@@ -1983,10 +1983,18 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus-tokens",
     mappingType: "pattern",
     notes:
-      "Replace Constraints.Horizontal with maxWidth design tokens or the Box/Container component.",
+      'Replace <Constraints.Horizontal max={N}> with <Box maxW="TOKEN">. ' +
+      "Use these Nimbus size tokens for maxW based on the UIKit max value: " +
+      "max=3→'3xs' (224px), max=4→'2xs' (256px), max=5→'xs' (320px), " +
+      "max=6→'xs' (320px), max=7→'sm' (384px), max=8→'sm' (384px), " +
+      "max=9→'md' (448px), max=10→'lg' (512px), max=11→'lg' (512px), " +
+      "max=12→'xl' (576px), max=13→'2xl' (672px), max=14→'2xl' (672px), " +
+      "max=15→'3xl' (768px), max=16→'3xl' (768px). " +
+      "Box supports style props, so add padding/gap directly instead of nesting Spacings wrappers.",
     breakingChanges: [
-      "Remove Constraints.Horizontal",
-      "Use maxWidth prop with design token values on Box or Container",
+      "Remove Constraints.Horizontal wrapper",
+      'Use <Box maxW="TOKEN"> with a Nimbus size token (see notes for lookup table)',
+      "Children should fill the Box — inputs stretch to 100% width by default",
     ],
     layoutGuidance: LAYOUT_NESTING_GUIDANCE,
   },
