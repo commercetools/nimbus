@@ -1,0 +1,16 @@
+{
+  "name": "mcp-eval",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "eval": "vitest run",
+    "eval:watch": "vitest"
+  },
+  "devDependencies": {
+    "@commercetools/nimbus-mcp": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "typescript": "catalog:tooling",
+    "vitest": "catalog:tooling"
+  }
+}

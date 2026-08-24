@@ -27,3 +27,4 @@ main().catch((error: unknown) => {
 });
 
 export type { ComponentMeta, DesignToken, ToolResult } from "./types.js";
+export { createServer } from "./server.js";
