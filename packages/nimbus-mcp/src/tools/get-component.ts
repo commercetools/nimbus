@@ -25,6 +25,38 @@ import { routePathToSlug as pathToSlug } from "../utils/route.js";
 const STYLE_PROPS_HINT =
   'Also accepts style props. Use get_docs_page(path: "home/style-props") for full reference.';
 
+/**
+ * Checks whether a component (or any of its sub-components) supports style
+ * props. For compound components where the top-level barrel has no
+ * `@supportsStyleProps` tag, this walks the sub-component type files and
+ * returns true if any of them have it.
+ *
+ * Exported for use by other tools (get-docs-page, migrate-from-uikit).
+ */
+export async function componentSupportsStyleProps(
+  exportName: string
+): Promise<boolean> {
+  try {
+    const typeData = await getTypeData(exportName);
+    if (typeData.supportsStyleProps) return true;
+  } catch {
+    // Type data unavailable for top-level — check sub-components
+  }
+
+  // Fallback: check sub-component type files
+  const subFiles = await findSubComponentFiles(exportName);
+  for (const file of subFiles) {
+    try {
+      const subName = file.replace(/\.json$/, "");
+      const subData = await getTypeData(subName);
+      if (subData.supportsStyleProps) return true;
+    } catch {
+      // Skip unavailable sub-component
+    }
+  }
+  return false;
+}
+
 // ---------------------------------------------------------------------------
 // Section definitions
 // ---------------------------------------------------------------------------
@@ -348,15 +380,10 @@ export function registerGetComponent(server: McpServer): void {
         if (!section) {
           const metadata = buildMetadataResponse(entry, availableSections);
 
-          // Add styleProps hint if the component supports style props
+          // Add styleProps hint if the component (or its sub-components) supports style props
           const exportName = entry.exportName ?? entry.title;
-          try {
-            const typeData = await getTypeData(exportName);
-            if (typeData.supportsStyleProps) {
-              metadata.styleProps = STYLE_PROPS_HINT;
-            }
-          } catch {
-            // Type data unavailable — skip styleProps hint
+          if (await componentSupportsStyleProps(exportName)) {
+            metadata.styleProps = STYLE_PROPS_HINT;
           }
 
           return {

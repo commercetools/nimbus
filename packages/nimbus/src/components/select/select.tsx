@@ -23,7 +23,6 @@ import {
  * ```
  *
  * @see https://nimbus-documentation.vercel.app/components/inputs/select
- * @supportsStyleProps
  */
 export const Select = {
   /**

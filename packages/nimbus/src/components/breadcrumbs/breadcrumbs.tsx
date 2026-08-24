@@ -22,7 +22,6 @@ import { BreadcrumbsRoot, BreadcrumbsItem } from "./components";
  *   <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
  * </Breadcrumbs.Root>
  * ```
- * @supportsStyleProps
  */
 export const Breadcrumbs = {
   /**

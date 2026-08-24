@@ -65,7 +65,6 @@ import {
  *   </Steps.NextTrigger>
  * </Steps.Root>
  * ```
- * @supportsStyleProps
  */
 export const Steps = {
   /**

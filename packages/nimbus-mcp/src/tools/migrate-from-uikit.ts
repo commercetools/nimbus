@@ -6,7 +6,8 @@ import {
   getUiKitCompoundMigrations,
   getAllUiKitMigrations,
 } from "../data/uikit-migration.js";
-import { getRouteManifest, getTypeData } from "../data-loader.js";
+import { getRouteManifest } from "../data-loader.js";
+import { componentSupportsStyleProps } from "./get-component.js";
 import type {
   MigrateComponentResult,
   MigrateCompoundResult,
@@ -288,15 +289,10 @@ async function buildComponentResult(
   );
   if (hint) result.hint = hint;
 
-  // Add styleProps hint when the Nimbus target supports style props
+  // Add styleProps hint when the Nimbus target (or its sub-components) supports style props
   if (entry.importPath === "@commercetools/nimbus" && entry.nimbusEquivalent) {
-    try {
-      const typeData = await getTypeData(entry.nimbusEquivalent);
-      if (typeData.supportsStyleProps) {
-        result.styleProps = STYLE_PROPS_HINT;
-      }
-    } catch {
-      // Type data unavailable — skip styleProps hint
+    if (await componentSupportsStyleProps(entry.nimbusEquivalent)) {
+      result.styleProps = STYLE_PROPS_HINT;
     }
   }
 

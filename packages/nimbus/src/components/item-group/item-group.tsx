@@ -18,7 +18,6 @@ import { ItemGroupRoot, ItemGroupSeparator } from "./components";
  *   <Item.Root>…</Item.Root>
  * </ItemGroup.Root>
  * ```
- * @supportsStyleProps
  */
 export const ItemGroup = {
   /**

@@ -41,7 +41,6 @@ import {
  *   </ComboBox.Popover>
  * </ComboBox.Root>
  * ```
- * @supportsStyleProps
  */
 export const ComboBox = {
   /**

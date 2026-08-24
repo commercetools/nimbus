@@ -4,8 +4,8 @@ import {
   getRouteData,
   getRouteManifest,
   getStylePropsSummary,
-  getTypeData,
 } from "../data-loader.js";
+import { componentSupportsStyleProps } from "./get-component.js";
 import type { DocsPageResult } from "../types.js";
 import { stripMarkdown } from "../utils/markdown.js";
 import { routePathToSlug } from "../utils/route.js";
@@ -84,13 +84,8 @@ async function maybeAddStylePropsHint(
   const exportName = await resolveExportName(route);
   if (!exportName) return;
 
-  try {
-    const typeData = await getTypeData(exportName);
-    if (typeData.supportsStyleProps) {
-      result.styleProps = STYLE_PROPS_HINT;
-    }
-  } catch {
-    // Type data unavailable — skip styleProps hint
+  if (await componentSupportsStyleProps(exportName)) {
+    result.styleProps = STYLE_PROPS_HINT;
   }
 }
 

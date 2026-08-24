@@ -65,7 +65,6 @@ export const DataTable = Object.assign(DataTableBase, {
    *   </DataTable.Table>
    * </DataTable.Root>
    * ```
- * @supportsStyleProps
    */
   Root: DataTableRoot,
   /**

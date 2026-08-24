@@ -23,7 +23,6 @@ import { TabNavRoot, TabNavItem } from "./components";
  *   <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
  * </TabNav.Root>
  * ```
- * @supportsStyleProps
  */
 export const TabNav = {
   /**

@@ -16,7 +16,6 @@ import { TagGroupRoot, TagGroupTagList, TagGroupTag } from "./components";
  *   </TagGroup.TagList>
  * </TagGroup.Root>
  * ```
- * @supportsStyleProps
  */
 export const TagGroup = {
   /**

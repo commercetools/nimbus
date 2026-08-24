@@ -24,7 +24,6 @@ export const Menu = {
    *   </Menu.Content>
    * </Menu.Root>
    * ```
- * @supportsStyleProps
    */
   Root: MenuRoot,
 

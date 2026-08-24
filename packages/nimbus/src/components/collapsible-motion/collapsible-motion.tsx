@@ -31,7 +31,6 @@ export const CollapsibleMotion: CollapsibleMotionNamespace = {
    *   <CollapsibleMotion.Content>Content here</CollapsibleMotion.Content>
    * </CollapsibleMotion.Root>
    * ```
- * @supportsStyleProps
    */
   Root: CollapsibleMotionRoot,
 

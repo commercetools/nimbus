@@ -20,7 +20,6 @@ import { PageContentRoot, PageContentColumn } from "./components";
  *   <PageContent.Column sticky>Sidebar</PageContent.Column>
  * </PageContent.Root>
  * ```
- * @supportsStyleProps
  */
 export const PageContent = {
   /**

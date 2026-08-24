@@ -12,7 +12,6 @@ import {
  * Provides feedback to the user about the status of an action or system event
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/alert}
- * @supportsStyleProps
  *
  * @example
  * ```tsx

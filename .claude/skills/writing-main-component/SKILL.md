@@ -285,7 +285,11 @@ guideline references.
   - Link placed BEFORE `@example` block
 - [ ] **@example block**: JSDoc includes `@example` block showing typical usage
 - [ ] **@supportsStyleProps tag**: `@supportsStyleProps` tag present if
-      component accepts Chakra UI style props
+      component accepts Chakra UI style props (extends `HTMLChakraProps`,
+      `RecipeVariantProps`, or forwards props to a styled component). Required
+      for the nimbus-mcp server to surface style props hints to LLMs.
+      For compound components, only tag the implementation files — the MCP
+      detects support from sub-components automatically.
 - [ ] **Compound parts JSDoc**: For compound components, EACH part has JSDoc in
       main file (NOT implementation files)
 - [ ] **Part heading**: Each compound part's JSDoc includes heading:
@@ -1094,7 +1098,10 @@ to component
 
 - Not using `extractStyleProps` to separate style props from functional props
 - Not forwarding style props to slot component
-- Missing `@supportsStyleProps` JSDoc tag
+- Missing `@supportsStyleProps` JSDoc tag (nimbus-mcp won't surface style props
+  to LLMs without it — they'll wrap your component in Box unnecessarily)
+- For compound components: tag on sub-component files but not on the barrel
+  namespace JSDoc
 
 **Solutions**:
 

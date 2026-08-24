@@ -27,7 +27,6 @@ export const FormField = {
    *   <FormField.Error>Username is required</FormField.Error>
    * </FormField.Root>
    * ```
- * @supportsStyleProps
    */
   Root: FormFieldRoot,
 

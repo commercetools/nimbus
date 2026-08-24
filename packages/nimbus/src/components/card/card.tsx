@@ -8,7 +8,6 @@ import { CardRoot, CardHeader, CardBody, CardFooter } from "./components";
  * together, making it easy to scan and interact with information.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/data-display/card}
- * @supportsStyleProps
  *
  * @example
  * ```tsx

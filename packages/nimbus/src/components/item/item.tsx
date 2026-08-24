@@ -38,7 +38,6 @@ import {
  *   <Item.Root>…</Item.Root>
  * </ItemGroup>
  * ```
- * @supportsStyleProps
  */
 export const Item = {
   /**
