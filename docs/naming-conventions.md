@@ -66,19 +66,20 @@ data-table.tsx
 
 All component-related files follow predictable patterns:
 
-| File Type           | Pattern                     | Example                |
-| ------------------- | --------------------------- | ---------------------- |
-| Main component      | `{component}.tsx`           | `button.tsx`           |
-| Types               | `{component}.types.ts`      | `button.types.ts`      |
-| Recipe              | `{component}.recipe.ts`     | `button.recipe.ts`     |
-| Slots               | `{component}.slots.tsx`     | `button.slots.tsx`     |
-| Stories             | `{component}.stories.tsx`   | `button.stories.tsx`   |
-| i18n                | `{component}.i18n.ts`       | `button.i18n.ts`       |
-| Developer docs      | `{component}.dev.mdx`       | `button.dev.mdx`       |
-| Documentation tests | `{component}.docs.spec.tsx` | `button.docs.spec.tsx` |
-| Designer docs       | `{component}.mdx`           | `button.mdx`           |
-| Unit tests          | `{utility}.spec.ts`         | `format-date.spec.ts`  |
-| Barrel export       | `index.ts`                  | `index.ts`             |
+| File Type           | Pattern                     | Example                 |
+| ------------------- | --------------------------- | ----------------------- |
+| Main component      | `{component}.tsx`           | `button.tsx`            |
+| Types               | `{component}.types.ts`      | `button.types.ts`       |
+| Recipe              | `{component}.recipe.ts`     | `button.recipe.ts`      |
+| Slots               | `{component}.slots.tsx`     | `button.slots.tsx`      |
+| Stories             | `{component}.stories.tsx`   | `button.stories.tsx`    |
+| i18n                | `{component}.i18n.ts`       | `button.i18n.ts`        |
+| Developer docs      | `{component}.dev.mdx`       | `button.dev.mdx`        |
+| Documentation tests | `{component}.docs.spec.tsx` | `button.docs.spec.tsx`  |
+| Designer docs       | `{component}.mdx`           | `button.mdx`            |
+| Unit tests          | `{utility}.spec.ts`         | `format-date.spec.ts`   |
+| Lazy-loaded module  | `{component}.lazy.tsx`      | `toast.outlet.lazy.tsx` |
+| Barrel export       | `index.ts`                  | `index.ts`              |
 
 ### Directory Structure
 
@@ -95,6 +96,36 @@ components/
 │   ├── button.mdx            # Designer documentation
 │   └── index.ts              # Barrel export
 ```
+
+### Lazy-Loaded Modules
+
+Files loaded via `React.lazy()` use the `.lazy.tsx` suffix. This convention
+makes code-split boundaries immediately visible in the file tree and signals
+that the module is only fetched at runtime when needed.
+
+**Pattern**: `{component}.lazy.tsx` — the base name matches the parent module
+that imports it lazily.
+
+```typescript
+// toast.outlet.tsx — lightweight shell, always in the main bundle
+const ToastOutletLazy = lazy(() => import("./toast.outlet.lazy"));
+
+// toast.outlet.lazy.tsx — heavy implementation, code-split into its own chunk
+export default function ToastOutletLazy() {
+  /* ... */
+}
+```
+
+**When to use:**
+
+- A module pulls in a heavy dependency that most consumers don't need
+- The parent component conditionally renders the lazy module (e.g., behind a
+  feature gate or activation check)
+- You want the consumer's bundler to split the module into a separate chunk
+
+**Naming rule:** The `.lazy.tsx` file is always a default export (required by
+`React.lazy()`) — this is the one sanctioned exception to the "prefer named
+exports" rule.
 
 ---
 
@@ -321,20 +352,12 @@ Recipe names use camelCase and end with "Recipe" or "SlotRecipe":
 
 ```typescript
 // Standard recipes
-export const buttonRecipe = defineRecipe({
-  /* ... */
-});
-export const badgeRecipe = defineRecipe({
-  /* ... */
-});
+export const buttonRecipe = defineRecipe({/* ... */});
+export const badgeRecipe = defineRecipe({/* ... */});
 
 // Slot recipes
-export const menuSlotRecipe = defineSlotRecipe({
-  /* ... */
-});
-export const dialogSlotRecipe = defineSlotRecipe({
-  /* ... */
-});
+export const menuSlotRecipe = defineSlotRecipe({/* ... */});
+export const dialogSlotRecipe = defineSlotRecipe({/* ... */});
 ```
 
 ### Recipe Registration
@@ -393,32 +416,16 @@ Story names use PascalCase and describe the variant or state:
 
 ```typescript
 // ✅ CORRECT
-export const Base: Story = {
-  /* ... */
-};
-export const WithIcon: Story = {
-  /* ... */
-};
-export const Loading: Story = {
-  /* ... */
-};
-export const Disabled: Story = {
-  /* ... */
-};
-export const SizeVariants: Story = {
-  /* ... */
-};
+export const Base: Story = {/* ... */};
+export const WithIcon: Story = {/* ... */};
+export const Loading: Story = {/* ... */};
+export const Disabled: Story = {/* ... */};
+export const SizeVariants: Story = {/* ... */};
 
 // ❌ INCORRECT
-export const base: Story = {
-  /* ... */
-}; // lowercase
-export const with_icon: Story = {
-  /* ... */
-}; // snake_case
-export const loading_state: Story = {
-  /* ... */
-}; // snake_case
+export const base: Story = {/* ... */}; // lowercase
+export const with_icon: Story = {/* ... */}; // snake_case
+export const loading_state: Story = {/* ... */}; // snake_case
 ```
 
 ### Story Organization Order
@@ -628,9 +635,7 @@ export type ButtonRootSlotProps = HTMLChakraProps<"button", ButtonRecipeProps>;
 export type ButtonProps = ButtonRootSlotProps & { isLoading?: boolean };
 
 // File: button.recipe.ts
-export const buttonRecipe = defineRecipe({
-  /* ... */
-});
+export const buttonRecipe = defineRecipe({/* ... */});
 
 // File: button.slots.tsx
 export const ButtonRoot = withProvider("button", "root");

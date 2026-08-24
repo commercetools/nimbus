@@ -8,7 +8,7 @@ import { NUMPAD_HOTKEYS } from "../constants";
 /**
  * Lazy-loaded heavy rendering implementation.
  *
- * This dynamic import is the key to toast code-splitting: the impl module
+ * This dynamic import is the key to toast code-splitting: the lazy module
  * imports `@chakra-ui/react/toast` (which pulls in @zag-js, ~18 KB gz).
  * By loading it lazily, consumers who never call `toast()` never pay for
  * the toast rendering infrastructure.
@@ -17,7 +17,7 @@ import { NUMPAD_HOTKEYS } from "../constants";
  * as a dynamic import in the ESM output. The consumer's bundler then handles
  * code-splitting it into a separate chunk.
  */
-const ToastOutletImpl = lazy(() => import("./toast.outlet.impl"));
+const ToastOutletLazy = lazy(() => import("./toast.outlet.lazy"));
 
 /**
  * Subscribe function for useSyncExternalStore.
@@ -88,7 +88,7 @@ export function ToastOutlet() {
 
   return (
     <Suspense fallback={null}>
-      <ToastOutletImpl />
+      <ToastOutletLazy />
     </Suspense>
   );
 }
