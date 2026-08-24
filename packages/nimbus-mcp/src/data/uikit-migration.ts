@@ -1623,7 +1623,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Rename to Badge. UI Kit used a tone prop; Nimbus uses colorPalette instead. " +
       "UI Kit tones: 'critical'|'warning'|'positive'|'information'|'primary'|'secondary'. " +
       "Nimbus colorPalette values: 'critical'|'warning'|'positive'|'info'|'primary'|'neutral'. " +
-      "Badge supports style props — use size='2xs' for compact contexts like table cells, " +
+      "Badge supports style props — use size='sm' for compact contexts like table cells, " +
       "and style props like px, py, fontSize for further tuning.",
     breakingChanges: [
       "Rename to Badge",
@@ -2066,7 +2066,8 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "direct",
     notes:
       "Rename to Accordion. Uses Accordion.Root, Accordion.Item, Accordion.Header, Accordion.Content composition. " +
-      "UI Kit used isClosed (controlled) + onToggle; the header was a prop, not a child slot.",
+      "UI Kit used isClosed (controlled) + onToggle; the header was a prop, not a child slot. " +
+      'Set size="sm" on Accordion.Root to match UIKit CollapsiblePanel\'s compact header sizing.',
     breakingChanges: [
       "Rename to Accordion",
       "Adopt compositional slot API (Accordion.Root, Accordion.Item, Accordion.Header, Accordion.Content)",
@@ -2214,21 +2215,22 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
     notes:
-      'Use <Heading as="h4" size="sm"> for subheadings like card titles and accordion labels. ' +
+      'Use <Heading as="h4" size="xs" fontWeight="medium"> for subheadings like card titles and accordion labels. ' +
+      "UIKit Subheadline used a medium weight — Heading defaults to bold, so set fontWeight explicitly. " +
       "Heading supports style props — use them for spacing instead of wrapper elements.",
     breakingChanges: [
       "Replace Text.Subheadline with <Heading>",
       "Set the appropriate heading level via the as prop",
-      "Set size='sm' for subheading-level text",
+      "Set size='xs' and fontWeight='medium' for subheading-level text",
     ],
     propMappings: [
       {
         uiKitProp: "_component",
         nimbusProp: "size",
         changeType: "value-mapping",
-        fixedValue: "sm",
+        fixedValue: "xs",
         notes:
-          "Use size='sm' for subheadings, 'md' if slightly larger is needed.",
+          "Use size='xs' for subheadings, 'md' if slightly larger is needed.",
       },
       {
         uiKitProp: "as",

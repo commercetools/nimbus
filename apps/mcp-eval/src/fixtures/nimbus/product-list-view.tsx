@@ -1,33 +1,45 @@
 /**
- * Realistic Merchant Center "Product List" view built entirely with Nimbus.
+ * Realistic Merchant Center "Product List" view — Nimbus migration of the
+ * UI Kit fixture at `../uikit/product-list-view.tsx`.
  *
- * This is the Nimbus equivalent of ../uikit/product-list-view.tsx — the same
- * page, migrated. It demonstrates the trickiest migration patterns all in one
- * file, the way a real MC page would combine them:
+ * Migration notes (see `migrate_from_uikit` output for the source file):
  *
- * - Button (solid/outline/ghost variants) / IconButton (children instead of
- *   label, onPress instead of onClick)
- * - SearchInput / Select / DateRangePicker (native onChange/onSelectionChange
- *   value shapes instead of UIKit's `{ target: { value } }` event wrapper)
- * - DataTable with `{ id, header, accessor }` columns and native
- *   selectionMode/selectedKeys — no more hand-rolled selection column or
- *   DataTableManager wrapper
- * - Stack (with `direction="row"` for inline layouts) instead of
- *   Spacings.Stack/Spacings.Inline; `maxW` style prop instead of
- *   Constraints.Horizontal
- * - Accordion.Root / Accordion.Item / Accordion.Header / Accordion.Content
- *   (compound API) instead of CollapsiblePanel
- * - Badge / TagGroup+Tag / Avatar (style-props-enabled Nimbus components)
- * - Pagination
- * - FieldErrors / LoadingSpinner
- * - Icon imports from @commercetools/nimbus-icons, wrapped in <Icon>
- * - Text (with `as`/`textStyle` props) instead of Text.Body/Text.Headline/Label
- * - Switch instead of ToggleInput
+ * - PrimaryButton/SecondaryButton/FlatButton → Button (variant + colorPalette
+ *   set explicitly to preserve the previous default blue appearance;
+ *   iconLeft/icon props become children).
+ * - IconButton → IconButton (label → aria-label, icon → children).
+ * - SearchTextInput → SearchInput (onChange receives the string directly).
+ * - SelectInput → Select.Root/Select.Options/Select.Option (onSelectionChange
+ *   receives the selected key directly).
+ * - DateRangeInput → DateRangePicker ({ start, end } CalendarDate value).
+ * - CheckboxInput (custom selection column) → removed entirely. Nimbus
+ *   DataTable's own `selectionMode="multiple"` replaces the hand-rolled
+ *   selection column cell/label (see `codeReduction.selection-model-collapse`
+ *   in the migration data).
+ * - ToggleInput → Switch (isChecked → isSelected, boolean onChange).
+ * - DataTable → DataTable (columns: key→id, label→header, renderItem merged
+ *   into `accessor`; onSortChange receives a descriptor object;
+ *   onSelectionChange receives `"all" | Set<Key>`).
+ * - DataTableManager → no dedicated Nimbus export; DataTable's own
+ *   density/customSettings/onColumnsChange props already cover column
+ *   management, so the wrapper is dropped rather than imported unused.
+ * - CollapsiblePanel → Accordion.Root/Item/Header/Content (isClosed/onToggle →
+ *   expandedKeys/onExpandedChange).
+ * - Pagination → Pagination (onPageChange receives the page number directly).
+ * - Stamp → Badge (tone → colorPalette, isCondensed → size="sm").
+ * - Tag → TagGroup.Root/TagGroup.TagList/TagGroup.Tag.
+ * - Avatar → Avatar (direct replacement).
+ * - Text.Body/Text.Headline/Text.Subheadline → Text/Heading.
+ * - Label → Text as="label".
+ * - FieldErrors/LoadingSpinner → direct replacements.
+ * - Spacings.Stack/Spacings.Inline → Stack (direction="column"/"row").
+ * - Constraints.Horizontal → Box with a maxWidth style prop.
+ * - FilterIcon/EditIcon/RefreshIcon/etc. → Icon (as={...}) from
+ *   "@commercetools/nimbus", wrapping icon components imported from
+ *   "@commercetools/nimbus-icons".
  */
 
 import { useCallback, useState } from "react";
-import type { Key, Selection } from "react-aria-components";
-
 import {
   Accordion,
   Avatar,
@@ -36,7 +48,9 @@ import {
   Button,
   DataTable,
   DateRangePicker,
+  type DateRangePickerProps,
   FieldErrors,
+  Heading,
   Icon,
   IconButton,
   LoadingSpinner,
@@ -47,18 +61,14 @@ import {
   Switch,
   TagGroup,
   Text,
-  type BadgeProps,
   type DataTableColumnItem,
-  type DateValue,
-  type RangeValue,
-  type SortDescriptor,
 } from "@commercetools/nimbus";
 import {
   Add,
   Delete,
+  Download,
   Edit,
-  FilterList,
-  FileDownload,
+  FilterAlt,
   Refresh,
 } from "@commercetools/nimbus-icons";
 
@@ -75,7 +85,19 @@ interface Product {
   lastModified: string;
   createdBy: string;
   categories: string[];
+  // DataTable's `DataTableRowItem<T>` requires an index signature.
+  [key: string]: unknown;
 }
+
+interface SortState {
+  key: string;
+  order: "asc" | "desc";
+}
+
+// Mirrors React Aria's `Selection` type (`"all" | Set<Key>`, where
+// `Key = string | number`) without pulling in a react-aria-components import
+// for a single type alias.
+type RowSelection = "all" | Set<string | number>;
 
 // ---------------------------------------------------------------------------
 // Mock data
@@ -114,84 +136,23 @@ const PRODUCTS: Product[] = [
   },
 ];
 
-const STATUS_OPTIONS: { id: string; name: string }[] = [
-  { id: "all", name: "All statuses" },
-  { id: "published", name: "Published" },
-  { id: "draft", name: "Draft" },
-  { id: "modified", name: "Modified" },
+const STATUS_OPTIONS = [
+  { value: "all", label: "All statuses" },
+  { value: "published", label: "Published" },
+  { value: "draft", label: "Draft" },
+  { value: "modified", label: "Modified" },
 ];
 
-const STATUS_BADGE_TONES: Record<
+// Stamp tone -> Badge colorPalette (positive/warning/primary all keep the
+// same name in the Nimbus semantic palette).
+const STATUS_COLOR_PALETTES: Record<
   Product["status"],
-  BadgeProps["colorPalette"]
+  "primary" | "positive" | "warning"
 > = {
   published: "positive",
   draft: "warning",
   modified: "primary",
 };
-
-// ---------------------------------------------------------------------------
-// DataTable columns — { id, header, accessor } instead of UIKit's
-// { key, label, renderItem, isSortable, width }. Selection is handled by
-// DataTable's own selectionMode/selectedKeys props, so the hand-rolled
-// SelectionColumnCell/SelectionColumnLabel components UIKit needed are gone
-// entirely (codeReduction).
-// ---------------------------------------------------------------------------
-
-const columns: DataTableColumnItem<Product>[] = [
-  {
-    id: "name",
-    header: "Product Name",
-    accessor: (row) => (
-      <Stack direction="row" gap="200" alignItems="center">
-        <Avatar
-          firstName={row.createdBy.split(" ")[0]}
-          lastName={row.createdBy.split(" ")[1]}
-          size="2xs"
-        />
-        <Text>{row.name}</Text>
-      </Stack>
-    ),
-  },
-  {
-    id: "sku",
-    header: "SKU",
-    accessor: (row) => <Text fontStyle="italic">{row.sku}</Text>,
-  },
-  {
-    id: "status",
-    header: "Status",
-    accessor: (row) => (
-      <Badge colorPalette={STATUS_BADGE_TONES[row.status]}>{row.status}</Badge>
-    ),
-  },
-  {
-    id: "price",
-    header: "Price",
-    accessor: (row) => row.price,
-  },
-  {
-    id: "categories",
-    header: "Categories",
-    accessor: (row) => (
-      <TagGroup.Root aria-label={`${row.name} categories`} size="sm">
-        <TagGroup.TagList
-          items={row.categories.map((category) => ({
-            id: category,
-            name: category,
-          }))}
-        >
-          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
-        </TagGroup.TagList>
-      </TagGroup.Root>
-    ),
-  },
-  {
-    id: "lastModified",
-    header: "Last Modified",
-    accessor: (row) => row.lastModified,
-  },
-];
 
 // ---------------------------------------------------------------------------
 // Component
@@ -200,68 +161,136 @@ const columns: DataTableColumnItem<Product>[] = [
 export function ProductListView() {
   // State
   const [searchValue, setSearchValue] = useState("");
-  const [statusFilter, setStatusFilter] = useState<Key>("all");
-  const [dateRange, setDateRange] = useState<RangeValue<DateValue> | null>(
-    null
-  );
-  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "name",
-    direction: "ascending",
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [dateRange, setDateRange] =
+    useState<DateRangePickerProps["value"]>(null);
+  const [sortState, setSortState] = useState<SortState>({
+    key: "name",
+    order: "asc",
   });
-  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+  const [selectedRows, setSelectedRows] = useState<RowSelection>(
+    new Set<string>()
+  );
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [showOnlyActive, setShowOnlyActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors] = useState<Record<string, boolean>>({});
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
+  const perPage = 20;
 
-  // Handlers — plain values instead of UIKit's synthetic/wrapped events
-  const handleStatusChange = useCallback((key: Key | null) => {
-    setStatusFilter(key ?? "all");
+  // Handlers
+  const handleStatusChange = useCallback((key: string | number | null) => {
+    setStatusFilter(key ? String(key) : "all");
   }, []);
 
-  const handleRefresh = useCallback(() => {
-    setIsLoading(true);
-    setTimeout(() => setIsLoading(false), 1000);
-  }, []);
+  const handleSortChange = useCallback(
+    (descriptor: { column: string; direction: "ascending" | "descending" }) => {
+      setSortState({
+        key: descriptor.column,
+        order: descriptor.direction === "ascending" ? "asc" : "desc",
+      });
+    },
+    []
+  );
 
-  const selectedCount =
-    selectedKeys === "all" ? PRODUCTS.length : selectedKeys.size;
-
-  const filteredProducts = PRODUCTS.filter((product) => {
-    if (statusFilter !== "all" && product.status !== statusFilter) return false;
+  const filteredProducts = PRODUCTS.filter((p) => {
+    if (statusFilter !== "all" && p.status !== statusFilter) return false;
     if (
       searchValue &&
-      !product.name.toLowerCase().includes(searchValue.toLowerCase())
+      !p.name.toLowerCase().includes(searchValue.toLowerCase())
     )
       return false;
     return true;
   });
 
+  const selectedCount =
+    selectedRows === "all" ? filteredProducts.length : selectedRows.size;
+
+  // DataTable columns: key -> id, label -> header, renderItem merged into
+  // `accessor` (returns either plain text or JSX per the Nimbus DataTable
+  // contract). The old selection column is gone — DataTable's own
+  // `selectionMode="multiple"` provides the header/row checkboxes.
+  const columns: DataTableColumnItem<Product>[] = [
+    {
+      id: "name",
+      header: "Product Name",
+      isSortable: true,
+      accessor: (row) => (
+        <Stack direction="row" gap="200" align="center">
+          <Avatar
+            firstName={row.createdBy.split(" ")[0]}
+            lastName={row.createdBy.split(" ")[1]}
+            size="sm"
+          />
+          <Text>{row.name}</Text>
+        </Stack>
+      ),
+    },
+    {
+      id: "sku",
+      header: "SKU",
+      accessor: (row) => <Text fontStyle="italic">{row.sku}</Text>,
+    },
+    {
+      id: "status",
+      header: "Status",
+      accessor: (row) => (
+        <Badge colorPalette={STATUS_COLOR_PALETTES[row.status]} size="sm">
+          {row.status}
+        </Badge>
+      ),
+    },
+    {
+      id: "price",
+      header: "Price",
+      isSortable: true,
+      accessor: (row) => row.price,
+    },
+    {
+      id: "categories",
+      header: "Categories",
+      accessor: (row) => (
+        <TagGroup.Root aria-label={`${row.name} categories`} size="sm">
+          <TagGroup.TagList>
+            {row.categories.map((cat) => (
+              <TagGroup.Tag key={cat}>{cat}</TagGroup.Tag>
+            ))}
+          </TagGroup.TagList>
+        </TagGroup.Root>
+      ),
+    },
+    {
+      id: "lastModified",
+      header: "Last Modified",
+      isSortable: true,
+      accessor: (row) => row.lastModified,
+    },
+  ];
+
   return (
-    <Box maxW="1600px">
-      <Stack gap="600">
+    // Constraints.Horizontal max={16} ~= 784px; no exact Nimbus size token
+    // matched this value, so it's applied as a plain maxWidth style prop.
+    <Box maxWidth="784px">
+      <Stack direction="column" gap="600">
         {/* Page header */}
-        <Stack
-          direction="row"
-          gap="400"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Stack direction="row" gap="200" alignItems="center">
-            <Text as="h1" textStyle="headline-h1">
+        <Stack direction="row" gap="400" align="center" justify="space-between">
+          <Stack direction="row" gap="200" align="center">
+            <Heading as="h1" size="lg">
               Products
-            </Text>
-            <Badge>{`${filteredProducts.length} items`}</Badge>
+            </Heading>
+            <TagGroup.Root aria-label="Item count">
+              <TagGroup.TagList>
+                <TagGroup.Tag>{`${filteredProducts.length} items`}</TagGroup.Tag>
+              </TagGroup.TagList>
+            </TagGroup.Root>
           </Stack>
 
           <Stack direction="row" gap="200">
-            <Button variant="outline" colorPalette="primary" onPress={() => {}}>
-              <Icon as={FileDownload} />
+            <Button variant="outline" colorPalette="primary">
+              <Icon as={Download} />
               Export
             </Button>
-            <Button variant="solid" colorPalette="primary" onPress={() => {}}>
+            <Button variant="solid" colorPalette="primary">
               <Icon as={Add} />
               Add Product
             </Button>
@@ -269,8 +298,9 @@ export function ProductListView() {
         </Stack>
 
         {/* Search and filter bar */}
-        <Stack direction="row" gap="400" alignItems="flex-end">
-          <Box maxW="400px">
+        <Stack direction="row" gap="400" align="flex-end">
+          {/* Constraints.Horizontal max={10} ~= 484px */}
+          <Box maxWidth="484px">
             <SearchInput
               value={searchValue}
               onChange={setSearchValue}
@@ -279,83 +309,81 @@ export function ProductListView() {
             />
           </Box>
 
-          <Box maxW="240px">
+          {/* Constraints.Horizontal max={6} ~= 284px */}
+          <Box maxWidth="284px">
             <Select.Root
+              aria-label="Filter by status"
               selectedKey={statusFilter}
               onSelectionChange={handleStatusChange}
-              aria-label="Filter by status"
             >
-              <Select.Options items={STATUS_OPTIONS}>
-                {(item) => (
-                  <Select.Option id={item.id}>{item.name}</Select.Option>
-                )}
+              <Select.Options>
+                {STATUS_OPTIONS.map((option) => (
+                  <Select.Option key={option.value} id={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
               </Select.Options>
             </Select.Root>
           </Box>
 
           <IconButton
             aria-label="Toggle filters"
-            variant="outline"
             onPress={() => setIsAdvancedOpen((prev) => !prev)}
           >
-            <Icon as={FilterList} />
+            <Icon as={FilterAlt} />
           </IconButton>
 
           <Button
             variant="ghost"
             colorPalette="primary"
-            onPress={handleRefresh}
+            onPress={() => {
+              setIsLoading(true);
+              setTimeout(() => setIsLoading(false), 1000);
+            }}
           >
             <Icon as={Refresh} />
             Refresh
           </Button>
         </Stack>
 
-        {/* Advanced filters — Accordion instead of CollapsiblePanel */}
+        {/* Advanced filters — CollapsiblePanel -> Accordion */}
         <Accordion.Root
+          size="sm"
           expandedKeys={isAdvancedOpen ? ["advanced-filters"] : []}
-          onExpandedChange={(keys) =>
-            setIsAdvancedOpen(Array.from(keys).includes("advanced-filters"))
-          }
+          onExpandedChange={(keys) => setIsAdvancedOpen(keys.size > 0)}
         >
           <Accordion.Item value="advanced-filters">
             <Accordion.Header>
-              <Stack direction="row" gap="200" alignItems="center">
-                <Icon as={FilterList} />
-                <Text as="h4" textStyle="label-l">
-                  Advanced Filters
-                </Text>
-              </Stack>
+              <Icon as={FilterAlt} size="sm" />
+              Advanced Filters
             </Accordion.Header>
             <Accordion.Content>
-              <Stack gap="400">
-                <Stack direction="row" gap="600" alignItems="flex-end">
-                  <Box maxW="320px">
-                    <Stack gap="100">
-                      <Text as="label">Date Range</Text>
+              <Stack direction="column" gap="400">
+                <Stack direction="row" gap="600" align="flex-end">
+                  {/* Constraints.Horizontal max={8} ~= 384px = size.9600 */}
+                  <Box maxWidth="9600">
+                    <Stack direction="column" gap="100">
+                      <Text as="label" fontSize="sm" fontWeight="medium">
+                        Date Range
+                      </Text>
                       <DateRangePicker
+                        aria-label="Select date range"
                         value={dateRange}
                         onChange={setDateRange}
-                        aria-label="Date range"
                       />
                     </Stack>
                   </Box>
 
-                  <Stack gap="100">
-                    <Text as="label">Active only</Text>
-                    <Switch
-                      isSelected={showOnlyActive}
-                      onChange={setShowOnlyActive}
-                    />
-                  </Stack>
+                  <Switch
+                    isSelected={showOnlyActive}
+                    onChange={setShowOnlyActive}
+                  >
+                    Active only
+                  </Switch>
                 </Stack>
 
-                {Object.keys(errors).length > 0 && (
-                  <FieldErrors
-                    id="advanced-filters-errors"
-                    errors={errors}
-                    isVisible
-                  />
+                {Object.values(errors).some(Boolean) && (
+                  <FieldErrors errors={errors} isVisible />
                 )}
               </Stack>
             </Accordion.Content>
@@ -364,35 +392,37 @@ export function ProductListView() {
 
         {/* Bulk actions bar (visible when rows selected) */}
         {selectedCount > 0 && (
-          <Stack direction="row" gap="400" alignItems="center">
+          <Stack direction="row" gap="400" align="center">
             <Text>{selectedCount} product(s) selected</Text>
-            <Button variant="outline" colorPalette="primary" onPress={() => {}}>
+            <Button variant="outline" colorPalette="primary">
               <Icon as={Edit} />
               Edit selected
             </Button>
-            <Button variant="ghost" colorPalette="critical" onPress={() => {}}>
+            <Button variant="ghost" colorPalette="critical">
               <Icon as={Delete} />
               Delete selected
             </Button>
           </Stack>
         )}
 
-        {/* Data table — native columns/selection/sorting, no DataTableManager */}
+        {/* Data table */}
         {isLoading ? (
-          <Stack direction="row" justifyContent="center">
-            <LoadingSpinner />
+          <Stack direction="row" justify="center">
+            <LoadingSpinner aria-label="Loading products" />
           </Stack>
         ) : (
           <DataTable
             columns={columns}
             rows={filteredProducts}
             maxHeight="600px"
-            allowsSorting
-            sortDescriptor={sortDescriptor}
-            onSortChange={setSortDescriptor}
             selectionMode="multiple"
-            selectedKeys={selectedKeys}
-            onSelectionChange={setSelectedKeys}
+            selectedKeys={selectedRows}
+            onSelectionChange={setSelectedRows}
+            sortDescriptor={{
+              column: sortState.key,
+              direction: sortState.order === "asc" ? "ascending" : "descending",
+            }}
+            onSortChange={handleSortChange}
             onRowClick={(row) => {
               window.location.href = `/products/${row.id}`;
             }}
@@ -400,13 +430,13 @@ export function ProductListView() {
         )}
 
         {/* Pagination */}
-        <Stack direction="row" justifyContent="flex-end">
+        <Stack direction="row" justify="flex-end">
           <Pagination
-            totalItems={filteredProducts.length}
             currentPage={page}
-            pageSize={pageSize}
             onPageChange={setPage}
-            onPageSizeChange={setPageSize}
+            pageSize={perPage}
+            onPageSizeChange={() => {}}
+            totalItems={filteredProducts.length}
           />
         </Stack>
       </Stack>
