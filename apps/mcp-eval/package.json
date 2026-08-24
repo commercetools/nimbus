@@ -13,7 +13,11 @@
   },
   "dependencies": {
     "react": "catalog:react",
-    "react-dom": "catalog:react"
+    "react-dom": "catalog:react",
+    "@commercetools/nimbus": "workspace:*",
+    "@commercetools/nimbus-icons": "workspace:*",
+    "@commercetools-frontend/ui-kit": "catalog:tooling",
+    "react-intl": "catalog:utils"
   },
   "devDependencies": {
     "@commercetools/nimbus-mcp": "workspace:*",

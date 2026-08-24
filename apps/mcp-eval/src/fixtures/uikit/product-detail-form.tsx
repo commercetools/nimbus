@@ -16,34 +16,34 @@
  */
 
 import React, { useState, useCallback } from "react";
-import TextField from "@commercetools-uikit/text-field";
-import MultilineTextField from "@commercetools-uikit/multiline-text-field";
-import LocalizedTextInput from "@commercetools-uikit/localized-text-input";
-import LocalizedMultilineTextInput from "@commercetools-uikit/localized-multiline-text-input";
-import MoneyInput from "@commercetools-uikit/money-input";
-import NumberInput from "@commercetools-uikit/number-input";
-import SelectInput from "@commercetools-uikit/select-input";
-import PrimaryButton from "@commercetools-uikit/primary-button";
-import SecondaryButton from "@commercetools-uikit/secondary-button";
-import FlatButton from "@commercetools-uikit/flat-button";
-import ContentNotification from "@commercetools-uikit/content-notification";
-import FieldErrors from "@commercetools-uikit/field-errors";
-import Text from "@commercetools-uikit/text";
-import Label from "@commercetools-uikit/label";
-import Card from "@commercetools-uikit/card";
-import Link from "@commercetools-uikit/link";
-import ProgressBar from "@commercetools-uikit/progress-bar";
-import Stamp from "@commercetools-uikit/stamp";
-import Tag from "@commercetools-uikit/tag";
-import Spacings from "@commercetools-uikit/spacings";
-import Constraints from "@commercetools-uikit/constraints";
 import {
+  TextField,
+  MultilineTextField,
+  LocalizedTextInput,
+  LocalizedMultilineTextInput,
+  MoneyInput,
+  NumberInput,
+  SelectInput,
+  PrimaryButton,
+  SecondaryButton,
+  FlatButton,
+  ContentNotification,
+  FieldErrors,
+  Text,
+  Label,
+  Card,
+  Link,
+  ProgressBar,
+  Stamp,
+  Tag,
+  Spacings,
+  Constraints,
   BackIcon,
   CheckBoldIcon,
   CloseBoldIcon,
   InformationIcon,
   WarningIcon,
-} from "@commercetools-uikit/icons";
+} from "@commercetools-frontend/ui-kit";
 
 // ---------------------------------------------------------------------------
 // Types

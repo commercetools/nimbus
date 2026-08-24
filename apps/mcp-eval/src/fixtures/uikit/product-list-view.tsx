@@ -18,29 +18,29 @@
  */
 
 import React, { useState, useCallback } from "react";
-import PrimaryButton from "@commercetools-uikit/primary-button";
-import SecondaryButton from "@commercetools-uikit/secondary-button";
-import FlatButton from "@commercetools-uikit/flat-button";
-import IconButton from "@commercetools-uikit/icon-button";
-import SearchTextInput from "@commercetools-uikit/search-text-input";
-import SelectInput from "@commercetools-uikit/select-input";
-import DateRangeInput from "@commercetools-uikit/date-range-input";
-import CheckboxInput from "@commercetools-uikit/checkbox-input";
-import ToggleInput from "@commercetools-uikit/toggle-input";
-import DataTable from "@commercetools-uikit/data-table";
-import DataTableManager from "@commercetools-uikit/data-table-manager";
-import CollapsiblePanel from "@commercetools-uikit/collapsible-panel";
-import Pagination from "@commercetools-uikit/pagination";
-import Stamp from "@commercetools-uikit/stamp";
-import Tag from "@commercetools-uikit/tag";
-import Avatar from "@commercetools-uikit/avatar";
-import Text from "@commercetools-uikit/text";
-import Label from "@commercetools-uikit/label";
-import FieldErrors from "@commercetools-uikit/field-errors";
-import LoadingSpinner from "@commercetools-uikit/loading-spinner";
-import Spacings from "@commercetools-uikit/spacings";
-import Constraints from "@commercetools-uikit/constraints";
 import {
+  PrimaryButton,
+  SecondaryButton,
+  FlatButton,
+  IconButton,
+  SearchTextInput,
+  SelectInput,
+  DateRangeInput,
+  CheckboxInput,
+  ToggleInput,
+  DataTable,
+  DataTableManager,
+  CollapsiblePanel,
+  Pagination,
+  Stamp,
+  Tag,
+  Avatar,
+  Text,
+  Label,
+  FieldErrors,
+  LoadingSpinner,
+  Spacings,
+  Constraints,
   PlusBoldIcon,
   FilterIcon,
   ExportIcon,
@@ -49,7 +49,7 @@ import {
   EditIcon,
   SortingIcon,
   RefreshIcon,
-} from "@commercetools-uikit/icons";
+} from "@commercetools-frontend/ui-kit";
 
 // ---------------------------------------------------------------------------
 // Types

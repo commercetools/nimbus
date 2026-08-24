@@ -335,16 +335,148 @@ interface StylePropCategory {
   props: string[];
 }
 
+/** Side-by-side comparison of a single tool call between local and published. */
+interface McpComparison {
+  /** Human label for this scenario. */
+  label: string;
+  tool: string;
+  args: Record<string, unknown>;
+  local: Record<string, unknown>;
+  published: Record<string, unknown>;
+  /** Fields only in local. */
+  addedFields: string[];
+  /** Fields only in published. */
+  removedFields: string[];
+  /** Fields in both but different. */
+  changedFields: string[];
+}
+
 interface EvalResults {
   timestamp: string;
   dimensions: EvalDimension[];
   /** Pre-built style props summary for display in the dashboard. */
   stylePropCategories: StylePropCategory[];
+  /** Side-by-side comparisons of local vs published MCP. Null when published not installed. */
+  mcpComparisons: McpComparison[] | null;
 }
 
 // ---------------------------------------------------------------------------
 // Run all dimensions
 // ---------------------------------------------------------------------------
+
+/** Try to create a published MCP client. Returns null if not installed. */
+async function createPublishedClient(): Promise<Client | null> {
+  try {
+    const mod = await import(
+      // @ts-expect-error — alias may not be installed
+      "nimbus-mcp-published"
+    );
+    const server = mod.createServer();
+    const [ct, st] = InMemoryTransport.createLinkedPair();
+    const client = new Client(
+      { name: "eval-published", version: "1.0.0" },
+      { capabilities: {} }
+    );
+    await server.connect(st);
+    await client.connect(ct);
+    return client;
+  } catch {
+    return null;
+  }
+}
+
+function diffFields(
+  local: Record<string, unknown>,
+  published: Record<string, unknown>
+): { addedFields: string[]; removedFields: string[]; changedFields: string[] } {
+  const allKeys = new Set([...Object.keys(local), ...Object.keys(published)]);
+  const addedFields: string[] = [];
+  const removedFields: string[] = [];
+  const changedFields: string[] = [];
+
+  for (const key of allKeys) {
+    const inLocal = key in local;
+    const inPublished = key in published;
+    if (inLocal && !inPublished) addedFields.push(key);
+    else if (!inLocal && inPublished) removedFields.push(key);
+    else if (JSON.stringify(local[key]) !== JSON.stringify(published[key]))
+      changedFields.push(key);
+  }
+  return { addedFields, removedFields, changedFields };
+}
+
+/** Run side-by-side comparisons of local vs published MCP. */
+async function runMcpComparisons(
+  localClient: Client,
+  publishedClient: Client
+): Promise<McpComparison[]> {
+  const scenarios: Array<{
+    label: string;
+    tool: string;
+    args: Record<string, unknown>;
+  }> = [
+    // File-level migrations
+    ...discoverFixtures("uikit").map((f) => ({
+      label: `File: ${f.name}`,
+      tool: "migrate_from_uikit",
+      args: { filePath: f.path },
+    })),
+    // Component lookups
+    ...[
+      "DataTable",
+      "PrimaryButton",
+      "Avatar",
+      "CollapsiblePanel",
+      "SelectInput",
+      "MoneyInput",
+    ].map((name) => ({
+      label: `Component: ${name}`,
+      tool: "migrate_from_uikit",
+      args: { componentName: name },
+    })),
+    // get_component
+    ...["Box", "Button", "Drawer"].map((name) => ({
+      label: `get_component: ${name}`,
+      tool: "get_component",
+      args: { name },
+    })),
+    // Docs pages
+    {
+      label: "Docs: style-props landing",
+      tool: "get_docs_page",
+      args: { path: "home/style-props" },
+    },
+    {
+      label: "Docs: Box component",
+      tool: "get_docs_page",
+      args: { path: "components/layout/box" },
+    },
+  ];
+
+  const comparisons: McpComparison[] = [];
+  for (const s of scenarios) {
+    const [localResult, pubResult] = await Promise.all([
+      callTool(localClient, s.tool, s.args),
+      callTool(publishedClient, s.tool, s.args),
+    ]);
+
+    const diff = diffFields(
+      localResult.data as Record<string, unknown>,
+      pubResult.data as Record<string, unknown>
+    );
+
+    comparisons.push({
+      label: s.label,
+      tool: s.tool,
+      args: s.args,
+      local: localResult.data as Record<string, unknown>,
+      published: pubResult.data as Record<string, unknown>,
+      ...diff,
+    });
+  }
+
+  return comparisons;
+}
 
 async function runAllDimensions(): Promise<EvalResults> {
   const client = await createClient();
@@ -367,6 +499,20 @@ async function runAllDimensions(): Promise<EvalResults> {
   // Docs page quality
   dimensions.push(await runDocsPagesDimension(client));
 
+  // A/B comparison with published MCP
+  let mcpComparisons: McpComparison[] | null = null;
+  const publishedClient = await createPublishedClient();
+  if (publishedClient) {
+    console.log("[eval] Published MCP detected — running A/B comparisons...");
+    mcpComparisons = await runMcpComparisons(client, publishedClient);
+    console.log(`[eval] ${mcpComparisons.length} comparisons complete`);
+    await publishedClient.close();
+  } else {
+    console.log(
+      '[eval] Published MCP not installed — skip A/B. Install with: pnpm --filter mcp-eval add -D "nimbus-mcp-published@npm:@commercetools/nimbus-mcp@latest"'
+    );
+  }
+
   await client.close();
 
   // Load style props summary for the dashboard
@@ -386,6 +532,7 @@ async function runAllDimensions(): Promise<EvalResults> {
     timestamp: new Date().toISOString(),
     dimensions,
     stylePropCategories,
+    mcpComparisons,
   };
 }
 
@@ -422,5 +569,16 @@ for (const dim of results.dimensions) {
   } else if (dim.kind === "docs-pages") {
     console.log(`[eval] ${dim.label}: ${dim.pages.length} pages checked`);
   }
+}
+if (results.mcpComparisons) {
+  const withDiffs = results.mcpComparisons.filter(
+    (c) =>
+      c.addedFields.length > 0 ||
+      c.removedFields.length > 0 ||
+      c.changedFields.length > 0
+  );
+  console.log(
+    `[eval] A/B: ${results.mcpComparisons.length} scenarios, ${withDiffs.length} with differences`
+  );
 }
 console.log(`[eval] Wrote ${outPath}`);

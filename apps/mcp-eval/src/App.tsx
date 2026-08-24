@@ -1,4 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
+
+const VisualCompare = lazy(() =>
+  import("./views/VisualCompare.js").then((m) => ({
+    default: m.VisualCompare,
+  }))
+);
 
 // ---------------------------------------------------------------------------
 // Types (matching run-eval.ts output)
@@ -88,10 +94,22 @@ interface StylePropCategory {
   props: string[];
 }
 
+interface McpComparison {
+  label: string;
+  tool: string;
+  args: Record<string, unknown>;
+  local: Record<string, unknown>;
+  published: Record<string, unknown>;
+  addedFields: string[];
+  removedFields: string[];
+  changedFields: string[];
+}
+
 interface EvalResults {
   timestamp: string;
   dimensions: EvalDimension[];
   stylePropCategories: StylePropCategory[];
+  mcpComparisons: McpComparison[] | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -858,12 +876,13 @@ function OverviewTable({ dim }: { dim: MigrationDimension }) {
 // App
 // ---------------------------------------------------------------------------
 
-type TabKey = "side-by-side" | "overview" | "component-docs" | "docs-pages";
+type TabKey =
+  "visual" | "side-by-side" | "overview" | "component-docs" | "docs-pages";
 
 export function App() {
   const [data, setData] = useState<EvalResults | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [tab, setTab] = useState<TabKey>("side-by-side");
+  const [tab, setTab] = useState<TabKey>("visual");
 
   useEffect(() => {
     fetch("/eval-results.json")
@@ -918,6 +937,7 @@ export function App() {
   );
 
   const tabs: Array<{ key: TabKey; label: string }> = [
+    { key: "visual", label: "Visual Compare" },
     { key: "side-by-side", label: "Side by Side" },
     { key: "overview", label: "Full Detail" },
     { key: "component-docs", label: "Component Docs" },
@@ -976,6 +996,21 @@ export function App() {
       </div>
 
       {/* Tab content */}
+      {tab === "visual" && (
+        <Suspense
+          fallback={
+            <div style={{ color: c.muted, padding: 20 }}>
+              Loading visual compare…
+            </div>
+          }
+        >
+          <VisualCompare
+            comparisons={data.mcpComparisons}
+            localFileMigrations={migDims[0]?.fileMigrations}
+          />
+        </Suspense>
+      )}
+
       {tab === "side-by-side" &&
         migDims.map((dim) => (
           <SideBySideView
