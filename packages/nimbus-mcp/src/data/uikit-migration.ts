@@ -1622,7 +1622,9 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     notes:
       "Rename to Badge. UI Kit used a tone prop; Nimbus uses colorPalette instead. " +
       "UI Kit tones: 'critical'|'warning'|'positive'|'information'|'primary'|'secondary'. " +
-      "Nimbus colorPalette values: 'critical'|'warning'|'positive'|'info'|'primary'|'neutral'.",
+      "Nimbus colorPalette values: 'critical'|'warning'|'positive'|'info'|'primary'|'neutral'. " +
+      "Badge supports style props — use size='2xs' for compact contexts like table cells, " +
+      "and style props like px, py, fontSize for further tuning.",
     breakingChanges: [
       "Rename to Badge",
       "Default color changed: UI Kit Stamp was blue (tone='information') by default; Nimbus Badge defaults to colorPalette='neutral' (gray). Add colorPalette='info' to preserve the blue appearance.",
@@ -2179,36 +2181,60 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
   },
   {
     uiKitName: "Text.Headline",
-    nimbusEquivalent: "Text",
+    nimbusEquivalent: "Heading",
     importPath: "@commercetools/nimbus",
-    mappingType: "variant",
-    notes: 'Use <Text size="2xl" fontWeight="bold"> or the Heading component.',
+    mappingType: "direct",
+    notes:
+      'Use <Heading as="h1" size="lg"> for page titles, or <Heading as="h2" size="md"> for section headings. ' +
+      "Heading supports style props — use them for spacing (e.g. mb, mt) instead of wrapper elements.",
     breakingChanges: [
-      "Replace Text.Headline with <Text size='2xl' fontWeight='bold'> or <Heading>",
+      "Replace Text.Headline with <Heading>",
+      "Set the appropriate heading level via the as prop (h1–h6) for semantic HTML",
+      "Set size prop to match visual hierarchy: 'lg' for page titles, 'md' for sections",
     ],
     propMappings: [
       {
         uiKitProp: "_component",
-        nimbusProp: null,
+        nimbusProp: "size",
         changeType: "value-mapping",
-        fixedValue: "2xl",
-        notes: "Also set fontWeight='bold', or use <Heading> instead.",
+        fixedValue: "lg",
+        notes: "Use size='lg' for page titles, 'md' for section headings.",
+      },
+      {
+        uiKitProp: "as",
+        nimbusProp: "as",
+        changeType: "rename",
+        notes: "Keep the same heading level (h1, h2, etc.).",
       },
     ],
   },
   {
     uiKitName: "Text.Subheadline",
-    nimbusEquivalent: "Text",
+    nimbusEquivalent: "Heading",
     importPath: "@commercetools/nimbus",
-    mappingType: "variant",
-    notes: 'Use <Text size="xl">.',
-    breakingChanges: ["Replace Text.Subheadline with <Text size='xl'>"],
+    mappingType: "direct",
+    notes:
+      'Use <Heading as="h4" size="sm"> for subheadings like card titles and accordion labels. ' +
+      "Heading supports style props — use them for spacing instead of wrapper elements.",
+    breakingChanges: [
+      "Replace Text.Subheadline with <Heading>",
+      "Set the appropriate heading level via the as prop",
+      "Set size='sm' for subheading-level text",
+    ],
     propMappings: [
       {
         uiKitProp: "_component",
-        nimbusProp: null,
+        nimbusProp: "size",
         changeType: "value-mapping",
-        fixedValue: "xl",
+        fixedValue: "sm",
+        notes:
+          "Use size='sm' for subheadings, 'md' if slightly larger is needed.",
+      },
+      {
+        uiKitProp: "as",
+        nimbusProp: "as",
+        changeType: "rename",
+        notes: "Keep the same heading level (h3, h4, etc.).",
       },
     ],
   },
