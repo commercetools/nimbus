@@ -19,6 +19,13 @@ import { fuzzyResolveName } from "../utils/relevance.js";
 import { routePathToSlug as pathToSlug } from "../utils/route.js";
 
 // ---------------------------------------------------------------------------
+// Style props hint
+// ---------------------------------------------------------------------------
+
+const STYLE_PROPS_HINT =
+  'Also accepts Chakra style props. Use get_docs_page(path: "home/style-props") for full reference.';
+
+// ---------------------------------------------------------------------------
 // Section definitions
 // ---------------------------------------------------------------------------
 
@@ -102,14 +109,11 @@ let topLevelNamesCache: Set<string> | undefined;
 let topLevelNamesRoutesRef: RouteManifestEntry[] | undefined;
 
 /**
- * For compound components (e.g. Drawer → DrawerRoot, DrawerContent, …),
- * the top-level type file has no props. This function finds all sub-component
- * type files matching `${exportName}*.json`, aggregates their filtered props,
- * and tags each prop with the sub-component name.
+ * Finds sub-component type files for a compound component, returning
+ * the sorted filenames (without path) matching `${exportName}*.json`.
+ * Caches the top-level name set for exclusion.
  */
-async function aggregateSubComponentProps(
-  exportName: string
-): Promise<FilteredProp[]> {
+async function findSubComponentFiles(exportName: string): Promise<string[]> {
   const typesDir = resolve(getDataDir(), "docs/types");
   let files: string[];
   try {
@@ -134,7 +138,7 @@ async function aggregateSubComponentProps(
   const topLevelNames = topLevelNamesCache;
 
   const prefix = exportName.toLowerCase();
-  const subFiles = files.filter((f) => {
+  return files.filter((f) => {
     const base = f.replace(/\.json$/, "");
     const baseLower = base.toLowerCase();
     return (
@@ -146,6 +150,18 @@ async function aggregateSubComponentProps(
       !topLevelNames.has(baseLower) // exclude standalone top-level components
     );
   });
+}
+
+/**
+ * For compound components (e.g. Drawer → DrawerRoot, DrawerContent, …),
+ * the top-level type file has no props. This function finds all sub-component
+ * type files matching `${exportName}*.json`, aggregates their filtered props,
+ * and tags each prop with the sub-component name.
+ */
+async function aggregateSubComponentProps(
+  exportName: string
+): Promise<FilteredProp[]> {
+  const subFiles = await findSubComponentFiles(exportName);
 
   const settled = await Promise.allSettled(
     subFiles.map(async (file) => {
@@ -161,6 +177,37 @@ async function aggregateSubComponentProps(
   return settled
     .filter((r) => r.status === "fulfilled")
     .flatMap((r) => (r as PromiseFulfilledResult<FilteredProp[]>).value);
+}
+
+/**
+ * Extended version of `aggregateSubComponentProps` that also tracks which
+ * sub-components accept Chakra style props.
+ */
+async function aggregateSubComponentPropsWithStyleInfo(
+  exportName: string
+): Promise<{ props: FilteredProp[]; stylePropsSubComponents: string[] }> {
+  const subFiles = await findSubComponentFiles(exportName);
+  const stylePropsSubComponents: string[] = [];
+
+  const settled = await Promise.allSettled(
+    subFiles.map(async (file) => {
+      const subName = file.replace(/\.json$/, "");
+      const typeData = await getTypeData(subName);
+      if (typeData.supportsStyleProps) {
+        stylePropsSubComponents.push(subName);
+      }
+      return filterProps(typeData).map((p) => ({
+        ...p,
+        subComponent: subName,
+      }));
+    })
+  );
+
+  const props = settled
+    .filter((r) => r.status === "fulfilled")
+    .flatMap((r) => (r as PromiseFulfilledResult<FilteredProp[]>).value);
+
+  return { props, stylePropsSubComponents: stylePropsSubComponents.sort() };
 }
 
 // ---------------------------------------------------------------------------
@@ -300,6 +347,18 @@ export function registerGetComponent(server: McpServer): void {
         // No section requested — return metadata + section list
         if (!section) {
           const metadata = buildMetadataResponse(entry, availableSections);
+
+          // Add styleProps hint if the component supports Chakra style props
+          const exportName = entry.exportName ?? entry.title;
+          try {
+            const typeData = await getTypeData(exportName);
+            if (typeData.supportsStyleProps) {
+              metadata.styleProps = STYLE_PROPS_HINT;
+            }
+          } catch {
+            // Type data unavailable — skip styleProps hint
+          }
+
           return {
             content: [
               {
@@ -317,21 +376,36 @@ export function registerGetComponent(server: McpServer): void {
             const typeData = await getTypeData(exportName);
             let filtered = filterProps(typeData);
 
+            const response: Record<string, unknown> = {
+              component: exportName,
+              propCount: filtered.length,
+              props: filtered,
+            };
+
             // Compound components have no props on the top-level export.
             // Aggregate from sub-component type files (e.g. DrawerRoot, DrawerContent).
             if (filtered.length === 0) {
-              filtered = await aggregateSubComponentProps(exportName);
+              const { props, stylePropsSubComponents } =
+                await aggregateSubComponentPropsWithStyleInfo(exportName);
+              filtered = props;
+              response.propCount = filtered.length;
+              response.props = filtered;
+
+              // For compound components, list which sub-components accept style props
+              if (stylePropsSubComponents.length > 0) {
+                response.styleProps =
+                  `${stylePropsSubComponents.join(", ")} also accept Chakra style props. ` +
+                  'Use get_docs_page(path: "home/style-props") for full reference.';
+              }
+            } else if (typeData.supportsStyleProps) {
+              response.styleProps = STYLE_PROPS_HINT;
             }
 
             return {
               content: [
                 {
                   type: "text" as const,
-                  text: JSON.stringify({
-                    component: exportName,
-                    propCount: filtered.length,
-                    props: filtered,
-                  }),
+                  text: JSON.stringify(response),
                 },
               ],
             };

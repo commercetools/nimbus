@@ -2,6 +2,7 @@ import { copyDocsData } from "./copy-docs-data.js";
 import { buildTokenData } from "./build-token-data.js";
 import { buildIconCatalog } from "./build-icon-catalog.js";
 import { buildSearchIndex } from "./build-search-index.js";
+import { buildStylePropsSummary } from "./build-style-props-summary.js";
 import { buildUiKitTokenData } from "./build-uikit-token-data.js";
 import { validateMigrationData } from "./validate-migration-data.js";
 
@@ -10,6 +11,7 @@ const steps = [
   { name: "Build token data", fn: buildTokenData },
   { name: "Build icon catalog", fn: buildIconCatalog },
   { name: "Build search index", fn: buildSearchIndex },
+  { name: "Build style props summary", fn: buildStylePropsSummary },
   { name: "Build UI Kit token data", fn: buildUiKitTokenData },
   { name: "Validate migration data", fn: validateMigrationData },
 ];

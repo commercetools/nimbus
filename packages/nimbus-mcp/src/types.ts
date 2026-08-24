@@ -134,6 +134,8 @@ export interface TypeData {
   >;
   methods: unknown[];
   tags: Record<string, string>;
+  /** Whether the component accepts Chakra style props (extracted from @supportsStyleProps JSDoc). */
+  supportsStyleProps?: boolean;
 }
 
 /** An entry in the search index. */
@@ -298,6 +300,8 @@ export interface ComponentMetadata {
   subcategory?: string;
   tags?: string[];
   sections: string[];
+  /** Hint that the component accepts Chakra style props, with a tool call for the full reference. */
+  styleProps?: string;
 }
 
 /** Shape returned for each component in the list_components response. */
@@ -537,6 +541,8 @@ export interface MigrateComponentResult {
   breakingChanges: string[];
   /** Suggestion to use another MCP tool for further assistance. */
   hint?: string;
+  /** Hint that the Nimbus target component accepts Chakra style props. */
+  styleProps?: string;
   /** Structured prop-level migration mappings, if available. */
   propMappings?: PropMapping[];
   /** Wrapper metadata for icon imports — tells the LLM to wrap bare icons. */
@@ -604,4 +610,28 @@ export interface DocsPageResult {
   path: string;
   sections: string[];
   content: string;
+  /** Hint that the component accepts Chakra style props, with a tool call for the full reference. */
+  styleProps?: string;
+}
+
+// ---------------------------------------------------------------------------
+// Style props summary types (used by scripts/build-style-props-summary and tools)
+// ---------------------------------------------------------------------------
+
+/** A single style-props category with its documentation path and prop names. */
+export interface StylePropsCategorySummary {
+  /** Category display name (e.g. "Spacing", "Sizing"). */
+  name: string;
+  /** Route path for drill-down docs (e.g. "home/style-props/spacing"). */
+  path: string;
+  /** All prop names in this category. */
+  props: string[];
+}
+
+/** Compact summary of all style-props categories, generated at build time. */
+export interface StylePropsSummary {
+  /** All style-props categories. */
+  categories: StylePropsCategorySummary[];
+  /** Human-readable hint for LLMs on how to drill down. */
+  hint: string;
 }

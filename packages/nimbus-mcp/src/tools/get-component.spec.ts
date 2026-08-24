@@ -310,3 +310,59 @@ describe("get_component — content sections", () => {
     expect(text).toContain("Button");
   });
 });
+
+// ---------------------------------------------------------------------------
+// Style props hint
+// ---------------------------------------------------------------------------
+
+describe("get_component — styleProps hint", () => {
+  it("includes styleProps hint in metadata for a component that supports style props (Box)", async () => {
+    const { text, isError } = await callGetComponent({ name: "Box" });
+    expect(isError).toBeFalsy();
+    const data = JSON.parse(text);
+    expect(data.styleProps).toBeDefined();
+    expect(data.styleProps).toContain("style props");
+    expect(data.styleProps).toContain("get_docs_page");
+  });
+
+  it("omits styleProps from metadata for a component that does not support style props (Button)", async () => {
+    const { text, isError } = await callGetComponent({ name: "Button" });
+    expect(isError).toBeFalsy();
+    const data = JSON.parse(text);
+    expect(data.styleProps).toBeUndefined();
+  });
+
+  it("includes styleProps hint in props section for a component that supports style props (Box)", async () => {
+    const { text, isError } = await callGetComponent({
+      name: "Box",
+      section: "props",
+    });
+    expect(isError).toBeFalsy();
+    const data = JSON.parse(text);
+    expect(data.styleProps).toBeDefined();
+    expect(data.styleProps).toContain("style props");
+  });
+
+  it("omits styleProps from props section for a component that does not support style props (Button)", async () => {
+    const { text, isError } = await callGetComponent({
+      name: "Button",
+      section: "props",
+    });
+    expect(isError).toBeFalsy();
+    const data = JSON.parse(text);
+    expect(data.styleProps).toBeUndefined();
+  });
+
+  it("includes styleProps with sub-component names for a compound component (Drawer)", async () => {
+    const { text, isError } = await callGetComponent({
+      name: "Drawer",
+      section: "props",
+    });
+    expect(isError).toBeFalsy();
+    const data = JSON.parse(text);
+    expect(data.styleProps).toBeDefined();
+    expect(data.styleProps).toContain("style props");
+    // Should mention specific sub-components that accept style props
+    expect(data.styleProps).toContain("DrawerContent");
+  });
+});
