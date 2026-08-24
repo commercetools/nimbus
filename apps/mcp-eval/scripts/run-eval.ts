@@ -589,3 +589,6 @@ if (results.mcpComparisons) {
   );
 }
 console.log(`[eval] Wrote ${outPath}`);
+
+// Force exit — the published MCP's stdio child process may keep the event loop alive
+process.exit(0);
