@@ -456,6 +456,7 @@ const FeatureTree = ({
  * checkboxes, chevrons, drag handles) so every element scales with `size`.
  */
 export const Sizes: Story = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack direction="row" gap="800" alignItems="flex-start">
       {(["sm", "md"] as const).map((size) => (
@@ -489,6 +490,77 @@ export const Sizes: Story = {
         ).toBeGreaterThan(0);
       }
     });
+
+    await step(
+      "Leading controls share one column grid at both sizes",
+      async () => {
+        // The two layout defects this component was written to avoid are
+        // geometric, so they are asserted geometrically. Story tests run in real
+        // Chromium, so these rects are true layout, not jsdom stubs.
+        for (const size of ["sm", "md"] as const) {
+          const treegrid = canvas.getByRole("treegrid", {
+            name: `Files ${size}`,
+          });
+
+          const measure = (row: HTMLElement) => {
+            const box = (slot: string) => {
+              const el = row.querySelector<HTMLElement>(`[slot='${slot}']`);
+              if (!el) throw new Error(`row is missing [slot='${slot}']`);
+              // The visual control box, not the visually-hidden input inside it.
+              const { left, right } = el.getBoundingClientRect();
+              return { left, right, width: right - left };
+            };
+            return {
+              level: Number(row.getAttribute("aria-level")),
+              drag: box("drag"),
+              checkbox: box("selection"),
+              chevron: box("chevron"),
+            };
+          };
+
+          const rows = within(treegrid).getAllByRole("row").map(measure);
+          await expect(rows.length).toBeGreaterThan(1);
+
+          for (const row of rows) {
+            // No collision: the controls are strictly disjoint and in order.
+            // Any overlap shows up here as a negative gap.
+            await expect(row.checkbox.left).toBeGreaterThanOrEqual(
+              row.drag.right
+            );
+            await expect(row.chevron.left).toBeGreaterThanOrEqual(
+              row.checkbox.right
+            );
+            // One uniform, non-shrinking column per control — a shrunken box is
+            // what lets a neighbour drift into it.
+            await expect(row.checkbox.width).toBeCloseTo(row.drag.width, 0);
+            await expect(row.chevron.width).toBeCloseTo(row.drag.width, 0);
+          }
+
+          // Rows at the same depth start at the same x.
+          const leftByLevel = new Map<number, number>();
+          for (const row of rows) {
+            const known = leftByLevel.get(row.level);
+            if (known === undefined) leftByLevel.set(row.level, row.drag.left);
+            else await expect(row.drag.left).toBeCloseTo(known, 0);
+          }
+
+          // Each level indents by exactly one control column (control + gap).
+          // This is the invariant that keeps a nested row's controls on the
+          // column grid instead of drifting out of alignment as depth grows.
+          const columnStep = rows[0].checkbox.left - rows[0].drag.left;
+          await expect(columnStep).toBeGreaterThan(0);
+          const depths = [...leftByLevel.entries()].sort((a, b) => a[0] - b[0]);
+          for (let i = 1; i < depths.length; i += 1) {
+            const [level, left] = depths[i];
+            const [prevLevel, prevLeft] = depths[i - 1];
+            await expect(left - prevLeft).toBeCloseTo(
+              columnStep * (level - prevLevel),
+              0
+            );
+          }
+        }
+      }
+    );
   },
 };
 
