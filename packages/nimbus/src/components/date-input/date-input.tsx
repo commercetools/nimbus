@@ -22,6 +22,7 @@ import { extractStyleProps } from "@/utils";
  * allows entering a date
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/dateinput}
+ * @supportsStyleProps
  */
 export const DateInput = (props: DateInputProps) => {
   const recipe = useRecipe({ recipe: dateInputSlotRecipe });

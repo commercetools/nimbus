@@ -27,6 +27,7 @@ import {
  *   </Tabs.Panels>
  * </Tabs.Root>
  * ```
+ * @supportsStyleProps
  */
 export const Tabs = {
   /**

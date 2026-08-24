@@ -33,6 +33,7 @@ import {
  * ```
  *
  * @see https://react-spectrum.adobe.com/react-aria/dnd.html
+ * @supportsStyleProps
  */
 export const DraggableList = {
   /**

@@ -42,6 +42,7 @@ import { DialogCloseTrigger } from "./components/dialog.close-trigger";
  * ```
  *
  * @see https://nimbus-documentation.vercel.app/components/feedback/dialog
+ * @supportsStyleProps
  */
 export const Dialog = {
   /**

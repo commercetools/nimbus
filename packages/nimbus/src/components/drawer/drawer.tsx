@@ -21,6 +21,8 @@ import { DrawerCloseTrigger } from "./components/drawer.close-trigger";
  * - Portal rendering support
  * - Backdrop overlay with animations
  *
+ * @supportsStyleProps
+ *
  * @example
  * ```tsx
  * <Drawer.Root>

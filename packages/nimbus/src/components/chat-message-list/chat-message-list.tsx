@@ -35,6 +35,7 @@ import { ChatMessageListRoot, ChatMessageListItem } from "./components";
  *   </ChatMessageList.Item>
  * </ChatMessageList.Root>
  * ```
+ * @supportsStyleProps
  */
 export const ChatMessageList = {
   /**

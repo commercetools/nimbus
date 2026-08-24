@@ -19,6 +19,7 @@ import type { ActivityIndicatorProps } from "./activity-indicator.types";
  * exist in the DOM before its content changes).
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/activityindicator}
+ * @supportsStyleProps
  */
 export const ActivityIndicator = (props: ActivityIndicatorProps) => {
   const { ref, colorPalette = "primary", ...restProps } = props;

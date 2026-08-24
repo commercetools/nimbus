@@ -8,6 +8,7 @@ import type { SliderBaseProps, SliderProps } from "./slider.types";
  * React Aria's Slider with Nimbus styling; the current value is shown in a
  * tooltip on the handle while hovering, focusing, or dragging. Provide an
  * `aria-label` (or use inside `FormField`) for the accessible name.
+ * @supportsStyleProps
  */
 export const Slider = (props: SliderProps) => {
   // SliderBaseProps intentionally widens value/onChange to `number | number[]`

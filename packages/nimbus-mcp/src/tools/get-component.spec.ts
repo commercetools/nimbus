@@ -325,8 +325,16 @@ describe("get_component — styleProps hint", () => {
     expect(data.styleProps).toContain("get_docs_page");
   });
 
-  it("omits styleProps from metadata for a component that does not support style props (Button)", async () => {
+  it("includes styleProps hint in metadata for Button (now tagged)", async () => {
     const { text, isError } = await callGetComponent({ name: "Button" });
+    expect(isError).toBeFalsy();
+    const data = JSON.parse(text);
+    expect(data.styleProps).toBeDefined();
+    expect(data.styleProps).toContain("style props");
+  });
+
+  it("omits styleProps from metadata for a component that does not support style props (Pagination)", async () => {
+    const { text, isError } = await callGetComponent({ name: "Pagination" });
     expect(isError).toBeFalsy();
     const data = JSON.parse(text);
     expect(data.styleProps).toBeUndefined();
@@ -343,9 +351,20 @@ describe("get_component — styleProps hint", () => {
     expect(data.styleProps).toContain("style props");
   });
 
-  it("omits styleProps from props section for a component that does not support style props (Button)", async () => {
+  it("includes styleProps in props section for Button (now tagged)", async () => {
     const { text, isError } = await callGetComponent({
       name: "Button",
+      section: "props",
+    });
+    expect(isError).toBeFalsy();
+    const data = JSON.parse(text);
+    expect(data.styleProps).toBeDefined();
+    expect(data.styleProps).toContain("style props");
+  });
+
+  it("omits styleProps from props section for a component that does not support style props (Pagination)", async () => {
+    const { text, isError } = await callGetComponent({
+      name: "Pagination",
       section: "props",
     });
     expect(isError).toBeFalsy();

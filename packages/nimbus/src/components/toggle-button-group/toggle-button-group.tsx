@@ -5,6 +5,7 @@ import { ToggleButtonGroupButton } from "./components/toggle-button-group.button
  * ToggleButtonGroup
  * ============================================================
  * To group multiple `Button` components together, visually and logically, representing a set of related actions.
+ * @supportsStyleProps
  */
 export const ToggleButtonGroup = {
   Root: ToggleButtonGroupRoot,

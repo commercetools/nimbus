@@ -22,6 +22,7 @@ import {
  *   <Splitter.Main>Content</Splitter.Main>
  * </Splitter.Root>
  * ```
+ * @supportsStyleProps
  */
 export const Splitter = {
   /**

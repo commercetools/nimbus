@@ -168,12 +168,13 @@ describe("get_docs_page — styleProps hint on component pages", () => {
     expect(result!.styleProps).toContain("get_docs_page");
   });
 
-  it("omits styleProps for a component page that does not support style props (Button)", async () => {
+  it("includes styleProps for Button (now tagged)", async () => {
     const { result } = await callGetDocsPage({
       path: "components/buttons/button",
     });
     expect(result).toBeDefined();
-    expect(result!.styleProps).toBeUndefined();
+    expect(result!.styleProps).toBeDefined();
+    expect(result!.styleProps).toContain("style props");
   });
 
   it("omits styleProps for non-component pages", async () => {

@@ -45,6 +45,7 @@ import {
  *   </ModalPage.Footer>
  * </ModalPage.Root>
  * ```
+ * @supportsStyleProps
  */
 export const ModalPage = {
   /**

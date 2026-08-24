@@ -18,6 +18,7 @@ import { TooltipContent } from "./components/tooltip.content";
  * ```
  *
  * @see https://nimbus-documentation.vercel.app/components/feedback/tooltip
+ * @supportsStyleProps
  */
 export const Tooltip = {
   /**

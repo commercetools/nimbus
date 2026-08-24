@@ -14,6 +14,7 @@ export const RadioInput = {
    *   <RadioInput.Option value="option2">Second Choice</RadioInput.Option>
    * </RadioInput.Root>
    * ```
+ * @supportsStyleProps
    */
   Root: RadioInputRoot,
 

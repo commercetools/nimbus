@@ -35,6 +35,7 @@ import {
  *   </Tree.Item>
  * </Tree.Root>
  * ```
+ * @supportsStyleProps
  */
 export const Tree = {
   /**

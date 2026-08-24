@@ -1078,10 +1078,11 @@ describe("migrate_from_uikit — styleProps hint", () => {
     expect(data.styleProps).toContain("get_docs_page");
   });
 
-  it("omits styleProps when the Nimbus target does not support style props (PrimaryButton → Button)", async () => {
+  it("includes styleProps for PrimaryButton → Button (Button now tagged)", async () => {
     const result = await callMigrate({ componentName: "PrimaryButton" });
     expect(result.isError).toBeFalsy();
     const data = JSON.parse(getText(result));
-    expect(data.styleProps).toBeUndefined();
+    expect(data.styleProps).toBeDefined();
+    expect(data.styleProps).toContain("style props");
   });
 });

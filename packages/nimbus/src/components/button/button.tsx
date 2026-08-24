@@ -11,6 +11,7 @@ import type { ButtonProps } from "./button.types.ts";
  * Displays a Button.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/button}
+ * @supportsStyleProps
  */
 const ButtonComponent = (props: ButtonProps) => {
   const {
@@ -108,6 +109,7 @@ ButtonComponent.displayName = "Button";
  * Displays a Button.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/button}
+ * @supportsStyleProps
  */
 export const Button: typeof ButtonComponent & {
   // TypeScript can't properly name the internal React Aria types when inferring
@@ -120,7 +122,9 @@ export const Button: typeof ButtonComponent & {
    * For advanced use cases, **you generally will not need this**
    *
    * @see {@link https://react-spectrum.adobe.com/react-aria/advanced.html#contexts}
+ * @supportsStyleProps
    * @see {@link https://react-spectrum.adobe.com/react-aria/Button.html#contexts}
+ * @supportsStyleProps
    */
   Context: typeof ButtonContext;
 } = Object.assign(ButtonComponent, {

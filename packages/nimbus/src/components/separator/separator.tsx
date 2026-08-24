@@ -18,6 +18,7 @@ import { separatorRecipe } from "./separator.recipe";
  * - allows overriding styles by using style-props
  * - supports 'asChild' and 'as' to modify the underlying html-element (polymorphic)
  * - built with React Aria for accessibility
+ * @supportsStyleProps
  */
 
 export const Separator = ({

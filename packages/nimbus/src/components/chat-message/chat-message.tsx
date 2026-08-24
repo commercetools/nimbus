@@ -41,6 +41,7 @@ import {
  *   </ChatMessage.Meta>
  * </ChatMessage.Root>
  * ```
+ * @supportsStyleProps
  */
 export const ChatMessage = {
   /**

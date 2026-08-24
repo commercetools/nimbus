@@ -55,6 +55,7 @@ import {
  *   </DefaultPage.Content>
  * </DefaultPage.Root>
  * ```
+ * @supportsStyleProps
  */
 export const DefaultPage = {
   /**

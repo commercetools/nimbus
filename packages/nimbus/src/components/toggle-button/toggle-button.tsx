@@ -12,6 +12,7 @@ import type { ToggleButtonProps } from "./toggle-button.types";
  * selected and unselected states.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/togglebutton}
+ * @supportsStyleProps
  */
 export const ToggleButton = ({
   ref: forwardedRef,

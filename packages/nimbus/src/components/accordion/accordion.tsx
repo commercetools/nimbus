@@ -27,6 +27,7 @@ import {
  *   </Accordion.Item>
  * </Accordion.Root>
  * ```
+ * @supportsStyleProps
  */
 export const Accordion = {
   /**

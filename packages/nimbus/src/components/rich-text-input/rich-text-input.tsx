@@ -22,6 +22,7 @@ import { richTextInputRecipe } from "./rich-text-input.recipe";
 
 /**
  RichTextInput - A rich text input component with formatting capabilities.
+ * @supportsStyleProps
  */
 export const RichTextInput = (props: RichTextInputProps) => {
   const {
