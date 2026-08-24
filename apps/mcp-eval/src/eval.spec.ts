@@ -197,6 +197,42 @@ describe("migrate_from_uikit — product-list-view.tsx", () => {
     const avatar = mappings.find((m) => m.uiKitName === "Avatar");
     expect(avatar?.styleProps).toBeDefined();
   });
+
+  it("styleProps breakdown — which components have it and which don't", async () => {
+    for (const [name, path] of Object.entries(FIXTURES)) {
+      const { parsed } = await callTool(local, "migrate_from_uikit", {
+        filePath: path,
+      });
+      const mappings = parsed.mappings as Array<Record<string, unknown>>;
+
+      console.log(`\n  === ${name} styleProps breakdown ===`);
+      for (const m of mappings) {
+        const sp = m.styleProps ? "✅" : "  ";
+        const uikit = (m.uiKitName as string).padEnd(35);
+        const nimbus = ((m.nimbusEquivalent as string) || "(pattern)").padEnd(
+          25
+        );
+        console.log(`    ${sp} ${uikit} → ${nimbus}`);
+      }
+      const withSP = mappings.filter((m) => m.styleProps).length;
+      console.log(`\n    With styleProps: ${withSP}/${mappings.length}`);
+
+      const nimbusWithout = mappings.filter(
+        (m) =>
+          !m.styleProps &&
+          m.nimbusEquivalent &&
+          m.importPath === "@commercetools/nimbus"
+      );
+      if (nimbusWithout.length > 0) {
+        console.log(
+          `    Nimbus targets WITHOUT styleProps (supportsStyleProps=false):`
+        );
+        for (const m of nimbusWithout) {
+          console.log(`      ${m.uiKitName} → ${m.nimbusEquivalent}`);
+        }
+      }
+    }
+  });
 });
 
 describe("migrate_from_uikit — product-detail-form.tsx", () => {

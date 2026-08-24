@@ -5,12 +5,24 @@
   "type": "module",
   "scripts": {
     "eval": "vitest run",
-    "eval:watch": "vitest"
+    "eval:watch": "vitest",
+    "eval:json": "tsx scripts/run-eval.ts",
+    "dev": "tsx scripts/run-eval.ts && vite",
+    "build": "tsx scripts/run-eval.ts && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "catalog:react",
+    "react-dom": "catalog:react"
   },
   "devDependencies": {
     "@commercetools/nimbus-mcp": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.27.1",
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react",
+    "@vitejs/plugin-react-swc": "catalog:tooling",
     "typescript": "catalog:tooling",
+    "vite": "catalog:tooling",
     "vitest": "catalog:tooling"
   }
 }
