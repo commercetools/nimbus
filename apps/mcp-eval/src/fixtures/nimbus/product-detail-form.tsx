@@ -259,7 +259,6 @@ export function ProductDetailForm() {
                   defaultLocaleOrCurrency="en"
                   valuesByLocaleOrCurrency={values.name}
                   onChange={handleLocalizedNameChange}
-                  displayAllLocalesOrCurrencies
                 />
                 {errors.name && <FieldErrors errors={errors.name} />}
               </Stack>
@@ -271,7 +270,6 @@ export function ProductDetailForm() {
                 defaultLocaleOrCurrency="en"
                 valuesByLocaleOrCurrency={values.description}
                 onChange={handleLocalizedDescriptionChange}
-                displayAllLocalesOrCurrencies
               />
 
               {/* Slug and SKU — collapsed Constraints.Horizontal widths */}

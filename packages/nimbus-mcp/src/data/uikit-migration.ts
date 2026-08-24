@@ -1258,12 +1258,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "variant",
     notes:
       'Use <LocalizedField type="text"> (the default type). ' +
-      "LocalizedField manages all locale inputs internally via its type prop.",
+      "LocalizedField manages all locale inputs internally via its type prop. " +
+      "It collapses non-default locales by default (matching UIKit's behavior) — " +
+      "do NOT set displayAllLocalesOrCurrencies unless you explicitly want all locales visible.",
     breakingChanges: [
       "Replace LocalizedTextInput with <LocalizedField> (type='text' is the default)",
       "selectedLanguage prop replaced by defaultLocaleOrCurrency",
       "value per locale replaced by valuesByLocaleOrCurrency object",
       "onChange receives a LocalizedFieldChangeEvent with target.locale",
+      "Collapse behavior is built in — do not add displayAllLocalesOrCurrencies",
     ],
     propMappings: [
       {
@@ -1339,11 +1342,13 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "variant",
     notes:
       'Use <LocalizedField type="multiLine">. ' +
-      "The type prop controls the input variant; no child composition needed.",
+      "The type prop controls the input variant; no child composition needed. " +
+      "Collapses non-default locales by default — do NOT set displayAllLocalesOrCurrencies.",
     breakingChanges: [
       "Replace LocalizedMultilineTextInput with <LocalizedField type='multiLine'>",
       "selectedLanguage prop replaced by defaultLocaleOrCurrency",
       "value per locale replaced by valuesByLocaleOrCurrency object",
+      "Collapse behavior is built in — do not add displayAllLocalesOrCurrencies",
       "onChange receives a LocalizedFieldChangeEvent with target.locale",
     ],
     propMappings: [
