@@ -32,8 +32,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // ---------------------------------------------------------------------------
 
 const FIXTURES = {
-  productList: resolve(__dirname, "fixtures/product-list-view.tsx"),
-  productDetail: resolve(__dirname, "fixtures/product-detail-form.tsx"),
+  productList: resolve(__dirname, "fixtures/uikit/product-list-view.tsx"),
+  productDetail: resolve(__dirname, "fixtures/uikit/product-detail-form.tsx"),
 };
 
 // ---------------------------------------------------------------------------
