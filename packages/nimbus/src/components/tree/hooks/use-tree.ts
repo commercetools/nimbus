@@ -22,6 +22,13 @@ function keysInTreeOrder<T extends object>(
 }
 
 /**
+ * Reported by every `useTree` mutation that is handed a destination inside the
+ * moved node's own subtree.
+ */
+const MOVE_INTO_OWN_SUBTREE_ERROR =
+  "Cannot move an item into itself or one of its own descendants.";
+
+/**
  * Whether `candidate` is `ancestor` itself, or sits anywhere inside its
  * subtree.
  *
@@ -98,7 +105,11 @@ export type UseTreeDragAndDropOptions = {
    * representation of each key.
    */
   getItems?: (keys: Set<Key>) => Array<Record<string, string>>;
-  /** Drag types accepted from external sources. */
+  /**
+   * Narrows which drag types an *internal* drag will accept. Dropping from an
+   * external source is not wired up, so external drops are always cancelled —
+   * this cannot widen what the tree accepts.
+   */
   acceptedDragTypes?: Array<string | symbol>;
 };
 
@@ -199,21 +210,52 @@ export function useTree<T extends object>(
   });
 
   /**
-   * `move`, with the invalid target rejected. `moveBefore` / `moveAfter`
-   * already throw for this condition inside React Stately, so without this the
-   * re-parent path is the only tree mutation that loses data instead of
-   * reporting the mistake.
+   * Reject a mutation whose destination parent sits inside the subtree of any
+   * node being moved. `null` is the root, which is never inside a subtree.
+   *
+   * React Stately guards only part of this. `move` has no check at all, and
+   * `moveBefore` / `moveAfter` walk the destination's ancestors with
+   * `while (parent?.parentKey != null)`, which exits before testing a
+   * root-level node — so whenever the moved node is itself root-level their
+   * guard never runs. Both gaps drop the node and every descendant silently.
+   * Checking here covers all three uniformly, and reports at the call site
+   * rather than from inside a later render's reducer.
    */
-  const move: TreeData<T>["move"] = (key, toParentKey, index) => {
-    if (
-      toParentKey != null &&
-      isSelfOrDescendant(tree.items, key, toParentKey)
-    ) {
-      throw new Error(
-        "Cannot move an item into itself or one of its own descendants."
-      );
+  const rejectOwnSubtreeTarget = (
+    destinationParent: Key | null,
+    movedKeys: Key[]
+  ) => {
+    if (destinationParent == null) return;
+    for (const key of movedKeys) {
+      if (isSelfOrDescendant(tree.items, key, destinationParent)) {
+        throw new Error(MOVE_INTO_OWN_SUBTREE_ERROR);
+      }
     }
+  };
+
+  /** `move`, with an own-subtree destination rejected. */
+  const move: TreeData<T>["move"] = (key, toParentKey, index) => {
+    rejectOwnSubtreeTarget(toParentKey, [key]);
     tree.move(key, toParentKey, index);
+  };
+
+  /**
+   * `moveBefore` / `moveAfter` insert *next to* `key`, so the moved nodes land
+   * in `key`'s parent — that parent, not `key`, is the destination to check.
+   * `keys` is an `Iterable`, so it is materialized once: iterating it twice
+   * would exhaust a generator before React Stately ever saw it.
+   */
+  const moveBefore: TreeData<T>["moveBefore"] = (key, keys) => {
+    const movedKeys = [...keys];
+    rejectOwnSubtreeTarget(tree.getItem(key)?.parentKey ?? null, movedKeys);
+    tree.moveBefore(key, movedKeys);
+  };
+
+  /** `moveAfter`, guarded the same way as `moveBefore`. */
+  const moveAfter: TreeData<T>["moveAfter"] = (key, keys) => {
+    const movedKeys = [...keys];
+    rejectOwnSubtreeTarget(tree.getItem(key)?.parentKey ?? null, movedKeys);
+    tree.moveAfter(key, movedKeys);
   };
 
   return {
@@ -228,8 +270,8 @@ export function useTree<T extends object>(
     prepend: tree.prepend,
     remove: tree.remove,
     move,
-    moveBefore: tree.moveBefore,
-    moveAfter: tree.moveAfter,
+    moveBefore,
+    moveAfter,
     update: tree.update,
   };
 }
