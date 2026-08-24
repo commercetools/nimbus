@@ -2002,10 +2002,14 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     nimbusEquivalent: "Stack",
     importPath: "@commercetools/nimbus",
     mappingType: "pattern",
-    notes: 'Use <Stack direction="row" gap={...}> with nimbus spacing tokens.',
+    notes:
+      'Use <Stack direction="row" gap={...}> with nimbus spacing tokens. ' +
+      "Add flexWrap='wrap' when the row contains multiple form inputs or constrained children " +
+      "that may overflow at narrow viewport widths.",
     breakingChanges: [
       "Replace Spacings.Inline with <Stack direction='row'>",
       "Spacing values use design token scale (e.g. gap='300')",
+      "Add flexWrap='wrap' for rows with multiple inputs to prevent overflow",
     ],
     layoutGuidance: LAYOUT_NESTING_GUIDANCE,
   },
