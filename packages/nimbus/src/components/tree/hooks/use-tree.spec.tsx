@@ -10,10 +10,11 @@ import { fileTree, type TreeNode } from "../utils/tree.test-data";
  *
  * Moving a node into its own subtree has no valid result: React Stately
  * detaches the node, then re-attaches it under a parent key that no longer
- * exists, so the node and every descendant are dropped from the tree. Left
- * unguarded this happened silently — no throw, no rejection, no diagnostic —
- * while `moveBefore` / `moveAfter` already threw for the same condition.
- * `useTree` now rejects it, so the whole controller reports consistently.
+ * exists, so the node and every descendant are dropped from the tree. React
+ * Stately guards this only partly — `move` not at all, and `moveBefore` /
+ * `moveAfter` only while the moved node is not itself root-level. Every gap
+ * lost data silently: no throw, no rejection, no diagnostic. `useTree` rejects
+ * all three uniformly, and does it at the call site.
  *
  * Drag-and-drop never reached this: React Aria's `getDropOperation` cancels any
  * internal drop targeting a dragged key or a descendant of one, for pointer and
@@ -123,6 +124,81 @@ describe("useTree — move into own subtree", () => {
     expect(toRoot).toBeUndefined();
     expect(result.current.getItem("report")).toBeDefined();
     expect(result.current.getItem("budget")).toBeDefined();
+    expect(flattenKeys(result.current.items)).toHaveLength(ALL_KEYS.length);
+  });
+});
+
+/**
+ * `moveBefore` / `moveAfter` insert *next to* the target, so the moved nodes
+ * land in the target's parent. React Stately guards that parent chain with
+ * `while (parent?.parentKey != null)`, which exits before testing a root-level
+ * node — so whenever the moved node is itself root-level, its guard never runs
+ * and the subtree is dropped silently, exactly as `move` used to.
+ */
+describe("useTree — sibling moves into own subtree", () => {
+  it("rejects moving a root-level node before its own child", () => {
+    const { result } = setup();
+
+    const error = attempt(() =>
+      result.current.moveBefore("project", ["documents"])
+    );
+
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toMatch(/itself or one of its own/i);
+    expect(flattenKeys(result.current.items)).toEqual(ALL_KEYS);
+  });
+
+  it("rejects moving a root-level node after its own child", () => {
+    const { result } = setup();
+
+    const error = attempt(() =>
+      result.current.moveAfter("image-1", ["photos"])
+    );
+
+    expect(error).toBeInstanceOf(Error);
+    expect(flattenKeys(result.current.items)).toEqual(ALL_KEYS);
+  });
+
+  it("rejects moving a root-level node next to a deeper descendant", () => {
+    const { result } = setup();
+
+    // "report" sits two levels below "documents", so the destination parent is
+    // "project" — still inside the moved node's own subtree.
+    const error = attempt(() =>
+      result.current.moveBefore("report", ["documents"])
+    );
+
+    expect(error).toBeInstanceOf(Error);
+    expect(flattenKeys(result.current.items)).toEqual(ALL_KEYS);
+  });
+
+  it("reports a nested node's own-subtree target at the call site", () => {
+    const { result } = setup();
+
+    // React Stately does catch this one, but from inside its `setItems`
+    // reducer — during a later render, where the caller cannot observe it. The
+    // guard runs first, so the rejection is synchronous and catchable.
+    const error = attempt(() =>
+      result.current.moveBefore("report", ["project"])
+    );
+
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toMatch(/itself or one of its own/i);
+    expect(flattenKeys(result.current.items)).toEqual(ALL_KEYS);
+  });
+
+  it("still reorders siblings and moves nodes between unrelated parents", () => {
+    const { result } = setup();
+
+    const reorder = attempt(() =>
+      result.current.moveBefore("image-1", ["image-2"])
+    );
+    const reparent = attempt(() =>
+      result.current.moveAfter("image-1", ["report"])
+    );
+
+    expect(reorder).toBeUndefined();
+    expect(reparent).toBeUndefined();
     expect(flattenKeys(result.current.items)).toHaveLength(ALL_KEYS.length);
   });
 });
