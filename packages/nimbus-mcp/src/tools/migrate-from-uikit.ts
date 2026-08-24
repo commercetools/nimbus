@@ -6,7 +6,7 @@ import {
   getUiKitCompoundMigrations,
   getAllUiKitMigrations,
 } from "../data/uikit-migration.js";
-import { getRouteManifest } from "../data-loader.js";
+import { getRouteManifest, getTypeData } from "../data-loader.js";
 import type {
   MigrateComponentResult,
   MigrateCompoundResult,
@@ -252,9 +252,12 @@ function buildTokenRedirect(name: string): MigrateComponentResult {
   };
 }
 
-function buildComponentResult(
+const STYLE_PROPS_HINT =
+  'Also accepts style props. Use get_docs_page(path: "home/style-props") for full reference.';
+
+async function buildComponentResult(
   uiKitName: string
-): MigrateComponentResult | null {
+): Promise<MigrateComponentResult | null> {
   const entry = getUiKitMigration(uiKitName);
   if (!entry) return null;
 
@@ -284,6 +287,18 @@ function buildComponentResult(
     entry.notes
   );
   if (hint) result.hint = hint;
+
+  // Add styleProps hint when the Nimbus target supports style props
+  if (entry.importPath === "@commercetools/nimbus" && entry.nimbusEquivalent) {
+    try {
+      const typeData = await getTypeData(entry.nimbusEquivalent);
+      if (typeData.supportsStyleProps) {
+        result.styleProps = STYLE_PROPS_HINT;
+      }
+    } catch {
+      // Type data unavailable — skip styleProps hint
+    }
+  }
 
   return result;
 }
@@ -502,7 +517,7 @@ export function registerMigrateFromUiKit(server: McpServer): void {
           };
         }
 
-        const result = buildComponentResult(componentName);
+        const result = await buildComponentResult(componentName);
         if (result) {
           return {
             content: [
@@ -517,8 +532,10 @@ export function registerMigrateFromUiKit(server: McpServer): void {
         // Check if this is a compound root (e.g. "Spacings" → Spacings.Stack, Spacings.Inline, ...)
         const compoundEntries = getUiKitCompoundMigrations(componentName);
         if (compoundEntries) {
-          const mappings = compoundEntries.map((e) =>
-            buildComponentResult(e.uiKitName)!
+          const mappings = await Promise.all(
+            compoundEntries.map((e) => buildComponentResult(e.uiKitName))
+          ).then(
+            (results) => results.filter(Boolean) as MigrateComponentResult[]
           );
           const response: MigrateCompoundResult = {
             compoundRoot: componentName,
@@ -544,7 +561,7 @@ export function registerMigrateFromUiKit(server: McpServer): void {
             content: [
               {
                 type: "text" as const,
-                text: JSON.stringify(buildComponentResult(fuzzy)),
+                text: JSON.stringify(await buildComponentResult(fuzzy)),
               },
             ],
           };
@@ -623,7 +640,7 @@ export function registerMigrateFromUiKit(server: McpServer): void {
           continue;
         }
 
-        const result = buildComponentResult(name);
+        const result = await buildComponentResult(name);
         if (result) {
           mappings.push(result);
           continue;
@@ -640,7 +657,8 @@ export function registerMigrateFromUiKit(server: McpServer): void {
           // use dynamic access or destructuring that the string search misses).
           const toInclude = used.length > 0 ? used : compoundEntries;
           for (const entry of toInclude) {
-            mappings.push(buildComponentResult(entry.uiKitName)!);
+            const entryResult = await buildComponentResult(entry.uiKitName);
+            if (entryResult) mappings.push(entryResult);
           }
           continue;
         }

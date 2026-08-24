@@ -15,7 +15,7 @@ import { routePathToSlug } from "../utils/route.js";
 // ---------------------------------------------------------------------------
 
 const STYLE_PROPS_HINT =
-  'Also accepts Chakra style props. Use get_docs_page(path: "home/style-props") for full reference.';
+  'Also accepts style props. Use get_docs_page(path: "home/style-props") for full reference.';
 
 /** Route prefix that identifies component documentation pages. */
 const COMPONENT_ROUTE_PREFIX = "components/";
@@ -75,7 +75,7 @@ async function resolveExportName(route: string): Promise<string | undefined> {
 
 /**
  * Adds the styleProps hint to a DocsPageResult if the component at the given
- * route supports Chakra style props.
+ * route supports style props.
  */
 async function maybeAddStylePropsHint(
   result: DocsPageResult,

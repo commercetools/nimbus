@@ -134,7 +134,7 @@ export interface TypeData {
   >;
   methods: unknown[];
   tags: Record<string, string>;
-  /** Whether the component accepts Chakra style props (extracted from @supportsStyleProps JSDoc). */
+  /** Whether the component accepts style props (extracted from @supportsStyleProps JSDoc). */
   supportsStyleProps?: boolean;
 }
 
@@ -300,7 +300,7 @@ export interface ComponentMetadata {
   subcategory?: string;
   tags?: string[];
   sections: string[];
-  /** Hint that the component accepts Chakra style props, with a tool call for the full reference. */
+  /** Hint that the component accepts style props, with a tool call for the full reference. */
   styleProps?: string;
 }
 
@@ -541,7 +541,7 @@ export interface MigrateComponentResult {
   breakingChanges: string[];
   /** Suggestion to use another MCP tool for further assistance. */
   hint?: string;
-  /** Hint that the Nimbus target component accepts Chakra style props. */
+  /** Hint that the Nimbus target component accepts style props. */
   styleProps?: string;
   /** Structured prop-level migration mappings, if available. */
   propMappings?: PropMapping[];
@@ -610,7 +610,7 @@ export interface DocsPageResult {
   path: string;
   sections: string[];
   content: string;
-  /** Hint that the component accepts Chakra style props, with a tool call for the full reference. */
+  /** Hint that the component accepts style props, with a tool call for the full reference. */
   styleProps?: string;
 }
 

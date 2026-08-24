@@ -23,7 +23,7 @@ import { routePathToSlug as pathToSlug } from "../utils/route.js";
 // ---------------------------------------------------------------------------
 
 const STYLE_PROPS_HINT =
-  'Also accepts Chakra style props. Use get_docs_page(path: "home/style-props") for full reference.';
+  'Also accepts style props. Use get_docs_page(path: "home/style-props") for full reference.';
 
 // ---------------------------------------------------------------------------
 // Section definitions
@@ -181,7 +181,7 @@ async function aggregateSubComponentProps(
 
 /**
  * Extended version of `aggregateSubComponentProps` that also tracks which
- * sub-components accept Chakra style props.
+ * sub-components accept style props.
  */
 async function aggregateSubComponentPropsWithStyleInfo(
   exportName: string
@@ -348,7 +348,7 @@ export function registerGetComponent(server: McpServer): void {
         if (!section) {
           const metadata = buildMetadataResponse(entry, availableSections);
 
-          // Add styleProps hint if the component supports Chakra style props
+          // Add styleProps hint if the component supports style props
           const exportName = entry.exportName ?? entry.title;
           try {
             const typeData = await getTypeData(exportName);
@@ -394,7 +394,7 @@ export function registerGetComponent(server: McpServer): void {
               // For compound components, list which sub-components accept style props
               if (stylePropsSubComponents.length > 0) {
                 response.styleProps =
-                  `${stylePropsSubComponents.join(", ")} also accept Chakra style props. ` +
+                  `${stylePropsSubComponents.join(", ")} also accept style props. ` +
                   'Use get_docs_page(path: "home/style-props") for full reference.';
               }
             } else if (typeData.supportsStyleProps) {
