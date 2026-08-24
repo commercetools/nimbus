@@ -98,8 +98,11 @@ overrides:
   "brace-expansion@>=3.0.0 <5.0.7": ">=5.0.7"
   mdast-util-to-hast: "^13.2.1"
   # js-yaml 3.x security floor — >=3.15.0 fixes GHSA-h67p-54hq-rp68
-  # (quadratic-complexity DoS in merge-key handling).
-  js-yaml: "^3.15.0"
+  # (quadratic-complexity DoS in merge-key handling); >=3.15.1 fixes
+  # GHSA-5p4m-2wfm-xmqj (quadratic CPU consumption in !!omap resolution,
+  # the CVE-2026-59870 fix that was never backported to 3.x/4.x).
+  # Caret holds the 3.x line — 4.x and 5.x are majors needing their own PR.
+  js-yaml: "^3.15.1"
   # Force the transitively-pulled dompurify (3.4.5 via @commercetools-uikit/icons
   # + rich-text-utils) up to the vetted catalog version, clearing the dompurify
   # GHSA cluster (…-cmwh-pvxp-8882, …-rp9w-3fw7-7cwq, …-76mc-f452-cxcm, etc.).
@@ -113,25 +116,51 @@ overrides:
   # "TypeError: minimatch is not a function" — see git history on this line.
   "minimatch@>=3.0.0 <3.1.4": "3.1.5"
   svgo: ">=4.0.2"
-  hono: ">=4.12.27"
+  # hono >=4.12.34 clears GHSA-8j4g-w8fx-2239 (ReDoS in CORS middleware),
+  # GHSA-54fx-42gc-7vw4 (algorithmic-complexity DoS in language middleware),
+  # GHSA-f23p-vx2j-j53r (memo() retains SSR output across requests) and
+  # GHSA-79qm-7rj5-m7r9 (proxy helper keeps Connection-listed headers).
+  hono: ">=4.12.34"
   esbuild: ">=0.28.1"
   shell-quote: ">=1.9.0"
   "@babel/core": "catalog:tooling"
-  "@hono/node-server": ">=1.19.13"
-  fast-uri: ">=4.1.1"
+  # >=1.19.15 fixes GHSA-frvp-7c67-39w9 (path traversal in serve-static on
+  # Windows via encoded backslash). Capped <2 deliberately: 2.x is a major
+  # (raises the Node floor to >=20), and an open floor WOULD reach it —
+  # 1.19.13 only survived because pnpm leaves a locked version alone while
+  # it still satisfies its spec, so changing the floor forces re-resolution.
+  "@hono/node-server": ">=1.19.15 <2"
+  # >=4.1.2 fixes GHSA-7p8r-x3mc-p8w7 (host confusion via backslash
+  # authority introducer).
+  fast-uri: ">=4.1.2"
   # immutable <4.3.9 — GHSA-xvcm-6775-5m9r / GHSA-v56q-mh7h-f735 (hash-collision
   # algorithmic-complexity DoS in Immutable.Map/Set). Capped <5 to stay within 4.x.
   immutable: ">=4.3.9 <5"
   # body-parser 2.0.0–2.2.x DoS fixed in 2.3.0 (Dependabot #147). Scoped to 2.x.
   "body-parser@2": ">=2.3.0"
-  ip-address: ">=10.1.1"
-  postcss: ">=8.5.10"
+  # >=10.3.1 fixes three SSRF / trust-boundary bypasses:
+  # GHSA-22jq-vg5j-6vgg (IPv4-mapped/NAT64 misclassification),
+  # GHSA-4xrf-jv44-h6hh (CIDR suffix suppresses special-use classification)
+  # and GHSA-mwp4-54f8-5fhr (leading-zero octets decoded as decimal while
+  # resolvers read them as octal).
+  ip-address: ">=10.3.1"
+  # >=8.5.23 fixes GHSA-r28c-9q8g-f849 and GHSA-fxqj-rqcc-2cmp — path
+  # traversal in previous-source-map auto-loading, where an attacker-controlled
+  # sourceMappingURL discloses arbitrary .map files (the latter completes the
+  # incomplete GHSA-6g55-p6wh-862q fix for the `from`-unset case).
+  postcss: ">=8.5.23"
   "lodash@<4.18.0": ">=4.18.0"
   "lodash-es@<4.18.0": ">=4.18.0"
   "ajv@>=8.0.0 <8.18.0": ">=8.18.0"
   "minimatch@>=10.0.0 <10.2.3": ">=10.2.3"
   flatted: ">=3.4.2"
-  undici: ">=7.28.0 <8"
+  # >=7.29.0 clears the 7.x advisory cluster: GHSA-4cwx-7wf7-3272 and
+  # GHSA-jr45-8vmc-qm54 (cross-user disclosure via degenerate / whitespaced
+  # Cache-Control directives), GHSA-8xcm-r25x-g524 (downstream response
+  # desync via the retry interceptor), GHSA-v3r7-h72x-cjcm (cookie attribute
+  # injection) and GHSA-m8rv-5g2x-5cg5 (CRLF injection via blob body `type`).
+  # Capped <8: v8 is a major needing its own PR.
+  undici: ">=7.29.0 <8"
   "picomatch@<2.3.2": ">=2.3.2"
   "picomatch@>=4.0.0 <4.0.4": ">=4.0.4"
   "yaml@1": "1.10.3"
