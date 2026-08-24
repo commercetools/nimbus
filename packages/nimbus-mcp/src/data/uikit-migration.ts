@@ -1628,7 +1628,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Rename to Badge. UI Kit used a tone prop; Nimbus uses colorPalette instead. " +
       "UI Kit tones: 'critical'|'warning'|'positive'|'information'|'primary'|'secondary'. " +
       "Nimbus colorPalette values: 'critical'|'warning'|'positive'|'info'|'primary'|'neutral'. " +
-      "Badge supports style props — use size='sm' for compact contexts like table cells, " +
+      "Badge supports style props — use size='sm' or size='2xs' for compact contexts like table cells, " +
       "and style props like px, py, fontSize for further tuning.",
     breakingChanges: [
       "Rename to Badge",
@@ -1983,8 +1983,8 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus-tokens",
     mappingType: "pattern",
     notes:
-      "Remove the Constraints.Horizontal wrapper and apply maxW directly as a style prop on the child component " +
-      "(most Nimbus components accept style props). Only use a <Box maxW> wrapper if the child doesn't support style props. " +
+      'Replace <Constraints.Horizontal max={N}> with <Box maxW="TOKEN">. ' +
+      "If the child component supports style props, you may apply maxW directly on it instead. " +
       "UIKit max value → Nimbus size token: " +
       "max=3→'3xs' (224px), max=4→'2xs' (256px), max=5→'xs' (320px), " +
       "max=6→'xs' (320px), max=7→'sm' (384px), max=8→'sm' (384px), " +
@@ -1992,7 +1992,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "max=12→'xl' (576px), max=13→'2xl' (672px), max=14→'2xl' (672px), " +
       "max=15→'3xl' (768px), max=16→'3xl' (768px).",
     breakingChanges: [
-      "Remove Constraints.Horizontal wrapper — apply maxW as a style prop directly on the child",
+      'Replace Constraints.Horizontal with <Box maxW="TOKEN">, or apply maxW directly on the child if it supports style props',
       "Use Nimbus size tokens for maxW values (see notes for lookup table)",
     ],
     layoutGuidance: LAYOUT_NESTING_GUIDANCE,
