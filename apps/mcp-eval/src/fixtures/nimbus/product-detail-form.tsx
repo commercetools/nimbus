@@ -274,7 +274,7 @@ export function ProductDetailForm() {
 
               {/* Slug and SKU — collapsed Constraints.Horizontal widths */}
               <Stack direction="row" gap="400">
-                <Box maxWidth="342px" flex="1">
+                <Box maxWidth="460px" flex="1">
                   <TextInputField
                     label="Slug"
                     value={values.slug}
@@ -283,7 +283,7 @@ export function ProductDetailForm() {
                     }
                   />
                 </Box>
-                <Box maxWidth="242px" flex="1">
+                <Box maxWidth="320px" flex="1">
                   <TextInputField
                     label="SKU"
                     value={values.sku}
@@ -307,7 +307,7 @@ export function ProductDetailForm() {
 
               <Stack direction="row" gap="400" align="flex-end">
                 {/* MoneyInput — exercises the onValueChange adapter */}
-                <Box maxWidth="284px" flex="1">
+                <Box flex="1" maxWidth="460px">
                   <Stack direction="column" gap="100">
                     <Text fontSize="sm" fontWeight="medium">
                       Price *
@@ -322,7 +322,7 @@ export function ProductDetailForm() {
                 </Box>
 
                 {/* NumberInput — exercises the numeric onChange adapter */}
-                <Box maxWidth="184px" flex="1">
+                <Box flex="1" maxWidth="320px">
                   <NumberInput
                     label="Quantity"
                     value={values.quantity}
@@ -331,7 +331,7 @@ export function ProductDetailForm() {
                   />
                 </Box>
 
-                <Box maxWidth="184px" flex="1">
+                <Box flex="1" maxWidth="320px">
                   <NumberInput
                     label="Weight (kg)"
                     value={values.weight}
