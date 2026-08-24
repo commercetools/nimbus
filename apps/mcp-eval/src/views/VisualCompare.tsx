@@ -162,7 +162,7 @@ export function VisualCompare() {
           <Splitter.Root defaultSize={50} minSize={20} maxSize={80}>
             {/* Left: UIKit rendered */}
             <Splitter.Aside>
-              <Box h="100%" overflow="auto" bg="white">
+              <Box h="100%" overflow="auto" bg="white" color="black">
                 <PanelHeader
                   label="● UI KIT — rendered (before)"
                   bg="warning.3"
@@ -189,7 +189,7 @@ export function VisualCompare() {
             <Splitter.Handle />
             {/* Right: Nimbus rendered */}
             <Splitter.Main>
-              <Box h="100%" overflow="auto" bg="white">
+              <Box h="100%" overflow="auto" bg="white" color="neutral.12">
                 <PanelHeader
                   label="● NIMBUS — rendered (after migration)"
                   bg="info.3"
