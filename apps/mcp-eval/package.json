@@ -15,6 +15,7 @@
     "@commercetools-frontend/ui-kit": "catalog:tooling",
     "@commercetools/nimbus": "workspace:*",
     "@commercetools/nimbus-icons": "workspace:*",
+    "@internationalized/date": "catalog:react",
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "react-intl": "catalog:utils"

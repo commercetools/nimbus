@@ -47,6 +47,19 @@ const fixtures = {
       }))
     ),
   },
+  "admin-settings-view": {
+    label: "Admin Settings",
+    uikit: React.lazy(() =>
+      import("../fixtures/uikit/admin-settings-view.js").then((m) => ({
+        default: m.AdminSettingsView,
+      }))
+    ),
+    nimbus: React.lazy(() =>
+      import("../fixtures/nimbus/admin-settings-view.js").then((m) => ({
+        default: m.AdminSettingsView,
+      }))
+    ),
+  },
 } as const;
 
 type FixtureKey = keyof typeof fixtures;

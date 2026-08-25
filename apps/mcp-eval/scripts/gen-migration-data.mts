@@ -16,6 +16,7 @@ async function main() {
   for (const [name, file] of [
     ["product-list-view", "src/fixtures/uikit/product-list-view.tsx"],
     ["product-detail-form", "src/fixtures/uikit/product-detail-form.tsx"],
+    ["admin-settings-view", "src/fixtures/uikit/admin-settings-view.tsx"],
   ] as const) {
     const result = await client.callTool({
       name: "migrate_from_uikit",
