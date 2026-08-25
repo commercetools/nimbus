@@ -1,7 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { SearchInput, NimbusProvider } from "@commercetools/nimbus";
+import { SearchInput, IconButton, NimbusProvider } from "@commercetools/nimbus";
+import { Tune, Visibility } from "@commercetools/nimbus-icons";
 
 /**
  * @docs-section basic-rendering
@@ -443,5 +444,97 @@ describe("SearchInput - Event handlers", () => {
     await user.keyboard("{Escape}");
 
     expect(searchBox).toHaveValue("");
+  });
+});
+
+/**
+ * @docs-section adornments
+ * @docs-title Leading and Trailing Element Tests
+ * @docs-description Verify configurable leading content and trailing elements
+ * @docs-order 7
+ */
+describe("SearchInput - Leading and trailing elements", () => {
+  it("renders the search icon by default", () => {
+    render(
+      <NimbusProvider>
+        <SearchInput aria-label="Search" />
+      </NimbusProvider>
+    );
+
+    const field = screen.getByRole("searchbox").closest("div");
+    expect(
+      field?.querySelector(".nimbus-search-input__leadingElement")
+    ).toBeInTheDocument();
+  });
+
+  it("replaces the leading icon when leadingElement is provided", () => {
+    render(
+      <NimbusProvider>
+        <SearchInput
+          aria-label="Search"
+          leadingElement={<Visibility data-testid="custom-leading" />}
+        />
+      </NimbusProvider>
+    );
+
+    expect(screen.getByTestId("custom-leading")).toBeInTheDocument();
+  });
+
+  it("renders no leading element when leadingElement is null", () => {
+    render(
+      <NimbusProvider>
+        <SearchInput aria-label="Search" leadingElement={null} />
+      </NimbusProvider>
+    );
+
+    const field = screen.getByRole("searchbox").closest("div");
+    expect(
+      field?.querySelector(".nimbus-search-input__leadingElement")
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders a trailing element after the input", () => {
+    render(
+      <NimbusProvider>
+        <SearchInput
+          aria-label="Search"
+          trailingElement={<Tune data-testid="custom-trailing" />}
+        />
+      </NimbusProvider>
+    );
+
+    const trailing = screen.getByTestId("custom-trailing");
+    expect(trailing.parentElement).toHaveClass(
+      "nimbus-search-input__trailingElement"
+    );
+  });
+
+  it("runs a trailing button's own handler without clearing the value", async () => {
+    const user = userEvent.setup();
+    const onFilter = vi.fn();
+
+    render(
+      <NimbusProvider>
+        <SearchInput
+          aria-label="Search"
+          defaultValue="shoes"
+          trailingElement={
+            <IconButton
+              size="xs"
+              variant="ghost"
+              aria-label="Filter results"
+              onPress={onFilter}
+            >
+              <Tune />
+            </IconButton>
+          }
+        />
+      </NimbusProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: "Filter results" }));
+
+    expect(onFilter).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("searchbox")).toHaveValue("shoes");
   });
 });
