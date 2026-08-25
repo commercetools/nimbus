@@ -1520,3 +1520,89 @@ export const FieldClickSurface: Story = {
     );
   },
 };
+
+/**
+ * Field Chrome: A Non-Clearable Field Reserves Nothing
+ * `main` reserved 56px to the right of the value unconditionally, via a
+ * hardcoded `--button-safespace`. Its `isClearable: false` variant was meant to
+ * shrink that, but had been dead since the prop stopped reaching
+ * `splitVariantProps` - so a field that can never show a clear button still made
+ * room for one. Layout is intrinsic now, so a non-clearable field is exactly one
+ * clear button narrower. Guarded because the old failure mode was a silently
+ * unused value rather than an error, and because the same three consumers
+ * (MoneyInput, ScopedSearchInput, Pagination) would absorb a regression here
+ * without any of their own code changing.
+ */
+export const FieldChromeNonClearable: Story = {
+  render: () => (
+    <Stack direction="column" gap="400">
+      {(["sm", "md"] as const).map((size) => (
+        <Stack key={size} direction="row" gap="400" alignItems="center">
+          <Select.Root
+            size={size}
+            aria-label={`${size} clearable`}
+            defaultSelectedKey="usd"
+            data-testid={`clearable-${size}`}
+          >
+            <Select.Options>
+              <Select.Option id="usd">USD</Select.Option>
+              <Select.Option id="eur">EUR</Select.Option>
+            </Select.Options>
+          </Select.Root>
+          <Select.Root
+            size={size}
+            isClearable={false}
+            aria-label={`${size} not clearable`}
+            defaultSelectedKey="usd"
+            data-testid={`fixed-${size}`}
+          >
+            <Select.Options>
+              <Select.Option id="usd">USD</Select.Option>
+              <Select.Option id="eur">EUR</Select.Option>
+            </Select.Options>
+          </Select.Root>
+        </Stack>
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    const field = (testId: string) =>
+      canvas
+        .getByTestId(testId)
+        .querySelector(".nimbus-select__trigger") as HTMLElement;
+
+    for (const size of ["sm", "md"] as const) {
+      const clearable = field(`clearable-${size}`);
+      const fixed = field(`fixed-${size}`);
+
+      await step(
+        `${size}: dropping the clear button narrows the field by exactly its own width`,
+        async () => {
+          const delta =
+            clearable.getBoundingClientRect().width -
+            fixed.getBoundingClientRect().width;
+          // sizes.600 - the clear button box, and nothing else.
+          await expect(Math.round(delta)).toBe(24);
+        }
+      );
+
+      await step(
+        `${size}: the chevron keeps its inset from the field edge`,
+        async () => {
+          for (const el of [clearable, fixed]) {
+            const controls = el.lastElementChild as HTMLElement;
+            const inset =
+              el.getBoundingClientRect().right -
+              controls.getBoundingClientRect().right;
+            // Both sizes inset by 16px: `md` from `px: 400`, `sm` from the
+            // deliberately asymmetric `pr: 400` that preserves the old overlay's
+            // hardcoded `right="400"`.
+            await expect(Math.round(inset)).toBe(16);
+          }
+        }
+      );
+    }
+  },
+};

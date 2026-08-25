@@ -6520,3 +6520,90 @@ export const TrailingElementInteraction: Story = {
     });
   },
 };
+
+/**
+ * Layout: Trailing Element Leaves The Field Alone
+ * A geometry guard rather than a visual one. Two separate regressions landed
+ * here at once and neither is legible in a snapshot: a `minH` on the trailing
+ * slot raised the field by 8px, and declaring the trailing grid track
+ * unconditionally spent an extra `column-gap` out of the content column on
+ * *every* ComboBox - visible only where a frame happened to sit exactly on a
+ * tag-wrap boundary.
+ */
+export const LayoutTrailingElementLeavesFieldAlone: Story = {
+  render: () => (
+    <Stack gap="600" alignItems="flex-start">
+      {(["sm", "md"] as const).map((size) => (
+        <Stack key={size} direction="row" gap="400" alignItems="flex-start">
+          <Box data-testid={`plain-${size}`}>
+            <ComposedComboBox<SimpleOption>
+              aria-label={`${size} without trailing element`}
+              items={simpleOptions}
+              size={size}
+              selectedKeys={[1]}
+            />
+          </Box>
+          <Box data-testid={`trailing-${size}`}>
+            <ComposedComboBox<SimpleOption>
+              aria-label={`${size} with trailing element`}
+              items={simpleOptions}
+              size={size}
+              selectedKeys={[1]}
+              trailingElement={<Tune aria-hidden="true" />}
+            />
+          </Box>
+        </Stack>
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    const trigger = (testId: string) =>
+      canvas
+        .getByTestId(testId)
+        .querySelector(".nimbus-combobox__trigger") as HTMLElement;
+
+    /** Computed `grid-template-columns` resolves to used px values, one per track. */
+    const trackCount = (el: HTMLElement) =>
+      getComputedStyle(el).gridTemplateColumns.trim().split(/\s+/).length;
+
+    const contentWidth = (testId: string) =>
+      (
+        canvas
+          .getByTestId(testId)
+          .querySelector(".nimbus-combobox__content") as HTMLElement
+      ).getBoundingClientRect().width;
+
+    for (const size of ["sm", "md"] as const) {
+      const plain = trigger(`plain-${size}`);
+      const trailing = trigger(`trailing-${size}`);
+
+      await step(
+        `${size}: a trailing element does not change the height`,
+        async () => {
+          await expect(trailing.getBoundingClientRect().height).toBe(
+            plain.getBoundingClientRect().height
+          );
+        }
+      );
+
+      await step(
+        `${size}: the trailing track exists only when rendered`,
+        async () => {
+          await expect(trackCount(plain)).toBe(4);
+          await expect(trackCount(trailing)).toBe(5);
+        }
+      );
+
+      await step(
+        `${size}: a plain field keeps the wider content column`,
+        async () => {
+          await expect(contentWidth(`plain-${size}`)).toBeGreaterThan(
+            contentWidth(`trailing-${size}`)
+          );
+        }
+      );
+    }
+  },
+};

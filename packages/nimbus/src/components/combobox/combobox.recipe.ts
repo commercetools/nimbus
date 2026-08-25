@@ -63,6 +63,12 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       // Explicit grid placement with a real box: `display: contents` (as used by
       // leadingElement above) would discard this gridArea and fall back to grid
       // auto-placement, landing the content in the wrong cell.
+      //
+      // Deliberately no `minH` per size, unlike leadingElement: there it is
+      // inert (`display: contents` has no box to size), here it would be live
+      // and would raise the grid row to the field's full height, which the
+      // trigger's own `py` then adds to - an 8px taller field. The trigger's
+      // `minH` sets the height; `alignItems: center` places this box in it.
       gridArea: "trailingElement",
       display: "flex",
       alignItems: "center",
@@ -75,9 +81,19 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     },
     trigger: {
       display: "grid",
-      gridTemplateColumns: "auto 1fr auto auto auto",
-      gridTemplateAreas:
-        '"leadingElement content trailingElement clear toggle"',
+      // Four tracks by default. `column-gap` applies between *every* adjacent
+      // pair of tracks in the explicit grid, empty ones included, so declaring
+      // the trailing track unconditionally spends an extra gap out of the `1fr`
+      // content column on every ComboBox, trailing element or not - 4px, which
+      // is enough to wrap a tag onto a second line. The track is declared only
+      // when the slot is actually rendered.
+      gridTemplateColumns: "auto 1fr auto auto",
+      gridTemplateAreas: '"leadingElement content clear toggle"',
+      "&:has(> .nimbus-combobox__trailingElement)": {
+        gridTemplateColumns: "auto 1fr auto auto auto",
+        gridTemplateAreas:
+          '"leadingElement content trailingElement clear toggle"',
+      },
       alignItems: "center",
       gap: "100",
       width: "100%",
@@ -255,9 +271,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         leadingElement: {
           minH: "800",
         },
-        trailingElement: {
-          minH: "800",
-        },
       },
       // Medium
       md: {
@@ -266,9 +279,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           textStyle: "md",
         },
         leadingElement: {
-          minH: "1000",
-        },
-        trailingElement: {
           minH: "1000",
         },
       },
