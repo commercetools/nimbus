@@ -7,6 +7,7 @@ import type {
   SelectTriggerSlotProps,
   SelectTriggerButtonSlotProps,
   SelectTriggerLabelSlotProps,
+  SelectTrailingElementSlotProps,
   SelectOptionsSlotProps,
   SelectOptionSlotProps,
   SelectOptionGroupSlotProps,
@@ -44,6 +45,12 @@ export const SelectTriggerLabelSlot = withContext<
   HTMLButtonElement,
   SelectTriggerLabelSlotProps
 >("span", "triggerLabel");
+
+// TrailingElement - consumer content between the value and the clear button
+export const SelectTrailingElementSlot = withContext<
+  HTMLDivElement,
+  SelectTrailingElementSlotProps
+>("div", "trailingElement");
 
 // ListBox
 export const SelectOptionsSlot = withContext<

@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef } from "react-aria";
-import { extractStyleProps, mergeRefs } from "@/utils";
+import { AdornmentContent, extractStyleProps, mergeRefs } from "@/utils";
 
 import {
   KeyboardArrowDown as DropdownIndicatorIcon,
@@ -21,6 +21,7 @@ import {
   SelectTriggerButtonSlot,
   SelectTriggerLabelSlot,
   SelectLeadingElementSlot,
+  SelectTrailingElementSlot,
 } from "./../select.slots";
 import { SelectClearButton } from "./select.clear-button";
 import { type SelectProps } from "./../select.types";
@@ -35,6 +36,7 @@ export const SelectRoot = function SelectRoot({
   ref: forwardedRef,
   children,
   leadingElement,
+  trailingElement,
   isLoading,
   isDisabled,
   isClearable = true,
@@ -71,6 +73,12 @@ export const SelectRoot = function SelectRoot({
               </SelectTriggerLabelSlot>
             </RaButton>
           </SelectTriggerButtonSlot>
+
+          {trailingElement && (
+            <SelectTrailingElementSlot>
+              <AdornmentContent>{trailingElement}</AdornmentContent>
+            </SelectTrailingElementSlot>
+          )}
 
           {isClearable && (
             <Flex width="600" flexShrink={0}>

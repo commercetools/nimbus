@@ -41,6 +41,8 @@ export type SelectTriggerButtonSlotProps = HTMLChakraProps<"button">;
 
 export type SelectTriggerLabelSlotProps = HTMLChakraProps<"span">;
 
+export type SelectTrailingElementSlotProps = HTMLChakraProps<"div">;
+
 export type SelectOptionsSlotProps = HTMLChakraProps<"div">;
 
 export type SelectOptionSlotProps = HTMLChakraProps<"div">;
@@ -67,6 +69,24 @@ export type SelectProps = OmitInternalProps<SelectRootSlotProps> &
      * Respects text direction (left in LTR, right in RTL)
      */
     leadingElement?: ReactNode;
+    /**
+     * Optional element rendered after the selected value, before the clear
+     * button and dropdown chevron.
+     * Respects text direction (right in LTR, left in RTL).
+     *
+     * Rendered beside the trigger button rather than inside it, so interactive
+     * content such as a filter button is valid here and keeps its own
+     * behaviour — pressing it does not open the listbox.
+     *
+     * **Accessibility**: mark decorative elements `aria-hidden="true"`.
+     * Interactive elements need their own `aria-label`.
+     *
+     * @example
+     * ```tsx
+     * <Select.Root trailingElement={<Icons.Tune aria-hidden="true" />} />
+     * ```
+     */
+    trailingElement?: ReactNode;
     /**
      * Whether to show a clear button when a value is selected
      * @default false

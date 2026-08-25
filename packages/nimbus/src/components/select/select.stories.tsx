@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Box,
   Icon,
+  IconButton,
   Select,
   type SelectProps,
   Stack,
@@ -10,7 +11,12 @@ import {
 import { useState } from "react";
 import type { Key } from "react-aria-components";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
-import { AddReaction, Search, Visibility } from "@commercetools/nimbus-icons";
+import {
+  AddReaction,
+  Search,
+  Tune,
+  Visibility,
+} from "@commercetools/nimbus-icons";
 
 import { useAsyncList } from "react-stately";
 
@@ -1195,5 +1201,227 @@ export const LeadingElement: Story = {
         ))}
       </Stack>
     );
+  },
+};
+
+/**
+ * Trailing Element Examples
+ * The `trailingElement` slot across size x variant, on its own and paired with a
+ * leading element, alongside the built-in clear button and chevron.
+ */
+export const TrailingElement: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => {
+    const examples: Array<{
+      label: string;
+      getProps: (
+        size: SelectProps["size"]
+      ) => Partial<React.ComponentProps<typeof Select.Root>>;
+    }> = [
+      {
+        label: "Trailing icon",
+        getProps: () => ({
+          trailingElement: <Icon as={Tune} aria-hidden="true" />,
+          "aria-label": "trailing-icon-select",
+        }),
+      },
+      {
+        label: "Leading and trailing",
+        getProps: () => ({
+          leadingElement: <Icon as={Search} aria-hidden="true" />,
+          trailingElement: <Icon as={Tune} aria-hidden="true" />,
+          "aria-label": "leading-and-trailing-select",
+        }),
+      },
+      {
+        label: "Trailing filter button",
+        getProps: (size) => ({
+          trailingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              colorPalette="primary"
+              variant="ghost"
+              aria-label="filter results"
+            >
+              <Icon as={Tune} />
+            </IconButton>
+          ),
+          "aria-label": "trailing-button-select",
+        }),
+      },
+    ];
+
+    return (
+      <Stack direction="column" gap="600">
+        {selectSizes.map((size) => (
+          <Stack key={size as string} direction="column" gap="400">
+            <Text fontWeight="semibold">Size: {size as string}</Text>
+            <Stack direction="column" gap="300">
+              {examples.map((example) => (
+                <Stack
+                  key={`${size as string}-${example.label}`}
+                  direction="column"
+                  gap="200"
+                >
+                  <Text fontSize="sm" color="neutral.11">
+                    {example.label}
+                  </Text>
+                  <Stack direction="row" gap="400" alignItems="center">
+                    {selectVariants.map((variant) => (
+                      <Stack
+                        key={variant as string}
+                        direction="column"
+                        gap="100"
+                      >
+                        <Text fontSize="xs" color="neutral.10">
+                          {variant as string}
+                        </Text>
+                        <Select.Root
+                          {...example.getProps(size)}
+                          size={size}
+                          variant={variant}
+                          defaultSelectedKey="option1"
+                        >
+                          <Select.Options>
+                            <Select.Option id="option1">Option 1</Select.Option>
+                            <Select.Option id="option2">Option 2</Select.Option>
+                          </Select.Options>
+                        </Select.Root>
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+};
+
+/**
+ * Trailing Element: Constrained Width
+ * With a trailing element competing for space the value truncates with an
+ * ellipsis rather than running underneath it — layout is intrinsic now, so
+ * nothing is reserved or overlapped.
+ */
+export const TrailingElementConstrainedWidth: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="400" width="7200">
+      <Select.Root
+        aria-label="long-value-no-trailing"
+        defaultSelectedKey="long"
+        width="100%"
+      >
+        <Select.Options>
+          <Select.Option id="long">
+            An extremely long selected option label that has to truncate
+          </Select.Option>
+        </Select.Options>
+      </Select.Root>
+      <Select.Root
+        aria-label="long-value-with-trailing"
+        defaultSelectedKey="long"
+        width="100%"
+        leadingElement={<Icon as={Search} aria-hidden="true" />}
+        trailingElement={
+          <IconButton
+            size="xs"
+            colorPalette="primary"
+            variant="ghost"
+            aria-label="filter results"
+          >
+            <Icon as={Tune} />
+          </IconButton>
+        }
+      >
+        <Select.Options>
+          <Select.Option id="long">
+            An extremely long selected option label that has to truncate
+          </Select.Option>
+        </Select.Options>
+      </Select.Root>
+    </Stack>
+  ),
+};
+
+/**
+ * Trailing Element: Interaction
+ * A trailing button sits beside the trigger button rather than inside it, so it
+ * is a valid interactive element and owns its own clicks.
+ */
+export const TrailingElementInteraction: Story = {
+  render: () => {
+    const onFilter = fn();
+    return (
+      <Select.Root
+        aria-label="select-with-filter"
+        defaultSelectedKey="option1"
+        data-testid="select"
+        trailingElement={
+          <IconButton
+            size="xs"
+            colorPalette="primary"
+            variant="ghost"
+            aria-label="filter results"
+            onPress={onFilter}
+          >
+            <Icon as={Tune} />
+          </IconButton>
+        }
+      >
+        <Select.Options>
+          <Select.Option id="option1">Option 1</Select.Option>
+          <Select.Option id="option2">Option 2</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const select = canvas.getByTestId("select");
+    const triggerButton = select.querySelector("button");
+    const filterButton = canvas.getByLabelText("filter results");
+
+    await step("Renders in the trailingElement slot", async () => {
+      await expect(filterButton.parentElement).toHaveClass(
+        "nimbus-select__trailingElement"
+      );
+    });
+
+    await step("Is not nested inside the trigger button", async () => {
+      await expect(triggerButton).not.toContainElement(filterButton);
+    });
+
+    await step("Does not inherit the trigger's accessible name", async () => {
+      await expect(filterButton).toHaveAccessibleName("filter results");
+    });
+
+    await step("Is reachable by keyboard", async () => {
+      filterButton.focus();
+      await expect(filterButton).toHaveFocus();
+    });
+
+    await step("Pressing it does not open the listbox", async () => {
+      await userEvent.click(filterButton);
+      await expect(
+        document.querySelector('[role="listbox"]')
+      ).not.toBeInTheDocument();
+    });
+
+    await step("Pressing it does not change the selection", async () => {
+      await expect(select).toHaveTextContent("Option 1");
+    });
+
+    await step("The trigger still opens the listbox", async () => {
+      await userEvent.click(triggerButton!);
+      await waitFor(async () =>
+        expect(document.querySelector('[role="listbox"]')).toBeInTheDocument()
+      );
+    });
   },
 };

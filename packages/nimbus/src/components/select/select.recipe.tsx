@@ -11,6 +11,7 @@ export const selectSlotRecipe = defineSlotRecipe({
     "trigger",
     "triggerButton",
     "triggerLabel",
+    "trailingElement",
     "options",
     "optionGroup",
     "option",
@@ -83,6 +84,12 @@ export const selectSlotRecipe = defineSlotRecipe({
       display: "flex",
       alignItems: "center",
       color: "neutral.11",
+    },
+    trailingElement: {
+      display: "flex",
+      alignItems: "center",
+      color: "neutral.11",
+      flexShrink: 0,
     },
     triggerLabel: {
       color: "neutral.12",
@@ -185,6 +192,11 @@ export const selectSlotRecipe = defineSlotRecipe({
             boxSize: "400",
           },
         },
+        trailingElement: {
+          "& > svg": {
+            boxSize: "400",
+          },
+        },
       },
       md: {
         root: {},
@@ -198,6 +210,11 @@ export const selectSlotRecipe = defineSlotRecipe({
           gap: "200",
         },
         leadingElement: {
+          "& > svg": {
+            boxSize: "500",
+          },
+        },
+        trailingElement: {
           "& > svg": {
             boxSize: "500",
           },
