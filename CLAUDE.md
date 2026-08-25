@@ -426,36 +426,43 @@ import { defineRecipe, Box, mergeRefs } from "@chakra-ui/react";
 
 ### Code Comments
 
-**A comment justifies the code that IS there** — never code that used to be
-there, a constraint that no longer applies, or what a change did. That belongs
-in the commit message and the PR, which is where someone goes when they ask "why
-did this change?". A comment is read by someone asking "why is this like this?".
+**A comment explains why the current code is the way it is.** It is read by
+someone asking "why is this like this?", never "what changed?". Anything
+answering the latter — history, the reasoning behind an edit, what the code used
+to be — belongs in the commit message and the PR.
 
-- Removing a workaround means removing its comment. **If a diff deletes code, it
-  must not add net comment lines.**
-- Reverting something to the ordinary case removes the comment entirely. A
-  normal value needs no defense; only an unusual one earns a "why".
-- When editing commented code, update or delete the existing comment. Never
-  leave a stale comment and add a second one next to it.
-- Exception, one line max: a genuine tripwire someone would plausibly trip
-  ("don't re-add X, it breaks Y"). Nobody re-adds a version pin by accident, so
-  a hold-back that has since been lifted does not qualify.
+Never write a comment that:
 
-```yaml
-# ✅ Correct - an unusual value, plus the live constraint that forces it
-jsdom: 29.0.1 # pinned: 29.0.2+ breaks Chakra/Emotion CSS in JSDOM
+- Describes code that is no longer present, or a constraint that no longer
+  applies.
+- Narrates the edit being made ("switched to X", "simplified this", "now uses
+  Y") or refers to a past state ("previously", "used to", "no longer needed").
+- Restates what the code already says.
 
-# ✅ Correct - an ordinary value needs no comment at all
-storybook: ^10.5.10
+When you change commented code, the comment is part of what you are changing:
+update it or delete it. Never leave a stale comment and add a second one beside
+it. When the reason for a comment goes away, the comment goes with it — **a diff
+that deletes code must not add net comment lines.**
 
-# ❌ WRONG - a tombstone for a workaround that is no longer in the file
-# Storybook 10.5.0-10.5.7 wrapped HTMLElement.focus and broke story tests,
-# which held this group at 10.4.6 via exact pins plus four overrides.
-# Fixed upstream in 10.5.8, so the pins and the overrides are now gone.
-storybook: ^10.5.10
+Only a non-obvious choice earns a "why". Once something returns to the ordinary
+case, it needs no explanation at all.
+
+**Exception, one line maximum:** a genuine tripwire — a change someone would
+plausibly make that would break something ("don't reorder these; X depends on
+it"). A constraint that has already been lifted is not a tripwire.
+
+```ts
+// ✅ Correct - a live constraint that explains a non-obvious choice
+// Cloned because the caller reuses this array across renders.
+const items = [...input];
+
+// ❌ WRONG - narrates the edit and describes code that is gone
+// Previously this mutated `input` directly and was guarded by a ref;
+// that guard became unnecessary once we started cloning here.
+const items = [...input];
 ```
 
-This applies to prose too: when a doc's guidance changes, edit the guidance
+This applies to prose as well: when a doc's guidance changes, edit the guidance
 rather than appending a note about what it used to say.
 
 ### Component Development
