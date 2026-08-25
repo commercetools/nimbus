@@ -71,6 +71,14 @@ The component SHALL provide a button to open the dropdown, contained within a no
 - **WHEN** user clicks anywhere in the field container other than the trailing element, clear button or chevron
 - **THEN** SHALL toggle the dropdown
 
+#### Scenario: Space for the clear button
+- **WHEN** `isClearable` is enabled
+- **THEN** the field SHALL allocate room for the clear button between the value and the chevron
+- **AND** SHALL keep that room while a selection exists and the button is rendered
+- **WHEN** `isClearable={false}`
+- **THEN** the field SHALL NOT allocate room for a clear button
+- **AND** the field SHALL be narrower by exactly that room than an otherwise identical clearable field
+
 #### Scenario: Overlay width
 - **WHEN** the dropdown opens
 - **THEN** the overlay SHALL be at least as wide as the field container
@@ -82,7 +90,7 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 #### Scenario: Slot styling
 - **WHEN** component renders
 - **THEN** SHALL apply select slot recipe from theme/slot-recipes/select.ts
-- **AND** SHALL style: root, label, trigger, triggerButton, valueText, icon, trailingElement, dropdown, option, section, helperText, errorText slots
+- **AND** SHALL style: root, leadingElement, trigger, triggerButton, triggerLabel, trailingElement, options, optionGroup, option slots
 - **AND** the trigger slot SHALL be the non-interactive field container
 - **AND** the triggerButton slot SHALL be the interactive element that opens the dropdown
 - **AND** SHALL support size variants

@@ -11,9 +11,10 @@ Interactivity is what makes this more than adding a slot in three places. ComboB
 - **`trailingElement?: ReactNode`** on ComboBox (`ComboBox.Root`), Select (`Select.Root`) and SearchInput, rendered after the input content and before each component's own affordances (clear button, dropdown toggle).
 - **`leadingElement?: ReactNode`** on SearchInput, which has no such prop today. It defaults to the current `<Search />` icon, so `undefined` preserves existing rendering and explicit `null` removes the icon.
 - **Select's chrome moves from the trigger `<button>` to its container**, converging Select onto the structural model ComboBox and SearchInput already use: a non-interactive container carrying border/background/height/padding and the focus ring via `_focusWithin`, with the value button, trailing element, clear button and chevron as normal-flow siblings. This *deletes* the `--button-safespace` reserve rather than extending it, and makes an interactive trailing element valid.
+- **A non-clearable field stops reserving space for a clear button.** The reserve being deleted was unconditional in practice, so `isClearable={false}` fields lose roughly 24px of dead width. That is a fix, and it changes how MoneyInput, ScopedSearchInput and Pagination render without any change to their own code.
 - Stories (visual-regression matrices plus play-function coverage of interactive trailing content) and developer documentation for all three.
 
-Select's public API is unchanged by the restructure — no props added, removed or retyped. Slot components are not exported from the package, so the internal element change is not part of the consumer surface.
+Select's **prop** API is unchanged by the restructure — no props added, removed or retyped. Slot *components* are not exported, so the element change is not a consumer surface. Slot *prop types* are, via `export * from "./select.types"`, so `SelectTriggerSlotProps` does change from `HTMLChakraProps<"button">` to `HTMLChakraProps<"div">`; nothing exported accepts that type, so it is an incidental export rather than a supported one.
 
 ## Capabilities
 
@@ -37,8 +38,8 @@ None.
 
 **Behavioral surface**
 
-- Select's generated `nimbus-select__trigger` class moves from a `<button>` element to a `<div>`. Slot components are internal (`select/index.ts` exports only `./select` and `./select.types`), but a consumer with a `button.nimbus-select__trigger` CSS selector would be affected; this is called out in the changeset.
-- Select's popover width and left edge must not shift. React Aria measures the element it is given, so the popover is re-pointed at the field container via `PopoverContext` — the technique ComboBox already uses.
+- Select's generated `nimbus-select__trigger` class moves from a `<button>` element to a `<div>`. Slot classes are not a published surface, so this is deliberately **not** in the changeset — documenting a migration path would legitimise targeting another component's internals. It is recorded in the PR description instead.
+- Select's popover width and left edge must not shift. React Aria measures the element it is given, so the popover is re-pointed at the field container. (Implemented with `Popover`'s public `triggerRef` prop rather than the `PopoverContext` override assumed here — see the notes in `tasks.md`.)
 - Chromatic baselines for Select churn as a result of the restructure. The restructure is committed separately from the feature so those baselines are reviewed on their own.
 
 **No impact**

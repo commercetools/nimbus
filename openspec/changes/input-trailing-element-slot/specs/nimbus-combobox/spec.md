@@ -52,9 +52,9 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 
 - **WHEN** component renders
 - **THEN** SHALL apply combobox slot recipe from theme/slot-recipes/combobox.ts
-- **AND** SHALL style: root, label, inputWrapper, input, toggleButton,
-  clearButton, dropdown, option, section, noResults, loadingState, helperText,
-  errorText slots
+- **AND** SHALL style: root, trigger, leadingElement, trailingElement, content,
+  tagGroup, input, popover, listBox, section, option, optionIndicator,
+  optionContent slots
 - **AND** SHALL style a trailingElement slot positioned between the input
   content and the clear button
 - **AND** SHALL support size variants
