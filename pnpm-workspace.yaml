@@ -168,15 +168,6 @@ overrides:
   "path-to-regexp@>=8.0.0 <8.4.0": ">=8.4.0"
   "happy-dom@<20.8.9": ">=20.8.9"
   jsdom: "catalog:tooling"
-  # Storybook 10.5.0-10.5.7 wrapped HTMLElement.focus in the CSF runtime with a
-  # getter that mishandled a `HTMLElement.prototype.focus` read, so
-  # @zag-js/focus-visible's setupGlobalFocusEvents got the raw native focus and
-  # threw "Illegal invocation", flaking browser story tests. That held the whole
-  # ecosystem at 10.4.6 via exact catalog pins plus overrides on the copies the
-  # @github-ui / @vueless addons pull transitively. Fixed upstream in 10.5.8
-  # (storybookjs/storybook#35528 — the getter now short-circuits when the
-  # receiver is HTMLElement.prototype), so both the pins and the overrides are
-  # gone; catalogs.tooling tracks Storybook on caret ranges again.
   "adm-zip": ">=0.6.0"
 
 catalogs:
@@ -234,9 +225,6 @@ catalogs:
     "@typescript-eslint/types": ^8.67.0
     "@typescript-eslint/typescript-estree": ^8.67.0
     react-docgen-typescript: ^2.4.0
-    # Storybook back on caret ranges as of 10.5.10: the CSF focus-wrapping
-    # regression that pinned this group to 10.4.6 was fixed in 10.5.8
-    # (storybookjs/storybook#35528). See the note in `overrides` above.
     storybook: ^10.5.10
     eslint-plugin-storybook: ^10.5.10
     "@storybook/addon-a11y": ^10.5.10
