@@ -49,11 +49,9 @@ import {
   TagList,
   Tag,
   ViewSwitcher,
-  HiddenInput,
   AccessibleHidden,
   ErrorMessage,
   WarningMessage,
-  AdditionalInfoMessage,
   GearIcon,
   InfoIcon,
   GridIcon,
@@ -211,7 +209,7 @@ export function AdminSettingsView() {
     <Constraints.Horizontal max={16}>
       <Spacings.Stack scale="l">
         {/* Hidden form token — not rendered visually */}
-        <HiddenInput name="formToken" value={formToken} />
+        <input type="hidden" name="formToken" value={formToken} />
 
         {/* Page header */}
         <Spacings.Inline
@@ -496,7 +494,10 @@ export function AdminSettingsView() {
             Changing your email signature applies to all future outgoing
             messages.
           </WarningMessage>
-          <AdditionalInfoMessage message="Settings are saved automatically to your account and synced across all your sessions." />
+          <Text.Detail>
+            Settings are saved automatically to your account and synced across
+            all your sessions.
+          </Text.Detail>
         </Spacings.Stack>
 
         {/* Save actions */}
