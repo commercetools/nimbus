@@ -863,7 +863,8 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
     notes:
-      "Direct replacement. UI Kit value was string|number and onChange was ChangeEvent<HTMLInputElement>; " +
+      "Use NumberInputField (not NumberInput) when a label is needed — it's a pre-composed field with built-in label, description, and error handling (like TextInputField). " +
+      "UI Kit value was string|number and onChange was ChangeEvent<HTMLInputElement>; " +
       "Nimbus value is a number and onChange receives a number directly. min/max/step prop names unchanged.",
     breakingChanges: [
       "onChange now receives a number instead of ChangeEvent<HTMLInputElement>",
@@ -1261,7 +1262,8 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       'Use <LocalizedField type="text"> (the default type). ' +
       "LocalizedField manages all locale inputs internally via its type prop. " +
       "It collapses non-default locales by default (matching UIKit's behavior) — " +
-      "do NOT set displayAllLocalesOrCurrencies unless you explicitly want all locales visible.",
+      "do NOT set displayAllLocalesOrCurrencies unless you explicitly want all locales visible. " +
+      "LocalizedField supports style props — set width='100%' to fill its container (it doesn't stretch by default).",
     breakingChanges: [
       "Replace LocalizedTextInput with <LocalizedField> (type='text' is the default)",
       "selectedLanguage prop replaced by defaultLocaleOrCurrency",
@@ -1344,7 +1346,8 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     notes:
       'Use <LocalizedField type="multiLine">. ' +
       "The type prop controls the input variant; no child composition needed. " +
-      "Collapses non-default locales by default — do NOT set displayAllLocalesOrCurrencies.",
+      "Collapses non-default locales by default — do NOT set displayAllLocalesOrCurrencies. " +
+      "Set width='100%' to fill container (it doesn't stretch by default).",
     breakingChanges: [
       "Replace LocalizedMultilineTextInput with <LocalizedField type='multiLine'>",
       "selectedLanguage prop replaced by defaultLocaleOrCurrency",
