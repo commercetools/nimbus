@@ -35,7 +35,9 @@ export type SelectRootSlotProps = HTMLChakraProps<
   SelectRecipeProps & RaSelectProps<object>
 >;
 
-export type SelectTriggerSlotProps = HTMLChakraProps<"button">;
+export type SelectTriggerSlotProps = HTMLChakraProps<"div">;
+
+export type SelectTriggerButtonSlotProps = HTMLChakraProps<"button">;
 
 export type SelectTriggerLabelSlotProps = HTMLChakraProps<"span">;
 

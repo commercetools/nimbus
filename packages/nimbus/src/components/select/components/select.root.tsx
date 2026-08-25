@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { chakra, useSlotRecipe } from "@chakra-ui/react/styled-system";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef } from "react-aria";
 import { extractStyleProps, mergeRefs } from "@/utils";
 
@@ -18,6 +18,7 @@ import {
 import {
   SelectRootSlot,
   SelectTriggerSlot,
+  SelectTriggerButtonSlot,
   SelectTriggerLabelSlot,
   SelectLeadingElementSlot,
 } from "./../select.slots";
@@ -41,6 +42,10 @@ export const SelectRoot = function SelectRoot({
 }: SelectProps) {
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  // The popover anchors to and is measured from the field container, not the
+  // trigger button - the button no longer spans the field, so measuring it would
+  // shrink the popover and shift its leading edge.
+  const triggerRef = useRef<HTMLDivElement>(null);
   const recipe = useSlotRecipe({ recipe: selectSlotRecipe });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
   const [styleProps, restProps] = extractStyleProps(restRecipeProps);
@@ -53,8 +58,8 @@ export const SelectRoot = function SelectRoot({
   return (
     <SelectRootSlot asChild ref={ref} {...recipeProps} {...styleProps}>
       <RaSelect {...raSelectProps}>
-        <chakra.div position="relative">
-          <SelectTriggerSlot zIndex={0} asChild>
+        <SelectTriggerSlot ref={triggerRef}>
+          <SelectTriggerButtonSlot asChild>
             <RaButton>
               {leadingElement && (
                 <SelectLeadingElementSlot asChild>
@@ -65,36 +70,28 @@ export const SelectRoot = function SelectRoot({
                 <RaSelectValue />
               </SelectTriggerLabelSlot>
             </RaButton>
-          </SelectTriggerSlot>
-          <Flex
-            position="absolute"
-            top="0"
-            bottom="0"
-            zIndex={1}
-            right="400"
-            pointerEvents="none"
-          >
-            {isClearable && (
-              <Flex width="600" my="auto">
-                <SelectClearButton isDisabled={isLoading || isDisabled} />
-              </Flex>
-            )}
+          </SelectTriggerButtonSlot>
 
-            <Flex my="auto" w="600" h="600">
-              <Box color="neutral.9" asChild m="auto" w="400" h="400">
-                {isLoading ? (
-                  <Box asChild animation="spin" animationDuration="slowest">
-                    <SpinnerIcon />
-                  </Box>
-                ) : (
-                  <DropdownIndicatorIcon />
-                )}
-              </Box>
+          {isClearable && (
+            <Flex width="600" flexShrink={0}>
+              <SelectClearButton isDisabled={isLoading || isDisabled} />
             </Flex>
-          </Flex>
-        </chakra.div>
+          )}
 
-        <RaPopover>{children}</RaPopover>
+          <Flex w="600" h="600" flexShrink={0}>
+            <Box color="neutral.9" asChild m="auto" w="400" h="400">
+              {isLoading ? (
+                <Box asChild animation="spin" animationDuration="slowest">
+                  <SpinnerIcon />
+                </Box>
+              ) : (
+                <DropdownIndicatorIcon />
+              )}
+            </Box>
+          </Flex>
+        </SelectTriggerSlot>
+
+        <RaPopover triggerRef={triggerRef}>{children}</RaPopover>
       </RaSelect>
     </SelectRootSlot>
   );
