@@ -1,0 +1,85 @@
+---
+title: Popover
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+A popover borrows the user's attention without taking the page from them. Use it
+when the next step is small enough to finish in place.
+
+### When to use
+
+Use a popover when **all** of these hold:
+
+- The content is interactive — something to press, type in, or choose
+- It belongs to a specific element on the page, and that relationship matters
+- It is short enough to finish without scrolling
+- Losing it to a stray click outside would cost the user nothing important
+
+If the last point fails, the work deserves a `Dialog`. An outside press
+dismisses a popover with no confirmation.
+
+### Choosing between overlays
+
+| Component | Content | Focus | Anchored |
+| --- | --- | --- | --- |
+| **Tooltip** | Short, non-interactive | Stays on trigger | Yes |
+| **Popover** | Interactive, small | Moves into overlay | Yes |
+| **Dialog** | Interactive, any size | Moves into overlay | No |
+| **Drawer** | Interactive, large | Moves into overlay | No |
+
+The most common mistake is using a popover for a text hint. Tooltips open on
+hover and focus and leave focus alone; a popover requires a press and pulls focus
+in. For a hint, that is friction with no benefit.
+
+The second most common is using a popover for a destructive confirmation. It can
+be dismissed by clicking anywhere else, which is the opposite of what a
+confirmation needs.
+
+### Best practices
+
+> [!TIP]\
+> **Do** name every popover. Give `Popover.Content` an `aria-label`, or point
+> `aria-labelledby` at a heading inside it. An unnamed dialog is announced as
+> just that.
+
+> [!TIP]\
+> **Do** let the trigger describe what opens. "Filters" tells the user what to
+> expect; an unlabelled icon does not.
+
+> [!CAUTION]\
+> **Do not** stack a popover on a popover. Nested overlays are hard to dismiss
+> predictably and hard to follow with a screen reader. Anchor both to the same
+> surface, or promote the second step to a `Dialog`.
+
+> [!CAUTION]\
+> **Do not** hide the only route to a task inside a popover. Anything a user must
+> be able to find should be reachable without discovering a trigger first.
+
+> [!TIP]\
+> **Do** constrain the width when the content is prose. Text that stretches the
+> full surface is harder to read than text with a sensible measure.
+
+### Content
+
+Keep the content to one job. A popover that has grown a header, several sections
+and a scrollbar has outgrown the pattern.
+
+Order the content the way it will be used: what the user came for first, and the
+action that closes the popover last. Where an action dismisses the popover, say
+what it does — "Apply filters" rather than "OK".
+
+### Placement
+
+Let the default `bottom` placement stand unless there is a reason not to. It is
+predictable, and it is where users look after pressing something.
+
+Change it when the trigger sits near an edge and a different side keeps the
+content closer to where the user is working. Placement is a preference either
+way: the popover flips and shifts to stay on screen, so it may not honour the
+side you asked for.
+
+Use `offset` to adjust the gap, not to nudge the surface into an alignment that
+`placement` already expresses.

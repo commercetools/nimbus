@@ -308,9 +308,23 @@ export const checkFieldDetailsDialog = async (
   const infoBoxButton = await within(field).getByRole("button", {
     name: "more info",
   });
+  // The fieldset points at the trigger via `aria-details`. The trigger carries
+  // that id itself while being wrapped by Popover.Trigger's `asChild`, so assert
+  // the association rather than assuming the id survived the wrapper.
+  expect(infoBoxButton.id).not.toBe("");
+  expect(field).toHaveAttribute("aria-details", infoBoxButton.id);
   await userEvent.click(infoBoxButton);
-  await within(documentBody).getByText(infoBoxValue);
+  // Opening the popover labels its dialog and links it back to the trigger.
+  const infoDialog = await within(documentBody).findByRole("dialog");
+  expect(infoDialog).toHaveAccessibleName("more info");
+  expect(infoBoxButton).toHaveAttribute("aria-expanded", "true");
+  const infoBoxContent = await within(documentBody).findByText(infoBoxValue);
   await userEvent.click(documentBody);
+  // The popover plays an exit animation, so it stays mounted after the
+  // dismissing click. Wait for it to leave the DOM before the caller opens the
+  // next field's hint, otherwise both are present and the text query is
+  // ambiguous.
+  await waitFor(() => expect(infoBoxContent).not.toBeInTheDocument());
 };
 
 export const checkFieldDescription = async (

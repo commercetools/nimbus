@@ -142,6 +142,10 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       minWidth: "var(--nimbus-combobox-trigger-width)",
       overflow: "hidden",
       padding: 0,
+      // Previously inherited from the shared `nimbusPopover` recipe, which the
+      // dropdown no longer routes through. Declared here so stacking order is
+      // unchanged.
+      zIndex: 1,
     },
     listBox: {
       "--scrollbar-color": "colors.neutral.8",

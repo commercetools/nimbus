@@ -1,0 +1,121 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx live
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>Open popover</Popover.Trigger>
+    <Popover.Content aria-label="Accessible popover">
+      <Stack gap="200">
+        <Text>Focus moves here when the popover opens.</Text>
+        <Button>Focusable action</Button>
+      </Stack>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+### Give every popover a name
+
+This is the one thing a consumer should supply. `Popover.Content` renders a
+dialog, and React Aria falls back to labelling that dialog with the **trigger's**
+accessible name when nothing else names it. That fallback is a floor, not a
+result: an icon-only trigger announces the dialog as "Options", and a trigger
+whose label describes an action ("Edit") names a surface that is not an action.
+Note that a visible heading does not name the dialog by itself — it has to be
+referenced, as in the second example below.
+
+Either label it directly:
+
+```jsx live
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>Filters</Popover.Trigger>
+    <Popover.Content aria-label="Filters">
+      <Checkbox>Only active</Checkbox>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+Or point at a heading inside it, which is preferable when the heading is visible
+anyway — the name then stays in sync with what is on screen:
+
+```jsx live
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>Filters</Popover.Trigger>
+    <Popover.Content aria-labelledby="filters-heading">
+      <Stack gap="200">
+        <Heading id="filters-heading" size="sm">
+          Filters
+        </Heading>
+        <Checkbox>Only active</Checkbox>
+      </Stack>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+### Keyboard interaction
+
+| Key | Result |
+| --- | --- |
+| `Enter` or `Space` on the trigger | Toggles the popover |
+| `Tab` | Moves focus between focusable elements in the popover |
+| `Escape` | Closes the popover and returns focus to the trigger |
+
+### Focus behavior
+
+Focus moves into the popover's dialog when it opens, and returns to the trigger
+when it closes — whether it was closed by Escape, by an outside press, or by a
+`close` callback from inside. The one exception is a dismissing press that lands
+on another focusable element: focus stays where the press put it rather than
+jumping back to the trigger.
+
+By default focus is contained within the popover and interaction outside
+dismisses it. This is React Aria's default for a dialog inside a popover, and it
+is the right behavior for almost every case: it keeps the interaction sequence
+predictable for screen reader and keyboard users.
+
+`isNonModal` does not lift that containment — focus still cycles inside the
+dialog and an outside press still dismisses it. React Aria's guidance is that
+most popovers should not use it, because screen readers can announce the
+surrounding page in ways that make the popover harder to follow; see the
+Implementation tab for what it does change.
+
+### ARIA attributes
+
+The trigger exposes `aria-expanded` reflecting the open state, and
+`aria-controls` referencing the overlay while it is open. `Popover.Content`
+renders an element with `role="dialog"`.
+
+The trigger does **not** carry `aria-haspopup`. React Aria deliberately sets it
+only for `menu` and `listbox` overlays, because screen readers often announce
+other values as "menu" — which would be actively misleading here. We follow that
+decision rather than overriding it.
+
+### Accessibility standards
+
+- **WCAG 2.1 AA** — the component meets 2.1.1 Keyboard, 2.4.3 Focus Order,
+  2.4.7 Focus Visible, and 4.1.2 Name, Role, Value, provided the consumer
+  supplies an accessible name
+- **Contrast** — the surface uses design tokens that meet AA contrast for text
+  placed on it; content authored with non-token colors must be checked
+  separately
+- **Target size** — triggers built from Nimbus buttons meet the minimum target
+  size; a custom `asChild` trigger is the consumer's responsibility
+
+### Resources
+
+- [ARIA dialog pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
+- [React Aria Popover](https://react-spectrum.adobe.com/react-aria/Popover.html)
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)

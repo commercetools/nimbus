@@ -10,7 +10,6 @@ import { iconRecipe } from "@/components/icon/icon.recipe";
 import { kbdRecipe } from "@/components/kbd/kbd.recipe";
 import { linkRecipe } from "@/components/link/link.recipe";
 import { loadingSpinnerRecipe } from "@/components/loading-spinner/loading-spinner.recipe";
-import { popoverRecipe } from "@/components/popover/popover.recipe";
 import { radioInputSlotRecipe } from "@/components/radio-input/radio-input.recipe";
 import { separatorRecipe } from "@/components/separator/separator.recipe";
 import { skeletonRecipe } from "@/components/skeleton/skeleton.recipe";
@@ -48,7 +47,6 @@ export const recipes = {
   nimbusKbd: kbdRecipe,
   nimbusLink: linkRecipe,
   nimbusLoadingSpinner: loadingSpinnerRecipe,
-  nimbusPopover: popoverRecipe,
   nimbusRadioInput: radioInputSlotRecipe,
   nimbusSeparator: separatorRecipe,
   nimbusSkeleton: skeletonRecipe,
