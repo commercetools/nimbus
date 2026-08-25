@@ -426,44 +426,19 @@ import { defineRecipe, Box, mergeRefs } from "@chakra-ui/react";
 
 ### Code Comments
 
-**A comment explains why the current code is the way it is.** It is read by
-someone asking "why is this like this?", never "what changed?". Anything
-answering the latter — history, the reasoning behind an edit, what the code used
-to be — belongs in the commit message and the PR.
+A comment explains why the current code is the way it is. History, the reason
+for an edit, and anything about code that is no longer there belong in the
+commit message, not the file.
 
-Never write a comment that:
+- When you change commented code, update or delete the comment with it. Never
+  leave a stale comment and add a second one beside it.
+- **A diff that deletes code must not add net comment lines.**
+- Only a non-obvious choice earns a "why". Ordinary code gets no comment.
+- One exception, one line: a real tripwire ("don't reorder these; X depends on
+  it"). An already-lifted constraint is not a tripwire.
 
-- Describes code that is no longer present, or a constraint that no longer
-  applies.
-- Narrates the edit being made ("switched to X", "simplified this", "now uses
-  Y") or refers to a past state ("previously", "used to", "no longer needed").
-- Restates what the code already says.
-
-When you change commented code, the comment is part of what you are changing:
-update it or delete it. Never leave a stale comment and add a second one beside
-it. When the reason for a comment goes away, the comment goes with it — **a diff
-that deletes code must not add net comment lines.**
-
-Only a non-obvious choice earns a "why". Once something returns to the ordinary
-case, it needs no explanation at all.
-
-**Exception, one line maximum:** a genuine tripwire — a change someone would
-plausibly make that would break something ("don't reorder these; X depends on
-it"). A constraint that has already been lifted is not a tripwire.
-
-```ts
-// ✅ Correct - a live constraint that explains a non-obvious choice
-// Cloned because the caller reuses this array across renders.
-const items = [...input];
-
-// ❌ WRONG - narrates the edit and describes code that is gone
-// Previously this mutated `input` directly and was guarded by a ref;
-// that guard became unnecessary once we started cloning here.
-const items = [...input];
-```
-
-This applies to prose as well: when a doc's guidance changes, edit the guidance
-rather than appending a note about what it used to say.
+Same for prose — when guidance changes, edit it rather than noting what it used
+to say.
 
 ### Component Development
 
