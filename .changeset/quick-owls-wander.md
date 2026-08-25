@@ -18,9 +18,11 @@ placing content — icons, buttons, filters — at the trailing edge of the fiel
 - When a trailing element competes with a long value for space, the value
   truncates with an ellipsis rather than running underneath it.
 - The trigger's visual chrome now sits on a wrapping element rather than the
-  button itself, so the focus ring is drawn around the whole field. If you target
-  the internal `nimbus-select__trigger` class in your own CSS, note it is now a
-  `div` rather than a `button` — an element-qualified selector such as
+  button itself, so the focus ring is drawn around the whole field. Rendering and
+  click behaviour are unchanged: the field measures identically to before in both
+  sizes and every variant, and clicking anywhere on it still opens the listbox. If
+  you target the internal `nimbus-select__trigger` class in your own CSS, note it
+  is now a `div` rather than a `button` — an element-qualified selector such as
   `button.nimbus-select__trigger` no longer matches.
 
 ### `SearchInput`
