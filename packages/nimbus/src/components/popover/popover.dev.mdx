@@ -216,6 +216,15 @@ element, so you can exempt specific regions from dismissing the popover.
 > If you set `isKeyboardDismissDisabled`, provide another keyboard route to close
 > the popover. Otherwise keyboard users can open something they cannot dismiss.
 
+`isNonModal` covers the other half of modality, and it lifts less than the name
+suggests. By default React Aria marks the rest of the page `inert` and locks page
+scroll; `isNonModal` leaves both alone, so assistive technologies can reach the
+surrounding content. Focus is still contained and an outside press still
+dismisses — that containment comes from the dialog `Popover.Content` renders, not
+from modality. React Aria's guidance is that most popovers should not use it; it
+exists for components like combobox, where the trigger must keep focus while the
+overlay is open.
+
 ## Component requirements
 
 ### Accessibility
@@ -235,12 +244,8 @@ React Aria.
   open. It deliberately does not carry `aria-haspopup` — React Aria sets that only
   for `menu` and `listbox` overlays, since screen readers often announce other
   values as "menu".
-
-By default focus is contained within the popover and outside interaction
-dismisses it. `isNonModal` changes neither: it stops React Aria marking the rest
-of the page `inert` and locking page scroll, so assistive technologies can reach
-the surrounding page, while focus stays inside the dialog. React Aria's guidance
-is that most popovers should not use it.
+- **Modality**: focus is contained and outside interaction dismisses it;
+  `isNonModal` relaxes neither — see [Dismissal behavior](#dismissal-behavior).
 
 If your use case requires tracking and analytics for this component, it is good
 practice to add a **persistent**, **unique** id:
