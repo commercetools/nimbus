@@ -15,9 +15,6 @@ existing clear and toggle controls.
   clear button it never renders, so it is around 24px narrower with no gap
   before the chevron. `MoneyInput`, `ScopedSearchInput` and `Pagination` each
   embed such a field and change appearance accordingly.
-- If you target the internal `nimbus-select__trigger` class in your own CSS, it
-  is now a `div` rather than a `button` — a selector such as
-  `button.nimbus-select__trigger` no longer matches.
 
 ### `SearchInput`
 
