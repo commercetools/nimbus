@@ -79,3 +79,31 @@ Two problems surfaced during implementation that the design had not anticipated:
   `isClearable` before `splitVariantProps`, so the recipe never received it. Its
   only effect was retuning `--button-safespace`, so it was removed with the
   reserve.
+
+Chromatic then surfaced three mechanisms that no play function or type check
+could have caught, all of them geometry:
+
+- **ComboBox height, +8px.** The trailing slot's size variants carried
+  `minH: 800 | 1000`, copied from the `leadingElement` variants beside them.
+  There the value is inert — `display: contents` leaves no box to size — but on
+  the trailing slot's real box it raised the grid row to the field's full height,
+  which the trigger's own `py` then added to. Removed; the trigger's `minH` is
+  the single source of the field height.
+- **ComboBox content column, -4px on every instance.** The trailing grid track
+  was declared unconditionally, and `column-gap` applies between every adjacent
+  pair of tracks in the explicit grid, empty ones included. So every ComboBox
+  paid a fourth gap out of its `1fr` content column whether or not a trailing
+  element was rendered — enough to wrap a tag onto a second line. The track is
+  now declared behind `&:has(> .nimbus-combobox__trailingElement)`.
+- **Select `isClearable={false}`, -24px.** Deleting `--button-safespace` (see
+  above) removed a reserve that had been unconditional in practice. The variant
+  meant to shrink it worked when Pagination added it (`c1b717226`); it went dead
+  three weeks later when the *original* leading/trailing-element PR
+  (`b7dd6bc7d`) refactored `SelectRoot` to parameter destructuring with a rest
+  element, which strips `isClearable` out of `props` before `splitVariantProps`.
+  Kept as a fix rather than restored — intrinsic layout needs no reserve, and no
+  variant means no number to keep in sync and no silent-failure mode.
+
+Each has a play function asserting the geometry directly, and each was verified
+to fail with its fix reverted. Chromatic could only ever catch the second one by
+accident, and only where a frame sat exactly on a wrap boundary.
