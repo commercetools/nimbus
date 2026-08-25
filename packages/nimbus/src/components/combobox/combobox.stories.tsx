@@ -1,8 +1,16 @@
 import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 import { useState, useCallback } from "react";
-import { userEvent, within, expect, waitFor } from "storybook/test";
-import { Box, Dialog, FormField, Stack, Text } from "@commercetools/nimbus";
-import { Search } from "@commercetools/nimbus-icons";
+import { userEvent, within, expect, waitFor, fn } from "storybook/test";
+import {
+  Box,
+  Dialog,
+  FormField,
+  Icon,
+  IconButton,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
+import { Search, Tune } from "@commercetools/nimbus-icons";
 import { ReactProfilerWrapper } from "@github-ui/storybook-addon-performance-panel/components";
 import { ComboBox } from "./combobox";
 import { type SimpleOption, simpleOptions } from "./utils/combobox.test-data";
@@ -6355,6 +6363,160 @@ export const OptionWithDescription: Story = {
       expect(
         document.querySelector('[role="option"] [slot="description"]')
       ).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Layout: Trailing Element
+ * The `trailingElement` slot across `size` x `variant`, on its own and paired
+ * with a leading element, so the grid's new column is captured next to the
+ * built-in clear and toggle buttons.
+ */
+export const LayoutTrailingElement: Story = {
+  // VRT: the `trailingElement` grid column; no other frame renders it.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => {
+    const sizes = ["sm", "md"] as const;
+    const variants = ["solid", "ghost"] as const;
+
+    return (
+      <Stack gap="800" alignItems="flex-start">
+        {sizes.map((size) => (
+          <Stack key={size} gap="400" alignItems="flex-start">
+            <Text fontWeight="600">size={size}</Text>
+            {variants.map((variant) => (
+              <Stack key={variant} direction="row" gap="400">
+                <ComposedComboBox<SimpleOption>
+                  aria-label={`${size} ${variant} trailing icon`}
+                  items={simpleOptions}
+                  size={size}
+                  variant={variant}
+                  selectedKeys={[1]}
+                  trailingElement={<Tune aria-hidden="true" />}
+                />
+                <ComposedComboBox<SimpleOption>
+                  aria-label={`${size} ${variant} leading and trailing`}
+                  items={simpleOptions}
+                  size={size}
+                  variant={variant}
+                  selectedKeys={[1]}
+                  leadingElement={<Search aria-hidden="true" />}
+                  trailingElement={<Tune aria-hidden="true" />}
+                />
+                <ComposedComboBox<SimpleOption>
+                  aria-label={`${size} ${variant} trailing button`}
+                  items={simpleOptions}
+                  size={size}
+                  variant={variant}
+                  selectedKeys={[1]}
+                  trailingElement={
+                    <IconButton
+                      size="2xs"
+                      variant="ghost"
+                      colorPalette="primary"
+                      aria-label="filter results"
+                    >
+                      <Icon as={Tune} />
+                    </IconButton>
+                  }
+                />
+              </Stack>
+            ))}
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+};
+
+/**
+ * Layout: Trailing Element - Disabled
+ * The disabled field dims the trailing element and blocks its interactive
+ * content, a surface the enabled matrix cannot show.
+ */
+export const LayoutTrailingElementDisabled: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <ComposedComboBox<SimpleOption>
+      aria-label="Disabled with trailing button"
+      items={simpleOptions}
+      selectedKeys={[1]}
+      isDisabled
+      trailingElement={
+        <IconButton
+          size="2xs"
+          variant="ghost"
+          colorPalette="primary"
+          aria-label="filter results"
+        >
+          <Icon as={Tune} />
+        </IconButton>
+      }
+    />
+  ),
+};
+
+/**
+ * Trailing Element: Interaction
+ * A trailing button owns its own clicks: it runs its handler without opening
+ * the options popover or clearing the selection.
+ */
+export const TrailingElementInteraction: Story = {
+  render: () => {
+    const onFilter = fn();
+    return (
+      <ComposedComboBox<SimpleOption>
+        aria-label="Combobox with filter button"
+        items={simpleOptions}
+        selectedKeys={[1]}
+        trailingElement={
+          <IconButton
+            size="2xs"
+            variant="ghost"
+            colorPalette="primary"
+            aria-label="filter results"
+            onPress={onFilter}
+          >
+            <Icon as={Tune} />
+          </IconButton>
+        }
+      />
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const filterButton = canvas.getByLabelText("filter results");
+    const input = canvas.getByRole("combobox") as HTMLInputElement;
+    const initialValue = input.value;
+
+    await step("Renders in the trailingElement slot", async () => {
+      await expect(filterButton.parentElement).toHaveClass(
+        "nimbus-combobox__trailingElement"
+      );
+    });
+
+    await step("Is reachable by keyboard", async () => {
+      filterButton.focus();
+      await expect(filterButton).toHaveFocus();
+    });
+
+    await step("Pressing it does not open the popover", async () => {
+      await userEvent.click(filterButton);
+      await expect(getListBox(document)).not.toBeInTheDocument();
+    });
+
+    await step("Pressing it does not clear the selection", async () => {
+      await expect(input).toHaveValue(initialValue);
+    });
+
+    await step("The toggle button still opens the popover", async () => {
+      await userEvent.click(canvas.getByLabelText(/toggle options/i));
+      await waitFor(async () =>
+        expect(getListBox(document)).toBeInTheDocument()
+      );
     });
   },
 };

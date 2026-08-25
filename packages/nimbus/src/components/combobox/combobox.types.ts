@@ -40,6 +40,7 @@ type ComboBoxRecipeProps = {
 export type ComboBoxRootSlotProps = HTMLChakraProps<"div", ComboBoxRecipeProps>;
 export type ComboBoxTriggerSlotProps = HTMLChakraProps<"div">;
 export type ComboBoxLeadingElementSlotProps = HTMLChakraProps<"div">;
+export type ComboBoxTrailingElementSlotProps = HTMLChakraProps<"div">;
 export type ComboBoxContentSlotProps = HTMLChakraProps<"div">; // Flex wrapper for tags and input
 export type ComboBoxTagGroupSlotProps = HTMLChakraProps<"div">;
 export type ComboBoxInputSlotProps = HTMLChakraProps<"div">; // Wraps React Aria Input
@@ -161,6 +162,9 @@ export type ComboBoxRootContextValue<T> = {
 
   /** Leading visual element (e.g., search icon) rendered before the input */
   leadingElement?: ReactNode;
+
+  /** Trailing element (e.g., filter button) rendered after the input */
+  trailingElement?: ReactNode;
 
   /** Ref to trigger element (for popover positioning) */
   triggerRef: React.RefObject<HTMLDivElement | null>;
@@ -670,6 +674,24 @@ export type ComboBoxRootProps<T extends object> = Omit<
    * ```
    */
   leadingElement?: ReactNode;
+
+  /**
+   * Trailing element rendered after the input, before the clear and toggle
+   * buttons. Common use cases: filter button, unit label, status indicator
+   *
+   * **Accessibility**: Ensure decorative elements have aria-hidden="true".
+   * If the element is functional (clickable), it needs its own aria-label.
+   *
+   * @example
+   * ```tsx
+   * // Decorative icon
+   * <ComboBox.Root trailingElement={<Icons.Tune aria-hidden="true" />} />
+   *
+   * // Functional element (needs aria-label)
+   * <ComboBox.Root trailingElement={<IconButton aria-label="Filter results"><Icons.Tune /></IconButton>} />
+   * ```
+   */
+  trailingElement?: ReactNode;
 
   /**
    * Whether component is disabled

@@ -10,6 +10,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     "root",
     "trigger",
     "leadingElement",
+    "trailingElement",
     "content",
     "tagGroup",
     "input",
@@ -58,10 +59,25 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         pr: "100",
       },
     },
+    trailingElement: {
+      // Explicit grid placement with a real box: `display: contents` (as used by
+      // leadingElement above) would discard this gridArea and fall back to grid
+      // auto-placement, landing the content in the wrong cell.
+      gridArea: "trailingElement",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      color: "neutral.11",
+      "& svg": {
+        minH: "600",
+        minW: "600",
+      },
+    },
     trigger: {
       display: "grid",
-      gridTemplateColumns: "auto 1fr auto auto",
-      gridTemplateAreas: '"leadingElement content clear toggle"',
+      gridTemplateColumns: "auto 1fr auto auto auto",
+      gridTemplateAreas:
+        '"leadingElement content trailingElement clear toggle"',
       alignItems: "center",
       gap: "100",
       width: "100%",
@@ -239,6 +255,9 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         leadingElement: {
           minH: "800",
         },
+        trailingElement: {
+          minH: "800",
+        },
       },
       // Medium
       md: {
@@ -247,6 +266,9 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           textStyle: "md",
         },
         leadingElement: {
+          minH: "1000",
+        },
+        trailingElement: {
           minH: "1000",
         },
       },
