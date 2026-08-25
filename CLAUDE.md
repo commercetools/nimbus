@@ -424,6 +424,40 @@ import { mergeRefs } from "@/utils"; // local utility, not from Chakra
 import { defineRecipe, Box, mergeRefs } from "@chakra-ui/react";
 ```
 
+### Code Comments
+
+**A comment justifies the code that IS there** — never code that used to be
+there, a constraint that no longer applies, or what a change did. That belongs
+in the commit message and the PR, which is where someone goes when they ask "why
+did this change?". A comment is read by someone asking "why is this like this?".
+
+- Removing a workaround means removing its comment. **If a diff deletes code, it
+  must not add net comment lines.**
+- Reverting something to the ordinary case removes the comment entirely. A
+  normal value needs no defense; only an unusual one earns a "why".
+- When editing commented code, update or delete the existing comment. Never
+  leave a stale comment and add a second one next to it.
+- Exception, one line max: a genuine tripwire someone would plausibly trip
+  ("don't re-add X, it breaks Y"). Nobody re-adds a version pin by accident, so
+  a hold-back that has since been lifted does not qualify.
+
+```yaml
+# ✅ Correct - an unusual value, plus the live constraint that forces it
+jsdom: 29.0.1 # pinned: 29.0.2+ breaks Chakra/Emotion CSS in JSDOM
+
+# ✅ Correct - an ordinary value needs no comment at all
+storybook: ^10.5.10
+
+# ❌ WRONG - a tombstone for a workaround that is no longer in the file
+# Storybook 10.5.0-10.5.7 wrapped HTMLElement.focus and broke story tests,
+# which held this group at 10.4.6 via exact pins plus four overrides.
+# Fixed upstream in 10.5.8, so the pins and the overrides are now gone.
+storybook: ^10.5.10
+```
+
+This applies to prose too: when a doc's guidance changes, edit the guidance
+rather than appending a note about what it used to say.
+
 ### Component Development
 
 For comprehensive component development guidance, see:
