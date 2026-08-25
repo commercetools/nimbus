@@ -39,8 +39,11 @@ export const selectSlotRecipe = defineSlotRecipe({
     // a consumer-provided trailing element sit beside the button in normal flow
     // instead of being absolutely positioned over it.
     trigger: {
+      cursor: "button",
       display: "inline-flex",
       alignItems: "center",
+      // Containing block for the trigger button's stretched hit area below.
+      position: "relative",
       borderRadius: "200",
       color: "neutral.12",
       width: "100%",
@@ -79,6 +82,15 @@ export const selectSlotRecipe = defineSlotRecipe({
       padding: 0,
       // The ring is drawn by the container via _focusWithin.
       focusRing: "none",
+
+      // Extends the pressable area across the whole field. Pseudo-elements are
+      // not event targets, so React Aria still sees a normal press on the
+      // button; siblings that need their own clicks are raised above it.
+      _after: {
+        content: '""',
+        position: "absolute",
+        inset: 0,
+      },
     },
     leadingElement: {
       display: "flex",
@@ -90,6 +102,9 @@ export const selectSlotRecipe = defineSlotRecipe({
       alignItems: "center",
       color: "neutral.11",
       flexShrink: 0,
+      // Above the trigger button's stretched hit area.
+      position: "relative",
+      zIndex: 1,
     },
     triggerLabel: {
       color: "neutral.12",
@@ -179,7 +194,13 @@ export const selectSlotRecipe = defineSlotRecipe({
       sm: {
         root: {},
         trigger: {
-          px: "300",
+          // Deliberately asymmetric. The overlay this layout replaced was
+          // positioned `right="400"` regardless of size, so sm has always inset
+          // its controls by 16px while padding its content by 12px. Kept so sm
+          // stays pixel-identical to the previous layout - do not "correct" it
+          // to `px` without re-baselining sm.
+          pl: "300",
+          pr: "400",
           gap: "100",
           h: "800",
           textStyle: "sm",

@@ -80,22 +80,43 @@ export const SelectRoot = function SelectRoot({
             </SelectTrailingElementSlot>
           )}
 
-          {isClearable && (
-            <Flex width="600" flexShrink={0}>
-              <SelectClearButton isDisabled={isLoading || isDisabled} />
-            </Flex>
-          )}
+          {/*
+            The field's own affordances are one tight cluster: the container's
+            `gap` separates the value, the trailing element and this group, but
+            must not separate the clear button from the chevron - they sat flush
+            in the overlay this replaced.
+          */}
+          {/*
+            Transparent to pointer events, so any part of it that is not an
+            actual control - the chevron, and the padding around the clear
+            button - falls through to the trigger button's stretched hit area
+            and opens the listbox. SelectClearButton re-enables pointer events
+            on itself. This is the same layering the old overlay relied on.
+          */}
+          <Flex
+            alignItems="center"
+            flexShrink={0}
+            position="relative"
+            zIndex={1}
+            pointerEvents="none"
+          >
+            {isClearable && (
+              <Flex width="600">
+                <SelectClearButton isDisabled={isLoading || isDisabled} />
+              </Flex>
+            )}
 
-          <Flex w="600" h="600" flexShrink={0}>
-            <Box color="neutral.9" asChild m="auto" w="400" h="400">
-              {isLoading ? (
-                <Box asChild animation="spin" animationDuration="slowest">
-                  <SpinnerIcon />
-                </Box>
-              ) : (
-                <DropdownIndicatorIcon />
-              )}
-            </Box>
+            <Flex w="600" h="600">
+              <Box color="neutral.9" asChild m="auto" w="400" h="400">
+                {isLoading ? (
+                  <Box asChild animation="spin" animationDuration="slowest">
+                    <SpinnerIcon />
+                  </Box>
+                ) : (
+                  <DropdownIndicatorIcon />
+                )}
+              </Box>
+            </Flex>
           </Flex>
         </SelectTriggerSlot>
 

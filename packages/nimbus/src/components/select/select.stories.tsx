@@ -1425,3 +1425,98 @@ export const TrailingElementInteraction: Story = {
     });
   },
 };
+
+/**
+ * Field Click Surface
+ * The entire field opens the listbox, not just the value text.
+ *
+ * This is behavioural, so Chromatic cannot catch it: the trigger button no
+ * longer spans the field (the root is inline-block and the field inline-flex,
+ * both shrink-to-fit, so `flex: 1` has no free space to claim), and its hit
+ * area is stretched with a pseudo-element instead. Regressing that would leave
+ * the padding, chevron and gaps inert while looking completely correct.
+ */
+export const FieldClickSurface: Story = {
+  render: () => (
+    <Stack direction="column" gap="400">
+      <Select.Root
+        aria-label="plain"
+        defaultSelectedKey="option1"
+        data-testid="plain"
+      >
+        <Select.Options>
+          <Select.Option id="option1">Option 1</Select.Option>
+          <Select.Option id="option2">Option 2</Select.Option>
+        </Select.Options>
+      </Select.Root>
+      <Select.Root
+        aria-label="with trailing"
+        defaultSelectedKey="option1"
+        data-testid="with-trailing"
+        trailingElement={
+          <IconButton
+            size="xs"
+            colorPalette="primary"
+            variant="ghost"
+            aria-label="filter results"
+          >
+            <Icon as={Tune} />
+          </IconButton>
+        }
+      >
+        <Select.Options>
+          <Select.Option id="option1">Option 1</Select.Option>
+          <Select.Option id="option2">Option 2</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    /** Every horizontal sample across the field must belong to the trigger or a real control. */
+    const findDeadZones = (testId: string) => {
+      const field = canvas
+        .getByTestId(testId)
+        .querySelector(".nimbus-select__trigger") as HTMLElement;
+      const r = field.getBoundingClientRect();
+      const y = r.top + r.height / 2;
+      const dead: number[] = [];
+      for (let x = 2; x < r.width - 2; x += 3) {
+        const el = document.elementFromPoint(r.left + x, y);
+        const live =
+          el?.closest(".nimbus-select__triggerButton") || el?.closest("button");
+        if (!live) dead.push(Math.round(x));
+      }
+      return { field, r, y, dead };
+    };
+
+    await step("No inert region anywhere in a plain field", async () => {
+      await expect(findDeadZones("plain").dead).toEqual([]);
+    });
+
+    await step("No inert region with a trailing element", async () => {
+      await expect(findDeadZones("with-trailing").dead).toEqual([]);
+    });
+
+    await step(
+      "Clicking the chevron end of the field opens the listbox",
+      async () => {
+        const { r, y } = findDeadZones("plain");
+        // A point over the chevron - decorative, so it must fall through to the trigger.
+        const atChevron = document.elementFromPoint(
+          r.right - 12,
+          y
+        ) as HTMLElement;
+        await expect(
+          atChevron.closest(".nimbus-select__triggerButton")
+        ).toBeTruthy();
+
+        await userEvent.click(atChevron);
+        await waitFor(async () =>
+          expect(document.querySelector('[role="listbox"]')).toBeInTheDocument()
+        );
+      }
+    );
+  },
+};
