@@ -424,7 +424,11 @@ import { mergeRefs } from "@/utils"; // local utility, not from Chakra
 import { defineRecipe, Box, mergeRefs } from "@chakra-ui/react";
 ```
 
-### Code Comments
+### Implementation Comments
+
+Comments that explain code to whoever edits it next. Public-API JSDoc is a
+separate, required thing — see [JSDoc Standards](./docs/jsdoc-standards.md);
+nothing below licenses dropping it.
 
 A comment explains why the current code is the way it is. History, the reason
 for an edit, and anything about code that is no longer there belong in the
