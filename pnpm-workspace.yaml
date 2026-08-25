@@ -168,13 +168,6 @@ overrides:
   "path-to-regexp@>=8.0.0 <8.4.0": ">=8.4.0"
   "happy-dom@<20.8.9": ">=20.8.9"
   jsdom: "catalog:tooling"
-  # Keep every Storybook copy off 10.5.0 (see the pin note in catalogs.tooling).
-  # These are pulled transitively (e.g. @github-ui/storybook-addon-performance-panel
-  # → @storybook/react) where the catalog pins don't reach.
-  "@storybook/react": "10.4.6"
-  "@storybook/react-dom-shim": "10.4.6"
-  "@storybook/builder-vite": "10.4.6"
-  "@storybook/csf-plugin": "10.4.6"
   "adm-zip": ">=0.6.0"
 
 catalogs:
@@ -232,18 +225,12 @@ catalogs:
     "@typescript-eslint/types": ^8.67.0
     "@typescript-eslint/typescript-estree": ^8.67.0
     react-docgen-typescript: ^2.4.0
-    # Storybook pinned exact at 10.4.6: 10.5.0 wraps HTMLElement.focus in its CSF
-    # runtime and throws "Illegal invocation" when react-aria's
-    # setupGlobalFocusEvents calls it, breaking browser story tests (flaky set of
-    # files per run). Exact pins + the @storybook/* overrides below keep the whole
-    # ecosystem — including the copies pulled transitively by the @github-ui /
-    # @vueless addons — off 10.5.0. Reconfirmed on 2026-07-15.
-    storybook: 10.4.6
-    eslint-plugin-storybook: 10.5.8
-    "@storybook/addon-a11y": 10.4.6
-    "@storybook/addon-docs": 10.4.6
-    "@storybook/addon-vitest": 10.4.6
-    "@storybook/react-vite": 10.4.6
+    storybook: ^10.5.10
+    eslint-plugin-storybook: ^10.5.10
+    "@storybook/addon-a11y": ^10.5.10
+    "@storybook/addon-docs": ^10.5.10
+    "@storybook/addon-vitest": ^10.5.10
+    "@storybook/react-vite": ^10.5.10
     "@vueless/storybook-dark-mode": ^10.0.8
     "@github-ui/storybook-addon-performance-panel": ^1.1.4
     chromatic: ^18.2.0
