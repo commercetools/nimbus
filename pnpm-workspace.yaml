@@ -172,7 +172,7 @@ overrides:
 
 catalogs:
   tooling:
-    "@figma/code-connect": ^1.5.3
+    "@figma/code-connect": ^2.0.0
     "@fission-ai/openspec": ^1.9.0
     eslint-plugin-react-hooks: ^7.1.1
     globals: ^17.11.0
