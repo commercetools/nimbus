@@ -7,12 +7,12 @@ import {
   DataTable,
   DefaultPage,
   Flex,
-  SearchInput,
   TagGroup,
   type DataTableColumnItem,
 } from "@commercetools/nimbus";
 import { SmartToy } from "@commercetools/nimbus-icons";
 import { mockAgents, type MockAgent } from "../data/mock-agents";
+import { AgentListFilters } from "./org-selector";
 
 type AgentRow = MockAgent & { id: string; [key: string]: unknown };
 
@@ -128,12 +128,7 @@ export const AgentList = () => {
       </DefaultPage.Header>
       <DefaultPage.Content>
         <Flex direction="column" gap="400">
-          <SearchInput
-            aria-label="Search agents by name"
-            placeholder="Search agents by name..."
-            value={search}
-            onChange={setSearch}
-          />
+          <AgentListFilters search={search} onSearchChange={setSearch} />
           <TagGroup.Root
             aria-label="Filter by publisher type"
             selectionMode="multiple"
