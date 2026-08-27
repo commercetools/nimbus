@@ -23,6 +23,13 @@ type ToggleButtonGroupRecipeVariantProps = {
    * @default "md"
    */
   size?: SlotRecipeProps<"nimbusToggleButtonGroup">["size"];
+  /**
+   * Visual style variant (EXPERIMENTAL — FEC-1170 spike, THROWAWAY).
+   * The name describes the resting look; the selected state always escalates
+   * to the most prominent color.
+   * @default "outline"
+   */
+  variant?: SlotRecipeProps<"nimbusToggleButtonGroup">["variant"];
 };
 
 // ============================================================

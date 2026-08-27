@@ -1,6 +1,20 @@
 import { buttonRecipe } from "@/components/button/button.recipe";
 import { defineRecipe } from "@chakra-ui/react/styled-system";
 
+// FEC-1170: the selected (ON) state every variant escalates to — the most
+// prominent color (solid colorPalette.9). Kept in sync with
+// toggle-button-group.recipe.tsx so standalone and grouped toggle buttons look
+// identical when selected. "Solid" is a universal state here, not a variant.
+const selectedOn = {
+  bg: "colorPalette.9",
+  color: "colorPalette.contrast",
+  borderColor: "colorPalette.9",
+  "&[data-hovered='true']": {
+    bg: "colorPalette.10",
+    borderColor: "colorPalette.10",
+  },
+};
+
 export const toggleButtonRecipe = defineRecipe({
   className: "nimbus-toggle-button",
   base: {
@@ -11,51 +25,35 @@ export const toggleButtonRecipe = defineRecipe({
     size: {
       ...buttonRecipe.variants?.size,
     },
+    // FEC-1170: toggle variants describe the resting *chrome* of the control,
+    // not Button's emphasis levels. Every variant escalates to `selectedOn`
+    // (solid .9) when selected. Button's `solid` and `link` are intentionally
+    // excluded: `solid` is the selected state above, and a "link" has no
+    // coherent toggled affordance.
     variant: {
       outline: {
-        "--button-bg": "transparent",
-        "--button-text": "{colors.colorPalette.11}",
-        "--border-width": "{sizes.25}",
-        "--border-color": "{colors.colorPalette.7}",
-
-        bg: "var(--button-bg)",
-        boxShadow: "0 0 0 var(--border-width) var(--border-color)",
-        color: "var(--button-text)",
-
+        borderColor: "colorPalette.7",
+        color: "colorPalette.11",
         "&[data-hovered='true']": {
-          "--button-bg": "{colors.colorPalette.2}",
-          "--border-color": "{colors.colorPalette.8}",
+          bg: "colorPalette.3",
+          borderColor: "colorPalette.8",
         },
-
-        ["&[data-selected=true]"]: {
-          "--button-bg": "{colors.colorPalette.3}",
-          "--border-color": "{colors.colorPalette.8}",
-
-          _hover: {
-            "--button-bg": "{colors.colorPalette.4}",
-            "--border-color": "{colors.colorPalette.9}",
-          },
-        },
+        "&[data-selected='true']": selectedOn,
       },
       ghost: {
-        "--button-text": "{colors.neutral.11}",
-        "--button-bg": "transparent",
-
-        color: "var(--button-text)",
-        bg: "var(--button-bg)",
-
+        color: "colorPalette.11",
         "&[data-hovered='true']": {
-          "--button-bg": "{colors.colorPalette.2}",
+          bg: "colorPalette.4",
         },
-
-        ["&[data-selected='true']"]: {
-          "--button-bg": "{colors.colorPalette.3}",
-          "--button-text": "{colors.colorPalette.11}",
-
-          "&[data-hovered='true']": {
-            "--button-bg": "{colors.colorPalette.4}",
-          },
+        "&[data-selected='true']": selectedOn,
+      },
+      subtle: {
+        bg: "colorPalette.3",
+        color: "colorPalette.11",
+        "&[data-hovered='true']": {
+          bg: "colorPalette.4",
         },
+        "&[data-selected='true']": selectedOn,
       },
     },
   },
