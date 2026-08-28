@@ -132,6 +132,13 @@ export const buttonGroupRecipe = defineSlotRecipe({
   // Border presence is owned by `variant`: only `outline` has a resting border,
   // so only `outline` recolors it on selection. `ghost`/`subtle` keep the
   // Button base's transparent 1px border, so selecting them never adds a ring.
+  //
+  // Segments collapse their right border (`borderRightWidth: 0`), so a selected
+  // button's right divider is physically drawn by the NEXT button's left
+  // border. We recolor that sibling's left border too — otherwise the selection
+  // outline is accent on three sides and neutral on the right. (When the
+  // selected button is last, it keeps its own right border, and there is no
+  // sibling to recolor.)
   compoundVariants: [
     {
       variant: "outline",
@@ -140,6 +147,15 @@ export const buttonGroupRecipe = defineSlotRecipe({
         button: {
           "&[data-selected=true]": {
             borderColor: "colorPalette.8",
+            // Hold the accent border on hover. The `variant.outline` hover sets
+            // a neutral border; without this the selected button would revert to
+            // gray on hover (this selector is more specific, so it wins).
+            _hover: {
+              borderColor: "colorPalette.8",
+            },
+          },
+          "&[data-selected=true] + button": {
+            borderLeftColor: "colorPalette.8",
           },
         },
       },
@@ -154,6 +170,9 @@ export const buttonGroupRecipe = defineSlotRecipe({
             _hover: {
               borderColor: "colorPalette.10",
             },
+          },
+          "&[data-selected=true] + button": {
+            borderLeftColor: "colorPalette.9",
           },
         },
       },

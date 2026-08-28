@@ -84,6 +84,12 @@ export const toggleButtonRecipe = defineRecipe({
       css: {
         "&[data-selected='true']": {
           borderColor: "colorPalette.8",
+          // Hold the accent border on hover. The `variant.outline` hover sets a
+          // neutral border; without this the selected button would revert to
+          // gray on hover (this selector is more specific, so it wins).
+          "&[data-hovered='true']": {
+            borderColor: "colorPalette.8",
+          },
         },
       },
     },
