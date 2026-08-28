@@ -51,25 +51,76 @@ const SectionHeading = ({ children }: { children: ReactNode }) => (
   </Text>
 );
 
+const SubHeading = ({ children }: { children: ReactNode }) => (
+  <Text fontWeight="600" fontSize="400">
+    {children}
+  </Text>
+);
+
 const GroupCell = ({
   variant,
   fillStyle,
+  selectionMode,
+  selectedKeys,
 }: {
   variant: Variant;
   fillStyle: FillStyle;
+  selectionMode: "single" | "multiple";
+  selectedKeys: string[];
 }) => (
   <ToggleButtonGroup.Root
     variant={variant}
     fillStyle={fillStyle}
-    selectionMode="single"
+    selectionMode={selectionMode}
     colorPalette="primary"
-    defaultSelectedKeys={["center"]}
-    aria-label={`${variant} ${fillStyle}`}
+    defaultSelectedKeys={selectedKeys}
+    aria-label={`${variant} ${fillStyle} ${selectionMode}`}
   >
     <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
     <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
     <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
   </ToggleButtonGroup.Root>
+);
+
+// variant × fillStyle grid for one selection mode. Both matrices set fillStyle
+// explicitly, so the columns show the full cross product regardless of the
+// selectionMode-derived default (which the "defaults" block below illustrates).
+const GroupMatrix = ({
+  selectionMode,
+  selectedKeys,
+}: {
+  selectionMode: "single" | "multiple";
+  selectedKeys: string[];
+}) => (
+  <Stack gap="400">
+    {/* column headers */}
+    <Stack direction="row" gap="600" alignItems="center">
+      <Box width="90px" flexShrink="0" />
+      {fillStyles.map((f) => (
+        <Box key={f} width="240px" flexShrink="0">
+          <Text fontWeight="600">{f}</Text>
+        </Box>
+      ))}
+    </Stack>
+
+    {variants.map((v) => (
+      <Stack key={v} direction="row" gap="600" alignItems="center">
+        <Box width="90px" flexShrink="0">
+          <Text fontWeight="600">{v}</Text>
+        </Box>
+        {fillStyles.map((f) => (
+          <Box key={f} width="240px" flexShrink="0">
+            <GroupCell
+              variant={v}
+              fillStyle={f}
+              selectionMode={selectionMode}
+              selectedKeys={selectedKeys}
+            />
+          </Box>
+        ))}
+      </Stack>
+    ))}
+  </Stack>
 );
 
 export const VariantExploration: Story = {
@@ -130,55 +181,79 @@ export const VariantExploration: Story = {
       </Stack>
 
       {/* 3 — ToggleButtonGroup ---------------------------------------- */}
-      <Stack gap="400">
+      <Stack gap="800">
         <SectionHeading>
-          3 · ToggleButtonGroup — variant × fillStyle (single-select, Center =
-          ON)
+          3 · ToggleButtonGroup — variant × fillStyle
         </SectionHeading>
 
-        {/* column headers */}
-        <Stack direction="row" gap="600" alignItems="center">
-          <Box width="90px" flexShrink="0" />
-          {fillStyles.map((f) => (
-            <Box key={f} width="240px" flexShrink="0">
-              <Text fontWeight="600">{f}</Text>
-            </Box>
-          ))}
+        {/* 3a — single-select matrix */}
+        <Stack gap="400">
+          <SubHeading>Single-select — Center = ON</SubHeading>
+          <GroupMatrix selectionMode="single" selectedKeys={["center"]} />
         </Stack>
 
-        {variants.map((v) => (
-          <Stack key={v} direction="row" gap="600" alignItems="center">
-            <Box width="90px" flexShrink="0">
-              <Text fontWeight="600">{v}</Text>
-            </Box>
-            {fillStyles.map((f) => (
-              <Box key={f} width="240px" flexShrink="0">
-                <GroupCell variant={v} fillStyle={f} />
-              </Box>
-            ))}
-          </Stack>
-        ))}
-
-        <Box paddingTop="400">
-          <Text fontWeight="600" marginBottom="200">
-            Multi-select — fillStyle defaults to tint (no wall of solid)
-          </Text>
-          <ToggleButtonGroup.Root
+        {/* 3b — multi-select matrix (adjacent selection shows the border join) */}
+        <Stack gap="400">
+          <SubHeading>Multi-select — Left + Center = ON</SubHeading>
+          <GroupMatrix
             selectionMode="multiple"
-            variant="ghost"
-            colorPalette="primary"
-            defaultSelectedKeys={["bold", "italic"]}
-            aria-label="Format"
+            selectedKeys={["left", "center"]}
+          />
+        </Stack>
+
+        {/* 3c — the selectionMode-derived fillStyle default (no explicit prop) */}
+        <Stack gap="300">
+          <SubHeading>
+            Default fillStyle derives from selectionMode (no fillStyle prop)
+          </SubHeading>
+          <Stack
+            direction="row"
+            gap="800"
+            alignItems="flex-start"
+            flexWrap="wrap"
           >
-            <ToggleButtonGroup.Button id="bold">Bold</ToggleButtonGroup.Button>
-            <ToggleButtonGroup.Button id="italic">
-              Italic
-            </ToggleButtonGroup.Button>
-            <ToggleButtonGroup.Button id="underline">
-              Underline
-            </ToggleButtonGroup.Button>
-          </ToggleButtonGroup.Root>
-        </Box>
+            <Box>
+              <Text marginBottom="200">single → solid</Text>
+              <ToggleButtonGroup.Root
+                selectionMode="single"
+                variant="outline"
+                colorPalette="primary"
+                defaultSelectedKeys={["center"]}
+                aria-label="single-select default"
+              >
+                <ToggleButtonGroup.Button id="left">
+                  Left
+                </ToggleButtonGroup.Button>
+                <ToggleButtonGroup.Button id="center">
+                  Center
+                </ToggleButtonGroup.Button>
+                <ToggleButtonGroup.Button id="right">
+                  Right
+                </ToggleButtonGroup.Button>
+              </ToggleButtonGroup.Root>
+            </Box>
+            <Box>
+              <Text marginBottom="200">multiple → tint (no wall of solid)</Text>
+              <ToggleButtonGroup.Root
+                selectionMode="multiple"
+                variant="ghost"
+                colorPalette="primary"
+                defaultSelectedKeys={["bold", "italic"]}
+                aria-label="multi-select default"
+              >
+                <ToggleButtonGroup.Button id="bold">
+                  Bold
+                </ToggleButtonGroup.Button>
+                <ToggleButtonGroup.Button id="italic">
+                  Italic
+                </ToggleButtonGroup.Button>
+                <ToggleButtonGroup.Button id="underline">
+                  Underline
+                </ToggleButtonGroup.Button>
+              </ToggleButtonGroup.Root>
+            </Box>
+          </Stack>
+        </Stack>
       </Stack>
     </Stack>
   ),
