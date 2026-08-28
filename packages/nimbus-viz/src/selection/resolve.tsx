@@ -141,6 +141,80 @@ function resolveInner(
   };
 }
 
+/* ========================================================================== */
+/* resolveByName — render a named preset directly (the primary agent path)    */
+/* ========================================================================== */
+
+/**
+ * Render a registry entry BY NAME — the primary "the agent picked this preset"
+ * path (docs/04: "the agent selects presets, not raw components"). Where
+ * `resolve` ranks the canonical charts for a bare intent, `resolveByName`
+ * addresses the full ~100-entry catalog directly: it renders the named entry
+ * when the data structure fits and fails safe to the DataTable otherwise
+ * (unknown name, malformed data, or a kind the preset can't draw). Never throws.
+ */
+export function resolveByName(
+  name: string,
+  request: ResolveRequest,
+  _size: ChartSize,
+  registry: ChartRegistry = chartRegistry
+): ResolveResult {
+  try {
+    const entry = registry.get(name);
+    if (!entry) {
+      return fallback(
+        request,
+        [],
+        `No preset named "${name}" is registered; showing the data as a table.`
+      );
+    }
+
+    const facts = deriveFacts(request);
+    if (facts.malformed) {
+      return fallback(
+        request,
+        [name],
+        `${facts.reason ?? "The data could not be read."} Showing the data as a table.`
+      );
+    }
+    if (!entry.dataKinds.includes(facts.kind)) {
+      return fallback(
+        request,
+        [name],
+        `Preset "${name}" cannot render ${facts.kind} data; showing the data as a table.`
+      );
+    }
+
+    emitTelemetry({ intent: request.intent, candidates: [name], chosen: name });
+
+    const q = entry.metadata.questionString;
+    const persona = entry.metadata.persona;
+    const reason = `Preset "${name}" selected by name${
+      persona ? ` (${persona}: “${q}”)` : ` (“${q}”)`
+    }.`;
+    return {
+      name,
+      reason,
+      candidates: [name],
+      render: (size) => entry.render(request, size),
+    };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    const reason = `The selector hit an unexpected error (${message}); showing the data as a table.`;
+    emitTelemetry({
+      intent: request.intent,
+      candidates: [],
+      chosen: DATA_TABLE_NAME,
+    });
+    return {
+      name: null,
+      reason,
+      candidates: [],
+      render: () => renderFallbackTable(request.data, reason),
+    };
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 /* Filter                                                                     */
 /* -------------------------------------------------------------------------- */
@@ -151,6 +225,11 @@ function passesFilter(
   facts: DataFacts
 ): boolean {
   const { metadata } = entry;
+
+  // (0) only canonical entries participate in bare-intent resolution; presets
+  //     are persona-specific and name-addressable via `resolveByName` (docs/09
+  //     batch 6), so they never crowd the intent ranking.
+  if (entry.canonical === false) return false;
 
   // (a) the chart must serve the requested intent.
   if (!metadata.intents.some((t) => t.intent === request.intent)) return false;

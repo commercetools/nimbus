@@ -1,153 +1,40 @@
-import { LineChart } from "../components/line-chart";
-import { BarChart } from "../components/bar-chart";
-import { DonutChart } from "../components/donut-chart";
-import { StackedBarChart } from "../components/stacked-bar-chart";
-import { ScatterPlot } from "../components/scatter-plot";
-import { Heatmap } from "../components/heatmap";
-import { FunnelChart } from "../components/funnel-chart";
-import type {
-  CategoryDatum,
-  FunnelStage,
-  HeatRow,
-  ScatterPoint,
-  Series,
-  StackRow,
-} from "../chart/types";
+import {
+  renderBarHorizontal,
+  renderBarVertical,
+  renderDonut,
+  renderFunnel,
+  renderHeatmap,
+  renderLine,
+  renderScatter,
+  renderStacked,
+} from "./render-adapters";
+import { presetEntries } from "./presets";
 import type {
   ChartRegistry,
   ChartRegistryEntry,
   ChartSelectionMetadata,
-  ChartSize,
-  ResolveRequest,
 } from "./types";
 
 /**
- * The chart registry: `name → { metadata, dataKinds, render }`.
+ * The chart registry: `name → { metadata, dataKinds, render, canonical }`.
  *
- * Each entry carries real docs/06 selection metadata AND a render adapter that
- * maps `request.data` / `request.options` onto the chart's props. `dataKinds`
- * is the concrete render guard (see `DataKind` in types.ts): the filter uses it
- * so a chart never receives a structure its adapter can't draw.
+ * Two roles live here (docs/09 batch 6):
+ *  - **Canonical** entries (below) are the "which chart for this bare intent +
+ *    shape?" answers — the only entries `resolve()` ranks. Roughly one per
+ *    intent × concrete-kind region.
+ *  - **Presets** (from `presets.tsx`, appended) are persona-specific named
+ *    configurations (base + overlays + defaults) addressed by name via
+ *    `resolveByName`. They grow the agent-selectable catalog toward ~100
+ *    without flooding the bare-intent resolver.
  *
- * Note on presets: BarChart is registered twice — once as the vertical
- * `bar-chart` (COMPARE) and once as the horizontal `ranked-bar-chart` (RANK).
- * That mirrors docs/04's split of VerticalBarChart vs. HorizontalBarChart and
- * demonstrates the docs/05 "preset = base component + default props + metadata"
- * model: two catalog entries, one React component.
+ * BarChart is still registered twice canonically — vertical `bar-chart`
+ * (COMPARE) and horizontal `ranked-bar-chart` (RANK) — the original proof that
+ * a preset is "base component + default props + metadata", now generalized by
+ * the declarative catalog.
  */
 
 /* -------------------------------------------------------------------------- */
-/* Option readers (no `any`; `unknown` + narrowing)                           */
-/* -------------------------------------------------------------------------- */
-
-function opts(request: ResolveRequest): Record<string, unknown> {
-  return request.options ?? {};
-}
-
-function optString(request: ResolveRequest, key: string): string | undefined {
-  const v = opts(request)[key];
-  return typeof v === "string" ? v : undefined;
-}
-
-function optStringArray(
-  request: ResolveRequest,
-  key: string
-): string[] | undefined {
-  const v = opts(request)[key];
-  if (!Array.isArray(v)) return undefined;
-  return v.filter((item): item is string => typeof item === "string");
-}
-
-/* -------------------------------------------------------------------------- */
-/* Render adapters                                                            */
-/* The filter guarantees the concrete `DataKind` before an adapter runs, so    */
-/* the `as` casts below are validated narrowings, not blind assertions.        */
-/* -------------------------------------------------------------------------- */
-
-function renderLine(request: ResolveRequest, size: ChartSize) {
-  const variant = optString(request, "variant") === "area" ? "area" : "line";
-  return (
-    <LineChart
-      width={size.width}
-      height={size.height}
-      series={request.data as Series[]}
-      variant={variant}
-      ariaLabel={optString(request, "ariaLabel")}
-    />
-  );
-}
-
-function renderBar(orientation: "vertical" | "horizontal") {
-  return (request: ResolveRequest, size: ChartSize) => (
-    <BarChart
-      width={size.width}
-      height={size.height}
-      data={request.data as CategoryDatum[]}
-      orientation={orientation}
-      ariaLabel={optString(request, "ariaLabel")}
-    />
-  );
-}
-
-function renderDonut(request: ResolveRequest, size: ChartSize) {
-  return (
-    <DonutChart
-      width={size.width}
-      height={size.height}
-      data={request.data as CategoryDatum[]}
-      ariaLabel={optString(request, "ariaLabel")}
-    />
-  );
-}
-
-function renderStacked(request: ResolveRequest, size: ChartSize) {
-  return (
-    <StackedBarChart
-      width={size.width}
-      height={size.height}
-      data={request.data as StackRow[]}
-      ariaLabel={optString(request, "ariaLabel")}
-    />
-  );
-}
-
-function renderScatter(request: ResolveRequest, size: ChartSize) {
-  return (
-    <ScatterPlot
-      width={size.width}
-      height={size.height}
-      points={request.data as ScatterPoint[]}
-      ariaLabel={optString(request, "ariaLabel")}
-    />
-  );
-}
-
-function renderHeatmap(request: ResolveRequest, size: ChartSize) {
-  return (
-    <Heatmap
-      width={size.width}
-      height={size.height}
-      rows={request.data as HeatRow[]}
-      hue={optString(request, "hue")}
-      columnLabels={optStringArray(request, "columnLabels")}
-      ariaLabel={optString(request, "ariaLabel")}
-    />
-  );
-}
-
-function renderFunnel(request: ResolveRequest, size: ChartSize) {
-  return (
-    <FunnelChart
-      width={size.width}
-      height={size.height}
-      data={request.data as FunnelStage[]}
-      ariaLabel={optString(request, "ariaLabel")}
-    />
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* Metadata + entries                                                         */
+/* Canonical selection metadata                                               */
 /* -------------------------------------------------------------------------- */
 
 const lineMeta: ChartSelectionMetadata = {
@@ -273,34 +160,70 @@ const funnelMeta: ChartSelectionMetadata = {
 
 /**
  * Build the default registry. Insertion order is the stable tie-break's
- * registration order (docs/06 §3), so it is fixed and documented here.
+ * registration order (docs/06 §3): canonical entries first (so they win a
+ * genuine tie among themselves), then the presets. Duplicate names are a
+ * programming error — warned, last-wins.
  */
 export function createDefaultRegistry(): ChartRegistry {
-  const entries: ChartRegistryEntry[] = [
-    { metadata: lineMeta, dataKinds: ["series"], render: renderLine },
+  const canonical: ChartRegistryEntry[] = [
+    {
+      metadata: lineMeta,
+      dataKinds: ["series"],
+      render: renderLine,
+      canonical: true,
+    },
     {
       metadata: barMeta,
       dataKinds: ["category"],
-      render: renderBar("vertical"),
+      render: renderBarVertical,
+      canonical: true,
     },
     {
       metadata: rankedBarMeta,
       dataKinds: ["category"],
-      render: renderBar("horizontal"),
+      render: renderBarHorizontal,
+      canonical: true,
     },
     {
       metadata: stackedMeta,
       dataKinds: ["stack-row"],
       render: renderStacked,
+      canonical: true,
     },
-    { metadata: donutMeta, dataKinds: ["category"], render: renderDonut },
-    { metadata: scatterMeta, dataKinds: ["scatter"], render: renderScatter },
-    { metadata: heatmapMeta, dataKinds: ["heat-row"], render: renderHeatmap },
-    { metadata: funnelMeta, dataKinds: ["funnel"], render: renderFunnel },
+    {
+      metadata: donutMeta,
+      dataKinds: ["category"],
+      render: renderDonut,
+      canonical: true,
+    },
+    {
+      metadata: scatterMeta,
+      dataKinds: ["scatter"],
+      render: renderScatter,
+      canonical: true,
+    },
+    {
+      metadata: heatmapMeta,
+      dataKinds: ["heat-row"],
+      render: renderHeatmap,
+      canonical: true,
+    },
+    {
+      metadata: funnelMeta,
+      dataKinds: ["funnel"],
+      render: renderFunnel,
+      canonical: true,
+    },
   ];
 
   const registry: ChartRegistry = new Map();
-  for (const entry of entries) {
+  for (const entry of [...canonical, ...presetEntries()]) {
+    if (registry.has(entry.metadata.name)) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `nimbus-viz: duplicate registry name "${entry.metadata.name}" — the later entry wins.`
+      );
+    }
     registry.set(entry.metadata.name, entry);
   }
   return registry;
