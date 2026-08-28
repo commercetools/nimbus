@@ -53,6 +53,7 @@ import {
   revenueTree,
   scatter,
 } from "./datasets";
+import { CatalogBrowser } from "./CatalogBrowser";
 
 // A dashboard-wide entity→color domain so a series keeps its color across
 // charts (e.g. "Returning" is the same hue in the stacked and grouped bars).
@@ -103,6 +104,7 @@ export function App() {
   const [mode, setMode] = useState<ColorMode>("light");
   const roles = resolveRoles(mode);
 
+  const [view, setView] = useState<"charts" | "catalog">("charts");
   const registryEntries = [...chartRegistry.values()];
   const presetCount = registryEntries.filter(
     (e) => e.canonical === false
@@ -136,304 +138,345 @@ export function App() {
               Prototype charts · visx + Nimbus tokens
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => setMode((m) => (m === "light" ? "dark" : "light"))}
-            style={{
-              border: `1px solid ${roles.grid}`,
-              background: roles.surface,
-              color: roles.ink,
-              borderRadius: 8,
-              padding: "8px 14px",
-              cursor: "pointer",
-              fontSize: 13,
-            }}
-          >
-            {mode === "light" ? "🌙 Dark" : "☀️ Light"}
-          </button>
+          <div style={{ display: "flex", gap: 8 }}>
+            <div
+              style={{
+                display: "flex",
+                border: `1px solid ${roles.grid}`,
+                borderRadius: 8,
+                overflow: "hidden",
+              }}
+            >
+              {(["charts", "catalog"] as const).map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => setView(v)}
+                  style={{
+                    border: "none",
+                    background: view === v ? roles.accent : roles.surface,
+                    color: view === v ? roles.surface : roles.ink,
+                    padding: "8px 14px",
+                    cursor: "pointer",
+                    fontSize: 13,
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {v}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setMode((m) => (m === "light" ? "dark" : "light"))}
+              style={{
+                border: `1px solid ${roles.grid}`,
+                background: roles.surface,
+                color: roles.ink,
+                borderRadius: 8,
+                padding: "8px 14px",
+                cursor: "pointer",
+                fontSize: 13,
+              }}
+            >
+              {mode === "light" ? "🌙 Dark" : "☀️ Light"}
+            </button>
+          </div>
         </header>
 
         <ColorScaleProvider domain={COLOR_DOMAIN}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
-              gap: 16,
-              alignItems: "start",
-            }}
-          >
-            <Card title="KPI stat cards">
-              <div style={{ display: "flex", gap: 32 }}>
-                <StatCard
-                  label="Revenue (MTD)"
-                  value={482000}
-                  previous={430000}
-                />
-                <StatCard label="Orders" value={12840} previous={13120} />
-              </div>
-            </Card>
-
-            <Card title="Revenue — area">
-              <ResponsiveContainer height={220}>
-                {(w, h) => (
-                  <LineChart
-                    width={w}
-                    height={h}
-                    series={revenueSeries}
-                    variant="area"
-                  />
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Revenue / Cost / Profit — lines (with a gap)">
-              <ResponsiveContainer height={240}>
-                {(w, h) => (
-                  <LineChart width={w} height={h} series={multiSeries} />
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Sales by channel — bars">
-              <ResponsiveContainer height={240}>
-                {(w, h) => <BarChart width={w} height={h} data={channels} />}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Sales by channel — ranked">
-              <ResponsiveContainer height={220}>
-                {(w, h) => (
-                  <BarChart
-                    width={w}
-                    height={h}
-                    data={channels}
-                    orientation="horizontal"
-                  />
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Revenue mix — donut">
-              <ResponsiveContainer height={260}>
-                {(w, h) => <DonutChart width={w} height={h} data={channels} />}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Customers by quarter — stacked">
-              <ResponsiveContainer height={260}>
-                {(w, h) => (
-                  <StackedBarChart width={w} height={h} data={composition} />
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Customers by quarter — grouped">
-              <ResponsiveContainer height={260}>
-                {(w, h) => (
-                  <GroupedBarChart width={w} height={h} data={composition} />
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="AOV vs. orders — scatter">
-              <ResponsiveContainer height={260}>
-                {(w, h) => (
-                  <ScatterPlot width={w} height={h} points={scatter} />
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Checkout funnel">
-              <ResponsiveContainer height={240}>
-                {(w, h) => <FunnelChart width={w} height={h} data={funnel} />}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Traffic → purchase — Sankey">
-              <ResponsiveContainer height={280}>
-                {(w, h) => <SankeyDiagram width={w} height={h} graph={flow} />}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Retention — cohort heatmap">
-              <ResponsiveContainer height={240}>
-                {(w, h) => (
-                  <Heatmap
-                    width={w}
-                    height={h}
-                    rows={cohorts}
-                    columnLabels={cohortPeriods}
-                  />
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="ARR bridge — waterfall">
-              <ResponsiveContainer height={240}>
-                {(w, h) => <WaterfallChart width={w} height={h} data={arr} />}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="KPIs vs. target — bullet">
-              <ResponsiveContainer height={200}>
-                {(w, h) => <BulletChart width={w} height={h} data={bullets} />}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Capacity — gauge">
-              <ResponsiveContainer height={180}>
-                {(w, h) => (
-                  <Gauge
-                    width={w}
-                    height={h}
-                    value={72}
-                    threshold={80}
-                    label="Capacity"
-                  />
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Order value — histogram">
-              <ResponsiveContainer height={240}>
-                {(w, h) => (
-                  <Histogram width={w} height={h} values={orderValues} />
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Latency by region — box plot">
-              <ResponsiveContainer height={240}>
-                {(w, h) => (
-                  <BoxPlot width={w} height={h} groups={latencyByRegion} />
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Revenue tree — treemap">
-              <ResponsiveContainer height={260}>
-                {(w, h) => <Treemap width={w} height={h} data={revenueTree} />}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Revenue vs. plan — area + band + target + benchmark">
-              <ResponsiveContainer height={240}>
-                {(w, h) => (
-                  <LineChart
-                    width={w}
-                    height={h}
-                    series={revenueSeries}
-                    variant="area"
-                  >
-                    <ThresholdBand
-                      from={200}
-                      to={260}
-                      variant="positive"
-                      label="Healthy"
-                    />
-                    <ReferenceLine value={240} label="Target" />
-                    <BenchmarkSeries points={plan} label="Plan" />
-                  </LineChart>
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Forecast envelope — line + confidence band">
-              <ResponsiveContainer height={240}>
-                {(w, h) => (
-                  <LineChart width={w} height={h} series={revenueSeries}>
-                    <ConfidenceBand points={revenueForecast} />
-                  </LineChart>
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="AOV vs. orders — scatter + trend line">
-              <ResponsiveContainer height={260}>
-                {(w, h) => (
-                  <ScatterPlot width={w} height={h} points={scatter}>
-                    <TrendLine points={scatter} />
-                  </ScatterPlot>
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="Sales vs. target — bars + target marker">
-              <ResponsiveContainer height={240}>
-                {(w, h) => (
-                  <BarChart width={w} height={h} data={channels}>
-                    <ReferenceLine value={3000} label="Avg" />
-                    <TargetMarker value={4000} label="Goal" />
-                  </BarChart>
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="🧠 Agent asks: COMPARE by channel">
-              <ResponsiveContainer height={240}>
-                {(w, h) => (
-                  <ResolvedChart
-                    request={compareRequest}
-                    width={w}
-                    height={h}
-                  />
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card title="🧠 Agent asks: GEO → table fallback">
-              <ResponsiveContainer height={240}>
-                {(w, h) => (
-                  <ResolvedChart request={geoRequest} width={w} height={h} />
-                )}
-              </ResponsiveContainer>
-            </Card>
-
-            <Card
-              title={`🗂️ Catalog: ${canonicalCount} canonical + ${presetCount} presets`}
+          {view === "catalog" ? (
+            <CatalogBrowser />
+          ) : (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
+                gap: 16,
+                alignItems: "start",
+              }}
             >
-              <p style={{ margin: 0, fontSize: 13, color: roles.mutedInk }}>
-                Every preset is pure config — a base chart + overlays + defaults
-                + selection metadata, registered under a name and tagged with
-                the persona question it answers. The agent picks a preset by
-                name (<code>resolveByName</code>); the two cards below render
-                one each.
-              </p>
-            </Card>
+              <Card title="KPI stat cards">
+                <div style={{ display: "flex", gap: 32 }}>
+                  <StatCard
+                    label="Revenue (MTD)"
+                    value={482000}
+                    previous={430000}
+                  />
+                  <StatCard label="Orders" value={12840} previous={13120} />
+                </div>
+              </Card>
 
-            <Card title="🗂️ resolveByName: sla-compliance-over-time">
-              <ResponsiveContainer height={240}>
-                {(w, h) =>
-                  resolveByName(
-                    "sla-compliance-over-time",
-                    {
-                      intent: "RANGE",
-                      data: revenueSeries,
-                      options: {
-                        variant: "area",
-                        rangeLow: 160,
-                        rangeHigh: 210,
-                        target: 200,
+              <Card title="Revenue — area">
+                <ResponsiveContainer height={220}>
+                  {(w, h) => (
+                    <LineChart
+                      width={w}
+                      height={h}
+                      series={revenueSeries}
+                      variant="area"
+                    />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Revenue / Cost / Profit — lines (with a gap)">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => (
+                    <LineChart width={w} height={h} series={multiSeries} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Sales by channel — bars">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => <BarChart width={w} height={h} data={channels} />}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Sales by channel — ranked">
+                <ResponsiveContainer height={220}>
+                  {(w, h) => (
+                    <BarChart
+                      width={w}
+                      height={h}
+                      data={channels}
+                      orientation="horizontal"
+                    />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Revenue mix — donut">
+                <ResponsiveContainer height={260}>
+                  {(w, h) => (
+                    <DonutChart width={w} height={h} data={channels} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Customers by quarter — stacked">
+                <ResponsiveContainer height={260}>
+                  {(w, h) => (
+                    <StackedBarChart width={w} height={h} data={composition} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Customers by quarter — grouped">
+                <ResponsiveContainer height={260}>
+                  {(w, h) => (
+                    <GroupedBarChart width={w} height={h} data={composition} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="AOV vs. orders — scatter">
+                <ResponsiveContainer height={260}>
+                  {(w, h) => (
+                    <ScatterPlot width={w} height={h} points={scatter} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Checkout funnel">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => <FunnelChart width={w} height={h} data={funnel} />}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Traffic → purchase — Sankey">
+                <ResponsiveContainer height={280}>
+                  {(w, h) => (
+                    <SankeyDiagram width={w} height={h} graph={flow} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Retention — cohort heatmap">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => (
+                    <Heatmap
+                      width={w}
+                      height={h}
+                      rows={cohorts}
+                      columnLabels={cohortPeriods}
+                    />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="ARR bridge — waterfall">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => <WaterfallChart width={w} height={h} data={arr} />}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="KPIs vs. target — bullet">
+                <ResponsiveContainer height={200}>
+                  {(w, h) => (
+                    <BulletChart width={w} height={h} data={bullets} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Capacity — gauge">
+                <ResponsiveContainer height={180}>
+                  {(w, h) => (
+                    <Gauge
+                      width={w}
+                      height={h}
+                      value={72}
+                      threshold={80}
+                      label="Capacity"
+                    />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Order value — histogram">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => (
+                    <Histogram width={w} height={h} values={orderValues} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Latency by region — box plot">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => (
+                    <BoxPlot width={w} height={h} groups={latencyByRegion} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Revenue tree — treemap">
+                <ResponsiveContainer height={260}>
+                  {(w, h) => (
+                    <Treemap width={w} height={h} data={revenueTree} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Revenue vs. plan — area + band + target + benchmark">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => (
+                    <LineChart
+                      width={w}
+                      height={h}
+                      series={revenueSeries}
+                      variant="area"
+                    >
+                      <ThresholdBand
+                        from={200}
+                        to={260}
+                        variant="positive"
+                        label="Healthy"
+                      />
+                      <ReferenceLine value={240} label="Target" />
+                      <BenchmarkSeries points={plan} label="Plan" />
+                    </LineChart>
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Forecast envelope — line + confidence band">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => (
+                    <LineChart width={w} height={h} series={revenueSeries}>
+                      <ConfidenceBand points={revenueForecast} />
+                    </LineChart>
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="AOV vs. orders — scatter + trend line">
+                <ResponsiveContainer height={260}>
+                  {(w, h) => (
+                    <ScatterPlot width={w} height={h} points={scatter}>
+                      <TrendLine points={scatter} />
+                    </ScatterPlot>
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Sales vs. target — bars + target marker">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => (
+                    <BarChart width={w} height={h} data={channels}>
+                      <ReferenceLine value={3000} label="Avg" />
+                      <TargetMarker value={4000} label="Goal" />
+                    </BarChart>
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="🧠 Agent asks: COMPARE by channel">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => (
+                    <ResolvedChart
+                      request={compareRequest}
+                      width={w}
+                      height={h}
+                    />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="🧠 Agent asks: GEO → table fallback">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => (
+                    <ResolvedChart request={geoRequest} width={w} height={h} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card
+                title={`🗂️ Catalog: ${canonicalCount} canonical + ${presetCount} presets`}
+              >
+                <p style={{ margin: 0, fontSize: 13, color: roles.mutedInk }}>
+                  Every preset is pure config — a base chart + overlays +
+                  defaults + selection metadata, registered under a name and
+                  tagged with the persona question it answers. The agent picks a
+                  preset by name (<code>resolveByName</code>); the two cards
+                  below render one each.
+                </p>
+              </Card>
+
+              <Card title="🗂️ resolveByName: sla-compliance-over-time">
+                <ResponsiveContainer height={240}>
+                  {(w, h) =>
+                    resolveByName(
+                      "sla-compliance-over-time",
+                      {
+                        intent: "RANGE",
+                        data: revenueSeries,
+                        options: {
+                          variant: "area",
+                          rangeLow: 160,
+                          rangeHigh: 210,
+                          target: 200,
+                        },
                       },
-                    },
-                    { width: w, height: h }
-                  ).render({ width: w, height: h })
-                }
-              </ResponsiveContainer>
-            </Card>
+                      { width: w, height: h }
+                    ).render({ width: w, height: h })
+                  }
+                </ResponsiveContainer>
+              </Card>
 
-            <Card title="🗂️ resolveByName: roas-by-channel">
-              <ResponsiveContainer height={240}>
-                {(w, h) =>
-                  resolveByName(
-                    "roas-by-channel",
-                    { intent: "COMPARE", data: channels },
-                    { width: w, height: h }
-                  ).render({ width: w, height: h })
-                }
-              </ResponsiveContainer>
-            </Card>
-          </div>
+              <Card title="🗂️ resolveByName: roas-by-channel">
+                <ResponsiveContainer height={240}>
+                  {(w, h) =>
+                    resolveByName(
+                      "roas-by-channel",
+                      { intent: "COMPARE", data: channels },
+                      { width: w, height: h }
+                    ).render({ width: w, height: h })
+                  }
+                </ResponsiveContainer>
+              </Card>
+            </div>
+          )}
         </ColorScaleProvider>
       </div>
     </ChartThemeProvider>
