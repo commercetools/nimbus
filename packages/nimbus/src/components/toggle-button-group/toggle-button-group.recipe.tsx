@@ -9,13 +9,15 @@ import { buttonRecipe } from "../button/button.recipe";
 // FEC-1170: the active (selected) fill — kept in sync with
 // toggle-button.recipe.ts. Resting is always neutral; the chosen `colorPalette`
 // applies only to the selected state. `fillStyle` sets how heavy the active
-// fill is (light `tint` vs full `solid`); both change the fill and carry a
-// colored border, so selection is never signalled by hue alone (WCAG 1.4.1).
+// fill is (light `tint` vs full `solid`); selection always changes the fill
+// (not hue alone), so it is never signalled by color alone (WCAG 1.4.1). The
+// border is NOT set here: border presence is owned by the `variant` (resting
+// chrome), so only `outline` recolors its border on selection (see
+// `compoundVariants`); `ghost`/`subtle` must not grow a border when selected.
 const activeFill = {
   tint: {
     bg: "colorPalette.3",
     color: "colorPalette.11",
-    borderColor: "colorPalette.8",
     _hover: {
       bg: "colorPalette.4",
     },
@@ -23,10 +25,8 @@ const activeFill = {
   solid: {
     bg: "colorPalette.9",
     color: "colorPalette.contrast",
-    borderColor: "colorPalette.9",
     _hover: {
       bg: "colorPalette.10",
-      borderColor: "colorPalette.10",
     },
   },
 };
@@ -128,6 +128,37 @@ export const buttonGroupRecipe = defineSlotRecipe({
       },
     },
   },
+
+  // Border presence is owned by `variant`: only `outline` has a resting border,
+  // so only `outline` recolors it on selection. `ghost`/`subtle` keep the
+  // Button base's transparent 1px border, so selecting them never adds a ring.
+  compoundVariants: [
+    {
+      variant: "outline",
+      fillStyle: "tint",
+      css: {
+        button: {
+          "&[data-selected=true]": {
+            borderColor: "colorPalette.8",
+          },
+        },
+      },
+    },
+    {
+      variant: "outline",
+      fillStyle: "solid",
+      css: {
+        button: {
+          "&[data-selected=true]": {
+            borderColor: "colorPalette.9",
+            _hover: {
+              borderColor: "colorPalette.10",
+            },
+          },
+        },
+      },
+    },
+  ],
 
   defaultVariants: {
     size: "md",
