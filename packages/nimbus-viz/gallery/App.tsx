@@ -28,6 +28,19 @@ import {
   ThresholdBand,
   Treemap,
   TrendLine,
+  StackedAreaChart,
+  Streamgraph,
+  SlopeChart,
+  DumbbellChart,
+  BumpChart,
+  BubbleChart,
+  Sparkline,
+  RadarChart,
+  ParallelCoordinates,
+  CalendarHeatmap,
+  RfmGrid,
+  ControlChart,
+  ParetoChart,
   WaterfallChart,
   resolveRoles,
   useChartTheme,
@@ -52,6 +65,20 @@ import {
   revenueSeries,
   revenueTree,
   scatter,
+  channelTraffic,
+  slopeData,
+  dumbbellData,
+  bumpSeries,
+  bubblePoints,
+  sparkData,
+  radarAxes,
+  radarData,
+  parallelDimensions,
+  parallelRows,
+  calendarData,
+  rfmData,
+  controlSeries,
+  paretoData,
 } from "./datasets";
 import { CatalogBrowser } from "./CatalogBrowser";
 
@@ -354,6 +381,141 @@ export function App() {
                 <ResponsiveContainer height={260}>
                   {(w, h) => (
                     <Treemap width={w} height={h} data={revenueTree} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Traffic by channel — stacked area">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => (
+                    <StackedAreaChart
+                      width={w}
+                      height={h}
+                      series={channelTraffic}
+                    />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Traffic by channel — streamgraph">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => (
+                    <Streamgraph width={w} height={h} series={channelTraffic} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Regional rank over time — bump">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => (
+                    <BumpChart width={w} height={h} series={bumpSeries} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Q1 → Q2 by market — slope">
+                <ResponsiveContainer height={300}>
+                  {(w, h) => (
+                    <SlopeChart
+                      width={w}
+                      height={h}
+                      data={slopeData}
+                      leftLabel="Q1"
+                      rightLabel="Q2"
+                    />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Before / after by area — dumbbell">
+                <ResponsiveContainer height={240}>
+                  {(w, h) => (
+                    <DumbbellChart
+                      width={w}
+                      height={h}
+                      data={dumbbellData}
+                      startLabel="2023"
+                      endLabel="2024"
+                    />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Accounts — bubble (x, y, size)">
+                <ResponsiveContainer height={300}>
+                  {(w, h) => (
+                    <BubbleChart width={w} height={h} points={bubblePoints} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Sessions — sparkline (inline)">
+                <ResponsiveContainer height={48}>
+                  {(w, h) => (
+                    <Sparkline width={w} height={h} data={sparkData} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Model profiles — radar">
+                <ResponsiveContainer height={320}>
+                  {(w, h) => (
+                    <RadarChart
+                      width={w}
+                      height={h}
+                      axes={radarAxes}
+                      data={radarData}
+                    />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Vehicles — parallel coordinates">
+                <ResponsiveContainer height={300}>
+                  {(w, h) => (
+                    <ParallelCoordinates
+                      width={w}
+                      height={h}
+                      dimensions={parallelDimensions}
+                      data={parallelRows}
+                    />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Daily activity — calendar heatmap">
+                <ResponsiveContainer height={180}>
+                  {(w, h) => (
+                    <CalendarHeatmap width={w} height={h} data={calendarData} />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Segments — RFM grid">
+                <ResponsiveContainer height={360}>
+                  {(w, h) => <RfmGrid width={w} height={h} data={rfmData} />}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Fill weight — control chart (SPC)">
+                <ResponsiveContainer height={260}>
+                  {(w, h) => (
+                    <ControlChart
+                      width={w}
+                      height={h}
+                      series={controlSeries}
+                      center={250}
+                      ucl={258}
+                      lcl={242}
+                    />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Defect causes — Pareto">
+                <ResponsiveContainer height={280}>
+                  {(w, h) => (
+                    <ParetoChart width={w} height={h} data={paretoData} />
                   )}
                 </ResponsiveContainer>
               </Card>
