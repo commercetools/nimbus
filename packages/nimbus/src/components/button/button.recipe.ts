@@ -144,7 +144,10 @@ export const buttonRecipe = defineRecipe({
         transitionProperty: "background-color, border-color, color",
         transitionDuration: "moderate",
         _hover: {
-          bg: "colorPalette.3",
+          // Radix ladder: a transparent-resting element's hover is the faintest
+          // fill. Outline already has a border doing the affordance work, so its
+          // hover fill is step 2 (one below ghost's step 3).
+          bg: "colorPalette.2",
           borderColor: "colorPalette.8",
         },
         _expanded: {
@@ -154,7 +157,9 @@ export const buttonRecipe = defineRecipe({
       ghost: {
         color: "colorPalette.11",
         _hover: {
-          bg: "colorPalette.4",
+          // Radix ladder: ghost has nothing at rest, so its hover fill is the
+          // first (gentle) component-background step, 3 (pressed/open steps to 4).
+          bg: "colorPalette.3",
         },
         _expanded: {
           bg: "colorPalette.4",
