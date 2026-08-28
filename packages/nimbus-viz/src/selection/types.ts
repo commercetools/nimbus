@@ -201,6 +201,15 @@ export interface ChartSelectionMetadata {
   overlays?: string[];
   /** The docs/03 persona whose question this preset answers. */
   persona?: string;
+  /**
+   * Structural configuration signature — base chart + variant + overlay set,
+   * ignoring persona, labels, and threshold values. Entries that share a
+   * `configLabel` render identically given the same data; it is the dedup key
+   * for "the exhaustive list of distinct chart configurations" (many persona
+   * presets collapse onto one configuration). Human-readable so it doubles as
+   * the display name of the configuration.
+   */
+  configLabel?: string;
 }
 
 /* -------------------------------------------------------------------------- */
