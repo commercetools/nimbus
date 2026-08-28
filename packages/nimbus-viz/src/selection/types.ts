@@ -170,10 +170,11 @@ export interface ChartConstraints {
 }
 
 /**
- * The docs/06 selection-metadata record, EXACTLY the fields the spec lists
- * ("Selection-metadata fields this depends on (per preset)"). `overlays[]` from
- * the doc's superset is omitted here because none of the seven prototype charts
- * carries an overlay yet; it is a follow-up field.
+ * The docs/06 selection-metadata record. Since batch 5 shipped the Layer-2
+ * overlays and batch 6 the declarative preset catalog, the doc's `overlays[]`
+ * superset field is now populated (the names of the overlays a preset composes,
+ * for the catalog surface). `persona` tags a preset with the docs/03 role whose
+ * question it answers.
  */
 export interface ChartSelectionMetadata {
   /** Registry name — the agent-selectable identifier. */
@@ -196,6 +197,10 @@ export interface ChartSelectionMetadata {
   questionString: string;
   /** Relative bundle / lazy-load cost; a minor negative nudge in ranking. */
   bundleWeight: number;
+  /** Names of Layer-2 overlays this preset composes (catalog surface). */
+  overlays?: string[];
+  /** The docs/03 persona whose question this preset answers. */
+  persona?: string;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -242,11 +247,21 @@ export interface ResolveResult {
  * contract: `dataKinds` (the concrete structures the adapter can consume — the
  * operative render guard, see `DataKind`) and `render` (maps a request +
  * size to the chart's props and returns the element).
+ *
+ * `canonical` distinguishes the two catalog roles the prototype surfaced
+ * (docs/09 batch 6): a **canonical** entry is a "which chart for this bare
+ * intent + shape?" answer and is the only kind `resolve()` ranks; a
+ * non-canonical **preset** is a persona-specific named configuration
+ * (base + overlays + defaults) addressed by name via `resolveByName`, so the
+ * catalog can grow to ~100 without flooding the bare-intent resolver. Absent or
+ * `true` ⇒ canonical.
  */
 export interface ChartRegistryEntry {
   metadata: ChartSelectionMetadata;
   dataKinds: DataKind[];
   render: (request: ResolveRequest, size: ChartSize) => ReactNode;
+  /** `false` = a name-addressable preset, excluded from bare-intent ranking. */
+  canonical?: boolean;
 }
 
 /** name → entry. Insertion order is the stable tie-break's registration order. */

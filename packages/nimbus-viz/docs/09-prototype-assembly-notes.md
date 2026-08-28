@@ -372,3 +372,92 @@ line/area, scatter, vertical bar. Next: the **preset-registration pass** — tur
 base × overlay × defaults × metadata into named catalog entries and grow
 `chartRegistry` toward ~100 from the doc-02 intent×shape matrix and doc-03
 persona questions.
+
+---
+
+## Batch 6 — the declarative preset catalog: 8 → 66 entries (2026-08-28)
+
+Turned the "preset = base + overlays + defaults + metadata" idea into a real,
+declarative catalog. `src/selection/presets.tsx` defines a `PresetDefinition`
+(pure data) and a `presetToEntry` factory; `PRESETS` is **58 persona-grounded
+presets** authored straight from the docs/03 question tables, each reusing one
+of the eight registered base charts — **zero new React components**. Registry
+went 8 → **66 entries** (8 canonical + 58 presets); library typechecks and
+tsup-builds (~130 kB ESM, +23 kB). Verified in the gallery (`resolveByName`
+renders `sla-compliance-over-time` with its options-driven band + SLA line, and
+`roas-by-channel`, both live).
+
+### The batch's central findings (RFC-level)
+
+- **Presets are pure config — doc-04 open question #2 answered.** Every one of
+  the 58 is
+  `{ name, base, overlays[], defaults, intents, shapes, dataKinds, constraints, question, persona }`
+  fed through one factory. Nothing needed a bespoke component. The factory even
+  threads overlay children into the overlay-hosting bases (line / vertical bar /
+  scatter) and drops them for the rest. **The RFC should adopt the declarative
+  preset as the catalog unit** and keep the ~100 count firmly on the config side
+  of the components-vs-presets line.
+- **A canonical/preset split keeps bare-intent resolution crisp AS the catalog
+  grows — the load-bearing structural decision.** Flooding one registry with
+  dozens of TREND-serving line presets would make `resolve({intent, data})` rank
+  ~20 identical-scoring entries and tie-break by registration order — a
+  semantically arbitrary pick (it can't tell "API error rate" from "revenue"
+  when intent+shape are identical). So entries now carry `canonical?: boolean`:
+  `resolve()` ranks **only canonical** entries (one-ish per intent×kind), and
+  the persona presets are addressed **by name** via the new `resolveByName`.
+  This directly matches doc-04's "the agent selects presets, not raw
+  components": by-name is the _primary_ agent path; bare-intent `resolve` is the
+  fallback for when the agent has only an intent. **The RFC must decide the two
+  selection surfaces explicitly** — (1) intent×shape → canonical chart, (2)
+  persona-question → named preset — because intent+shape alone is provably too
+  coarse to disambiguate the ~100 catalog.
+- **The persona question IS the disambiguating key.** What separates
+  `refund-rate-trend` from `api-error-rate-trend` (both line, both series, both
+  TREND/RANGE) is the `questionString` + `persona`, not the chart mechanics.
+  That argues the machine-readable catalog surface the agent matches against
+  should be keyed on the question/persona embedding, with intent+shape as a
+  coarse pre-filter — not the other way round.
+
+### Smaller, concrete items
+
+- **`overlays[]` + `persona` are now real metadata fields** (types.ts), the
+  fields docs/06 anticipated. `overlays` lists the composed overlay names for
+  the catalog surface; 20 of the 58 presets compose at least one.
+- **Overlay values arrive via `options`, not the data.** Presets bake sensible
+  fallbacks (e.g. chargeback `VAMP 1.5%`) but read
+  `options.target / rangeLow / rangeHigh / benchmark / band / errors` so a
+  caller tunes the threshold to their metric. Data-derived overlays (TrendLine
+  off the scatter's own points) need nothing. This is the clean division:
+  **static thresholds = options; derived summaries = data.**
+- **`resolveByName` is fail-safe like `resolve`.** Unknown name, malformed data,
+  or a kind the preset can't draw all fall back to the DataTable with a readable
+  reason; it never throws. Guarded on `dataKinds` only (the agent chose the
+  preset deliberately — we don't second-guess intent/shape), so it's permissive
+  where `resolve` is strict.
+- **Extraction stayed `any`-free.** Option/data readers narrow `unknown` with
+  small guards; the factory's per-base defaults (`RANK`/`WEIGHT`/`KIND`/`SHAPES`
+  maps) keep each preset to just what's distinctive — most are 5–7 lines.
+- **Adapters were extracted to `render-adapters.tsx`** so registry ↔ presets
+  share the base renderers with no import cycle; the renderers gained an
+  `overlays?: ReactNode` param.
+
+### Path from 66 to ~100 (not a limitation of the model — a wiring gap)
+
+The catalog is capped at the **8 bases the brain currently recognizes** (series
+/ category / stack-row / scatter / heat-row / funnel). The DIST family
+(histogram, box plot), VALUE (stat card), DELTA (waterfall), and GEO (map) chart
+components exist but aren't yet wired into the resolver's `DataKind` taxonomy or
+given render adapters — wiring those unlocks the ~30 DIST/VALUE/DELTA/GEO
+persona questions in docs/03 and takes the catalog to ~100. That's the obvious
+next batch.
+
+### Catalog coverage (doc 04) after batch 6
+
+Layer-5 presets are now real and declarative: **58 named presets** across TREND,
+RANGE, TARGET, COMPARE, RANK, PART-WHOLE, COMP-TIME, REL, RETAIN, DIST(2nd), and
+FLOW, spanning ~16 of the 17 personas, plus the two selection surfaces
+(`resolve` canonical + `resolveByName`). Still missing (unchanged): the
+DIST/VALUE/DELTA/GEO base-wiring above, the remaining Tier-3 chart tail,
+`ChartFromSpec`, lazy-loading, a shared interaction primitive, measured
+margins + label-collision handling (now sighted in every overlay/preset batch),
+and a11y depth.

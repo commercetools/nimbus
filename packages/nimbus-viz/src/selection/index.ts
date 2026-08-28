@@ -28,8 +28,18 @@ export type { DataFacts } from "./derive-facts";
 // Registry
 export { chartRegistry, createDefaultRegistry } from "./registry";
 
-// Resolver
-export { resolve, tabularize, renderFallbackTable } from "./resolve";
+// Preset catalog (declarative base + overlays + defaults + metadata)
+export { PRESETS, presetEntries, presetToEntry } from "./presets";
+export type { PresetDefinition } from "./presets";
+
+// Resolver — `resolve` ranks canonical charts for a bare intent;
+// `resolveByName` renders a named preset from the full catalog.
+export {
+  resolve,
+  resolveByName,
+  tabularize,
+  renderFallbackTable,
+} from "./resolve";
 
 // Demoable component
 export { ResolvedChart } from "./resolved-chart";

@@ -6,6 +6,7 @@ import {
   BoxPlot,
   BulletChart,
   ChartThemeProvider,
+  chartRegistry,
   ColorScaleProvider,
   ConfidenceBand,
   DonutChart,
@@ -17,6 +18,7 @@ import {
   LineChart,
   ReferenceLine,
   ResolvedChart,
+  resolveByName,
   ResponsiveContainer,
   SankeyDiagram,
   ScatterPlot,
@@ -100,6 +102,12 @@ function Card({ title, children }: { title: string; children: ReactNode }) {
 export function App() {
   const [mode, setMode] = useState<ColorMode>("light");
   const roles = resolveRoles(mode);
+
+  const registryEntries = [...chartRegistry.values()];
+  const presetCount = registryEntries.filter(
+    (e) => e.canonical === false
+  ).length;
+  const canonicalCount = registryEntries.length - presetCount;
 
   return (
     <ChartThemeProvider mode={mode}>
@@ -378,6 +386,51 @@ export function App() {
                 {(w, h) => (
                   <ResolvedChart request={geoRequest} width={w} height={h} />
                 )}
+              </ResponsiveContainer>
+            </Card>
+
+            <Card
+              title={`🗂️ Catalog: ${canonicalCount} canonical + ${presetCount} presets`}
+            >
+              <p style={{ margin: 0, fontSize: 13, color: roles.mutedInk }}>
+                Every preset is pure config — a base chart + overlays + defaults
+                + selection metadata, registered under a name and tagged with
+                the persona question it answers. The agent picks a preset by
+                name (<code>resolveByName</code>); the two cards below render
+                one each.
+              </p>
+            </Card>
+
+            <Card title="🗂️ resolveByName: sla-compliance-over-time">
+              <ResponsiveContainer height={240}>
+                {(w, h) =>
+                  resolveByName(
+                    "sla-compliance-over-time",
+                    {
+                      intent: "RANGE",
+                      data: revenueSeries,
+                      options: {
+                        variant: "area",
+                        rangeLow: 160,
+                        rangeHigh: 210,
+                        target: 200,
+                      },
+                    },
+                    { width: w, height: h }
+                  ).render({ width: w, height: h })
+                }
+              </ResponsiveContainer>
+            </Card>
+
+            <Card title="🗂️ resolveByName: roas-by-channel">
+              <ResponsiveContainer height={240}>
+                {(w, h) =>
+                  resolveByName(
+                    "roas-by-channel",
+                    { intent: "COMPARE", data: channels },
+                    { width: w, height: h }
+                  ).render({ width: w, height: h })
+                }
               </ResponsiveContainer>
             </Card>
           </div>
