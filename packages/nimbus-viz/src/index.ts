@@ -40,3 +40,21 @@ export { FunnelChart } from "./components/funnel-chart";
 export type { FunnelChartProps } from "./components/funnel-chart";
 export { SankeyDiagram } from "./components/sankey-diagram";
 export type { SankeyDiagramProps } from "./components/sankey-diagram";
+export { WaterfallChart } from "./components/waterfall-chart";
+export type {
+  WaterfallChartProps,
+  WaterfallStep,
+} from "./components/waterfall-chart";
+export { BulletChart } from "./components/bullet-chart";
+export type { BulletChartProps, BulletDatum } from "./components/bullet-chart";
+export { Gauge } from "./components/gauge";
+export type { GaugeProps } from "./components/gauge";
+export { Histogram } from "./components/histogram";
+export type { HistogramProps } from "./components/histogram";
+export { BoxPlot } from "./components/box-plot";
+export type { BoxPlotProps, BoxPlotGroupStats } from "./components/box-plot";
+export { Treemap } from "./components/treemap";
+export type { TreemapProps, TreemapNode } from "./components/treemap";
+
+// Selection engine ("the brain") + DataTable fallback
+export * from "./selection";

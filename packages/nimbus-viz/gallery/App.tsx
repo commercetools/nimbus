@@ -2,31 +2,45 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import {
   BarChart,
+  BoxPlot,
+  BulletChart,
   ChartThemeProvider,
   ColorScaleProvider,
   DonutChart,
   FunnelChart,
+  Gauge,
   GroupedBarChart,
   Heatmap,
+  Histogram,
   LineChart,
+  ResolvedChart,
   ResponsiveContainer,
   SankeyDiagram,
   ScatterPlot,
   StackedBarChart,
   StatCard,
+  Treemap,
+  WaterfallChart,
   resolveRoles,
   useChartTheme,
   type ColorMode,
 } from "../src";
 import {
+  arr,
+  bullets,
   channels,
   cohortPeriods,
   cohorts,
+  compareRequest,
   composition,
   flow,
   funnel,
+  geoRequest,
+  latencyByRegion,
   multiSeries,
+  orderValues,
   revenueSeries,
+  revenueTree,
   scatter,
 } from "./datasets";
 
@@ -234,6 +248,74 @@ export function App() {
                     rows={cohorts}
                     columnLabels={cohortPeriods}
                   />
+                )}
+              </ResponsiveContainer>
+            </Card>
+
+            <Card title="ARR bridge — waterfall">
+              <ResponsiveContainer height={240}>
+                {(w, h) => <WaterfallChart width={w} height={h} data={arr} />}
+              </ResponsiveContainer>
+            </Card>
+
+            <Card title="KPIs vs. target — bullet">
+              <ResponsiveContainer height={200}>
+                {(w, h) => <BulletChart width={w} height={h} data={bullets} />}
+              </ResponsiveContainer>
+            </Card>
+
+            <Card title="Capacity — gauge">
+              <ResponsiveContainer height={180}>
+                {(w, h) => (
+                  <Gauge
+                    width={w}
+                    height={h}
+                    value={72}
+                    threshold={80}
+                    label="Capacity"
+                  />
+                )}
+              </ResponsiveContainer>
+            </Card>
+
+            <Card title="Order value — histogram">
+              <ResponsiveContainer height={240}>
+                {(w, h) => (
+                  <Histogram width={w} height={h} values={orderValues} />
+                )}
+              </ResponsiveContainer>
+            </Card>
+
+            <Card title="Latency by region — box plot">
+              <ResponsiveContainer height={240}>
+                {(w, h) => (
+                  <BoxPlot width={w} height={h} groups={latencyByRegion} />
+                )}
+              </ResponsiveContainer>
+            </Card>
+
+            <Card title="Revenue tree — treemap">
+              <ResponsiveContainer height={260}>
+                {(w, h) => <Treemap width={w} height={h} data={revenueTree} />}
+              </ResponsiveContainer>
+            </Card>
+
+            <Card title="🧠 Agent asks: COMPARE by channel">
+              <ResponsiveContainer height={240}>
+                {(w, h) => (
+                  <ResolvedChart
+                    request={compareRequest}
+                    width={w}
+                    height={h}
+                  />
+                )}
+              </ResponsiveContainer>
+            </Card>
+
+            <Card title="🧠 Agent asks: GEO → table fallback">
+              <ResponsiveContainer height={240}>
+                {(w, h) => (
+                  <ResolvedChart request={geoRequest} width={w} height={h} />
                 )}
               </ResponsiveContainer>
             </Card>
