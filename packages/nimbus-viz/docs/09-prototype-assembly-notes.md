@@ -1,0 +1,209 @@
+# Prototype Assembly Notes — RFC Input
+
+_Living log. As we prototype components breadth-first, this captures what the
+act of assembling them teaches us — the cross-cutting details a solid RFC must
+settle. Not a spec; evidence for one. Newest findings appended per batch._
+
+The prototype lives in `packages/nimbus-viz/`. Run the gallery with
+`pnpm --filter @commercetools/nimbus-viz gallery` (Vite, dev-only, resolves the
+library from `./src`). Foundation = visx + Nimbus tokens (settled in Phase 0).
+
+---
+
+## Batch 1 — foundation + LineChart, BarChart, StatCard (2026-08-28)
+
+Three chart families on purpose (time-series w/ axes, categorical bars, no-axis
+card), to put the shared chrome under cross-shape pressure immediately. Verified
+rendering in the gallery in both light and dark. Library typechecks, tsup-builds
+(ESM+CJS+DTS), and the gallery bundles.
+
+### What's confirmed working
+
+- **Theming maps 1:1 onto Nimbus tokens.** The Spike-2 categorical sequence is
+  literally aliases onto `color.system-palettes.<hue>.<mode>.<step>`, reached
+  through one seam (`systemStep(hue, step, mode)` → `resolveRoles(mode)`).
+  Charts hold zero literal colors. Light and dark both correct in-browser.
+- **Fixed-order categorical + single-hue magnitude.** Multi-series lines take
+  categorical roles in order (blue/orange/teal, CVD-safe); magnitude bars use
+  one accent hue (color carries no meaning there — the category axis does).
+  Matches the dataviz non-negotiables.
+- **One shared SVG shell works.** `ChartFrame` (render-prop handing inner dims)
+  is reused by line and bar; StatCard opts out entirely (it's HTML). Good sign
+  the frame boundary is roughly right.
+- **null gaps** via visx `defined` render correctly (Profit series gap).
+- **Valence never color-alone** — StatCard delta carries arrow + sign + color.
+- **visx v4** is all-in-lockstep at 4.0.0, modular/tree-shakeable. `BarRounded`
+  gives per-corner rounding (top for columns, right for ranked bars) = the
+  dataviz "rounded data-end" for free.
+
+### What the assembly surfaced (open questions for the RFC)
+
+1. **Theme needs surface _levels_, not one `surface`.** Charts sit on cards on a
+   page — at least page / raised(card) / plot. The gallery had to hack a page
+   background via `systemStep("gray", 2)` because roles expose only one surface.
+   → Add a small surface scale to `ChartRoles`.
+2. **Color mode is a prop, not wired to the host.** `ChartThemeProvider` takes
+   `mode` directly (fine for the gallery). Production wiring = read the active
+   Nimbus color mode. → Decide the binding (context bridge vs. prop).
+3. **Margins are fixed constants.** Long y-tick labels and long category names
+   (the ranked bar hard-codes `left: 100`) will clip or float. → Derive margins
+   from measured tick/label metrics, or expose a margin prop with sensible auto.
+4. **Hover/tooltip is re-implemented per chart and inconsistent.** Line uses a
+   crosshair + SVG readout by x-index; bar uses opacity-dim on `<g>` hover; no
+   shared contract. Also, index-based hover assumes x-aligned series. → Factor a
+   shared interaction primitive; pick SVG-tooltip vs HTML-portal; define the
+   nearest-point strategy (bisector) and the aligned-vs-sparse data contract.
+5. **Data model is per-chart** (`Series` vs `CategoryDatum`). The selection
+   engine (doc 06) will need either one normalized shape or per-chart adapters.
+   These concrete shapes are the raw material for that metadata contract.
+6. **Legend is HTML, axes are visx, tooltip is SVG.** Mixed rendering is fine
+   but means a chart is a `<div>` wrapping an `<svg>` wrapping HTML-again for
+   legends. → Settle the outer composition (where legend/title/toolbar live
+   relative to the SVG) as a `ChartContainer` contract.
+7. **TS ergonomics:** visx `tickLabelProps` needs `as const` to satisfy the
+   `textAnchor` literal type. Minor, but worth a shared axis helper that bakes
+   the themed defaults so every chart doesn't repeat it.
+
+### Deferred integrations (staged for momentum, not dropped)
+
+- **@commercetools/nimbus components** (DataTable fallback, layout, icons) —
+  nimbus isn't built in this checkout and has no `source` export condition, so
+  importing it needs a build or a Vite source alias. Charts prototype on visx +
+  nimbus-tokens for now; the DataTable fail-safe and layout reuse come when we
+  exercise the selection engine.
+- **SSR / server render** — not yet exercised in the gallery (client-only). Line
+  and bar are pure SVG and should server-render; to be verified.
+
+### Immediate refactors these suggest (before the catalog grows)
+
+- `ChartRoles`: add surface levels (page/raised/plot).
+- A themed `Axes` helper (bakes tick label props, grid, formats).
+- A shared hover/tooltip primitive + the series-data contract.
+
+---
+
+## Batch 2 — 3 refactors + DonutChart, StackedBarChart, ScatterPlot, Heatmap (2026-08-28)
+
+Added arc, stacking, point, and matrix marks — deliberately different from the
+axis/line/bar of batch 1 — to see where the batch-1 chrome holds and where it
+strains. All seven families verified in the gallery, light and dark; library
+typechecks and builds (~36 kB ESM).
+
+### The three refactors from batch 1 — done, and they held
+
+- **Surface levels** (`surface` raised + `surfacePage` recessed, elevation
+  inverted for dark) — cards now visibly float above the page in dark mode; the
+  gallery dropped its `systemStep` page-bg hack. Confirmed the theme needs ≥2
+  surfaces.
+- **Axes helper** (`GridRows`, `leftTickLabel`, `bottomTickLabel`) — line, bar,
+  stacked, and scatter all consume it; the repeated `as const` tick-label
+  boilerplate is gone.
+- **SvgTooltip** extracted — reused by line (index hover) and scatter (point
+  hover) unchanged. The box travels; only the _pointer logic_ differs (see
+  below).
+
+### What the new marks confirmed / surfaced
+
+- **Color-as-identity vs. color-as-nothing is per-chart, and correct.** Donut
+  and stacked assign categorical hues by slice/key (identity); magnitude bars
+  use one accent (the axis is the identity). The sequential heatmap uses a
+  single-hue ramp. All three color jobs now exercised against the same token
+  source.
+- **A stable entity→color mapping is now the clearest missing primitive.** Four
+  charts assign categorical colors independently (by series index, by slice
+  index, by stack-key index). Nothing guarantees "Returning" is the same color
+  in the stacked bar as it would be in a line chart, or that a filter dropping a
+  category doesn't repaint the survivors (a dataviz non-negotiable). → Introduce
+  a shared categorical **color scale keyed by entity id**, resolved once, that
+  every chart consumes. This is probably the single most important pre-catalog
+  refactor.
+- **Two hover modes are real, not one.** Line/area/stacked want _index/category_
+  hover (snap to a column); scatter/bubble want _nearest-point_. The shared
+  SvgTooltip serves both, but the hit-testing is different. → The shared
+  interaction primitive should expose both modes (index vs. quadtree-nearest),
+  not force one.
+- **Sequential needs a hue _name_, not a resolved role.**
+  `sequentialColor(hue, mode)` takes a token family (e.g. "blue") because a ramp
+  spans steps, whereas the categorical/semantic roles are pre-resolved values.
+  Fine, but it means the theme has two shapes of color API (resolved roles +
+  ramp factory). Heatmap also still lacks a **gradient legend** — a gap for any
+  sequential/diverging chart.
+- **Stacked assumes all rows share segment keys in order.** Works, but the real
+  contract (sparse keys, consistent ordering, color-by-key) is the same
+  entity→color question above. Grouped bar (next) will pull on the same thread.
+- **`ChartFrame`'s `background` prop went unused** — cards supply the surface.
+  Likely drop it, or reserve it for standalone (card-less) embedding.
+
+### Catalog coverage so far (doc 04)
+
+Layer-1: LineChart, AreaChart (variant), Vertical/Horizontal Bar, StackedBar,
+StatCard, Donut, Heatmap (base). Layer-3 specialist base: cohort heatmap. Next
+to stress assembly further: **GroupedBar** (multi-series categorical — forces
+the entity→color scale), and a **FLOW specialist** (Funnel, then the decisive
+Sankey via `@visx/sankey`).
+
+---
+
+## Batch 3 — entity→color scale + GroupedBar, FunnelChart, SankeyDiagram (2026-08-28)
+
+Built the color primitive the batch-2 notes flagged, retrofitted the four
+multi-entity charts onto it, then added a multi-series bar and the two FLOW
+specialists. Ten families now verified in the gallery, light and dark; library
+typechecks and builds (~46 kB ESM).
+
+### The entity→color scale — built and it works
+
+`createColorScale(domain, categorical)` + `<ColorScaleProvider>` +
+`useEntityColors(domain)` (`src/theme/color-scale.tsx`). Colors are assigned by
+entity id in fixed order, never by rank or filtered index. Line, Donut, Stacked,
+Scatter, Grouped, and Sankey all consume it. Demonstrated live:
+**"New/Returning/Wholesale" are the same hues in the stacked bar and the grouped
+bar** because both resolve through one dashboard-level scale.
+
+### What this batch surfaced (RFC-level)
+
+- **A single entity-id convention is now a hard requirement.** The scale keys on
+  whatever string a chart passes — LineChart keys by `series.id`, others by
+  category / group / stack-key. When the shared domain listed _labels_
+  (`"Revenue"`) but the line keyed by _id_ (`"rev"`), the series silently missed
+  the scale and got first-seen colors. This bit us in the gallery. → The RFC
+  must fix ONE entity-id concept spanning every chart's data shape **and** the
+  selection metadata, or the shared scale doesn't bind.
+- **One throwing chart took down the whole page.** A bad Sankey config threw
+  and, with no error boundary, blanked the entire dashboard. → Confirms doc 06's
+  fail-safe must be real (resolver → DataTable, never throw) **and** the host
+  should wrap each chart in an error boundary. Concrete, not theoretical.
+- **Grouped and stacked are the same data, different layout.** `GroupedBarChart`
+  reuses `StackRow` unchanged; the only difference is side-by-side vs. stacked.
+  → Candidate for one "categorical multi-series" data type (shared with the line
+  chart's series) and possibly one component with a `layout` prop.
+- **Sankey via `@visx/sankey` renders proper proportional ribbons** — the
+  decisive capability visx has and Vega-Lite lacks, now real in-repo. Two
+  gotchas worth a contract: (1) d3-sankey **mutates its input** → the component
+  clones nodes/links each render; (2) the **link key space must match the node
+  id accessor** — leaving `nodeId` default (index) matches index-based links;
+  setting `nodeId=name` while links use indices throws `missing: 0`. The
+  flow-graph data contract must state indices-vs-ids and hold to it.
+- **Funnel** is single-hue magnitude; plain rounded rects read fine — trapezoid
+  connectors are cosmetic polish, not required.
+- **visx types are clean** once flow node/link are `type` aliases (not
+  interfaces) so they satisfy d3-sankey's index-signature generic. No `any`, no
+  casts needed.
+
+### Still open / next
+
+- **DataTable fallback + the selection engine (doc 06) are the biggest gap.** We
+  have chart breadth but not yet the "agent picks a chart" brain, nor the
+  guaranteed table fallback the crash-finding shows we need. Strong candidate
+  for the next batch: selection metadata + registry +
+  `resolve({type,data,options})` → chart, fail-safe to a DataTable, telemetry
+  hook — the point of the library.
+- Shared interaction primitive (index vs. nearest-point) still deferred.
+- Gradient legend for sequential/diverging still missing.
+
+### Catalog coverage (doc 04) after batch 3
+
+Layer-1: line, area, vertical/horizontal bar, grouped bar, stacked bar, donut,
+stat card (table still missing). Layer-3 specialists: cohort heatmap, funnel,
+Sankey. Infra: theme, color scale, responsive, lazy (not yet), chart frame,
+axes, legend, SVG tooltip.
