@@ -16,10 +16,17 @@ type ToggleButtonRecipeProps = {
    */
   size?: RecipeProps<"nimbusToggleButton">["size"];
   /**
-   * Visual style variant of the toggle button
+   * Resting chrome of the toggle button — always neutral. `colorPalette` is
+   * reserved for the active state.
    * @default "outline"
    */
   variant?: RecipeProps<"nimbusToggleButton">["variant"];
+  /**
+   * Weight of the active (selected) fill: `tint` (light accent wash) or `solid`
+   * (full accent fill).
+   * @default "tint"
+   */
+  fillStyle?: RecipeProps<"nimbusToggleButton">["fillStyle"];
 };
 
 // ============================================================

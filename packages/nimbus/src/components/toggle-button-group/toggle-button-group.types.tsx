@@ -24,12 +24,17 @@ type ToggleButtonGroupRecipeVariantProps = {
    */
   size?: SlotRecipeProps<"nimbusToggleButtonGroup">["size"];
   /**
-   * Visual style variant (EXPERIMENTAL — FEC-1170 spike, THROWAWAY).
-   * The name describes the resting look; the selected state always escalates
-   * to the most prominent color.
+   * Resting chrome of the toggle buttons — always neutral. `colorPalette` is
+   * reserved for the active state.
    * @default "outline"
    */
   variant?: SlotRecipeProps<"nimbusToggleButtonGroup">["variant"];
+  /**
+   * Weight of the active (selected) fill: `tint` (light accent wash) or `solid`
+   * (full accent fill). Defaults from `selectionMode` — `single` → `solid`,
+   * `multiple` → `tint` — and is overridable.
+   */
+  fillStyle?: SlotRecipeProps<"nimbusToggleButtonGroup">["fillStyle"];
 };
 
 // ============================================================

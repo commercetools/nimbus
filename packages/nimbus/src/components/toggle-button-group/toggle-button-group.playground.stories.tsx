@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Box,
-  Button,
   Stack,
   Text,
   ToggleButton,
@@ -9,25 +8,17 @@ import {
 } from "@commercetools/nimbus";
 
 /**
- * FEC-1170 — variant exploration (NOT the final component stories).
+ * FEC-1170 — variant × fillStyle exploration (NOT the final component stories).
  *
- * This page exists to document *why* the variant set landed where it did. It
- * puts Buttons, ToggleButtons and ToggleButtonGroups on one page so the
- * relationships are visible at a glance.
+ * Documents the two orthogonal style axes:
+ *   - `variant`   → resting chrome, always neutral: outline | ghost | subtle
+ *   - `fillStyle` → active-state fill: tint (light wash) | solid (full fill)
  *
- * Where we ended up: a toggle variant describes the resting *chrome* of the
- * control, and every variant escalates to the most prominent color (solid
- * colorPalette.9) when selected. That leaves three coherent variants:
+ * `colorPalette` applies to the ACTIVE state only; resting is always neutral.
+ * In a group, `fillStyle` defaults from `selectionMode` (single → solid,
+ * multiple → tint) and is overridable.
  *
- *   - `outline` — bordered segmented control (view-mode switching)
- *   - `ghost`   — no chrome (toolbar segmentation)
- *   - `subtle`  — filled-tint "track" (filter toggles)
- *
- * Button's `solid` and `link` were dropped on purpose: `solid` is the selected
- * *state* (not a variant), and a "link" has no coherent toggled affordance.
- *
- * This story will be replaced by proper stories + play tests before the change
- * leaves draft.
+ * Replaced by real stories + play tests before this change leaves draft.
  */
 const meta: Meta<typeof ToggleButtonGroup.Root> = {
   title: "Components/Buttons/ToggleButtonGroup (Playground)",
@@ -43,102 +34,94 @@ export default meta;
 type Story = StoryObj<typeof ToggleButtonGroup.Root>;
 
 const variants = ["outline", "ghost", "subtle"] as const;
+const fillStyles = ["tint", "solid"] as const;
 
 type Variant = (typeof variants)[number];
+type FillStyle = (typeof fillStyles)[number];
 
-const GroupRow = ({ variant }: { variant: Variant }) => (
-  <Stack direction="row" alignItems="center" gap="600">
-    <Box width="80px" flexShrink="0">
-      <Text fontWeight="600">{variant}</Text>
-    </Box>
-
-    {/* Plain Button for reference. */}
-    <Box width="120px" flexShrink="0">
-      <Button variant={variant}>Button</Button>
-    </Box>
-
-    {/* The candidate: group preselects Center so OFF + ON show together. */}
-    <ToggleButtonGroup.Root
-      variant={variant}
-      colorPalette="primary"
-      defaultSelectedKeys={["center"]}
-      aria-label={`${variant} group`}
-    >
-      <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
-      <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
-      <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
-    </ToggleButtonGroup.Root>
-  </Stack>
+const Cell = ({
+  variant,
+  fillStyle,
+}: {
+  variant: Variant;
+  fillStyle: FillStyle;
+}) => (
+  <ToggleButtonGroup.Root
+    variant={variant}
+    fillStyle={fillStyle}
+    selectionMode="single"
+    colorPalette="primary"
+    defaultSelectedKeys={["center"]}
+    aria-label={`${variant} ${fillStyle}`}
+  >
+    <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
+  </ToggleButtonGroup.Root>
 );
 
-/**
- * Everything on one page: reference Buttons, reference ToggleButtons, and the
- * candidate ToggleButtonGroup variants.
- */
 export const VariantExploration: Story = {
   render: () => (
     <Stack gap="1000" padding="600">
-      <Stack gap="300">
-        <Text fontWeight="700" fontSize="500">
-          Buttons (reference)
-        </Text>
-        <Stack direction="row" gap="400" alignItems="center">
-          <Button variant="solid">solid</Button>
-          <Button variant="subtle">subtle</Button>
-          <Button variant="outline">outline</Button>
-          <Button variant="ghost">ghost</Button>
-          <Button variant="link">link</Button>
-        </Stack>
-      </Stack>
-
-      <Stack gap="300">
-        <Text fontWeight="700" fontSize="500">
-          ToggleButtons — variants (off vs on)
-        </Text>
-        <Stack direction="row" gap="600" alignItems="center" flexWrap="wrap">
-          {variants.map((v) => (
-            <Stack key={v} direction="row" gap="200" alignItems="center">
-              <ToggleButton variant={v}>{v} · off</ToggleButton>
-              <ToggleButton variant={v} defaultSelected>
-                {v} · on
-              </ToggleButton>
-            </Stack>
-          ))}
-        </Stack>
-      </Stack>
-
       <Stack gap="400">
         <Text fontWeight="700" fontSize="500">
-          ToggleButtonGroup — variants (Center = ON)
+          variant × fillStyle — single-select (Center = ON)
         </Text>
+
+        {/* Column headers */}
+        <Stack direction="row" gap="600" alignItems="center">
+          <Box width="80px" flexShrink="0" />
+          {fillStyles.map((f) => (
+            <Box key={f} width="240px" flexShrink="0">
+              <Text fontWeight="600">{f}</Text>
+            </Box>
+          ))}
+        </Stack>
+
         {variants.map((v) => (
-          <GroupRow key={v} variant={v} />
+          <Stack key={v} direction="row" gap="600" alignItems="center">
+            <Box width="80px" flexShrink="0">
+              <Text fontWeight="600">{v}</Text>
+            </Box>
+            {fillStyles.map((f) => (
+              <Box key={f} width="240px" flexShrink="0">
+                <Cell variant={v} fillStyle={f} />
+              </Box>
+            ))}
+          </Stack>
         ))}
       </Stack>
 
-      <Stack gap="400">
+      <Stack gap="300">
         <Text fontWeight="700" fontSize="500">
-          ToggleButtonGroup — critical palette (Center = ON)
+          Multi-select — fillStyle defaults to tint (no wall of solid)
         </Text>
-        <Stack direction="row" gap="600" alignItems="center" flexWrap="wrap">
+        <ToggleButtonGroup.Root
+          selectionMode="multiple"
+          variant="ghost"
+          colorPalette="primary"
+          defaultSelectedKeys={["bold", "italic"]}
+          aria-label="Format"
+        >
+          <ToggleButtonGroup.Button id="bold">Bold</ToggleButtonGroup.Button>
+          <ToggleButtonGroup.Button id="italic">
+            Italic
+          </ToggleButtonGroup.Button>
+          <ToggleButtonGroup.Button id="underline">
+            Underline
+          </ToggleButtonGroup.Button>
+        </ToggleButtonGroup.Root>
+      </Stack>
+
+      <Stack gap="300">
+        <Text fontWeight="700" fontSize="500">
+          Standalone ToggleButton — resting chrome (always neutral)
+        </Text>
+        <Stack direction="row" gap="400" alignItems="center">
           {variants.map((v) => (
-            <ToggleButtonGroup.Root
-              key={v}
-              variant={v}
-              colorPalette="critical"
-              defaultSelectedKeys={["center"]}
-              aria-label={`${v} critical group`}
-            >
-              <ToggleButtonGroup.Button id="left">
-                {v}
-              </ToggleButtonGroup.Button>
-              <ToggleButtonGroup.Button id="center">
-                On
-              </ToggleButtonGroup.Button>
-              <ToggleButtonGroup.Button id="right">
-                Off
-              </ToggleButtonGroup.Button>
-            </ToggleButtonGroup.Root>
+            <ToggleButton key={v} variant={v}>
+              {v}
+            </ToggleButton>
           ))}
         </Stack>
       </Stack>

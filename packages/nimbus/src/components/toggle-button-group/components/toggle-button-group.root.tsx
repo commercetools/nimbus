@@ -10,9 +10,20 @@ import type { ToggleButtonGroupRootComponent } from "../toggle-button-group.type
 export const ToggleButtonGroupRoot: ToggleButtonGroupRootComponent = (
   props
 ) => {
-  const { ref, children, ...rest } = props;
+  const { ref, children, fillStyle, selectionMode, ...rest } = props;
+  // FEC-1170: default the active-fill weight from selectionMode. Single-select
+  // leads the eye with a solid fill; multi-select stays quiet (tint) so several
+  // active buttons don't compete for attention. Explicitly overridable via the
+  // `fillStyle` prop.
+  const resolvedFillStyle =
+    fillStyle ?? (selectionMode === "multiple" ? "tint" : "solid");
   return (
-    <ToggleButtonGroupRootSlot ref={ref} {...rest}>
+    <ToggleButtonGroupRootSlot
+      ref={ref}
+      fillStyle={resolvedFillStyle}
+      selectionMode={selectionMode}
+      {...rest}
+    >
       {children}
     </ToggleButtonGroupRootSlot>
   );
