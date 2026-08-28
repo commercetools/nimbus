@@ -207,3 +207,89 @@ Layer-1: line, area, vertical/horizontal bar, grouped bar, stacked bar, donut,
 stat card (table still missing). Layer-3 specialists: cohort heatmap, funnel,
 Sankey. Infra: theme, color scale, responsive, lazy (not yet), chart frame,
 axes, legend, SVG tooltip.
+
+---
+
+## Batch 4 — parallel build: 6 charts + the selection engine (2026-08-28)
+
+Ran three background subagents in parallel against disjoint directories
+(orchestrator kept the barrel, gallery, and shared types), then integrated in
+one pass. Added **WaterfallChart, BulletChart, Gauge** (TARGET/DELTA family),
+**Histogram, BoxPlot, Treemap** (DIST + hierarchical), and **the selection
+engine + DataTable fallback** (the brain). All 16 chart families plus the
+resolver verified in the gallery, light and dark; integrated package typechecks
+and builds (~95 kB ESM). The parallelization worked cleanly — each agent's dirs
+typechecked in isolation and composed with a barrel + gallery edit only.
+
+### The brain works — and is visible
+
+`resolve({ intent, data }, size)` → filter → rank → stable tie-break → render,
+with a guaranteed fail-safe. In the gallery: a **COMPARE** request resolves to a
+bar chart; a **GEO** request (no chart serves it) falls back to the themed
+**DataTable** with a human-readable reason; malformed data does the same without
+throwing. `<ResolvedChart>` additionally wraps the chosen chart in a
+**render-time error boundary** — so selection covers _choosing_ and the boundary
+covers _rendering_, together closing the batch-3 "one throwing chart blanked the
+page" finding.
+
+### RFC-level findings this batch produced
+
+- **Abstract `acceptedShapes` cannot gate rendering by itself — the strongest
+  finding.** One abstract shape maps to incompatible concrete structures:
+  _part-to-whole_ is served by Donut from a flat `CategoryDatum[]` **and** by
+  StackedBar from `StackRow[]`. Filtering on the abstract shape alone would let
+  a chart "accept" data it can't draw. The engine added a concrete
+  **`DataKind`** render-guard as the operative filter; `acceptedShapes` stays as
+  the doc-06 contract. **The RFC must decide whether the metadata shape key is
+  the abstract taxonomy, a concrete kind, or both.**
+- **The single entity-id convention is now codified** as `ENTITY_ID_ACCESSOR`
+  per shape (`series.id`, `datum.category`, `row.category`/`segment.key`,
+  `point.group`, `row.label`, `stage.stage`); the resolver, render adapters, and
+  `useEntityColors` all key on the same string. This is the batch-3 live bug,
+  now a contract — **the RFC should ratify it as spanning data shapes AND
+  selection metadata.**
+- **The preset model is validated.** BarChart is registered as **two presets** —
+  `bar-chart` (COMPARE-primary, vertical) and `ranked-bar-chart` (RANK-primary,
+  horizontal) — one React component, two catalog entries with different
+  metadata. This is exactly the doc-04/05 "preset = base + defaultProps +
+  metadata" idea, and it's what makes RANK vs COMPARE resolve to different
+  layouts.
+- **Coverage gap:** flat `CategoryDatum[]` PART-WHOLE with >6 categories has
+  only Donut (capped at 6) → it falls back to the table. Doc-06's own worked
+  example (12-category → segmented bar) isn't reachable from flat data because
+  no flat "segmented / 100% single-bar" preset exists yet. A real preset gap to
+  fill.
+- **Theme gap: no on-accent / on-categorical text role.** Treemap labels sit on
+  saturated categorical fills and need contrast-safe light text; only the
+  heatmap avoids this by thresholding a sequential `t`. Categorical fills have
+  no scalar to threshold → the theme needs an explicit "text-on-fill" role.
+
+### Smaller, concrete items
+
+- **`format.ts` needs `formatSignedCompact`** (Waterfall composed signs
+  locally).
+- **Radial gotchas:** `@visx/shape` `Arc` is generic with no default → needs an
+  explicit `<Arc<unknown>>`; the d3-shape angle convention (0 at 12 o'clock,
+  clockwise) warrants a shared radial-angle helper for future gauges/dials.
+- **visx name collisions:** `@visx/stats` `BoxPlot` and `@visx/hierarchy`
+  `Treemap` clash with our component names → import aliases. `@visx/hierarchy`
+  re-exports `hierarchy` (no extra d3 dep).
+- **Label density**, again: Waterfall's category axis labels overlap at small
+  widths and Bullet's value label can collide with the target tick — reinforces
+  the deferred "measured margins + label-collision handling" need.
+- StrictMode double-renders `<ResolvedChart>` in dev, so telemetry can
+  double-emit there (harmless; note for any real telemetry wiring).
+
+### Catalog coverage (doc 04) after batch 4
+
+Layer-1: stat card, line/area, vertical/horizontal/grouped/stacked bar, donut,
+histogram, **data table (as the fallback)**. Layer-2/3 specialists: heatmap
+(cohort), funnel, Sankey, waterfall, bullet, gauge, box plot, treemap. Layer-4:
+theme + entity color scale + sequential ramp, responsive, chart frame, axes,
+legend, SVG tooltip, **the selection engine (metadata + registry + resolver +
+telemetry) with error-boundary + DataTable fail-safe**. Still missing: Layer-2
+overlays (reference line/band, target, benchmark), the remaining Tier-3 tail
+(scatter done; still bump/slope/dumbbell/radar/control-chart/pareto/geo/RFM/
+parallel-coords/streamgraph/calendar), `ChartFromSpec`, lazy-loading, the
+machine-readable catalog surface, a shared interaction primitive, and a11y
+depth.
