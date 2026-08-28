@@ -293,3 +293,82 @@ overlays (reference line/band, target, benchmark), the remaining Tier-3 tail
 parallel-coords/streamgraph/calendar), `ChartFromSpec`, lazy-loading, the
 machine-readable catalog surface, a shared interaction primitive, and a11y
 depth.
+
+---
+
+## Batch 5 — Layer-2 overlays: the composition contract (2026-08-28)
+
+Built the seven overlays doc 04 calls for — **ReferenceLine, ThresholdBand,
+TargetMarker, TrendLine, ErrorBars, ConfidenceBand, BenchmarkSeries** — and
+wired three base charts (LineChart, ScatterPlot, vertical BarChart) to host
+them. All verified in the gallery, light and dark; library typechecks and
+tsup-builds (~107 kB ESM, +12 kB for the overlay set). This is the piece that
+unlocks the preset multiplier: one base + a stock overlay = a new named preset,
+no new component.
+
+### The composition contract (the batch's central finding)
+
+- **Overlays compose as `children`, reading a published scale context.** A base
+  chart wraps its inner plot in `<ChartScaleProvider>`
+  (`src/chart/scale-context.tsx`) exposing a uniform
+  `{ yScale, xScale, xBandwidth, innerWidth, innerHeight }`; overlays call
+  `useChartScales()` and draw in the same margin-inset space as the marks.
+  Consumer API is exactly the idiom you'd hope for:
+  `<LineChart …><ThresholdBand … /><ReferenceLine … /></LineChart>`. **The RFC
+  should ratify this as the overlay contract** — it makes "preset = base +
+  overlay + defaults" literally a base element with overlay children.
+- **The base chart owns scale-shape adaptation; overlays stay scale-agnostic.**
+  Each chart adapts its native scale (time / linear / band) to the uniform
+  accessors — line wraps its time scale, scatter its linear, bar centres on its
+  band. So one `ReferenceLine` works across every host without knowing the x
+  type. This adaptation seam is the reason the contract stays small.
+- **Overlays are non-interactive by construction.** Every overlay wraps in
+  `<g style={{ pointerEvents: "none" }}>`, so a full-width `ThresholdBand` rect
+  can render _on top of_ the marks without stealing the hover/crosshair beneath
+  it. That single rule let us keep ONE `children` slot (annotations on top)
+  instead of splitting underlay/overlay layers. It's a clean default; a
+  production API may still want an explicit behind-marks slot for opaque fills.
+- **Overlay values can exceed the base chart's domain.** The host computes its
+  y-domain from its own series; a `ConfidenceBand`/`ReferenceLine` beyond that
+  range draws outside the plot (into the margin) — we hand-tuned the demo band
+  to ±10 % to stay in-frame. → **RFC/impl decision: should a chart optionally
+  union its overlays' extents into its scale?** (Probably yes, opt-in, since a
+  target line above every bar is a real and common case.)
+
+### Overlay-specific notes
+
+- **ReferenceLine vs. TargetMarker earn their separateness.** ReferenceLine is a
+  full-width dashed level (threshold/SLA). TargetMarker is an axis-anchored
+  caret
+  - faint guide ("the goal is _here_") that reads over bars without a dominating
+    line. Both are value-axis primitives; both took the same `OverlayVariant`
+    role enum (`neutral | accent | positive | negative`) so an overlay never
+    names a hue — same discipline as the base charts.
+- **TrendLine fits in data space, maps only endpoints.** Least-squares slope /
+  intercept computed from the raw points, then two points mapped through the
+  scales — no per-pixel work, degenerate (vertical) fits guarded to `null`.
+- **ConfidenceBand = continuous, ErrorBars = discrete.** Same `{x, low, high}`
+  shape; the band is a visx `Area` with `y0/y1`, the bars are capped whiskers.
+  Keeping both is worth it — forecast envelopes vs. per-point CIs are different
+  asks that doc 04 lumped into one row.
+- **Transposed value axis is the one gap.** The contract is expressed as x/y, so
+  the _ranked_ (horizontal) BarChart — whose value axis is x — is not yet an
+  overlay host (it accepts `children` but ignores them). → The RFC's contract
+  may be better phrased as **value-axis / category-axis** than x/y, so a
+  transposed chart hosts the same overlays unchanged.
+- **Label collisions, yet again.** On the area demo the `ThresholdBand` and
+  `ReferenceLine` labels both right-anchor and overlap when their levels are
+  close. Third sighting of the deferred "measured margins + label-collision"
+  need — now firmly an RFC must-have, not a nice-to-have.
+- Added `formatSignedCompact` (`+~s`) to `format.ts` — the batch-4 to-do; useful
+  for signed overlay/delta labels.
+
+### Catalog coverage (doc 04) after batch 5
+
+Layer-2 overlays now exist: ReferenceLine, ThresholdBand, TargetMarker,
+TrendLine, ErrorBars, ConfidenceBand, BenchmarkSeries (+ the
+`ChartScaleProvider` contract they compose through). Base hosts wired:
+line/area, scatter, vertical bar. Next: the **preset-registration pass** — turn
+base × overlay × defaults × metadata into named catalog entries and grow
+`chartRegistry` toward ~100 from the doc-02 intent×shape matrix and doc-03
+persona questions.

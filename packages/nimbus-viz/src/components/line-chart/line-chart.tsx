@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scaleLinear, scaleTime } from "@visx/scale";
 import { AreaClosed, LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveMonotoneX } from "@visx/curve";
 import { extent, max } from "d3-array";
 import { ChartFrame } from "../../chart/chart-frame";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import { Legend } from "../../chart/legend";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
@@ -18,6 +20,9 @@ export interface LineChartProps {
   series: Series[];
   variant?: "line" | "area";
   ariaLabel?: string;
+  /** Layer-2 overlays (ReferenceLine, ThresholdBand, BenchmarkSeries…) drawn
+   *  in the plot's coordinate space, on top of the series. */
+  children?: ReactNode;
 }
 
 const toDate = (x: number | Date): Date =>
@@ -34,6 +39,7 @@ export function LineChart({
   series,
   variant = "line",
   ariaLabel,
+  children,
 }: LineChartProps) {
   const theme = useChartTheme();
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
@@ -76,7 +82,15 @@ export function LineChart({
           });
 
           return (
-            <>
+            <ChartScaleProvider
+              value={{
+                yScale: (v) => yScale(v),
+                xScale: (v) => xScale(v instanceof Date ? v : new Date(v)),
+                xBandwidth: 0,
+                innerWidth,
+                innerHeight,
+              }}
+            >
               <GridRows
                 ticks={yScale.ticks(4)}
                 y={(t) => yScale(t)}
@@ -129,6 +143,8 @@ export function LineChart({
                   />
                 );
               })}
+
+              {children}
 
               {hoverIndex != null && hoveredX != null && (
                 <>
@@ -192,7 +208,7 @@ export function LineChart({
                   ]}
                 />
               )}
-            </>
+            </ChartScaleProvider>
           );
         }}
       </ChartFrame>

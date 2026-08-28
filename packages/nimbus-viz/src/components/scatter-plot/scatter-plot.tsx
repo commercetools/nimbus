@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { extent } from "d3-array";
 import { ChartFrame } from "../../chart/chart-frame";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import { Legend } from "../../chart/legend";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
@@ -15,6 +17,8 @@ export interface ScatterPlotProps {
   height: number;
   points: ScatterPoint[];
   ariaLabel?: string;
+  /** Layer-2 overlays (TrendLine, ReferenceLine…) drawn on top of the points. */
+  children?: ReactNode;
 }
 
 /**
@@ -27,6 +31,7 @@ export function ScatterPlot({
   height,
   points,
   ariaLabel,
+  children,
 }: ScatterPlotProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
@@ -77,7 +82,15 @@ export function ScatterPlot({
           });
           const hp = hover != null ? points[hover] : null;
           return (
-            <>
+            <ChartScaleProvider
+              value={{
+                yScale: (v) => yScale(v),
+                xScale: (v) => xScale(v instanceof Date ? +v : v),
+                xBandwidth: 0,
+                innerWidth,
+                innerHeight,
+              }}
+            >
               <GridRows
                 ticks={yScale.ticks(4)}
                 y={(t) => yScale(t)}
@@ -114,6 +127,7 @@ export function ScatterPlot({
                   onMouseLeave={() => setHover(null)}
                 />
               ))}
+              {children}
               {hp && (
                 <SvgTooltip
                   x={xScale(hp.x)}
@@ -125,7 +139,7 @@ export function ScatterPlot({
                   ]}
                 />
               )}
-            </>
+            </ChartScaleProvider>
           );
         }}
       </ChartFrame>
