@@ -54,6 +54,7 @@ const lineMeta: ChartSelectionMetadata = {
   perceptualRank: 0.95,
   questionString: "How is this trending over time?",
   bundleWeight: 12,
+  configLabel: "LineChart",
 };
 
 const barMeta: ChartSelectionMetadata = {
@@ -70,6 +71,7 @@ const barMeta: ChartSelectionMetadata = {
   perceptualRank: 0.9,
   questionString: "How do these categories compare?",
   bundleWeight: 8,
+  configLabel: "BarChart (vertical)",
 };
 
 const rankedBarMeta: ChartSelectionMetadata = {
@@ -85,6 +87,7 @@ const rankedBarMeta: ChartSelectionMetadata = {
   perceptualRank: 0.92,
   questionString: "Where does each item rank?",
   bundleWeight: 8,
+  configLabel: "BarChart (ranked)",
 };
 
 const stackedMeta: ChartSelectionMetadata = {
@@ -102,6 +105,7 @@ const stackedMeta: ChartSelectionMetadata = {
   perceptualRank: 0.72,
   questionString: "What is the composition across categories?",
   bundleWeight: 10,
+  configLabel: "StackedBarChart",
 };
 
 const donutMeta: ChartSelectionMetadata = {
@@ -115,6 +119,7 @@ const donutMeta: ChartSelectionMetadata = {
   perceptualRank: 0.45,
   questionString: "What share is each part of the whole?",
   bundleWeight: 9,
+  configLabel: "DonutChart",
 };
 
 const scatterMeta: ChartSelectionMetadata = {
@@ -128,6 +133,7 @@ const scatterMeta: ChartSelectionMetadata = {
   perceptualRank: 0.8,
   questionString: "How do these two variables relate?",
   bundleWeight: 9,
+  configLabel: "ScatterPlot",
 };
 
 const heatmapMeta: ChartSelectionMetadata = {
@@ -144,6 +150,7 @@ const heatmapMeta: ChartSelectionMetadata = {
   perceptualRank: 0.35,
   questionString: "How does behavior evolve across the cohort matrix?",
   bundleWeight: 11,
+  configLabel: "Heatmap",
 };
 
 const funnelMeta: ChartSelectionMetadata = {
@@ -156,6 +163,7 @@ const funnelMeta: ChartSelectionMetadata = {
   perceptualRank: 0.6,
   questionString: "How much drops off at each stage of the flow?",
   bundleWeight: 6,
+  configLabel: "FunnelChart",
 };
 
 /**

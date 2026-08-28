@@ -461,3 +461,23 @@ DIST/VALUE/DELTA/GEO base-wiring above, the remaining Tier-3 chart tail,
 `ChartFromSpec`, lazy-loading, a shared interaction primitive, measured
 margins + label-collision handling (now sighted in every overlay/preset batch),
 and a11y depth.
+
+### Batch 6a — configuration signature: 66 entries collapse to 19 configs
+
+Browsing the catalog surfaced that the **persona axis and the configuration axis
+are separable**, and conflating them reads as duplication: `revenue-trend`,
+`margin-trend`, `csat-nps-trend`, … are one configuration (`LineChart`) asked by
+eight personas. Added a `configLabel` to the metadata — a structural signature
+of **base + variant + sorted overlay set**, ignoring persona, annotation text,
+and threshold values (two entries with the same label render identically for the
+same data). The 66 entries collapse to **19 distinct configurations**; the
+gallery's catalog browser now defaults to the deduped "Configurations" view
+(with a "Presets" toggle for the per-persona list, and each config expandable to
+the presets that share it).
+
+**RFC finding:** the ~100 catalog is ~20 configurations × personas, not ~100
+independent charts. That reframes the count honestly (a small, enumerable
+configuration space; a large, open persona/question space) and suggests the
+machine-readable catalog should carry the config signature as a first-class
+field so an agent can reason about "distinct chart shapes" separately from
+"which question."

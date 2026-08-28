@@ -114,7 +114,10 @@ function selfScatterPoints(req: ResolveRequest): { x: number; y: number }[] {
 type OverlayBuilder = (request: ResolveRequest) => ReactNode;
 
 interface OverlaySpec {
+  /** Overlay component name (catalog surface). */
   name: string;
+  /** Config-signature label incl. variant (dedup key); ignores threshold text. */
+  label: string;
   build: OverlayBuilder;
 }
 
@@ -126,6 +129,7 @@ function refLine(
 ): OverlaySpec {
   return {
     name: "ReferenceLine",
+    label: `ReferenceLine (${variant})`,
     build: (req) => (
       <ReferenceLine
         value={num(req, "target") ?? fallback}
@@ -145,6 +149,7 @@ function thresholdBand(
 ): OverlaySpec {
   return {
     name: "ThresholdBand",
+    label: `ThresholdBand (${variant})`,
     build: (req) => (
       <ThresholdBand
         from={num(req, "rangeLow") ?? loFallback}
@@ -164,6 +169,7 @@ function targetMarker(
 ): OverlaySpec {
   return {
     name: "TargetMarker",
+    label: `TargetMarker (${variant})`,
     build: (req) => (
       <TargetMarker
         value={num(req, "target") ?? fallback}
@@ -178,6 +184,7 @@ function targetMarker(
 function benchmark(label: string): OverlaySpec {
   return {
     name: "BenchmarkSeries",
+    label: "BenchmarkSeries",
     build: (req) => {
       const pts = xyPoints(req, "benchmark");
       return pts.length >= 2 ? (
@@ -191,6 +198,7 @@ function benchmark(label: string): OverlaySpec {
 function confidence(): OverlaySpec {
   return {
     name: "ConfidenceBand",
+    label: "ConfidenceBand",
     build: (req) => {
       const pts = bandPoints(req, "band");
       return pts.length >= 2 ? <ConfidenceBand points={pts} /> : null;
@@ -202,6 +210,7 @@ function confidence(): OverlaySpec {
 function errorBars(): OverlaySpec {
   return {
     name: "ErrorBars",
+    label: "ErrorBars",
     build: (req) => {
       const pts = bandPoints(req, "errors");
       return pts.length ? <ErrorBars points={pts} /> : null;
@@ -213,11 +222,46 @@ function errorBars(): OverlaySpec {
 function trend(): OverlaySpec {
   return {
     name: "TrendLine",
+    label: "TrendLine",
     build: (req) => {
       const pts = selfScatterPoints(req);
       return pts.length >= 2 ? <TrendLine points={pts} /> : null;
     },
   };
+}
+
+/** Human-readable base name for a config signature. */
+const BASE_DISPLAY: Record<BaseName, string> = {
+  line: "LineChart",
+  "bar-vertical": "BarChart (vertical)",
+  "bar-horizontal": "BarChart (ranked)",
+  donut: "DonutChart",
+  stacked: "StackedBarChart",
+  scatter: "ScatterPlot",
+  heatmap: "Heatmap",
+  funnel: "FunnelChart",
+};
+
+/**
+ * The structural configuration signature — base + variant + sorted overlay
+ * labels, ignoring persona / annotation text / threshold values. Two entries
+ * with the same result render identically for the same data, so it is the
+ * dedup key for "the exhaustive list of distinct configurations".
+ */
+export function configLabelFor(
+  base: BaseName,
+  defaults: Record<string, unknown> | undefined,
+  overlays: OverlaySpec[] | undefined
+): string {
+  const variant = defaults?.variant === "area" ? " · area" : "";
+  const ov = overlays?.length
+    ? " + " +
+      overlays
+        .map((o) => o.label)
+        .sort()
+        .join(" + ")
+    : "";
+  return `${BASE_DISPLAY[base]}${variant}${ov}`;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -352,6 +396,7 @@ export function presetToEntry(preset: PresetDefinition): ChartRegistryEntry {
     bundleWeight: preset.bundleWeight,
     overlays: preset.overlays?.map((o) => o.name),
     persona: preset.persona,
+    configLabel: configLabelFor(preset.base, preset.defaults, preset.overlays),
   };
 
   return { metadata, dataKinds: preset.dataKinds, render, canonical: false };
