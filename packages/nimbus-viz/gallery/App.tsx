@@ -2,10 +2,12 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import {
   BarChart,
+  BenchmarkSeries,
   BoxPlot,
   BulletChart,
   ChartThemeProvider,
   ColorScaleProvider,
+  ConfidenceBand,
   DonutChart,
   FunnelChart,
   Gauge,
@@ -13,13 +15,17 @@ import {
   Heatmap,
   Histogram,
   LineChart,
+  ReferenceLine,
   ResolvedChart,
   ResponsiveContainer,
   SankeyDiagram,
   ScatterPlot,
   StackedBarChart,
   StatCard,
+  TargetMarker,
+  ThresholdBand,
   Treemap,
+  TrendLine,
   WaterfallChart,
   resolveRoles,
   useChartTheme,
@@ -39,6 +45,8 @@ import {
   latencyByRegion,
   multiSeries,
   orderValues,
+  plan,
+  revenueForecast,
   revenueSeries,
   revenueTree,
   scatter,
@@ -297,6 +305,59 @@ export function App() {
             <Card title="Revenue tree — treemap">
               <ResponsiveContainer height={260}>
                 {(w, h) => <Treemap width={w} height={h} data={revenueTree} />}
+              </ResponsiveContainer>
+            </Card>
+
+            <Card title="Revenue vs. plan — area + band + target + benchmark">
+              <ResponsiveContainer height={240}>
+                {(w, h) => (
+                  <LineChart
+                    width={w}
+                    height={h}
+                    series={revenueSeries}
+                    variant="area"
+                  >
+                    <ThresholdBand
+                      from={200}
+                      to={260}
+                      variant="positive"
+                      label="Healthy"
+                    />
+                    <ReferenceLine value={240} label="Target" />
+                    <BenchmarkSeries points={plan} label="Plan" />
+                  </LineChart>
+                )}
+              </ResponsiveContainer>
+            </Card>
+
+            <Card title="Forecast envelope — line + confidence band">
+              <ResponsiveContainer height={240}>
+                {(w, h) => (
+                  <LineChart width={w} height={h} series={revenueSeries}>
+                    <ConfidenceBand points={revenueForecast} />
+                  </LineChart>
+                )}
+              </ResponsiveContainer>
+            </Card>
+
+            <Card title="AOV vs. orders — scatter + trend line">
+              <ResponsiveContainer height={260}>
+                {(w, h) => (
+                  <ScatterPlot width={w} height={h} points={scatter}>
+                    <TrendLine points={scatter} />
+                  </ScatterPlot>
+                )}
+              </ResponsiveContainer>
+            </Card>
+
+            <Card title="Sales vs. target — bars + target marker">
+              <ResponsiveContainer height={240}>
+                {(w, h) => (
+                  <BarChart width={w} height={h} data={channels}>
+                    <ReferenceLine value={3000} label="Avg" />
+                    <TargetMarker value={4000} label="Goal" />
+                  </BarChart>
+                )}
               </ResponsiveContainer>
             </Card>
 

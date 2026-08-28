@@ -13,6 +13,11 @@ export type { LegendItem } from "./chart/legend";
 export { GridRows, leftTickLabel, bottomTickLabel } from "./chart/axes";
 export { SvgTooltip } from "./chart/svg-tooltip";
 export type { SvgTooltipProps } from "./chart/svg-tooltip";
+export { ChartScaleProvider, useChartScales } from "./chart/scale-context";
+export type {
+  ChartScales,
+  ChartScaleProviderProps,
+} from "./chart/scale-context";
 export * from "./chart/format";
 
 // Infrastructure
@@ -55,6 +60,9 @@ export { BoxPlot } from "./components/box-plot";
 export type { BoxPlotProps, BoxPlotGroupStats } from "./components/box-plot";
 export { Treemap } from "./components/treemap";
 export type { TreemapProps, TreemapNode } from "./components/treemap";
+
+// Layer-2 overlays (composable annotations over base charts)
+export * from "./overlays";
 
 // Selection engine ("the brain") + DataTable fallback
 export * from "./selection";

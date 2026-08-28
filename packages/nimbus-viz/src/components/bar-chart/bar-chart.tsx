@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { max } from "d3-array";
 import { ChartFrame } from "../../chart/chart-frame";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
@@ -16,6 +18,11 @@ export interface BarChartProps {
   /** "horizontal" = ranked bars (sorted desc, direct value labels). */
   orientation?: "vertical" | "horizontal";
   ariaLabel?: string;
+  /** Layer-2 overlays (ReferenceLine, TargetMarker…) on the value axis. Wired
+   *  for the vertical orientation, where the value axis is y; the ranked
+   *  (horizontal) orientation transposes the value axis and is not yet a
+   *  supported overlay surface (see docs/09). */
+  children?: ReactNode;
 }
 
 /**
@@ -29,6 +36,7 @@ export function BarChart({
   data,
   orientation = "vertical",
   ariaLabel,
+  children,
 }: BarChartProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
@@ -139,7 +147,18 @@ export function BarChart({
         });
         const bw = xScale.bandwidth();
         return (
-          <>
+          <ChartScaleProvider
+            value={{
+              yScale: (v) => yScale(v),
+              xScale: (v) => {
+                const cat = rows[Math.round(Number(v))]?.category;
+                return cat != null ? (xScale(cat) ?? 0) + bw / 2 : 0;
+              },
+              xBandwidth: bw,
+              innerWidth,
+              innerHeight,
+            }}
+          >
             <GridRows
               ticks={yScale.ticks(4)}
               y={(t) => yScale(t)}
@@ -180,7 +199,8 @@ export function BarChart({
                 />
               );
             })}
-          </>
+            {children}
+          </ChartScaleProvider>
         );
       }}
     </ChartFrame>

@@ -1,7 +1,9 @@
 import type {
+  BenchmarkPoint,
   BoxPlotGroupStats,
   BulletDatum,
   CategoryDatum,
+  ConfidenceBandPoint,
   FlowGraph,
   FunnelStage,
   HeatRow,
@@ -233,3 +235,19 @@ export const compareRequest: ResolveRequest = {
   data: channels,
 };
 export const geoRequest: ResolveRequest = { intent: "GEO", data: channels };
+
+// ── Overlay (Layer 2) demo data, derived from the single-series revenue line ──
+const revPts = revenueSeries[0].data;
+
+/** A "plan" comparison line laid under the actuals (BenchmarkSeries). */
+export const plan: BenchmarkPoint[] = revPts.map((p) => ({
+  x: p.x,
+  y: (p.y ?? 0) * 0.88,
+}));
+
+/** A ±10% forecast envelope hugging the actuals (ConfidenceBand). */
+export const revenueForecast: ConfidenceBandPoint[] = revPts.map((p) => ({
+  x: p.x,
+  low: (p.y ?? 0) * 0.9,
+  high: (p.y ?? 0) * 1.1,
+}));
