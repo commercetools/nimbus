@@ -481,3 +481,74 @@ configuration space; a large, open persona/question space) and suggests the
 machine-readable catalog should carry the config signature as a first-class
 field so an agent can reason about "distinct chart shapes" separately from
 "which question."
+
+---
+
+## Batch 7 — 13 specialized components via parallel subagents (2026-08-28)
+
+Prioritized building CHART COMPONENTS over wiring the brain (user's call:
+breadth first). Fanned 13 components across 6 background subagents on disjoint
+new dirs, orchestrator owning the shared files (barrel, gallery, `chart/types`):
+**StackedAreaChart, Streamgraph, SlopeChart, DumbbellChart, BumpChart,
+BubbleChart, Sparkline, RadarChart, ParallelCoordinates, CalendarHeatmap,
+RfmGrid, ControlChart, ParetoChart.** All typecheck + build clean (ESM ~205 kB),
+render in the gallery light+dark. Component count ~32 → **~45 of ~54**.
+
+### Findings (RFC-level)
+
+- **Dependency reality vs. the "d3 is available" assumption — a real
+  supply-chain/DX finding.** Only `@visx/*` + `d3-array` / `d3-format` /
+  `d3-time-format` actually resolve; `d3-shape`, `d3-scale`, `d3-time` are NOT
+  nimbus-viz deps (don't resolve at runtime even though `@types` may satisfy
+  tsc). Three agents independently hit this and worked around it with visx
+  equivalents: `AreaStack` `offset="wiggle"`/`order="insideout"` instead of
+  d3-shape stack offsets; manual sin/cos for the radar polar geometry; integer
+  UTC day-index math for the calendar buckets instead of `timeWeek`/`timeDay`. →
+  RFC/tooling decision: either add those d3 packages to `catalog:viz`, or
+  standardize on the `@visx` wrappers and document it. **typecheck-clean ≠
+  runtime-resolvable — the build/gallery is the real gate.**
+- **The "single value-axis" rule needs scoping.** It is about time / bar /
+  magnitude charts. RadarChart and ParallelCoordinates are inherently
+  multi-dimensional — parallel-coords gives each axis its OWN independent scale
+  (that's the point), radar shares one radial scale across spokes. Neither fits
+  `ChartFrame`'s cartesian margin model, so both used a plain centered `<svg>` /
+  widened margins. RFC: exempt inherently multi-axis forms from the single-axis
+  rule, and note `ChartFrame` is cartesian-only (polar/parallel charts own their
+  layout).
+- **Pareto without a dual axis — codify this recipe.** The classic Pareto puts
+  cumulative % on a second y-axis (banned by the dataviz rule). The compliant
+  build: cumulative in ABSOLUTE units on the SAME axis (it ends at the grand
+  total) + a dashed 80%-of-total reference line, % annotated as text only. Clean
+  and single-axis — should be THE Pareto pattern in the library.
+- **Size scales couple to margins.** BubbleChart's largest bubble can exceed the
+  plot bounds (a big circle clips at the top edge). New assembly detail: a
+  radius-encoding chart must pad its plot by the max radius — another input to
+  the deferred "measured margins" work.
+- **The chrome must be opt-out for micro-charts.** Sparkline bypasses
+  `ChartFrame` (no margins/axes/grid, a few px inset) — confirms the frame
+  chrome should be optional, not assumed, so micro/inline charts (sparkline, and
+  eventually table-cell charts) aren't forced into axis margins.
+- **Label de-collision keeps recurring — someone started it.** SlopeChart labels
+  crowd when values are close; the agent added a greedy `spreadLabels` pass, and
+  DumbbellChart flares value labels to the outer side. These are the first
+  concrete stabs at the shared label-placement primitive the RFC keeps deferring
+  — worth extracting into `src/chart` rather than re-solving per chart.
+- **Parallel subagent orchestration scaled cleanly.** 6 agents / 13 components /
+  disjoint dirs; each defined its data types locally (exported from its own
+  `index.ts`) and never touched the shared files; integration was purely barrel
+  - gallery edits. The one friction was the dep-resolution surprise above, which
+    each agent self-diagnosed. This is a repeatable pattern for breadth work.
+
+### Catalog coverage (doc 04) after batch 7
+
+Built now spans Layer 1 (add StackedArea, Bubble, Sparkline), most of Layer 3
+(add Slope, Dumbbell, Bump, Radar, ParallelCoords, CalendarHeatmap, RFMGrid,
+ControlChart, Pareto, Streamgraph — alongside funnel/sankey/waterfall/treemap
+/heatmap), plus the 7 Layer-2 overlays and Layer-4 infra from prior batches.
+Still NOT built: **GeoMap** (needs bundled topojson/geo data — its own focused
+pass), Layer-4 **LazyChart / ChartFromSpec / EmptyState / LoadingSkeleton**, two
+Layer-2 overlays (**AnnotationCallout**, **Brush/Zoom**), and the
+**ChordDiagram** cut-candidate. Also still true: the 9 pre-batch-7 charts +
+these 13 are mostly NOT wired into the selection engine yet (only 8 canonical
+bases are) — brain wiring is the deferred next step, per the user's
+build-components-first call.

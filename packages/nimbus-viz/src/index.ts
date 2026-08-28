@@ -60,6 +60,42 @@ export { BoxPlot } from "./components/box-plot";
 export type { BoxPlotProps, BoxPlotGroupStats } from "./components/box-plot";
 export { Treemap } from "./components/treemap";
 export type { TreemapProps, TreemapNode } from "./components/treemap";
+export { StackedAreaChart } from "./components/stacked-area-chart";
+export type { StackedAreaChartProps } from "./components/stacked-area-chart";
+export { Streamgraph } from "./components/streamgraph";
+export type { StreamgraphProps } from "./components/streamgraph";
+export { SlopeChart } from "./components/slope-chart";
+export type { SlopeChartProps, SlopeRow } from "./components/slope-chart";
+export { DumbbellChart } from "./components/dumbbell-chart";
+export type {
+  DumbbellChartProps,
+  DumbbellRow,
+} from "./components/dumbbell-chart";
+export { BumpChart } from "./components/bump-chart";
+export type { BumpChartProps } from "./components/bump-chart";
+export { BubbleChart } from "./components/bubble-chart";
+export type { BubbleChartProps, BubblePoint } from "./components/bubble-chart";
+export { Sparkline } from "./components/sparkline";
+export type { SparklineProps } from "./components/sparkline";
+export { RadarChart } from "./components/radar-chart";
+export type { RadarChartProps, RadarSeries } from "./components/radar-chart";
+export { ParallelCoordinates } from "./components/parallel-coordinates";
+export type {
+  ParallelCoordinatesProps,
+  ParallelDimension,
+  ParallelRow,
+} from "./components/parallel-coordinates";
+export { CalendarHeatmap } from "./components/calendar-heatmap";
+export type {
+  CalendarHeatmapProps,
+  CalendarDatum,
+} from "./components/calendar-heatmap";
+export { RfmGrid } from "./components/rfm-grid";
+export type { RfmGridProps, RfmCell } from "./components/rfm-grid";
+export { ControlChart } from "./components/control-chart";
+export type { ControlChartProps } from "./components/control-chart";
+export { ParetoChart } from "./components/pareto-chart";
+export type { ParetoChartProps } from "./components/pareto-chart";
 
 // Layer-2 overlays (composable annotations over base charts)
 export * from "./overlays";
