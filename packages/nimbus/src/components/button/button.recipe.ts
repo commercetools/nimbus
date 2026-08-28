@@ -23,6 +23,13 @@ export const buttonRecipe = defineRecipe({
     transitionProperty: "common",
     transitionDuration: "moderate",
     focusVisibleRing: "outside",
+    // Tactile press feedback: nudge the button down 1px while held. Translate
+    // only — no scaling — so text/icons stay crisp and layout never reflows.
+    // Keyed off react-aria's `data-pressed` (set from `isPressed`) so it fires
+    // for pointer, keyboard, and touch alike.
+    "&[data-pressed]": {
+      transform: "translateY(1px)",
+    },
     _disabled: {
       layerStyle: "disabled",
     },
@@ -141,7 +148,7 @@ export const buttonRecipe = defineRecipe({
         borderWidth: "1px",
         borderColor: "colorPalette.7",
         color: "colorPalette.11",
-        transitionProperty: "background-color, border-color, color",
+        transitionProperty: "background-color, border-color, color, transform",
         transitionDuration: "moderate",
         _hover: {
           // Radix ladder: a transparent-resting element's hover is the faintest
