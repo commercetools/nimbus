@@ -638,3 +638,28 @@ render adapter + a named entry. This closes out the Tier-3 specialist tail;
 **ChordDiagram** remains the only unbuilt Layer-3 chart, and it's the documented
 cut-candidate (dense/niche; its commerce use — cross-sell/relationship matrix —
 is already served by Heatmap + Sankey per docs/03).
+
+---
+
+## Deferred / parked (settled decisions, fold into the RFC)
+
+- **GeoMap — deferred (no reliable boundary-data source).** A choropleth /
+  bubble map is only as trustworthy as its topojson: wrong or outdated borders
+  and licensing ambiguity make an unvetted map worse than no map. Parked until a
+  vetted, licensed boundary set is chosen (world + the commerce markets that
+  matter). The `GEO` intent already fails safe to the DataTable in the resolver,
+  so the catalog degrades gracefully in the meantime. **RFC action:** list
+  GeoMap as v1-deferred pending a data-sourcing decision, not a technical
+  blocker.
+- **ChordDiagram — cut** (see batch 8a): dense/niche, redundant with Heatmap +
+  Sankey for the commerce cross-sell use case.
+
+### Remaining after all chart work
+
+No chart types left to build except the two deferred/cut above. What's left is
+**not charts**: two Layer-2 interaction overlays (AnnotationCallout, Brush/Zoom;
+plus extracting the LineChart crosshair into a reusable overlay), and the
+Layer-4 production-hardening modules (LazyChart, ChartFromSpec,
+EmptyState/NoData, LoadingSkeleton). The next high-value move for the RFC is
+**consolidation** — folding these nine batches of findings into the contract
+docs (02 architecture / 04 inventory / 06 selection).
