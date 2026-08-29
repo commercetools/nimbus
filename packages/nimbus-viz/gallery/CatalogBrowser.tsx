@@ -54,7 +54,13 @@ const SAMPLE: Record<
   },
   "stack-row": { data: composition },
   scatter: { data: scatter },
-  "heat-row": { data: cohorts, options: { columnLabels: cohortPeriods } },
+  "heat-row": {
+    data: cohorts,
+    options: {
+      columnLabels: cohortPeriods,
+      periodLabels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    },
+  },
   funnel: { data: funnel },
   "slope-row": {
     data: slopeData,

@@ -253,6 +253,7 @@ const BASE_DISPLAY: Record<BaseName, string> = {
   parallel: "ParallelCoordinates",
   calendar: "CalendarHeatmap",
   rfm: "RfmGrid",
+  "cohort-triangle": "CohortTriangle",
 };
 
 /**
@@ -321,6 +322,7 @@ const RANK: Record<BaseName, number> = {
   parallel: 0.6,
   calendar: 0.4,
   rfm: 0.4,
+  "cohort-triangle": 0.4,
 };
 const WEIGHT: Record<BaseName, number> = {
   line: 12,
@@ -344,6 +346,7 @@ const WEIGHT: Record<BaseName, number> = {
   parallel: 12,
   calendar: 11,
   rfm: 11,
+  "cohort-triangle": 11,
 };
 const KIND: Record<BaseName, DataKind[]> = {
   line: ["series"],
@@ -367,6 +370,7 @@ const KIND: Record<BaseName, DataKind[]> = {
   parallel: ["parallel-row"],
   calendar: ["calendar"],
   rfm: ["rfm"],
+  "cohort-triangle": ["heat-row"],
 };
 const SHAPES: Record<BaseName, DataShape[]> = {
   line: ["time-series", "multi-time-series"],
@@ -390,6 +394,7 @@ const SHAPES: Record<BaseName, DataShape[]> = {
   parallel: ["multivariate"],
   calendar: ["time-series", "distribution"],
   rfm: ["distribution", "part-to-whole"],
+  "cohort-triangle": ["cohort-matrix"],
 };
 
 const t = (intent: Intent, primacy: Primacy = "primary"): IntentTag => ({
@@ -1131,6 +1136,13 @@ export const PRESETS: PresetDefinition[] = [
     base: "rfm",
     intents: [t("PART-WHOLE"), t("DIST", "secondary")],
     question: "RFM segment sizes and value?",
+    persona: "Customer Success Manager",
+  }),
+  def({
+    name: "cohort-triangle",
+    base: "cohort-triangle",
+    intents: [t("RETAIN")],
+    question: "Retention by cohort, calendar-aligned (seasonality)?",
     persona: "Customer Success Manager",
   }),
 ];

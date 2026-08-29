@@ -92,6 +92,8 @@ export type {
 } from "./components/calendar-heatmap";
 export { RfmGrid } from "./components/rfm-grid";
 export type { RfmGridProps, RfmCell } from "./components/rfm-grid";
+export { CohortTriangle } from "./components/cohort-triangle";
+export type { CohortTriangleProps } from "./components/cohort-triangle";
 export { ControlChart } from "./components/control-chart";
 export type { ControlChartProps } from "./components/control-chart";
 export { ParetoChart } from "./components/pareto-chart";
