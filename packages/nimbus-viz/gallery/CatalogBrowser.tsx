@@ -8,33 +8,36 @@ import {
 } from "../src";
 import type { ChartRegistryEntry, Intent } from "../src";
 import {
+  bubblePoints,
+  calendarData,
   channels,
+  channelTraffic,
   cohortPeriods,
   cohorts,
   composition,
+  dumbbellData,
   funnel,
-  plan,
-  revenueForecast,
-  revenueSeries,
+  parallelDimensions,
+  parallelRows,
+  radarAxes,
+  radarData,
+  rfmData,
   scatter,
+  slopeData,
 } from "./datasets";
 
 // Representative data per concrete DataKind, so ANY entry can be previewed.
-// Series/category carry a generous options bag (target, range, benchmark, band,
-// errors) so overlay-bearing configs render their overlays.
+// series/category carry an options bag (target, range, errors) so overlay-
+// bearing configs render their overlays; the multivariate/paired kinds pass the
+// axis/label options their charts need.
 const SAMPLE: Record<
   string,
   { data: unknown; options?: Record<string, unknown> }
 > = {
+  // Multi-series so stacked-area / streamgraph / bump preview meaningfully.
   series: {
-    data: revenueSeries,
-    options: {
-      target: 200,
-      rangeLow: 160,
-      rangeHigh: 210,
-      benchmark: plan,
-      band: revenueForecast,
-    },
+    data: channelTraffic,
+    options: { target: 450, rangeLow: 380, rangeHigh: 560 },
   },
   category: {
     data: channels,
@@ -53,6 +56,22 @@ const SAMPLE: Record<
   scatter: { data: scatter },
   "heat-row": { data: cohorts, options: { columnLabels: cohortPeriods } },
   funnel: { data: funnel },
+  "slope-row": {
+    data: slopeData,
+    options: { leftLabel: "Q1", rightLabel: "Q2" },
+  },
+  "dumbbell-row": {
+    data: dumbbellData,
+    options: { startLabel: "2023", endLabel: "2024" },
+  },
+  bubble: { data: bubblePoints },
+  "radar-series": { data: radarData, options: { axes: radarAxes } },
+  "parallel-row": {
+    data: parallelRows,
+    options: { dimensions: parallelDimensions },
+  },
+  calendar: { data: calendarData },
+  rfm: { data: rfmData },
 };
 
 /** A local boundary so one throwing preview never blanks the whole browser. */

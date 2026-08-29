@@ -84,12 +84,18 @@ export type DataShape =
   | "part-to-whole" // part-to-whole
   | "distribution" // distribution
   | "two-variable" // two-variable relationship
+  | "multivariate" // 3+ variables per record (radar / parallel coordinates)
   | "flows-net" // flows/net
   | "cohort-matrix" // cohort/retention matrix
   | "geographic" // geographic
   | "event-timeline"; // event/timeline
 
-/** All 13 shapes, enumerable. */
+/**
+ * All shapes, enumerable. docs/02 defined 13; the prototype added a 14th,
+ * `multivariate`, when radar / parallel-coordinates landed (batch 8) — the 13
+ * had no home for "3+ variables per record". RFC finding: the shape taxonomy
+ * needs the multivariate slot.
+ */
 export const DATA_SHAPES: readonly DataShape[] = [
   "single-value",
   "value-vs-target",
@@ -100,6 +106,7 @@ export const DATA_SHAPES: readonly DataShape[] = [
   "part-to-whole",
   "distribution",
   "two-variable",
+  "multivariate",
   "flows-net",
   "cohort-matrix",
   "geographic",
@@ -134,6 +141,13 @@ export type DataKind =
   | "scatter" // ScatterPoint[]
   | "heat-row" // HeatRow[]
   | "funnel" // FunnelStage[]
+  | "slope-row" // SlopeRow[]        (slope-chart)
+  | "dumbbell-row" // DumbbellRow[]  (dumbbell-chart)
+  | "bubble" // BubblePoint[]        (bubble-chart — scatter + size)
+  | "radar-series" // RadarSeries[]  (radar-chart)
+  | "parallel-row" // ParallelRow[]  (parallel-coordinates)
+  | "calendar" // CalendarDatum[]    (calendar-heatmap)
+  | "rfm" // RfmCell[]               (rfm-grid)
   | "unknown"; // unrecognized / malformed
 
 /* -------------------------------------------------------------------------- */

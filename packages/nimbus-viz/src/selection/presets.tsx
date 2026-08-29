@@ -240,6 +240,19 @@ const BASE_DISPLAY: Record<BaseName, string> = {
   scatter: "ScatterPlot",
   heatmap: "Heatmap",
   funnel: "FunnelChart",
+  "stacked-area": "StackedAreaChart",
+  streamgraph: "Streamgraph",
+  bump: "BumpChart",
+  sparkline: "Sparkline",
+  control: "ControlChart",
+  pareto: "ParetoChart",
+  slope: "SlopeChart",
+  dumbbell: "DumbbellChart",
+  bubble: "BubbleChart",
+  radar: "RadarChart",
+  parallel: "ParallelCoordinates",
+  calendar: "CalendarHeatmap",
+  rfm: "RfmGrid",
 };
 
 /**
@@ -280,7 +293,9 @@ export interface PresetDefinition {
   perceptualRank: number;
   bundleWeight: number;
   question: string;
-  persona: string;
+  persona?: string;
+  /** `true` = a canonical bare-intent answer (ranked by `resolve`). */
+  canonical?: boolean;
 }
 
 // Per-base defaults so a preset only states what makes it distinct.
@@ -293,6 +308,19 @@ const RANK: Record<BaseName, number> = {
   scatter: 0.8,
   heatmap: 0.35,
   funnel: 0.6,
+  "stacked-area": 0.7,
+  streamgraph: 0.55,
+  bump: 0.75,
+  sparkline: 0.9,
+  control: 0.9,
+  pareto: 0.85,
+  slope: 0.8,
+  dumbbell: 0.82,
+  bubble: 0.75,
+  radar: 0.5,
+  parallel: 0.6,
+  calendar: 0.4,
+  rfm: 0.4,
 };
 const WEIGHT: Record<BaseName, number> = {
   line: 12,
@@ -303,6 +331,19 @@ const WEIGHT: Record<BaseName, number> = {
   scatter: 9,
   heatmap: 11,
   funnel: 6,
+  "stacked-area": 12,
+  streamgraph: 12,
+  bump: 12,
+  sparkline: 6,
+  control: 12,
+  pareto: 9,
+  slope: 9,
+  dumbbell: 9,
+  bubble: 10,
+  radar: 11,
+  parallel: 12,
+  calendar: 11,
+  rfm: 11,
 };
 const KIND: Record<BaseName, DataKind[]> = {
   line: ["series"],
@@ -313,6 +354,19 @@ const KIND: Record<BaseName, DataKind[]> = {
   scatter: ["scatter"],
   heatmap: ["heat-row"],
   funnel: ["funnel"],
+  "stacked-area": ["series"],
+  streamgraph: ["series"],
+  bump: ["series"],
+  sparkline: ["series"],
+  control: ["series"],
+  pareto: ["category"],
+  slope: ["slope-row"],
+  dumbbell: ["dumbbell-row"],
+  bubble: ["bubble"],
+  radar: ["radar-series"],
+  parallel: ["parallel-row"],
+  calendar: ["calendar"],
+  rfm: ["rfm"],
 };
 const SHAPES: Record<BaseName, DataShape[]> = {
   line: ["time-series", "multi-time-series"],
@@ -323,6 +377,19 @@ const SHAPES: Record<BaseName, DataShape[]> = {
   scatter: ["two-variable"],
   heatmap: ["cohort-matrix"],
   funnel: ["flows-net"],
+  "stacked-area": ["multi-time-series", "time-series"],
+  streamgraph: ["multi-time-series", "time-series"],
+  bump: ["multi-time-series", "time-series"],
+  sparkline: ["time-series"],
+  control: ["time-series"],
+  pareto: ["distribution", "categorical"],
+  slope: ["categorical"],
+  dumbbell: ["categorical"],
+  bubble: ["two-variable"],
+  radar: ["multivariate"],
+  parallel: ["multivariate"],
+  calendar: ["time-series", "distribution"],
+  rfm: ["distribution", "part-to-whole"],
 };
 
 const t = (intent: Intent, primacy: Primacy = "primary"): IntentTag => ({
@@ -335,7 +402,8 @@ interface PresetInput {
   base: BaseName;
   intents: IntentTag[];
   question: string;
-  persona: string;
+  /** The docs/03 persona; omitted for canonical "which chart?" base entries. */
+  persona?: string;
   overlays?: OverlaySpec[];
   defaults?: Record<string, unknown>;
   constraints?: ChartConstraints;
@@ -343,6 +411,8 @@ interface PresetInput {
   bundleWeight?: number;
   acceptedShapes?: DataShape[];
   dataKinds?: DataKind[];
+  /** `true` registers this as a canonical bare-intent answer (see registry). */
+  canonical?: boolean;
 }
 
 function def(input: PresetInput): PresetDefinition {
@@ -361,6 +431,7 @@ function def(input: PresetInput): PresetDefinition {
     bundleWeight:
       input.bundleWeight ??
       WEIGHT[input.base] + (input.overlays?.length ? 2 : 0),
+    canonical: input.canonical ?? false,
   };
 }
 
@@ -399,7 +470,12 @@ export function presetToEntry(preset: PresetDefinition): ChartRegistryEntry {
     configLabel: configLabelFor(preset.base, preset.defaults, preset.overlays),
   };
 
-  return { metadata, dataKinds: preset.dataKinds, render, canonical: false };
+  return {
+    metadata,
+    dataKinds: preset.dataKinds,
+    render,
+    canonical: preset.canonical ?? false,
+  };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -884,6 +960,178 @@ export const PRESETS: PresetDefinition[] = [
     intents: [t("FLOW"), t("TARGET", "secondary")],
     question: "Quote-to-order conversion rate?",
     persona: "B2B Account Manager",
+  }),
+
+  /* --- Batch-8 canonical base entries (bare-intent answers) ------------ */
+  def({
+    name: "stacked-area-chart",
+    base: "stacked-area",
+    intents: [t("COMP-TIME"), t("TREND", "secondary")],
+    question: "How does the composition shift over time?",
+    canonical: true,
+  }),
+  def({
+    name: "bump-chart",
+    base: "bump",
+    intents: [t("RANK"), t("TREND", "secondary")],
+    question: "How do rankings change over time?",
+    canonical: true,
+  }),
+  def({
+    name: "control-chart",
+    base: "control",
+    intents: [t("RANGE"), t("BENCH", "secondary"), t("TREND", "secondary")],
+    question: "Is the process within control limits?",
+    canonical: true,
+  }),
+  def({
+    name: "pareto-chart",
+    base: "pareto",
+    intents: [t("DIST"), t("RANK", "secondary")],
+    question: "Which vital few causes drive most of the total?",
+    canonical: true,
+  }),
+  def({
+    name: "slope-chart",
+    base: "slope",
+    intents: [t("DELTA"), t("COMPARE", "secondary")],
+    question: "How did each item change between two moments?",
+    canonical: true,
+  }),
+  def({
+    name: "dumbbell-chart",
+    base: "dumbbell",
+    intents: [t("COMPARE"), t("DELTA", "secondary")],
+    question: "How far apart are the two values per category?",
+    canonical: true,
+  }),
+  def({
+    name: "bubble-chart",
+    base: "bubble",
+    intents: [t("REL"), t("COMPARE", "secondary")],
+    question: "How do two variables relate, weighted by a third?",
+    canonical: true,
+  }),
+  def({
+    name: "radar-chart",
+    base: "radar",
+    intents: [t("COMPARE")],
+    question: "How do profiles compare across many axes?",
+    canonical: true,
+  }),
+  def({
+    name: "parallel-coordinates",
+    base: "parallel",
+    intents: [t("REL")],
+    question: "How do records relate across many dimensions?",
+    canonical: true,
+  }),
+  def({
+    name: "calendar-heatmap",
+    base: "calendar",
+    intents: [t("TREND"), t("DIST", "secondary")],
+    question: "How does a daily value vary across the calendar?",
+    canonical: true,
+  }),
+  def({
+    name: "rfm-grid",
+    base: "rfm",
+    intents: [t("PART-WHOLE"), t("DIST", "secondary")],
+    question: "How are customers distributed across recency × frequency?",
+    canonical: true,
+  }),
+
+  /* --- Batch-8 presets on the new bases (persona questions) ------------ */
+  def({
+    name: "channel-mix-stream",
+    base: "streamgraph",
+    intents: [t("COMP-TIME")],
+    question: "How does channel mix flow over time?",
+    persona: "Marketing Manager",
+  }),
+  def({
+    name: "traffic-mix-over-time",
+    base: "stacked-area",
+    intents: [t("COMP-TIME")],
+    question: "How does traffic mix evolve over time?",
+    persona: "Growth / CRO Analyst",
+  }),
+  def({
+    name: "kpi-sparkline",
+    base: "sparkline",
+    intents: [t("TREND"), t("VALUE", "secondary")],
+    question: "What is the at-a-glance trend for this KPI?",
+    persona: "Store Owner",
+  }),
+  def({
+    name: "keyword-rank-movement",
+    base: "bump",
+    intents: [t("RANK"), t("TREND", "secondary")],
+    question: "Keyword ranking movement over time?",
+    persona: "SEO / Content Manager",
+  }),
+  def({
+    name: "api-error-control",
+    base: "control",
+    intents: [t("RANGE"), t("BENCH", "secondary")],
+    question: "Is the API error rate within control limits?",
+    persona: "Developer / Integrator",
+  }),
+  def({
+    name: "abc-inventory-pareto",
+    base: "pareto",
+    intents: [t("DIST")],
+    question: "Inventory value distribution (ABC)?",
+    persona: "Inventory Manager",
+  }),
+  def({
+    name: "yoy-category-change",
+    base: "slope",
+    intents: [t("DELTA"), t("COMPARE", "secondary")],
+    question: "Which categories grow / shrink YoY?",
+    persona: "Category / Catalog Manager",
+  }),
+  def({
+    name: "competitor-price-gap",
+    base: "dumbbell",
+    intents: [t("COMPARE")],
+    question: "How do our prices compare to competitors?",
+    persona: "Pricing Manager",
+  }),
+  def({
+    name: "price-vs-volume",
+    base: "bubble",
+    intents: [t("REL")],
+    question: "Discount effectiveness — revenue vs margin lost?",
+    persona: "Marketing Manager",
+  }),
+  def({
+    name: "product-feature-profile",
+    base: "radar",
+    intents: [t("COMPARE")],
+    question: "How do products compare across features?",
+    persona: "Merchandiser",
+  }),
+  def({
+    name: "multivariate-relationships",
+    base: "parallel",
+    intents: [t("REL")],
+    question: "Multi-metric relationships across records?",
+    persona: "Data Analyst / BI",
+  }),
+  def({
+    name: "sales-by-day",
+    base: "calendar",
+    intents: [t("TREND"), t("DIST", "secondary")],
+    question: "When do we sell most (day of week / month)?",
+    persona: "Store Owner",
+  }),
+  def({
+    name: "rfm-segments",
+    base: "rfm",
+    intents: [t("PART-WHOLE"), t("DIST", "secondary")],
+    question: "RFM segment sizes and value?",
+    persona: "Customer Success Manager",
   }),
 ];
 

@@ -552,3 +552,73 @@ Layer-2 overlays (**AnnotationCallout**, **Brush/Zoom**), and the
 these 13 are mostly NOT wired into the selection engine yet (only 8 canonical
 bases are) — brain wiring is the deferred next step, per the user's
 build-components-first call.
+
+---
+
+## Batch 8 — wiring the components into the brain (registry 66 → 90)
+
+Wired the batch-7 charts into the selection engine so they're detectable,
+resolvable, and appear in the catalog. Registry **66 → 90** (19 canonical + 71
+presets, 32 distinct configs); typecheck + build clean; all bare-intent
+resolutions verified; the catalog previews render (radar et al.).
+
+### What it took (the anatomy of "add a chart to the brain")
+
+Adding one selectable chart touches **five coupled contracts** — a useful RFC
+artifact in itself:
+
+1. a `DataKind` (types.ts) + its **detection** (`detectKind`) in collision-safe
+   order,
+2. `shapesForKind` + a `deriveFacts` case (structural facts),
+3. an `ENTITY_ID_ACCESSOR` entry (TS-enforced: the `Record<DataKind,…>` won't
+   compile without it — a good guardrail),
+4. a render **adapter** + `BaseName`/`BASE_COMPONENT`/`renderBase` + the four
+   per-base maps (`KIND`/`SHAPES`/`RANK`/`WEIGHT`, also TS-enforced Records),
+5. a **registry entry** (canonical and/or presets). The TS `Record<BaseName,…>`
+   / `Record<DataKind,…>` exhaustiveness caught every omission at compile time —
+   the wiring is only "done" when it typechecks. RFC: this five-point checklist
+   should be the documented contract for adding a chart.
+
+### Findings
+
+- **`detectKind` order is load-bearing and fragile.** Structural detection has
+  real collisions: RadarSeries `{id,label,values}` shadows HeatRow
+  `{label,values}` (radar must be checked first); BubblePoint `{x,y,size}`
+  shadows ScatterPoint `{x,y}` (bubble first); DumbbellRow
+  `{category,start,end}` and CalendarDatum `{date,value}` must precede the
+  generic CategoryDatum `{category,value}`; ParallelRow is distinguished only by
+  `values` being an **object, not an array**. This structural-sniffing works but
+  is brittle — RFC should consider an explicit `kind`/`$schema` discriminator on
+  the data (or a typed request) rather than duck-typing the first element.
+- **The kind guard cleanly separates same-intent charts.** bubble vs scatter
+  both serve REL, but resolve to different charts purely by DataKind — no
+  intent-level ambiguity. Same for pareto (DIST) vs bar (COMPARE) on the shared
+  `category` kind: different primary intent, same kind, no collision. The
+  intent×kind pair is the real selection key.
+- **The taxonomy needed a 14th shape.** radar / parallel-coordinates are "3+
+  variables per record" — no home in doc-02's 13 shapes — so a `multivariate`
+  shape was added. (Noted in types.ts.) RFC: adopt it.
+- **Some charts need options the data can't carry.** Radar needs axis _names_
+  and parallel needs _dimension_ defs, which aren't in `RadarSeries` /
+  `ParallelRow`. The adapters fall back to positional/derived labels so a bare
+  resolve still renders, but this exposes that `ResolveRequest` needs a typed
+  **options contract** per chart (today it's an untyped `Record<string,unknown>`
+  read defensively). Another RFC input.
+- **New canonicals improved bare-intent answers.** Previously `RANK`+series and
+  `COMP-TIME`/`RANGE`+series fell to a plain line (or the table); now they land
+  on bump / stacked-area / control. The catalog got materially smarter, not just
+  bigger.
+- **Declarative `canonical` flag paid off.** Rather than 11 hand-written
+  metadata blocks in registry.tsx, the `def()` factory gained a `canonical`
+  boolean, so the 11 new base entries are compact data alongside the presets —
+  the same "config is data" principle, now covering canonical entries too.
+
+### Catalog coverage after batch 8
+
+Selection engine now covers **13 DataKinds** and **21 base charts**; 90 catalog
+entries across nearly all intents. Remaining gaps: **GeoMap** (needs geo data),
+Layer-4 infra (LazyChart / ChartFromSpec / EmptyState / LoadingSkeleton), two
+Layer-2 overlays (AnnotationCallout, Brush/Zoom), and the ChordDiagram
+cut-candidate. Open contracts for the RFC: a data **discriminator** vs.
+duck-typing, a typed per-chart **options** contract, and the config-signature /
+persona split as first-class catalog metadata (batch 6a).
