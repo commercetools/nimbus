@@ -615,10 +615,26 @@ artifact in itself:
 
 ### Catalog coverage after batch 8
 
-Selection engine now covers **13 DataKinds** and **21 base charts**; 90 catalog
+Selection engine now covers **13 DataKinds** and **22 base charts**; 91 catalog
 entries across nearly all intents. Remaining gaps: **GeoMap** (needs geo data),
 Layer-4 infra (LazyChart / ChartFromSpec / EmptyState / LoadingSkeleton), two
 Layer-2 overlays (AnnotationCallout, Brush/Zoom), and the ChordDiagram
 cut-candidate. Open contracts for the RFC: a data **discriminator** vs.
 duck-typing, a typed per-chart **options** contract, and the config-signature /
 persona split as first-class catalog metadata (batch 6a).
+
+### Batch 8a — CohortTriangle (the last specialist chart)
+
+Added **CohortTriangle**: the calendar-aligned cousin of the cohort Heatmap.
+Same `HeatRow[]` data and `heat-row` DataKind, but each cohort row is shifted
+right by its index so age-0 (acquisition) lands on the diagonal (outlined) and
+columns are calendar periods — reading DOWN a column shows different-aged
+cohorts in the same calendar month (seasonality), which the period-aligned
+heatmap flattens. Registered as a **preset** (canonical:false) on `heat-row`, so
+Heatmap stays the default RETAIN answer and the triangle is a name-addressable
+alternative. Finding: two genuinely different **views of the same DataKind** is
+a clean case for the preset model — no new kind, no new detection, just a second
+render adapter + a named entry. This closes out the Tier-3 specialist tail;
+**ChordDiagram** remains the only unbuilt Layer-3 chart, and it's the documented
+cut-candidate (dense/niche; its commerce use — cross-sell/relationship matrix —
+is already served by Heatmap + Sankey per docs/03).

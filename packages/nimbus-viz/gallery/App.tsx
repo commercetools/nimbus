@@ -39,6 +39,7 @@ import {
   ParallelCoordinates,
   CalendarHeatmap,
   RfmGrid,
+  CohortTriangle,
   ControlChart,
   ParetoChart,
   WaterfallChart,
@@ -328,6 +329,19 @@ export function App() {
                       height={h}
                       rows={cohorts}
                       columnLabels={cohortPeriods}
+                    />
+                  )}
+                </ResponsiveContainer>
+              </Card>
+
+              <Card title="Retention — cohort triangle (calendar-aligned)">
+                <ResponsiveContainer height={260}>
+                  {(w, h) => (
+                    <CohortTriangle
+                      width={w}
+                      height={h}
+                      rows={cohorts}
+                      periodLabels={cohorts.map((c) => c.label)}
                     />
                   )}
                 </ResponsiveContainer>

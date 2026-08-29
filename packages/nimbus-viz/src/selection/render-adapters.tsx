@@ -29,6 +29,7 @@ import { CalendarHeatmap } from "../components/calendar-heatmap";
 import type { CalendarDatum } from "../components/calendar-heatmap";
 import { RfmGrid } from "../components/rfm-grid";
 import type { RfmCell } from "../components/rfm-grid";
+import { CohortTriangle } from "../components/cohort-triangle";
 import type {
   CategoryDatum,
   FunnelStage,
@@ -366,6 +367,22 @@ export function renderRfm(request: ResolveRequest, size: ChartSize) {
   );
 }
 
+export function renderCohortTriangle(request: ResolveRequest, size: ChartSize) {
+  return (
+    <CohortTriangle
+      width={size.width}
+      height={size.height}
+      rows={request.data as HeatRow[]}
+      periodLabels={
+        optStringArray(request, "periodLabels") ??
+        optStringArray(request, "columnLabels")
+      }
+      hue={optString(request, "hue")}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /* Base dispatch (for the preset factory)                                     */
 /* -------------------------------------------------------------------------- */
@@ -392,7 +409,8 @@ export type BaseName =
   | "radar"
   | "parallel"
   | "calendar"
-  | "rfm";
+  | "rfm"
+  | "cohort-triangle";
 
 /** Which bases publish the scale contract and so can host overlay children. */
 export const OVERLAY_HOSTS: ReadonlySet<BaseName> = new Set<BaseName>([
@@ -424,6 +442,7 @@ export const BASE_COMPONENT: Record<BaseName, string> = {
   parallel: "ParallelCoordinates",
   calendar: "CalendarHeatmap",
   rfm: "RfmGrid",
+  "cohort-triangle": "CohortTriangle",
 };
 
 export function renderBase(
@@ -475,5 +494,7 @@ export function renderBase(
       return renderCalendar(request, size);
     case "rfm":
       return renderRfm(request, size);
+    case "cohort-triangle":
+      return renderCohortTriangle(request, size);
   }
 }
