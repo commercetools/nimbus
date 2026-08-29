@@ -43,10 +43,18 @@ import {
   ControlChart,
   ParetoChart,
   WaterfallChart,
-  resolveRoles,
   useChartTheme,
   type ColorMode,
 } from "../src";
+import {
+  NimbusProvider,
+  useColorMode,
+  Box,
+  Flex,
+  Heading,
+  Text,
+  Button,
+} from "@commercetools/nimbus";
 import {
   arr,
   bullets,
@@ -129,8 +137,16 @@ function Card({ title, children }: { title: string; children: ReactNode }) {
 }
 
 export function App() {
-  const [mode, setMode] = useState<ColorMode>("light");
-  const roles = resolveRoles(mode);
+  return (
+    <NimbusProvider defaultTheme="light">
+      <GalleryShell />
+    </NimbusProvider>
+  );
+}
+
+function GalleryShell() {
+  const { colorMode, toggleColorMode } = useColorMode();
+  const mode: ColorMode = colorMode === "dark" ? "dark" : "light";
 
   const [view, setView] = useState<"charts" | "catalog">("charts");
   const registryEntries = [...chartRegistry.values()];
@@ -141,76 +157,38 @@ export function App() {
 
   return (
     <ChartThemeProvider mode={mode}>
-      <div
-        style={{
-          minHeight: "100vh",
-          background: roles.surfacePage,
-          color: roles.ink,
-          fontFamily: "system-ui, sans-serif",
-          padding: 24,
-        }}
-      >
-        <header
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 24,
-          }}
-        >
-          <div>
-            <h1 style={{ margin: 0, fontSize: 20 }}>nimbus-viz gallery</h1>
-            <p
-              style={{ margin: "4px 0 0", color: roles.mutedInk, fontSize: 13 }}
-            >
+      <Box minH="100vh" bg="neutral.1" color="neutral.12" p="600">
+        <Flex as="header" align="center" justify="space-between" mb="600">
+          <Box>
+            <Heading>nimbus-viz gallery</Heading>
+            <Text color="fg.muted" mt="100">
               Prototype charts · visx + Nimbus tokens
-            </p>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <div
-              style={{
-                display: "flex",
-                border: `1px solid ${roles.grid}`,
-                borderRadius: 8,
-                overflow: "hidden",
-              }}
-            >
+            </Text>
+          </Box>
+          <Flex gap="200">
+            <Flex gap="100">
               {(["charts", "catalog"] as const).map((v) => (
-                <button
+                <Button
                   key={v}
-                  type="button"
-                  onClick={() => setView(v)}
-                  style={{
-                    border: "none",
-                    background: view === v ? roles.accent : roles.surface,
-                    color: view === v ? roles.surface : roles.ink,
-                    padding: "8px 14px",
-                    cursor: "pointer",
-                    fontSize: 13,
-                    textTransform: "capitalize",
-                  }}
+                  size="sm"
+                  variant={view === v ? "solid" : "outline"}
+                  colorPalette="primary"
+                  onPress={() => setView(v)}
                 >
-                  {v}
-                </button>
+                  {v === "charts" ? "Charts" : "Catalog"}
+                </Button>
               ))}
-            </div>
-            <button
-              type="button"
-              onClick={() => setMode((m) => (m === "light" ? "dark" : "light"))}
-              style={{
-                border: `1px solid ${roles.grid}`,
-                background: roles.surface,
-                color: roles.ink,
-                borderRadius: 8,
-                padding: "8px 14px",
-                cursor: "pointer",
-                fontSize: 13,
-              }}
+            </Flex>
+            <Button
+              size="sm"
+              variant="outline"
+              colorPalette="neutral"
+              onPress={toggleColorMode}
             >
               {mode === "light" ? "🌙 Dark" : "☀️ Light"}
-            </button>
-          </div>
-        </header>
+            </Button>
+          </Flex>
+        </Flex>
 
         <ColorScaleProvider domain={COLOR_DOMAIN}>
           {view === "catalog" ? (
@@ -610,13 +588,13 @@ export function App() {
               <Card
                 title={`🗂️ Catalog: ${canonicalCount} canonical + ${presetCount} presets`}
               >
-                <p style={{ margin: 0, fontSize: 13, color: roles.mutedInk }}>
+                <Text color="fg.muted">
                   Every preset is pure config — a base chart + overlays +
                   defaults + selection metadata, registered under a name and
                   tagged with the persona question it answers. The agent picks a
                   preset by name (<code>resolveByName</code>); the two cards
                   below render one each.
-                </p>
+                </Text>
               </Card>
 
               <Card title="🗂️ resolveByName: sla-compliance-over-time">
@@ -654,7 +632,7 @@ export function App() {
             </div>
           )}
         </ColorScaleProvider>
-      </div>
+      </Box>
     </ChartThemeProvider>
   );
 }

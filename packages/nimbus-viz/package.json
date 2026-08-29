@@ -63,6 +63,7 @@
     "react-dom": "catalog:react"
   },
   "devDependencies": {
+    "@commercetools/nimbus": "workspace:*",
     "@types/d3-array": "catalog:viz",
     "@types/d3-format": "catalog:viz",
     "@types/d3-time-format": "catalog:viz",

@@ -1123,6 +1123,9 @@ importers:
         specifier: catalog:viz
         version: 4.1.0
     devDependencies:
+      '@commercetools/nimbus':
+        specifier: workspace:*
+        version: link:../nimbus
       '@types/d3-array':
         specifier: catalog:viz
         version: 3.2.2
