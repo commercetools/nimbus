@@ -4,6 +4,14 @@ _Living log. As we prototype components breadth-first, this captures what the
 act of assembling them teaches us — the cross-cutting details a solid RFC must
 settle. Not a spec; evidence for one. Newest findings appended per batch._
 
+> **Consolidated.** These findings have now been folded into the contract docs —
+> **02** (architecture/taxonomy: hybrid chosen, visx foundation, Nimbus theming,
+> 14th shape, two selection surfaces, metadata contract), **04** (inventory:
+> built-vs-planned counts, presets-are-config, config-signature, deferrals), and
+> **06** (selection: canonical/preset split, `resolveByName`, concrete-kind
+> guard, scoring formula, open contracts). This file remains the dated
+> **evidence log** behind those decisions._
+
 The prototype lives in `packages/nimbus-viz/`. Run the gallery with
 `pnpm --filter @commercetools/nimbus-viz gallery` (Vite, dev-only, resolves the
 library from `./src`). Foundation = visx + Nimbus tokens (settled in Phase 0).
