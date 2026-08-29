@@ -6,6 +6,29 @@ import { StackedBarChart } from "../components/stacked-bar-chart";
 import { ScatterPlot } from "../components/scatter-plot";
 import { Heatmap } from "../components/heatmap";
 import { FunnelChart } from "../components/funnel-chart";
+import { StackedAreaChart } from "../components/stacked-area-chart";
+import { Streamgraph } from "../components/streamgraph";
+import { BumpChart } from "../components/bump-chart";
+import { Sparkline } from "../components/sparkline";
+import { ControlChart } from "../components/control-chart";
+import { ParetoChart } from "../components/pareto-chart";
+import { SlopeChart } from "../components/slope-chart";
+import type { SlopeRow } from "../components/slope-chart";
+import { DumbbellChart } from "../components/dumbbell-chart";
+import type { DumbbellRow } from "../components/dumbbell-chart";
+import { BubbleChart } from "../components/bubble-chart";
+import type { BubblePoint } from "../components/bubble-chart";
+import { RadarChart } from "../components/radar-chart";
+import type { RadarSeries } from "../components/radar-chart";
+import { ParallelCoordinates } from "../components/parallel-coordinates";
+import type {
+  ParallelDimension,
+  ParallelRow,
+} from "../components/parallel-coordinates";
+import { CalendarHeatmap } from "../components/calendar-heatmap";
+import type { CalendarDatum } from "../components/calendar-heatmap";
+import { RfmGrid } from "../components/rfm-grid";
+import type { RfmCell } from "../components/rfm-grid";
 import type {
   CategoryDatum,
   FunnelStage,
@@ -177,6 +200,172 @@ export function renderFunnel(request: ResolveRequest, size: ChartSize) {
   );
 }
 
+export function renderStackedArea(request: ResolveRequest, size: ChartSize) {
+  return (
+    <StackedAreaChart
+      width={size.width}
+      height={size.height}
+      series={request.data as Series[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderStreamgraph(request: ResolveRequest, size: ChartSize) {
+  return (
+    <Streamgraph
+      width={size.width}
+      height={size.height}
+      series={request.data as Series[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderBump(request: ResolveRequest, size: ChartSize) {
+  return (
+    <BumpChart
+      width={size.width}
+      height={size.height}
+      series={request.data as Series[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderSparkline(request: ResolveRequest, size: ChartSize) {
+  const series = request.data as Series[];
+  return (
+    <Sparkline
+      width={size.width}
+      height={size.height}
+      data={series[0]?.data ?? []}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderControl(request: ResolveRequest, size: ChartSize) {
+  return (
+    <ControlChart
+      width={size.width}
+      height={size.height}
+      series={request.data as Series[]}
+      center={optNumber(request, "center")}
+      ucl={optNumber(request, "ucl")}
+      lcl={optNumber(request, "lcl")}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderPareto(request: ResolveRequest, size: ChartSize) {
+  return (
+    <ParetoChart
+      width={size.width}
+      height={size.height}
+      data={request.data as CategoryDatum[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderSlope(request: ResolveRequest, size: ChartSize) {
+  return (
+    <SlopeChart
+      width={size.width}
+      height={size.height}
+      data={request.data as SlopeRow[]}
+      leftLabel={optString(request, "leftLabel")}
+      rightLabel={optString(request, "rightLabel")}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderDumbbell(request: ResolveRequest, size: ChartSize) {
+  return (
+    <DumbbellChart
+      width={size.width}
+      height={size.height}
+      data={request.data as DumbbellRow[]}
+      startLabel={optString(request, "startLabel")}
+      endLabel={optString(request, "endLabel")}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderBubble(request: ResolveRequest, size: ChartSize) {
+  return (
+    <BubbleChart
+      width={size.width}
+      height={size.height}
+      points={request.data as BubblePoint[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderRadar(request: ResolveRequest, size: ChartSize) {
+  const data = request.data as RadarSeries[];
+  // Axis names come from options; fall back to positional labels so a bare
+  // (intent, data) resolve still renders.
+  const axes =
+    optStringArray(request, "axes") ??
+    (data[0]?.values ?? []).map((_, i) => `Axis ${i + 1}`);
+  return (
+    <RadarChart
+      width={size.width}
+      height={size.height}
+      axes={axes}
+      data={data}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderParallel(request: ResolveRequest, size: ChartSize) {
+  const rows = request.data as ParallelRow[];
+  const provided = opts(request).dimensions as ParallelDimension[] | undefined;
+  // Derive the axes from the first row's value keys when none are supplied.
+  const dimensions =
+    provided ??
+    Object.keys(rows[0]?.values ?? {}).map((key) => ({ key, label: key }));
+  return (
+    <ParallelCoordinates
+      width={size.width}
+      height={size.height}
+      dimensions={dimensions}
+      data={rows}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderCalendar(request: ResolveRequest, size: ChartSize) {
+  return (
+    <CalendarHeatmap
+      width={size.width}
+      height={size.height}
+      data={request.data as CalendarDatum[]}
+      hue={optString(request, "hue")}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderRfm(request: ResolveRequest, size: ChartSize) {
+  return (
+    <RfmGrid
+      width={size.width}
+      height={size.height}
+      data={request.data as RfmCell[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /* Base dispatch (for the preset factory)                                     */
 /* -------------------------------------------------------------------------- */
@@ -190,7 +379,20 @@ export type BaseName =
   | "stacked"
   | "scatter"
   | "heatmap"
-  | "funnel";
+  | "funnel"
+  | "stacked-area"
+  | "streamgraph"
+  | "bump"
+  | "sparkline"
+  | "control"
+  | "pareto"
+  | "slope"
+  | "dumbbell"
+  | "bubble"
+  | "radar"
+  | "parallel"
+  | "calendar"
+  | "rfm";
 
 /** Which bases publish the scale contract and so can host overlay children. */
 export const OVERLAY_HOSTS: ReadonlySet<BaseName> = new Set<BaseName>([
@@ -209,6 +411,19 @@ export const BASE_COMPONENT: Record<BaseName, string> = {
   scatter: "ScatterPlot",
   heatmap: "Heatmap",
   funnel: "FunnelChart",
+  "stacked-area": "StackedAreaChart",
+  streamgraph: "Streamgraph",
+  bump: "BumpChart",
+  sparkline: "Sparkline",
+  control: "ControlChart",
+  pareto: "ParetoChart",
+  slope: "SlopeChart",
+  dumbbell: "DumbbellChart",
+  bubble: "BubbleChart",
+  radar: "RadarChart",
+  parallel: "ParallelCoordinates",
+  calendar: "CalendarHeatmap",
+  rfm: "RfmGrid",
 };
 
 export function renderBase(
@@ -234,5 +449,31 @@ export function renderBase(
       return renderHeatmap(request, size);
     case "funnel":
       return renderFunnel(request, size);
+    case "stacked-area":
+      return renderStackedArea(request, size);
+    case "streamgraph":
+      return renderStreamgraph(request, size);
+    case "bump":
+      return renderBump(request, size);
+    case "sparkline":
+      return renderSparkline(request, size);
+    case "control":
+      return renderControl(request, size);
+    case "pareto":
+      return renderPareto(request, size);
+    case "slope":
+      return renderSlope(request, size);
+    case "dumbbell":
+      return renderDumbbell(request, size);
+    case "bubble":
+      return renderBubble(request, size);
+    case "radar":
+      return renderRadar(request, size);
+    case "parallel":
+      return renderParallel(request, size);
+    case "calendar":
+      return renderCalendar(request, size);
+    case "rfm":
+      return renderRfm(request, size);
   }
 }

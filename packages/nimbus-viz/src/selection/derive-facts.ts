@@ -49,6 +49,13 @@ export const ENTITY_ID_ACCESSOR: Record<
   scatter: "point.group (ungrouped points share the accent)",
   "heat-row": "row.label",
   funnel: "stage.stage",
+  "slope-row": "row.id",
+  "dumbbell-row": "row.category",
+  bubble: "point.group (ungrouped points share the accent)",
+  "radar-series": "series.id",
+  "parallel-row": "row.group (ungrouped rows share the accent)",
+  calendar: "datum.date",
+  rfm: "cell.recency×frequency",
 };
 
 /* -------------------------------------------------------------------------- */
@@ -81,9 +88,42 @@ export function detectKind(data: unknown): DataKind {
   ) {
     return "series";
   }
+  // RadarSeries[]: { id, label, values: [...] } — before heat-row (label+values).
+  if (
+    typeof first.id === "string" &&
+    typeof first.label === "string" &&
+    Array.isArray(first.values)
+  ) {
+    return "radar-series";
+  }
+  // SlopeRow[]: { id, label, left: number, right: number }
+  if (
+    typeof first.id === "string" &&
+    typeof first.label === "string" &&
+    isFiniteNumber(first.left) &&
+    isFiniteNumber(first.right)
+  ) {
+    return "slope-row";
+  }
+  // ParallelRow[]: { id, values: { ...record } } — values is an object, not array.
+  if (
+    typeof first.id === "string" &&
+    isObject(first.values) &&
+    !Array.isArray(first.values)
+  ) {
+    return "parallel-row";
+  }
   // StackRow[]: { category, segments: [...] }
   if (typeof first.category === "string" && Array.isArray(first.segments)) {
     return "stack-row";
+  }
+  // DumbbellRow[]: { category, start: number, end: number } — before category.
+  if (
+    typeof first.category === "string" &&
+    isFiniteNumber(first.start) &&
+    isFiniteNumber(first.end)
+  ) {
+    return "dumbbell-row";
   }
   // HeatRow[]: { label, values: [...] }
   if (typeof first.label === "string" && Array.isArray(first.values)) {
@@ -93,9 +133,32 @@ export function detectKind(data: unknown): DataKind {
   if (typeof first.stage === "string" && typeof first.value === "number") {
     return "funnel";
   }
+  // RfmCell[]: { recency: number, frequency: number, count: number }
+  if (
+    isFiniteNumber(first.recency) &&
+    isFiniteNumber(first.frequency) &&
+    isFiniteNumber(first.count)
+  ) {
+    return "rfm";
+  }
+  // CalendarDatum[]: { date: string | Date, value: number } — before category.
+  if (
+    (typeof first.date === "string" || first.date instanceof Date) &&
+    isFiniteNumber(first.value)
+  ) {
+    return "calendar";
+  }
   // CategoryDatum[]: { category, value }
   if (typeof first.category === "string" && typeof first.value === "number") {
     return "category";
+  }
+  // BubblePoint[]: { x: number, y: number, size: number } — before scatter.
+  if (
+    isFiniteNumber(first.x) &&
+    isFiniteNumber(first.y) &&
+    isFiniteNumber(first.size)
+  ) {
+    return "bubble";
   }
   // ScatterPoint[]: { x: number, y: number, ... }
   if (typeof first.x === "number" && typeof first.y === "number") {
@@ -112,8 +175,9 @@ function shapesForKind(kind: DataKind, seriesCount: number): DataShape[] {
         ? ["multi-time-series", "time-series"]
         : ["time-series"];
     case "category":
-      // A flat category array serves compare, rank, and part-to-whole alike.
-      return ["categorical", "ranking", "part-to-whole"];
+      // A flat category array serves compare, rank, part-to-whole, and (sorted
+      // + cumulative) Pareto distribution alike.
+      return ["categorical", "ranking", "part-to-whole", "distribution"];
     case "stack-row":
       return ["part-to-whole", "categorical"];
     case "scatter":
@@ -122,6 +186,20 @@ function shapesForKind(kind: DataKind, seriesCount: number): DataShape[] {
       return ["cohort-matrix"];
     case "funnel":
       return ["flows-net"];
+    case "slope-row":
+      return ["categorical"];
+    case "dumbbell-row":
+      return ["categorical"];
+    case "bubble":
+      return ["two-variable"];
+    case "radar-series":
+      return ["multivariate"];
+    case "parallel-row":
+      return ["multivariate"];
+    case "calendar":
+      return ["time-series", "distribution"];
+    case "rfm":
+      return ["distribution", "part-to-whole"];
     case "unknown":
       return [];
   }
@@ -281,6 +359,78 @@ export function deriveFacts(request: ResolveRequest): DataFacts {
         hasTarget,
         hasTimeAxis: false,
         sampleSize: stages.length,
+        hierarchy,
+        malformed: false,
+      };
+    }
+    case "slope-row":
+    case "dumbbell-row":
+    case "calendar": {
+      const rows = data as unknown[];
+      return {
+        kind,
+        shapes: shapesForKind(kind, 1),
+        cardinality: rows.length,
+        seriesCount: 1,
+        hasTarget,
+        hasTimeAxis: kind === "calendar", // calendar is date-ordered
+        sampleSize: rows.length,
+        hierarchy,
+        malformed: false,
+      };
+    }
+    case "bubble":
+    case "parallel-row": {
+      const rows = data as Array<{ group?: unknown }>;
+      const groups = new Set(
+        rows
+          .map((r) => r.group)
+          .filter((g): g is string => typeof g === "string")
+      );
+      return {
+        kind,
+        shapes: shapesForKind(kind, 1),
+        cardinality: rows.length,
+        seriesCount: Math.max(1, groups.size),
+        hasTarget,
+        hasTimeAxis: false,
+        sampleSize: rows.length,
+        hierarchy,
+        malformed: false,
+      };
+    }
+    case "radar-series": {
+      const series = data as Array<{ values?: unknown[] }>;
+      const sampleSize = series.reduce(
+        (sum, s) => sum + (Array.isArray(s.values) ? s.values.length : 0),
+        0
+      );
+      return {
+        kind,
+        shapes: shapesForKind(kind, series.length),
+        cardinality: series.length,
+        seriesCount: series.length,
+        hasTarget,
+        hasTimeAxis: false,
+        sampleSize,
+        hierarchy,
+        malformed: false,
+      };
+    }
+    case "rfm": {
+      const cells = data as Array<{ count?: unknown }>;
+      const sampleSize = cells.reduce(
+        (sum, c) => sum + (isFiniteNumber(c.count) ? c.count : 0),
+        0
+      );
+      return {
+        kind,
+        shapes: shapesForKind(kind, 1),
+        cardinality: cells.length,
+        seriesCount: 1,
+        hasTarget,
+        hasTimeAxis: false,
+        sampleSize,
         hierarchy,
         malformed: false,
       };
