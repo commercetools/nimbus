@@ -10,7 +10,12 @@ export { ChartFrame } from "./chart/chart-frame";
 export type { ChartFrameProps, InnerDims } from "./chart/chart-frame";
 export { Legend } from "./chart/legend";
 export type { LegendItem } from "./chart/legend";
-export { GridRows, leftTickLabel, bottomTickLabel } from "./chart/axes";
+export {
+  GridRows,
+  leftTickLabel,
+  bottomTickLabel,
+  fitBandLabel,
+} from "./chart/axes";
 export { SvgTooltip } from "./chart/svg-tooltip";
 export type { SvgTooltipProps } from "./chart/svg-tooltip";
 export { ChartScaleProvider, useChartScales } from "./chart/scale-context";

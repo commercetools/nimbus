@@ -4,7 +4,12 @@ import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { ChartFrame } from "../../chart/chart-frame";
 import { Legend } from "../../chart/legend";
-import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
+import {
+  GridRows,
+  bottomTickLabel,
+  fitBandLabel,
+  leftTickLabel,
+} from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
@@ -94,6 +99,7 @@ export function StackedBarChart({
                 top={innerHeight}
                 stroke={theme.axis}
                 hideTicks
+                tickFormat={(v) => fitBandLabel(xScale.step())(String(v))}
                 tickLabelProps={bottomTickLabel(theme)}
               />
               {data.map((row) => {

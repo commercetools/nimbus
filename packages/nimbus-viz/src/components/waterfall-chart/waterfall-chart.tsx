@@ -3,7 +3,12 @@ import { scaleBand, scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { ChartFrame } from "../../chart/chart-frame";
-import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
+import {
+  GridRows,
+  bottomTickLabel,
+  fitBandLabel,
+  leftTickLabel,
+} from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
@@ -112,6 +117,7 @@ export function WaterfallChart({
               top={innerHeight}
               stroke={theme.axis}
               hideTicks
+              tickFormat={(v) => fitBandLabel(xScale.step())(String(v))}
               tickLabelProps={bottomTickLabel(theme)}
             />
             {bars.map((bar, i) => {

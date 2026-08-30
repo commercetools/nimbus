@@ -5,7 +5,12 @@ import { AxisBottom, AxisLeft } from "@visx/axis";
 import { sum } from "d3-array";
 import { ChartFrame } from "../../chart/chart-frame";
 import { Legend } from "../../chart/legend";
-import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
+import {
+  GridRows,
+  bottomTickLabel,
+  fitBandLabel,
+  leftTickLabel,
+} from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
@@ -120,6 +125,7 @@ export function ParetoChart({
                 top={innerHeight}
                 stroke={theme.axis}
                 hideTicks
+                tickFormat={(v) => fitBandLabel(xScale.step())(String(v))}
                 tickLabelProps={bottomTickLabel(theme)}
               />
 

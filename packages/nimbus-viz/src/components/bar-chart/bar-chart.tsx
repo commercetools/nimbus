@@ -6,7 +6,12 @@ import { AxisBottom, AxisLeft } from "@visx/axis";
 import { max } from "d3-array";
 import { ChartFrame } from "../../chart/chart-frame";
 import { ChartScaleProvider } from "../../chart/scale-context";
-import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
+import {
+  GridRows,
+  bottomTickLabel,
+  fitBandLabel,
+  leftTickLabel,
+} from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
@@ -177,6 +182,7 @@ export function BarChart({
               top={innerHeight}
               stroke={theme.axis}
               hideTicks
+              tickFormat={(v) => fitBandLabel(xScale.step())(String(v))}
               tickLabelProps={bottomTickLabel(theme)}
             />
             {rows.map((d, i) => {
