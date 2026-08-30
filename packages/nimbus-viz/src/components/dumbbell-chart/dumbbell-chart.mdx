@@ -1,0 +1,42 @@
+---
+id: Charts-DumbbellChart
+title: Dumbbell Chart
+exportName: DumbbellChart
+description: The gap between two values per category.
+lifecycleState: Experimental
+order: 500
+icon: CompareArrows
+menu:
+  - Charts
+  - Dumbbell Chart
+tags:
+  - chart
+  - compare
+---
+
+## Dumbbell Chart
+
+The gap between two values per category.
+
+```jsx live
+const data = [
+  { category: "Onboarding", start: 42, end: 61 },
+  { category: "Checkout", start: 55, end: 72 },
+  { category: "Search", start: 38, end: 49 },
+  { category: "Support", start: 60, end: 58 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <DumbbellChart width={width} height={height} data={data} startLabel="2024" endLabel="2025" />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { DumbbellChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

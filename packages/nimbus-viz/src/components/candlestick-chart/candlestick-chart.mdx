@@ -1,0 +1,46 @@
+---
+id: Charts-CandlestickChart
+title: Candlestick Chart
+exportName: CandlestickChart
+description: Open, high, low and close for each period at a glance.
+lifecycleState: Experimental
+order: 105
+icon: ShowChart
+menu:
+  - Charts
+  - Candlestick Chart
+tags:
+  - chart
+  - trend
+---
+
+## Candlestick Chart
+
+Open, high, low and close for each period at a glance.
+
+```jsx live
+const rand = (i) => { const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
+let p = 100;
+const bars = Array.from({ length: 24 }, (_, i) => {
+  const open = p;
+  const close = Math.max(5, open + (rand(i) - 0.47) * 8);
+  const high = Math.max(open, close) + rand(i + 20) * 4;
+  const low = Math.min(open, close) - rand(i + 40) * 4;
+  p = close;
+  return { date: new Date(2026, 0, i + 1), open: +open.toFixed(2), high: +high.toFixed(2), low: +low.toFixed(2), close: +close.toFixed(2) };
+});
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <CandlestickChart width={width} height={height} data={bars} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { CandlestickChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

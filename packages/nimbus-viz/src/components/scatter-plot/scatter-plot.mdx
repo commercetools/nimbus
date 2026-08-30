@@ -1,0 +1,40 @@
+---
+id: Charts-ScatterPlot
+title: Scatter Plot
+exportName: ScatterPlot
+description: The relationship between two variables, point by point.
+lifecycleState: Experimental
+order: 700
+icon: BubbleChart
+menu:
+  - Charts
+  - Scatter Plot
+tags:
+  - chart
+  - relationship
+---
+
+## Scatter Plot
+
+The relationship between two variables, point by point.
+
+```jsx live
+const points = [
+  { x: 12, y: 22 }, { x: 20, y: 30 }, { x: 26, y: 28 }, { x: 34, y: 44 }, { x: 41, y: 39 },
+  { x: 48, y: 58 }, { x: 55, y: 51 }, { x: 63, y: 66 }, { x: 72, y: 71 }, { x: 80, y: 68 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <ScatterPlot width={width} height={height} points={points} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { ScatterPlot, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

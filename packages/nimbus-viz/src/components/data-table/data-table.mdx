@@ -1,0 +1,36 @@
+---
+id: Charts-DataTable
+title: Data Table
+exportName: DataTable
+description: The accessible table the resolver falls back to.
+lifecycleState: Experimental
+order: 1400
+icon: TableChart
+menu:
+  - Charts
+  - Data Table
+tags:
+  - chart
+  - tabular
+---
+
+## Data Table
+
+The accessible table the resolver falls back to.
+
+```jsx live
+const columns = ["Region", "Orders", "Revenue"];
+const rows = [["EU", 1240, "82k"], ["US", 980, "71k"], ["APAC", 640, "44k"]];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <DataTable columns={columns} rows={rows} />
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { DataTable, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

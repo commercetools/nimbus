@@ -1,0 +1,40 @@
+---
+id: Charts-Histogram
+title: Histogram
+exportName: Histogram
+description: Bin raw samples to reveal the shape of a distribution.
+lifecycleState: Experimental
+order: 204
+icon: BarChart
+menu:
+  - Charts
+  - Histogram
+tags:
+  - chart
+  - magnitude
+---
+
+## Histogram
+
+Bin raw samples to reveal the shape of a distribution.
+
+```jsx live
+const rand = (i) => { const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
+const values = Array.from({ length: 220 }, (_, i) =>
+  Math.round(50 + ((rand(i) + rand(i + 60) + rand(i + 130)) / 3 - 0.5) * 70)
+);
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <Histogram width={width} height={height} values={values} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { Histogram, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

@@ -1,0 +1,42 @@
+---
+id: Charts-StackedBarChart
+title: Stacked Bar Chart
+exportName: StackedBarChart
+description: Composition within each category as stacked segments.
+lifecycleState: Experimental
+order: 300
+icon: PieChart
+menu:
+  - Charts
+  - Stacked Bar Chart
+tags:
+  - chart
+  - part-to-whole
+---
+
+## Stacked Bar Chart
+
+Composition within each category as stacked segments.
+
+```jsx live
+const data = [
+  { category: "Q1", segments: [{ key: "New", value: 120 }, { key: "Returning", value: 80 }, { key: "Wholesale", value: 40 }] },
+  { category: "Q2", segments: [{ key: "New", value: 140 }, { key: "Returning", value: 96 }, { key: "Wholesale", value: 52 }] },
+  { category: "Q3", segments: [{ key: "New", value: 118 }, { key: "Returning", value: 110 }, { key: "Wholesale", value: 61 }] },
+  { category: "Q4", segments: [{ key: "New", value: 150 }, { key: "Returning", value: 128 }, { key: "Wholesale", value: 70 }] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <StackedBarChart width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { StackedBarChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

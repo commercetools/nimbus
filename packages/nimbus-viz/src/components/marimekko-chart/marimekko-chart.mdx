@@ -1,0 +1,42 @@
+---
+id: Charts-MarimekkoChart
+title: Marimekko
+exportName: MarimekkoChart
+description: A 100% stacked column whose widths encode category totals.
+lifecycleState: Experimental
+order: 305
+icon: PieChart
+menu:
+  - Charts
+  - Marimekko
+tags:
+  - chart
+  - part-to-whole
+---
+
+## Marimekko
+
+A 100% stacked column whose widths encode category totals.
+
+```jsx live
+const data = [
+  { category: "Q1", segments: [{ key: "New", value: 120 }, { key: "Returning", value: 80 }, { key: "Wholesale", value: 40 }] },
+  { category: "Q2", segments: [{ key: "New", value: 140 }, { key: "Returning", value: 96 }, { key: "Wholesale", value: 52 }] },
+  { category: "Q3", segments: [{ key: "New", value: 118 }, { key: "Returning", value: 110 }, { key: "Wholesale", value: 61 }] },
+  { category: "Q4", segments: [{ key: "New", value: 150 }, { key: "Returning", value: 128 }, { key: "Wholesale", value: 70 }] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <MarimekkoChart width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { MarimekkoChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

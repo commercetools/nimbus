@@ -1,0 +1,43 @@
+---
+id: Charts-FunnelChart
+title: Funnel Chart
+exportName: FunnelChart
+description: Stage-by-stage drop-off through a single process.
+lifecycleState: Experimental
+order: 306
+icon: PieChart
+menu:
+  - Charts
+  - Funnel Chart
+tags:
+  - chart
+  - part-to-whole
+---
+
+## Funnel Chart
+
+Stage-by-stage drop-off through a single process.
+
+```jsx live
+const data = [
+  { stage: "Visit", value: 1000 },
+  { stage: "Product view", value: 640 },
+  { stage: "Add to cart", value: 320 },
+  { stage: "Checkout", value: 180 },
+  { stage: "Purchase", value: 95 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <FunnelChart width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { FunnelChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

@@ -1,0 +1,40 @@
+---
+id: Charts-CalendarHeatmap
+title: Calendar Heatmap
+exportName: CalendarHeatmap
+description: A daily value laid out across a calendar grid.
+lifecycleState: Experimental
+order: 901
+icon: GridView
+menu:
+  - Charts
+  - Calendar Heatmap
+tags:
+  - chart
+  - matrix
+---
+
+## Calendar Heatmap
+
+A daily value laid out across a calendar grid.
+
+```jsx live
+const days = Array.from({ length: 120 }, (_, i) => ({
+  date: new Date(2026, 0, i + 1),
+  value: Math.round(10 + 9 * Math.sin(i / 5) + (i % 7 === 0 ? 12 : 0)),
+}));
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <CalendarHeatmap width={width} height={height} data={days} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { CalendarHeatmap, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

@@ -1,0 +1,44 @@
+---
+id: Charts-Treemap
+title: Treemap
+exportName: Treemap
+description: Nested rectangles for a hierarchical part-to-whole.
+lifecycleState: Experimental
+order: 302
+icon: PieChart
+menu:
+  - Charts
+  - Treemap
+tags:
+  - chart
+  - part-to-whole
+---
+
+## Treemap
+
+Nested rectangles for a hierarchical part-to-whole.
+
+```jsx live
+const data = {
+  name: "Revenue",
+  children: [
+    { name: "Web", children: [{ name: "New", value: 260 }, { name: "Returning", value: 180 }] },
+    { name: "Mobile", children: [{ name: "iOS", value: 150 }, { name: "Android", value: 120 }] },
+    { name: "Retail", children: [{ name: "Flagship", value: 90 }, { name: "Outlet", value: 60 }] },
+  ],
+};
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <Treemap width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { Treemap, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

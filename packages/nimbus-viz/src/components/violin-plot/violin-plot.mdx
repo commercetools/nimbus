@@ -1,0 +1,43 @@
+---
+id: Charts-ViolinPlot
+title: Violin Plot
+exportName: ViolinPlot
+description: Full distribution shapes via kernel-density estimates.
+lifecycleState: Experimental
+order: 801
+icon: Insights
+menu:
+  - Charts
+  - Violin Plot
+tags:
+  - chart
+  - distribution
+---
+
+## Violin Plot
+
+Full distribution shapes via kernel-density estimates.
+
+```jsx live
+const rand = (i) => { const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
+const groups = ["Web", "Mobile", "Retail"].map((label, g) => ({
+  label,
+  samples: Array.from({ length: 60 }, (_, i) =>
+    Math.round(42 + g * 8 + ((rand(i + g * 100) + rand(i + g * 100 + 40)) / 2 - 0.5) * 60)
+  ),
+}));
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <ViolinPlot width={width} height={height} groups={groups} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { ViolinPlot, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

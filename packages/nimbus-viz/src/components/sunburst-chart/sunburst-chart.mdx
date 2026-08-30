@@ -1,0 +1,44 @@
+---
+id: Charts-SunburstChart
+title: Sunburst
+exportName: SunburstChart
+description: The radial counterpart to the treemap for hierarchies.
+lifecycleState: Experimental
+order: 303
+icon: PieChart
+menu:
+  - Charts
+  - Sunburst
+tags:
+  - chart
+  - part-to-whole
+---
+
+## Sunburst
+
+The radial counterpart to the treemap for hierarchies.
+
+```jsx live
+const data = {
+  name: "Revenue",
+  children: [
+    { name: "Web", children: [{ name: "New", value: 260 }, { name: "Returning", value: 180 }] },
+    { name: "Mobile", children: [{ name: "iOS", value: 150 }, { name: "Android", value: 120 }] },
+    { name: "Retail", children: [{ name: "Flagship", value: 90 }, { name: "Outlet", value: 60 }] },
+  ],
+};
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <SunburstChart width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { SunburstChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```
