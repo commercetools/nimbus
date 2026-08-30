@@ -4,6 +4,7 @@ import { extent } from "d3-array";
 import { ChartFrame } from "../../chart/chart-frame";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
+import { emText } from "../../chart/typography";
 
 /** One row of a slopegraph: a single entity measured at two moments. */
 export interface SlopeRow {
@@ -109,7 +110,7 @@ export function SlopeChart({
                 x={0}
                 y={-12}
                 textAnchor="end"
-                fontSize={11}
+                style={emText(11)}
                 fontWeight={600}
                 fontFamily="system-ui, sans-serif"
                 fill={theme.ink}
@@ -122,7 +123,7 @@ export function SlopeChart({
                 x={innerWidth}
                 y={-12}
                 textAnchor="start"
-                fontSize={11}
+                style={emText(11)}
                 fontWeight={600}
                 fontFamily="system-ui, sans-serif"
                 fill={theme.ink}
@@ -177,7 +178,7 @@ export function SlopeChart({
                     y={leftYs[i]}
                     dy="0.32em"
                     textAnchor="end"
-                    fontSize={11}
+                    style={emText(11)}
                     fontFamily="system-ui, sans-serif"
                     fill={theme.ink}
                   >
@@ -188,7 +189,7 @@ export function SlopeChart({
                     y={rightYs[i]}
                     dy="0.32em"
                     textAnchor="start"
-                    fontSize={11}
+                    style={emText(11)}
                     fontFamily="system-ui, sans-serif"
                     fill={theme.ink}
                   >

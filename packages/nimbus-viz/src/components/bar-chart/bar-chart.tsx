@@ -10,6 +10,7 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { CategoryDatum } from "../../chart/types";
+import { emText } from "../../chart/typography";
 
 export interface BarChartProps {
   width: number;
@@ -101,7 +102,7 @@ export function BarChart({
                       y={y + bh / 2}
                       dy="0.32em"
                       textAnchor="end"
-                      fontSize={11}
+                      style={emText(11)}
                       fontFamily="system-ui, sans-serif"
                       fill={theme.mutedInk}
                     >
@@ -111,7 +112,7 @@ export function BarChart({
                       x={w + 6}
                       y={y + bh / 2}
                       dy="0.32em"
-                      fontSize={11}
+                      style={emText(11)}
                       fontFamily="system-ui, sans-serif"
                       fill={theme.ink}
                     >

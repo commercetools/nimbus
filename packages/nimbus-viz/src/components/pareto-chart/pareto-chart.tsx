@@ -9,6 +9,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
 import type { CategoryDatum } from "../../chart/types";
+import { emText } from "../../chart/typography";
 
 export interface ParetoChartProps {
   width: number;
@@ -155,7 +156,7 @@ export function ParetoChart({
               x={innerWidth}
               y={eightyY - 4}
               textAnchor="end"
-              fontSize={10}
+              style={emText(10)}
               fontFamily="system-ui, sans-serif"
               fill={theme.mutedInk}
             >
@@ -191,7 +192,7 @@ export function ParetoChart({
               x={cx(last)}
               y={yScale(grandTotal) - 8}
               textAnchor="end"
-              fontSize={10}
+              style={emText(10)}
               fontFamily="system-ui, sans-serif"
               fill={theme.mutedInk}
             >

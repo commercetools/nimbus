@@ -2,6 +2,7 @@ import { useChartScales } from "../chart/scale-context";
 import { useChartTheme } from "../theme";
 import { overlayColor } from "./variant";
 import type { OverlayVariant } from "./variant";
+import { emText } from "../chart/typography";
 
 export interface TargetMarkerProps {
   /** The target value on the value axis. */
@@ -48,7 +49,7 @@ export function TargetMarker({
           y={y}
           dy="0.32em"
           textAnchor="start"
-          fontSize={10}
+          style={emText(10)}
           fontFamily="system-ui, sans-serif"
           fill={theme.mutedInk}
         >

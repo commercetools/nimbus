@@ -5,6 +5,7 @@ import { Group } from "@visx/group";
 import { ChartFrame } from "../../chart/chart-frame";
 import { useChartTheme, useEntityColors } from "../../theme";
 import type { FlowGraph, FlowLink, FlowNode } from "../../chart/types";
+import { emText } from "../../chart/typography";
 
 export interface SankeyDiagramProps {
   width: number;
@@ -88,7 +89,7 @@ export function SankeyDiagram({
                       y={(y0 + y1) / 2}
                       dy="0.32em"
                       textAnchor={leftHalf ? "start" : "end"}
-                      fontSize={10}
+                      style={emText(10)}
                       fontFamily="system-ui, sans-serif"
                       fill={theme.ink}
                     >

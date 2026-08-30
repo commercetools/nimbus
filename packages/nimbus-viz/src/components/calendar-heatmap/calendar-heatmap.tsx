@@ -5,6 +5,7 @@ import { ChartFrame } from "../../chart/chart-frame";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { sequentialColor, useChartTheme } from "../../theme";
 import { formatDayMonth, formatInteger } from "../../chart/format";
+import { emText } from "../../chart/typography";
 
 /** One day's magnitude on a calendar activity grid. */
 export interface CalendarDatum {
@@ -146,7 +147,7 @@ export function CalendarHeatmap({
                     key={`m-${col}`}
                     x={col * step}
                     y={-6}
-                    fontSize={10}
+                    style={emText(10)}
                     fontFamily="system-ui, sans-serif"
                     fill={theme.mutedInk}
                   >
@@ -162,7 +163,7 @@ export function CalendarHeatmap({
                   y={row * step + cell / 2}
                   dy="0.32em"
                   textAnchor="end"
-                  fontSize={9}
+                  style={emText(9)}
                   fontFamily="system-ui, sans-serif"
                   fill={theme.mutedInk}
                 >

@@ -5,6 +5,7 @@ import { ChartFrame } from "../../chart/chart-frame";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { sequentialColor, useChartTheme } from "../../theme";
 import { formatCompact, formatInteger } from "../../chart/format";
+import { emText } from "../../chart/typography";
 
 /** One segment of an RFM matrix. `recency` & `frequency` are 1..N bucket indices. */
 export interface RfmCell {
@@ -137,7 +138,7 @@ export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
                           y={y + bh / 2}
                           dy="0.32em"
                           textAnchor="middle"
-                          fontSize={11}
+                          style={emText(11)}
                           fontWeight={600}
                           fontFamily="system-ui, sans-serif"
                           fill={t > 0.55 ? theme.surface : theme.ink}
@@ -159,7 +160,7 @@ export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
                     x={(xScale(String(r)) ?? 0) + bw / 2}
                     y={innerHeight + 12}
                     textAnchor="middle"
-                    fontSize={10}
+                    style={emText(10)}
                     fontFamily="system-ui, sans-serif"
                     fill={theme.mutedInk}
                   >
@@ -177,7 +178,7 @@ export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
                     y={(yScale(String(f)) ?? 0) + bh / 2}
                     dy="0.32em"
                     textAnchor="end"
-                    fontSize={10}
+                    style={emText(10)}
                     fontFamily="system-ui, sans-serif"
                     fill={theme.mutedInk}
                   >
@@ -190,7 +191,7 @@ export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
                 x={innerWidth / 2}
                 y={innerHeight + 30}
                 textAnchor="middle"
-                fontSize={11}
+                style={emText(11)}
                 fontWeight={600}
                 fontFamily="system-ui, sans-serif"
                 fill={theme.mutedInk}
@@ -200,7 +201,7 @@ export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
               <text
                 transform={`translate(${-34}, ${innerHeight / 2}) rotate(-90)`}
                 textAnchor="middle"
-                fontSize={11}
+                style={emText(11)}
                 fontWeight={600}
                 fontFamily="system-ui, sans-serif"
                 fill={theme.mutedInk}

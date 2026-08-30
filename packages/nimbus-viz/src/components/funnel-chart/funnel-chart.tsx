@@ -3,6 +3,7 @@ import { ChartFrame } from "../../chart/chart-frame";
 import { useChartTheme } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
 import type { FunnelStage } from "../../chart/types";
+import { emText } from "../../chart/typography";
 
 export interface FunnelChartProps {
   width: number;
@@ -49,7 +50,7 @@ export function FunnelChart({
                     x={innerWidth / 2}
                     y={y - 3}
                     textAnchor="middle"
-                    fontSize={10}
+                    style={emText(10)}
                     fontFamily="system-ui, sans-serif"
                     fill={theme.mutedInk}
                   >
@@ -70,7 +71,7 @@ export function FunnelChart({
                     y={y + barH / 2}
                     dy="0.32em"
                     textAnchor="middle"
-                    fontSize={12}
+                    style={emText(12)}
                     fontWeight={600}
                     fontFamily="system-ui, sans-serif"
                     fill={theme.surface}

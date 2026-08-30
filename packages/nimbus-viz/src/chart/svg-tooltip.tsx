@@ -1,4 +1,5 @@
 import { useChartTheme } from "../theme";
+import { emText } from "./typography";
 
 export interface SvgTooltipProps {
   /** Anchor x in inner (plot) coordinates. */
@@ -37,7 +38,7 @@ export function SvgTooltip({ x, innerWidth, lines, top = 4 }: SvgTooltipProps) {
           key={line}
           x={8}
           y={17 + i * 15}
-          fontSize={11}
+          style={emText(11)}
           fontFamily="system-ui, sans-serif"
           fontWeight={i === 0 ? 600 : 400}
           fill={i === 0 ? theme.ink : theme.mutedInk}

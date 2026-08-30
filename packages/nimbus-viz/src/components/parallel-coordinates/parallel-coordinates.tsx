@@ -8,6 +8,7 @@ import { Legend } from "../../chart/legend";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
+import { emText } from "../../chart/typography";
 
 /** One vertical axis: `key` selects the field on each row's `values`. */
 export interface ParallelDimension {
@@ -154,7 +155,7 @@ export function ParallelCoordinates({
                       x={0}
                       y={-12}
                       textAnchor="middle"
-                      fontSize={11}
+                      style={emText(11)}
                       fontFamily="system-ui, sans-serif"
                       fill={theme.mutedInk}
                     >
@@ -164,7 +165,7 @@ export function ParallelCoordinates({
                       x={-6}
                       y={4}
                       textAnchor="end"
-                      fontSize={10}
+                      style={emText(10)}
                       fontFamily="system-ui, sans-serif"
                       fill={theme.mutedInk}
                     >
@@ -174,7 +175,7 @@ export function ParallelCoordinates({
                       x={-6}
                       y={innerHeight}
                       textAnchor="end"
-                      fontSize={10}
+                      style={emText(10)}
                       fontFamily="system-ui, sans-serif"
                       fill={theme.mutedInk}
                     >
