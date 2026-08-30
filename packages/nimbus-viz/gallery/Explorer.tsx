@@ -5,7 +5,6 @@ import {
   BulletChart,
   chartRegistry,
   Gauge,
-  GroupedBarChart,
   Histogram,
   resolveByName,
   ResponsiveContainer,
@@ -32,7 +31,6 @@ import { fixtureFor } from "./fixtures";
 import {
   arr,
   bullets,
-  composition,
   flow,
   latencyByRegion,
   orderValues,
@@ -135,14 +133,6 @@ const GAP_TYPES: GapType[] = (
           <StatCard label="Revenue (MTD)" value={482000} previous={430000} />
           <StatCard label="Orders" value={12840} previous={13120} />
         </Flex>
-      ),
-    },
-    {
-      base: "GroupedBarChart",
-      label: "Grouped bar",
-      height: 260,
-      render: (w: number, h: number) => (
-        <GroupedBarChart width={w} height={h} data={composition} />
       ),
     },
     {
