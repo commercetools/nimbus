@@ -3,6 +3,7 @@ import {
   renderBarVertical,
   renderBoxPlot,
   renderBullet,
+  renderDivergingBar,
   renderDonut,
   renderFunnel,
   renderGauge,
@@ -10,11 +11,14 @@ import {
   renderHeatmap,
   renderHistogram,
   renderLine,
+  renderLollipop,
+  renderRadialBar,
   renderSankey,
   renderScatter,
   renderStacked,
   renderStatCard,
   renderTreemap,
+  renderWaffle,
   renderWaterfall,
 } from "./render-adapters";
 import { presetEntries } from "./presets";
@@ -302,6 +306,71 @@ const statCardMeta: ChartSelectionMetadata = {
   configLabel: "StatCard",
 };
 
+/* -------------------------------------------------------------------------- */
+/* Visual-vocabulary additions (FT chart-doctor families)                     */
+/* -------------------------------------------------------------------------- */
+
+const divergingBarMeta: ChartSelectionMetadata = {
+  name: "diverging-bar-chart",
+  baseComponent: "DivergingBarChart",
+  intents: [
+    { intent: "DELTA", primacy: "primary" },
+    { intent: "COMPARE", primacy: "secondary" },
+  ],
+  acceptedShapes: ["categorical"],
+  constraints: { maxCategories: 25 },
+  // Signed length on a shared zero baseline — a clean deviation read.
+  perceptualRank: 0.88,
+  questionString: "How does each category deviate (+/−) from the baseline?",
+  bundleWeight: 8,
+  configLabel: "DivergingBarChart",
+};
+
+const lollipopMeta: ChartSelectionMetadata = {
+  name: "lollipop-chart",
+  baseComponent: "LollipopChart",
+  intents: [
+    { intent: "RANK", primacy: "primary" },
+    { intent: "COMPARE", primacy: "secondary" },
+  ],
+  acceptedShapes: ["ranking", "categorical"],
+  constraints: { maxCategories: 30 },
+  // Position of the dot on a common baseline — as accurate as the bar, less ink.
+  perceptualRank: 0.9,
+  questionString: "Where does each item rank?",
+  bundleWeight: 6,
+  configLabel: "LollipopChart",
+};
+
+const radialBarMeta: ChartSelectionMetadata = {
+  name: "radial-bar-chart",
+  baseComponent: "RadialBarChart",
+  intents: [
+    { intent: "COMPARE", primacy: "primary" },
+    { intent: "RANK", primacy: "secondary" },
+  ],
+  acceptedShapes: ["categorical"],
+  constraints: { maxCategories: 16 },
+  // Angular position + radial length — a compact form, less accurate than a bar.
+  perceptualRank: 0.6,
+  questionString: "How do these categories compare, compactly?",
+  bundleWeight: 7,
+  configLabel: "RadialBarChart",
+};
+
+const waffleMeta: ChartSelectionMetadata = {
+  name: "waffle-chart",
+  baseComponent: "WaffleChart",
+  intents: [{ intent: "PART-WHOLE", primacy: "primary" }],
+  acceptedShapes: ["part-to-whole", "categorical"],
+  constraints: { maxCategories: 8 },
+  // Counting cells reads share more accurately than a pie's angles.
+  perceptualRank: 0.55,
+  questionString: "What share is each part of the whole?",
+  bundleWeight: 5,
+  configLabel: "WaffleChart",
+};
+
 /**
  * Build the default registry. Insertion order is the stable tie-break's
  * registration order (docs/06 §3): canonical entries first (so they win a
@@ -412,10 +481,41 @@ export function createDefaultRegistry(): ChartRegistry {
       render: renderStatCard,
       canonical: true,
     },
+    // Deviation family (FT): the go-to for signed change across categories.
+    {
+      metadata: divergingBarMeta,
+      dataKinds: ["category"],
+      render: renderDivergingBar,
+      canonical: true,
+    },
+  ];
+
+  // Name-addressable alternates (canonical: false) — real components that share
+  // a data kind with a canonical chart, so they enrich the catalog and the
+  // gallery without crowding the bare-intent resolver.
+  const extended: ChartRegistryEntry[] = [
+    {
+      metadata: lollipopMeta,
+      dataKinds: ["category"],
+      render: renderLollipop,
+      canonical: false,
+    },
+    {
+      metadata: radialBarMeta,
+      dataKinds: ["category"],
+      render: renderRadialBar,
+      canonical: false,
+    },
+    {
+      metadata: waffleMeta,
+      dataKinds: ["category"],
+      render: renderWaffle,
+      canonical: false,
+    },
   ];
 
   const registry: ChartRegistry = new Map();
-  for (const entry of [...canonical, ...presetEntries()]) {
+  for (const entry of [...canonical, ...extended, ...presetEntries()]) {
     if (registry.has(entry.metadata.name)) {
       // eslint-disable-next-line no-console
       console.warn(

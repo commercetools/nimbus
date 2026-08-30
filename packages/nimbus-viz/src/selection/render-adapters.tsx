@@ -42,6 +42,10 @@ import { Treemap } from "../components/treemap";
 import type { TreemapNode } from "../components/treemap";
 import { Gauge } from "../components/gauge";
 import { StatCard } from "../components/stat-card";
+import { LollipopChart } from "../components/lollipop-chart";
+import { RadialBarChart } from "../components/radial-bar-chart";
+import { WaffleChart } from "../components/waffle-chart";
+import { DivergingBarChart } from "../components/diverging-bar-chart";
 import type { FlowGraph } from "../chart/types";
 import { CohortTriangle } from "../components/cohort-triangle";
 import type {
@@ -528,6 +532,50 @@ export function renderStatCard(request: ResolveRequest, size: ChartSize) {
       label={optString(request, "label") ?? "Value"}
       value={request.data as number}
       previous={optNumber(request, "previous")}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderLollipop(request: ResolveRequest, size: ChartSize) {
+  return (
+    <LollipopChart
+      width={size.width}
+      height={size.height}
+      data={request.data as CategoryDatum[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderRadialBar(request: ResolveRequest, size: ChartSize) {
+  return (
+    <RadialBarChart
+      width={size.width}
+      height={size.height}
+      data={request.data as CategoryDatum[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderWaffle(request: ResolveRequest, size: ChartSize) {
+  return (
+    <WaffleChart
+      width={size.width}
+      height={size.height}
+      data={request.data as CategoryDatum[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderDivergingBar(request: ResolveRequest, size: ChartSize) {
+  return (
+    <DivergingBarChart
+      width={size.width}
+      height={size.height}
+      data={request.data as CategoryDatum[]}
       ariaLabel={optString(request, "ariaLabel")}
     />
   );
