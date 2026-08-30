@@ -1,0 +1,44 @@
+---
+id: Charts-Heatmap
+title: Heatmap
+exportName: Heatmap
+description: A value grid shaded on a single sequential ramp.
+lifecycleState: Experimental
+order: 900
+icon: GridView
+menu:
+  - Charts
+  - Heatmap
+tags:
+  - chart
+  - matrix
+---
+
+## Heatmap
+
+A value grid shaded on a single sequential ramp.
+
+```jsx live
+const rows = [
+  { label: "Mon", values: [12, 24, 40, 62, 48, 20] },
+  { label: "Tue", values: [8, 22, 44, 70, 52, 26] },
+  { label: "Wed", values: [10, 26, 50, 66, 46, 22] },
+  { label: "Thu", values: [14, 30, 48, 72, 58, 30] },
+  { label: "Fri", values: [18, 34, 56, 80, 64, 38] },
+];
+const columnLabels = ["6a", "9a", "12p", "3p", "6p", "9p"];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <Heatmap width={width} height={height} rows={rows} columnLabels={columnLabels} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { Heatmap, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

@@ -1,0 +1,48 @@
+---
+id: Charts-ParallelCoordinates
+title: Parallel Coordinates
+exportName: ParallelCoordinates
+description: Relate records across many dimensions on parallel axes.
+lifecycleState: Experimental
+order: 704
+icon: BubbleChart
+menu:
+  - Charts
+  - Parallel Coordinates
+tags:
+  - chart
+  - relationship
+---
+
+## Parallel Coordinates
+
+Relate records across many dimensions on parallel axes.
+
+```jsx live
+const dimensions = [
+  { key: "price", label: "Price" },
+  { key: "margin", label: "Margin" },
+  { key: "volume", label: "Volume" },
+  { key: "rating", label: "Rating" },
+];
+const data = [
+  { id: "r1", values: { price: 40, margin: 32, volume: 1200, rating: 4.2 } },
+  { id: "r2", values: { price: 88, margin: 18, volume: 640, rating: 3.6 } },
+  { id: "r3", values: { price: 62, margin: 44, volume: 2100, rating: 4.8 } },
+  { id: "r4", values: { price: 30, margin: 26, volume: 900, rating: 4.0 } },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <ParallelCoordinates width={width} height={height} dimensions={dimensions} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { ParallelCoordinates, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

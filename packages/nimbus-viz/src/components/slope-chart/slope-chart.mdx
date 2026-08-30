@@ -1,0 +1,42 @@
+---
+id: Charts-SlopeChart
+title: Slope Chart
+exportName: SlopeChart
+description: How each item changed between two moments.
+lifecycleState: Experimental
+order: 501
+icon: CompareArrows
+menu:
+  - Charts
+  - Slope Chart
+tags:
+  - chart
+  - compare
+---
+
+## Slope Chart
+
+How each item changed between two moments.
+
+```jsx live
+const data = [
+  { id: "a", label: "Apparel", left: 3200, right: 4100 },
+  { id: "b", label: "Home", left: 2800, right: 2500 },
+  { id: "c", label: "Beauty", left: 1900, right: 2600 },
+  { id: "d", label: "Toys", left: 2200, right: 2050 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <SlopeChart width={width} height={height} data={data} leftLabel="2024" rightLabel="2025" />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { SlopeChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

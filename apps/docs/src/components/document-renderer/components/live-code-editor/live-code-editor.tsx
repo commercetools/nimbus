@@ -1,4 +1,5 @@
 import * as NimbusUi from "@commercetools/nimbus";
+import * as NimbusViz from "@commercetools/nimbus-viz";
 import * as icons from "@commercetools/nimbus-icons";
 import {
   Box,
@@ -34,8 +35,11 @@ const baseHooks = {
   useMemo,
 };
 
-// functions & components available to the live code editor
+// functions & components available to the live code editor.
+// NimbusViz is spread first so `@commercetools/nimbus` wins any shared name;
+// the chart component names are unique, so they are always available.
 const scope = {
+  ...NimbusViz,
   ...NimbusUi,
   ...baseHooks,
   Icons: { ...icons },

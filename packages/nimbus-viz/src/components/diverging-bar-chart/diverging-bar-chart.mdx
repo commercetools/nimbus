@@ -1,0 +1,43 @@
+---
+id: Charts-DivergingBarChart
+title: Diverging Bar Chart
+exportName: DivergingBarChart
+description: Signed values against a central zero baseline.
+lifecycleState: Experimental
+order: 400
+icon: SwapVert
+menu:
+  - Charts
+  - Diverging Bar Chart
+tags:
+  - chart
+  - deviation
+---
+
+## Diverging Bar Chart
+
+Signed values against a central zero baseline.
+
+```jsx live
+const data = [
+  { category: "Apparel", value: 32 },
+  { category: "Home", value: 18 },
+  { category: "Beauty", value: 6 },
+  { category: "Toys", value: -9 },
+  { category: "Grocery", value: -21 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <DivergingBarChart width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { DivergingBarChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

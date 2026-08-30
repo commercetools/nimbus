@@ -1,0 +1,40 @@
+---
+id: Charts-CumulativeCurve
+title: Cumulative Curve
+exportName: CumulativeCurve
+description: The empirical CDF for reading percentiles directly.
+lifecycleState: Experimental
+order: 803
+icon: Insights
+menu:
+  - Charts
+  - Cumulative Curve
+tags:
+  - chart
+  - distribution
+---
+
+## Cumulative Curve
+
+The empirical CDF for reading percentiles directly.
+
+```jsx live
+const rand = (i) => { const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
+const values = Array.from({ length: 220 }, (_, i) =>
+  Math.round(50 + ((rand(i) + rand(i + 60) + rand(i + 130)) / 3 - 0.5) * 70)
+);
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <CumulativeCurve width={width} height={height} values={values} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { CumulativeCurve, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

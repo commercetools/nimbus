@@ -1,0 +1,43 @@
+---
+id: Charts-BubbleChart
+title: Bubble Chart
+exportName: BubbleChart
+description: A scatter weighted by a third variable, encoded as area.
+lifecycleState: Experimental
+order: 701
+icon: BubbleChart
+menu:
+  - Charts
+  - Bubble Chart
+tags:
+  - chart
+  - relationship
+---
+
+## Bubble Chart
+
+A scatter weighted by a third variable, encoded as area.
+
+```jsx live
+const points = [
+  { x: 22, y: 38, size: 320, label: "Acme" },
+  { x: 44, y: 52, size: 680, label: "Globex" },
+  { x: 61, y: 30, size: 210, label: "Initech" },
+  { x: 73, y: 66, size: 900, label: "Umbrella" },
+  { x: 35, y: 74, size: 460, label: "Hooli" },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <BubbleChart width={width} height={height} points={points} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { BubbleChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

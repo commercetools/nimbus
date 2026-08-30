@@ -1,0 +1,40 @@
+---
+id: Charts-BeeswarmPlot
+title: Beeswarm Plot
+exportName: BeeswarmPlot
+description: Every sample kept visible, packed without overlap.
+lifecycleState: Experimental
+order: 802
+icon: Insights
+menu:
+  - Charts
+  - Beeswarm Plot
+tags:
+  - chart
+  - distribution
+---
+
+## Beeswarm Plot
+
+Every sample kept visible, packed without overlap.
+
+```jsx live
+const rand = (i) => { const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
+const values = Array.from({ length: 220 }, (_, i) =>
+  Math.round(50 + ((rand(i) + rand(i + 60) + rand(i + 130)) / 3 - 0.5) * 70)
+);
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <BeeswarmPlot width={width} height={height} values={values} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { BeeswarmPlot, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

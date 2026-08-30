@@ -1,0 +1,50 @@
+---
+id: Charts-Streamgraph
+title: Streamgraph
+exportName: Streamgraph
+description: A flowing, center-baseline take on composition over time.
+lifecycleState: Experimental
+order: 102
+icon: ShowChart
+menu:
+  - Charts
+  - Streamgraph
+tags:
+  - chart
+  - trend
+---
+
+## Streamgraph
+
+A flowing, center-baseline take on composition over time.
+
+```jsx live
+const series = [
+  { id: "organic", label: "Organic", data: [
+    { x: new Date("2026-01-01"), y: 120 }, { x: new Date("2026-02-01"), y: 150 },
+    { x: new Date("2026-03-01"), y: 170 }, { x: new Date("2026-04-01"), y: 210 },
+    { x: new Date("2026-05-01"), y: 240 }, { x: new Date("2026-06-01"), y: 300 } ] },
+  { id: "paid", label: "Paid", data: [
+    { x: new Date("2026-01-01"), y: 80 }, { x: new Date("2026-02-01"), y: 96 },
+    { x: new Date("2026-03-01"), y: 110 }, { x: new Date("2026-04-01"), y: 104 },
+    { x: new Date("2026-05-01"), y: 130 }, { x: new Date("2026-06-01"), y: 150 } ] },
+  { id: "referral", label: "Referral", data: [
+    { x: new Date("2026-01-01"), y: 40 }, { x: new Date("2026-02-01"), y: 52 },
+    { x: new Date("2026-03-01"), y: 60 }, { x: new Date("2026-04-01"), y: 72 },
+    { x: new Date("2026-05-01"), y: 66 }, { x: new Date("2026-06-01"), y: 88 } ] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <Streamgraph width={width} height={height} series={series} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { Streamgraph, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

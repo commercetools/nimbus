@@ -1,0 +1,62 @@
+---
+id: Charts-LineChart
+title: Line Chart
+exportName: LineChart
+description: Track one or more series over a continuous time axis.
+lifecycleState: Experimental
+order: 100
+icon: ShowChart
+menu:
+  - Charts
+  - Line Chart
+tags:
+  - chart
+  - trend
+---
+
+## Line Chart
+
+Track one or more series over a continuous time axis.
+
+```jsx live
+const series = [
+  {
+    id: "eu",
+    label: "EU",
+    data: [
+      { x: new Date("2026-01-01"), y: 120 },
+      { x: new Date("2026-02-01"), y: 148 },
+      { x: new Date("2026-03-01"), y: 136 },
+      { x: new Date("2026-04-01"), y: 172 },
+      { x: new Date("2026-05-01"), y: 165 },
+      { x: new Date("2026-06-01"), y: 194 },
+    ],
+  },
+  {
+    id: "us",
+    label: "US",
+    data: [
+      { x: new Date("2026-01-01"), y: 90 },
+      { x: new Date("2026-02-01"), y: 104 },
+      { x: new Date("2026-03-01"), y: 128 },
+      { x: new Date("2026-04-01"), y: 119 },
+      { x: new Date("2026-05-01"), y: 142 },
+      { x: new Date("2026-06-01"), y: 158 },
+    ],
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <LineChart width={width} height={height} series={series} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { LineChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

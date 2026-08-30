@@ -1,0 +1,42 @@
+---
+id: Charts-BulletChart
+title: Bullet Chart
+exportName: BulletChart
+description: A measure against its target and qualitative ranges.
+lifecycleState: Experimental
+order: 503
+icon: CompareArrows
+menu:
+  - Charts
+  - Bullet Chart
+tags:
+  - chart
+  - compare
+---
+
+## Bullet Chart
+
+A measure against its target and qualitative ranges.
+
+```jsx live
+const data = [
+  { label: "Revenue", measure: 82, target: 100 },
+  { label: "New customers", measure: 68, target: 60 },
+  { label: "NPS", measure: 44, target: 50 },
+  { label: "Uptime", measure: 96, target: 99 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <BulletChart width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { BulletChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

@@ -1,0 +1,33 @@
+---
+id: Charts-StatCard
+title: Stat Card
+exportName: StatCard
+description: A headline number with an optional delta vs. a prior value.
+lifecycleState: Experimental
+order: 1300
+icon: Numbers
+menu:
+  - Charts
+  - Stat Card
+tags:
+  - chart
+  - single-value
+---
+
+## Stat Card
+
+A headline number with an optional delta vs. a prior value.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <StatCard label="Monthly revenue" value={128400} previous={112900} />
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { StatCard, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

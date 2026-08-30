@@ -1,0 +1,35 @@
+---
+id: Charts-Gauge
+title: Gauge
+exportName: Gauge
+description: Progress of a single value toward a target.
+lifecycleState: Experimental
+order: 1301
+icon: Numbers
+menu:
+  - Charts
+  - Gauge
+tags:
+  - chart
+  - single-value
+---
+
+## Gauge
+
+Progress of a single value toward a target.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={200}>
+      {(width, height) => <Gauge width={width} height={height} value={72} min={0} max={100} threshold={80} label="SLA attainment" />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { Gauge, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```
