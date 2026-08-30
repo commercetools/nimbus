@@ -156,7 +156,6 @@ export function ParallelCoordinates({
                       y={-12}
                       textAnchor="middle"
                       style={emText(11)}
-                      fontFamily="system-ui, sans-serif"
                       fill={theme.mutedInk}
                     >
                       {d.label}
@@ -166,7 +165,6 @@ export function ParallelCoordinates({
                       y={4}
                       textAnchor="end"
                       style={emText(10)}
-                      fontFamily="system-ui, sans-serif"
                       fill={theme.mutedInk}
                     >
                       {formatCompact(hi)}
@@ -176,7 +174,6 @@ export function ParallelCoordinates({
                       y={innerHeight}
                       textAnchor="end"
                       style={emText(10)}
-                      fontFamily="system-ui, sans-serif"
                       fill={theme.mutedInk}
                     >
                       {formatCompact(lo)}

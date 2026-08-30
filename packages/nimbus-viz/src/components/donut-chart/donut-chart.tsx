@@ -83,7 +83,6 @@ export function DonutChart({
                 dy={-2}
                 style={emText(20)}
                 fontWeight={700}
-                fontFamily="system-ui, sans-serif"
                 fill={theme.ink}
               >
                 {active
@@ -94,7 +93,6 @@ export function DonutChart({
                 textAnchor="middle"
                 dy={16}
                 style={emText(11)}
-                fontFamily="system-ui, sans-serif"
                 fill={theme.mutedInk}
               >
                 {active ? active.category : "Total"}

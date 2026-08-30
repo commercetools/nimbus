@@ -162,7 +162,6 @@ export function WaterfallChart({
                     y={barTop - 4}
                     textAnchor="middle"
                     style={emText(10)}
-                    fontFamily="system-ui, sans-serif"
                     fill={theme.mutedInk}
                   >
                     {valueLabel}

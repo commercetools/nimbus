@@ -88,7 +88,6 @@ export function BulletChart({
                     dy="0.32em"
                     textAnchor="end"
                     style={emText(11)}
-                    fontFamily="system-ui, sans-serif"
                     fill={theme.mutedInk}
                   >
                     {d.label}
@@ -131,7 +130,6 @@ export function BulletChart({
                     y={cy}
                     dy="0.32em"
                     style={emText(10)}
-                    fontFamily="system-ui, sans-serif"
                     fill={theme.ink}
                   >
                     {formatCompact(d.measure)}

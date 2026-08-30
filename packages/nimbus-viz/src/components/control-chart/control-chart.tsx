@@ -164,7 +164,6 @@ export function ControlChart({
                 y={yScale(value)}
                 dy="0.32em"
                 style={emText(9)}
-                fontFamily="system-ui, sans-serif"
                 fill={theme.mutedInk}
               >
                 {text}

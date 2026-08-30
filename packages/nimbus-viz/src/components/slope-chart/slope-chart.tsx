@@ -112,7 +112,6 @@ export function SlopeChart({
                 textAnchor="end"
                 style={emText(11)}
                 fontWeight={600}
-                fontFamily="system-ui, sans-serif"
                 fill={theme.ink}
               >
                 {leftLabel}
@@ -125,7 +124,6 @@ export function SlopeChart({
                 textAnchor="start"
                 style={emText(11)}
                 fontWeight={600}
-                fontFamily="system-ui, sans-serif"
                 fill={theme.ink}
               >
                 {rightLabel}
@@ -179,7 +177,6 @@ export function SlopeChart({
                     dy="0.32em"
                     textAnchor="end"
                     style={emText(11)}
-                    fontFamily="system-ui, sans-serif"
                     fill={theme.ink}
                   >
                     {`${row.label}  ${formatCompact(row.left)}`}
@@ -190,7 +187,6 @@ export function SlopeChart({
                     dy="0.32em"
                     textAnchor="start"
                     style={emText(11)}
-                    fontFamily="system-ui, sans-serif"
                     fill={theme.ink}
                   >
                     {`${formatCompact(row.right)}  ${row.label}`}

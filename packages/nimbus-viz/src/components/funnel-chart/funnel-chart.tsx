@@ -51,7 +51,6 @@ export function FunnelChart({
                     y={y - 3}
                     textAnchor="middle"
                     style={emText(10)}
-                    fontFamily="system-ui, sans-serif"
                     fill={theme.mutedInk}
                   >
                     {stage.stage}
@@ -73,7 +72,6 @@ export function FunnelChart({
                     textAnchor="middle"
                     style={emText(12)}
                     fontWeight={600}
-                    fontFamily="system-ui, sans-serif"
                     fill={theme.surface}
                   >
                     {formatCompact(stage.value)}

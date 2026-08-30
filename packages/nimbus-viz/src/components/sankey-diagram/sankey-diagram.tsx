@@ -90,7 +90,6 @@ export function SankeyDiagram({
                       dy="0.32em"
                       textAnchor={leftHalf ? "start" : "end"}
                       style={emText(10)}
-                      fontFamily="system-ui, sans-serif"
                       fill={theme.ink}
                     >
                       {node.name}

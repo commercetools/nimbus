@@ -50,7 +50,6 @@ export function TargetMarker({
           dy="0.32em"
           textAnchor="start"
           style={emText(10)}
-          fontFamily="system-ui, sans-serif"
           fill={theme.mutedInk}
         >
           {label}

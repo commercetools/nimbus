@@ -55,7 +55,6 @@ export function ThresholdBand({
             y={10}
             textAnchor="start"
             style={emText(10)}
-            fontFamily="system-ui, sans-serif"
             fill={theme.mutedInk}
           >
             {label}
@@ -85,7 +84,6 @@ export function ThresholdBand({
           y={top + 12}
           textAnchor="end"
           style={emText(10)}
-          fontFamily="system-ui, sans-serif"
           fill={theme.mutedInk}
         >
           {label}
