@@ -583,7 +583,11 @@ function QuestionCard({ entry }: { entry: ChartRegistryEntry }) {
             </Text>
           }
         >
-          <ResponsiveContainer height={260}>
+          <ResponsiveContainer
+            aspectRatio={1.7}
+            minHeight={200}
+            maxHeight={320}
+          >
             {(w, h) => renderPreset(entry, w, h)}
           </ResponsiveContainer>
         </PreviewBoundary>
