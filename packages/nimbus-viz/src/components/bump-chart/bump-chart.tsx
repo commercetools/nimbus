@@ -1,10 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { scalePoint } from "@visx/scale";
 import { LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveMonotoneX } from "@visx/curve";
 import { ChartFrame } from "../../chart/chart-frame";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
+import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact, formatDayMonth } from "../../chart/format";
 import type { Series } from "../../chart/types";
@@ -40,6 +41,7 @@ export function BumpChart({
   ariaLabel,
 }: BumpChartProps) {
   const theme = useChartTheme();
+  const [hover, setHover] = useState<{ si: number; i: number } | null>(null);
   const color = useEntityColors(
     useMemo(() => series.map((s) => s.id), [series])
   );
@@ -122,18 +124,19 @@ export function BumpChart({
                 tickLabelProps={bottomTickLabel(theme)}
               />
 
-              {ranked.map((s) => {
+              {ranked.map((s, si) => {
                 const stroke = color(s.id);
                 const last = s.points[s.points.length - 1];
+                const dimmed = hover != null && hover.si !== si;
                 return (
-                  <g key={s.id}>
+                  <g key={s.id} opacity={dimmed ? 0.3 : 1}>
                     <LinePath<RankPoint>
                       data={s.points}
                       x={(d) => px(d.i)}
                       y={(d) => py(d.rank)}
                       curve={curveMonotoneX}
                       stroke={stroke}
-                      strokeWidth={2}
+                      strokeWidth={hover?.si === si ? 3 : 2}
                       fill="none"
                     />
                     {s.points.map((d) => (
@@ -141,10 +144,12 @@ export function BumpChart({
                         key={d.i}
                         cx={px(d.i)}
                         cy={py(d.rank)}
-                        r={4}
+                        r={hover?.si === si && hover?.i === d.i ? 6 : 4}
                         fill={stroke}
                         stroke={theme.surface}
                         strokeWidth={1.5}
+                        onMouseEnter={() => setHover({ si, i: d.i })}
+                        onMouseLeave={() => setHover(null)}
                       />
                     ))}
                     {last && (
@@ -161,6 +166,26 @@ export function BumpChart({
                   </g>
                 );
               })}
+              {hover &&
+                (() => {
+                  const rp = ranked[hover.si]?.points.find(
+                    (p) => p.i === hover.i
+                  );
+                  const datum = series[hover.si]?.data[hover.i];
+                  if (!rp || !datum || datum.y == null) return null;
+                  return (
+                    <SvgTooltip
+                      x={px(hover.i)}
+                      innerWidth={innerWidth}
+                      top={Math.max(0, py(rp.rank) - 8)}
+                      lines={[
+                        series[hover.si].label,
+                        `Rank #${rp.rank}`,
+                        `${fmtX(datum.x)}: ${formatCompact(datum.y)}`,
+                      ]}
+                    />
+                  );
+                })()}
             </>
           );
         }}

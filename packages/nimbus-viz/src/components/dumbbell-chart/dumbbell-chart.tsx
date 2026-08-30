@@ -5,8 +5,9 @@ import { extent } from "d3-array";
 import { ChartFrame } from "../../chart/chart-frame";
 import { Legend } from "../../chart/legend";
 import { bottomTickLabel } from "../../chart/axes";
+import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { formatCompact, formatSignedCompact } from "../../chart/format";
 import { emText } from "../../chart/typography";
 
 /** One category compared at two points — a start and an end value. */
@@ -80,6 +81,7 @@ export function DumbbellChart({
             padding: 0.4,
           });
           const bw = yScale.bandwidth();
+          const hr = hover != null ? data[hover] : null;
 
           return (
             <>
@@ -180,6 +182,19 @@ export function DumbbellChart({
                   </g>
                 );
               })}
+              {hr && (
+                <SvgTooltip
+                  x={(xScale(hr.start) + xScale(hr.end)) / 2}
+                  innerWidth={innerWidth}
+                  top={Math.max(0, (yScale(hr.category) ?? 0) + bw / 2 - 30)}
+                  lines={[
+                    hr.category,
+                    `${startLabel}: ${formatCompact(hr.start)}`,
+                    `${endLabel}: ${formatCompact(hr.end)}`,
+                    `Change: ${formatSignedCompact(hr.end - hr.start)}`,
+                  ]}
+                />
+              )}
             </>
           );
         }}

@@ -2,8 +2,13 @@ import { useMemo, useState } from "react";
 import { scaleLinear } from "@visx/scale";
 import { extent } from "d3-array";
 import { ChartFrame } from "../../chart/chart-frame";
+import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import {
+  formatCompact,
+  formatSignedCompact,
+  formatSignedPercent,
+} from "../../chart/format";
 import { emText } from "../../chart/typography";
 
 /** One row of a slopegraph: a single entity measured at two moments. */
@@ -194,6 +199,31 @@ export function SlopeChart({
                 </g>
               );
             })}
+            {hover != null &&
+              data[hover] &&
+              (() => {
+                const row = data[hover];
+                const delta = row.right - row.left;
+                return (
+                  <SvgTooltip
+                    x={innerWidth / 2}
+                    innerWidth={innerWidth}
+                    top={Math.max(
+                      0,
+                      (yScale(row.left) + yScale(row.right)) / 2 - 8
+                    )}
+                    lines={[
+                      row.label,
+                      `${formatCompact(row.left)} → ${formatCompact(row.right)}`,
+                      `Change: ${formatSignedCompact(delta)}${
+                        row.left !== 0
+                          ? ` (${formatSignedPercent(delta / row.left)})`
+                          : ""
+                      }`,
+                    ]}
+                  />
+                );
+              })()}
           </>
         );
       }}

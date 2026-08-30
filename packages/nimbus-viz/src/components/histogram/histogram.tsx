@@ -5,6 +5,7 @@ import { AxisBottom, AxisLeft } from "@visx/axis";
 import { bin, extent, max } from "d3-array";
 import { ChartFrame } from "../../chart/chart-frame";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
+import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact, formatInteger } from "../../chart/format";
 
@@ -68,6 +69,7 @@ export function Histogram({
           range: [innerHeight, 0],
           nice: true,
         });
+        const hb = hover != null ? bins[hover] : null;
         return (
           <>
             <GridRows
@@ -114,6 +116,21 @@ export function Histogram({
                 />
               );
             })}
+            {hb && (
+              <SvgTooltip
+                x={
+                  (xScale(hb.x0 ?? domain[0]) + xScale(hb.x1 ?? domain[1])) / 2
+                }
+                innerWidth={innerWidth}
+                top={Math.max(0, yScale(hb.length) - 4)}
+                lines={[
+                  `${formatCompact(hb.x0 ?? domain[0])} – ${formatCompact(
+                    hb.x1 ?? domain[1]
+                  )}`,
+                  `Count: ${formatInteger(hb.length)}`,
+                ]}
+              />
+            )}
           </>
         );
       }}

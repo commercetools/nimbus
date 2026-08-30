@@ -5,6 +5,7 @@ import { AxisBottom, AxisLeft } from "@visx/axis";
 import { ChartFrame } from "../../chart/chart-frame";
 import { Legend } from "../../chart/legend";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
+import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { StackRow } from "../../chart/types";
@@ -68,6 +69,11 @@ export function StackedBarChart({
             nice: true,
           });
           const bw = xScale.bandwidth();
+          const hr =
+            hover != null ? data.find((d) => d.category === hover) : null;
+          const hrTotal = hr
+            ? hr.segments.reduce((s, seg) => s + seg.value, 0)
+            : 0;
           return (
             <>
               <GridRows
@@ -133,6 +139,20 @@ export function StackedBarChart({
                   </g>
                 );
               })}
+              {hr && (
+                <SvgTooltip
+                  x={(xScale(hr.category) ?? 0) + bw / 2}
+                  innerWidth={innerWidth}
+                  top={Math.max(0, yScale(hrTotal) - 4)}
+                  lines={[
+                    hr.category,
+                    `Total: ${formatCompact(hrTotal)}`,
+                    ...hr.segments.map(
+                      (seg) => `${seg.key}: ${formatCompact(seg.value)}`
+                    ),
+                  ]}
+                />
+              )}
             </>
           );
         }}
