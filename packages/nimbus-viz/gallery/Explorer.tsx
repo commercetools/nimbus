@@ -18,6 +18,7 @@ import type { ChartRegistryEntry, Intent } from "../src";
 import {
   Badge,
   Box,
+  Button,
   Card,
   Code,
   Flex,
@@ -90,6 +91,28 @@ function buildCatalogTypes(): CatalogType[] {
 }
 
 const CATALOG_TYPES = buildCatalogTypes();
+
+// The question-intent taxonomy, in doc order, restricted to intents actually
+// present in the catalog — the axis the intent filter offers.
+const INTENT_ORDER: Intent[] = [
+  "TREND",
+  "DELTA",
+  "RANK",
+  "PART-WHOLE",
+  "COMPARE",
+  "DIST",
+  "TARGET",
+  "RANGE",
+  "REL",
+  "COMP-TIME",
+  "GEO",
+  "FLOW",
+  "BENCH",
+  "RETAIN",
+  "VALUE",
+];
+const PRESENT_INTENTS = new Set(CATALOG_TYPES.flatMap((t) => t.intents));
+const ALL_INTENTS = INTENT_ORDER.filter((i) => PRESENT_INTENTS.has(i));
 
 // ── Gap types: built components with no registry entry (a coverage gap). ─────
 // Rendered directly (no presets / questions / selection metadata) so retiring
@@ -250,16 +273,20 @@ function TypeRow({
 
 export function Explorer() {
   const [query, setQuery] = useState("");
+  const [selectedIntents, setSelectedIntents] = useState<Set<string>>(
+    () => new Set()
+  );
   const [selected, setSelected] = useState<string>(
     CATALOG_TYPES[0]?.base ?? ""
   );
 
   const q = query.trim().toLowerCase();
+  const intentActive = selectedIntents.size > 0;
 
   const catalogMatches = useMemo(
     () =>
-      CATALOG_TYPES.filter(
-        (t) =>
+      CATALOG_TYPES.filter((t) => {
+        const textOk =
           !q ||
           t.base.toLowerCase().includes(q) ||
           t.entries.some(
@@ -267,124 +294,209 @@ export function Explorer() {
               e.metadata.name.toLowerCase().includes(q) ||
               e.metadata.questionString.toLowerCase().includes(q) ||
               (e.metadata.persona ?? "").toLowerCase().includes(q)
-          )
-      ),
-    [q]
+          );
+        const intentOk =
+          !intentActive ||
+          t.entries.some((e) =>
+            e.metadata.intents.some((i) => selectedIntents.has(i.intent))
+          );
+        return textOk && intentOk;
+      }),
+    [q, intentActive, selectedIntents]
   );
+  // Gap types carry no catalog metadata, so an active intent filter hides them.
   const gapMatches = useMemo(
     () =>
-      GAP_TYPES.filter(
-        (g) => !q || g.base.toLowerCase().includes(q) || g.label.includes(q)
-      ),
-    [q]
+      intentActive
+        ? []
+        : GAP_TYPES.filter(
+            (g) => !q || g.base.toLowerCase().includes(q) || g.label.includes(q)
+          ),
+    [q, intentActive]
   );
 
-  const gap = GAP_TYPES.find((g) => g.base === selected);
+  const selectedGap = GAP_TYPES.find((g) => g.base === selected);
+  const gap =
+    selectedGap && gapMatches.includes(selectedGap) ? selectedGap : undefined;
   const cat = gap
     ? undefined
-    : (CATALOG_TYPES.find((t) => t.base === selected) ?? CATALOG_TYPES[0]);
+    : (catalogMatches.find((t) => t.base === selected) ?? catalogMatches[0]);
+
+  const toggleIntent = (i: string) =>
+    setSelectedIntents((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
 
   return (
-    <Flex gap="400" align="start">
-      {/* ── sidebar ── */}
+    <Stack gap="400">
+      {/* ── intent filter ── */}
       <Box
-        width="20rem"
-        flexShrink="0"
         borderWidth="1px"
         borderColor="neutral.6"
         borderRadius="300"
         bg="neutral.2"
-        maxH="82vh"
-        display="flex"
-        flexDirection="column"
+        p="300"
       >
-        <Box p="300" borderBottomWidth="1px" borderColor="neutral.6">
-          <SearchInput
-            value={query}
-            onChange={setQuery}
-            placeholder="Filter chart types…"
-            aria-label="Filter chart types"
-          />
-          <Text fontSize="300" color="fg.muted" mt="200">
-            {CATALOG_TYPES.length} in catalog · {GAP_TYPES.length} not yet · ★ =
-            has canonical
-          </Text>
-        </Box>
-        <Box overflowY="auto" p="200">
+        <Flex gap="100" wrap="wrap" align="center">
           <Text
-            fontSize="300"
-            fontWeight="600"
+            textStyle="xs"
             color="fg.muted"
             textTransform="uppercase"
-            letterSpacing="0.04em"
-            px="200"
-            py="150"
+            letterSpacing="0.06em"
+            mr="100"
           >
-            In catalog
+            Filter by intent
           </Text>
-          {catalogMatches.map((t) => (
-            <TypeRow
-              key={t.base}
-              title={`${t.base}${t.canonicalCount > 0 ? " ★" : ""}`}
-              subtitle={`${t.presetCount} preset${
-                t.presetCount === 1 ? "" : "s"
-              } · ${t.configCount} config${t.configCount === 1 ? "" : "s"}`}
-              active={!gap && cat?.base === t.base}
-              onClick={() => setSelected(t.base)}
-              badge={String(t.presetCount)}
-              badgePalette="primary"
-            />
-          ))}
+          {ALL_INTENTS.map((i) => {
+            const active = selectedIntents.has(i);
+            return (
+              <Button
+                key={i}
+                size="2xs"
+                variant={active ? "solid" : "outline"}
+                colorPalette={active ? "primary" : "neutral"}
+                onPress={() => toggleIntent(i)}
+              >
+                {i}
+              </Button>
+            );
+          })}
+          {intentActive && (
+            <Button
+              size="2xs"
+              variant="ghost"
+              colorPalette="neutral"
+              onPress={() => setSelectedIntents(new Set())}
+            >
+              Clear
+            </Button>
+          )}
+        </Flex>
+      </Box>
 
-          <Text
-            fontSize="300"
-            fontWeight="600"
-            color="fg.muted"
-            textTransform="uppercase"
-            letterSpacing="0.04em"
-            px="200"
-            py="150"
-            mt="200"
-          >
-            Not in catalog yet
-          </Text>
-          {gapMatches.map((g) => (
-            <TypeRow
-              key={g.base}
-              title={g.base}
-              subtitle="built · no presets"
-              active={gap?.base === g.base}
-              onClick={() => setSelected(g.base)}
-              badge="gap"
-              badgePalette="neutral"
+      <Flex gap="400" align="start">
+        {/* ── sidebar ── */}
+        <Box
+          width="20rem"
+          flexShrink="0"
+          borderWidth="1px"
+          borderColor="neutral.6"
+          borderRadius="300"
+          bg="neutral.2"
+          maxH="82vh"
+          display="flex"
+          flexDirection="column"
+        >
+          <Box p="300" borderBottomWidth="1px" borderColor="neutral.6">
+            <SearchInput
+              value={query}
+              onChange={setQuery}
+              placeholder="Filter chart types…"
+              aria-label="Filter chart types"
             />
-          ))}
+            <Text fontSize="300" color="fg.muted" mt="200">
+              {catalogMatches.length}{" "}
+              {intentActive ? "match the filter" : "in catalog"} ·{" "}
+              {gapMatches.length} not yet · ★ = has canonical
+            </Text>
+          </Box>
+          <Box overflowY="auto" p="200">
+            {catalogMatches.length > 0 && (
+              <Text
+                fontSize="300"
+                fontWeight="600"
+                color="fg.muted"
+                textTransform="uppercase"
+                letterSpacing="0.04em"
+                px="200"
+                py="150"
+              >
+                In catalog
+              </Text>
+            )}
+            {catalogMatches.map((t) => (
+              <TypeRow
+                key={t.base}
+                title={`${t.base}${t.canonicalCount > 0 ? " ★" : ""}`}
+                subtitle={`${t.presetCount} preset${
+                  t.presetCount === 1 ? "" : "s"
+                } · ${t.configCount} config${t.configCount === 1 ? "" : "s"}`}
+                active={!gap && cat?.base === t.base}
+                onClick={() => setSelected(t.base)}
+                badge={String(t.presetCount)}
+                badgePalette="primary"
+              />
+            ))}
+
+            {gapMatches.length > 0 && (
+              <>
+                <Text
+                  fontSize="300"
+                  fontWeight="600"
+                  color="fg.muted"
+                  textTransform="uppercase"
+                  letterSpacing="0.04em"
+                  px="200"
+                  py="150"
+                  mt="200"
+                >
+                  Not in catalog yet
+                </Text>
+                {gapMatches.map((g) => (
+                  <TypeRow
+                    key={g.base}
+                    title={g.base}
+                    subtitle="built · no presets"
+                    active={gap?.base === g.base}
+                    onClick={() => setSelected(g.base)}
+                    badge="gap"
+                    badgePalette="neutral"
+                  />
+                ))}
+              </>
+            )}
+          </Box>
         </Box>
-      </Box>
 
-      {/* ── main panel ── */}
-      <Box flexGrow="1">
-        {gap ? (
-          <GapPanel gap={gap} />
-        ) : cat ? (
-          <CatalogPanel type={cat} />
-        ) : null}
-      </Box>
-    </Flex>
+        {/* ── main panel ── */}
+        <Box flexGrow="1">
+          {gap ? (
+            <GapPanel gap={gap} />
+          ) : cat ? (
+            <CatalogPanel type={cat} selectedIntents={selectedIntents} />
+          ) : (
+            <Text color="fg.muted">No chart types match this filter.</Text>
+          )}
+        </Box>
+      </Flex>
+    </Stack>
   );
 }
 
-function CatalogPanel({ type }: { type: CatalogType }) {
-  // One card per question — canonical answers first, then alphabetical.
-  const presets = useMemo(
-    () =>
-      [...type.entries].sort((a, b) => {
-        const ca = a.canonical !== false ? 0 : 1;
-        const cb = b.canonical !== false ? 0 : 1;
-        return ca - cb || a.metadata.name.localeCompare(b.metadata.name);
-      }),
-    [type]
-  );
+function CatalogPanel({
+  type,
+  selectedIntents,
+}: {
+  type: CatalogType;
+  selectedIntents: Set<string>;
+}) {
+  const intentActive = selectedIntents.size > 0;
+  // One card per question — filtered by intent, canonical answers first.
+  const presets = useMemo(() => {
+    const list = intentActive
+      ? type.entries.filter((e) =>
+          e.metadata.intents.some((i) => selectedIntents.has(i.intent))
+        )
+      : type.entries;
+    return [...list].sort((a, b) => {
+      const ca = a.canonical !== false ? 0 : 1;
+      const cb = b.canonical !== false ? 0 : 1;
+      return ca - cb || a.metadata.name.localeCompare(b.metadata.name);
+    });
+  }, [type, selectedIntents, intentActive]);
 
   return (
     <Stack gap="600">
@@ -398,16 +510,29 @@ function CatalogPanel({ type }: { type: CatalogType }) {
           )}
         </Flex>
         <Text color="fg.muted" textStyle="sm">
-          {type.presetCount} question{type.presetCount === 1 ? "" : "s"} ·{" "}
-          {type.configCount} configuration{type.configCount === 1 ? "" : "s"} ·{" "}
-          {type.shapes.join(", ")}
+          {intentActive
+            ? `${presets.length} of ${type.presetCount} question${
+                type.presetCount === 1 ? "" : "s"
+              } match`
+            : `${type.presetCount} question${
+                type.presetCount === 1 ? "" : "s"
+              }`}{" "}
+          · {type.configCount} configuration
+          {type.configCount === 1 ? "" : "s"} · {type.shapes.join(", ")}
         </Text>
         <Flex gap="100" mt="200" wrap="wrap">
-          {type.intents.map((i) => (
-            <Badge key={i} size="2xs" colorPalette="neutral">
-              {i}
-            </Badge>
-          ))}
+          {type.intents.map((i) => {
+            const on = selectedIntents.has(i);
+            return (
+              <Badge
+                key={i}
+                size="2xs"
+                colorPalette={on ? "primary" : "neutral"}
+              >
+                {i}
+              </Badge>
+            );
+          })}
         </Flex>
       </Box>
 
