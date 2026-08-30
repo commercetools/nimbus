@@ -1,13 +1,21 @@
 import {
   renderBarHorizontal,
   renderBarVertical,
+  renderBoxPlot,
+  renderBullet,
   renderDonut,
   renderFunnel,
+  renderGauge,
   renderGrouped,
   renderHeatmap,
+  renderHistogram,
   renderLine,
+  renderSankey,
   renderScatter,
   renderStacked,
+  renderStatCard,
+  renderTreemap,
+  renderWaterfall,
 } from "./render-adapters";
 import { presetEntries } from "./presets";
 import type {
@@ -184,6 +192,116 @@ const funnelMeta: ChartSelectionMetadata = {
   configLabel: "FunnelChart",
 };
 
+const histogramMeta: ChartSelectionMetadata = {
+  name: "histogram",
+  baseComponent: "Histogram",
+  intents: [{ intent: "DIST", primacy: "primary" }],
+  acceptedShapes: ["distribution"],
+  constraints: {},
+  // Length on a common baseline, one anonymous sample set.
+  perceptualRank: 0.6,
+  questionString: "How is this distributed?",
+  bundleWeight: 6,
+  configLabel: "Histogram",
+};
+
+const boxPlotMeta: ChartSelectionMetadata = {
+  name: "box-plot",
+  baseComponent: "BoxPlot",
+  intents: [
+    { intent: "DIST", primacy: "primary" },
+    { intent: "COMPARE", primacy: "secondary" },
+  ],
+  acceptedShapes: ["distribution"],
+  constraints: { maxCategories: 20 },
+  perceptualRank: 0.5,
+  questionString: "How do these distributions compare?",
+  bundleWeight: 7,
+  configLabel: "BoxPlot",
+};
+
+const waterfallMeta: ChartSelectionMetadata = {
+  name: "waterfall-chart",
+  baseComponent: "WaterfallChart",
+  intents: [
+    { intent: "DELTA", primacy: "primary" },
+    { intent: "PART-WHOLE", primacy: "secondary" },
+  ],
+  acceptedShapes: ["part-to-whole"],
+  constraints: {},
+  perceptualRank: 0.65,
+  questionString: "What drives the change from start to end?",
+  bundleWeight: 7,
+  configLabel: "WaterfallChart",
+};
+
+const bulletMeta: ChartSelectionMetadata = {
+  name: "bullet-chart",
+  baseComponent: "BulletChart",
+  intents: [
+    { intent: "TARGET", primacy: "primary" },
+    { intent: "RANGE", primacy: "secondary" },
+  ],
+  acceptedShapes: ["value-vs-target"],
+  constraints: { maxCategories: 12 },
+  perceptualRank: 0.62,
+  questionString: "Is each measure hitting its target?",
+  bundleWeight: 5,
+  configLabel: "BulletChart",
+};
+
+const sankeyMeta: ChartSelectionMetadata = {
+  name: "sankey-diagram",
+  baseComponent: "SankeyDiagram",
+  intents: [{ intent: "FLOW", primacy: "primary" }],
+  acceptedShapes: ["flows-net"],
+  constraints: {},
+  perceptualRank: 0.5,
+  questionString: "How does volume flow between stages?",
+  bundleWeight: 12,
+  configLabel: "SankeyDiagram",
+};
+
+const treemapMeta: ChartSelectionMetadata = {
+  name: "treemap",
+  baseComponent: "Treemap",
+  intents: [{ intent: "PART-WHOLE", primacy: "primary" }],
+  acceptedShapes: ["part-to-whole"],
+  constraints: {},
+  perceptualRank: 0.45,
+  questionString: "How does the whole break down across a hierarchy?",
+  bundleWeight: 8,
+  configLabel: "Treemap",
+};
+
+const gaugeMeta: ChartSelectionMetadata = {
+  name: "gauge",
+  baseComponent: "Gauge",
+  intents: [
+    { intent: "TARGET", primacy: "primary" },
+    { intent: "VALUE", primacy: "secondary" },
+  ],
+  acceptedShapes: ["value-vs-target", "single-value"],
+  constraints: {},
+  perceptualRank: 0.4,
+  questionString: "How close is this to its target?",
+  bundleWeight: 4,
+  configLabel: "Gauge",
+};
+
+const statCardMeta: ChartSelectionMetadata = {
+  name: "stat-card",
+  baseComponent: "StatCard",
+  intents: [{ intent: "VALUE", primacy: "primary" }],
+  acceptedShapes: ["single-value"],
+  constraints: {},
+  // A single number read directly — the highest-fidelity readout there is.
+  perceptualRank: 1,
+  questionString: "What is the headline number right now?",
+  bundleWeight: 2,
+  configLabel: "StatCard",
+};
+
 /**
  * Build the default registry. Insertion order is the stable tie-break's
  * registration order (docs/06 §3): canonical entries first (so they win a
@@ -244,6 +362,54 @@ export function createDefaultRegistry(): ChartRegistry {
       metadata: funnelMeta,
       dataKinds: ["funnel"],
       render: renderFunnel,
+      canonical: true,
+    },
+    {
+      metadata: histogramMeta,
+      dataKinds: ["samples"],
+      render: renderHistogram,
+      canonical: true,
+    },
+    {
+      metadata: boxPlotMeta,
+      dataKinds: ["box-group"],
+      render: renderBoxPlot,
+      canonical: true,
+    },
+    {
+      metadata: waterfallMeta,
+      dataKinds: ["delta-steps"],
+      render: renderWaterfall,
+      canonical: true,
+    },
+    {
+      metadata: bulletMeta,
+      dataKinds: ["bullet-row"],
+      render: renderBullet,
+      canonical: true,
+    },
+    {
+      metadata: sankeyMeta,
+      dataKinds: ["flow-graph"],
+      render: renderSankey,
+      canonical: true,
+    },
+    {
+      metadata: treemapMeta,
+      dataKinds: ["hierarchy"],
+      render: renderTreemap,
+      canonical: true,
+    },
+    {
+      metadata: gaugeMeta,
+      dataKinds: ["scalar"],
+      render: renderGauge,
+      canonical: true,
+    },
+    {
+      metadata: statCardMeta,
+      dataKinds: ["scalar"],
+      render: renderStatCard,
       canonical: true,
     },
   ];

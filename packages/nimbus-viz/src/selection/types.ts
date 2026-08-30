@@ -148,6 +148,13 @@ export type DataKind =
   | "parallel-row" // ParallelRow[]  (parallel-coordinates)
   | "calendar" // CalendarDatum[]    (calendar-heatmap)
   | "rfm" // RfmCell[]               (rfm-grid)
+  | "samples" // number[]            (histogram — raw samples)
+  | "box-group" // BoxPlotGroupStats[] (box-plot — five-number summaries)
+  | "delta-steps" // WaterfallStep[] (waterfall-chart — signed contributions)
+  | "bullet-row" // BulletDatum[]    (bullet-chart — measure vs target)
+  | "flow-graph" // FlowGraph        (sankey-diagram — { nodes, links })
+  | "hierarchy" // TreemapNode       (treemap — nested { name, children/value })
+  | "scalar" // number               (stat-card / gauge — a single value)
   | "unknown"; // unrecognized / malformed
 
 /* -------------------------------------------------------------------------- */

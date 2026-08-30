@@ -1,18 +1,6 @@
 import { Component, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import {
-  BoxPlot,
-  BulletChart,
-  chartRegistry,
-  Gauge,
-  Histogram,
-  resolveByName,
-  ResponsiveContainer,
-  SankeyDiagram,
-  StatCard,
-  Treemap,
-  WaterfallChart,
-} from "../src";
+import { chartRegistry, resolveByName, ResponsiveContainer } from "../src";
 import type { ChartRegistryEntry, Intent } from "../src";
 import {
   Badge,
@@ -28,14 +16,6 @@ import {
   Text,
 } from "@commercetools/nimbus";
 import { fixtureFor } from "./fixtures";
-import {
-  arr,
-  bullets,
-  flow,
-  latencyByRegion,
-  orderValues,
-  revenueTree,
-} from "./datasets";
 
 /** A local boundary so one throwing preview never blanks the whole explorer. */
 class PreviewBoundary extends Component<
@@ -122,83 +102,10 @@ interface GapType {
   render: (w: number, h: number) => ReactNode;
 }
 
-const GAP_TYPES: GapType[] = (
-  [
-    {
-      base: "StatCard",
-      label: "Stat card",
-      height: 120,
-      render: () => (
-        <Flex gap="800">
-          <StatCard label="Revenue (MTD)" value={482000} previous={430000} />
-          <StatCard label="Orders" value={12840} previous={13120} />
-        </Flex>
-      ),
-    },
-    {
-      base: "Histogram",
-      label: "Histogram",
-      height: 240,
-      render: (w: number, h: number) => (
-        <Histogram width={w} height={h} values={orderValues} />
-      ),
-    },
-    {
-      base: "BoxPlot",
-      label: "Box plot",
-      height: 240,
-      render: (w: number, h: number) => (
-        <BoxPlot width={w} height={h} groups={latencyByRegion} />
-      ),
-    },
-    {
-      base: "BulletChart",
-      label: "Bullet",
-      height: 200,
-      render: (w: number, h: number) => (
-        <BulletChart width={w} height={h} data={bullets} />
-      ),
-    },
-    {
-      base: "Gauge",
-      label: "Gauge",
-      height: 180,
-      render: (w: number, h: number) => (
-        <Gauge
-          width={w}
-          height={h}
-          value={72}
-          threshold={80}
-          label="Capacity"
-        />
-      ),
-    },
-    {
-      base: "WaterfallChart",
-      label: "Waterfall",
-      height: 240,
-      render: (w: number, h: number) => (
-        <WaterfallChart width={w} height={h} data={arr} />
-      ),
-    },
-    {
-      base: "SankeyDiagram",
-      label: "Sankey",
-      height: 280,
-      render: (w: number, h: number) => (
-        <SankeyDiagram width={w} height={h} graph={flow} />
-      ),
-    },
-    {
-      base: "Treemap",
-      label: "Treemap",
-      height: 260,
-      render: (w: number, h: number) => (
-        <Treemap width={w} height={h} data={revenueTree} />
-      ),
-    },
-  ] as GapType[]
-).sort((a, b) => a.label.localeCompare(b.label));
+// Built components not yet registered in the selection engine. Empty now that
+// every exported chart is wired into the registry — a newly-built but
+// unregistered component would reappear here as a coverage signal.
+const GAP_TYPES: GapType[] = [];
 
 function renderPreset(entry: ChartRegistryEntry, w: number, h: number) {
   const fx = fixtureFor(entry);

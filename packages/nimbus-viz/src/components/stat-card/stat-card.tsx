@@ -1,5 +1,6 @@
 import { useChartTheme } from "../../theme";
 import { formatCompact, formatSignedPercent } from "../../chart/format";
+import { CHART_FONT_STACK } from "../../chart/typography";
 
 export interface StatCardProps {
   label: string;
@@ -36,7 +37,7 @@ export function StatCard({
         flexDirection: "column",
         gap: 4,
         padding: 4,
-        fontFamily: "system-ui, sans-serif",
+        fontFamily: CHART_FONT_STACK,
       }}
     >
       <span style={{ fontSize: 12, color: theme.mutedInk }}>{label}</span>
