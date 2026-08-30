@@ -46,6 +46,9 @@ import { LollipopChart } from "../components/lollipop-chart";
 import { RadialBarChart } from "../components/radial-bar-chart";
 import { WaffleChart } from "../components/waffle-chart";
 import { DivergingBarChart } from "../components/diverging-bar-chart";
+import { DivergingStackedBar } from "../components/diverging-stacked-bar";
+import { PopulationPyramid } from "../components/population-pyramid";
+import { MarimekkoChart } from "../components/marimekko-chart";
 import type { FlowGraph } from "../chart/types";
 import { CohortTriangle } from "../components/cohort-triangle";
 import type {
@@ -576,6 +579,45 @@ export function renderDivergingBar(request: ResolveRequest, size: ChartSize) {
       width={size.width}
       height={size.height}
       data={request.data as CategoryDatum[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderDivergingStacked(
+  request: ResolveRequest,
+  size: ChartSize
+) {
+  return (
+    <DivergingStackedBar
+      width={size.width}
+      height={size.height}
+      data={request.data as StackRow[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderPopulationPyramid(
+  request: ResolveRequest,
+  size: ChartSize
+) {
+  return (
+    <PopulationPyramid
+      width={size.width}
+      height={size.height}
+      data={request.data as StackRow[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderMarimekko(request: ResolveRequest, size: ChartSize) {
+  return (
+    <MarimekkoChart
+      width={size.width}
+      height={size.height}
+      data={request.data as StackRow[]}
       ariaLabel={optString(request, "ariaLabel")}
     />
   );
