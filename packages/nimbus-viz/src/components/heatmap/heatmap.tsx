@@ -81,7 +81,6 @@ export function Heatmap({
                 y={-8}
                 textAnchor="middle"
                 style={emText(10)}
-                fontFamily="system-ui, sans-serif"
                 fill={theme.mutedInk}
               >
                 {columnLabels?.[c] ?? c}
@@ -97,7 +96,6 @@ export function Heatmap({
                     dy="0.32em"
                     textAnchor="end"
                     style={emText(10)}
-                    fontFamily="system-ui, sans-serif"
                     fill={theme.mutedInk}
                   >
                     {row.label}
@@ -123,7 +121,6 @@ export function Heatmap({
                             dy="0.32em"
                             textAnchor="middle"
                             style={emText(9)}
-                            fontFamily="system-ui, sans-serif"
                             fill={t > 0.55 ? theme.surface : theme.ink}
                           >
                             {formatCompact(v)}

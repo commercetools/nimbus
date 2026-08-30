@@ -128,7 +128,6 @@ export function DumbbellChart({
                       dy="0.32em"
                       textAnchor="end"
                       style={emText(11)}
-                      fontFamily="system-ui, sans-serif"
                       fill={theme.mutedInk}
                     >
                       {row.category}
@@ -164,7 +163,6 @@ export function DumbbellChart({
                       dy="0.32em"
                       textAnchor={startAnchor}
                       style={emText(10)}
-                      fontFamily="system-ui, sans-serif"
                       fill={theme.ink}
                     >
                       {formatCompact(row.start)}
@@ -175,7 +173,6 @@ export function DumbbellChart({
                       dy="0.32em"
                       textAnchor={endAnchor}
                       style={emText(10)}
-                      fontFamily="system-ui, sans-serif"
                       fill={theme.ink}
                     >
                       {formatCompact(row.end)}

@@ -153,7 +153,6 @@ export function BumpChart({
                         y={py(last.rank)}
                         dy={4}
                         style={emText(11)}
-                        fontFamily="system-ui, sans-serif"
                         fill={theme.ink}
                       >
                         {s.label}

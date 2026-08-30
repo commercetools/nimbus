@@ -103,7 +103,6 @@ export function Treemap({ width, height, data, ariaLabel }: TreemapProps) {
                           y={16}
                           style={emText(11)}
                           fontWeight={600}
-                          fontFamily="system-ui, sans-serif"
                           fill={theme.surface}
                         >
                           {leaf.data.name}
@@ -113,7 +112,6 @@ export function Treemap({ width, height, data, ariaLabel }: TreemapProps) {
                             x={6}
                             y={30}
                             style={emText(10)}
-                            fontFamily="system-ui, sans-serif"
                             fill={theme.surface}
                             opacity={0.85}
                           >

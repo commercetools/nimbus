@@ -103,7 +103,6 @@ export function BarChart({
                       dy="0.32em"
                       textAnchor="end"
                       style={emText(11)}
-                      fontFamily="system-ui, sans-serif"
                       fill={theme.mutedInk}
                     >
                       {d.category}
@@ -113,7 +112,6 @@ export function BarChart({
                       y={y + bh / 2}
                       dy="0.32em"
                       style={emText(11)}
-                      fontFamily="system-ui, sans-serif"
                       fill={theme.ink}
                     >
                       {formatCompact(d.value)}

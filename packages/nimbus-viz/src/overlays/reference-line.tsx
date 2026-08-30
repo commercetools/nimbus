@@ -52,7 +52,6 @@ export function ReferenceLine({
             y={10}
             textAnchor="start"
             style={emText(10)}
-            fontFamily="system-ui, sans-serif"
             fill={theme.mutedInk}
           >
             {label}
@@ -80,7 +79,6 @@ export function ReferenceLine({
           y={y - 4}
           textAnchor="end"
           style={emText(10)}
-          fontFamily="system-ui, sans-serif"
           fill={theme.mutedInk}
         >
           {label}

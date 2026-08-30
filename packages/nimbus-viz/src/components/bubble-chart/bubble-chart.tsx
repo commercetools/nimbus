@@ -167,7 +167,6 @@ export function BubbleChart({
                       y={legendBaseY - 2 * r}
                       dy={4}
                       style={emText(10)}
-                      fontFamily="system-ui, sans-serif"
                       textAnchor="end"
                       fill={theme.mutedInk}
                     >

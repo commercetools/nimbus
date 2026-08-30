@@ -148,7 +148,6 @@ export function CalendarHeatmap({
                     x={col * step}
                     y={-6}
                     style={emText(10)}
-                    fontFamily="system-ui, sans-serif"
                     fill={theme.mutedInk}
                   >
                     {MONTHS[m]}
@@ -164,7 +163,6 @@ export function CalendarHeatmap({
                   dy="0.32em"
                   textAnchor="end"
                   style={emText(9)}
-                  fontFamily="system-ui, sans-serif"
                   fill={theme.mutedInk}
                 >
                   {label}

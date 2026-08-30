@@ -55,7 +55,6 @@ export function BenchmarkSeries({
           y={lastY - 6}
           textAnchor="end"
           style={emText(10)}
-          fontFamily="system-ui, sans-serif"
           fill={theme.mutedInk}
         >
           {label}

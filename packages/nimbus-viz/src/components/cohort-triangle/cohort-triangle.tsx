@@ -96,7 +96,6 @@ export function CohortTriangle({
                   y={-8}
                   textAnchor="middle"
                   style={emText(10)}
-                  fontFamily="system-ui, sans-serif"
                   fill={theme.mutedInk}
                 >
                   {periodLabels?.[c] ?? c}
@@ -112,7 +111,6 @@ export function CohortTriangle({
                       dy="0.32em"
                       textAnchor="end"
                       style={emText(10)}
-                      fontFamily="system-ui, sans-serif"
                       fill={theme.mutedInk}
                     >
                       {row.label}
@@ -148,7 +146,6 @@ export function CohortTriangle({
                               dy="0.32em"
                               textAnchor="middle"
                               style={emText(9)}
-                              fontFamily="system-ui, sans-serif"
                               fill={t > 0.55 ? theme.surface : theme.ink}
                             >
                               {formatCompact(v)}

@@ -108,7 +108,6 @@ export function Gauge({
               y={-innerRadius * 0.35}
               style={{ fontSize: Math.max(14, radius * 0.28) }}
               fontWeight={700}
-              fontFamily="system-ui, sans-serif"
               fill={theme.ink}
             >
               {valueFormat(value)}
@@ -118,7 +117,6 @@ export function Gauge({
                 textAnchor="middle"
                 y={-innerRadius * 0.35 + 16}
                 style={emText(11)}
-                fontFamily="system-ui, sans-serif"
                 fill={theme.mutedInk}
               >
                 {label}

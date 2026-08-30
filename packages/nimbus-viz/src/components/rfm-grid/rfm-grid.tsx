@@ -140,7 +140,6 @@ export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
                           textAnchor="middle"
                           style={emText(11)}
                           fontWeight={600}
-                          fontFamily="system-ui, sans-serif"
                           fill={t > 0.55 ? theme.surface : theme.ink}
                           pointerEvents="none"
                         >
@@ -161,7 +160,6 @@ export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
                     y={innerHeight + 12}
                     textAnchor="middle"
                     style={emText(10)}
-                    fontFamily="system-ui, sans-serif"
                     fill={theme.mutedInk}
                   >
                     {r}
@@ -179,7 +177,6 @@ export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
                     dy="0.32em"
                     textAnchor="end"
                     style={emText(10)}
-                    fontFamily="system-ui, sans-serif"
                     fill={theme.mutedInk}
                   >
                     {f}
@@ -193,7 +190,6 @@ export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
                 textAnchor="middle"
                 style={emText(11)}
                 fontWeight={600}
-                fontFamily="system-ui, sans-serif"
                 fill={theme.mutedInk}
               >
                 Recency →
@@ -203,7 +199,6 @@ export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
                 textAnchor="middle"
                 style={emText(11)}
                 fontWeight={600}
-                fontFamily="system-ui, sans-serif"
                 fill={theme.mutedInk}
               >
                 Frequency →

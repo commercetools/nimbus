@@ -157,7 +157,6 @@ export function ParetoChart({
               y={eightyY - 4}
               textAnchor="end"
               style={emText(10)}
-              fontFamily="system-ui, sans-serif"
               fill={theme.mutedInk}
             >
               80%
@@ -193,7 +192,6 @@ export function ParetoChart({
               y={yScale(grandTotal) - 8}
               textAnchor="end"
               style={emText(10)}
-              fontFamily="system-ui, sans-serif"
               fill={theme.mutedInk}
             >
               {formatPercent(last.cumulativeFraction)}
