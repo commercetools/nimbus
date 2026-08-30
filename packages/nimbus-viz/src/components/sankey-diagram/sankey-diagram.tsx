@@ -1,9 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Sankey } from "@visx/sankey";
 import type { SankeyNode } from "@visx/sankey";
 import { Group } from "@visx/group";
 import { ChartFrame } from "../../chart/chart-frame";
+import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
+import { formatCompact } from "../../chart/format";
 import type { FlowGraph, FlowLink, FlowNode } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
@@ -29,6 +31,10 @@ export function SankeyDiagram({
   ariaLabel,
 }: SankeyDiagramProps) {
   const theme = useChartTheme();
+  const [hover, setHover] = useState<{
+    kind: "node" | "link";
+    i: number;
+  } | null>(null);
   const nodeColor = useEntityColors(
     useMemo(() => graph.nodes.map((n) => n.name), [graph])
   );
@@ -57,14 +63,17 @@ export function SankeyDiagram({
             <Group>
               {laid.links.map((link, i) => {
                 const source = link.source as LaidNode;
+                const isHover = hover?.kind === "link" && hover.i === i;
                 return (
                   <path
                     key={`link-${i}`}
                     d={createPath(link) || ""}
                     fill="none"
                     stroke={nodeColor(source.name)}
-                    strokeOpacity={0.35}
+                    strokeOpacity={isHover ? 0.6 : 0.35}
                     strokeWidth={Math.max(1, link.width ?? 1)}
+                    onMouseEnter={() => setHover({ kind: "link", i })}
+                    onMouseLeave={() => setHover(null)}
                   />
                 );
               })}
@@ -74,6 +83,7 @@ export function SankeyDiagram({
                 const y0 = node.y0 ?? 0;
                 const y1 = node.y1 ?? 0;
                 const leftHalf = x0 < innerWidth / 2;
+                const isHover = hover?.kind === "node" && hover.i === i;
                 return (
                   <Group key={`node-${i}`}>
                     <rect
@@ -83,6 +93,10 @@ export function SankeyDiagram({
                       height={Math.max(0, y1 - y0)}
                       rx={2}
                       fill={nodeColor(node.name)}
+                      stroke={isHover ? theme.ink : "none"}
+                      strokeWidth={isHover ? 1.5 : 0}
+                      onMouseEnter={() => setHover({ kind: "node", i })}
+                      onMouseLeave={() => setHover(null)}
                     />
                     <text
                       x={leftHalf ? x1 + 6 : x0 - 6}
@@ -97,6 +111,42 @@ export function SankeyDiagram({
                   </Group>
                 );
               })}
+              {hover &&
+                (() => {
+                  if (hover.kind === "node") {
+                    const node = laid.nodes[hover.i];
+                    if (!node) return null;
+                    return (
+                      <SvgTooltip
+                        x={((node.x0 ?? 0) + (node.x1 ?? 0)) / 2}
+                        innerWidth={innerWidth}
+                        top={Math.max(0, (node.y0 ?? 0) - 4)}
+                        lines={[
+                          node.name,
+                          `Total: ${formatCompact(node.value ?? 0)}`,
+                        ]}
+                      />
+                    );
+                  }
+                  const link = laid.links[hover.i];
+                  if (!link) return null;
+                  const source = link.source as LaidNode;
+                  const target = link.target as LaidNode;
+                  return (
+                    <SvgTooltip
+                      x={((source.x1 ?? 0) + (target.x0 ?? 0)) / 2}
+                      innerWidth={innerWidth}
+                      top={Math.max(
+                        0,
+                        ((link.y0 ?? 0) + (link.y1 ?? 0)) / 2 - 20
+                      )}
+                      lines={[
+                        `${source.name} → ${target.name}`,
+                        formatCompact(link.value ?? 0),
+                      ]}
+                    />
+                  );
+                })()}
             </Group>
           )}
         </Sankey>

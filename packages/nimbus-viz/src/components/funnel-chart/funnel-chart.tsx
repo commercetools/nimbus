@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { BarRounded } from "@visx/shape";
 import { ChartFrame } from "../../chart/chart-frame";
+import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
 import type { FunnelStage } from "../../chart/types";
@@ -24,6 +26,7 @@ export function FunnelChart({
   ariaLabel,
 }: FunnelChartProps) {
   const theme = useChartTheme();
+  const [hover, setHover] = useState<number | null>(null);
   if (width <= 0 || height <= 0 || data.length === 0) return null;
 
   const top = data[0].value || 1;
@@ -44,8 +47,14 @@ export function FunnelChart({
               const w = Math.max(2, (stage.value / top) * innerWidth);
               const x = (innerWidth - w) / 2;
               const y = i * bandH + (bandH - barH) / 2;
+              const active = hover == null || hover === i;
               return (
-                <g key={stage.stage}>
+                <g
+                  key={stage.stage}
+                  opacity={active ? 1 : 0.5}
+                  onMouseEnter={() => setHover(i)}
+                  onMouseLeave={() => setHover(null)}
+                >
                   <text
                     x={innerWidth / 2}
                     y={y - 3}
@@ -79,6 +88,31 @@ export function FunnelChart({
                 </g>
               );
             })}
+            {hover != null &&
+              data[hover] &&
+              (() => {
+                const stage = data[hover];
+                const y = hover * bandH + (bandH - barH) / 2;
+                const prev = hover > 0 ? data[hover - 1].value : null;
+                const lines = [
+                  stage.stage,
+                  `Value: ${formatCompact(stage.value)}`,
+                  `${formatPercent(stage.value / top)} of first`,
+                ];
+                if (prev != null && prev > 0) {
+                  lines.push(
+                    `${formatPercent(stage.value / prev)} of previous`
+                  );
+                }
+                return (
+                  <SvgTooltip
+                    x={innerWidth / 2}
+                    innerWidth={innerWidth}
+                    top={Math.max(0, y - 4)}
+                    lines={lines}
+                  />
+                );
+              })()}
           </>
         );
       }}

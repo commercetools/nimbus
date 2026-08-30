@@ -1,10 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Treemap as VisxTreemap, hierarchy } from "@visx/hierarchy";
 import type { HierarchyRectangularNode } from "@visx/hierarchy";
 import { Group } from "@visx/group";
 import { ChartFrame } from "../../chart/chart-frame";
+import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { formatCompact, formatPercent } from "../../chart/format";
 import { emText } from "../../chart/typography";
 
 /** A node in a nested part-to-whole hierarchy. Leaves carry `value`. */
@@ -47,6 +48,7 @@ function topLevelAncestor<Datum>(
  */
 export function Treemap({ width, height, data, ariaLabel }: TreemapProps) {
   const theme = useChartTheme();
+  const [hover, setHover] = useState<number | null>(null);
 
   const root = useMemo(() => {
     const built = hierarchy<TreemapNode>(data, (d) => d.children).sum(
@@ -88,12 +90,14 @@ export function Treemap({ width, height, data, ariaLabel }: TreemapProps) {
                     key={`${leaf.data.name}-${i}`}
                     left={leaf.x0}
                     top={leaf.y0}
+                    onMouseEnter={() => setHover(i)}
+                    onMouseLeave={() => setHover(null)}
                   >
                     <rect
                       width={nodeWidth}
                       height={nodeHeight}
                       fill={fill}
-                      stroke={theme.surface}
+                      stroke={hover === i ? theme.ink : theme.surface}
                       strokeWidth={CELL_GAP}
                     />
                     {showLabel && (
@@ -123,6 +127,25 @@ export function Treemap({ width, height, data, ariaLabel }: TreemapProps) {
                   </Group>
                 );
               })}
+              {hover != null &&
+                laidOut.leaves()[hover] &&
+                (() => {
+                  const leaf = laidOut.leaves()[hover];
+                  const total = root.value ?? 0;
+                  const share = total > 0 ? (leaf.value ?? 0) / total : 0;
+                  return (
+                    <SvgTooltip
+                      x={leaf.x0 + (leaf.x1 - leaf.x0) / 2}
+                      innerWidth={innerWidth}
+                      top={Math.max(0, leaf.y0 - 4)}
+                      lines={[
+                        leaf.data.name,
+                        `Value: ${formatCompact(leaf.value ?? 0)}`,
+                        `Share: ${formatPercent(share)}`,
+                      ]}
+                    />
+                  );
+                })()}
             </Group>
           )}
         </VisxTreemap>

@@ -1,7 +1,8 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { scaleBand } from "@visx/scale";
 import { Group } from "@visx/group";
 import { ChartFrame } from "../../chart/chart-frame";
+import { SvgTooltip } from "../../chart/svg-tooltip";
 import { sequentialColor, useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { HeatRow } from "../../chart/types";
@@ -31,6 +32,7 @@ export function Heatmap({
   ariaLabel,
 }: HeatmapProps) {
   const theme = useChartTheme();
+  const [hover, setHover] = useState<{ r: number; c: number } | null>(null);
   const numCols = useMemo(
     () => Math.max(0, ...rows.map((r) => r.values.length)),
     [rows]
@@ -86,7 +88,7 @@ export function Heatmap({
                 {columnLabels?.[c] ?? c}
               </text>
             ))}
-            {rows.map((row) => {
+            {rows.map((row, ri) => {
               const y = yScale(row.label) ?? 0;
               return (
                 <Group key={row.label}>
@@ -104,8 +106,13 @@ export function Heatmap({
                     if (v == null) return null;
                     const x = xScale(String(c)) ?? 0;
                     const t = maxVal > 0 ? v / maxVal : 0;
+                    const isHover = hover?.r === ri && hover?.c === c;
                     return (
-                      <g key={c}>
+                      <g
+                        key={c}
+                        onMouseEnter={() => setHover({ r: ri, c })}
+                        onMouseLeave={() => setHover(null)}
+                      >
                         <rect
                           x={x}
                           y={y}
@@ -113,6 +120,8 @@ export function Heatmap({
                           height={ch}
                           rx={3}
                           fill={color(t)}
+                          stroke={isHover ? theme.ink : "none"}
+                          strokeWidth={isHover ? 1.5 : 0}
                         />
                         {cw > 26 && ch > 16 && (
                           <text
@@ -132,6 +141,25 @@ export function Heatmap({
                 </Group>
               );
             })}
+            {hover &&
+              rows[hover.r]?.values[hover.c] != null &&
+              (() => {
+                const row = rows[hover.r];
+                const value = row.values[hover.c] as number;
+                return (
+                  <SvgTooltip
+                    x={(xScale(String(hover.c)) ?? 0) + cw / 2}
+                    innerWidth={innerWidth}
+                    top={Math.max(0, (yScale(row.label) ?? 0) - 4)}
+                    lines={[
+                      row.label,
+                      `${columnLabels?.[hover.c] ?? hover.c}: ${formatCompact(
+                        value
+                      )}`,
+                    ]}
+                  />
+                );
+              })()}
           </>
         );
       }}

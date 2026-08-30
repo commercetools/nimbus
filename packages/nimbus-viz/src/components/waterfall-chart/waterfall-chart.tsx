@@ -4,6 +4,7 @@ import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { ChartFrame } from "../../chart/chart-frame";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
+import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import { emText } from "../../chart/typography";
@@ -89,6 +90,7 @@ export function WaterfallChart({
           nice: true,
         });
         const bw = xScale.bandwidth();
+        const hb = hover != null ? bars[hover] : null;
 
         return (
           <>
@@ -169,6 +171,24 @@ export function WaterfallChart({
                 </g>
               );
             })}
+            {hb && (
+              <SvgTooltip
+                x={(xScale(hb.step.label) ?? 0) + bw / 2}
+                innerWidth={innerWidth}
+                top={Math.max(0, Math.min(yScale(hb.from), yScale(hb.to)) - 4)}
+                lines={
+                  hb.step.isTotal
+                    ? [hb.step.label, `Total: ${formatCompact(hb.step.value)}`]
+                    : [
+                        hb.step.label,
+                        `Change: ${
+                          hb.step.value >= 0 ? "+" : ""
+                        }${formatCompact(hb.step.value)}`,
+                        `Running total: ${formatCompact(hb.to)}`,
+                      ]
+                }
+              />
+            )}
           </>
         );
       }}

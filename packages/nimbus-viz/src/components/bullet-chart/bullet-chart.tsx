@@ -1,8 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { scaleLinear } from "@visx/scale";
 import { ChartFrame } from "../../chart/chart-frame";
+import { SvgTooltip } from "../../chart/svg-tooltip";
 import { sequentialColor, useChartTheme } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { formatCompact, formatSignedCompact } from "../../chart/format";
 import { emText } from "../../chart/typography";
 
 /** One measure-vs-target row in a bullet chart. */
@@ -43,6 +44,7 @@ export function BulletChart({
   ariaLabel,
 }: BulletChartProps) {
   const theme = useChartTheme();
+  const [hover, setHover] = useState<number | null>(null);
   const grayRamp = sequentialColor("gray", theme.mode);
 
   const domainMax = useMemo(
@@ -81,7 +83,12 @@ export function BulletChart({
                 d.ranges && d.ranges.length > 0 ? d.ranges : [domainMax];
               let prev = 0;
               return (
-                <g key={d.label}>
+                <g
+                  key={d.label}
+                  opacity={hover == null || hover === i ? 1 : 0.5}
+                  onMouseEnter={() => setHover(i)}
+                  onMouseLeave={() => setHover(null)}
+                >
                   <text
                     x={-8}
                     y={cy}
@@ -137,6 +144,25 @@ export function BulletChart({
                 </g>
               );
             })}
+            {hover != null &&
+              data[hover] &&
+              (() => {
+                const d = data[hover];
+                const cy = hover * rowH + rowH / 2;
+                return (
+                  <SvgTooltip
+                    x={xScale(d.measure)}
+                    innerWidth={innerWidth}
+                    top={Math.max(0, cy - rowH * 0.36 - 4)}
+                    lines={[
+                      d.label,
+                      `Measure: ${formatCompact(d.measure)}`,
+                      `Target: ${formatCompact(d.target)}`,
+                      `vs target: ${formatSignedCompact(d.measure - d.target)}`,
+                    ]}
+                  />
+                );
+              })()}
           </>
         );
       }}

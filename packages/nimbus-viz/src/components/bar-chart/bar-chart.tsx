@@ -7,6 +7,7 @@ import { max } from "d3-array";
 import { ChartFrame } from "../../chart/chart-frame";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
+import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { CategoryDatum } from "../../chart/types";
@@ -199,6 +200,14 @@ export function BarChart({
               );
             })}
             {children}
+            {hover != null && rows[hover] && (
+              <SvgTooltip
+                x={(xScale(rows[hover].category) ?? 0) + bw / 2}
+                innerWidth={innerWidth}
+                top={Math.max(0, yScale(rows[hover].value) - 4)}
+                lines={[rows[hover].category, formatCompact(rows[hover].value)]}
+              />
+            )}
           </ChartScaleProvider>
         );
       }}

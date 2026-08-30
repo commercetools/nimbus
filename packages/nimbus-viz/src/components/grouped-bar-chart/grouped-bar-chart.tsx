@@ -5,6 +5,7 @@ import { AxisBottom, AxisLeft } from "@visx/axis";
 import { ChartFrame } from "../../chart/chart-frame";
 import { Legend } from "../../chart/legend";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
+import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { StackRow } from "../../chart/types";
@@ -30,7 +31,7 @@ export function GroupedBarChart({
   ariaLabel,
 }: GroupedBarChartProps) {
   const theme = useChartTheme();
-  const [hoverKey, setHoverKey] = useState<string | null>(null);
+  const [hover, setHover] = useState<{ cat: string; key: string } | null>(null);
   const keys = useMemo(() => data[0]?.segments.map((s) => s.key) ?? [], [data]);
   const colorForKey = useEntityColors(keys);
   const valueMax = useMemo(
@@ -68,6 +69,11 @@ export function GroupedBarChart({
             nice: true,
           });
           const bw = x1.bandwidth();
+          const hb = hover
+            ? data
+                .find((d) => d.category === hover.cat)
+                ?.segments.find((s) => s.key === hover.key)
+            : null;
           return (
             <>
               <GridRows ticks={y.ticks(4)} y={(t) => y(t)} width={innerWidth} />
@@ -93,7 +99,7 @@ export function GroupedBarChart({
                     {row.segments.map((seg) => {
                       const bx = gx + (x1(seg.key) ?? 0);
                       const bh = Math.max(0, innerHeight - y(seg.value));
-                      const active = hoverKey == null || hoverKey === seg.key;
+                      const active = hover == null || hover.key === seg.key;
                       return (
                         <BarRounded
                           key={seg.key}
@@ -105,14 +111,24 @@ export function GroupedBarChart({
                           top
                           fill={colorForKey(seg.key)}
                           opacity={active ? 1 : 0.35}
-                          onMouseEnter={() => setHoverKey(seg.key)}
-                          onMouseLeave={() => setHoverKey(null)}
+                          onMouseEnter={() =>
+                            setHover({ cat: row.category, key: seg.key })
+                          }
+                          onMouseLeave={() => setHover(null)}
                         />
                       );
                     })}
                   </g>
                 );
               })}
+              {hover && hb && (
+                <SvgTooltip
+                  x={(x0(hover.cat) ?? 0) + (x1(hover.key) ?? 0) + bw / 2}
+                  innerWidth={innerWidth}
+                  top={Math.max(0, y(hb.value) - 4)}
+                  lines={[hover.cat, `${hb.key}: ${formatCompact(hb.value)}`]}
+                />
+              )}
             </>
           );
         }}
