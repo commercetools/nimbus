@@ -56,6 +56,13 @@ export const ENTITY_ID_ACCESSOR: Record<
   "parallel-row": "row.group (ungrouped rows share the accent)",
   calendar: "datum.date",
   rfm: "cell.recency×frequency",
+  samples: "(none — a single anonymous distribution)",
+  "box-group": "group.label",
+  "delta-steps": "step.label",
+  "bullet-row": "row.label",
+  "flow-graph": "node.name",
+  hierarchy: "node.name",
+  scalar: "(none — a single value)",
 };
 
 /* -------------------------------------------------------------------------- */
@@ -76,8 +83,27 @@ function isFiniteNumber(value: unknown): value is number {
  * probe is sufficient and deterministic.
  */
 export function detectKind(data: unknown): DataKind {
+  // Non-array shapes first — a few charts consume a single value or object
+  // rather than an array of records.
+  if (isFiniteNumber(data)) return "scalar";
+  if (isObject(data) && !Array.isArray(data)) {
+    // FlowGraph: { nodes: [...], links: [...] }  (sankey)
+    if (Array.isArray(data.nodes) && Array.isArray(data.links)) {
+      return "flow-graph";
+    }
+    // TreemapNode: { name, children: [...] } or a valued leaf.  (treemap)
+    if (
+      typeof data.name === "string" &&
+      (Array.isArray(data.children) || isFiniteNumber(data.value))
+    ) {
+      return "hierarchy";
+    }
+    return "unknown";
+  }
   if (!Array.isArray(data) || data.length === 0) return "unknown";
   const first: unknown = data[0];
+  // number[] — a single anonymous sample set (histogram).
+  if (isFiniteNumber(first)) return "samples";
   if (!isObject(first)) return "unknown";
 
   // Series[]: { id, label, data: [...] }
@@ -125,9 +151,30 @@ export function detectKind(data: unknown): DataKind {
   ) {
     return "dumbbell-row";
   }
+  // BoxPlotGroupStats[]: { label, firstQuartile, median, thirdQuartile, … }
+  if (
+    typeof first.label === "string" &&
+    isFiniteNumber(first.firstQuartile) &&
+    isFiniteNumber(first.median) &&
+    isFiniteNumber(first.thirdQuartile)
+  ) {
+    return "box-group";
+  }
+  // BulletDatum[]: { label, measure, target }
+  if (
+    typeof first.label === "string" &&
+    isFiniteNumber(first.measure) &&
+    isFiniteNumber(first.target)
+  ) {
+    return "bullet-row";
+  }
   // HeatRow[]: { label, values: [...] }
   if (typeof first.label === "string" && Array.isArray(first.values)) {
     return "heat-row";
+  }
+  // WaterfallStep[]: { label, value } — a signed contribution (no values array).
+  if (typeof first.label === "string" && isFiniteNumber(first.value)) {
+    return "delta-steps";
   }
   // FunnelStage[]: { stage, value }
   if (typeof first.stage === "string" && typeof first.value === "number") {
@@ -200,6 +247,20 @@ function shapesForKind(kind: DataKind, seriesCount: number): DataShape[] {
       return ["time-series", "distribution"];
     case "rfm":
       return ["distribution", "part-to-whole"];
+    case "samples":
+      return ["distribution"];
+    case "box-group":
+      return ["distribution"];
+    case "delta-steps":
+      return ["part-to-whole"];
+    case "bullet-row":
+      return ["value-vs-target"];
+    case "flow-graph":
+      return ["flows-net"];
+    case "hierarchy":
+      return ["part-to-whole"];
+    case "scalar":
+      return ["single-value", "value-vs-target"];
     case "unknown":
       return [];
   }
@@ -214,6 +275,20 @@ function shapesForKind(kind: DataKind, seriesCount: number): DataShape[] {
  * a `DataFacts` (malformed/empty data simply sets `malformed`), so the caller
  * never has to guard against a throw.
  */
+/** Total leaf count of a treemap-style hierarchy (a node with no non-empty
+ *  `children` is a leaf). */
+function countHierarchyLeaves(node: unknown): number {
+  if (!isObject(node)) return 0;
+  const children = node.children;
+  if (Array.isArray(children) && children.length > 0) {
+    return children.reduce(
+      (sum: number, child) => sum + countHierarchyLeaves(child),
+      0
+    );
+  }
+  return 1;
+}
+
 export function deriveFacts(request: ResolveRequest): DataFacts {
   const { data, options } = request;
   const opts = options ?? {};
@@ -236,6 +311,44 @@ export function deriveFacts(request: ResolveRequest): DataFacts {
     return { ...base, reason: "No data was provided." };
   }
   if (!Array.isArray(data)) {
+    // A few charts consume a single value or object rather than an array.
+    const nonArrayKind = detectKind(data);
+    if (nonArrayKind === "scalar") {
+      return {
+        ...base,
+        kind: "scalar",
+        shapes: shapesForKind("scalar", 1),
+        cardinality: 1,
+        seriesCount: 1,
+        sampleSize: 1,
+        malformed: false,
+      };
+    }
+    if (nonArrayKind === "flow-graph") {
+      const g = data as { nodes: unknown[]; links: unknown[] };
+      return {
+        ...base,
+        kind: "flow-graph",
+        shapes: shapesForKind("flow-graph", 1),
+        cardinality: g.nodes.length,
+        seriesCount: 1,
+        sampleSize: g.links.length,
+        malformed: false,
+      };
+    }
+    if (nonArrayKind === "hierarchy") {
+      const leaves = countHierarchyLeaves(data);
+      return {
+        ...base,
+        kind: "hierarchy",
+        shapes: shapesForKind("hierarchy", 1),
+        cardinality: leaves,
+        seriesCount: 1,
+        sampleSize: leaves,
+        hierarchy: true,
+        malformed: false,
+      };
+    }
     return {
       ...base,
       reason: "Data is not an array of records the charts understand.",
@@ -435,5 +548,31 @@ export function deriveFacts(request: ResolveRequest): DataFacts {
         malformed: false,
       };
     }
+    case "samples":
+    case "box-group":
+    case "delta-steps":
+    case "bullet-row": {
+      const rows = data as unknown[];
+      return {
+        kind,
+        shapes: shapesForKind(kind, 1),
+        cardinality: rows.length,
+        seriesCount: 1,
+        hasTarget,
+        hasTimeAxis: false,
+        sampleSize: rows.length,
+        hierarchy,
+        malformed: false,
+      };
+    }
+    // Non-array kinds are resolved before the array guard above; listed here
+    // only to keep the switch exhaustive over DataKind.
+    case "flow-graph":
+    case "hierarchy":
+    case "scalar":
+      return {
+        ...base,
+        reason: "Unexpected non-array kind in the array branch.",
+      };
   }
 }

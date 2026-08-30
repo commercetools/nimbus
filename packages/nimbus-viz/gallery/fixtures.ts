@@ -601,6 +601,152 @@ function buildRfm(e: ChartRegistryEntry): Fixture {
   return { data };
 }
 
+// ── raw samples (histogram) ───────────────────────────────────────────────
+function buildSamples(e: ChartRegistryEntry): Fixture {
+  const r = mulberry32(hashString(e.metadata.name));
+  // Roughly bell-shaped: mean of three uniforms.
+  const data = Array.from({ length: 240 }, () => {
+    const u = (between(r, 0, 1) + between(r, 0, 1) + between(r, 0, 1)) / 3;
+    return +(20 + u * 80).toFixed(1);
+  });
+  return { data };
+}
+
+// ── five-number summaries (box plot) ──────────────────────────────────────
+function buildBoxGroup(e: ChartRegistryEntry): Fixture {
+  const r = mulberry32(hashString(e.metadata.name));
+  const labels = ["Web", "Mobile", "Marketplace", "POS"];
+  const data = labels.map((label) => {
+    const median = Math.round(between(r, 40, 120));
+    const spread = between(r, 10, 30);
+    return {
+      label,
+      min: Math.round(median - spread * 2),
+      firstQuartile: Math.round(median - spread),
+      median,
+      thirdQuartile: Math.round(median + spread),
+      max: Math.round(median + spread * 2),
+      outliers: [Math.round(median + spread * 2 + between(r, 4, 20))],
+    };
+  });
+  return { data };
+}
+
+// ── signed contributions building a total (waterfall) ─────────────────────
+function buildDeltaSteps(e: ChartRegistryEntry): Fixture {
+  const r = mulberry32(hashString(e.metadata.name));
+  const steps: Array<{ label: string; value: number; isTotal?: boolean }> = [
+    { label: "Start", value: Math.round(between(r, 400, 800)), isTotal: true },
+    { label: "New", value: Math.round(between(r, 80, 240)) },
+    { label: "Expansion", value: Math.round(between(r, 40, 120)) },
+    { label: "Churn", value: -Math.round(between(r, 40, 140)) },
+    { label: "Contraction", value: -Math.round(between(r, 20, 80)) },
+  ];
+  const end = steps.reduce((s, x) => (x.isTotal ? x.value : s + x.value), 0);
+  steps.push({ label: "End", value: end, isTotal: true });
+  return { data: steps };
+}
+
+// ── measure vs target (bullet) ────────────────────────────────────────────
+function buildBulletRows(e: ChartRegistryEntry): Fixture {
+  const r = mulberry32(hashString(e.metadata.name));
+  const labels = ["Revenue", "New customers", "NPS", "Uptime"];
+  const data = labels.map((label) => {
+    const target = Math.round(between(r, 60, 100));
+    return {
+      label,
+      measure: Math.round(target * between(r, 0.6, 1.15)),
+      target,
+      ranges: [
+        Math.round(target * 0.5),
+        Math.round(target * 0.8),
+        Math.round(target * 1.2),
+      ],
+    };
+  });
+  return { data };
+}
+
+// ── flow graph (sankey) ───────────────────────────────────────────────────
+function buildFlowGraph(e: ChartRegistryEntry): Fixture {
+  const r = mulberry32(hashString(e.metadata.name));
+  const v = (lo: number, hi: number) => Math.round(between(r, lo, hi));
+  const nodes = [
+    { name: "Search" },
+    { name: "Direct" },
+    { name: "Home" },
+    { name: "Product" },
+    { name: "Cart" },
+    { name: "Checkout" },
+    { name: "Purchase" },
+    { name: "Abandoned" },
+  ];
+  const links = [
+    { source: 0, target: 2, value: v(300, 600) },
+    { source: 1, target: 2, value: v(150, 350) },
+    { source: 2, target: 3, value: v(400, 700) },
+    { source: 3, target: 4, value: v(200, 400) },
+    { source: 4, target: 5, value: v(120, 260) },
+    { source: 5, target: 6, value: v(80, 180) },
+    { source: 4, target: 7, value: v(60, 160) },
+    { source: 3, target: 7, value: v(80, 200) },
+  ];
+  return { data: { nodes, links } };
+}
+
+// ── nested hierarchy (treemap) ────────────────────────────────────────────
+function buildHierarchy(e: ChartRegistryEntry): Fixture {
+  const r = mulberry32(hashString(e.metadata.name));
+  const v = (lo: number, hi: number) => Math.round(between(r, lo, hi));
+  const data = {
+    name: "Revenue",
+    children: [
+      {
+        name: "Web",
+        children: [
+          { name: "New", value: v(100, 300) },
+          { name: "Returning", value: v(100, 300) },
+        ],
+      },
+      {
+        name: "Mobile",
+        children: [
+          { name: "iOS", value: v(80, 220) },
+          { name: "Android", value: v(80, 220) },
+        ],
+      },
+      {
+        name: "Marketplace",
+        children: [
+          { name: "Amazon", value: v(60, 180) },
+          { name: "eBay", value: v(30, 90) },
+        ],
+      },
+      { name: "Wholesale", value: v(80, 160) },
+    ],
+  };
+  return { data };
+}
+
+// ── single value (stat card / gauge) ──────────────────────────────────────
+function buildScalar(e: ChartRegistryEntry): Fixture {
+  const r = mulberry32(hashString(e.metadata.name));
+  if (e.metadata.baseComponent === "Gauge") {
+    return {
+      data: Math.round(between(r, 40, 95)),
+      options: { min: 0, max: 100, threshold: 80, label: "SLA attainment" },
+    };
+  }
+  const value = Math.round(between(r, 4000, 90000));
+  return {
+    data: value,
+    options: {
+      label: "Monthly revenue",
+      previous: Math.round(value * between(r, 0.8, 1.1)),
+    },
+  };
+}
+
 const BUILDERS: Record<string, (e: ChartRegistryEntry) => Fixture> = {
   series: buildSeries,
   category: buildCategory,
@@ -615,6 +761,13 @@ const BUILDERS: Record<string, (e: ChartRegistryEntry) => Fixture> = {
   "parallel-row": buildParallel,
   calendar: buildCalendar,
   rfm: buildRfm,
+  samples: buildSamples,
+  "box-group": buildBoxGroup,
+  "delta-steps": buildDeltaSteps,
+  "bullet-row": buildBulletRows,
+  "flow-graph": buildFlowGraph,
+  hierarchy: buildHierarchy,
+  scalar: buildScalar,
 };
 
 /** Plausible, deterministic demo data fitting a preset's question. */

@@ -30,6 +30,19 @@ import { CalendarHeatmap } from "../components/calendar-heatmap";
 import type { CalendarDatum } from "../components/calendar-heatmap";
 import { RfmGrid } from "../components/rfm-grid";
 import type { RfmCell } from "../components/rfm-grid";
+import { Histogram } from "../components/histogram";
+import { BoxPlot } from "../components/box-plot";
+import type { BoxPlotGroupStats } from "../components/box-plot";
+import { WaterfallChart } from "../components/waterfall-chart";
+import type { WaterfallStep } from "../components/waterfall-chart";
+import { BulletChart } from "../components/bullet-chart";
+import type { BulletDatum } from "../components/bullet-chart";
+import { SankeyDiagram } from "../components/sankey-diagram";
+import { Treemap } from "../components/treemap";
+import type { TreemapNode } from "../components/treemap";
+import { Gauge } from "../components/gauge";
+import { StatCard } from "../components/stat-card";
+import type { FlowGraph } from "../chart/types";
 import { CohortTriangle } from "../components/cohort-triangle";
 import type {
   CategoryDatum,
@@ -423,6 +436,102 @@ export type BaseName =
   | "calendar"
   | "rfm"
   | "cohort-triangle";
+
+export function renderHistogram(request: ResolveRequest, size: ChartSize) {
+  return (
+    <Histogram
+      width={size.width}
+      height={size.height}
+      values={request.data as number[]}
+      thresholds={optNumber(request, "thresholds")}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderBoxPlot(request: ResolveRequest, size: ChartSize) {
+  return (
+    <BoxPlot
+      width={size.width}
+      height={size.height}
+      groups={request.data as BoxPlotGroupStats[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderWaterfall(request: ResolveRequest, size: ChartSize) {
+  return (
+    <WaterfallChart
+      width={size.width}
+      height={size.height}
+      data={request.data as WaterfallStep[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderBullet(request: ResolveRequest, size: ChartSize) {
+  return (
+    <BulletChart
+      width={size.width}
+      height={size.height}
+      data={request.data as BulletDatum[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderSankey(request: ResolveRequest, size: ChartSize) {
+  return (
+    <SankeyDiagram
+      width={size.width}
+      height={size.height}
+      graph={request.data as FlowGraph}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderTreemap(request: ResolveRequest, size: ChartSize) {
+  return (
+    <Treemap
+      width={size.width}
+      height={size.height}
+      data={request.data as TreemapNode}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderGauge(request: ResolveRequest, size: ChartSize) {
+  return (
+    <Gauge
+      width={size.width}
+      height={size.height}
+      value={request.data as number}
+      min={optNumber(request, "min")}
+      max={optNumber(request, "max")}
+      threshold={optNumber(request, "threshold")}
+      label={optString(request, "label")}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderStatCard(request: ResolveRequest, size: ChartSize) {
+  // StatCard is intrinsically self-sizing; size is accepted for signature
+  // parity with the other adapters.
+  void size;
+  return (
+    <StatCard
+      label={optString(request, "label") ?? "Value"}
+      value={request.data as number}
+      previous={optNumber(request, "previous")}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
 
 /** Which bases publish the scale contract and so can host overlay children. */
 export const OVERLAY_HOSTS: ReadonlySet<BaseName> = new Set<BaseName>([
