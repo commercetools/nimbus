@@ -3,6 +3,7 @@ import { LineChart } from "../components/line-chart";
 import { BarChart } from "../components/bar-chart";
 import { DonutChart } from "../components/donut-chart";
 import { StackedBarChart } from "../components/stacked-bar-chart";
+import { GroupedBarChart } from "../components/grouped-bar-chart";
 import { ScatterPlot } from "../components/scatter-plot";
 import { Heatmap } from "../components/heatmap";
 import { FunnelChart } from "../components/funnel-chart";
@@ -152,6 +153,17 @@ export function renderDonut(request: ResolveRequest, size: ChartSize) {
 export function renderStacked(request: ResolveRequest, size: ChartSize) {
   return (
     <StackedBarChart
+      width={size.width}
+      height={size.height}
+      data={request.data as StackRow[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderGrouped(request: ResolveRequest, size: ChartSize) {
+  return (
+    <GroupedBarChart
       width={size.width}
       height={size.height}
       data={request.data as StackRow[]}

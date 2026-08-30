@@ -3,6 +3,7 @@ import {
   renderBarVertical,
   renderDonut,
   renderFunnel,
+  renderGrouped,
   renderHeatmap,
   renderLine,
   renderScatter,
@@ -108,6 +109,23 @@ const stackedMeta: ChartSelectionMetadata = {
   configLabel: "StackedBarChart",
 };
 
+const groupedMeta: ChartSelectionMetadata = {
+  name: "grouped-bar-chart",
+  baseComponent: "GroupedBarChart",
+  intents: [
+    { intent: "COMPARE", primacy: "primary" },
+    { intent: "COMP-TIME", primacy: "secondary" },
+  ],
+  acceptedShapes: ["categorical"],
+  constraints: { maxCategories: 12 },
+  // Side-by-side bars all sit on a common baseline — aligned length, so it
+  // beats the stacked bar's floating segments for cross-series comparison.
+  perceptualRank: 0.85,
+  questionString: "How do these series compare within each category?",
+  bundleWeight: 10,
+  configLabel: "GroupedBarChart",
+};
+
 const donutMeta: ChartSelectionMetadata = {
   name: "donut-chart",
   baseComponent: "DonutChart",
@@ -196,6 +214,12 @@ export function createDefaultRegistry(): ChartRegistry {
       metadata: stackedMeta,
       dataKinds: ["stack-row"],
       render: renderStacked,
+      canonical: true,
+    },
+    {
+      metadata: groupedMeta,
+      dataKinds: ["stack-row"],
+      render: renderGrouped,
       canonical: true,
     },
     {
