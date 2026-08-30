@@ -127,21 +127,25 @@ import { ColorScaleProvider } from "@commercetools/nimbus-viz";
 
 ## Component catalog
 
-31 components, grouped by the question they answer:
+47 components, grouped by the question they answer. The families track the
+[FT Visual Vocabulary](https://github.com/Financial-Times/chart-doctor/tree/main/visual-vocabulary):
 
-| Intent                | Components                                                                  |
-| --------------------- | --------------------------------------------------------------------------- |
-| Trend over time       | `LineChart`, `StackedAreaChart`, `Streamgraph`, `Sparkline`, `ControlChart` |
-| Categorical magnitude | `BarChart`, `GroupedBarChart`, `Histogram`, `ParetoChart`                   |
-| Part-to-whole         | `StackedBarChart`, `DonutChart`, `Treemap`, `FunnelChart`                   |
-| Compare / delta       | `DumbbellChart`, `SlopeChart`, `WaterfallChart`, `BulletChart`              |
-| Rank                  | `BumpChart`                                                                 |
-| Relationship          | `ScatterPlot`, `BubbleChart`, `RadarChart`, `ParallelCoordinates`           |
-| Matrix / retention    | `Heatmap`, `CalendarHeatmap`, `CohortTriangle`, `RfmGrid`                   |
-| Flow                  | `SankeyDiagram`                                                             |
-| Distribution          | `BoxPlot`                                                                   |
-| Single value          | `StatCard`, `Gauge`                                                         |
-| Tabular fallback      | `DataTable`                                                                 |
+| Family / intent       | Components                                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------------- |
+| Trend over time       | `LineChart`, `StackedAreaChart`, `Streamgraph`, `Sparkline`, `ControlChart`, `CandlestickChart`   |
+| Categorical magnitude | `BarChart`, `GroupedBarChart`, `LollipopChart`, `RadialBarChart`, `Histogram`, `ParetoChart`      |
+| Part-to-whole         | `StackedBarChart`, `DonutChart`, `Treemap`, `Sunburst`, `WaffleChart`, `Marimekko`, `FunnelChart` |
+| Deviation             | `DivergingBarChart`, `DivergingStackedBar` (Likert), `PopulationPyramid`                          |
+| Compare / delta       | `DumbbellChart`, `SlopeChart`, `WaterfallChart`, `BulletChart`                                    |
+| Rank                  | `BumpChart`                                                                                       |
+| Relationship          | `ScatterPlot`, `BubbleChart`, `ConnectedScatterplot`, `RadarChart`, `ParallelCoordinates`         |
+| Distribution          | `BoxPlot`, `ViolinPlot`, `BeeswarmPlot`, `CumulativeCurve`                                        |
+| Matrix / retention    | `Heatmap`, `CalendarHeatmap`, `CohortTriangle`, `RfmGrid`                                         |
+| Flow                  | `SankeyDiagram`, `ChordDiagram`                                                                   |
+| Timeline / schedule   | `GanttChart`                                                                                      |
+| Spatial               | `TileGridMap`                                                                                     |
+| Single value          | `StatCard`, `Gauge`                                                                               |
+| Tabular fallback      | `DataTable`                                                                                       |
 
 Composable **overlays** (`ReferenceLine`, `TargetMarker`, `TrendLine`,
 `ThresholdBand`, `ConfidenceBand`, `ErrorBars`, `BenchmarkSeries`) layer
