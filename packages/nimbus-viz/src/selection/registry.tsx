@@ -4,6 +4,7 @@ import {
   renderBoxPlot,
   renderBullet,
   renderDivergingBar,
+  renderDivergingStacked,
   renderDonut,
   renderFunnel,
   renderGauge,
@@ -12,6 +13,8 @@ import {
   renderHistogram,
   renderLine,
   renderLollipop,
+  renderMarimekko,
+  renderPopulationPyramid,
   renderRadialBar,
   renderSankey,
   renderScatter,
@@ -371,6 +374,52 @@ const waffleMeta: ChartSelectionMetadata = {
   configLabel: "WaffleChart",
 };
 
+const divergingStackedMeta: ChartSelectionMetadata = {
+  name: "diverging-stacked-bar",
+  baseComponent: "DivergingStackedBar",
+  intents: [
+    { intent: "PART-WHOLE", primacy: "primary" },
+    { intent: "DELTA", primacy: "secondary" },
+    { intent: "COMPARE", primacy: "secondary" },
+  ],
+  acceptedShapes: ["part-to-whole", "categorical"],
+  constraints: { maxCategories: 12 },
+  perceptualRank: 0.6,
+  questionString: "How does sentiment diverge across an ordered scale?",
+  bundleWeight: 9,
+  configLabel: "DivergingStackedBar",
+};
+
+const populationPyramidMeta: ChartSelectionMetadata = {
+  name: "population-pyramid",
+  baseComponent: "PopulationPyramid",
+  intents: [
+    { intent: "COMPARE", primacy: "primary" },
+    { intent: "DIST", primacy: "secondary" },
+  ],
+  acceptedShapes: ["distribution", "categorical"],
+  constraints: { maxCategories: 20 },
+  perceptualRank: 0.7,
+  questionString: "How do two populations compare across bands?",
+  bundleWeight: 7,
+  configLabel: "PopulationPyramid",
+};
+
+const marimekkoMeta: ChartSelectionMetadata = {
+  name: "marimekko-chart",
+  baseComponent: "MarimekkoChart",
+  intents: [
+    { intent: "PART-WHOLE", primacy: "primary" },
+    { intent: "COMPARE", primacy: "secondary" },
+  ],
+  acceptedShapes: ["part-to-whole", "categorical"],
+  constraints: { maxCategories: 12 },
+  perceptualRank: 0.6,
+  questionString: "How do composition and size vary across categories?",
+  bundleWeight: 9,
+  configLabel: "MarimekkoChart",
+};
+
 /**
  * Build the default registry. Insertion order is the stable tie-break's
  * registration order (docs/06 §3): canonical entries first (so they win a
@@ -510,6 +559,24 @@ export function createDefaultRegistry(): ChartRegistry {
       metadata: waffleMeta,
       dataKinds: ["category"],
       render: renderWaffle,
+      canonical: false,
+    },
+    {
+      metadata: divergingStackedMeta,
+      dataKinds: ["stack-row"],
+      render: renderDivergingStacked,
+      canonical: false,
+    },
+    {
+      metadata: populationPyramidMeta,
+      dataKinds: ["stack-row"],
+      render: renderPopulationPyramid,
+      canonical: false,
+    },
+    {
+      metadata: marimekkoMeta,
+      dataKinds: ["stack-row"],
+      render: renderMarimekko,
       canonical: false,
     },
   ];
