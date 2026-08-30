@@ -174,6 +174,9 @@ catalogs:
     '@storybook/react-vite':
       specifier: ^10.5.10
       version: 10.5.10
+    '@testing-library/dom':
+      specifier: 10.4.1
+      version: 10.4.1
     '@testing-library/jest-dom':
       specifier: 6.9.1
       version: 6.9.1
@@ -1126,6 +1129,15 @@ importers:
       '@commercetools/nimbus':
         specifier: workspace:*
         version: link:../nimbus
+      '@testing-library/dom':
+        specifier: catalog:tooling
+        version: 10.4.1
+      '@testing-library/jest-dom':
+        specifier: catalog:tooling
+        version: 6.9.1
+      '@testing-library/react':
+        specifier: catalog:tooling
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@types/d3-array':
         specifier: catalog:viz
         version: 3.2.2
@@ -1144,6 +1156,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: catalog:tooling
         version: 6.0.5(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.44.0)(tsx@4.23.12)(yaml@2.8.3))
+      jsdom:
+        specifier: 29.0.1
+        version: 29.0.1
       react:
         specifier: catalog:react
         version: 19.2.0
@@ -1159,6 +1174,9 @@ importers:
       vite:
         specifier: catalog:tooling
         version: 8.2.1(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.44.0)(tsx@4.23.12)(yaml@2.8.3)
+      vitest:
+        specifier: catalog:tooling
+        version: 4.1.10(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(jsdom@29.0.1)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.44.0)(tsx@4.23.12)(yaml@2.8.3))
 
   packages/tokens:
     devDependencies:
