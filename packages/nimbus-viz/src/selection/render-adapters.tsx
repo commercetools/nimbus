@@ -49,6 +49,10 @@ import { DivergingBarChart } from "../components/diverging-bar-chart";
 import { DivergingStackedBar } from "../components/diverging-stacked-bar";
 import { PopulationPyramid } from "../components/population-pyramid";
 import { MarimekkoChart } from "../components/marimekko-chart";
+import { BeeswarmPlot } from "../components/beeswarm-plot";
+import { CumulativeCurve } from "../components/cumulative-curve";
+import { ConnectedScatterplot } from "../components/connected-scatterplot";
+import { SunburstChart } from "../components/sunburst-chart";
 import type { FlowGraph } from "../chart/types";
 import { CohortTriangle } from "../components/cohort-triangle";
 import type {
@@ -618,6 +622,56 @@ export function renderMarimekko(request: ResolveRequest, size: ChartSize) {
       width={size.width}
       height={size.height}
       data={request.data as StackRow[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderBeeswarm(request: ResolveRequest, size: ChartSize) {
+  return (
+    <BeeswarmPlot
+      width={size.width}
+      height={size.height}
+      values={request.data as number[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderCumulativeCurve(
+  request: ResolveRequest,
+  size: ChartSize
+) {
+  return (
+    <CumulativeCurve
+      width={size.width}
+      height={size.height}
+      values={request.data as number[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderConnectedScatter(
+  request: ResolveRequest,
+  size: ChartSize
+) {
+  return (
+    <ConnectedScatterplot
+      width={size.width}
+      height={size.height}
+      points={request.data as ScatterPoint[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderSunburst(request: ResolveRequest, size: ChartSize) {
+  return (
+    <SunburstChart
+      width={size.width}
+      height={size.height}
+      data={request.data as TreemapNode}
       ariaLabel={optString(request, "ariaLabel")}
     />
   );

@@ -1,8 +1,11 @@
 import {
   renderBarHorizontal,
   renderBarVertical,
+  renderBeeswarm,
   renderBoxPlot,
   renderBullet,
+  renderConnectedScatter,
+  renderCumulativeCurve,
   renderDivergingBar,
   renderDivergingStacked,
   renderDonut,
@@ -20,6 +23,7 @@ import {
   renderScatter,
   renderStacked,
   renderStatCard,
+  renderSunburst,
   renderTreemap,
   renderWaffle,
   renderWaterfall,
@@ -420,6 +424,57 @@ const marimekkoMeta: ChartSelectionMetadata = {
   configLabel: "MarimekkoChart",
 };
 
+const beeswarmMeta: ChartSelectionMetadata = {
+  name: "beeswarm-plot",
+  baseComponent: "BeeswarmPlot",
+  intents: [{ intent: "DIST", primacy: "primary" }],
+  acceptedShapes: ["distribution"],
+  constraints: {},
+  perceptualRank: 0.55,
+  questionString: "How are the individual samples distributed?",
+  bundleWeight: 6,
+  configLabel: "BeeswarmPlot",
+};
+
+const cumulativeCurveMeta: ChartSelectionMetadata = {
+  name: "cumulative-curve",
+  baseComponent: "CumulativeCurve",
+  intents: [{ intent: "DIST", primacy: "primary" }],
+  acceptedShapes: ["distribution"],
+  constraints: {},
+  perceptualRank: 0.6,
+  questionString: "What share of the data falls below each value?",
+  bundleWeight: 7,
+  configLabel: "CumulativeCurve",
+};
+
+const connectedScatterMeta: ChartSelectionMetadata = {
+  name: "connected-scatterplot",
+  baseComponent: "ConnectedScatterplot",
+  intents: [
+    { intent: "REL", primacy: "primary" },
+    { intent: "TREND", primacy: "secondary" },
+  ],
+  acceptedShapes: ["two-variable"],
+  constraints: { minSampleSize: 3 },
+  perceptualRank: 0.7,
+  questionString: "How do two variables move together over the sequence?",
+  bundleWeight: 8,
+  configLabel: "ConnectedScatterplot",
+};
+
+const sunburstMeta: ChartSelectionMetadata = {
+  name: "sunburst-chart",
+  baseComponent: "SunburstChart",
+  intents: [{ intent: "PART-WHOLE", primacy: "primary" }],
+  acceptedShapes: ["part-to-whole"],
+  constraints: {},
+  perceptualRank: 0.45,
+  questionString: "How does the whole break down across a hierarchy (radial)?",
+  bundleWeight: 9,
+  configLabel: "SunburstChart",
+};
+
 /**
  * Build the default registry. Insertion order is the stable tie-break's
  * registration order (docs/06 §3): canonical entries first (so they win a
@@ -577,6 +632,30 @@ export function createDefaultRegistry(): ChartRegistry {
       metadata: marimekkoMeta,
       dataKinds: ["stack-row"],
       render: renderMarimekko,
+      canonical: false,
+    },
+    {
+      metadata: beeswarmMeta,
+      dataKinds: ["samples"],
+      render: renderBeeswarm,
+      canonical: false,
+    },
+    {
+      metadata: cumulativeCurveMeta,
+      dataKinds: ["samples"],
+      render: renderCumulativeCurve,
+      canonical: false,
+    },
+    {
+      metadata: connectedScatterMeta,
+      dataKinds: ["scatter"],
+      render: renderConnectedScatter,
+      canonical: false,
+    },
+    {
+      metadata: sunburstMeta,
+      dataKinds: ["hierarchy"],
+      render: renderSunburst,
       canonical: false,
     },
   ];
