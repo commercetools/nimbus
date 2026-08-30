@@ -4,16 +4,21 @@ import type {
   CategoryDatum,
   ChartRegistryEntry,
   DumbbellRow,
+  FlowMatrix,
   FunnelStage,
   HeatRow,
+  OhlcBar,
   ParallelDimension,
   ParallelRow,
   RadarSeries,
+  RegionTile,
   RfmCell,
+  SampleGroup,
   ScatterPoint,
   Series,
   SlopeRow,
   StackRow,
+  TimelineEvent,
 } from "../src";
 
 /**
@@ -330,6 +335,13 @@ function buildCategory(e: ChartRegistryEntry): Fixture {
   const k = kw(e);
   const r = mulberry32(hashString(k.name));
   const cats = categoryList(k);
+  // Diverging bar: signed values (e.g. variance-to-plan), sorted high→low.
+  if (k.name === "diverging-bar-chart") {
+    const data: CategoryDatum[] = cats
+      .map((category) => ({ category, value: Math.round(between(r, -55, 60)) }))
+      .sort((a, b) => b.value - a.value);
+    return { data };
+  }
   const isRate = test(k, /rate|ctr|conversion|realization|sell-through|fill/);
   let values = cats.map(() =>
     isRate ? +between(r, 4, 42).toFixed(1) : Math.round(between(r, 400, 4500))
@@ -357,6 +369,37 @@ function buildCategory(e: ChartRegistryEntry): Fixture {
 function buildStack(e: ChartRegistryEntry): Fixture {
   const k = kw(e);
   const r = mulberry32(hashString(k.name));
+  // Population pyramid: age bands with two back-to-back series.
+  if (k.name === "population-pyramid") {
+    const bands = ["0–17", "18–24", "25–34", "35–44", "45–54", "55–64", "65+"];
+    const data: StackRow[] = bands.map((category) => ({
+      category,
+      segments: [
+        { key: "Male", value: Math.round(between(r, 20, 100)) },
+        { key: "Female", value: Math.round(between(r, 20, 100)) },
+      ],
+    }));
+    return { data };
+  }
+  // Diverging stacked bar: an ordered Likert scale per topic.
+  if (k.name === "diverging-stacked-bar") {
+    const topics = ["Checkout", "Search", "Support", "Onboarding", "Docs"];
+    const scale = [
+      "Strongly disagree",
+      "Disagree",
+      "Neutral",
+      "Agree",
+      "Strongly agree",
+    ];
+    const data: StackRow[] = topics.map((category) => ({
+      category,
+      segments: scale.map((key) => ({
+        key,
+        value: Math.round(between(r, 5, 45)),
+      })),
+    }));
+    return { data };
+  }
   const segKeys = test(k, /new vs returning|new-vs-returning/)
     ? ["New", "Returning"]
     : test(k, /success|failure|sync|job/)
@@ -440,6 +483,21 @@ function buildHeat(e: ChartRegistryEntry): Fixture {
 function buildScatter(e: ChartRegistryEntry): Fixture {
   const k = kw(e);
   const r = mulberry32(hashString(k.name));
+  // Connected scatterplot: a single ordered trajectory, not two clouds.
+  if (k.name === "connected-scatterplot") {
+    let x = between(r, 20, 40);
+    let y = between(r, 20, 40);
+    const data: ScatterPoint[] = MONTHS.map((_, i) => {
+      x += between(r, -6, 11);
+      y += between(r, -4, 9);
+      return {
+        x: Math.round(x),
+        y: Math.round(y),
+        label: i === 0 ? "Jan" : i === MONTHS.length - 1 ? "Dec" : undefined,
+      };
+    });
+    return { data };
+  }
   const neg = test(k, /elasticity|price|discount/);
   const groups = ["EU", "US"];
   const data: ScatterPoint[] = groups.flatMap((group, g) =>
@@ -747,6 +805,136 @@ function buildScalar(e: ChartRegistryEntry): Fixture {
   };
 }
 
+// ── per-group raw samples (violin) ────────────────────────────────────────
+function buildSampleGroups(e: ChartRegistryEntry): Fixture {
+  const r = mulberry32(hashString(e.metadata.name));
+  const labels = ["Web", "Mobile", "Marketplace"];
+  const data: SampleGroup[] = labels.map((label) => {
+    const center = between(r, 40, 80);
+    const spread = between(r, 8, 22);
+    return {
+      label,
+      samples: Array.from({ length: 60 }, () => {
+        const u = (between(r, 0, 1) + between(r, 0, 1) + between(r, 0, 1)) / 3;
+        return +(center + (u - 0.5) * spread * 4).toFixed(1);
+      }),
+    };
+  });
+  return { data };
+}
+
+// ── open/high/low/close bars (candlestick) ────────────────────────────────
+function buildOhlc(e: ChartRegistryEntry): Fixture {
+  const r = mulberry32(hashString(e.metadata.name));
+  let price = between(r, 90, 120);
+  const data: OhlcBar[] = Array.from({ length: 22 }, (_, i) => {
+    const open = price;
+    const close = Math.max(5, open + (r() - 0.47) * 7);
+    const high = Math.max(open, close) + between(r, 0.5, 4);
+    const low = Math.min(open, close) - between(r, 0.5, 4);
+    price = close;
+    return {
+      date: new Date(2026, 0, i + 1),
+      open: +open.toFixed(2),
+      high: +high.toFixed(2),
+      low: +low.toFixed(2),
+      close: +close.toFixed(2),
+    };
+  });
+  return { data };
+}
+
+// ── scheduled spans + a milestone (gantt / timeline) ──────────────────────
+function buildTimelineEvents(e: ChartRegistryEntry): Fixture {
+  const r = mulberry32(hashString(e.metadata.name));
+  const phases: Array<[string, string, number, number | null]> = [
+    ["Discovery", "Plan", 0, 1],
+    ["Design", "Plan", 1, 3],
+    ["Build", "Build", 2, 6],
+    ["Beta", "Build", 6, 8],
+    ["Launch", "Launch", 8, null],
+    ["Rollout", "Launch", 8, 11],
+  ];
+  const jitter = Math.floor(between(r, 0, 3));
+  const data: TimelineEvent[] = phases.map(([label, category, s, en]) => ({
+    label,
+    category,
+    start: new Date(2026, s, 1 + jitter),
+    end: en == null ? undefined : new Date(2026, en, 1),
+  }));
+  return { data };
+}
+
+// ── square flow matrix (chord) ────────────────────────────────────────────
+function buildFlowMatrix(e: ChartRegistryEntry): Fixture {
+  const r = mulberry32(hashString(e.metadata.name));
+  const labels = ["Search", "Social", "Email", "Direct", "Referral"];
+  const n = labels.length;
+  const matrix = Array.from({ length: n }, (_, i) =>
+    Array.from({ length: n }, (_, j) =>
+      i === j ? 0 : Math.round(between(r, 0, 60))
+    )
+  );
+  const data: FlowMatrix = { labels, matrix };
+  return { data };
+}
+
+// ── regions on a hand-laid grid (tile-grid map) ───────────────────────────
+function buildRegionTiles(e: ChartRegistryEntry): Fixture {
+  const r = mulberry32(hashString(e.metadata.name));
+  // A compact US-style tile grid (row, col chosen to echo geography).
+  const cells: Array<[string, number, number]> = [
+    ["WA", 0, 0],
+    ["MT", 0, 1],
+    ["ND", 0, 2],
+    ["MN", 0, 3],
+    ["WI", 0, 4],
+    ["MI", 0, 5],
+    ["NY", 0, 7],
+    ["MA", 0, 8],
+    ["CA", 1, 0],
+    ["ID", 1, 1],
+    ["SD", 1, 2],
+    ["IA", 1, 3],
+    ["IL", 1, 4],
+    ["IN", 1, 5],
+    ["OH", 1, 6],
+    ["PA", 1, 7],
+    ["NJ", 1, 8],
+    ["NV", 2, 1],
+    ["WY", 2, 2],
+    ["NE", 2, 3],
+    ["MO", 2, 4],
+    ["KY", 2, 5],
+    ["WV", 2, 6],
+    ["VA", 2, 7],
+    ["MD", 2, 8],
+    ["AZ", 3, 1],
+    ["UT", 3, 2],
+    ["CO", 3, 3],
+    ["KS", 3, 4],
+    ["TN", 3, 5],
+    ["NC", 3, 6],
+    ["SC", 3, 7],
+    ["NM", 4, 2],
+    ["OK", 4, 3],
+    ["AR", 4, 4],
+    ["MS", 4, 5],
+    ["AL", 4, 6],
+    ["GA", 4, 7],
+    ["TX", 5, 3],
+    ["LA", 5, 4],
+    ["FL", 5, 8],
+  ];
+  const data: RegionTile[] = cells.map(([id, row, col]) => ({
+    id,
+    row,
+    col,
+    value: Math.round(between(r, 10, 100)),
+  }));
+  return { data };
+}
+
 const BUILDERS: Record<string, (e: ChartRegistryEntry) => Fixture> = {
   series: buildSeries,
   category: buildCategory,
@@ -768,6 +956,11 @@ const BUILDERS: Record<string, (e: ChartRegistryEntry) => Fixture> = {
   "flow-graph": buildFlowGraph,
   hierarchy: buildHierarchy,
   scalar: buildScalar,
+  "sample-groups": buildSampleGroups,
+  ohlc: buildOhlc,
+  "timeline-events": buildTimelineEvents,
+  "flow-matrix": buildFlowMatrix,
+  "region-tiles": buildRegionTiles,
 };
 
 /** Plausible, deterministic demo data fitting a preset's question. */
