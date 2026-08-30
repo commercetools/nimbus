@@ -63,6 +63,11 @@ export const ENTITY_ID_ACCESSOR: Record<
   "flow-graph": "node.name",
   hierarchy: "node.name",
   scalar: "(none — a single value)",
+  "sample-groups": "group.label",
+  ohlc: "bar.date",
+  "timeline-events": "event.label",
+  "flow-matrix": "matrix.labels[i]",
+  "region-tiles": "tile.id",
 };
 
 /* -------------------------------------------------------------------------- */
@@ -90,6 +95,10 @@ export function detectKind(data: unknown): DataKind {
     // FlowGraph: { nodes: [...], links: [...] }  (sankey)
     if (Array.isArray(data.nodes) && Array.isArray(data.links)) {
       return "flow-graph";
+    }
+    // FlowMatrix: { labels: [...], matrix: [[...]] }  (chord)
+    if (Array.isArray(data.labels) && Array.isArray(data.matrix)) {
+      return "flow-matrix";
     }
     // TreemapNode: { name, children: [...] } or a valued leaf.  (treemap)
     if (
@@ -139,6 +148,27 @@ export function detectKind(data: unknown): DataKind {
   ) {
     return "parallel-row";
   }
+  // RegionTile[]: { id, row: number, col: number, value: number } (tile-grid map).
+  if (
+    typeof first.id === "string" &&
+    isFiniteNumber(first.row) &&
+    isFiniteNumber(first.col) &&
+    isFiniteNumber(first.value)
+  ) {
+    return "region-tiles";
+  }
+  // SampleGroup[]: { label, samples: [...] } — before heat-row (label + array).
+  if (typeof first.label === "string" && Array.isArray(first.samples)) {
+    return "sample-groups";
+  }
+  // TimelineEvent[]: { label, start: Date|string, end? } — before the numeric
+  // label-based kinds; `start` is a date, never a number.
+  if (
+    typeof first.label === "string" &&
+    (first.start instanceof Date || typeof first.start === "string")
+  ) {
+    return "timeline-events";
+  }
   // StackRow[]: { category, segments: [...] }
   if (typeof first.category === "string" && Array.isArray(first.segments)) {
     return "stack-row";
@@ -187,6 +217,17 @@ export function detectKind(data: unknown): DataKind {
     isFiniteNumber(first.count)
   ) {
     return "rfm";
+  }
+  // OhlcBar[]: { date, open, high, low, close } — before calendar (date-keyed,
+  // but has no `value`, so it would fall through otherwise).
+  if (
+    (typeof first.date === "string" || first.date instanceof Date) &&
+    isFiniteNumber(first.open) &&
+    isFiniteNumber(first.high) &&
+    isFiniteNumber(first.low) &&
+    isFiniteNumber(first.close)
+  ) {
+    return "ohlc";
   }
   // CalendarDatum[]: { date: string | Date, value: number } — before category.
   if (
@@ -261,6 +302,16 @@ function shapesForKind(kind: DataKind, seriesCount: number): DataShape[] {
       return ["part-to-whole"];
     case "scalar":
       return ["single-value", "value-vs-target"];
+    case "sample-groups":
+      return ["distribution"];
+    case "ohlc":
+      return ["time-series"];
+    case "timeline-events":
+      return ["event-timeline"];
+    case "flow-matrix":
+      return ["flows-net"];
+    case "region-tiles":
+      return ["geographic"];
     case "unknown":
       return [];
   }
@@ -346,6 +397,18 @@ export function deriveFacts(request: ResolveRequest): DataFacts {
         seriesCount: 1,
         sampleSize: leaves,
         hierarchy: true,
+        malformed: false,
+      };
+    }
+    if (nonArrayKind === "flow-matrix") {
+      const m = data as { labels: unknown[]; matrix: unknown[] };
+      return {
+        ...base,
+        kind: "flow-matrix",
+        shapes: shapesForKind("flow-matrix", 1),
+        cardinality: m.labels.length,
+        seriesCount: 1,
+        sampleSize: m.matrix.length,
         malformed: false,
       };
     }
@@ -551,7 +614,8 @@ export function deriveFacts(request: ResolveRequest): DataFacts {
     case "samples":
     case "box-group":
     case "delta-steps":
-    case "bullet-row": {
+    case "bullet-row":
+    case "region-tiles": {
       const rows = data as unknown[];
       return {
         kind,
@@ -565,9 +629,43 @@ export function deriveFacts(request: ResolveRequest): DataFacts {
         malformed: false,
       };
     }
+    case "sample-groups": {
+      const groups = data as Array<{ samples?: unknown[] }>;
+      const sampleSize = groups.reduce(
+        (sum, g) => sum + (Array.isArray(g.samples) ? g.samples.length : 0),
+        0
+      );
+      return {
+        kind,
+        shapes: shapesForKind(kind, 1),
+        cardinality: groups.length,
+        seriesCount: 1,
+        hasTarget,
+        hasTimeAxis: false,
+        sampleSize,
+        hierarchy,
+        malformed: false,
+      };
+    }
+    case "ohlc":
+    case "timeline-events": {
+      const rows = data as unknown[];
+      return {
+        kind,
+        shapes: shapesForKind(kind, 1),
+        cardinality: rows.length,
+        seriesCount: 1,
+        hasTarget,
+        hasTimeAxis: true, // both are time-ordered by contract
+        sampleSize: rows.length,
+        hierarchy,
+        malformed: false,
+      };
+    }
     // Non-array kinds are resolved before the array guard above; listed here
     // only to keep the switch exhaustive over DataKind.
     case "flow-graph":
+    case "flow-matrix":
     case "hierarchy":
     case "scalar":
       return {

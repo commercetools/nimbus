@@ -122,6 +122,52 @@ function dataForKind(kind: DataKind): unknown {
       };
     case "scalar":
       return 72;
+    case "sample-groups":
+      return ["A", "B"].map((label, i) => ({
+        label,
+        samples: Array.from({ length: 30 }, (_, k) => (k % 7) + i),
+      }));
+    case "ohlc":
+      return Array.from({ length: 8 }, (_, i) => {
+        const base = 100 + i;
+        return {
+          date: new Date(2024, 0, i + 1),
+          open: base,
+          high: base + 5,
+          low: base - 4,
+          close: base + (i % 2 ? 2 : -2),
+        };
+      });
+    case "timeline-events":
+      return [
+        {
+          label: "Design",
+          start: new Date(2024, 0, 1),
+          end: new Date(2024, 1, 1),
+        },
+        {
+          label: "Build",
+          start: new Date(2024, 1, 1),
+          end: new Date(2024, 3, 1),
+        },
+        { label: "Launch", start: new Date(2024, 3, 1) },
+      ];
+    case "flow-matrix":
+      return {
+        labels: ["A", "B", "C"],
+        matrix: [
+          [0, 3, 1],
+          [2, 0, 4],
+          [1, 2, 0],
+        ],
+      };
+    case "region-tiles":
+      return [
+        { id: "NW", row: 0, col: 0, value: 5 },
+        { id: "NE", row: 0, col: 2, value: 9 },
+        { id: "SW", row: 2, col: 0, value: 3 },
+        { id: "SE", row: 2, col: 2, value: 7 },
+      ];
     case "unknown":
       return [{ nope: true }];
   }
@@ -172,6 +218,13 @@ describe("intent routing (the new registrations)", () => {
     ["TARGET", "scalar", "gauge"],
     ["VALUE", "scalar", "stat-card"],
     ["COMPARE", "stack-row", "grouped-bar-chart"],
+    // Visual-vocabulary additions with a new (intent × kind) region.
+    ["DELTA", "category", "diverging-bar-chart"],
+    ["DIST", "sample-groups", "violin-plot"],
+    ["TREND", "ohlc", "candlestick-chart"],
+    ["TREND", "timeline-events", "gantt-chart"],
+    ["FLOW", "flow-matrix", "chord-diagram"],
+    ["GEO", "region-tiles", "tile-grid-map"],
   ];
 
   for (const [intent, kind, expected] of cases) {
