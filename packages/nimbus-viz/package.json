@@ -33,7 +33,9 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "gallery": "vite",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest --run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@commercetools/nimbus-tokens": "workspace:*",
@@ -64,16 +66,21 @@
   },
   "devDependencies": {
     "@commercetools/nimbus": "workspace:*",
+    "@testing-library/dom": "catalog:tooling",
+    "@testing-library/jest-dom": "catalog:tooling",
+    "@testing-library/react": "catalog:tooling",
     "@types/d3-array": "catalog:viz",
     "@types/d3-format": "catalog:viz",
     "@types/d3-time-format": "catalog:viz",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react": "catalog:tooling",
+    "jsdom": "catalog:tooling",
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "tsup": "catalog:tooling",
     "typescript": "catalog:tooling",
-    "vite": "catalog:tooling"
+    "vite": "catalog:tooling",
+    "vitest": "catalog:tooling"
   }
 }

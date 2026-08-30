@@ -155,6 +155,10 @@ This package lives in the Nimbus monorepo.
 # Type-check
 pnpm --filter @commercetools/nimbus-viz typecheck
 
+# Unit + render tests (Vitest, jsdom) — classifier, resolver routing, and a
+# render-smoke that resolves and mounts every registered chart
+pnpm --filter @commercetools/nimbus-viz test
+
 # Build (tsup → dist ESM + CJS + d.ts)
 pnpm --filter @commercetools/nimbus-viz build
 
