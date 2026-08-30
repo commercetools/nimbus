@@ -4,6 +4,7 @@ import { useChartScales } from "../chart/scale-context";
 import { useChartTheme } from "../theme";
 import { overlayColor } from "./variant";
 import type { OverlayVariant } from "./variant";
+import { emText } from "../chart/typography";
 
 export interface BenchmarkPoint {
   x: number | Date;
@@ -53,7 +54,7 @@ export function BenchmarkSeries({
           x={lastX}
           y={lastY - 6}
           textAnchor="end"
-          fontSize={10}
+          style={emText(10)}
           fontFamily="system-ui, sans-serif"
           fill={theme.mutedInk}
         >

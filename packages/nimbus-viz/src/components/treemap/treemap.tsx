@@ -5,6 +5,7 @@ import { Group } from "@visx/group";
 import { ChartFrame } from "../../chart/chart-frame";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
+import { emText } from "../../chart/typography";
 
 /** A node in a nested part-to-whole hierarchy. Leaves carry `value`. */
 export interface TreemapNode {
@@ -100,7 +101,7 @@ export function Treemap({ width, height, data, ariaLabel }: TreemapProps) {
                         <text
                           x={6}
                           y={16}
-                          fontSize={11}
+                          style={emText(11)}
                           fontWeight={600}
                           fontFamily="system-ui, sans-serif"
                           fill={theme.surface}
@@ -111,7 +112,7 @@ export function Treemap({ width, height, data, ariaLabel }: TreemapProps) {
                           <text
                             x={6}
                             y={30}
-                            fontSize={10}
+                            style={emText(10)}
                             fontFamily="system-ui, sans-serif"
                             fill={theme.surface}
                             opacity={0.85}

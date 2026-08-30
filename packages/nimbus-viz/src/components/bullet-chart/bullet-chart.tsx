@@ -3,6 +3,7 @@ import { scaleLinear } from "@visx/scale";
 import { ChartFrame } from "../../chart/chart-frame";
 import { sequentialColor, useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
+import { emText } from "../../chart/typography";
 
 /** One measure-vs-target row in a bullet chart. */
 export interface BulletDatum {
@@ -86,7 +87,7 @@ export function BulletChart({
                     y={cy}
                     dy="0.32em"
                     textAnchor="end"
-                    fontSize={11}
+                    style={emText(11)}
                     fontFamily="system-ui, sans-serif"
                     fill={theme.mutedInk}
                   >
@@ -129,7 +130,7 @@ export function BulletChart({
                     x={xScale(d.measure) + 6}
                     y={cy}
                     dy="0.32em"
-                    fontSize={10}
+                    style={emText(10)}
                     fontFamily="system-ui, sans-serif"
                     fill={theme.ink}
                   >

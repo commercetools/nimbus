@@ -6,6 +6,7 @@ import { Legend } from "../../chart/legend";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
 import type { CategoryDatum } from "../../chart/types";
+import { emText } from "../../chart/typography";
 
 export interface DonutChartProps {
   width: number;
@@ -80,7 +81,7 @@ export function DonutChart({
               <text
                 textAnchor="middle"
                 dy={-2}
-                fontSize={20}
+                style={emText(20)}
                 fontWeight={700}
                 fontFamily="system-ui, sans-serif"
                 fill={theme.ink}
@@ -92,7 +93,7 @@ export function DonutChart({
               <text
                 textAnchor="middle"
                 dy={16}
-                fontSize={11}
+                style={emText(11)}
                 fontFamily="system-ui, sans-serif"
                 fill={theme.mutedInk}
               >

@@ -7,6 +7,7 @@ import { Legend } from "../../chart/legend";
 import { bottomTickLabel } from "../../chart/axes";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
+import { emText } from "../../chart/typography";
 
 /** One category compared at two points — a start and an end value. */
 export interface DumbbellRow {
@@ -126,7 +127,7 @@ export function DumbbellChart({
                       y={cy}
                       dy="0.32em"
                       textAnchor="end"
-                      fontSize={11}
+                      style={emText(11)}
                       fontFamily="system-ui, sans-serif"
                       fill={theme.mutedInk}
                     >
@@ -162,7 +163,7 @@ export function DumbbellChart({
                       y={cy}
                       dy="0.32em"
                       textAnchor={startAnchor}
-                      fontSize={10}
+                      style={emText(10)}
                       fontFamily="system-ui, sans-serif"
                       fill={theme.ink}
                     >
@@ -173,7 +174,7 @@ export function DumbbellChart({
                       y={cy}
                       dy="0.32em"
                       textAnchor={endAnchor}
-                      fontSize={10}
+                      style={emText(10)}
                       fontFamily="system-ui, sans-serif"
                       fill={theme.ink}
                     >

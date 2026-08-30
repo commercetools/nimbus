@@ -4,6 +4,7 @@ import { Group } from "@visx/group";
 import { ChartFrame } from "../../chart/chart-frame";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
+import { emText } from "../../chart/typography";
 
 export interface GaugeProps {
   width: number;
@@ -105,7 +106,7 @@ export function Gauge({
             <text
               textAnchor="middle"
               y={-innerRadius * 0.35}
-              fontSize={Math.max(14, radius * 0.28)}
+              style={{ fontSize: Math.max(14, radius * 0.28) }}
               fontWeight={700}
               fontFamily="system-ui, sans-serif"
               fill={theme.ink}
@@ -116,7 +117,7 @@ export function Gauge({
               <text
                 textAnchor="middle"
                 y={-innerRadius * 0.35 + 16}
-                fontSize={11}
+                style={emText(11)}
                 fontFamily="system-ui, sans-serif"
                 fill={theme.mutedInk}
               >

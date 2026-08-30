@@ -8,6 +8,7 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
+import { emText } from "../../chart/typography";
 
 /** A point with a third magnitude encoded as bubble area. */
 export type BubblePoint = {
@@ -165,7 +166,7 @@ export function BubbleChart({
                       x={legendBaseX - R_MAX - 6}
                       y={legendBaseY - 2 * r}
                       dy={4}
-                      fontSize={10}
+                      style={emText(10)}
                       fontFamily="system-ui, sans-serif"
                       textAnchor="end"
                       fill={theme.mutedInk}

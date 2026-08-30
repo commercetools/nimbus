@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Group } from "@visx/group";
 import { useChartTheme } from "../theme";
 import type { Margin } from "./types";
+import { chartRootStyle } from "./typography";
 
 export interface InnerDims {
   innerWidth: number;
@@ -42,7 +43,13 @@ export function ChartFrame({
   const innerWidth = Math.max(0, width - margin.left - margin.right);
   const innerHeight = Math.max(0, height - margin.top - margin.bottom);
   return (
-    <svg width={width} height={height} role="img" aria-label={ariaLabel}>
+    <svg
+      width={width}
+      height={height}
+      role="img"
+      aria-label={ariaLabel}
+      style={chartRootStyle(width, height)}
+    >
       {background && (
         <rect
           x={0}

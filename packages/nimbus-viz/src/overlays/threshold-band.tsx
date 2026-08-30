@@ -2,6 +2,7 @@ import { useChartScales } from "../chart/scale-context";
 import { useChartTheme } from "../theme";
 import { overlayColor } from "./variant";
 import type { OverlayVariant } from "./variant";
+import { emText } from "../chart/typography";
 
 export interface ThresholdBandProps {
   /** One edge of the band, in data units. */
@@ -53,7 +54,7 @@ export function ThresholdBand({
             x={left + 4}
             y={10}
             textAnchor="start"
-            fontSize={10}
+            style={emText(10)}
             fontFamily="system-ui, sans-serif"
             fill={theme.mutedInk}
           >
@@ -83,7 +84,7 @@ export function ThresholdBand({
           x={innerWidth - 4}
           y={top + 12}
           textAnchor="end"
-          fontSize={10}
+          style={emText(10)}
           fontFamily="system-ui, sans-serif"
           fill={theme.mutedInk}
         >

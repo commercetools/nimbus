@@ -8,6 +8,7 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact, formatDayMonth } from "../../chart/format";
 import type { Series } from "../../chart/types";
+import { emText } from "../../chart/typography";
 
 export interface BumpChartProps {
   width: number;
@@ -151,7 +152,7 @@ export function BumpChart({
                         x={px(last.i) + 10}
                         y={py(last.rank)}
                         dy={4}
-                        fontSize={11}
+                        style={emText(11)}
                         fontFamily="system-ui, sans-serif"
                         fill={theme.ink}
                       >

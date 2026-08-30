@@ -7,6 +7,7 @@ import { Legend } from "../../chart/legend";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
+import { chartRootStyle, emText } from "../../chart/typography";
 
 /** One multivariate profile: `values` aligns index-for-index to `axes`. */
 export interface RadarSeries {
@@ -96,6 +97,7 @@ export function RadarChart({
           ariaLabel ??
           `Radar chart of ${data.map((s) => s.label).join(", ")} across ${axes.join(", ")}`
         }
+        style={chartRootStyle(width, svgHeight)}
       >
         <Group left={cx} top={cy}>
           {/* Concentric grid rings */}
@@ -133,8 +135,7 @@ export function RadarChart({
                   y={label.y}
                   dy={4 + Math.sin(angleFor(i)) * 6}
                   textAnchor={anchor}
-                  fontSize={11}
-                  fontFamily="system-ui, sans-serif"
+                  style={emText(11)}
                   fill={theme.mutedInk}
                 >
                   {name}

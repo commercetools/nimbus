@@ -6,6 +6,7 @@ import { ChartFrame } from "../../chart/chart-frame";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
+import { emText } from "../../chart/typography";
 
 /** One ordered step in a waterfall: a signed contribution, or an explicit total. */
 export interface WaterfallStep {
@@ -160,7 +161,7 @@ export function WaterfallChart({
                     x={x + bw / 2}
                     y={barTop - 4}
                     textAnchor="middle"
-                    fontSize={10}
+                    style={emText(10)}
                     fontFamily="system-ui, sans-serif"
                     fill={theme.mutedInk}
                   >

@@ -10,6 +10,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact, formatDayMonth } from "../../chart/format";
 import type { Series, SeriesPoint } from "../../chart/types";
+import { emText } from "../../chart/typography";
 
 export interface ControlChartProps {
   width: number;
@@ -162,7 +163,7 @@ export function ControlChart({
                 x={innerWidth + 4}
                 y={yScale(value)}
                 dy="0.32em"
-                fontSize={9}
+                style={emText(9)}
                 fontFamily="system-ui, sans-serif"
                 fill={theme.mutedInk}
               >

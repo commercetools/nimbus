@@ -5,6 +5,7 @@ import { ChartFrame } from "../../chart/chart-frame";
 import { sequentialColor, useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { HeatRow } from "../../chart/types";
+import { emText } from "../../chart/typography";
 
 export interface HeatmapProps {
   width: number;
@@ -79,7 +80,7 @@ export function Heatmap({
                 x={(xScale(String(c)) ?? 0) + cw / 2}
                 y={-8}
                 textAnchor="middle"
-                fontSize={10}
+                style={emText(10)}
                 fontFamily="system-ui, sans-serif"
                 fill={theme.mutedInk}
               >
@@ -95,7 +96,7 @@ export function Heatmap({
                     y={y + ch / 2}
                     dy="0.32em"
                     textAnchor="end"
-                    fontSize={10}
+                    style={emText(10)}
                     fontFamily="system-ui, sans-serif"
                     fill={theme.mutedInk}
                   >
@@ -121,7 +122,7 @@ export function Heatmap({
                             y={y + ch / 2}
                             dy="0.32em"
                             textAnchor="middle"
-                            fontSize={9}
+                            style={emText(9)}
                             fontFamily="system-ui, sans-serif"
                             fill={t > 0.55 ? theme.surface : theme.ink}
                           >

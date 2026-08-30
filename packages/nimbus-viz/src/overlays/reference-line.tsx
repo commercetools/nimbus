@@ -2,6 +2,7 @@ import { useChartScales } from "../chart/scale-context";
 import { useChartTheme } from "../theme";
 import { overlayColor } from "./variant";
 import type { OverlayVariant } from "./variant";
+import { emText } from "../chart/typography";
 
 export interface ReferenceLineProps {
   /** Data value on the referenced axis (a number on the value axis; a number
@@ -50,7 +51,7 @@ export function ReferenceLine({
             x={x + 4}
             y={10}
             textAnchor="start"
-            fontSize={10}
+            style={emText(10)}
             fontFamily="system-ui, sans-serif"
             fill={theme.mutedInk}
           >
@@ -78,7 +79,7 @@ export function ReferenceLine({
           x={innerWidth}
           y={y - 4}
           textAnchor="end"
-          fontSize={10}
+          style={emText(10)}
           fontFamily="system-ui, sans-serif"
           fill={theme.mutedInk}
         >

@@ -10,7 +10,6 @@ export function leftTickLabel(theme: ChartRoles) {
   return () =>
     ({
       fill: theme.mutedInk,
-      fontSize: 10,
       textAnchor: "end",
       dx: -6,
       dy: 3,
@@ -22,7 +21,6 @@ export function bottomTickLabel(theme: ChartRoles) {
   return () =>
     ({
       fill: theme.mutedInk,
-      fontSize: 10,
       textAnchor: "middle",
       dy: 2,
     }) as const;

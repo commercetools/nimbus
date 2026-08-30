@@ -6,6 +6,7 @@ import { curveMonotoneX } from "@visx/curve";
 import { extent } from "d3-array";
 import { useChartTheme } from "../../theme";
 import type { SeriesPoint } from "../../chart/types";
+import { chartRootStyle } from "../../chart/typography";
 
 export interface SparklineProps {
   width: number;
@@ -81,6 +82,7 @@ export function Sparkline({
       height={height}
       role="img"
       aria-label={ariaLabel ?? "Sparkline"}
+      style={chartRootStyle(width, height)}
     >
       <Group left={PAD} top={PAD}>
         <LinePath<Defined>
