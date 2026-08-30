@@ -18,88 +18,25 @@ import type { ChartRegistryEntry, Intent } from "../src";
 import {
   Badge,
   Box,
+  Card,
+  Code,
   Flex,
   Heading,
   SearchInput,
+  SimpleGrid,
+  Stack,
   Text,
 } from "@commercetools/nimbus";
+import { fixtureFor } from "./fixtures";
 import {
   arr,
-  bubblePoints,
   bullets,
-  calendarData,
-  channels,
-  channelTraffic,
-  cohortPeriods,
-  cohorts,
   composition,
-  dumbbellData,
   flow,
-  funnel,
   latencyByRegion,
   orderValues,
-  parallelDimensions,
-  parallelRows,
-  radarAxes,
-  radarData,
   revenueTree,
-  rfmData,
-  scatter,
-  slopeData,
 } from "./datasets";
-
-// ── Representative data per concrete DataKind, so any catalog entry previews.
-// series/category carry an options bag (target, range, errors) so overlay-
-// bearing configs render their overlays; the multivariate/paired kinds pass
-// the axis/label options their charts need.
-const SAMPLE: Record<
-  string,
-  { data: unknown; options?: Record<string, unknown> }
-> = {
-  series: {
-    data: channelTraffic,
-    options: { target: 450, rangeLow: 380, rangeHigh: 560 },
-  },
-  category: {
-    data: channels,
-    options: {
-      target: 3000,
-      errors: [
-        { x: 0, low: 3800, high: 4600 },
-        { x: 1, low: 2800, high: 3400 },
-        { x: 2, low: 1500, high: 2100 },
-        { x: 3, low: 1000, high: 1400 },
-        { x: 4, low: 500, high: 780 },
-      ],
-    },
-  },
-  "stack-row": { data: composition },
-  scatter: { data: scatter },
-  "heat-row": {
-    data: cohorts,
-    options: {
-      columnLabels: cohortPeriods,
-      periodLabels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    },
-  },
-  funnel: { data: funnel },
-  "slope-row": {
-    data: slopeData,
-    options: { leftLabel: "Q1", rightLabel: "Q2" },
-  },
-  "dumbbell-row": {
-    data: dumbbellData,
-    options: { startLabel: "2023", endLabel: "2024" },
-  },
-  bubble: { data: bubblePoints },
-  "radar-series": { data: radarData, options: { axes: radarAxes } },
-  "parallel-row": {
-    data: parallelRows,
-    options: { dimensions: parallelDimensions },
-  },
-  calendar: { data: calendarData },
-  rfm: { data: rfmData },
-};
 
 /** A local boundary so one throwing preview never blanks the whole explorer. */
 class PreviewBoundary extends Component<
@@ -140,17 +77,14 @@ function buildCatalogTypes(): CatalogType[] {
       entries,
       presetCount: entries.length,
       canonicalCount: entries.filter((e) => e.canonical !== false).length,
-      configCount: new Set(
-        entries.map((e) => e.metadata.configLabel ?? base)
-      ).size,
+      configCount: new Set(entries.map((e) => e.metadata.configLabel ?? base))
+        .size,
       intents: [
         ...new Set(
           entries.flatMap((e) => e.metadata.intents.map((i) => i.intent))
         ),
       ],
-      shapes: [
-        ...new Set(entries.flatMap((e) => e.metadata.acceptedShapes)),
-      ],
+      shapes: [...new Set(entries.flatMap((e) => e.metadata.acceptedShapes))],
     }))
     .sort((a, b) => a.base.localeCompare(b.base));
 }
@@ -167,91 +101,100 @@ interface GapType {
   render: (w: number, h: number) => ReactNode;
 }
 
-const GAP_TYPES: GapType[] = ([
-  {
-    base: "StatCard",
-    label: "Stat card",
-    height: 120,
-    render: () => (
-      <Flex gap="800">
-        <StatCard label="Revenue (MTD)" value={482000} previous={430000} />
-        <StatCard label="Orders" value={12840} previous={13120} />
-      </Flex>
-    ),
-  },
-  {
-    base: "GroupedBarChart",
-    label: "Grouped bar",
-    height: 260,
-    render: (w: number, h: number) => <GroupedBarChart width={w} height={h} data={composition} />,
-  },
-  {
-    base: "Histogram",
-    label: "Histogram",
-    height: 240,
-    render: (w: number, h: number) => <Histogram width={w} height={h} values={orderValues} />,
-  },
-  {
-    base: "BoxPlot",
-    label: "Box plot",
-    height: 240,
-    render: (w: number, h: number) => <BoxPlot width={w} height={h} groups={latencyByRegion} />,
-  },
-  {
-    base: "BulletChart",
-    label: "Bullet",
-    height: 200,
-    render: (w: number, h: number) => <BulletChart width={w} height={h} data={bullets} />,
-  },
-  {
-    base: "Gauge",
-    label: "Gauge",
-    height: 180,
-    render: (w: number, h: number) => (
-      <Gauge width={w} height={h} value={72} threshold={80} label="Capacity" />
-    ),
-  },
-  {
-    base: "WaterfallChart",
-    label: "Waterfall",
-    height: 240,
-    render: (w: number, h: number) => <WaterfallChart width={w} height={h} data={arr} />,
-  },
-  {
-    base: "SankeyDiagram",
-    label: "Sankey",
-    height: 280,
-    render: (w: number, h: number) => <SankeyDiagram width={w} height={h} graph={flow} />,
-  },
-  {
-    base: "Treemap",
-    label: "Treemap",
-    height: 260,
-    render: (w: number, h: number) => <Treemap width={w} height={h} data={revenueTree} />,
-  },
-] as GapType[]).sort((a, b) => a.label.localeCompare(b.label));
+const GAP_TYPES: GapType[] = (
+  [
+    {
+      base: "StatCard",
+      label: "Stat card",
+      height: 120,
+      render: () => (
+        <Flex gap="800">
+          <StatCard label="Revenue (MTD)" value={482000} previous={430000} />
+          <StatCard label="Orders" value={12840} previous={13120} />
+        </Flex>
+      ),
+    },
+    {
+      base: "GroupedBarChart",
+      label: "Grouped bar",
+      height: 260,
+      render: (w: number, h: number) => (
+        <GroupedBarChart width={w} height={h} data={composition} />
+      ),
+    },
+    {
+      base: "Histogram",
+      label: "Histogram",
+      height: 240,
+      render: (w: number, h: number) => (
+        <Histogram width={w} height={h} values={orderValues} />
+      ),
+    },
+    {
+      base: "BoxPlot",
+      label: "Box plot",
+      height: 240,
+      render: (w: number, h: number) => (
+        <BoxPlot width={w} height={h} groups={latencyByRegion} />
+      ),
+    },
+    {
+      base: "BulletChart",
+      label: "Bullet",
+      height: 200,
+      render: (w: number, h: number) => (
+        <BulletChart width={w} height={h} data={bullets} />
+      ),
+    },
+    {
+      base: "Gauge",
+      label: "Gauge",
+      height: 180,
+      render: (w: number, h: number) => (
+        <Gauge
+          width={w}
+          height={h}
+          value={72}
+          threshold={80}
+          label="Capacity"
+        />
+      ),
+    },
+    {
+      base: "WaterfallChart",
+      label: "Waterfall",
+      height: 240,
+      render: (w: number, h: number) => (
+        <WaterfallChart width={w} height={h} data={arr} />
+      ),
+    },
+    {
+      base: "SankeyDiagram",
+      label: "Sankey",
+      height: 280,
+      render: (w: number, h: number) => (
+        <SankeyDiagram width={w} height={h} graph={flow} />
+      ),
+    },
+    {
+      base: "Treemap",
+      label: "Treemap",
+      height: 260,
+      render: (w: number, h: number) => (
+        <Treemap width={w} height={h} data={revenueTree} />
+      ),
+    },
+  ] as GapType[]
+).sort((a, b) => a.label.localeCompare(b.label));
 
 function renderPreset(entry: ChartRegistryEntry, w: number, h: number) {
-  const kind = entry.dataKinds[0] ?? "series";
-  const sample = SAMPLE[kind];
-  if (!sample) return null;
+  const fx = fixtureFor(entry);
   const intent: Intent = entry.metadata.intents[0]?.intent ?? "TREND";
   return resolveByName(
     entry.metadata.name,
-    { intent, data: sample.data, options: sample.options },
+    { intent, data: fx.data, options: fx.options },
     { width: w, height: h }
   ).render({ width: w, height: h });
-}
-
-function Meta({ label, value }: { label: string; value: ReactNode }) {
-  return (
-    <Flex gap="200" fontSize="350" lineHeight="1.6">
-      <Text color="fg.muted" minW="7rem">
-        {label}
-      </Text>
-      <Text>{value}</Text>
-    </Flex>
-  );
 }
 
 function TypeRow({
@@ -421,146 +364,148 @@ export function Explorer() {
 
       {/* ── main panel ── */}
       <Box flexGrow="1">
-        {gap ? <GapPanel gap={gap} /> : cat ? <CatalogPanel type={cat} /> : null}
+        {gap ? (
+          <GapPanel gap={gap} />
+        ) : cat ? (
+          <CatalogPanel type={cat} />
+        ) : null}
       </Box>
     </Flex>
   );
 }
 
 function CatalogPanel({ type }: { type: CatalogType }) {
-  // Group the type's entries by configuration signature.
-  const configs = useMemo(() => {
-    const m = new Map<string, ChartRegistryEntry[]>();
-    for (const e of type.entries) {
-      const key = e.metadata.configLabel ?? type.base;
-      const list = m.get(key);
-      if (list) list.push(e);
-      else m.set(key, [e]);
-    }
-    return [...m.entries()].map(([label, members]) => ({ label, members }));
-  }, [type]);
+  // One card per question — canonical answers first, then alphabetical.
+  const presets = useMemo(
+    () =>
+      [...type.entries].sort((a, b) => {
+        const ca = a.canonical !== false ? 0 : 1;
+        const cb = b.canonical !== false ? 0 : 1;
+        return ca - cb || a.metadata.name.localeCompare(b.metadata.name);
+      }),
+    [type]
+  );
 
   return (
-    <Box>
-      <Heading size="md">{type.base}</Heading>
-      <Text color="fg.muted" mb="300">
-        {type.presetCount} preset{type.presetCount === 1 ? "" : "s"} ·{" "}
-        {type.configCount} configuration{type.configCount === 1 ? "" : "s"} ·{" "}
-        {type.canonicalCount} canonical
-      </Text>
-      <Meta label="Intents" value={type.intents.join(", ")} />
-      <Meta label="Shapes" value={type.shapes.join(", ")} />
+    <Stack gap="600">
+      <Box>
+        <Flex align="center" gap="200" mb="100">
+          <Heading>{type.base}</Heading>
+          {type.canonicalCount > 0 && (
+            <Badge size="xs" colorPalette="primary">
+              canonical
+            </Badge>
+          )}
+        </Flex>
+        <Text color="fg.muted" textStyle="sm">
+          {type.presetCount} question{type.presetCount === 1 ? "" : "s"} ·{" "}
+          {type.configCount} configuration{type.configCount === 1 ? "" : "s"} ·{" "}
+          {type.shapes.join(", ")}
+        </Text>
+        <Flex gap="100" mt="200" wrap="wrap">
+          {type.intents.map((i) => (
+            <Badge key={i} size="2xs" colorPalette="neutral">
+              {i}
+            </Badge>
+          ))}
+        </Flex>
+      </Box>
 
-      <Flex direction="column" gap="400" mt="400">
-        {configs.map((cfg) => {
-          const rep = cfg.members[0];
-          const hasCanonical = cfg.members.some((e) => e.canonical !== false);
-          return (
-            <Box
-              key={cfg.label}
-              borderWidth="1px"
-              borderColor="neutral.6"
-              borderRadius="300"
-              bg="neutral.2"
-              p="400"
+      <SimpleGrid columns={{ base: 1, lg: 2 }} gap="400">
+        {presets.map((e) => (
+          <QuestionCard key={e.metadata.name} entry={e} />
+        ))}
+      </SimpleGrid>
+    </Stack>
+  );
+}
+
+/** A single question framed as a card: the question, answered by its chart. */
+function QuestionCard({ entry }: { entry: ChartRegistryEntry }) {
+  const canonical = entry.canonical !== false;
+  const intents = entry.metadata.intents.map((i) => i.intent);
+  return (
+    <Card.Root variant="outlined" size="md">
+      <Card.Header>
+        <Stack gap="150">
+          <Flex align="center" justify="space-between" gap="200">
+            <Text
+              textStyle="xs"
+              color="fg.muted"
+              textTransform="uppercase"
+              letterSpacing="0.06em"
             >
-              <Flex align="center" gap="200" mb="200">
-                <Text fontFamily="mono" fontWeight="600" fontSize="350">
-                  {cfg.label}
-                  {hasCanonical ? " ★" : ""}
-                </Text>
-                <Badge size="2xs" colorPalette="neutral">
-                  {cfg.members.length} preset
-                  {cfg.members.length === 1 ? "" : "s"}
-                </Badge>
-              </Flex>
-
-              <Box
-                borderWidth="1px"
-                borderColor="neutral.6"
-                borderRadius="200"
-                bg="neutral.1"
-                p="200"
-                mb="300"
-              >
-                <PreviewBoundary
-                  key={cfg.label}
-                  fallback={
-                    <Text p="600" color="fg.muted" fontSize="350">
-                      This configuration could not render with the sample data.
-                    </Text>
-                  }
-                >
-                  <ResponsiveContainer height={300}>
-                    {(w, h) => renderPreset(rep, w, h)}
-                  </ResponsiveContainer>
-                </PreviewBoundary>
-              </Box>
-
-              <Text
-                fontSize="300"
-                fontWeight="600"
-                color="fg.muted"
-                textTransform="uppercase"
-                letterSpacing="0.04em"
-                mb="150"
-              >
-                Questions it answers
-              </Text>
-              <Flex direction="column" gap="100">
-                {cfg.members.map((e) => (
-                  <Text key={e.metadata.name} fontSize="350">
-                    <Text as="span" fontFamily="mono" color="neutral.12">
-                      {e.metadata.name}
-                      {e.canonical !== false ? " ★" : ""}
-                    </Text>
-                    <Text as="span" color="fg.muted">
-                      {" — "}
-                      {e.metadata.persona ?? "canonical"}:{" "}
-                      {e.metadata.questionString}
-                    </Text>
-                  </Text>
-                ))}
-              </Flex>
-            </Box>
-          );
-        })}
-      </Flex>
-    </Box>
+              {entry.metadata.persona ?? "Canonical answer"}
+            </Text>
+            {canonical && (
+              <Badge size="2xs" colorPalette="primary">
+                canonical
+              </Badge>
+            )}
+          </Flex>
+          <Text textStyle="lg" fontWeight="600" color="neutral.12">
+            {entry.metadata.questionString}
+          </Text>
+          <Code>{entry.metadata.name}</Code>
+        </Stack>
+      </Card.Header>
+      <Card.Body>
+        <PreviewBoundary
+          key={entry.metadata.name}
+          fallback={
+            <Text color="fg.muted" textStyle="sm">
+              Could not render with the sample data.
+            </Text>
+          }
+        >
+          <ResponsiveContainer height={260}>
+            {(w, h) => renderPreset(entry, w, h)}
+          </ResponsiveContainer>
+        </PreviewBoundary>
+      </Card.Body>
+      <Card.Footer>
+        <Flex gap="100" wrap="wrap" align="center">
+          {intents.map((i) => (
+            <Badge key={i} size="2xs" colorPalette="neutral">
+              {i}
+            </Badge>
+          ))}
+          {entry.metadata.overlays?.length ? (
+            <Text textStyle="xs" color="fg.muted">
+              + {entry.metadata.overlays.join(", ")}
+            </Text>
+          ) : null}
+        </Flex>
+      </Card.Footer>
+    </Card.Root>
   );
 }
 
 function GapPanel({ gap }: { gap: GapType }) {
   return (
-    <Box>
-      <Heading size="md">{gap.base}</Heading>
+    <Stack gap="400">
+      <Heading>{gap.base}</Heading>
       <Box
         borderWidth="1px"
         borderColor="warning.7"
         bg="warning.2"
         borderRadius="200"
-        px="300"
-        py="200"
-        mt="200"
-        mb="400"
+        px="400"
+        py="300"
       >
-        <Text fontSize="350" color="warning.11">
+        <Text textStyle="sm" color="warning.11">
           Built component — <strong>not yet in the selection catalog</strong>.
           No presets, questions, or selection metadata; rendered directly. A
           candidate to register (or intentionally excluded).
         </Text>
       </Box>
-      <Box
-        borderWidth="1px"
-        borderColor="neutral.6"
-        borderRadius="300"
-        bg="neutral.2"
-        p="400"
-      >
-        <ResponsiveContainer height={gap.height}>
-          {(w, h) => gap.render(w, h)}
-        </ResponsiveContainer>
-      </Box>
-    </Box>
+      <Card.Root variant="outlined" size="md">
+        <Card.Body>
+          <ResponsiveContainer height={gap.height}>
+            {(w, h) => gap.render(w, h)}
+          </ResponsiveContainer>
+        </Card.Body>
+      </Card.Root>
+    </Stack>
   );
 }
