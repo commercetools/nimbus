@@ -48,6 +48,29 @@ const SAMPLES: Record<DataKind, unknown> = {
     ],
   },
   scalar: 42,
+  "sample-groups": [
+    { label: "A", samples: [1, 2, 3, 4, 5] },
+    { label: "B", samples: [2, 3, 4] },
+  ],
+  ohlc: [
+    { date: new Date(2024, 0, 1), open: 10, high: 12, low: 9, close: 11 },
+    { date: new Date(2024, 0, 2), open: 11, high: 13, low: 10, close: 10 },
+  ],
+  "timeline-events": [
+    { label: "Launch", start: new Date(2024, 0, 1), end: new Date(2024, 2, 1) },
+  ],
+  "flow-matrix": {
+    labels: ["A", "B", "C"],
+    matrix: [
+      [0, 1, 2],
+      [1, 0, 1],
+      [2, 1, 0],
+    ],
+  },
+  "region-tiles": [
+    { id: "CA", row: 0, col: 0, value: 5 },
+    { id: "TX", row: 1, col: 2, value: 8 },
+  ],
   unknown: [{ nope: true }],
 };
 

@@ -153,8 +153,13 @@ export type DataKind =
   | "delta-steps" // WaterfallStep[] (waterfall-chart — signed contributions)
   | "bullet-row" // BulletDatum[]    (bullet-chart — measure vs target)
   | "flow-graph" // FlowGraph        (sankey-diagram — { nodes, links })
-  | "hierarchy" // TreemapNode       (treemap — nested { name, children/value })
+  | "hierarchy" // TreemapNode       (treemap / sunburst — nested { name, children/value })
   | "scalar" // number               (stat-card / gauge — a single value)
+  | "sample-groups" // SampleGroup[]  (violin-plot — per-group raw samples)
+  | "ohlc" // OhlcBar[]              (candlestick — { date, open, high, low, close })
+  | "timeline-events" // TimelineEvent[] (gantt/timeline — { label, start, end? })
+  | "flow-matrix" // FlowMatrix      (chord — { labels, matrix }) — non-array
+  | "region-tiles" // RegionTile[]   (tile-grid map — { id, row, col, value })
   | "unknown"; // unrecognized / malformed
 
 /* -------------------------------------------------------------------------- */

@@ -53,6 +53,16 @@ import { BeeswarmPlot } from "../components/beeswarm-plot";
 import { CumulativeCurve } from "../components/cumulative-curve";
 import { ConnectedScatterplot } from "../components/connected-scatterplot";
 import { SunburstChart } from "../components/sunburst-chart";
+import { ViolinPlot } from "../components/violin-plot";
+import type { SampleGroup } from "../components/violin-plot";
+import { CandlestickChart } from "../components/candlestick-chart";
+import type { OhlcBar } from "../components/candlestick-chart";
+import { GanttChart } from "../components/gantt-chart";
+import type { TimelineEvent } from "../components/gantt-chart";
+import { ChordDiagram } from "../components/chord-diagram";
+import type { FlowMatrix } from "../components/chord-diagram";
+import { TileGridMap } from "../components/tile-grid-map";
+import type { RegionTile } from "../components/tile-grid-map";
 import type { FlowGraph } from "../chart/types";
 import { CohortTriangle } from "../components/cohort-triangle";
 import type {
@@ -672,6 +682,62 @@ export function renderSunburst(request: ResolveRequest, size: ChartSize) {
       width={size.width}
       height={size.height}
       data={request.data as TreemapNode}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderViolin(request: ResolveRequest, size: ChartSize) {
+  return (
+    <ViolinPlot
+      width={size.width}
+      height={size.height}
+      groups={request.data as SampleGroup[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderCandlestick(request: ResolveRequest, size: ChartSize) {
+  return (
+    <CandlestickChart
+      width={size.width}
+      height={size.height}
+      data={request.data as OhlcBar[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderGantt(request: ResolveRequest, size: ChartSize) {
+  return (
+    <GanttChart
+      width={size.width}
+      height={size.height}
+      data={request.data as TimelineEvent[]}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderChord(request: ResolveRequest, size: ChartSize) {
+  return (
+    <ChordDiagram
+      width={size.width}
+      height={size.height}
+      data={request.data as FlowMatrix}
+      ariaLabel={optString(request, "ariaLabel")}
+    />
+  );
+}
+
+export function renderTileGridMap(request: ResolveRequest, size: ChartSize) {
+  return (
+    <TileGridMap
+      width={size.width}
+      height={size.height}
+      data={request.data as RegionTile[]}
+      hue={optString(request, "hue")}
       ariaLabel={optString(request, "ariaLabel")}
     />
   );

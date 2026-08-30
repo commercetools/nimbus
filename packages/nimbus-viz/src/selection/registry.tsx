@@ -4,12 +4,15 @@ import {
   renderBeeswarm,
   renderBoxPlot,
   renderBullet,
+  renderCandlestick,
+  renderChord,
   renderConnectedScatter,
   renderCumulativeCurve,
   renderDivergingBar,
   renderDivergingStacked,
   renderDonut,
   renderFunnel,
+  renderGantt,
   renderGauge,
   renderGrouped,
   renderHeatmap,
@@ -24,7 +27,9 @@ import {
   renderStacked,
   renderStatCard,
   renderSunburst,
+  renderTileGridMap,
   renderTreemap,
+  renderViolin,
   renderWaffle,
   renderWaterfall,
 } from "./render-adapters";
@@ -475,6 +480,80 @@ const sunburstMeta: ChartSelectionMetadata = {
   configLabel: "SunburstChart",
 };
 
+// New concrete data kinds — each is the sole canonical answer for its region.
+
+const violinMeta: ChartSelectionMetadata = {
+  name: "violin-plot",
+  baseComponent: "ViolinPlot",
+  intents: [
+    { intent: "DIST", primacy: "primary" },
+    { intent: "COMPARE", primacy: "secondary" },
+  ],
+  acceptedShapes: ["distribution"],
+  constraints: { maxCategories: 20 },
+  perceptualRank: 0.55,
+  questionString: "How do these full distributions compare?",
+  bundleWeight: 8,
+  configLabel: "ViolinPlot",
+};
+
+const candlestickMeta: ChartSelectionMetadata = {
+  name: "candlestick-chart",
+  baseComponent: "CandlestickChart",
+  intents: [
+    { intent: "TREND", primacy: "primary" },
+    { intent: "RANGE", primacy: "secondary" },
+  ],
+  acceptedShapes: ["time-series"],
+  constraints: { requiresTimeAxis: true },
+  perceptualRank: 0.7,
+  questionString: "How did the price move each period (OHLC)?",
+  bundleWeight: 9,
+  configLabel: "CandlestickChart",
+};
+
+const ganttMeta: ChartSelectionMetadata = {
+  name: "gantt-chart",
+  baseComponent: "GanttChart",
+  intents: [
+    { intent: "TREND", primacy: "primary" },
+    { intent: "COMP-TIME", primacy: "secondary" },
+  ],
+  acceptedShapes: ["event-timeline"],
+  constraints: {},
+  perceptualRank: 0.7,
+  questionString: "When does each event happen and how long does it last?",
+  bundleWeight: 8,
+  configLabel: "GanttChart",
+};
+
+const chordMeta: ChartSelectionMetadata = {
+  name: "chord-diagram",
+  baseComponent: "ChordDiagram",
+  intents: [
+    { intent: "FLOW", primacy: "primary" },
+    { intent: "REL", primacy: "secondary" },
+  ],
+  acceptedShapes: ["flows-net"],
+  constraints: {},
+  perceptualRank: 0.45,
+  questionString: "How much flows between each pair of entities?",
+  bundleWeight: 10,
+  configLabel: "ChordDiagram",
+};
+
+const tileGridMapMeta: ChartSelectionMetadata = {
+  name: "tile-grid-map",
+  baseComponent: "TileGridMap",
+  intents: [{ intent: "GEO", primacy: "primary" }],
+  acceptedShapes: ["geographic"],
+  constraints: {},
+  perceptualRank: 0.4,
+  questionString: "How does a value vary across regions?",
+  bundleWeight: 7,
+  configLabel: "TileGridMap",
+};
+
 /**
  * Build the default registry. Insertion order is the stable tie-break's
  * registration order (docs/06 §3): canonical entries first (so they win a
@@ -590,6 +669,37 @@ export function createDefaultRegistry(): ChartRegistry {
       metadata: divergingBarMeta,
       dataKinds: ["category"],
       render: renderDivergingBar,
+      canonical: true,
+    },
+    // New-kind canonicals — each is the sole answer for its (intent × kind).
+    {
+      metadata: violinMeta,
+      dataKinds: ["sample-groups"],
+      render: renderViolin,
+      canonical: true,
+    },
+    {
+      metadata: candlestickMeta,
+      dataKinds: ["ohlc"],
+      render: renderCandlestick,
+      canonical: true,
+    },
+    {
+      metadata: ganttMeta,
+      dataKinds: ["timeline-events"],
+      render: renderGantt,
+      canonical: true,
+    },
+    {
+      metadata: chordMeta,
+      dataKinds: ["flow-matrix"],
+      render: renderChord,
+      canonical: true,
+    },
+    {
+      metadata: tileGridMapMeta,
+      dataKinds: ["region-tiles"],
+      render: renderTileGridMap,
       canonical: true,
     },
   ];

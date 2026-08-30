@@ -58,6 +58,19 @@ export { ConnectedScatterplot } from "./components/connected-scatterplot";
 export type { ConnectedScatterplotProps } from "./components/connected-scatterplot";
 export { SunburstChart } from "./components/sunburst-chart";
 export type { SunburstChartProps } from "./components/sunburst-chart";
+export { ViolinPlot } from "./components/violin-plot";
+export type { ViolinPlotProps, SampleGroup } from "./components/violin-plot";
+export { CandlestickChart } from "./components/candlestick-chart";
+export type {
+  CandlestickChartProps,
+  OhlcBar,
+} from "./components/candlestick-chart";
+export { GanttChart } from "./components/gantt-chart";
+export type { GanttChartProps, TimelineEvent } from "./components/gantt-chart";
+export { ChordDiagram } from "./components/chord-diagram";
+export type { ChordDiagramProps, FlowMatrix } from "./components/chord-diagram";
+export { TileGridMap } from "./components/tile-grid-map";
+export type { TileGridMapProps, RegionTile } from "./components/tile-grid-map";
 export { DonutChart } from "./components/donut-chart";
 export type { DonutChartProps } from "./components/donut-chart";
 export { StackedBarChart } from "./components/stacked-bar-chart";
