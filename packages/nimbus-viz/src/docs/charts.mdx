@@ -1,8 +1,9 @@
 ---
 id: Charts
 title: Charts
-description: Data visualization components from the nimbus-viz package.
+description: Browse the nimbus-viz chart library by the question each chart answers.
 lifecycleState: Experimental
+layout: no-sidebar
 order: 6
 icon: Insights
 menu:
@@ -12,51 +13,4 @@ tags:
   - visualization
 ---
 
-# Charts
-
-`@commercetools/nimbus-viz` is a library of 47 React chart components, built on [visx](https://airbnb.io/visx/) and themed with Nimbus design tokens. Every chart reads its colors from a `ChartThemeProvider` and takes an explicit pixel `width`/`height` — `ResponsiveContainer` measures the parent and supplies them.
-
-## Quick start
-
-```jsx live
-const series = [
-  {
-    id: "eu",
-    label: "EU",
-    data: [
-      { x: new Date("2026-01-01"), y: 120 },
-      { x: new Date("2026-02-01"), y: 148 },
-      { x: new Date("2026-03-01"), y: 136 },
-      { x: new Date("2026-04-01"), y: 172 },
-      { x: new Date("2026-05-01"), y: 165 },
-      { x: new Date("2026-06-01"), y: 194 },
-    ],
-  },
-  {
-    id: "us",
-    label: "US",
-    data: [
-      { x: new Date("2026-01-01"), y: 90 },
-      { x: new Date("2026-02-01"), y: 104 },
-      { x: new Date("2026-03-01"), y: 128 },
-      { x: new Date("2026-04-01"), y: 119 },
-      { x: new Date("2026-05-01"), y: 142 },
-      { x: new Date("2026-06-01"), y: 158 },
-    ],
-  },
-];
-
-const App = () => (
-  <ChartThemeProvider mode="light">
-    <ResponsiveContainer height={280}>
-      {(width, height) => <LineChart width={width} height={height} series={series} />}
-    </ResponsiveContainer>
-  </ChartThemeProvider>
-);
-```
-
-Dark mode is a selected palette, not an inversion — pass `mode={isDark ? "dark" : "light"}` to the provider. Wrap a dashboard in `ColorScaleProvider` to keep one entity's color consistent across every chart.
-
-## Browse the charts
-
-<CategoryOverview />
+<ChartsHomePage />
