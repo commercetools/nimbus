@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { ChartContainer } from "../../chart/chart-container";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import {
   GridRows,
   bottomTickLabel,
@@ -20,6 +22,8 @@ export interface GroupedBarChartProps {
   /** Same shape as the stacked bar — a category with keyed segments. */
   data: StackRow[];
   ariaLabel?: string;
+  /** Overlays (ReferenceLine, ThresholdBand, TargetMarker, …) in plot space. */
+  children?: ReactNode;
 }
 
 /**
@@ -33,6 +37,7 @@ export function GroupedBarChart({
   height,
   data,
   ariaLabel,
+  children,
 }: GroupedBarChartProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<{ cat: string; key: string } | null>(null);
@@ -85,7 +90,15 @@ export function GroupedBarChart({
               ?.segments.find((s) => s.key === hover.key)
           : null;
         return (
-          <>
+          <ChartScaleProvider
+            value={{
+              yScale: y,
+              xScale: (v) => x0(String(v)) ?? 0,
+              xBandwidth: x0.bandwidth(),
+              innerWidth,
+              innerHeight,
+            }}
+          >
             <GridRows ticks={y.ticks(4)} y={(t) => y(t)} width={innerWidth} />
             <AxisLeft
               scale={y}
@@ -140,7 +153,8 @@ export function GroupedBarChart({
                 lines={[hover.cat, `${hb.key}: ${formatCompact(hb.value)}`]}
               />
             )}
-          </>
+            {children}
+          </ChartScaleProvider>
         );
       }}
     </ChartContainer>
