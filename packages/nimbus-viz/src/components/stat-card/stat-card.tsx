@@ -1,6 +1,10 @@
 import { useChartTheme } from "../../theme";
 import { formatCompact, formatSignedPercent } from "../../chart/format";
-import { CHART_FONT_STACK } from "../../chart/typography";
+import {
+  CHART_FONT_STACK,
+  EMPHASIS_PX,
+  LABEL_PX,
+} from "../../chart/typography";
 
 export interface StatCardProps {
   label: string;
@@ -40,7 +44,7 @@ export function StatCard({
         fontFamily: CHART_FONT_STACK,
       }}
     >
-      <span style={{ fontSize: 12, color: theme.mutedInk }}>{label}</span>
+      <span style={{ fontSize: LABEL_PX, color: theme.mutedInk }}>{label}</span>
       <span
         style={{
           fontSize: 32,
@@ -54,7 +58,7 @@ export function StatCard({
       {hasDelta && (
         <span
           style={{
-            fontSize: 13,
+            fontSize: EMPHASIS_PX,
             color: up ? theme.positive : theme.negative,
             display: "inline-flex",
             alignItems: "center",

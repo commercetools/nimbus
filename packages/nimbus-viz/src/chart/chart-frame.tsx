@@ -48,7 +48,7 @@ export function ChartFrame({
       height={height}
       role="img"
       aria-label={ariaLabel}
-      style={chartRootStyle(width, height)}
+      style={chartRootStyle()}
     >
       {background && (
         <rect

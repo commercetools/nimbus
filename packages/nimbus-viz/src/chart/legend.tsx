@@ -1,4 +1,5 @@
 import { useChartTheme } from "../theme";
+import { CHART_FONT_STACK, LABEL_PX } from "./typography";
 
 export interface LegendItem {
   label: string;
@@ -21,7 +22,9 @@ export function Legend({ items }: { items: LegendItem[] }) {
         margin: 0,
         padding: 0,
         listStyle: "none",
-        font: "12px/1.4 system-ui, sans-serif",
+        fontSize: LABEL_PX,
+        lineHeight: 1.4,
+        fontFamily: CHART_FONT_STACK,
         color: theme.mutedInk,
       }}
     >

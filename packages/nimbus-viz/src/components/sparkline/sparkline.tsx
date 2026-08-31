@@ -82,7 +82,7 @@ export function Sparkline({
       height={height}
       role="img"
       aria-label={ariaLabel ?? "Sparkline"}
-      style={chartRootStyle(width, height)}
+      style={chartRootStyle()}
     >
       <Group left={PAD} top={PAD}>
         <LinePath<Defined>

@@ -5,7 +5,7 @@ import { ChartFrame } from "../../chart/chart-frame";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { sequentialColor, useChartTheme } from "../../theme";
 import { formatCompact, formatInteger } from "../../chart/format";
-import { emText } from "../../chart/typography";
+import { emText, CHART_FONT_STACK, LABEL_PX } from "../../chart/typography";
 
 /** One segment of an RFM matrix. `recency` & `frequency` are 1..N bucket indices. */
 export interface RfmCell {
@@ -252,7 +252,9 @@ function GradientLegend({
         display: "flex",
         alignItems: "center",
         gap: 6,
-        font: "11px/1.4 system-ui, sans-serif",
+        fontSize: LABEL_PX,
+        lineHeight: 1.4,
+        fontFamily: CHART_FONT_STACK,
         color: mutedInk,
       }}
     >
