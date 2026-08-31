@@ -5,7 +5,8 @@
     "nodeMaxMemory": 2560
   },
   "gitIgnoredAuthors": [
-    "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+    "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
+    "ct-changesets[bot] <145970804+ct-changesets[bot]@users.noreply.github.com>"
   ],
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
