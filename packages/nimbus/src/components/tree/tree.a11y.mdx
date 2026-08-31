@@ -56,9 +56,11 @@ const App = () => (
   `aria-label` or `aria-labelledby`.
 - **Item text:** provide a meaningful `textValue` per `Tree.Item`. It supplies
   the type-ahead target and accessible name when the label is not plain text.
-- **Keyboard navigation:** Up/Down move between visible rows, Right/Left
-  expand/collapse (or move to a child/parent), Home/End jump to the first/last
-  visible row, and typing performs type-ahead.
+- **Keyboard navigation:** Up/Down move between visible rows, Right expands a
+  collapsed row (on an already-expanded row it moves into that row's own
+  controls, not to its first child), Left collapses an expanded row or moves to
+  its parent, Home/End jump to the first/last visible row, and typing performs
+  type-ahead.
 - **Expand/collapse control:** the `Tree.Indicator` chevron is given a localized
   accessible name by React Aria and is hidden for leaf rows.
 - **Drag and drop:** when drag-and-drop is enabled, `Tree.ItemContent`

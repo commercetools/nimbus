@@ -194,10 +194,14 @@ function DraggableTree() {
 }
 ```
 
-For custom drag data or accepted external drag types, pass an options object
-instead of `true`: `dragAndDrop={{ getItems, acceptedDragTypes }}`. For
-programmatic edits, the same `tree` object exposes `insert`, `remove`, `move`,
-`update`, and more.
+For custom drag data, pass an options object instead of `true`:
+`dragAndDrop={{ getItems }}`. `acceptedDragTypes` narrows which types an
+*internal* drag will accept; dropping from an external source is not wired up in
+this iteration, so external drops are always cancelled. For programmatic edits,
+the same `tree` object exposes `insert`, `remove`, `move`, `update`, and more —
+note that `move`, `moveBefore` and `moveAfter` all reject a destination inside
+the moved node's own subtree, which would otherwise discard it and everything
+beneath it.
 
 ## Accessibility
 
@@ -221,7 +225,9 @@ pattern. It provides:
 **Keyboard navigation:**
 
 - `Up` / `Down` — move between visible rows
-- `Right` / `Left` — expand/collapse, or move to a child/parent
+- `Right` — expand a collapsed row; on an expanded row, move into that row's
+  own controls
+- `Left` — collapse an expanded row, or move to its parent
 - `Home` / `End` — move to the first/last visible row
 - _type characters_ — type-ahead to the next matching row
 
