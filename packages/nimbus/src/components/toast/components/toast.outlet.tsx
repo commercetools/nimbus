@@ -6,18 +6,48 @@ import {
 import { NUMPAD_HOTKEYS } from "../constants";
 
 /**
- * Lazy-loaded heavy rendering implementation.
+ * Cached import promise for the heavy toast rendering chunk.
  *
- * This dynamic import is the key to toast code-splitting: the lazy module
+ * Both the eager preload (fired on activation) and React.lazy share this
+ * promise so that by the time React evaluates the Suspense boundary the
+ * chunk is typically already resolved — avoiding the fallback frame that
+ * would otherwise delay Toaster mounting and cause visual ordering issues
+ * in snapshot tests (Chromatic).
+ *
+ * The dynamic import is the key to toast code-splitting: the lazy module
  * imports `@chakra-ui/react/toast` (which pulls in @zag-js, ~18 KB gz).
- * By loading it lazily, consumers who never call `toast()` never pay for
- * the toast rendering infrastructure.
+ * Consumers who never call `toast()` never pay for this chunk.
  *
  * In the nimbus library build (Vite lib mode), this `import()` is preserved
  * as a dynamic import in the ESM output. The consumer's bundler then handles
  * code-splitting it into a separate chunk.
  */
-const ToastOutletLazy = lazy(() => import("./toast.outlet.lazy"));
+let lazyImportPromise: Promise<{ default: React.ComponentType }> | null = null;
+
+function getLazyImport() {
+  if (!lazyImportPromise) {
+    lazyImportPromise = import("./toast.outlet.lazy") as Promise<{
+      default: React.ComponentType;
+    }>;
+  }
+  return lazyImportPromise;
+}
+
+/**
+ * Eagerly start loading the lazy chunk as soon as the first toast is created.
+ *
+ * `markToastersActive()` fires activation listeners synchronously during the
+ * first `toast()` call — well before React's batched re-render commits the
+ * Suspense boundary. By kicking off the import here, the chunk has a head
+ * start: in bundled environments (Storybook, Chromatic) the module resolves
+ * on the next microtask, so React.lazy sees an already-resolved promise and
+ * renders the Toasters without a fallback frame.
+ */
+onToastersActivated(() => {
+  getLazyImport();
+});
+
+const ToastOutletLazy = lazy(getLazyImport);
 
 /**
  * Subscribe function for useSyncExternalStore.
