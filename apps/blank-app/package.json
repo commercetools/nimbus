@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:analyze": "ANALYZE_BUNDLE=true tsc -b && ANALYZE_BUNDLE=true vite build",
     "build:webpack": "webpack --mode production",
     "lint": "eslint .",
     "preview": "vite preview"
