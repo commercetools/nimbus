@@ -26,8 +26,17 @@ const LazyManager = lazy(() =>
   }))
 );
 
-/** @internal Suspense wrapper so consumers don't need their own boundary. */
-const DataTableManager = () => (
+/**
+ * DataTable.Manager - Manager component for the data table
+ *
+ * Provides a settings drawer for column visibility and layout configuration.
+ * Lazy-loaded so the heavy dependencies (Drawer, Tabs, DraggableList) are only
+ * fetched when this component is rendered.
+ *
+ * @internal Suspense wrapper so consumers don't need their own boundary.
+ * @supportsStyleProps
+ */
+const DataTableManager: React.FC = () => (
   <Suspense fallback={null}>
     <LazyManager />
   </Suspense>
