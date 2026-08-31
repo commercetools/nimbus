@@ -147,10 +147,10 @@
   "peerDependencies": {
     "@chakra-ui/react": "catalog:react",
     "react": "19.x",
-    "slate": "^0.123.0",
+    "slate": "^0.123.0 || ^0.126.0",
     "slate-history": "^0.115.0",
-    "slate-hyperscript": "^0.115.0",
-    "slate-react": "^0.123.0"
+    "slate-hyperscript": "^0.115.0 || ^0.125.0",
+    "slate-react": "^0.123.0 || ^0.126.0"
   },
   "scripts": {
     "build": "pnpm run build-theme-typings && pnpm run build:lib && pnpm run build:postbuild-types",
