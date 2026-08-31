@@ -4,7 +4,7 @@ import { ChartFrame } from "../../chart/chart-frame";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { sequentialColor, useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
-import { emText } from "../../chart/typography";
+import { emText, CHART_FONT_STACK, LABEL_PX } from "../../chart/typography";
 
 /** One region placed on a hand-laid grid, shaded by its value. */
 export interface RegionTile {
@@ -146,7 +146,9 @@ export function TileGridMap({
           alignItems: "center",
           gap: 6,
           paddingTop: 6,
-          font: "11px/1.2 system-ui, sans-serif",
+          fontSize: LABEL_PX,
+          lineHeight: 1.2,
+          fontFamily: CHART_FONT_STACK,
           color: theme.mutedInk,
         }}
       >

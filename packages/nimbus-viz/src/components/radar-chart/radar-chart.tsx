@@ -97,7 +97,7 @@ export function RadarChart({
           ariaLabel ??
           `Radar chart of ${data.map((s) => s.label).join(", ")} across ${axes.join(", ")}`
         }
-        style={chartRootStyle(width, svgHeight)}
+        style={chartRootStyle()}
       >
         <Group left={cx} top={cy}>
           {/* Concentric grid rings */}

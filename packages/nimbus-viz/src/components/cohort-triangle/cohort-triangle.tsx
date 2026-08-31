@@ -6,7 +6,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { sequentialColor, useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { HeatRow } from "../../chart/types";
-import { emText } from "../../chart/typography";
+import { emText, LABEL_PX } from "../../chart/typography";
 
 export interface CohortTriangleProps {
   width: number;
@@ -180,7 +180,7 @@ export function CohortTriangle({
           gap: 6,
           paddingTop: 6,
           paddingLeft: 76,
-          fontSize: 10,
+          fontSize: LABEL_PX,
           color: theme.mutedInk,
         }}
       >
