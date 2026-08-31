@@ -27,12 +27,12 @@ const LazyManager = lazy(() =>
 );
 
 /** @internal Suspense wrapper so consumers don't need their own boundary. */
-const DataTableManagerLazy = () => (
+const DataTableManager = () => (
   <Suspense fallback={null}>
     <LazyManager />
   </Suspense>
 );
-DataTableManagerLazy.displayName = "DataTable.Manager";
+DataTableManager.displayName = "DataTable.Manager";
 
 // Default DataTable component that provides the standard structure
 const DataTableBase = function DataTable<
@@ -213,7 +213,7 @@ export const DataTable = Object.assign(DataTableBase, {
    * </DataTable.Root>
    * ```
    */
-  Manager: DataTableManagerLazy,
+  Manager: DataTableManager,
   /**
    * # DataTable.Context
    *
@@ -255,6 +255,7 @@ export {
   DataTableColumn as _DataTableColumn,
   DataTableFooter as _DataTableFooter,
 };
-// DataTableManager is lazy-loaded — the docgen export uses the Suspense
-// wrapper which is functionally identical for consumers (Manager has no props).
-export { DataTableManagerLazy as _DataTableManager };
+// Docgen uses the source variable name as displayName → filename, so the
+// wrapper must be named DataTableManager (not DataTableManagerLazy) to
+// produce the expected DataTableManager.json type-data file.
+export { DataTableManager as _DataTableManager };
