@@ -54,8 +54,8 @@ export function TileGridMap({
     [data]
   );
   const ramp = useMemo(
-    () => sequentialColor(hue, theme.mode),
-    [hue, theme.mode]
+    () => sequentialColor(theme.ramps[hue] ?? theme.ramps.blue),
+    [hue, theme.ramps]
   );
   const tOf = (v: number) =>
     domain[1] === domain[0] ? 0.5 : (v - domain[0]) / (domain[1] - domain[0]);

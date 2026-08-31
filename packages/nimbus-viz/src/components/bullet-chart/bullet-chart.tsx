@@ -45,7 +45,7 @@ export function BulletChart({
 }: BulletChartProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
-  const grayRamp = sequentialColor("gray", theme.mode);
+  const grayRamp = sequentialColor(theme.ramps.gray);
 
   const domainMax = useMemo(
     () =>

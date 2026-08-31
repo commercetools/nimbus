@@ -1,8 +1,11 @@
-export { systemStep } from "./tokens";
-export type { ColorMode } from "./tokens";
-export { resolveRoles } from "./roles";
-export type { ChartRoles } from "./roles";
-export { sequentialColor } from "./sequential";
+export type {
+  ColorMode,
+  ChartRoles,
+  ChartTheme,
+  ChartThemeName,
+} from "./roles";
+export { resolveRoles, resolveTheme, THEMES } from "./roles";
+export { sequentialColor, divergingColor } from "./sequential";
 export {
   createColorScale,
   ColorScaleProvider,
