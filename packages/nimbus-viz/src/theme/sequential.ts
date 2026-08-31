@@ -1,22 +1,33 @@
-import type { ColorMode } from "./tokens";
-import { systemStep } from "./tokens";
-
-// Steps spanning a single hue for a sequential (magnitude) ramp. Read against
-// the active mode, the perceptual direction is correct in both: higher = darker
-// in light mode, higher = brighter in dark mode.
-const RAMP_STEPS = [3, 5, 7, 9, 11];
+import { makeOklabRamp } from "./oklab";
 
 /**
- * A single-hue sequential color ramp. Returns a function mapping t∈[0,1] to a
- * Nimbus token value. Sequential = one hue, never a rainbow (dataviz rule).
+ * A single-hue sequential color scale from a theme's ramp anchor stops,
+ * interpolated in OKLab (perceptually even, monotonic lightness, no banding).
+ * `t` ∈ [0,1] (clamped; non-finite → 0). Sequential = one hue, never a rainbow.
+ *
+ * The caller passes the ramp it wants from the resolved theme, e.g.
+ * `sequentialColor(theme.ramps.blue)` — the stops are already ordered for the
+ * active mode (light→dark in light, dark→bright in dark), so `t=1` is always the
+ * strongest reading.
  */
-export function sequentialColor(
-  hue: string,
-  mode: ColorMode
-): (t: number) => string {
-  return (t: number) => {
-    const clamped = Math.max(0, Math.min(1, Number.isFinite(t) ? t : 0));
-    const idx = Math.round(clamped * (RAMP_STEPS.length - 1));
-    return systemStep(hue, RAMP_STEPS[idx], mode);
+export function sequentialColor(stops: string[]): (t: number) => string {
+  return makeOklabRamp(stops);
+}
+
+/**
+ * A diverging color scale: `t=0` → negative pole, `t=0.5` → neutral midpoint,
+ * `t=1` → positive pole, each arm interpolated in OKLab. Two hues meeting at a
+ * neutral gray, so polarity reads from hue as well as position.
+ */
+export function divergingColor(pair: {
+  negative: string;
+  neutral: string;
+  positive: string;
+}): (t: number) => string {
+  const negArm = makeOklabRamp([pair.neutral, pair.negative]);
+  const posArm = makeOklabRamp([pair.neutral, pair.positive]);
+  return (t: number): string => {
+    const u = t < 0 ? 0 : t > 1 ? 1 : Number.isFinite(t) ? t : 0.5;
+    return u <= 0.5 ? negArm((0.5 - u) / 0.5) : posArm((u - 0.5) / 0.5);
   };
 }

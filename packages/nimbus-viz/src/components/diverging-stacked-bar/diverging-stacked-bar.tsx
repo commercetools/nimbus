@@ -3,7 +3,7 @@ import { scaleBand, scaleLinear } from "@visx/scale";
 import { ChartFrame } from "../../chart/chart-frame";
 import { Legend } from "../../chart/legend";
 import { SvgTooltip } from "../../chart/svg-tooltip";
-import { sequentialColor, useChartTheme } from "../../theme";
+import { divergingColor, useChartTheme } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
 import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
@@ -43,16 +43,11 @@ export function DivergingStackedBar({
   const odd = n % 2 === 1;
 
   const colorFor = useMemo(() => {
-    const neg = sequentialColor("tomato", theme.mode);
-    const pos = sequentialColor("grass", theme.mode);
-    const neutral = sequentialColor("gray", theme.mode)(0.5);
-    return (i: number): string => {
-      if (n <= 1) return neutral;
-      const p = i / (n - 1);
-      if (Math.abs(p - 0.5) < 1e-9) return neutral;
-      return p < 0.5 ? neg((0.5 - p) / 0.5) : pos((p - 0.5) / 0.5);
-    };
-  }, [n, theme.mode]);
+    const scale = divergingColor(theme.diverging);
+    // Segments run most-negative (i=0) → most-positive (i=n-1); map onto the
+    // diverging scale so the neutral midpoint lands on the middle segment.
+    return (i: number): string => scale(n <= 1 ? 0.5 : i / (n - 1));
+  }, [n, theme.diverging]);
 
   const { maxLeft, maxRight } = useMemo(() => {
     let l = 0;

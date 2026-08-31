@@ -56,7 +56,7 @@ export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
     return null;
   }
 
-  const color = sequentialColor("blue", theme.mode);
+  const color = sequentialColor(theme.ramps.blue);
   const legendHeight = 24;
   const chartHeight = height - legendHeight;
 

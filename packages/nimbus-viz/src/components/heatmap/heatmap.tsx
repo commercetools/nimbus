@@ -50,7 +50,7 @@ export function Heatmap({
     return null;
   }
 
-  const color = sequentialColor(hue, theme.mode);
+  const color = sequentialColor(theme.ramps[hue] ?? theme.ramps.blue);
 
   return (
     <ChartFrame

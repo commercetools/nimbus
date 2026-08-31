@@ -1065,9 +1065,6 @@ importers:
 
   packages/nimbus-viz:
     dependencies:
-      '@commercetools/nimbus-tokens':
-        specifier: workspace:*
-        version: link:../tokens
       '@visx/axis':
         specifier: catalog:viz
         version: 4.0.0(@types/react@19.2.18)(react@19.2.0)

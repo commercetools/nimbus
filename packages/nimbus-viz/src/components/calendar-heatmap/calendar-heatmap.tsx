@@ -108,7 +108,7 @@ export function CalendarHeatmap({
   }
 
   const { firstMonday, numWeeks } = layout;
-  const color = sequentialColor(hue, theme.mode);
+  const color = sequentialColor(theme.ramps[hue] ?? theme.ramps.blue);
   const legendHeight = 24;
   const chartHeight = height - legendHeight;
 
