@@ -97,3 +97,29 @@ describe("palette legibility gate", () => {
     expect(cvdDeltaE("#2a78d6", "#2c79d7")).toBeLessThan(CVD_FLOOR);
   });
 });
+
+describe("axis & gridline contrast (documented decorative decision)", () => {
+  // WCAG 1.4.11 (Non-text Contrast, 3:1) applies to graphical objects that
+  // convey information. Axis and gridline LINES here are decorative scaffolding;
+  // the information-bearing tick LABELS use `mutedInk`, which the main gate above
+  // already floors at 3:1. So 3:1 is deliberately WAIVED for axis/grid lines —
+  // we only assert they remain visible against the surface (a regression that
+  // made them vanish would fail), and record the measured ratio.
+  for (const [name, theme] of Object.entries(THEMES)) {
+    for (const mode of MODES) {
+      const roles = theme[mode];
+      it(`${name} / ${mode}: axis & grid stay visible on the surface`, () => {
+        const axisC = contrastRatio(roles.axis, roles.surface);
+        const gridC = contrastRatio(roles.grid, roles.surface);
+        expect(
+          axisC,
+          `axis ${roles.axis} on ${roles.surface} = ${axisC.toFixed(2)}:1`
+        ).toBeGreaterThanOrEqual(1.1);
+        expect(
+          gridC,
+          `grid ${roles.grid} on ${roles.surface} = ${gridC.toFixed(2)}:1`
+        ).toBeGreaterThanOrEqual(1.03);
+      });
+    }
+  }
+});

@@ -3,8 +3,7 @@ import { scaleLinear } from "@visx/scale";
 import { LinePath } from "@visx/shape";
 import { Group } from "@visx/group";
 import { extent } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
-import { Legend } from "../../chart/legend";
+import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
@@ -69,146 +68,148 @@ export function ParallelCoordinates({
     return null;
 
   const showLegend = groups.length >= 2;
-  const legendHeight = showLegend ? 26 : 0;
-  const chartHeight = height - legendHeight;
   const colorFor = (r: ParallelRow) =>
     r.group ? groupColor(r.group) : theme.accent;
+  const table = {
+    columns: ["Row", ...dimensions.map((d) => d.label), "Group"],
+    rows: data.map((r) => [
+      r.id,
+      ...dimensions.map((d) => r.values[d.key] ?? ""),
+      r.group ?? "",
+    ]),
+  };
 
   return (
-    <div style={{ width, height }}>
-      <ChartFrame
-        width={width}
-        height={chartHeight}
-        margin={MARGIN}
-        ariaLabel={
-          ariaLabel ??
-          `Parallel coordinates of ${data.length} rows across ${dimensions
-            .map((d) => d.label)
-            .join(", ")}`
-        }
-      >
-        {({ innerWidth, innerHeight }) => {
-          // Equally-spaced axis x positions (single axis → centered).
-          const xFor = (j: number) =>
-            dimensions.length > 1
-              ? (j / (dimensions.length - 1)) * innerWidth
-              : innerWidth / 2;
+    <ChartContainer
+      width={width}
+      height={height}
+      margin={MARGIN}
+      legend={
+        showLegend
+          ? groups.map((g) => ({ label: g, color: groupColor(g) }))
+          : undefined
+      }
+      table={table}
+      ariaLabel={
+        ariaLabel ??
+        `Parallel coordinates of ${data.length} rows across ${dimensions
+          .map((d) => d.label)
+          .join(", ")}`
+      }
+    >
+      {({ innerWidth, innerHeight }) => {
+        // Equally-spaced axis x positions (single axis → centered).
+        const xFor = (j: number) =>
+          dimensions.length > 1
+            ? (j / (dimensions.length - 1)) * innerWidth
+            : innerWidth / 2;
 
-          // One independent scale per dimension over its own extent.
-          const scales = dimensions.map((d) => {
-            const domain = extent(data, (r) => r.values[d.key]) as [
-              number,
-              number,
-            ];
-            return scaleLinear({
-              domain,
-              range: [innerHeight, 0],
-              nice: true,
-            });
+        // One independent scale per dimension over its own extent.
+        const scales = dimensions.map((d) => {
+          const domain = extent(data, (r) => r.values[d.key]) as [
+            number,
+            number,
+          ];
+          return scaleLinear({
+            domain,
+            range: [innerHeight, 0],
+            nice: true,
           });
+        });
 
-          const pointsFor = (r: ParallelRow): Vertex[] =>
-            dimensions.map((d, j) => ({
-              x: xFor(j),
-              y: scales[j](r.values[d.key]),
-            }));
+        const pointsFor = (r: ParallelRow): Vertex[] =>
+          dimensions.map((d, j) => ({
+            x: xFor(j),
+            y: scales[j](r.values[d.key]),
+          }));
 
-          const hoveredRow = hover != null ? data[hover] : null;
+        const hoveredRow = hover != null ? data[hover] : null;
 
-          return (
-            <>
-              {/* Row polylines */}
-              {data.map((r, i) => {
-                const active = hover === null || hover === i;
-                const c = colorFor(r);
-                return (
-                  <LinePath<Vertex>
-                    key={r.id}
-                    data={pointsFor(r)}
-                    x={(p) => p.x}
-                    y={(p) => p.y}
-                    fill="none"
-                    stroke={c}
-                    strokeWidth={hover === i ? 2.5 : 1.5}
-                    strokeOpacity={active ? (hover === i ? 1 : 0.5) : 0.12}
-                    onMouseEnter={() => setHover(i)}
-                    onMouseLeave={() => setHover(null)}
-                  />
-                );
-              })}
-
-              {/* Vertical axes: spine, dimension label, min/max ticks */}
-              {dimensions.map((d, j) => {
-                const scale = scales[j];
-                const [lo, hi] = scale.domain() as [number, number];
-                return (
-                  <Group key={d.key} left={xFor(j)}>
-                    <line
-                      x1={0}
-                      y1={0}
-                      x2={0}
-                      y2={innerHeight}
-                      stroke={theme.axis}
-                      strokeWidth={1}
-                    />
-                    <text
-                      x={0}
-                      y={-12}
-                      textAnchor="middle"
-                      style={emText(11)}
-                      fill={theme.mutedInk}
-                    >
-                      {d.label}
-                    </text>
-                    <text
-                      x={-6}
-                      y={4}
-                      textAnchor="end"
-                      style={emText(10)}
-                      fill={theme.mutedInk}
-                    >
-                      {formatCompact(hi)}
-                    </text>
-                    <text
-                      x={-6}
-                      y={innerHeight}
-                      textAnchor="end"
-                      style={emText(10)}
-                      fill={theme.mutedInk}
-                    >
-                      {formatCompact(lo)}
-                    </text>
-                  </Group>
-                );
-              })}
-
-              {hoveredRow && (
-                <SvgTooltip
-                  x={xFor(0)}
-                  innerWidth={innerWidth}
-                  lines={[
-                    hoveredRow.group
-                      ? `${hoveredRow.id} · ${hoveredRow.group}`
-                      : hoveredRow.id,
-                    ...dimensions.map(
-                      (d) =>
-                        `${d.label}: ${formatCompact(hoveredRow.values[d.key])}`
-                    ),
-                  ]}
+        return (
+          <>
+            {/* Row polylines */}
+            {data.map((r, i) => {
+              const active = hover === null || hover === i;
+              const c = colorFor(r);
+              return (
+                <LinePath<Vertex>
+                  key={r.id}
+                  data={pointsFor(r)}
+                  x={(p) => p.x}
+                  y={(p) => p.y}
+                  fill="none"
+                  stroke={c}
+                  strokeWidth={hover === i ? 2.5 : 1.5}
+                  strokeOpacity={active ? (hover === i ? 1 : 0.5) : 0.12}
+                  onMouseEnter={() => setHover(i)}
+                  onMouseLeave={() => setHover(null)}
                 />
-              )}
-            </>
-          );
-        }}
-      </ChartFrame>
+              );
+            })}
 
-      {showLegend && (
-        <div style={{ paddingTop: 6 }}>
-          <Legend
-            items={groups.map((g) => ({ label: g, color: groupColor(g) }))}
-          />
-        </div>
-      )}
-    </div>
+            {/* Vertical axes: spine, dimension label, min/max ticks */}
+            {dimensions.map((d, j) => {
+              const scale = scales[j];
+              const [lo, hi] = scale.domain() as [number, number];
+              return (
+                <Group key={d.key} left={xFor(j)}>
+                  <line
+                    x1={0}
+                    y1={0}
+                    x2={0}
+                    y2={innerHeight}
+                    stroke={theme.axis}
+                    strokeWidth={1}
+                  />
+                  <text
+                    x={0}
+                    y={-12}
+                    textAnchor="middle"
+                    style={emText(11)}
+                    fill={theme.mutedInk}
+                  >
+                    {d.label}
+                  </text>
+                  <text
+                    x={-6}
+                    y={4}
+                    textAnchor="end"
+                    style={emText(10)}
+                    fill={theme.mutedInk}
+                  >
+                    {formatCompact(hi)}
+                  </text>
+                  <text
+                    x={-6}
+                    y={innerHeight}
+                    textAnchor="end"
+                    style={emText(10)}
+                    fill={theme.mutedInk}
+                  >
+                    {formatCompact(lo)}
+                  </text>
+                </Group>
+              );
+            })}
+
+            {hoveredRow && (
+              <SvgTooltip
+                x={xFor(0)}
+                innerWidth={innerWidth}
+                lines={[
+                  hoveredRow.group
+                    ? `${hoveredRow.id} · ${hoveredRow.group}`
+                    : hoveredRow.id,
+                  ...dimensions.map(
+                    (d) =>
+                      `${d.label}: ${formatCompact(hoveredRow.values[d.key])}`
+                  ),
+                ]}
+              />
+            )}
+          </>
+        );
+      }}
+    </ChartContainer>
   );
 }

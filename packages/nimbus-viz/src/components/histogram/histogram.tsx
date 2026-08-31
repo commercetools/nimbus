@@ -3,7 +3,7 @@ import { scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { bin, extent, max } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
@@ -50,13 +50,21 @@ export function Histogram({
   const label =
     ariaLabel ??
     `Histogram of ${values.length} samples across ${bins.length} bins`;
+  const table = {
+    columns: ["Bin", "Count"],
+    rows: bins.map((b) => [
+      `${formatCompact(b.x0 ?? domain[0])}–${formatCompact(b.x1 ?? domain[1])}`,
+      b.length,
+    ]),
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 12, right: 16, bottom: 28, left: 40 }}
       ariaLabel={label}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleLinear({
@@ -134,6 +142,6 @@ export function Histogram({
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

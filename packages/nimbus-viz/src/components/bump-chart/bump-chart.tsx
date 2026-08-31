@@ -3,7 +3,7 @@ import { scalePoint } from "@visx/scale";
 import { LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveMonotoneX } from "@visx/curve";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
@@ -71,125 +71,133 @@ export function BumpChart({
 
   if (width <= 0 || height <= 0 || series.length === 0) return null;
 
+  const table = {
+    columns: ["Series", "Latest value", "Latest rank"],
+    rows: ranked.map((s, si) => [
+      s.label,
+      series[si].data[series[si].data.length - 1]?.y ?? "",
+      s.points[s.points.length - 1]?.rank ?? "",
+    ]),
+  };
+
   const ranks = Array.from({ length: series.length }, (_, k) => k + 1);
   const indices = Array.from({ length: n }, (_, k) => k);
   const step = Math.max(1, Math.ceil(n / 6));
   const tickIndices = indices.filter((k) => k % step === 0);
 
   return (
-    <div style={{ width, height }}>
-      <ChartFrame
-        width={width}
-        height={height}
-        margin={{ top: 12, right: 96, bottom: 28, left: 32 }}
-        ariaLabel={
-          ariaLabel ??
-          `Bump chart ranking ${series.map((s) => s.label).join(", ")} over time`
-        }
-      >
-        {({ innerWidth, innerHeight }) => {
-          const xScale = scalePoint<number>({
-            domain: indices,
-            range: [0, innerWidth],
-            padding: 0.5,
-          });
-          const yScale = scalePoint<number>({
-            domain: ranks,
-            range: [0, innerHeight],
-            padding: 0.5,
-          });
-          const px = (i: number) => xScale(i) ?? 0;
-          const py = (rank: number) => yScale(rank) ?? 0;
+    <ChartContainer
+      width={width}
+      height={height}
+      margin={{ top: 12, right: 96, bottom: 28, left: 32 }}
+      ariaLabel={
+        ariaLabel ??
+        `Bump chart ranking ${series.map((s) => s.label).join(", ")} over time`
+      }
+      table={table}
+    >
+      {({ innerWidth, innerHeight }) => {
+        const xScale = scalePoint<number>({
+          domain: indices,
+          range: [0, innerWidth],
+          padding: 0.5,
+        });
+        const yScale = scalePoint<number>({
+          domain: ranks,
+          range: [0, innerHeight],
+          padding: 0.5,
+        });
+        const px = (i: number) => xScale(i) ?? 0;
+        const py = (rank: number) => yScale(rank) ?? 0;
 
-          return (
-            <>
-              <GridRows ticks={ranks} y={py} width={innerWidth} />
-              <AxisLeft
-                scale={yScale}
-                hideAxisLine
-                hideTicks
-                tickFormat={(v) => `#${Number(v)}`}
-                tickLabelProps={leftTickLabel(theme)}
-              />
-              <AxisBottom
-                scale={xScale}
-                top={innerHeight}
-                tickValues={tickIndices}
-                stroke={theme.axis}
-                hideTicks
-                tickFormat={(v) => {
-                  const x = series[0]?.data[Number(v)]?.x;
-                  return x != null ? fmtX(x) : `${Number(v)}`;
-                }}
-                tickLabelProps={bottomTickLabel(theme)}
-              />
+        return (
+          <>
+            <GridRows ticks={ranks} y={py} width={innerWidth} />
+            <AxisLeft
+              scale={yScale}
+              hideAxisLine
+              hideTicks
+              tickFormat={(v) => `#${Number(v)}`}
+              tickLabelProps={leftTickLabel(theme)}
+            />
+            <AxisBottom
+              scale={xScale}
+              top={innerHeight}
+              tickValues={tickIndices}
+              stroke={theme.axis}
+              hideTicks
+              tickFormat={(v) => {
+                const x = series[0]?.data[Number(v)]?.x;
+                return x != null ? fmtX(x) : `${Number(v)}`;
+              }}
+              tickLabelProps={bottomTickLabel(theme)}
+            />
 
-              {ranked.map((s, si) => {
-                const stroke = color(s.id);
-                const last = s.points[s.points.length - 1];
-                const dimmed = hover != null && hover.si !== si;
-                return (
-                  <g key={s.id} opacity={dimmed ? 0.3 : 1}>
-                    <LinePath<RankPoint>
-                      data={s.points}
-                      x={(d) => px(d.i)}
-                      y={(d) => py(d.rank)}
-                      curve={curveMonotoneX}
-                      stroke={stroke}
-                      strokeWidth={hover?.si === si ? 3 : 2}
-                      fill="none"
+            {ranked.map((s, si) => {
+              const stroke = color(s.id);
+              const last = s.points[s.points.length - 1];
+              const dimmed = hover != null && hover.si !== si;
+              return (
+                <g key={s.id} opacity={dimmed ? 0.3 : 1}>
+                  <LinePath<RankPoint>
+                    data={s.points}
+                    x={(d) => px(d.i)}
+                    y={(d) => py(d.rank)}
+                    curve={curveMonotoneX}
+                    stroke={stroke}
+                    strokeWidth={hover?.si === si ? 3 : 2}
+                    fill="none"
+                  />
+                  {s.points.map((d) => (
+                    <circle
+                      key={d.i}
+                      cx={px(d.i)}
+                      cy={py(d.rank)}
+                      r={hover?.si === si && hover?.i === d.i ? 6 : 4}
+                      fill={stroke}
+                      stroke={theme.surface}
+                      strokeWidth={1.5}
+                      onMouseEnter={() => setHover({ si, i: d.i })}
+                      onMouseLeave={() => setHover(null)}
                     />
-                    {s.points.map((d) => (
-                      <circle
-                        key={d.i}
-                        cx={px(d.i)}
-                        cy={py(d.rank)}
-                        r={hover?.si === si && hover?.i === d.i ? 6 : 4}
-                        fill={stroke}
-                        stroke={theme.surface}
-                        strokeWidth={1.5}
-                        onMouseEnter={() => setHover({ si, i: d.i })}
-                        onMouseLeave={() => setHover(null)}
-                      />
-                    ))}
-                    {last && (
-                      <text
-                        x={px(last.i) + 10}
-                        y={py(last.rank)}
-                        dy={4}
-                        style={emText(11)}
-                        fill={theme.ink}
-                      >
-                        {s.label}
-                      </text>
-                    )}
-                  </g>
+                  ))}
+                  {last && (
+                    <text
+                      x={px(last.i) + 10}
+                      y={py(last.rank)}
+                      dy={4}
+                      style={emText(11)}
+                      fill={theme.ink}
+                    >
+                      {s.label}
+                    </text>
+                  )}
+                </g>
+              );
+            })}
+            {hover &&
+              (() => {
+                const rp = ranked[hover.si]?.points.find(
+                  (p) => p.i === hover.i
                 );
-              })}
-              {hover &&
-                (() => {
-                  const rp = ranked[hover.si]?.points.find(
-                    (p) => p.i === hover.i
-                  );
-                  const datum = series[hover.si]?.data[hover.i];
-                  if (!rp || !datum || datum.y == null) return null;
-                  return (
-                    <SvgTooltip
-                      x={px(hover.i)}
-                      innerWidth={innerWidth}
-                      top={Math.max(0, py(rp.rank) - 8)}
-                      lines={[
-                        series[hover.si].label,
-                        `Rank #${rp.rank}`,
-                        `${fmtX(datum.x)}: ${formatCompact(datum.y)}`,
-                      ]}
-                    />
-                  );
-                })()}
-            </>
-          );
-        }}
-      </ChartFrame>
-    </div>
+                const datum = series[hover.si]?.data[hover.i];
+                if (!rp || !datum || datum.y == null) return null;
+                return (
+                  <SvgTooltip
+                    x={px(hover.i)}
+                    innerWidth={innerWidth}
+                    top={Math.max(0, py(rp.rank) - 8)}
+                    lines={[
+                      series[hover.si].label,
+                      `Rank #${rp.rank}`,
+                      `${fmtX(datum.x)}: ${formatCompact(datum.y)}`,
+                    ]}
+                  />
+                );
+              })()}
+          </>
+        );
+      }}
+    </ChartContainer>
   );
 }

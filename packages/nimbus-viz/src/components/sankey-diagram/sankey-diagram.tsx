@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Sankey } from "@visx/sankey";
 import type { SankeyNode } from "@visx/sankey";
 import { Group } from "@visx/group";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
@@ -41,12 +41,23 @@ export function SankeyDiagram({
 
   if (width <= 0 || height <= 0 || graph.nodes.length === 0) return null;
 
+  const nodeName = (idx: number) => graph.nodes[idx]?.name ?? String(idx);
+  const table = {
+    columns: ["From", "To", "Value"],
+    rows: graph.links.map((l) => [
+      nodeName(l.source),
+      nodeName(l.target),
+      l.value,
+    ]),
+  };
+
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 8, right: 8, bottom: 8, left: 8 }}
       ariaLabel={ariaLabel ?? "Sankey flow diagram"}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => (
         <Sankey<FlowNode, FlowLink>
@@ -151,6 +162,6 @@ export function SankeyDiagram({
           )}
         </Sankey>
       )}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

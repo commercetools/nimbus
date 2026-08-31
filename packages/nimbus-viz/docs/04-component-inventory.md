@@ -4,6 +4,16 @@ _Companion to docs 01–03. Status: **prototype-built** — the counts below are
 actuals from `packages/nimbus-viz`, not estimates. See doc 09 for the
 batch-by-batch build log._
 
+> **Update (2026-08): superseded counts.** This stays as the historical build
+> log; the authoritative live catalog is the package **README**. Current shipped
+> count is **47 components** (46 charts exported from the barrel + `DataTable`
+> via the selection barrel), enforced by `src/components/catalog.spec.ts`. Since
+> this log was written, `ChordDiagram` and `TileGridMap` shipped (no longer
+> "cut"/deferred), and the empty `ridgeline-plot/` stub was removed.
+> `EmptyState`/`LoadingSkeleton` (Layer 4) and
+> `Brush`/`Zoom`/`AnnotationCallout` (Layer 2) remain unbuilt — tracked in the
+> roadmap.
+
 ## Read this first
 
 - **Components ≠ catalog presets — validated.** The agent-selectable catalog is

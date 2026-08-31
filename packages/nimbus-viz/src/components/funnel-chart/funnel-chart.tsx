@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BarRounded } from "@visx/shape";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
@@ -30,13 +30,18 @@ export function FunnelChart({
   if (width <= 0 || height <= 0 || data.length === 0) return null;
 
   const top = data[0].value || 1;
+  const table = {
+    columns: ["Stage", "Value", "% of first"],
+    rows: data.map((s) => [s.stage, s.value, formatPercent(s.value / top)]),
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 10, right: 16, bottom: 8, left: 16 }}
       ariaLabel={ariaLabel ?? `Funnel of ${data.length} stages`}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const bandH = innerHeight / data.length;
@@ -116,6 +121,6 @@ export function FunnelChart({
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

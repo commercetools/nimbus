@@ -1,13 +1,15 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scaleLinear, scaleTime } from "@visx/scale";
 import { AreaStack } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveMonotoneX } from "@visx/curve";
 import { extent } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
-import { Legend } from "../../chart/legend";
+import { ChartContainer } from "../../chart/chart-container";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
+import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact, formatDayMonth } from "../../chart/format";
 import type { Series } from "../../chart/types";
@@ -17,6 +19,8 @@ export interface StackedAreaChartProps {
   height: number;
   series: Series[];
   ariaLabel?: string;
+  /** Overlays (ReferenceLine, TrendLine, Annotation, …) rendered in plot space. */
+  children?: ReactNode;
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
@@ -39,6 +43,7 @@ export function StackedAreaChart({
   height,
   series,
   ariaLabel,
+  children,
 }: StackedAreaChartProps) {
   const theme = useChartTheme();
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
@@ -67,134 +72,138 @@ export function StackedAreaChart({
     return null;
 
   const showLegend = series.length >= 2;
-  const legendHeight = showLegend ? 26 : 0;
-  const chartHeight = height - legendHeight;
-  const n = rows.length;
   const hoveredX = hoverIndex != null ? rows[hoverIndex]?.x : undefined;
+  const table = {
+    columns: ["Date", ...series.map((s) => s.label)],
+    rows: rows.map((r) => [
+      formatDayMonth(new Date(r.x)),
+      ...keys.map((k) => r[k]),
+    ]),
+  };
 
   return (
-    <div style={{ width, height }}>
-      <ChartFrame
-        width={width}
-        height={chartHeight}
-        ariaLabel={
-          ariaLabel ??
-          `Stacked area chart of ${series.map((s) => s.label).join(", ")}`
-        }
-      >
-        {({ innerWidth, innerHeight }) => {
-          const xScale = scaleTime({ domain: xDomain, range: [0, innerWidth] });
-          const yScale = scaleLinear({
-            domain: [0, maxTotal],
-            range: [innerHeight, 0],
-            nice: true,
-          });
+    <ChartContainer
+      width={width}
+      height={height}
+      ariaLabel={
+        ariaLabel ??
+        `Stacked area chart of ${series.map((s) => s.label).join(", ")}`
+      }
+      legend={
+        showLegend
+          ? series.map((s) => ({ label: s.label, color: color(s.id) }))
+          : undefined
+      }
+      table={table}
+    >
+      {({ innerWidth, innerHeight }) => {
+        const xScale = scaleTime({ domain: xDomain, range: [0, innerWidth] });
+        const yScale = scaleLinear({
+          domain: [0, maxTotal],
+          range: [innerHeight, 0],
+          nice: true,
+        });
 
-          return (
-            <>
-              <GridRows
-                ticks={yScale.ticks(4)}
-                y={(t) => yScale(t)}
-                width={innerWidth}
-              />
-              <AxisLeft
-                scale={yScale}
-                numTicks={4}
-                hideAxisLine
-                hideTicks
-                tickFormat={(v) => formatCompact(v as number)}
-                tickLabelProps={leftTickLabel(theme)}
-              />
-              <AxisBottom
-                scale={xScale}
-                top={innerHeight}
-                numTicks={Math.max(2, Math.min(6, Math.floor(innerWidth / 90)))}
+        return (
+          <ChartScaleProvider
+            value={{ yScale, xScale, xBandwidth: 0, innerWidth, innerHeight }}
+          >
+            <GridRows
+              ticks={yScale.ticks(4)}
+              y={(t) => yScale(t)}
+              width={innerWidth}
+            />
+            <AxisLeft
+              scale={yScale}
+              numTicks={4}
+              hideAxisLine
+              hideTicks
+              tickFormat={(v) => formatCompact(v as number)}
+              tickLabelProps={leftTickLabel(theme)}
+            />
+            <AxisBottom
+              scale={xScale}
+              top={innerHeight}
+              numTicks={Math.max(2, Math.min(6, Math.floor(innerWidth / 90)))}
+              stroke={theme.axis}
+              hideTicks
+              tickFormat={(v) => formatDayMonth(v as Date)}
+              tickLabelProps={bottomTickLabel(theme)}
+            />
+
+            <AreaStack<StackDatum, string>
+              data={rows}
+              keys={keys}
+              value={(d, key) => d[key]}
+              x={(d) => xScale(new Date(d.data.x))}
+              y0={(d) => yScale(d[0])}
+              y1={(d) => yScale(d[1])}
+              curve={curveMonotoneX}
+            >
+              {({ stacks, path }) =>
+                stacks.map((stack) => (
+                  <path
+                    key={stack.key}
+                    d={path(stack) || ""}
+                    fill={color(stack.key)}
+                    fillOpacity={0.85}
+                    stroke={theme.surface}
+                    strokeWidth={1}
+                  />
+                ))
+              }
+            </AreaStack>
+
+            {hoverIndex != null && hoveredX != null && (
+              <line
+                x1={xScale(new Date(hoveredX))}
+                x2={xScale(new Date(hoveredX))}
+                y1={0}
+                y2={innerHeight}
                 stroke={theme.axis}
-                hideTicks
-                tickFormat={(v) => formatDayMonth(v as Date)}
-                tickLabelProps={bottomTickLabel(theme)}
+                strokeDasharray="3 3"
               />
+            )}
 
-              <AreaStack<StackDatum, string>
-                data={rows}
-                keys={keys}
-                value={(d, key) => d[key]}
-                x={(d) => xScale(new Date(d.data.x))}
-                y0={(d) => yScale(d[0])}
-                y1={(d) => yScale(d[1])}
-                curve={curveMonotoneX}
-              >
-                {({ stacks, path }) =>
-                  stacks.map((stack) => (
-                    <path
-                      key={stack.key}
-                      d={path(stack) || ""}
-                      fill={color(stack.key)}
-                      fillOpacity={0.85}
-                      stroke={theme.surface}
-                      strokeWidth={1}
-                    />
-                  ))
-                }
-              </AreaStack>
+            <rect
+              x={0}
+              y={0}
+              width={innerWidth}
+              height={innerHeight}
+              fill="transparent"
+              onMouseMove={(e) => {
+                const box = e.currentTarget.getBoundingClientRect();
+                const mx = e.clientX - box.left;
+                const idx = nearestIndexByX(
+                  mx,
+                  xScale,
+                  rows,
+                  (r) => new Date(r.x)
+                );
+                if (idx >= 0) setHoverIndex(idx);
+              }}
+              onMouseLeave={() => setHoverIndex(null)}
+            />
 
-              {hoverIndex != null && hoveredX != null && (
-                <line
-                  x1={xScale(new Date(hoveredX))}
-                  x2={xScale(new Date(hoveredX))}
-                  y1={0}
-                  y2={innerHeight}
-                  stroke={theme.axis}
-                  strokeDasharray="3 3"
-                />
-              )}
-
-              <rect
-                x={0}
-                y={0}
-                width={innerWidth}
-                height={innerHeight}
-                fill="transparent"
-                onMouseMove={(e) => {
-                  const box = e.currentTarget.getBoundingClientRect();
-                  const mx = e.clientX - box.left;
-                  if (n <= 1) {
-                    setHoverIndex(0);
-                    return;
-                  }
-                  const idx = Math.round((mx / innerWidth) * (n - 1));
-                  setHoverIndex(Math.max(0, Math.min(n - 1, idx)));
-                }}
-                onMouseLeave={() => setHoverIndex(null)}
+            {hoverIndex != null && hoveredX != null && (
+              <SvgTooltip
+                x={xScale(new Date(hoveredX))}
+                innerWidth={innerWidth}
+                lines={[
+                  formatDayMonth(new Date(hoveredX)),
+                  ...series.map((s) => {
+                    const p = s.data[hoverIndex];
+                    return `${s.label}: ${
+                      p && p.y != null ? formatCompact(p.y) : "—"
+                    }`;
+                  }),
+                ]}
               />
-
-              {hoverIndex != null && hoveredX != null && (
-                <SvgTooltip
-                  x={xScale(new Date(hoveredX))}
-                  innerWidth={innerWidth}
-                  lines={[
-                    formatDayMonth(new Date(hoveredX)),
-                    ...series.map((s) => {
-                      const p = s.data[hoverIndex];
-                      return `${s.label}: ${
-                        p && p.y != null ? formatCompact(p.y) : "—"
-                      }`;
-                    }),
-                  ]}
-                />
-              )}
-            </>
-          );
-        }}
-      </ChartFrame>
-
-      {showLegend && (
-        <div style={{ paddingTop: 6 }}>
-          <Legend
-            items={series.map((s) => ({ label: s.label, color: color(s.id) }))}
-          />
-        </div>
-      )}
-    </div>
+            )}
+            {children}
+          </ChartScaleProvider>
+        );
+      }}
+    </ChartContainer>
   );
 }

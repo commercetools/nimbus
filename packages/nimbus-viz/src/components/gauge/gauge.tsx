@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Arc } from "@visx/shape";
 import { Group } from "@visx/group";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import { emText } from "../../chart/typography";
@@ -62,15 +62,20 @@ export function Gauge({
   if (width <= 0 || height <= 0) return null;
 
   const valueAngle = START_ANGLE + fraction * (END_ANGLE - START_ANGLE);
+  const table = {
+    columns: ["Metric", "Value", "Min", "Max", "Target"],
+    rows: [[label ?? "Value", value, min, max, threshold ?? "—"]],
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 8, right: 8, bottom: 8, left: 8 }}
       ariaLabel={
         ariaLabel ?? `Gauge: ${valueFormat(value)} of ${valueFormat(max)}`
       }
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const radius = Math.max(0, Math.min(innerWidth / 2, innerHeight));
@@ -125,6 +130,6 @@ export function Gauge({
           </Group>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

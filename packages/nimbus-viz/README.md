@@ -148,8 +148,15 @@ import { ColorScaleProvider } from "@commercetools/nimbus-viz";
 | Tabular fallback      | `DataTable`                                                                                       |
 
 Composable **overlays** (`ReferenceLine`, `TargetMarker`, `TrendLine`,
-`ThresholdBand`, `ConfidenceBand`, `ErrorBars`, `BenchmarkSeries`) layer
-annotations over the axis-based charts.
+`ThresholdBand`, `ConfidenceBand`, `ErrorBars`, `BenchmarkSeries`, `Annotation`,
+`EventMarkers`, `NowLine`) layer annotations over the axis-based charts.
+
+> **Geographic data.** `TileGridMap` is a **tile/hex grid** (equal-area regions
+> laid out on a grid), not a geographic **choropleth**. It's the supported geo
+> option today; a true boundary-shape choropleth is intentionally not shipped —
+> it needs vetted, licensed boundary data (topojson) that isn't bundled. Reach
+> for `TileGridMap` for "metric by region" comparisons where exact geography
+> isn't required.
 
 ## Development
 

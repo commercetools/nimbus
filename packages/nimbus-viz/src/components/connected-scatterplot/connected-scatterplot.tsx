@@ -3,7 +3,7 @@ import { scaleLinear } from "@visx/scale";
 import { LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { extent } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
@@ -48,13 +48,18 @@ export function ConnectedScatterplot({
   const label = ariaLabel ?? `Connected scatterplot of ${points.length} points`;
   const r = Math.max(2.5, 3 * chartScale(width, height));
   const lastIndex = points.length - 1;
+  const table = {
+    columns: ["#", "Label", "x", "y"],
+    rows: points.map((p, i) => [i + 1, p.label ?? "", p.x, p.y]),
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 16, right: 20, bottom: 28, left: 44 }}
       ariaLabel={label}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleLinear({
@@ -153,6 +158,6 @@ export function ConnectedScatterplot({
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

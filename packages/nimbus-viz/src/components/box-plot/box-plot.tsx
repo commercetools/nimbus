@@ -3,7 +3,7 @@ import { scaleBand, scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { BoxPlot as VisxBoxPlot } from "@visx/stats";
 import { extent } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
@@ -49,13 +49,25 @@ export function BoxPlot({ width, height, groups, ariaLabel }: BoxPlotProps) {
 
   const label = ariaLabel ?? `Box plot of ${groups.length} groups`;
   const hoverGroup = hover != null ? groups[hover] : null;
+  const table = {
+    columns: ["Group", "Min", "Q1", "Median", "Q3", "Max"],
+    rows: groups.map((g) => [
+      g.label,
+      g.min,
+      g.firstQuartile,
+      g.median,
+      g.thirdQuartile,
+      g.max,
+    ]),
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 12, right: 16, bottom: 28, left: 44 }}
       ariaLabel={label}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleBand({
@@ -147,6 +159,6 @@ export function BoxPlot({ width, height, groups, ariaLabel }: BoxPlotProps) {
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

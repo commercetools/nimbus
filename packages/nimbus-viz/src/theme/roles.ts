@@ -30,7 +30,6 @@ export interface ChartRamps {
  * scales (see `sequential.ts`), so charts never reach for a raw hue name.
  */
 export interface ChartRoles {
-  mode: ColorMode;
   /** Primary emphasis (single-series accent, focused element). */
   accent: string;
   /** Valence — up/good. Carried WITH a non-color cue, never color alone. */
@@ -87,7 +86,6 @@ function deepFreeze<T>(obj: T): T {
 const nimbus: ChartTheme = deepFreeze<ChartTheme>({
   name: "nimbus",
   light: {
-    mode: "light",
     accent: "#2a78d6",
     positive: "#006300",
     negative: "#e34948",
@@ -116,7 +114,6 @@ const nimbus: ChartTheme = deepFreeze<ChartTheme>({
     diverging: { negative: "#e34948", neutral: "#f0efec", positive: "#2a78d6" },
   },
   dark: {
-    mode: "dark",
     accent: "#3987e5",
     positive: "#0ca30c",
     negative: "#e66767",
@@ -146,29 +143,53 @@ const nimbus: ChartTheme = deepFreeze<ChartTheme>({
   },
 });
 
-/** The theme registry. Adding a theme is one entry here. */
+/** The seed theme registry (built-ins). Custom themes are added at runtime with
+ * {@link registerTheme}; this const keeps the static union of built-in names. */
 export const THEMES = { nimbus } as const;
 
-/** A registered theme name. Grows as themes are added. */
+/** A built-in theme name (autocompletes). Registered custom names are accepted
+ * anywhere a name is taken, via the `(string & {})` widening below. */
 export type ChartThemeName = keyof typeof THEMES;
 
 const DEFAULT_THEME: ChartThemeName = "nimbus";
 
+// Live registry, seeded with the built-ins. Kept separate from THEMES so the
+// static union of built-in names stays exact while custom themes register at
+// runtime.
+const registry = new Map<string, ChartTheme>(Object.entries(THEMES));
+
 /**
- * Resolve a theme name + mode to its (frozen) role set. Never throws: an
- * unrecognized name or mode falls back to `nimbus` / `light` with a dev warning,
- * mirroring the resolver philosophy in `selection/resolve.tsx`.
+ * Register a custom chart theme so it can be selected by name on
+ * `<ChartThemeProvider theme="…">`. The theme is shape-checked and deep-frozen
+ * (charts must not mutate the shared palette); re-registering a name replaces
+ * it. Run the legibility gate (see `legibility.spec.ts`) on a new theme before
+ * shipping it.
+ */
+export function registerTheme(theme: ChartTheme): void {
+  if (!theme || typeof theme.name !== "string" || !theme.light || !theme.dark) {
+    throw new Error(
+      "nimbus-viz: registerTheme(theme) requires an object with { name, light, dark }."
+    );
+  }
+  registry.set(theme.name, deepFreeze(theme));
+}
+
+/**
+ * Resolve a theme name + mode to its (frozen) role set. Accepts a built-in name,
+ * a name registered via {@link registerTheme}, or any string. Never throws: an
+ * unknown name falls back to `nimbus` with a dev warning, mirroring the resolver
+ * philosophy in `selection/resolve.tsx`.
  */
 export function resolveTheme(
-  name: ChartThemeName,
+  name: ChartThemeName | (string & {}),
   mode: ColorMode
 ): ChartRoles {
-  const theme = THEMES[name];
+  const theme = registry.get(name);
   if (!theme) {
     console.warn(
       `nimbus-viz: unknown chart theme "${String(name)}"; using "${DEFAULT_THEME}"`
     );
-    return THEMES[DEFAULT_THEME][mode === "dark" ? "dark" : "light"];
+    return registry.get(DEFAULT_THEME)![mode === "dark" ? "dark" : "light"];
   }
   return theme[mode === "dark" ? "dark" : "light"];
 }
@@ -176,4 +197,16 @@ export function resolveTheme(
 /** Back-compat shim: the default theme's roles for a mode. */
 export function resolveRoles(mode: ColorMode): ChartRoles {
   return resolveTheme(DEFAULT_THEME, mode);
+}
+
+/**
+ * Coerce a host color-mode value (e.g. `next-themes` `resolvedTheme`, which can
+ * be `"light" | "dark" | "system" | undefined`) to the strict {@link ColorMode}
+ * charts use — anything but `"dark"` becomes `"light"`. This is the seam for
+ * host-mode sync WITHOUT coupling the package to the host: a consumer inside a
+ * NimbusProvider does
+ * `<ChartThemeProvider mode={coerceColorMode(useColorMode().colorMode)}>`.
+ */
+export function coerceColorMode(value: string | null | undefined): ColorMode {
+  return value === "dark" ? "dark" : "light";
 }

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { AxisLeft } from "@visx/axis";
 import { max, min } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { GridRows, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
@@ -54,13 +54,24 @@ export function CandlestickChart({
 
   const label = ariaLabel ?? `Candlestick chart of ${data.length} periods`;
   const labelEvery = Math.max(1, Math.ceil(data.length / 6));
+  const table = {
+    columns: ["Date", "Open", "High", "Low", "Close"],
+    rows: data.map((d) => [
+      formatDayMonth(d.date),
+      d.open,
+      d.high,
+      d.low,
+      d.close,
+    ]),
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 12, right: 12, bottom: 28, left: 44 }}
       ariaLabel={label}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleBand({
@@ -149,6 +160,6 @@ export function CandlestickChart({
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

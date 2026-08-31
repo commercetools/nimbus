@@ -4,7 +4,7 @@ import { LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveStepAfter } from "@visx/curve";
 import { extent } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
@@ -52,13 +52,18 @@ export function CumulativeCurve({
   const label = ariaLabel ?? `Cumulative curve of ${values.length} samples`;
   const showDots = values.length <= 60;
   const r = Math.max(2, 2.5 * chartScale(width, height));
+  const table = {
+    columns: ["Value", "Cumulative %"],
+    rows: points.map((p) => [p.v, formatPercent(p.f)]),
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 12, right: 16, bottom: 28, left: 44 }}
       ariaLabel={label}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleLinear({
@@ -142,6 +147,6 @@ export function CumulativeCurve({
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

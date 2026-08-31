@@ -20,5 +20,11 @@ export type {
 } from "./confidence-band";
 export { BenchmarkSeries } from "./benchmark-series";
 export type { BenchmarkSeriesProps, BenchmarkPoint } from "./benchmark-series";
+export { Annotation } from "./annotation";
+export type { AnnotationProps } from "./annotation";
+export { EventMarkers } from "./event-markers";
+export type { EventMarkerDatum, EventMarkersProps } from "./event-markers";
+export { NowLine } from "./now-line";
+export type { NowLineProps } from "./now-line";
 
 export type { OverlayVariant } from "./variant";

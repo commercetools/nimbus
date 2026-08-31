@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { scaleLinear } from "@visx/scale";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { sequentialColor, useChartTheme } from "../../theme";
 import { formatCompact, formatSignedCompact } from "../../chart/format";
@@ -58,12 +58,23 @@ export function BulletChart({
 
   if (width <= 0 || height <= 0 || data.length === 0) return null;
 
+  const table = {
+    columns: ["Measure", "Value", "Target", "Δ vs target"],
+    rows: data.map((d) => [
+      d.label,
+      d.measure,
+      d.target,
+      formatSignedCompact(d.measure - d.target),
+    ]),
+  };
+
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 8, right: 44, bottom: 8, left: 100 }}
       ariaLabel={ariaLabel ?? `Bullet chart of ${data.length} measures`}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleLinear({
@@ -166,6 +177,6 @@ export function BulletChart({
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

@@ -2,8 +2,7 @@ import { useMemo, useState } from "react";
 import { scaleLinear, scaleSqrt } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { extent, max } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
-import { Legend } from "../../chart/legend";
+import { ChartContainer } from "../../chart/chart-container";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
@@ -70,10 +69,12 @@ export function BubbleChart({
   if (width <= 0 || height <= 0 || points.length === 0) return null;
 
   const showLegend = groups.length >= 2;
-  const legendHeight = showLegend ? 26 : 0;
-  const chartHeight = height - legendHeight;
   const colorFor = (p: BubblePoint) =>
     p.group ? groupColor(p.group) : theme.accent;
+  const table = {
+    columns: ["Label", "x", "y", "Size", "Group"],
+    rows: points.map((p) => [p.label ?? "", p.x, p.y, p.size, p.group ?? ""]),
+  };
 
   const refSizes = Array.from(
     new Set(
@@ -82,123 +83,120 @@ export function BubbleChart({
   ).sort((a, b) => b - a);
 
   return (
-    <div style={{ width, height }}>
-      <ChartFrame
-        width={width}
-        height={chartHeight}
-        margin={{ top: 12, right: 16, bottom: 28, left: 44 }}
-        ariaLabel={ariaLabel ?? `Bubble chart of ${points.length} points`}
-      >
-        {({ innerWidth, innerHeight }) => {
-          const xScale = scaleLinear({
-            domain: xDomain,
-            range: [0, innerWidth],
-            nice: true,
-          });
-          const yScale = scaleLinear({
-            domain: yDomain,
-            range: [innerHeight, 0],
-            nice: true,
-          });
-          const sizeScale = scaleSqrt({
-            domain: [0, maxSize],
-            range: [R_MIN, R_MAX],
-          });
-          const hp = hover != null ? points[hover] : null;
+    <ChartContainer
+      width={width}
+      height={height}
+      margin={{ top: 12, right: 16, bottom: 28, left: 44 }}
+      ariaLabel={ariaLabel ?? `Bubble chart of ${points.length} points`}
+      legend={
+        showLegend
+          ? groups.map((g) => ({ label: g, color: groupColor(g) }))
+          : undefined
+      }
+      table={table}
+    >
+      {({ innerWidth, innerHeight }) => {
+        const xScale = scaleLinear({
+          domain: xDomain,
+          range: [0, innerWidth],
+          nice: true,
+        });
+        const yScale = scaleLinear({
+          domain: yDomain,
+          range: [innerHeight, 0],
+          nice: true,
+        });
+        const sizeScale = scaleSqrt({
+          domain: [0, maxSize],
+          range: [R_MIN, R_MAX],
+        });
+        const hp = hover != null ? points[hover] : null;
 
-          const legendBaseX = innerWidth - R_MAX - 4;
-          const legendBaseY = innerHeight - 4;
+        const legendBaseX = innerWidth - R_MAX - 4;
+        const legendBaseY = innerHeight - 4;
 
-          return (
-            <>
-              <GridRows
-                ticks={yScale.ticks(4)}
-                y={(t) => yScale(t)}
-                width={innerWidth}
+        return (
+          <>
+            <GridRows
+              ticks={yScale.ticks(4)}
+              y={(t) => yScale(t)}
+              width={innerWidth}
+            />
+            <AxisLeft
+              scale={yScale}
+              numTicks={4}
+              hideAxisLine
+              hideTicks
+              tickFormat={(v) => formatCompact(v as number)}
+              tickLabelProps={leftTickLabel(theme)}
+            />
+            <AxisBottom
+              scale={xScale}
+              top={innerHeight}
+              numTicks={5}
+              stroke={theme.axis}
+              hideTicks
+              tickFormat={(v) => formatCompact(v as number)}
+              tickLabelProps={bottomTickLabel(theme)}
+            />
+
+            {ordered.map(({ p, i }) => (
+              <circle
+                key={p.label ?? i}
+                cx={xScale(p.x)}
+                cy={yScale(p.y)}
+                r={sizeScale(p.size)}
+                fill={colorFor(p)}
+                fillOpacity={hover == null || hover === i ? 0.6 : 0.25}
+                stroke={theme.surface}
+                strokeWidth={1}
+                onMouseEnter={() => setHover(i)}
+                onMouseLeave={() => setHover(null)}
               />
-              <AxisLeft
-                scale={yScale}
-                numTicks={4}
-                hideAxisLine
-                hideTicks
-                tickFormat={(v) => formatCompact(v as number)}
-                tickLabelProps={leftTickLabel(theme)}
+            ))}
+
+            {/* Size legend: reference circles sharing a bottom baseline. */}
+            {refSizes.map((ref) => {
+              const r = sizeScale(ref);
+              return (
+                <g key={ref}>
+                  <circle
+                    cx={legendBaseX}
+                    cy={legendBaseY - r}
+                    r={r}
+                    fill="none"
+                    stroke={theme.mutedInk}
+                    strokeOpacity={0.5}
+                  />
+                  <text
+                    x={legendBaseX - R_MAX - 6}
+                    y={legendBaseY - 2 * r}
+                    dy={4}
+                    style={emText(10)}
+                    textAnchor="end"
+                    fill={theme.mutedInk}
+                  >
+                    {formatCompact(ref)}
+                  </text>
+                </g>
+              );
+            })}
+
+            {hp && (
+              <SvgTooltip
+                x={xScale(hp.x)}
+                innerWidth={innerWidth}
+                lines={[
+                  hp.label ?? "Bubble",
+                  `x: ${formatCompact(hp.x)}`,
+                  `y: ${formatCompact(hp.y)}`,
+                  `size: ${formatCompact(hp.size)}`,
+                ]}
               />
-              <AxisBottom
-                scale={xScale}
-                top={innerHeight}
-                numTicks={5}
-                stroke={theme.axis}
-                hideTicks
-                tickFormat={(v) => formatCompact(v as number)}
-                tickLabelProps={bottomTickLabel(theme)}
-              />
-
-              {ordered.map(({ p, i }) => (
-                <circle
-                  key={p.label ?? i}
-                  cx={xScale(p.x)}
-                  cy={yScale(p.y)}
-                  r={sizeScale(p.size)}
-                  fill={colorFor(p)}
-                  fillOpacity={hover == null || hover === i ? 0.6 : 0.25}
-                  stroke={theme.surface}
-                  strokeWidth={1}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
-                />
-              ))}
-
-              {/* Size legend: reference circles sharing a bottom baseline. */}
-              {refSizes.map((ref) => {
-                const r = sizeScale(ref);
-                return (
-                  <g key={ref}>
-                    <circle
-                      cx={legendBaseX}
-                      cy={legendBaseY - r}
-                      r={r}
-                      fill="none"
-                      stroke={theme.mutedInk}
-                      strokeOpacity={0.5}
-                    />
-                    <text
-                      x={legendBaseX - R_MAX - 6}
-                      y={legendBaseY - 2 * r}
-                      dy={4}
-                      style={emText(10)}
-                      textAnchor="end"
-                      fill={theme.mutedInk}
-                    >
-                      {formatCompact(ref)}
-                    </text>
-                  </g>
-                );
-              })}
-
-              {hp && (
-                <SvgTooltip
-                  x={xScale(hp.x)}
-                  innerWidth={innerWidth}
-                  lines={[
-                    hp.label ?? "Bubble",
-                    `x: ${formatCompact(hp.x)}`,
-                    `y: ${formatCompact(hp.y)}`,
-                    `size: ${formatCompact(hp.size)}`,
-                  ]}
-                />
-              )}
-            </>
-          );
-        }}
-      </ChartFrame>
-      {showLegend && (
-        <div style={{ paddingTop: 6 }}>
-          <Legend
-            items={groups.map((g) => ({ label: g, color: groupColor(g) }))}
-          />
-        </div>
-      )}
-    </div>
+            )}
+          </>
+        );
+      }}
+    </ChartContainer>
   );
 }

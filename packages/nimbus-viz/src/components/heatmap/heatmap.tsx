@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { scaleBand } from "@visx/scale";
 import { Group } from "@visx/group";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { sequentialColor, useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
@@ -51,15 +51,26 @@ export function Heatmap({
   }
 
   const color = sequentialColor(theme.ramps[hue] ?? theme.ramps.blue);
+  const table = {
+    columns: [
+      "Row",
+      ...Array.from(
+        { length: numCols },
+        (_, i) => columnLabels?.[i] ?? String(i)
+      ),
+    ],
+    rows: rows.map((r) => [r.label, ...r.values.map((v) => v ?? "")]),
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 20, right: 8, bottom: 8, left: 76 }}
       ariaLabel={
         ariaLabel ?? `Heatmap, ${rows.length} rows by ${numCols} columns`
       }
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleBand({
@@ -163,6 +174,6 @@ export function Heatmap({
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

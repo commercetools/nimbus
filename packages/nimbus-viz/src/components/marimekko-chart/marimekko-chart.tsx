@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
-import { ChartFrame } from "../../chart/chart-frame";
-import { Legend } from "../../chart/legend";
+import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { fitBandLabel } from "../../chart/axes";
 import { useChartTheme, useEntityColors } from "../../theme";
@@ -49,91 +48,90 @@ export function MarimekkoChart({
 
   if (width <= 0 || height <= 0 || data.length === 0 || grand <= 0) return null;
 
-  const legendHeight = 26;
-  const chartHeight = height - legendHeight;
   const label = ariaLabel ?? `Marimekko chart of ${data.length} categories`;
+  const table = {
+    columns: ["Column", ...keys],
+    rows: data.map((d) => [
+      d.category,
+      ...keys.map((k) => d.segments.find((s) => s.key === k)?.value ?? 0),
+    ]),
+  };
 
   return (
-    <div style={{ width, height }}>
-      <ChartFrame
-        width={width}
-        height={chartHeight}
-        margin={{ top: 8, right: 8, bottom: 24, left: 8 }}
-        ariaLabel={label}
-      >
-        {({ innerWidth, innerHeight }) => {
-          const totalGap = GAP * Math.max(0, data.length - 1);
-          const usable = Math.max(0, innerWidth - totalGap);
-          const truncate = (colWidth: number) => fitBandLabel(colWidth);
-          let x = 0;
-          const columns = data.map((row, c) => {
-            const colWidth = (usable * totals[c]) / grand;
-            const x0 = x;
-            x += colWidth + GAP;
-            return { row, c, x0, colWidth };
-          });
-          const hovered =
-            hover != null ? data[hover.c]?.segments[hover.s] : null;
-          return (
-            <>
-              {columns.map(({ row, c, x0, colWidth }) => {
-                let y = 0;
-                return (
-                  <g key={row.category}>
-                    {row.segments.map((seg, s) => {
-                      const frac = totals[c] > 0 ? seg.value / totals[c] : 0;
-                      const h = frac * innerHeight;
-                      const rectY = y;
-                      y += h;
-                      const active =
-                        hover == null || (hover.c === c && hover.s === s);
-                      return (
-                        <rect
-                          key={seg.key}
-                          x={x0}
-                          y={rectY}
-                          width={Math.max(0, colWidth)}
-                          height={Math.max(0, h - GAP)}
-                          fill={color(seg.key)}
-                          opacity={active ? 1 : 0.4}
-                          onMouseEnter={() => setHover({ c, s })}
-                          onMouseLeave={() => setHover(null)}
-                        />
-                      );
-                    })}
-                    <text
-                      x={x0 + colWidth / 2}
-                      y={innerHeight + 14}
-                      textAnchor="middle"
-                      style={emText(10)}
-                      fill={theme.mutedInk}
-                    >
-                      {truncate(colWidth)(row.category)}
-                    </text>
-                  </g>
-                );
-              })}
-              {hovered && hover && (
-                <SvgTooltip
-                  x={columns[hover.c].x0 + columns[hover.c].colWidth / 2}
-                  innerWidth={innerWidth}
-                  top={4}
-                  lines={[
-                    `${data[hover.c].category} · ${hovered.key}`,
-                    formatCompact(hovered.value),
-                    `${formatPercent(totals[hover.c] > 0 ? hovered.value / totals[hover.c] : 0)} of column`,
-                  ]}
-                />
-              )}
-            </>
-          );
-        }}
-      </ChartFrame>
-      <div style={{ paddingTop: 6 }}>
-        <Legend
-          items={keys.map((key) => ({ label: key, color: color(key) }))}
-        />
-      </div>
-    </div>
+    <ChartContainer
+      width={width}
+      height={height}
+      margin={{ top: 8, right: 8, bottom: 24, left: 8 }}
+      ariaLabel={label}
+      legend={keys.map((k) => ({ label: k, color: color(k) }))}
+      table={table}
+    >
+      {({ innerWidth, innerHeight }) => {
+        const totalGap = GAP * Math.max(0, data.length - 1);
+        const usable = Math.max(0, innerWidth - totalGap);
+        const truncate = (colWidth: number) => fitBandLabel(colWidth);
+        let x = 0;
+        const columns = data.map((row, c) => {
+          const colWidth = (usable * totals[c]) / grand;
+          const x0 = x;
+          x += colWidth + GAP;
+          return { row, c, x0, colWidth };
+        });
+        const hovered = hover != null ? data[hover.c]?.segments[hover.s] : null;
+        return (
+          <>
+            {columns.map(({ row, c, x0, colWidth }) => {
+              let y = 0;
+              return (
+                <g key={row.category}>
+                  {row.segments.map((seg, s) => {
+                    const frac = totals[c] > 0 ? seg.value / totals[c] : 0;
+                    const h = frac * innerHeight;
+                    const rectY = y;
+                    y += h;
+                    const active =
+                      hover == null || (hover.c === c && hover.s === s);
+                    return (
+                      <rect
+                        key={seg.key}
+                        x={x0}
+                        y={rectY}
+                        width={Math.max(0, colWidth)}
+                        height={Math.max(0, h - GAP)}
+                        fill={color(seg.key)}
+                        opacity={active ? 1 : 0.4}
+                        onMouseEnter={() => setHover({ c, s })}
+                        onMouseLeave={() => setHover(null)}
+                      />
+                    );
+                  })}
+                  <text
+                    x={x0 + colWidth / 2}
+                    y={innerHeight + 14}
+                    textAnchor="middle"
+                    style={emText(10)}
+                    fill={theme.mutedInk}
+                  >
+                    {truncate(colWidth)(row.category)}
+                  </text>
+                </g>
+              );
+            })}
+            {hovered && hover && (
+              <SvgTooltip
+                x={columns[hover.c].x0 + columns[hover.c].colWidth / 2}
+                innerWidth={innerWidth}
+                top={4}
+                lines={[
+                  `${data[hover.c].category} · ${hovered.key}`,
+                  formatCompact(hovered.value),
+                  `${formatPercent(totals[hover.c] > 0 ? hovered.value / totals[hover.c] : 0)} of column`,
+                ]}
+              />
+            )}
+          </>
+        );
+      }}
+    </ChartContainer>
   );
 }

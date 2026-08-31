@@ -71,6 +71,7 @@
     "@types/d3-array": "catalog:viz",
     "@types/d3-format": "catalog:viz",
     "@types/d3-time-format": "catalog:viz",
+    "@types/node": "catalog:utils",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react": "catalog:tooling",

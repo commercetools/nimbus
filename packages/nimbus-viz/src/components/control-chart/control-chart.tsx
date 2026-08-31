@@ -4,9 +4,10 @@ import { LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveMonotoneX } from "@visx/curve";
 import { deviation, extent, mean } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
+import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme } from "../../theme";
 import { formatCompact, formatDayMonth } from "../../chart/format";
 import type { Series, SeriesPoint } from "../../chart/types";
@@ -77,13 +78,24 @@ export function ControlChart({
   if (width <= 0 || height <= 0 || points.length === 0) return null;
 
   const label = ariaLabel ?? `Control chart of ${series[0].label}`;
+  const table = {
+    columns: ["Date", "Value", "Status"],
+    rows: points.map((p) => [
+      formatDayMonth(toDate(p.x)),
+      p.y ?? "",
+      p.y != null && (p.y > limits.upper || p.y < limits.lower)
+        ? "out of control"
+        : "in control",
+    ]),
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 12, right: 40, bottom: 28, left: 44 }}
       ariaLabel={label}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleTime({ domain: xDomain, range: [0, innerWidth] });
@@ -92,7 +104,6 @@ export function ControlChart({
           range: [innerHeight, 0],
           nice: true,
         });
-        const n = points.length;
         const isOut = (y: number) => y > limits.upper || y < limits.lower;
         const hovered = hoverIndex != null ? points[hoverIndex] : undefined;
 
@@ -217,12 +228,10 @@ export function ControlChart({
               onMouseMove={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
                 const mx = e.clientX - rect.left;
-                if (n <= 1) {
-                  setHoverIndex(0);
-                  return;
-                }
-                const idx = Math.round((mx / innerWidth) * (n - 1));
-                setHoverIndex(Math.max(0, Math.min(n - 1, idx)));
+                const idx = nearestIndexByX(mx, xScale, points, (p) =>
+                  toDate(p.x)
+                );
+                if (idx >= 0) setHoverIndex(idx);
               }}
               onMouseLeave={() => setHoverIndex(null)}
             />
@@ -241,6 +250,6 @@ export function ControlChart({
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

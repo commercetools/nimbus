@@ -4,10 +4,10 @@ import { AreaStack, Area } from "@visx/shape";
 import { AxisBottom } from "@visx/axis";
 import { curveBasis } from "@visx/curve";
 import { extent } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
-import { Legend } from "../../chart/legend";
+import { ChartContainer } from "../../chart/chart-container";
 import { bottomTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
+import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact, formatDayMonth } from "../../chart/format";
 import type { Series } from "../../chart/types";
@@ -63,136 +63,137 @@ export function Streamgraph({
     return null;
 
   const showLegend = series.length >= 2;
-  const legendHeight = showLegend ? 26 : 0;
-  const chartHeight = height - legendHeight;
-  const n = rows.length;
   const hoveredX = hoverIndex != null ? rows[hoverIndex]?.x : undefined;
+  const table = {
+    columns: ["Date", ...series.map((s) => s.label)],
+    rows: rows.map((r) => [
+      formatDayMonth(new Date(r.x)),
+      ...keys.map((k) => r[k]),
+    ]),
+  };
 
   return (
-    <div style={{ width, height }}>
-      <ChartFrame
-        width={width}
-        height={chartHeight}
-        margin={{ top: 12, right: 16, bottom: 28, left: 16 }}
-        ariaLabel={
-          ariaLabel ?? `Streamgraph of ${series.map((s) => s.label).join(", ")}`
-        }
-      >
-        {({ innerWidth, innerHeight }) => {
-          const xScale = scaleTime({ domain: xDomain, range: [0, innerWidth] });
+    <ChartContainer
+      width={width}
+      height={height}
+      margin={{ top: 12, right: 16, bottom: 28, left: 16 }}
+      ariaLabel={
+        ariaLabel ?? `Streamgraph of ${series.map((s) => s.label).join(", ")}`
+      }
+      legend={
+        showLegend
+          ? series.map((s) => ({ label: s.label, color: color(s.id) }))
+          : undefined
+      }
+      table={table}
+    >
+      {({ innerWidth, innerHeight }) => {
+        const xScale = scaleTime({ domain: xDomain, range: [0, innerWidth] });
 
-          return (
-            <>
-              <AxisBottom
-                scale={xScale}
-                top={innerHeight}
-                numTicks={Math.max(2, Math.min(6, Math.floor(innerWidth / 90)))}
+        return (
+          <>
+            <AxisBottom
+              scale={xScale}
+              top={innerHeight}
+              numTicks={Math.max(2, Math.min(6, Math.floor(innerWidth / 90)))}
+              stroke={theme.axis}
+              hideTicks
+              tickFormat={(v) => formatDayMonth(v as Date)}
+              tickLabelProps={bottomTickLabel(theme)}
+            />
+
+            <AreaStack<StackDatum, string>
+              data={rows}
+              keys={keys}
+              value={(d, key) => d[key]}
+              offset="wiggle"
+              order="insideout"
+            >
+              {({ stacks }) => {
+                // Wiggle coordinates are scale-independent; derive the y
+                // domain from the computed stacks (it straddles zero).
+                let lo = 0;
+                let hi = 0;
+                for (const layer of stacks) {
+                  for (const p of layer) {
+                    if (p[0] < lo) lo = p[0];
+                    if (p[1] > hi) hi = p[1];
+                  }
+                }
+                const yScale = scaleLinear({
+                  domain: [lo, hi],
+                  range: [innerHeight, 0],
+                });
+                return (
+                  <>
+                    {stacks.map((layer) => (
+                      <Area
+                        key={layer.key}
+                        data={layer}
+                        x={(d) => xScale(new Date(d.data.x))}
+                        y0={(d) => yScale(d[0])}
+                        y1={(d) => yScale(d[1])}
+                        curve={curveBasis}
+                        fill={color(layer.key)}
+                        fillOpacity={0.85}
+                        stroke={theme.surface}
+                        strokeWidth={1}
+                      />
+                    ))}
+                  </>
+                );
+              }}
+            </AreaStack>
+
+            {hoverIndex != null && hoveredX != null && (
+              <line
+                x1={xScale(new Date(hoveredX))}
+                x2={xScale(new Date(hoveredX))}
+                y1={0}
+                y2={innerHeight}
                 stroke={theme.axis}
-                hideTicks
-                tickFormat={(v) => formatDayMonth(v as Date)}
-                tickLabelProps={bottomTickLabel(theme)}
+                strokeDasharray="3 3"
               />
+            )}
 
-              <AreaStack<StackDatum, string>
-                data={rows}
-                keys={keys}
-                value={(d, key) => d[key]}
-                offset="wiggle"
-                order="insideout"
-              >
-                {({ stacks }) => {
-                  // Wiggle coordinates are scale-independent; derive the y
-                  // domain from the computed stacks (it straddles zero).
-                  let lo = 0;
-                  let hi = 0;
-                  for (const layer of stacks) {
-                    for (const p of layer) {
-                      if (p[0] < lo) lo = p[0];
-                      if (p[1] > hi) hi = p[1];
-                    }
-                  }
-                  const yScale = scaleLinear({
-                    domain: [lo, hi],
-                    range: [innerHeight, 0],
-                  });
-                  return (
-                    <>
-                      {stacks.map((layer) => (
-                        <Area
-                          key={layer.key}
-                          data={layer}
-                          x={(d) => xScale(new Date(d.data.x))}
-                          y0={(d) => yScale(d[0])}
-                          y1={(d) => yScale(d[1])}
-                          curve={curveBasis}
-                          fill={color(layer.key)}
-                          fillOpacity={0.85}
-                          stroke={theme.surface}
-                          strokeWidth={1}
-                        />
-                      ))}
-                    </>
-                  );
-                }}
-              </AreaStack>
+            <rect
+              x={0}
+              y={0}
+              width={innerWidth}
+              height={innerHeight}
+              fill="transparent"
+              onMouseMove={(e) => {
+                const box = e.currentTarget.getBoundingClientRect();
+                const mx = e.clientX - box.left;
+                const idx = nearestIndexByX(
+                  mx,
+                  xScale,
+                  rows,
+                  (r) => new Date(r.x)
+                );
+                if (idx >= 0) setHoverIndex(idx);
+              }}
+              onMouseLeave={() => setHoverIndex(null)}
+            />
 
-              {hoverIndex != null && hoveredX != null && (
-                <line
-                  x1={xScale(new Date(hoveredX))}
-                  x2={xScale(new Date(hoveredX))}
-                  y1={0}
-                  y2={innerHeight}
-                  stroke={theme.axis}
-                  strokeDasharray="3 3"
-                />
-              )}
-
-              <rect
-                x={0}
-                y={0}
-                width={innerWidth}
-                height={innerHeight}
-                fill="transparent"
-                onMouseMove={(e) => {
-                  const box = e.currentTarget.getBoundingClientRect();
-                  const mx = e.clientX - box.left;
-                  if (n <= 1) {
-                    setHoverIndex(0);
-                    return;
-                  }
-                  const idx = Math.round((mx / innerWidth) * (n - 1));
-                  setHoverIndex(Math.max(0, Math.min(n - 1, idx)));
-                }}
-                onMouseLeave={() => setHoverIndex(null)}
+            {hoverIndex != null && hoveredX != null && (
+              <SvgTooltip
+                x={xScale(new Date(hoveredX))}
+                innerWidth={innerWidth}
+                lines={[
+                  formatDayMonth(new Date(hoveredX)),
+                  ...series.map((s) => {
+                    const p = s.data[hoverIndex];
+                    return `${s.label}: ${
+                      p && p.y != null ? formatCompact(p.y) : "—"
+                    }`;
+                  }),
+                ]}
               />
-
-              {hoverIndex != null && hoveredX != null && (
-                <SvgTooltip
-                  x={xScale(new Date(hoveredX))}
-                  innerWidth={innerWidth}
-                  lines={[
-                    formatDayMonth(new Date(hoveredX)),
-                    ...series.map((s) => {
-                      const p = s.data[hoverIndex];
-                      return `${s.label}: ${
-                        p && p.y != null ? formatCompact(p.y) : "—"
-                      }`;
-                    }),
-                  ]}
-                />
-              )}
-            </>
-          );
-        }}
-      </ChartFrame>
-
-      {showLegend && (
-        <div style={{ paddingTop: 6 }}>
-          <Legend
-            items={series.map((s) => ({ label: s.label, color: color(s.id) }))}
-          />
-        </div>
-      )}
-    </div>
+            )}
+          </>
+        );
+      }}
+    </ChartContainer>
   );
 }

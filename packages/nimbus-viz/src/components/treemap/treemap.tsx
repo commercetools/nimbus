@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Treemap as VisxTreemap, hierarchy } from "@visx/hierarchy";
 import type { HierarchyRectangularNode } from "@visx/hierarchy";
 import { Group } from "@visx/group";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
@@ -67,13 +67,24 @@ export function Treemap({ width, height, data, ariaLabel }: TreemapProps) {
   if (width <= 0 || height <= 0 || (root.value ?? 0) <= 0) return null;
 
   const label = ariaLabel ?? `Treemap of ${root.leaves().length} segments`;
+  const table = {
+    columns: ["Segment", "Value", "Share"],
+    rows: root
+      .leaves()
+      .map((l) => [
+        l.data.name,
+        l.value ?? 0,
+        formatPercent((l.value ?? 0) / (root.value ?? 1)),
+      ]),
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 4, right: 4, bottom: 4, left: 4 }}
       ariaLabel={label}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => (
         <VisxTreemap<TreemapNode> root={root} size={[innerWidth, innerHeight]}>
@@ -150,6 +161,6 @@ export function Treemap({ width, height, data, ariaLabel }: TreemapProps) {
           )}
         </VisxTreemap>
       )}
-    </ChartFrame>
+    </ChartContainer>
   );
 }
