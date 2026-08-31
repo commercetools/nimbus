@@ -15,6 +15,7 @@ import { extractStyleProps } from "@/utils";
  * TimeInput
  * ============================================================
  * allows entering a time in the currently selected locale
+ * @supportsStyleProps
  */
 export const TimeInput = (props: TimeInputProps) => {
   const recipe = useRecipe({ recipe: timeInputRecipe });

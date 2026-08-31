@@ -1,9 +1,24 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { getRouteData } from "../data-loader.js";
+import {
+  getRouteData,
+  getRouteManifest,
+  getStylePropsSummary,
+} from "../data-loader.js";
+import { componentSupportsStyleProps } from "./get-component.js";
 import type { DocsPageResult } from "../types.js";
 import { stripMarkdown } from "../utils/markdown.js";
 import { routePathToSlug } from "../utils/route.js";
+
+// ---------------------------------------------------------------------------
+// Style props constants
+// ---------------------------------------------------------------------------
+
+const STYLE_PROPS_HINT =
+  'Also accepts style props. Use get_docs_page(path: "home/style-props") for full reference.';
+
+/** Route prefix that identifies component documentation pages. */
+const COMPONENT_ROUTE_PREFIX = "components/";
 
 const viewContentCache = new WeakMap<object, string>();
 
@@ -14,6 +29,64 @@ function getCachedStripped(viewObj: { mdx: string }): string {
     viewContentCache.set(viewObj, cached);
   }
   return cached;
+}
+
+// ---------------------------------------------------------------------------
+// Style props helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Enriches the style-props landing page content with a compact prop index
+ * from the pre-built summary. The original landing page is very short (~184
+ * chars); this makes it useful as a reference by appending all categories
+ * with their prop names and drill-down paths.
+ */
+async function enrichStylePropsLanding(content: string): Promise<string> {
+  try {
+    const summary = await getStylePropsSummary();
+    const lines = summary.categories.map(
+      (c) => `${c.name} (${c.path}): ${c.props.join(", ")}`
+    );
+    return (
+      content +
+      "\n\n--- Style Props Index ---\n" +
+      lines.join("\n") +
+      `\n\n${summary.hint}`
+    );
+  } catch {
+    return content;
+  }
+}
+
+/**
+ * Resolves a component route to its exportName from the route manifest.
+ * Returns undefined for non-component routes.
+ */
+async function resolveExportName(route: string): Promise<string | undefined> {
+  if (!route.startsWith(COMPONENT_ROUTE_PREFIX)) return undefined;
+  try {
+    const manifest = await getRouteManifest();
+    const entry = manifest.routes.find((r) => r.path === `/${route}`);
+    return entry?.exportName ?? entry?.title;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Adds the styleProps hint to a DocsPageResult if the component at the given
+ * route supports style props.
+ */
+async function maybeAddStylePropsHint(
+  result: DocsPageResult,
+  route: string
+): Promise<void> {
+  const exportName = await resolveExportName(route);
+  if (!exportName) return;
+
+  if (await componentSupportsStyleProps(exportName)) {
+    result.styleProps = STYLE_PROPS_HINT;
+  }
 }
 
 export function registerGetDocsPage(server: McpServer): void {
@@ -83,6 +156,10 @@ export function registerGetDocsPage(server: McpServer): void {
             sections: availableSections,
             content: getCachedStripped(view),
           };
+
+          // Add styleProps hint for component pages
+          await maybeAddStylePropsHint(result, meta.route);
+
           return {
             content: [{ type: "text" as const, text: JSON.stringify(result) }],
           };
@@ -99,6 +176,11 @@ export function registerGetDocsPage(server: McpServer): void {
           content = meta.description;
         }
 
+        // Enrich the style-props landing page with a compact prop index
+        if (meta.route === "home/style-props") {
+          content = await enrichStylePropsLanding(content);
+        }
+
         const result: DocsPageResult = {
           title: meta.title,
           description: meta.description,
@@ -106,6 +188,10 @@ export function registerGetDocsPage(server: McpServer): void {
           sections: availableSections,
           content,
         };
+
+        // Add styleProps hint for component pages
+        await maybeAddStylePropsHint(result, meta.route);
+
         return {
           content: [{ type: "text" as const, text: JSON.stringify(result) }],
         };

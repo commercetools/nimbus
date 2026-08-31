@@ -1063,3 +1063,26 @@ describe("migrate_from_uikit — structured migration guidance", () => {
     expect(note).toBeDefined();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Style props hint
+// ---------------------------------------------------------------------------
+
+describe("migrate_from_uikit — styleProps hint", () => {
+  it("includes styleProps hint when the Nimbus target supports style props (Avatar)", async () => {
+    const result = await callMigrate({ componentName: "Avatar" });
+    expect(result.isError).toBeFalsy();
+    const data = JSON.parse(getText(result));
+    expect(data.styleProps).toBeDefined();
+    expect(data.styleProps).toContain("style props");
+    expect(data.styleProps).toContain("get_docs_page");
+  });
+
+  it("includes styleProps for PrimaryButton → Button (Button now tagged)", async () => {
+    const result = await callMigrate({ componentName: "PrimaryButton" });
+    expect(result.isError).toBeFalsy();
+    const data = JSON.parse(getText(result));
+    expect(data.styleProps).toBeDefined();
+    expect(data.styleProps).toContain("style props");
+  });
+});

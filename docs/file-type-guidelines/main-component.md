@@ -1051,10 +1051,11 @@ export const ComponentName = (props: ComponentNameProps) => {
 };
 ```
 
-**When Required** - Add this tag if the component supports Chakra UI style props
+**When Required** — Add this tag if the component supports Chakra UI style props
 through ANY of these patterns:
 
 - ✅ Component type extends `HTMLChakraProps` (directly or via slot props)
+- ✅ Component type extends `RecipeVariantProps`
 - ✅ Component uses `extractStyleProps()` and forwards style props to slot
   components
 - ✅ Component forwards all props to an underlying Chakra/Nimbus component that
@@ -1063,6 +1064,10 @@ through ANY of these patterns:
 
 **Key Indicator**: If users can pass `margin`, `padding`, `backgroundColor`, or
 other Chakra style props to your component and they work, add the tag.
+
+**For compound components**: Only tag the **implementation files** (e.g.,
+`card.root.tsx`, `card.body.tsx`). No tag is needed on the barrel namespace
+(`card.tsx`).
 
 **Applies To**:
 

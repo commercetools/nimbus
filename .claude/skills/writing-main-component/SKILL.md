@@ -285,7 +285,9 @@ guideline references.
   - Link placed BEFORE `@example` block
 - [ ] **@example block**: JSDoc includes `@example` block showing typical usage
 - [ ] **@supportsStyleProps tag**: `@supportsStyleProps` tag present if
-      component accepts Chakra UI style props
+      component accepts Chakra UI style props (extends `HTMLChakraProps`,
+      `RecipeVariantProps`, or forwards props to a styled component).
+      For compound components, only tag the implementation files.
 - [ ] **Compound parts JSDoc**: For compound components, EACH part has JSDoc in
       main file (NOT implementation files)
 - [ ] **Part heading**: Each compound part's JSDoc includes heading:

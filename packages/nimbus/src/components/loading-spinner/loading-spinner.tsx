@@ -15,6 +15,7 @@ const pointerPath =
  * Indicates ongoing processes or loading states
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/loadingspinner}
+ * @supportsStyleProps
  */
 export const LoadingSpinner = (props: LoadingSpinnerProps) => {
   const msg = useLocalizedStringFormatter(loadingSpinnerMessagesStrings);

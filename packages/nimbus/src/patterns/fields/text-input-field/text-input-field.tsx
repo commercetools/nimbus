@@ -24,6 +24,7 @@ import { FormField, FieldErrors } from "@/components";
  *   isRequired
  * />
  * ```
+ * @supportsStyleProps
  */
 
 export const TextInputField = ({

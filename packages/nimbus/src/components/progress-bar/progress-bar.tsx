@@ -32,6 +32,7 @@ import type { ProgressBarProps } from "./progress-bar.types";
  * - Accepts all native HTML div attributes
  * - Supports variants, sizes, etc. configured in the recipe
  * - Allows overriding styles by using style-props
+ * @supportsStyleProps
  */
 export const ProgressBar = (props: ProgressBarProps) => {
   const {

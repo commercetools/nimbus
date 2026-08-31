@@ -7,6 +7,13 @@ import { extractStyleProps } from "@/utils";
 import { toolbarRecipe } from "./toolbar.recipe.ts";
 import { Toolbar as RaToolbar } from "react-aria-components";
 
+/**
+ * # Toolbar
+ *
+ * A container for grouping a set of controls, such as buttons, toggle buttons, or menus.
+ *
+ * @supportsStyleProps
+ */
 export const Toolbar: ToolbarComponent = ({
   ref: forwardedRef,
   orientation = "horizontal",

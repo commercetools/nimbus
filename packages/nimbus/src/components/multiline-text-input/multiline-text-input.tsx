@@ -20,6 +20,7 @@ import { useAutogrow } from "./hooks";
  * A multiline text input component for capturing longer text content.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/forms/multiline-text-input}
+ * @supportsStyleProps
  */
 export const MultilineTextInput = (props: MultilineTextInputProps) => {
   const {

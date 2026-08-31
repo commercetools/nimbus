@@ -27,6 +27,7 @@ export type * from "./split-button.types";
  * with all available options.
  *
  * Use with Menu.Item, Menu.Section, and Separator components for content.
+ * @supportsStyleProps
  */
 export const SplitButton = (props: SplitButtonProps) => {
   const msg = useLocalizedStringFormatter(splitButtonMessagesStrings);

@@ -26,6 +26,7 @@ import { numberInputMessagesStrings } from "./number-input.messages";
  *
  * A number input allows users to enter numerical values and adjust them incrementally.
  * The locale for formatting comes from React Aria's I18nProvider context.
+ * @supportsStyleProps
  */
 export const NumberInput = (props: NumberInputProps) => {
   const {

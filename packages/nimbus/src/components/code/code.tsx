@@ -6,6 +6,7 @@ import { CodeRoot } from "./code.slots";
  * renders code blocks
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/typography/code}
+ * @supportsStyleProps
  *
  * @experimental This component is experimental and may change or be removed in future versions.
  */

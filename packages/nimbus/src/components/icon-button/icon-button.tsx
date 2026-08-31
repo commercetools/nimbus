@@ -12,6 +12,7 @@ declare const process: { env: Record<string, string | undefined> } | undefined;
  * displays a button with an icon only as child
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/iconbutton}
+ * @supportsStyleProps
  */
 export const IconButton = (props: IconButtonProps) => {
   const {

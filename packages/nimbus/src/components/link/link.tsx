@@ -10,6 +10,7 @@ import { mergeRefs } from "@/utils";
  * To allow a user to navigate to a different page or resource
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/navigation/link}
+ * @supportsStyleProps
  */
 export const Link = (props: LinkProps) => {
   const { as, asChild, children, ref: forwardedRef, ...rest } = props;

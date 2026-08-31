@@ -81,10 +81,11 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Button variant="ghost"> for flat styling. ' +
+      'Use <Button variant="ghost" size="sm"> for flat styling. ' +
+      "FlatButton renders compact — set size='sm' to match. " +
       "UI Kit tone prop ('primary'|'secondary'|'inverted'|'critical') maps to Nimbus colorPalette/variant.",
     breakingChanges: [
-      "Replace FlatButton with <Button>",
+      "Replace FlatButton with <Button variant='ghost' size='sm'>",
       "Default color changed: UI Kit FlatButton was blue (tone='primary') by default; Nimbus Button defaults to colorPalette='neutral' (gray). Add colorPalette='primary' to preserve the blue appearance.",
       "label prop replaced by children",
       "tone prop replaced by variant/colorPalette",
@@ -862,7 +863,8 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
     notes:
-      "Direct replacement. UI Kit value was string|number and onChange was ChangeEvent<HTMLInputElement>; " +
+      "Use NumberInputField (not NumberInput) when a label is needed — it's a pre-composed field with built-in label, description, and error handling (like TextInputField). " +
+      "UI Kit value was string|number and onChange was ChangeEvent<HTMLInputElement>; " +
       "Nimbus value is a number and onChange receives a number directly. min/max/step prop names unchanged.",
     breakingChanges: [
       "onChange now receives a number instead of ChangeEvent<HTMLInputElement>",
@@ -1258,12 +1260,16 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "variant",
     notes:
       'Use <LocalizedField type="text"> (the default type). ' +
-      "LocalizedField manages all locale inputs internally via its type prop.",
+      "LocalizedField manages all locale inputs internally via its type prop. " +
+      "It collapses non-default locales by default (matching UIKit's behavior) — " +
+      "do NOT set displayAllLocalesOrCurrencies unless you explicitly want all locales visible. " +
+      "LocalizedField supports style props — set width='100%' to fill its container (it doesn't stretch by default).",
     breakingChanges: [
       "Replace LocalizedTextInput with <LocalizedField> (type='text' is the default)",
       "selectedLanguage prop replaced by defaultLocaleOrCurrency",
       "value per locale replaced by valuesByLocaleOrCurrency object",
       "onChange receives a LocalizedFieldChangeEvent with target.locale",
+      "Collapse behavior is built in — do not add displayAllLocalesOrCurrencies",
     ],
     propMappings: [
       {
@@ -1339,11 +1345,14 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "variant",
     notes:
       'Use <LocalizedField type="multiLine">. ' +
-      "The type prop controls the input variant; no child composition needed.",
+      "The type prop controls the input variant; no child composition needed. " +
+      "Collapses non-default locales by default — do NOT set displayAllLocalesOrCurrencies. " +
+      "Set width='100%' to fill container (it doesn't stretch by default).",
     breakingChanges: [
       "Replace LocalizedMultilineTextInput with <LocalizedField type='multiLine'>",
       "selectedLanguage prop replaced by defaultLocaleOrCurrency",
       "value per locale replaced by valuesByLocaleOrCurrency object",
+      "Collapse behavior is built in — do not add displayAllLocalesOrCurrencies",
       "onChange receives a LocalizedFieldChangeEvent with target.locale",
     ],
     propMappings: [
@@ -1622,7 +1631,9 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     notes:
       "Rename to Badge. UI Kit used a tone prop; Nimbus uses colorPalette instead. " +
       "UI Kit tones: 'critical'|'warning'|'positive'|'information'|'primary'|'secondary'. " +
-      "Nimbus colorPalette values: 'critical'|'warning'|'positive'|'info'|'primary'|'neutral'.",
+      "Nimbus colorPalette values: 'critical'|'warning'|'positive'|'info'|'primary'|'neutral'. " +
+      "Badge supports style props — use size='sm' or size='2xs' for compact contexts like table cells, " +
+      "and style props like px, py, fontSize for further tuning.",
     breakingChanges: [
       "Rename to Badge",
       "Default color changed: UI Kit Stamp was blue (tone='information') by default; Nimbus Badge defaults to colorPalette='neutral' (gray). Add colorPalette='info' to preserve the blue appearance.",
@@ -1735,7 +1746,11 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
     notes:
-      "Direct replacement. Column definitions require DataTableColumnItem<RowType>[] generic typing. Sort and selection callbacks have new signatures.",
+      "Direct replacement. Column definitions require DataTableColumnItem<RowType>[] generic typing. Sort and selection callbacks have new signatures. " +
+      "Set allowsPinning={false} unless you need row pinning (UIKit DataTable had no pin column). " +
+      "For sticky header with vertical scrolling, set maxHeight on the DataTable. " +
+      "Horizontal scroll shadows are automatic — they appear when the table overflows its container width. " +
+      "DataTable supports style props, so set maxW directly on it to constrain width and trigger horizontal scrolling.",
     breakingChanges: [
       "columns prop shape changed: key→id, label→header, accessor required (returns cell content, can be string or JSX)",
       "DataTableColumnItem<T> is generic — without <T> accessors return unknown and TS rejects them as ReactNode",
@@ -1976,10 +1991,21 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus-tokens",
     mappingType: "pattern",
     notes:
-      "Replace Constraints.Horizontal with maxWidth design tokens or the Box/Container component.",
+      "Replace <Constraints.Horizontal max={N}> with maxW on the appropriate container. " +
+      "Three approaches depending on context: " +
+      '(1) Single child: <Box maxW="TOKEN"> wrapper or maxW style prop on the child. ' +
+      '(2) Multiple constrained siblings in a row: put maxW on the parent <Stack direction="row"> ' +
+      'and use flex props on children to share the space proportionally (e.g. flex="2" for wider, flex="1" for narrower). ' +
+      "(3) Page-level constraint: maxW on the outermost container. " +
+      "UIKit max value → Nimbus size token: " +
+      "max=3→'3xs' (224px), max=4→'2xs' (256px), max=5→'xs' (320px), " +
+      "max=6→'xs' (320px), max=7→'sm' (384px), max=8→'sm' (384px), " +
+      "max=9→'md' (448px), max=10→'lg' (512px), max=11→'lg' (512px), " +
+      "max=12→'xl' (576px), max=13→'2xl' (672px), max=14→'2xl' (672px), " +
+      "max=15→'3xl' (768px), max=16→'3xl' (768px).",
     breakingChanges: [
-      "Remove Constraints.Horizontal",
-      "Use maxWidth prop with design token values on Box or Container",
+      "Remove Constraints.Horizontal wrapper",
+      "Use maxW with Nimbus size tokens (see notes for lookup table and three approaches)",
     ],
     layoutGuidance: LAYOUT_NESTING_GUIDANCE,
   },
@@ -1988,10 +2014,14 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     nimbusEquivalent: "Stack",
     importPath: "@commercetools/nimbus",
     mappingType: "pattern",
-    notes: 'Use <Stack direction="row" gap={...}> with nimbus spacing tokens.',
+    notes:
+      'Use <Stack direction="row" gap={...}> with nimbus spacing tokens. ' +
+      "Add flexWrap='wrap' when the row contains multiple form inputs or constrained children " +
+      "that may overflow at narrow viewport widths.",
     breakingChanges: [
       "Replace Spacings.Inline with <Stack direction='row'>",
       "Spacing values use design token scale (e.g. gap='300')",
+      "Add flexWrap='wrap' for rows with multiple inputs to prevent overflow",
     ],
     layoutGuidance: LAYOUT_NESTING_GUIDANCE,
   },
@@ -2064,7 +2094,8 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "direct",
     notes:
       "Rename to Accordion. Uses Accordion.Root, Accordion.Item, Accordion.Header, Accordion.Content composition. " +
-      "UI Kit used isClosed (controlled) + onToggle; the header was a prop, not a child slot.",
+      "UI Kit used isClosed (controlled) + onToggle; the header was a prop, not a child slot. " +
+      'Set size="sm" on Accordion.Root to match UIKit CollapsiblePanel\'s compact header sizing.',
     breakingChanges: [
       "Rename to Accordion",
       "Adopt compositional slot API (Accordion.Root, Accordion.Item, Accordion.Header, Accordion.Content)",
@@ -2179,36 +2210,61 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
   },
   {
     uiKitName: "Text.Headline",
-    nimbusEquivalent: "Text",
+    nimbusEquivalent: "Heading",
     importPath: "@commercetools/nimbus",
-    mappingType: "variant",
-    notes: 'Use <Text size="2xl" fontWeight="bold"> or the Heading component.',
+    mappingType: "direct",
+    notes:
+      'Use <Heading as="h1" size="lg"> for page titles, or <Heading as="h2" size="md"> for section headings. ' +
+      "Heading supports style props — use them for spacing (e.g. mb, mt) instead of wrapper elements.",
     breakingChanges: [
-      "Replace Text.Headline with <Text size='2xl' fontWeight='bold'> or <Heading>",
+      "Replace Text.Headline with <Heading>",
+      "Set the appropriate heading level via the as prop (h1–h6) for semantic HTML",
+      "Set size prop to match visual hierarchy: 'lg' for page titles, 'md' for sections",
     ],
     propMappings: [
       {
         uiKitProp: "_component",
-        nimbusProp: null,
+        nimbusProp: "size",
         changeType: "value-mapping",
-        fixedValue: "2xl",
-        notes: "Also set fontWeight='bold', or use <Heading> instead.",
+        fixedValue: "lg",
+        notes: "Use size='lg' for page titles, 'md' for section headings.",
+      },
+      {
+        uiKitProp: "as",
+        nimbusProp: "as",
+        changeType: "rename",
+        notes: "Keep the same heading level (h1, h2, etc.).",
       },
     ],
   },
   {
     uiKitName: "Text.Subheadline",
-    nimbusEquivalent: "Text",
+    nimbusEquivalent: "Heading",
     importPath: "@commercetools/nimbus",
-    mappingType: "variant",
-    notes: 'Use <Text size="xl">.',
-    breakingChanges: ["Replace Text.Subheadline with <Text size='xl'>"],
+    mappingType: "direct",
+    notes:
+      'Use <Heading as="h4" size="xs" fontWeight="medium"> for subheadings like card titles and accordion labels. ' +
+      "UIKit Subheadline used a medium weight — Heading defaults to bold, so set fontWeight explicitly. " +
+      "Heading supports style props — use them for spacing instead of wrapper elements.",
+    breakingChanges: [
+      "Replace Text.Subheadline with <Heading>",
+      "Set the appropriate heading level via the as prop",
+      "Set size='xs' and fontWeight='medium' for subheading-level text",
+    ],
     propMappings: [
       {
         uiKitProp: "_component",
-        nimbusProp: null,
+        nimbusProp: "size",
         changeType: "value-mapping",
-        fixedValue: "xl",
+        fixedValue: "xs",
+        notes:
+          "Use size='xs' for subheadings, 'md' if slightly larger is needed.",
+      },
+      {
+        uiKitProp: "as",
+        nimbusProp: "as",
+        changeType: "rename",
+        notes: "Keep the same heading level (h3, h4, etc.).",
       },
     ],
   },

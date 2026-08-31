@@ -101,6 +101,7 @@ import { moneyInputMessagesStrings } from "./money-input.messages";
  * - **Automatic locale formatting** using React Aria NumberField
  * - **Accessibility compliant** following WCAG 2.1 AA standards
  * - **Dual API support** for backward compatibility and modern development
+ * @supportsStyleProps
  */
 export const MoneyInput = (props: MoneyInputProps) => {
   const {
