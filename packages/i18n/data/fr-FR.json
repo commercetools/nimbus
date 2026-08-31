@@ -33,7 +33,7 @@
   },
   "Nimbus.ChatMessageList.scrollToBottom": {
     "developer_comment": "aria-label for the control that jumps to the newest message in a chat transcript",
-    "string": "Scroll to latest message"
+    "string": "Faire défiler jusqu'au dernier message"
   },
   "Nimbus.ComboBox.clearSelection": {
     "developer_comment": "aria-label for clear selection button in ComboBox",
@@ -61,7 +61,7 @@
   },
   "Nimbus.DataTable.collapseRow": {
     "developer_comment": "aria-label for the collapse button on an expanded row",
-    "string": "Collapse"
+    "string": "Réduire"
   },
   "Nimbus.DataTable.comfortable": {
     "developer_comment": "title for the comfortable togglebutton in the data table manager layout",
@@ -101,7 +101,7 @@
   },
   "Nimbus.DataTable.expandRow": {
     "developer_comment": "aria-label for the expand button on a collapsed row",
-    "string": "Expand"
+    "string": "Développer"
   },
   "Nimbus.DataTable.expandRows": {
     "developer_comment": "aria-label for the expand rows column header",
@@ -137,7 +137,7 @@
   },
   "Nimbus.DataTable.nestedContentRow": {
     "developer_comment": "aria-label for the nested content row that expands below a data row",
-    "string": "Details for row {rowId}"
+    "string": "Détails de la ligne {rowId}"
   },
   "Nimbus.DataTable.noHiddenColumns": {
     "developer_comment": "message when there is no hidden columns in the data table manager",
@@ -665,7 +665,7 @@
   },
   "Nimbus.Splitter.resizePanes": {
     "developer_comment": "Default aria-label for the Splitter handle that users drag to redistribute space between the two panes.",
-    "string": "Resize panes"
+    "string": "Modifier la taille du volet"
   },
   "Nimbus.TagGroup.removeTag": {
     "developer_comment": "aria-label for remove tag button",
