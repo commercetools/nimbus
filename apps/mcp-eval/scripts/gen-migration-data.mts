@@ -4,12 +4,16 @@ import { createServer } from "@commercetools/nimbus-mcp";
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 
-const SCRATCHPAD = "/private/tmp/claude-502/-Users-byronwall-workspaces-ct-nimbus/e5afdf5b-b126-4d98-8836-7810a4d3620c/scratchpad";
+const SCRATCHPAD =
+  "/private/tmp/claude-502/-Users-byronwall-workspaces-ct-nimbus/e5afdf5b-b126-4d98-8836-7810a4d3620c/scratchpad";
 
 async function main() {
   const server = createServer();
   const [ct, st] = InMemoryTransport.createLinkedPair();
-  const client = new Client({ name: "gen", version: "1.0.0" }, { capabilities: {} });
+  const client = new Client(
+    { name: "gen", version: "1.0.0" },
+    { capabilities: {} }
+  );
   await server.connect(st);
   await client.connect(ct);
 
@@ -22,7 +26,10 @@ async function main() {
       name: "migrate_from_uikit",
       arguments: { filePath: resolve(file) },
     });
-    const text = (result.content as Array<{type: string; text: string}>).find(c => c.type === "text")?.text ?? "";
+    const text =
+      (result.content as Array<{ type: string; text: string }>).find(
+        (c) => c.type === "text"
+      )?.text ?? "";
     const outPath = `${SCRATCHPAD}/mcp-migration-${name}.json`;
     writeFileSync(outPath, JSON.stringify(JSON.parse(text), null, 2));
     console.log(`Wrote ${outPath} (${text.length} chars)`);

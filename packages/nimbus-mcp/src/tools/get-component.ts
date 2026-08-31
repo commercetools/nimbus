@@ -188,31 +188,7 @@ async function findSubComponentFiles(exportName: string): Promise<string[]> {
  * For compound components (e.g. Drawer → DrawerRoot, DrawerContent, …),
  * the top-level type file has no props. This function finds all sub-component
  * type files matching `${exportName}*.json`, aggregates their filtered props,
- * and tags each prop with the sub-component name.
- */
-async function aggregateSubComponentProps(
-  exportName: string
-): Promise<FilteredProp[]> {
-  const subFiles = await findSubComponentFiles(exportName);
-
-  const settled = await Promise.allSettled(
-    subFiles.map(async (file) => {
-      const subName = file.replace(/\.json$/, "");
-      const typeData = await getTypeData(subName);
-      return filterProps(typeData).map((p) => ({
-        ...p,
-        subComponent: subName,
-      }));
-    })
-  );
-
-  return settled
-    .filter((r) => r.status === "fulfilled")
-    .flatMap((r) => (r as PromiseFulfilledResult<FilteredProp[]>).value);
-}
-
-/**
- * Extended version of `aggregateSubComponentProps` that also tracks which
+ * and tags each prop with the sub-component name. Also tracks which
  * sub-components accept style props.
  */
 async function aggregateSubComponentPropsWithStyleInfo(

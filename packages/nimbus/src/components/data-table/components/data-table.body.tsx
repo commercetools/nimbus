@@ -73,7 +73,6 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
     // Stable identity — delegates through refs so RaTableBody never
     // unmounts/remounts rows due to a new render-function reference.
     // Row re-renders are driven by RaTableBody's `dependencies` array.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 

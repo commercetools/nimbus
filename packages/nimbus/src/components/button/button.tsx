@@ -122,9 +122,8 @@ export const Button: typeof ButtonComponent & {
    * For advanced use cases, **you generally will not need this**
    *
    * @see {@link https://react-spectrum.adobe.com/react-aria/advanced.html#contexts}
- * @supportsStyleProps
    * @see {@link https://react-spectrum.adobe.com/react-aria/Button.html#contexts}
- * @supportsStyleProps
+   * @supportsStyleProps
    */
   Context: typeof ButtonContext;
 } = Object.assign(ButtonComponent, {

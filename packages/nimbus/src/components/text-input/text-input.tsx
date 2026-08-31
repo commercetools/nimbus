@@ -149,9 +149,8 @@ export const TextInput: typeof TextInputComponent & {
    * For advanced use cases, **you generally will not need this**
    *
    * @see {@link https://react-spectrum.adobe.com/react-aria/advanced.html#contexts}
- * @supportsStyleProps
    * @see {@link https://react-spectrum.adobe.com/react-aria/TextField.html#custom-children}
- * @supportsStyleProps
+   * @supportsStyleProps
    */
   Context: Context<TextInputContextValue | null>;
 } = Object.assign(TextInputComponent, {

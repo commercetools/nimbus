@@ -44,10 +44,8 @@ import {
   PlusBoldIcon,
   FilterIcon,
   ExportIcon,
-  SearchIcon,
   BinLinearIcon,
   EditIcon,
-  SortingIcon,
   RefreshIcon,
 } from "@commercetools-frontend/ui-kit";
 
@@ -174,6 +172,7 @@ export function ProductListView() {
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [showOnlyActive, setShowOnlyActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [page, setPage] = useState(1);
   const perPage = 20;

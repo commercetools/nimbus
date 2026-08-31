@@ -18,7 +18,6 @@
 import React, { useState, useCallback } from "react";
 import {
   TextField,
-  MultilineTextField,
   LocalizedTextInput,
   LocalizedMultilineTextInput,
   MoneyInput,
@@ -41,7 +40,6 @@ import {
   BackIcon,
   CheckBoldIcon,
   CloseBoldIcon,
-  InformationIcon,
   WarningIcon,
 } from "@commercetools-frontend/ui-kit";
 
@@ -111,6 +109,7 @@ export function ProductDetailForm() {
     status: "published",
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [errors, setErrors] = useState<Record<string, Record<string, string>>>(
     {}
   );
