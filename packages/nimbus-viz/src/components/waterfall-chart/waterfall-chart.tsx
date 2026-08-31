@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import {
   GridRows,
   bottomTickLabel,
@@ -75,13 +75,18 @@ export function WaterfallChart({
   if (width <= 0 || height <= 0 || data.length === 0) return null;
 
   const label = ariaLabel ?? `Waterfall of ${data.length} steps`;
+  const table = {
+    columns: ["Step", "Value", "Running total"],
+    rows: bars.map((b) => [b.step.label, b.step.value, b.to]),
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 20, right: 12, bottom: 28, left: 44 }}
       ariaLabel={label}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleBand({
@@ -198,6 +203,6 @@ export function WaterfallChart({
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

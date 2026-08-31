@@ -4,7 +4,13 @@ export type {
   ChartTheme,
   ChartThemeName,
 } from "./roles";
-export { resolveRoles, resolveTheme, THEMES } from "./roles";
+export {
+  resolveRoles,
+  resolveTheme,
+  registerTheme,
+  coerceColorMode,
+  THEMES,
+} from "./roles";
 export { sequentialColor, divergingColor } from "./sequential";
 export {
   createColorScale,

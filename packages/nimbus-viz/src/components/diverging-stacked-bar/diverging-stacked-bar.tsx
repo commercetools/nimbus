@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { scaleBand, scaleLinear } from "@visx/scale";
-import { ChartFrame } from "../../chart/chart-frame";
-import { Legend } from "../../chart/legend";
+import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { divergingColor, useChartTheme } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
@@ -68,110 +67,109 @@ export function DivergingStackedBar({
 
   if (width <= 0 || height <= 0 || data.length === 0 || n === 0) return null;
 
-  const legendHeight = 26;
-  const chartHeight = height - legendHeight;
   const label =
     ariaLabel ?? `Diverging stacked bar of ${data.length} categories`;
+  const table = {
+    columns: ["Category", ...keys],
+    rows: data.map((row) => [
+      row.category,
+      ...keys.map((k) => row.segments.find((s) => s.key === k)?.value ?? 0),
+    ]),
+  };
 
   return (
-    <div style={{ width, height }}>
-      <ChartFrame
-        width={width}
-        height={chartHeight}
-        margin={{ top: 8, right: 16, bottom: 12, left: 100 }}
-        ariaLabel={label}
-      >
-        {({ innerWidth, innerHeight }) => {
-          const yScale = scaleBand({
-            domain: data.map((d) => d.category),
-            range: [0, innerHeight],
-            padding: 0.25,
-          });
-          const xScale = scaleLinear({
-            domain: [-(maxLeft || 1), maxRight || 1],
-            range: [0, innerWidth],
-            nice: true,
-          });
-          const zero = xScale(0);
-          const bh = yScale.bandwidth();
-          const hovered =
-            hover != null ? data[hover.r]?.segments[hover.s] : null;
-          const hoveredRow = hover != null ? data[hover.r] : null;
-          const rowTotal =
-            hoveredRow?.segments.reduce((s, seg) => s + seg.value, 0) ?? 0;
-          return (
-            <>
-              <line
-                x1={zero}
-                x2={zero}
-                y1={0}
-                y2={innerHeight}
-                stroke={theme.axis}
+    <ChartContainer
+      width={width}
+      height={height}
+      margin={{ top: 8, right: 16, bottom: 12, left: 100 }}
+      ariaLabel={label}
+      legend={keys.map((key, i) => ({ label: key, color: colorFor(i) }))}
+      table={table}
+    >
+      {({ innerWidth, innerHeight }) => {
+        const yScale = scaleBand({
+          domain: data.map((d) => d.category),
+          range: [0, innerHeight],
+          padding: 0.25,
+        });
+        const xScale = scaleLinear({
+          domain: [-(maxLeft || 1), maxRight || 1],
+          range: [0, innerWidth],
+          nice: true,
+        });
+        const zero = xScale(0);
+        const bh = yScale.bandwidth();
+        const hovered = hover != null ? data[hover.r]?.segments[hover.s] : null;
+        const hoveredRow = hover != null ? data[hover.r] : null;
+        const rowTotal =
+          hoveredRow?.segments.reduce((s, seg) => s + seg.value, 0) ?? 0;
+        return (
+          <>
+            <line
+              x1={zero}
+              x2={zero}
+              y1={0}
+              y2={innerHeight}
+              stroke={theme.axis}
+            />
+            {data.map((row, r) => {
+              const y = yScale(row.category) ?? 0;
+              let off = 0;
+              row.segments.forEach((seg, i) => {
+                if (i < mid) off += seg.value;
+                else if (odd && i === mid) off += seg.value / 2;
+              });
+              let acc = -off;
+              return (
+                <g key={row.category}>
+                  {row.segments.map((seg, s) => {
+                    const x0 = xScale(acc);
+                    acc += seg.value;
+                    const x1 = xScale(acc);
+                    const active =
+                      hover == null || (hover.r === r && hover.s === s);
+                    return (
+                      <rect
+                        key={seg.key}
+                        x={Math.min(x0, x1)}
+                        y={y}
+                        width={Math.max(0, Math.abs(x1 - x0) - 1)}
+                        height={bh}
+                        fill={colorFor(s)}
+                        opacity={active ? 1 : 0.4}
+                        onMouseEnter={() => setHover({ r, s })}
+                        onMouseLeave={() => setHover(null)}
+                      />
+                    );
+                  })}
+                  <text
+                    x={-8}
+                    y={y + bh / 2}
+                    dy="0.32em"
+                    textAnchor="end"
+                    style={emText(11)}
+                    fill={theme.mutedInk}
+                  >
+                    {row.category}
+                  </text>
+                </g>
+              );
+            })}
+            {hovered && hoveredRow && (
+              <SvgTooltip
+                x={zero}
+                innerWidth={innerWidth}
+                top={Math.max(0, (yScale(hoveredRow.category) ?? 0) - 4)}
+                lines={[
+                  `${hoveredRow.category} · ${hovered.key}`,
+                  formatCompact(hovered.value),
+                  `${formatPercent(rowTotal > 0 ? hovered.value / rowTotal : 0)} of responses`,
+                ]}
               />
-              {data.map((row, r) => {
-                const y = yScale(row.category) ?? 0;
-                let off = 0;
-                row.segments.forEach((seg, i) => {
-                  if (i < mid) off += seg.value;
-                  else if (odd && i === mid) off += seg.value / 2;
-                });
-                let acc = -off;
-                return (
-                  <g key={row.category}>
-                    {row.segments.map((seg, s) => {
-                      const x0 = xScale(acc);
-                      acc += seg.value;
-                      const x1 = xScale(acc);
-                      const active =
-                        hover == null || (hover.r === r && hover.s === s);
-                      return (
-                        <rect
-                          key={seg.key}
-                          x={Math.min(x0, x1)}
-                          y={y}
-                          width={Math.max(0, Math.abs(x1 - x0) - 1)}
-                          height={bh}
-                          fill={colorFor(s)}
-                          opacity={active ? 1 : 0.4}
-                          onMouseEnter={() => setHover({ r, s })}
-                          onMouseLeave={() => setHover(null)}
-                        />
-                      );
-                    })}
-                    <text
-                      x={-8}
-                      y={y + bh / 2}
-                      dy="0.32em"
-                      textAnchor="end"
-                      style={emText(11)}
-                      fill={theme.mutedInk}
-                    >
-                      {row.category}
-                    </text>
-                  </g>
-                );
-              })}
-              {hovered && hoveredRow && (
-                <SvgTooltip
-                  x={zero}
-                  innerWidth={innerWidth}
-                  top={Math.max(0, (yScale(hoveredRow.category) ?? 0) - 4)}
-                  lines={[
-                    `${hoveredRow.category} · ${hovered.key}`,
-                    formatCompact(hovered.value),
-                    `${formatPercent(rowTotal > 0 ? hovered.value / rowTotal : 0)} of responses`,
-                  ]}
-                />
-              )}
-            </>
-          );
-        }}
-      </ChartFrame>
-      <div style={{ paddingTop: 6 }}>
-        <Legend
-          items={keys.map((key, i) => ({ label: key, color: colorFor(i) }))}
-        />
-      </div>
-    </div>
+            )}
+          </>
+        );
+      }}
+    </ChartContainer>
   );
 }

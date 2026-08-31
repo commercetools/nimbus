@@ -8,8 +8,58 @@ export * from "./theme";
 export * from "./chart/types";
 export { ChartFrame } from "./chart/chart-frame";
 export type { ChartFrameProps, InnerDims } from "./chart/chart-frame";
+export { ChartContainer } from "./chart/chart-container";
+export type { ChartContainerProps } from "./chart/chart-container";
 export { Legend } from "./chart/legend";
 export type { LegendItem } from "./chart/legend";
+export {
+  DATA_END_RADIUS,
+  SURFACE_GAP,
+  MIN_MARKER,
+  SERIES_STROKE,
+  LEGEND_HEIGHT,
+  GRADIENT_LEGEND_HEIGHT,
+  MARGINS,
+} from "./chart/marks";
+export type { MarginPreset } from "./chart/marks";
+export { makeValueScale } from "./chart/scales";
+export type { ValueScaleKind, ValueScaleConfig } from "./chart/scales";
+export { useReducedMotion, MOTION } from "./chart/use-reduced-motion";
+export { useForcedColors } from "./chart/use-forced-colors";
+export {
+  createFormatters,
+  ChartLocaleProvider,
+  useChartFormatters,
+} from "./chart/format-locale";
+export type {
+  ChartFormatters,
+  ChartFormatOptions,
+  ChartLocaleProviderProps,
+} from "./chart/format-locale";
+export { ChartPatternDefs, patternFill } from "./chart/patterns";
+export type { ChartPatternDefsProps, PatternKind } from "./chart/patterns";
+export { FacetGrid } from "./chart/facet-grid";
+export type { FacetGridProps, Facet } from "./chart/facet-grid";
+export { lttb } from "./chart/decimate";
+export type { XYPoint } from "./chart/decimate";
+export { Brush, orderRange } from "./chart/brush";
+export type { BrushProps } from "./chart/brush";
+export { useControlledSelection } from "./chart/interaction";
+export type {
+  DatumEvent,
+  DatumClickHandler,
+  DatumHoverHandler,
+  SelectionChangeHandler,
+  InteractionProps,
+} from "./chart/interaction";
+export { nearestIndexByX } from "./chart/nearest-x";
+export type { InvertibleScale } from "./chart/nearest-x";
+
+// Statistical helpers (regression, control limits, KDE, five-number summary).
+export * as stats from "./stats";
+
+// Composed dashboard recipes.
+export * from "./recipes";
 export {
   GridRows,
   leftTickLabel,

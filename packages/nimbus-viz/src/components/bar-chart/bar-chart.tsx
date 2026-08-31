@@ -4,7 +4,7 @@ import { scaleBand, scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { max } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import {
   GridRows,
@@ -60,14 +60,19 @@ export function BarChart({
   if (width <= 0 || height <= 0 || rows.length === 0) return null;
 
   const label = ariaLabel ?? `Bar chart of ${rows.length} categories`;
+  const table = {
+    columns: ["Category", "Value"],
+    rows: rows.map((d) => [d.category, d.value]),
+  };
 
   if (orientation === "horizontal") {
     return (
-      <ChartFrame
+      <ChartContainer
         width={width}
         height={height}
         margin={{ top: 8, right: 48, bottom: 12, left: 100 }}
         ariaLabel={label}
+        table={table}
       >
         {({ innerWidth, innerHeight }) => {
           const yScale = scaleBand({
@@ -128,16 +133,17 @@ export function BarChart({
             </>
           );
         }}
-      </ChartFrame>
+      </ChartContainer>
     );
   }
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 12, right: 12, bottom: 28, left: 40 }}
       ariaLabel={label}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleBand({
@@ -217,6 +223,6 @@ export function BarChart({
           </ChartScaleProvider>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

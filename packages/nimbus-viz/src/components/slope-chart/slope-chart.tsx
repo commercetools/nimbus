@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { scaleLinear } from "@visx/scale";
 import { extent } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import {
@@ -84,12 +84,23 @@ export function SlopeChart({
 
   if (width <= 0 || height <= 0 || data.length === 0) return null;
 
+  const table = {
+    columns: ["Row", leftLabel ?? "Left", rightLabel ?? "Right", "Change"],
+    rows: data.map((d) => [
+      d.label,
+      d.left,
+      d.right,
+      formatSignedCompact(d.right - d.left),
+    ]),
+  };
+
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 30, right: 96, bottom: 12, left: 96 }}
       ariaLabel={ariaLabel ?? `Slope chart of ${data.length} rows`}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const yScale = scaleLinear({
@@ -227,6 +238,6 @@ export function SlopeChart({
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

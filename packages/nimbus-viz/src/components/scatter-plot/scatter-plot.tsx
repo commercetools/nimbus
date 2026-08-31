@@ -3,9 +3,8 @@ import type { ReactNode } from "react";
 import { scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { extent } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
-import { Legend } from "../../chart/legend";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
@@ -56,103 +55,99 @@ export function ScatterPlot({
   if (width <= 0 || height <= 0 || points.length === 0) return null;
 
   const showLegend = groups.length >= 2;
-  const legendHeight = showLegend ? 26 : 0;
-  const chartHeight = height - legendHeight;
   const colorFor = (p: ScatterPoint) =>
     p.group ? groupColor(p.group) : theme.accent;
+  const table = {
+    columns: ["Label", "x", "y", "Group"],
+    rows: points.map((p) => [p.label ?? "", p.x, p.y, p.group ?? ""]),
+  };
 
   return (
-    <div style={{ width, height }}>
-      <ChartFrame
-        width={width}
-        height={chartHeight}
-        margin={{ top: 12, right: 16, bottom: 28, left: 44 }}
-        ariaLabel={ariaLabel ?? `Scatter plot of ${points.length} points`}
-      >
-        {({ innerWidth, innerHeight }) => {
-          const xScale = scaleLinear({
-            domain: xDomain,
-            range: [0, innerWidth],
-            nice: true,
-          });
-          const yScale = scaleLinear({
-            domain: yDomain,
-            range: [innerHeight, 0],
-            nice: true,
-          });
-          const hp = hover != null ? points[hover] : null;
-          return (
-            <ChartScaleProvider
-              value={{
-                yScale: (v) => yScale(v),
-                xScale: (v) => xScale(v instanceof Date ? +v : v),
-                xBandwidth: 0,
-                innerWidth,
-                innerHeight,
-              }}
-            >
-              <GridRows
-                ticks={yScale.ticks(4)}
-                y={(t) => yScale(t)}
-                width={innerWidth}
+    <ChartContainer
+      width={width}
+      height={height}
+      margin={{ top: 12, right: 16, bottom: 28, left: 44 }}
+      ariaLabel={ariaLabel ?? `Scatter plot of ${points.length} points`}
+      legend={
+        showLegend
+          ? groups.map((g) => ({ label: g, color: groupColor(g) }))
+          : undefined
+      }
+      table={table}
+    >
+      {({ innerWidth, innerHeight }) => {
+        const xScale = scaleLinear({
+          domain: xDomain,
+          range: [0, innerWidth],
+          nice: true,
+        });
+        const yScale = scaleLinear({
+          domain: yDomain,
+          range: [innerHeight, 0],
+          nice: true,
+        });
+        const hp = hover != null ? points[hover] : null;
+        return (
+          <ChartScaleProvider
+            value={{
+              yScale: (v) => yScale(v),
+              xScale: (v) => xScale(v instanceof Date ? +v : v),
+              xBandwidth: 0,
+              innerWidth,
+              innerHeight,
+            }}
+          >
+            <GridRows
+              ticks={yScale.ticks(4)}
+              y={(t) => yScale(t)}
+              width={innerWidth}
+            />
+            <AxisLeft
+              scale={yScale}
+              numTicks={4}
+              hideAxisLine
+              hideTicks
+              tickFormat={(v) => formatCompact(v as number)}
+              tickLabelProps={leftTickLabel(theme)}
+            />
+            <AxisBottom
+              scale={xScale}
+              top={innerHeight}
+              numTicks={5}
+              stroke={theme.axis}
+              hideTicks
+              tickFormat={(v) => formatCompact(v as number)}
+              tickLabelProps={bottomTickLabel(theme)}
+            />
+            {points.map((p, i) => (
+              <circle
+                key={p.label ?? i}
+                cx={xScale(p.x)}
+                cy={yScale(p.y)}
+                r={hover === i ? 6 : 5}
+                fill={colorFor(p)}
+                fillOpacity={hover == null || hover === i ? 0.85 : 0.35}
+                stroke={theme.surface}
+                strokeWidth={1}
+                onMouseEnter={() => setHover(i)}
+                onMouseLeave={() => setHover(null)}
               />
-              <AxisLeft
-                scale={yScale}
-                numTicks={4}
-                hideAxisLine
-                hideTicks
-                tickFormat={(v) => formatCompact(v as number)}
-                tickLabelProps={leftTickLabel(theme)}
+            ))}
+            {children}
+            {hp && (
+              <SvgTooltip
+                x={xScale(hp.x)}
+                innerWidth={innerWidth}
+                lines={[
+                  hp.label ?? "Point",
+                  `x: ${formatCompact(hp.x)}`,
+                  `y: ${formatCompact(hp.y)}`,
+                ]}
               />
-              <AxisBottom
-                scale={xScale}
-                top={innerHeight}
-                numTicks={5}
-                stroke={theme.axis}
-                hideTicks
-                tickFormat={(v) => formatCompact(v as number)}
-                tickLabelProps={bottomTickLabel(theme)}
-              />
-              {points.map((p, i) => (
-                <circle
-                  key={p.label ?? i}
-                  cx={xScale(p.x)}
-                  cy={yScale(p.y)}
-                  r={hover === i ? 6 : 5}
-                  fill={colorFor(p)}
-                  fillOpacity={hover == null || hover === i ? 0.85 : 0.35}
-                  stroke={theme.surface}
-                  strokeWidth={1}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
-                />
-              ))}
-              {children}
-              {hp && (
-                <SvgTooltip
-                  x={xScale(hp.x)}
-                  innerWidth={innerWidth}
-                  lines={[
-                    hp.label ?? "Point",
-                    `x: ${formatCompact(hp.x)}`,
-                    `y: ${formatCompact(hp.y)}`,
-                  ]}
-                />
-              )}
-            </ChartScaleProvider>
-          );
-        }}
-      </ChartFrame>
-      {showLegend && (
-        <div style={{ paddingTop: 6 }}>
-          <Legend
-            items={groups.map((g) => ({
-              label: g,
-              color: groupColor(g),
-            }))}
-          />
-        </div>
-      )}
-    </div>
+            )}
+          </ChartScaleProvider>
+        );
+      }}
+    </ChartContainer>
   );
 }

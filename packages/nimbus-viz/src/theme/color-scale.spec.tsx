@@ -15,6 +15,8 @@ describe("createColorScale", () => {
   });
 
   it("appends an out-of-domain key without repainting existing entities", () => {
+    // "z" is a 4th distinct entity over a 3-color palette → overflow + one warn.
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const scale = createColorScale(["a", "b", "c"], CATS);
     const before = { a: scale("a"), b: scale("b"), c: scale("c") };
     const z = scale("z"); // first sighting → appended
@@ -23,6 +25,7 @@ describe("createColorScale", () => {
     expect(scale("c")).toBe(before.c);
     // stable on re-query
     expect(scale("z")).toBe(z);
+    warn.mockRestore();
   });
 
   it("is deterministic: same domain → same entity→color mapping", () => {
@@ -31,16 +34,43 @@ describe("createColorScale", () => {
     for (const k of ["x", "y", "z"]) expect(a(k)).toBe(b(k));
   });
 
-  it("cycles through the ramp when the domain exceeds the color count", () => {
+  it("does not cycle past the palette: extra entities get a neutral, not a repeated hue", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const scale = createColorScale(["a", "b", "c", "d"], CATS);
-    expect(scale("d")).toBe("#111111"); // wraps: index 3 % 3
+    // the first three keep their distinct hues in order…
+    expect(scale("a")).toBe("#111111");
+    expect(scale("b")).toBe("#222222");
+    expect(scale("c")).toBe("#333333");
+    // …the 4th must NOT wrap back to the 1st hue (the old `i % 3` bug)
+    expect(scale("d")).not.toBe("#111111");
+    expect(warn).toHaveBeenCalledTimes(1); // warns once when the palette is exhausted
+    warn.mockRestore();
+  });
+
+  it("uses the provided overflow color for entities past the palette", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const scale = createColorScale(["a", "b", "c", "d", "e"], CATS, {
+      overflow: "#999999",
+    });
+    expect(scale("d")).toBe("#999999");
+    expect(scale("e")).toBe("#999999"); // stable neutral, still not cycling
+    warn.mockRestore();
+  });
+
+  it("calls onOverflow once with the palette size when exceeded", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const onOverflow = vi.fn();
+    createColorScale(["a", "b", "c", "d", "e"], CATS, { onOverflow });
+    expect(onOverflow).toHaveBeenCalledTimes(1);
+    expect(onOverflow).toHaveBeenCalledWith(3);
+    warn.mockRestore();
   });
 });
 
 /** Reads the theme and exposes a couple of fields as data-attributes. */
 function Probe() {
   const t = useChartTheme();
-  return <span data-mode={t.mode} data-c0={t.categorical[0]} />;
+  return <span data-c0={t.categorical[0]} />;
 }
 
 describe("ChartThemeProvider / useChartTheme", () => {
@@ -57,7 +87,7 @@ describe("ChartThemeProvider / useChartTheme", () => {
       </ChartThemeProvider>
     );
     const span = container.querySelector("span");
-    expect(span?.getAttribute("data-mode")).toBe("dark");
+    // The dark categorical[0] proves the dark role set was resolved.
     expect(span?.getAttribute("data-c0")).toBe("#3987e5"); // dark blue slot
   });
 
@@ -68,7 +98,7 @@ describe("ChartThemeProvider / useChartTheme", () => {
       </ChartThemeProvider>
     );
     const span = container.querySelector("span");
-    expect(span?.getAttribute("data-mode")).toBe("light");
+    // The light categorical[0] proves the light role set was resolved.
     expect(span?.getAttribute("data-c0")).toBe("#2a78d6"); // light blue slot
   });
 });

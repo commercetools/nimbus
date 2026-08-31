@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { scaleLinear } from "@visx/scale";
 import { AxisBottom } from "@visx/axis";
 import { extent } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { bottomTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
@@ -72,12 +72,17 @@ export function BeeswarmPlot({
 
   const label = ariaLabel ?? `Beeswarm plot of ${values.length} samples`;
   const r = Math.max(2, 3 * chartScale(width, height));
+  const table = {
+    columns: ["#", "Value"],
+    rows: values.map((v, i) => [i + 1, v]),
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 12, right: 16, bottom: 28, left: 16 }}
+      table={table}
       ariaLabel={label}
     >
       {({ innerWidth, innerHeight }) => {
@@ -130,6 +135,6 @@ export function BeeswarmPlot({
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

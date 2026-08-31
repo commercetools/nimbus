@@ -52,3 +52,7 @@ export type { TelemetryRecord, TelemetrySink } from "./telemetry";
 // Fallback component (re-exported for convenience)
 export { DataTable } from "../components/data-table";
 export type { DataTableProps } from "../components/data-table";
+
+// Stability tiers
+export { chartStability, STABLE_CHARTS } from "./stability";
+export type { Stability } from "./stability";

@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
-import { ChartFrame } from "../../chart/chart-frame";
-import { Legend } from "../../chart/legend";
+import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useEntityColors } from "../../theme";
 import { formatPercent } from "../../chart/format";
@@ -73,72 +72,73 @@ export function WaffleChart({
 
   if (width <= 0 || height <= 0 || data.length === 0 || total <= 0) return null;
 
-  const legendHeight = 26;
-  const chartHeight = height - legendHeight;
+  const table = {
+    columns: ["Category", "Value", "Share"],
+    rows: data.map((d) => [
+      d.category,
+      d.value,
+      formatPercent(d.value / total),
+    ]),
+  };
   const activeShare =
     hover != null
       ? (data.find((d) => d.category === hover)?.value ?? 0) / total
       : null;
 
   return (
-    <div style={{ width, height }}>
-      <ChartFrame
-        width={width}
-        height={chartHeight}
-        margin={{ top: 8, right: 8, bottom: 8, left: 8 }}
-        ariaLabel={ariaLabel ?? `Waffle chart of ${data.length} categories`}
-      >
-        {({ innerWidth, innerHeight }) => {
-          const side = Math.max(0, Math.min(innerWidth, innerHeight) / cells);
-          const gap = Math.min(3, side * 0.14);
-          const gridSize = side * cells;
-          const offsetX = (innerWidth - gridSize) / 2;
-          const offsetY = (innerHeight - gridSize) / 2;
-          return (
-            <>
-              {Array.from({ length: cells * cells }, (_, idx) => {
-                // Fill bottom-to-top so the grid "grows" upward.
-                const rowFromTop = Math.floor(idx / cells);
-                const col = idx % cells;
-                const cellIndex = (cells - 1 - rowFromTop) * cells + col;
-                const owner = cellOwners[cellIndex];
-                const cat = owner != null ? data[owner]?.category : undefined;
-                const dimmed = hover != null && cat != null && hover !== cat;
-                return (
-                  <rect
-                    key={idx}
-                    x={offsetX + col * side + gap / 2}
-                    y={offsetY + rowFromTop * side + gap / 2}
-                    width={Math.max(0, side - gap)}
-                    height={Math.max(0, side - gap)}
-                    rx={2}
-                    fill={cat != null ? color(cat) : undefined}
-                    fillOpacity={cat == null ? 0 : dimmed ? 0.3 : 1}
-                    onMouseEnter={() => cat != null && setHover(cat)}
-                    onMouseLeave={() => setHover(null)}
-                  />
-                );
-              })}
-              {hover != null && activeShare != null && (
-                <SvgTooltip
-                  x={innerWidth / 2}
-                  innerWidth={innerWidth}
-                  top={4}
-                  lines={[hover, formatPercent(activeShare)]}
+    <ChartContainer
+      width={width}
+      height={height}
+      margin={{ top: 8, right: 8, bottom: 8, left: 8 }}
+      ariaLabel={ariaLabel ?? `Waffle chart of ${data.length} categories`}
+      legend={data.map((d) => ({
+        label: d.category,
+        color: color(d.category),
+      }))}
+      table={table}
+    >
+      {({ innerWidth, innerHeight }) => {
+        const side = Math.max(0, Math.min(innerWidth, innerHeight) / cells);
+        const gap = Math.min(3, side * 0.14);
+        const gridSize = side * cells;
+        const offsetX = (innerWidth - gridSize) / 2;
+        const offsetY = (innerHeight - gridSize) / 2;
+        return (
+          <>
+            {Array.from({ length: cells * cells }, (_, idx) => {
+              // Fill bottom-to-top so the grid "grows" upward.
+              const rowFromTop = Math.floor(idx / cells);
+              const col = idx % cells;
+              const cellIndex = (cells - 1 - rowFromTop) * cells + col;
+              const owner = cellOwners[cellIndex];
+              const cat = owner != null ? data[owner]?.category : undefined;
+              const dimmed = hover != null && cat != null && hover !== cat;
+              return (
+                <rect
+                  key={idx}
+                  x={offsetX + col * side + gap / 2}
+                  y={offsetY + rowFromTop * side + gap / 2}
+                  width={Math.max(0, side - gap)}
+                  height={Math.max(0, side - gap)}
+                  rx={2}
+                  fill={cat != null ? color(cat) : undefined}
+                  fillOpacity={cat == null ? 0 : dimmed ? 0.3 : 1}
+                  onMouseEnter={() => cat != null && setHover(cat)}
+                  onMouseLeave={() => setHover(null)}
                 />
-              )}
-            </>
-          );
-        }}
-      </ChartFrame>
-      <div style={{ paddingTop: 6 }}>
-        <Legend
-          items={data.map((d) => ({
-            label: d.category,
-            color: color(d.category),
-          }))}
-        />
-      </div>
-    </div>
+              );
+            })}
+            {hover != null && activeShare != null && (
+              <SvgTooltip
+                x={innerWidth / 2}
+                innerWidth={innerWidth}
+                top={4}
+                lines={[hover, formatPercent(activeShare)]}
+              />
+            )}
+          </>
+        );
+      }}
+    </ChartContainer>
   );
 }

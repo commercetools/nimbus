@@ -1,6 +1,12 @@
 import { describe, it, expect, vi } from "vitest";
-import { THEMES, resolveRoles, resolveTheme } from "./roles";
-import type { ChartRoles } from "./roles";
+import {
+  THEMES,
+  resolveRoles,
+  resolveTheme,
+  registerTheme,
+  coerceColorMode,
+} from "./roles";
+import type { ChartRoles, ChartTheme } from "./roles";
 import { divergingColor, sequentialColor } from "./sequential";
 import { deltaE, isMonotonic, lightness } from "./legibility";
 
@@ -18,8 +24,8 @@ const REQUIRED_FIELDS: (keyof ChartRoles)[] = [
 
 describe("theme registry / resolveTheme", () => {
   it("resolves each mode to its own role set", () => {
-    expect(resolveTheme("nimbus", "light").mode).toBe("light");
-    expect(resolveTheme("nimbus", "dark").mode).toBe("dark");
+    expect(resolveTheme("nimbus", "light").accent).toBe("#2a78d6");
+    expect(resolveTheme("nimbus", "dark").accent).toBe("#3987e5");
   });
 
   it("resolveRoles shims the default theme", () => {
@@ -29,12 +35,32 @@ describe("theme registry / resolveTheme", () => {
 
   it("falls back to the default theme on an unknown name (never throws)", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-    // @ts-expect-error — intentionally invalid theme name
     expect(resolveTheme("does-not-exist", "light")).toBe(
       resolveTheme("nimbus", "light")
     );
     expect(warn).toHaveBeenCalledOnce();
     warn.mockRestore();
+  });
+
+  it("registers a custom theme selectable by name", () => {
+    const custom: ChartTheme = { ...THEMES.nimbus, name: "custom-test-theme" };
+    registerTheme(custom);
+    expect(resolveTheme("custom-test-theme", "dark").accent).toBe(
+      THEMES.nimbus.dark.accent
+    );
+  });
+
+  it("registerTheme rejects a malformed theme", () => {
+    // @ts-expect-error — missing light/dark
+    expect(() => registerTheme({ name: "broken" })).toThrow();
+  });
+
+  it("coerceColorMode maps host values to a strict mode", () => {
+    expect(coerceColorMode("dark")).toBe("dark");
+    expect(coerceColorMode("light")).toBe("light");
+    expect(coerceColorMode("system")).toBe("light");
+    expect(coerceColorMode(undefined)).toBe("light");
+    expect(coerceColorMode(null)).toBe("light");
   });
 
   it("every theme × mode is complete and well-formed", () => {

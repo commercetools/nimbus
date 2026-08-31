@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Group } from "@visx/group";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { max } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
@@ -57,13 +57,18 @@ export function RadialBarChart({
   if (width <= 0 || height <= 0 || data.length === 0) return null;
 
   const label = ariaLabel ?? `Radial bar chart of ${data.length} categories`;
+  const table = {
+    columns: ["Category", "Value"],
+    rows: data.map((d) => [d.category, d.value]),
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 8, right: 8, bottom: 8, left: 8 }}
       ariaLabel={label}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const cx = innerWidth / 2;
@@ -129,6 +134,6 @@ export function RadialBarChart({
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

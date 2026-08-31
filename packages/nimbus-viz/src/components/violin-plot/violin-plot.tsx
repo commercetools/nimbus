@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { extent } from "d3-array";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
@@ -106,13 +106,22 @@ export function ViolinPlot({
   if (width <= 0 || height <= 0 || groups.length === 0) return null;
 
   const label = ariaLabel ?? `Violin plot of ${groups.length} groups`;
+  const table = {
+    columns: ["Group", "n", "Median"],
+    rows: groups.map((g, i) => [
+      g.label,
+      stats[i].n,
+      formatCompact(stats[i].median),
+    ]),
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 12, right: 16, bottom: 28, left: 44 }}
       ariaLabel={label}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleBand({
@@ -207,6 +216,6 @@ export function ViolinPlot({
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

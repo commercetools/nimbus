@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Partition, hierarchy } from "@visx/hierarchy";
 import type { HierarchyRectangularNode } from "@visx/hierarchy";
 import { Group } from "@visx/group";
-import { ChartFrame } from "../../chart/chart-frame";
+import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
@@ -84,13 +84,24 @@ export function SunburstChart({
   if (width <= 0 || height <= 0 || total <= 0) return null;
 
   const label = ariaLabel ?? `Sunburst of ${root.leaves().length} segments`;
+  const table = {
+    columns: ["Segment", "Value", "Share"],
+    rows: root
+      .leaves()
+      .map((l) => [
+        l.data.name,
+        l.value ?? 0,
+        formatPercent((l.value ?? 0) / (total || 1)),
+      ]),
+  };
 
   return (
-    <ChartFrame
+    <ChartContainer
       width={width}
       height={height}
       margin={{ top: 4, right: 4, bottom: 4, left: 4 }}
       ariaLabel={label}
+      table={table}
     >
       {({ innerWidth, innerHeight }) => {
         const radius = Math.max(0, Math.min(innerWidth, innerHeight) / 2);
@@ -166,6 +177,6 @@ export function SunburstChart({
           </>
         );
       }}
-    </ChartFrame>
+    </ChartContainer>
   );
 }

@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { Group } from "@visx/group";
-import { ChartFrame } from "../../chart/chart-frame";
-import { Legend } from "../../chart/legend";
+import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
@@ -122,98 +121,92 @@ export function ChordDiagram({
   if (width <= 0 || height <= 0 || labels.length === 0) return null;
 
   const label = ariaLabel ?? `Chord diagram of ${labels.length} entities`;
-  const legendHeight = 26;
-  const chartHeight = height - legendHeight;
+  const table = {
+    columns: ["Entity", "Total outbound"],
+    rows: labels.map((l, i) => [l, layout.rowSum[i]]),
+  };
 
   return (
-    <div style={{ width, height }}>
-      <ChartFrame
-        width={width}
-        height={chartHeight}
-        margin={{ top: 8, right: 8, bottom: 8, left: 8 }}
-        ariaLabel={label}
-      >
-        {({ innerWidth, innerHeight }) => {
-          const cx = innerWidth / 2;
-          const cy = innerHeight / 2;
-          const outer = Math.max(0, Math.min(innerWidth, innerHeight) / 2 - 24);
-          const ring = Math.max(6, outer * 0.06);
-          const inner = outer - ring;
-          const ribbonOpacity = (rb: Ribbon, idx: number): number => {
-            if (hoverRibbon != null) return hoverRibbon === idx ? 0.85 : 0.1;
-            if (hoverArc != null)
-              return rb.i === hoverArc || rb.j === hoverArc ? 0.75 : 0.1;
-            return 0.45;
-          };
-          const tip = (() => {
-            if (hoverRibbon != null) {
-              const rb = layout.ribbons[hoverRibbon];
-              return [
-                `${labels[rb.i]} ↔ ${labels[rb.j]}`,
-                formatCompact(rb.value),
-              ];
-            }
-            if (hoverArc != null) {
-              return [
-                labels[hoverArc],
-                `total ${formatCompact(layout.rowSum[hoverArc])}`,
-              ];
-            }
-            return null;
-          })();
-          return (
-            <>
-              <Group top={cy} left={cx}>
-                {layout.ribbons.map((rb, idx) => (
-                  <path
-                    key={`r-${rb.i}-${rb.j}`}
-                    d={ribbonPath(rb.s, rb.t, inner)}
-                    fill={color(labels[rb.i])}
-                    opacity={ribbonOpacity(rb, idx)}
-                    onMouseEnter={() => setHoverRibbon(idx)}
-                    onMouseLeave={() => setHoverRibbon(null)}
-                  />
-                ))}
-                {layout.groups.map((g, i) => {
-                  const mid = (g.a0 + g.a1) / 2;
-                  const [lx, ly] = polar(outer + 10, mid);
-                  return (
-                    <g key={`g-${i}`}>
-                      <path
-                        d={arcPath(inner, outer, g.a0, g.a1)}
-                        fill={color(labels[i])}
-                        onMouseEnter={() => setHoverArc(i)}
-                        onMouseLeave={() => setHoverArc(null)}
-                      />
-                      <text
-                        x={lx}
-                        y={ly}
-                        dy="0.32em"
-                        textAnchor={mid > Math.PI ? "end" : "start"}
-                        style={emText(10)}
-                        fill={theme.mutedInk}
-                      >
-                        {labels[i]}
-                      </text>
-                    </g>
-                  );
-                })}
-              </Group>
-              {tip && (
-                <SvgTooltip
-                  x={cx}
-                  innerWidth={innerWidth}
-                  top={4}
-                  lines={tip}
+    <ChartContainer
+      width={width}
+      height={height}
+      margin={{ top: 8, right: 8, bottom: 8, left: 8 }}
+      ariaLabel={label}
+      legend={labels.map((l) => ({ label: l, color: color(l) }))}
+      table={table}
+    >
+      {({ innerWidth, innerHeight }) => {
+        const cx = innerWidth / 2;
+        const cy = innerHeight / 2;
+        const outer = Math.max(0, Math.min(innerWidth, innerHeight) / 2 - 24);
+        const ring = Math.max(6, outer * 0.06);
+        const inner = outer - ring;
+        const ribbonOpacity = (rb: Ribbon, idx: number): number => {
+          if (hoverRibbon != null) return hoverRibbon === idx ? 0.85 : 0.1;
+          if (hoverArc != null)
+            return rb.i === hoverArc || rb.j === hoverArc ? 0.75 : 0.1;
+          return 0.45;
+        };
+        const tip = (() => {
+          if (hoverRibbon != null) {
+            const rb = layout.ribbons[hoverRibbon];
+            return [
+              `${labels[rb.i]} ↔ ${labels[rb.j]}`,
+              formatCompact(rb.value),
+            ];
+          }
+          if (hoverArc != null) {
+            return [
+              labels[hoverArc],
+              `total ${formatCompact(layout.rowSum[hoverArc])}`,
+            ];
+          }
+          return null;
+        })();
+        return (
+          <>
+            <Group top={cy} left={cx}>
+              {layout.ribbons.map((rb, idx) => (
+                <path
+                  key={`r-${rb.i}-${rb.j}`}
+                  d={ribbonPath(rb.s, rb.t, inner)}
+                  fill={color(labels[rb.i])}
+                  opacity={ribbonOpacity(rb, idx)}
+                  onMouseEnter={() => setHoverRibbon(idx)}
+                  onMouseLeave={() => setHoverRibbon(null)}
                 />
-              )}
-            </>
-          );
-        }}
-      </ChartFrame>
-      <div style={{ paddingTop: 6 }}>
-        <Legend items={labels.map((l) => ({ label: l, color: color(l) }))} />
-      </div>
-    </div>
+              ))}
+              {layout.groups.map((g, i) => {
+                const mid = (g.a0 + g.a1) / 2;
+                const [lx, ly] = polar(outer + 10, mid);
+                return (
+                  <g key={`g-${i}`}>
+                    <path
+                      d={arcPath(inner, outer, g.a0, g.a1)}
+                      fill={color(labels[i])}
+                      onMouseEnter={() => setHoverArc(i)}
+                      onMouseLeave={() => setHoverArc(null)}
+                    />
+                    <text
+                      x={lx}
+                      y={ly}
+                      dy="0.32em"
+                      textAnchor={mid > Math.PI ? "end" : "start"}
+                      style={emText(10)}
+                      fill={theme.mutedInk}
+                    >
+                      {labels[i]}
+                    </text>
+                  </g>
+                );
+              })}
+            </Group>
+            {tip && (
+              <SvgTooltip x={cx} innerWidth={innerWidth} top={4} lines={tip} />
+            )}
+          </>
+        );
+      }}
+    </ChartContainer>
   );
 }
