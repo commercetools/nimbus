@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
@@ -15,15 +15,23 @@ import type {
   DatumHoverHandler,
 } from "../../chart/interaction";
 
-export interface ScatterPlotProps {
+export interface ScatterPlotProps<T = ScatterPoint> {
   width: number;
   height: number;
-  points: ScatterPoint[];
+  points: T[];
+  /** x accessor. Defaults to `d.x` (the ScatterPoint shape). Required for a custom row type. */
+  x?: (d: T) => number;
+  /** y accessor. Defaults to `d.y`. Required for a custom row type. */
+  y?: (d: T) => number;
+  /** Optional group accessor (fixed categorical color). Defaults to `d.group`. */
+  group?: (d: T) => string | undefined;
+  /** Optional point-label accessor (tooltip title). Defaults to `d.label`. */
+  label?: (d: T) => string | undefined;
   ariaLabel?: string;
   /** Fired when a datum is clicked (drill-down). */
-  onDatumClick?: DatumClickHandler<ScatterPoint>;
+  onDatumClick?: DatumClickHandler<T>;
   /** Fired when the hovered datum changes; null when the pointer leaves. */
-  onDatumHover?: DatumHoverHandler<ScatterPoint>;
+  onDatumHover?: DatumHoverHandler<T>;
   /** Layer-2 overlays (TrendLine, ReferenceLine…) drawn on top of the points. */
   children?: ReactNode;
 }
@@ -32,44 +40,77 @@ export interface ScatterPlotProps {
  * Two-variable relationship. Points optionally colored by group (fixed
  * categorical order); a single-group scatter uses the accent. Per-point hover
  * with an SVG readout.
+ *
+ * Generic over the row type `T`: pass `x`/`y` (and optionally `group`/`label`)
+ * accessors to feed your own rows; all default to the built-in `ScatterPoint`.
  */
-export function ScatterPlot({
+export function ScatterPlot<T = ScatterPoint>({
   width,
   height,
   points,
+  x,
+  y,
+  group,
+  label,
   ariaLabel,
   onDatumClick,
   onDatumHover,
   children,
-}: ScatterPlotProps) {
+}: ScatterPlotProps<T>) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
+
+  const getX = useCallback(
+    (d: T): number => (x ? x(d) : (d as ScatterPoint).x),
+    [x]
+  );
+  const getY = useCallback(
+    (d: T): number => (y ? y(d) : (d as ScatterPoint).y),
+    [y]
+  );
+  const getGroup = useCallback(
+    (d: T): string | undefined =>
+      group ? group(d) : (d as ScatterPoint).group,
+    [group]
+  );
+  const getLabel = useCallback(
+    (d: T): string | undefined =>
+      label ? label(d) : (d as ScatterPoint).label,
+    [label]
+  );
 
   const groups = useMemo(
     () =>
       Array.from(
-        new Set(points.map((p) => p.group).filter((g): g is string => !!g))
+        new Set(points.map((p) => getGroup(p)).filter((g): g is string => !!g))
       ),
-    [points]
+    [points, getGroup]
   );
   const xDomain = useMemo(
-    () => extent(points, (p) => p.x) as [number, number],
-    [points]
+    () => extent(points, (p) => getX(p)) as [number, number],
+    [points, getX]
   );
   const yDomain = useMemo(
-    () => extent(points, (p) => p.y) as [number, number],
-    [points]
+    () => extent(points, (p) => getY(p)) as [number, number],
+    [points, getY]
   );
   const groupColor = useEntityColors(groups);
 
   if (width <= 0 || height <= 0 || points.length === 0) return null;
 
   const showLegend = groups.length >= 2;
-  const colorFor = (p: ScatterPoint) =>
-    p.group ? groupColor(p.group) : theme.accent;
+  const colorFor = (p: T) => {
+    const g = getGroup(p);
+    return g ? groupColor(g) : theme.accent;
+  };
   const table = {
     columns: ["Label", "x", "y", "Group"],
-    rows: points.map((p) => [p.label ?? "", p.x, p.y, p.group ?? ""]),
+    rows: points.map((p) => [
+      getLabel(p) ?? "",
+      getX(p),
+      getY(p),
+      getGroup(p) ?? "",
+    ]),
   };
 
   return (
@@ -131,9 +172,9 @@ export function ScatterPlot({
             />
             {points.map((p, i) => (
               <circle
-                key={p.label ?? i}
-                cx={xScale(p.x)}
-                cy={yScale(p.y)}
+                key={getLabel(p) ?? i}
+                cx={xScale(getX(p))}
+                cy={yScale(getY(p))}
                 r={hover === i ? 6 : 5}
                 fill={colorFor(p)}
                 fillOpacity={hover == null || hover === i ? 0.85 : 0.35}
@@ -141,26 +182,26 @@ export function ScatterPlot({
                 strokeWidth={1}
                 onMouseEnter={() => {
                   setHover(i);
-                  onDatumHover?.({ datum: p, index: i, seriesId: p.group });
+                  onDatumHover?.({ datum: p, index: i, seriesId: getGroup(p) });
                 }}
                 onMouseLeave={() => {
                   setHover(null);
                   onDatumHover?.(null);
                 }}
                 onClick={() =>
-                  onDatumClick?.({ datum: p, index: i, seriesId: p.group })
+                  onDatumClick?.({ datum: p, index: i, seriesId: getGroup(p) })
                 }
               />
             ))}
             {children}
             {hp && (
               <SvgTooltip
-                x={xScale(hp.x)}
+                x={xScale(getX(hp))}
                 innerWidth={innerWidth}
                 lines={[
-                  hp.label ?? "Point",
-                  `x: ${formatCompact(hp.x)}`,
-                  `y: ${formatCompact(hp.y)}`,
+                  getLabel(hp) ?? "Point",
+                  `x: ${formatCompact(getX(hp))}`,
+                  `y: ${formatCompact(getY(hp))}`,
                 ]}
               />
             )}
