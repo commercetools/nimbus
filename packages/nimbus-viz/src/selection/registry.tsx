@@ -27,7 +27,6 @@ import {
   renderStacked,
   renderStatCard,
   renderSunburst,
-  renderTileGridMap,
   renderTreemap,
   renderViolin,
   renderWaffle,
@@ -542,18 +541,6 @@ const chordMeta: ChartSelectionMetadata = {
   configLabel: "ChordDiagram",
 };
 
-const tileGridMapMeta: ChartSelectionMetadata = {
-  name: "tile-grid-map",
-  baseComponent: "TileGridMap",
-  intents: [{ intent: "GEO", primacy: "primary" }],
-  acceptedShapes: ["geographic"],
-  constraints: {},
-  perceptualRank: 0.4,
-  questionString: "How does a value vary across regions?",
-  bundleWeight: 7,
-  configLabel: "TileGridMap",
-};
-
 /**
  * Build the default registry. Insertion order is the stable tie-break's
  * registration order (docs/06 §3): canonical entries first (so they win a
@@ -694,12 +681,6 @@ export function createDefaultRegistry(): ChartRegistry {
       metadata: chordMeta,
       dataKinds: ["flow-matrix"],
       render: renderChord,
-      canonical: true,
-    },
-    {
-      metadata: tileGridMapMeta,
-      dataKinds: ["region-tiles"],
-      render: renderTileGridMap,
       canonical: true,
     },
   ];

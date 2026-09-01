@@ -4,7 +4,7 @@ import { Group } from "@visx/group";
 import { ChartContainer } from "../../chart/chart-container";
 import { GRADIENT_LEGEND_HEIGHT } from "../../chart/marks";
 import { SvgTooltip } from "../../chart/svg-tooltip";
-import { sequentialColor, useChartTheme } from "../../theme";
+import { sequentialColor, useChartTheme, readableTextColor } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { HeatRow } from "../../chart/types";
 import { emText, LABEL_PX } from "../../chart/typography";
@@ -180,7 +180,11 @@ export function CohortTriangle({
                             dy="0.32em"
                             textAnchor="middle"
                             style={emText(9)}
-                            fill={t > 0.55 ? theme.surface : theme.ink}
+                            fill={readableTextColor(
+                              color(t),
+                              theme.ink,
+                              theme.surface
+                            )}
                           >
                             {formatCompact(v)}
                           </text>

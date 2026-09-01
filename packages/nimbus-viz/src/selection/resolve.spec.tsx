@@ -161,13 +161,6 @@ function dataForKind(kind: DataKind): unknown {
           [1, 2, 0],
         ],
       };
-    case "region-tiles":
-      return [
-        { id: "NW", row: 0, col: 0, value: 5 },
-        { id: "NE", row: 0, col: 2, value: 9 },
-        { id: "SW", row: 2, col: 0, value: 3 },
-        { id: "SE", row: 2, col: 2, value: 7 },
-      ];
     case "unknown":
       return [{ nope: true }];
   }
@@ -224,7 +217,6 @@ describe("intent routing (the new registrations)", () => {
     ["TREND", "ohlc", "candlestick-chart"],
     ["TREND", "timeline-events", "gantt-chart"],
     ["FLOW", "flow-matrix", "chord-diagram"],
-    ["GEO", "region-tiles", "tile-grid-map"],
   ];
 
   for (const [intent, kind, expected] of cases) {

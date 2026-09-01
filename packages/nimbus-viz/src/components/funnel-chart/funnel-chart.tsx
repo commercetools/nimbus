@@ -53,6 +53,11 @@ export function FunnelChart({
               const x = (innerWidth - w) / 2;
               const y = i * bandH + (bandH - barH) / 2;
               const active = hover == null || hover === i;
+              const valueLabel = formatCompact(stage.value);
+              // ~14px bold ≈ 8.4px/char. Only draw the value inside the bar when
+              // it fits; otherwise the stage % above and the hover tooltip carry
+              // it, rather than showing a clipped number.
+              const valueFits = valueLabel.length * 8.4 <= w - 8;
               return (
                 <g
                   key={stage.stage}
@@ -79,17 +84,19 @@ export function FunnelChart({
                     all
                     fill={theme.accent}
                   />
-                  <text
-                    x={innerWidth / 2}
-                    y={y + barH / 2}
-                    dy="0.32em"
-                    textAnchor="middle"
-                    style={emText(12)}
-                    fontWeight={600}
-                    fill={theme.surface}
-                  >
-                    {formatCompact(stage.value)}
-                  </text>
+                  {valueFits && (
+                    <text
+                      x={innerWidth / 2}
+                      y={y + barH / 2}
+                      dy="0.32em"
+                      textAnchor="middle"
+                      style={emText(12)}
+                      fontWeight={600}
+                      fill={theme.surface}
+                    >
+                      {valueLabel}
+                    </text>
+                  )}
                 </g>
               );
             })}

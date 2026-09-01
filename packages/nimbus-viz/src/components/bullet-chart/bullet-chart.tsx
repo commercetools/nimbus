@@ -116,7 +116,10 @@ export function BulletChart({
                     prev = to;
                     const x0 = xScale(from);
                     const x1 = xScale(to);
-                    const t = (bi / Math.max(1, bands.length - 1)) * 0.5;
+                    // Keep the qualitative bands in the ramp's light end so
+                    // they read as subtle context behind the measure bar rather
+                    // than heavy blocks (cap well below the ramp's mid-tone).
+                    const t = (bi / Math.max(1, bands.length - 1)) * 0.2;
                     return (
                       <rect
                         key={b}
