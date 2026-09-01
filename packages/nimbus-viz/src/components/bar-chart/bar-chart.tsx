@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
@@ -22,24 +22,29 @@ import type {
 } from "../../chart/interaction";
 import { emText } from "../../chart/typography";
 
-export interface BarChartProps {
+export interface BarChartProps<T = CategoryDatum> {
   width: number;
   height: number;
-  data: CategoryDatum[];
+  data: T[];
+  /** Category-label accessor. Defaults to `d.category` (the CategoryDatum shape).
+   *  Required when `data` is a custom row type. */
+  category?: (d: T) => string;
+  /** Value accessor. Defaults to `d.value`. Required for a custom row type. */
+  value?: (d: T) => number;
   /** "horizontal" = ranked bars (sorted desc, direct value labels). */
   orientation?: "vertical" | "horizontal";
   ariaLabel?: string;
-  /** Layer-2 overlays (ReferenceLine, TargetMarker…) on the value axis. Wired
-   *  for the vertical orientation, where the value axis is y; the ranked
-   *  (horizontal) orientation transposes the value axis and is not yet a
-   *  supported overlay surface (see docs/09). */
   /** Format a value-axis number (tick labels + tooltip values). Overrides the
    *  locale/currency formatter from any surrounding ChartLocaleProvider. */
   valueFormat?: (n: number) => string;
   /** Fired when a datum is clicked (drill-down). */
-  onDatumClick?: DatumClickHandler<CategoryDatum>;
+  onDatumClick?: DatumClickHandler<T>;
   /** Fired when the hovered datum changes; null when the pointer leaves. */
-  onDatumHover?: DatumHoverHandler<CategoryDatum>;
+  onDatumHover?: DatumHoverHandler<T>;
+  /** Layer-2 overlays (ReferenceLine, TargetMarker…) on the value axis. Wired
+   *  for the vertical orientation, where the value axis is y; the ranked
+   *  (horizontal) orientation transposes the value axis and is not yet a
+   *  supported overlay surface (see docs/09). */
   children?: ReactNode;
 }
 
@@ -47,38 +52,55 @@ export interface BarChartProps {
  * Categorical magnitudes. One hue (accent) — color carries no meaning here, the
  * category axis does; hovering dims the others. Horizontal is the ranked form:
  * sorted descending, with direct value labels at each bar end.
+ *
+ * Generic over the row type `T`: pass `category`/`value` accessors to feed your
+ * own domain rows directly; both default to the built-in `CategoryDatum` shape.
  */
-export function BarChart({
+export function BarChart<T = CategoryDatum>({
   width,
   height,
   data,
+  category,
+  value,
   orientation = "vertical",
   ariaLabel,
   valueFormat,
   onDatumClick,
   onDatumHover,
   children,
-}: BarChartProps) {
+}: BarChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
+  const getCat = useCallback(
+    (d: T): string => (category ? category(d) : (d as CategoryDatum).category),
+    [category]
+  );
+  const getVal = useCallback(
+    (d: T): number => (value ? value(d) : (d as CategoryDatum).value),
+    [value]
+  );
+
   const rows = useMemo(
     () =>
       orientation === "horizontal"
-        ? [...data].sort((a, b) => b.value - a.value)
+        ? [...data].sort((a, b) => getVal(b) - getVal(a))
         : data,
-    [data, orientation]
+    [data, orientation, getVal]
   );
-  const valueMax = useMemo(() => max(rows, (d) => d.value) ?? 0, [rows]);
+  const valueMax = useMemo(
+    () => max(rows, (d) => getVal(d)) ?? 0,
+    [rows, getVal]
+  );
 
   if (width <= 0 || height <= 0 || rows.length === 0) return null;
 
   const label = ariaLabel ?? `Bar chart of ${rows.length} categories`;
   const table = {
     columns: ["Category", "Value"],
-    rows: rows.map((d) => [d.category, d.value]),
+    rows: rows.map((d) => [getCat(d), getVal(d)]),
   };
 
   if (orientation === "horizontal") {
@@ -92,7 +114,7 @@ export function BarChart({
       >
         {({ innerWidth, innerHeight }) => {
           const yScale = scaleBand({
-            domain: rows.map((d) => d.category),
+            domain: rows.map((d) => getCat(d)),
             range: [0, innerHeight],
             padding: 0.25,
           });
@@ -105,12 +127,12 @@ export function BarChart({
           return (
             <>
               {rows.map((d, i) => {
-                const y = yScale(d.category) ?? 0;
-                const w = Math.max(0, xScale(d.value));
+                const y = yScale(getCat(d)) ?? 0;
+                const w = Math.max(0, xScale(getVal(d)));
                 const active = hover == null || hover === i;
                 return (
                   <g
-                    key={d.category}
+                    key={getCat(d)}
                     onMouseEnter={() => {
                       setHover(i);
                       onDatumHover?.({ datum: d, index: i });
@@ -139,7 +161,7 @@ export function BarChart({
                       style={emText(11)}
                       fill={theme.mutedInk}
                     >
-                      {d.category}
+                      {getCat(d)}
                     </text>
                     <text
                       x={w + 6}
@@ -148,7 +170,7 @@ export function BarChart({
                       style={emText(11)}
                       fill={theme.ink}
                     >
-                      {valueFmt(d.value)}
+                      {valueFmt(getVal(d))}
                     </text>
                   </g>
                 );
@@ -170,7 +192,7 @@ export function BarChart({
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleBand({
-          domain: rows.map((d) => d.category),
+          domain: rows.map((d) => getCat(d)),
           range: [0, innerWidth],
           padding: 0.2,
         });
@@ -185,8 +207,8 @@ export function BarChart({
             value={{
               yScale: (v) => yScale(v),
               xScale: (v) => {
-                const cat = rows[Math.round(Number(v))]?.category;
-                return cat != null ? (xScale(cat) ?? 0) + bw / 2 : 0;
+                const r = rows[Math.round(Number(v))];
+                return r != null ? (xScale(getCat(r)) ?? 0) + bw / 2 : 0;
               },
               xBandwidth: bw,
               innerWidth,
@@ -215,14 +237,14 @@ export function BarChart({
               tickLabelProps={bottomTickLabel(theme)}
             />
             {rows.map((d, i) => {
-              const x = xScale(d.category) ?? 0;
-              const barH = Math.max(0, innerHeight - yScale(d.value));
+              const x = xScale(getCat(d)) ?? 0;
+              const barH = Math.max(0, innerHeight - yScale(getVal(d)));
               const active = hover == null || hover === i;
               return (
                 <BarRounded
-                  key={d.category}
+                  key={getCat(d)}
                   x={x}
-                  y={yScale(d.value)}
+                  y={yScale(getVal(d))}
                   width={bw}
                   height={barH}
                   radius={4}
@@ -244,10 +266,10 @@ export function BarChart({
             {children}
             {hover != null && rows[hover] && (
               <SvgTooltip
-                x={(xScale(rows[hover].category) ?? 0) + bw / 2}
+                x={(xScale(getCat(rows[hover])) ?? 0) + bw / 2}
                 innerWidth={innerWidth}
-                top={Math.max(0, yScale(rows[hover].value) - 4)}
-                lines={[rows[hover].category, valueFmt(rows[hover].value)]}
+                top={Math.max(0, yScale(getVal(rows[hover])) - 4)}
+                lines={[getCat(rows[hover]), valueFmt(getVal(rows[hover]))]}
               />
             )}
           </ChartScaleProvider>
