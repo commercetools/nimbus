@@ -35,6 +35,8 @@ export interface CandlestickChartProps {
  * open) uses the positive hue, a down period the negative hue; direction is also
  * carried by which end of the body is open vs close, never color alone. Hovering
  * a period shows its OHLC.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function CandlestickChart({
   width,

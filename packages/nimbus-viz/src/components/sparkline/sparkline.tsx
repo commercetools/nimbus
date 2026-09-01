@@ -29,6 +29,8 @@ interface Defined {
  * A micro line for inline placement (table cell, KPI tile): no axes, no
  * gridlines, no tick labels — just a single accent stroke, faint min/max
  * markers, and an optional end dot. Points are evenly spaced by index.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function Sparkline({
   width,

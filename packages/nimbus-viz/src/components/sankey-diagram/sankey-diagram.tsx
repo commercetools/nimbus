@@ -23,6 +23,8 @@ type LaidNode = SankeyNode<FlowNode, FlowLink>;
  * (d3-sankey layout). This is the mark Vega-Lite could not express — the reason
  * the foundation is a single library (visx). Node color from the shared
  * entity→color scale; links inherit their source node's color.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function SankeyDiagram({
   width,

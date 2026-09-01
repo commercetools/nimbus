@@ -56,6 +56,8 @@ interface Bar {
  * sign is always repeated in the value label too — color alone never carries
  * it (a dataviz non-negotiable). Thin dashed connectors bridge each bar's
  * ending level to the next bar's starting level.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function WaterfallChart({
   width,

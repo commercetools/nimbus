@@ -31,6 +31,8 @@ export interface TileGridMapProps {
  * value on a single-hue sequential ramp. Every region reads equally regardless
  * of geographic size (the point of a cartogram). A compact ramp legend shows the
  * scale; hovering a tile reveals its value.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function TileGridMap({
   width,

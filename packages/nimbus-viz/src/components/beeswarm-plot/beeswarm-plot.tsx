@@ -57,6 +57,8 @@ function placeDots(
  * visible (unlike a histogram's bins or a box plot's summary). Dots are packed
  * without overlap around the value axis; density shows as thickness. One accent
  * hue; hovering a dot reveals its value.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function BeeswarmPlot({
   width,

@@ -25,6 +25,8 @@ const GAP = 2;
  * cell's area is proportional to its value. Color is segment identity (fixed
  * order, shared scale), so a legend is always present; hovering a cell shows its
  * value and its share of the column.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function MarimekkoChart({
   width,

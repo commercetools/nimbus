@@ -37,6 +37,8 @@ interface Vertex {
  * lines are grid-colored; axis names sit at the spoke ends in muted ink. Each
  * series is a closed polygon in its fixed categorical hue — fill never carries
  * meaning color alone, the legend does.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function RadarChart({
   width,

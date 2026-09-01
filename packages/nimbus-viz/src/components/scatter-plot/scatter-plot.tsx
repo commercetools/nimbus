@@ -43,6 +43,8 @@ export interface ScatterPlotProps<T = ScatterPoint> {
  *
  * Generic over the row type `T`: pass `x`/`y` (and optionally `group`/`label`)
  * accessors to feed your own rows; all default to the built-in `ScatterPoint`.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function ScatterPlot<T = ScatterPoint>({
   width,

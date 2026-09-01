@@ -28,6 +28,8 @@ const GUTTER = 52;
  * back around a central gutter that carries the band labels. Both sides share a
  * value scale so the two populations are directly comparable at every band. Two
  * categorical hues with a legend; hovering a bar shows its value.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function PopulationPyramid({
   width,

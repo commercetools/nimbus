@@ -44,6 +44,8 @@ const MARGIN = { top: 30, right: 32, bottom: 26, left: 44 };
  * row threads its per-dimension values across the axes; hovering one raises its
  * opacity and reads its values out. Color by `group` in fixed categorical
  * order; ungrouped rows use the accent.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function ParallelCoordinates({
   width,

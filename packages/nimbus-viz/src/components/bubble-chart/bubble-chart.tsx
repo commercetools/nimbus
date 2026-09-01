@@ -45,6 +45,8 @@ const R_MAX = 28;
  * size-scale, so area — not radius — is proportional to `size`). Optional color
  * by group in fixed categorical order; ungrouped bubbles use the accent. A
  * size legend of reference circles decodes the area channel.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function BubbleChart({
   width,

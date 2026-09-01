@@ -38,6 +38,8 @@ const toDate = (x: number | Date): Date =>
  * centered axis. No emphasized zero baseline and no value axis — a streamgraph
  * communicates relative shape and turnover, not absolute magnitude. Fixed-order
  * categorical fills, a legend, and a per-series hover readout.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function Streamgraph({
   width,

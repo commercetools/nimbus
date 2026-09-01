@@ -39,6 +39,8 @@ export interface GroupedBarChartProps {
  * category. Colors come from the shared entity→color scale keyed by series id,
  * so a series keeps its color here, in the stacked bar, and in a line chart.
  * Hovering a series highlights it across every category.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function GroupedBarChart({
   width,

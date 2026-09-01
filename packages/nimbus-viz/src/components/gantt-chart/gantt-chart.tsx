@@ -30,6 +30,8 @@ export interface GanttChartProps {
  * each: a rounded bar spans start→end, and an event with no end is a milestone
  * diamond. Optional categories color the bars (with a legend); otherwise one
  * accent hue. Hovering shows the dates and duration.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function GanttChart({
   width,

@@ -65,6 +65,8 @@ function spreadLabels(ys: number[], gap: number, max: number): number[] {
  * negative, flat = mutedInk — while all text stays in ink (color never carries
  * the reading on its own; the values are right there). No numeric axis: the
  * direct labels are the point of the form.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function SlopeChart({
   width,

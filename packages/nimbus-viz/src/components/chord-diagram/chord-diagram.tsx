@@ -64,6 +64,8 @@ function ribbonPath(s: Arc, t: Arc, r: number): string {
  * two entities of every pair, its ends sized by the flow in each direction.
  * Entities are colored in fixed order (legend always present); hovering a ribbon
  * or an arc highlights it and reads out the value.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function ChordDiagram({
   width,

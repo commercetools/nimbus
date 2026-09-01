@@ -26,6 +26,8 @@ export interface DivergingStackedBarProps {
  * right, and (for an odd count) the neutral segment straddles the axis. Color is
  * a diverging ramp (two hues meeting at a gray midpoint), so polarity is read
  * from both side and hue.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function DivergingStackedBar({
   width,
