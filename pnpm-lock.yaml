@@ -742,6 +742,9 @@ importers:
       react-dom:
         specifier: catalog:react
         version: 19.2.0(react@19.2.0)
+      react-router-dom:
+        specifier: catalog:apps
+        version: 7.18.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
     devDependencies:
       '@eslint/js':
         specifier: catalog:tooling

@@ -1,12 +1,15 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { App } from "./app";
+import { BrowserRouter } from "react-router-dom";
 import { NimbusProvider } from "@commercetools/nimbus";
+import { App } from "./app";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <NimbusProvider>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </NimbusProvider>
   </StrictMode>
 );

@@ -14,7 +14,8 @@
     "react-dom": "catalog:react",
     "@commercetools/nimbus": "workspace:*",
     "@commercetools/nimbus-icons": "workspace:*",
-    "@commercetools/nimbus-viz": "workspace:*"
+    "@commercetools/nimbus-viz": "workspace:*",
+    "react-router-dom": "catalog:apps"
   },
   "devDependencies": {
     "@eslint/js": "catalog:tooling",
