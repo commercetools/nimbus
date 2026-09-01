@@ -17,9 +17,13 @@ export interface RfmCell {
 }
 
 export interface RfmGridProps {
+  /** Chart width in pixels (supplied by `ResponsiveContainer`). */
   width: number;
+  /** Chart height in pixels (supplied by `ResponsiveContainer`). */
   height: number;
+  /** One cell per occupied recency×frequency bucket; missing buckets render empty. */
   data: RfmCell[];
+  /** Accessible label for the SVG frame (Cesal alt-text). Defaults to a generated summary. */
   ariaLabel?: string;
 }
 

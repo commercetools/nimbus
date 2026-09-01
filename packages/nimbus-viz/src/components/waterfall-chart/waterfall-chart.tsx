@@ -31,15 +31,18 @@ export interface WaterfallStep {
 }
 
 export interface WaterfallChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** Ordered `WaterfallStep` rows (`{ label, value, isTotal? }`). */
   data: WaterfallStep[];
   ariaLabel?: string;
-  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   /** Fired when a datum is clicked (drill-down). */
   onDatumClick?: DatumClickHandler<WaterfallStep>;
   /** Fired when the hovered datum changes; null when the pointer leaves. */
   onDatumHover?: DatumHoverHandler<WaterfallStep>;
+  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
 }
 

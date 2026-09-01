@@ -18,7 +18,12 @@ tags:
 
 <ChartMeta />
 
-A compact polar layout of categorical magnitudes.
+A radial bar chart lays categorical magnitudes out around a circle: each
+category gets an angular slot, and its bar grows outward from a shared inner
+ring. Length still sits on a common baseline (the ring), so it reads as
+magnitude — the circular form trades some comparison accuracy for a compact,
+distinctive shape. Reach for it when a striking, space-efficient overview
+matters more than reading exact values.
 
 ```jsx live
 const data = [
@@ -32,14 +37,219 @@ const data = [
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <RadialBarChart width={width} height={height} data={data} />}
+      {(width, height) => (
+        <RadialBarChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Radial bar chart of revenue by channel, where Web reaches furthest and Email is shortest"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a radial bar chart when you have one number per category, only a
+handful of them, and you want a compact, eye-catching form — a dashboard tile or
+a hero graphic — more than pixel-accurate comparison. When the exact ranking or
+the precise gap between values is the point, a straight bar or lollipop reads
+more accurately.
+
+| You want to…                                    | Use instead       |
+| ----------------------------------------------- | ----------------- |
+| Read magnitudes as accurately as possible       | `BarChart`        |
+| Rank many categories with minimal ink           | `LollipopChart`   |
+| Compare several series within each category     | `GroupedBarChart` |
+| Show each part's share of a whole               | `DonutChart`      |
+| Surface the few categories that drive the total | `ParetoChart`     |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { RadialBarChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  RadialBarChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `CategoryDatum` — one row per radial bar:
+
+```ts
+interface CategoryDatum {
+  category: string;
+  value: number;
+}
+```
+
+```tsx
+const data: CategoryDatum[] = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `category` should be **unique** per row — it is the angular band-scale domain
+  and the React key.
+- Rows are **not** sorted: input order sets the slot order, laid out clockwise
+  from 12 o'clock.
+- `value` is a plain number. The radius scale runs from **0** at the inner ring
+  to the maximum at the outer ring, so values are assumed **non-negative**; a
+  negative value collapses its bar to the inner ring.
+- Each category's label is drawn on the rim just outside its bar.
+
+## API reference
+
+<PropsTable id="RadialBarChart" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Layout & labels (automatic)
+
+Not configurable — the chart derives them. Categories are placed as equal
+angular slots (a band scale over the full circle) in input order, clockwise from
+the top; each bar is an annular sector growing from a fixed inner ring (30% of
+the outer radius) outward. Category labels sit around the rim and flip alignment
+on the left half so they read outward. There are no drawn axes, ticks, or radial
+gridlines.
+
+### Hover & tooltip (automatic)
+
+Hovering a bar highlights it (the other bars dim to 0.35 opacity) and shows a
+small tooltip at the top of the plot with the category and its formatted value.
+Hover state is managed internally.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Bars use the validated
+`nimbus` chart accent, not a CSS color; color carries no meaning here — a bar's
+angular position identifies its category.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <RadialBarChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={1} minHeight={240} maxHeight={420}>
+  {(width, height) => (
+    <RadialBarChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+The plot uses the smaller of width and height for its radius, so a roughly
+square container (an `aspectRatio` near `1`) uses the space best.
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. The circular layout suits a handful of categories;
+there is no downsampling — cap or aggregate upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<RadialBarChart
+  ariaLabel="Radial bar chart of revenue by channel, where Web reaches furthest and Email is shortest"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Radial bar chart of N categories"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `RadialBarChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Category**, **Value**) into the accessibility tree, plus a keyboard "View
+  data as table" toggle that reveals it in place. Because radial length is read
+  less precisely than straight bars, this text equivalent is especially valuable
+  here.
+- **CVD-safe palette.** The accent comes from the validated chart theme
+  (contrast + color-vision-deficiency checks), not an ad-hoc color.
+- **Non-color encoding.** Meaning is carried by angular position and radial
+  length; color is a single hue and is not load-bearing.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the categories/values rather
+than "the longest wedge". There is no animation, so reduced-motion handling is
+N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (position/length carry it here)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names categories/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`RadialBarChart` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Less accurate than straight bars.** Angle and curvature distort length
+  comparison — use [`BarChart`](/charts/bar-chart) or
+  [`LollipopChart`](/charts/lollipop-chart) when precision matters.
+- **One measure per category.** No series or stacking.
+- **Non-negative values.** The inner ring is the baseline; negatives collapse to
+  it.
+- **Draw order is input order.** There is no built-in sort.
+- **No tooltip config, callbacks, overlays, or legend.** There are no
+  `onDatumClick`/`onDatumHover` props, no `children`, and no legend.
+- **No value formatting** — values use the built-in compact formatter.
+- **No title, caption, loading, or error passthrough** — `RadialBarChart`
+  forwards only `ariaLabel` and the data table to `ChartContainer`.
+
+## Related charts
+
+Same "magnitude" purpose, different trade-offs: [Bar chart](/charts/bar-chart),
+[Grouped bar chart](/charts/grouped-bar-chart),
+[Lollipop chart](/charts/lollipop-chart), [Histogram](/charts/histogram), and
+[Pareto chart](/charts/pareto-chart). The `<ChartMeta />` block above links the
+current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

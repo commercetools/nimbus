@@ -25,15 +25,19 @@ export type BubblePoint = {
 };
 
 export interface BubbleChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** Points to plot; each is a `BubblePoint` (`{ x, y, size, group?, label? }`),
+   *  with `size` mapped to bubble area (not radius). */
   points: BubblePoint[];
   ariaLabel?: string;
-  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   /** Fired when a datum is clicked (drill-down). */
   onDatumClick?: DatumClickHandler<BubblePoint>;
   /** Fired when the hovered datum changes; null when the pointer leaves. */
   onDatumHover?: DatumHoverHandler<BubblePoint>;
+  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
 }
 

@@ -20,13 +20,16 @@ import type {
 } from "../../chart/interaction";
 
 export interface LineChartProps {
+  /** Plot width in pixels — supply from `ResponsiveContainer`. */
   width: number;
+  /** Plot height in pixels — supply from `ResponsiveContainer`. */
   height: number;
+  /** One or more labelled series drawn on a single shared value axis. */
   series: Series[];
+  /** Draw each series as a stroked line (default) or a filled area. */
   variant?: "line" | "area";
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
-  /** Layer-2 overlays (ReferenceLine, ThresholdBand, BenchmarkSeries…) drawn
-   *  in the plot's coordinate space, on top of the series. */
   /** Format a value-axis number (tick labels + tooltip values). Overrides the
    *  locale/currency formatter from any surrounding ChartLocaleProvider. */
   valueFormat?: (n: number) => string;
@@ -34,6 +37,8 @@ export interface LineChartProps {
   onDatumClick?: DatumClickHandler<SeriesPoint>;
   /** Fired when the hovered datum changes; null when the pointer leaves. */
   onDatumHover?: DatumHoverHandler<SeriesPoint>;
+  /** Layer-2 overlays (ReferenceLine, ThresholdBand, BenchmarkSeries…) drawn
+   *  in the plot's coordinate space, on top of the series. */
   children?: ReactNode;
 }
 

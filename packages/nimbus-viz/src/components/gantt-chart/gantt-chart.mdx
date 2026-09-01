@@ -18,29 +18,304 @@ tags:
 
 <ChartMeta />
 
-Events on a shared time axis, as spans and milestones.
+A Gantt chart places events on a shared horizontal time axis, one row each: an
+event with a start and end draws a bar whose length is its duration, and an
+event with only a start draws a milestone diamond. Use it to answer "when does
+each event happen, and for how long?" — project phases, campaign windows,
+release schedules.
 
 ```jsx live
 const data = [
-  { label: "Discovery", start: new Date(2026, 0, 1), end: new Date(2026, 1, 1), category: "Plan" },
-  { label: "Design", start: new Date(2026, 1, 1), end: new Date(2026, 2, 15), category: "Plan" },
-  { label: "Build", start: new Date(2026, 2, 1), end: new Date(2026, 5, 1), category: "Build" },
-  { label: "Beta", start: new Date(2026, 5, 1), end: new Date(2026, 6, 15), category: "Build" },
+  {
+    label: "Discovery",
+    start: new Date(2026, 0, 1),
+    end: new Date(2026, 1, 1),
+    category: "Plan",
+  },
+  {
+    label: "Design",
+    start: new Date(2026, 1, 1),
+    end: new Date(2026, 2, 15),
+    category: "Plan",
+  },
+  {
+    label: "Build",
+    start: new Date(2026, 2, 1),
+    end: new Date(2026, 5, 1),
+    category: "Build",
+  },
+  {
+    label: "Beta",
+    start: new Date(2026, 5, 1),
+    end: new Date(2026, 6, 15),
+    category: "Build",
+  },
   { label: "Launch", start: new Date(2026, 6, 15), category: "Launch" },
-  { label: "Rollout", start: new Date(2026, 6, 15), end: new Date(2026, 9, 1), category: "Launch" },
+  {
+    label: "Rollout",
+    start: new Date(2026, 6, 15),
+    end: new Date(2026, 9, 1),
+    category: "Launch",
+  },
 ];
 
 const App = () => (
   <ChartThemeProvider mode="light">
-    <ResponsiveContainer height={280}>
-      {(width, height) => <GanttChart width={width} height={height} data={data} />}
+    <ResponsiveContainer height={300}>
+      {(width, height) => (
+        <GanttChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Timeline of project phases from Discovery to Rollout, where Build is the longest span"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a Gantt chart when each item has a **position in time** — a moment or
+a span — and the reader needs to see sequencing, duration, and overlap together.
+It suits schedules and plans with a manageable number of rows; one row per
+event, in the order you supply them.
+
+| You want to…                                | Use instead     |
+| ------------------------------------------- | --------------- |
+| Track a continuous metric's value over time | `LineChart`     |
+| Show drop-off through ordered stages        | `FunnelChart`   |
+| Show how volume moves between stages        | `SankeyDiagram` |
+| Compare two dates per category as a range   | `DumbbellChart` |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { GanttChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  GanttChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `TimelineEvent` — one row per event:
+
+```ts
+interface TimelineEvent {
+  label: string;
+  start: Date;
+  /** Omit for a milestone (a point in time rather than a span). */
+  end?: Date;
+  /** Optional grouping; colors the bar by category in fixed order. */
+  category?: string;
+}
+```
+
+```tsx
+const data: TimelineEvent[] = [
+  {
+    label: "Discovery",
+    start: new Date(2026, 0, 1),
+    end: new Date(2026, 1, 1),
+    category: "Plan",
+  },
+  { label: "Launch", start: new Date(2026, 6, 15), category: "Launch" },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `start` and `end` are `Date` objects. The time axis domain runs from the
+  **earliest `start`** to the **latest `end`** (falling back to `start` for
+  milestones) across all events.
+- An event **without an `end` is a milestone** — drawn as a diamond at its
+  `start`, not a bar.
+- Row **order is preserved** — events stack top-to-bottom in the order given;
+  the component does not sort by date.
+- `label` is the row label, the tooltip title, and the React key — keep it
+  **unique**.
+- `category` is optional; when present it colors the bar and, with two or more
+  distinct categories, drives a legend.
+
+## API reference
+
+<PropsTable id="GanttChart" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Categories & color
+
+`category` is the one lever on appearance. When an event has a `category`, its
+bar (or milestone) is colored from the shared **entity → color** scale in fixed
+category order; events without a category use the single accent hue. With two or
+more distinct categories the chart also shows a legend automatically.
+
+```jsx live
+const data = [
+  {
+    label: "Spec",
+    start: new Date(2026, 0, 1),
+    end: new Date(2026, 0, 20),
+    category: "Design",
+  },
+  {
+    label: "API",
+    start: new Date(2026, 0, 15),
+    end: new Date(2026, 1, 20),
+    category: "Engineering",
+  },
+  {
+    label: "UI",
+    start: new Date(2026, 1, 1),
+    end: new Date(2026, 2, 10),
+    category: "Engineering",
+  },
+  { label: "Freeze", start: new Date(2026, 2, 10), category: "Release" },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={240}>
+      {(width, height) => (
+        <GanttChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Timeline colored by team, with a release-freeze milestone"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Milestones (automatic)
+
+Any event you supply without an `end` renders as a diamond at its `start`
+instead of a bar — no prop needed. Mix milestones and spans freely in the same
+`data` array.
+
+### Time axis & tooltip (automatic)
+
+Not configurable — the chart always draws them. The bottom axis is a time scale
+(about five ticks, day-and-month labels) fit to the data's date range. Hovering
+a row dims the others to 0.4 opacity and shows a tooltip with the label, the
+date range (or the single date for a milestone), and the duration in whole days.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={300}>
+  {(width, height) => <GanttChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={480}>
+  {(width, height) => <GanttChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Each event is a fixed row, so tall plots crowd once
+there are many rows and short spans shrink toward the 2px minimum bar width;
+there is no downsampling, so give the chart enough height for its rows or
+paginate long schedules upstream. The left margin reserves ~120px for row labels
+— keep labels concise.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the timeline shows **and** its takeaway,
+using Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<GanttChart
+  ariaLabel="Timeline of project phases from Discovery to Rollout, where Build is the longest span"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list every date in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Timeline of N events"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `GanttChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Event**, **Start**, **End**, **Category**) into the accessibility tree, plus
+  a keyboard "View data as table" toggle that reveals it in place — so the dates
+  are available as text, not just the one-line label.
+- **CVD-safe palette.** Bar colors come from the validated chart theme (contrast
+  - color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** Meaning is carried by bar position and length on the
+  time axis, each row is labeled directly, and category (when present) also
+  appears in the legend and the data table — color is never the only cue.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the events and dates rather
+than "the long bar". There is no animation, so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the timeline shows and its takeaway (Cesal
+      formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (row position, bar length, and
+      direct labels carry it here)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names events/dates rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`GanttChart` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **No dependencies or critical path.** Rows are independent bars; the chart
+  does not draw links between events or compute a schedule.
+- **No sorting.** Rows appear in the order you supply — sort `data` yourself if
+  you want chronological order.
+- **No title, caption, loading, or error passthrough** — `GanttChart` forwards
+  only `ariaLabel`, the (category) legend, and the data table to
+  `ChartContainer`.
+- **No overlays or interaction callbacks.** Hover is internal only; there is no
+  `children` slot and no click/hover callbacks.
+
+## Related charts
+
+Timeline is a family of one, so cross-link its neighbors: for a continuous
+metric's value over time, see [Line chart](/charts/line-chart); for volume
+moving between stages, [Sankey diagram](/charts/sankey-diagram); for two dates
+per category shown as a range, [Dumbbell chart](/charts/dumbbell-chart). The
+`<ChartMeta />` block above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)
+  </content>

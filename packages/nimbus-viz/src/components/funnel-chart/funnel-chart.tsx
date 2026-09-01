@@ -8,8 +8,12 @@ import type { FunnelStage } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
 export interface FunnelChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** Ordered `FunnelStage` rows (`{ stage, value }`), given top-to-bottom; the
+   *  first stage's value is the 100% reference for every bar's width. */
   data: FunnelStage[];
   ariaLabel?: string;
 }

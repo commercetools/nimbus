@@ -18,7 +18,11 @@ tags:
 
 <ChartMeta />
 
-Stage-by-stage drop-off through a single process.
+A funnel chart stacks the ordered stages of a single process, each centered
+bar's width the share that survives to that stage relative to the first. Use it
+to answer "how much drops off at each stage?" — visit → product view → add to
+cart → checkout → purchase — where the shrinking width makes the leak between
+steps obvious.
 
 ```jsx live
 const data = [
@@ -32,14 +36,216 @@ const data = [
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <FunnelChart width={width} height={height} data={data} />}
+      {(width, height) => (
+        <FunnelChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Funnel of checkout stages, where the largest drop-off is between visit and product view"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a funnel when you have one linear sequence of stages and you care
+about where volume is lost between them. It is a single-path view: every stage
+is a subset of the one before it, so the bars only ever shrink. If your flow
+branches or merges — traffic splitting across sources and paths — a
+[Sankey diagram](/charts/sankey-diagram) shows that; a funnel cannot.
+
+| You want to…                                  | Use instead       |
+| --------------------------------------------- | ----------------- |
+| Show a branching / merging flow between nodes | `SankeyDiagram`   |
+| Compare stage counts as plain bars            | `BarChart`        |
+| Show what makes up each stage's total         | `StackedBarChart` |
+| Split one whole into shares                   | `DonutChart`      |
+| Show step-to-step change as a bridge          | `WaterfallChart`  |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { FunnelChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  FunnelChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `FunnelStage` — one bar per stage, given top-to-bottom:
+
+```ts
+interface FunnelStage {
+  stage: string;
+  value: number;
+}
+```
+
+```tsx
+const data: FunnelStage[] = [
+  { stage: "Visit", value: 1000 },
+  { stage: "Product view", value: 640 },
+  { stage: "Add to cart", value: 320 },
+  { stage: "Checkout", value: 180 },
+  { stage: "Purchase", value: 95 },
+];
+```
+
+Contract notes, verifiable from source:
+
+- Stages render **in array order**, top to bottom — order the array the way the
+  process runs.
+- The **first stage's value is the 100% reference**: every bar's width is
+  `value / firstValue`. Values are assumed **non-increasing** (a funnel
+  narrows); a larger later value would produce a bar wider than the first
+  stage's.
+- `value` is a plain number; the `% of first` and (in the tooltip)
+  `% of previous` are derived from it, so pass raw counts, not percentages.
+
+## API reference
+
+<PropsTable id="FunnelChart" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Stage bars & labels (automatic)
+
+Not configurable — each stage is a centered, rounded bar whose width is its
+share of the first stage. The stage name sits above each bar, and from the
+second stage on it carries the `% of first` beside it. The bar's compact value
+is drawn inside it when it fits; when the bar is too narrow the value is omitted
+(the label above and the hover tooltip carry it instead of showing a clipped
+number).
+
+### Tooltip (automatic)
+
+Hovering a stage dims the others to 0.5 opacity and shows a tooltip with the
+stage name, its compact value, its `% of first`, and — for every stage after the
+first — its `% of previous`, which is the step-to-step conversion rate.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. All bars use the single
+validated `nimbus` chart **accent** — color carries no meaning here; the width
+and stacking order do — so there is no legend.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => <FunnelChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={4 / 3} minHeight={200} maxHeight={420}>
+  {(width, height) => <FunnelChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Bar height is capped (~40px) and each stage takes a
+band of the height, so a funnel is meant for a handful of stages; there is no
+downsampling — collapse or group stages upstream if there are many.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<FunnelChart
+  ariaLabel="Funnel of checkout stages, where the largest drop-off is between visit and product view"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Funnel of N stages"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `FunnelChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Stage**, **Value**, **% of first**) into the accessibility tree, plus a
+  keyboard "View data as table" toggle that reveals it in place — so the numbers
+  are available as text, not just the one-line label.
+- **CVD-safe palette.** The accent comes from the validated chart theme
+  (contrast + color-vision-deficiency checks), not an ad-hoc color.
+- **Non-color encoding.** Meaning is carried by bar width and stacking order;
+  color is a single hue and is not load-bearing.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the stages and drop-offs
+rather than "the narrow bar". There is no animation, so reduced-motion handling
+is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (width/order carry it here)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names stages/drop-offs rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`FunnelChart` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **A single linear path only.** Stages must be strictly nested subsets; there
+  is no branching or merging — for that use
+  [`SankeyDiagram`](/charts/sankey-diagram).
+- **Assumes non-increasing values.** A later stage larger than the first draws a
+  bar wider than the top; the chart does not clamp or warn.
+- **No value formatting prop.** Values are compact-formatted and rates are
+  percentages; neither is configurable.
+- **No interaction callbacks.** Hover is internal; there is no `onDatumClick` /
+  `onDatumHover`.
+- **No title, subtitle, caption, loading, or error passthrough** — `FunnelChart`
+  forwards only `ariaLabel` and the data table to `ChartContainer`.
+
+## Related charts
+
+Same "part-to-whole" purpose, different trade-offs:
+[Stacked bar chart](/charts/stacked-bar-chart),
+[Donut chart](/charts/donut-chart), [Treemap](/charts/treemap),
+[Sunburst](/charts/sunburst-chart), [Waffle chart](/charts/waffle-chart), and
+[Marimekko](/charts/marimekko-chart). For a branching flow rather than a single
+path, see [Sankey diagram](/charts/sankey-diagram). The `<ChartMeta />` block
+above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

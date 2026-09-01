@@ -24,10 +24,13 @@ export interface BoxPlotGroupStats {
 }
 
 export interface BoxPlotProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
   /** One five-number summary per category. Nothing is computed here. */
   groups: BoxPlotGroupStats[];
+  /** Accessible label for the SVG; defaults to a generated summary. */
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;

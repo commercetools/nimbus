@@ -18,21 +18,263 @@ tags:
 
 <ChartMeta />
 
-The accessible table the resolver falls back to.
+A data table is the library's guaranteed, text-native presentation of any
+dataset: a lean, themed HTML table of columns and rows. It is the answer to "how
+do I make these values readable no matter what?" — and it is not only a chart
+you can reach for directly. **Every drawn chart already embeds one:** the
+visually-hidden fallback that `ChartContainer` renders into the accessibility
+tree (WCAG 1.1.1) is this exact component, and the selection resolver falls back
+to it whenever a chart can't be drawn. Learn it once and you understand every
+chart's accessible core.
 
 ```jsx live
 const columns = ["Region", "Orders", "Revenue"];
-const rows = [["EU", 1240, "82k"], ["US", 980, "71k"], ["APAC", 640, "44k"]];
+const rows = [
+  ["EU", 1240, "82k"],
+  ["US", 980, "71k"],
+  ["APAC", 640, "44k"],
+];
 
 const App = () => (
   <ChartThemeProvider mode="light">
-    <DataTable columns={columns} rows={rows} />
+    <DataTable columns={columns} rows={rows} caption="Orders by region" />
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a data table directly when the values themselves are the point — exact
+figures, a small grid a reader will scan cell by cell, or a deliberate
+text-first alternative to a chart. You rarely need to add it beside a chart for
+accessibility, because each chart already carries a hidden copy; use it on its
+own when a table is the primary presentation.
+
+| You want to…                         | Use instead  |
+| ------------------------------------ | ------------ |
+| Compare magnitudes across categories | `BarChart`   |
+| Show how a metric moves over time    | `LineChart`  |
+| Show the composition of a whole      | `DonutChart` |
+
+Any of those charts still exposes its numbers as a `DataTable` fallback — the
+table below is that same guarantee, made the primary view.
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { DataTable, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import { DataTable, ChartThemeProvider } from "@commercetools/nimbus-viz";
 ```
+
+`DataTable` reads its colors from a `ChartThemeProvider` (it calls
+`useChartTheme()` and throws without one), so mount that once, high in your
+layout. Like `StatCard`, it is **self-sizing**: it renders an HTML `<table>`,
+takes **no `width`/`height`**, and does **not** need a `ResponsiveContainer`.
+Drop it straight into your layout and it fills the available width.
+
+## Data shape
+
+A `DataTable` takes two props — the header labels and a row-major array of
+cells:
+
+```ts
+interface DataTableInput {
+  columns: string[]; // header labels, left-to-right
+  rows: (string | number)[][]; // one inner array per row, cells in column order
+  reason?: string; // optional banner above the table
+  caption?: string; // optional table caption
+}
+```
+
+```tsx
+const columns = ["Region", "Orders", "Revenue"];
+const rows: (string | number)[][] = [
+  ["EU", 1240, "82k"],
+  ["US", 980, "71k"],
+  ["APAC", 640, "44k"],
+];
+```
+
+Contract notes, verifiable from source — the table renders defensively and
+**never throws**:
+
+- **Ragged rows are padded** to the column count, and extra cells beyond the
+  columns are ignored, so a short or long row can't break the layout.
+- **Non-finite numbers** (`NaN`, `Infinity`) and **missing cells** render as an
+  em dash (`—`).
+- **Empty `rows`** render a single "No rows to display." state row rather than
+  an empty table.
+- Cells are `string | number` only — the number's own `String()` form is shown,
+  so pre-format currency/percent values as strings.
+
+## API reference
+
+<PropsTable id="DataTable" />
+
+Renders a "No rows to display." row for empty `rows` and an em dash for any
+non-finite or missing cell; it never throws.
+
+## Chart configuration
+
+### Reason banner (`reason`)
+
+Pass `reason` to show a small note above the table — typically why a chart
+resolver fell back to the table (unsupported shape, an emptied filter). It
+renders as a `role="note"` banner.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <DataTable
+      columns={["Metric", "Value"]}
+      rows={[
+        ["Sessions", 18240],
+        ["Conversion", "3.1%"],
+      ]}
+      reason="No chart matched this shape — showing the values as a table."
+    />
+  </ChartThemeProvider>
+);
+```
+
+### Caption (`caption`)
+
+Pass `caption` to describe the table; it renders as a top-aligned `<caption>`
+element, which screen readers announce as the table's name. When `DataTable` is
+used as a chart's hidden fallback, `ChartContainer` passes the chart's title
+here automatically.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <DataTable
+      columns={["Stage", "Users", "Rate"]}
+      rows={[
+        ["Visit", 1000, "100%"],
+        ["Cart", 320, "32%"],
+        ["Purchase", 95, "9.5%"],
+      ]}
+      caption="Checkout funnel, last 30 days"
+    />
+  </ChartThemeProvider>
+);
+```
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Every color — text, surface,
+header rule, borders — comes from the chart theme roles, so the table sits
+correctly on a card in both light and dark.
+
+### Semantic markup & defensive rendering (automatic)
+
+Not configurable — the table always emits real `<table>` markup with
+`scope="col"` header cells, pads ragged rows, renders non-finite or missing
+cells as an em dash, and shows an empty-state row for no data. These behaviors
+are what make it safe to use as the universal fallback.
+
+## Responsiveness & performance
+
+`DataTable` is **self-sizing** — there is no `ResponsiveContainer` and no
+`width`/`height`. It renders at `width: 100%` and scrolls horizontally within
+its own container when the columns overflow (`overflow-x: auto`,
+`max-width: 100%`), so it stays contained on narrow viewports. Place it directly
+in your layout:
+
+```tsx
+<Box maxW="640px">
+  <DataTable columns={columns} rows={rows} />
+</Box>
+```
+
+Every row is rendered — there is no virtualization or downsampling — so cap or
+paginate very large datasets upstream before handing them to the table.
+
+## Accessibility
+
+`DataTable` is the library's accessibility backbone rather than a graphic to
+label: it is a real semantic `<table>` with `scope="col"` header cells and an
+optional `<caption>`, so screen readers navigate it by row and column and every
+value is available as text. It is exactly what `ChartContainer` mounts
+visually-hidden inside every drawn chart to satisfy WCAG 1.1.1 — so documenting
+it well documents the fallback the whole library depends on.
+
+Because it is text, there is no `ariaLabel` and no image role — use `caption`
+(or a nearby heading) to name what the table shows:
+
+```tsx
+<DataTable
+  columns={columns}
+  rows={rows}
+  caption="Orders by region, last 30 days"
+/>
+```
+
+What you get automatically:
+
+- **Semantic table markup.** `<th scope="col">` header cells and an optional
+  `<caption>` give assistive tech the structure to read cells with their column
+  headers.
+- **Values as text.** Every cell is DOM text; there is nothing to describe and
+  no fallback needed — this component _is_ the fallback.
+- **CVD-safe, themed palette.** Text and rules use validated theme roles
+  (contrast checked in light and dark), not ad-hoc colors, and no meaning is
+  carried by color at all.
+
+Your job: keep the table in a `ChartThemeProvider`; give it a `caption` (or an
+adjacent heading) so its purpose is announced; and pre-format numeric cells
+(currency, percent) as strings, since the table prints numbers verbatim.
+
+Accessibility checklist:
+
+- [ ] `caption` (or a nearby heading) states what the table shows
+- [ ] Underlying values are available as text (they always are — this is the
+      fallback)
+- [ ] Meaning does not depend on color alone (all data is text; color is
+      decorative)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Numeric cells are pre-formatted where a unit matters (currency, percent)
+- [ ] Motion respected where present — N/A, this component does not animate
+
+## States
+
+Unlike the drawn charts (which return `null` for empty data), `DataTable` has
+its **own** empty state: empty `rows` render a single "No rows to display." cell
+spanning all columns. There is no loading or error surface — guard those
+upstream and render your own placeholder, or pass a `reason` banner to explain a
+fallback.
+
+## Limitations
+
+- **Presentational only.** No sorting, filtering, pagination, row selection, or
+  cell interaction — it is a static table, by design, so it can be the
+  guaranteed fallback.
+- **Primitive cells.** Cells are `string | number`; there are no custom cell
+  renderers, per-column alignment, or number formatting — numbers print via
+  their `String()` form, so format them upstream.
+- **No `ChartContainer` chrome.** It renders only the optional `reason` banner
+  and `caption`; there is no title/subtitle, legend, loading, or error
+  passthrough.
+- **Interim implementation.** This is a lean stand-in intended to graduate to
+  the full `@commercetools/nimbus` `DataTable`; its props are deliberately
+  primitive so that swap stays a drop-in.
+
+## Related charts
+
+`DataTable` is the sole member of the "tabular" family, and it is the accessible
+fallback embedded in **every** chart — so its natural relatives are whichever
+charts you would reach for given your data shape:
+[Bar chart](/charts/bar-chart), [Line chart](/charts/line-chart), and
+[Donut chart](/charts/donut-chart) among them. The `<ChartMeta />` block above
+places it in the catalog.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [MDN: the table element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table)
+  </content>

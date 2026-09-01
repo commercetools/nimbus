@@ -18,7 +18,12 @@ tags:
 
 <ChartMeta />
 
-Customers distributed across recency and frequency.
+An RFM grid places customer segments on a recency × frequency matrix — recency
+buckets run left to right along the x-axis, frequency buckets bottom to top on
+the y-axis — and shades each cell on a single-hue sequential ramp over its
+customer count. Use it to answer "where do customers sit across recency and
+frequency?" — so the loyal top-right, the lapsing bottom-left, and the dense
+segments in between are visible at a glance.
 
 ```jsx live
 const data = [
@@ -33,15 +38,228 @@ const data = [
 
 const App = () => (
   <ChartThemeProvider mode="light">
-    <ResponsiveContainer height={280}>
-      {(width, height) => <RfmGrid width={width} height={height} data={data} />}
+    <ResponsiveContainer height={300}>
+      {(width, height) => (
+        <RfmGrid
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="RFM grid of customers by recency and frequency, where recent frequent buyers cluster top-right"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for an RFM grid when you have already bucketed customers by recency and
+frequency and you want to see how the base distributes across those two axes —
+which segments are crowded, which are empty, where the value concentrates. It is
+a purpose-built recency×frequency matrix; for an arbitrary two-category grid, or
+for a different pair of axes, use the general heatmap.
+
+| You want to…                                 | Use instead       |
+| -------------------------------------------- | ----------------- |
+| Plot an arbitrary two-axis value matrix      | `Heatmap`         |
+| Track retention as cohorts age               | `CohortTriangle`  |
+| Lay a single daily value out over a calendar | `CalendarHeatmap` |
+| Compare segment sizes as ranked bars         | `BarChart`        |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { RfmGrid, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  RfmGrid,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `RfmCell` — one entry per occupied segment:
+
+```ts
+interface RfmCell {
+  recency: number;
+  frequency: number;
+  count: number;
+  value?: number;
+}
+```
+
+```tsx
+const data: RfmCell[] = [
+  { recency: 1, frequency: 1, count: 40, value: 8000 },
+  { recency: 3, frequency: 2, count: 70, value: 22000 },
+  { recency: 5, frequency: 5, count: 140, value: 210000 },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `recency` and `frequency` are **1-based bucket indices** (`1..N`). The grid is
+  sized to the largest index seen on each axis (`max recency` wide ×
+  `max frequency` tall).
+- `count` is the number of customers in the segment — it drives both the cell's
+  shade (`count / maxCount`) and the number printed in the cell.
+- `value` is optional (e.g. revenue); it appears **in the hover tooltip only**
+  and is not encoded in color or position.
+- Provide only the **occupied** segments — any bucket combination you omit is
+  drawn as an empty cell. If two entries share the same `recency`/`frequency`,
+  the **last** one wins.
+- Recency increases **left → right**; frequency increases **bottom → top**, so
+  the best (recent, frequent) customers sit in the **top-right**.
+
+## API reference
+
+<PropsTable id="RfmGrid" />
+
+Renders `null` for empty `data`, a grid with no recency or frequency buckets, or
+a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Axes & buckets (automatic)
+
+Not configurable — the chart always draws them. Recency bucket numbers run along
+the bottom (labeled `Recency →`) and frequency bucket numbers up the left side
+(labeled `Frequency →`, reading upward). Both axes are simple 1..N bucket bands;
+there are no continuous scales or tick formatting to set.
+
+### Color scale, legend & count labels (automatic)
+
+Cells are shaded by customer `count` on a single-hue sequential ramp, with a
+low→high gradient legend ("Fewer" → "More") in the reserved strip. Each occupied
+cell prints its count (compact-formatted, bold) when it is large enough, using
+an automatically contrast-matched text color. Empty segments render as a faint
+outlined cell rather than blank space.
+
+### Tooltip (automatic)
+
+Hovering a cell shows a tooltip with the recency/frequency bucket (`R3 · F2`),
+the customer count, and — when present — the segment `value`.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Unlike its heatmap siblings,
+`RfmGrid` has no `hue` prop — the ramp is the validated `nimbus` **blue**
+sequential scale, fixed.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={300}>
+  {(width, height) => <RfmGrid width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={1} minHeight={240} maxHeight={440}>
+  {(width, height) => <RfmGrid width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. RFM grids are small by nature — typically a 5×5
+matrix of buckets — so there is no downsampling; bucket your customers into a
+handful of recency/frequency bins upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the grid shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<RfmGrid
+  ariaLabel="RFM grid of customers by recency and frequency, where recent frequent buyers cluster top-right"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual cells in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"RFM grid, N recency by M frequency buckets"` is generated if you omit
+  it).
+- **Data-table fallback (WCAG 1.1.1).** `RfmGrid` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Recency**, **Frequency**, **Count**, **Value**) into the accessibility tree,
+  plus a keyboard "View data as table" toggle that reveals it in place — so
+  every segment's numbers are available as text.
+- **CVD-safe palette + legend.** The ramp is a single-hue **sequential** scale
+  (lightness, never a rainbow) from the validated chart theme, and a low→high
+  gradient legend states the scale direction.
+- **Non-color cues.** In-cell count labels, the labeled recency/frequency axes,
+  and the data-table fallback all carry meaning without relying on shade.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the dense segments and their
+counts rather than "the dark cell". There is no animation, so reduced-motion
+handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Magnitude is not read from color alone (in-cell counts + the data table
+      carry the numbers; the ramp uses lightness, not hue)
+- [ ] Palette meets contrast + CVD checks (built-in sequential theme; don't
+      override to un-validated colors)
+- [ ] Surrounding copy names segments and counts rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`RfmGrid` renders `null` when `data` is empty, either axis has no buckets, or
+the measured size is non-positive; it does not draw its own empty, loading, or
+error message (it does not forward those `ChartContainer` features). Unoccupied
+segments inside the grid are drawn as faint empty cells, not gaps. Guard the
+no-data-yet state upstream and render your own placeholder.
+
+## Limitations
+
+- **Count drives color; value is tooltip-only.** The ramp encodes customer
+  `count`; segment `value` is shown on hover but never mapped to color or size.
+- **Fixed blue ramp.** There is no `hue` prop — unlike
+  [`Heatmap`](/charts/heatmap), [`CalendarHeatmap`](/charts/calendar-heatmap),
+  and [`CohortTriangle`](/charts/cohort-triangle), the scale is always the
+  validated blue sequential ramp.
+- **Integer bucket indices only.** Both axes are 1..N bands; the grid does not
+  take continuous recency/frequency values or custom bucket labels.
+- **No title, caption, loading, or error passthrough** — `RfmGrid` forwards only
+  `ariaLabel`, the gradient legend, and the data table to `ChartContainer`.
+- **No click or hover callbacks.** Hover highlight and the tooltip are internal;
+  there is no prop to observe cell interaction for drill-down.
+
+## Related charts
+
+Same "matrix & retention" purpose, different jobs: [Heatmap](/charts/heatmap),
+[Calendar heatmap](/charts/calendar-heatmap), and
+[Cohort triangle](/charts/cohort-triangle). The `<ChartMeta />` block above
+links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

@@ -18,10 +18,17 @@ tags:
 
 <ChartMeta />
 
-Bin raw samples to reveal the shape of a distribution.
+A histogram bins a single set of numeric samples and draws a bar per bin, so you
+can see the shape of a distribution — where values cluster, how wide they
+spread, whether the tail runs long. Unlike a bar chart, the x-axis is a
+continuous numeric scale and the bars are contiguous bins, not discrete
+categories. Use it to answer "how are these values distributed?"
 
 ```jsx live
-const rand = (i) => { const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
+const rand = (i) => {
+  const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
 const values = Array.from({ length: 220 }, (_, i) =>
   Math.round(50 + ((rand(i) + rand(i + 60) + rand(i + 130)) / 3 - 0.5) * 70)
 );
@@ -29,14 +36,238 @@ const values = Array.from({ length: 220 }, (_, i) =>
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <Histogram width={width} height={height} values={values} />}
+      {(width, height) => (
+        <Histogram
+          width={width}
+          height={height}
+          values={values}
+          ariaLabel="Histogram of 220 order values, where most cluster near the center and the tails are light"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a histogram when you have a single set of raw measurements and the
+question is about their spread and shape, not about named categories. It bins
+continuous values; a bar chart compares discrete labels. When you need summary
+statistics or want to compare several groups' distributions, move to a sibling
+below.
+
+| You want to…                                    | Use instead       |
+| ----------------------------------------------- | ----------------- |
+| Compare discrete, named categories              | `BarChart`        |
+| Show median, quartiles, and outliers            | `BoxPlot`         |
+| Show the full density shape of the distribution | `ViolinPlot`      |
+| Show every individual point                     | `BeeswarmPlot`    |
+| Read the cumulative share below each value      | `CumulativeCurve` |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { Histogram, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  Histogram,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+Unlike the categorical charts, the data prop is `values` — a flat array of raw
+numbers, binned for you:
+
+```ts
+const values: number[] = [4.2, 5.1, 5.4, 6.0, 6.1, 6.3 /* … */];
+```
+
+Contract notes, verifiable from source:
+
+- `values` are **raw samples**. The chart bins them internally with d3-array's
+  `bin()` over the sample's own `[min, max]` extent — you do not pre-aggregate.
+- `thresholds` sets the **approximate** bin count (default `12`); d3 may adjust
+  it to land on "nice" boundaries, so the drawn bin count can differ from the
+  number you pass.
+- The x-axis is a continuous value scale; there are no category labels. The
+  y-axis is the count per bin.
+- An empty `values` array (no bins) renders nothing — see States.
+
+## API reference
+
+<PropsTable id="Histogram" />
+
+Renders `null` for empty `values` (no bins) or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Bin count (`thresholds`)
+
+`thresholds` is the one visual knob: the approximate number of bins. Fewer bins
+smooth the distribution into a coarse silhouette; more bins expose finer
+structure (and noise). d3 treats it as a hint and may snap to nicer boundaries.
+
+```jsx live
+const rand = (i) => {
+  const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
+const values = Array.from({ length: 220 }, (_, i) =>
+  Math.round(50 + ((rand(i) + rand(i + 60) + rand(i + 130)) / 3 - 0.5) * 70)
+);
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <Histogram
+          width={width}
+          height={height}
+          values={values}
+          thresholds={24}
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Axes, scales & tooltip (automatic)
+
+The x-axis is a linear value scale over the sample extent (about six ticks,
+compact-formatted); the y-axis is a linear count scale (four ticks, integer
+labels) with horizontal gridlines. Hovering a bin dims the others to 0.4 opacity
+and shows a tooltip with the bin's value range and its count.
+
+### Overlays (`children`)
+
+Layer Layer-2 annotations (e.g. `ReferenceLine`, `ThresholdBand`, `TrendLine`)
+over the plot by passing them as `children` — a mean/median marker or a target
+band draws in the same plot space as the bars.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Bars use the validated
+`nimbus` chart accent, not a CSS color; color carries no meaning here — the
+value axis and bar heights do.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <Histogram width={width} height={height} values={values} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <Histogram width={width} height={height} values={values} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Binning naturally bounds the drawn marks to the bin
+count regardless of how many samples you pass, so large sample sets stay cheap
+to render; there is no separate downsampling step.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<Histogram
+  ariaLabel="Histogram of order values, where most cluster near the center and the tails are light"
+  width={width}
+  height={height}
+  values={values}
+/>
+```
+
+Don't list individual bins in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Histogram of N samples across M bins"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `Histogram` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns **Bin**
+  — the value range — and **Count**) into the accessibility tree, plus a
+  keyboard "View data as table" toggle that reveals it in place.
+- **CVD-safe palette.** The accent comes from the validated chart theme
+  (contrast + color-vision-deficiency checks), not an ad-hoc color.
+- **Non-color encoding.** Meaning is carried by position along the value axis
+  and bar height; color is a single hue and is not load-bearing.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy describe the shape (center,
+spread, tail) rather than colors. There is no animation, so reduced-motion
+handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (position/height carry it here)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy describes the distribution's shape rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`Histogram` renders `null` when `values` produces no bins (e.g. an empty array)
+or the measured size is non-positive; it does not draw its own empty, loading,
+or error message (it does not forward those `ChartContainer` features). Guard
+those states upstream and render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Single sample set.** No grouped or overlaid distributions — to compare
+  groups use [`BoxPlot`](/charts/box-plot) or
+  [`ViolinPlot`](/charts/violin-plot).
+- **Bins span the sample's own extent.** There is no fixed or shared domain
+  across charts, no explicit bin edges or width, and no log scale — only the
+  approximate `thresholds` count.
+- **No tooltip config, callbacks, or legend.** Hover is internal; there are no
+  `onDatumClick`/`onDatumHover` props and no legend.
+- **No per-bin coloring or built-in density curve** — add annotations via
+  `children`.
+- **No title, caption, loading, or error passthrough** — `Histogram` forwards
+  only `ariaLabel`, the data table, and `children` to `ChartContainer`.
+
+## Related charts
+
+Same "magnitude" purpose in the catalog, different trade-offs:
+[Bar chart](/charts/bar-chart), [Grouped bar chart](/charts/grouped-bar-chart),
+[Lollipop chart](/charts/lollipop-chart),
+[Radial bar chart](/charts/radial-bar-chart), and
+[Pareto chart](/charts/pareto-chart). For the true distribution cousins, see
+[Box plot](/charts/box-plot), [Violin plot](/charts/violin-plot), and
+[Cumulative curve](/charts/cumulative-curve). The `<ChartMeta />` block above
+links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

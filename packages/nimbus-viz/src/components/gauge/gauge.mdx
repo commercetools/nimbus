@@ -18,20 +18,312 @@ tags:
 
 <ChartMeta />
 
-Progress of a single value toward a target.
+A gauge shows one value as a fraction of a range: a muted track arc spans
+`min`..`max`, an accent arc sweeps the share reached, and an optional threshold
+tick marks a target on the arc. The value sits in the center in ink, so the
+number is readable without interpreting the arc's color. Use it to answer "how
+close is this value to its target?" — SLA attainment, quota progress, capacity
+used.
 
 ```jsx live
 const App = () => (
   <ChartThemeProvider mode="light">
-    <ResponsiveContainer height={200}>
-      {(width, height) => <Gauge width={width} height={height} value={72} min={0} max={100} threshold={80} label="SLA attainment" />}
-    </ResponsiveContainer>
+    <Box maxW="360px">
+      <ResponsiveContainer height={220}>
+        {(width, height) => (
+          <Gauge
+            width={width}
+            height={height}
+            value={72}
+            min={0}
+            max={100}
+            threshold={80}
+            label="SLA attainment"
+            ariaLabel="Gauge of SLA attainment, 72 of 100 against an 80 target"
+          />
+        )}
+      </ResponsiveContainer>
+    </Box>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a gauge when a single value is best understood **relative to a range
+or a target**, not as a raw number. It trades precision for an instant
+part-of-whole read on one metric. Keep it to one value; for several
+target-vs-actual measures at once, or for a bare headline number, use a sibling
+below.
+
+| You want to…                                           | Use instead   |
+| ------------------------------------------------------ | ------------- |
+| Show a headline number with a period-over-period delta | `StatCard`    |
+| Track several measures against their targets at once   | `BulletChart` |
+| Show how parts make up a whole                         | `DonutChart`  |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { Gauge, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  Gauge,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`Gauge` takes scalar inputs, not an array — a single reading plus the bounds it
+is measured against:
+
+```ts
+interface GaugeInput {
+  value: number; // the current reading, in the same units as min/max
+  min?: number; // lower bound of the arc (default 0)
+  max?: number; // upper bound of the arc (default 100)
+  threshold?: number; // optional target, drawn as a tick on the arc
+}
+```
+
+```tsx
+<Gauge
+  width={width}
+  height={height}
+  value={72}
+  min={0}
+  max={100}
+  threshold={80}
+/>
+```
+
+Contract notes, verifiable from source:
+
+- The swept fraction is `(value − min) / (max − min)`, **clamped to 0..1** — a
+  value below `min` reads empty, above `max` reads full.
+- The range must be positive: if `max <= min` the fraction is `0` and no
+  threshold tick is drawn.
+- `threshold` is positioned by the same fraction; it is a marker only and does
+  not change the value arc.
+
+## API reference
+
+<PropsTable id="Gauge" />
+
+Renders `null` for a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Range (`min` / `max`)
+
+`min` (default `0`) and `max` (default `100`) set the arc's span; the value arc
+sweeps the fraction of that range reached. Set them to your metric's natural
+bounds so the fill is meaningful.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <Box maxW="360px">
+      <ResponsiveContainer height={220}>
+        {(width, height) => (
+          <Gauge
+            width={width}
+            height={height}
+            value={4200}
+            min={0}
+            max={5000}
+            label="Orders this month"
+            ariaLabel="Gauge of orders this month, 4,200 of a 5,000 cap"
+          />
+        )}
+      </ResponsiveContainer>
+    </Box>
+  </ChartThemeProvider>
+);
+```
+
+### Threshold tick
+
+Pass `threshold` to draw a target mark across the arc at that value — the point
+the reader should compare the fill against (a target, SLA, or limit).
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <Box maxW="360px">
+      <ResponsiveContainer height={220}>
+        {(width, height) => (
+          <Gauge
+            width={width}
+            height={height}
+            value={88}
+            min={0}
+            max={100}
+            threshold={95}
+            valueFormat={(n) => `${n}%`}
+            label="Uptime vs. 95% SLA"
+            ariaLabel="Gauge of uptime, 88% against a 95% SLA target"
+          />
+        )}
+      </ResponsiveContainer>
+    </Box>
+  </ChartThemeProvider>
+);
+```
+
+### Value & label formatting
+
+`valueFormat` formats the centered value label (default: a compact formatter);
+`label` adds a caption line beneath it for a unit or metric name.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <Box maxW="360px">
+      <ResponsiveContainer height={220}>
+        {(width, height) => (
+          <Gauge
+            width={width}
+            height={height}
+            value={640000}
+            min={0}
+            max={1000000}
+            valueFormat={(n) => `$${(n / 1000).toFixed(0)}k`}
+            label="Revenue to goal"
+            ariaLabel="Gauge of revenue to goal, 640k of 1M"
+          />
+        )}
+      </ResponsiveContainer>
+    </Box>
+  </ChartThemeProvider>
+);
+```
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. The track uses the theme
+`grid` role, the value arc the `accent`, and the value label + threshold tick
+the `ink` role — validated theme colors, not ad-hoc CSS.
+
+### Arc geometry (automatic)
+
+Not configurable — the gauge always draws the same **upper-half semicircle**
+(dome-shaped, flat side down), with the value label centered above the arc and
+the optional caption beneath it. The value label is always rendered in ink so
+the number never depends on reading the arc's color.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={220}>
+  {(width, height) => <Gauge width={width} height={height} value={72} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={2 / 1} minHeight={160} maxHeight={280}>
+  {(width, height) => <Gauge width={width} height={height} value={72} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+gauge returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. The arc radius is derived from the smaller of the
+available half-width and height, so a short, wide container yields a smaller
+dome centered horizontally. A gauge is a single value, so there is nothing to
+downsample.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the gauge shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<Gauge
+  ariaLabel="Gauge of SLA attainment, 72 of 100 against an 80 target"
+  width={width}
+  height={height}
+  value={72}
+  threshold={80}
+/>
+```
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Gauge: {value} of {max}"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `Gauge` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Metric**, **Value**, **Min**, **Max**, **Target**) into the accessibility
+  tree, plus a keyboard "View data as table" toggle that reveals it in place —
+  so the exact numbers are available as text, not just the arc.
+- **Value as text.** The reading is drawn as a centered ink label, so the number
+  is legible without interpreting arc color; the threshold is a positioned tick,
+  not a color.
+- **CVD-safe palette.** Track, arc, and tick come from the validated chart theme
+  (contrast + color-vision-deficiency checks), not ad-hoc colors.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the value and its target
+rather than "the filled arc". There is no animation, so reduced-motion handling
+is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the gauge shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (arc length + position + centered
+      value carry it)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names the value and target rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`Gauge` renders `null` when the measured size is non-positive; it does not draw
+its own loading or error message (it forwards only `ariaLabel` and the data
+table to `ChartContainer`). A value outside `min`..`max` is clamped rather than
+errored. Guard loading and error states upstream and render your own
+placeholder.
+
+## Limitations
+
+- **One value.** A gauge shows a single reading against one range — for several
+  target-vs-actual measures use [`BulletChart`](/charts/bullet-chart), and for a
+  bare headline number use [`StatCard`](/charts/stat-card).
+- **Semicircle only.** The arc is a fixed upper-half dome; there is no
+  full-circle, radial, or angular-range variant.
+- **Minimal scale.** Only the centered value is labeled — there are no
+  `min`/`max` end labels or tick scale along the arc, and the threshold is a
+  single tick.
+- **No title, caption, legend, loading, or error passthrough**, and no click or
+  hover interaction — `Gauge` forwards only `ariaLabel` and the data table to
+  `ChartContainer`.
+
+## Related charts
+
+Same "single value" purpose: [Stat card](/charts/stat-card) shows the same kind
+of headline number with a period-over-period delta instead of a target arc. For
+target-vs-actual across several measures, see
+[Bullet chart](/charts/bullet-chart). The `<ChartMeta />` block above links the
+current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)
+  </content>

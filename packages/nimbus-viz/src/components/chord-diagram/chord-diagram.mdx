@@ -18,7 +18,12 @@ tags:
 
 <ChartMeta />
 
-Flows between every pair of a shared set of entities.
+A chord diagram lays a single set of entities around a circle and draws a ribbon
+between every pair that exchanges volume, its ends sized by the flow in each
+direction. Each entity's arc spans its total outbound flow, so the circle reads
+as a symmetric flow matrix at a glance. Use it to answer "how much flows between
+each pair?" — traffic between channels, transfers between accounts, migration
+between segments.
 
 ```jsx live
 const data = {
@@ -34,15 +39,236 @@ const data = {
 
 const App = () => (
   <ChartThemeProvider mode="light">
-    <ResponsiveContainer height={280}>
-      {(width, height) => <ChordDiagram width={width} height={height} data={data} />}
+    <ResponsiveContainer height={320}>
+      {(width, height) => (
+        <ChordDiagram
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Chord diagram of flow between acquisition channels, where Direct and Email exchange the most"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a chord diagram when your data is a **square matrix** of flows among
+one set of entities and the pairings themselves — who exchanges with whom, and
+how much — are the point. It handles bidirectional flow (the two ends of a
+ribbon can differ) and works best for a small set of entities where the ribbons
+stay readable.
+
+| You want to…                                        | Use instead     |
+| --------------------------------------------------- | --------------- |
+| Show volume moving through directed, layered stages | `SankeyDiagram` |
+| Show drop-off through ordered, single-path stages   | `FunnelChart`   |
+| Show a value at each row × column cell              | `Heatmap`       |
+| Compare entity totals as plain magnitudes           | `BarChart`      |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { ChordDiagram, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  ChordDiagram,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is a `FlowMatrix` — the entity `labels` and a square `matrix` where
+`matrix[i][j]` is the flow **from** entity `i` **to** entity `j`:
+
+```ts
+interface FlowMatrix {
+  labels: string[];
+  /** `matrix[i][j]` = flow FROM entity i TO entity j. */
+  matrix: number[][];
+}
+```
+
+```tsx
+const data: FlowMatrix = {
+  labels: ["Search", "Social", "Email"],
+  matrix: [
+    [0, 18, 9], // Search → Social, Search → Email
+    [14, 0, 12], // Social → Search, Social → Email
+    [7, 15, 0], // Email → Search, Email → Social
+  ],
+};
+```
+
+Contract notes, verifiable from source:
+
+- The matrix must be **square** and its side must equal `labels.length` — row
+  `i` and column `i` are the same entity.
+- `matrix[i][j]` is directional (from `i` to `j`); the ribbon for a pair merges
+  both directions, and its two ends are sized by `matrix[i][j]` and
+  `matrix[j][i]` respectively.
+- The **diagonal** (`matrix[i][i]`) is self-flow and contributes to the arc but
+  draws no ribbon.
+- Each entity's arc length is its **row sum** (total outbound flow), also what
+  the data table and arc tooltip report.
+- **Negative values are clamped to 0** — this chart expects non-negative flows.
+- `labels` should be **unique**; each is the color key, the arc label, and a
+  legend entry.
+
+## API reference
+
+<PropsTable id="ChordDiagram" />
+
+Renders `null` when `labels` is empty or the measured `width`/`height` is
+non-positive.
+
+## Chart configuration
+
+### Layout (automatic)
+
+Not configurable — the chart always lays the entities out clockwise from the
+top, each arc spanning its total outbound flow with a small fixed gap between
+neighbors. Ribbons connect the sub-arcs of each pair, curving through the
+center. The ring radius adapts to the smaller of the available width and height,
+and every arc gets a direct text label just outside the ring.
+
+### Legend (automatic)
+
+`ChordDiagram` always passes a `legend` to `ChartContainer` — one swatch per
+entity, in the fixed color order — so the ring's colors are named even before a
+reader hovers. It is not a configurable prop.
+
+### Color & theming
+
+Entity color comes from the shared **entity → color** scale (`useEntityColors`),
+assigned in `labels` order; each ribbon takes the color of its lower-indexed
+entity. Set the color mode on the provider (`mode="light"` default, or
+`mode="dark"`). To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Colors come from the
+validated `nimbus` chart palette, not CSS.
+
+### Tooltips & hover (automatic)
+
+Built in and not configurable. Hovering an **arc** dims every ribbon except the
+ones touching that entity and reads out its total; hovering a **ribbon**
+isolates that pair and shows `A ↔ B` with the combined flow. Values use the
+compact formatter (e.g. `4.2k`).
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={320}>
+  {(width, height) => (
+    <ChordDiagram width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={1} minHeight={260} maxHeight={480}>
+  {(width, height) => (
+    <ChordDiagram width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Because the ring is inscribed in the smaller dimension, a **roughly square**
+container (`aspectRatio={1}`) uses the space best. `ResponsiveContainer` renders
+nothing until it observes a positive size, and the chart returns `null` for a
+non-positive size — safe inside tabs, drawers, and initially-hidden containers.
+There is no downsampling; a chord diagram becomes an unreadable knot past a
+dozen or so entities, so aggregate or filter upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the diagram shows **and** its takeaway,
+using Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<ChordDiagram
+  ariaLabel="Chord diagram of flow between acquisition channels, where Direct and Email exchange the most"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual pair flows in the label; the data-table fallback carries
+them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Chord diagram of N entities"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `ChordDiagram` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Entity**, **Total outbound**) into the accessibility tree, plus a keyboard
+  "View data as table" toggle that reveals it in place — so the totals are
+  available as text, not just the one-line label.
+- **Named legend.** A categorical legend maps each color to its entity, so the
+  colors are identified in text.
+- **CVD-safe palette.** Colors come from the validated chart theme (contrast +
+  color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** Meaning is carried by arc length and ribbon width, and
+  every arc is labeled directly; color only groups the entities.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the entities and pairs rather
+than "the two big arcs". There is no animation, so reduced-motion handling is
+N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the diagram shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (arc length, ribbon width, direct
+      labels, and a named legend carry it here)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names entities/pairs rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`ChordDiagram` renders `null` when `labels` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Square, non-negative matrix only.** `matrix` must be `labels.length` on each
+  side, and negatives are clamped to 0.
+- **Arcs span outbound flow.** Each arc is sized by its row sum; there is no
+  option to size by inbound or by net flow.
+- **No title, caption, loading, or error passthrough** — `ChordDiagram` forwards
+  only `ariaLabel`, the legend, and the data table to `ChartContainer`.
+- **No overlays or interaction callbacks.** Hover is internal only; there is no
+  `children` slot and no click/hover callbacks.
+
+## Related charts
+
+Same "flow" purpose, different question: for volume moving through directed,
+layered stages, see [Sankey diagram](/charts/sankey-diagram). For ordered,
+single-path drop-off, reach for [Funnel chart](/charts/funnel-chart); for a
+value at each row × column cell, [Heatmap](/charts/heatmap). The `<ChartMeta />`
+block above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)
+  </content>

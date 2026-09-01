@@ -18,29 +18,318 @@ tags:
 
 <ChartMeta />
 
-Watch a process against its mean and control limits.
+A control chart is a statistical process-control (SPC) view: one measured
+time-series plotted against a center line and upper/lower control limits, all on
+a single value axis. Use it to answer "is this process staying in control?" —
+fill weight, response time, defect rate — where points that breach a limit are
+the signal you are watching for.
 
 ```jsx live
 const series = [
-  { id: "p", label: "Fill weight", data: [
-    { x: new Date("2026-01-01"), y: 249 }, { x: new Date("2026-01-02"), y: 251 },
-    { x: new Date("2026-01-03"), y: 250 }, { x: new Date("2026-01-04"), y: 258 },
-    { x: new Date("2026-01-05"), y: 247 }, { x: new Date("2026-01-06"), y: 252 },
-    { x: new Date("2026-01-07"), y: 240 }, { x: new Date("2026-01-08"), y: 251 },
-    { x: new Date("2026-01-09"), y: 253 }, { x: new Date("2026-01-10"), y: 249 } ] },
+  {
+    id: "p",
+    label: "Fill weight",
+    data: [
+      { x: new Date("2026-01-01"), y: 249 },
+      { x: new Date("2026-01-02"), y: 251 },
+      { x: new Date("2026-01-03"), y: 250 },
+      { x: new Date("2026-01-04"), y: 258 },
+      { x: new Date("2026-01-05"), y: 247 },
+      { x: new Date("2026-01-06"), y: 252 },
+      { x: new Date("2026-01-07"), y: 240 },
+      { x: new Date("2026-01-08"), y: 251 },
+      { x: new Date("2026-01-09"), y: 253 },
+      { x: new Date("2026-01-10"), y: 249 },
+    ],
+  },
 ];
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <ControlChart width={width} height={height} series={series} />}
+      {(width, height) => (
+        <ControlChart
+          width={width}
+          height={height}
+          series={series}
+          ariaLabel="Control chart of fill weight, where two points breach the control limits"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a control chart when you are monitoring a single ongoing process and
+the question is stability, not just level — you want the mean, the acceptable
+band around it, and an obvious flag when a sample falls outside it. If you just
+want the trend of one or more series without control limits, use a line chart;
+if you are enforcing a target rather than statistical limits, an overlay
+`ThresholdBand` on a line chart may fit better.
+
+| You want to…                                   | Use instead                                      |
+| ---------------------------------------------- | ------------------------------------------------ |
+| Plot one or more trends without control limits | [`LineChart`](/charts/line-chart)                |
+| Show composition of a total over time          | [`StackedAreaChart`](/charts/stacked-area-chart) |
+| Track price open/high/low/close per period     | [`CandlestickChart`](/charts/candlestick-chart)  |
+| Fit a bare trend inline beside a KPI           | [`Sparkline`](/charts/sparkline)                 |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { ControlChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  ControlChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`series` is an array of `Series`, but only the **first** entry is plotted — the
+control chart measures one process. Additional entries are ignored.
+
+```ts
+interface SeriesPoint {
+  x: number | Date;
+  y: number | null;
+}
+
+interface Series {
+  id: string;
+  label: string;
+  data: SeriesPoint[];
+}
+```
+
+```tsx
+const series: Series[] = [
+  {
+    id: "fill",
+    label: "Fill weight",
+    data: [
+      { x: new Date("2026-01-01"), y: 249 },
+      { x: new Date("2026-01-02"), y: 251 },
+      { x: new Date("2026-01-03"), y: 250 },
+      { x: new Date("2026-01-04"), y: 258 },
+    ],
+  },
+];
+```
+
+Contract notes, verifiable from source:
+
+- Only `series[0]` is drawn; its `label` names the process in the tooltip and
+  aria-label. Pass a single-element array.
+- `x` accepts a `Date` or epoch-milliseconds number (coerced to a `Date` on a
+  time scale). `y` may be `null` — null points are skipped (the line is
+  `defined` only where `y` is non-null) and are excluded from the statistics.
+- The value axis is **not** anchored at 0; it fits the data and the three
+  reference levels, so a control chart can sit anywhere on the number line
+  (including negative values).
+
+## API reference
+
+<PropsTable id="ControlChart" />
+
+Renders `null` for an empty (first) series or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Control limits (center, UCL, LCL)
+
+The three reference levels are the point of the chart. By default they are
+computed from the measured series: the **center line** is its mean, and the
+**upper/lower control limits** are the center ± 3σ (three sample standard
+deviations — the classic 3-sigma limits). Override any of them with the
+`center`, `ucl`, and `lcl` props when you have externally specified limits (a
+spec target, a regulatory band) rather than data-derived ones. All three share
+the single value axis; a control chart never adds a second scale.
+
+```jsx live
+const series = [
+  {
+    id: "rt",
+    label: "Response time (ms)",
+    data: [
+      { x: new Date("2026-02-01"), y: 210 },
+      { x: new Date("2026-02-02"), y: 224 },
+      { x: new Date("2026-02-03"), y: 218 },
+      { x: new Date("2026-02-04"), y: 205 },
+      { x: new Date("2026-02-05"), y: 262 },
+      { x: new Date("2026-02-06"), y: 231 },
+      { x: new Date("2026-02-07"), y: 209 },
+      { x: new Date("2026-02-08"), y: 198 },
+    ],
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <ControlChart
+          width={width}
+          height={height}
+          series={series}
+          center={220}
+          ucl={250}
+          lcl={190}
+          ariaLabel="Control chart of response time against a fixed 190–250ms band"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Out-of-control flags (automatic)
+
+Any point above the UCL or below the LCL is flagged: it is drawn as a larger
+marker in the theme's `negative` hue (in-control points use the smaller accent
+marker). The alarm is not color-only — the tooltip on a flagged point adds the
+text "Out of control", and the data-table fallback's **Status** column reads
+"out of control" / "in control" for every point. This behavior is not
+configurable.
+
+### Overlays (`children`)
+
+Annotations (e.g. `ReferenceLine`, `ThresholdBand`, `TrendLine`) passed as
+`children` are drawn in the plot's coordinate space, on top of the series and
+limits — use them to mark a shift, a spec revision, or a period of interest.
+
+### Axes, reference lines & tooltip (automatic)
+
+Also always drawn: a value axis (linear, fitted to the data and limits, with
+horizontal gridlines) and a time axis whose tick count adapts to the width. The
+UCL and LCL are dashed lines and the center line is solid, each labeled at the
+right edge (**UCL**, **CL**, **LCL**) in muted ink — never a mark color.
+Hovering resolves the nearest x-index, draws a dashed crosshair, and shows a
+tooltip with the date, the value, and the out-of-control note when applicable.
+There is no `valueFormat` prop — values use the built-in compact formatter.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. The line accent, the
+`negative` out-of-control marker, and the reference lines all come from the
+validated `nimbus` chart theme, not CSS.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <ControlChart width={width} height={height} series={series} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <ControlChart width={width} height={height} series={series} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. There is no built-in downsampling: every sample is
+drawn and every sample is a candidate marker, so aggregate very long runs
+upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<ControlChart
+  ariaLabel="Control chart of fill weight, where samples 4 and 7 breach the control limits"
+  width={width}
+  height={height}
+  series={series}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Control chart of {series label}"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `ControlChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Date**, **Value**, **Status**) into the accessibility tree, plus a keyboard
+  "View data as table" toggle that reveals it in place — so both the numbers and
+  each point's in/out-of-control status are available as text.
+- **CVD-safe palette.** The line, markers, and reference lines come from the
+  validated chart theme (contrast + color-vision-deficiency checks), not ad-hoc
+  colors.
+- **Non-color encoding.** Out-of-control points carry the alarm three ways —
+  position outside the band, a larger marker, and the text "Out of control" in
+  the tooltip and the Status column — so it is never color alone.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy describe breaches in words ("two
+points above the upper limit") rather than "the red dots". There is no
+animation, so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback,
+      including the Status column)
+- [ ] Meaning does not depend on color alone (position + marker size + text)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names values/status rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`ControlChart` renders `null` when the first series has no points or the
+measured size is non-positive; it does not draw its own empty, loading, or error
+message (it does not forward those `ChartContainer` features). Guard those
+states upstream and render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **One process.** Only `series[0]` is plotted; there is no multi-process
+  overlay — use [`LineChart`](/charts/line-chart) for several series.
+- **3-sigma default only.** Automatic limits are the mean ± 3σ; other rule sets
+  (2σ warning zones, Western Electric run rules) are not built in — supply your
+  own `ucl`/`lcl`, or annotate via overlays.
+- **No value-format prop.** Axis and tooltip use the built-in compact formatter.
+- **No interaction callbacks.** Hover drives the internal tooltip only.
+- **No legend, title, caption, loading, or error passthrough** — it forwards
+  only `ariaLabel` and the data table to `ChartContainer`.
+
+## Related charts
+
+Same "trend over time" purpose, different trade-offs:
+[Line chart](/charts/line-chart),
+[Stacked area chart](/charts/stacked-area-chart),
+[Streamgraph](/charts/streamgraph), [Sparkline](/charts/sparkline), and
+[Candlestick chart](/charts/candlestick-chart). The `<ChartMeta />` block above
+links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

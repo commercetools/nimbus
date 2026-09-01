@@ -10,10 +10,13 @@ import { formatCompact } from "../../chart/format";
 import { chartScale, emText } from "../../chart/typography";
 
 export interface BeeswarmPlotProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
   /** Raw samples; each becomes one dot placed along the value axis. */
   values: number[];
+  /** Accessible label for the SVG; defaults to a generated summary. */
   ariaLabel?: string;
 }
 

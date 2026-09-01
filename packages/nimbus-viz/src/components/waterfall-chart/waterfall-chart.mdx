@@ -18,7 +18,11 @@ tags:
 
 <ChartMeta />
 
-What drives the change from a start total to an end total.
+A waterfall chart (bridge chart) decomposes the change from one total to another
+into an ordered sequence of signed contributions. Each intermediate bar floats
+from the running cumulative total — up for a gain, down for a loss — and
+explicit "total" checkpoints anchor back to zero. It answers "what drove the
+move from the start total to the end total, and how big was each piece?"
 
 ```jsx live
 const data = [
@@ -33,14 +37,296 @@ const data = [
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <WaterfallChart width={width} height={height} data={data} />}
+      {(width, height) => (
+        <WaterfallChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Waterfall of ARR from 500k to 660k, where New and Expansion outweigh Churn and Contraction"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a waterfall when a single number changed over a period and you want to
+attribute that change to its parts — starting ARR to ending ARR, opening
+headcount to closing headcount, gross to net. The floating bars turn "it went
+from 500 to 660" into "here are the five things that got us there." Keep the
+steps ordered and few; for a running metric over many periods, or a split into
+concurrent flows, move to a sibling below.
+
+| You want to…                                       | Use instead     |
+| -------------------------------------------------- | --------------- |
+| Compare the gap between two values per category    | `DumbbellChart` |
+| Show each item's move between two moments as lines | `SlopeChart`    |
+| Check a measure against its target and ranges      | `BulletChart`   |
+| Show how volume splits and flows across stages     | `SankeyDiagram` |
+| Show drop-off through an ordered process           | `FunnelChart`   |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { WaterfallChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  WaterfallChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `WaterfallStep`, given in the order they should appear
+left to right:
+
+```ts
+interface WaterfallStep {
+  label: string;
+  value: number;
+  isTotal?: boolean;
+}
+```
+
+```tsx
+const data: WaterfallStep[] = [
+  { label: "Start", value: 500, isTotal: true },
+  { label: "New", value: 180 },
+  { label: "Churn", value: -70 },
+  { label: "End", value: 610, isTotal: true },
+];
+```
+
+Contract notes, verifiable from source:
+
+- Steps render in **array order**; `label` is the x-axis category (and should be
+  unique — it is the band-scale domain and the React key).
+- For a normal step, `value` is a **signed contribution** added to the running
+  cumulative (positive floats up, negative floats down).
+- When `isTotal` is `true`, `value` is the **absolute** level (not an addend):
+  the bar is anchored at zero as a checkpoint, and the running cumulative is
+  **reset** to that value for the steps that follow. Use it for the opening
+  total, any subtotals, and the closing total.
+- The value axis includes zero and is `nice`-rounded to fit the highest and
+  lowest points the running total reaches.
+
+## API reference
+
+<PropsTable id="WaterfallChart" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Totals & checkpoints (`isTotal`)
+
+Mark a step `isTotal` to draw it as an absolute bar from zero instead of a
+floating delta — and to reset the running cumulative to its value. This is how
+you place the opening total, any mid-sequence subtotals, and the closing total.
+Total bars take the accent color; positive deltas the positive hue and negative
+deltas the negative hue.
+
+```jsx live
+const data = [
+  { label: "Q1", value: 120, isTotal: true },
+  { label: "Wins", value: 60 },
+  { label: "Losses", value: -35 },
+  { label: "Q2 subtotal", value: 145, isTotal: true },
+  { label: "Wins", value: 50 },
+  { label: "Losses", value: -25 },
+  { label: "Q3", value: 170, isTotal: true },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <WaterfallChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Waterfall of pipeline across two quarters with a mid subtotal"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Overlays (`children`)
+
+Layer Layer-2 annotations — `ReferenceLine`, `ThresholdBand`, `TrendLine`, and
+the like — over the plot by passing them as `children`. They receive the chart's
+scales through a `ChartScaleProvider`, so they position themselves in data
+space.
+
+```jsx live
+const data = [
+  { label: "Start", value: 500, isTotal: true },
+  { label: "New", value: 180 },
+  { label: "Expansion", value: 90 },
+  { label: "Churn", value: -70 },
+  { label: "End", value: 700, isTotal: true },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <WaterfallChart width={width} height={height} data={data}>
+          <ReferenceLine value={650} label="Target" />
+        </WaterfallChart>
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Interaction callbacks
+
+`onDatumClick` and `onDatumHover` report the raw input step (the
+`WaterfallStep`, not the internal floating-bar geometry) and its index; use them
+for drill-down or to drive an external readout. `onDatumHover` fires with `null`
+when the pointer leaves. Internal hover styling runs regardless.
+
+```tsx
+<WaterfallChart
+  width={width}
+  height={height}
+  data={data}
+  onDatumClick={({ datum }) => drillInto(datum.label)}
+/>
+```
+
+### Axes, colors & connectors (automatic)
+
+Not configurable — the chart always draws them. The x-axis is a band scale
+(labels fit to the band and truncated when tight); the y-axis is a linear scale
+including zero with horizontal gridlines. Every bar is direct-labeled with its
+value — **always with an explicit sign** for deltas (`+180`, `-70`) so the
+direction never rides on color alone. Thin dashed connectors bridge each bar's
+ending level to the next bar's start. Values use a compact formatter (e.g.
+`4.2k`); there is no format-override prop.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Total/positive/negative
+colors come from the validated `nimbus` theme, not CSS.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <WaterfallChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <WaterfallChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. A waterfall reads best with a handful of steps;
+past ~15–20 the bars and their labels crowd, so aggregate small contributions
+into an "Other" step upstream. There is no downsampling.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<WaterfallChart
+  ariaLabel="Waterfall of ARR from 500k to 660k, where New and Expansion outweigh Churn and Contraction"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Waterfall of N steps"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `WaterfallChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Step**, **Value**, and **Running total**) into the accessibility tree, plus
+  a keyboard "View data as table" toggle that reveals it in place — so the
+  contributions and the running total are available as text.
+- **Non-color encoding.** Every delta's sign is repeated in its value label
+  (`+180`, `-70`), so gain-vs-loss never depends on the positive/negative color
+  alone; bar direction and position carry it too.
+- **CVD-safe palette.** The accent / positive / negative colors come from the
+  validated chart theme (contrast + color-vision-deficiency checks), not ad-hoc
+  colors.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the steps and their effect
+("Churn cost 70k") rather than "the red bars". There is no animation, so
+reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (signed labels + direction)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names steps/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`WaterfallChart` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **One sequence.** A waterfall decomposes a single running total; for
+  concurrent flows use [`SankeyDiagram`](/charts/sankey-diagram), and for
+  stage-to-stage drop-off use [`FunnelChart`](/charts/funnel-chart).
+- **Fixed compact formatting.** Values render with the compact formatter; there
+  is no `valueFormat` override.
+- **No legend, title, caption, loading, or error passthrough** —
+  `WaterfallChart` forwards only `ariaLabel`, the overlays, and the data table
+  to `ChartContainer`. Color meaning (total / gain / loss) is conveyed by the
+  signed labels rather than a legend.
+
+## Related charts
+
+Same "compare & delta" purpose, different trade-offs:
+[Dumbbell chart](/charts/dumbbell-chart), [Slope chart](/charts/slope-chart),
+and [Bullet chart](/charts/bullet-chart). The `<ChartMeta />` block above links
+the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)
+  </content>

@@ -18,25 +18,331 @@ tags:
 
 <ChartMeta />
 
-The relationship between two variables, point by point.
+A scatter plot places one dot per record at its `(x, y)` position, so the shape
+of the cloud reveals how two continuous variables relate — correlation,
+clusters, and outliers all read off the same picture. Use it to answer "how do
+these two measures move together?" — price vs. rating, spend vs. retention,
+latency vs. error rate.
 
 ```jsx live
 const points = [
-  { x: 12, y: 22 }, { x: 20, y: 30 }, { x: 26, y: 28 }, { x: 34, y: 44 }, { x: 41, y: 39 },
-  { x: 48, y: 58 }, { x: 55, y: 51 }, { x: 63, y: 66 }, { x: 72, y: 71 }, { x: 80, y: 68 },
+  { x: 12, y: 22 },
+  { x: 20, y: 30 },
+  { x: 26, y: 28 },
+  { x: 34, y: 44 },
+  { x: 41, y: 39 },
+  { x: 48, y: 58 },
+  { x: 55, y: 51 },
+  { x: 63, y: 66 },
+  { x: 72, y: 71 },
+  { x: 80, y: 68 },
 ];
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <ScatterPlot width={width} height={height} points={points} />}
+      {(width, height) => (
+        <ScatterPlot
+          width={width}
+          height={height}
+          points={points}
+          ariaLabel="Scatter plot of spend vs. retention, where the two rise together"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a scatter plot when both axes are continuous measures and the question
+is about their _relationship_ rather than a ranking or a total — you want to see
+whether they track together, where the crowd sits, and which points break the
+pattern. Each dot is one record; the axes, not color, carry the meaning.
+
+| You want to…                                      | Use instead            |
+| ------------------------------------------------- | ---------------------- |
+| Weight each point by a third measure              | `BubbleChart`          |
+| Trace the path two variables took over a sequence | `ConnectedScatterplot` |
+| Compare multivariate profiles across many axes    | `RadarChart`           |
+| Relate records across many dimensions at once     | `ParallelCoordinates`  |
+| Show the spread of a single continuous variable   | `Histogram`            |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { ScatterPlot, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  ScatterPlot,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`points` is an array of `ScatterPoint` — one dot per row:
+
+```ts
+interface ScatterPoint {
+  x: number;
+  y: number;
+  label?: string;
+  /** Optional grouping — colors points by group in fixed categorical order. */
+  group?: string;
+}
+```
+
+```tsx
+const points: ScatterPoint[] = [
+  { x: 12, y: 22, label: "Acme" },
+  { x: 48, y: 58, label: "Globex", group: "Enterprise" },
+  { x: 80, y: 68, label: "Initech", group: "Enterprise" },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `x` and `y` are plain numbers; both axes are **linear** scales fit to the data
+  extent (`nice`-rounded), so neither is anchored at 0 — a scatter is about
+  relative position, not magnitude from a baseline.
+- `label` is optional; it titles the point's hover tooltip and appears in the
+  data-table fallback.
+- `group` is optional; when two or more distinct groups are present the points
+  are colored categorically and a legend appears. A single group (or none) draws
+  every point in the accent.
+- To plot your own domain rows instead of `ScatterPoint`, keep the array and
+  pass `x` / `y` (and optionally `group` / `label`) accessors (see below).
+
+## API reference
+
+<PropsTable id="ScatterPlot" />
+
+Renders `null` for empty `points` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Custom row types
+
+`ScatterPlot` is generic over its row type. Pass `x` / `y` accessors (and
+optionally `group` / `label`) to feed your own domain objects directly — no
+reshaping into `ScatterPoint`.
+
+```jsx live
+const accounts = [
+  { name: "Acme", spend: 12, retention: 22 },
+  { name: "Globex", spend: 34, retention: 44 },
+  { name: "Initech", spend: 48, retention: 58 },
+  { name: "Umbrella", spend: 63, retention: 66 },
+  { name: "Hooli", spend: 80, retention: 68 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={260}>
+      {(width, height) => (
+        <ScatterPlot
+          width={width}
+          height={height}
+          points={accounts}
+          x={(d) => d.spend}
+          y={(d) => d.retention}
+          label={(d) => d.name}
+          ariaLabel="Scatter plot of spend vs. retention by account"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Grouping & color
+
+Give points a `group` and the chart colors them in a fixed categorical order
+from the validated palette, adding a legend once two or more groups are present.
+Group identity is carried by color plus the legend — the data-table fallback
+also exposes each point's group as text.
+
+```jsx live
+const points = [
+  { x: 12, y: 22, group: "SMB" },
+  { x: 20, y: 26, group: "SMB" },
+  { x: 30, y: 31, group: "SMB" },
+  { x: 48, y: 58, group: "Enterprise" },
+  { x: 63, y: 66, group: "Enterprise" },
+  { x: 80, y: 71, group: "Enterprise" },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <ScatterPlot
+          width={width}
+          height={height}
+          points={points}
+          ariaLabel="Scatter plot of spend vs. retention, colored by segment"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Overlays (`children`)
+
+Layer-2 annotations (e.g. `TrendLine`, `ReferenceLine`) can be drawn over the
+points by passing them as `children`. They render in plot space on top of the
+dots, so a fitted trend line or a threshold marker reads against the same
+scales.
+
+### Interaction callbacks
+
+`onDatumClick` and `onDatumHover` report the datum, its index, and its group
+(`seriesId`); use them for drill-down or to drive an external readout. Hover
+state (dimming the other points and showing the tooltip) is managed internally
+regardless of whether you pass a callback.
+
+```tsx
+<ScatterPlot
+  width={width}
+  height={height}
+  points={points}
+  onDatumClick={({ datum }) => navigate(`/account/${datum.label}`)}
+/>
+```
+
+### Axes, scales & tooltip (automatic)
+
+Not configurable — the chart always draws them. Both axes are linear scales fit
+to the data extent (`nice`-rounded) with horizontal gridlines behind the points;
+tick labels use a compact number format. Hovering a point enlarges it, dims the
+rest to 0.35 opacity, and shows a small tooltip with the point's label and its
+`x` / `y` values. A legend appears automatically when two or more groups are
+present.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Points use the validated
+`nimbus` chart accent (single group) or its categorical hues (grouped), not a
+CSS color.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <ScatterPlot width={width} height={height} points={points} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <ScatterPlot width={width} height={height} points={points} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Every point is drawn as its own SVG circle and
+there is no downsampling; for very large clouds (thousands of points) sample or
+aggregate upstream before passing them in.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<ScatterPlot
+  ariaLabel="Scatter plot of spend vs. retention, where the two rise together"
+  width={width}
+  height={height}
+  points={points}
+/>
+```
+
+Don't list individual coordinates in the label; the data-table fallback carries
+them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Scatter plot of N points"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `ScatterPlot` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Label**, **x**, **y**, **Group**) into the accessibility tree, plus a
+  keyboard "View data as table" toggle that reveals it in place — so the numbers
+  are available as text, not just the one-line label.
+- **CVD-safe palette.** Accent and categorical hues come from the validated
+  chart theme (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** The relationship itself is carried by position (each
+  point's `x` / `y`), which no color choice affects. When you group, group
+  identity is carried by color and decoded by the legend — points are not also
+  varied by shape or marker, so lean on the legend and the data table for that
+  distinction.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the groups/values rather than
+"the blue cluster". There is no animation, so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (position carries the relationship;
+      groups are decoded by the legend and the data table)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names groups/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`ScatterPlot` renders `null` when `points` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Two axes only.** For a third magnitude use
+  [`BubbleChart`](/charts/bubble-chart); for the trajectory of a pair over a
+  sequence use [`ConnectedScatterplot`](/charts/connected-scatterplot).
+- **Groups distinguished by color, not shape.** There is no per-group marker or
+  pattern — the legend and data table are the non-color paths to group identity.
+- **Fixed number formatting.** Axis ticks and the tooltip use a built-in compact
+  formatter; there is no `valueFormat` prop.
+- **No title, caption, legend override, loading, or error passthrough** —
+  `ScatterPlot` forwards only `ariaLabel`, the auto legend, and the data table
+  to `ChartContainer`.
+
+## Related charts
+
+Same "relationship" purpose, different trade-offs:
+[Bubble chart](/charts/bubble-chart),
+[Connected scatterplot](/charts/connected-scatterplot),
+[Radar chart](/charts/radar-chart), and
+[Parallel coordinates](/charts/parallel-coordinates). The `<ChartMeta />` block
+above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

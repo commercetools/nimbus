@@ -21,11 +21,14 @@ import type {
 } from "../../chart/interaction";
 
 export interface StackedBarChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** One `StackRow` per category (`{ category, segments: { key, value }[] }`);
+   *  every row should carry the same segment keys, in the same order. */
   data: StackRow[];
   ariaLabel?: string;
-  /** Overlays (ReferenceLine, ThresholdBand, TargetMarker, …) in plot space. */
   /** Format a value-axis number (tick labels + tooltip values). Overrides the
    *  locale/currency formatter from any surrounding ChartLocaleProvider. */
   valueFormat?: (n: number) => string;
@@ -33,6 +36,7 @@ export interface StackedBarChartProps {
   onDatumClick?: DatumClickHandler<StackRow>;
   /** Fired when the hovered datum changes; null when the pointer leaves. */
   onDatumHover?: DatumHoverHandler<StackRow>;
+  /** Overlays (ReferenceLine, ThresholdBand, TargetMarker, …) in plot space. */
   children?: ReactNode;
 }
 

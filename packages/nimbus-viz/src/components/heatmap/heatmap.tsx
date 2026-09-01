@@ -9,12 +9,17 @@ import type { HeatRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
 export interface HeatmapProps {
+  /** Chart width in pixels (supplied by `ResponsiveContainer`). */
   width: number;
+  /** Chart height in pixels (supplied by `ResponsiveContainer`). */
   height: number;
+  /** Matrix rows, one per y-axis band; each row's `values` are the cells left→right. */
   rows: HeatRow[];
   /** Nimbus hue for the sequential ramp. */
   hue?: string;
+  /** Column headers along the top; falls back to the 0-based column index. */
   columnLabels?: string[];
+  /** Accessible label for the SVG frame (Cesal alt-text). Defaults to a generated summary. */
   ariaLabel?: string;
 }
 

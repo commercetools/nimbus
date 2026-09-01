@@ -10,9 +10,14 @@ import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
 export interface RadialBarChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** Categories to plot. Each row is `CategoryDatum` (`{ category, value }`);
+   *  drawn in the given order, one angular slot per row. */
   data: CategoryDatum[];
+  /** Accessible label for the SVG; state the takeaway, not every value. */
   ariaLabel?: string;
 }
 

@@ -18,7 +18,11 @@ tags:
 
 <ChartMeta />
 
-A scatter weighted by a third variable, encoded as area.
+A bubble chart is a scatter plot with a third measure mapped onto each dot's
+**area** — so it relates two variables by position and a third by size, all in
+one view. Use it to answer "how do these two measures relate, and which records
+carry the most weight?" — spend vs. margin sized by revenue, reach vs.
+engagement sized by audience.
 
 ```jsx live
 const points = [
@@ -32,14 +36,283 @@ const points = [
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <BubbleChart width={width} height={height} points={points} />}
+      {(width, height) => (
+        <BubbleChart
+          width={width}
+          height={height}
+          points={points}
+          ariaLabel="Bubble chart of margin vs. growth sized by revenue, where Umbrella is largest"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a bubble chart when a scatter plot's two axes leave out an important
+third measure and you want that measure to read as visual weight. Keep the third
+variable to a single positive magnitude — area is read approximately, so bubbles
+answer "which are big" well and "exactly how big" poorly.
+
+| You want to…                                        | Use instead            |
+| --------------------------------------------------- | ---------------------- |
+| Relate two variables with no third measure          | `ScatterPlot`          |
+| Trace the path two variables took over a sequence   | `ConnectedScatterplot` |
+| Compare multivariate profiles across many axes      | `RadarChart`           |
+| Relate records across many dimensions at once       | `ParallelCoordinates`  |
+| Compare a single magnitude precisely across records | `BarChart`             |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { BubbleChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  BubbleChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`points` is an array of `BubblePoint` — one bubble per row:
+
+```ts
+type BubblePoint = {
+  x: number;
+  y: number;
+  size: number;
+  group?: string;
+  label?: string;
+};
+```
+
+```tsx
+const points: BubblePoint[] = [
+  { x: 22, y: 38, size: 320, label: "Acme" },
+  { x: 44, y: 52, size: 680, label: "Globex", group: "Enterprise" },
+  { x: 73, y: 66, size: 900, label: "Umbrella", group: "Enterprise" },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `x` and `y` are plain numbers; both axes are **linear** scales fit to the data
+  extent (`nice`-rounded), so neither is anchored at 0.
+- `size` maps to bubble **area** through a square-root scale over `[0, max]`, so
+  a bubble with twice the `size` has twice the area (not twice the radius).
+  `size` is assumed **non-negative**; the largest value sets the top of the size
+  legend.
+- `label` is optional; it titles the point's hover tooltip and appears in the
+  data-table fallback.
+- `group` is optional; when two or more distinct groups are present the bubbles
+  are colored categorically and a color legend appears. A single group (or none)
+  draws every bubble in the accent.
+- `BubbleChart` takes the `BubblePoint` shape directly — there are no `x`/`y`
+  accessors, so reshape custom rows into `{ x, y, size }` before passing them.
+
+## API reference
+
+<PropsTable id="BubbleChart" />
+
+Renders `null` for empty `points` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Size as area (automatic)
+
+Not configurable — `size` always drives bubble **area** via a square-root scale
+(radius ranges from 4 to 28 px), which is the perceptually honest mapping for a
+magnitude. Bubbles are drawn largest-first so smaller ones stay hoverable on
+top, and a **size legend** of reference circles (at the max and roughly a third
+of it) is always rendered in the corner to decode the area channel.
+
+### Grouping & color
+
+Give bubbles a `group` and the chart colors them in a fixed categorical order
+from the validated palette, adding a color legend once two or more groups are
+present. Group identity is carried by color plus the legend; the data-table
+fallback also exposes each bubble's group as text.
+
+```jsx live
+const points = [
+  { x: 22, y: 38, size: 320, label: "Acme", group: "SMB" },
+  { x: 35, y: 74, size: 460, label: "Hooli", group: "SMB" },
+  { x: 44, y: 52, size: 680, label: "Globex", group: "Enterprise" },
+  { x: 73, y: 66, size: 900, label: "Umbrella", group: "Enterprise" },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={300}>
+      {(width, height) => (
+        <BubbleChart
+          width={width}
+          height={height}
+          points={points}
+          ariaLabel="Bubble chart of margin vs. growth sized by revenue, colored by segment"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Overlays (`children`)
+
+Layer-2 annotations (e.g. `ReferenceLine`, `ThresholdBand`, `TrendLine`) can be
+drawn in plot space by passing them as `children`. They render against the same
+scales as the bubbles — a threshold band or a reference line lands where the
+axes put it.
+
+### Interaction callbacks
+
+`onDatumClick` and `onDatumHover` report the datum, its index, and its group
+(`seriesId`); use them for drill-down or to drive an external readout. Hover
+state (dimming the other bubbles and showing the tooltip) is managed internally
+regardless of whether you pass a callback.
+
+```tsx
+<BubbleChart
+  width={width}
+  height={height}
+  points={points}
+  onDatumClick={({ datum }) => navigate(`/account/${datum.label}`)}
+/>
+```
+
+### Axes, scales & tooltip (automatic)
+
+Not configurable — the chart always draws them. Both axes are linear scales fit
+to the data extent (`nice`-rounded) with horizontal gridlines behind the
+bubbles; tick labels use a compact number format. Hovering a bubble dims the
+others and shows a small tooltip with the label and its `x`, `y`, and `size`
+values.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Bubbles use the validated
+`nimbus` chart accent (single group) or its categorical hues (grouped), not a
+CSS color.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <BubbleChart width={width} height={height} points={points} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <BubbleChart width={width} height={height} points={points} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Each bubble is its own SVG circle and there is no
+downsampling; bubble charts get unreadable through overplotting well before a
+scatter does, so keep the point count modest and aggregate upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<BubbleChart
+  ariaLabel="Bubble chart of margin vs. growth sized by revenue, where Umbrella is largest"
+  width={width}
+  height={height}
+  points={points}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Bubble chart of N points"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `BubbleChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Label**, **x**, **y**, **Size**, **Group**) into the accessibility tree,
+  plus a keyboard "View data as table" toggle that reveals it in place — so all
+  three measures are available as text, not just the one-line label.
+- **Size legend.** Reference circles decode the area channel, so the size
+  measure is readable without hovering.
+- **CVD-safe palette.** Accent and categorical hues come from the validated
+  chart theme (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** The relationship is carried by position and the third
+  measure by area — neither depends on color. When you group, group identity is
+  carried by color and decoded by the legend; bubbles are not also varied by
+  shape, so lean on the legend and the data table for that distinction.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the groups/values rather than
+"the big blue bubble". There is no animation, so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (position + area carry it; groups
+      are decoded by the legend and the data table)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names groups/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`BubbleChart` renders `null` when `points` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Positive magnitude only.** `size` maps to area from 0; there is no support
+  for signed or diverging size, and no `sizeFormat` for the size legend.
+- **No `x`/`y` accessors.** Unlike [`ScatterPlot`](/charts/scatter-plot),
+  `BubbleChart` is not generic — reshape rows into `{ x, y, size }` first.
+- **Area is read approximately.** Good for "which are big"; for exact magnitude
+  comparison use a [`BarChart`](/charts/bar-chart).
+- **Groups distinguished by color, not shape** — the color legend and data table
+  are the non-color paths to group identity.
+- **No title, caption, legend override, loading, or error passthrough** —
+  `BubbleChart` forwards only `ariaLabel`, the auto legend, and the data table
+  to `ChartContainer`.
+
+## Related charts
+
+Same "relationship" purpose, different trade-offs:
+[Scatter plot](/charts/scatter-plot),
+[Connected scatterplot](/charts/connected-scatterplot),
+[Radar chart](/charts/radar-chart), and
+[Parallel coordinates](/charts/parallel-coordinates). The `<ChartMeta />` block
+above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

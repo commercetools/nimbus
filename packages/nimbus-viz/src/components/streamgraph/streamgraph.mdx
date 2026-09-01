@@ -18,35 +18,299 @@ tags:
 
 <ChartMeta />
 
-A flowing, center-baseline take on composition over time.
+A streamgraph stacks the same series as a stacked area chart, but around a
+centered, wiggling baseline instead of a flat zero — so bands ripple and the
+picture reads as flow and turnover in the mix. Use it to answer "how is the mix
+shifting over time?" when the shape of change matters more than exact totals:
+genre popularity, traffic sources, product categories over a long window.
 
 ```jsx live
 const series = [
-  { id: "organic", label: "Organic", data: [
-    { x: new Date("2026-01-01"), y: 120 }, { x: new Date("2026-02-01"), y: 150 },
-    { x: new Date("2026-03-01"), y: 170 }, { x: new Date("2026-04-01"), y: 210 },
-    { x: new Date("2026-05-01"), y: 240 }, { x: new Date("2026-06-01"), y: 300 } ] },
-  { id: "paid", label: "Paid", data: [
-    { x: new Date("2026-01-01"), y: 80 }, { x: new Date("2026-02-01"), y: 96 },
-    { x: new Date("2026-03-01"), y: 110 }, { x: new Date("2026-04-01"), y: 104 },
-    { x: new Date("2026-05-01"), y: 130 }, { x: new Date("2026-06-01"), y: 150 } ] },
-  { id: "referral", label: "Referral", data: [
-    { x: new Date("2026-01-01"), y: 40 }, { x: new Date("2026-02-01"), y: 52 },
-    { x: new Date("2026-03-01"), y: 60 }, { x: new Date("2026-04-01"), y: 72 },
-    { x: new Date("2026-05-01"), y: 66 }, { x: new Date("2026-06-01"), y: 88 } ] },
+  {
+    id: "organic",
+    label: "Organic",
+    data: [
+      { x: new Date("2026-01-01"), y: 120 },
+      { x: new Date("2026-02-01"), y: 150 },
+      { x: new Date("2026-03-01"), y: 170 },
+      { x: new Date("2026-04-01"), y: 210 },
+      { x: new Date("2026-05-01"), y: 240 },
+      { x: new Date("2026-06-01"), y: 300 },
+    ],
+  },
+  {
+    id: "paid",
+    label: "Paid",
+    data: [
+      { x: new Date("2026-01-01"), y: 80 },
+      { x: new Date("2026-02-01"), y: 96 },
+      { x: new Date("2026-03-01"), y: 110 },
+      { x: new Date("2026-04-01"), y: 104 },
+      { x: new Date("2026-05-01"), y: 130 },
+      { x: new Date("2026-06-01"), y: 150 },
+    ],
+  },
+  {
+    id: "referral",
+    label: "Referral",
+    data: [
+      { x: new Date("2026-01-01"), y: 40 },
+      { x: new Date("2026-02-01"), y: 52 },
+      { x: new Date("2026-03-01"), y: 60 },
+      { x: new Date("2026-04-01"), y: 72 },
+      { x: new Date("2026-05-01"), y: 66 },
+      { x: new Date("2026-06-01"), y: 88 },
+    ],
+  },
 ];
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <Streamgraph width={width} height={height} series={series} />}
+      {(width, height) => (
+        <Streamgraph
+          width={width}
+          height={height}
+          series={series}
+          ariaLabel="Streamgraph of sessions by channel, where Organic widens as the overall stream thickens"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a streamgraph when you have many parts over a long time span and the
+message is the changing shape of the mix — which bands swell, which shrink, when
+turnover happens — rather than a precise total or level. Because it has no value
+axis and a moving baseline, it is a qualitative, exploratory view. When you need
+readable totals or exact part values, step down to a stacked area chart.
+
+| You want to…                                 | Use instead                                      |
+| -------------------------------------------- | ------------------------------------------------ |
+| Read the running total and part shares       | [`StackedAreaChart`](/charts/stacked-area-chart) |
+| Compare each series' level precisely         | [`LineChart`](/charts/line-chart)                |
+| Show composition across categories, not time | [`StackedBarChart`](/charts/stacked-bar-chart)   |
+| Fit a compact trend inline beside a KPI      | [`Sparkline`](/charts/sparkline)                 |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { Streamgraph, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  Streamgraph,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`series` is an array of `Series` — one entry per band, each carrying its own
+`SeriesPoint[]`:
+
+```ts
+interface SeriesPoint {
+  x: number | Date;
+  y: number | null;
+}
+
+interface Series {
+  id: string;
+  label: string;
+  data: SeriesPoint[];
+}
+```
+
+```tsx
+const series: Series[] = [
+  {
+    id: "organic",
+    label: "Organic",
+    data: [
+      { x: new Date("2026-01-01"), y: 120 },
+      { x: new Date("2026-02-01"), y: 150 },
+      { x: new Date("2026-03-01"), y: 170 },
+    ],
+  },
+  {
+    id: "paid",
+    label: "Paid",
+    data: [
+      { x: new Date("2026-01-01"), y: 80 },
+      { x: new Date("2026-02-01"), y: 96 },
+      { x: new Date("2026-03-01"), y: 110 },
+    ],
+  },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `id` must be **unique** — it is the stack key and the input to the color scale
+  (`useEntityColors`). `label` shows in the legend, tooltip, and data table.
+- Series are **aligned by index**: the stack is built from the first series'
+  points, and each series contributes `data[i].y` at position `i`. Give every
+  series the **same x samples in the same order**.
+- A missing or `null` `y` is treated as **0** at that position (the band pinches
+  there), not as a gap.
+- Values are **non-negative** — a streamgraph stacks band thicknesses; negatives
+  are not meaningful. Layer order is computed automatically (an "insideout"
+  ordering that keeps the silhouette calm), independent of array order.
+- There is **no value axis** and the baseline is not zero, so band thickness is
+  comparable but absolute position is not — read shape, not level.
+
+## API reference
+
+<PropsTable id="Streamgraph" />
+
+Renders `null` for an empty `series` (or empty rows) or a non-positive
+`width`/`height`.
+
+## Chart configuration
+
+### Overlays (`children`)
+
+Annotations (e.g. `ReferenceLine`, `ThresholdBand`, `TrendLine`) passed as
+`children` are drawn in the plot's coordinate space. The chart derives a value
+y-scale from the wiggle stacks (its domain straddles zero) purely so overlays
+line up with the bands — there is still no visible value axis.
+
+### Legend (automatic)
+
+Not configurable — a legend appears automatically for **two or more** series
+(each label mapped to its band color) and is omitted for a single series. There
+is no `legend` prop to toggle it.
+
+### Baseline, curves & tooltip (automatic)
+
+Also always drawn: a time axis along the bottom (its tick count adapts to the
+width), the wiggle/insideout centered baseline, and bands rendered with a smooth
+basis spline at 0.85 fill opacity separated by a 1px surface stroke. Hovering
+resolves the nearest x-index, draws a dashed crosshair, and shows a tooltip
+listing the date and each series' compact-formatted value. None of this is
+configurable — there is deliberately **no** value axis and **no** value-format
+prop, because the streamgraph is a shape-first view.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Band colors come from the
+validated `nimbus` entity palette (assigned by `id`), not CSS.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <Streamgraph width={width} height={height} series={series} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <Streamgraph width={width} height={height} series={series} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. There is no built-in downsampling: every point of
+every band is drawn, so aggregate very long time ranges upstream.
+
+## Accessibility
+
+A streamgraph is a shape-first, qualitative view, which makes the text
+equivalents especially important. Pass an `ariaLabel` that states what the chart
+shows **and** its takeaway, using Amy Cesal's formula —
+`[Chart type] of [data], where [the point]`:
+
+```tsx
+<Streamgraph
+  ariaLabel="Streamgraph of sessions by channel, where Organic overtakes Paid as the mix widens"
+  width={width}
+  height={height}
+  series={series}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Streamgraph of {series labels}"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `Streamgraph` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Date** then one column per series label) into the accessibility tree, plus a
+  keyboard "View data as table" toggle that reveals it in place — so the exact
+  numbers are available as text even though the chart itself shows no axis.
+- **CVD-safe palette.** Band colors come from the validated chart theme
+  (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** Band thickness carries the values; color only
+  distinguishes bands and is restated by the legend and tooltip labels.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and because the visual is imprecise, make sure the numbers
+are available nearby (the data table, or a companion table). There is no
+animation, so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (band thickness carries it)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names series/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`Streamgraph` renders `null` when `series` is empty, its rows are empty, or the
+measured size is non-positive; it does not draw its own empty, loading, or error
+message (it does not forward those `ChartContainer` features). Guard those
+states upstream and render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **No value axis, no exact reading.** By design there is no y-axis and the
+  baseline moves; use [`StackedAreaChart`](/charts/stacked-area-chart) when the
+  total or part values must be read off the chart.
+- **No value-format prop.** The tooltip uses the built-in compact formatter;
+  there is no `valueFormat`.
+- **Non-negative values only.** Band thicknesses cannot be negative.
+- **No interaction callbacks.** Hover drives the internal tooltip only; there is
+  no `onDatumClick`/`onDatumHover`.
+- **No title, caption, loading, or error passthrough** — it forwards only
+  `ariaLabel`, the auto legend, and the data table to `ChartContainer`.
+
+## Related charts
+
+Same "trend over time" purpose, different trade-offs:
+[Stacked area chart](/charts/stacked-area-chart),
+[Line chart](/charts/line-chart), [Sparkline](/charts/sparkline),
+[Control chart](/charts/control-chart), and
+[Candlestick chart](/charts/candlestick-chart). The `<ChartMeta />` block above
+links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

@@ -14,7 +14,9 @@ import type { ScatterPoint } from "../../chart/types";
 import { chartScale, emText } from "../../chart/typography";
 
 export interface ConnectedScatterplotProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
   /** Points in sequence — connected in the given order (often chronological). */
   points: ScatterPoint[];

@@ -14,10 +14,13 @@ import { formatCompact, formatPercent } from "../../chart/format";
 import { chartScale } from "../../chart/typography";
 
 export interface CumulativeCurveProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
   /** Raw samples; the empirical CDF F(v) = share of samples ≤ v is drawn. */
   values: number[];
+  /** Accessible label for the SVG; defaults to a generated summary. */
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;

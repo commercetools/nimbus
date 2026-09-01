@@ -16,14 +16,18 @@ import { useChartFormatters } from "../../chart/format-locale";
 import type { Series } from "../../chart/types";
 
 export interface StackedAreaChartProps {
+  /** Plot width in pixels — supply from `ResponsiveContainer`. */
   width: number;
+  /** Plot height in pixels — supply from `ResponsiveContainer`. */
   height: number;
+  /** Series stacked bottom-to-top, aligned by index and sharing x positions. */
   series: Series[];
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
-  /** Overlays (ReferenceLine, TrendLine, Annotation, …) rendered in plot space. */
   /** Format a value-axis number (tick labels + tooltip values). Overrides the
    *  locale/currency formatter from any surrounding ChartLocaleProvider. */
   valueFormat?: (n: number) => string;
+  /** Overlays (ReferenceLine, TrendLine, Annotation, …) rendered in plot space. */
   children?: ReactNode;
 }
 

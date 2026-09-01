@@ -16,7 +16,9 @@ import type { Series, SeriesPoint } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
 export interface ControlChartProps {
+  /** Plot width in pixels — supply from `ResponsiveContainer`. */
   width: number;
+  /** Plot height in pixels — supply from `ResponsiveContainer`. */
   height: number;
   /** The measured process. The FIRST series is used; any others are ignored. */
   series: Series[];
@@ -26,6 +28,7 @@ export interface ControlChartProps {
   ucl?: number;
   /** Lower control limit. Defaults to center − 3σ. */
   lcl?: number;
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;

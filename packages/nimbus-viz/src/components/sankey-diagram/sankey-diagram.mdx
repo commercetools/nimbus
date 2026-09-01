@@ -18,13 +18,21 @@ tags:
 
 <ChartMeta />
 
-Volume flowing between stages of a process.
+A Sankey diagram traces how a quantity moves through a network of stages: nodes
+are the stages, and proportional ribbons between them carry the volume, so the
+width of every ribbon maps directly to how much flowed along it. Use it to
+answer "how does volume move between stages?" — traffic sources into a funnel,
+budget across departments, users between states.
 
 ```jsx live
 const graph = {
   nodes: [
-    { name: "Search" }, { name: "Direct" }, { name: "Home" },
-    { name: "Product" }, { name: "Cart" }, { name: "Purchase" },
+    { name: "Search" },
+    { name: "Direct" },
+    { name: "Home" },
+    { name: "Product" },
+    { name: "Cart" },
+    { name: "Purchase" },
   ],
   links: [
     { source: 0, target: 2, value: 480 },
@@ -38,14 +46,232 @@ const graph = {
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <SankeyDiagram width={width} height={height} graph={graph} />}
+      {(width, height) => (
+        <SankeyDiagram
+          width={width}
+          height={height}
+          graph={graph}
+          ariaLabel="Sankey diagram of session flow, where most traffic enters through Search and narrows toward Purchase"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a Sankey when you have a directed network of flows and you want the
+ribbon widths to show, at a glance, where the volume concentrates and where it
+splits or leaks. It suits multi-stage journeys and many-to-many routing between
+a modest set of nodes; keep the graph small enough that the ribbons stay
+untangled.
+
+| You want to…                                        | Use instead    |
+| --------------------------------------------------- | -------------- |
+| Show flow between every pair of one set of entities | `ChordDiagram` |
+| Show drop-off through ordered, single-path stages   | `FunnelChart`  |
+| Compare stage totals as plain magnitudes            | `BarChart`     |
+| Break a whole down across a hierarchy               | `Treemap`      |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { SankeyDiagram, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  SankeyDiagram,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`graph` is a `FlowGraph` — a list of nodes plus a list of weighted links that
+reference nodes **by their index** into `nodes`:
+
+```ts
+type FlowNode = { name: string };
+type FlowLink = { source: number; target: number; value: number };
+
+interface FlowGraph {
+  nodes: FlowNode[];
+  links: FlowLink[];
+}
+```
+
+```tsx
+const graph: FlowGraph = {
+  nodes: [
+    { name: "Search" }, // index 0
+    { name: "Direct" }, // index 1
+    { name: "Home" }, // index 2
+    { name: "Product" }, // index 3
+  ],
+  links: [
+    { source: 0, target: 2, value: 480 },
+    { source: 1, target: 2, value: 220 },
+    { source: 2, target: 3, value: 520 },
+  ],
+};
+```
+
+Contract notes, verifiable from source:
+
+- `source` and `target` are **integer indices** into `nodes`, not names — a link
+  points at `nodes[source]` and `nodes[target]`.
+- `value` drives the ribbon width; the layout comes from d3-sankey, so the graph
+  should be **acyclic** (a cycle has no left-to-right layering).
+- `node.name` is the visible label, the tooltip title, and the key the color
+  scale hashes on — keep names **unique**.
+- The component **clones** `graph` before laying it out (d3-sankey mutates its
+  input with computed `x`/`y` fields), so your array is left untouched.
+
+## API reference
+
+<PropsTable id="SankeyDiagram" />
+
+Renders `null` when `graph.nodes` is empty or the measured `width`/`height` is
+non-positive.
+
+## Chart configuration
+
+### Layout (automatic)
+
+Not configurable — the chart always computes the layout with d3-sankey. Nodes
+are drawn as thin rounded rectangles (fixed 12px wide, 14px vertical padding)
+placed in left-to-right layers; each node's name sits just outside it (to the
+right for left-half nodes, to the left for right-half nodes). Ribbon vertical
+positions and widths are solved to minimize crossings.
+
+### Color & theming
+
+Node color comes from the shared **entity → color** scale (`useEntityColors`),
+assigned in the order the nodes appear, and **each ribbon inherits its source
+node's color** — so you can follow a flow back to where it originated. Set the
+color mode on the provider (`mode="light"` default, or `mode="dark"`). To follow
+the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Colors come from the
+validated `nimbus` chart palette, not CSS.
+
+### Tooltips & hover (automatic)
+
+Built in and not configurable. Hovering a **node** brightens its ribbons and
+shows the node name with its total throughput; hovering a **link** darkens that
+ribbon and shows `source → target` with the flow value. Values are formatted
+with the compact formatter (e.g. `4.2k`).
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <SankeyDiagram width={width} height={height} graph={graph} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={220} maxHeight={480}>
+  {(width, height) => (
+    <SankeyDiagram width={width} height={height} graph={graph} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. A Sankey stays legible for a handful of nodes and
+links; there is no downsampling, so aggregate small flows into an "Other" node
+upstream rather than rendering hundreds of hairline ribbons.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the diagram shows **and** its takeaway,
+using Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<SankeyDiagram
+  ariaLabel="Sankey diagram of session flow, where most traffic enters through Search and narrows toward Purchase"
+  width={width}
+  height={height}
+  graph={graph}
+/>
+```
+
+Don't list individual flow values in the label; the data-table fallback carries
+them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Sankey flow diagram"` is used if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `SankeyDiagram` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **From**, **To**, **Value** — one row per link) into the accessibility tree,
+  plus a keyboard "View data as table" toggle that reveals it in place — so the
+  flows are available as text, not just the one-line label.
+- **CVD-safe palette.** Node and ribbon colors come from the validated chart
+  theme (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** Meaning is carried by ribbon width and node position,
+  and every node is labeled directly; color only tells flows apart.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the nodes and flows rather
+than "the thick ribbon". There is no animation, so reduced-motion handling is
+N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the diagram shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (ribbon width, node position, and
+      direct labels carry it here)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names nodes/flows rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`SankeyDiagram` renders `null` when `graph.nodes` is empty or the measured size
+is non-positive; it does not draw its own empty, loading, or error message (it
+does not forward those `ChartContainer` features). Guard those states upstream
+and render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Nodes reference by index.** Links use integer `source`/`target` indices, not
+  node names — build the `nodes` array first and index into it.
+- **Acyclic graphs only.** The d3-sankey layout assumes a left-to-right
+  layering; cycles are not supported.
+- **No legend, title, caption, loading, or error passthrough** — `SankeyDiagram`
+  forwards only `ariaLabel` and the data table to `ChartContainer`. Nodes carry
+  inline labels instead of a legend.
+- **No overlays or interaction callbacks.** Hover is internal only; there is no
+  `children` slot and no `onDatumClick`/`onDatumHover`.
+- **Fixed node geometry.** Node width and padding are not configurable.
+
+## Related charts
+
+Same "flow" purpose, different question: for flows between every pair of a
+single set of entities, see [Chord diagram](/charts/chord-diagram). For ordered,
+single-path drop-off, reach for [Funnel chart](/charts/funnel-chart). The
+`<ChartMeta />` block above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)
+  </content>
+</invoke>

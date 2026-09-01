@@ -18,28 +18,290 @@ tags:
 
 <ChartMeta />
 
-Full distribution shapes via kernel-density estimates.
+A violin plot shows each group's **full distribution shape** — a kernel-density
+estimate mirrored around the group's center — instead of collapsing it to
+quartiles. Fat waists, long tails, and two humps (bimodality) all read straight
+off the silhouette, which a box plot would hide. It answers "how are these
+distributions shaped, and how do the shapes differ across groups?". Unlike the
+box plot, `ViolinPlot` takes **raw samples** and estimates the density itself.
 
 ```jsx live
-const rand = (i) => { const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
+const rand = (i) => {
+  const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
 const groups = ["Web", "Mobile", "Retail"].map((label, g) => ({
   label,
   samples: Array.from({ length: 60 }, (_, i) =>
-    Math.round(42 + g * 8 + ((rand(i + g * 100) + rand(i + g * 100 + 40)) / 2 - 0.5) * 60)
+    Math.round(
+      42 + g * 8 + ((rand(i + g * 100) + rand(i + g * 100 + 40)) / 2 - 0.5) * 60
+    )
   ),
 }));
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <ViolinPlot width={width} height={height} groups={groups} />}
+      {(width, height) => (
+        <ViolinPlot
+          width={width}
+          height={height}
+          groups={groups}
+          ariaLabel="Violin plot of session length by channel, where Retail skews higher"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a violin plot when the **shape** of each distribution matters — you
+suspect bimodality, heavy tails, or a skew that a five-number summary would
+smooth over — and you are comparing a handful of groups. Each violin is widest
+where samples cluster, and a line inside marks the median. It carries more
+information than a box plot but reads less precisely, and the density is an
+estimate, not the raw points.
+
+| You want to…                                     | Use instead       |
+| ------------------------------------------------ | ----------------- |
+| Compare compact quartile summaries across groups | `BoxPlot`         |
+| Keep every individual sample visible             | `BeeswarmPlot`    |
+| Read percentiles or "what share is below X?"     | `CumulativeCurve` |
+| Show one variable's distribution in bins         | `Histogram`       |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { ViolinPlot, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  ViolinPlot,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`groups` is an array of `SampleGroup` — one group of **raw samples** per violin:
+
+```ts
+interface SampleGroup {
+  label: string;
+  samples: number[];
+}
+```
+
+```tsx
+const groups: SampleGroup[] = [
+  { label: "Web", samples: [41, 38, 52, 40, 47, 39, 55, 44, 43, 48] },
+  { label: "Mobile", samples: [33, 29, 40, 31, 36, 28, 44, 35] },
+];
+```
+
+Contract notes, verifiable from source:
+
+- **You supply raw samples; the chart estimates the density.** Each group runs
+  through a Gaussian kernel-density estimate (Silverman's bandwidth), evaluated
+  at 40 points across the shared value range.
+- `label` should be **unique** per group — it is the band-scale domain and the
+  React key.
+- The value axis spans the `extent` of all samples across all groups, made
+  "nice", so every violin shares one vertical scale.
+- The **median** shown inside each violin is computed from that group's samples;
+  degenerate (all-equal) sample sets are handled without dividing by zero.
+- Larger samples give a smoother, more trustworthy estimate; very small groups
+  produce a lumpy KDE — for tiny groups, prefer
+  [`BeeswarmPlot`](/charts/beeswarm-plot).
+
+## API reference
+
+<PropsTable id="ViolinPlot" />
+
+Renders `null` for empty `groups` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Density estimation (automatic)
+
+Not configurable — each group's silhouette is a Gaussian kernel-density estimate
+using Silverman's rule-of-thumb bandwidth, sampled at 40 points and mirrored
+left/right around the group's center. The width of the violin at any value is
+proportional to the estimated density there; widths are scaled so the fattest
+point of the fattest group fills its band.
+
+### Median marker (automatic)
+
+A short horizontal line inside each violin marks that group's median. There is
+no box or quartile overlay — for the five-number summary, use
+[`BoxPlot`](/charts/box-plot).
+
+### Axes & scales (automatic)
+
+The category axis is a band scale (one violin per `label`); the value axis is a
+linear scale over the combined sample extent, made "nice", with four horizontal
+gridlines and compact tick labels.
+
+### Tooltips & hover (automatic)
+
+Hovering a violin dims the others and shows a tooltip with the group `label`,
+its `median`, and its sample count `n`. Hover state is internal; there are no
+click/hover callbacks.
+
+### Overlays (`children`)
+
+Layer Layer-2 annotations over the value axis by passing them as `children` —
+`ReferenceLine`, `ThresholdBand`, `TrendLine`, `TargetMarker`. They read the
+chart's scale contract, so a level lands at the right value.
+
+```jsx live
+const rand = (i) => {
+  const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
+const groups = ["Web", "Mobile", "Retail"].map((label, g) => ({
+  label,
+  samples: Array.from({ length: 60 }, (_, i) =>
+    Math.round(
+      42 + g * 8 + ((rand(i + g * 100) + rand(i + g * 100 + 40)) / 2 - 0.5) * 60
+    )
+  ),
+}));
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <ViolinPlot width={width} height={height} groups={groups}>
+          <ReferenceLine value={50} label="Target" variant="positive" />
+        </ViolinPlot>
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Every violin uses one
+validated `nimbus` accent fill — the category axis, not color, distinguishes the
+groups — outlined and median-marked in ink.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <ViolinPlot width={width} height={height} groups={groups} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <ViolinPlot width={width} height={height} groups={groups} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. The KDE is O(samples × 40) per group, recomputed
+only when `groups` changes (it is memoized); each violin is a single fixed-point
+path regardless of sample count, so the drawn output stays cheap even for large
+groups. There is no downsampling — the estimate already summarizes the samples.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<ViolinPlot
+  ariaLabel="Violin plot of session length by channel, where Retail skews higher"
+  width={width}
+  height={height}
+  groups={groups}
+/>
+```
+
+Don't describe every hump in the label; the data-table fallback carries the
+summary values.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Violin plot of N groups"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `ViolinPlot` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Group**, **n**, **Median**) into the accessibility tree, plus a keyboard
+  "View data as table" toggle that reveals it in place — so the summary is
+  available as text, not just the one-line label.
+- **CVD-safe palette.** The accent comes from the validated chart theme
+  (contrast + color-vision-deficiency checks), not an ad-hoc color.
+- **Non-color encoding.** Meaning is carried by silhouette width, position, and
+  the median line; color is a single hue and is not load-bearing.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the groups and their shapes
+rather than "the wide violin". The data table exposes the median and count, not
+the full density — provide the raw data elsewhere when the shape itself is the
+finding.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (width/position carry it here)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names groups/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`ViolinPlot` renders `null` when `groups` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Estimated density, not raw points.** The KDE bandwidth (Silverman) and
+  resolution (40 points) are fixed and not configurable; to keep every sample
+  visible use [`BeeswarmPlot`](/charts/beeswarm-plot).
+- **Median only** inside the violin — no box or quartile overlay (use
+  [`BoxPlot`](/charts/box-plot) for the five-number summary).
+- **No per-group color.** Every violin shares one accent; group identity lives
+  on the category axis.
+- **No legend, title, caption, loading, or error passthrough** — `ViolinPlot`
+  forwards only `ariaLabel` and the data table to `ChartContainer`.
+- **Fixed number formatting** (compact); there is no `valueFormat` prop.
+- **No click/selection callbacks** — hover drives the internal tooltip only.
+
+## Related charts
+
+Same "distribution" purpose, different trade-offs: [Box plot](/charts/box-plot),
+[Beeswarm plot](/charts/beeswarm-plot), and
+[Cumulative curve](/charts/cumulative-curve). For a single variable's shape in
+bins, see [Histogram](/charts/histogram). The `<ChartMeta />` block above links
+the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

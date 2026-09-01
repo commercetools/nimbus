@@ -18,7 +18,11 @@ tags:
 
 <ChartMeta />
 
-A grid of squares that reads share by counting cells.
+A waffle chart fills a square grid of cells in proportion to each category's
+share, so the whole is a fixed count of cells (100 by default) and each category
+claims its slice of them. Use it to answer "what share is each part of the
+whole?" when you want shares that can be **counted** — one cell per percentage
+point reads more precisely than the angle of a pie.
 
 ```jsx live
 const data = [
@@ -32,14 +36,231 @@ const data = [
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <WaffleChart width={width} height={height} data={data} />}
+      {(width, height) => (
+        <WaffleChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Waffle chart of revenue share by channel, where Web fills the most cells"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a waffle when you have a single whole made of a few parts and you want
+shares that are easy to read and easy to count — a 10×10 grid maps one cell to
+one percent. It reads a handful of categories well; with many small categories
+the cell blocks fragment and the counting advantage is lost. Use it as a
+friendlier alternative to a pie for the same one-level part-to-whole question.
+
+| You want to…                                 | Use instead       |
+| -------------------------------------------- | ----------------- |
+| Show the split as slices of a ring           | `DonutChart`      |
+| Compare or rank the parts accurately         | `BarChart`        |
+| Break a whole down across a nested hierarchy | `Treemap`         |
+| Split each of several categories into parts  | `StackedBarChart` |
+| Show composition and category size together  | `MarimekkoChart`  |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { WaffleChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  WaffleChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `CategoryDatum` — one category per row:
+
+```ts
+interface CategoryDatum {
+  category: string;
+  value: number;
+}
+```
+
+```tsx
+const data: CategoryDatum[] = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `category` should be **unique** per row — it is the cell color key, the legend
+  label, and the React key. Cells are filled category-by-category in array
+  order, bottom-to-top.
+- `value` is a plain number; negatives are clamped to `0`. Cells are allocated
+  by **largest-remainder rounding** so the counts sum exactly to the grid total
+  and each share is preserved as closely as whole cells allow.
+- The grid holds `cells × cells` cells (default `10` → 100). The tooltip and
+  data table report each category's share of the summed total.
+
+## API reference
+
+<PropsTable id="WaffleChart" />
+
+Renders `null` for empty `data`, a total of `0`, or a non-positive
+`width`/`height`.
+
+## Chart configuration
+
+### Grid size (`cells`)
+
+`cells` is the grid's side length — the whole is `cells × cells` squares, `10`
+(100 cells) by default. Raise it for finer resolution (e.g. `14` → 196 cells),
+lower it for a coarser, chunkier grid.
+
+```jsx live
+const data = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+  { category: "Partner", value: 1800 },
+  { category: "Email", value: 1200 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <WaffleChart width={width} height={height} data={data} cells={14} />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Legend & tooltip (automatic)
+
+Not configurable — each category gets a categorical color from the shared
+entity→color scale, shown as a legend strip. Color is **identity** here (one hue
+per category), which is legitimate for a part-to-whole chart. Hovering a cell
+dims the other categories to 0.3 opacity and shows a tooltip with that
+category's name and its share.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Cells are colored by the
+validated `nimbus` categorical palette (contrast + color-vision-deficiency
+checks), not ad-hoc CSS colors.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => <WaffleChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={1} minHeight={220} maxHeight={420}>
+  {(width, height) => <WaffleChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. The grid is square and fills the smaller of
+width/height, so a square-ish container reads best. There is no downsampling;
+keep to a few categories so each still claims a readable block of cells.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<WaffleChart
+  ariaLabel="Waffle chart of revenue share by channel, where Web fills the most cells"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Waffle chart of N categories"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `WaffleChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Category**, **Value**, **Share**) into the accessibility tree, plus a
+  keyboard "View data as table" toggle that reveals it in place — so the shares
+  are available as text, not just the one-line label.
+- **CVD-safe palette + legend.** Cell colors come from the validated chart
+  palette, and the always-present legend maps each color back to its category,
+  so color identity is not left to the eye alone.
+- **Non-color encoding.** Cell count carries the share; the legend and data
+  table carry the identities and exact numbers.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the categories rather than
+"the blue cells". There is no animation, so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (cell count + legend + table)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names categories/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`WaffleChart` renders `null` when `data` is empty, the values sum to `0`, or the
+measured size is non-positive; it does not draw its own empty, loading, or error
+message (it does not forward those `ChartContainer` features). Guard those
+states upstream and render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Whole-cell resolution.** Shares are rounded to whole cells
+  (largest-remainder rounding), so very small categories may round to zero cells
+  at low `cells` counts — raise `cells` or aggregate them.
+- **No value formatting prop.** Tooltip and table shares are percentages; the
+  raw value column is unformatted.
+- **No interaction callbacks.** Hover is internal; there is no `onDatumClick` /
+  `onDatumHover`.
+- **No title, subtitle, caption, loading, or error passthrough** — `WaffleChart`
+  forwards only `ariaLabel`, the legend, and the data table to `ChartContainer`.
+
+## Related charts
+
+Same "part-to-whole" purpose, different trade-offs:
+[Donut chart](/charts/donut-chart),
+[Stacked bar chart](/charts/stacked-bar-chart), [Treemap](/charts/treemap),
+[Sunburst](/charts/sunburst-chart), [Marimekko](/charts/marimekko-chart), and
+[Funnel chart](/charts/funnel-chart). The `<ChartMeta />` block above links the
+current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

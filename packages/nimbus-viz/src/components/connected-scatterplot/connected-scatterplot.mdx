@@ -18,25 +18,255 @@ tags:
 
 <ChartMeta />
 
-Two variables joined in sequence to trace a trajectory.
+A connected scatterplot plots two variables against each other, then joins the
+points **in the order they are given** to trace the path the pair took — usually
+over time. It shows the relationship and its trajectory at once: not just "do
+these move together?" but "which way did they travel, and did they double back?"
+— think inflation vs. unemployment year by year, or price vs. demand across a
+season.
 
 ```jsx live
 const points = [
-  { x: 20, y: 24, label: "Jan" }, { x: 26, y: 30 }, { x: 24, y: 38 }, { x: 33, y: 42 },
-  { x: 41, y: 40 }, { x: 47, y: 52 }, { x: 58, y: 61, label: "Jun" },
+  { x: 20, y: 24, label: "Jan" },
+  { x: 26, y: 30 },
+  { x: 24, y: 38 },
+  { x: 33, y: 42 },
+  { x: 41, y: 40 },
+  { x: 47, y: 52 },
+  { x: 58, y: 61, label: "Jun" },
 ];
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <ConnectedScatterplot width={width} height={height} points={points} />}
+      {(width, height) => (
+        <ConnectedScatterplot
+          width={width}
+          height={height}
+          points={points}
+          ariaLabel="Connected scatterplot of price vs. demand from Jan to Jun, climbing steadily"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a connected scatterplot when the **order** of the observations is part
+of the story and you want to see how two variables evolved together, including
+loops and reversals a plain time series would hide. The sequence is carried by
+the connecting line and the labelled start/end points, so it reads as a
+trajectory rather than a cloud.
+
+| You want to…                                   | Use instead   |
+| ---------------------------------------------- | ------------- |
+| Show the relationship without a path or order  | `ScatterPlot` |
+| Weight each point by a third measure           | `BubbleChart` |
+| Track a single variable over time              | `LineChart`   |
+| Compare multivariate profiles across many axes | `RadarChart`  |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { ConnectedScatterplot, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  ConnectedScatterplot,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`points` is an array of `ScatterPoint`, in trajectory order:
+
+```ts
+interface ScatterPoint {
+  x: number;
+  y: number;
+  label?: string;
+  group?: string; // not used by this chart
+}
+```
+
+```tsx
+const points: ScatterPoint[] = [
+  { x: 20, y: 24, label: "Jan" },
+  { x: 26, y: 30 },
+  { x: 58, y: 61, label: "Jun" },
+];
+```
+
+Contract notes, verifiable from source:
+
+- **Array order is load-bearing.** Points are connected in the order given —
+  sort your data into the sequence you want traced (usually chronological)
+  before passing it.
+- `x` and `y` are plain numbers; both axes are **linear** scales fit to the data
+  extent (`nice`-rounded), so neither is anchored at 0.
+- `label` is optional, but labelling the **first and last** points is
+  recommended — the chart draws those two endpoint labels (the last in bolder
+  ink) to orient the reader on where the path starts and ends. Intermediate
+  labels are not drawn on the plot but do appear in the tooltip and the
+  data-table fallback.
+- `group` is part of the `ScatterPoint` shape but is **not** used here; a
+  connected scatterplot draws a single trajectory in the accent.
+
+## API reference
+
+<PropsTable id="ConnectedScatterplot" />
+
+Renders `null` for empty `points` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Sequence & endpoints (automatic)
+
+Not configurable — the chart always joins the points in array order with a
+single accent line, marks each point with a small circle, and draws the first
+and last points larger and filled so the start and end of the path stand out. If
+those endpoints carry a `label`, it is printed beside them (the final label in
+emphasised ink).
+
+### Overlays (`children`)
+
+Layer-2 annotations (e.g. `ReferenceLine`, `ThresholdBand`, `TrendLine`) can be
+drawn in plot space by passing them as `children`. They render against the same
+scales as the trajectory — a reference line lands where the axes put it.
+
+### Axes, scales & tooltip (automatic)
+
+Not configurable — the chart always draws them. Both axes are linear scales fit
+to the data extent (`nice`-rounded) with horizontal gridlines behind the path;
+tick labels use a compact number format. Hovering a point dims the rest of the
+trajectory and shows a small tooltip with the point's label (or "Point N" by
+sequence position) and its `x` / `y` values.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. The line and points use the
+validated `nimbus` chart accent, not a CSS color.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <ConnectedScatterplot width={width} height={height} points={points} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <ConnectedScatterplot width={width} height={height} points={points} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. The path point radius scales gently with the chart
+size. There is no downsampling; a connected scatterplot is meant for a readable
+sequence of observations (the line crosses itself and becomes spaghetti past a
+few dozen), so aggregate long series upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<ConnectedScatterplot
+  ariaLabel="Connected scatterplot of price vs. demand from Jan to Jun, climbing steadily"
+  width={width}
+  height={height}
+  points={points}
+/>
+```
+
+Don't list individual coordinates in the label; the data-table fallback carries
+them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Connected scatterplot of N points"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `ConnectedScatterplot` passes a `table`
+  to `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **#**, **Label**, **x**, **y**, where **#** is the sequence position) into the
+  accessibility tree, plus a keyboard "View data as table" toggle that reveals
+  it in place — so the ordered values are available as text, not just the
+  one-line label.
+- **CVD-safe palette.** The accent comes from the validated chart theme
+  (contrast + color-vision-deficiency checks), not an ad-hoc color.
+- **Non-color encoding.** The trajectory is carried by position and the
+  connecting line's direction, with labelled endpoints — a single hue, not
+  load-bearing color.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the start/end and the
+direction of travel rather than a color. There is no animation, so
+reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback,
+      in sequence order)
+- [ ] Meaning does not depend on color alone (position + path direction carry
+      it)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names the start/end and direction rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`ConnectedScatterplot` renders `null` when `points` is empty or the measured
+size is non-positive; it does not draw its own empty, loading, or error message
+(it does not forward those `ChartContainer` features). Guard those states
+upstream and render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Single trajectory.** One path per chart — there is no per-series grouping
+  and `group` is ignored. For a plain cloud use
+  [`ScatterPlot`](/charts/scatter-plot).
+- **No interaction callbacks.** Hover is internal-only; there are no
+  `onDatumClick` / `onDatumHover` props.
+- **Only endpoints are labelled on the plot.** Intermediate labels live in the
+  tooltip and the data table, not on the line.
+- **Fixed number formatting.** Axis ticks and the tooltip use a built-in compact
+  formatter; there is no `valueFormat` prop.
+- **No title, caption, legend, loading, or error passthrough** —
+  `ConnectedScatterplot` forwards only `ariaLabel` and the data table to
+  `ChartContainer`.
+
+## Related charts
+
+Same "relationship" purpose, different trade-offs:
+[Scatter plot](/charts/scatter-plot), [Bubble chart](/charts/bubble-chart),
+[Radar chart](/charts/radar-chart), and
+[Parallel coordinates](/charts/parallel-coordinates). The `<ChartMeta />` block
+above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

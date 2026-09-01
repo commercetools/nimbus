@@ -9,11 +9,15 @@ import type { SeriesPoint } from "../../chart/types";
 import { chartRootStyle } from "../../chart/typography";
 
 export interface SparklineProps {
+  /** Width in pixels — supply from `ResponsiveContainer` or the host cell. */
   width: number;
+  /** Height in pixels — supply from `ResponsiveContainer` or the host cell. */
   height: number;
+  /** Ordered points; spaced evenly by index (the `x` value is not scaled). */
   data: SeriesPoint[];
   /** Draw an accent dot at the last point. */
   showEndDot?: boolean;
+  /** Accessible label for the SVG (exposed as `role="img"`). */
   ariaLabel?: string;
 }
 

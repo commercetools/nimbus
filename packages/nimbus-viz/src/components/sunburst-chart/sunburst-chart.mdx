@@ -18,29 +18,276 @@ tags:
 
 <ChartMeta />
 
-The radial counterpart to the treemap for hierarchies.
+A sunburst lays a hierarchy out as concentric rings: the inner ring is the
+top-level split, each outer ring a level deeper, and every arc's sweep is its
+share of its parent. Use it to answer "how does a hierarchy break down,
+radially?" — the same question as a [treemap](/charts/treemap), when a circular
+layout with clear ring-by-ring levels reads better than nested rectangles.
 
 ```jsx live
 const data = {
   name: "Revenue",
   children: [
-    { name: "Web", children: [{ name: "New", value: 260 }, { name: "Returning", value: 180 }] },
-    { name: "Mobile", children: [{ name: "iOS", value: 150 }, { name: "Android", value: 120 }] },
-    { name: "Retail", children: [{ name: "Flagship", value: 90 }, { name: "Outlet", value: 60 }] },
+    {
+      name: "Web",
+      children: [
+        { name: "New", value: 260 },
+        { name: "Returning", value: 180 },
+      ],
+    },
+    {
+      name: "Mobile",
+      children: [
+        { name: "iOS", value: 150 },
+        { name: "Android", value: 120 },
+      ],
+    },
+    {
+      name: "Retail",
+      children: [
+        { name: "Flagship", value: 90 },
+        { name: "Outlet", value: 60 },
+      ],
+    },
   ],
 };
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <SunburstChart width={width} height={height} data={data} />}
+      {(width, height) => (
+        <SunburstChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Sunburst of revenue by channel and sub-channel, where Web is the largest branch"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a sunburst when the whole is nested and you want the **levels** to
+read clearly — each ring is one level of the tree, so the depth of the hierarchy
+is obvious at a glance. Angle and arc are read less precisely than length, so it
+is for structure and rough proportion, not exact comparison. Prefer a treemap
+when you have many leaves and space is tight; prefer the sunburst when depth and
+the top-level split are the story.
+
+| You want to…                                   | Use instead       |
+| ---------------------------------------------- | ----------------- |
+| Show the same hierarchy as nested rectangles   | `Treemap`         |
+| Split one whole into a few slices (one level)  | `DonutChart`      |
+| Compare a single flat set of parts, accurately | `BarChart`        |
+| Split each of several categories into segments | `StackedBarChart` |
+| Read shares by counting a grid of cells        | `WaffleChart`     |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { SunburstChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  SunburstChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is a single `TreemapNode` — the same nested hierarchy the
+[treemap](/charts/treemap) takes. Leaves carry `value`; parents carry `children`
+and sum their descendants:
+
+```ts
+interface TreemapNode {
+  name: string;
+  value?: number;
+  children?: TreemapNode[];
+}
+```
+
+```tsx
+const data: TreemapNode = {
+  name: "Revenue",
+  children: [
+    {
+      name: "Web",
+      children: [
+        { name: "New", value: 260 },
+        { name: "Returning", value: 180 },
+      ],
+    },
+    {
+      name: "Mobile",
+      children: [
+        { name: "iOS", value: 150 },
+        { name: "Android", value: 120 },
+      ],
+    },
+  ],
+};
+```
+
+Contract notes, verifiable from source:
+
+- `data` is one **object**, not an array — the hierarchy root. The root itself
+  is the empty center, not a ring; the first ring is its direct children.
+- Only **leaves** need a `value`; each ring's arcs are summed from below and
+  sorted by value descending within their parent.
+- Every node is colored by its **top-level ancestor** and dimmed slightly with
+  depth, so a branch reads as one hue getting lighter outward.
+- Shares in the center readout, tooltip, and table are computed against the
+  **root total**.
+
+## API reference
+
+<PropsTable id="SunburstChart" />
+
+Renders `null` for empty/zero data (a root total of 0) or a non-positive
+`width`/`height`.
+
+## Chart configuration
+
+### Rings, center readout & color (automatic)
+
+Not configurable — the chart always draws one ring per hierarchy level, arcs
+swept in proportion to each node's share of its parent, with a 1px surface
+stroke between arcs. Each node is colored by its top-level branch (shared
+entity→color scale) and progressively dimmed with depth. The empty center shows
+the **total** (compact-formatted) at rest, switching to a hovered node's
+**share** and name.
+
+### Tooltip (automatic)
+
+Hovering an arc dims the rest and shows a tooltip with the node's name, its
+compact value, and its share of the total. Hover is internal; there is no click
+or hover callback.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Branch colors come from the
+validated `nimbus` categorical palette (contrast + color-vision-deficiency
+checks), not ad-hoc CSS colors.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <SunburstChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={1} minHeight={220} maxHeight={440}>
+  {(width, height) => (
+    <SunburstChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. The sunburst fills the smaller of width/height, so
+a square-ish container reads best. There is no downsampling; thin outer arcs get
+hard to hover and carry no visible label — lean on the tooltip and data table,
+or aggregate a long tail upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<SunburstChart
+  ariaLabel="Sunburst of revenue by channel and sub-channel, where Web is the largest branch"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Sunburst of N segments"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `SunburstChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Segment**, **Value**, **Share**, one row per leaf) into the accessibility
+  tree, plus a keyboard "View data as table" toggle that reveals it in place —
+  so the values are available as text. This matters here: the arcs carry no
+  visible labels at all.
+- **CVD-safe palette.** Branch colors come from the validated chart palette
+  (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** Ring position (depth) and arc sweep (share) carry the
+  structure and proportions; the data table carries the identities and values.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the branches rather than "the
+outer ring". There is **no legend** and the arcs are unlabeled, so the data
+table is the primary text equivalent. There is no animation, so reduced-motion
+handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (ring/arc + table carry it)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names branches/leaves rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`SunburstChart` renders `null` when the hierarchy has no positive value or the
+measured size is non-positive; it does not draw its own empty, loading, or error
+message (it does not forward those `ChartContainer` features). Guard those
+states upstream and render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **No labels on the arcs.** Unlike the treemap, nodes are not labeled in place;
+  identities live in the tooltip and the data table.
+- **No legend passthrough.** The branch/color mapping is not shown as a legend.
+- **No value formatting prop.** The center total is compact-formatted and shares
+  are percentages; neither is configurable.
+- **No interaction callbacks.** Hover is internal (it drives the center
+  readout); there is no `onDatumClick` / `onDatumHover`, and no click-to-zoom
+  into a branch.
+- **No title, subtitle, caption, loading, or error passthrough** —
+  `SunburstChart` forwards only `ariaLabel` and the data table to
+  `ChartContainer`.
+
+## Related charts
+
+Same "part-to-whole" purpose, different trade-offs: [Treemap](/charts/treemap),
+[Donut chart](/charts/donut-chart),
+[Stacked bar chart](/charts/stacked-bar-chart),
+[Waffle chart](/charts/waffle-chart), [Marimekko](/charts/marimekko-chart), and
+[Funnel chart](/charts/funnel-chart). The `<ChartMeta />` block above links the
+current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

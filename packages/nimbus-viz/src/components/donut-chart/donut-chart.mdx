@@ -18,7 +18,11 @@ tags:
 
 <ChartMeta />
 
-Part-to-whole for a handful of slices, with a center readout.
+A donut chart splits a single whole into a handful of slices, each slice's sweep
+its share of the total, with the total (or the hovered slice's share) read out
+in the hole. Use it to answer "what share is each part of the whole?" — revenue
+mix by channel, sessions by device — when there are only a few categories and
+the rough split matters more than exact ranking.
 
 ```jsx live
 const data = [
@@ -32,14 +36,206 @@ const data = [
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <DonutChart width={width} height={height} data={data} />}
+      {(width, height) => (
+        <DonutChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Donut chart of revenue share by channel, where Web is the largest share"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a donut when you have a single total made of a few parts and you want
+the reader to see the split at a glance — one dominant slice, or a roughly even
+spread. Angle and area are read less accurately than length on a baseline, so
+keep it to about five slices and don't use it when the exact ranking or small
+differences matter; a bar chart or waffle reads those better.
+
+| You want to…                                 | Use instead       |
+| -------------------------------------------- | ----------------- |
+| Compare the parts accurately or rank them    | `BarChart`        |
+| Read shares by counting a grid of cells      | `WaffleChart`     |
+| Break a whole down across a nested hierarchy | `Treemap`         |
+| Split each of several categories into parts  | `StackedBarChart` |
+| Show composition and category size together  | `MarimekkoChart`  |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { DonutChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  DonutChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `CategoryDatum` — one slice per row:
+
+```ts
+interface CategoryDatum {
+  category: string;
+  value: number;
+}
+```
+
+```tsx
+const data: CategoryDatum[] = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `category` should be **unique** per row — it is the slice color key, the
+  legend label, and the React key. Color and legend order follow the array.
+- `value` is a plain number and assumed **non-negative**; each slice's share is
+  `value / total`, and the center reads the summed total (compact-formatted).
+- Shares in the tooltip/table are computed against that total, so the values do
+  not need to be pre-normalized to 100.
+
+## API reference
+
+<PropsTable id="DonutChart" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Center readout & slices (automatic)
+
+Not configurable — the chart always draws a donut (a ring with a hole at
+`0.62 × radius`) and a two-line label in the hole. At rest the hole shows the
+**total**, compact-formatted; hovering a slice dims the others to 0.4 opacity
+and switches the hole to that slice's **share** and category name. Slices carry
+a small pad angle and rounded corners.
+
+### Legend (automatic)
+
+Each category gets a categorical color from the shared entity→color scale, shown
+as a legend strip beneath the plot. Color is **identity** here — one hue per
+category — which is legitimate for a part-to-whole chart, and the legend maps
+every color back to its label.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Slices are colored by the
+validated `nimbus` categorical palette (contrast + color-vision-deficiency
+checks), not ad-hoc CSS colors.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => <DonutChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={1} minHeight={220} maxHeight={420}>
+  {(width, height) => <DonutChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. The donut fills the smaller of width/height, so a
+square-ish container reads best. There is no downsampling; a donut is only
+legible for a handful of slices — group the long tail into an "Other" slice
+upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<DonutChart
+  ariaLabel="Donut chart of revenue share by channel, where Web is the largest share"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Donut chart of N categories"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `DonutChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Category**, **Value**, **Share**) into the accessibility tree, plus a
+  keyboard "View data as table" toggle that reveals it in place — so the shares
+  are available as text, not just the one-line label.
+- **CVD-safe palette + legend.** Slice colors come from the validated chart
+  palette, and the always-present legend maps each color back to its category,
+  so color identity is not left to the eye alone.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the categories rather than
+"the blue slice". There is no animation, so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (share + legend + table carry it)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names categories/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`DonutChart` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **A single whole only.** One ring of slices — no nested rings; for a hierarchy
+  use [`Sunburst`](/charts/sunburst-chart) or [`Treemap`](/charts/treemap).
+- **No value formatting prop.** The center total is compact-formatted and slice
+  labels are percentages; neither is configurable.
+- **No interaction callbacks.** Hover is internal (it drives the center
+  readout); there is no `onDatumClick` / `onDatumHover`.
+- **No title, subtitle, caption, loading, or error passthrough** — `DonutChart`
+  forwards only `ariaLabel`, the legend, and the data table to `ChartContainer`.
+
+## Related charts
+
+Same "part-to-whole" purpose, different trade-offs:
+[Stacked bar chart](/charts/stacked-bar-chart), [Treemap](/charts/treemap),
+[Sunburst](/charts/sunburst-chart), [Waffle chart](/charts/waffle-chart),
+[Marimekko](/charts/marimekko-chart), and [Funnel chart](/charts/funnel-chart).
+The `<ChartMeta />` block above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

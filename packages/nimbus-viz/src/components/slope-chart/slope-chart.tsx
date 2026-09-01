@@ -24,8 +24,11 @@ export interface SlopeRow {
 }
 
 export interface SlopeChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** One `SlopeRow` (`{ id, label, left, right }`) per line. */
   data: SlopeRow[];
   /** Header for the left column (e.g. "Q1"). */
   leftLabel?: string;

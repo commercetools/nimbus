@@ -18,35 +18,294 @@ tags:
 
 <ChartMeta />
 
-How rankings shift over time.
+A bump chart plots **rank over time**: at each point on the x-axis the series
+are ranked by their value (highest is rank 1), and the y-axis shows rank with #1
+at the top — so a line that rises is climbing the leaderboard and crossings mark
+where positions swap. Use it to answer "how does the ordering shift?" — category
+rankings across quarters, product leaderboards by month, region standings over a
+season.
 
 ```jsx live
 const series = [
-  { id: "a", label: "Running", data: [
-    { x: new Date("2026-01-01"), y: 120 }, { x: new Date("2026-02-01"), y: 160 },
-    { x: new Date("2026-03-01"), y: 140 }, { x: new Date("2026-04-01"), y: 190 },
-    { x: new Date("2026-05-01"), y: 210 } ] },
-  { id: "b", label: "Trail", data: [
-    { x: new Date("2026-01-01"), y: 150 }, { x: new Date("2026-02-01"), y: 140 },
-    { x: new Date("2026-03-01"), y: 170 }, { x: new Date("2026-04-01"), y: 160 },
-    { x: new Date("2026-05-01"), y: 200 } ] },
-  { id: "c", label: "Court", data: [
-    { x: new Date("2026-01-01"), y: 100 }, { x: new Date("2026-02-01"), y: 120 },
-    { x: new Date("2026-03-01"), y: 130 }, { x: new Date("2026-04-01"), y: 150 },
-    { x: new Date("2026-05-01"), y: 145 } ] },
+  {
+    id: "a",
+    label: "Running",
+    data: [
+      { x: new Date("2026-01-01"), y: 120 },
+      { x: new Date("2026-02-01"), y: 160 },
+      { x: new Date("2026-03-01"), y: 140 },
+      { x: new Date("2026-04-01"), y: 190 },
+      { x: new Date("2026-05-01"), y: 210 },
+    ],
+  },
+  {
+    id: "b",
+    label: "Trail",
+    data: [
+      { x: new Date("2026-01-01"), y: 150 },
+      { x: new Date("2026-02-01"), y: 140 },
+      { x: new Date("2026-03-01"), y: 170 },
+      { x: new Date("2026-04-01"), y: 160 },
+      { x: new Date("2026-05-01"), y: 200 },
+    ],
+  },
+  {
+    id: "c",
+    label: "Court",
+    data: [
+      { x: new Date("2026-01-01"), y: 100 },
+      { x: new Date("2026-02-01"), y: 120 },
+      { x: new Date("2026-03-01"), y: 130 },
+      { x: new Date("2026-04-01"), y: 150 },
+      { x: new Date("2026-05-01"), y: 145 },
+    ],
+  },
 ];
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <BumpChart width={width} height={height} series={series} />}
+      {(width, height) => (
+        <BumpChart
+          width={width}
+          height={height}
+          series={series}
+          ariaLabel="Bump chart ranking Running, Trail, and Court by monthly volume, where Running climbs to #1"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a bump chart when the **order** of a small set of series matters more
+than their absolute values, and you want to show how that order changes across a
+sequence of time points. It reads as a story of overtakings; the underlying
+values are demoted to ranks, so use it when "who's ahead" beats "by how much".
+
+| You want to…                                  | Use instead     |
+| --------------------------------------------- | --------------- |
+| Rank categories at a single point in time     | `LollipopChart` |
+| Compare exact magnitudes on a common baseline | `BarChart`      |
+| Show each series' actual value over time      | `LineChart`     |
+| Compare the ranking between just two moments  | `SlopeChart`    |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { BumpChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  BumpChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`series` is an array of `Series` — one line per entity, each with an ordered set
+of `{ x, y }` points:
+
+```ts
+interface SeriesPoint {
+  x: number | Date;
+  y: number | null;
+}
+
+interface Series {
+  id: string;
+  label: string;
+  data: SeriesPoint[];
+}
+```
+
+```tsx
+const series: Series[] = [
+  {
+    id: "a",
+    label: "Running",
+    data: [
+      { x: new Date("2026-01-01"), y: 120 },
+      { x: new Date("2026-02-01"), y: 160 },
+    ],
+  },
+  {
+    id: "b",
+    label: "Trail",
+    data: [
+      { x: new Date("2026-01-01"), y: 150 },
+      { x: new Date("2026-02-01"), y: 140 },
+    ],
+  },
+];
+```
+
+Contract notes, verifiable from source:
+
+- Series are ranked **by index**, not by `x` value: the point at index `i` in
+  each series is ranked against every other series' index `i`. Keep the series
+  **aligned** — the same x-positions, in the same order.
+- Ranking is by `y` **descending** (highest `y` = rank 1). A point with
+  `y: null` is skipped at that index, so a series can enter or drop out.
+- The x-axis labels come from the **first series'** `x` values at each index; a
+  `Date` renders as day-and-month, a number with the compact formatter.
+- `id` is the color key and React key; `label` is drawn directly at the series'
+  last point — both should be **unique**.
+
+## API reference
+
+<PropsTable id="BumpChart" />
+
+Renders `null` when `series` is empty or the measured `width`/`height` is
+non-positive.
+
+## Chart configuration
+
+### Overlays (`children`)
+
+Layer plot-space annotations (e.g. `ReferenceLine`, `ThresholdBand`,
+`TrendLine`) over the ranking by passing them as `children`; they receive the
+chart's scales through context and draw in the same coordinate space as the
+lines.
+
+```tsx
+<BumpChart width={width} height={height} series={series}>
+  <ReferenceLine y={1} label="Leader" />
+</BumpChart>
+```
+
+### Ranking, axes & tooltip (automatic)
+
+Not configurable — the chart always computes them. Ranks are derived per x-index
+as described above; the y-axis is an inverted point scale labeled `#1`, `#2`, …
+with a gridline per rank, and the x-axis shows about six evenly-spaced index
+ticks. Hovering a point brightens and thickens its whole series (dimming the
+others to 0.3), grows the dot, and shows a tooltip with the series label, its
+rank there, and the x/value.
+
+### Color & theming
+
+Each series takes a color from the shared **entity → color** scale
+(`useEntityColors`) in `series` order, and its `label` is drawn in ink at its
+last point — so identity never rides on color alone and there is **no legend**.
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Colors come from the
+validated `nimbus` chart palette, not CSS.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <BumpChart width={width} height={height} series={series} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <BumpChart width={width} height={height} series={series} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. A bump chart has one rank row per series, so it
+stays legible for a handful of series; there is no downsampling. The right
+margin reserves ~96px for the end-of-line labels — keep labels short.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<BumpChart
+  ariaLabel="Bump chart ranking Running, Trail, and Court by monthly volume, where Running climbs to #1"
+  width={width}
+  height={height}
+  series={series}
+/>
+```
+
+Don't list every rank in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  naming the ranked series is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `BumpChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Series**, **Latest value**, **Latest rank**) into the accessibility tree,
+  plus a keyboard "View data as table" toggle that reveals it in place — so the
+  standings are available as text, not just the one-line label.
+- **CVD-safe palette.** Line colors come from the validated chart theme
+  (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** Meaning is carried by vertical position (rank), and
+  every line is labeled directly at its end, so identity does not depend on
+  color.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the series and their ranks
+rather than "the top line". There is no animation, so reduced-motion handling is
+N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (rank position and direct end
+      labels carry it here)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names series/ranks rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`BumpChart` renders `null` when `series` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Rank, not value.** The chart shows ordering; absolute magnitudes are not
+  drawn (only the hovered value and the data table expose them). For values over
+  time use [`LineChart`](/charts/line-chart).
+- **Index-aligned series.** Ranking is per index, not per `x` — series with
+  mismatched x-positions will rank against the wrong points.
+- **No legend, title, caption, loading, or error passthrough** — `BumpChart`
+  forwards only `ariaLabel` and the data table to `ChartContainer`; identity
+  comes from the direct end labels.
+- **No interaction callbacks.** Hover is internal only; there is no
+  `onDatumClick`/`onDatumHover`.
+
+## Related charts
+
+Rank is a family of one here, so cross-link the magnitude charts that rank at a
+single moment: [Lollipop chart](/charts/lollipop-chart) and the ranked
+(horizontal) [Bar chart](/charts/bar-chart). To compare the ordering between
+just two moments, see [Slope chart](/charts/slope-chart). The `<ChartMeta />`
+block above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)
+  </content>

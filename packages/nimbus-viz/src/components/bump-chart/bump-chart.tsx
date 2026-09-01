@@ -14,9 +14,16 @@ import type { Series } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
 export interface BumpChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** The series to rank. At each x-index the series are ranked by their `y`
+   *  value (highest = rank 1); points with a null `y` are skipped at that
+   *  index. Each series' `label` is drawn at its last point. */
   series: Series[];
+  /** Accessible label for the SVG frame; states what the ranking shows and its
+   *  takeaway. Defaults to a label naming the ranked series. */
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;

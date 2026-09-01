@@ -14,11 +14,15 @@ export interface CalendarDatum {
 }
 
 export interface CalendarHeatmapProps {
+  /** Chart width in pixels (supplied by `ResponsiveContainer`). */
   width: number;
+  /** Chart height in pixels (supplied by `ResponsiveContainer`). */
   height: number;
+  /** One entry per day; the calendar spans the min→max date, filling gaps as empty cells. */
   data: CalendarDatum[];
   /** Nimbus hue for the sequential ramp. */
   hue?: string;
+  /** Accessible label for the SVG frame (Cesal alt-text). Defaults to a generated summary. */
   ariaLabel?: string;
 }
 

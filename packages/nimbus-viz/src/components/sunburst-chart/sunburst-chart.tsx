@@ -10,8 +10,11 @@ import type { TreemapNode } from "../treemap";
 import { emText } from "../../chart/typography";
 
 export interface SunburstChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** Root of the hierarchy to lay out; leaves carry `value`, parents sum theirs. */
   data: TreemapNode;
   ariaLabel?: string;
 }

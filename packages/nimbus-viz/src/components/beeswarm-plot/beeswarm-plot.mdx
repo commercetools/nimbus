@@ -18,10 +18,18 @@ tags:
 
 <ChartMeta />
 
-Every sample kept visible, packed without overlap.
+A beeswarm plot places **one dot per sample** along the value axis and nudges
+dots off the center line only as far as needed to avoid overlap — so no data is
+hidden in bins or summarized away. Where samples cluster, the swarm thickens;
+the overall silhouette reads like a distribution while every point stays
+inspectable. It answers "how is this one variable distributed, and where does
+each sample sit?" — order values, response times, review scores.
 
 ```jsx live
-const rand = (i) => { const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
+const rand = (i) => {
+  const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
 const values = Array.from({ length: 220 }, (_, i) =>
   Math.round(50 + ((rand(i) + rand(i + 60) + rand(i + 130)) / 3 - 0.5) * 70)
 );
@@ -29,14 +37,220 @@ const values = Array.from({ length: 220 }, (_, i) =>
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <BeeswarmPlot width={width} height={height} values={values} />}
+      {(width, height) => (
+        <BeeswarmPlot
+          width={width}
+          height={height}
+          values={values}
+          ariaLabel="Beeswarm plot of order values, where most orders cluster near the center"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a beeswarm when you have a **single continuous variable** for a modest
+number of records and you want to keep every observation on screen — to spot
+individual outliers, gaps, and clusters that a histogram's bins or a box plot's
+summary would erase. Density is encoded as swarm thickness; unlike jittered
+strip plots the placement is deterministic, so the same data always draws the
+same swarm.
+
+| You want to…                           | Use instead       |
+| -------------------------------------- | ----------------- |
+| Bin the variable into a smoothed shape | `Histogram`       |
+| Summarize with quartiles               | `BoxPlot`         |
+| Compare full shapes across groups      | `ViolinPlot`      |
+| Read percentiles or cumulative share   | `CumulativeCurve` |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { BeeswarmPlot, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  BeeswarmPlot,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`values` is a flat array of numbers — one dot per entry:
+
+```ts
+type Values = number[];
+```
+
+```tsx
+const values: number[] = [12, 18, 22, 24, 25, 27, 31, 33, 40, 44, 52, 61, 88];
+```
+
+Contract notes, verifiable from source:
+
+- **One dot per number**, placed at its value on the horizontal axis. There are
+  no labels or keys — this is an unlabelled sample of a single variable.
+- The value axis spans the `extent` of `values`, made "nice".
+- Placement is **deterministic**: samples are processed in ascending value order
+  and packed greedily, so identical data always yields the same swarm.
+- Very dense swarms are **clamped** to the plot height — dots that would sit
+  past the top or bottom edge are pinned at the edge rather than clipped.
+- A `n = {count}` label is drawn in the top-left corner.
+
+## API reference
+
+<PropsTable id="BeeswarmPlot" />
+
+Renders `null` for empty `values` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Dot placement (automatic)
+
+Not configurable — dots sit at their value on the x axis and are pushed off the
+center line (0, +1, −1, +2, −2, …) only far enough to clear the nearest already-
+placed dot. Dot radius scales with the chart size (with a floor), so the swarm
+stays legible small and large. In a very dense region the offset is capped at
+the plot's half-height, so the thickest part of the swarm fills the frame
+without overflowing it.
+
+### Value axis (automatic)
+
+A single horizontal axis with about five ticks and compact number labels. There
+is no vertical axis — the vertical position of a dot is packing, not data.
+
+### Sample count (automatic)
+
+The total number of samples is shown as an `n = {count}` label in the top-left,
+so the reader knows how many dots the swarm represents.
+
+### Tooltips & hover (automatic)
+
+Hovering a dot dims the rest and shows a tooltip with that sample's value. Hover
+state is internal; there are no click/hover callbacks.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Every dot uses one validated
+`nimbus` accent — density is carried by dot packing, not color.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <BeeswarmPlot width={width} height={height} values={values} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <BeeswarmPlot width={width} height={height} values={values} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Placement is a greedy O(n²)-ish pack (each dot is
+tested against those already placed) and every sample becomes its own SVG
+`<circle>`, so a beeswarm is meant for hundreds, not tens of thousands, of
+points. There is no downsampling — for much larger samples, bin into a
+[`Histogram`](/charts/histogram) or summarize with a
+[`BoxPlot`](/charts/box-plot).
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<BeeswarmPlot
+  ariaLabel="Beeswarm plot of order values, where most orders cluster near the center"
+  width={width}
+  height={height}
+  values={values}
+/>
+```
+
+Don't enumerate individual points in the label; the data-table fallback carries
+them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Beeswarm plot of N samples"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `BeeswarmPlot` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns **#**,
+  **Value**) into the accessibility tree, plus a keyboard "View data as table"
+  toggle that reveals it in place — so every value is available as text, not
+  just the one-line label.
+- **CVD-safe palette.** The accent comes from the validated chart theme
+  (contrast + color-vision-deficiency checks), not an ad-hoc color.
+- **Non-color encoding.** Meaning is carried by dot position and swarm
+  thickness; color is a single hue and is not load-bearing.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the values and clusters
+rather than "the dense blob".
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (position/thickness carry it here)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names values/clusters rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`BeeswarmPlot` renders `null` when `values` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Single, unlabelled series.** One swarm of one variable — no grouping and no
+  per-dot label. To compare distributions across groups use
+  [`ViolinPlot`](/charts/violin-plot) or [`BoxPlot`](/charts/box-plot).
+- **No overlays.** `BeeswarmPlot` takes no `children`; reference lines and bands
+  are not supported (it does not publish the overlay scale contract).
+- **Density clamps at the edges.** The thickest part of a swarm is capped to the
+  plot height rather than growing past it.
+- **No legend, title, caption, loading, or error passthrough** — `BeeswarmPlot`
+  forwards only `ariaLabel` and the data table to `ChartContainer`.
+- **Fixed number formatting** (compact); there is no `valueFormat` prop.
+- **No click/selection callbacks** — hover drives the internal tooltip only.
+
+## Related charts
+
+Same "distribution" purpose, different trade-offs: [Box plot](/charts/box-plot),
+[Violin plot](/charts/violin-plot), and
+[Cumulative curve](/charts/cumulative-curve). For a single variable's shape in
+bins, see [Histogram](/charts/histogram). The `<ChartMeta />` block above links
+the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

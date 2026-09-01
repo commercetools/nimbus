@@ -9,7 +9,9 @@ import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
 export interface PopulationPyramidProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
   /**
    * One row per band (e.g. an age bracket). The first two segments become the
@@ -17,6 +19,8 @@ export interface PopulationPyramidProps {
    * given order, top to bottom.
    */
   data: StackRow[];
+  /** Accessible label for the graphic. Defaults to
+   *  "Population pyramid of N bands". */
   ariaLabel?: string;
 }
 

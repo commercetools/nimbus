@@ -8,9 +8,13 @@ import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
 export interface MarimekkoChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
-  /** One column per category; column WIDTH encodes the column's total. */
+  /** One `StackRow` per category; column WIDTH encodes the column's total and
+   *  each segment's height its share within the column. Rows should share the
+   *  same segment keys, in the same order. */
   data: StackRow[];
   ariaLabel?: string;
 }

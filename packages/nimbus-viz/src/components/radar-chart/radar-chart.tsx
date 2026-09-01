@@ -17,10 +17,13 @@ export interface RadarSeries {
 }
 
 export interface RadarChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
   /** Axis names, one spoke each; series values align to this order. */
   axes: string[];
+  /** One closed polygon per series; each series' `values[i]` maps to `axes[i]`. */
   data: RadarSeries[];
   ariaLabel?: string;
 }

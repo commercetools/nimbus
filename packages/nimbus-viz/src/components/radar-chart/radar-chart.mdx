@@ -18,7 +18,11 @@ tags:
 
 <ChartMeta />
 
-Compare profiles across several axes at once.
+A radar chart lays several measures out as equally-spaced spokes and draws each
+subject as a closed polygon across them, so you can compare a few multivariate
+_profiles_ at a glance. Use it to answer "how do these options differ in shape
+across the same set of attributes?" — two product plans across speed, power, and
+range; teams across a fixed scorecard.
 
 ```jsx live
 const axes = ["Speed", "Power", "Range", "Agility", "Comfort"];
@@ -29,15 +33,241 @@ const data = [
 
 const App = () => (
   <ChartThemeProvider mode="light">
-    <ResponsiveContainer height={280}>
-      {(width, height) => <RadarChart width={width} height={height} axes={axes} data={data} />}
+    <ResponsiveContainer height={320}>
+      {(width, height) => (
+        <RadarChart
+          width={width}
+          height={height}
+          axes={axes}
+          data={data}
+          ariaLabel="Radar chart comparing Model A and Model B across five attributes"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a radar chart when you have a handful of subjects measured on the
+**same** small set of comparable axes and the interesting thing is the overall
+_shape_ of each profile — where it bulges and where it dips. Keep it to a few
+axes and a few series; radar rewards pattern-spotting, not precise reading.
+
+| You want to…                                          | Use instead           |
+| ----------------------------------------------------- | --------------------- |
+| Relate records across many independently-scaled axes  | `ParallelCoordinates` |
+| Relate exactly two continuous variables               | `ScatterPlot`         |
+| Weight a two-variable relationship by a third measure | `BubbleChart`         |
+| Compare one measure precisely across categories       | `GroupedBarChart`     |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { RadarChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  RadarChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`RadarChart` takes two props together: `axes` names the spokes, and `data` is
+one `RadarSeries` per profile whose `values` align index-for-index to `axes`.
+
+```ts
+// Spoke names, in clockwise order from 12 o'clock.
+type Axes = string[];
+
+interface RadarSeries {
+  id: string;
+  label: string;
+  values: number[]; // values[i] belongs to axes[i]
+}
+```
+
+```tsx
+const axes = ["Speed", "Power", "Range", "Agility", "Comfort"];
+
+const data: RadarSeries[] = [
+  { id: "a", label: "Model A", values: [80, 62, 74, 55, 90] },
+  { id: "b", label: "Model B", values: [58, 88, 66, 82, 60] },
+];
+```
+
+Contract notes, verifiable from source:
+
+- Each series' `values[i]` maps to `axes[i]`, so every `values` array should
+  have **one entry per axis, in the same order**. A shorter array leaves that
+  spoke undefined.
+- `id` must be **unique** per series — it is the React key and the color key.
+- All spokes share **one radial scale** from **0** to the `nice`-rounded maximum
+  across every series and axis. Values are therefore assumed **non-negative**,
+  and the axes should be on **comparable ranges** — if one attribute is measured
+  in thousands and another in single digits, the small one collapses to the
+  center. Normalize (e.g. to 0–100) before passing when scales differ. For
+  per-axis independent scales, use
+  [`ParallelCoordinates`](/charts/parallel-coordinates).
+- A legend appears once `data` has two or more series.
+
+## API reference
+
+<PropsTable id="RadarChart" />
+
+Renders `null` for empty `data`, empty `axes`, or a non-positive
+`width`/`height`.
+
+## Chart configuration
+
+### Axes & radial scale (automatic)
+
+Not configurable — the chart draws `axes.length` equally-spaced spokes starting
+at 12 o'clock and sweeping clockwise, with concentric grid rings at the scale's
+tick values. All spokes share a **single** radial scale (0 → the `nice` maximum
+across all series), so a value's distance from the center means the same thing
+on every spoke. Axis names sit in muted ink just beyond the outer ring.
+
+### Series & legend (automatic)
+
+Not configurable — each series is drawn as a closed polygon in its own fixed
+categorical hue, with a light fill and a vertex dot on every spoke; hovering a
+vertex enlarges it and reads out that series/axis value. When two or more series
+are present, a legend below the plot maps each color to its `label`. Fill is
+kept translucent so overlapping profiles stay legible.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Series use the validated
+`nimbus` categorical hues; the rings and spokes use the theme grid color, not a
+CSS color.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={320}>
+  {(width, height) => (
+    <RadarChart width={width} height={height} axes={axes} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={1} minHeight={240} maxHeight={420}>
+  {(width, height) => (
+    <RadarChart width={width} height={height} axes={axes} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. The plotted radius is derived from the smaller of
+width and height (a near-square container reads best), and the legend reserves a
+strip below the polar plot. There is no downsampling; radar is meant for a few
+axes and a few series.
+
+## Accessibility
+
+> **Radar chart draws its own SVG rather than routing through the shared
+> `ChartContainer`, so it does _not_ ship the visually-hidden data-table
+> fallback the other charts get.** The values are reachable only by hovering a
+> vertex, which is not an accessible path. Supply the same numbers as text
+> yourself — render a [`DataTable`](/charts/data-table) or an HTML table beside
+> the chart — to satisfy WCAG 1.1.1.
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<RadarChart
+  ariaLabel="Radar chart comparing Model A and Model B, where A leads on comfort and B on power"
+  width={width}
+  height={height}
+  axes={axes}
+  data={data}
+/>
+```
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Radar chart of {series} across {axes}"` is generated if you omit it).
+- **Legend.** When two or more series are present, a color-to-label legend is
+  rendered below the plot.
+- **CVD-safe palette.** Series hues come from the validated chart theme
+  (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** Each profile's _shape_ (its polygon) carries the
+  comparison; color plus the legend distinguish which profile is which.
+
+What is **not** automatic: there is **no built-in data-table fallback** (see the
+callout above), and no title, caption, loading, or error surface. Provide the
+values as text yourself.
+
+Your job: pass a meaningful `ariaLabel`; render the underlying values as a table
+alongside the chart; keep it in a `ChartThemeProvider`; and in surrounding copy
+name the series and attributes rather than colors. There is no animation, so
+reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text — **you must add this**; radar has
+      no built-in data-table fallback
+- [ ] Meaning does not depend on color alone (polygon shape carries the profile;
+      the legend maps color to series)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names series/attributes rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`RadarChart` renders `null` when `data` is empty, `axes` is empty, or the
+measured size is non-positive; it does not draw its own empty, loading, or error
+message (it does not use `ChartContainer`, so those features are not available
+at all). Guard those states upstream and render your own placeholder when there
+is no data yet.
+
+## Limitations
+
+- **Shared radial scale.** All axes read against one 0-to-max scale, so
+  attributes on different ranges must be normalized first; for per-axis
+  independent scales use [`ParallelCoordinates`](/charts/parallel-coordinates).
+- **No data-table fallback.** Unlike the other relationship charts, `RadarChart`
+  does not route through `ChartContainer`, so the accessible data table and the
+  "View data as table" toggle are absent — provide the values as text yourself.
+- **Few series, few axes.** Overlapping polygons and area distortion make radar
+  hard to read past a handful of each.
+- **No interaction callbacks, overlays, or custom accessors.** Hover is
+  internal-only; there are no `onDatumClick` / `onDatumHover`, no `children`,
+  and no `value` accessor — reshape into `axes` + `RadarSeries` first.
+- **Fixed number formatting.** The tooltip uses a built-in compact formatter;
+  there is no `valueFormat` prop.
+
+## Related charts
+
+Same "relationship" purpose, different trade-offs:
+[Scatter plot](/charts/scatter-plot), [Bubble chart](/charts/bubble-chart),
+[Connected scatterplot](/charts/connected-scatterplot), and
+[Parallel coordinates](/charts/parallel-coordinates). The `<ChartMeta />` block
+above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

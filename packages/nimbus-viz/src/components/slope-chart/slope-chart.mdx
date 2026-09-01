@@ -18,7 +18,12 @@ tags:
 
 <ChartMeta />
 
-How each item changed between two moments.
+A slope chart (slopegraph) connects each item's value at a **left** moment to
+its value at a **right** moment with a single line, on one shared value scale.
+The line's slope is the message — steep up, steep down, or flat — so it answers
+"how did each item change between two moments, and which items moved against the
+crowd?" Each end is direct-labeled with the name and value; there is no numeric
+axis.
 
 ```jsx live
 const data = [
@@ -31,14 +36,263 @@ const data = [
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <SlopeChart width={width} height={height} data={data} leftLabel="2024" rightLabel="2025" />}
+      {(width, height) => (
+        <SlopeChart
+          width={width}
+          height={height}
+          data={data}
+          leftLabel="2024"
+          rightLabel="2025"
+          ariaLabel="Slope chart of revenue by category, 2024 to 2025, where Apparel and Beauty rose while Home and Toys fell"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a slope chart when you have several items each measured at exactly
+**two** moments and you care about the direction and rate of change more than
+the precise magnitudes — which items climbed, which slipped, and which crossed
+over each other. Because the lines share one scale, a reader compares slopes at
+a glance. Keep it to two moments and a legible number of lines; for more moments
+or a decomposition, move to a sibling below.
+
+| You want to…                                          | Use instead      |
+| ----------------------------------------------------- | ---------------- |
+| Show the absolute gap between two values per category | `DumbbellChart`  |
+| Decompose one start→end change into contributions     | `WaterfallChart` |
+| Check each measure against its target                 | `BulletChart`    |
+| Track a metric across many time points, not just two  | `LineChart`      |
+| Compare a single measure across categories            | `BarChart`       |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { SlopeChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  SlopeChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `SlopeRow` — one line per row:
+
+```ts
+interface SlopeRow {
+  id: string;
+  label: string;
+  left: number;
+  right: number;
+}
+```
+
+```tsx
+const data: SlopeRow[] = [
+  { id: "a", label: "Apparel", left: 3200, right: 4100 },
+  { id: "b", label: "Home", left: 2800, right: 2500 },
+  { id: "c", label: "Beauty", left: 1900, right: 2600 },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `id` is the stable identity and the React key; it must be **unique** per row.
+- `label` is direct-labeled at **both** ends, alongside each end's value.
+- `left` and `right` are plain numbers on one shared linear scale spanning the
+  combined extent of all values (`nice`-rounded). There is **no fixed zero
+  baseline**, so negative values are fine.
+- The line takes a **valence** color from the sign of `right − left` (rising is
+  positive, falling is negative, flat is muted); the data-table "Change" column
+  reports the same delta.
+
+## API reference
+
+<PropsTable id="SlopeChart" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Column headers (`leftLabel` / `rightLabel`)
+
+`leftLabel` and `rightLabel` head the two columns (e.g. `"Q1"` / `"Q2"`). When
+provided they render as bold headers above each end of the plot and become the
+two value-column headers in the data-table fallback. Both are optional — omit
+them and the headers simply don't render (the fallback falls back to `"Left"` /
+`"Right"`).
+
+```jsx live
+const data = [
+  { id: "a", label: "Search", left: 44, right: 51 },
+  { id: "b", label: "Direct", left: 30, right: 28 },
+  { id: "c", label: "Email", left: 18, right: 26 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={240}>
+      {(width, height) => (
+        <SlopeChart
+          width={width}
+          height={height}
+          data={data}
+          leftLabel="Before"
+          rightLabel="After"
+          ariaLabel="Slope chart of conversion share by channel, before vs after"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Slope color & direction (automatic)
+
+Not configurable — each line is colored by the sign of its change: rising lines
+take the theme's **positive** hue, falling lines the **negative** hue, and flat
+lines the muted ink. All text stays in ink, and the value is direct-labeled at
+each end, so the direction is carried by the slope's geometry (position), not by
+color alone.
+
+### Direct labels & de-overlap (automatic)
+
+There is no numeric axis — the direct labels are the point of the form. When
+several endpoints land close together, a greedy vertical de-overlap nudges
+labels apart just enough to stay legible (and slides the stack back up if it
+overflows), preserving input order. Values use a compact formatter (e.g.
+`4.2k`); there is no format-override prop.
+
+### Hover & tooltip (automatic)
+
+Hovering a line dims the others to `0.3` opacity, thickens the hovered line, and
+shows a tooltip with the label, the `left → right` values, and the signed change
+(with a percent when `left` is non-zero). Hover is internal — there are no
+interaction callbacks to wire.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Line valence colors come
+from the validated `nimbus` theme, not CSS.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => <SlopeChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => <SlopeChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Slopegraphs stay legible for a modest number of
+lines; past that the direct labels crowd even with de-overlap, so cap or group
+rows upstream. There is no downsampling.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<SlopeChart
+  ariaLabel="Slope chart of revenue by category, 2024 to 2025, where Apparel and Beauty rose while Home and Toys fell"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Slope chart of N rows"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `SlopeChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Row**, your `leftLabel`, your `rightLabel`, and **Change**) into the
+  accessibility tree, plus a keyboard "View data as table" toggle that reveals
+  it in place — so the numbers, and the delta, are available as text.
+- **Non-color encoding.** Direction is carried by the slope's geometry and by
+  the values direct-labeled at both ends; the valence color is a reinforcement,
+  not the only signal.
+- **CVD-safe palette.** The positive / negative / muted colors come from the
+  validated chart theme (contrast + color-vision-deficiency checks), not ad-hoc
+  colors.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the items and their direction
+("Home fell") rather than "the red line". There is no animation, so
+reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (slope geometry + direct labels)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names items/direction rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`SlopeChart` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Exactly two moments per item.** For more than two, use
+  [`LineChart`](/charts/line-chart); for the absolute gap rather than the
+  trajectory, use [`DumbbellChart`](/charts/dumbbell-chart).
+- **No numeric axis.** The form deliberately omits an axis in favor of direct
+  labels; if consumers need to read exact magnitudes off a scale, pair it with
+  the data table or use a bar/line chart.
+- **No overlays.** `SlopeChart` takes no `children`, so reference lines and
+  annotations can't be layered in.
+- **No interaction callbacks.** Hover is internal only — there is no
+  `onDatumClick`/`onDatumHover`.
+- **Fixed compact formatting.** Values render with the compact formatter; there
+  is no `valueFormat` override.
+- **No legend, title, caption, loading, or error passthrough** — `SlopeChart`
+  forwards only `ariaLabel` and the data table to `ChartContainer`.
+
+## Related charts
+
+Same "compare & delta" purpose, different trade-offs:
+[Dumbbell chart](/charts/dumbbell-chart),
+[Waterfall chart](/charts/waterfall-chart), and
+[Bullet chart](/charts/bullet-chart). The `<ChartMeta />` block above links the
+current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)
+  </content>

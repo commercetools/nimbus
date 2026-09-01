@@ -23,9 +23,13 @@ export interface ParallelRow {
 }
 
 export interface ParallelCoordinatesProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** Vertical axes, left to right; each gets its own independent linear scale. */
   dimensions: ParallelDimension[];
+  /** One polyline per row; `values` is keyed by each dimension's `key`. */
   data: ParallelRow[];
   ariaLabel?: string;
 }

@@ -23,15 +23,20 @@ import type {
 import { emText } from "../../chart/typography";
 
 export interface ParetoChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** Categories to rank. Sorted by value descending internally; the cumulative
+   *  running total is derived from them. */
   data: CategoryDatum[];
+  /** Accessible label for the SVG; state the takeaway, not every value. */
   ariaLabel?: string;
-  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   /** Fired when a datum is clicked (drill-down). */
   onDatumClick?: DatumClickHandler<CategoryDatum>;
   /** Fired when the hovered datum changes; null when the pointer leaves. */
   onDatumHover?: DatumHoverHandler<CategoryDatum>;
+  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
 }
 

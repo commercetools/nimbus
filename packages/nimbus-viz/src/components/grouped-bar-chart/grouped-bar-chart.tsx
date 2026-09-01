@@ -21,16 +21,20 @@ import type {
 } from "../../chart/interaction";
 
 export interface GroupedBarChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
-  /** Same shape as the stacked bar — a category with keyed segments. */
+  /** Same shape as the stacked bar — a category with keyed segments. All rows
+   *  must share the same segment `key` set (the first row defines the series). */
   data: StackRow[];
+  /** Accessible label for the SVG; state the takeaway, not every value. */
   ariaLabel?: string;
-  /** Overlays (ReferenceLine, ThresholdBand, TargetMarker, …) in plot space. */
   /** Fired when a datum is clicked (drill-down). */
   onDatumClick?: DatumClickHandler<StackSegment>;
   /** Fired when the hovered datum changes; null when the pointer leaves. */
   onDatumHover?: DatumHoverHandler<StackSegment>;
+  /** Overlays (ReferenceLine, ThresholdBand, TargetMarker, …) in plot space. */
   children?: ReactNode;
 }
 

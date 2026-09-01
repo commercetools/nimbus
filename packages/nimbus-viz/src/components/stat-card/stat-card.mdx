@@ -18,7 +18,10 @@ tags:
 
 <ChartMeta />
 
-A headline number with an optional delta vs. a prior value.
+A stat card puts one metric front and center: a label, the current value, and —
+when you pass a prior value — a signed delta that says which way it moved. Use
+it to answer "what's the headline number right now, and is it up or down?" — the
+KPI tiles across the top of a dashboard.
 
 ```jsx live
 const App = () => (
@@ -28,8 +31,247 @@ const App = () => (
 );
 ```
 
+## When to use
+
+Reach for a stat card when a single number is the message and you want it read
+at a glance, optionally with its short-term direction. It carries no trend line
+and no target — just the value and, if you supply `previous`, how it changed.
+
+| You want to…                                 | Use instead   |
+| -------------------------------------------- | ------------- |
+| Show progress of a value toward a target     | `Gauge`       |
+| Show the trend behind the number, inline     | `Sparkline`   |
+| Track several measures against their targets | `BulletChart` |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { StatCard, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import { StatCard, ChartThemeProvider } from "@commercetools/nimbus-viz";
 ```
+
+`StatCard` reads its colors from a `ChartThemeProvider` (it calls
+`useChartTheme()` and throws without one), so mount that once, high in your
+layout. Unlike the drawn charts, it is **self-sizing**: it renders plain text in
+a flex column, takes **no `width`/`height`**, and does **not** need a
+`ResponsiveContainer`. Drop it straight into your grid or KPI row and let the
+surrounding layout set its width.
+
+## Data shape
+
+`StatCard` takes scalar inputs, not an array — one label, one value, and an
+optional prior value to compare against:
+
+```ts
+interface StatCardInput {
+  label: string; // metric name, shown above the value
+  value: number; // the headline number
+  previous?: number; // prior value; drives the delta when present
+}
+```
+
+```tsx
+<StatCard label="Monthly revenue" value={128400} previous={112900} />
+```
+
+Contract notes, verifiable from source:
+
+- The delta appears **only** when `previous` is non-null **and not `0`**
+  (percent change is undefined against a zero baseline, so a `previous` of `0`
+  shows no delta).
+- The delta is computed as `(value − previous) / previous` and rendered as a
+  signed percentage; the arrow (`▲`/`▼`) follows the true direction of change.
+- `value` and `previous` are plain numbers in the same unit; format them with
+  `format` (below).
+
+## API reference
+
+<PropsTable id="StatCard" />
+
+Self-sizing — renders text in a flex column and ignores width/height. The delta
+row is omitted when `previous` is absent or `0`.
+
+## Chart configuration
+
+### Delta vs. a prior value
+
+Pass `previous` to show how the value moved. The card renders a signed
+percentage with a direction arrow; omit `previous` for a bare headline number.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap="600">
+      <StatCard label="Monthly revenue" value={128400} previous={112900} />
+      <StatCard label="Active stores" value={342} previous={351} />
+      <StatCard label="Open tickets" value={57} />
+    </Box>
+  </ChartThemeProvider>
+);
+```
+
+### Inverted valence for "lower is better"
+
+By default an increase is colored positive and a decrease negative. For metrics
+where **down is good** (refund rate, processing time, churn), set `invertDelta`:
+the valence color flips, while the arrow still points in the true direction.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <Box display="grid" gridTemplateColumns="repeat(2, 1fr)" gap="600">
+      <StatCard
+        label="Refund rate"
+        value={2.1}
+        previous={2.8}
+        format={(n) => `${n}%`}
+        invertDelta
+      />
+      <StatCard
+        label="Avg. response time"
+        value={4.6}
+        previous={5.9}
+        format={(n) => `${n}h`}
+        invertDelta
+      />
+    </Box>
+  </ChartThemeProvider>
+);
+```
+
+### Value formatting
+
+`format` formats the headline value; it defaults to a compact formatter
+(`128.4k`). Override it for currency, percentages, or units. It applies to the
+value only — the delta is always shown as a signed percentage.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <StatCard
+      label="Gross merchandise value"
+      value={1284000}
+      previous={1129000}
+      format={(n) => `$${n.toLocaleString()}`}
+    />
+  </ChartThemeProvider>
+);
+```
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. The value uses the theme
+`ink` role, the label `mutedInk`, and the delta the validated `positive` /
+`negative` roles — not ad-hoc CSS colors.
+
+### Delta format & arrow (automatic)
+
+Not configurable — the delta is always a signed percentage with a leading `▲`
+(increase) or `▼` (decrease) and a trailing "vs prev". The arrow direction
+tracks the actual change; only its valence **color** responds to `invertDelta`.
+
+## Responsiveness & performance
+
+`StatCard` is **self-sizing** — there is no `ResponsiveContainer` and no
+`width`/`height`. It lays out as a flex column: it takes the width its parent
+gives it and grows to fit its own text height. Place it directly in your layout
+and let a grid or flex row size it:
+
+```tsx
+<Box display="grid" gridTemplateColumns="repeat(4, 1fr)" gap="600">
+  <StatCard label="Revenue" value={128400} previous={112900} />
+  <StatCard label="Orders" value={3420} previous={3180} />
+  {/* … */}
+</Box>
+```
+
+There is nothing to measure and nothing to downsample — a stat card is a single
+value, so it is cheap to render anywhere, including inside tabs, drawers, and
+initially-hidden containers.
+
+## Accessibility
+
+Unlike the drawn charts, `StatCard` renders **real text**, not an SVG image, so
+its accessibility model is different — and simpler. The whole card is a
+`role="group"` labeled by `ariaLabel` (falling back to `label`), and the label,
+value, and delta are all live DOM text that a screen reader reads directly, in
+order. There is no `role="img"` and no visually-hidden data-table fallback,
+because the numbers are already text.
+
+Pass an `ariaLabel` when `label` alone would not be clear out of context:
+
+```tsx
+<StatCard
+  label="Revenue"
+  value={128400}
+  previous={112900}
+  ariaLabel="Monthly revenue, up 13.7% versus the prior month"
+/>
+```
+
+What you get automatically:
+
+- **Values as text.** The label, value, and delta render as DOM text inside a
+  labeled `role="group"` — no image description or fallback table is required.
+- **Direction is not color-only.** Valence is carried by a direction arrow
+  (`▲`/`▼`) **and** the sign of the percentage, so a change reads correctly
+  without color (WCAG 1.4.1). The arrow glyph is `aria-hidden`; the signed
+  percentage carries direction to assistive tech.
+- **CVD-safe palette.** The positive/negative colors come from the validated
+  chart theme (contrast + color-vision-deficiency checks), not ad-hoc colors.
+
+Your job: keep the card in a `ChartThemeProvider`; pass a meaningful `ariaLabel`
+where `label` is ambiguous; and for an inverted-valence metric, make sure
+surrounding copy explains that a decrease is the good outcome — the color flip
+alone is not self-explanatory.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` (or `label`) states what the metric is
+- [ ] The value and delta are available as text (they are rendered as DOM text,
+      not an image)
+- [ ] Direction does not depend on color alone (arrow glyph + signed percentage
+      carry it)
+- [ ] Palette meets contrast + CVD checks (built-in `positive`/`negative` theme
+      roles)
+- [ ] For inverted-valence metrics, surrounding copy explains that down is good
+- [ ] Motion respected where present — N/A, this component does not animate
+
+## States
+
+`StatCard` always renders — there is no empty, loading, or error state and no
+`null` return, because it is a single scalar rather than a dataset. If a metric
+is missing, do not render the card (or render your own placeholder); a
+`previous` that is absent or `0` simply hides the delta row while the value
+still shows.
+
+## Limitations
+
+- **One scalar, no trend.** It shows a single number and an optional single-step
+  delta — no history line. For the shape behind the number use
+  [`Sparkline`](/charts/sparkline).
+- **No target.** There is no threshold or goal marker; for progress toward a
+  target use [`Gauge`](/charts/gauge) or [`BulletChart`](/charts/bullet-chart).
+- **Fixed delta format.** The delta is always a signed percentage vs. exactly
+  one prior value — the number of comparison points and the delta format are not
+  configurable.
+- **No `ChartContainer` chrome.** Because it does not use `ChartContainer`,
+  there is no title/subtitle/caption, legend, loading, or error passthrough, and
+  no data-table fallback (the value is already text).
+
+## Related charts
+
+Same "single value" purpose: [Gauge](/charts/gauge) shows the same kind of
+headline number as progress toward a target. The `<ChartMeta />` block above
+links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)
+  </content>
+</invoke>

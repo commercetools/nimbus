@@ -10,7 +10,9 @@ import type { HeatRow } from "../../chart/types";
 import { emText, LABEL_PX } from "../../chart/typography";
 
 export interface CohortTriangleProps {
+  /** Chart width in pixels (supplied by `ResponsiveContainer`). */
   width: number;
+  /** Chart height in pixels (supplied by `ResponsiveContainer`). */
   height: number;
   /** One row per cohort; `values` are indexed by AGE (period-0 first). */
   rows: HeatRow[];
@@ -18,6 +20,7 @@ export interface CohortTriangleProps {
   periodLabels?: string[];
   /** Nimbus hue for the sequential ramp. */
   hue?: string;
+  /** Accessible label for the SVG frame (Cesal alt-text). Defaults to a generated summary. */
   ariaLabel?: string;
 }
 

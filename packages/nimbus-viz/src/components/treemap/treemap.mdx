@@ -18,29 +18,269 @@ tags:
 
 <ChartMeta />
 
-Nested rectangles for a hierarchical part-to-whole.
+A treemap tiles a rectangle so that every leaf's **area** is proportional to its
+value, nesting the tiles by hierarchy and coloring each leaf by its top-level
+branch. Use it to answer "how does the whole break down across a hierarchy?" —
+revenue by channel and sub-channel, spend by team and project — when there are
+too many leaves for a bar chart but the grouping still matters.
 
 ```jsx live
 const data = {
   name: "Revenue",
   children: [
-    { name: "Web", children: [{ name: "New", value: 260 }, { name: "Returning", value: 180 }] },
-    { name: "Mobile", children: [{ name: "iOS", value: 150 }, { name: "Android", value: 120 }] },
-    { name: "Retail", children: [{ name: "Flagship", value: 90 }, { name: "Outlet", value: 60 }] },
+    {
+      name: "Web",
+      children: [
+        { name: "New", value: 260 },
+        { name: "Returning", value: 180 },
+      ],
+    },
+    {
+      name: "Mobile",
+      children: [
+        { name: "iOS", value: 150 },
+        { name: "Android", value: 120 },
+      ],
+    },
+    {
+      name: "Retail",
+      children: [
+        { name: "Flagship", value: 90 },
+        { name: "Outlet", value: 60 },
+      ],
+    },
   ],
 };
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <Treemap width={width} height={height} data={data} />}
+      {(width, height) => (
+        <Treemap
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Treemap of revenue by channel and sub-channel, where Web is the largest branch"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a treemap when the whole splits into groups and sub-groups and you
+want a dense, space-filling view of the relative sizes — it packs far more
+leaves into a fixed area than a bar chart can. Area is read less precisely than
+length, so it is for spotting the big blocks and the grouping, not for exact
+comparison of similar-sized cells. Two levels read comfortably; deeper trees get
+hard to label.
+
+| You want to…                                   | Use instead       |
+| ---------------------------------------------- | ----------------- |
+| Show the same hierarchy radially               | `Sunburst`        |
+| Compare a single flat set of parts, accurately | `BarChart`        |
+| Split one whole into a few slices              | `DonutChart`      |
+| Split each of several categories into segments | `StackedBarChart` |
+| Read shares by counting a grid of cells        | `WaffleChart`     |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { Treemap, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  Treemap,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is a single `TreemapNode` — the root of a nested hierarchy. Leaves carry
+`value`; parent nodes carry `children` and their value is the sum of their
+descendants:
+
+```ts
+interface TreemapNode {
+  name: string;
+  value?: number;
+  children?: TreemapNode[];
+}
+```
+
+```tsx
+const data: TreemapNode = {
+  name: "Revenue",
+  children: [
+    {
+      name: "Web",
+      children: [
+        { name: "New", value: 260 },
+        { name: "Returning", value: 180 },
+      ],
+    },
+    {
+      name: "Mobile",
+      children: [
+        { name: "iOS", value: 150 },
+        { name: "Android", value: 120 },
+      ],
+    },
+  ],
+};
+```
+
+Contract notes, verifiable from source:
+
+- `data` is one **object**, not an array — the hierarchy root.
+- Only **leaves** need a `value`; a parent's size is summed from its children
+  (`value ?? 0` at each leaf). Nodes are sorted by value descending within each
+  parent, so the largest cells land top-left.
+- Each leaf is colored by its **top-level ancestor** (the root's direct child),
+  so every descendant of one branch shares a hue regardless of depth.
+- Shares in the tooltip and table are computed against the **root total**.
+
+## API reference
+
+<PropsTable id="Treemap" />
+
+Renders `null` for empty/zero data (a root total of 0) or a non-positive
+`width`/`height`.
+
+## Chart configuration
+
+### Layout, labels & color (automatic)
+
+Not configurable — the treemap always lays leaves out with the squarified
+algorithm, separated by a 2px surface-colored gap. A leaf's name is drawn inside
+it only once the cell is large enough to hold text (roughly wider than 44px and
+taller than 20px), and its compact value is added when the cell is tall enough;
+smaller cells stay unlabeled and rely on the tooltip. Every leaf is colored by
+its top-level branch via the shared entity→color scale.
+
+### Tooltip (automatic)
+
+Hovering a cell outlines it with the ink color and shows a tooltip with the
+leaf's name, its compact value, and its share of the root total. Hover is
+internal; there is no click or hover callback.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Branch colors come from the
+validated `nimbus` categorical palette (contrast + color-vision-deficiency
+checks), not ad-hoc CSS colors.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => <Treemap width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={480}>
+  {(width, height) => <Treemap width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. A treemap tolerates many leaves, but very small
+cells fall below the label threshold and can only be read via the tooltip or the
+data table; aggregate a long tail into an "Other" node upstream when that
+matters.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<Treemap
+  ariaLabel="Treemap of revenue by channel and sub-channel, where Web is the largest branch"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Treemap of N segments"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `Treemap` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Segment**, **Value**, **Share**, one row per leaf) into the accessibility
+  tree, plus a keyboard "View data as table" toggle that reveals it in place —
+  so the values are available as text, not just the one-line label. This matters
+  more here than elsewhere: small cells carry no visible label.
+- **CVD-safe palette.** Branch colors come from the validated chart palette
+  (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** Area and nesting carry the sizes and grouping; the
+  in-cell labels and the data table carry the identities.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the branches rather than "the
+big green block". There is **no legend** — the branch names appear as in-cell
+labels, so reference them by name. There is no animation, so reduced-motion
+handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (area/nesting + labels + table)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names branches/leaves rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`Treemap` renders `null` when the hierarchy has no positive value or the
+measured size is non-positive; it does not draw its own empty, loading, or error
+message (it does not forward those `ChartContainer` features). Guard those
+states upstream and render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **No legend passthrough.** Branches are identified by in-cell labels, not a
+  legend strip — small cells that fall below the label threshold have no visible
+  name (read them via the tooltip or data table).
+- **No value formatting prop.** In-cell values are compact-formatted and shares
+  are percentages; neither is configurable.
+- **No interaction callbacks.** Hover is internal; there is no `onDatumClick` /
+  `onDatumHover`.
+- **No title, subtitle, caption, loading, or error passthrough** — `Treemap`
+  forwards only `ariaLabel` and the data table to `ChartContainer`.
+
+## Related charts
+
+Same "part-to-whole" purpose, different trade-offs:
+[Sunburst](/charts/sunburst-chart), [Donut chart](/charts/donut-chart),
+[Stacked bar chart](/charts/stacked-bar-chart),
+[Waffle chart](/charts/waffle-chart), [Marimekko](/charts/marimekko-chart), and
+[Funnel chart](/charts/funnel-chart). The `<ChartMeta />` block above links the
+current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

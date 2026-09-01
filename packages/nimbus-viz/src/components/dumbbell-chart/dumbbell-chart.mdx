@@ -18,7 +18,11 @@ tags:
 
 <ChartMeta />
 
-The gap between two values per category.
+A dumbbell chart compares **two** values for each of a handful of categories — a
+start and an end, a before and an after, last period and this one — by drawing a
+barbell per row: a muted "start" dot, an accent "end" dot, and a connector
+between them. The connector length is the readable quantity, so it answers "how
+far apart are the two moments, and which way did each category move?"
 
 ```jsx live
 const data = [
@@ -31,14 +35,255 @@ const data = [
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <DumbbellChart width={width} height={height} data={data} startLabel="2024" endLabel="2025" />}
+      {(width, height) => (
+        <DumbbellChart
+          width={width}
+          height={height}
+          data={data}
+          startLabel="2024"
+          endLabel="2025"
+          ariaLabel="Dumbbell chart of task completion by area, 2024 vs 2025, where Support slipped and the rest rose"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a dumbbell when every category has exactly **two** comparable values
+and the story is the size and direction of the gap between them. The connector
+makes the distance the thing you read; the two dots keep both endpoints visible
+at once, so a reader sees not just that a category moved but where it started
+and landed. Keep it to two moments per category — for more moments, a
+decomposition, or a target comparison, move to a sibling below.
+
+| You want to…                                         | Use instead      |
+| ---------------------------------------------------- | ---------------- |
+| Show each item's move between two moments as lines   | `SlopeChart`     |
+| Break a start→end total into signed contributions    | `WaterfallChart` |
+| Compare each measure against a target and ranges     | `BulletChart`    |
+| Track a metric across many time points, not just two | `LineChart`      |
+| Compare a single measure across categories           | `BarChart`       |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { DumbbellChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  DumbbellChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `DumbbellRow` — one barbell per row:
+
+```ts
+interface DumbbellRow {
+  category: string;
+  start: number;
+  end: number;
+}
+```
+
+```tsx
+const data: DumbbellRow[] = [
+  { category: "Onboarding", start: 42, end: 61 },
+  { category: "Checkout", start: 55, end: 72 },
+  { category: "Search", start: 38, end: 49 },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `category` should be **unique** per row — it is the band-scale domain and the
+  React key.
+- `start` and `end` are plain numbers, and either may be the larger. The value
+  axis spans the **combined extent** of all `start`/`end` values (padded ~10% on
+  each side), so there is **no fixed zero baseline** — negative values are fine.
+- `start` draws as the muted dot, `end` as the accent dot; the connector and the
+  data-table "Change" column both report `end − start`.
+- Row **order** is preserved top to bottom.
+
+## API reference
+
+<PropsTable id="DumbbellChart" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Endpoint labels (`startLabel` / `endLabel`)
+
+`startLabel` (default `"Start"`) and `endLabel` (default `"End"`) name the two
+moments. They title the two legend swatches and become the two value-column
+headers in the data-table fallback, so set them to whatever the two dots mean —
+`"Q1"`/`"Q2"`, `"Before"`/`"After"`, `"2024"`/`"2025"`.
+
+```jsx live
+const data = [
+  { category: "Apparel", start: 3200, end: 4100 },
+  { category: "Home", start: 2800, end: 2500 },
+  { category: "Beauty", start: 1900, end: 2600 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={240}>
+      {(width, height) => (
+        <DumbbellChart
+          width={width}
+          height={height}
+          data={data}
+          startLabel="Last year"
+          endLabel="This year"
+          ariaLabel="Dumbbell chart of revenue by category, last year vs this year"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Axis, value labels & legend (automatic)
+
+Not configurable — the chart always draws them. Categories are direct-labeled
+down the left; a single linear value axis runs along the bottom with light
+vertical gridlines. Each dot is direct-labeled with its value, flared to the
+outer side of the pair so the two labels never collide. A legend maps the two
+dot colors to `startLabel`/`endLabel`, so the two moments are told apart by
+label, not by color alone. Values use a compact formatter (e.g. `4.2k`); there
+is no format-override prop.
+
+### Hover & tooltip (automatic)
+
+Hovering a row dims the others to `0.35` opacity and shows a small tooltip with
+the category, both endpoint values, and the signed change. Hover state is
+managed internally — there are no interaction callbacks to wire.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. The start dot uses the
+theme's muted ink and the end dot the validated `nimbus` accent — not CSS
+colors.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <DumbbellChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <DumbbellChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. A dumbbell is meant for a handful of categories
+(rows get cramped past ~15–20); there is no downsampling — cap or aggregate
+categories upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<DumbbellChart
+  ariaLabel="Dumbbell chart of task completion by area, 2024 vs 2025, where Support slipped and the rest rose"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Dumbbell chart of N categories"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `DumbbellChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Category**, your `startLabel`, your `endLabel`, and **Change**) into the
+  accessibility tree, plus a keyboard "View data as table" toggle that reveals
+  it in place — so the numbers, and the delta, are available as text.
+- **Non-color encoding.** The two moments are separated by the legend and by
+  each dot's direct value label; position along the value axis carries the
+  reading. Color is not the sole differentiator.
+- **CVD-safe palette.** The muted and accent colors come from the validated
+  chart theme (contrast + color-vision-deficiency checks), not ad-hoc colors.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the categories and moments
+rather than "the two dots". There is no animation, so reduced-motion handling is
+N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (legend + direct labels + position)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names categories/moments rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`DumbbellChart` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Exactly two values per category.** For more than two moments, use
+  [`LineChart`](/charts/line-chart); for a decomposition of one change, use
+  [`WaterfallChart`](/charts/waterfall-chart).
+- **No overlays.** `DumbbellChart` takes no `children`, so reference lines and
+  annotations can't be layered in.
+- **No interaction callbacks.** Hover is internal only — there is no
+  `onDatumClick`/`onDatumHover`.
+- **Fixed compact formatting.** Values render with the compact formatter; there
+  is no `valueFormat` override.
+- **No title, caption, loading, or error passthrough** — `DumbbellChart`
+  forwards only `ariaLabel`, the legend, and the data table to `ChartContainer`.
+
+## Related charts
+
+Same "compare & delta" purpose, different trade-offs:
+[Slope chart](/charts/slope-chart), [Waterfall chart](/charts/waterfall-chart),
+and [Bullet chart](/charts/bullet-chart). The `<ChartMeta />` block above links
+the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)
+  </content>
+</invoke>

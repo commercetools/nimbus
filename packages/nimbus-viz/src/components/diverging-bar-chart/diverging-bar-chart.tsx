@@ -9,10 +9,14 @@ import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
 export interface DivergingBarChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
   /** Signed magnitudes — positive bars grow right, negative grow left. */
   data: CategoryDatum[];
+  /** Accessible label for the graphic. Defaults to
+   *  "Diverging bar chart of N categories". */
   ariaLabel?: string;
 }
 

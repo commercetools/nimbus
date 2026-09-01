@@ -18,27 +18,268 @@ tags:
 
 <ChartMeta />
 
-A measure against its target and qualitative ranges.
+A bullet chart is a compact horizontal measure-vs-target readout — one row per
+metric. A single accent bar is the measured value, a tick mark is the target,
+and graded gray background bands give qualitative context (poor / satisfactory /
+good). It answers "is each measure hitting its target, and where does it sit in
+its acceptable range?" — the space-efficient replacement for a dashboard gauge.
 
 ```jsx live
 const data = [
-  { label: "Revenue", measure: 82, target: 100 },
-  { label: "New customers", measure: 68, target: 60 },
-  { label: "NPS", measure: 44, target: 50 },
-  { label: "Uptime", measure: 96, target: 99 },
+  { label: "Revenue", measure: 82, target: 100, ranges: [50, 90, 120] },
+  { label: "New customers", measure: 68, target: 60, ranges: [40, 70, 100] },
+  { label: "NPS", measure: 44, target: 50, ranges: [30, 55, 80] },
+  { label: "Uptime", measure: 96, target: 99, ranges: [95, 99, 100] },
 ];
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <BulletChart width={width} height={height} data={data} />}
+      {(width, height) => (
+        <BulletChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Bullet chart of KPIs vs target, where New customers beats target and the rest fall short"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a bullet chart when each metric has a **value and a target** and you
+want a dense, scannable panel of "how are we doing against plan?" across several
+KPIs at once. The bar-vs-tick pairing reads faster and packs more metrics into
+less space than a row of dials. Add qualitative ranges when "is 82 good?" needs
+context; skip a sibling below when there is only one number, or when there is no
+target to compare against.
+
+| You want to…                                          | Use instead      |
+| ----------------------------------------------------- | ---------------- |
+| Show a single headline number vs its prior            | `StatCard`       |
+| Show progress toward a target on a dial               | `Gauge`          |
+| Compare the gap between two values per category       | `DumbbellChart`  |
+| Decompose a change from a start total to an end total | `WaterfallChart` |
+| Compare a single measure across categories            | `BarChart`       |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { BulletChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  BulletChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `BulletDatum` — one bullet row per metric:
+
+```ts
+interface BulletDatum {
+  label: string;
+  measure: number;
+  target: number;
+  ranges?: number[];
+}
+```
+
+```tsx
+const data: BulletDatum[] = [
+  { label: "Revenue", measure: 82, target: 100, ranges: [50, 90, 120] },
+  { label: "New customers", measure: 68, target: 60 },
+  { label: "NPS", measure: 44, target: 50, ranges: [30, 55, 80] },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `label` should be **unique** per row — it is the React key and the left-hand
+  row label.
+- `measure` draws as the accent bar (from zero) and `target` as the tick mark,
+  in the same units.
+- `ranges` are **ascending** qualitative breakpoints in those same units; each
+  successive band fills from the previous breakpoint to the next. Omit it and
+  the row gets a single band spanning the domain.
+- All rows share one linear x-scale from **0** to the `nice`-rounded maximum of
+  every `measure`, `target`, and range across the data (floored at 1), so bars
+  and ticks are comparable row to row.
+
+## API reference
+
+<PropsTable id="BulletChart" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Qualitative ranges (`ranges`)
+
+Per row, `ranges` sets the graded background bands — the qualitative context
+behind the bar (e.g. poor / satisfactory / good). Give ascending breakpoints in
+the measure's units; the bands are drawn in a muted single-hue gray ramp kept to
+its light end, so they read as subtle context rather than competing with the
+measure bar. Rows without `ranges` get one flat band.
+
+```jsx live
+const data = [
+  { label: "Load time (s)", measure: 2.4, target: 2, ranges: [1, 2, 5] },
+  { label: "Error rate (%)", measure: 0.6, target: 1, ranges: [0.5, 1, 3] },
+  { label: "Conversion (%)", measure: 3.1, target: 3.5, ranges: [2, 3.5, 5] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={220}>
+      {(width, height) => (
+        <BulletChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Bullet chart of performance metrics against target with quality bands"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Measure bar, target tick & value label (automatic)
+
+Not configurable — the chart always draws them. The accent bar runs from zero to
+`measure`; the target is an **ink tick mark** (never implied by color alone);
+and the measure's value is direct-labeled just past the end of its bar. Values
+use a compact formatter (e.g. `4.2k`); there is no format-override prop. There
+is no category or value axis — the row labels and the shared scale do the work.
+
+### Hover & tooltip (automatic)
+
+Hovering a row dims the others to `0.5` opacity and shows a tooltip with the
+label, the measure, the target, and the signed difference versus target. Hover
+is internal — there are no interaction callbacks to wire.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. The measure bar uses the
+validated `nimbus` accent and the bands a muted gray ramp — not CSS colors. The
+gray ramp is deliberate: the bands carry magnitude context, not entity identity,
+so a categorical hue would be wrong here.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => <BulletChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={160} maxHeight={420}>
+  {(width, height) => <BulletChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Rows split the available height evenly, so give the
+container enough height for the number of metrics (each row wants ~40–60px to
+keep the bar, tick, and label legible); there is no downsampling.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<BulletChart
+  ariaLabel="Bullet chart of KPIs vs target, where New customers beats target and the rest fall short"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Bullet chart of N measures"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `BulletChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Measure**, **Value**, **Target**, and **Δ vs target**) into the
+  accessibility tree, plus a keyboard "View data as table" toggle that reveals
+  it in place — so the values, targets, and gaps are available as text.
+- **Non-color encoding.** The target is always a tick mark and the measure a bar
+  length from zero, so value-vs-target is read by position, not by color; the
+  bands are a single-hue gray ramp for magnitude context, not identity.
+- **CVD-safe palette.** The accent and the gray ramp come from the validated
+  chart theme (contrast + color-vision-deficiency checks), not ad-hoc colors.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the metrics and whether they
+clear target rather than "the ones in the light band". There is no animation, so
+reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (bar length + target tick position)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names metrics/targets rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`BulletChart` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **One measure and one target per row.** For a single headline number use
+  [`StatCard`](/charts/stat-card); for a dial toward one target use
+  [`Gauge`](/charts/gauge).
+- **Horizontal only.** There is no orientation prop — bullets are always drawn
+  as horizontal rows.
+- **No overlays.** `BulletChart` takes no `children`, so reference lines and
+  annotations can't be layered in.
+- **No interaction callbacks.** Hover is internal only — there is no
+  `onDatumClick`/`onDatumHover`.
+- **Fixed compact formatting.** Values render with the compact formatter; there
+  is no `valueFormat` override.
+- **No legend, title, caption, loading, or error passthrough** — `BulletChart`
+  forwards only `ariaLabel` and the data table to `ChartContainer`.
+
+## Related charts
+
+Same "compare & delta" purpose, different trade-offs:
+[Dumbbell chart](/charts/dumbbell-chart), [Slope chart](/charts/slope-chart),
+and [Waterfall chart](/charts/waterfall-chart). The `<ChartMeta />` block above
+links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)
+  </content>

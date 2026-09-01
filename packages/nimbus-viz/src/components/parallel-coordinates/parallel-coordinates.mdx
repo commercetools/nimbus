@@ -18,7 +18,12 @@ tags:
 
 <ChartMeta />
 
-Relate records across many dimensions on parallel axes.
+A parallel-coordinates plot stands several measures up as parallel vertical axes
+and threads each record through them as a single polyline, so you can read how
+many dimensions relate across a whole set of records at once. Use it to answer
+"which records are high here and low there, and do any dimensions move
+together?" — SKUs across price, margin, volume, and rating; cohorts across a row
+of KPIs.
 
 ```jsx live
 const dimensions = [
@@ -36,15 +41,301 @@ const data = [
 
 const App = () => (
   <ChartThemeProvider mode="light">
-    <ResponsiveContainer height={280}>
-      {(width, height) => <ParallelCoordinates width={width} height={height} dimensions={dimensions} data={data} />}
+    <ResponsiveContainer height={300}>
+      {(width, height) => (
+        <ParallelCoordinates
+          width={width}
+          height={height}
+          dimensions={dimensions}
+          data={data}
+          ariaLabel="Parallel coordinates of four products across price, margin, volume, and rating"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for parallel coordinates when you have many records described by several
+comparable-but-differently-scaled measures and you want to explore the whole
+table as lines — spotting clusters, outliers, and pairs of dimensions that rise
+and fall together. Because each axis is scaled independently, it handles
+dimensions in different units that a radar chart's shared scale cannot.
+
+| You want to…                                        | Use instead            |
+| --------------------------------------------------- | ---------------------- |
+| Compare a few profiles on one shared 0-to-max scale | `RadarChart`           |
+| Relate exactly two continuous variables             | `ScatterPlot`          |
+| Weight a two-variable relationship by a third       | `BubbleChart`          |
+| Trace two variables over a sequence                 | `ConnectedScatterplot` |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { ParallelCoordinates, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  ParallelCoordinates,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`ParallelCoordinates` takes two props together: `dimensions` defines the axes
+left-to-right, and `data` is one `ParallelRow` per polyline whose `values` are
+keyed by each dimension's `key`.
+
+```ts
+interface ParallelDimension {
+  key: string; // selects the field on each row's `values`
+  label: string; // the axis heading
+}
+
+interface ParallelRow {
+  id: string;
+  group?: string; // colors the polyline
+  values: Record<string, number>;
+}
+```
+
+```tsx
+const dimensions: ParallelDimension[] = [
+  { key: "price", label: "Price" },
+  { key: "margin", label: "Margin" },
+  { key: "volume", label: "Volume" },
+];
+
+const data: ParallelRow[] = [
+  { id: "r1", values: { price: 40, margin: 32, volume: 1200 } },
+  { id: "r2", values: { price: 88, margin: 18, volume: 640 }, group: "Import" },
+];
+```
+
+Contract notes, verifiable from source:
+
+- Every row should provide a value for **each** dimension `key`; a missing key
+  leaves that vertex undefined and blank in the data table.
+- Each axis gets its **own** independent linear scale fit to that dimension's
+  extent (`nice`-rounded), labelled with its min at the bottom and max at the
+  top. This is the accepted exception to the "shared axis" rule — parallel axes
+  are meant to be independently scaled.
+- **Axis order matters.** Only relationships between _adjacent_ axes are read
+  directly; reorder `dimensions` to place the pair you care about side by side.
+- `id` must be **unique** per row — it is the React key and the data-table row
+  label.
+- `group` is optional; when two or more distinct groups are present the
+  polylines are colored categorically and a legend appears. A single group (or
+  none) draws every line in the accent.
+
+## API reference
+
+<PropsTable id="ParallelCoordinates" />
+
+Renders `null` for empty `data`, empty `dimensions`, or a non-positive
+`width`/`height`.
+
+## Chart configuration
+
+### Dimensions & independent scales (automatic)
+
+Not configurable — the chart draws one vertical axis per entry in `dimensions`,
+equally spaced across the width (a single dimension is centered). Each axis has
+its own linear scale over that dimension's data extent, with the label above the
+spine and the max/min values printed at the top and bottom. Reorder `dimensions`
+to change which axes sit adjacent, since adjacency is what makes a pairwise
+relationship legible.
+
+### Grouping & color
+
+Give rows a `group` and the chart colors their polylines in a fixed categorical
+order from the validated palette, adding a legend once two or more groups are
+present. Group identity is carried by color plus the legend; the data-table
+fallback also exposes each row's group as text.
+
+```jsx live
+const dimensions = [
+  { key: "price", label: "Price" },
+  { key: "margin", label: "Margin" },
+  { key: "rating", label: "Rating" },
+];
+const data = [
+  {
+    id: "r1",
+    group: "Domestic",
+    values: { price: 40, margin: 32, rating: 4.2 },
+  },
+  {
+    id: "r2",
+    group: "Domestic",
+    values: { price: 30, margin: 26, rating: 4.0 },
+  },
+  { id: "r3", group: "Import", values: { price: 88, margin: 18, rating: 3.6 } },
+  { id: "r4", group: "Import", values: { price: 62, margin: 44, rating: 4.8 } },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={300}>
+      {(width, height) => (
+        <ParallelCoordinates
+          width={width}
+          height={height}
+          dimensions={dimensions}
+          data={data}
+          ariaLabel="Parallel coordinates of products across price, margin, and rating, colored by source"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Hover & tooltip (automatic)
+
+Not configurable — hovering a polyline raises it to full opacity, fades the rest
+to the background, and shows a tooltip listing that row's `id` (and `group`,
+when set) followed by its value on every dimension. This is how a single record
+is isolated from the bundle.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Lines use the validated
+`nimbus` chart accent (single group) or its categorical hues (grouped); axes use
+the theme axis color, not a CSS color.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={300}>
+  {(width, height) => (
+    <ParallelCoordinates
+      width={width}
+      height={height}
+      dimensions={dimensions}
+      data={data}
+    />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={220} maxHeight={460}>
+  {(width, height) => (
+    <ParallelCoordinates
+      width={width}
+      height={height}
+      dimensions={dimensions}
+      data={data}
+    />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Each row is one SVG polyline and there is no
+downsampling; overplotting is the real limit here — hundreds of overlapping
+lines bundle into an unreadable mass, so filter, sample, or color by `group`
+before passing large sets.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<ParallelCoordinates
+  ariaLabel="Parallel coordinates of four products across price, margin, volume, and rating"
+  width={width}
+  height={height}
+  dimensions={dimensions}
+  data={data}
+/>
+```
+
+Don't list every value in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Parallel coordinates of N rows across {dimensions}"` is generated if you
+  omit it).
+- **Data-table fallback (WCAG 1.1.1).** `ParallelCoordinates` passes a `table`
+  to `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Row**, one per dimension label, **Group**) into the accessibility tree, plus
+  a keyboard "View data as table" toggle that reveals it in place — so every
+  record's values are available as text, not just the one-line label.
+- **CVD-safe palette.** Accent and categorical hues come from the validated
+  chart theme (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** The relationships are carried by each line's vertical
+  positions across the axes; when you group, group identity is carried by color
+  and decoded by the legend — lines are not also varied by dash or width, so
+  lean on the legend and the data table for that distinction.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the dimensions/records rather
+than "the red lines". There is no animation, so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (axis positions carry the
+      relations; groups are decoded by the legend and the data table)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names dimensions/records rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`ParallelCoordinates` renders `null` when `data` is empty, `dimensions` is
+empty, or the measured size is non-positive; it does not draw its own empty,
+loading, or error message (it does not forward those `ChartContainer` features).
+Guard those states upstream and render your own placeholder when there is no
+data yet.
+
+## Limitations
+
+- **Adjacent axes only.** Relationships read directly only between neighboring
+  axes; there is no built-in axis reordering or brushing, so set the order in
+  `dimensions` deliberately.
+- **Overplotting.** With no downsampling, large sets bundle into an unreadable
+  mass — filter or color by `group` first.
+- **Groups distinguished by color, not line style** — the legend and data table
+  are the non-color paths to group identity.
+- **No interaction callbacks, overlays, or custom accessors.** Hover is
+  internal-only; there are no `onDatumClick` / `onDatumHover` and no `children`.
+- **Fixed number formatting.** Axis ticks and the tooltip use a built-in compact
+  formatter; there is no `valueFormat` prop.
+- **No title, caption, legend override, loading, or error passthrough** —
+  `ParallelCoordinates` forwards only `ariaLabel`, the auto legend, and the data
+  table to `ChartContainer`.
+
+## Related charts
+
+Same "relationship" purpose, different trade-offs:
+[Radar chart](/charts/radar-chart), [Scatter plot](/charts/scatter-plot),
+[Bubble chart](/charts/bubble-chart), and
+[Connected scatterplot](/charts/connected-scatterplot). The `<ChartMeta />`
+block above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

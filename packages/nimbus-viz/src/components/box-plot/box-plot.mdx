@@ -18,26 +18,323 @@ tags:
 
 <ChartMeta />
 
-Five-number summaries compared across groups.
+A box plot compresses each group's distribution into a five-number summary —
+minimum, first quartile, median, third quartile, maximum — and lines the boxes
+up across categories so you can compare spread, skew, and center at a glance. It
+answers "how do these distributions differ across groups?" — session length by
+channel, order value by segment, response time by region. `BoxPlot` draws the
+summary you give it and computes nothing from raw samples.
 
 ```jsx live
 const groups = [
-  { label: "Web", min: 12, firstQuartile: 28, median: 40, thirdQuartile: 55, max: 78 },
-  { label: "Mobile", min: 8, firstQuartile: 22, median: 34, thirdQuartile: 48, max: 70 },
-  { label: "Retail", min: 18, firstQuartile: 33, median: 46, thirdQuartile: 60, max: 88 },
+  {
+    label: "Web",
+    min: 12,
+    firstQuartile: 28,
+    median: 40,
+    thirdQuartile: 55,
+    max: 78,
+  },
+  {
+    label: "Mobile",
+    min: 8,
+    firstQuartile: 22,
+    median: 34,
+    thirdQuartile: 48,
+    max: 70,
+  },
+  {
+    label: "Retail",
+    min: 18,
+    firstQuartile: 33,
+    median: 46,
+    thirdQuartile: 60,
+    max: 88,
+  },
 ];
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <BoxPlot width={width} height={height} groups={groups} />}
+      {(width, height) => (
+        <BoxPlot
+          width={width}
+          height={height}
+          groups={groups}
+          ariaLabel="Box plot of session length by channel, where Retail runs highest and Mobile lowest"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a box plot when you already have (or can compute) quartiles for a
+handful of groups and want a compact, side-by-side read on center and spread.
+The box spans the interquartile range, the line marks the median, and the
+whiskers reach the min and max — so an asymmetric box reads immediately as a
+skewed distribution. It is the densest of the distribution charts: one box per
+group, no matter how many samples sit behind it.
+
+| You want to…                                    | Use instead       |
+| ----------------------------------------------- | ----------------- |
+| See each group's full shape (bimodality, tails) | `ViolinPlot`      |
+| Keep every individual sample visible            | `BeeswarmPlot`    |
+| Read percentiles or "what share is below X?"    | `CumulativeCurve` |
+| Show one variable's distribution in bins        | `Histogram`       |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { BoxPlot, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  BoxPlot,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`groups` is an array of `BoxPlotGroupStats` — one precomputed five-number
+summary per box:
+
+```ts
+interface BoxPlotGroupStats {
+  label: string;
+  min: number;
+  firstQuartile: number;
+  median: number;
+  thirdQuartile: number;
+  max: number;
+  /** Individual points outside the whiskers, drawn as dots. */
+  outliers?: number[];
+}
+```
+
+```tsx
+const groups: BoxPlotGroupStats[] = [
+  {
+    label: "Web",
+    min: 12,
+    firstQuartile: 28,
+    median: 40,
+    thirdQuartile: 55,
+    max: 78,
+    outliers: [96, 104],
+  },
+  {
+    label: "Mobile",
+    min: 8,
+    firstQuartile: 22,
+    median: 34,
+    thirdQuartile: 48,
+    max: 70,
+  },
+];
+```
+
+Contract notes, verifiable from source:
+
+- **You supply the statistics.** `BoxPlot` computes nothing — pass the
+  quartiles, median, and extremes already reduced. To go from raw samples, use
+  [`ViolinPlot`](/charts/violin-plot) (which estimates density itself) or
+  compute the summary upstream.
+- `label` should be **unique** per group — it is the band-scale domain and the
+  React key.
+- The value axis spans the `extent` of every group's `min`, `max`, and
+  `outliers`, made "nice", so outliers push the axis out to include them.
+- `outliers` is optional; each entry is drawn as an individual dot beyond the
+  whiskers.
+
+## API reference
+
+<PropsTable id="BoxPlot" />
+
+Renders `null` for empty `groups` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Axes & scales (automatic)
+
+Not configurable — the chart always draws them. The category axis is a band
+scale (one box per `label`); the value axis is a linear scale over the data
+extent, made "nice", with four horizontal gridlines. Tick labels use the compact
+number formatter (`4.2k`).
+
+### Outliers (automatic)
+
+Any values you pass in a group's `outliers` array are drawn as individual dots
+beyond that box's whiskers, in the accent hue. Whether a point counts as an
+outlier is your decision upstream — the chart just renders what you give it.
+
+### Tooltips & hover (automatic)
+
+Hovering a box dims the others and shows a tooltip listing that group's `max`,
+`Q3`, `median`, `Q1`, and `min`. Hover state is internal; there are no
+click/hover callbacks.
+
+### Overlays (`children`)
+
+Layer Layer-2 annotations over the value axis by passing them as `children` —
+`ReferenceLine`, `ThresholdBand`, `TrendLine`, `TargetMarker`. They read the
+chart's scale contract, so a level lands at the right value.
+
+```jsx live
+const groups = [
+  {
+    label: "Web",
+    min: 12,
+    firstQuartile: 28,
+    median: 40,
+    thirdQuartile: 55,
+    max: 78,
+  },
+  {
+    label: "Mobile",
+    min: 8,
+    firstQuartile: 22,
+    median: 34,
+    thirdQuartile: 48,
+    max: 70,
+  },
+  {
+    label: "Retail",
+    min: 18,
+    firstQuartile: 33,
+    median: 46,
+    thirdQuartile: 60,
+    max: 88,
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <BoxPlot width={width} height={height} groups={groups}>
+          <ReferenceLine value={50} label="SLA" variant="negative" />
+        </BoxPlot>
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Every box uses one validated
+`nimbus` accent fill — the category axis, not color, distinguishes the groups —
+with box strokes, whiskers, and the median line drawn in ink.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => <BoxPlot width={width} height={height} groups={groups} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => <BoxPlot width={width} height={height} groups={groups} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. A box plot is built for a handful of groups; the
+per-group cost is a single summary, so the render is cheap regardless of how
+many samples each summary was reduced from. There is no downsampling — reduce to
+quartiles upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<BoxPlot
+  ariaLabel="Box plot of session length by channel, where Retail runs highest and Mobile lowest"
+  width={width}
+  height={height}
+  groups={groups}
+/>
+```
+
+Don't list every quartile in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Box plot of N groups"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `BoxPlot` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Group**, **Min**, **Q1**, **Median**, **Q3**, **Max**) into the
+  accessibility tree, plus a keyboard "View data as table" toggle that reveals
+  it in place — so the numbers are available as text, not just the one-line
+  label.
+- **CVD-safe palette.** The accent comes from the validated chart theme
+  (contrast + color-vision-deficiency checks), not an ad-hoc color.
+- **Non-color encoding.** Meaning is carried by box position, size, and the
+  median line; color is a single hue and is not load-bearing.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the groups and quartiles
+rather than "the tall box".
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (position/size carry it here)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names groups/quartiles rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`BoxPlot` renders `null` when `groups` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Precomputed summaries only.** The chart computes nothing from raw samples —
+  supply the quartiles/median/extremes yourself, or use
+  [`ViolinPlot`](/charts/violin-plot) to work from raw samples.
+- **No per-group color.** Every box shares one accent; group identity lives on
+  the category axis.
+- **No legend, title, caption, loading, or error passthrough** — `BoxPlot`
+  forwards only `ariaLabel` and the data table to `ChartContainer`.
+- **Fixed number formatting** (compact); there is no `valueFormat` prop.
+- **No click/selection callbacks** — hover drives the internal tooltip only.
+
+## Related charts
+
+Same "distribution" purpose, different trade-offs:
+[Violin plot](/charts/violin-plot), [Beeswarm plot](/charts/beeswarm-plot), and
+[Cumulative curve](/charts/cumulative-curve). For a single variable's shape in
+bins, see [Histogram](/charts/histogram). The `<ChartMeta />` block above links
+the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

@@ -23,8 +23,12 @@ import type {
 import { emText } from "../../chart/typography";
 
 export interface BarChartProps<T = CategoryDatum> {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** Categories to plot. Each row is a `CategoryDatum` (`{ category, value }`)
+   *  unless you pass `category`/`value` accessors for a custom row type. */
   data: T[];
   /** Category-label accessor. Defaults to `d.category` (the CategoryDatum shape).
    *  Required when `data` is a custom row type. */

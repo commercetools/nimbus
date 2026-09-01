@@ -21,9 +21,13 @@ export interface OhlcBar {
 }
 
 export interface CandlestickChartProps {
+  /** Plot width in pixels — supply from `ResponsiveContainer`. */
   width: number;
+  /** Plot height in pixels — supply from `ResponsiveContainer`. */
   height: number;
+  /** One OHLC bar per period, in chronological order (spaced evenly by index). */
   data: OhlcBar[];
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
