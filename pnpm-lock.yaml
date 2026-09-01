@@ -725,6 +725,55 @@ importers:
         specifier: catalog:tooling
         version: 7.2.2(js-yaml@3.15.1)(json5@2.2.3)(webpack@5.109.2)
 
+  apps/viz-dashboard:
+    dependencies:
+      '@commercetools/nimbus':
+        specifier: workspace:*
+        version: link:../../packages/nimbus
+      '@commercetools/nimbus-icons':
+        specifier: workspace:*
+        version: link:../../packages/nimbus-icons
+      '@commercetools/nimbus-viz':
+        specifier: workspace:*
+        version: link:../../packages/nimbus-viz
+      react:
+        specifier: catalog:react
+        version: 19.2.0
+      react-dom:
+        specifier: catalog:react
+        version: 19.2.0(react@19.2.0)
+    devDependencies:
+      '@eslint/js':
+        specifier: catalog:tooling
+        version: 10.0.1(eslint@10.8.1(supports-color@8.1.1))
+      '@types/react':
+        specifier: catalog:react
+        version: 19.2.18
+      '@types/react-dom':
+        specifier: catalog:react
+        version: 19.2.4(@types/react@19.2.18)
+      '@vitejs/plugin-react-swc':
+        specifier: catalog:tooling
+        version: 4.3.3(@swc/helpers@0.5.17)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.44.0)(tsx@4.23.12)(yaml@2.8.3))
+      eslint:
+        specifier: catalog:tooling
+        version: 10.8.1(supports-color@8.1.1)
+      eslint-plugin-react-refresh:
+        specifier: catalog:tooling
+        version: 0.5.4(eslint@10.8.1(supports-color@8.1.1))
+      globals:
+        specifier: catalog:tooling
+        version: 17.11.0
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      typescript-eslint:
+        specifier: catalog:tooling
+        version: 8.67.0(eslint@10.8.1(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
+      vite:
+        specifier: catalog:tooling
+        version: 8.2.1(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.44.0)(tsx@4.23.12)(yaml@2.8.3)
+
   packages/color-tokens:
     dependencies:
       '@radix-ui/colors':
