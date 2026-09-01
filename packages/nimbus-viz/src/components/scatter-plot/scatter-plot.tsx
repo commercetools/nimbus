@@ -10,12 +10,20 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { ScatterPoint } from "../../chart/types";
+import type {
+  DatumClickHandler,
+  DatumHoverHandler,
+} from "../../chart/interaction";
 
 export interface ScatterPlotProps {
   width: number;
   height: number;
   points: ScatterPoint[];
   ariaLabel?: string;
+  /** Fired when a datum is clicked (drill-down). */
+  onDatumClick?: DatumClickHandler<ScatterPoint>;
+  /** Fired when the hovered datum changes; null when the pointer leaves. */
+  onDatumHover?: DatumHoverHandler<ScatterPoint>;
   /** Layer-2 overlays (TrendLine, ReferenceLine…) drawn on top of the points. */
   children?: ReactNode;
 }
@@ -30,6 +38,8 @@ export function ScatterPlot({
   height,
   points,
   ariaLabel,
+  onDatumClick,
+  onDatumHover,
   children,
 }: ScatterPlotProps) {
   const theme = useChartTheme();
@@ -129,8 +139,17 @@ export function ScatterPlot({
                 fillOpacity={hover == null || hover === i ? 0.85 : 0.35}
                 stroke={theme.surface}
                 strokeWidth={1}
-                onMouseEnter={() => setHover(i)}
-                onMouseLeave={() => setHover(null)}
+                onMouseEnter={() => {
+                  setHover(i);
+                  onDatumHover?.({ datum: p, index: i, seriesId: p.group });
+                }}
+                onMouseLeave={() => {
+                  setHover(null);
+                  onDatumHover?.(null);
+                }}
+                onClick={() =>
+                  onDatumClick?.({ datum: p, index: i, seriesId: p.group })
+                }
               />
             ))}
             {children}
