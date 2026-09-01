@@ -11,7 +11,11 @@ import fs from "fs/promises";
 
 export function mdxHmrPlugin(): Plugin {
   const REPO_ROOT = path.resolve(__dirname, "../../..");
-  const MDX_GLOB = "packages/nimbus/src/**/*.mdx";
+  // Both doc-bearing packages: core components (nimbus) and charts (nimbus-viz).
+  const MDX_GLOBS = [
+    "packages/nimbus/src/**/*.mdx",
+    "packages/nimbus-viz/src/**/*.mdx",
+  ];
   const ROUTE_MANIFEST_PATH = path.join(
     REPO_ROOT,
     "apps/docs/src/data/route-manifest.json"
@@ -28,7 +32,9 @@ export function mdxHmrPlugin(): Plugin {
       // avoid a second, style-clashing line here. Live edits still log below.
 
       // Watch for MDX file changes
-      server.watcher.add(path.join(REPO_ROOT, MDX_GLOB));
+      for (const glob of MDX_GLOBS) {
+        server.watcher.add(path.join(REPO_ROOT, glob));
+      }
 
       server.watcher.on("change", async (file) => {
         // Only handle MDX files
@@ -45,15 +51,20 @@ export function mdxHmrPlugin(): Plugin {
           await rebuildRouteData(file);
 
           // Invalidate multiple modules for granular updates
+          const routesDir = path.join(REPO_ROOT, "apps/docs/src/data/routes");
+          // The generated route file is named after the *route*, not the file:
+          // watcher.ts writes `${route.replace(/\//g, "-")}.json`
+          // (e.g. `/charts/bar-chart` → `charts-bar-chart.json`). We try that
+          // first, then fall back to the file basename for anything the route
+          // heuristic doesn't cover. Non-existent candidates are skipped below.
+          const routeChunk = route.replace(/^\//, "").replace(/\//g, "-");
           const modulesToInvalidate = [
             // Route manifest
             ROUTE_MANIFEST_PATH,
-            // Specific route data file (derived from file path)
-            path.join(
-              REPO_ROOT,
-              "apps/docs/src/data/routes",
-              `${path.basename(file, ".mdx")}.json`
-            ),
+            // Route data file, by route-derived chunk name
+            path.join(routesDir, `${routeChunk}.json`),
+            // …and by file basename, as a fallback
+            path.join(routesDir, `${path.basename(file, ".mdx")}.json`),
           ];
 
           let invalidatedCount = 0;
@@ -129,6 +140,15 @@ export function mdxHmrPlugin(): Plugin {
  * Extract route path from file path
  */
 function extractRouteFromPath(filePath: string): string {
+  // nimbus-viz charts render under /charts/<component-dir> (from their
+  // frontmatter menu), not the /components/... directory they live in. The
+  // package's landing page (src/docs/charts.mdx) is /charts.
+  if (filePath.includes("nimbus-viz")) {
+    if (/\/docs\/charts\.mdx$/.test(filePath)) return "/charts";
+    const chart = filePath.match(/\/components\/([^/]+)\/[^/]+\.mdx$/);
+    if (chart) return `/charts/${chart[1]}`;
+  }
+
   // Remove everything before /components/ or /docs/
   const match = filePath.match(/\/(components|docs)\/(.+)\.mdx$/);
   if (!match) return "/";
