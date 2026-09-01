@@ -6,8 +6,12 @@ import { formatPercent } from "../../chart/format";
 import type { CategoryDatum } from "../../chart/types";
 
 export interface WaffleChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** One `CategoryDatum` (`{ category, value }`) per category; cells are
+   *  allocated in proportion to `value`, in array order. */
   data: CategoryDatum[];
   /** Grid side length in cells (default 10 → 100 cells = whole). */
   cells?: number;

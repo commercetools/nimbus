@@ -18,35 +18,340 @@ tags:
 
 <ChartMeta />
 
-Show how a total and its composition move over time.
+A stacked area chart stacks several series into one filled shape over a time
+axis, so the outer edge reads as the running total and each band reads as one
+part's contribution. Use it to answer "how does the total, and its makeup, move
+over time?" — traffic by channel, revenue by segment, sessions by device.
 
 ```jsx live
 const series = [
-  { id: "organic", label: "Organic", data: [
-    { x: new Date("2026-01-01"), y: 120 }, { x: new Date("2026-02-01"), y: 150 },
-    { x: new Date("2026-03-01"), y: 170 }, { x: new Date("2026-04-01"), y: 210 },
-    { x: new Date("2026-05-01"), y: 240 }, { x: new Date("2026-06-01"), y: 300 } ] },
-  { id: "paid", label: "Paid", data: [
-    { x: new Date("2026-01-01"), y: 80 }, { x: new Date("2026-02-01"), y: 96 },
-    { x: new Date("2026-03-01"), y: 110 }, { x: new Date("2026-04-01"), y: 104 },
-    { x: new Date("2026-05-01"), y: 130 }, { x: new Date("2026-06-01"), y: 150 } ] },
-  { id: "referral", label: "Referral", data: [
-    { x: new Date("2026-01-01"), y: 40 }, { x: new Date("2026-02-01"), y: 52 },
-    { x: new Date("2026-03-01"), y: 60 }, { x: new Date("2026-04-01"), y: 72 },
-    { x: new Date("2026-05-01"), y: 66 }, { x: new Date("2026-06-01"), y: 88 } ] },
+  {
+    id: "organic",
+    label: "Organic",
+    data: [
+      { x: new Date("2026-01-01"), y: 120 },
+      { x: new Date("2026-02-01"), y: 150 },
+      { x: new Date("2026-03-01"), y: 170 },
+      { x: new Date("2026-04-01"), y: 210 },
+      { x: new Date("2026-05-01"), y: 240 },
+      { x: new Date("2026-06-01"), y: 300 },
+    ],
+  },
+  {
+    id: "paid",
+    label: "Paid",
+    data: [
+      { x: new Date("2026-01-01"), y: 80 },
+      { x: new Date("2026-02-01"), y: 96 },
+      { x: new Date("2026-03-01"), y: 110 },
+      { x: new Date("2026-04-01"), y: 104 },
+      { x: new Date("2026-05-01"), y: 130 },
+      { x: new Date("2026-06-01"), y: 150 },
+    ],
+  },
+  {
+    id: "referral",
+    label: "Referral",
+    data: [
+      { x: new Date("2026-01-01"), y: 40 },
+      { x: new Date("2026-02-01"), y: 52 },
+      { x: new Date("2026-03-01"), y: 60 },
+      { x: new Date("2026-04-01"), y: 72 },
+      { x: new Date("2026-05-01"), y: 66 },
+      { x: new Date("2026-06-01"), y: 88 },
+    ],
+  },
 ];
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <StackedAreaChart width={width} height={height} series={series} />}
+      {(width, height) => (
+        <StackedAreaChart
+          width={width}
+          height={height}
+          series={series}
+          ariaLabel="Stacked area chart of sessions by channel, where Organic grows fastest and the total rises"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a stacked area chart when the x-axis is time and you care about both
+the total and how the parts add up to it — the top edge is the sum, each band is
+a share. Keep it to a few clearly-ordered parts; comparing individual series
+against each other is hard once they sit on shifting baselines, so if the level
+of each part matters more than the total, use a line chart instead.
+
+| You want to…                                     | Use instead                                    |
+| ------------------------------------------------ | ---------------------------------------------- |
+| Compare each series' level, not the total        | [`LineChart`](/charts/line-chart)              |
+| Emphasize turnover in the mix, drop the baseline | [`Streamgraph`](/charts/streamgraph)           |
+| Show composition across categories, not time     | [`StackedBarChart`](/charts/stacked-bar-chart) |
+| Fit a compact trend inline beside a KPI          | [`Sparkline`](/charts/sparkline)               |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { StackedAreaChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  StackedAreaChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`series` is an array of `Series` — one entry per band, each carrying its own
+`SeriesPoint[]`:
+
+```ts
+interface SeriesPoint {
+  x: number | Date;
+  y: number | null;
+}
+
+interface Series {
+  id: string;
+  label: string;
+  data: SeriesPoint[];
+}
+```
+
+```tsx
+const series: Series[] = [
+  {
+    id: "organic",
+    label: "Organic",
+    data: [
+      { x: new Date("2026-01-01"), y: 120 },
+      { x: new Date("2026-02-01"), y: 150 },
+      { x: new Date("2026-03-01"), y: 170 },
+    ],
+  },
+  {
+    id: "paid",
+    label: "Paid",
+    data: [
+      { x: new Date("2026-01-01"), y: 80 },
+      { x: new Date("2026-02-01"), y: 96 },
+      { x: new Date("2026-03-01"), y: 110 },
+    ],
+  },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `id` must be **unique** — it is the stack key and the input to the color scale
+  (`useEntityColors`). `label` is what the legend, tooltip, and data-table
+  columns show.
+- Series are **aligned by index**: the stack is built from the first series'
+  points, and each series contributes `data[i].y` at position `i`. Give every
+  series the **same x samples in the same order**.
+- A missing or `null` `y` is treated as **0** in the stack (a band pinches to
+  zero there), not as a gap — unlike `LineChart`, the fill does not break.
+- Values are **non-negative**: the value axis runs from 0 to the maximum stacked
+  total, and negative parts are not meaningful in a stack.
+- Stacking order is the array order, bottom to top; fills are assigned in fixed
+  categorical order.
+
+## API reference
+
+<PropsTable id="StackedAreaChart" />
+
+Renders `null` for an empty `series` (or empty rows) or a non-positive
+`width`/`height`.
+
+## Chart configuration
+
+### Value formatting
+
+`valueFormat` formats both the value-axis tick labels and the tooltip values. It
+defaults to a compact formatter (`4.2k`); override it for currency, percentages,
+or units. It takes precedence over any surrounding `ChartLocaleProvider`.
+
+```jsx live
+const series = [
+  {
+    id: "new",
+    label: "New",
+    data: [
+      { x: new Date("2026-01-01"), y: 24000 },
+      { x: new Date("2026-02-01"), y: 28000 },
+      { x: new Date("2026-03-01"), y: 31000 },
+      { x: new Date("2026-04-01"), y: 35000 },
+    ],
+  },
+  {
+    id: "returning",
+    label: "Returning",
+    data: [
+      { x: new Date("2026-01-01"), y: 18000 },
+      { x: new Date("2026-02-01"), y: 21000 },
+      { x: new Date("2026-03-01"), y: 24000 },
+      { x: new Date("2026-04-01"), y: 27000 },
+    ],
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <StackedAreaChart
+          width={width}
+          height={height}
+          series={series}
+          valueFormat={(n) => `$${(n / 1000).toFixed(0)}k`}
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Overlays (`children`)
+
+Annotations (e.g. `ReferenceLine`, `TrendLine`, `Annotation`) passed as
+`children` are drawn in the plot's coordinate space, on top of the stacked bands
+— use them to mark a target total, a campaign window, or a threshold.
+
+### Legend (automatic)
+
+Not configurable — a legend appears automatically for **two or more** series
+(each label mapped to its band color) and is omitted for a single series. There
+is no `legend` prop to toggle it.
+
+### Axes, scales & tooltip (automatic)
+
+Also always drawn: a single value axis (linear, from 0 to a nice maximum stacked
+total, with horizontal gridlines) and a time axis whose tick count adapts to the
+width. Bands use a monotone spline and are separated by a 1px surface stroke at
+0.85 fill opacity so adjacent layers stay legible. Hovering resolves the nearest
+x-index, draws a dashed crosshair, and shows a tooltip listing the date and each
+series' value. None of this is configurable.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Band colors come from the
+validated `nimbus` entity palette (assigned by `id`), not CSS.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <StackedAreaChart width={width} height={height} series={series} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <StackedAreaChart width={width} height={height} series={series} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. There is no built-in downsampling: every point is
+drawn, and stacked areas stay readable only for a few bands, so cap the number
+of series and aggregate long time ranges upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<StackedAreaChart
+  ariaLabel="Stacked area chart of sessions by channel, where the total climbs and Organic drives most of it"
+  width={width}
+  height={height}
+  series={series}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Stacked area chart of {series labels}"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `StackedAreaChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Date** then one column per series label) into the accessibility tree, plus a
+  keyboard "View data as table" toggle that reveals it in place — so the numbers
+  are available as text, not just the one-line label.
+- **CVD-safe palette.** Band colors come from the validated chart theme
+  (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** Position and band thickness carry the values; color
+  only distinguishes bands and is restated by the legend and tooltip labels.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the parts rather than "the
+top band". There is no animation, so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (position/thickness carry it)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names series/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`StackedAreaChart` renders `null` when `series` is empty, its rows are empty, or
+the measured size is non-positive; it does not draw its own empty, loading, or
+error message (it does not forward those `ChartContainer` features). Guard those
+states upstream and render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Total-first reading.** Bands after the first sit on shifting baselines, so
+  reading an individual series' level is imprecise — use
+  [`LineChart`](/charts/line-chart) when each series' level is the point.
+- **Non-negative values.** The stack is anchored at 0; negative parts are not
+  meaningful.
+- **No interaction callbacks.** There is no `onDatumClick`/`onDatumHover` —
+  hover drives the internal tooltip only.
+- **No legend, title, caption, loading, or error passthrough** — it forwards
+  only `ariaLabel`, the auto legend, and the data table to `ChartContainer`.
+- **No downsampling** — every point of every series is drawn.
+
+## Related charts
+
+Same "trend over time" purpose, different trade-offs:
+[Line chart](/charts/line-chart), [Streamgraph](/charts/streamgraph),
+[Sparkline](/charts/sparkline), [Control chart](/charts/control-chart), and
+[Candlestick chart](/charts/candlestick-chart). For composition across
+categories rather than time, see [Stacked bar chart](/charts/stacked-bar-chart).
+The `<ChartMeta />` block above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

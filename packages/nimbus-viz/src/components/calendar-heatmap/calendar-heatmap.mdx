@@ -18,7 +18,11 @@ tags:
 
 <ChartMeta />
 
-A daily value laid out across a calendar grid.
+A calendar heatmap lays one value per day out on a GitHub-style contribution
+grid — weeks run left to right as columns, weekdays stack Monday-first as rows —
+and shades each day on a single-hue sequential ramp. Use it to answer "how does
+a daily value vary across the calendar?" — orders per day, active users, publish
+streaks — where weekday rhythm, seasonality, and gaps are the point.
 
 ```jsx live
 const days = Array.from({ length: 120 }, (_, i) => ({
@@ -28,15 +32,242 @@ const days = Array.from({ length: 120 }, (_, i) => ({
 
 const App = () => (
   <ChartThemeProvider mode="light">
-    <ResponsiveContainer height={280}>
-      {(width, height) => <CalendarHeatmap width={width} height={height} data={days} />}
+    <ResponsiveContainer height={200}>
+      {(width, height) => (
+        <CalendarHeatmap
+          width={width}
+          height={height}
+          data={days}
+          ariaLabel="Calendar heatmap of daily orders, where weekends run lighter"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a calendar heatmap when your observations are keyed by calendar date
+and the daily/weekly rhythm across a long span is what you want to surface — the
+Monday spike, the holiday lull, the missed days. It trades precise value reading
+for pattern density; when the exact trend line matters more than the calendar
+layout, a line chart or sparkline reads better.
+
+| You want to…                                   | Use instead      |
+| ---------------------------------------------- | ---------------- |
+| Plot a matrix of two arbitrary categories      | `Heatmap`        |
+| Track retention as cohorts age                 | `CohortTriangle` |
+| Show the value as a continuous trend line      | `LineChart`      |
+| Show a compact inline trend without a calendar | `Sparkline`      |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { CalendarHeatmap, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  CalendarHeatmap,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `CalendarDatum` — one entry per day:
+
+```ts
+interface CalendarDatum {
+  date: Date | string;
+  value: number;
+}
+```
+
+```tsx
+const data: CalendarDatum[] = [
+  { date: "2026-01-01", value: 12 },
+  { date: "2026-01-02", value: 18 },
+  { date: new Date(2026, 0, 3), value: 7 },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `date` accepts a `Date` **or** a date string (parsed with `new Date`). Days
+  are bucketed by their UTC calendar date, so the layout is timezone- and
+  DST-agnostic.
+- The grid spans the **earliest to latest** date in the data. Days you don't
+  provide are drawn as **empty cells** — you supply only the days that have a
+  value, not a dense range.
+- One entry per day: if two entries fall on the same calendar day, the **last**
+  one wins.
+- Values are assumed **non-negative**: the ramp runs from 0 to the maximum
+  value, so a day's shade is `value / max`.
+
+## API reference
+
+<PropsTable id="CalendarHeatmap" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Hue
+
+`hue` picks the Nimbus color the sequential ramp is built from (default
+`"blue"`). The ramp — light for low, saturated for high — is generated from the
+validated theme.
+
+```jsx live
+const days = Array.from({ length: 120 }, (_, i) => ({
+  date: new Date(2026, 0, i + 1),
+  value: Math.round(10 + 9 * Math.sin(i / 5) + (i % 7 === 0 ? 12 : 0)),
+}));
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={200}>
+      {(width, height) => (
+        <CalendarHeatmap
+          width={width}
+          height={height}
+          data={days}
+          hue="green"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Calendar layout, legend & tooltip (automatic)
+
+Not configurable — the chart always draws them. Weeks are laid out as columns
+left-to-right with month labels along the top (collision-filtered so labels
+never overlap) and Monday/Wednesday/Friday markers down the left. A low→high
+gradient legend ("Less" → "More") sits in a reserved strip below the grid.
+Hovering a day highlights it and shows a tooltip with the date and its value.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. The ramp is derived from the
+validated `nimbus` chart palette for the chosen `hue`, not a CSS color.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={200}>
+  {(width, height) => (
+    <CalendarHeatmap width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 4} minHeight={140} maxHeight={260}>
+  {(width, height) => (
+    <CalendarHeatmap width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Day cells size themselves to fit the full date span
+in the available box, so a wider range yields smaller cells; there is no
+downsampling — a calendar heatmap is meant for roughly a year of days at a time.
+Slice the range upstream for longer histories.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the calendar shows **and** its takeaway,
+using Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<CalendarHeatmap
+  ariaLabel="Calendar heatmap of daily orders, where weekends run lighter"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual days in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Calendar heatmap of N days"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `CalendarHeatmap` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Date**, **Value**) into the accessibility tree, plus a keyboard "View data
+  as table" toggle that reveals it in place — so every day's value is available
+  as text, not just the one-line label.
+- **CVD-safe palette + legend.** The ramp is a single-hue **sequential** scale
+  (lightness, never a rainbow) from the validated chart theme, and a low→high
+  gradient legend states the scale direction.
+- **Non-color scale reading.** The gradient legend and the data-table fallback
+  give the magnitude scale in text and swatches, so the ramp is not the only
+  cue.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the busy and quiet dates and
+their values rather than "the dark squares". There is no animation, so
+reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Magnitude is not read from color alone (gradient legend + the data table
+      carry the scale; the ramp uses lightness, not hue)
+- [ ] Palette meets contrast + CVD checks (built-in sequential theme; don't
+      override to un-validated colors)
+- [ ] Surrounding copy names dates and values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`CalendarHeatmap` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Days without a value inside the
+spanned range are drawn as empty cells, not gaps in the grid. Guard the
+no-data-yet state upstream and render your own placeholder.
+
+## Limitations
+
+- **One measure per day.** A calendar cell encodes a single number; it can't
+  show a second series or a within-day breakdown.
+- **Daily granularity only.** The grid is day-by-week; it does not roll up to
+  weeks/months or drill down to hours (use [`Heatmap`](/charts/heatmap) for an
+  arbitrary two-axis matrix such as weekday × hour).
+- **Non-negative values.** The ramp is anchored at 0 and scaled to the maximum;
+  it is not a diverging scale for signed data.
+- **No title, caption, loading, or error passthrough** — `CalendarHeatmap`
+  forwards only `ariaLabel`, the gradient legend, and the data table to
+  `ChartContainer`.
+- **No click or hover callbacks.** Hover highlight and the tooltip are internal;
+  there is no prop to observe day interaction for drill-down.
+
+## Related charts
+
+Same "matrix & retention" purpose, different jobs: [Heatmap](/charts/heatmap),
+[Cohort triangle](/charts/cohort-triangle), and [RFM grid](/charts/rfm-grid).
+The `<ChartMeta />` block above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

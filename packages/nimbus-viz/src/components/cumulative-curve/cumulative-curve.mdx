@@ -18,10 +18,19 @@ tags:
 
 <ChartMeta />
 
-The empirical CDF for reading percentiles directly.
+A cumulative curve (empirical CDF, or ogive) sorts the samples and plots, for
+each value, the **share of the data at or below it**. Reading it is direct: pick
+a value on the x axis and the curve's height is the fraction under it; pick a
+percentile on the y axis and read across to its value. It answers "what fraction
+falls below X?" and "what's the p90?" — latency budgets, order-value cut-offs,
+SLA attainment. The step form is honest about the discrete jumps between
+samples.
 
 ```jsx live
-const rand = (i) => { const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
+const rand = (i) => {
+  const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
 const values = Array.from({ length: 220 }, (_, i) =>
   Math.round(50 + ((rand(i) + rand(i + 60) + rand(i + 130)) / 3 - 0.5) * 70)
 );
@@ -29,14 +38,241 @@ const values = Array.from({ length: 220 }, (_, i) =>
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <CumulativeCurve width={width} height={height} values={values} />}
+      {(width, height) => (
+        <CumulativeCurve
+          width={width}
+          height={height}
+          values={values}
+          ariaLabel="Cumulative curve of order values, where the median sits near the center"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a cumulative curve when the question is about **thresholds and
+percentiles** rather than shape — "what share of orders clear $50?", "what's the
+p95 response time?". Because it is monotonic and anchored at 0% and 100%, it is
+also the cleanest way to overlay a target line or compare two distributions'
+tails. A dashed guide at 50% marks the median.
+
+| You want to…                                   | Use instead    |
+| ---------------------------------------------- | -------------- |
+| See the density/shape (humps, gaps)            | `Histogram`    |
+| Keep every individual sample visible           | `BeeswarmPlot` |
+| Compare compact summaries across groups        | `BoxPlot`      |
+| Compare full distribution shapes across groups | `ViolinPlot`   |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { CumulativeCurve, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  CumulativeCurve,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`values` is a flat array of numbers — the raw samples:
+
+```ts
+type Values = number[];
+```
+
+```tsx
+const values: number[] = [12, 18, 22, 24, 25, 27, 31, 33, 40, 44, 52, 61, 88];
+```
+
+Contract notes, verifiable from source:
+
+- **You supply raw samples; the chart computes the CDF.** Values are sorted and
+  each becomes a step at cumulative share `(i + 1) / n`, so the curve rises from
+  just above 0% to exactly 100%.
+- The x (value) axis spans the `extent` of `values`, made "nice"; the y axis is
+  fixed at **0–100%** and formatted as a percentage.
+- The curve is drawn as a **step-after** line — flat until the next sample, then
+  a jump — which is faithful to a discrete empirical distribution.
+- Ordering of the input does not matter; the chart sorts internally.
+
+## API reference
+
+<PropsTable id="CumulativeCurve" />
+
+Renders `null` for empty `values` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Empirical CDF (automatic)
+
+Not configurable — the samples are sorted and plotted as a step curve where each
+value's height is the share of samples at or below it. The path starts at the
+data minimum with a share of 0 and steps up to 100% at the maximum.
+
+### Median guide (automatic)
+
+A dashed horizontal line at 50% marks the median level, so the median value is
+the x-position where the curve crosses it.
+
+### Sample dots (automatic)
+
+For small samples (**60 or fewer**), each sample is drawn as a dot on the curve;
+hovering one dims the rest and shows a tooltip with the value and the share at
+or below it (`75% ≤ this`). Above 60 samples the dots are dropped and only the
+line is drawn, keeping large curves clean.
+
+### Axes & scales (automatic)
+
+The value axis carries about five compact ticks; the percentage axis carries
+four ticks with four horizontal gridlines. Both are drawn automatically.
+
+### Overlays (`children`)
+
+Layer Layer-2 annotations by passing them as `children` — `ReferenceLine`,
+`ThresholdBand`, `TrendLine`, `TargetMarker`. A `vertical` reference line marks
+a value on the x axis (a target or SLA), a `horizontal` one marks a percentile.
+
+```jsx live
+const values = [12, 18, 22, 24, 25, 27, 31, 33, 40, 44, 52, 61, 66, 74, 88];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <CumulativeCurve width={width} height={height} values={values}>
+          <ReferenceLine
+            value={50}
+            orientation="vertical"
+            label="Target"
+            variant="positive"
+          />
+        </CumulativeCurve>
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. The curve uses one validated
+`nimbus` accent — position on the two axes carries the meaning, not color.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <CumulativeCurve width={width} height={height} values={values} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <CumulativeCurve width={width} height={height} values={values} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. The curve is a single path over the sorted samples
+(memoized), and the per-sample dots are automatically suppressed above 60
+samples, so large curves stay light. There is no downsampling; the step path
+draws every sample.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<CumulativeCurve
+  ariaLabel="Cumulative curve of order values, where the median sits near the center"
+  width={width}
+  height={height}
+  values={values}
+/>
+```
+
+Don't enumerate individual points in the label; the data-table fallback carries
+them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Cumulative curve of N samples"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `CumulativeCurve` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Value**, **Cumulative %**) into the accessibility tree, plus a keyboard
+  "View data as table" toggle that reveals it in place — so the values and their
+  cumulative shares are available as text, not just the one-line label.
+- **CVD-safe palette.** The accent comes from the validated chart theme
+  (contrast + color-vision-deficiency checks), not an ad-hoc color.
+- **Non-color encoding.** Meaning is carried by the curve's position on the two
+  axes; color is a single hue and is not load-bearing.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the values and percentiles
+rather than "the line".
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (axis position carries it here)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names values/percentiles rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`CumulativeCurve` renders `null` when `values` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Single series.** One value array draws one curve — there is no built-in way
+  to overlay two distributions for comparison in a single call.
+- **Dots only at small n.** The per-sample dots (and their hover tooltips)
+  appear only when there are 60 or fewer samples.
+- **Fixed formatting.** The value axis uses the compact formatter and the share
+  axis is always a percentage; there is no `valueFormat` prop.
+- **No legend, title, caption, loading, or error passthrough** —
+  `CumulativeCurve` forwards only `ariaLabel` and the data table to
+  `ChartContainer`.
+- **No click/selection callbacks** — hover drives the internal tooltip only.
+
+## Related charts
+
+Same "distribution" purpose, different trade-offs: [Box plot](/charts/box-plot),
+[Violin plot](/charts/violin-plot), and [Beeswarm plot](/charts/beeswarm-plot).
+For a single variable's shape in bins, see [Histogram](/charts/histogram). The
+`<ChartMeta />` block above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

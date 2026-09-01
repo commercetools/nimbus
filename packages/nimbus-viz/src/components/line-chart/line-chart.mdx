@@ -18,7 +18,10 @@ tags:
 
 <ChartMeta />
 
-Track one or more series over a continuous time axis.
+A line chart traces one or more series across a continuous time axis, so the eye
+follows the slope between points as change over time. Use it to answer "how is
+this metric trending?" — sessions per month, revenue by region, latency over a
+release window — for a handful of series that share one value scale.
 
 ```jsx live
 const series = [
@@ -51,14 +54,334 @@ const series = [
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <LineChart width={width} height={height} series={series} />}
+      {(width, height) => (
+        <LineChart
+          width={width}
+          height={height}
+          series={series}
+          ariaLabel="Line chart of sessions by region, where EU stays above US and both climb"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a line chart when your x-axis is time (or another continuous ordering)
+and the story is the trajectory — direction, rate of change, and where series
+cross. It stays legible for a few series on one shared value scale; past that,
+or when the point is composition rather than level, move to a sibling below.
+
+| You want to…                                    | Use instead                                      |
+| ----------------------------------------------- | ------------------------------------------------ |
+| Show how a total's composition shifts over time | [`StackedAreaChart`](/charts/stacked-area-chart) |
+| Emphasize turnover in the mix, not level        | [`Streamgraph`](/charts/streamgraph)             |
+| Fit a trend inline beside a KPI, no axes        | [`Sparkline`](/charts/sparkline)                 |
+| Watch a process against control limits          | [`ControlChart`](/charts/control-chart)          |
+| Show open/high/low/close per period             | [`CandlestickChart`](/charts/candlestick-chart)  |
+| Compare magnitudes across categories, not time  | [`BarChart`](/charts/bar-chart)                  |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { LineChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  LineChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`series` is an array of `Series` — one entry per line, each carrying its own
+`SeriesPoint[]`:
+
+```ts
+interface SeriesPoint {
+  x: number | Date;
+  y: number | null;
+}
+
+interface Series {
+  id: string;
+  label: string;
+  data: SeriesPoint[];
+}
+```
+
+```tsx
+const series: Series[] = [
+  {
+    id: "eu",
+    label: "EU",
+    data: [
+      { x: new Date("2026-01-01"), y: 120 },
+      { x: new Date("2026-02-01"), y: 148 },
+      { x: new Date("2026-03-01"), y: 136 },
+    ],
+  },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `id` must be **unique** per series — it is the React key and the input to the
+  color scale (`useEntityColors`). `label` is what the legend, tooltip, and
+  data-table columns show.
+- `x` accepts a `Date` or an epoch-milliseconds number; both are coerced to a
+  `Date` and placed on a time scale.
+- `y` may be `null` to mark a **gap** — the line/area is `defined` only where
+  `y` is non-null, so it breaks rather than interpolating through the hole.
+- The value axis runs from **0** to a "nice" maximum, so values are assumed
+  **non-negative**; negative `y` would fall below the baseline.
+- The hover model, tooltip, and data table are indexed off the **first** series'
+  points, so all series should share the same x samples (align them by index).
+
+## API reference
+
+<PropsTable id="LineChart" />
+
+Renders `null` for an empty `series` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Variant (line or area)
+
+`variant` is `"line"` (default) or `"area"`. The area form fills under each
+series at low opacity (0.16) while keeping the stroke, useful for a single
+series where the filled region reinforces magnitude. For **stacked** composition
+across series, use [`StackedAreaChart`](/charts/stacked-area-chart) instead —
+`variant="area"` here overlays each series independently, it does not stack
+them.
+
+```jsx live
+const series = [
+  {
+    id: "revenue",
+    label: "Revenue",
+    data: [
+      { x: new Date("2026-01-01"), y: 120 },
+      { x: new Date("2026-02-01"), y: 150 },
+      { x: new Date("2026-03-01"), y: 138 },
+      { x: new Date("2026-04-01"), y: 176 },
+      { x: new Date("2026-05-01"), y: 168 },
+      { x: new Date("2026-06-01"), y: 205 },
+    ],
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <LineChart
+          width={width}
+          height={height}
+          series={series}
+          variant="area"
+          ariaLabel="Area chart of monthly revenue, trending up"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Value formatting
+
+`valueFormat` formats both the value-axis tick labels and the tooltip values. It
+defaults to a compact formatter (`4.2k`); override it for currency, percentages,
+or units. It takes precedence over any surrounding `ChartLocaleProvider`.
+
+```jsx live
+const series = [
+  {
+    id: "mrr",
+    label: "MRR",
+    data: [
+      { x: new Date("2026-01-01"), y: 42000 },
+      { x: new Date("2026-02-01"), y: 46500 },
+      { x: new Date("2026-03-01"), y: 51200 },
+      { x: new Date("2026-04-01"), y: 49800 },
+      { x: new Date("2026-05-01"), y: 55300 },
+      { x: new Date("2026-06-01"), y: 60100 },
+    ],
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <LineChart
+          width={width}
+          height={height}
+          series={series}
+          valueFormat={(n) => `$${n.toLocaleString()}`}
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Overlays (`children`)
+
+Layer-2 annotations (e.g. `ReferenceLine`, `ThresholdBand`, `BenchmarkSeries`)
+passed as `children` are drawn in the plot's coordinate space, on top of the
+series — use them to mark a target, a launch date, or a band of acceptable
+values.
+
+### Interaction callbacks
+
+`onDatumClick` and `onDatumHover` fire with a `{ datum, index, seriesId }`
+payload. Because hover tracks a single x-index across all series, both callbacks
+report the **first** series' point at the resolved index (matching the
+crosshair's lead readout); use them for drill-down or to drive an external
+readout. Internal hover state is managed regardless of whether you pass them.
+
+```tsx
+<LineChart
+  width={width}
+  height={height}
+  series={series}
+  onDatumClick={({ datum }) => navigate(`/day/${datum.x}`)}
+/>
+```
+
+### Legend (automatic)
+
+Not configurable — a legend appears automatically for **two or more** series
+(labels mapped to their series color) and is omitted for a single series, where
+color is not load-bearing. There is no `legend` prop to toggle it.
+
+### Axes, scales & tooltip (automatic)
+
+Also always drawn: a **single** value axis (linear, from 0 to a nice maximum,
+with horizontal gridlines) and a time axis whose tick count adapts to the
+available width. Both series curves use a monotone spline. Hovering resolves the
+nearest x-index, draws a dashed crosshair with a point marker per series, and
+shows a tooltip listing the date and each series' formatted value (`—` for a
+gap). None of this is configurable.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Series colors come from the
+validated `nimbus` entity palette (assigned by `id`), not CSS.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <LineChart width={width} height={height} series={series} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <LineChart width={width} height={height} series={series} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. There is no built-in downsampling: every point is
+drawn, so for very long series (thousands of points) decimate or aggregate
+upstream before passing them in.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<LineChart
+  ariaLabel="Line chart of sessions by region, where EU leads US across the half-year"
+  width={width}
+  height={height}
+  series={series}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Line chart of {series labels}"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `LineChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Date** then one column per series label) into the accessibility tree, plus a
+  keyboard "View data as table" toggle that reveals it in place — so the numbers
+  are available as text, not just the one-line label.
+- **CVD-safe palette.** Series colors come from the validated chart theme
+  (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** Trend is carried by line position and slope; color
+  only distinguishes series and is restated by the legend and tooltip labels.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the series rather than "the
+blue line". There is no animation, so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (position/slope carry the trend)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names series/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`LineChart` renders `null` when `series` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **One shared value axis.** All series share a single linear y-scale — there is
+  no secondary axis for a second unit.
+- **Non-negative values.** The axis is anchored at 0; series that dip below zero
+  fall under the baseline.
+- **No legend, title, caption, loading, or error passthrough** — `LineChart`
+  forwards only `ariaLabel`, the auto legend, and the data table to
+  `ChartContainer`.
+- **Single-index hover.** Click/hover callbacks report the first series' point
+  at the resolved x-index, not a per-series datum.
+- **No downsampling** — very long series are drawn point-for-point.
+
+## Related charts
+
+Same "trend over time" purpose, different trade-offs:
+[Stacked area chart](/charts/stacked-area-chart),
+[Streamgraph](/charts/streamgraph), [Sparkline](/charts/sparkline),
+[Control chart](/charts/control-chart), and
+[Candlestick chart](/charts/candlestick-chart). The `<ChartMeta />` block above
+links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

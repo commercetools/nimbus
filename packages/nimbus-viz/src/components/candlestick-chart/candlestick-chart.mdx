@@ -18,10 +18,17 @@ tags:
 
 <ChartMeta />
 
-Open, high, low and close for each period at a glance.
+A candlestick chart shows all four price points of each period at once: a thin
+wick spans the low-to-high range and a body spans open-to-close, with an up
+period (close ≥ open) in the positive hue and a down period in the negative hue.
+Use it to answer "how did the price move each period?" — the classic view for
+OHLC market data or any metric with an open, high, low, and close.
 
 ```jsx live
-const rand = (i) => { const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
+const rand = (i) => {
+  const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+};
 let p = 100;
 const bars = Array.from({ length: 24 }, (_, i) => {
   const open = p;
@@ -29,20 +36,236 @@ const bars = Array.from({ length: 24 }, (_, i) => {
   const high = Math.max(open, close) + rand(i + 20) * 4;
   const low = Math.min(open, close) - rand(i + 40) * 4;
   p = close;
-  return { date: new Date(2026, 0, i + 1), open: +open.toFixed(2), high: +high.toFixed(2), low: +low.toFixed(2), close: +close.toFixed(2) };
+  return {
+    date: new Date(2026, 0, i + 1),
+    open: +open.toFixed(2),
+    high: +high.toFixed(2),
+    low: +low.toFixed(2),
+    close: +close.toFixed(2),
+  };
 });
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <CandlestickChart width={width} height={height} data={bars} />}
+      {(width, height) => (
+        <CandlestickChart
+          width={width}
+          height={height}
+          data={bars}
+          ariaLabel="Candlestick chart of daily price over 24 sessions, choppy with a slight drift"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a candlestick chart when each period has a genuine open/high/low/close
+and the intraperiod range and direction both matter — trading days, sprint
+burn-in windows, any bounded metric summarized per period. If you only have a
+single value per period, a line chart tells the trend more cleanly; if you have
+the range but not open/close, that four-value encoding is wasted.
+
+| You want to…                           | Use instead                                      |
+| -------------------------------------- | ------------------------------------------------ |
+| Plot a single value per period         | [`LineChart`](/charts/line-chart)                |
+| Watch a process against control limits | [`ControlChart`](/charts/control-chart)          |
+| Show composition of a total over time  | [`StackedAreaChart`](/charts/stacked-area-chart) |
+| Fit a bare trend inline beside a KPI   | [`Sparkline`](/charts/sparkline)                 |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { CandlestickChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  CandlestickChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `OhlcBar` — one bar per period:
+
+```ts
+interface OhlcBar {
+  date: Date;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+}
+```
+
+```tsx
+const data: OhlcBar[] = [
+  { date: new Date("2026-01-01"), open: 100, high: 104, low: 98, close: 103 },
+  { date: new Date("2026-01-02"), open: 103, high: 105, low: 99, close: 100 },
+  { date: new Date("2026-01-03"), open: 100, high: 108, low: 100, close: 107 },
+];
+```
+
+Contract notes, verifiable from source:
+
+- Bars are placed on a **band scale by index**, evenly spaced regardless of the
+  gaps between `date` values — pass bars already in chronological order;
+  weekends or missing sessions are not left as gaps.
+- `date` is a `Date` (used for the tick and tooltip labels, not for
+  positioning).
+- `high` should be the period's max and `low` its min; the value axis fits
+  `[min(low), max(high)]` (a "nice" domain). A period with `open === close`
+  still draws a minimum 1px body so it stays visible.
+- Direction is derived from `close >= open` (up) vs `close < open` (down).
+
+## API reference
+
+<PropsTable id="CandlestickChart" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Overlays (`children`)
+
+Annotations (e.g. `ReferenceLine`, `ThresholdBand`, `TrendLine`) passed as
+`children` are drawn in the plot's coordinate space, on top of the candles — use
+them to mark a support level, a moving average, or an event.
+
+### Candles, axis & tooltip (automatic)
+
+Not configurable — the chart always draws each period as a wick (low→high) plus
+a body (open→close), an up period in the theme's `positive` hue and a down
+period in `negative`. A value axis (linear, fitted to the low/high range, with
+horizontal gridlines) runs down the left; date labels appear under roughly every
+sixth candle so they don't collide. Hovering a candle dims the others to 0.4
+opacity and shows a tooltip with the date and the period's O / H / L / C. There
+is no `valueFormat` prop — values use the built-in compact formatter.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. The up/down hues come from
+the validated `nimbus` chart theme (`positive` / `negative`), not CSS.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <CandlestickChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <CandlestickChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Candles use a padded band scale, so they get thin
+and then illegible as the count grows past a few dozen for a typical width;
+there is no downsampling, so window or aggregate long histories (e.g. to weekly
+bars) upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<CandlestickChart
+  ariaLabel="Candlestick chart of daily price over January, where the trend drifts up after a mid-month dip"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Candlestick chart of N periods"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `CandlestickChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Date**, **Open**, **High**, **Low**, **Close**) into the accessibility tree,
+  plus a keyboard "View data as table" toggle that reveals it in place — so the
+  four values per period are available as text, not just the color.
+- **CVD-safe palette.** The up/down hues come from the validated chart theme
+  (contrast + color-vision-deficiency checks), not ad-hoc red/green.
+- **Non-color encoding.** Up vs down is carried by the positive/negative hue,
+  reinforced by which end of the body is open vs close; because that hue does
+  carry meaning, the OHLC values in the tooltip and the data table are the
+  authoritative non-color path — lean on them in surrounding copy.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy describe moves in words ("closed
+above the open") rather than "the green candles". There is no animation, so
+reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying O/H/L/C values are available as text (the built-in data-table
+      fallback)
+- [ ] Meaning does not depend on color alone (values in the table/tooltip carry
+      direction as text)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated red/green)
+- [ ] Surrounding copy names periods/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`CandlestickChart` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Index-spaced periods.** The band scale spaces bars evenly by index, so
+  calendar gaps (weekends, missing sessions) are not shown — pre-fill or accept
+  the compression.
+- **No volume pane.** Only price is drawn; there is no paired volume histogram
+  or secondary axis.
+- **No value-format prop.** The axis and tooltip use the built-in compact
+  formatter.
+- **No interaction callbacks.** Hover drives the internal dim + tooltip only.
+- **No legend, title, caption, loading, or error passthrough** — it forwards
+  only `ariaLabel` and the data table to `ChartContainer`.
+
+## Related charts
+
+Same "trend over time" purpose, different trade-offs:
+[Line chart](/charts/line-chart),
+[Stacked area chart](/charts/stacked-area-chart),
+[Streamgraph](/charts/streamgraph), [Sparkline](/charts/sparkline), and
+[Control chart](/charts/control-chart). The `<ChartMeta />` block above links
+the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

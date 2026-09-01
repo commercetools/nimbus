@@ -19,9 +19,15 @@ export interface TimelineEvent {
 }
 
 export interface GanttChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** Events to place on the shared time axis, one row each, in the order given.
+   *  A `TimelineEvent` with an `end` is a span; one without is a milestone. */
   data: TimelineEvent[];
+  /** Accessible label for the SVG frame; states what the timeline shows and its
+   *  takeaway. Defaults to `"Timeline of N events"`. */
   ariaLabel?: string;
 }
 

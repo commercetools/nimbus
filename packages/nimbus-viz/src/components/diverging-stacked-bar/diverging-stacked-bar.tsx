@@ -8,7 +8,9 @@ import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
 export interface DivergingStackedBarProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
   /**
    * One row per category; segments given in order from most-negative to
@@ -16,6 +18,8 @@ export interface DivergingStackedBarProps {
    * centered on the neutral midpoint of that ordered scale.
    */
   data: StackRow[];
+  /** Accessible label for the graphic. Defaults to
+   *  "Diverging stacked bar of N categories". */
   ariaLabel?: string;
 }
 

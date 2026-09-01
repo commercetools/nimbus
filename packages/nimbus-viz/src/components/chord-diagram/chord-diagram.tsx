@@ -14,9 +14,15 @@ export interface FlowMatrix {
 }
 
 export interface ChordDiagramProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** The square flow matrix and its entity labels. `matrix[i][j]` is the flow
+   *  from entity i to entity j; negatives are clamped to 0. */
   data: FlowMatrix;
+  /** Accessible label for the SVG frame; states what the flows show and their
+   *  takeaway. Defaults to `"Chord diagram of N entities"`. */
   ariaLabel?: string;
 }
 

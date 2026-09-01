@@ -7,11 +7,15 @@ import { formatCompact } from "../../chart/format";
 import { emText } from "../../chart/typography";
 
 export interface GaugeProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
   /** The current value, in the same units as `min`/`max`. */
   value: number;
+  /** Lower bound of the arc's range. Defaults to `0`. */
   min?: number;
+  /** Upper bound of the arc's range. Defaults to `100`. */
   max?: number;
   /** Optional target/threshold value, rendered as a tick mark on the arc. */
   threshold?: number;
@@ -19,6 +23,7 @@ export interface GaugeProps {
   valueFormat?: (value: number) => string;
   /** Caption below the value label (e.g. a unit or metric name). */
   label?: string;
+  /** Accessible label for the SVG. Defaults to `Gauge: {value} of {max}`. */
   ariaLabel?: string;
 }
 

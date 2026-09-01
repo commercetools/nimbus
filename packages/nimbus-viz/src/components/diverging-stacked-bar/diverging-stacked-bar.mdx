@@ -18,26 +18,380 @@ tags:
 
 <ChartMeta />
 
-The sanctioned form for Likert and sentiment scales.
+A diverging stacked bar is the sanctioned form for ordered-scale survey data —
+Likert agreement, satisfaction, net sentiment. Each category's segments run from
+most-negative to most-positive and the bar is centered on the neutral midpoint:
+the negative half grows left, the positive half grows right, so you can compare
+the balance of sentiment across categories at a glance. Use it to answer "how
+does sentiment diverge across this scale, category by category?"
 
 ```jsx live
 const data = [
-  { category: "Checkout", segments: [{ key: "Strongly disagree", value: 8 }, { key: "Disagree", value: 14 }, { key: "Neutral", value: 20 }, { key: "Agree", value: 34 }, { key: "Strongly agree", value: 24 }] },
-  { category: "Search", segments: [{ key: "Strongly disagree", value: 16 }, { key: "Disagree", value: 22 }, { key: "Neutral", value: 18 }, { key: "Agree", value: 28 }, { key: "Strongly agree", value: 16 }] },
-  { category: "Support", segments: [{ key: "Strongly disagree", value: 6 }, { key: "Disagree", value: 10 }, { key: "Neutral", value: 16 }, { key: "Agree", value: 38 }, { key: "Strongly agree", value: 30 }] },
+  {
+    category: "Checkout",
+    segments: [
+      { key: "Strongly disagree", value: 8 },
+      { key: "Disagree", value: 14 },
+      { key: "Neutral", value: 20 },
+      { key: "Agree", value: 34 },
+      { key: "Strongly agree", value: 24 },
+    ],
+  },
+  {
+    category: "Search",
+    segments: [
+      { key: "Strongly disagree", value: 16 },
+      { key: "Disagree", value: 22 },
+      { key: "Neutral", value: 18 },
+      { key: "Agree", value: 28 },
+      { key: "Strongly agree", value: 16 },
+    ],
+  },
+  {
+    category: "Support",
+    segments: [
+      { key: "Strongly disagree", value: 6 },
+      { key: "Disagree", value: 10 },
+      { key: "Neutral", value: 16 },
+      { key: "Agree", value: 38 },
+      { key: "Strongly agree", value: 30 },
+    ],
+  },
 ];
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <DivergingStackedBar width={width} height={height} data={data} />}
+      {(width, height) => (
+        <DivergingStackedBar
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Diverging stacked bar of agreement by area, where Support leans most positive and Search most negative"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a diverging stacked bar when every category is answered on the **same
+ordered scale** and you care about the split between the negative and positive
+ends. Centering on the neutral point lets the eye compare "how far each bar
+leans" without doing arithmetic. If the parts have no natural order, or you only
+have one number per category, use a sibling below.
+
+| You want to…                                 | Use instead         |
+| -------------------------------------------- | ------------------- |
+| Show one signed number per category          | `DivergingBarChart` |
+| Stack unordered parts of a non-signed whole  | `StackedBarChart`   |
+| Compare two groups back-to-back across bands | `PopulationPyramid` |
+| Show plain non-negative magnitudes           | `BarChart`          |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { DivergingStackedBar, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  DivergingStackedBar,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `StackRow` — one row per category, each with an ordered
+set of `StackSegment`s:
+
+```ts
+interface StackSegment {
+  key: string;
+  value: number;
+}
+
+interface StackRow {
+  category: string;
+  segments: StackSegment[];
+}
+```
+
+```tsx
+const data: StackRow[] = [
+  {
+    category: "Checkout",
+    segments: [
+      { key: "Strongly disagree", value: 8 },
+      { key: "Disagree", value: 14 },
+      { key: "Neutral", value: 20 },
+      { key: "Agree", value: 34 },
+      { key: "Strongly agree", value: 24 },
+    ],
+  },
+  // …one row per category, every row sharing the same segment keys in order
+];
+```
+
+Contract notes, verifiable from source:
+
+- `category` should be **unique** per row — it is the band-scale domain and the
+  React key.
+- **Segment order is the scale.** Give segments from most-negative to
+  most-positive (e.g. "Strongly disagree" → "Strongly agree"); the bar is
+  centered on the neutral midpoint of that order.
+- With an **odd** segment count the middle segment is treated as neutral and
+  straddles the axis (half left, half right); with an **even** count the split
+  falls cleanly at the center with no neutral band.
+- **All rows must share the same keys, in the same order.** The legend and the
+  data table are built from the **first row's** keys; a key missing from a later
+  row reads as `0` in the table.
+- `value`s are non-negative counts or shares. The tooltip also reports each
+  segment as a percentage of its row's total responses.
+
+## API reference
+
+<PropsTable id="DivergingStackedBar" />
+
+Renders `null` for empty `data`, a row with no segments, or a non-positive
+`width`/`height`.
+
+## Chart configuration
+
+`DivergingStackedBar` takes only `width`, `height`, `data`, and `ariaLabel`. The
+layout, legend, tooltip, and color ramp below are all **automatic** — driven by
+the segment order in your data, with no props to set.
+
+### Diverging layout & neutral center (automatic)
+
+Not configurable. Segments before the midpoint stack leftward and segments after
+it stack rightward; for an odd count the middle segment straddles the zero line.
+A single vertical axis line marks the center. The left and right extents are
+scaled independently to the largest negative and positive offsets across all
+rows, so every bar shares one comparable scale. This demo uses an even,
+four-point scale (no neutral band):
+
+```jsx live
+const data = [
+  {
+    category: "Checkout",
+    segments: [
+      { key: "Very dissatisfied", value: 10 },
+      { key: "Dissatisfied", value: 18 },
+      { key: "Satisfied", value: 40 },
+      { key: "Very satisfied", value: 32 },
+    ],
+  },
+  {
+    category: "Search",
+    segments: [
+      { key: "Very dissatisfied", value: 22 },
+      { key: "Dissatisfied", value: 26 },
+      { key: "Satisfied", value: 30 },
+      { key: "Very satisfied", value: 22 },
+    ],
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={200}>
+      {(width, height) => (
+        <DivergingStackedBar
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Diverging stacked bar of satisfaction on a four-point scale"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Legend (automatic)
+
+The chart passes one `legend` item per segment key to `ChartContainer`, which
+renders the shared legend strip below the plot — a swatch and label for each
+point on the scale, in scale order.
+
+### Tooltips (automatic)
+
+Hovering a segment dims the others to 0.4 opacity and shows a small tooltip with
+the category and scale point, the segment's value, and its share of that row's
+total ("X% of responses"). Hover state is internal; there are no interaction
+callbacks.
+
+### Color & theming
+
+Segments are colored from a **diverging ramp** — two hues meeting at a gray
+midpoint — so the negative pole, neutral center, and positive pole are visually
+distinct and ordered. Set the color mode on the provider (`mode="light"`
+default, or `mode="dark"`); to follow the app's mode inside a `NimbusProvider`,
+pass `mode={coerceColorMode(useColorMode().colorMode)}`. The ramp comes from the
+validated `nimbus` chart theme, not from CSS colors.
+
+```jsx live
+const data = [
+  {
+    category: "Checkout",
+    segments: [
+      { key: "Strongly disagree", value: 8 },
+      { key: "Disagree", value: 14 },
+      { key: "Neutral", value: 20 },
+      { key: "Agree", value: 34 },
+      { key: "Strongly agree", value: 24 },
+    ],
+  },
+  {
+    category: "Support",
+    segments: [
+      { key: "Strongly disagree", value: 6 },
+      { key: "Disagree", value: 10 },
+      { key: "Neutral", value: 16 },
+      { key: "Agree", value: 38 },
+      { key: "Strongly agree", value: 30 },
+    ],
+  },
+];
+
+const App = () => (
+  <Box bg="#12151c" p="400" borderRadius="300">
+    <ChartThemeProvider mode="dark">
+      <ResponsiveContainer height={220}>
+        {(width, height) => (
+          <DivergingStackedBar
+            width={width}
+            height={height}
+            data={data}
+            ariaLabel="Diverging stacked bar of agreement by area, dark mode"
+          />
+        )}
+      </ResponsiveContainer>
+    </ChartThemeProvider>
+  </Box>
+);
+```
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <DivergingStackedBar width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <DivergingStackedBar width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. It is built for a handful of categories on a short
+ordered scale (roughly 3–7 points); there is no downsampling — aggregate
+categories or scale points upstream if you have many.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<DivergingStackedBar
+  ariaLabel="Diverging stacked bar of agreement by area, where Support leans most positive and Search most negative"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Diverging stacked bar of N categories"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `DivergingStackedBar` passes a `table`
+  to `ChartContainer`, which renders a visually-hidden `DataTable` (a
+  **Category** column plus one column per scale point) into the accessibility
+  tree, plus a keyboard "View data as table" toggle that reveals it in place.
+- **Text legend.** The legend labels every scale point in words, so the mapping
+  from ramp color to meaning is available as text, not color alone.
+- **CVD-safe palette.** The diverging ramp comes from the validated chart theme
+  (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** A segment's polarity is read from its side of the
+  center line and its position in the scale order; the tooltip and table give
+  the value and share. Color reinforces the order rather than being the only
+  cue.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, order the scale points sensibly, and in surrounding copy
+name the scale points rather than "the blue end". There is no animation, so
+reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (side + scale order + legend
+      labels)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names scale points rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`DivergingStackedBar` renders `null` when `data` is empty, a row has no
+segments, or the measured size is non-positive; it does not draw its own empty,
+loading, or error message (it does not forward those `ChartContainer` features).
+Guard those states upstream and render your own placeholder when there is no
+data yet.
+
+## Limitations
+
+- **Ordered scales only.** The layout assumes segments run negative → positive;
+  for unordered parts of a non-signed whole use
+  [`StackedBarChart`](/charts/stacked-bar-chart).
+- **Shared keys required.** Segment keys come from the first row; every row must
+  use the same keys in the same order, or the legend and table will be
+  inconsistent.
+- **No format or orientation overrides.** Values use fixed compact and percent
+  formats, and the layout is fixed horizontal.
+- **No title, caption, loading, or error passthrough** — `DivergingStackedBar`
+  forwards only `ariaLabel`, the `legend`, and the data table to
+  `ChartContainer`.
+- **No overlays or interaction callbacks** — it accepts no `children` and no
+  `onDatumClick` / `onDatumHover`.
+
+## Related charts
+
+Same "deviation" purpose, different trade-offs:
+[Diverging bar chart](/charts/diverging-bar-chart) for a single signed value per
+category and [Population pyramid](/charts/population-pyramid) for two mirrored
+groups per band. For an unordered part-to-whole breakdown of a non-signed total,
+use a [Stacked bar chart](/charts/stacked-bar-chart); for plain non-negative
+magnitudes, a [Bar chart](/charts/bar-chart). The `<ChartMeta />` block above
+links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

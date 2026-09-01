@@ -16,8 +16,11 @@ export interface TreemapNode {
 }
 
 export interface TreemapProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** Root of the hierarchy to lay out; leaves carry `value`, parents sum theirs. */
   data: TreemapNode;
   ariaLabel?: string;
 }

@@ -7,10 +7,13 @@ import {
 } from "../../chart/typography";
 
 export interface StatCardProps {
+  /** Metric name, shown above the value (e.g. "Monthly revenue"). */
   label: string;
+  /** The headline number to display. */
   value: number;
   /** Prior value; when present, a signed delta vs. it is shown. */
   previous?: number;
+  /** Formats the headline value. Defaults to `formatCompact` (e.g. `128.4k`). */
   format?: (n: number) => string;
   /**
    * For "lower is better" metrics (refund rate, processing time, churn…). When
@@ -18,6 +21,7 @@ export interface StatCardProps {
    * arrow still points in the true direction — only the valence color flips.
    */
   invertDelta?: boolean;
+  /** Accessible label for the card group. Defaults to `label`. */
   ariaLabel?: string;
 }
 

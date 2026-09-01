@@ -18,27 +18,264 @@ tags:
 
 <ChartMeta />
 
-A compact, label-free trend line for inline KPIs.
+A sparkline is a micro line for inline placement — a table cell, a KPI tile, a
+sentence — with no axes, gridlines, or tick labels, just a single accent stroke
+with faint min/max markers and an optional end dot. Use it to answer "which way
+is this number heading?" beside the number itself, where a full chart would be
+too heavy.
 
 ```jsx live
 const data = [
-  { x: new Date("2026-01-01"), y: 12 }, { x: new Date("2026-02-01"), y: 18 },
-  { x: new Date("2026-03-01"), y: 15 }, { x: new Date("2026-04-01"), y: 22 },
-  { x: new Date("2026-05-01"), y: 28 }, { x: new Date("2026-06-01"), y: 25 },
+  { x: new Date("2026-01-01"), y: 12 },
+  { x: new Date("2026-02-01"), y: 18 },
+  { x: new Date("2026-03-01"), y: 15 },
+  { x: new Date("2026-04-01"), y: 22 },
+  { x: new Date("2026-05-01"), y: 28 },
+  { x: new Date("2026-06-01"), y: 25 },
   { x: new Date("2026-07-01"), y: 33 },
 ];
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={80}>
-      {(width, height) => <Sparkline width={width} height={height} data={data} showEndDot />}
+      {(width, height) => (
+        <Sparkline
+          width={width}
+          height={height}
+          data={data}
+          showEndDot
+          ariaLabel="Sparkline of weekly signups, trending up"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a sparkline when the trend is context for a headline number, not the
+main subject — a "last 7 days" trace next to a metric, a per-row trend in a
+dense table, a shape in running copy. It shows direction and volatility at a
+glance; it deliberately shows no values, so it is never the sole source of the
+numbers.
+
+| You want to…                                   | Use instead                             |
+| ---------------------------------------------- | --------------------------------------- |
+| Show a full trend with axes and a tooltip      | [`LineChart`](/charts/line-chart)       |
+| Compare each series' level over time           | [`LineChart`](/charts/line-chart)       |
+| Pair the trend with the headline number itself | [`StatCard`](/charts/stat-card)         |
+| Watch a process against control limits         | [`ControlChart`](/charts/control-chart) |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { Sparkline, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  Sparkline,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size. A sparkline is
+usually sized by its host cell, but it still takes numeric `width`/`height` and
+does no measuring itself — supply them from a `ResponsiveContainer` or from the
+element it sits inside.
+
+## Data shape
+
+`data` is an array of `SeriesPoint` — one micro-series, no wrapping `Series`
+object:
+
+```ts
+interface SeriesPoint {
+  x: number | Date;
+  y: number | null;
+}
+```
+
+```tsx
+const data: SeriesPoint[] = [
+  { x: new Date("2026-01-01"), y: 12 },
+  { x: new Date("2026-02-01"), y: 18 },
+  { x: new Date("2026-03-01"), y: 15 },
+  { x: new Date("2026-04-01"), y: 22 },
+];
+```
+
+Contract notes, verifiable from source:
+
+- Points are spaced **evenly by index**, not by their `x` value — the `x` field
+  is carried by the type but is **not** placed on a scale here, so irregular
+  time gaps are not reflected. Pass points already in chronological order.
+- `y` may be `null`; null points are dropped before drawing, and the line
+  connects across the gap (it does not break).
+- The y-scale fits the min/max of the defined values (a "nice" domain), so a
+  sparkline shows **shape, not absolute level** — two sparklines are not
+  comparable unless you scale them yourself upstream.
+- The faint markers sit at the min and max defined points; the end dot (when
+  enabled) sits at the last defined point.
+
+## API reference
+
+<PropsTable id="Sparkline" />
+
+Renders `null` when `data` has no non-null points or the size is non-positive.
+
+## Chart configuration
+
+### End dot
+
+`showEndDot` (default `true`) draws a filled accent dot at the last point, which
+anchors the eye on the current value — the natural focus when a sparkline sits
+beside a number. Set it to `false` for the barest possible trace.
+
+```jsx live
+const data = [
+  { x: new Date("2026-01-01"), y: 40 },
+  { x: new Date("2026-02-01"), y: 44 },
+  { x: new Date("2026-03-01"), y: 39 },
+  { x: new Date("2026-04-01"), y: 52 },
+  { x: new Date("2026-05-01"), y: 48 },
+  { x: new Date("2026-06-01"), y: 61 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={64}>
+      {(width, height) => (
+        <Sparkline
+          width={width}
+          height={height}
+          data={data}
+          showEndDot={false}
+          ariaLabel="Sparkline of monthly orders, no end marker"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Marks & scale (automatic)
+
+Not configurable: a single accent stroke (a monotone spline), two faint
+`mutedInk` dots at the min and max points, and the optional end dot. There are
+no axes, gridlines, tick labels, legend, or hover tooltip — the sparkline is
+intentionally chrome-free. The scale fits the data's own extent.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. The stroke, markers, and end
+dot come from the validated `nimbus` chart theme (`accent` and `mutedInk`), not
+CSS.
+
+## Responsiveness & performance
+
+Fixed height (typically short — 48–80px):
+
+```tsx
+<ResponsiveContainer height={64}>
+  {(width, height) => <Sparkline width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={6} minHeight={40} maxHeight={96}>
+  {(width, height) => <Sparkline width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+sparkline returns `null` for a non-positive size — safe inside tables, tabs, and
+initially-hidden containers. There is no downsampling; keep sparklines to a
+modest number of points (they are read as a gesture, not a dataset).
+
+## Accessibility
+
+Unlike the full charts, a sparkline is a **bare SVG** — it does not use
+`ChartContainer`, so there is **no** built-in data-table fallback. Its only
+accessible affordance is its label, and it is meant to sit beside the number it
+describes. Pass an `ariaLabel` using Amy Cesal's formula —
+`[Chart type] of [data], where [the point]`:
+
+```tsx
+<Sparkline
+  ariaLabel="Sparkline of weekly signups over 7 weeks, trending up"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a plain
+  default of `"Sparkline"` is used if you omit it — almost always worth
+  overriding).
+- **CVD-safe palette.** The stroke and markers come from the validated chart
+  theme (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** Trend is carried entirely by line position and slope;
+  color is a single accent hue and is not load-bearing.
+
+What you must supply (there is **no** automatic table here): make the actual
+values available as text nearby — the headline number the sparkline annotates,
+or a fuller [`LineChart`](/charts/line-chart) /
+[`DataTable`](/charts/data-table) on drill-down. A sparkline should never be the
+only source of a value. Keep it inside a `ChartThemeProvider`, and in
+surrounding copy describe the trend in words rather than "the line".
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the trend shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text nearby (there is **no** built-in
+      data table — the sparkline is not a standalone data source)
+- [ ] Meaning does not depend on color alone (position/slope carry the trend)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names the metric and its direction rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`Sparkline` renders `null` when `data` contains no non-null points or the
+measured size is non-positive; it draws no empty, loading, or error state of its
+own. Guard those states upstream and render a dash or placeholder in the cell
+when there is no series yet.
+
+## Limitations
+
+- **No data-table fallback.** It does not use `ChartContainer`, so the
+  accessible-table equivalent the other trend charts provide is absent — supply
+  the numbers as text nearby.
+- **No axes, tooltip, or legend.** It is chrome-free by design; for any of those
+  use [`LineChart`](/charts/line-chart).
+- **Single series only.** `data` is one `SeriesPoint[]`; there is no
+  multi-series form.
+- **`x` is not scaled.** Points are evenly spaced by index, so uneven time gaps
+  are not shown.
+- **Not cross-comparable.** Each sparkline fits its own extent, so heights are
+  not comparable across sparklines without upstream normalization.
+
+## Related charts
+
+Same "trend over time" purpose, different trade-offs:
+[Line chart](/charts/line-chart),
+[Stacked area chart](/charts/stacked-area-chart),
+[Streamgraph](/charts/streamgraph), [Control chart](/charts/control-chart), and
+[Candlestick chart](/charts/candlestick-chart). Sparklines pair naturally with a
+[Stat card](/charts/stat-card) headline number. The `<ChartMeta />` block above
+links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

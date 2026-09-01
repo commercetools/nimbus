@@ -15,9 +15,13 @@ import { formatCompact, formatDayMonth } from "../../chart/format";
 import type { Series } from "../../chart/types";
 
 export interface StreamgraphProps {
+  /** Plot width in pixels — supply from `ResponsiveContainer`. */
   width: number;
+  /** Plot height in pixels — supply from `ResponsiveContainer`. */
   height: number;
+  /** Series stacked around a centered baseline, aligned by index on shared x. */
   series: Series[];
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;

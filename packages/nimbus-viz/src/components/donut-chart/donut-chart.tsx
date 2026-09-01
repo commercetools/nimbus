@@ -8,8 +8,12 @@ import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
 export interface DonutChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** One `CategoryDatum` (`{ category, value }`) per slice; slice order follows
+   *  the array. */
   data: CategoryDatum[];
   ariaLabel?: string;
 }

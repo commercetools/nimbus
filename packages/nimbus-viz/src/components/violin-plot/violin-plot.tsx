@@ -17,9 +17,13 @@ export interface SampleGroup {
 }
 
 export interface ViolinPlotProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** One group of raw samples per violin; the density is estimated here. */
   groups: SampleGroup[];
+  /** Accessible label for the SVG; defaults to a generated summary. */
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;

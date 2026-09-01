@@ -18,27 +18,342 @@ tags:
 
 <ChartMeta />
 
-Two series drawn back to back on a shared band axis.
+A population pyramid draws two series back to back on one shared band axis: each
+band (an age bracket, a tenure cohort) has a bar growing left for one group and
+a bar growing right for the other, meeting at a central gutter that carries the
+band labels. Both sides share one value scale, so the two groups are directly
+comparable at every band. Use it to answer "how do these two groups compare
+across the same set of bands?"
 
 ```jsx live
 const data = [
-  { category: "0–17", segments: [{ key: "Male", value: 62 }, { key: "Female", value: 58 }] },
-  { category: "18–34", segments: [{ key: "Male", value: 88 }, { key: "Female", value: 92 }] },
-  { category: "35–54", segments: [{ key: "Male", value: 74 }, { key: "Female", value: 80 }] },
-  { category: "55+", segments: [{ key: "Male", value: 46 }, { key: "Female", value: 63 }] },
+  {
+    category: "0–17",
+    segments: [
+      { key: "Male", value: 62 },
+      { key: "Female", value: 58 },
+    ],
+  },
+  {
+    category: "18–34",
+    segments: [
+      { key: "Male", value: 88 },
+      { key: "Female", value: 92 },
+    ],
+  },
+  {
+    category: "35–54",
+    segments: [
+      { key: "Male", value: 74 },
+      { key: "Female", value: 80 },
+    ],
+  },
+  {
+    category: "55+",
+    segments: [
+      { key: "Male", value: 46 },
+      { key: "Female", value: 63 },
+    ],
+  },
 ];
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <PopulationPyramid width={width} height={height} data={data} />}
+      {(width, height) => (
+        <PopulationPyramid
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Population pyramid of customers by age band and gender, where the two groups are close in the youngest bands and diverge at 55+"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a population pyramid when you have exactly two groups measured across
+the same ordered set of bands and the shape of each group's distribution — and
+how the two mirror or diverge — is the point. The shared central axis and common
+value scale make band-by-band comparison exact. For more than two groups, or a
+signed single value, use a sibling below.
+
+| You want to…                                   | Use instead           |
+| ---------------------------------------------- | --------------------- |
+| Compare more than two series across bands      | `GroupedBarChart`     |
+| Show one signed number per category            | `DivergingBarChart`   |
+| Break each bar into an ordered sentiment scale | `DivergingStackedBar` |
+| Show plain non-negative magnitudes             | `BarChart`            |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { PopulationPyramid, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  PopulationPyramid,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `StackRow` — one row per band. Each row's **first two**
+segments become the left and right sides:
+
+```ts
+interface StackSegment {
+  key: string;
+  value: number;
+}
+
+interface StackRow {
+  category: string;
+  segments: StackSegment[];
+}
+```
+
+```tsx
+const data: StackRow[] = [
+  {
+    category: "0–17",
+    segments: [
+      { key: "Male", value: 62 },
+      { key: "Female", value: 58 },
+    ],
+  },
+  {
+    category: "18–34",
+    segments: [
+      { key: "Male", value: 88 },
+      { key: "Female", value: 92 },
+    ],
+  },
+  // …one row per band, all rows using the same two segment keys
+];
+```
+
+Contract notes, verifiable from source:
+
+- `category` is the **band label** (age bracket, cohort). It should be unique —
+  it is the band-scale domain and the React key.
+- **Only the first two segments are used.** Segment 0 is the left side and
+  segment 1 the right; any further segments are ignored.
+- The two side labels come from the **first row's** two segment keys (defaulting
+  to "Left"/"Right" if absent), so every row should use the same two keys.
+- Bands are drawn **top to bottom in the given order** — they are not sorted.
+- `value`s are non-negative. Both sides share one linear scale from 0 to the
+  largest value across either side, so bar lengths are comparable everywhere.
+- A missing first or second segment in a row reads as `0`.
+
+## API reference
+
+<PropsTable id="PopulationPyramid" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+`PopulationPyramid` takes only `width`, `height`, `data`, and `ariaLabel`. The
+mirrored layout, legend, tooltip, and colors below are all **automatic** — there
+are no props to configure them.
+
+### Two mirrored series (automatic)
+
+Not configurable. The first two segments of each row become the left and right
+bars; both sides share a single value scale, and a fixed central gutter carries
+the band labels between them. Bands appear in input order, top to bottom, so an
+ordered set of brackets stays ordered.
+
+### Legend (automatic)
+
+The chart passes one `legend` item per side to `ChartContainer`, which renders
+the shared legend strip below the plot — a swatch and label for each of the two
+groups (the two segment keys).
+
+### Tooltips (automatic)
+
+Hovering a bar dims the opposite side to 0.4 opacity and shows a small tooltip
+with the band, the side's label, and its value. Hover state is internal; there
+are no interaction callbacks.
+
+### Color & theming
+
+The two sides use distinct **categorical** hues from the theme's entity-color
+scale, distinguished in the legend and by which side of the gutter they occupy.
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`);
+to follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Colors come from the
+validated `nimbus` chart palette, not from CSS.
+
+```jsx live
+const data = [
+  {
+    category: "0–17",
+    segments: [
+      { key: "Male", value: 62 },
+      { key: "Female", value: 58 },
+    ],
+  },
+  {
+    category: "18–34",
+    segments: [
+      { key: "Male", value: 88 },
+      { key: "Female", value: 92 },
+    ],
+  },
+  {
+    category: "35–54",
+    segments: [
+      { key: "Male", value: 74 },
+      { key: "Female", value: 80 },
+    ],
+  },
+  {
+    category: "55+",
+    segments: [
+      { key: "Male", value: 46 },
+      { key: "Female", value: 63 },
+    ],
+  },
+];
+
+const App = () => (
+  <Box bg="#12151c" p="400" borderRadius="300">
+    <ChartThemeProvider mode="dark">
+      <ResponsiveContainer height={280}>
+        {(width, height) => (
+          <PopulationPyramid
+            width={width}
+            height={height}
+            data={data}
+            ariaLabel="Population pyramid of customers by age band and gender, dark mode"
+          />
+        )}
+      </ResponsiveContainer>
+    </ChartThemeProvider>
+  </Box>
+);
+```
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <PopulationPyramid width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <PopulationPyramid width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. It is built for a modest number of bands (age
+brackets, tenure cohorts); there is no downsampling — bucket into bands upstream
+rather than passing raw rows.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<PopulationPyramid
+  ariaLabel="Population pyramid of customers by age band and gender, where the two groups are close in the youngest bands and diverge at 55+"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Population pyramid of N bands"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `PopulationPyramid` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Band**, and one per side) into the accessibility tree, plus a keyboard "View
+  data as table" toggle that reveals it in place.
+- **Text legend.** The legend names both sides in words, so which hue means
+  which group is available as text.
+- **CVD-safe palette.** The two hues come from the validated chart theme
+  (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** The two groups sit on opposite sides of the central
+  gutter, so side (position) distinguishes them independently of color; the
+  legend and data table name each side.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, choose two clear side labels, and in surrounding copy name
+the groups and bands rather than "the left bars". There is no animation, so
+reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (side/position + legend labels)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names the groups and bands rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`PopulationPyramid` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Exactly two series.** Only the first two segments per row are drawn; any
+  extra are ignored. For three or more groups use
+  [`GroupedBarChart`](/charts/grouped-bar-chart).
+- **No sorting or format overrides.** Bands are drawn in input order, the layout
+  is a fixed horizontal mirror, and values use a fixed compact format.
+- **Categorical side hues.** The two sides are colored as distinct categories,
+  not as a valence/diverging pair — for signed above/below-zero data use
+  [`DivergingBarChart`](/charts/diverging-bar-chart).
+- **No title, caption, loading, or error passthrough** — `PopulationPyramid`
+  forwards only `ariaLabel`, the `legend`, and the data table to
+  `ChartContainer`.
+- **No overlays or interaction callbacks** — it accepts no `children` and no
+  `onDatumClick` / `onDatumHover`.
+
+## Related charts
+
+Same "deviation" purpose, different trade-offs:
+[Diverging bar chart](/charts/diverging-bar-chart) for a single signed value per
+category and [Diverging stacked bar](/charts/diverging-stacked-bar) for ordered
+sentiment scales. To compare two or more groups side by side without the
+mirrored layout, use a [Grouped bar chart](/charts/grouped-bar-chart); for plain
+non-negative magnitudes, a [Bar chart](/charts/bar-chart). The `<ChartMeta />`
+block above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

@@ -18,7 +18,13 @@ tags:
 
 <ChartMeta />
 
-Retention by cohort, aligned to periods since signup.
+A cohort triangle is the calendar-aligned cousin of the cohort heatmap. Each
+cohort is a row of values indexed by **age** (period 0 = acquisition), but each
+row is shifted right by its position so age-0 lands on the outlined diagonal and
+every **column is a calendar period**. Use it to answer "how does each cohort
+retain as it ages?" — and, reading straight down a column, "how did cohorts of
+different ages behave in the same calendar month?", which surfaces seasonality a
+purely age-aligned heatmap flattens.
 
 ```jsx live
 const rows = [
@@ -28,19 +34,264 @@ const rows = [
   { label: "Apr", values: [100, 70] },
   { label: "May", values: [100] },
 ];
-const periodLabels = ["M0", "M1", "M2", "M3", "M4"];
+const periodLabels = ["Jan", "Feb", "Mar", "Apr", "May"];
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <CohortTriangle width={width} height={height} rows={rows} periodLabels={periodLabels} />}
+      {(width, height) => (
+        <CohortTriangle
+          width={width}
+          height={height}
+          rows={rows}
+          periodLabels={periodLabels}
+          ariaLabel="Cohort triangle of monthly retention, where each cohort's tail steadies with age"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a cohort triangle when you track a metric per acquisition cohort over
+subsequent periods and you care about **calendar alignment** — you want to read
+both along a row (one cohort aging) and down a column (all cohorts in one
+calendar period). If you only care about age-over-age retention and calendar
+seasonality is noise, a plain heatmap with cohorts as rows and age as columns is
+simpler.
+
+| You want to…                                 | Use instead       |
+| -------------------------------------------- | ----------------- |
+| Read retention purely by age, period-aligned | `Heatmap`         |
+| Segment customers by recency and frequency   | `RfmGrid`         |
+| Lay a single daily value out over a calendar | `CalendarHeatmap` |
+| Plot one cohort's retention curve as a line  | `LineChart`       |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { CohortTriangle, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  CohortTriangle,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`rows` is an array of `HeatRow` — one row per cohort. A row's `values` are
+indexed by **age** (period 0 first), and the chart shifts each row right by its
+index to build the calendar columns:
+
+```ts
+interface HeatRow {
+  label: string;
+  values: Array<number | null>;
+}
+```
+
+```tsx
+const rows: HeatRow[] = [
+  { label: "Jan", values: [100, 68, 52, 44] }, // acquired in Jan, ages Jan→Apr
+  { label: "Feb", values: [100, 72, 58] }, //     acquired in Feb, ages Feb→Apr
+  { label: "Mar", values: [100, 65] }, //         acquired in Mar, ages Mar→Apr
+];
+```
+
+Contract notes, verifiable from source:
+
+- `label` is the cohort's row label and its React key, so it should be
+  **unique** per row. Rows are drawn top-to-bottom in the order given (typically
+  oldest cohort first).
+- `values[0]` is the **acquisition** period (age M0); `values[1]` is one period
+  later, and so on. The M0 cell sits on the diagonal and is outlined.
+- Rows are naturally **ragged** — younger cohorts have fewer observed periods.
+  Row _i_'s oldest age lands in column `i + values.length − 1`, so the grid's
+  column count is the longest such reach. A `null` value is drawn as an empty
+  cell.
+- `periodLabels` are indexed by **column** (calendar period), where cohort 0's
+  acquisition is column 0; a missing label falls back to the column index.
+- Values are assumed **non-negative**: the ramp runs from 0 to the maximum
+  across all cells.
+
+## API reference
+
+<PropsTable id="CohortTriangle" />
+
+Renders `null` for empty `rows`, a grid with no columns, or a non-positive
+`width`/`height`.
+
+## Chart configuration
+
+### Hue
+
+`hue` picks the Nimbus color the sequential ramp is built from (default
+`"teal"`). The ramp — light for low, saturated for high — is generated from the
+validated theme.
+
+```jsx live
+const rows = [
+  { label: "Jan", values: [100, 68, 52, 44, 39] },
+  { label: "Feb", values: [100, 72, 58, 47] },
+  { label: "Mar", values: [100, 65, 50] },
+  { label: "Apr", values: [100, 70] },
+  { label: "May", values: [100] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <CohortTriangle
+          width={width}
+          height={height}
+          rows={rows}
+          hue="purple"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Period labels
+
+`periodLabels` label the calendar columns along the top, indexed by column
+(cohort 0's acquisition is column 0). Pass calendar labels (months, weeks) so a
+column reads as a moment in time; omit the prop and columns fall back to their
+index number.
+
+### Diagonal, cell values, legend & tooltip (automatic)
+
+Not configurable — the chart always draws them. The **acquisition (M0) cell of
+each cohort is outlined** in the theme accent and forms the diagonal; the legend
+strip below explains the outline alongside a low→high gradient ("Less" →
+"More"). Each cell prints its value (compact-formatted) when large enough, with
+an automatically contrast-matched text color. Hovering a cell shows a tooltip
+with the cohort, the age (`M0` … marked "acquired" at M0), and the value.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. The ramp is derived from the
+validated `nimbus` chart palette for the chosen `hue`, not a CSS color.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <CohortTriangle width={width} height={height} rows={rows} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={220} maxHeight={440}>
+  {(width, height) => (
+    <CohortTriangle width={width} height={height} rows={rows} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Cells share the available space equally, so wide
+triangles (many cohorts × many periods) shrink each cell and drop the in-cell
+value label; there is no downsampling — keep the cohort/period counts legible
+and aggregate periods (weeks → months) upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the triangle shows **and** its takeaway,
+using Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<CohortTriangle
+  ariaLabel="Cohort triangle of monthly retention, where each cohort's tail steadies with age"
+  width={width}
+  height={height}
+  rows={rows}
+/>
+```
+
+Don't list individual cells in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Cohort triangle, N cohorts"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `CohortTriangle` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (a **Cohort**
+  column plus one column per **age** M0…Mn) into the accessibility tree, plus a
+  keyboard "View data as table" toggle that reveals it in place — so every cell
+  value is available as text. Note the table is **age-indexed** (the natural
+  retention read), even though the chart is drawn calendar-aligned.
+- **CVD-safe palette + legend.** The ramp is a single-hue **sequential** scale
+  (lightness, never a rainbow) from the validated chart theme, and the legend
+  states both the scale direction and the diagonal outline.
+- **Non-color cues.** In-cell values, the outlined acquisition diagonal, and the
+  data-table fallback all carry meaning without relying on color intensity.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the cohorts, ages, and values
+rather than "the dark diagonal". There is no animation, so reduced-motion
+handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Magnitude is not read from color alone (in-cell values, the outlined
+      diagonal, and the data table carry it; the ramp uses lightness, not hue)
+- [ ] Palette meets contrast + CVD checks (built-in sequential theme; don't
+      override to un-validated colors)
+- [ ] Surrounding copy names cohorts/periods and values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`CohortTriangle` renders `null` when `rows` is empty, the grid has no columns,
+or the measured size is non-positive; it does not draw its own empty, loading,
+or error message (it does not forward those `ChartContainer` features). Guard
+those states upstream and render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **One measure per cell.** A cell encodes a single number; it can't show a
+  second metric or a within-cell breakdown per cohort/period.
+- **Contiguous, age-0-first rows.** Each row's `values` are assumed to start at
+  acquisition (M0) and run without internal gaps except explicit `null`s; the
+  right-shift alignment relies on this.
+- **Non-negative values.** The ramp is anchored at 0 and scaled to the maximum;
+  it is not a diverging scale for signed data.
+- **No title, caption, loading, or error passthrough** — `CohortTriangle`
+  forwards only `ariaLabel`, the gradient legend, and the data table to
+  `ChartContainer`.
+- **No click or hover callbacks.** Hover highlight and the tooltip are internal;
+  there is no prop to observe cell interaction for drill-down.
+
+## Related charts
+
+Same "matrix & retention" purpose, different jobs: [Heatmap](/charts/heatmap),
+[Calendar heatmap](/charts/calendar-heatmap), and [RFM grid](/charts/rfm-grid).
+The `<ChartMeta />` block above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

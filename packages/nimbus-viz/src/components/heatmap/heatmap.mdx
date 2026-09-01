@@ -18,7 +18,11 @@ tags:
 
 <ChartMeta />
 
-A value grid shaded on a single sequential ramp.
+A heatmap lays a measure out on a two-dimensional grid — rows against columns —
+and shades each cell on a single-hue sequential ramp so intensity maps to value.
+Use it to answer "how does this value vary across the matrix?" — orders by
+weekday and hour, error rate by service and region, engagement by segment and
+week.
 
 ```jsx live
 const rows = [
@@ -33,14 +37,271 @@ const columnLabels = ["6a", "9a", "12p", "3p", "6p", "9p"];
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <Heatmap width={width} height={height} rows={rows} columnLabels={columnLabels} />}
+      {(width, height) => (
+        <Heatmap
+          width={width}
+          height={height}
+          rows={rows}
+          columnLabels={columnLabels}
+          ariaLabel="Heatmap of orders by weekday and hour, where mid-afternoon peaks"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a heatmap when every observation has two categorical coordinates and
+one number, and you want to see the pattern across the whole grid at once — the
+hot corner, the dead row, the diagonal — rather than read individual values
+precisely. Color intensity is a fast but coarse encoding; when exact comparison
+matters more than the overall pattern, a bar chart reads more accurately.
+
+| You want to…                                    | Use instead       |
+| ----------------------------------------------- | ----------------- |
+| Lay a daily value out over weeks and months     | `CalendarHeatmap` |
+| Track retention as cohorts age                  | `CohortTriangle`  |
+| Segment customers by recency and frequency      | `RfmGrid`         |
+| Compare a single measure across categories      | `BarChart`        |
+| Show the distribution of one continuous measure | `Histogram`       |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { Heatmap, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  Heatmap,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`rows` is an array of `HeatRow` — one row per y-axis band, each carrying a flat
+array of cell values left-to-right:
+
+```ts
+interface HeatRow {
+  label: string;
+  values: Array<number | null>;
+}
+```
+
+```tsx
+const rows: HeatRow[] = [
+  { label: "Mon", values: [12, 24, 40, 62] },
+  { label: "Tue", values: [8, 22, 44, 70] },
+  { label: "Wed", values: [10, 26, 50, null] },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `label` is the row's y-axis band label and its React key, so it should be
+  **unique** per row.
+- The grid's **column count** is the longest row's length; shorter rows are
+  **ragged** and a `null` cell is simply left empty (no mark drawn). Use `null`,
+  not `0`, for "no data" — `0` is a real value on the ramp.
+- Values are assumed **non-negative**: the ramp runs from 0 to the maximum
+  across all cells, so a cell's shade is `value / max`.
+- Row **order** is preserved top-to-bottom; columns are positional (index `0`
+  first), and `columnLabels` label them by index.
+
+## API reference
+
+<PropsTable id="Heatmap" />
+
+Renders `null` for empty `rows`, an all-empty grid (zero columns), or a
+non-positive `width`/`height`.
+
+## Chart configuration
+
+### Hue
+
+`hue` picks the Nimbus color the sequential ramp is built from (default
+`"blue"`). Pick a hue that suits the metric; the ramp itself — light for low,
+saturated for high — is generated from the validated theme, not a CSS gradient.
+
+```jsx live
+const rows = [
+  { label: "Mon", values: [12, 24, 40, 62, 48, 20] },
+  { label: "Tue", values: [8, 22, 44, 70, 52, 26] },
+  { label: "Wed", values: [10, 26, 50, 66, 46, 22] },
+  { label: "Thu", values: [14, 30, 48, 72, 58, 30] },
+  { label: "Fri", values: [18, 34, 56, 80, 64, 38] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <Heatmap width={width} height={height} rows={rows} hue="teal" />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Labels
+
+Row labels come from each row's `label`. Column headers come from
+`columnLabels`, matched to columns by index; where a label is missing the column
+falls back to its 0-based index number, so you can omit the prop entirely for an
+unlabeled matrix.
+
+```jsx live
+const rows = [
+  { label: "North", values: [4, 9, 6, 2] },
+  { label: "South", values: [7, 3, 8, 5] },
+  { label: "East", values: [2, 6, 9, 4] },
+  { label: "West", values: [5, 8, 3, 7] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={240}>
+      {(width, height) => (
+        <Heatmap
+          width={width}
+          height={height}
+          rows={rows}
+          columnLabels={["Q1", "Q2", "Q3", "Q4"]}
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Cell values, scale & tooltip (automatic)
+
+Not configurable — the chart always draws them. Each cell prints its value
+(compact-formatted) when the cell is large enough to fit legible text; tight
+cells drop the label and rely on shade alone. The printed value's color is
+chosen automatically for contrast against its cell fill. Hovering a cell
+outlines it and shows a small tooltip with the row label, the column label, and
+the value. There is no configurable axis or scale: the ramp is anchored at 0 and
+scaled to the grid maximum.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. The ramp is derived from the
+validated `nimbus` chart palette for the chosen `hue`, not an ad-hoc color.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => <Heatmap width={width} height={height} rows={rows} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => <Heatmap width={width} height={height} rows={rows} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Cells share the available space equally, so very
+large grids shrink each cell (and drop its in-cell value label); there is no
+downsampling — keep the matrix to a legible number of rows and columns and
+aggregate upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the grid shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<Heatmap
+  ariaLabel="Heatmap of orders by weekday and hour, where mid-afternoon peaks"
+  width={width}
+  height={height}
+  rows={rows}
+/>
+```
+
+Don't list individual cells in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Heatmap, N rows by M columns"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `Heatmap` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (a **Row**
+  column plus one column per matrix column, labeled from `columnLabels` or the
+  index) into the accessibility tree, plus a keyboard "View data as table"
+  toggle that reveals it in place — so every cell value is available as text,
+  not just the one-line label.
+- **CVD-safe palette.** The ramp is a single-hue **sequential** scale
+  (lightness, never a rainbow) from the validated chart theme, so it stays
+  ordered under color-vision deficiency.
+- **Value text on cells.** Where a cell is large enough, its value is printed
+  with an automatically contrast-matched text color, so magnitude is not read
+  from color alone.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the hot rows/columns and
+their values rather than "the dark cell". There is no animation, so
+reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Magnitude is not read from color alone (in-cell values + the data table
+      carry the numbers; the ramp uses lightness, not hue)
+- [ ] Palette meets contrast + CVD checks (built-in sequential theme; don't
+      override to un-validated colors)
+- [ ] Surrounding copy names rows/columns and values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`Heatmap` renders `null` when `rows` is empty, the grid has no columns, or the
+measured size is non-positive; it does not draw its own empty, loading, or error
+message (it does not forward those `ChartContainer` features). Guard those
+states upstream and render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **One measure per cell.** A heatmap encodes a single number per cell; it can't
+  show a second measure or a breakdown within a cell.
+- **No legend.** Unlike its calendar, cohort, and RFM siblings, `Heatmap` draws
+  no low→high gradient legend — lean on the printed cell values and the data
+  table for the scale.
+- **Non-negative values.** The ramp is anchored at 0 and scaled to the maximum;
+  it is not a diverging scale for signed data.
+- **No title, caption, loading, or error passthrough** — `Heatmap` forwards only
+  `ariaLabel` and the data table to `ChartContainer`.
+- **No click or hover callbacks.** Hover highlight and the tooltip are internal;
+  there is no prop to observe cell interaction for drill-down.
+
+## Related charts
+
+Same "matrix & retention" purpose, different jobs:
+[Calendar heatmap](/charts/calendar-heatmap),
+[Cohort triangle](/charts/cohort-triangle), and [RFM grid](/charts/rfm-grid).
+The `<ChartMeta />` block above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

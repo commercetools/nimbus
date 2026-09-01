@@ -18,7 +18,11 @@ tags:
 
 <ChartMeta />
 
-Sorted bars plus a cumulative line to find the vital few.
+A Pareto chart ranks categories by magnitude and overlays a running cumulative
+total, so the "vital few" categories that drive most of the whole stand out.
+Bars (sorted descending) show each category's size; a line climbs across them to
+the grand total, and a dashed reference line marks the 80% level. Use it to
+answer "which few causes account for most of the total?"
 
 ```jsx live
 const data = [
@@ -32,14 +36,254 @@ const data = [
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <ParetoChart width={width} height={height} data={data} />}
+      {(width, height) => (
+        <ParetoChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Pareto chart of revenue by channel, where the top two channels account for most of the total"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a Pareto chart when you have one measure per category and the story is
+concentration — a few categories carrying the bulk of the total, the classic
+80/20. If you only need the ranking, or the total's composition, a sibling reads
+more simply.
+
+| You want to…                                    | Use instead                  |
+| ----------------------------------------------- | ---------------------------- |
+| Just rank categories by size                    | `BarChart` / `LollipopChart` |
+| Compare several series within each category     | `GroupedBarChart`            |
+| Show each category's parts adding to a total    | `StackedBarChart`            |
+| Read cumulative share across a continuous value | `CumulativeCurve`            |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { ParetoChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  ParetoChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `CategoryDatum` — one row per bar. You supply only the raw
+magnitudes; the ranking and the cumulative total are derived for you:
+
+```ts
+interface CategoryDatum {
+  category: string;
+  value: number;
+}
+```
+
+```tsx
+const data: CategoryDatum[] = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `category` should be **unique** per row — it is the band-scale domain and the
+  React key.
+- Rows are **sorted by value descending internally**, so input order does not
+  matter.
+- The running cumulative total, the grand total, and the 80% cutoff are all
+  **computed** — there is no cumulative field to supply.
+- `value` is a plain number and is assumed **non-negative**: values are summed
+  into a running total, and the value axis top is the grand total.
+
+## API reference
+
+<PropsTable id="ParetoChart" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Single value axis & cumulative line (automatic)
+
+This is a deliberate departure from the textbook dual-axis Pareto. Both the bars
+(per-category magnitude) and the cumulative line read off **one** absolute-unit
+value axis, whose top is the grand total — there is **no** second right-hand
+percentage axis. The cumulative line climbs in the same units from the tallest
+bar's value up to the grand total; its final share is printed as a text
+annotation, and the running share appears in the hover tooltip. The 80% "vital
+few" cutoff is drawn as a dashed **reference line** on that same axis, not as a
+percentage scale.
+
+### Legend & color (automatic)
+
+A two-item legend renders above the plot — **Value** (the accent bars) and
+**Cumulative** (the line). The line uses a distinct categorical hue to separate
+it from the bars. Neither the legend nor the colors are configurable.
+
+### Axes & scales (automatic)
+
+The category axis is a band scale over the ranked categories (labels fit to the
+band and truncate when tight); the value axis is a linear scale from 0 to the
+"nice" grand total, with horizontal gridlines and compact-formatted ticks.
+
+### Hover & tooltip (automatic)
+
+Hovering a bar dims the rest to 0.4 opacity and shows a tooltip with the
+category, its value, and its cumulative share (as a percentage).
+
+### Overlays (`children`)
+
+Layer Layer-2 annotations (e.g. `ReferenceLine`, `ThresholdBand`, `TrendLine`)
+over the value axis by passing them as `children`.
+
+### Interaction callbacks
+
+`onDatumClick` and `onDatumHover` report the **raw input datum** as `datum` and
+its **rank in the sorted display order** as `index`; use them for drill-down or
+to drive external readouts. Hover state is managed internally regardless.
+
+```tsx
+<ParetoChart
+  width={width}
+  height={height}
+  data={data}
+  onDatumClick={({ datum }) => navigate(`/channel/${datum.category}`)}
+/>
+```
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. The bar accent and the
+cumulative line's hue both come from the validated `nimbus` chart palette
+(contrast + color-vision-deficiency checks), not CSS colors.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => <ParetoChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => <ParetoChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. A Pareto chart is meant for a handful of categories
+(the point is the concentration in the first few); there is no downsampling —
+cap or aggregate the long tail upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<ParetoChart
+  ariaLabel="Pareto chart of revenue by channel, where the top two channels account for most of the total"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Pareto chart of N categories"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `ParetoChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Category**, **Value**, and **Cumulative %**) into the accessibility tree,
+  plus a keyboard "View data as table" toggle that reveals it in place — so the
+  cumulative share is available as text, not only on the line.
+- **Legend.** A visible legend names the bars ("Value") and the line
+  ("Cumulative").
+- **CVD-safe palette.** Both hues come from the validated chart theme
+  (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** The bars and the cumulative line are distinguished by
+  shape (bar vs. line) as well as color, and the legend and data table carry the
+  distinction as text.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the leading categories and
+their cumulative share rather than "the line" or "the tall bar". There is no
+animation, so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback,
+      including the cumulative %)
+- [ ] Meaning does not depend on color alone (bar vs. line shape + legend carry
+      it)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names categories/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`ParetoChart` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Single absolute value axis by design.** There is no dual-axis form with a
+  right-hand percentage scale; the cumulative share is shown as text and in the
+  tooltip only. If you specifically need the textbook two-axis Pareto, this is
+  not it.
+- **Non-negative values.** Values are summed into a running total; signed data
+  is not supported.
+- **One measure per category.** No series — use
+  [`GroupedBarChart`](/charts/grouped-bar-chart) or
+  [`StackedBarChart`](/charts/stacked-bar-chart).
+- **The 80% cutoff is fixed** at 80% of the grand total; it is not configurable.
+- **No value formatting** — bars use the built-in compact formatter and the
+  cumulative share uses a percentage formatter.
+- **No title, caption, loading, or error passthrough** — `ParetoChart` forwards
+  only `ariaLabel`, the legend, the data table, and `children` to
+  `ChartContainer`.
+
+## Related charts
+
+Same "magnitude" purpose, different trade-offs: [Bar chart](/charts/bar-chart),
+[Grouped bar chart](/charts/grouped-bar-chart),
+[Lollipop chart](/charts/lollipop-chart),
+[Radial bar chart](/charts/radial-bar-chart), and
+[Histogram](/charts/histogram). The `<ChartMeta />` block above links the
+current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

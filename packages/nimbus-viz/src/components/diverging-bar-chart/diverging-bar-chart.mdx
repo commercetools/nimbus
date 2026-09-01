@@ -18,7 +18,11 @@ tags:
 
 <ChartMeta />
 
-Signed values against a central zero baseline.
+A diverging bar chart plots one **signed** number per category against a central
+zero line: positive values grow right, negative values grow left. Bars are
+sorted from most positive to most negative, so the chart reads as a ranked
+above/below-baseline list. Use it to answer "how far above or below zero does
+each category sit?" — variance to plan, year-over-year change, net sentiment.
 
 ```jsx live
 const data = [
@@ -32,14 +36,258 @@ const data = [
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <DivergingBarChart width={width} height={height} data={data} />}
+      {(width, height) => (
+        <DivergingBarChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Diverging bar chart of category variance to plan, where Apparel is furthest above and Grocery furthest below"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a diverging bar chart when each category has exactly one number that
+can be positive or negative and the sign is the story — who is up, who is down,
+and by how much. The shared zero baseline makes the crossover point obvious and
+keeps the two directions on one comparable length scale.
+
+| You want to…                                   | Use instead           |
+| ---------------------------------------------- | --------------------- |
+| Show only non-negative magnitudes              | `BarChart`            |
+| Break each bar into an ordered sentiment scale | `DivergingStackedBar` |
+| Compare two groups back-to-back across bands   | `PopulationPyramid`   |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { DivergingBarChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  DivergingBarChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `CategoryDatum` — one row per bar, with a **signed**
+value:
+
+```ts
+interface CategoryDatum {
+  category: string;
+  value: number;
+}
+```
+
+```tsx
+const data: CategoryDatum[] = [
+  { category: "Apparel", value: 32 },
+  { category: "Home", value: 18 },
+  { category: "Toys", value: -9 },
+  { category: "Grocery", value: -21 },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `category` should be **unique** per row — it is the band-scale domain and the
+  React key.
+- `value` is a **signed** number: positive bars grow right, negative bars grow
+  left. The value axis is symmetric — the domain is `[-absMax, absMax]` from the
+  largest absolute value, "niced" — so zero always sits at the center.
+- Row **order is not preserved**: rows are sorted internally from most positive
+  to most negative before drawing.
+- Each bar carries a signed value label at its end (e.g. `+32`, `-21`); the
+  category label sits in the left margin.
+
+## API reference
+
+<PropsTable id="DivergingBarChart" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+`DivergingBarChart` has a deliberately small surface — `width`, `height`,
+`data`, and `ariaLabel`. Everything below is **automatic**; there are no props
+to configure layout, sorting, or formatting.
+
+### Sorting & zero baseline (automatic)
+
+Not configurable. Rows are sorted from most positive to most negative, and the
+value axis is built symmetrically around zero from the largest absolute value
+(`[-absMax, absMax]`, "niced"). A single vertical axis line marks the zero
+baseline, so the above/below split is always centered and directly comparable in
+both directions.
+
+### Sign encoding (automatic)
+
+Sign is carried three ways at once, so it never depends on color alone: **side**
+(positive right, negative left of the zero line), a **signed value label** at
+each bar end (`+32`, `-21`), and **hue** — positive bars use the theme's
+`positive` (green) role and negative bars its `negative` (red) role. The hue is
+a redundant valence cue on top of side and label.
+
+### Hover highlighting (automatic)
+
+Hovering a bar dims the others to 0.4 opacity to isolate the row you are
+reading. There is no tooltip and no legend — the value label and category label
+are drawn directly on the plot, so every number is already on screen. Hover
+state is internal; there are no `onDatumClick` / `onDatumHover` callbacks.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. The positive and negative
+poles come from the validated `nimbus` chart theme, not from CSS colors.
+
+```jsx live
+const data = [
+  { category: "Apparel", value: 32 },
+  { category: "Home", value: 18 },
+  { category: "Beauty", value: 6 },
+  { category: "Toys", value: -9 },
+  { category: "Grocery", value: -21 },
+];
+
+const App = () => (
+  <Box bg="#12151c" p="400" borderRadius="300">
+    <ChartThemeProvider mode="dark">
+      <ResponsiveContainer height={280}>
+        {(width, height) => (
+          <DivergingBarChart
+            width={width}
+            height={height}
+            data={data}
+            ariaLabel="Diverging bar chart of category variance to plan, dark mode"
+          />
+        )}
+      </ResponsiveContainer>
+    </ChartThemeProvider>
+  </Box>
+);
+```
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <DivergingBarChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <DivergingBarChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Like an ordinary bar chart, this is meant for a
+handful of categories (it stops being legible past ~20–30 rows); there is no
+downsampling — cap or aggregate categories upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<DivergingBarChart
+  ariaLabel="Diverging bar chart of category variance to plan, where Apparel is furthest above zero and Grocery furthest below"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Diverging bar chart of N categories"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `DivergingBarChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Category**, **Value**) into the accessibility tree, plus a keyboard "View
+  data as table" toggle that reveals it in place — so the signed numbers are
+  available as text, not just the one-line label.
+- **CVD-safe palette.** The positive/negative poles come from the validated
+  chart theme (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Non-color encoding.** Sign is read from side (left/right of zero) and the
+  signed value label at each bar end; the green/red hues are a redundant cue, so
+  meaning survives for color-blind readers.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the categories and whether
+they are above or below zero rather than "the red bars". There is no animation,
+so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (side + signed label carry it here)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names categories and above/below rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`DivergingBarChart` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **One signed value per category.** No stacked segments — for an ordered
+  sentiment scale use [`DivergingStackedBar`](/charts/diverging-stacked-bar),
+  and for two mirrored groups per band use
+  [`PopulationPyramid`](/charts/population-pyramid).
+- **Always sorted.** Rows are reordered most-positive to most-negative; there is
+  no prop to preserve input order.
+- **No orientation or format overrides.** The diverging layout is fixed
+  horizontal and value labels use a fixed signed-compact format (`+32`, `-21`).
+- **No legend, title, caption, loading, or error passthrough** —
+  `DivergingBarChart` forwards only `ariaLabel` and the data table to
+  `ChartContainer`.
+- **No overlays or interaction callbacks** — it accepts no `children` and no
+  `onDatumClick` / `onDatumHover`.
+
+## Related charts
+
+Same "deviation" purpose, different trade-offs:
+[Diverging stacked bar](/charts/diverging-stacked-bar) for ordered sentiment
+scales and [Population pyramid](/charts/population-pyramid) for two mirrored
+groups per band. When your values are all non-negative, a plain
+[Bar chart](/charts/bar-chart) is the simpler choice. The `<ChartMeta />` block
+above links the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

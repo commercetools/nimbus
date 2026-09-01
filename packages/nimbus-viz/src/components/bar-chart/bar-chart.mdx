@@ -18,7 +18,10 @@ tags:
 
 <ChartMeta />
 
-Compare magnitudes across categories on a common baseline.
+A bar chart compares a single measure across a handful of categories, drawn from
+a shared zero baseline so bar length maps directly to value. Use it to answer
+"how do these categories compare in size?" — revenue by channel, orders by
+region, tickets by team.
 
 ```jsx live
 const data = [
@@ -32,14 +35,317 @@ const data = [
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <BarChart width={width} height={height} data={data} />}
+      {(width, height) => (
+        <BarChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Bar chart of revenue by channel, where Web leads and Email trails"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a bar chart when you have one number per category and you want the
+comparison to be exact — length on a common baseline is the most accurately read
+of all the visual encodings. Keep it to a single measure per category; for
+anything richer, move to a sibling below.
+
+| You want to…                                     | Use instead         |
+| ------------------------------------------------ | ------------------- |
+| Compare several series within each category      | `GroupedBarChart`   |
+| Show each bar's internal composition             | `StackedBarChart`   |
+| Rank many categories with less ink               | `LollipopChart`     |
+| Highlight which few categories drive the total   | `ParetoChart`       |
+| Show the distribution of one continuous variable | `Histogram`         |
+| Show values that sit above and below zero        | `DivergingBarChart` |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { BarChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  BarChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `CategoryDatum` — one row per bar:
+
+```ts
+interface CategoryDatum {
+  category: string;
+  value: number;
+}
+```
+
+```tsx
+const data: CategoryDatum[] = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `category` should be **unique** per row — it is the band-scale domain and the
+  React key.
+- `value` is a plain number. The value axis is anchored at **0** and scaled to
+  the maximum, so values are assumed **non-negative**; for signed data use
+  [`DivergingBarChart`](/charts/diverging-bar-chart).
+- Row **order** is preserved in the vertical orientation; the horizontal
+  (ranked) orientation sorts descending internally.
+- To plot your own domain rows instead of `CategoryDatum`, keep the array and
+  pass `category` / `value` accessors (see below).
+
+## API reference
+
+<PropsTable id="BarChart" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Orientation
+
+`orientation` is `"vertical"` (default) or `"horizontal"`. The horizontal form
+is the **ranked** bar chart: rows are sorted by value descending and each bar
+gets a direct value label at its end, so it reads as a leaderboard.
+
+```jsx live
+const data = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+  { category: "Partner", value: 1800 },
+  { category: "Email", value: 1200 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <BarChart
+          width={width}
+          height={height}
+          data={data}
+          orientation="horizontal"
+          ariaLabel="Ranked bar chart of revenue by channel"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Custom row types
+
+`BarChart` is generic over its row type. Pass `category` / `value` accessors to
+feed your own domain objects directly — no reshaping into `CategoryDatum`.
+
+```jsx live
+const orders = [
+  { channel: "Web", count: 4200 },
+  { channel: "Mobile", count: 3100 },
+  { channel: "Retail", count: 2400 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={260}>
+      {(width, height) => (
+        <BarChart
+          width={width}
+          height={height}
+          data={orders}
+          category={(d) => d.channel}
+          value={(d) => d.count}
+          ariaLabel="Bar chart of order count by channel"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Value formatting
+
+`valueFormat` formats both the value-axis tick labels and the tooltip value. It
+defaults to a compact formatter (`4.2k`); override it for currency, percentages,
+or units. It takes precedence over any surrounding `ChartLocaleProvider`.
+
+```jsx live
+const data = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={260}>
+      {(width, height) => (
+        <BarChart
+          width={width}
+          height={height}
+          data={data}
+          valueFormat={(n) => `$${n.toLocaleString()}`}
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Axes, scales & tooltip (automatic)
+
+Not configurable — the chart always draws them. The category axis is a band
+scale (labels are fit to the available band width and truncated when tight); the
+value axis is a linear scale from 0 to the "nice" maximum with horizontal
+gridlines. Hovering a bar dims the others to 0.4 opacity and shows a small
+tooltip with the category and formatted value. There is no legend — a single
+accent hue carries all bars, because the category axis, not color, distinguishes
+them.
+
+### Overlays (`children`)
+
+In the vertical orientation you can layer Layer-2 annotations (e.g.
+`ReferenceLine`, `TargetMarker`) over the value axis by passing them as
+`children`. Overlays are not wired for the horizontal (ranked) orientation.
+
+### Interaction callbacks
+
+`onDatumClick` and `onDatumHover` report the datum and its index; use them for
+drill-down or to drive external readouts. Hover state is managed internally
+regardless.
+
+```tsx
+<BarChart
+  width={width}
+  height={height}
+  data={data}
+  onDatumClick={({ datum }) => navigate(`/channel/${datum.category}`)}
+/>
+```
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Bars use the validated
+`nimbus` chart accent, not a CSS color.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => <BarChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => <BarChart width={width} height={height} data={data} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Bar charts are meant for a handful of categories
+(they stop being legible past ~20–30 bars); there is no downsampling — cap or
+aggregate categories upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<BarChart
+  ariaLabel="Bar chart of revenue by channel, where Web leads and Email trails"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Bar chart of N categories"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `BarChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Category**, **Value**) into the accessibility tree, plus a keyboard "View
+  data as table" toggle that reveals it in place — so the numbers are available
+  as text, not just the one-line label.
+- **CVD-safe palette.** The accent comes from the validated chart theme
+  (contrast + color-vision-deficiency checks), not an ad-hoc color.
+- **Non-color encoding.** Meaning is carried by bar length and axis position;
+  color is a single hue and is not load-bearing.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the categories/values rather
+than "the tall bar". There is no animation, so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (length/position carry it here)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names categories/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`BarChart` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **One measure per category.** No grouped or stacked series — use
+  [`GroupedBarChart`](/charts/grouped-bar-chart) or
+  [`StackedBarChart`](/charts/stacked-bar-chart).
+- **Non-negative values.** The baseline is fixed at 0; for signed data use
+  [`DivergingBarChart`](/charts/diverging-bar-chart).
+- **No legend, title, caption, loading, or error passthrough** — `BarChart`
+  forwards only `ariaLabel` and the data table to `ChartContainer`.
+- **Overlays are vertical-only** (the ranked orientation transposes the value
+  axis).
+
+## Related charts
+
+Same "magnitude" purpose, different trade-offs:
+[Grouped bar chart](/charts/grouped-bar-chart),
+[Lollipop chart](/charts/lollipop-chart),
+[Radial bar chart](/charts/radial-bar-chart), [Histogram](/charts/histogram),
+and [Pareto chart](/charts/pareto-chart). The `<ChartMeta />` block above links
+the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

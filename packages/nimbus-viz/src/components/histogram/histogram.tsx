@@ -12,12 +12,15 @@ import { useChartTheme } from "../../theme";
 import { formatCompact, formatInteger } from "../../chart/format";
 
 export interface HistogramProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
   /** Raw samples. Binned internally via d3-array's `bin()`. */
   values: number[];
   /** Approximate bin count (d3 may adjust for nice boundaries). Default 12. */
   thresholds?: number;
+  /** Accessible label for the SVG; state the takeaway, not every value. */
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;

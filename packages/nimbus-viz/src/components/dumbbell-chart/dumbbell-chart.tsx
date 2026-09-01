@@ -20,8 +20,11 @@ export interface DumbbellRow {
 }
 
 export interface DumbbellChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** One `DumbbellRow` (`{ category, start, end }`) per barbell. */
   data: DumbbellRow[];
   /** Legend label for the start dots (default "Start"). */
   startLabel?: string;

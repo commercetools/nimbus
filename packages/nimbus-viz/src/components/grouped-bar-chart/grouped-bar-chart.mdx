@@ -18,27 +18,310 @@ tags:
 
 <ChartMeta />
 
-Compare several series side by side within each category.
+A grouped bar chart places several series side by side within each category,
+each series a colored bar drawn from a shared zero baseline. Use it when you
+care about the individual per-series values across a handful of categories — new
+vs. returning vs. wholesale orders by quarter, say — and want to compare them
+both within a group and across groups.
 
 ```jsx live
 const data = [
-  { category: "Q1", segments: [{ key: "New", value: 120 }, { key: "Returning", value: 80 }, { key: "Wholesale", value: 40 }] },
-  { category: "Q2", segments: [{ key: "New", value: 140 }, { key: "Returning", value: 96 }, { key: "Wholesale", value: 52 }] },
-  { category: "Q3", segments: [{ key: "New", value: 118 }, { key: "Returning", value: 110 }, { key: "Wholesale", value: 61 }] },
-  { category: "Q4", segments: [{ key: "New", value: 150 }, { key: "Returning", value: 128 }, { key: "Wholesale", value: 70 }] },
+  {
+    category: "Q1",
+    segments: [
+      { key: "New", value: 120 },
+      { key: "Returning", value: 80 },
+      { key: "Wholesale", value: 40 },
+    ],
+  },
+  {
+    category: "Q2",
+    segments: [
+      { key: "New", value: 140 },
+      { key: "Returning", value: 96 },
+      { key: "Wholesale", value: 52 },
+    ],
+  },
+  {
+    category: "Q3",
+    segments: [
+      { key: "New", value: 118 },
+      { key: "Returning", value: 110 },
+      { key: "Wholesale", value: 61 },
+    ],
+  },
+  {
+    category: "Q4",
+    segments: [
+      { key: "New", value: 150 },
+      { key: "Returning", value: 128 },
+      { key: "Wholesale", value: 70 },
+    ],
+  },
 ];
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <GroupedBarChart width={width} height={height} data={data} />}
+      {(width, height) => (
+        <GroupedBarChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Grouped bar chart of orders by quarter, split into New, Returning, and Wholesale, where New leads every quarter"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a grouped bar chart when each category holds a small set of series and
+you want to read each series' value directly — not their total. Keep the series
+count low (two to four): every extra series narrows the bars and adds a color
+the reader must track. If the total matters more than the parts, stack them
+instead.
+
+| You want to…                                    | Use instead       |
+| ----------------------------------------------- | ----------------- |
+| Compare a single measure per category           | `BarChart`        |
+| Show each category's parts adding to a total    | `StackedBarChart` |
+| Rank many categories with minimal ink           | `LollipopChart`   |
+| Surface the few categories that drive the total | `ParetoChart`     |
+| Track those series over time                    | `LineChart`       |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { GroupedBarChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  GroupedBarChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `StackRow` — the same shape the stacked bar chart takes.
+Each row is one category with an ordered set of keyed `StackSegment`s (one per
+series):
+
+```ts
+interface StackSegment {
+  key: string;
+  value: number;
+}
+
+interface StackRow {
+  category: string;
+  segments: StackSegment[];
+}
+```
+
+```tsx
+const data: StackRow[] = [
+  {
+    category: "Q1",
+    segments: [
+      { key: "New", value: 120 },
+      { key: "Returning", value: 80 },
+    ],
+  },
+  {
+    category: "Q2",
+    segments: [
+      { key: "New", value: 140 },
+      { key: "Returning", value: 96 },
+    ],
+  },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `category` should be **unique** per row — it is the band-scale domain and the
+  React key. Row order is preserved along the category axis.
+- The **first row defines the series.** The set and left-to-right order of the
+  grouped bars come from `data[0].segments`; every row should carry the same
+  segment `key`s in the same order. A key missing from a later row reads as
+  **0** (that is what the data-table fallback shows for it).
+- `value` is a plain number. The value axis is anchored at **0** and scaled to
+  the largest single segment value, so values are assumed **non-negative**.
+- Series color is keyed by segment `key`, so the same series keeps its color
+  here, in the stacked bar chart, and in a line chart of the same entities.
+
+## API reference
+
+<PropsTable id="GroupedBarChart" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Series, color & legend (automatic)
+
+Not configurable — the chart derives them. Each series (segment `key`) is
+assigned a color from the shared entity→color scale, so a series keeps its color
+across every chart that plots the same entities. A categorical **legend** is
+rendered automatically above the plot, one swatch per series in first-row order.
+There is no prop to set colors or toggle the legend.
+
+### Axes, scales & tooltip (automatic)
+
+The category axis is an outer band scale; within each category band a second
+(nested) band scale lays the series bars side by side. The value axis is a
+linear scale from 0 to the "nice" maximum, with horizontal gridlines. Category
+labels are fit to the band width and truncated when tight. Hovering any bar
+**highlights that series across every category** (the other series dim to 0.35
+opacity) and shows a small tooltip with the category and the hovered series'
+`key: value`.
+
+### Overlays (`children`)
+
+Layer Layer-2 annotations (e.g. `ReferenceLine`, `ThresholdBand`,
+`TargetMarker`) over the value axis by passing them as `children`; they draw in
+the same plot space as the bars.
+
+### Interaction callbacks
+
+`onDatumClick` and `onDatumHover` report the hovered/clicked **segment** as
+`datum`, the **category index** as `index`, and the segment's `key` as
+`seriesId`; use them for drill-down or to drive external readouts. Hover state
+is managed internally regardless.
+
+```tsx
+<GroupedBarChart
+  width={width}
+  height={height}
+  data={data}
+  onDatumClick={({ datum, seriesId }) =>
+    navigate(`/segment/${seriesId}/${datum.value}`)
+  }
+/>
+```
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Series colors come from the
+validated `nimbus` categorical palette (contrast + color-vision-deficiency
+checks), not ad-hoc CSS colors.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <GroupedBarChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <GroupedBarChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Grouped bars are meant for a handful of categories
+crossed with a few series (the bars get too thin past that); there is no
+downsampling — cap or aggregate upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<GroupedBarChart
+  ariaLabel="Grouped bar chart of orders by quarter, split by customer type, where New leads every quarter"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Grouped bar chart, N series"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `GroupedBarChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (a **Category**
+  column plus one column per series) into the accessibility tree, plus a
+  keyboard "View data as table" toggle that reveals it in place.
+- **Legend.** A visible legend names each series, so identity is available as
+  text, not color alone.
+- **CVD-safe palette.** Series colors come from the validated categorical
+  palette (contrast + color-vision-deficiency checks), not ad-hoc colors.
+
+Because color is what distinguishes the series here, lean on the redundant
+encodings: the legend labels and the data-table fallback both carry series
+identity as text. In surrounding copy, name the series ("returning customers")
+rather than "the second bar in each group". There is no animation, so
+reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (the legend and data table carry
+      series identity as text)
+- [ ] Palette meets contrast + CVD checks (built-in categorical palette; don't
+      override to un-validated colors)
+- [ ] Surrounding copy names series/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`GroupedBarChart` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **Series come from the first row.** Rows with a different segment `key` set
+  read the missing keys as 0 — normalize your rows to a shared key set first.
+- **Non-negative values.** The baseline is fixed at 0; there is no signed
+  variant here.
+- **No stacked or single view.** For each category's total use
+  [`StackedBarChart`](/charts/stacked-bar-chart); for one measure per category
+  use [`BarChart`](/charts/bar-chart).
+- **Vertical only.** No orientation prop, and overlays draw over the value axis.
+- **No value formatting or per-series color override** — values use the compact
+  formatter and colors come from the shared entity scale.
+- **No title, caption, loading, or error passthrough** — `GroupedBarChart`
+  forwards only `ariaLabel`, the legend, and the data table to `ChartContainer`.
+
+## Related charts
+
+Same "magnitude" purpose, different trade-offs: [Bar chart](/charts/bar-chart),
+[Lollipop chart](/charts/lollipop-chart),
+[Radial bar chart](/charts/radial-bar-chart), [Histogram](/charts/histogram),
+and [Pareto chart](/charts/pareto-chart). The `<ChartMeta />` block above links
+the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

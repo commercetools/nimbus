@@ -8,9 +8,14 @@ import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
 export interface LollipopChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** Categories to rank. Each row is `CategoryDatum` (`{ category, value }`);
+   *  sorted by value descending internally. */
   data: CategoryDatum[];
+  /** Accessible label for the SVG; state the takeaway, not every value. */
   ariaLabel?: string;
 }
 

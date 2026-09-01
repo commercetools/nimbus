@@ -16,8 +16,12 @@ import type {
 } from "../../chart/interaction";
 
 export interface ScatterPlotProps<T = ScatterPoint> {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** Points to plot; one dot each. Defaults to the `ScatterPoint` shape
+   *  (`{ x, y, label?, group? }`). Pass `x`/`y` accessors for a custom row type. */
   points: T[];
   /** x accessor. Defaults to `d.x` (the ScatterPoint shape). Required for a custom row type. */
   x?: (d: T) => number;

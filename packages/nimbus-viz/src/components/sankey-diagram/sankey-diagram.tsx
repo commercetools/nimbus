@@ -10,9 +10,15 @@ import type { FlowGraph, FlowLink, FlowNode } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
 export interface SankeyDiagramProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** The flow graph: `nodes` plus weighted `links` that reference nodes by
+   *  their index into `nodes`. The d3-sankey layout positions the rest. */
   graph: FlowGraph;
+  /** Accessible label for the SVG frame; states what the flow shows and its
+   *  takeaway. Defaults to `"Sankey flow diagram"`. */
   ariaLabel?: string;
 }
 

@@ -18,27 +18,286 @@ tags:
 
 <ChartMeta />
 
-A 100% stacked column whose widths encode category totals.
+A Marimekko (mekko) is a 100%-stacked column chart whose **column widths**
+encode each category's total, so it reads two magnitudes at once: how big each
+category is (column width = share of the grand total) and its internal mix
+(segment height = share within the column). Every cell's area is proportional to
+its value. Use it to answer "how do composition and size vary together?" —
+revenue by region split by product line, where both the region's size and its
+mix matter.
 
 ```jsx live
 const data = [
-  { category: "Q1", segments: [{ key: "New", value: 120 }, { key: "Returning", value: 80 }, { key: "Wholesale", value: 40 }] },
-  { category: "Q2", segments: [{ key: "New", value: 140 }, { key: "Returning", value: 96 }, { key: "Wholesale", value: 52 }] },
-  { category: "Q3", segments: [{ key: "New", value: 118 }, { key: "Returning", value: 110 }, { key: "Wholesale", value: 61 }] },
-  { category: "Q4", segments: [{ key: "New", value: 150 }, { key: "Returning", value: 128 }, { key: "Wholesale", value: 70 }] },
+  {
+    category: "Q1",
+    segments: [
+      { key: "New", value: 120 },
+      { key: "Returning", value: 80 },
+      { key: "Wholesale", value: 40 },
+    ],
+  },
+  {
+    category: "Q2",
+    segments: [
+      { key: "New", value: 140 },
+      { key: "Returning", value: 96 },
+      { key: "Wholesale", value: 52 },
+    ],
+  },
+  {
+    category: "Q3",
+    segments: [
+      { key: "New", value: 118 },
+      { key: "Returning", value: 110 },
+      { key: "Wholesale", value: 61 },
+    ],
+  },
+  {
+    category: "Q4",
+    segments: [
+      { key: "New", value: 150 },
+      { key: "Returning", value: 128 },
+      { key: "Wholesale", value: 70 },
+    ],
+  },
 ];
 
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <MarimekkoChart width={width} height={height} data={data} />}
+      {(width, height) => (
+        <MarimekkoChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Marimekko of orders by quarter and type, where Q4 is the largest quarter"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a Marimekko when a single stacked bar isn't enough because the
+categories are **not the same size** and that size is part of the story — it
+carries category weight in the column width that a stacked bar would flatten. It
+asks a lot of the reader (two encodings at once), so keep it to a few columns
+and a few segments; when category size doesn't matter, a plain stacked bar reads
+more easily.
+
+| You want to…                                      | Use instead        |
+| ------------------------------------------------- | ------------------ |
+| Show composition when categories are equal-weight | `StackedBarChart`  |
+| Compare category totals only, one measure each    | `BarChart`         |
+| Split one whole into shares                       | `DonutChart`       |
+| Break a whole down across a nested hierarchy      | `Treemap`          |
+| Show composition shifting over a time axis        | `StackedAreaChart` |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { MarimekkoChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  MarimekkoChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `StackRow` — one column per row, each carrying an ordered
+set of segments. The column's total drives its width; the segments drive the
+100%-stack within it:
+
+```ts
+interface StackSegment {
+  key: string;
+  value: number;
+}
+
+interface StackRow {
+  category: string;
+  segments: StackSegment[];
+}
+```
+
+```tsx
+const data: StackRow[] = [
+  {
+    category: "Q1",
+    segments: [
+      { key: "New", value: 120 },
+      { key: "Returning", value: 80 },
+      { key: "Wholesale", value: 40 },
+    ],
+  },
+  {
+    category: "Q2",
+    segments: [
+      { key: "New", value: 140 },
+      { key: "Returning", value: 96 },
+      { key: "Wholesale", value: 52 },
+    ],
+  },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `category` labels the column (drawn beneath it, truncated to fit) and is the
+  React key. Columns are laid out left-to-right in array order.
+- Every row should carry the **same segment keys, in the same order**. The
+  **first row** defines the legend keys, order, and colors; a key missing from a
+  later row counts as `0`.
+- Values are clamped to non-negative. Each **column's width** is its total ÷ the
+  grand total of all columns; each **segment's height** is its share of its own
+  column (columns always fill the full height — it's a 100% stack).
+
+## API reference
+
+<PropsTable id="MarimekkoChart" />
+
+Renders `null` for empty `data`, a grand total of `0`, or a non-positive
+`width`/`height`.
+
+## Chart configuration
+
+### Two-magnitude layout (automatic)
+
+Not configurable — the chart always encodes the column total in **width** and
+the segment share in **height**, so a cell's area equals its share of the grand
+total. Columns are separated by a 2px gap, as are the stacked segments within a
+column. Category labels sit below each column and truncate to the column's
+width.
+
+### Legend & tooltip (automatic)
+
+Each distinct segment key gets a categorical color from the shared entity→color
+scale, shown as a **legend** strip. Hovering a cell dims the others to 0.4
+opacity and shows a tooltip with the column and key, the cell's compact value,
+and its share of that column.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Segments are colored by the
+validated `nimbus` categorical palette (contrast + color-vision-deficiency
+checks), not ad-hoc CSS colors.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <MarimekkoChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <MarimekkoChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. There is no downsampling; narrow columns (small
+categories) squeeze their labels and thin segments, so keep to a handful of
+columns and segments, or aggregate the small ones upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<MarimekkoChart
+  ariaLabel="Marimekko of orders by quarter and type, where Q4 is the largest quarter"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Marimekko chart of N categories"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `MarimekkoChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Column** plus one per segment key) into the accessibility tree, plus a
+  keyboard "View data as table" toggle that reveals it in place — so the numbers
+  are available as text. The width encoding is hard to read precisely, which
+  makes the table especially important here.
+- **CVD-safe palette + legend.** Segment colors come from the validated chart
+  palette, and the always-present legend maps each color back to its key.
+- **Non-color encoding.** Column width and segment height carry the two
+  magnitudes; the legend and data table disambiguate the segments.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the columns and segments
+rather than colors. There is no animation, so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (width/height + legend + table)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names columns/segments rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`MarimekkoChart` renders `null` when `data` is empty, the totals sum to `0`, or
+the measured size is non-positive; it does not draw its own empty, loading, or
+error message (it does not forward those `ChartContainer` features). Guard those
+states upstream and render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **No value axis.** Because column widths vary, there is no shared numeric
+  axis; exact values live in the tooltip and data table, not in axis ticks.
+- **Non-negative values only.** Values are clamped to zero; there is no signed
+  or diverging mode.
+- **No value formatting prop.** Tooltip values are compact-formatted and shares
+  are percentages; neither is configurable.
+- **No interaction callbacks.** Hover is internal; there is no `onDatumClick` /
+  `onDatumHover`.
+- **No title, subtitle, caption, loading, or error passthrough** —
+  `MarimekkoChart` forwards only `ariaLabel`, the legend, and the data table to
+  `ChartContainer`.
+
+## Related charts
+
+Same "part-to-whole" purpose, different trade-offs:
+[Stacked bar chart](/charts/stacked-bar-chart),
+[Donut chart](/charts/donut-chart), [Treemap](/charts/treemap),
+[Sunburst](/charts/sunburst-chart), [Waffle chart](/charts/waffle-chart), and
+[Funnel chart](/charts/funnel-chart). The `<ChartMeta />` block above links the
+current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)

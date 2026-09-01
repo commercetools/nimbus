@@ -23,8 +23,11 @@ export interface BulletDatum {
 }
 
 export interface BulletChartProps {
+  /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
+  /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
+  /** One `BulletDatum` (`{ label, measure, target, ranges? }`) per row. */
   data: BulletDatum[];
   ariaLabel?: string;
 }

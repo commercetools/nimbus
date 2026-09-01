@@ -18,7 +18,12 @@ tags:
 
 <ChartMeta />
 
-A leaner alternative to the ranked bar for the same read.
+A lollipop chart ranks categories by a single measure, drawing a thin stem from
+a common baseline out to a dot that marks the value. It reads like a bar chart
+with the ink stripped away — the dot's position carries the magnitude — so it
+stays legible with more categories than filled bars would tolerate. Rows are
+sorted descending and labeled directly, so it answers "where does each item
+rank?"
 
 ```jsx live
 const data = [
@@ -32,14 +37,212 @@ const data = [
 const App = () => (
   <ChartThemeProvider mode="light">
     <ResponsiveContainer height={280}>
-      {(width, height) => <LollipopChart width={width} height={height} data={data} />}
+      {(width, height) => (
+        <LollipopChart
+          width={width}
+          height={height}
+          data={data}
+          ariaLabel="Lollipop chart of revenue by channel, where Web leads and Email trails"
+        />
+      )}
     </ResponsiveContainer>
   </ChartThemeProvider>
 );
 ```
 
+## When to use
+
+Reach for a lollipop chart when you have one number per category, the ranking is
+the story, and a wall of filled bars would feel heavy — the stem-and-dot form
+carries the same length-on-a-baseline reading with far less ink. Keep it to a
+single measure per category; for anything richer, move to a sibling below.
+
+| You want to…                                    | Use instead       |
+| ----------------------------------------------- | ----------------- |
+| Emphasize exact magnitude with filled bars      | `BarChart`        |
+| Compare several series within each category     | `GroupedBarChart` |
+| Show each category's internal composition       | `StackedBarChart` |
+| Surface the few categories that drive the total | `ParetoChart`     |
+| Compare two values per category (before/after)  | `DumbbellChart`   |
+
+## Getting started
+
 ### Import
 
 ```tsx
-import { LollipopChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+import {
+  LollipopChart,
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
 ```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`data` is an array of `CategoryDatum` — one row per lollipop:
+
+```ts
+interface CategoryDatum {
+  category: string;
+  value: number;
+}
+```
+
+```tsx
+const data: CategoryDatum[] = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+];
+```
+
+Contract notes, verifiable from source:
+
+- `category` should be **unique** per row — it is the band-scale domain and the
+  React key.
+- Rows are **sorted by value descending internally**, so input order does not
+  matter; the chart always reads top-to-bottom as a leaderboard.
+- `value` is a plain number. The value scale runs from **0** to the maximum, so
+  values are assumed **non-negative**; a negative value collapses its stem to
+  the baseline.
+- Each row prints its `category` label at the baseline and its formatted value
+  at the dot — there are no drawn axes.
+
+## API reference
+
+<PropsTable id="LollipopChart" />
+
+Renders `null` for empty `data` or a non-positive `width`/`height`.
+
+## Chart configuration
+
+### Ranking & labels (automatic)
+
+Not configurable — the chart always sorts rows by value descending and lays them
+out horizontally, one band per row. Each row carries its `category` at the
+left-hand baseline and its value, formatted compactly, just past the dot. There
+is no orientation option and no drawn axis lines, ticks, or gridlines: the
+direct labels stand in for them.
+
+### Hover (automatic)
+
+Hovering a row dims the others to 0.4 opacity to isolate it. There is no tooltip
+— the value is always visible as a direct label, so hover is emphasis only.
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Stems and dots use the
+validated `nimbus` chart accent, not a CSS color; color carries no meaning here
+— the category axis distinguishes the rows.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => (
+    <LollipopChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => (
+    <LollipopChart width={width} height={height} data={data} />
+  )}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers. Rows are stacked vertically, so give the container
+enough height for the row count; the lighter form tolerates more categories than
+filled bars, but there is no downsampling — cap or aggregate upstream.
+
+## Accessibility
+
+Pass an `ariaLabel` that states what the chart shows **and** its takeaway, using
+Amy Cesal's formula — `[Chart type] of [data], where [the point]`:
+
+```tsx
+<LollipopChart
+  ariaLabel="Lollipop chart of revenue by channel, where Web leads and Email trails"
+  width={width}
+  height={height}
+  data={data}
+/>
+```
+
+Don't list individual values in the label; the data-table fallback carries them.
+
+What you get automatically:
+
+- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+  of `"Lollipop chart of N categories"` is generated if you omit it).
+- **Data-table fallback (WCAG 1.1.1).** `LollipopChart` passes a `table` to
+  `ChartContainer`, which renders a visually-hidden `DataTable` (columns
+  **Category**, **Value**) into the accessibility tree, plus a keyboard "View
+  data as table" toggle that reveals it in place.
+- **CVD-safe palette.** The accent comes from the validated chart theme
+  (contrast + color-vision-deficiency checks), not an ad-hoc color.
+- **Non-color encoding.** Meaning is carried by the dot's position along the
+  value axis; color is a single hue and is not load-bearing.
+
+Your job: pass a meaningful `ariaLabel`, keep the chart in a
+`ChartThemeProvider`, and in surrounding copy name the categories/values rather
+than "the long stem". There is no animation, so reduced-motion handling is N/A.
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (position/length carry it here)
+- [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
+      un-validated colors)
+- [ ] Surrounding copy names categories/values rather than colors
+- [ ] Motion respected where present — N/A, this chart does not animate
+
+## States
+
+`LollipopChart` renders `null` when `data` is empty or the measured size is
+non-positive; it does not draw its own empty, loading, or error message (it does
+not forward those `ChartContainer` features). Guard those states upstream and
+render your own placeholder when there is no data yet.
+
+## Limitations
+
+- **One measure per category.** No series — use
+  [`GroupedBarChart`](/charts/grouped-bar-chart) or
+  [`StackedBarChart`](/charts/stacked-bar-chart).
+- **Always ranked descending.** No input-order, ascending, or orientation
+  option.
+- **Non-negative values.** The baseline is fixed at 0; negatives collapse to it.
+- **No tooltip, callbacks, overlays, or legend.** Hover is emphasis-only; there
+  are no `onDatumClick`/`onDatumHover` props, no `children`, and no legend.
+- **No value formatting** — values use the built-in compact formatter.
+- **No title, caption, loading, or error passthrough** — `LollipopChart`
+  forwards only `ariaLabel` and the data table to `ChartContainer`.
+
+## Related charts
+
+Same "magnitude" purpose, different trade-offs: [Bar chart](/charts/bar-chart),
+[Grouped bar chart](/charts/grouped-bar-chart),
+[Radial bar chart](/charts/radial-bar-chart), [Histogram](/charts/histogram),
+and [Pareto chart](/charts/pareto-chart). The `<ChartMeta />` block above links
+the current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
+- [Amy Cesal — Writing alt text for data visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81)
