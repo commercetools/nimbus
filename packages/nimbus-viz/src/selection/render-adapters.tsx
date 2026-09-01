@@ -184,14 +184,20 @@ export function renderDonut(request: ResolveRequest, size: ChartSize) {
   );
 }
 
-export function renderStacked(request: ResolveRequest, size: ChartSize) {
+export function renderStacked(
+  request: ResolveRequest,
+  size: ChartSize,
+  overlays?: ReactNode
+) {
   return (
     <StackedBarChart
       width={size.width}
       height={size.height}
       data={request.data as StackRow[]}
       ariaLabel={optString(request, "ariaLabel")}
-    />
+    >
+      {overlays}
+    </StackedBarChart>
   );
 }
 
@@ -247,36 +253,54 @@ export function renderFunnel(request: ResolveRequest, size: ChartSize) {
   );
 }
 
-export function renderStackedArea(request: ResolveRequest, size: ChartSize) {
+export function renderStackedArea(
+  request: ResolveRequest,
+  size: ChartSize,
+  overlays?: ReactNode
+) {
   return (
     <StackedAreaChart
       width={size.width}
       height={size.height}
       series={request.data as Series[]}
       ariaLabel={optString(request, "ariaLabel")}
-    />
+    >
+      {overlays}
+    </StackedAreaChart>
   );
 }
 
-export function renderStreamgraph(request: ResolveRequest, size: ChartSize) {
+export function renderStreamgraph(
+  request: ResolveRequest,
+  size: ChartSize,
+  overlays?: ReactNode
+) {
   return (
     <Streamgraph
       width={size.width}
       height={size.height}
       series={request.data as Series[]}
       ariaLabel={optString(request, "ariaLabel")}
-    />
+    >
+      {overlays}
+    </Streamgraph>
   );
 }
 
-export function renderBump(request: ResolveRequest, size: ChartSize) {
+export function renderBump(
+  request: ResolveRequest,
+  size: ChartSize,
+  overlays?: ReactNode
+) {
   return (
     <BumpChart
       width={size.width}
       height={size.height}
       series={request.data as Series[]}
       ariaLabel={optString(request, "ariaLabel")}
-    />
+    >
+      {overlays}
+    </BumpChart>
   );
 }
 
@@ -292,7 +316,11 @@ export function renderSparkline(request: ResolveRequest, size: ChartSize) {
   );
 }
 
-export function renderControl(request: ResolveRequest, size: ChartSize) {
+export function renderControl(
+  request: ResolveRequest,
+  size: ChartSize,
+  overlays?: ReactNode
+) {
   return (
     <ControlChart
       width={size.width}
@@ -302,18 +330,26 @@ export function renderControl(request: ResolveRequest, size: ChartSize) {
       ucl={optNumber(request, "ucl")}
       lcl={optNumber(request, "lcl")}
       ariaLabel={optString(request, "ariaLabel")}
-    />
+    >
+      {overlays}
+    </ControlChart>
   );
 }
 
-export function renderPareto(request: ResolveRequest, size: ChartSize) {
+export function renderPareto(
+  request: ResolveRequest,
+  size: ChartSize,
+  overlays?: ReactNode
+) {
   return (
     <ParetoChart
       width={size.width}
       height={size.height}
       data={request.data as CategoryDatum[]}
       ariaLabel={optString(request, "ariaLabel")}
-    />
+    >
+      {overlays}
+    </ParetoChart>
   );
 }
 
@@ -343,14 +379,20 @@ export function renderDumbbell(request: ResolveRequest, size: ChartSize) {
   );
 }
 
-export function renderBubble(request: ResolveRequest, size: ChartSize) {
+export function renderBubble(
+  request: ResolveRequest,
+  size: ChartSize,
+  overlays?: ReactNode
+) {
   return (
     <BubbleChart
       width={size.width}
       height={size.height}
       points={request.data as BubblePoint[]}
       ariaLabel={optString(request, "ariaLabel")}
-    />
+    >
+      {overlays}
+    </BubbleChart>
   );
 }
 
@@ -748,6 +790,13 @@ export const OVERLAY_HOSTS: ReadonlySet<BaseName> = new Set<BaseName>([
   "line",
   "bar-vertical",
   "scatter",
+  "stacked",
+  "stacked-area",
+  "streamgraph",
+  "bump",
+  "control",
+  "pareto",
+  "bubble",
 ]);
 
 /** The React component name each base renders (for selection metadata). */
@@ -792,7 +841,7 @@ export function renderBase(
     case "donut":
       return renderDonut(request, size);
     case "stacked":
-      return renderStacked(request, size);
+      return renderStacked(request, size, overlays);
     case "scatter":
       return renderScatter(request, size, overlays);
     case "heatmap":
@@ -800,23 +849,23 @@ export function renderBase(
     case "funnel":
       return renderFunnel(request, size);
     case "stacked-area":
-      return renderStackedArea(request, size);
+      return renderStackedArea(request, size, overlays);
     case "streamgraph":
-      return renderStreamgraph(request, size);
+      return renderStreamgraph(request, size, overlays);
     case "bump":
-      return renderBump(request, size);
+      return renderBump(request, size, overlays);
     case "sparkline":
       return renderSparkline(request, size);
     case "control":
-      return renderControl(request, size);
+      return renderControl(request, size, overlays);
     case "pareto":
-      return renderPareto(request, size);
+      return renderPareto(request, size, overlays);
     case "slope":
       return renderSlope(request, size);
     case "dumbbell":
       return renderDumbbell(request, size);
     case "bubble":
-      return renderBubble(request, size);
+      return renderBubble(request, size, overlays);
     case "radar":
       return renderRadar(request, size);
     case "parallel":
