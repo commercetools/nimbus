@@ -765,7 +765,7 @@ describe("DataTable - Accessibility", () => {
  * @docs-order 11
  */
 describe("DataTable.Manager - Basic rendering", () => {
-  it("renders the settings button", () => {
+  it("renders the settings button", async () => {
     const managerColumns: DataTableColumnItem[] = [
       {
         id: "name",
@@ -799,8 +799,9 @@ describe("DataTable.Manager - Basic rendering", () => {
       </NimbusProvider>
     );
 
+    // Manager is lazy-loaded, so wait for it to resolve
     expect(
-      screen.getByRole("button", { name: /settings/i })
+      await screen.findByRole("button", { name: /settings/i })
     ).toBeInTheDocument();
   });
 
@@ -839,7 +840,10 @@ describe("DataTable.Manager - Basic rendering", () => {
       </NimbusProvider>
     );
 
-    const settingsButton = screen.getByRole("button", { name: /settings/i });
+    // Manager is lazy-loaded, so wait for it to resolve
+    const settingsButton = await screen.findByRole("button", {
+      name: /settings/i,
+    });
 
     // Verify button can be clicked
     await user.click(settingsButton);
