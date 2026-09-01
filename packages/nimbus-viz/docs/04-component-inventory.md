@@ -6,10 +6,11 @@ batch-by-batch build log._
 
 > **Update (2026-08): superseded counts.** This stays as the historical build
 > log; the authoritative live catalog is the package **README**. Current shipped
-> count is **47 components** (46 charts exported from the barrel + `DataTable`
+> count is **46 components** (45 charts exported from the barrel + `DataTable`
 > via the selection barrel), enforced by `src/components/catalog.spec.ts`. Since
-> this log was written, `ChordDiagram` and `TileGridMap` shipped (no longer
-> "cut"/deferred), and the empty `ridgeline-plot/` stub was removed.
+> this log was written, `ChordDiagram` shipped (no longer "cut"/deferred), the
+> empty `ridgeline-plot/` stub was removed, and `TileGridMap` was subsequently
+> removed (tile-grid cartogram — dropped as out of scope).
 > `EmptyState`/`LoadingSkeleton` (Layer 4) and
 > `Brush`/`Zoom`/`AnnotationCallout` (Layer 2) remain unbuilt — tracked in the
 > roadmap.

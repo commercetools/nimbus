@@ -67,7 +67,6 @@ export const ENTITY_ID_ACCESSOR: Record<
   ohlc: "bar.date",
   "timeline-events": "event.label",
   "flow-matrix": "matrix.labels[i]",
-  "region-tiles": "tile.id",
 };
 
 /* -------------------------------------------------------------------------- */
@@ -147,15 +146,6 @@ export function detectKind(data: unknown): DataKind {
     !Array.isArray(first.values)
   ) {
     return "parallel-row";
-  }
-  // RegionTile[]: { id, row: number, col: number, value: number } (tile-grid map).
-  if (
-    typeof first.id === "string" &&
-    isFiniteNumber(first.row) &&
-    isFiniteNumber(first.col) &&
-    isFiniteNumber(first.value)
-  ) {
-    return "region-tiles";
   }
   // SampleGroup[]: { label, samples: [...] } — before heat-row (label + array).
   if (typeof first.label === "string" && Array.isArray(first.samples)) {
@@ -310,8 +300,6 @@ function shapesForKind(kind: DataKind, seriesCount: number): DataShape[] {
       return ["event-timeline"];
     case "flow-matrix":
       return ["flows-net"];
-    case "region-tiles":
-      return ["geographic"];
     case "unknown":
       return [];
   }
@@ -614,8 +602,7 @@ export function deriveFacts(request: ResolveRequest): DataFacts {
     case "samples":
     case "box-group":
     case "delta-steps":
-    case "bullet-row":
-    case "region-tiles": {
+    case "bullet-row": {
       const rows = data as unknown[];
       return {
         kind,

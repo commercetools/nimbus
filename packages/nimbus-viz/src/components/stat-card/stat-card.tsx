@@ -12,6 +12,12 @@ export interface StatCardProps {
   /** Prior value; when present, a signed delta vs. it is shown. */
   previous?: number;
   format?: (n: number) => string;
+  /**
+   * For "lower is better" metrics (refund rate, processing time, churn…). When
+   * true, a DECREASE is colored as positive and an increase as negative. The
+   * arrow still points in the true direction — only the valence color flips.
+   */
+  invertDelta?: boolean;
   ariaLabel?: string;
 }
 
@@ -24,6 +30,7 @@ export function StatCard({
   value,
   previous,
   format = formatCompact,
+  invertDelta = false,
   ariaLabel,
 }: StatCardProps) {
   const theme = useChartTheme();
@@ -31,6 +38,9 @@ export function StatCard({
   const delta = hasDelta ? value - previous : 0;
   const pct = hasDelta ? delta / previous : 0;
   const up = delta >= 0;
+  // Arrow follows the true direction; color valence can be inverted for
+  // "lower is better" metrics so an improvement always reads positive.
+  const good = invertDelta ? !up : up;
 
   return (
     <div
@@ -59,7 +69,7 @@ export function StatCard({
         <span
           style={{
             fontSize: EMPHASIS_PX,
-            color: up ? theme.positive : theme.negative,
+            color: good ? theme.positive : theme.negative,
             display: "inline-flex",
             alignItems: "center",
             gap: 4,

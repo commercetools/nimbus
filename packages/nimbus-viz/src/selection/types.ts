@@ -31,13 +31,12 @@ export type Intent =
   | "RANGE" // Is it in range / within a threshold?
   | "REL" // Relationship between two (or more) variables.
   | "COMP-TIME" // Composition over time.
-  | "GEO" // Where geographically?
   | "FLOW" // What's the flow (in vs out / net)?
   | "BENCH" // Is this normal vs a benchmark?
   | "RETAIN" // Retention / cohort behavior.
   | "VALUE"; // What is the single value / magnitude right now?
 
-/** All 15 intents, enumerable for a catalog surface and for runtime validation. */
+/** All 14 intents, enumerable for a catalog surface and for runtime validation. */
 export const INTENTS: readonly Intent[] = [
   "TREND",
   "DELTA",
@@ -49,7 +48,6 @@ export const INTENTS: readonly Intent[] = [
   "RANGE",
   "REL",
   "COMP-TIME",
-  "GEO",
   "FLOW",
   "BENCH",
   "RETAIN",
@@ -87,14 +85,13 @@ export type DataShape =
   | "multivariate" // 3+ variables per record (radar / parallel coordinates)
   | "flows-net" // flows/net
   | "cohort-matrix" // cohort/retention matrix
-  | "geographic" // geographic
   | "event-timeline"; // event/timeline
 
 /**
- * All shapes, enumerable. docs/02 defined 13; the prototype added a 14th,
- * `multivariate`, when radar / parallel-coordinates landed (batch 8) — the 13
- * had no home for "3+ variables per record". RFC finding: the shape taxonomy
- * needs the multivariate slot.
+ * All shapes, enumerable. docs/02 defined 13 (including `geographic`, dropped
+ * when the TileGridMap chart was removed); the prototype added `multivariate`
+ * when radar / parallel-coordinates landed (batch 8) — the original set had no
+ * home for "3+ variables per record".
  */
 export const DATA_SHAPES: readonly DataShape[] = [
   "single-value",
@@ -109,7 +106,6 @@ export const DATA_SHAPES: readonly DataShape[] = [
   "multivariate",
   "flows-net",
   "cohort-matrix",
-  "geographic",
   "event-timeline",
 ] as const;
 
@@ -159,7 +155,6 @@ export type DataKind =
   | "ohlc" // OhlcBar[]              (candlestick — { date, open, high, low, close })
   | "timeline-events" // TimelineEvent[] (gantt/timeline — { label, start, end? })
   | "flow-matrix" // FlowMatrix      (chord — { labels, matrix }) — non-array
-  | "region-tiles" // RegionTile[]   (tile-grid map — { id, row, col, value })
   | "unknown"; // unrecognized / malformed
 
 /* -------------------------------------------------------------------------- */

@@ -42,7 +42,6 @@ import {
   StatCard,
   Streamgraph,
   SunburstChart,
-  TileGridMap,
   Treemap,
   ViolinPlot,
   WaffleChart,
@@ -166,12 +165,6 @@ export const PURPOSES: ChartPurpose[] = [
     label: "Timeline",
     question: "When do events happen, and for how long?",
     icon: "Timeline",
-  },
-  {
-    key: "spatial",
-    label: "Spatial",
-    question: "How does a value vary by place?",
-    icon: "Map",
   },
   {
     key: "single-value",
@@ -1275,35 +1268,6 @@ export const CHART_CATALOG: ChartCatalogEntry[] = [
             end: new Date(2026, 9, 1),
             category: "Launch",
           },
-        ]}
-      />
-    ),
-  },
-
-  // ---- Spatial -------------------------------------------------------------
-  {
-    exportName: "TileGridMap",
-    purpose: "spatial",
-    question: "How does a value vary across regions?",
-    keywords: ["tile grid", "map", "geographic", "regions", "cartogram"],
-    height: 170,
-    selfSizing: false,
-    Thumb: ({ width, height }) => (
-      <TileGridMap
-        width={width}
-        height={height}
-        data={[
-          { id: "WA", row: 0, col: 0, value: 62 },
-          { id: "MN", row: 0, col: 3, value: 40 },
-          { id: "NY", row: 0, col: 7, value: 88 },
-          { id: "CA", row: 1, col: 0, value: 95 },
-          { id: "IL", row: 1, col: 4, value: 71 },
-          { id: "PA", row: 1, col: 7, value: 66 },
-          { id: "CO", row: 2, col: 3, value: 34 },
-          { id: "VA", row: 2, col: 7, value: 58 },
-          { id: "TX", row: 3, col: 3, value: 82 },
-          { id: "GA", row: 3, col: 6, value: 49 },
-          { id: "FL", row: 4, col: 7, value: 77 },
         ]}
       />
     ),

@@ -4,7 +4,7 @@ import { max } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { GRADIENT_LEGEND_HEIGHT } from "../../chart/marks";
 import { SvgTooltip } from "../../chart/svg-tooltip";
-import { sequentialColor, useChartTheme } from "../../theme";
+import { sequentialColor, useChartTheme, readableTextColor } from "../../theme";
 import { formatCompact, formatInteger } from "../../chart/format";
 import { emText, CHART_FONT_STACK, LABEL_PX } from "../../chart/typography";
 
@@ -154,7 +154,11 @@ export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
                         textAnchor="middle"
                         style={emText(11)}
                         fontWeight={600}
-                        fill={t > 0.55 ? theme.surface : theme.ink}
+                        fill={readableTextColor(
+                          color(t),
+                          theme.ink,
+                          theme.surface
+                        )}
                         pointerEvents="none"
                       >
                         {formatCompact(cellData.count)}

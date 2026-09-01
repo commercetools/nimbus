@@ -3,7 +3,7 @@ import { scaleBand } from "@visx/scale";
 import { Group } from "@visx/group";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
-import { sequentialColor, useChartTheme } from "../../theme";
+import { sequentialColor, useChartTheme, readableTextColor } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { HeatRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
@@ -141,7 +141,11 @@ export function Heatmap({
                             dy="0.32em"
                             textAnchor="middle"
                             style={emText(9)}
-                            fill={t > 0.55 ? theme.surface : theme.ink}
+                            fill={readableTextColor(
+                              color(t),
+                              theme.ink,
+                              theme.surface
+                            )}
                           >
                             {formatCompact(v)}
                           </text>

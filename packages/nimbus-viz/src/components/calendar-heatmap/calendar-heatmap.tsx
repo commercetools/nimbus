@@ -138,41 +138,55 @@ export function CalendarHeatmap({
         const step = Math.min(innerWidth / numWeeks, innerHeight / 7);
         const gap = Math.max(1, step * 0.16);
         const cell = Math.max(0, step - gap);
+        // A full-year grid is width-bound (≈53 columns), so the 7-row grid is
+        // shorter than a tall container. Center it vertically so any slack is
+        // balanced instead of pooling at the bottom.
+        const gridH = 7 * step;
+        const yOffset = Math.max(0, (innerHeight - gridH) / 2);
+        // Month labels: one per month's first column, but drop a partial leading
+        // month (e.g. a "Dec" sliver whose Monday precedes a Jan-start dataset)
+        // when the next month's label would collide with it.
+        const MONTH_LABEL_MIN_GAP = 28;
+        const monthCandidates: { col: number; m: number }[] = [];
+        for (let col = 0; col < numWeeks; col++) {
+          const monday = new Date((firstMonday + col * 7) * DAY_MS);
+          const m = monday.getUTCMonth();
+          const yr = monday.getUTCFullYear();
+          const prevM = new Date((firstMonday + (col - 1) * 7) * DAY_MS);
+          const isNew =
+            col === 0 ||
+            m !== prevM.getUTCMonth() ||
+            yr !== prevM.getUTCFullYear();
+          if (isNew) monthCandidates.push({ col, m });
+        }
+        const monthLabels = monthCandidates.filter((c, i) => {
+          const next = monthCandidates[i + 1];
+          return !next || (next.col - c.col) * step >= MONTH_LABEL_MIN_GAP;
+        });
         const hovered = hover != null ? byDay.get(hover) : null;
         const hoveredCol =
           hover != null ? Math.floor((hover - firstMonday) / 7) : 0;
         const hoveredRow = hover != null ? mondayWeekday(hover) : 0;
         return (
           <>
-            {/* Month labels along the top */}
-            {Array.from({ length: numWeeks }).map((_, col) => {
-              const monday = new Date((firstMonday + col * 7) * DAY_MS);
-              const m = monday.getUTCMonth();
-              const y = monday.getUTCFullYear();
-              const prev = new Date((firstMonday + (col - 1) * 7) * DAY_MS);
-              const isNew =
-                col === 0 ||
-                m !== prev.getUTCMonth() ||
-                y !== prev.getUTCFullYear();
-              if (!isNew) return null;
-              return (
-                <text
-                  key={`m-${col}`}
-                  x={col * step}
-                  y={-6}
-                  style={emText(10)}
-                  fill={theme.mutedInk}
-                >
-                  {MONTHS[m]}
-                </text>
-              );
-            })}
+            {/* Month labels along the top (collision-filtered above) */}
+            {monthLabels.map(({ col, m }) => (
+              <text
+                key={`m-${col}`}
+                x={col * step}
+                y={yOffset - 6}
+                style={emText(10)}
+                fill={theme.mutedInk}
+              >
+                {MONTHS[m]}
+              </text>
+            ))}
             {/* Weekday labels (M / W / F) at left */}
             {WEEKDAY_LABELS.map(([row, label]) => (
               <text
                 key={label}
                 x={-6}
-                y={row * step + cell / 2}
+                y={row * step + cell / 2 + yOffset}
                 dy="0.32em"
                 textAnchor="end"
                 style={emText(9)}
@@ -187,7 +201,7 @@ export function CalendarHeatmap({
                 const day = firstMonday + col * 7 + row;
                 const entry = byDay.get(day);
                 const x = col * step;
-                const y = row * step;
+                const y = row * step + yOffset;
                 if (!entry) {
                   return (
                     <rect
@@ -225,7 +239,7 @@ export function CalendarHeatmap({
             {hovered && (
               <SvgTooltip
                 x={hoveredCol * step + cell / 2}
-                top={Math.max(0, hoveredRow * step)}
+                top={Math.max(0, hoveredRow * step + yOffset)}
                 innerWidth={innerWidth}
                 lines={[
                   formatDayMonth(hovered.date),

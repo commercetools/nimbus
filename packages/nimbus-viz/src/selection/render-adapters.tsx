@@ -61,8 +61,6 @@ import { GanttChart } from "../components/gantt-chart";
 import type { TimelineEvent } from "../components/gantt-chart";
 import { ChordDiagram } from "../components/chord-diagram";
 import type { FlowMatrix } from "../components/chord-diagram";
-import { TileGridMap } from "../components/tile-grid-map";
-import type { RegionTile } from "../components/tile-grid-map";
 import type { FlowGraph } from "../chart/types";
 import { CohortTriangle } from "../components/cohort-triangle";
 import type {
@@ -768,18 +766,6 @@ export function renderChord(request: ResolveRequest, size: ChartSize) {
       width={size.width}
       height={size.height}
       data={request.data as FlowMatrix}
-      ariaLabel={optString(request, "ariaLabel")}
-    />
-  );
-}
-
-export function renderTileGridMap(request: ResolveRequest, size: ChartSize) {
-  return (
-    <TileGridMap
-      width={size.width}
-      height={size.height}
-      data={request.data as RegionTile[]}
-      hue={optString(request, "hue")}
       ariaLabel={optString(request, "ariaLabel")}
     />
   );

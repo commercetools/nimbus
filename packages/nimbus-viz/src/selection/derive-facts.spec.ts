@@ -67,10 +67,6 @@ const SAMPLES: Record<DataKind, unknown> = {
       [2, 1, 0],
     ],
   },
-  "region-tiles": [
-    { id: "CA", row: 0, col: 0, value: 5 },
-    { id: "TX", row: 1, col: 2, value: 8 },
-  ],
   unknown: [{ nope: true }],
 };
 

@@ -20,3 +20,4 @@ export {
 export type { ColorScale } from "./color-scale";
 export { ChartThemeProvider, useChartTheme } from "./theme-provider";
 export type { ChartThemeProviderProps } from "./theme-provider";
+export { readableTextColor, contrastRatio } from "./text-legibility";
