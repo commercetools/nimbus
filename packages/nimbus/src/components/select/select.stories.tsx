@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Box,
   Icon,
+  IconButton,
   Select,
   type SelectProps,
   Stack,
@@ -10,7 +11,12 @@ import {
 import { useState } from "react";
 import type { Key } from "react-aria-components";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
-import { AddReaction, Search, Visibility } from "@commercetools/nimbus-icons";
+import {
+  AddReaction,
+  Search,
+  Tune,
+  Visibility,
+} from "@commercetools/nimbus-icons";
 
 import { useAsyncList } from "react-stately";
 
@@ -1195,5 +1201,408 @@ export const LeadingElement: Story = {
         ))}
       </Stack>
     );
+  },
+};
+
+/**
+ * Trailing Element Examples
+ * The `trailingElement` slot across size x variant, on its own and paired with a
+ * leading element, alongside the built-in clear button and chevron.
+ */
+export const TrailingElement: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => {
+    const examples: Array<{
+      label: string;
+      getProps: (
+        size: SelectProps["size"]
+      ) => Partial<React.ComponentProps<typeof Select.Root>>;
+    }> = [
+      {
+        label: "Trailing icon",
+        getProps: () => ({
+          trailingElement: <Icon as={Tune} aria-hidden="true" />,
+          "aria-label": "trailing-icon-select",
+        }),
+      },
+      {
+        label: "Leading and trailing",
+        getProps: () => ({
+          leadingElement: <Icon as={Search} aria-hidden="true" />,
+          trailingElement: <Icon as={Tune} aria-hidden="true" />,
+          "aria-label": "leading-and-trailing-select",
+        }),
+      },
+      {
+        label: "Trailing filter button",
+        getProps: (size) => ({
+          trailingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              colorPalette="primary"
+              variant="ghost"
+              aria-label="filter results"
+            >
+              <Icon as={Tune} />
+            </IconButton>
+          ),
+          "aria-label": "trailing-button-select",
+        }),
+      },
+    ];
+
+    return (
+      <Stack direction="column" gap="600">
+        {selectSizes.map((size) => (
+          <Stack key={size as string} direction="column" gap="400">
+            <Text fontWeight="semibold">Size: {size as string}</Text>
+            <Stack direction="column" gap="300">
+              {examples.map((example) => (
+                <Stack
+                  key={`${size as string}-${example.label}`}
+                  direction="column"
+                  gap="200"
+                >
+                  <Text fontSize="sm" color="neutral.11">
+                    {example.label}
+                  </Text>
+                  <Stack direction="row" gap="400" alignItems="center">
+                    {selectVariants.map((variant) => (
+                      <Stack
+                        key={variant as string}
+                        direction="column"
+                        gap="100"
+                      >
+                        <Text fontSize="xs" color="neutral.10">
+                          {variant as string}
+                        </Text>
+                        <Select.Root
+                          {...example.getProps(size)}
+                          size={size}
+                          variant={variant}
+                          defaultSelectedKey="option1"
+                        >
+                          <Select.Options>
+                            <Select.Option id="option1">Option 1</Select.Option>
+                            <Select.Option id="option2">Option 2</Select.Option>
+                          </Select.Options>
+                        </Select.Root>
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+};
+
+/**
+ * Trailing Element: Constrained Width
+ * With a trailing element competing for space the value truncates with an
+ * ellipsis rather than running underneath it — layout is intrinsic now, so
+ * nothing is reserved or overlapped.
+ */
+export const TrailingElementConstrainedWidth: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="400" width="7200">
+      <Select.Root
+        aria-label="long-value-no-trailing"
+        defaultSelectedKey="long"
+        width="100%"
+      >
+        <Select.Options>
+          <Select.Option id="long">
+            An extremely long selected option label that has to truncate
+          </Select.Option>
+        </Select.Options>
+      </Select.Root>
+      <Select.Root
+        aria-label="long-value-with-trailing"
+        defaultSelectedKey="long"
+        width="100%"
+        leadingElement={<Icon as={Search} aria-hidden="true" />}
+        trailingElement={
+          <IconButton
+            size="xs"
+            colorPalette="primary"
+            variant="ghost"
+            aria-label="filter results"
+          >
+            <Icon as={Tune} />
+          </IconButton>
+        }
+      >
+        <Select.Options>
+          <Select.Option id="long">
+            An extremely long selected option label that has to truncate
+          </Select.Option>
+        </Select.Options>
+      </Select.Root>
+    </Stack>
+  ),
+};
+
+/**
+ * Trailing Element: Interaction
+ * A trailing button sits beside the trigger button rather than inside it, so it
+ * is a valid interactive element and owns its own clicks.
+ */
+export const TrailingElementInteraction: Story = {
+  render: () => {
+    const onFilter = fn();
+    return (
+      <Select.Root
+        aria-label="select-with-filter"
+        defaultSelectedKey="option1"
+        data-testid="select"
+        trailingElement={
+          <IconButton
+            size="xs"
+            colorPalette="primary"
+            variant="ghost"
+            aria-label="filter results"
+            onPress={onFilter}
+          >
+            <Icon as={Tune} />
+          </IconButton>
+        }
+      >
+        <Select.Options>
+          <Select.Option id="option1">Option 1</Select.Option>
+          <Select.Option id="option2">Option 2</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const select = canvas.getByTestId("select");
+    const triggerButton = select.querySelector("button");
+    const filterButton = canvas.getByLabelText("filter results");
+
+    await step("Renders in the trailingElement slot", async () => {
+      await expect(filterButton.parentElement).toHaveClass(
+        "nimbus-select__trailingElement"
+      );
+    });
+
+    await step("Is not nested inside the trigger button", async () => {
+      await expect(triggerButton).not.toContainElement(filterButton);
+    });
+
+    await step("Does not inherit the trigger's accessible name", async () => {
+      await expect(filterButton).toHaveAccessibleName("filter results");
+    });
+
+    await step("Is reachable by keyboard", async () => {
+      filterButton.focus();
+      await expect(filterButton).toHaveFocus();
+    });
+
+    await step("Pressing it does not open the listbox", async () => {
+      await userEvent.click(filterButton);
+      await expect(
+        document.querySelector('[role="listbox"]')
+      ).not.toBeInTheDocument();
+    });
+
+    await step("Pressing it does not change the selection", async () => {
+      await expect(select).toHaveTextContent("Option 1");
+    });
+
+    await step("The trigger still opens the listbox", async () => {
+      await userEvent.click(triggerButton!);
+      await waitFor(async () =>
+        expect(document.querySelector('[role="listbox"]')).toBeInTheDocument()
+      );
+    });
+  },
+};
+
+/**
+ * Field Click Surface
+ * The entire field opens the listbox, not just the value text.
+ *
+ * This is behavioural, so Chromatic cannot catch it: the trigger button no
+ * longer spans the field (the root is inline-block and the field inline-flex,
+ * both shrink-to-fit, so `flex: 1` has no free space to claim), and its hit
+ * area is stretched with a pseudo-element instead. Regressing that would leave
+ * the padding, chevron and gaps inert while looking completely correct.
+ */
+export const FieldClickSurface: Story = {
+  render: () => (
+    <Stack direction="column" gap="400">
+      <Select.Root
+        aria-label="plain"
+        defaultSelectedKey="option1"
+        data-testid="plain"
+      >
+        <Select.Options>
+          <Select.Option id="option1">Option 1</Select.Option>
+          <Select.Option id="option2">Option 2</Select.Option>
+        </Select.Options>
+      </Select.Root>
+      <Select.Root
+        aria-label="with trailing"
+        defaultSelectedKey="option1"
+        data-testid="with-trailing"
+        trailingElement={
+          <IconButton
+            size="xs"
+            colorPalette="primary"
+            variant="ghost"
+            aria-label="filter results"
+          >
+            <Icon as={Tune} />
+          </IconButton>
+        }
+      >
+        <Select.Options>
+          <Select.Option id="option1">Option 1</Select.Option>
+          <Select.Option id="option2">Option 2</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    /** Every horizontal sample across the field must belong to the trigger or a real control. */
+    const findDeadZones = (testId: string) => {
+      const field = canvas
+        .getByTestId(testId)
+        .querySelector(".nimbus-select__trigger") as HTMLElement;
+      const r = field.getBoundingClientRect();
+      const y = r.top + r.height / 2;
+      const dead: number[] = [];
+      for (let x = 2; x < r.width - 2; x += 3) {
+        const el = document.elementFromPoint(r.left + x, y);
+        const live =
+          el?.closest(".nimbus-select__triggerButton") || el?.closest("button");
+        if (!live) dead.push(Math.round(x));
+      }
+      return { field, r, y, dead };
+    };
+
+    await step("No inert region anywhere in a plain field", async () => {
+      await expect(findDeadZones("plain").dead).toEqual([]);
+    });
+
+    await step("No inert region with a trailing element", async () => {
+      await expect(findDeadZones("with-trailing").dead).toEqual([]);
+    });
+
+    await step(
+      "Clicking the chevron end of the field opens the listbox",
+      async () => {
+        const { r, y } = findDeadZones("plain");
+        // A point over the chevron - decorative, so it must fall through to the trigger.
+        const atChevron = document.elementFromPoint(
+          r.right - 12,
+          y
+        ) as HTMLElement;
+        await expect(
+          atChevron.closest(".nimbus-select__triggerButton")
+        ).toBeTruthy();
+
+        await userEvent.click(atChevron);
+        await waitFor(async () =>
+          expect(document.querySelector('[role="listbox"]')).toBeInTheDocument()
+        );
+      }
+    );
+  },
+};
+
+/**
+ * Field Chrome: A Non-Clearable Field Reserves Nothing
+ * `main` reserved 56px to the right of the value unconditionally, via a
+ * hardcoded `--button-safespace`. Its `isClearable: false` variant was meant to
+ * shrink that, but had been dead since the prop stopped reaching
+ * `splitVariantProps` - so a field that can never show a clear button still made
+ * room for one. Layout is intrinsic now, so a non-clearable field is exactly one
+ * clear button narrower. Guarded because the old failure mode was a silently
+ * unused value rather than an error, and because the same three consumers
+ * (MoneyInput, ScopedSearchInput, Pagination) would absorb a regression here
+ * without any of their own code changing.
+ */
+export const FieldChromeNonClearable: Story = {
+  render: () => (
+    <Stack direction="column" gap="400">
+      {(["sm", "md"] as const).map((size) => (
+        <Stack key={size} direction="row" gap="400" alignItems="center">
+          <Select.Root
+            size={size}
+            aria-label={`${size} clearable`}
+            defaultSelectedKey="usd"
+            data-testid={`clearable-${size}`}
+          >
+            <Select.Options>
+              <Select.Option id="usd">USD</Select.Option>
+              <Select.Option id="eur">EUR</Select.Option>
+            </Select.Options>
+          </Select.Root>
+          <Select.Root
+            size={size}
+            isClearable={false}
+            aria-label={`${size} not clearable`}
+            defaultSelectedKey="usd"
+            data-testid={`fixed-${size}`}
+          >
+            <Select.Options>
+              <Select.Option id="usd">USD</Select.Option>
+              <Select.Option id="eur">EUR</Select.Option>
+            </Select.Options>
+          </Select.Root>
+        </Stack>
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    const field = (testId: string) =>
+      canvas
+        .getByTestId(testId)
+        .querySelector(".nimbus-select__trigger") as HTMLElement;
+
+    for (const size of ["sm", "md"] as const) {
+      const clearable = field(`clearable-${size}`);
+      const fixed = field(`fixed-${size}`);
+
+      await step(
+        `${size}: dropping the clear button narrows the field by exactly its own width`,
+        async () => {
+          const delta =
+            clearable.getBoundingClientRect().width -
+            fixed.getBoundingClientRect().width;
+          // sizes.600 - the clear button box, and nothing else.
+          await expect(Math.round(delta)).toBe(24);
+        }
+      );
+
+      await step(
+        `${size}: the chevron keeps its inset from the field edge`,
+        async () => {
+          for (const el of [clearable, fixed]) {
+            const controls = el.lastElementChild as HTMLElement;
+            const inset =
+              el.getBoundingClientRect().right -
+              controls.getBoundingClientRect().right;
+            // Both sizes inset by 16px: `md` from `px: 400`, `sm` from the
+            // deliberately asymmetric `pr: 400` that preserves the old overlay's
+            // hardcoded `right="400"`.
+            await expect(Math.round(inset)).toBe(16);
+          }
+        }
+      );
+    }
   },
 };

@@ -33,6 +33,8 @@ export type SearchInputRootSlotProps = HTMLChakraProps<
 
 export type SearchInputLeadingElementSlotProps = HTMLChakraProps<"div">;
 
+export type SearchInputTrailingElementSlotProps = HTMLChakraProps<"div">;
+
 export type SearchInputInputSlotProps = HTMLChakraProps<"input">;
 
 // ============================================================
@@ -52,4 +54,25 @@ export type SearchInputProps = OmitInternalProps<
      * Placeholder text for the search input
      */
     placeholder?: string;
+    /**
+     * Element to display at the start of the input.
+     * Respects text direction (left in LTR, right in RTL).
+     *
+     * Defaults to the search icon. Pass an element to replace it, or `null`
+     * to render no leading element at all.
+     *
+     * **Accessibility**: decorative elements should be marked
+     * `aria-hidden="true"`. An interactive element needs its own `aria-label`.
+     *
+     * @default <Search />
+     */
+    leadingElement?: React.ReactNode;
+    /**
+     * Optional element to display at the end of the input, before the clear
+     * button. Respects text direction (right in LTR, left in RTL).
+     *
+     * **Accessibility**: decorative elements should be marked
+     * `aria-hidden="true"`. An interactive element needs its own `aria-label`.
+     */
+    trailingElement?: React.ReactNode;
   };

@@ -5,7 +5,9 @@ import {
 import type {
   SelectRootSlotProps,
   SelectTriggerSlotProps,
+  SelectTriggerButtonSlotProps,
   SelectTriggerLabelSlotProps,
+  SelectTrailingElementSlotProps,
   SelectOptionsSlotProps,
   SelectOptionSlotProps,
   SelectOptionGroupSlotProps,
@@ -26,17 +28,29 @@ export const SelectLeadingElementSlot = withContext<
   HTMLChakraProps<"div">
 >("div", "leadingElement");
 
-// Trigger Button
+// Trigger container - carries the field chrome; not interactive
 export const SelectTriggerSlot = withContext<
-  HTMLButtonElement,
+  HTMLDivElement,
   SelectTriggerSlotProps
->("button", "trigger");
+>("div", "trigger");
+
+// Trigger Button - the interactive element that opens the listbox
+export const SelectTriggerButtonSlot = withContext<
+  HTMLButtonElement,
+  SelectTriggerButtonSlotProps
+>("button", "triggerButton");
 
 // Trigger Button Label
 export const SelectTriggerLabelSlot = withContext<
   HTMLButtonElement,
   SelectTriggerLabelSlotProps
 >("span", "triggerLabel");
+
+// TrailingElement - consumer content between the value and the clear button
+export const SelectTrailingElementSlot = withContext<
+  HTMLDivElement,
+  SelectTrailingElementSlotProps
+>("div", "trailingElement");
 
 // ListBox
 export const SelectOptionsSlot = withContext<

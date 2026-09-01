@@ -8,7 +8,7 @@ import {
 } from "react-aria-components";
 import { Search, Close } from "@commercetools/nimbus-icons";
 import { IconButton } from "@/components";
-import { extractStyleProps } from "@/utils";
+import { AdornmentContent, extractStyleProps } from "@/utils";
 import {
   useLocalizedStringFormatter,
   useFocusInputOnFieldClick,
@@ -17,6 +17,7 @@ import { searchInputSlotRecipe } from "./search-input.recipe";
 import {
   SearchInputRootSlot,
   SearchInputLeadingElementSlot,
+  SearchInputTrailingElementSlot,
   SearchInputInputSlot,
 } from "./search-input.slots";
 import type { SearchInputProps } from "./search-input.types";
@@ -32,7 +33,12 @@ import { searchInputMessagesStrings } from "./search-input.messages";
  * @supportsStyleProps
  */
 export const SearchInput = (props: SearchInputProps) => {
-  const { ref: forwardedRef, ...restProps } = props;
+  const {
+    ref: forwardedRef,
+    leadingElement = <Search />,
+    trailingElement,
+    ...restProps
+  } = props;
 
   const msg = useLocalizedStringFormatter(searchInputMessagesStrings);
   const recipe = useSlotRecipe({ recipe: searchInputSlotRecipe });
@@ -64,12 +70,19 @@ export const SearchInput = (props: SearchInputProps) => {
             {...styleProps}
             {...stateProps}
           >
-            <SearchInputLeadingElementSlot>
-              <Search />
-            </SearchInputLeadingElementSlot>
+            {leadingElement && (
+              <SearchInputLeadingElementSlot>
+                <AdornmentContent>{leadingElement}</AdornmentContent>
+              </SearchInputLeadingElementSlot>
+            )}
             <SearchInputInputSlot asChild>
               <RaInput ref={ref} />
             </SearchInputInputSlot>
+            {trailingElement && (
+              <SearchInputTrailingElementSlot>
+                <AdornmentContent>{trailingElement}</AdornmentContent>
+              </SearchInputTrailingElementSlot>
+            )}
             <IconButton
               slot="null"
               size="2xs"

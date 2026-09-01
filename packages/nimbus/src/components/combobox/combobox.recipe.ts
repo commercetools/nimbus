@@ -10,6 +10,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     "root",
     "trigger",
     "leadingElement",
+    "trailingElement",
     "content",
     "tagGroup",
     "input",
@@ -58,10 +59,41 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         pr: "100",
       },
     },
+    trailingElement: {
+      // Explicit grid placement with a real box: `display: contents` (as used by
+      // leadingElement above) would discard this gridArea and fall back to grid
+      // auto-placement, landing the content in the wrong cell.
+      //
+      // Deliberately no `minH` per size, unlike leadingElement: there it is
+      // inert (`display: contents` has no box to size), here it would be live
+      // and would raise the grid row to the field's full height, which the
+      // trigger's own `py` then adds to - an 8px taller field. The trigger's
+      // `minH` sets the height; `alignItems: center` places this box in it.
+      gridArea: "trailingElement",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      color: "neutral.11",
+      "& svg": {
+        minH: "600",
+        minW: "600",
+      },
+    },
     trigger: {
       display: "grid",
+      // Four tracks by default. `column-gap` applies between *every* adjacent
+      // pair of tracks in the explicit grid, empty ones included, so declaring
+      // the trailing track unconditionally spends an extra gap out of the `1fr`
+      // content column on every ComboBox, trailing element or not - 4px, which
+      // is enough to wrap a tag onto a second line. The track is declared only
+      // when the slot is actually rendered.
       gridTemplateColumns: "auto 1fr auto auto",
       gridTemplateAreas: '"leadingElement content clear toggle"',
+      "&:has(> .nimbus-combobox__trailingElement)": {
+        gridTemplateColumns: "auto 1fr auto auto auto",
+        gridTemplateAreas:
+          '"leadingElement content trailingElement clear toggle"',
+      },
       alignItems: "center",
       gap: "100",
       width: "100%",

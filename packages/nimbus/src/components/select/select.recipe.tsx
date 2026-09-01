@@ -9,7 +9,9 @@ export const selectSlotRecipe = defineSlotRecipe({
     "root",
     "leadingElement",
     "trigger",
+    "triggerButton",
     "triggerLabel",
+    "trailingElement",
     "options",
     "optionGroup",
     "option",
@@ -32,17 +34,25 @@ export const selectSlotRecipe = defineSlotRecipe({
         bg: "neutral.3",
       },
     },
+    // The field container. Non-interactive: it owns the chrome, while the
+    // button below owns the interaction. This lets the clear button, chevron and
+    // a consumer-provided trailing element sit beside the button in normal flow
+    // instead of being absolutely positioned over it.
     trigger: {
       cursor: "button",
       display: "inline-flex",
-      focusRing: "outside",
       alignItems: "center",
-      justifyContent: "flex-start",
+      // Containing block for the trigger button's stretched hit area below.
+      position: "relative",
       borderRadius: "200",
       color: "neutral.12",
       width: "100%",
-      userSelect: "none",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
+
+      focusRing: "outside",
+      _focusWithin: {
+        layerStyle: "focusRing",
+      },
 
       '& [slot="description"]': {
         display: "none",
@@ -53,23 +63,54 @@ export const selectSlotRecipe = defineSlotRecipe({
         "--border-color": "colors.critical.7",
       },
     },
+    // The interactive trigger. Transparent and unpainted - it grows to fill
+    // whatever the sibling controls leave, so clicking anywhere in the field
+    // except those controls still opens the listbox.
+    triggerButton: {
+      cursor: "button",
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "flex-start",
+      flex: "1",
+      minWidth: 0,
+      bg: "transparent",
+      border: "none",
+      color: "inherit",
+      font: "inherit",
+      textAlign: "left",
+      userSelect: "none",
+      padding: 0,
+      // The ring is drawn by the container via _focusWithin.
+      focusRing: "none",
+
+      // Extends the pressable area across the whole field. Pseudo-elements are
+      // not event targets, so React Aria still sees a normal press on the
+      // button; siblings that need their own clicks are raised above it.
+      _after: {
+        content: '""',
+        position: "absolute",
+        inset: 0,
+      },
+    },
     leadingElement: {
       display: "flex",
       alignItems: "center",
       color: "neutral.11",
     },
+    trailingElement: {
+      display: "flex",
+      alignItems: "center",
+      color: "neutral.11",
+      flexShrink: 0,
+      // Above the trigger button's stretched hit area.
+      position: "relative",
+      zIndex: 1,
+    },
     triggerLabel: {
-      // *Magic*
-      // the trigger-label defines the overall width of the select,
-      // but since we position 2 buttons/icons next to it, we need to account for
-      // their width as well and reserve some space for them
-      // = label-button-gap + button-size + icon-size
-      // = 8px + 24px + 24px
-      // = 56px * 25 = 1400 token
-      "--button-safespace": "sizes.1400",
       color: "neutral.12",
       textAlign: "left",
-      marginRight: "var(--button-safespace)",
+      flex: "1",
+      minWidth: 0,
       maxWidth: "100%",
       whiteSpace: "nowrap",
       overflow: "hidden",
@@ -153,12 +194,26 @@ export const selectSlotRecipe = defineSlotRecipe({
       sm: {
         root: {},
         trigger: {
-          px: "300",
+          // Deliberately asymmetric. The overlay this layout replaced was
+          // positioned `right="400"` regardless of size, so sm has always inset
+          // its controls by 16px while padding its content by 12px. Kept so sm
+          // stays pixel-identical to the previous layout - do not "correct" it
+          // to `px` without re-baselining sm.
+          pl: "300",
+          pr: "400",
           gap: "100",
           h: "800",
           textStyle: "sm",
         },
+        triggerButton: {
+          gap: "100",
+        },
         leadingElement: {
+          "& > svg": {
+            boxSize: "400",
+          },
+        },
+        trailingElement: {
           "& > svg": {
             boxSize: "400",
           },
@@ -167,12 +222,20 @@ export const selectSlotRecipe = defineSlotRecipe({
       md: {
         root: {},
         trigger: {
-          h: "1000",
           px: "400",
           gap: "200",
+          h: "1000",
           textStyle: "md",
         },
+        triggerButton: {
+          gap: "200",
+        },
         leadingElement: {
+          "& > svg": {
+            boxSize: "500",
+          },
+        },
+        trailingElement: {
           "& > svg": {
             boxSize: "500",
           },
@@ -204,14 +267,6 @@ export const selectSlotRecipe = defineSlotRecipe({
         trigger: {
           "--border-width": "sizes.25",
           "--border-color": "transparent",
-        },
-      },
-    },
-
-    isClearable: {
-      false: {
-        triggerLabel: {
-          "--button-safespace": "sizes.1000",
         },
       },
     },

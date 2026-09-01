@@ -3,6 +3,7 @@ import type { SlotComponent } from "../../type-utils/slot-types";
 import type {
   SearchInputRootSlotProps,
   SearchInputLeadingElementSlotProps,
+  SearchInputTrailingElementSlotProps,
   SearchInputInputSlotProps,
 } from "./search-input.types";
 
@@ -21,6 +22,14 @@ export const SearchInputLeadingElementSlot: SlotComponent<
 > = withContext<HTMLDivElement, SearchInputLeadingElementSlotProps>(
   "div",
   "leadingElement"
+);
+
+export const SearchInputTrailingElementSlot: SlotComponent<
+  HTMLDivElement,
+  SearchInputTrailingElementSlotProps
+> = withContext<HTMLDivElement, SearchInputTrailingElementSlotProps>(
+  "div",
+  "trailingElement"
 );
 
 export const SearchInputInputSlot: SlotComponent<

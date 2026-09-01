@@ -2,7 +2,8 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState, useCallback } from "react";
-import { ComboBox, NimbusProvider } from "@commercetools/nimbus";
+import { ComboBox, IconButton, NimbusProvider } from "@commercetools/nimbus";
+import { Tune } from "@commercetools/nimbus-icons";
 
 /**
  * @docs-section basic-rendering
@@ -400,5 +401,67 @@ describe("ComboBox - Option groups", () => {
       expect(screen.getByText("Fruits")).toBeInTheDocument();
       expect(screen.getByText("Vegetables")).toBeInTheDocument();
     });
+  });
+});
+
+/**
+ * @docs-section trailing-element
+ * @docs-title Trailing Element Tests
+ * @docs-description Verify trailing element rendering and that it owns its own clicks
+ * @docs-order 9
+ */
+describe("ComboBox - Trailing element", () => {
+  const animals = [
+    { id: "koala", name: "Koala" },
+    { id: "panda", name: "Panda" },
+  ];
+
+  const renderWithTrailing = (trailingElement: React.ReactNode) =>
+    render(
+      <NimbusProvider>
+        <ComboBox.Root
+          items={animals}
+          aria-label="Search animals"
+          trailingElement={trailingElement}
+        >
+          <ComboBox.Trigger />
+          <ComboBox.Popover>
+            <ComboBox.ListBox>
+              {(item: { id: string; name: string }) => (
+                <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+              )}
+            </ComboBox.ListBox>
+          </ComboBox.Popover>
+        </ComboBox.Root>
+      </NimbusProvider>
+    );
+
+  it("renders the trailing element in the trailingElement slot", () => {
+    renderWithTrailing(<Tune data-testid="trailing-icon" />);
+
+    expect(screen.getByTestId("trailing-icon").parentElement).toHaveClass(
+      "nimbus-combobox__trailingElement"
+    );
+  });
+
+  it("runs a trailing button's handler without opening the options", async () => {
+    const user = userEvent.setup();
+    const onFilter = vi.fn();
+
+    renderWithTrailing(
+      <IconButton
+        size="2xs"
+        variant="ghost"
+        aria-label="Filter results"
+        onPress={onFilter}
+      >
+        <Tune />
+      </IconButton>
+    );
+
+    await user.click(screen.getByRole("button", { name: "Filter results" }));
+
+    expect(onFilter).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 });

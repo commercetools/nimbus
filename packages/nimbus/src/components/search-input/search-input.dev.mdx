@@ -80,6 +80,52 @@ const App = () => {
 - Clear button is disabled when input is disabled or read-only
 - Clear button has an internationalized aria-label ("Clear search input")
 
+### Leading and trailing elements
+
+The leading search icon is the default, and can be replaced with any element or
+removed entirely by passing `null`. Use `trailingElement` to place content at the
+end of the field, before the clear button — an inline filter button, for example:
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <SearchInput
+      placeholder="Default leading icon"
+      aria-label="Default leading icon"
+    />
+    <SearchInput
+      placeholder="Replaced leading icon"
+      aria-label="Replaced leading icon"
+      leadingElement={<Icons.Visibility aria-hidden="true" />}
+    />
+    <SearchInput
+      placeholder="No leading element"
+      aria-label="No leading element"
+      leadingElement={null}
+    />
+    <SearchInput
+      placeholder="Filter results"
+      aria-label="Filter results"
+      trailingElement={
+        <IconButton
+          size="xs"
+          variant="ghost"
+          colorPalette="primary"
+          aria-label="Filter results"
+          onPress={() => {}}
+        >
+          <Icons.Tune />
+        </IconButton>
+      }
+    />
+  </Stack>
+)
+```
+
+Decorative content should be marked `aria-hidden="true"`. Interactive content
+needs its own `aria-label`, and keeps its own click behavior — pressing a
+trailing button does not clear the field or move focus to the input.
+
 ### Disabled state
 
 Disable input interaction with the `isDisabled` prop:
