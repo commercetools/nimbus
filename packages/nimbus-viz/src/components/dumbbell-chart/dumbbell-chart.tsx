@@ -37,6 +37,8 @@ export interface DumbbellChartProps {
  * the readable quantity. Each dot's value is direct-labeled, flared to the
  * outer side of the pair so the two never collide. A legend maps the two dot
  * colors to their moments (identity is never carried by color alone).
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function DumbbellChart({
   width,

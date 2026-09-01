@@ -54,6 +54,8 @@ function topLevelAncestor<Datum>(
  * share of the parent; every node is colored by its top-level ancestor (via the
  * shared entity→color scale) and dimmed slightly with depth. The center reads
  * the total, or a hovered node's value and share.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function SunburstChart({
   width,

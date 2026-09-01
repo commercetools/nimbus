@@ -31,6 +31,8 @@ const BAR_GAP = 2;
  * like the categorical bar chart, color carries no meaning here, the value
  * axis does. Binning uses d3-array's `bin()` over the sample's own value
  * range.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function Histogram({
   width,

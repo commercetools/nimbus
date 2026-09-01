@@ -66,6 +66,8 @@ interface DayEntry {
  * Each day is a small rounded square colored by a single-hue sequential ramp
  * over the value domain (magnitude → one hue, never a rainbow). Days with no
  * datum render as an empty grid cell. Trend/distribution over dates.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function CalendarHeatmap({
   width,

@@ -34,6 +34,8 @@ interface CdfPoint {
  * under X?" and percentiles directly; the step form is honest about the
  * discrete jumps. A 50% guide marks the median. Dots (small n) expose each
  * sample's value and percentile on hover.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function CumulativeCurve({
   width,

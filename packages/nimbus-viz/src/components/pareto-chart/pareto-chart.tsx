@@ -51,6 +51,8 @@ interface ParetoRow {
  * A Pareto chart: categories ranked by magnitude, with a running cumulative
  * total, used to surface the "vital few" categories that drive most of the
  * whole. Per-bar hover dims the rest and reads out the cumulative share.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function ParetoChart({
   width,

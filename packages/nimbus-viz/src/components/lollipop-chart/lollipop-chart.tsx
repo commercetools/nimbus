@@ -20,6 +20,8 @@ export interface LollipopChartProps {
  * that marks the value against a common baseline; rows are sorted descending
  * with direct value labels. One accent hue: color carries no meaning here, the
  * category axis does — so hovering an item just dims the rest.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function LollipopChart({
   width,

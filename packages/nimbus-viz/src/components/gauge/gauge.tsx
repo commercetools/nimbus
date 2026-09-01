@@ -33,6 +33,8 @@ const END_ANGLE = Math.PI / 2;
  * range, an accent value arc sweeps the fraction reached, and an optional
  * threshold tick marks a target point on the arc. The value label sits at
  * center in ink — the arc's color never has to be read to know the number.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function Gauge({
   width,

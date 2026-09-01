@@ -28,6 +28,8 @@ export interface ConnectedScatterplotProps {
  * joined in sequence to trace the path the pair took (typically over time). It
  * shows the relationship AND its trajectory at once; the first and last points
  * are labelled to orient the reader. Hovering a point shows its coordinates.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function ConnectedScatterplot({
   width,

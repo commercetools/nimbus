@@ -41,6 +41,8 @@ const toDate = (x: number | Date): Date =>
  * breach a control limit are flagged with a larger `negative` marker; the mark
  * color carries the alarm, but the tooltip repeats it in text ("out of
  * control") so it is never color-only.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function ControlChart({
   width,

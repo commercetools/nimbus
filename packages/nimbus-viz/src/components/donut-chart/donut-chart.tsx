@@ -18,6 +18,8 @@ export interface DonutChartProps {
  * Part-to-whole as a donut. Color is identity here (one hue per slice, fixed
  * order) — legitimate, unlike magnitude bars. The hole shows the total, or the
  * hovered slice's share.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function DonutChart({
   width,

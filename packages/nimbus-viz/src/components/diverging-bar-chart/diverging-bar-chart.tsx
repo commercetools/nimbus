@@ -23,6 +23,8 @@ export interface DivergingBarChartProps {
  * signed value label, never by color alone; the positive/negative hues are a
  * redundant valence cue. The go-to for variance-to-plan, sentiment, or
  * year-over-year change across categories.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function DivergingBarChart({
   width,

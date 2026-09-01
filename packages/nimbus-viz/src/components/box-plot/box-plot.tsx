@@ -39,6 +39,8 @@ export interface BoxPlotProps {
  * accent fill; ink is reserved for the box stroke, whiskers, and median line.
  * Summary stats are accepted as-is (min/quartiles/median/max/outliers); this
  * component computes nothing from raw samples.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function BoxPlot({
   width,

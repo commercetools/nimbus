@@ -37,6 +37,8 @@ const fmtX = (x: number | Date): string =>
  * climbing the ranking. One smooth line per series (fixed-order categorical
  * hue), a dot at each rank, and a direct ink label at each series' last point —
  * so identity never rides on color alone and no legend is needed.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function BumpChart({
   width,

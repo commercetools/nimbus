@@ -43,6 +43,8 @@ function sectorPath(r0: number, r1: number, a0: number, a1: number): string {
  * ring), so it reads as magnitude; the circular layout is the trade for a
  * compact, distinctive form. One accent hue (identity is the angular position),
  * hover highlights a bar and shows its value.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function RadialBarChart({
   width,

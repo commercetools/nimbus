@@ -40,6 +40,8 @@ function allocateCells(values: number[], total: number): number[] {
  * order), so a legend is always present. Reads shares more accurately than a pie
  * for a handful of categories. Hovering a cell dims the other categories and
  * shows that category's share.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function WaffleChart({
   width,

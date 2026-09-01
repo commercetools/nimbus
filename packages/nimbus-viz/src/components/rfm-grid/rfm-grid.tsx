@@ -29,6 +29,8 @@ export interface RfmGridProps {
  * over its customer `count` (magnitude → one hue), with the count printed in
  * the cell. Empty segments render as an empty grid cell. Part-whole /
  * distribution segmentation.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
   const theme = useChartTheme();

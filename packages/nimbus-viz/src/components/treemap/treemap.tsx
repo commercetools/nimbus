@@ -45,6 +45,8 @@ function topLevelAncestor<Datum>(
  * shares one hue regardless of nesting depth. Cells are separated by a 2px
  * surface-colored gap; labels only render once a cell is large enough to hold
  * them (same size-gating idea as the heatmap's cell labels).
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function Treemap({ width, height, data, ariaLabel }: TreemapProps) {
   const theme = useChartTheme();

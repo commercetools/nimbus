@@ -76,6 +76,8 @@ function density(
  * summary. The median is marked with a line inside each violin. Like the box
  * plot, the category axis carries identity, so every violin uses one accent
  * fill; hovering shows the group's median and sample count.
+ *
+ * @experimental Prototype-stage; API may change before it is marked stable.
  */
 export function ViolinPlot({
   width,
