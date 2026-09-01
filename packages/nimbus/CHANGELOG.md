@@ -1,5 +1,95 @@
 # @commercetools/nimbus
 
+## 3.6.0
+
+### Minor Changes
+
+- [#1941](https://github.com/commercetools/nimbus/pull/1941)
+  [`7ac47da`](https://github.com/commercetools/nimbus/commit/7ac47dae713ff1fa1402981fe4d5674b33526dcb)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! -
+  `@commercetools/nimbus-icons` and `@commercetools/nimbus-tokens` are no longer
+  required peer dependencies. Nimbus now bundles the icons and tokens it uses
+  internally, so consumers only need to install `@chakra-ui/react` and `react`
+  as peers.
+
+  - Consumers who import icons directly from `@commercetools/nimbus-icons` for
+    their own UI should keep it as a regular dependency — it continues to work
+    independently and now tree-shakes correctly.
+  - Consumers who only had `nimbus-icons` and `nimbus-tokens` installed because
+    nimbus required them can remove both packages.
+
+  `@commercetools/nimbus-icons`: fixed tree-shaking — bundlers now correctly
+  eliminate unused icons instead of including all 2,000+.
+
+- [#1936](https://github.com/commercetools/nimbus/pull/1936)
+  [`3ccc421`](https://github.com/commercetools/nimbus/commit/3ccc421cf32fe2ab2dac5efb6bdf194f8422f278)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Popover`: new compound
+  component for interactive content anchored to a trigger — `Popover.Root`,
+  `Popover.Trigger` and `Popover.Content`. Reach for it for filter panels, short
+  edit forms and context-sensitive actions; `Tooltip` still covers plain hints,
+  and `Dialog` covers flows that should block the page.
+
+  Name `Popover.Content` with `aria-label` or `aria-labelledby` — a visible
+  heading inside the popover does not name it.
+
+  Beta. See the
+  [Popover docs](https://nimbus-documentation.vercel.app/components/feedback/popover)
+  for the full prop reference.
+
+- [#1947](https://github.com/commercetools/nimbus/pull/1947)
+  [`0aea8c7`](https://github.com/commercetools/nimbus/commit/0aea8c7ad2e7b61ce544636b27e52952685edd9c)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `ComboBox`, `Select` and
+  `SearchInput` gain a `trailingElement` prop for placing an icon, button or
+  filter control at the trailing edge of the field, beside the existing clear
+  and toggle controls.
+
+  ### `Select`
+  - The trailing element sits beside the trigger rather than inside it, so
+    interactive content keeps its own behaviour: pressing a trailing button runs
+    your handler without opening the listbox.
+  - The focus ring now follows focus anywhere in the field, so focusing the
+    clear button or trailing content outlines the whole field rather than just
+    that control. This matches how `ComboBox` and `SearchInput` already behave.
+  - **Fixed:** a field with `isClearable={false}` no longer reserves space for
+    the clear button it never renders, so it is around 24px narrower with no gap
+    before the chevron. `MoneyInput`, `ScopedSearchInput` and `Pagination` each
+    embed such a field and change appearance accordingly.
+
+  ### `SearchInput`
+  - New `leadingElement` prop. It defaults to the search icon, so existing usage
+    is unaffected; pass an element to replace the icon, or `null` to remove it.
+    Interactive leading content now receives clicks.
+
+- [#1943](https://github.com/commercetools/nimbus/pull/1943)
+  [`dfc5aa3`](https://github.com/commercetools/nimbus/commit/dfc5aa37f2e450c0b16cc9fc1022a92159e8299e)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Components now declare
+  which style props they support via a `@supportsStyleProps` JSDoc tag. This
+  metadata is surfaced by the MCP tools (`get_component`, `get_docs_page`,
+  `migrate_from_uikit`) so AI-assisted migrations can apply layout and spacing
+  props directly to components instead of wrapping them in a `Box`.
+
+- [#1936](https://github.com/commercetools/nimbus/pull/1936)
+  [`3ccc421`](https://github.com/commercetools/nimbus/commit/3ccc421cf32fe2ab2dac5efb6bdf194f8422f278)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `LocalizedField`: the
+  info popover opened by the hint button now has an accessible name, so screen
+  readers announce it instead of an unnamed dialog. It also matches the
+  appearance of other popovers — one shadow rather than two stacked, no border
+  or background tint of its own — and fades in and out like them. It no longer
+  draws an outline around itself when opened, matching `Dialog` and `Drawer`.
+
+### Patch Changes
+
+- [#1940](https://github.com/commercetools/nimbus/pull/1940)
+  [`4a04f8b`](https://github.com/commercetools/nimbus/commit/4a04f8b568669ced1a5b6091465c5f92a2a8a349)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Tree`: `useTree`'s
+  `move`, `moveBefore` and `moveAfter` no longer discard a node when it is moved
+  into its own subtree. Previously the node and everything beneath it were
+  removed from the tree without anything being reported — `move` for any such
+  target, and `moveBefore` / `moveAfter` whenever the moved node was a top-level
+  node. All three now throw instead, and the error comes from the call itself so
+  it can be caught where the move is made. Drag-and-drop was never affected —
+  such a drop is refused before it reaches the tree.
+
 ## 3.5.1
 
 ### Patch Changes
