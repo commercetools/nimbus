@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scaleLinear, scaleTime } from "@visx/scale";
-import { AreaStack, Area } from "@visx/shape";
+import { AreaStack, Area, stack } from "@visx/shape";
 import { AxisBottom } from "@visx/axis";
 import { curveBasis } from "@visx/curve";
 import { extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import { bottomTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
@@ -17,6 +19,8 @@ export interface StreamgraphProps {
   height: number;
   series: Series[];
   ariaLabel?: string;
+  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
+  children?: ReactNode;
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
@@ -40,6 +44,7 @@ export function Streamgraph({
   height,
   series,
   ariaLabel,
+  children,
 }: StreamgraphProps) {
   const theme = useChartTheme();
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
@@ -89,9 +94,32 @@ export function Streamgraph({
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleTime({ domain: xDomain, range: [0, innerWidth] });
+        // Value y-scale for overlays: wiggle coordinates are scale-independent,
+        // so derive the domain (it straddles zero) from the stacks — same stack
+        // config as the AreaStack below, so overlays line up with the bands.
+        const wiggleStacks = stack<StackDatum, string>({
+          keys,
+          value: (d, key) => d[key],
+          offset: "wiggle",
+          order: "insideout",
+        })(rows);
+        let lo = 0;
+        let hi = 0;
+        for (const layer of wiggleStacks) {
+          for (const p of layer) {
+            if (p[0] < lo) lo = p[0];
+            if (p[1] > hi) hi = p[1];
+          }
+        }
+        const yScale = scaleLinear({
+          domain: [lo, hi],
+          range: [innerHeight, 0],
+        });
 
         return (
-          <>
+          <ChartScaleProvider
+            value={{ yScale, xScale, xBandwidth: 0, innerWidth, innerHeight }}
+          >
             <AxisBottom
               scale={xScale}
               top={innerHeight}
@@ -109,40 +137,24 @@ export function Streamgraph({
               offset="wiggle"
               order="insideout"
             >
-              {({ stacks }) => {
-                // Wiggle coordinates are scale-independent; derive the y
-                // domain from the computed stacks (it straddles zero).
-                let lo = 0;
-                let hi = 0;
-                for (const layer of stacks) {
-                  for (const p of layer) {
-                    if (p[0] < lo) lo = p[0];
-                    if (p[1] > hi) hi = p[1];
-                  }
-                }
-                const yScale = scaleLinear({
-                  domain: [lo, hi],
-                  range: [innerHeight, 0],
-                });
-                return (
-                  <>
-                    {stacks.map((layer) => (
-                      <Area
-                        key={layer.key}
-                        data={layer}
-                        x={(d) => xScale(new Date(d.data.x))}
-                        y0={(d) => yScale(d[0])}
-                        y1={(d) => yScale(d[1])}
-                        curve={curveBasis}
-                        fill={color(layer.key)}
-                        fillOpacity={0.85}
-                        stroke={theme.surface}
-                        strokeWidth={1}
-                      />
-                    ))}
-                  </>
-                );
-              }}
+              {({ stacks }) => (
+                <>
+                  {stacks.map((layer) => (
+                    <Area
+                      key={layer.key}
+                      data={layer}
+                      x={(d) => xScale(new Date(d.data.x))}
+                      y0={(d) => yScale(d[0])}
+                      y1={(d) => yScale(d[1])}
+                      curve={curveBasis}
+                      fill={color(layer.key)}
+                      fillOpacity={0.85}
+                      stroke={theme.surface}
+                      strokeWidth={1}
+                    />
+                  ))}
+                </>
+              )}
             </AreaStack>
 
             {hoverIndex != null && hoveredX != null && (
@@ -191,7 +203,8 @@ export function Streamgraph({
                 ]}
               />
             )}
-          </>
+            {children}
+          </ChartScaleProvider>
         );
       }}
     </ChartContainer>

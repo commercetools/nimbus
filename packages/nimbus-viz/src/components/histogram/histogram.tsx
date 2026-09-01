@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { bin, extent, max } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
@@ -17,6 +19,8 @@ export interface HistogramProps {
   /** Approximate bin count (d3 may adjust for nice boundaries). Default 12. */
   thresholds?: number;
   ariaLabel?: string;
+  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
+  children?: ReactNode;
 }
 
 /** Visual gap between adjacent bars, in px. */
@@ -34,6 +38,7 @@ export function Histogram({
   values,
   thresholds = 12,
   ariaLabel,
+  children,
 }: HistogramProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
@@ -79,7 +84,15 @@ export function Histogram({
         });
         const hb = hover != null ? bins[hover] : null;
         return (
-          <>
+          <ChartScaleProvider
+            value={{
+              yScale,
+              xScale,
+              xBandwidth: 0,
+              innerWidth,
+              innerHeight,
+            }}
+          >
             <GridRows
               ticks={yScale.ticks(4)}
               y={(t) => yScale(t)}
@@ -139,7 +152,8 @@ export function Histogram({
                 ]}
               />
             )}
-          </>
+            {children}
+          </ChartScaleProvider>
         );
       }}
     </ChartContainer>

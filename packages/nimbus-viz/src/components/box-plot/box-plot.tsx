@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { BoxPlot as VisxBoxPlot } from "@visx/stats";
 import { extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
@@ -27,6 +29,8 @@ export interface BoxPlotProps {
   /** One five-number summary per category. Nothing is computed here. */
   groups: BoxPlotGroupStats[];
   ariaLabel?: string;
+  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
+  children?: ReactNode;
 }
 
 /**
@@ -36,7 +40,13 @@ export interface BoxPlotProps {
  * Summary stats are accepted as-is (min/quartiles/median/max/outliers); this
  * component computes nothing from raw samples.
  */
-export function BoxPlot({ width, height, groups, ariaLabel }: BoxPlotProps) {
+export function BoxPlot({
+  width,
+  height,
+  groups,
+  ariaLabel,
+  children,
+}: BoxPlotProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
 
@@ -82,7 +92,15 @@ export function BoxPlot({ width, height, groups, ariaLabel }: BoxPlotProps) {
         });
         const boxWidth = xScale.bandwidth() * 0.6;
         return (
-          <>
+          <ChartScaleProvider
+            value={{
+              yScale,
+              xScale: (v) => xScale(String(v)) ?? 0,
+              xBandwidth: xScale.bandwidth(),
+              innerWidth,
+              innerHeight,
+            }}
+          >
             <GridRows
               ticks={yScale.ticks(4)}
               y={(t) => yScale(t)}
@@ -156,7 +174,8 @@ export function BoxPlot({ width, height, groups, ariaLabel }: BoxPlotProps) {
                 ]}
               />
             )}
-          </>
+            {children}
+          </ChartScaleProvider>
         );
       }}
     </ChartContainer>
