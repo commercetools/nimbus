@@ -16,6 +16,10 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { CategoryDatum } from "../../chart/types";
+import type {
+  DatumClickHandler,
+  DatumHoverHandler,
+} from "../../chart/interaction";
 import { emText } from "../../chart/typography";
 
 export interface BarChartProps {
@@ -32,6 +36,10 @@ export interface BarChartProps {
   /** Format a value-axis number (tick labels + tooltip values). Overrides the
    *  locale/currency formatter from any surrounding ChartLocaleProvider. */
   valueFormat?: (n: number) => string;
+  /** Fired when a datum is clicked (drill-down). */
+  onDatumClick?: DatumClickHandler<CategoryDatum>;
+  /** Fired when the hovered datum changes; null when the pointer leaves. */
+  onDatumHover?: DatumHoverHandler<CategoryDatum>;
   children?: ReactNode;
 }
 
@@ -47,6 +55,8 @@ export function BarChart({
   orientation = "vertical",
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
   children,
 }: BarChartProps) {
   const theme = useChartTheme();
@@ -101,8 +111,15 @@ export function BarChart({
                 return (
                   <g
                     key={d.category}
-                    onMouseEnter={() => setHover(i)}
-                    onMouseLeave={() => setHover(null)}
+                    onMouseEnter={() => {
+                      setHover(i);
+                      onDatumHover?.({ datum: d, index: i });
+                    }}
+                    onMouseLeave={() => {
+                      setHover(null);
+                      onDatumHover?.(null);
+                    }}
+                    onClick={() => onDatumClick?.({ datum: d, index: i })}
                   >
                     <BarRounded
                       x={0}
@@ -212,8 +229,15 @@ export function BarChart({
                   top
                   fill={theme.accent}
                   opacity={active ? 1 : 0.4}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: d, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: d, index: i })}
                 />
               );
             })}

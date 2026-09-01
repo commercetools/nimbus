@@ -14,6 +14,10 @@ import { useChartTheme, useEntityColors } from "../../theme";
 import { formatDayMonth } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { Series, SeriesPoint } from "../../chart/types";
+import type {
+  DatumClickHandler,
+  DatumHoverHandler,
+} from "../../chart/interaction";
 
 export interface LineChartProps {
   width: number;
@@ -26,6 +30,10 @@ export interface LineChartProps {
   /** Format a value-axis number (tick labels + tooltip values). Overrides the
    *  locale/currency formatter from any surrounding ChartLocaleProvider. */
   valueFormat?: (n: number) => string;
+  /** Fired when a datum is clicked (drill-down). */
+  onDatumClick?: DatumClickHandler<SeriesPoint>;
+  /** Fired when the hovered datum changes; null when the pointer leaves. */
+  onDatumHover?: DatumHoverHandler<SeriesPoint>;
   children?: ReactNode;
 }
 
@@ -44,6 +52,8 @@ export function LineChart({
   variant = "line",
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
   children,
 }: LineChartProps) {
   const theme = useChartTheme();
@@ -203,9 +213,37 @@ export function LineChart({
                 const idx = nearestIndexByX(mx, xScale, series[0].data, (p) =>
                   toDate(p.x)
                 );
-                if (idx >= 0) setHoverIndex(idx);
+                if (idx >= 0) {
+                  setHoverIndex(idx);
+                  // Multi-series: the hover model tracks a single x-index across
+                  // all series, so we report the FIRST series's point at that
+                  // index (matching the tooltip's lead line + readout).
+                  onDatumHover?.({
+                    datum: series[0].data[idx],
+                    index: idx,
+                    seriesId: series[0].id,
+                  });
+                }
               }}
-              onMouseLeave={() => setHoverIndex(null)}
+              onMouseLeave={() => {
+                setHoverIndex(null);
+                onDatumHover?.(null);
+              }}
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const mx = e.clientX - rect.left;
+                const idx = nearestIndexByX(mx, xScale, series[0].data, (p) =>
+                  toDate(p.x)
+                );
+                // Click mirrors hover: report the FIRST series's point at the
+                // resolved x-index.
+                if (idx >= 0)
+                  onDatumClick?.({
+                    datum: series[0].data[idx],
+                    index: idx,
+                    seriesId: series[0].id,
+                  });
+              }}
             />
 
             {hoverIndex != null && hoveredX != null && (
