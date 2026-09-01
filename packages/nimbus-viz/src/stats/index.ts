@@ -41,6 +41,57 @@ export function linearRegression(points: readonly Point[]): LinearFit {
   return { slope, intercept };
 }
 
+export interface RegressionBandPoint {
+  x: number;
+  /** Fitted mean response ŷ = slope·x + intercept. */
+  y: number;
+  low: number;
+  high: number;
+}
+
+/**
+ * OLS fit plus a pointwise confidence band for the mean response, sampled
+ * uniformly across the x-extent. The half-width at x is
+ * `mult · SE · √(1/n + (x−x̄)²/Sxx)`, where SE is the residual standard error
+ * (√(SSE/(n−2))) — the textbook confidence interval for the regression line,
+ * which correctly flares away from x̄. `confidence` selects the multiplier via a
+ * z-approximation (0.90→1.645, 0.95→1.96, 0.99→2.576); adequate for a visual
+ * band and exact as n grows. Needs n ≥ 3 and non-degenerate x; returns [] else.
+ */
+export function regressionBand(
+  points: readonly Point[],
+  opts: { confidence?: number; resolution?: number } = {}
+): RegressionBandPoint[] {
+  const n = points.length;
+  if (n < 3) return [];
+  const { confidence = 0.95, resolution = 32 } = opts;
+  const { slope, intercept } = linearRegression(points);
+  const xbar = points.reduce((s, p) => s + p.x, 0) / n;
+  let sxx = 0;
+  let sse = 0;
+  let xMin = Infinity;
+  let xMax = -Infinity;
+  for (const p of points) {
+    sxx += (p.x - xbar) * (p.x - xbar);
+    const resid = p.y - (slope * p.x + intercept);
+    sse += resid * resid;
+    if (p.x < xMin) xMin = p.x;
+    if (p.x > xMax) xMax = p.x;
+  }
+  if (sxx === 0) return []; // vertical / single-x — no band
+  const se = Math.sqrt(sse / (n - 2));
+  const mult = confidence >= 0.99 ? 2.576 : confidence >= 0.95 ? 1.96 : 1.645;
+  const step = (xMax - xMin) / Math.max(1, resolution - 1);
+  const out: RegressionBandPoint[] = [];
+  for (let i = 0; i < resolution; i++) {
+    const x = xMin + i * step;
+    const y = slope * x + intercept;
+    const half = mult * se * Math.sqrt(1 / n + ((x - xbar) * (x - xbar)) / sxx);
+    out.push({ x, y, low: y - half, high: y + half });
+  }
+  return out;
+}
+
 export type ControlLimitMethod = "sd" | "movingRange";
 
 export interface ControlLimits {

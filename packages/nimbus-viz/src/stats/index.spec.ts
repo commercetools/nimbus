@@ -5,6 +5,7 @@ import {
   gaussianKde,
   histogramBins,
   linearRegression,
+  regressionBand,
   silvermanBandwidth,
 } from "./index";
 
@@ -25,6 +26,50 @@ describe("linearRegression", () => {
       slope: 0,
       intercept: 9,
     });
+  });
+});
+
+describe("regressionBand", () => {
+  it("centers on the OLS fit and flares away from x̄", () => {
+    // y = 2x + 1 with symmetric noise so the fit is ~exact but SE > 0
+    const pts = [
+      { x: 0, y: 1.2 },
+      { x: 1, y: 2.8 },
+      { x: 2, y: 5.2 },
+      { x: 3, y: 6.8 },
+      { x: 4, y: 9.2 },
+      { x: 5, y: 10.8 },
+    ];
+    const band = regressionBand(pts, { confidence: 0.95, resolution: 21 });
+    expect(band.length).toBe(21);
+    // band midline equals the fit
+    const fit = linearRegression(pts);
+    for (const p of band) {
+      expect(p.y).toBeCloseTo(fit.slope * p.x + fit.intercept, 10);
+      expect(p.low).toBeLessThan(p.y);
+      expect(p.high).toBeGreaterThan(p.y);
+    }
+    // narrowest at the mean x, wider at the extremes
+    const mid = band[Math.floor(band.length / 2)];
+    const midWidth = mid.high - mid.low;
+    const endWidth = band[0].high - band[0].low;
+    expect(endWidth).toBeGreaterThan(midWidth);
+  });
+
+  it("needs n ≥ 3 and non-degenerate x", () => {
+    expect(
+      regressionBand([
+        { x: 1, y: 1 },
+        { x: 2, y: 2 },
+      ])
+    ).toEqual([]);
+    expect(
+      regressionBand([
+        { x: 3, y: 1 },
+        { x: 3, y: 2 },
+        { x: 3, y: 3 },
+      ])
+    ).toEqual([]);
   });
 });
 
