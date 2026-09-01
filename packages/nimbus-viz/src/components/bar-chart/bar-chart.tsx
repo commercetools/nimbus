@@ -14,7 +14,7 @@ import {
 } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
@@ -29,6 +29,9 @@ export interface BarChartProps {
    *  for the vertical orientation, where the value axis is y; the ranked
    *  (horizontal) orientation transposes the value axis and is not yet a
    *  supported overlay surface (see docs/09). */
+  /** Format a value-axis number (tick labels + tooltip values). Overrides the
+   *  locale/currency formatter from any surrounding ChartLocaleProvider. */
+  valueFormat?: (n: number) => string;
   children?: ReactNode;
 }
 
@@ -43,9 +46,12 @@ export function BarChart({
   data,
   orientation = "vertical",
   ariaLabel,
+  valueFormat,
   children,
 }: BarChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const rows = useMemo(
@@ -125,7 +131,7 @@ export function BarChart({
                       style={emText(11)}
                       fill={theme.ink}
                     >
-                      {formatCompact(d.value)}
+                      {valueFmt(d.value)}
                     </text>
                   </g>
                 );
@@ -180,7 +186,7 @@ export function BarChart({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -217,7 +223,7 @@ export function BarChart({
                 x={(xScale(rows[hover].category) ?? 0) + bw / 2}
                 innerWidth={innerWidth}
                 top={Math.max(0, yScale(rows[hover].value) - 4)}
-                lines={[rows[hover].category, formatCompact(rows[hover].value)]}
+                lines={[rows[hover].category, valueFmt(rows[hover].value)]}
               />
             )}
           </ChartScaleProvider>

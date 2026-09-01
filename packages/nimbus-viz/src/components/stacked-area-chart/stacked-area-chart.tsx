@@ -11,7 +11,8 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact, formatDayMonth } from "../../chart/format";
+import { formatDayMonth } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { Series } from "../../chart/types";
 
 export interface StackedAreaChartProps {
@@ -20,6 +21,9 @@ export interface StackedAreaChartProps {
   series: Series[];
   ariaLabel?: string;
   /** Overlays (ReferenceLine, TrendLine, Annotation, …) rendered in plot space. */
+  /** Format a value-axis number (tick labels + tooltip values). Overrides the
+   *  locale/currency formatter from any surrounding ChartLocaleProvider. */
+  valueFormat?: (n: number) => string;
   children?: ReactNode;
 }
 
@@ -43,9 +47,12 @@ export function StackedAreaChart({
   height,
   series,
   ariaLabel,
+  valueFormat,
   children,
 }: StackedAreaChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   const keys = useMemo(() => series.map((s) => s.id), [series]);
@@ -118,7 +125,7 @@ export function StackedAreaChart({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -194,7 +201,7 @@ export function StackedAreaChart({
                   ...series.map((s) => {
                     const p = s.data[hoverIndex];
                     return `${s.label}: ${
-                      p && p.y != null ? formatCompact(p.y) : "—"
+                      p && p.y != null ? valueFmt(p.y) : "—"
                     }`;
                   }),
                 ]}
