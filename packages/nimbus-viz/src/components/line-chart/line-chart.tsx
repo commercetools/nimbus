@@ -11,7 +11,8 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact, formatDayMonth } from "../../chart/format";
+import { formatDayMonth } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { Series, SeriesPoint } from "../../chart/types";
 
 export interface LineChartProps {
@@ -22,6 +23,9 @@ export interface LineChartProps {
   ariaLabel?: string;
   /** Layer-2 overlays (ReferenceLine, ThresholdBand, BenchmarkSeries…) drawn
    *  in the plot's coordinate space, on top of the series. */
+  /** Format a value-axis number (tick labels + tooltip values). Overrides the
+   *  locale/currency formatter from any surrounding ChartLocaleProvider. */
+  valueFormat?: (n: number) => string;
   children?: ReactNode;
 }
 
@@ -39,9 +43,12 @@ export function LineChart({
   series,
   variant = "line",
   ariaLabel,
+  valueFormat,
   children,
 }: LineChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   const points = useMemo(() => series.flatMap((s) => s.data), [series]);
@@ -111,7 +118,7 @@ export function LineChart({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -210,7 +217,7 @@ export function LineChart({
                   ...series.map((s) => {
                     const p = s.data[hoverIndex];
                     return `${s.label}: ${
-                      p && p.y != null ? formatCompact(p.y) : "—"
+                      p && p.y != null ? valueFmt(p.y) : "—"
                     }`;
                   }),
                 ]}

@@ -13,7 +13,7 @@ import {
 } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { StackRow } from "../../chart/types";
 
 export interface StackedBarChartProps {
@@ -22,6 +22,9 @@ export interface StackedBarChartProps {
   data: StackRow[];
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TargetMarker, …) in plot space. */
+  /** Format a value-axis number (tick labels + tooltip values). Overrides the
+   *  locale/currency formatter from any surrounding ChartLocaleProvider. */
+  valueFormat?: (n: number) => string;
   children?: ReactNode;
 }
 
@@ -35,9 +38,12 @@ export function StackedBarChart({
   height,
   data,
   ariaLabel,
+  valueFormat,
   children,
 }: StackedBarChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<string | null>(null);
 
   const keys = useMemo(() => data[0]?.segments.map((s) => s.key) ?? [], [data]);
@@ -107,7 +113,7 @@ export function StackedBarChart({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -168,9 +174,9 @@ export function StackedBarChart({
                 top={Math.max(0, yScale(hrTotal) - 4)}
                 lines={[
                   hr.category,
-                  `Total: ${formatCompact(hrTotal)}`,
+                  `Total: ${valueFmt(hrTotal)}`,
                   ...hr.segments.map(
-                    (seg) => `${seg.key}: ${formatCompact(seg.value)}`
+                    (seg) => `${seg.key}: ${valueFmt(seg.value)}`
                   ),
                 ]}
               />

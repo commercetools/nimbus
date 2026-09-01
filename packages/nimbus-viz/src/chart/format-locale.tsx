@@ -1,5 +1,6 @@
 import { createContext, useContext, useMemo } from "react";
 import type { ReactNode } from "react";
+import { formatCompact, formatInteger, formatPercent } from "./format";
 
 /**
  * Locale- and currency-aware chart formatting. The base `format.ts` d3
@@ -53,7 +54,19 @@ export function createFormatters(
   };
 }
 
-const DEFAULT_FORMATTERS = createFormatters();
+/**
+ * The no-provider default deliberately mirrors the base `format.ts` d3
+ * helpers, so a chart that reads `useChartFormatters()` renders identically to
+ * one that still calls `formatCompact`/`formatInteger`/`formatPercent`
+ * directly — locale/currency only diverge once a `ChartLocaleProvider` opts in.
+ * (`currency` has no d3 equivalent; it falls back to the Intl compact set.)
+ */
+const DEFAULT_FORMATTERS: ChartFormatters = {
+  number: (n) => formatInteger(n),
+  compact: (n) => formatCompact(n),
+  percent: (n) => formatPercent(n),
+  currency: createFormatters().currency,
+};
 
 const FormatContext = createContext<ChartFormatters | null>(null);
 
