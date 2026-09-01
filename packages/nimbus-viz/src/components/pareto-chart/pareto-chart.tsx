@@ -16,6 +16,10 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
 import type { CategoryDatum } from "../../chart/types";
+import type {
+  DatumClickHandler,
+  DatumHoverHandler,
+} from "../../chart/interaction";
 import { emText } from "../../chart/typography";
 
 export interface ParetoChartProps {
@@ -24,6 +28,10 @@ export interface ParetoChartProps {
   data: CategoryDatum[];
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
+  /** Fired when a datum is clicked (drill-down). */
+  onDatumClick?: DatumClickHandler<CategoryDatum>;
+  /** Fired when the hovered datum changes; null when the pointer leaves. */
+  onDatumHover?: DatumHoverHandler<CategoryDatum>;
   children?: ReactNode;
 }
 
@@ -35,6 +43,8 @@ interface ParetoRow {
   /** Cumulative as a fraction of the grand total (for the tooltip / annotation
    *  text only — never a second axis). */
   cumulativeFraction: number;
+  /** The raw input datum this row was ranked from (for interaction callbacks). */
+  datum: CategoryDatum;
 }
 
 /**
@@ -47,6 +57,8 @@ export function ParetoChart({
   height,
   data,
   ariaLabel,
+  onDatumClick,
+  onDatumHover,
   children,
 }: ParetoChartProps) {
   const theme = useChartTheme();
@@ -63,6 +75,7 @@ export function ParetoChart({
         value: d.value,
         cumulative: running,
         cumulativeFraction: total > 0 ? running / total : 0,
+        datum: d,
       };
     });
   }, [data]);
@@ -166,8 +179,18 @@ export function ParetoChart({
                   top
                   fill={theme.accent}
                   opacity={active ? 1 : 0.4}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    // datum is the raw input element; index is its rank in the
+                    // sorted (ranked) display order — the same convention as the
+                    // horizontal (ranked) bar chart.
+                    onDatumHover?.({ datum: d.datum, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: d.datum, index: i })}
                 />
               );
             })}

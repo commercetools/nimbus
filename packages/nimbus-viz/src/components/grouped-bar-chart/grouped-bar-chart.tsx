@@ -14,7 +14,11 @@ import {
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
-import type { StackRow } from "../../chart/types";
+import type { StackRow, StackSegment } from "../../chart/types";
+import type {
+  DatumClickHandler,
+  DatumHoverHandler,
+} from "../../chart/interaction";
 
 export interface GroupedBarChartProps {
   width: number;
@@ -23,6 +27,10 @@ export interface GroupedBarChartProps {
   data: StackRow[];
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TargetMarker, …) in plot space. */
+  /** Fired when a datum is clicked (drill-down). */
+  onDatumClick?: DatumClickHandler<StackSegment>;
+  /** Fired when the hovered datum changes; null when the pointer leaves. */
+  onDatumHover?: DatumHoverHandler<StackSegment>;
   children?: ReactNode;
 }
 
@@ -37,6 +45,8 @@ export function GroupedBarChart({
   height,
   data,
   ariaLabel,
+  onDatumClick,
+  onDatumHover,
   children,
 }: GroupedBarChartProps) {
   const theme = useChartTheme();
@@ -116,7 +126,7 @@ export function GroupedBarChart({
               tickFormat={(v) => fitBandLabel(x0.step())(String(v))}
               tickLabelProps={bottomTickLabel(theme)}
             />
-            {data.map((row) => {
+            {data.map((row, i) => {
               const gx = x0(row.category) ?? 0;
               return (
                 <g key={row.category}>
@@ -135,10 +145,26 @@ export function GroupedBarChart({
                         top
                         fill={colorForKey(seg.key)}
                         opacity={active ? 1 : 0.35}
-                        onMouseEnter={() =>
-                          setHover({ cat: row.category, key: seg.key })
+                        onMouseEnter={() => {
+                          setHover({ cat: row.category, key: seg.key });
+                          // index = the category index; datum = the raw segment.
+                          onDatumHover?.({
+                            datum: seg,
+                            index: i,
+                            seriesId: seg.key,
+                          });
+                        }}
+                        onMouseLeave={() => {
+                          setHover(null);
+                          onDatumHover?.(null);
+                        }}
+                        onClick={() =>
+                          onDatumClick?.({
+                            datum: seg,
+                            index: i,
+                            seriesId: seg.key,
+                          })
                         }
-                        onMouseLeave={() => setHover(null)}
                       />
                     );
                   })}

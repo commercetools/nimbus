@@ -15,6 +15,10 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import { emText } from "../../chart/typography";
+import type {
+  DatumClickHandler,
+  DatumHoverHandler,
+} from "../../chart/interaction";
 
 /** One ordered step in a waterfall: a signed contribution, or an explicit total. */
 export interface WaterfallStep {
@@ -32,6 +36,10 @@ export interface WaterfallChartProps {
   data: WaterfallStep[];
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
+  /** Fired when a datum is clicked (drill-down). */
+  onDatumClick?: DatumClickHandler<WaterfallStep>;
+  /** Fired when the hovered datum changes; null when the pointer leaves. */
+  onDatumHover?: DatumHoverHandler<WaterfallStep>;
   children?: ReactNode;
 }
 
@@ -54,6 +62,8 @@ export function WaterfallChart({
   height,
   data,
   ariaLabel,
+  onDatumClick,
+  onDatumHover,
   children,
 }: WaterfallChartProps) {
   const theme = useChartTheme();
@@ -160,8 +170,16 @@ export function WaterfallChart({
               return (
                 <g
                   key={bar.step.label}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    // datum is the raw input step, not the internal Bar.
+                    onDatumHover?.({ datum: bar.step, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: bar.step, index: i })}
                 >
                   {next && (
                     <line
