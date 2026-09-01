@@ -15,6 +15,10 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { StackRow } from "../../chart/types";
+import type {
+  DatumClickHandler,
+  DatumHoverHandler,
+} from "../../chart/interaction";
 
 export interface StackedBarChartProps {
   width: number;
@@ -25,6 +29,10 @@ export interface StackedBarChartProps {
   /** Format a value-axis number (tick labels + tooltip values). Overrides the
    *  locale/currency formatter from any surrounding ChartLocaleProvider. */
   valueFormat?: (n: number) => string;
+  /** Fired when a datum is clicked (drill-down). */
+  onDatumClick?: DatumClickHandler<StackRow>;
+  /** Fired when the hovered datum changes; null when the pointer leaves. */
+  onDatumHover?: DatumHoverHandler<StackRow>;
   children?: ReactNode;
 }
 
@@ -39,6 +47,8 @@ export function StackedBarChart({
   data,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
   children,
 }: StackedBarChartProps) {
   const theme = useChartTheme();
@@ -124,7 +134,7 @@ export function StackedBarChart({
               tickFormat={(v) => fitBandLabel(xScale.step())(String(v))}
               tickLabelProps={bottomTickLabel(theme)}
             />
-            {data.map((row) => {
+            {data.map((row, i) => {
               const x = xScale(row.category) ?? 0;
               const dimmed = hover != null && hover !== row.category;
               const lastIdx = row.segments.length - 1;
@@ -133,8 +143,15 @@ export function StackedBarChart({
                 <g
                   key={row.category}
                   opacity={dimmed ? 0.5 : 1}
-                  onMouseEnter={() => setHover(row.category)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(row.category);
+                    onDatumHover?.({ datum: row, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: row, index: i })}
                 >
                   {row.segments.map((seg, si) => {
                     const y0 = yScale(cumulative);

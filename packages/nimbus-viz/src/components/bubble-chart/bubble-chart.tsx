@@ -10,6 +10,10 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import { emText } from "../../chart/typography";
+import type {
+  DatumClickHandler,
+  DatumHoverHandler,
+} from "../../chart/interaction";
 
 /** A point with a third magnitude encoded as bubble area. */
 export type BubblePoint = {
@@ -26,6 +30,10 @@ export interface BubbleChartProps {
   points: BubblePoint[];
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
+  /** Fired when a datum is clicked (drill-down). */
+  onDatumClick?: DatumClickHandler<BubblePoint>;
+  /** Fired when the hovered datum changes; null when the pointer leaves. */
+  onDatumHover?: DatumHoverHandler<BubblePoint>;
   children?: ReactNode;
 }
 
@@ -43,6 +51,8 @@ export function BubbleChart({
   height,
   points,
   ariaLabel,
+  onDatumClick,
+  onDatumHover,
   children,
 }: BubbleChartProps) {
   const theme = useChartTheme();
@@ -163,8 +173,17 @@ export function BubbleChart({
                 fillOpacity={hover == null || hover === i ? 0.6 : 0.25}
                 stroke={theme.surface}
                 strokeWidth={1}
-                onMouseEnter={() => setHover(i)}
-                onMouseLeave={() => setHover(null)}
+                onMouseEnter={() => {
+                  setHover(i);
+                  onDatumHover?.({ datum: p, index: i, seriesId: p.group });
+                }}
+                onMouseLeave={() => {
+                  setHover(null);
+                  onDatumHover?.(null);
+                }}
+                onClick={() =>
+                  onDatumClick?.({ datum: p, index: i, seriesId: p.group })
+                }
               />
             ))}
 
