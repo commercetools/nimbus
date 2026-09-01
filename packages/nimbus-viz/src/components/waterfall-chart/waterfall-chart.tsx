@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { ChartContainer } from "../../chart/chart-container";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import {
   GridRows,
   bottomTickLabel,
@@ -29,6 +31,8 @@ export interface WaterfallChartProps {
   height: number;
   data: WaterfallStep[];
   ariaLabel?: string;
+  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
+  children?: ReactNode;
 }
 
 interface Bar {
@@ -50,6 +54,7 @@ export function WaterfallChart({
   height,
   data,
   ariaLabel,
+  children,
 }: WaterfallChartProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
@@ -103,7 +108,15 @@ export function WaterfallChart({
         const hb = hover != null ? bars[hover] : null;
 
         return (
-          <>
+          <ChartScaleProvider
+            value={{
+              yScale,
+              xScale: (v) => xScale(String(v)) ?? 0,
+              xBandwidth: bw,
+              innerWidth,
+              innerHeight,
+            }}
+          >
             <GridRows
               ticks={yScale.ticks(4)}
               y={(t) => yScale(t)}
@@ -200,7 +213,8 @@ export function WaterfallChart({
                 }
               />
             )}
-          </>
+            {children}
+          </ChartScaleProvider>
         );
       }}
     </ChartContainer>

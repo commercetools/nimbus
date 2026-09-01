@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { BarRounded, LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { sum } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import {
   GridRows,
   bottomTickLabel,
@@ -21,6 +23,8 @@ export interface ParetoChartProps {
   height: number;
   data: CategoryDatum[];
   ariaLabel?: string;
+  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
+  children?: ReactNode;
 }
 
 interface ParetoRow {
@@ -43,6 +47,7 @@ export function ParetoChart({
   height,
   data,
   ariaLabel,
+  children,
 }: ParetoChartProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
@@ -115,7 +120,15 @@ export function ParetoChart({
         const last = rows[rows.length - 1];
 
         return (
-          <>
+          <ChartScaleProvider
+            value={{
+              yScale,
+              xScale: (v) => xScale(String(v)) ?? 0,
+              xBandwidth: xScale.bandwidth(),
+              innerWidth,
+              innerHeight,
+            }}
+          >
             <GridRows
               ticks={yScale.ticks(4)}
               y={(t) => yScale(t)}
@@ -227,7 +240,8 @@ export function ParetoChart({
                 ]}
               />
             )}
-          </>
+            {children}
+          </ChartScaleProvider>
         );
       }}
     </ChartContainer>

@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scaleLinear } from "@visx/scale";
 import { LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveStepAfter } from "@visx/curve";
 import { extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
@@ -17,6 +19,8 @@ export interface CumulativeCurveProps {
   /** Raw samples; the empirical CDF F(v) = share of samples ≤ v is drawn. */
   values: number[];
   ariaLabel?: string;
+  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
+  children?: ReactNode;
 }
 
 interface CdfPoint {
@@ -36,6 +40,7 @@ export function CumulativeCurve({
   height,
   values,
   ariaLabel,
+  children,
 }: CumulativeCurveProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
@@ -78,7 +83,9 @@ export function CumulativeCurve({
         const leadingPoint: CdfPoint = { v: domain[0], f: 0 };
         const path = [leadingPoint, ...points];
         return (
-          <>
+          <ChartScaleProvider
+            value={{ yScale, xScale, xBandwidth: 0, innerWidth, innerHeight }}
+          >
             <GridRows
               ticks={yScale.ticks(4)}
               y={(t) => yScale(t)}
@@ -144,7 +151,8 @@ export function CumulativeCurve({
                 ]}
               />
             )}
-          </>
+            {children}
+          </ChartScaleProvider>
         );
       }}
     </ChartContainer>

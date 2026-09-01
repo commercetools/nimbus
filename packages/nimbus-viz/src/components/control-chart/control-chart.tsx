@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scaleLinear, scaleTime } from "@visx/scale";
 import { LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveMonotoneX } from "@visx/curve";
 import { deviation, extent, mean } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
@@ -25,6 +27,8 @@ export interface ControlChartProps {
   /** Lower control limit. Defaults to center − 3σ. */
   lcl?: number;
   ariaLabel?: string;
+  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
+  children?: ReactNode;
 }
 
 const toDate = (x: number | Date): Date =>
@@ -46,6 +50,7 @@ export function ControlChart({
   ucl,
   lcl,
   ariaLabel,
+  children,
 }: ControlChartProps) {
   const theme = useChartTheme();
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
@@ -108,7 +113,9 @@ export function ControlChart({
         const hovered = hoverIndex != null ? points[hoverIndex] : undefined;
 
         return (
-          <>
+          <ChartScaleProvider
+            value={{ yScale, xScale, xBandwidth: 0, innerWidth, innerHeight }}
+          >
             <GridRows
               ticks={yScale.ticks(4)}
               y={(t) => yScale(t)}
@@ -247,7 +254,8 @@ export function ControlChart({
                 ]}
               />
             )}
-          </>
+            {children}
+          </ChartScaleProvider>
         );
       }}
     </ChartContainer>

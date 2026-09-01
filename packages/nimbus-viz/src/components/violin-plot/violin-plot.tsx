@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
@@ -19,6 +21,8 @@ export interface ViolinPlotProps {
   height: number;
   groups: SampleGroup[];
   ariaLabel?: string;
+  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
+  children?: ReactNode;
 }
 
 /** Number of points at which each group's density is evaluated. */
@@ -78,6 +82,7 @@ export function ViolinPlot({
   height,
   groups,
   ariaLabel,
+  children,
 }: ViolinPlotProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
@@ -140,7 +145,15 @@ export function ViolinPlot({
           range: [0, halfBand * 0.95],
         });
         return (
-          <>
+          <ChartScaleProvider
+            value={{
+              yScale,
+              xScale: (v) => xScale(String(v)) ?? 0,
+              xBandwidth: xScale.bandwidth(),
+              innerWidth,
+              innerHeight,
+            }}
+          >
             <GridRows
               ticks={yScale.ticks(4)}
               y={(t) => yScale(t)}
@@ -213,7 +226,8 @@ export function ViolinPlot({
                 ]}
               />
             )}
-          </>
+            {children}
+          </ChartScaleProvider>
         );
       }}
     </ChartContainer>

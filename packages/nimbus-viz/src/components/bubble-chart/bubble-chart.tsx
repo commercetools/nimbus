@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scaleLinear, scaleSqrt } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { extent, max } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
@@ -23,6 +25,8 @@ export interface BubbleChartProps {
   height: number;
   points: BubblePoint[];
   ariaLabel?: string;
+  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
+  children?: ReactNode;
 }
 
 const R_MIN = 4;
@@ -39,6 +43,7 @@ export function BubbleChart({
   height,
   points,
   ariaLabel,
+  children,
 }: BubbleChartProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
@@ -116,7 +121,15 @@ export function BubbleChart({
         const legendBaseY = innerHeight - 4;
 
         return (
-          <>
+          <ChartScaleProvider
+            value={{
+              yScale: (v) => yScale(v),
+              xScale: (v) => xScale(v instanceof Date ? +v : v),
+              xBandwidth: 0,
+              innerWidth,
+              innerHeight,
+            }}
+          >
             <GridRows
               ticks={yScale.ticks(4)}
               y={(t) => yScale(t)}
@@ -194,7 +207,8 @@ export function BubbleChart({
                 ]}
               />
             )}
-          </>
+            {children}
+          </ChartScaleProvider>
         );
       }}
     </ChartContainer>

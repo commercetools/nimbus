@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { scalePoint } from "@visx/scale";
 import { LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveMonotoneX } from "@visx/curve";
 import { ChartContainer } from "../../chart/chart-container";
+import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
@@ -16,6 +18,8 @@ export interface BumpChartProps {
   height: number;
   series: Series[];
   ariaLabel?: string;
+  /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
+  children?: ReactNode;
 }
 
 /** One series' rank at a single x-index (rank 1 = highest y). */
@@ -39,6 +43,7 @@ export function BumpChart({
   height,
   series,
   ariaLabel,
+  children,
 }: BumpChartProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<{ si: number; i: number } | null>(null);
@@ -111,7 +116,15 @@ export function BumpChart({
         const py = (rank: number) => yScale(rank) ?? 0;
 
         return (
-          <>
+          <ChartScaleProvider
+            value={{
+              yScale: (v) => yScale(v) ?? 0,
+              xScale: (v) => xScale(Number(v)) ?? 0,
+              xBandwidth: 0,
+              innerWidth,
+              innerHeight,
+            }}
+          >
             <GridRows ticks={ranks} y={py} width={innerWidth} />
             <AxisLeft
               scale={yScale}
@@ -195,7 +208,8 @@ export function BumpChart({
                   />
                 );
               })()}
-          </>
+            {children}
+          </ChartScaleProvider>
         );
       }}
     </ChartContainer>
