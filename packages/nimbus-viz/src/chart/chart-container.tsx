@@ -1,3 +1,4 @@
+import { useId, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { ChartFrame } from "./chart-frame";
 import type { InnerDims } from "./chart-frame";
@@ -92,6 +93,9 @@ export function ChartContainer({
   children,
 }: ChartContainerProps) {
   const theme = useChartTheme();
+  const tableId = useId();
+  const [tableOpen, setTableOpen] = useState(false);
+  const [toggleFocused, setToggleFocused] = useState(false);
   const hasLegend = (legend != null && legend.length > 0) || legendSlot != null;
   const legendH = hasLegend ? (legendHeight ?? LEGEND_HEIGHT) : 0;
   const headH = (title ? TITLE_H : 0) + (subtitle ? SUBTITLE_H : 0);
@@ -114,6 +118,7 @@ export function ChartContainer({
         margin: 0,
         display: "flex",
         flexDirection: "column",
+        position: "relative",
       }}
     >
       {(title || subtitle) && (
@@ -196,14 +201,69 @@ export function ChartContainer({
       )}
 
       {table && !isEmpty && !loading && error == null && (
-        <div style={VISUALLY_HIDDEN}>
-          {table.summary && <p>{table.summary}</p>}
-          <DataTable
-            columns={table.columns}
-            rows={table.rows}
-            caption={typeof title === "string" ? title : undefined}
-          />
-        </div>
+        <>
+          {/* Skip-link-style keyboard affordance: visually hidden until focused
+              (zero visual change to the chart), reveals the data table in place.
+              Gives keyboard-only users an operable path to the underlying data;
+              the table stays in the a11y tree for screen readers when closed. */}
+          <button
+            type="button"
+            aria-expanded={tableOpen}
+            aria-controls={tableId}
+            onClick={() => setTableOpen((o) => !o)}
+            onFocus={() => setToggleFocused(true)}
+            onBlur={() => setToggleFocused(false)}
+            style={
+              toggleFocused
+                ? {
+                    position: "absolute",
+                    top: 4,
+                    left: 4,
+                    zIndex: 3,
+                    fontFamily: "inherit",
+                    fontSize: LABEL_PX,
+                    padding: "2px 8px",
+                    color: theme.ink,
+                    background: theme.surface,
+                    border: `1px solid ${theme.axis}`,
+                    borderRadius: 4,
+                    cursor: "pointer",
+                    outline: `2px solid ${theme.accent}`,
+                    outlineOffset: 2,
+                  }
+                : VISUALLY_HIDDEN
+            }
+          >
+            {tableOpen ? "Hide data table" : "View data as table"}
+          </button>
+          <div
+            id={tableId}
+            role="region"
+            aria-label="Data table"
+            style={
+              tableOpen
+                ? {
+                    position: "absolute",
+                    inset: 0,
+                    zIndex: 2,
+                    overflow: "auto",
+                    padding: 8,
+                    boxSizing: "border-box",
+                    background: theme.surface,
+                    border: `1px solid ${theme.grid}`,
+                    borderRadius: 4,
+                  }
+                : VISUALLY_HIDDEN
+            }
+          >
+            {table.summary && <p>{table.summary}</p>}
+            <DataTable
+              columns={table.columns}
+              rows={table.rows}
+              caption={typeof title === "string" ? title : undefined}
+            />
+          </div>
+        </>
       )}
     </figure>
   );

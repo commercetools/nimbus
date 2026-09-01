@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { ReactNode } from "react";
-import { render } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import { ChartContainer } from "./chart-container";
 import type { InnerDims } from "./chart-frame";
 import { ChartThemeProvider } from "../theme";
@@ -96,6 +96,28 @@ describe("ChartContainer", () => {
     expect(tbl).not.toBeNull();
     expect(tbl?.textContent).toContain("Jan");
     expect(tbl?.textContent).toContain("20");
+  });
+
+  it("reveals the data table via a keyboard-operable disclosure", () => {
+    const { getByRole } = renderInTheme(
+      <ChartContainer
+        width={400}
+        height={300}
+        ariaLabel="Sales"
+        table={{ columns: ["Month", "Sales"], rows: [["Jan", 10]] }}
+      >
+        {plot}
+      </ChartContainer>
+    );
+    const toggle = getByRole("button", { name: /view data as table/i });
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    // the disclosed region is a labelled landmark holding the equivalent data
+    const region = getByRole("region", { name: /data table/i });
+    expect(region.textContent).toContain("Jan");
+    // activating the toggle opens the disclosure
+    fireEvent.click(toggle);
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(toggle.getAttribute("aria-controls")).toBe(region.id);
   });
 
   it("shows a loading skeleton (role=status) ahead of data", () => {
