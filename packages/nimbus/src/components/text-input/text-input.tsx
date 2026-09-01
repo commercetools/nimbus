@@ -133,6 +133,7 @@ TextInputComponent.displayName = "TextInput";
  * An input component that takes in text as input
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/textinput}
+ * @supportsStyleProps
  */
 export const TextInput: typeof TextInputComponent & {
   // TypeScript can't properly name the internal React Aria types when inferring
@@ -149,6 +150,7 @@ export const TextInput: typeof TextInputComponent & {
    *
    * @see {@link https://react-spectrum.adobe.com/react-aria/advanced.html#contexts}
    * @see {@link https://react-spectrum.adobe.com/react-aria/TextField.html#custom-children}
+   * @supportsStyleProps
    */
   Context: Context<TextInputContextValue | null>;
 } = Object.assign(TextInputComponent, {

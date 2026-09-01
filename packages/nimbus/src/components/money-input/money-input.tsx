@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useId, useLocale as useAriaLocale } from "react-aria";
-import { designTokens } from "@commercetools/nimbus-tokens";
+import { themeTokens } from "@commercetools/nimbus-tokens";
 import {
   NumberInput,
   Select,
@@ -101,6 +101,7 @@ import { moneyInputMessagesStrings } from "./money-input.messages";
  * - **Automatic locale formatting** using React Aria NumberField
  * - **Accessibility compliant** following WCAG 2.1 AA standards
  * - **Dual API support** for backward compatibility and modern development
+ * @supportsStyleProps
  */
 export const MoneyInput = (props: MoneyInputProps) => {
   const {
@@ -369,7 +370,7 @@ export const MoneyInput = (props: MoneyInputProps) => {
                   color={isDisabled ? "neutral.8" : "neutral.11"}
                   aria-label={msg.format("highPrecisionPrice")}
                   // Position the badge correctly as we don't want layout shift that occurs with trailingElement use in the underlying NumberInput
-                  transform={`translateX(-${designTokens.spacing["1200"]})`}
+                  transform={`translateX(-${themeTokens.spacing["1200"].value})`}
                 />
               </MakeElementFocusable>
               <Tooltip.Content placement="top">

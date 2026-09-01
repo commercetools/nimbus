@@ -352,9 +352,9 @@ export const Menu = {
 };
 ````
 
-**Note**: Place `@supportsStyleProps` tags in implementation files for
-documentation generation. The parser extracts metadata from implementation
-files, not namespace objects.
+**Note**: Place `@supportsStyleProps` in **implementation files only** (e.g.,
+`menu.trigger.tsx`, `menu.root.tsx`). No tag is needed on the barrel namespace
+(`menu.tsx`).
 
 ### Components Index File
 
@@ -529,10 +529,8 @@ For comprehensive type patterns and examples for compound components, see:
 
 - [ ] **Each component implementation has JSDoc directly above the component
       function**
-- [ ] **`@supportsStyleProps` JSDoc tag added in implementation files**
-      (required for doc generation)
-- [ ] **`@supportsStyleProps` tag placed in implementation files where parser
-      can extract it**
+- [ ] **`@supportsStyleProps` JSDoc tag added in implementation files** (e.g.,
+      `menu.trigger.tsx`); no barrel tag needed
 
 ### Standard Patterns
 

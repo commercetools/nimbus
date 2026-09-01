@@ -26,6 +26,7 @@ import { FormField, FieldErrors } from "@/components";
  *   autoGrow
  * />
  * ```
+ * @supportsStyleProps
  */
 
 export const MultilineTextInputField = ({

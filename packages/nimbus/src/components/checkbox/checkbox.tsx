@@ -15,6 +15,7 @@ import {
  * Displays a checkbox.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/checkbox}
+ * @supportsStyleProps
  */
 export const Checkbox = (props: CheckboxProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;

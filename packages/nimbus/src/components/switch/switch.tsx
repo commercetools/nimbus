@@ -25,6 +25,7 @@ import { switchSlotRecipe } from "./switch.recipe";
  * A clear, visual toggle, allowing users to activate or deactivate a setting quickly.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/switch}
+ * @supportsStyleProps
  */
 export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
   const localRef = useRef<HTMLInputElement>(null);

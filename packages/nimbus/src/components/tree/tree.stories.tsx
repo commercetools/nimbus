@@ -239,6 +239,17 @@ export const KeyboardNavigation: Story = {
       );
     });
 
+    await step("Up arrow moves focus back through visible rows", async () => {
+      await userEvent.keyboard("{End}");
+      await waitFor(() =>
+        expect(canvas.getByRole("row", { name: /Image 2/ })).toHaveFocus()
+      );
+      await userEvent.keyboard("{ArrowUp}");
+      await waitFor(() =>
+        expect(canvas.getByRole("row", { name: /Image 1/ })).toHaveFocus()
+      );
+    });
+
     await step("Type-ahead jumps to a matching row", async () => {
       await userEvent.keyboard("Photos");
       await waitFor(() =>
@@ -445,6 +456,7 @@ const FeatureTree = ({
  * checkboxes, chevrons, drag handles) so every element scales with `size`.
  */
 export const Sizes: Story = {
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack direction="row" gap="800" alignItems="flex-start">
       {(["sm", "md"] as const).map((size) => (
@@ -478,6 +490,77 @@ export const Sizes: Story = {
         ).toBeGreaterThan(0);
       }
     });
+
+    await step(
+      "Leading controls share one column grid at both sizes",
+      async () => {
+        // The two layout defects this component was written to avoid are
+        // geometric, so they are asserted geometrically. Story tests run in real
+        // Chromium, so these rects are true layout, not jsdom stubs.
+        for (const size of ["sm", "md"] as const) {
+          const treegrid = canvas.getByRole("treegrid", {
+            name: `Files ${size}`,
+          });
+
+          const measure = (row: HTMLElement) => {
+            const box = (slot: string) => {
+              const el = row.querySelector<HTMLElement>(`[slot='${slot}']`);
+              if (!el) throw new Error(`row is missing [slot='${slot}']`);
+              // The visual control box, not the visually-hidden input inside it.
+              const { left, right } = el.getBoundingClientRect();
+              return { left, right, width: right - left };
+            };
+            return {
+              level: Number(row.getAttribute("aria-level")),
+              drag: box("drag"),
+              checkbox: box("selection"),
+              chevron: box("chevron"),
+            };
+          };
+
+          const rows = within(treegrid).getAllByRole("row").map(measure);
+          await expect(rows.length).toBeGreaterThan(1);
+
+          for (const row of rows) {
+            // No collision: the controls are strictly disjoint and in order.
+            // Any overlap shows up here as a negative gap.
+            await expect(row.checkbox.left).toBeGreaterThanOrEqual(
+              row.drag.right
+            );
+            await expect(row.chevron.left).toBeGreaterThanOrEqual(
+              row.checkbox.right
+            );
+            // One uniform, non-shrinking column per control — a shrunken box is
+            // what lets a neighbour drift into it.
+            await expect(row.checkbox.width).toBeCloseTo(row.drag.width, 0);
+            await expect(row.chevron.width).toBeCloseTo(row.drag.width, 0);
+          }
+
+          // Rows at the same depth start at the same x.
+          const leftByLevel = new Map<number, number>();
+          for (const row of rows) {
+            const known = leftByLevel.get(row.level);
+            if (known === undefined) leftByLevel.set(row.level, row.drag.left);
+            else await expect(row.drag.left).toBeCloseTo(known, 0);
+          }
+
+          // Each level indents by exactly one control column (control + gap).
+          // This is the invariant that keeps a nested row's controls on the
+          // column grid instead of drifting out of alignment as depth grows.
+          const columnStep = rows[0].checkbox.left - rows[0].drag.left;
+          await expect(columnStep).toBeGreaterThan(0);
+          const depths = [...leftByLevel.entries()].sort((a, b) => a[0] - b[0]);
+          for (let i = 1; i < depths.length; i += 1) {
+            const [level, left] = depths[i];
+            const [prevLevel, prevLeft] = depths[i - 1];
+            await expect(left - prevLeft).toBeCloseTo(
+              columnStep * (level - prevLevel),
+              0
+            );
+          }
+        }
+      }
+    );
   },
 };
 
@@ -638,10 +721,9 @@ const SIZES = ["sm", "md"] as const;
 /**
  * Smoke test — every visual permutation in one view: both sizes (`sm`, `md`),
  * all three selection modes (`none`, `single`, `multiple`), each rendered both
- * without drag-and-drop (the default roomy, equal-column layout) and with it
- * (the tighter layout whose drag handle separates the checkbox from the
- * chevron). Use it to eyeball control spacing and nested-row alignment across
- * the matrix at a glance.
+ * without drag-and-drop and with it (which adds a drag handle ahead of the
+ * shared leading-control column). Use it to eyeball control spacing and
+ * nested-row alignment across the matrix at a glance.
  */
 const SmokeTestView = () => {
   return (
@@ -796,6 +878,18 @@ export const FocusedRow: Story = {
       // Without this, a ring that never paints baselines as a silent pass.
       await expect(rows[0]).toHaveStyle({ outlineStyle: "solid" });
     });
+
+    await step(
+      "Root is not a scroll container, so rings aren't clipped",
+      async () => {
+        // The row's ring paints 2px outside a full-width row box, so a forced
+        // `overflow` on the root would clip it horizontally. The recipe sets none
+        // for exactly this reason; consumers opt into scrolling themselves.
+        const treegrid = canvas.getByRole("treegrid", { name: "Files" });
+        const { overflowX, overflowY } = getComputedStyle(treegrid);
+        await expect([overflowX, overflowY]).toEqual(["visible", "visible"]);
+      }
+    );
   },
 };
 
@@ -890,5 +984,83 @@ export const SmokeTest: Story = {
         }
       }
     );
+  },
+};
+
+/**
+ * Regression guard: React Aria must never offer the dragged subtree as a drop
+ * target.
+ *
+ * `useTree`'s `onMove` re-parents a `dropPosition: "on"` drop with
+ * `tree.move(key, target, index)` and does not itself check that the target
+ * sits outside the dragged subtree — a self- or descendant-target would destroy
+ * the dragged nodes (see `hooks/use-tree.spec.tsx`). What makes drag-and-drop
+ * safe is upstream: `useDroppableCollectionState`'s `getDropOperation` cancels
+ * any internal drop whose target is a dragged key or descends from one, for
+ * pointer and keyboard alike.
+ *
+ * This pins that guarantee, so supplying an `onItemDrop`/`getDropOperation` of
+ * our own, or a React Aria upgrade that moves the guard, fails here rather than
+ * silently exposing the destructive path.
+ */
+export const DropTargetsExcludeDraggedSubtree: Story = {
+  render: () => <FeatureTree aria-label="Files" selectionMode="none" />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await waitForTreeRows(canvas);
+
+    await step("Picks up the Documents folder with the keyboard", async () => {
+      const dragHandle = canvas.getByRole("button", { name: /Drag Documents/ });
+      dragHandle.focus();
+      await waitFor(() => expect(dragHandle).toHaveFocus());
+      await userEvent.keyboard("{Enter}");
+      await wait(150);
+    });
+
+    await step(
+      "Never offers the dragged folder or its descendants as an 'on' target",
+      async () => {
+        // One full cycle of React Aria's keyboard drop targets is 9 steps for
+        // this tree; 24 covers it more than twice over. Rows reachable as an
+        // "on" target are collected, before/after indicator positions (where no
+        // row carries `data-drop-target`) are skipped.
+        const offered = new Set<string>();
+
+        for (let i = 0; i < 24; i += 1) {
+          // React Aria's between-rows drop indicator is itself a
+          // `role="row"` carrying `aria-level` (valid treegrid markup), so it
+          // has to be excluded by class or it registers as an empty target.
+          const target = canvasElement.querySelector<HTMLElement>(
+            '[role="row"][data-drop-target="true"]:not(.react-aria-DropIndicator)'
+          );
+          if (target) offered.add((target.textContent ?? "").trim());
+          await userEvent.keyboard("{ArrowDown}");
+          await wait(80);
+        }
+
+        // Documents is dragged; Project / Weekly Report / Budget descend from
+        // it. Only the untouched Photos subtree may be dropped onto.
+        await expect([...offered].sort()).toEqual([
+          "Image 1",
+          "Image 2",
+          "Photos",
+        ]);
+      }
+    );
+
+    await step("Cancels the drag without losing the subtree", async () => {
+      await userEvent.keyboard("{Escape}");
+      await wait(150);
+
+      await expect(
+        canvas.getByRole("row", { name: /Documents/ })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("row", { name: /Weekly Report/ })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("row", { name: /Budget/ })
+      ).toBeInTheDocument();
+    });
   },
 };

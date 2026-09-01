@@ -25,6 +25,7 @@ export type HeadingProps = HeadingRootSlotProps & {
  * renders a heading
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/typography/heading}
+ * @supportsStyleProps
  */
 export const Heading = ({ ref: forwardedRef, ...props }: HeadingProps) => {
   const [contextProps, ref] = useContextProps(

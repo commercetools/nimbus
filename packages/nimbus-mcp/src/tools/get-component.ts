@@ -19,6 +19,45 @@ import { fuzzyResolveName } from "../utils/relevance.js";
 import { routePathToSlug as pathToSlug } from "../utils/route.js";
 
 // ---------------------------------------------------------------------------
+// Style props hint
+// ---------------------------------------------------------------------------
+
+const STYLE_PROPS_HINT =
+  'Also accepts style props. Use get_docs_page(path: "home/style-props") for full reference.';
+
+/**
+ * Checks whether a component (or any of its sub-components) supports style
+ * props. For compound components where the top-level barrel has no
+ * `@supportsStyleProps` tag, this walks the sub-component type files and
+ * returns true if any of them have it.
+ *
+ * Exported for use by other tools (get-docs-page, migrate-from-uikit).
+ */
+export async function componentSupportsStyleProps(
+  exportName: string
+): Promise<boolean> {
+  try {
+    const typeData = await getTypeData(exportName);
+    if (typeData.supportsStyleProps) return true;
+  } catch {
+    // Type data unavailable for top-level — check sub-components
+  }
+
+  // Fallback: check sub-component type files
+  const subFiles = await findSubComponentFiles(exportName);
+  for (const file of subFiles) {
+    try {
+      const subName = file.replace(/\.json$/, "");
+      const subData = await getTypeData(subName);
+      if (subData.supportsStyleProps) return true;
+    } catch {
+      // Skip unavailable sub-component
+    }
+  }
+  return false;
+}
+
+// ---------------------------------------------------------------------------
 // Section definitions
 // ---------------------------------------------------------------------------
 
@@ -102,14 +141,11 @@ let topLevelNamesCache: Set<string> | undefined;
 let topLevelNamesRoutesRef: RouteManifestEntry[] | undefined;
 
 /**
- * For compound components (e.g. Drawer → DrawerRoot, DrawerContent, …),
- * the top-level type file has no props. This function finds all sub-component
- * type files matching `${exportName}*.json`, aggregates their filtered props,
- * and tags each prop with the sub-component name.
+ * Finds sub-component type files for a compound component, returning
+ * the sorted filenames (without path) matching `${exportName}*.json`.
+ * Caches the top-level name set for exclusion.
  */
-async function aggregateSubComponentProps(
-  exportName: string
-): Promise<FilteredProp[]> {
+async function findSubComponentFiles(exportName: string): Promise<string[]> {
   const typesDir = resolve(getDataDir(), "docs/types");
   let files: string[];
   try {
@@ -134,7 +170,7 @@ async function aggregateSubComponentProps(
   const topLevelNames = topLevelNamesCache;
 
   const prefix = exportName.toLowerCase();
-  const subFiles = files.filter((f) => {
+  return files.filter((f) => {
     const base = f.replace(/\.json$/, "");
     const baseLower = base.toLowerCase();
     return (
@@ -146,11 +182,28 @@ async function aggregateSubComponentProps(
       !topLevelNames.has(baseLower) // exclude standalone top-level components
     );
   });
+}
+
+/**
+ * For compound components (e.g. Drawer → DrawerRoot, DrawerContent, …),
+ * the top-level type file has no props. This function finds all sub-component
+ * type files matching `${exportName}*.json`, aggregates their filtered props,
+ * and tags each prop with the sub-component name. Also tracks which
+ * sub-components accept style props.
+ */
+async function aggregateSubComponentPropsWithStyleInfo(
+  exportName: string
+): Promise<{ props: FilteredProp[]; stylePropsSubComponents: string[] }> {
+  const subFiles = await findSubComponentFiles(exportName);
+  const stylePropsSubComponents: string[] = [];
 
   const settled = await Promise.allSettled(
     subFiles.map(async (file) => {
       const subName = file.replace(/\.json$/, "");
       const typeData = await getTypeData(subName);
+      if (typeData.supportsStyleProps) {
+        stylePropsSubComponents.push(subName);
+      }
       return filterProps(typeData).map((p) => ({
         ...p,
         subComponent: subName,
@@ -158,9 +211,11 @@ async function aggregateSubComponentProps(
     })
   );
 
-  return settled
+  const props = settled
     .filter((r) => r.status === "fulfilled")
     .flatMap((r) => (r as PromiseFulfilledResult<FilteredProp[]>).value);
+
+  return { props, stylePropsSubComponents: stylePropsSubComponents.sort() };
 }
 
 // ---------------------------------------------------------------------------
@@ -300,6 +355,13 @@ export function registerGetComponent(server: McpServer): void {
         // No section requested — return metadata + section list
         if (!section) {
           const metadata = buildMetadataResponse(entry, availableSections);
+
+          // Add styleProps hint if the component (or its sub-components) supports style props
+          const exportName = entry.exportName ?? entry.title;
+          if (await componentSupportsStyleProps(exportName)) {
+            metadata.styleProps = STYLE_PROPS_HINT;
+          }
+
           return {
             content: [
               {
@@ -317,21 +379,36 @@ export function registerGetComponent(server: McpServer): void {
             const typeData = await getTypeData(exportName);
             let filtered = filterProps(typeData);
 
+            const response: Record<string, unknown> = {
+              component: exportName,
+              propCount: filtered.length,
+              props: filtered,
+            };
+
             // Compound components have no props on the top-level export.
             // Aggregate from sub-component type files (e.g. DrawerRoot, DrawerContent).
             if (filtered.length === 0) {
-              filtered = await aggregateSubComponentProps(exportName);
+              const { props, stylePropsSubComponents } =
+                await aggregateSubComponentPropsWithStyleInfo(exportName);
+              filtered = props;
+              response.propCount = filtered.length;
+              response.props = filtered;
+
+              // For compound components, list which sub-components accept style props
+              if (stylePropsSubComponents.length > 0) {
+                response.styleProps =
+                  `${stylePropsSubComponents.join(", ")} also accept style props. ` +
+                  'Use get_docs_page(path: "home/style-props") for full reference.';
+              }
+            } else if (typeData.supportsStyleProps) {
+              response.styleProps = STYLE_PROPS_HINT;
             }
 
             return {
               content: [
                 {
                   type: "text" as const,
-                  text: JSON.stringify({
-                    component: exportName,
-                    propCount: filtered.length,
-                    props: filtered,
-                  }),
+                  text: JSON.stringify(response),
                 },
               ],
             };

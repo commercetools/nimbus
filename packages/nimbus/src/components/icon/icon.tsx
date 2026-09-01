@@ -7,6 +7,7 @@ import type { IconProps } from "./icon.types";
  * displays icon components
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/media/icon}
+ * @supportsStyleProps
  */
 export const Icon = (props: IconProps) => {
   const { ref, slot, ...restProps } = props;

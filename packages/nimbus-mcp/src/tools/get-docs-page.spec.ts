@@ -129,3 +129,59 @@ describe("get_docs_page — error handling", () => {
     expect(error).toContain("search_docs");
   });
 });
+
+// ---------------------------------------------------------------------------
+// Style props
+// ---------------------------------------------------------------------------
+
+describe("get_docs_page — style props landing page enrichment", () => {
+  it("returns compact prop index for the style-props landing page", async () => {
+    const { result } = await callGetDocsPage({
+      path: "home/style-props",
+    });
+    expect(result).toBeDefined();
+    // The enriched content should include category names and prop names
+    expect(result!.content).toContain("Spacing");
+    expect(result!.content).toContain("padding");
+    // Should include drill-down paths
+    expect(result!.content).toContain("home/style-props/spacing");
+  });
+
+  it("sub-pages are not enriched (only the landing page)", async () => {
+    const { result } = await callGetDocsPage({
+      path: "home/style-props/spacing",
+    });
+    expect(result).toBeDefined();
+    // Should NOT contain the prop index from the summary — just normal page content
+    expect(result!.content).not.toContain("home/style-props/typography");
+  });
+});
+
+describe("get_docs_page — styleProps hint on component pages", () => {
+  it("includes styleProps hint for a component page that supports style props (Box)", async () => {
+    const { result } = await callGetDocsPage({
+      path: "components/layout/box",
+    });
+    expect(result).toBeDefined();
+    expect(result!.styleProps).toBeDefined();
+    expect(result!.styleProps).toContain("style props");
+    expect(result!.styleProps).toContain("get_docs_page");
+  });
+
+  it("includes styleProps for Button (now tagged)", async () => {
+    const { result } = await callGetDocsPage({
+      path: "components/buttons/button",
+    });
+    expect(result).toBeDefined();
+    expect(result!.styleProps).toBeDefined();
+    expect(result!.styleProps).toContain("style props");
+  });
+
+  it("omits styleProps for non-component pages", async () => {
+    const { result } = await callGetDocsPage({
+      path: "home/getting-started/installation",
+    });
+    expect(result).toBeDefined();
+    expect(result!.styleProps).toBeUndefined();
+  });
+});

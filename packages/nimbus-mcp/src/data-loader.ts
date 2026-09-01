@@ -12,6 +12,7 @@ import type {
   IconCatalog,
   FlatTokenData,
   UiKitTokenMap,
+  StylePropsSummary,
 } from "./types.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -190,3 +191,14 @@ export const getFlatTokenData = lazyJson<FlatTokenData>("tokens.json");
  * Loads the pre-built UI Kit token map from `data/uikit-tokens.json`.
  */
 export const getUiKitTokenMap = lazyJson<UiKitTokenMap>("uikit-tokens.json");
+
+// ---------------------------------------------------------------------------
+// Style props summary
+// ---------------------------------------------------------------------------
+
+/**
+ * Loads the pre-built style props summary from `data/style-props-summary.json`.
+ */
+export const getStylePropsSummary = lazyJson<StylePropsSummary>(
+  "style-props-summary.json"
+);

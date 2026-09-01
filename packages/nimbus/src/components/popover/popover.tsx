@@ -26,6 +26,7 @@ import { PopoverRoot, PopoverTrigger, PopoverContent } from "./components";
  * </Popover.Root>
  * ```
  *
+ * @supportsStyleProps
  * @see https://nimbus-documentation.vercel.app/components/feedback/popover
  */
 export const Popover = {
