@@ -3,7 +3,8 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import type { Key } from "react-aria-components";
-import { Select, NimbusProvider } from "@commercetools/nimbus";
+import { Select, IconButton, NimbusProvider } from "@commercetools/nimbus";
+import { Tune } from "@commercetools/nimbus-icons";
 
 /**
  * @docs-section basic-rendering
@@ -221,5 +222,72 @@ describe("Select - Invalid state", () => {
     const button = screen.getByRole("button", { name: /Select an option/ });
     const selectRoot = button.closest('[data-invalid="true"]');
     expect(selectRoot).toBeInTheDocument();
+  });
+});
+
+/**
+ * @docs-section trailing-element
+ * @docs-title Trailing Element Tests
+ * @docs-description Verify trailing element rendering and that it owns its own clicks
+ * @docs-order 7
+ */
+describe("Select - Trailing element", () => {
+  const renderWithTrailing = (trailingElement: React.ReactNode) =>
+    render(
+      <NimbusProvider>
+        <Select.Root
+          aria-label="Choose an option"
+          defaultSelectedKey="option1"
+          data-testid="select"
+          trailingElement={trailingElement}
+        >
+          <Select.Options>
+            <Select.Option id="option1">Option 1</Select.Option>
+            <Select.Option id="option2">Option 2</Select.Option>
+          </Select.Options>
+        </Select.Root>
+      </NimbusProvider>
+    );
+
+  it("renders the trailing element in the trailingElement slot", () => {
+    renderWithTrailing(<Tune data-testid="trailing-icon" />);
+
+    expect(screen.getByTestId("trailing-icon").parentElement).toHaveClass(
+      "nimbus-select__trailingElement"
+    );
+  });
+
+  it("renders a trailing button outside the trigger button", () => {
+    renderWithTrailing(
+      <IconButton size="xs" variant="ghost" aria-label="Filter results">
+        <Tune />
+      </IconButton>
+    );
+
+    const trigger = screen.getByTestId("select").querySelector("button");
+    const filterButton = screen.getByRole("button", { name: "Filter results" });
+
+    expect(trigger).not.toContainElement(filterButton);
+  });
+
+  it("runs a trailing button's handler without opening the listbox", async () => {
+    const user = userEvent.setup();
+    const onFilter = vi.fn();
+
+    renderWithTrailing(
+      <IconButton
+        size="xs"
+        variant="ghost"
+        aria-label="Filter results"
+        onPress={onFilter}
+      >
+        <Tune />
+      </IconButton>
+    );
+
+    await user.click(screen.getByRole("button", { name: "Filter results" }));
+
+    expect(onFilter).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 });

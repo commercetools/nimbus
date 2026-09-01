@@ -317,7 +317,44 @@ const App = () => (
 )
 ```
 
+### Trailing element
 
+Use `trailingElement` to add content after the selected value, before the clear
+button and chevron. It renders beside the trigger button rather than inside it,
+so interactive content is valid here and keeps its own behaviour — pressing a
+trailing button does not open the listbox:
+
+```jsx live-dev
+const App = () => (
+  <Select.Root
+    leadingElement={<Icon as={Icons.Search} />}
+    trailingElement={
+      <IconButton
+        size="xs"
+        variant="ghost"
+        colorPalette="primary"
+        aria-label="Filter results"
+        onPress={() => {}}
+      >
+        <Icons.Tune />
+      </IconButton>
+    }
+    aria-label="Select an option"
+  >
+    <Select.Options placeholder="Choose...">
+      <Select.Option id="1">Option 1</Select.Option>
+      <Select.Option id="2">Option 2</Select.Option>
+    </Select.Options>
+  </Select.Root>
+)
+```
+
+When space runs short the selected value truncates with an ellipsis rather than
+running underneath the trailing element. Mark decorative content
+`aria-hidden="true"`; interactive content needs its own `aria-label`.
+
+Keep the trigger readable — a leading icon, a trailing control, the clear button
+and the chevron can all appear at once, so add only what earns its place.
 
 ## Component requirements
 

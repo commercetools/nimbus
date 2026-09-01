@@ -299,6 +299,58 @@ const App = () => {
 };
 ```
 
+### Trailing element
+
+Add a trailing element to place content at the end of the field, before the
+built-in clear and toggle buttons. Unlike the leading element, this position is
+suited to controls — an inline filter button, for example:
+
+```jsx live-dev
+const App = () => {
+  const animals = [
+    { id: "koala", name: "Koala" },
+    { id: "panda", name: "Panda" },
+    { id: "giraffe", name: "Giraffe" },
+  ];
+
+  return (
+    <ComboBox.Root
+      items={animals}
+      leadingElement={<Icons.Search aria-hidden="true" />}
+      trailingElement={
+        <IconButton
+          size="2xs"
+          variant="ghost"
+          colorPalette="primary"
+          aria-label="Filter results"
+          onPress={() => {}}
+        >
+          <Icons.Tune />
+        </IconButton>
+      }
+      placeholder="Search..."
+      aria-label="Search for an animal"
+    >
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          {(item) => (
+            <ComboBox.Option id={item.id}>{item.name}</ComboBox.Option>
+          )}
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  );
+};
+```
+
+A trailing control keeps its own behavior: pressing it runs its handler without
+opening the options popover or clearing the selection. Mark decorative content
+`aria-hidden="true"`; interactive content needs its own `aria-label`.
+
+Keep the field readable — a leading icon, a trailing control, the clear button
+and the toggle button can all appear at once, so add only what earns its place.
+
 ### Disabled state
 
 Use `isDisabled` to disable the combobox:

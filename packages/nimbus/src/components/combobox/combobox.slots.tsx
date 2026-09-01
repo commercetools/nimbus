@@ -4,6 +4,7 @@ import type {
   ComboBoxRootSlotProps,
   ComboBoxTriggerSlotProps,
   ComboBoxLeadingElementSlotProps,
+  ComboBoxTrailingElementSlotProps,
   ComboBoxContentSlotProps,
   ComboBoxTagGroupSlotProps,
   ComboBoxInputSlotProps,
@@ -36,6 +37,12 @@ export const ComboBoxLeadingElementSlot = withContext<
   HTMLDivElement,
   ComboBoxLeadingElementSlotProps
 >("div", "leadingElement");
+
+// TrailingElement slot - wrapper for trailing element (icon, button, etc.)
+export const ComboBoxTrailingElementSlot = withContext<
+  HTMLDivElement,
+  ComboBoxTrailingElementSlotProps
+>("div", "trailingElement");
 
 // Content slot - wrapper for tags and input (flex container within grid)
 export const ComboBoxContentSlot = withContext<

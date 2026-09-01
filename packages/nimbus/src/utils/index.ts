@@ -1,3 +1,4 @@
+export { AdornmentContent } from "./adornment-content";
 export { DisplayColorPalettes } from "./display-color-palettes";
 export { extractAriaAttributes } from "./extract-aria-attributes";
 export { extractPaddingProps } from "./extract-padding-props";

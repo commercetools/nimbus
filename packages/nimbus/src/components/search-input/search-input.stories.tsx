@@ -3,11 +3,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Box,
   FormField,
+  Icon,
+  IconButton,
   SearchInput,
   Stack,
   Text,
 } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
+import { Tune, Visibility } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof SearchInput> = {
   title: "Components/SearchInput",
@@ -893,6 +896,284 @@ export const WithFormField: Story = {
     await step("Info box is present", async () => {
       const infoButton = canvas.getByRole("button", { name: "__MORE INFO" });
       await expect(infoButton).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Leading and trailing adornments across both sizes and variants.
+ *
+ * `leadingElement` defaults to the search icon, so the first row is what every
+ * other story renders; the remaining rows replace it, remove it, or add trailing
+ * content. Each input carries a value so the built-in clear button is visible and
+ * its spacing against a trailing element is captured.
+ */
+export const LeadingAndTrailingElements: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => {
+    const examples: Array<{
+      label: string;
+      getProps: (size: "sm" | "md") => React.ComponentProps<typeof SearchInput>;
+    }> = [
+      {
+        label: "Default leading icon",
+        getProps: () => ({
+          defaultValue: "Search query",
+          "aria-label": "default-leading",
+        }),
+      },
+      {
+        label: "Replaced leading icon",
+        getProps: () => ({
+          defaultValue: "Search query",
+          leadingElement: <Icon as={Visibility} aria-hidden="true" />,
+          "aria-label": "replaced-leading",
+        }),
+      },
+      {
+        label: "No leading element",
+        getProps: () => ({
+          defaultValue: "Search query",
+          leadingElement: null,
+          "aria-label": "no-leading",
+        }),
+      },
+      {
+        label: "Trailing icon",
+        getProps: () => ({
+          defaultValue: "Search query",
+          trailingElement: <Icon as={Tune} aria-hidden="true" />,
+          "aria-label": "trailing-icon",
+        }),
+      },
+      {
+        label: "Trailing filter button",
+        getProps: (size) => ({
+          defaultValue: "Search query",
+          trailingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              colorPalette="primary"
+              variant="ghost"
+              aria-label="filter results"
+            >
+              <Icon as={Tune} />
+            </IconButton>
+          ),
+          "aria-label": "trailing-button",
+        }),
+      },
+      {
+        label: "Trailing button, disabled field",
+        getProps: (size) => ({
+          defaultValue: "Search query",
+          isDisabled: true,
+          trailingElement: (
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              colorPalette="primary"
+              variant="ghost"
+              aria-label="filter results"
+              isDisabled
+            >
+              <Icon as={Tune} />
+            </IconButton>
+          ),
+          "aria-label": "trailing-button-disabled",
+        }),
+      },
+    ];
+
+    return (
+      <Stack direction="column" gap="600">
+        {inputSize.map((size) => (
+          <Stack key={size} direction="column" gap="400">
+            <Text fontWeight="semibold">Size: {size}</Text>
+            <Stack direction="column" gap="300">
+              {examples.map((example) => (
+                <Stack
+                  key={`${size}-${example.label}`}
+                  direction="column"
+                  gap="200"
+                >
+                  <Text fontSize="sm" color="neutral.11">
+                    {example.label}
+                  </Text>
+                  <Stack direction="row" gap="400" alignItems="center">
+                    {inputVariants.map((variant) => (
+                      <Stack key={variant} direction="column" gap="100">
+                        <Text fontSize="xs" color="neutral.10">
+                          {variant}
+                        </Text>
+                        <SearchInput
+                          {...example.getProps(size)}
+                          size={size}
+                          variant={variant}
+                        />
+                      </Stack>
+                    ))}
+                  </Stack>
+                </Stack>
+              ))}
+            </Stack>
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+};
+
+/** RTL mirrors the adornment layout: leading and trailing elements swap sides. */
+export const RTLSupportWithAdornments: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="400">
+      <Box>
+        <Text mb="200">LTR direction (left-to-right)</Text>
+        <SearchInput
+          defaultValue="Search query"
+          trailingElement={<Icon as={Tune} aria-hidden="true" />}
+          aria-label="ltr-adornments"
+        />
+      </Box>
+      <Box dir="rtl" width="100%">
+        <Text mb="200" textAlign="right">
+          RTL direction (right-to-left)
+        </Text>
+        <SearchInput
+          defaultValue="Search query"
+          trailingElement={<Icon as={Tune} aria-hidden="true" />}
+          aria-label="rtl-adornments"
+        />
+      </Box>
+    </Stack>
+  ),
+};
+
+/**
+ * A trailing button is the motivating use case: an inline filter control that
+ * lives inside the field but owns its own clicks.
+ */
+export const TrailingElementInteraction: Story = {
+  render: () => {
+    const onFilter = fn();
+    return (
+      <SearchInput
+        defaultValue="Search query"
+        aria-label="search-with-filter"
+        trailingElement={
+          <IconButton
+            size="xs"
+            colorPalette="primary"
+            variant="ghost"
+            aria-label="filter results"
+            onPress={onFilter}
+            data-testid="filter-button"
+          >
+            <Icon as={Tune} />
+          </IconButton>
+        }
+      />
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("searchbox");
+    const filterButton = canvas.getByLabelText("filter results");
+
+    await step(
+      "Trailing element renders in the trailingElement slot",
+      async () => {
+        await expect(filterButton.parentElement).toHaveClass(
+          "nimbus-search-input__trailingElement"
+        );
+      }
+    );
+
+    await step(
+      "Trailing button is reachable by keyboard after the input",
+      async () => {
+        await userEvent.tab();
+        await expect(input).toHaveFocus();
+        await userEvent.tab();
+        await expect(filterButton).toHaveFocus();
+      }
+    );
+
+    await step("Activating it does not clear the value", async () => {
+      await userEvent.click(filterButton);
+      await expect(input).toHaveValue("Search query");
+    });
+
+    await step("Clicking it does not steal focus to the input", async () => {
+      await expect(input).not.toHaveFocus();
+    });
+  },
+};
+
+/**
+ * `leadingElement` is configurable: omitted keeps the search icon, an element
+ * replaces it, and `null` removes it.
+ */
+export const LeadingElementConfiguration: Story = {
+  render: () => (
+    <Stack direction="column" gap="400">
+      <SearchInput defaultValue="Default" aria-label="leading-default" />
+      <SearchInput
+        defaultValue="Replaced"
+        aria-label="leading-replaced"
+        leadingElement={<Icon as={Visibility} aria-hidden="true" />}
+      />
+      <SearchInput
+        defaultValue="Removed"
+        aria-label="leading-removed"
+        leadingElement={null}
+      />
+      <SearchInput
+        defaultValue="Interactive"
+        aria-label="leading-interactive"
+        leadingElement={
+          <IconButton
+            size="xs"
+            colorPalette="primary"
+            variant="ghost"
+            aria-label="choose scope"
+          >
+            <Icon as={Tune} />
+          </IconButton>
+        }
+      />
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const slot = "nimbus-search-input__leadingElement";
+
+    await step("Omitting the prop keeps the search icon", async () => {
+      const field = canvas.getByLabelText("leading-default").closest("div");
+      await expect(field?.querySelector(`.${slot} svg`)).toBeInTheDocument();
+    });
+
+    await step(
+      "Providing an element renders it in the leading slot",
+      async () => {
+        const field = canvas.getByLabelText("leading-replaced").closest("div");
+        await expect(field?.querySelector(`.${slot}`)).toBeInTheDocument();
+      }
+    );
+
+    await step("Passing null renders no leading slot", async () => {
+      const field = canvas.getByLabelText("leading-removed").closest("div");
+      await expect(field?.querySelector(`.${slot}`)).not.toBeInTheDocument();
+    });
+
+    await step("An interactive leading element receives clicks", async () => {
+      const scopeButton = canvas.getByLabelText("choose scope");
+      await expect(scopeButton.parentElement).toHaveClass(slot);
+      await userEvent.click(scopeButton);
+      await expect(scopeButton).toHaveFocus();
     });
   },
 };

@@ -5,7 +5,7 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * Defines the styling variants and base styles using Chakra UI's slot recipe system.
  */
 export const searchInputSlotRecipe = defineSlotRecipe({
-  slots: ["root", "leadingElement", "input"],
+  slots: ["root", "leadingElement", "trailingElement", "input"],
   // Unique class name prefix for the component
   className: "nimbus-search-input",
 
@@ -42,7 +42,12 @@ export const searchInputSlotRecipe = defineSlotRecipe({
       display: "flex",
       alignItems: "center",
       color: "neutral.11",
-      pointerEvents: "none",
+    },
+
+    trailingElement: {
+      display: "flex",
+      alignItems: "center",
+      color: "neutral.11",
     },
 
     input: {
@@ -81,6 +86,11 @@ export const searchInputSlotRecipe = defineSlotRecipe({
             boxSize: "400",
           },
         },
+        trailingElement: {
+          "& > svg": {
+            boxSize: "400",
+          },
+        },
       },
       md: {
         root: {
@@ -90,6 +100,11 @@ export const searchInputSlotRecipe = defineSlotRecipe({
           textStyle: "md",
         },
         leadingElement: {
+          "& > svg": {
+            boxSize: "500",
+          },
+        },
+        trailingElement: {
           "& > svg": {
             boxSize: "500",
           },
