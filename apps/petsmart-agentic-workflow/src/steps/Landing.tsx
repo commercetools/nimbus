@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Flex, Stack, Text, Separator, Button, Tooltip } from "@commercetools/nimbus";
+import { Box, Flex, Stack, Text, Separator, Button } from "@commercetools/nimbus";
 import { AiDot } from "../components/AiDot";
 import { pipelineSteps, agents } from "../data/agents";
 
@@ -16,29 +16,24 @@ const WorkflowPipeline = () => (
   <Flex wrap="wrap" alignItems="flex-start" justifyContent="center" gap="50" rowGap="200">
     {pipelineSteps.map((step, index) => {
       const { bg, fg } = getPipelineColors(step);
-      const agent = step.agentId ? agents[step.agentId] : undefined;
-      const tooltip = (step as { description?: string }).description ?? agent?.description ?? step.label;
       return (
         <Flex key={step.step} alignItems="center" gap="50">
-          <Tooltip.Root>
-            <Flex direction="column" alignItems="center" gap="50" width="1200" cursor="default">
-              <Flex
-                width="500"
-                height="500"
-                borderRadius="full"
-                bg={bg}
-                alignItems="center"
-                justifyContent="center"
-                flexShrink={0}
-              >
-                <Text textStyle="xs" fontWeight="bold" color={fg}>{step.step}</Text>
-              </Flex>
-              <Text textStyle="xs" color="neutral.11" textAlign="center" lineHeight="tight">
-                {step.label}
-              </Text>
+          <Flex direction="column" alignItems="center" gap="50" width="1200">
+            <Flex
+              width="500"
+              height="500"
+              borderRadius="full"
+              bg={bg}
+              alignItems="center"
+              justifyContent="center"
+              flexShrink={0}
+            >
+              <Text textStyle="xs" fontWeight="bold" color={fg}>{step.step}</Text>
             </Flex>
-            <Tooltip.Content>{tooltip}</Tooltip.Content>
-          </Tooltip.Root>
+            <Text textStyle="xs" color="neutral.11" textAlign="center" lineHeight="tight">
+              {step.label}
+            </Text>
+          </Flex>
           {index < pipelineSteps.length - 1 && (
             <Text as="span" color="neutral.6" textStyle="xs" flexShrink={0} aria-hidden="true">→</Text>
           )}

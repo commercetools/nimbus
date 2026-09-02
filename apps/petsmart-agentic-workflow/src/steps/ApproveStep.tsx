@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Flex, Stack, Text, Button, Tooltip } from "@commercetools/nimbus";
+import { Box, Flex, Stack, Text, Button } from "@commercetools/nimbus";
 import { PageHeader } from "../components/PageHeader";
 import { InlineCard } from "../components/InlineCard";
 import { AgentChain } from "../components/AgentChain";
@@ -67,33 +67,28 @@ const WorkflowPipeline = () => (
     {pipelineSteps.map((step, index) => {
       const status = getStepStatus(step.step);
       const { bg, fg } = getPipelineColors(step, status);
-      const agent = step.agentId ? agents[step.agentId] : undefined;
-      const tooltip = (step as { description?: string }).description ?? agent?.description ?? step.label;
       return (
         <Flex key={step.step} alignItems="center" gap="50">
-          <Tooltip.Root>
-            <Flex direction="column" alignItems="center" gap="50" width="1200" cursor="default">
-              <Flex
-                width="500"
-                height="500"
-                borderRadius="full"
-                bg={bg}
-                alignItems="center"
-                justifyContent="center"
-                flexShrink={0}
-                borderWidth={status === "active" ? "2px" : "0"}
-                borderColor="amber.9"
-              >
-                <Text textStyle="xs" fontWeight="bold" color={fg}>
-                  {status === "done" ? "✓" : step.step}
-                </Text>
-              </Flex>
-              <Text textStyle="xs" color="neutral.11" textAlign="center" lineHeight="tight">
-                {step.label}
+          <Flex direction="column" alignItems="center" gap="50" width="1200">
+            <Flex
+              width="500"
+              height="500"
+              borderRadius="full"
+              bg={bg}
+              alignItems="center"
+              justifyContent="center"
+              flexShrink={0}
+              borderWidth={status === "active" ? "2px" : "0"}
+              borderColor="amber.9"
+            >
+              <Text textStyle="xs" fontWeight="bold" color={fg}>
+                {status === "done" ? "✓" : step.step}
               </Text>
             </Flex>
-            <Tooltip.Content>{tooltip}</Tooltip.Content>
-          </Tooltip.Root>
+            <Text textStyle="xs" color="neutral.11" textAlign="center" lineHeight="tight">
+              {step.label}
+            </Text>
+          </Flex>
           {index < pipelineSteps.length - 1 && (
             <Text as="span" color="neutral.6" textStyle="xs" flexShrink={0} aria-hidden="true">→</Text>
           )}
@@ -123,6 +118,7 @@ export const ApproveStep = ({ mode }: { mode: FlavorMode }) => {
               variant="solid"
               colorPalette="positive"
               size="sm"
+              data-tour="approve-btn"
               onPress={() => navigate(`/${mode}/step-5`)}
             >
               Approve &amp; Launch

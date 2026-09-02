@@ -42,6 +42,7 @@ const CartCard = ({ cart }: { cart: (typeof simulationCarts)[number] }) => {
       borderColor={isWarning ? "amber.7" : "neutral.5"}
       borderRadius="200"
       p="300"
+      data-tour={isWarning ? "cart-warning" : undefined}
     >
       <Text textStyle="sm" fontWeight="semibold" color="neutral.12">
         {cart.label}
@@ -107,6 +108,7 @@ export const TestStep = ({ mode }: { mode: FlavorMode }) => {
                 variant="solid"
                 colorPalette="primary"
                 size="sm"
+                data-tour="submit-approval"
                 onPress={() => navigate(`/${mode}/step-4`)}
               >
                 Submit for Approval
@@ -119,36 +121,44 @@ export const TestStep = ({ mode }: { mode: FlavorMode }) => {
       <Box p={{ base: "300", sm: "500" }}>
         {isContextual ? (
           <InlineSlot direction="row" gap="300">
-            <InlineCard title="Simulation Results" agentName="Preview Agent" agentSource="ct">
-              <SimulationResults />
-            </InlineCard>
-            <InlineCard title="Inventory Context" agentName="Inventory Agent" agentSource="customer">
-              <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-                {inventoryContextText}
-              </Text>
-            </InlineCard>
+            <Box data-tour="simulation-card">
+              <InlineCard title="Simulation Results" agentName="Preview Agent" agentSource="ct">
+                <SimulationResults />
+              </InlineCard>
+            </Box>
+            <Box data-tour="petsmart-context">
+              <InlineCard title="Inventory Context" agentName="Inventory Agent" agentSource="customer">
+                <Text textStyle="xs" color="neutral.11" lineHeight="tall">
+                  {inventoryContextText}
+                </Text>
+              </InlineCard>
+            </Box>
           </InlineSlot>
         ) : (
-          <InlineCard title="Simulation Report" agentName="PetSmart Orchestrator" agentSource="customer">
-            <SimulationResults />
-            <Text textStyle="xs" color="neutral.11" lineHeight="tall" mt="200">
-              {inventoryContextText}
-            </Text>
-            <AgentChain
-              contributions={[
-                {
-                  agentName: "Preview Agent",
-                  source: "ct",
-                  contribution: "Simulated 3 carts against the current discount configuration.",
-                },
-                {
-                  agentName: "Inventory Agent",
-                  source: "customer",
-                  contribution: "Added return policy and in-store pickup context for targeted products.",
-                },
-              ]}
-            />
-          </InlineCard>
+          <Box data-tour="orchestrator-card">
+            <InlineCard title="Simulation Report" agentName="PetSmart Orchestrator" agentSource="customer">
+              <SimulationResults />
+              <Text textStyle="xs" color="neutral.11" lineHeight="tall" mt="200">
+                {inventoryContextText}
+              </Text>
+              <Box data-tour="agent-chain">
+                <AgentChain
+                  contributions={[
+                    {
+                      agentName: "Preview Agent",
+                      source: "ct",
+                      contribution: "Simulated 3 carts against the current discount configuration.",
+                    },
+                    {
+                      agentName: "Inventory Agent",
+                      source: "customer",
+                      contribution: "Added return policy and in-store pickup context for targeted products.",
+                    },
+                  ]}
+                />
+              </Box>
+            </InlineCard>
+          </Box>
         )}
       </Box>
 

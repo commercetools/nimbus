@@ -394,24 +394,27 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                   <ConflictWarning />
                 </Box>
 
-                <AgentChain
-                  contributions={[
-                    {
-                      agentName: "Promo Agent",
-                      source: "ct",
-                      contribution:
-                        "Impact preview and conflict detection against active discounts",
-                    },
-                    {
-                      agentName: "Inventory Agent",
-                      source: "customer",
-                      contribution:
-                        "Stock validation and reorder lead time analysis; discount-type performance history",
-                    },
-                  ]}
-                />
+                <Box data-tour="agent-chain">
+                  <AgentChain
+                    contributions={[
+                      {
+                        agentName: "Promo Agent",
+                        source: "ct",
+                        contribution:
+                          "Impact preview and conflict detection against active discounts",
+                      },
+                      {
+                        agentName: "Inventory Agent",
+                        source: "customer",
+                        contribution:
+                          "Stock validation and reorder lead time analysis; discount-type performance history",
+                      },
+                    ]}
+                  />
+                </Box>
               </Stack>
             </InlineCard>
+            </Box>
           </InlineSlot>
         )}
       </Stack>
