@@ -201,19 +201,25 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                   mt="200"
                   px="300"
                   py="200"
-                  bg="info.2"
+                  bg="ctteal.2"
                   borderRadius="200"
+                  borderWidth="1px"
+                  borderColor="ctteal.6"
                   gap="200"
                   alignItems="center"
+                  cursor="pointer"
+                  _hover={{ bg: "ctteal.3" }}
+                  transition="background 150ms"
                 >
                   <ProvenanceIndicator
                     agentName="Inventory Agent"
                     agentSource="customer"
-                    reason="Based on Spring 2025 promotional performance data"
+                    reason="Spring 2025 ran Buy 1 Get 1 on pet health and lifted orders 22% over 6 weeks. Click to use the same structure."
                   />
-                  <Text textStyle="xs" color="info.11">
+                  <Text textStyle="xs" color="ctteal.11" flex="1">
                     Comparable: Spring 2025 lifted orders 22% over 6 weeks
                   </Text>
+                  <Text textStyle="xs" fontWeight="medium" color="ctteal.11">Use template →</Text>
                 </Flex>
               </InlineCard>
             </Box>
