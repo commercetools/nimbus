@@ -19,19 +19,21 @@ const AppBar = () => (
     shadow="xs"
     zIndex={100}
   >
-    <ComboBox.Root size="sm" defaultSelectedKeys={["my-org"]} aria-label="Organization" width="180px">
+    <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-organization-name" aria-label="Organization" width="180px">
       <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
           <ComboBox.Option id="my-org" textValue="my-organization-name">my-organization-name</ComboBox.Option>
+          <ComboBox.Option id="other-org" textValue="other-org">other-org</ComboBox.Option>
         </ComboBox.ListBox>
       </ComboBox.Popover>
     </ComboBox.Root>
-    <ComboBox.Root size="sm" defaultSelectedKeys={["my-proj"]} aria-label="Project" width="160px">
+    <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-project-key" aria-label="Project" width="160px">
       <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
           <ComboBox.Option id="my-proj" textValue="my-project-key">my-project-key</ComboBox.Option>
+          <ComboBox.Option id="staging" textValue="staging-project">staging-project</ComboBox.Option>
         </ComboBox.ListBox>
       </ComboBox.Popover>
     </ComboBox.Root>
