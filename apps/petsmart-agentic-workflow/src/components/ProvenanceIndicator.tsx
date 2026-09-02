@@ -33,9 +33,16 @@ interface ProvenanceIndicatorProps {
   pulse?: boolean;
   /** Explicit callback; falls back to PanelContext.openPanel */
   onWhyClick?: () => void;
+  /** Which agent produced this element; drives the indicator's color. Default "ct". */
+  agentSource?: "ct" | "customer";
   /** Extra props forwarded from parent (e.g. data-tour) */
   [key: `data-${string}`]: string | undefined;
 }
+
+const sourceColors = {
+  ct: { star: "ctteal.9", starHover: "ctteal.11", popoverStar: "ctteal.9" },
+  customer: { star: "primary.9", starHover: "primary.11", popoverStar: "primary.9" },
+};
 
 /**
  * A tiny ✦ star that indicates AI provenance.
@@ -48,9 +55,11 @@ export const ProvenanceIndicator = ({
   size = "12px",
   pulse = false,
   onWhyClick,
+  agentSource = "ct",
   ...rest
 }: ProvenanceIndicatorProps) => {
   const { openPanel } = usePanelContext();
+  const colors = sourceColors[agentSource];
   const [isPulsing, setIsPulsing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -100,11 +109,11 @@ export const ProvenanceIndicator = ({
         height="auto"
         fontSize={size}
         lineHeight="1"
-        color="indigo.9"
+        color={colors.star}
         cursor="pointer"
         flexShrink={0}
         transition="transform 200ms ease, color 200ms ease"
-        _hover={{ color: "indigo.11", transform: "scale(1.3)" }}
+        _hover={{ color: colors.starHover, transform: "scale(1.3)" }}
         animation={isPulsing ? "ai-pulse 600ms ease-out" : undefined}
         onAnimationEnd={handleAnimationEnd}
         onMouseEnter={handleMouseEnter}
@@ -116,7 +125,7 @@ export const ProvenanceIndicator = ({
         <Box p="200">
           {/* Header: agent name + confidence badge */}
           <Flex alignItems="center" gap="150" mb="150">
-            <Text as="span" fontSize="10px" color="indigo.9" lineHeight="1">✦</Text>
+            <Text as="span" fontSize="10px" color={colors.popoverStar} lineHeight="1">✦</Text>
             <Text textStyle="xs" fontWeight="semibold" color="neutral.12">
               {agentName}
             </Text>
@@ -153,7 +162,12 @@ export const ProvenanceIndicator = ({
           <Separator mb="200" />
 
           {/* Actions */}
-          <Button variant="ghost" size="2xs" colorPalette="info" onPress={handleWhyClick}>
+          <Button
+            variant="ghost"
+            size="2xs"
+            colorPalette={agentSource === "customer" ? "primary" : "info"}
+            onPress={handleWhyClick}
+          >
             Ask why
           </Button>
         </Box>

@@ -5,6 +5,8 @@ import type { ReactNode } from "react";
 interface InlineCardProps {
   title: string;
   agentName: string;
+  /** Which agent produced this card; drives header tint and provenance indicator color. Default "ct". */
+  agentSource?: "ct" | "customer";
   /** Optional right-side header content (badge, count, etc.) */
   headerRight?: ReactNode;
   children: ReactNode;
@@ -17,6 +19,7 @@ interface InlineCardProps {
 export const InlineCard = ({
   title,
   agentName,
+  agentSource = "ct",
   headerRight,
   children,
 }: InlineCardProps) => {
@@ -38,9 +41,9 @@ export const InlineCard = ({
         py="150"
         borderBottomWidth="1px"
         borderColor="neutral.4"
-        bg="neutral.2"
+        bg={agentSource === "customer" ? "primary.2" : "ctteal.2"}
       >
-        <ProvenanceIndicator agentName={agentName} />
+        <ProvenanceIndicator agentName={agentName} agentSource={agentSource} />
         <Text textStyle="xs" fontWeight="semibold" color="neutral.12">
           {title}
         </Text>
