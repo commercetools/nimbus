@@ -139,6 +139,7 @@ export const CategoryReorg = () => (
             aria-label="Category hierarchy"
             size="sm"
             defaultExpandedKeys={["accessories", "phone-cases"]}
+            css={{ "--tree-indent-step": "28px", "--tree-control-gap": "2px" }}
           >
             <Tree.Item id="accessories" textValue="Accessories">
               <Tree.ItemContent>

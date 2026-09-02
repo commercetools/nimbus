@@ -529,6 +529,7 @@ export const ProductLaunch = () => {
               aria-label="Product categories"
               defaultExpandedKeys={["electronics", "accessories"]}
               selectionMode="multiple"
+              css={{ "--tree-indent-step": "28px", "--tree-control-gap": "2px" }}
               defaultSelectedKeys={["mobile-phones"]}
               data-tour="category-tree"
             >
