@@ -1,10 +1,35 @@
-import { Box, Flex, Stack, Text, Badge, Button, Separator, TextInput, FormField, Icon, ComboBox } from "@commercetools/nimbus";
-import { AutoAwesome } from "@commercetools/nimbus-icons";
-import { ChartThemeProvider, ResponsiveContainer, WaffleChart } from "@commercetools/nimbus-viz";
+import { useState } from "react";
+import {
+  Box,
+  Flex,
+  Stack,
+  Text,
+  Badge,
+  Button,
+  Separator,
+  TextInput,
+  FormField,
+  Icon,
+  Tree,
+  DataTable,
+  Grid,
+} from "@commercetools/nimbus";
+import type { DataTableColumnItem, DataTableRowItem } from "@commercetools/nimbus";
+import { CheckCircle } from "@commercetools/nimbus-icons";
+import {
+  ChartThemeProvider,
+  ResponsiveContainer,
+  WaffleChart,
+} from "@commercetools/nimbus-viz";
 import { PageHeader } from "../components/PageHeader";
 import { AiDot } from "../components/AiDot";
+import { InlineSlot } from "../components/InlineSlot";
+import { InlineCard } from "../components/InlineCard";
+import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
+import { ActivationButton } from "../components/ActivationButton";
 
-// Readiness breakdown for waffle chart (part-to-whole)
+// ─── Data ───────────────────────────────────────────────────────────────────
+
 const readinessBreakdown = [
   { category: "Categories", value: 10 },
   { category: "Names", value: 12 },
@@ -15,12 +40,7 @@ const readinessBreakdown = [
   { category: "SEO", value: 2 },
   { category: "Attributes", value: 15 },
 ];
-import { InlineSlot } from "../components/InlineSlot";
-import { InlineCard } from "../components/InlineCard";
-import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
-import { ActivationButton } from "../components/ActivationButton";
 
-// Readiness checklist data
 const checklist = [
   { status: "done" as const, label: "Categories", detail: "Electronics > Mobile Phones" },
   { status: "done" as const, label: "Name (5 locales)", detail: "Complete" },
@@ -38,24 +58,118 @@ const statusIcon = {
   missing: { symbol: "✗", color: "red.11" as const },
 };
 
-// Chart categorical colors (light theme), matching waffle chart assignment order
-const chartColors = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"];
-
-// Suggested variants data
-const suggestedVariants = [
-  { color: "Navy", storage: "256GB", reason: "Top seller DE/FR", market: "EU" },
-  { color: "Green", storage: "128GB", reason: "Trending, 0 in catalog", market: "EU" },
-  { color: "White", storage: "512GB", reason: "High margin, 12% EU", market: "EU" },
+const chartColors = [
+  "#2a78d6",
+  "#eb6834",
+  "#1baf7a",
+  "#eda100",
+  "#e87ba4",
+  "#008300",
+  "#4a3aa7",
+  "#e34948",
 ];
 
-// Category suggestions (augmentation items)
-const categorySuggestions = [
-  { label: "Electronics > Mobile Phones", confidence: 92, highlight: true },
-  { label: "Electronics > Smartphones", confidence: 78, highlight: false },
-  { label: "Accessories > Phone Cases", confidence: 67, highlight: false },
+// Variant rows: 3 API + 3 AI-suggested
+type VariantRow = {
+  id: string;
+  sku: string;
+  color: string;
+  storage: string;
+  priceEur: string;
+  inventory: number;
+  images: number;
+  status: string;
+  isSuggested?: boolean;
+  reason?: string;
+};
+
+const existingVariants: VariantRow[] = [
+  { id: "v1", sku: "GS25U-BLK-128", color: "Black", storage: "128GB", priceEur: "€899", inventory: 342, images: 4, status: "Published" },
+  { id: "v2", sku: "GS25U-BLK-256", color: "Black", storage: "256GB", priceEur: "€999", inventory: 187, images: 4, status: "Published" },
+  { id: "v3", sku: "GS25U-WHT-128", color: "White", storage: "128GB", priceEur: "€899", inventory: 256, images: 3, status: "Published" },
 ];
+
+const suggestedVariants: VariantRow[] = [
+  { id: "s1", sku: "GS25U-NAV-256", color: "Navy", storage: "256GB", priceEur: "€999", inventory: 0, images: 0, status: "Draft", isSuggested: true, reason: "Top seller DE/FR" },
+  { id: "s2", sku: "GS25U-GRN-128", color: "Green", storage: "128GB", priceEur: "€899", inventory: 0, images: 0, status: "Draft", isSuggested: true, reason: "Trending, 0 in catalog" },
+  { id: "s3", sku: "GS25U-WHT-512", color: "White", storage: "512GB", priceEur: "€1,099", inventory: 0, images: 0, status: "Draft", isSuggested: true, reason: "High margin, 12% EU" },
+];
+
+const allVariantRows: DataTableRowItem<VariantRow>[] = [
+  ...existingVariants,
+  ...suggestedVariants,
+];
+
+const variantColumns: DataTableColumnItem<VariantRow>[] = [
+  {
+    id: "variant",
+    header: "Variant",
+    isRowHeader: true,
+    accessor: (row) => (
+      <Flex alignItems="center" gap="100">
+        {row.isSuggested && <AiDot size="8px" />}
+        <Text textStyle="xs" fontWeight="medium" color="neutral.12">
+          {row.color} / {row.storage}
+        </Text>
+      </Flex>
+    ),
+  },
+  {
+    id: "sku",
+    header: "SKU",
+    accessor: (row) => <Text textStyle="xs" color="neutral.11">{row.sku}</Text>,
+  },
+  {
+    id: "price",
+    header: "Price",
+    accessor: (row) => <Text textStyle="xs" fontWeight="medium" color="neutral.12">{row.priceEur}</Text>,
+  },
+  {
+    id: "inventory",
+    header: "Inventory",
+    accessor: (row) => (
+      <Text textStyle="xs" color={row.inventory === 0 ? "neutral.8" : "neutral.11"}>
+        {row.inventory}
+      </Text>
+    ),
+  },
+  {
+    id: "status",
+    header: "",
+    accessor: (row) => {
+      if (row.isSuggested) {
+        return <Button variant="outline" size="2xs">Create</Button>;
+      }
+      return <Badge size="2xs" colorPalette="positive">{row.status}</Badge>;
+    },
+  },
+];
+
+// Product attributes
+const attributes = [
+  { name: "Display", value: '6.9" Dynamic AMOLED 2X, 3120×1440', complete: true },
+  { name: "Battery", value: "5,000 mAh, 45W wired charging", complete: true },
+  { name: "Connectivity", value: "5G, Wi-Fi 7, Bluetooth 5.4, NFC", complete: true },
+  { name: "Weight", value: "218g", complete: true },
+  { name: "Processor", value: "Snapdragon 8 Elite for Galaxy", complete: true },
+  { name: "RAM", value: "12GB", complete: true },
+  { name: "OS", value: null as string | null, suggested: "Android 16 with One UI 7.1" },
+  { name: "Water resistance", value: null as string | null, suggested: "IP68" },
+  { name: "Camera (main)", value: null as string | null, suggested: "200MP wide + 50MP ultra-wide + 50MP telephoto" },
+];
+
+// Search keywords
+const existingKeywords = ["galaxy", "s25", "ultra", "samsung"];
+const suggestedKeywords = [
+  { term: "5g phone", source: "Search volume analysis" },
+  { term: "amoled display", source: "Product attributes" },
+];
+
+// ─── Component ──────────────────────────────────────────────────────────────
 
 export const ProductLaunch = () => {
+  const [expandedVariant, setExpandedVariant] = useState<string | null>(null);
+
   return (
     <Box height="100%" overflow="auto">
       <PageHeader
@@ -65,12 +179,6 @@ export const ProductLaunch = () => {
         ]}
         title="Galaxy S25 Ultra"
         subtitle="SKU-GS25U-001"
-        tabs={[
-          { label: "General", active: true },
-          { label: "Variants" },
-          { label: "Search" },
-          { label: "Selections" },
-        ]}
         actions={
           <>
             <Button variant="ghost" size="2xs">
@@ -86,7 +194,8 @@ export const ProductLaunch = () => {
               py="100"
               borderRadius="200"
               borderWidth="1px"
-              borderColor="indigo.6" data-tour="generate-seo"
+              borderColor="indigo.6"
+              data-tour="generate-seo"
               cursor="pointer"
               _hover={{ bg: "indigo.3" }}
               transition="background 150ms"
@@ -100,161 +209,24 @@ export const ProductLaunch = () => {
         }
       />
 
-      {/* Content area */}
-      <Stack gap="400" p="500">
-        {/* === INLINE SLOT: horizontal, two compact cards === */}
-        <InlineSlot direction="row" gap="300" data-tour="inline-slot">
-          {/* Readiness Card */}
-          <InlineCard
-            title="Readiness"
-            agentName="Product Enrichment Agent"
-            headerRight={
-              <Text textStyle="lg" fontWeight="bold" color="amber.11">
-                68%
-              </Text>
-            }
-          >
-            {/* Progress bar with animation */}
-            <Box
-              height="2px"
-              bg="neutral.4"
-              borderRadius="full"
-              mb="200"
-              overflow="hidden"
-            >
-              <Box
-                height="100%"
-                width="0%"
-                bg="amber.9"
-                borderRadius="full"
-                css={{
-                  animation: "progressGrow 800ms ease-out 300ms forwards",
-                }}
-              />
-            </Box>
+      {/* ── Two-column body ─────────────────────────────────────────── */}
+      <Flex gap="300" p="300" alignItems="flex-start">
+        {/* ── Left column (~65%) ─────────────────────────────────────── */}
+        <Stack gap="300" flex="2" minWidth="0">
+          {/* General info form */}
+          <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300">
+            <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="300">
+              General Information
+            </Text>
 
-            {/* Checklist + trend chart side by side */}
-            <Flex gap="400">
-              <Stack gap="100" flex="1">
-                {checklist.map((item, i) => (
-                  <Flex key={item.label} alignItems="center" gap="150">
-                    <Box
-                      width="6px"
-                      height="6px"
-                      borderRadius="full"
-                      flexShrink={0}
-                      css={{ background: chartColors[i] ?? "#999" }}
-                    />
-                    <Text
-                      textStyle="xs"
-                      fontWeight="bold"
-                      color={statusIcon[item.status].color}
-                    >
-                      {statusIcon[item.status].symbol}
-                    </Text>
-                    <Text textStyle="xs" color="neutral.11">
-                      {item.label}
-                    </Text>
-                  </Flex>
-                ))}
-              </Stack>
-              {/* Waffle chart: readiness breakdown by area */}
-              <Box flex="1" minWidth="140px" data-tour="readiness-chart">
-                <Text textStyle="xs" color="neutral.9" mb="100">Completion by area</Text>
-                <ChartThemeProvider>
-                  <ResponsiveContainer height={140}>
-                    {(w, h) => (
-                      <WaffleChart width={w} height={h} data={readinessBreakdown} cells={10} ariaLabel="Product readiness: completion by area" />
-                    )}
-                  </ResponsiveContainer>
-                </ChartThemeProvider>
-              </Box>
-            </Flex>
-          </InlineCard>
-
-          {/* Variants Card: existing API data + AI suggestions coexisting */}
-          <Box
-            bg="white"
-            borderWidth="1px"
-            borderColor="neutral.6"
-            borderRadius="200"
-            overflow="hidden"
-            width="fit-content"
-            maxWidth="100%"
-          >
-            {/* Card header */}
-            <Flex alignItems="center" gap="150" px="300" py="150" borderBottomWidth="1px" borderColor="neutral.4" bg="neutral.2">
-              <Text textStyle="xs" fontWeight="semibold" color="neutral.12">Variants</Text>
-              <Box flex="1" />
-              <Text textStyle="xs" color="neutral.9">3 existing</Text>
-            </Flex>
-            <Box px="300" py="200">
-              <Stack gap="150">
-                {/* Existing variants (API data, no AI indicator) */}
-                {[
-                  { color: "Black", storage: "128GB", status: "Published" },
-                  { color: "Black", storage: "256GB", status: "Published" },
-                  { color: "White", storage: "128GB", status: "Published" },
-                ].map((v, i) => (
-                  <Flex key={i} alignItems="center" gap="300" py="50">
-                    <Text textStyle="xs" color="neutral.11" minWidth="100px">
-                      {v.color} / {v.storage}
-                    </Text>
-                    <Badge size="2xs" colorPalette="positive">{v.status}</Badge>
-                  </Flex>
-                ))}
-
-                {/* Divider between API data and AI suggestions */}
-                <Flex alignItems="center" gap="150" pt="100">
-                  <Box height="1px" bg="neutral.4" flex="1" />
-                  <Flex alignItems="center" gap="100">
-                    <AiDot size="10px" />
-                    <Text textStyle="xs" color="indigo.9" fontWeight="medium" data-tour="variants-suggested">Suggested</Text>
-                  </Flex>
-                  <Box height="1px" bg="neutral.4" flex="1" />
-                </Flex>
-
-                {/* AI-suggested variants (with ✦ indicator) */}
-                {suggestedVariants.map((v, i) => (
-                  <Flex key={i} alignItems="center" gap="300" py="50">
-                    <Flex alignItems="center" gap="150" minWidth="100px">
-                      <AiDot size="8px" />
-                      <Text textStyle="xs" fontWeight="medium" color="neutral.12">
-                        {v.color} / {v.storage}
-                      </Text>
-                    </Flex>
-                    <Text textStyle="xs" color="neutral.9" flex="1">{v.reason}</Text>
-                    <Button variant="outline" size="2xs">Create</Button>
-                  </Flex>
-                ))}
-              </Stack>
-            </Box>
-          </Box>
-        </InlineSlot>
-
-        {/* === FORM CARD: General Information === */}
-        <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" p="500">
-          <Text textStyle="md" fontWeight="semibold" color="neutral.12" mb="400">
-            General Information
-          </Text>
-
-          {/* 2-column form grid */}
-          <Flex gap="500">
-            <Stack gap="400" flex="1">
+            <Grid gridTemplateColumns="1fr 1fr" gap="300">
               <FormField.Root size="sm">
                 <FormField.Label>Product name (EN)</FormField.Label>
                 <FormField.Input>
                   <TextInput size="sm" defaultValue="Galaxy S25 Ultra" />
                 </FormField.Input>
               </FormField.Root>
-              <FormField.Root size="sm">
-                <FormField.Label>SKU</FormField.Label>
-                <FormField.Input>
-                  <TextInput size="sm" defaultValue="SKU-GS25U-001" />
-                </FormField.Input>
-              </FormField.Root>
-            </Stack>
-            <Stack gap="400" flex="1">
+
               <FormField.Root size="sm">
                 <FormField.Label>
                   <Flex alignItems="center" gap="200" width="100%">
@@ -264,77 +236,335 @@ export const ProductLaunch = () => {
                   </Flex>
                 </FormField.Label>
                 <FormField.Input>
-                  <TextInput size="sm" defaultValue='The Galaxy S25 Ultra features a stunning 6.9" Dynamic AMOLED...' />
+                  <TextInput
+                    size="sm"
+                    defaultValue='The Galaxy S25 Ultra features a stunning 6.9" Dynamic AMOLED...'
+                  />
                 </FormField.Input>
               </FormField.Root>
+
               <FormField.Root size="sm">
                 <FormField.Label>Product key</FormField.Label>
                 <FormField.Input>
                   <TextInput size="sm" defaultValue="galaxy-s25-ultra" />
                 </FormField.Input>
               </FormField.Root>
-            </Stack>
-          </Flex>
 
-          <Separator my="400" />
+              <FormField.Root size="sm">
+                <FormField.Label>External ID</FormField.Label>
+                <FormField.Input>
+                  <TextInput size="sm" defaultValue="EXT-GS25U-2026" />
+                </FormField.Input>
+              </FormField.Root>
 
-          {/* === AUGMENTATION: Category picker with real Nimbus ComboBox + sections === */}
-          <FormField.Root size="sm">
-            <FormField.Label>Categories</FormField.Label>
-            <ComboBox.Root
-              placeholder="Search categories..."
-              aria-label="Assign categories" data-tour="category-combobox"
-              menuTrigger="focus"
+              <FormField.Root size="sm">
+                <FormField.Label>Tax category</FormField.Label>
+                <FormField.Input>
+                  <TextInput size="sm" defaultValue="Standard Rate (19%)" />
+                </FormField.Input>
+              </FormField.Root>
+
+              <FormField.Root size="sm">
+                <FormField.Label>Price mode</FormField.Label>
+                <FormField.Input>
+                  <TextInput size="sm" defaultValue="Embedded" />
+                </FormField.Input>
+              </FormField.Root>
+            </Grid>
+          </Box>
+
+          {/* Inline widgets: Readiness + Product Info */}
+          <InlineSlot direction="row" gap="300" data-tour="inline-slot">
+            {/* Readiness Card */}
+            <InlineCard
+              title="Readiness"
+              agentName="Product Enrichment Agent"
+              headerRight={
+                <Text textStyle="lg" fontWeight="bold" color="amber.11">
+                  68%
+                </Text>
+              }
             >
-              <ComboBox.Trigger />
-              <ComboBox.Popover>
-                <ComboBox.ListBox>
-                  <ComboBox.Section label="Recently used">
-                    <ComboBox.Option id="tablets" textValue="Electronics > Tablets">
-                      <Text textStyle="sm" color="neutral.12">Electronics {">"} Tablets</Text>
-                    </ComboBox.Option>
-                    <ComboBox.Option id="wearables" textValue="Electronics > Wearables">
-                      <Text textStyle="sm" color="neutral.12">Electronics {">"} Wearables</Text>
-                    </ComboBox.Option>
-                  </ComboBox.Section>
-                  <ComboBox.Section label="All categories">
-                    <ComboBox.Option id="audio" textValue="Electronics > Audio">
-                      <Text textStyle="sm" color="neutral.12">Electronics {">"} Audio</Text>
-                    </ComboBox.Option>
-                    <ComboBox.Option id="computing" textValue="Electronics > Computing">
-                      <Text textStyle="sm" color="neutral.12">Electronics {">"} Computing</Text>
-                    </ComboBox.Option>
-                  </ComboBox.Section>
-                  <ComboBox.Section label="✦ Suggested">
-                    {categorySuggestions.map((sug) => (
-                      <ComboBox.Option key={sug.label} id={sug.label} textValue={sug.label}>
-                        <Flex alignItems="center" gap="200" width="100%">
-                          <ProvenanceIndicator
-                            agentName="Product Enrichment Agent"
-                            confidence={sug.confidence}
-                            size="16px"
-                          />
-                          <Text
-                            textStyle="sm"
-                            fontWeight={sug.highlight ? "medium" : "regular"}
-                            color="neutral.12"
-                            flex="1"
-                          >
-                            {sug.label}
-                          </Text>
-                          <Badge size="2xs" colorPalette="info" variant="subtle">
-                            {sug.confidence}%
-                          </Badge>
-                        </Flex>
-                      </ComboBox.Option>
-                    ))}
-                  </ComboBox.Section>
-                </ComboBox.ListBox>
-              </ComboBox.Popover>
-            </ComboBox.Root>
-          </FormField.Root>
-        </Box>
-      </Stack>
+              <Box height="2px" bg="neutral.4" borderRadius="full" mb="200" overflow="hidden">
+                <Box
+                  height="100%"
+                  width="0%"
+                  bg="amber.9"
+                  borderRadius="full"
+                  css={{ animation: "progressGrow 800ms ease-out 300ms forwards" }}
+                />
+              </Box>
+
+              <Flex gap="300">
+                <Stack gap="100" flex="1">
+                  {checklist.map((item, i) => (
+                    <Flex key={item.label} alignItems="center" gap="150">
+                      <Box
+                        width="6px"
+                        height="6px"
+                        borderRadius="full"
+                        flexShrink={0}
+                        css={{ background: chartColors[i] ?? "#999" }}
+                      />
+                      <Text textStyle="xs" fontWeight="bold" color={statusIcon[item.status].color}>
+                        {statusIcon[item.status].symbol}
+                      </Text>
+                      <Text textStyle="xs" color="neutral.11">{item.label}</Text>
+                    </Flex>
+                  ))}
+                </Stack>
+                <Box flex="1" minWidth="140px" data-tour="readiness-chart">
+                  <Text textStyle="xs" color="neutral.9" mb="100">Completion by area</Text>
+                  <ChartThemeProvider>
+                    <ResponsiveContainer height={140}>
+                      {(w, h) => (
+                        <WaffleChart
+                          width={w}
+                          height={h}
+                          data={readinessBreakdown}
+                          cells={10}
+                          ariaLabel="Product readiness: completion by area"
+                        />
+                      )}
+                    </ResponsiveContainer>
+                  </ChartThemeProvider>
+                </Box>
+              </Flex>
+            </InlineCard>
+
+            {/* Metadata sidebar card */}
+            <InlineCard title="Product Info" agentName="Product Enrichment Agent">
+              <Stack gap="150">
+                <Flex justifyContent="space-between">
+                  <Text textStyle="xs" color="neutral.9">Product type</Text>
+                  <Text textStyle="xs" fontWeight="medium" color="neutral.12">Electronics</Text>
+                </Flex>
+                <Flex justifyContent="space-between">
+                  <Text textStyle="xs" color="neutral.9">Created</Text>
+                  <Text textStyle="xs" fontWeight="medium" color="neutral.12">Aug 15, 2026</Text>
+                </Flex>
+                <Flex justifyContent="space-between">
+                  <Text textStyle="xs" color="neutral.9">Modified</Text>
+                  <Text textStyle="xs" fontWeight="medium" color="neutral.12">Sep 1, 2026</Text>
+                </Flex>
+                <Flex justifyContent="space-between">
+                  <Text textStyle="xs" color="neutral.9">Master variant</Text>
+                  <Text textStyle="xs" fontWeight="medium" color="neutral.12">GS25U-BLK-128</Text>
+                </Flex>
+                <Flex justifyContent="space-between">
+                  <Text textStyle="xs" color="neutral.9">Published</Text>
+                  <Badge size="2xs" colorPalette="positive">Yes</Badge>
+                </Flex>
+              </Stack>
+            </InlineCard>
+          </InlineSlot>
+
+          {/* Variants DataTable */}
+          <Box
+            bg="white"
+            borderWidth="1px"
+            borderColor="neutral.6"
+            borderRadius="200"
+            overflow="hidden"
+            data-tour="variants-table"
+          >
+            <Flex
+              alignItems="center"
+              gap="200"
+              px="300"
+              py="150"
+              borderBottomWidth="1px"
+              borderColor="neutral.4"
+            >
+              <Text textStyle="sm" fontWeight="semibold" color="neutral.12">
+                Variants
+              </Text>
+              <Text textStyle="xs" color="neutral.9">3 existing</Text>
+              <Box flex="1" />
+              <Flex alignItems="center" gap="100">
+                <AiDot size="8px" />
+                <Text textStyle="xs" color="indigo.9" fontWeight="medium" data-tour="variants-suggested">
+                  +3 suggested
+                </Text>
+              </Flex>
+            </Flex>
+
+            <DataTable.Root
+              columns={variantColumns}
+              rows={allVariantRows}
+              density="condensed"
+              allowsPinning={false}
+              allowsExpandColumn={false}
+              renderNestedContent={(row) => {
+                if (!row.isSuggested) {
+                  return (
+                    <Box px="300" py="150" bg="neutral.2">
+                      <Text textStyle="xs" color="neutral.11">
+                        Variant details for {row.sku}
+                      </Text>
+                    </Box>
+                  );
+                }
+                return (
+                  <Box px="300" py="150" bg="indigo.2">
+                    <Flex alignItems="center" gap="150" mb="100">
+                      <AiDot />
+                      <Text textStyle="xs" fontWeight="medium" color="indigo.9">
+                        Product Enrichment Agent
+                      </Text>
+                    </Flex>
+                    <Text textStyle="xs" color="neutral.12">
+                      Suggested because: {row.reason}. Based on market analysis of EU catalog gaps and trending search data.
+                    </Text>
+                  </Box>
+                );
+              }}
+            >
+              <DataTable.Table>
+                <DataTable.Header />
+                <DataTable.Body>
+                  {(row) => (
+                    <DataTable.Row
+                      row={row}
+                      css={row.isSuggested ? { background: "var(--nimbus-colors-indigo-2)" } : undefined}
+                    />
+                  )}
+                </DataTable.Body>
+              </DataTable.Table>
+            </DataTable.Root>
+          </Box>
+        </Stack>
+
+        {/* ── Right column (~35%) ──────────────────────────────────────── */}
+        <Stack gap="300" flex="1" minWidth="260px">
+          {/* Categories tree */}
+          <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300">
+            <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="200">
+              Categories
+            </Text>
+            <Tree.Root
+              size="sm"
+              aria-label="Product categories"
+              defaultExpandedKeys={["electronics", "accessories"]}
+              selectionMode="multiple"
+              defaultSelectedKeys={["mobile-phones"]}
+              data-tour="category-tree"
+            >
+              <Tree.Item id="electronics" textValue="Electronics">
+                <Tree.ItemContent>
+                  <Tree.Indicator />
+                  <Text textStyle="xs" color="neutral.12">Electronics</Text>
+                </Tree.ItemContent>
+
+                <Tree.Item id="mobile-phones" textValue="Mobile Phones">
+                  <Tree.ItemContent>
+                    <Tree.Indicator />
+                    <Flex alignItems="center" gap="150" flex="1">
+                      <Text textStyle="xs" fontWeight="medium" color="neutral.12">
+                        Mobile Phones
+                      </Text>
+                      <Icon as={CheckCircle} size="2xs" color="green.9" />
+                    </Flex>
+                  </Tree.ItemContent>
+                </Tree.Item>
+
+                <Tree.Item id="smartphones" textValue="Smartphones (suggested)">
+                  <Tree.ItemContent>
+                    <Tree.Indicator />
+                    <Flex alignItems="center" gap="150" flex="1">
+                      <AiDot size="8px" />
+                      <Text textStyle="xs" color="indigo.11">Smartphones</Text>
+                      <Badge size="2xs" colorPalette="info" variant="subtle">78%</Badge>
+                    </Flex>
+                  </Tree.ItemContent>
+                </Tree.Item>
+              </Tree.Item>
+
+              <Tree.Item id="accessories" textValue="Accessories">
+                <Tree.ItemContent>
+                  <Tree.Indicator />
+                  <Text textStyle="xs" color="neutral.12">Accessories</Text>
+                </Tree.ItemContent>
+
+                <Tree.Item id="phone-cases" textValue="Phone Cases (suggested)">
+                  <Tree.ItemContent>
+                    <Tree.Indicator />
+                    <Flex alignItems="center" gap="150" flex="1">
+                      <AiDot size="8px" />
+                      <Text textStyle="xs" color="indigo.11">Phone Cases</Text>
+                      <Badge size="2xs" colorPalette="info" variant="subtle">67%</Badge>
+                    </Flex>
+                  </Tree.ItemContent>
+                </Tree.Item>
+              </Tree.Item>
+            </Tree.Root>
+          </Box>
+
+          {/* Product attributes */}
+          <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300">
+            <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="200">
+              Attributes
+            </Text>
+            <Stack gap="0">
+              {attributes.map((attr, i) => (
+                <Flex
+                  key={attr.name}
+                  py="100"
+                  px="200"
+                  alignItems="center"
+                  gap="200"
+                  borderBottomWidth={i < attributes.length - 1 ? "1px" : "0"}
+                  borderColor="neutral.3"
+                  _hover={{ bg: "neutral.2" }}
+                  transition="background 100ms"
+                >
+                  <Text textStyle="xs" color="neutral.9" minWidth="100px" flexShrink={0}>
+                    {attr.name}
+                  </Text>
+                  {attr.value ? (
+                    <Text textStyle="xs" color="neutral.12" flex="1">
+                      {attr.value}
+                    </Text>
+                  ) : (
+                    <Flex alignItems="center" gap="100" flex="1">
+                      <AiDot size="8px" />
+                      <Text textStyle="xs" fontWeight="medium" color="indigo.11">
+                        {attr.suggested}
+                      </Text>
+                    </Flex>
+                  )}
+                </Flex>
+              ))}
+            </Stack>
+          </Box>
+
+          {/* Search keywords */}
+          <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300">
+            <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="200">
+              Search Keywords
+            </Text>
+
+            <Flex gap="150" flexWrap="wrap" mb="200">
+              {existingKeywords.map((kw) => (
+                <Badge key={kw} size="2xs" colorPalette="neutral">{kw}</Badge>
+              ))}
+            </Flex>
+
+            <Flex alignItems="center" gap="100" mb="150">
+              <AiDot size="8px" />
+              <Text textStyle="xs" fontWeight="medium" color="indigo.9">Suggested</Text>
+            </Flex>
+            <Stack gap="100">
+              {suggestedKeywords.map((kw) => (
+                <Flex key={kw.term} alignItems="center" gap="200">
+                  <Badge size="2xs" colorPalette="info" variant="subtle">{kw.term}</Badge>
+                  <Text textStyle="xs" color="neutral.9">{kw.source}</Text>
+                </Flex>
+              ))}
+            </Stack>
+          </Box>
+        </Stack>
+      </Flex>
     </Box>
   );
 };

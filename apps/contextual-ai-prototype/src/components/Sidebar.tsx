@@ -1,10 +1,11 @@
 import { Box, Flex, Stack, Separator, Icon, Tooltip } from "@commercetools/nimbus";
 import {
+  Dashboard,
   Inventory,
-  Category,
+  AccountTree,
+  PersonOutline,
   ShoppingCart,
-  Discount,
-  People,
+  LocalOffer,
   Settings,
   CommercetoolsCube,
 } from "@commercetools/nimbus-icons";
@@ -56,7 +57,7 @@ export const Sidebar = () => {
       overflow="hidden"
       width="48px"
     >
-      {/* CT Logo - links to landing page */}
+      {/* CT Logo */}
       <NavLink to="/" style={{ textDecoration: "none" }}>
         <Flex
           alignItems="center"
@@ -74,43 +75,42 @@ export const Sidebar = () => {
 
       <Separator css={{ borderColor: "rgba(255,255,255,0.12)" }} />
 
-      {/* Navigation */}
+      {/* Navigation - matching real MC sidebar icons */}
       <Stack gap="100" pt="200" flex="1" alignItems="center">
         <NavItem
           icon={<Icon as={Inventory} size="xs" />}
-          label="1. Product Launch"
+          label="Products"
           to="/products/galaxy-s25-ultra"
         />
         <NavItem
           icon={<Icon as={ShoppingCart} size="xs" />}
-          label="2. Pricing Review"
-          to="/products/pricing"
-        />
-        <NavItem
-          icon={<Icon as={Discount} size="xs" />}
-          label="3. Discount Campaign"
-          to="/discounts/summer-clearance"
-        />
-        <NavItem
-          icon={<Icon as={ShoppingCart} size="xs" />}
-          label="4. Order Investigation"
+          label="Orders"
           to="/orders/mc-2026-847291"
         />
         <NavItem
-          icon={<Icon as={Category} size="xs" />}
-          label="5. Category Reorg"
+          icon={<Icon as={PersonOutline} size="xs" />}
+          label="Customers"
+          to="/products/pour-over-kettle"
+        />
+        <NavItem
+          icon={<Icon as={LocalOffer} size="xs" />}
+          label="Discounts"
+          to="/discounts/summer-clearance"
+        />
+        <NavItem
+          icon={<Icon as={AccountTree} size="xs" />}
+          label="Categories"
           to="/categories/phone-cases"
         />
         <NavItem
-          icon={<Icon as={People} size="xs" />}
-          label="6. Self-Documenting"
-          to="/products/pour-over-kettle"
+          icon={<Icon as={Dashboard} size="xs" />}
+          label="Pricing"
+          to="/products/pricing"
         />
       </Stack>
 
       <Separator css={{ borderColor: "rgba(255,255,255,0.12)" }} />
 
-      {/* Footer */}
       <Box pt="200">
         <NavItem
           icon={<Icon as={Settings} size="xs" />}
