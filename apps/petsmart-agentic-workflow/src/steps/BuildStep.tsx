@@ -171,8 +171,8 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                   </Text>
                 }
               >
-                <Flex gap="300">
-                  <Box>
+                <Flex gap="300" justifyContent="center">
+                  <Box textAlign="center">
                     <Text textStyle="xl" fontWeight="bold" color="neutral.12">
                       ~{promotion.productsAffected}
                     </Text>
@@ -180,7 +180,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                       Products affected
                     </Text>
                   </Box>
-                  <Box>
+                  <Box textAlign="center">
                     <Text textStyle="xl" fontWeight="bold" color="amber.11">
                       {promotion.marginImpact}
                     </Text>
@@ -188,7 +188,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                       Est. margin impact
                     </Text>
                   </Box>
-                  <Box>
+                  <Box textAlign="center">
                     <Text textStyle="xl" fontWeight="bold" color="green.11">
                       0
                     </Text>
