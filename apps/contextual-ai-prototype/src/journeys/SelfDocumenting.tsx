@@ -194,13 +194,13 @@ export const SelfDocumenting = () => (
       </InlineSlot>
 
       {/* Form with augmented fields */}
-      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300" overflow="hidden">
+      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300">
         <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="300">
           General Information
         </Text>
 
         <Flex gap="300" direction={{ base: "column", md: "row" }}>
-          <Stack gap="300" flex="1">
+          <Stack gap="300" flex="1" minWidth="0">
             <FormField.Root size="sm">
               <FormField.Label>Product name (EN)</FormField.Label>
               <FormField.Input>
@@ -221,7 +221,7 @@ export const SelfDocumenting = () => (
               <FormField.Description>Required for SEO and storefront display</FormField.Description>
             </FormField.Root>
           </Stack>
-          <Stack gap="300" flex="1">
+          <Stack gap="300" flex="1" minWidth="0">
             <FormField.Root size="sm">
               <FormField.Label>SKU</FormField.Label>
               <FormField.Input>
