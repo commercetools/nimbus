@@ -27,7 +27,7 @@ const AppBar = () => (
     <Box flex="1" />
     <Flex alignItems="center" gap="200">
       {/* Organization selector */}
-      <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-organization-name" aria-label="Organization" width="max-content" css={{ "& [slot=clear]": { display: "none" }, "& input": { color: "rgba(255,255,255,0.9)", fontSize: "var(--nimbus-font-sizes-xs)" }, "& button": { color: "rgba(255,255,255,0.6)" } }}>
+      <ComboBox.Root size="sm" variant="ghost" defaultValue="my-organization-name" aria-label="Organization" width="max-content" css={{ "& [slot=clear]": { display: "none" }, "& input": { color: "rgba(255,255,255,0.9)", fontSize: "var(--nimbus-font-sizes-xs)" }, "& button": { color: "rgba(255,255,255,0.6)" } }}>
         <ComboBox.Trigger />
         <ComboBox.Popover>
           <ComboBox.ListBox>
@@ -38,7 +38,7 @@ const AppBar = () => (
       </ComboBox.Root>
       <Box width="1px" height="16px" bg="rgba(255,255,255,0.15)" />
       {/* Project selector */}
-      <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-project-key" aria-label="Project" width="max-content" css={{ "& [slot=clear]": { display: "none" }, "& input": { color: "rgba(255,255,255,0.9)", fontSize: "var(--nimbus-font-sizes-xs)" }, "& button": { color: "rgba(255,255,255,0.6)" } }}>
+      <ComboBox.Root size="sm" variant="ghost" defaultValue="my-project-key" aria-label="Project" width="max-content" css={{ "& [slot=clear]": { display: "none" }, "& input": { color: "rgba(255,255,255,0.9)", fontSize: "var(--nimbus-font-sizes-xs)" }, "& button": { color: "rgba(255,255,255,0.6)" } }}>
         <ComboBox.Trigger />
         <ComboBox.Popover>
           <ComboBox.ListBox>
