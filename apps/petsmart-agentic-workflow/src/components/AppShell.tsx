@@ -134,12 +134,13 @@ export const AppShell = () => {
           </Box>
 
           {/* Chat panel: inline on large screens, overlay on small */}
-          <Box
+          <Flex
             data-tour="chat-panel"
+            direction="column"
             width={panelOpen ? { base: "100%", lg: "380px" } : "0px"}
             minWidth={panelOpen ? { base: "100%", lg: "380px" } : "0px"}
             maxWidth={panelOpen ? { base: "100%", lg: "380px" } : "0px"}
-            position={{ base: "absolute", lg: "relative" }}
+            position="relative"
             right="0"
             top="0"
             overflow="hidden"
@@ -167,7 +168,7 @@ export const AppShell = () => {
               placeholder={chatConfig?.placeholder}
               whyContext={whyContext}
             />
-          </Box>
+          </Flex>
         </Flex>
       </Flex>
     </PanelProvider>

@@ -197,14 +197,24 @@ export const ChatPanel = ({
   placeholder = "Ask about this product...",
   whyContext,
 }: ChatPanelProps) => {
-  // Auto-scroll messages to bottom
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  // Scroll messages to top on mount, bottom on subsequent changes
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const prevLengthRef = useRef(messages?.length ?? 0);
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, whyContext]);
+    if (!messagesContainerRef.current) return;
+    const currentLength = messages?.length ?? 0;
+    if (currentLength > prevLengthRef.current) {
+      // New message added: scroll to bottom
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    } else {
+      // Initial load or route change: scroll to top
+      messagesContainerRef.current.scrollTop = 0;
+    }
+    prevLengthRef.current = currentLength;
+  }, [messages]);
 
   return (
-    <Flex direction="column" height="100%" overflow="hidden">
+    <Flex direction="column" position="absolute" top="0" left="0" right="0" bottom="0" overflow="hidden">
       {/* Header */}
       <Flex
         alignItems="center"
@@ -238,10 +248,12 @@ export const ChatPanel = ({
 
       {/* Messages */}
       <Stack
+        ref={messagesContainerRef}
         gap="500"
         px="400"
         py="400"
         flex="1"
+        minHeight="0"
         overflow="auto"
       >
         {messages.map((msg, i) =>
@@ -255,7 +267,6 @@ export const ChatPanel = ({
         {whyContext && (
           <WhyContextResponse context={whyContext} agentName={agentName} />
         )}
-        <div ref={messagesEndRef} />
       </Stack>
 
       <Separator />
@@ -268,14 +279,13 @@ export const ChatPanel = ({
         py="250"
         flexShrink={0}
       >
-        <Box flex="1" minWidth="0" width="100%">
+        <Box minWidth="0" width="100%">
           <MultilineTextInput
             placeholder={placeholder}
             aria-label="Chat input"
             variant="ghost"
             size="sm"
             rows={1}
-            autoGrow
             width="100%"
           />
         </Box>
