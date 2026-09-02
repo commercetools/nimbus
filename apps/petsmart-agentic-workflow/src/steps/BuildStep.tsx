@@ -1,5 +1,4 @@
 import { useState } from "react";
-import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -14,11 +13,6 @@ import {
   NumberInput,
   FormField,
   Icon,
-  DataTable,
-} from "@commercetools/nimbus";
-import type {
-  DataTableColumnItem,
-  DataTableRowItem,
 } from "@commercetools/nimbus";
 import { Warning } from "@commercetools/nimbus-icons";
 import { PageHeader } from "../components/PageHeader";
@@ -108,41 +102,6 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
       return next;
     });
 
-  const appliedColumns: DataTableColumnItem[] = [
-    {
-      id: "condition",
-      header: "Condition",
-      accessor: (row) => row.label as ReactNode,
-    },
-    {
-      id: "source",
-      header: "Source",
-      accessor: (row) =>
-        (row.isDefault ? "Default" : "Agent suggested") as ReactNode,
-    },
-    {
-      id: "actions",
-      header: "",
-      align: "end",
-      accessor: (row) => (
-        <Button
-          variant="ghost"
-          size="2xs"
-          onPress={() => removeCondition(row.label as string)}
-        >
-          Remove
-        </Button>
-      ),
-    },
-  ];
-
-  const appliedRows: DataTableRowItem[] = appliedList.map((c) => ({
-    id: c.label,
-    label: c.label,
-    isDefault: c.isDefault ?? false,
-    confidence: c.confidence,
-  }));
-
   return (
     <Box height="100%" overflow="auto">
       <PageHeader
@@ -184,6 +143,102 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
       />
 
       <Stack gap="300" p="300">
+        {/* Impact preview + stock validation + conflict detection: contextual
+            mode only, surfaced above the form so Maya sees the impact as she
+            configures. In orchestrated mode, this context lives in the chat
+            panel instead. */}
+        {mode === "contextual" && (
+          <InlineSlot direction="row" data-tour="inline-slot">
+            <Box data-tour="impact-card">
+              <InlineCard
+                title="Impact Preview"
+                agentName="Promo Agent"
+                agentSource="ct"
+                headerRight={
+                  <Text textStyle="xs" color="neutral.9">
+                    Updates as you configure
+                  </Text>
+                }
+              >
+                <Flex gap="300">
+                  <Box>
+                    <Text textStyle="xl" fontWeight="bold" color="neutral.12">
+                      ~{promotion.productsAffected}
+                    </Text>
+                    <Text textStyle="xs" color="neutral.9">
+                      Products affected
+                    </Text>
+                  </Box>
+                  <Box>
+                    <Text textStyle="xl" fontWeight="bold" color="amber.11">
+                      {promotion.marginImpact}
+                    </Text>
+                    <Text textStyle="xs" color="neutral.9">
+                      Est. margin impact
+                    </Text>
+                  </Box>
+                  <Box>
+                    <Text textStyle="xl" fontWeight="bold" color="green.11">
+                      0
+                    </Text>
+                    <Text textStyle="xs" color="neutral.9">
+                      Products below floor
+                    </Text>
+                  </Box>
+                </Flex>
+                <Flex
+                  mt="200"
+                  px="300"
+                  py="200"
+                  bg="neutral.3"
+                  borderRadius="200"
+                  gap="200"
+                  alignItems="center"
+                >
+                  <ProvenanceIndicator
+                    agentName="Inventory Agent"
+                    agentSource="customer"
+                    reason="Based on Spring 2025 promotional performance data"
+                  />
+                  <Text textStyle="xs" color="neutral.11">
+                    Comparable: Spring 2025 lifted orders 22% over 6 weeks
+                  </Text>
+                </Flex>
+              </InlineCard>
+            </Box>
+
+            <Box data-tour="stock-card">
+              <InlineCard
+                title="Stock Validation"
+                agentName="Inventory Agent"
+                agentSource="customer"
+                headerRight={
+                  <Badge size="2xs" colorPalette="warning">
+                    {promotion.lowStockProducts} low stock
+                  </Badge>
+                }
+              >
+                <StockWarning />
+              </InlineCard>
+            </Box>
+
+            <Box data-tour="conflict-card">
+              <InlineCard
+                title="Conflict Detection"
+                agentName="Promo Agent"
+                agentSource="ct"
+                headerRight={
+                  <Badge size="2xs" colorPalette="warning">
+                    1 conflict
+                  </Badge>
+                }
+              >
+                <ConflictWarning />
+              </InlineCard>
+            </Box>
+          </InlineSlot>
+        )}
+
         {/* Discount form */}
         <Box
           bg="white"
@@ -340,29 +395,20 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
               </Flex>
             </FormField.Label>
 
-            {/* Applied conditions, with per-row rationale on expand */}
-            <Box mb="300" data-tour="applied-conditions-table">
-              {appliedRows.length > 0 ? (
-                <DataTable.Root
-                  columns={appliedColumns}
-                  rows={appliedRows}
-                  density="condensed"
-                  renderNestedContent={(row) => (
-                    <Box px="300" py="200">
-                      <Text textStyle="xs" color="neutral.11">
-                        {row.isDefault
-                          ? "Applied automatically when this discount was created."
-                          : `Added from a Promo Agent suggestion (${row.confidence as number}% confidence).`}
-                      </Text>
-                    </Box>
-                  )}
-                />
-              ) : (
-                <Text textStyle="xs" color="neutral.9">
-                  No conditions applied yet.
-                </Text>
-              )}
-            </Box>
+            {/* Applied conditions (click ✕ to remove) */}
+            <Flex gap="200" flexWrap="wrap" mb="300">
+              {appliedList.map((c) => (
+                <Badge
+                  key={c.label}
+                  size="2xs"
+                  colorPalette="neutral"
+                  cursor="pointer"
+                  onClick={() => removeCondition(c.label)}
+                >
+                  {c.label} ✕
+                </Badge>
+              ))}
+            </Flex>
 
             {/* AI suggested conditions (click to add): contextual mode only.
                 In orchestrated mode, these suggestions surface through the
@@ -400,89 +446,6 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
             )}
           </FormField.Root>
         </Box>
-
-        {/* Agent insights: augmentation, separated from the form above.
-            Contextual mode only — in orchestrated mode, this context lives
-            in the chat panel instead. */}
-        {mode === "contextual" && (
-          <Box>
-            <Flex alignItems="baseline" gap="200" mb="200">
-              <Text textStyle="sm" fontWeight="semibold" color="neutral.12">
-                Agent insights
-              </Text>
-              <Text textStyle="xs" color="neutral.9">
-                Automated checks based on the current configuration
-              </Text>
-            </Flex>
-
-            <InlineSlot direction="row" data-tour="inline-slot">
-              <Box data-tour="impact-card">
-                <InlineCard
-                  title="Impact Preview"
-                  agentName="Promo Agent"
-                  agentSource="ct"
-                >
-                  <Flex gap="300">
-                    <Box>
-                      <Text textStyle="xl" fontWeight="bold" color="neutral.12">
-                        ~{promotion.productsAffected}
-                      </Text>
-                      <Text textStyle="xs" color="neutral.9">
-                        Products affected
-                      </Text>
-                    </Box>
-                    <Box>
-                      <Text textStyle="xl" fontWeight="bold" color="amber.11">
-                        {promotion.marginImpact}
-                      </Text>
-                      <Text textStyle="xs" color="neutral.9">
-                        Est. margin impact
-                      </Text>
-                    </Box>
-                    <Box>
-                      <Text textStyle="xl" fontWeight="bold" color="green.11">
-                        0
-                      </Text>
-                      <Text textStyle="xs" color="neutral.9">
-                        Products below floor
-                      </Text>
-                    </Box>
-                  </Flex>
-                </InlineCard>
-              </Box>
-
-              <Box data-tour="stock-card">
-                <InlineCard
-                  title="Stock Validation"
-                  agentName="Inventory Agent"
-                  agentSource="customer"
-                  headerRight={
-                    <Badge size="2xs" colorPalette="warning">
-                      {promotion.lowStockProducts} low-stock
-                    </Badge>
-                  }
-                >
-                  <StockWarning />
-                </InlineCard>
-              </Box>
-
-              <Box data-tour="conflict-card">
-                <InlineCard
-                  title="Conflict Detection"
-                  agentName="Promo Agent"
-                  agentSource="ct"
-                  headerRight={
-                    <Badge size="2xs" colorPalette="warning">
-                      {promotion.conflictProducts} conflicts
-                    </Badge>
-                  }
-                >
-                  <ConflictWarning />
-                </InlineCard>
-              </Box>
-            </InlineSlot>
-          </Box>
-        )}
       </Stack>
     </Box>
   );

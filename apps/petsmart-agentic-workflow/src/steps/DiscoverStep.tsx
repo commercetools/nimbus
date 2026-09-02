@@ -212,16 +212,16 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
                   Spring promotions lift this category 28%.
                   Window: March 1 through April 15. Bundle slow movers with accessories.
                 </Text>
-                <Flex justifyContent="flex-end" pt="100">
+                <Box pt="100">
                   <Button
                     variant="outline"
                     size="2xs"
                     data-tour="create-promotion"
                     onPress={() => navigate(`/${mode}/step-2`)}
                   >
-                    ✦ Create Promotion
+                    ✦ Create Promotions
                   </Button>
-                </Flex>
+                </Box>
               </InlineCard>
             </Box>
           </InlineSlot>
