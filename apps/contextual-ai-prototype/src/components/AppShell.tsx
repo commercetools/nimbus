@@ -1,13 +1,13 @@
 import { useState, useCallback, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { Box, Flex, Text, Icon } from "@commercetools/nimbus";
+import { Box, Flex, Icon, ComboBox } from "@commercetools/nimbus";
 import { HelpOutline, PersonOutline } from "@commercetools/nimbus-icons";
 import { Sidebar } from "./Sidebar";
 import { ChatPanel } from "./ChatPanel";
 import { PanelProvider } from "./ProvenanceIndicator";
 import { chatConfigs } from "../data/chatMessages";
 
-/** Top app bar matching the real MC: white bg, box-shadow, project key + user menu */
+/** Top app bar matching the real MC: white bg, box-shadow, org + project selectors + user menu */
 const AppBar = () => (
   <Flex
     alignItems="center"
@@ -19,9 +19,22 @@ const AppBar = () => (
     shadow="xs"
     zIndex={100}
   >
-    <Text textStyle="xs" fontWeight="semibold" color="neutral.12">
-      my-project-key
-    </Text>
+    <ComboBox.Root size="sm" defaultSelectedKeys={["my-org"]} aria-label="Organization" width="180px">
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          <ComboBox.Option id="my-org" textValue="my-organization-name">my-organization-name</ComboBox.Option>
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+    <ComboBox.Root size="sm" defaultSelectedKeys={["my-proj"]} aria-label="Project" width="160px">
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          <ComboBox.Option id="my-proj" textValue="my-project-key">my-project-key</ComboBox.Option>
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
     <Box flex="1" />
     <Box cursor="pointer" color="neutral.9"><Icon as={HelpOutline} size="xs" /></Box>
     <Flex
