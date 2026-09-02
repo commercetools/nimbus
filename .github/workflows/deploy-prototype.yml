@@ -9,6 +9,7 @@ on:
       - 'packages/nimbus-viz/**'
       - 'packages/nimbus-icons/**'
       - 'packages/tokens/**'
+      - '.github/workflows/deploy-prototype.yml'
   workflow_dispatch:
 
 permissions:
@@ -26,18 +27,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build packages
-        run: pnpm build:packages
+      - name: Install and build
+        uses: ./.github/actions/ci
 
       - name: Build prototype
         run: pnpm --filter contextual-ai-prototype build
