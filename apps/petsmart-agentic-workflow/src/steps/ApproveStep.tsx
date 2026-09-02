@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Flex, Stack, Text, Button, Tooltip, MakeElementFocusable } from "@commercetools/nimbus";
+import { Box, Flex, Stack, Text, Button, Tooltip, MakeElementFocusable, Grid } from "@commercetools/nimbus";
 import { PageHeader } from "../components/PageHeader";
 import { InlineCard } from "../components/InlineCard";
 import { AgentChain } from "../components/AgentChain";
 import { StepNavigation } from "../components/StepNavigation";
 import { agents, pipelineSteps } from "../data/agents";
+import { promotion } from "../data/promotionData";
 
 export type FlavorMode = "contextual" | "orchestrated";
 
@@ -105,12 +106,46 @@ const WorkflowPipeline = () => (
   </Flex>
 );
 
+const DetailField = ({ label, value }: { label: string; value: string }) => (
+  <Box>
+    <Text textStyle="xs" color="neutral.9" mb="50">
+      {label}
+    </Text>
+    <Text textStyle="sm" fontWeight="medium" color="neutral.12">
+      {value}
+    </Text>
+  </Box>
+);
+
+const PromotionDetails = () => (
+  <Box
+    bg="white"
+    borderRadius="300"
+    p="400"
+    shadow="xs"
+    borderWidth="1px"
+    borderColor="neutral.4"
+    data-tour="promotion-details"
+  >
+    <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="300">
+      Promotion details
+    </Text>
+    <Grid templateColumns={{ base: "1fr 1fr", md: "repeat(5, 1fr)" }} gap="300">
+      <DetailField label="Name" value={promotion.name} />
+      <DetailField label="Type" value={promotion.type} />
+      <DetailField label="Date range" value={`${promotion.startDate} – ${promotion.endDate}`} />
+      <DetailField label="Target category" value={promotion.targetCategory} />
+      <DetailField label="Products affected" value={String(promotion.productsAffected)} />
+    </Grid>
+  </Box>
+);
+
 export const ApproveStep = ({ mode }: { mode: FlavorMode }) => {
   const isContextual = mode === "contextual";
   const navigate = useNavigate();
 
   return (
-    <Box height="100%" overflow="auto" bg="neutral.1">
+    <Box height="100%" overflow="auto" bg="neutral.1" display="flex" flexDirection="column">
       <PageHeader
         breadcrumbs={[
           { label: "Promotions" },
@@ -119,8 +154,101 @@ export const ApproveStep = ({ mode }: { mode: FlavorMode }) => {
         ]}
         title="Promotion Review"
         subtitle="Ready for approval"
-        actions={
-          <>
+      />
+
+      <Box p={{ base: "300", sm: "500" }} flex="1">
+        <Stack gap="500">
+          <PromotionDetails />
+
+          <Stack gap="300">
+            <Box>
+              <Text textStyle="sm" fontWeight="semibold" color="neutral.12">
+                Review: How this promotion was built
+              </Text>
+              <Text textStyle="xs" color="neutral.9">
+                Agent contributions across the pipeline, from inventory analysis to promo
+                configuration. Step 6 is the human approval gate you're at now.
+              </Text>
+            </Box>
+
+            <Box
+              bg="white"
+              borderRadius="300"
+              p="400"
+              shadow="xs"
+              borderWidth="1px"
+              borderColor="neutral.4"
+              data-tour="pipeline"
+            >
+              <WorkflowPipeline />
+            </Box>
+
+            {isContextual ? (
+              <Stack gap="200" data-tour="summary-cards">
+                <Text textStyle="xs" fontWeight="semibold" color="neutral.10">
+                  Agent contributions
+                </Text>
+                {summaryCards.map((card) => (
+                  <InlineCard
+                    key={card.title}
+                    title={card.title}
+                    agentName={card.agentName}
+                    agentSource={card.agentSource}
+                  >
+                    <Text textStyle="xs" color="neutral.11" lineHeight="tall">
+                      {card.summary}
+                    </Text>
+                  </InlineCard>
+                ))}
+              </Stack>
+            ) : (
+              <Box data-tour="orchestrator-card">
+                <InlineCard title="Promotion Brief" agentName="PetSmart Orchestrator" agentSource="customer">
+                  <Text textStyle="xs" color="neutral.11" lineHeight="tall">
+                    {executiveSummary}
+                  </Text>
+                  <Box data-tour="agent-chain">
+                    <AgentChain
+                      defaultExpanded
+                      contributions={summaryCards.map((card) => ({
+                        agentName: card.agentName,
+                        source: card.agentSource,
+                        contribution: card.summary,
+                      }))}
+                    />
+                  </Box>
+                </InlineCard>
+              </Box>
+            )}
+          </Stack>
+        </Stack>
+      </Box>
+
+      <Box
+        position="sticky"
+        bottom="0"
+        flexShrink={0}
+        bg="white"
+        borderTopWidth="1px"
+        borderColor="neutral.4"
+        px={{ base: "300", sm: "500" }}
+        py="300"
+        shadow="lg"
+        zIndex="1"
+      >
+        <Flex
+          justifyContent="space-between"
+          alignItems={{ base: "flex-start", sm: "center" }}
+          direction={{ base: "column", sm: "row" }}
+          gap="200"
+        >
+          <Text textStyle="xs" color="neutral.9">
+            This promotion will go live immediately upon approval.
+          </Text>
+          <Flex gap="200" flexShrink={0}>
+            <Button variant="outline" colorPalette="warning" size="2xs">
+              Request Changes
+            </Button>
             <Button
               variant="solid"
               colorPalette="positive"
@@ -130,62 +258,8 @@ export const ApproveStep = ({ mode }: { mode: FlavorMode }) => {
             >
               Approve &amp; Launch
             </Button>
-            <Button variant="outline" colorPalette="warning" size="2xs">
-              Request Changes
-            </Button>
-          </>
-        }
-      />
-
-      <Box p={{ base: "300", sm: "500" }}>
-        <Stack gap="400">
-          <Box
-            bg="white"
-            borderRadius="300"
-            p="400"
-            shadow="xs"
-            borderWidth="1px"
-            borderColor="neutral.4"
-            data-tour="pipeline"
-          >
-            <WorkflowPipeline />
-          </Box>
-
-          {isContextual ? (
-            <Stack gap="200" data-tour="summary-cards">
-              {summaryCards.map((card) => (
-                <InlineCard
-                  key={card.title}
-                  title={card.title}
-                  agentName={card.agentName}
-                  agentSource={card.agentSource}
-                >
-                  <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-                    {card.summary}
-                  </Text>
-                </InlineCard>
-              ))}
-            </Stack>
-          ) : (
-            <Box data-tour="orchestrator-card">
-              <InlineCard title="Promotion Brief" agentName="PetSmart Orchestrator" agentSource="customer">
-                <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-                  {executiveSummary}
-                </Text>
-                <Box data-tour="agent-chain">
-                  <AgentChain
-                    defaultExpanded
-                    contributions={summaryCards.map((card) => ({
-                      agentName: card.agentName,
-                      source: card.agentSource,
-                      contribution: card.summary,
-                    }))}
-                  />
-                </Box>
-              </InlineCard>
-            </Box>
-          )}
-        </Stack>
+          </Flex>
+        </Flex>
       </Box>
 
       <StepNavigation currentStep={4} totalSteps={5} mode={mode} />

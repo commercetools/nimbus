@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -9,8 +10,15 @@ import {
   Button,
   Separator,
   TextInput,
+  MultilineTextInput,
+  NumberInput,
   FormField,
   Icon,
+  DataTable,
+} from "@commercetools/nimbus";
+import type {
+  DataTableColumnItem,
+  DataTableRowItem,
 } from "@commercetools/nimbus";
 import { Warning } from "@commercetools/nimbus-icons";
 import { PageHeader } from "../components/PageHeader";
@@ -102,6 +110,41 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
       return next;
     });
 
+  const appliedColumns: DataTableColumnItem[] = [
+    {
+      id: "condition",
+      header: "Condition",
+      accessor: (row) => row.label as ReactNode,
+    },
+    {
+      id: "source",
+      header: "Source",
+      accessor: (row) =>
+        (row.isDefault ? "Default" : "Agent suggested") as ReactNode,
+    },
+    {
+      id: "actions",
+      header: "",
+      align: "end",
+      accessor: (row) => (
+        <Button
+          variant="ghost"
+          size="2xs"
+          onPress={() => removeCondition(row.label as string)}
+        >
+          Remove
+        </Button>
+      ),
+    },
+  ];
+
+  const appliedRows: DataTableRowItem[] = appliedList.map((c) => ({
+    id: c.label,
+    label: c.label,
+    isDefault: c.isDefault ?? false,
+    confidence: c.confidence,
+  }));
+
   return (
     <Box height="100%" overflow="auto">
       <PageHeader
@@ -118,6 +161,9 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
         ]}
         actions={
           <>
+            <Badge size="2xs" colorPalette="neutral">
+              Draft
+            </Badge>
             <Button variant="ghost" size="2xs">
               Discard
             </Button>
@@ -149,7 +195,12 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
           p="300"
           data-tour="discount-form"
         >
-          <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="300">
+          <Text
+            textStyle="sm"
+            fontWeight="semibold"
+            color="neutral.12"
+            mb="300"
+          >
             Discount Configuration
           </Text>
 
@@ -158,7 +209,11 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
               <FormField.Root size="sm">
                 <FormField.Label>Discount name</FormField.Label>
                 <FormField.Input>
-                  <TextInput size="sm" width="100%" defaultValue={promotion.name} />
+                  <TextInput
+                    size="sm"
+                    width="100%"
+                    defaultValue={promotion.name}
+                  />
                 </FormField.Input>
               </FormField.Root>
               <FormField.Root size="sm" data-tour="discount-type">
@@ -173,7 +228,11 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                   </Flex>
                 </FormField.Label>
                 <FormField.Input>
-                  <TextInput size="sm" width="100%" defaultValue={promotion.type} />
+                  <TextInput
+                    size="sm"
+                    width="100%"
+                    defaultValue={promotion.type}
+                  />
                 </FormField.Input>
                 <Flex
                   mt="150"
@@ -185,8 +244,8 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                   borderRadius="200"
                 >
                   <Text textStyle="xs" color="neutral.11">
-                    Suggested: &quot;{promotion.type}&quot; — historically
-                    lifts pet health 31% vs flat percentage
+                    Suggested: &quot;{promotion.type}&quot; — historically lifts
+                    pet health 31% vs flat percentage
                   </Text>
                 </Flex>
               </FormField.Root>
@@ -209,6 +268,62 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
 
           <Separator my="300" />
 
+          {/* Additional discount editor fields */}
+          <Stack gap="300">
+            <FormField.Root size="sm">
+              <FormField.Label>Description</FormField.Label>
+              <FormField.Input>
+                <MultilineTextInput
+                  size="sm"
+                  width="100%"
+                  rows={2}
+                  placeholder="Add a description for internal reference (optional)"
+                />
+              </FormField.Input>
+            </FormField.Root>
+
+            <Flex gap="300" direction={{ base: "column", md: "row" }}>
+              <FormField.Root size="sm" flex="1">
+                <FormField.Label>Sort order</FormField.Label>
+                <FormField.Input>
+                  <NumberInput
+                    size="sm"
+                    width="100%"
+                    defaultValue={0.5}
+                    step={0.1}
+                  />
+                </FormField.Input>
+              </FormField.Root>
+              <FormField.Root size="sm" flex="1">
+                <FormField.Label>Max applications</FormField.Label>
+                <FormField.Input>
+                  <TextInput size="sm" width="100%" defaultValue="1 per cart" />
+                </FormField.Input>
+              </FormField.Root>
+              <FormField.Root size="sm" flex="1">
+                <FormField.Label>
+                  <Flex alignItems="center" gap="150">
+                    <Text>Stacking mode</Text>
+                    <ProvenanceIndicator
+                      agentName="Promo Agent"
+                      agentSource="ct"
+                      reason={`Loyalty Paw Points 10% overlaps ${promotion.conflictProducts} products; non-stackable avoids pushing them below the margin floor`}
+                    />
+                  </Flex>
+                </FormField.Label>
+                <FormField.Input>
+                  <TextInput
+                    size="sm"
+                    width="100%"
+                    defaultValue="Non-stackable"
+                  />
+                </FormField.Input>
+              </FormField.Root>
+            </Flex>
+          </Stack>
+
+          <Separator my="300" />
+
           {/* Conditions section */}
           <FormField.Root size="sm">
             <FormField.Label>
@@ -221,20 +336,29 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
               </Flex>
             </FormField.Label>
 
-            {/* Applied conditions (click ✕ to remove) */}
-            <Flex gap="200" flexWrap="wrap" mb="300">
-              {appliedList.map((c) => (
-                <Badge
-                  key={c.label}
-                  size="2xs"
-                  colorPalette="neutral"
-                  cursor="pointer"
-                  onClick={() => removeCondition(c.label)}
-                >
-                  {c.label} ✕
-                </Badge>
-              ))}
-            </Flex>
+            {/* Applied conditions, with per-row rationale on expand */}
+            <Box mb="300" data-tour="applied-conditions-table">
+              {appliedRows.length > 0 ? (
+                <DataTable.Root
+                  columns={appliedColumns}
+                  rows={appliedRows}
+                  density="condensed"
+                  renderNestedContent={(row) => (
+                    <Box px="300" py="200">
+                      <Text textStyle="xs" color="neutral.11">
+                        {row.isDefault
+                          ? "Applied automatically when this discount was created."
+                          : `Added from a Promo Agent suggestion (${row.confidence as number}% confidence).`}
+                      </Text>
+                    </Box>
+                  )}
+                />
+              ) : (
+                <Text textStyle="xs" color="neutral.9">
+                  No conditions applied yet.
+                </Text>
+              )}
+            </Box>
 
             {/* AI suggested conditions (click to add) */}
             {suggestedList.length > 0 && (
@@ -271,83 +395,25 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
           </FormField.Root>
         </Box>
 
-        {/* Inline agent cards */}
-        {mode === "contextual" ? (
-          <InlineSlot direction="row" data-tour="inline-slot">
-            <Box data-tour="impact-card">
-              <InlineCard title="Impact Preview" agentName="Promo Agent" agentSource="ct">
-                <Flex gap="300">
-                  <Box>
-                    <Text textStyle="xl" fontWeight="bold" color="neutral.12">
-                      ~{promotion.productsAffected}
-                    </Text>
-                    <Text textStyle="xs" color="neutral.9">
-                      Products affected
-                    </Text>
-                  </Box>
-                  <Box>
-                    <Text textStyle="xl" fontWeight="bold" color="amber.11">
-                      {promotion.marginImpact}
-                    </Text>
-                    <Text textStyle="xs" color="neutral.9">
-                      Est. margin impact
-                    </Text>
-                  </Box>
-                  <Box>
-                    <Text textStyle="xl" fontWeight="bold" color="green.11">
-                      0
-                    </Text>
-                    <Text textStyle="xs" color="neutral.9">
-                      Products below floor
-                    </Text>
-                  </Box>
-                </Flex>
-              </InlineCard>
-            </Box>
+        {/* Agent insights: augmentation, separated from the form above */}
+        <Box>
+          <Flex alignItems="baseline" gap="200" mb="200">
+            <Text textStyle="sm" fontWeight="semibold" color="neutral.12">
+              Agent insights
+            </Text>
+            <Text textStyle="xs" color="neutral.9">
+              Automated checks based on the current configuration
+            </Text>
+          </Flex>
 
-            <Box data-tour="stock-card">
-              <InlineCard
-                title="Stock Validation"
-                agentName="Inventory Agent"
-                agentSource="customer"
-                headerRight={
-                  <Badge size="2xs" colorPalette="warning">
-                    {promotion.lowStockProducts} low-stock
-                  </Badge>
-                }
-              >
-                <StockWarning />
-              </InlineCard>
-            </Box>
-
-            <Box data-tour="conflict-card">
-              <InlineCard
-                title="Conflict Detection"
-                agentName="Promo Agent"
-                agentSource="ct"
-                headerRight={
-                  <Badge size="2xs" colorPalette="warning">
-                    {promotion.conflictProducts} conflicts
-                  </Badge>
-                }
-              >
-                <ConflictWarning />
-              </InlineCard>
-            </Box>
-          </InlineSlot>
-        ) : (
-          <InlineSlot direction="row" data-tour="inline-slot">
-            <Box data-tour="orchestrator-card">
-            <InlineCard
-              title="Promotion Draft"
-              agentName="PetSmart Orchestrator"
-              agentSource="customer"
-            >
-              <Stack gap="300" minWidth={{ base: "auto", md: "480px" }}>
-                <Box>
-                  <Text textStyle="xs" fontWeight="semibold" color="neutral.11" mb="150">
-                    Impact preview
-                  </Text>
+          {mode === "contextual" ? (
+            <InlineSlot direction="row" data-tour="inline-slot">
+              <Box data-tour="impact-card">
+                <InlineCard
+                  title="Impact Preview"
+                  agentName="Promo Agent"
+                  agentSource="ct"
+                >
                   <Flex gap="300">
                     <Box>
                       <Text textStyle="xl" fontWeight="bold" color="neutral.12">
@@ -374,49 +440,149 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                       </Text>
                     </Box>
                   </Flex>
-                </Box>
+                </InlineCard>
+              </Box>
 
-                <Separator />
-
-                <Box>
-                  <Text textStyle="xs" fontWeight="semibold" color="neutral.11" mb="150">
-                    Stock validation
-                  </Text>
+              <Box data-tour="stock-card">
+                <InlineCard
+                  title="Stock Validation"
+                  agentName="Inventory Agent"
+                  agentSource="customer"
+                  headerRight={
+                    <Badge size="2xs" colorPalette="warning">
+                      {promotion.lowStockProducts} low-stock
+                    </Badge>
+                  }
+                >
                   <StockWarning />
-                </Box>
+                </InlineCard>
+              </Box>
 
-                <Separator />
-
-                <Box>
-                  <Text textStyle="xs" fontWeight="semibold" color="neutral.11" mb="150">
-                    Conflict detection
-                  </Text>
+              <Box data-tour="conflict-card">
+                <InlineCard
+                  title="Conflict Detection"
+                  agentName="Promo Agent"
+                  agentSource="ct"
+                  headerRight={
+                    <Badge size="2xs" colorPalette="warning">
+                      {promotion.conflictProducts} conflicts
+                    </Badge>
+                  }
+                >
                   <ConflictWarning />
-                </Box>
+                </InlineCard>
+              </Box>
+            </InlineSlot>
+          ) : (
+            <InlineSlot direction="row" data-tour="inline-slot">
+              <Box data-tour="orchestrator-card">
+                <InlineCard
+                  title="Promotion Draft"
+                  agentName="PetSmart Orchestrator"
+                  agentSource="customer"
+                >
+                  <Stack gap="300" minWidth={{ base: "auto", md: "480px" }}>
+                    <Box>
+                      <Text
+                        textStyle="xs"
+                        fontWeight="semibold"
+                        color="neutral.11"
+                        mb="150"
+                      >
+                        Impact preview
+                      </Text>
+                      <Flex gap="300">
+                        <Box>
+                          <Text
+                            textStyle="xl"
+                            fontWeight="bold"
+                            color="neutral.12"
+                          >
+                            ~{promotion.productsAffected}
+                          </Text>
+                          <Text textStyle="xs" color="neutral.9">
+                            Products affected
+                          </Text>
+                        </Box>
+                        <Box>
+                          <Text
+                            textStyle="xl"
+                            fontWeight="bold"
+                            color="amber.11"
+                          >
+                            {promotion.marginImpact}
+                          </Text>
+                          <Text textStyle="xs" color="neutral.9">
+                            Est. margin impact
+                          </Text>
+                        </Box>
+                        <Box>
+                          <Text
+                            textStyle="xl"
+                            fontWeight="bold"
+                            color="green.11"
+                          >
+                            0
+                          </Text>
+                          <Text textStyle="xs" color="neutral.9">
+                            Products below floor
+                          </Text>
+                        </Box>
+                      </Flex>
+                    </Box>
 
-                <Box data-tour="agent-chain">
-                  <AgentChain
-                    contributions={[
-                      {
-                        agentName: "Promo Agent",
-                        source: "ct",
-                        contribution:
-                          "Impact preview and conflict detection against active discounts",
-                      },
-                      {
-                        agentName: "Inventory Agent",
-                        source: "customer",
-                        contribution:
-                          "Stock validation and reorder lead time analysis; discount-type performance history",
-                      },
-                    ]}
-                  />
-                </Box>
-              </Stack>
-            </InlineCard>
-            </Box>
-          </InlineSlot>
-        )}
+                    <Separator />
+
+                    <Box>
+                      <Text
+                        textStyle="xs"
+                        fontWeight="semibold"
+                        color="neutral.11"
+                        mb="150"
+                      >
+                        Stock validation
+                      </Text>
+                      <StockWarning />
+                    </Box>
+
+                    <Separator />
+
+                    <Box>
+                      <Text
+                        textStyle="xs"
+                        fontWeight="semibold"
+                        color="neutral.11"
+                        mb="150"
+                      >
+                        Conflict detection
+                      </Text>
+                      <ConflictWarning />
+                    </Box>
+
+                    <Box data-tour="agent-chain">
+                      <AgentChain
+                        contributions={[
+                          {
+                            agentName: "Promo Agent",
+                            source: "ct",
+                            contribution:
+                              "Impact preview and conflict detection against active discounts",
+                          },
+                          {
+                            agentName: "Inventory Agent",
+                            source: "customer",
+                            contribution:
+                              "Stock validation and reorder lead time analysis; discount-type performance history",
+                          },
+                        ]}
+                      />
+                    </Box>
+                  </Stack>
+                </InlineCard>
+              </Box>
+            </InlineSlot>
+          )}
+        </Box>
       </Stack>
 
       <StepNavigation currentStep={2} totalSteps={5} mode={mode} />

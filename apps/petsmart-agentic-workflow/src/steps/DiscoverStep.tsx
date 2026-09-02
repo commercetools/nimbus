@@ -1,6 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Flex, Stack, Text, DataTable, Button } from "@commercetools/nimbus";
+import {
+  Box,
+  Flex,
+  Stack,
+  Text,
+  DataTable,
+  Button,
+  Badge,
+  TextInput,
+  FormField,
+  Icon,
+  Separator,
+} from "@commercetools/nimbus";
 import type { DataTableColumnItem, DataTableRowItem } from "@commercetools/nimbus";
+import { Search } from "@commercetools/nimbus-icons";
+import { ChartThemeProvider, ResponsiveContainer, LineChart } from "@commercetools/nimbus-viz";
 import { PageHeader } from "../components/PageHeader";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
@@ -105,6 +119,23 @@ const inventoryStats = [
   { label: "Avg. days on shelf", value: "79" },
 ];
 
+// Weekly velocity trend for slow movers - PetSmart warehouse time-series data
+// that commercetools platform data doesn't include.
+const velocityTrendSeries = [
+  {
+    id: "velocity",
+    label: "Weekly velocity",
+    data: [
+      { x: new Date("2026-01-06"), y: -8 },
+      { x: new Date("2026-01-13"), y: -12 },
+      { x: new Date("2026-01-20"), y: -18 },
+      { x: new Date("2026-01-27"), y: -22 },
+      { x: new Date("2026-02-03"), y: -29 },
+      { x: new Date("2026-02-10"), y: -34 },
+    ],
+  },
+];
+
 const agentChainContributions = [
   {
     agentName: "Inventory Agent",
@@ -135,6 +166,54 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
       />
 
       <Stack gap="300" p="300">
+        {/* Standard MC toolbar: search + filters (pre-existing product list chrome) */}
+        <Box
+          bg="white"
+          borderWidth="1px"
+          borderColor="neutral.6"
+          borderRadius="200"
+          p="300"
+          data-tour="product-toolbar"
+        >
+          <Stack gap="200">
+            <Flex gap="200" alignItems="flex-end" flexWrap="wrap">
+              <FormField.Root size="sm" width="280px">
+                <FormField.Label>Search</FormField.Label>
+                <FormField.Input>
+                  <TextInput
+                    size="sm"
+                    width="100%"
+                    placeholder="Search products..."
+                    leadingElement={<Icon as={Search} />}
+                  />
+                </FormField.Input>
+              </FormField.Root>
+
+              <Flex gap="150" alignItems="center" flexWrap="wrap">
+                <Badge size="sm" colorPalette="neutral">
+                  Category: Pet Health
+                </Badge>
+                <Badge size="sm" colorPalette="neutral">
+                  Status: Published
+                </Badge>
+              </Flex>
+            </Flex>
+
+            <Flex alignItems="center" gap="200">
+              <Text textStyle="xs" color="neutral.9">
+                Showing 6 of 847 products
+              </Text>
+              <Box flex="1" />
+              <Button variant="outline" size="2xs">
+                Export
+              </Button>
+              <Button variant="solid" colorPalette="primary" size="2xs">
+                Add product
+              </Button>
+            </Flex>
+          </Stack>
+        </Box>
+
         {/* Product table */}
         <Box
           bg="white"
@@ -157,6 +236,21 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
             </DataTable.Table>
           </DataTable.Root>
         </Box>
+
+        {/* Visual separation between standard MC content (above) and agent-augmented content (below) */}
+        <Flex alignItems="center" gap="200" pt="100">
+          <Separator flex="1" />
+          <Text
+            textStyle="xs"
+            fontWeight="semibold"
+            color="indigo.10"
+            textTransform="uppercase"
+            letterSpacing="wide"
+          >
+            Agent insights
+          </Text>
+          <Separator flex="1" />
+        </Flex>
 
         {/* Inline agent cards */}
         {mode === "contextual" ? (
@@ -184,6 +278,24 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
                     23 products below velocity threshold in Pet Health. Total
                     shelf value: $47,200. Average days on shelf: 79.
                   </Text>
+                  <Box>
+                    <Text textStyle="xs" color="neutral.9" mb="50">
+                      Weekly velocity trend
+                    </Text>
+                    <ChartThemeProvider>
+                      <ResponsiveContainer height={60}>
+                        {(w, h) => (
+                          <LineChart
+                            width={w}
+                            height={h}
+                            series={velocityTrendSeries}
+                            yBaselineFromData
+                            ariaLabel="Weekly velocity trend for slow-moving Pet Health products"
+                          />
+                        )}
+                      </ResponsiveContainer>
+                    </ChartThemeProvider>
+                  </Box>
                 </Stack>
               </InlineCard>
             </Box>
