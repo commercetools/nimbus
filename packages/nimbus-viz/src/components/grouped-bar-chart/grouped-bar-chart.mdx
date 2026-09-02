@@ -1,0 +1,44 @@
+---
+id: Charts-GroupedBarChart
+title: Grouped Bar Chart
+exportName: GroupedBarChart
+description: Compare several series side by side within each category.
+lifecycleState: Experimental
+order: 201
+icon: BarChart
+menu:
+  - Charts
+  - Grouped Bar Chart
+tags:
+  - chart
+  - magnitude
+---
+
+## Grouped Bar Chart
+
+<ChartMeta />
+
+Compare several series side by side within each category.
+
+```jsx live
+const data = [
+  { category: "Q1", segments: [{ key: "New", value: 120 }, { key: "Returning", value: 80 }, { key: "Wholesale", value: 40 }] },
+  { category: "Q2", segments: [{ key: "New", value: 140 }, { key: "Returning", value: 96 }, { key: "Wholesale", value: 52 }] },
+  { category: "Q3", segments: [{ key: "New", value: 118 }, { key: "Returning", value: 110 }, { key: "Wholesale", value: 61 }] },
+  { category: "Q4", segments: [{ key: "New", value: 150 }, { key: "Returning", value: 128 }, { key: "Wholesale", value: 70 }] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <GroupedBarChart width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { GroupedBarChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

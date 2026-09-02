@@ -1,0 +1,46 @@
+---
+id: Charts-WaterfallChart
+title: Waterfall Chart
+exportName: WaterfallChart
+description: What drives the change from a start total to an end total.
+lifecycleState: Experimental
+order: 502
+icon: CompareArrows
+menu:
+  - Charts
+  - Waterfall Chart
+tags:
+  - chart
+  - compare
+---
+
+## Waterfall Chart
+
+<ChartMeta />
+
+What drives the change from a start total to an end total.
+
+```jsx live
+const data = [
+  { label: "Start", value: 500, isTotal: true },
+  { label: "New", value: 180 },
+  { label: "Expansion", value: 90 },
+  { label: "Churn", value: -70 },
+  { label: "Contraction", value: -40 },
+  { label: "End", value: 660, isTotal: true },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <WaterfallChart width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { WaterfallChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

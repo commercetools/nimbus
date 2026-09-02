@@ -1,0 +1,52 @@
+---
+id: Charts-BumpChart
+title: Bump Chart
+exportName: BumpChart
+description: How rankings shift over time.
+lifecycleState: Experimental
+order: 600
+icon: Leaderboard
+menu:
+  - Charts
+  - Bump Chart
+tags:
+  - chart
+  - rank
+---
+
+## Bump Chart
+
+<ChartMeta />
+
+How rankings shift over time.
+
+```jsx live
+const series = [
+  { id: "a", label: "Running", data: [
+    { x: new Date("2026-01-01"), y: 120 }, { x: new Date("2026-02-01"), y: 160 },
+    { x: new Date("2026-03-01"), y: 140 }, { x: new Date("2026-04-01"), y: 190 },
+    { x: new Date("2026-05-01"), y: 210 } ] },
+  { id: "b", label: "Trail", data: [
+    { x: new Date("2026-01-01"), y: 150 }, { x: new Date("2026-02-01"), y: 140 },
+    { x: new Date("2026-03-01"), y: 170 }, { x: new Date("2026-04-01"), y: 160 },
+    { x: new Date("2026-05-01"), y: 200 } ] },
+  { id: "c", label: "Court", data: [
+    { x: new Date("2026-01-01"), y: 100 }, { x: new Date("2026-02-01"), y: 120 },
+    { x: new Date("2026-03-01"), y: 130 }, { x: new Date("2026-04-01"), y: 150 },
+    { x: new Date("2026-05-01"), y: 145 } ] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <BumpChart width={width} height={height} series={series} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { BumpChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

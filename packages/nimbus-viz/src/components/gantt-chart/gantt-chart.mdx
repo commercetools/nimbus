@@ -1,0 +1,46 @@
+---
+id: Charts-GanttChart
+title: Gantt Chart
+exportName: GanttChart
+description: Events on a shared time axis, as spans and milestones.
+lifecycleState: Experimental
+order: 1100
+icon: Timeline
+menu:
+  - Charts
+  - Gantt Chart
+tags:
+  - chart
+  - timeline
+---
+
+## Gantt Chart
+
+<ChartMeta />
+
+Events on a shared time axis, as spans and milestones.
+
+```jsx live
+const data = [
+  { label: "Discovery", start: new Date(2026, 0, 1), end: new Date(2026, 1, 1), category: "Plan" },
+  { label: "Design", start: new Date(2026, 1, 1), end: new Date(2026, 2, 15), category: "Plan" },
+  { label: "Build", start: new Date(2026, 2, 1), end: new Date(2026, 5, 1), category: "Build" },
+  { label: "Beta", start: new Date(2026, 5, 1), end: new Date(2026, 6, 15), category: "Build" },
+  { label: "Launch", start: new Date(2026, 6, 15), category: "Launch" },
+  { label: "Rollout", start: new Date(2026, 6, 15), end: new Date(2026, 9, 1), category: "Launch" },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <GanttChart width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { GanttChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

@@ -1,0 +1,42 @@
+---
+id: Charts-ConnectedScatterplot
+title: Connected Scatterplot
+exportName: ConnectedScatterplot
+description: Two variables joined in sequence to trace a trajectory.
+lifecycleState: Experimental
+order: 702
+icon: BubbleChart
+menu:
+  - Charts
+  - Connected Scatterplot
+tags:
+  - chart
+  - relationship
+---
+
+## Connected Scatterplot
+
+<ChartMeta />
+
+Two variables joined in sequence to trace a trajectory.
+
+```jsx live
+const points = [
+  { x: 20, y: 24, label: "Jan" }, { x: 26, y: 30 }, { x: 24, y: 38 }, { x: 33, y: 42 },
+  { x: 41, y: 40 }, { x: 47, y: 52 }, { x: 58, y: 61, label: "Jun" },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <ConnectedScatterplot width={width} height={height} points={points} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { ConnectedScatterplot, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

@@ -1,0 +1,45 @@
+---
+id: Charts-ParetoChart
+title: Pareto Chart
+exportName: ParetoChart
+description: Sorted bars plus a cumulative line to find the vital few.
+lifecycleState: Experimental
+order: 205
+icon: BarChart
+menu:
+  - Charts
+  - Pareto Chart
+tags:
+  - chart
+  - magnitude
+---
+
+## Pareto Chart
+
+<ChartMeta />
+
+Sorted bars plus a cumulative line to find the vital few.
+
+```jsx live
+const data = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+  { category: "Partner", value: 1800 },
+  { category: "Email", value: 1200 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <ParetoChart width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { ParetoChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

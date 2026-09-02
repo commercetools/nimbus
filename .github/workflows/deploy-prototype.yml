@@ -1,0 +1,48 @@
+name: Deploy Contextual AI Prototype
+
+on:
+  push:
+    branches: [bw/contextual-ai-prototype]
+    paths:
+      - 'apps/contextual-ai-prototype/**'
+      - 'packages/nimbus/**'
+      - 'packages/nimbus-viz/**'
+      - 'packages/nimbus-icons/**'
+      - 'packages/tokens/**'
+      - '.github/workflows/deploy-prototype.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install and build
+        uses: ./.github/actions/ci
+
+      - name: Build prototype
+        run: pnpm --filter contextual-ai-prototype build
+        env:
+          GITHUB_PAGES: "1"
+
+      - name: Deploy to gh-pages subdirectory
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DEPLOY=$(mktemp -d)
+          git clone --branch gh-pages --depth=1 \
+            "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" \
+            "$DEPLOY"
+          rm -rf "$DEPLOY/multi-surface-rendering-user-journeys"
+          cp -r apps/contextual-ai-prototype/dist "$DEPLOY/multi-surface-rendering-user-journeys"
+          cd "$DEPLOY"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "deploy: multi-surface-rendering-user-journeys $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push origin gh-pages

@@ -1,0 +1,51 @@
+---
+id: Charts-SankeyDiagram
+title: Sankey Diagram
+exportName: SankeyDiagram
+description: Volume flowing between stages of a process.
+lifecycleState: Experimental
+order: 1000
+icon: AccountTree
+menu:
+  - Charts
+  - Sankey Diagram
+tags:
+  - chart
+  - flow
+---
+
+## Sankey Diagram
+
+<ChartMeta />
+
+Volume flowing between stages of a process.
+
+```jsx live
+const graph = {
+  nodes: [
+    { name: "Search" }, { name: "Direct" }, { name: "Home" },
+    { name: "Product" }, { name: "Cart" }, { name: "Purchase" },
+  ],
+  links: [
+    { source: 0, target: 2, value: 480 },
+    { source: 1, target: 2, value: 220 },
+    { source: 2, target: 3, value: 520 },
+    { source: 3, target: 4, value: 300 },
+    { source: 4, target: 5, value: 160 },
+  ],
+};
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <SankeyDiagram width={width} height={height} graph={graph} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { SankeyDiagram, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

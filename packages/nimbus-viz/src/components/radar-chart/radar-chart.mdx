@@ -1,0 +1,43 @@
+---
+id: Charts-RadarChart
+title: Radar Chart
+exportName: RadarChart
+description: Compare profiles across several axes at once.
+lifecycleState: Experimental
+order: 703
+icon: BubbleChart
+menu:
+  - Charts
+  - Radar Chart
+tags:
+  - chart
+  - relationship
+---
+
+## Radar Chart
+
+<ChartMeta />
+
+Compare profiles across several axes at once.
+
+```jsx live
+const axes = ["Speed", "Power", "Range", "Agility", "Comfort"];
+const data = [
+  { id: "a", label: "Model A", values: [80, 62, 74, 55, 90] },
+  { id: "b", label: "Model B", values: [58, 88, 66, 82, 60] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <RadarChart width={width} height={height} axes={axes} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { RadarChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

@@ -1,0 +1,43 @@
+---
+id: Charts-DivergingStackedBar
+title: Diverging Stacked Bar
+exportName: DivergingStackedBar
+description: The sanctioned form for Likert and sentiment scales.
+lifecycleState: Experimental
+order: 401
+icon: SwapVert
+menu:
+  - Charts
+  - Diverging Stacked Bar
+tags:
+  - chart
+  - deviation
+---
+
+## Diverging Stacked Bar
+
+<ChartMeta />
+
+The sanctioned form for Likert and sentiment scales.
+
+```jsx live
+const data = [
+  { category: "Checkout", segments: [{ key: "Strongly disagree", value: 8 }, { key: "Disagree", value: 14 }, { key: "Neutral", value: 20 }, { key: "Agree", value: 34 }, { key: "Strongly agree", value: 24 }] },
+  { category: "Search", segments: [{ key: "Strongly disagree", value: 16 }, { key: "Disagree", value: 22 }, { key: "Neutral", value: 18 }, { key: "Agree", value: 28 }, { key: "Strongly agree", value: 16 }] },
+  { category: "Support", segments: [{ key: "Strongly disagree", value: 6 }, { key: "Disagree", value: 10 }, { key: "Neutral", value: 16 }, { key: "Agree", value: 38 }, { key: "Strongly agree", value: 30 }] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <DivergingStackedBar width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { DivergingStackedBar, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

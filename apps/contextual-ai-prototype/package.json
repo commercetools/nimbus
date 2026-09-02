@@ -1,0 +1,26 @@
+{
+  "name": "contextual-ai-prototype",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "catalog:react",
+    "react-dom": "catalog:react",
+    "react-router-dom": "catalog:apps",
+    "@commercetools/nimbus": "workspace:*",
+    "@commercetools/nimbus-icons": "workspace:*",
+    "@commercetools/nimbus-viz": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react",
+    "@vitejs/plugin-react-swc": "catalog:tooling",
+    "typescript": "catalog:tooling",
+    "vite": "catalog:tooling"
+  }
+}

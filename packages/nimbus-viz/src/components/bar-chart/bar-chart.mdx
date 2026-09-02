@@ -1,0 +1,45 @@
+---
+id: Charts-BarChart
+title: Bar Chart
+exportName: BarChart
+description: Compare magnitudes across categories on a common baseline.
+lifecycleState: Experimental
+order: 200
+icon: BarChart
+menu:
+  - Charts
+  - Bar Chart
+tags:
+  - chart
+  - magnitude
+---
+
+## Bar Chart
+
+<ChartMeta />
+
+Compare magnitudes across categories on a common baseline.
+
+```jsx live
+const data = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+  { category: "Partner", value: 1800 },
+  { category: "Email", value: 1200 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <BarChart width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { BarChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

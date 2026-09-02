@@ -1,0 +1,45 @@
+---
+id: Charts-LollipopChart
+title: Lollipop Chart
+exportName: LollipopChart
+description: A leaner alternative to the ranked bar for the same read.
+lifecycleState: Experimental
+order: 202
+icon: BarChart
+menu:
+  - Charts
+  - Lollipop Chart
+tags:
+  - chart
+  - magnitude
+---
+
+## Lollipop Chart
+
+<ChartMeta />
+
+A leaner alternative to the ranked bar for the same read.
+
+```jsx live
+const data = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+  { category: "Partner", value: 1800 },
+  { category: "Email", value: 1200 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <LollipopChart width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { LollipopChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

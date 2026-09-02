@@ -1,0 +1,46 @@
+---
+id: Charts-CohortTriangle
+title: Cohort Triangle
+exportName: CohortTriangle
+description: Retention by cohort, aligned to periods since signup.
+lifecycleState: Experimental
+order: 902
+icon: GridView
+menu:
+  - Charts
+  - Cohort Triangle
+tags:
+  - chart
+  - matrix
+---
+
+## Cohort Triangle
+
+<ChartMeta />
+
+Retention by cohort, aligned to periods since signup.
+
+```jsx live
+const rows = [
+  { label: "Jan", values: [100, 68, 52, 44, 39] },
+  { label: "Feb", values: [100, 72, 58, 47] },
+  { label: "Mar", values: [100, 65, 50] },
+  { label: "Apr", values: [100, 70] },
+  { label: "May", values: [100] },
+];
+const periodLabels = ["M0", "M1", "M2", "M3", "M4"];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <CohortTriangle width={width} height={height} rows={rows} periodLabels={periodLabels} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { CohortTriangle, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

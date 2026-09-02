@@ -1,0 +1,44 @@
+---
+id: Charts-PopulationPyramid
+title: Population Pyramid
+exportName: PopulationPyramid
+description: Two series drawn back to back on a shared band axis.
+lifecycleState: Experimental
+order: 402
+icon: SwapVert
+menu:
+  - Charts
+  - Population Pyramid
+tags:
+  - chart
+  - deviation
+---
+
+## Population Pyramid
+
+<ChartMeta />
+
+Two series drawn back to back on a shared band axis.
+
+```jsx live
+const data = [
+  { category: "0–17", segments: [{ key: "Male", value: 62 }, { key: "Female", value: 58 }] },
+  { category: "18–34", segments: [{ key: "Male", value: 88 }, { key: "Female", value: 92 }] },
+  { category: "35–54", segments: [{ key: "Male", value: 74 }, { key: "Female", value: 80 }] },
+  { category: "55+", segments: [{ key: "Male", value: 46 }, { key: "Female", value: 63 }] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <PopulationPyramid width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { PopulationPyramid, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```
