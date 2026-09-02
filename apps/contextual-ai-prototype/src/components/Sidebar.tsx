@@ -73,7 +73,7 @@ export const Sidebar = () => {
         </Flex>
       </NavLink>
 
-      <Separator css={{ borderColor: "rgba(255,255,255,0.12)" }} />
+      <Separator borderColor="rgba(255,255,255,0.12)" />
 
       {/* Navigation: matching real MC sidebar icons per plan */}
       <Stack gap="100" pt="200" flex="1" alignItems="center">
@@ -109,7 +109,7 @@ export const Sidebar = () => {
         />
       </Stack>
 
-      <Separator css={{ borderColor: "rgba(255,255,255,0.12)" }} />
+      <Separator borderColor="rgba(255,255,255,0.12)" />
 
       <Box pt="200">
         <NavItem

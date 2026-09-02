@@ -183,39 +183,7 @@ export const ChatPanel = ({
           <MultilineTextInput
             placeholder={placeholder}
             aria-label="Chat input"
-            autoGrow
-            maxHeight="4800"
-            variant="ghost"
             size="sm"
-            rows={1}
-            css={{
-              width: "100%",
-              "& textarea": {
-                width: "100%",
-                height: "auto !important",
-                minHeight: "unset !important",
-                paddingInlineStart: "var(--nimbus-spacing-200)",
-                paddingInlineEnd: "var(--nimbus-spacing-200)",
-                paddingBlock: "var(--nimbus-spacing-100)",
-                fontSize: "var(--nimbus-font-sizes-sm)",
-                lineHeight: "1.4",
-                border: "none",
-                outline: "none",
-                background: "transparent",
-                resize: "none",
-                overflow: "hidden",
-              },
-              "& textarea:focus": {
-                outline: "none",
-                boxShadow: "none",
-              },
-              "& > div": {
-                border: "none",
-                boxShadow: "none",
-                background: "transparent",
-                width: "100%",
-              },
-            }}
           />
         </Box>
         <IconButton

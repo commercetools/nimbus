@@ -16,14 +16,14 @@ const AppBar = () => (
     px="300"
     gap="200"
     flexShrink={0}
-    css={{ boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.1)" }}
+    shadow="xs"
     zIndex={100}
   >
     <Text textStyle="xs" fontWeight="semibold" color="neutral.12">
       my-project-key
     </Text>
     <Box flex="1" />
-    <Icon as={HelpOutline} size="xs" color="neutral.9" cursor="pointer" />
+    <Box cursor="pointer" color="neutral.9"><Icon as={HelpOutline} size="xs" /></Box>
     <Flex
       width="24px"
       height="24px"

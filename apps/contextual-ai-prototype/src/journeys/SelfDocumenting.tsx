@@ -129,7 +129,7 @@ export const SelfDocumenting = () => (
                     height="6px"
                     borderRadius="full"
                     flexShrink={0}
-                    css={{ background: chartColors[i] ?? "#999" }}
+                    bg={chartColors[i] ?? "#999"}
                   />
                   <Text textStyle="xs" fontWeight="bold" color={statusIcon[item.status].color}>
                     {statusIcon[item.status].symbol}
