@@ -25,8 +25,8 @@ const NavItem = ({ icon, label, to }: NavItemProps) => (
         <Flex
           alignItems="center"
           justifyContent="center"
-          width="500"
-          height="500"
+          width="600"
+          height="600"
           borderRadius="200"
           bg={isActive ? "rgba(255,255,255,0.15)" : undefined}
           _hover={{ bg: "rgba(255,255,255,0.1)" }}
@@ -57,15 +57,6 @@ export const Sidebar = () => {
       overflow="hidden"
       width="900"
     >
-      {/* CT logo */}
-      <NavLink to="/" style={{ textDecoration: "none" }}>
-        <Flex alignItems="center" justifyContent="center" color="white" _hover={{ opacity: 0.8 }} cursor="pointer" mb="100">
-          <Icon as={CommercetoolsCube} size="xs" />
-        </Flex>
-      </NavLink>
-
-      <Separator borderColor="rgba(255,255,255,0.12)" />
-
       {/* Navigation */}
       <Stack gap="100" pt="100" flex="1" alignItems="center">
         <NavItem

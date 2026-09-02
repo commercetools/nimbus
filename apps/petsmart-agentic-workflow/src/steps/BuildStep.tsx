@@ -129,6 +129,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                 variant="solid"
                 colorPalette="info"
                 size="2xs"
+                data-tour="save-simulate"
                 onPress={() => navigate(`/${mode}/step-3`)}
               >
                 Save &amp; Simulate
@@ -160,7 +161,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                   <TextInput size="sm" width="100%" defaultValue={promotion.name} />
                 </FormField.Input>
               </FormField.Root>
-              <FormField.Root size="sm">
+              <FormField.Root size="sm" data-tour="discount-type">
                 <FormField.Label>
                   <Flex alignItems="center" gap="150">
                     <Text>Discount type</Text>
@@ -273,47 +274,51 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
         {/* Inline agent cards */}
         {mode === "contextual" ? (
           <InlineSlot direction="row" data-tour="inline-slot">
-            <InlineCard title="Impact Preview" agentName="Promo Agent" agentSource="ct">
-              <Flex gap="300">
-                <Box>
-                  <Text textStyle="xl" fontWeight="bold" color="neutral.12">
-                    ~{promotion.productsAffected}
-                  </Text>
-                  <Text textStyle="xs" color="neutral.9">
-                    Products affected
-                  </Text>
-                </Box>
-                <Box>
-                  <Text textStyle="xl" fontWeight="bold" color="amber.11">
-                    {promotion.marginImpact}
-                  </Text>
-                  <Text textStyle="xs" color="neutral.9">
-                    Est. margin impact
-                  </Text>
-                </Box>
-                <Box>
-                  <Text textStyle="xl" fontWeight="bold" color="green.11">
-                    0
-                  </Text>
-                  <Text textStyle="xs" color="neutral.9">
-                    Products below floor
-                  </Text>
-                </Box>
-              </Flex>
-            </InlineCard>
+            <Box data-tour="impact-card">
+              <InlineCard title="Impact Preview" agentName="Promo Agent" agentSource="ct">
+                <Flex gap="300">
+                  <Box>
+                    <Text textStyle="xl" fontWeight="bold" color="neutral.12">
+                      ~{promotion.productsAffected}
+                    </Text>
+                    <Text textStyle="xs" color="neutral.9">
+                      Products affected
+                    </Text>
+                  </Box>
+                  <Box>
+                    <Text textStyle="xl" fontWeight="bold" color="amber.11">
+                      {promotion.marginImpact}
+                    </Text>
+                    <Text textStyle="xs" color="neutral.9">
+                      Est. margin impact
+                    </Text>
+                  </Box>
+                  <Box>
+                    <Text textStyle="xl" fontWeight="bold" color="green.11">
+                      0
+                    </Text>
+                    <Text textStyle="xs" color="neutral.9">
+                      Products below floor
+                    </Text>
+                  </Box>
+                </Flex>
+              </InlineCard>
+            </Box>
 
-            <InlineCard
-              title="Stock Validation"
-              agentName="Inventory Agent"
-              agentSource="customer"
-              headerRight={
-                <Badge size="2xs" colorPalette="warning">
-                  {promotion.lowStockProducts} low-stock
-                </Badge>
-              }
-            >
-              <StockWarning />
-            </InlineCard>
+            <Box data-tour="stock-card">
+              <InlineCard
+                title="Stock Validation"
+                agentName="Inventory Agent"
+                agentSource="customer"
+                headerRight={
+                  <Badge size="2xs" colorPalette="warning">
+                    {promotion.lowStockProducts} low-stock
+                  </Badge>
+                }
+              >
+                <StockWarning />
+              </InlineCard>
+            </Box>
 
             <Box data-tour="conflict-card">
               <InlineCard
@@ -332,6 +337,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
           </InlineSlot>
         ) : (
           <InlineSlot direction="row" data-tour="inline-slot">
+            <Box data-tour="orchestrator-card">
             <InlineCard
               title="Promotion Draft"
               agentName="PetSmart Orchestrator"

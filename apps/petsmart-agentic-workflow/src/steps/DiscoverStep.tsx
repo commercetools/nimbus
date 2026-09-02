@@ -62,6 +62,7 @@ const productColumns: DataTableColumnItem<PetSmartProduct>[] = [
           py={isHigh ? "50" : "0"}
           borderRadius="100"
           bg={isHigh ? "amber.4" : undefined}
+          data-tour={isHigh ? "shelf-days-highlight" : undefined}
         >
           <Text
             textStyle="xs"
