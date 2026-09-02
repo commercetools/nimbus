@@ -34,9 +34,9 @@ import { useTour } from "../components/Tour";
 // Each cell = one completion criterion. Short names for clean tooltips.
 const readinessBreakdown = [
   // Categories (10)
-  ...["Primary category", "Subcategory", "Category path", "Parent active", "Slug", "Breadcrumbs", "Meta title", "Facets", "Navigation", "Order hint"].map(c => ({ category: c, value: 1 })),
+  ...["Primary category", "Subcategory", "Category path", "Parent active", "Category slug", "Breadcrumbs", "Category meta title", "Facets", "Navigation", "Order hint"].map(c => ({ category: c, value: 1 })),
   // Names (12)
-  ...["Name EN", "Name DE", "Name FR", "Name ES", "Name IT", "Length OK", "Brand prefix", "Has model", "SEO keywords", "No special chars", "Title case", "Slug"].map(c => ({ category: c, value: 1 })),
+  ...["Name EN", "Name DE", "Name FR", "Name ES", "Name IT", "Length OK", "Brand prefix", "Has model", "SEO keywords", "No special chars", "Title case", "Name slug"].map(c => ({ category: c, value: 1 })),
   // Descriptions (5)
   ...["Desc EN", "Desc > 100 chars", "Has features", "Desc DE", "Desc FR"].map(c => ({ category: c, value: 1 })),
   // Images (8)
@@ -46,7 +46,7 @@ const readinessBreakdown = [
   // Variants (6)
   ...["Master variant", "SKUs unique", "Attrs filled", "Images linked", "Prices set", "Inventory"].map(c => ({ category: c, value: 1 })),
   // SEO (2)
-  ...["Meta title", "Meta desc"].map(c => ({ category: c, value: 1 })),
+  ...["SEO meta title", "SEO meta desc"].map(c => ({ category: c, value: 1 })),
   // Attributes (15)
   ...["Display", "Battery", "Connectivity", "Weight", "Processor", "RAM", "OS", "Water resist.", "Camera", "Storage", "Color", "Dimensions", "Warranty", "Manufacturer", "Origin"].map(c => ({ category: c, value: 1 })),
 ];
