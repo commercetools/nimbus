@@ -259,7 +259,32 @@ const msg5_agent: Msg = {
   ),
 };
 
-// ─── Cumulative thread configs ──────────────────────────────────────────────
+// ─── Orchestrated: 3 natural views ─────────────────────────────────────────
+// Step 1 (Products): full conversation covering discovery → draft → simulation
+// Step 4 (Review): approval brief + launch
+// Step 5 (Analytics): results
+// Steps 2 and 3 are pass-through (same thread as Step 1) for direct navigation.
+
+const orchestratedName = "PetSmart Orchestrator";
+
+/** Step 1: discovery + draft + simulation all happen in one conversation */
+const step1Thread: Msg[] = [
+  msg1_user, msg1_agent,
+  msg2_user, msg2_agent,
+  msg3_user, msg3_agent,
+];
+
+/** Step 4: approval brief builds on the full thread */
+const step4Thread: Msg[] = [
+  ...step1Thread,
+  msg4_user, msg4_agent,
+];
+
+/** Step 5: results build on approval */
+const step5Thread: Msg[] = [
+  ...step4Thread,
+  msg5_user, msg5_agent,
+];
 
 export const chatConfigs: Record<
   string,
@@ -269,29 +294,30 @@ export const chatConfigs: Record<
     placeholder: string;
   }
 > = {
+  // Orchestrated flow: 3 views, one continuous thread
   "/orchestrated/step-1": {
-    agentName: "PetSmart Orchestrator",
-    messages: [msg1_user, msg1_agent],
-    placeholder: "Ask about inventory, seasonal trends, or promotion strategy...",
+    agentName: orchestratedName,
+    messages: step1Thread,
+    placeholder: "Ask about inventory, promotion strategy, or the draft...",
   },
   "/orchestrated/step-2": {
-    agentName: "PetSmart Orchestrator",
-    messages: [msg1_user, msg1_agent, msg2_user, msg2_agent],
-    placeholder: "Ask about conditions, conflicts, or stock details...",
+    agentName: orchestratedName,
+    messages: step1Thread,
+    placeholder: "Ask about the discount configuration...",
   },
   "/orchestrated/step-3": {
-    agentName: "PetSmart Orchestrator",
-    messages: [msg1_user, msg1_agent, msg2_user, msg2_agent, msg3_user, msg3_agent],
-    placeholder: "Ask about specific cart scenarios or edge cases...",
+    agentName: orchestratedName,
+    messages: step1Thread,
+    placeholder: "Ask about the simulation results...",
   },
   "/orchestrated/step-4": {
-    agentName: "PetSmart Orchestrator",
-    messages: [msg1_user, msg1_agent, msg2_user, msg2_agent, msg3_user, msg3_agent, msg4_user, msg4_agent],
-    placeholder: "Ask for more detail on any section before approving...",
+    agentName: orchestratedName,
+    messages: step4Thread,
+    placeholder: "Ask for more detail before approving...",
   },
   "/orchestrated/step-5": {
-    agentName: "PetSmart Orchestrator",
-    messages: [msg1_user, msg1_agent, msg2_user, msg2_agent, msg3_user, msg3_agent, msg4_user, msg4_agent, msg5_user, msg5_agent],
+    agentName: orchestratedName,
+    messages: step5Thread,
     placeholder: "Ask about specific products, channels, or next steps...",
   },
 };

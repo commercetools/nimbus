@@ -129,8 +129,32 @@ export const AppShell = () => {
           </Box>
 
           {/* Main content area */}
-          <Box flex="1" overflow="auto" bg="neutral.2" minWidth="0">
+          <Box flex="1" overflow="auto" bg="neutral.2" minWidth="0" position="relative">
             <Outlet context={{ panelOpen, setPanelOpen }} />
+            {/* Floating button to re-open the agent panel (visible when panel is closed in orchestrated mode) */}
+            {!panelOpen && isOrchestrated && (
+              <Flex
+                position="fixed"
+                bottom="300"
+                right="300"
+                alignItems="center"
+                gap="150"
+                px="300"
+                py="200"
+                bg="primary.9"
+                color="white"
+                borderRadius="full"
+                shadow="lg"
+                cursor="pointer"
+                zIndex={40}
+                _hover={{ bg: "primary.10" }}
+                transition="background 150ms"
+                onClick={() => setPanelOpen(true)}
+              >
+                <Text as="span" fontSize="250" lineHeight="1">✦</Text>
+                <Text textStyle="xs" fontWeight="semibold" color="white">Open Orchestrator</Text>
+              </Flex>
+            )}
           </Box>
 
           {/* Chat panel: inline on large screens, overlay on small */}
