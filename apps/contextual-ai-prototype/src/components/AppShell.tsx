@@ -1,14 +1,14 @@
 import { useState, useCallback, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { Box, Flex, Icon, ComboBox } from "@commercetools/nimbus";
-import { HelpOutline, PersonOutline, CommercetoolsCube } from "@commercetools/nimbus-icons";
+import { Box, Flex, Icon, IconButton, Menu, Text, Separator } from "@commercetools/nimbus";
+import { PersonOutline, CommercetoolsCube, Business, Inventory as InventoryIcon } from "@commercetools/nimbus-icons";
 import { NavLink } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { ChatPanel } from "./ChatPanel";
 import { PanelProvider } from "./ProvenanceIndicator";
 import { chatConfigs } from "../data/chatMessages";
 
-/** Top app bar: dark bg matching sidebar, menu toolbar on the right */
+/** Top app bar: dark bg matching sidebar, icon-button menu toolbar on the right */
 const AppBar = () => (
   <Flex
     alignItems="center"
@@ -25,40 +25,67 @@ const AppBar = () => (
       </Flex>
     </NavLink>
     <Box flex="1" />
-    <Flex alignItems="center" gap="200" color="rgba(255,255,255,0.7)">
-      <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-organization-name" aria-label="Organization" width="max-content" css={{ "& [slot=clear]": { display: "none" }, "& input": { color: "rgba(255,255,255,0.9)", fontSize: "var(--nimbus-font-sizes-xs)" }, "& button": { color: "rgba(255,255,255,0.6)" } }}>
-        <ComboBox.Trigger />
-        <ComboBox.Popover>
-          <ComboBox.ListBox>
-            <ComboBox.Option id="my-org" textValue="my-organization-name">my-organization-name</ComboBox.Option>
-            <ComboBox.Option id="other-org" textValue="other-org">other-org</ComboBox.Option>
-          </ComboBox.ListBox>
-        </ComboBox.Popover>
-      </ComboBox.Root>
-      <Box width="1px" height="16px" bg="rgba(255,255,255,0.2)" />
-      <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-project-key" aria-label="Project" width="max-content" css={{ "& [slot=clear]": { display: "none" }, "& input": { color: "rgba(255,255,255,0.9)", fontSize: "var(--nimbus-font-sizes-xs)" }, "& button": { color: "rgba(255,255,255,0.6)" } }}>
-        <ComboBox.Trigger />
-        <ComboBox.Popover>
-          <ComboBox.ListBox>
-            <ComboBox.Option id="my-proj" textValue="my-project-key">my-project-key</ComboBox.Option>
-            <ComboBox.Option id="staging" textValue="staging-project">staging-project</ComboBox.Option>
-          </ComboBox.ListBox>
-        </ComboBox.Popover>
-      </ComboBox.Root>
-      <Box width="1px" height="16px" bg="rgba(255,255,255,0.2)" />
-      <Box cursor="pointer" _hover={{ color: "white" }}><Icon as={HelpOutline} size="xs" /></Box>
-      <Flex
-        width="22px"
-        height="22px"
-        borderRadius="full"
-        bg="rgba(255,255,255,0.15)"
-        alignItems="center"
-        justifyContent="center"
-        cursor="pointer"
-        _hover={{ bg: "rgba(255,255,255,0.25)" }}
-      >
-        <Icon as={PersonOutline} size="2xs" />
-      </Flex>
+    <Flex alignItems="center" gap="100">
+      {/* Organization menu */}
+      <Menu.Root placement="bottom end">
+        <Menu.Trigger asChild>
+          <IconButton variant="ghost" size="2xs" aria-label="Organization" color="rgba(255,255,255,0.7)" _hover={{ color: "white", bg: "rgba(255,255,255,0.1)" }}>
+            <Business />
+          </IconButton>
+        </Menu.Trigger>
+        <Menu.Content>
+          <Menu.Section label="Organization">
+            <Menu.Item id="my-org">
+              <Text slot="label">my-organization-name</Text>
+            </Menu.Item>
+            <Menu.Item id="other-org">
+              <Text slot="label">other-org</Text>
+            </Menu.Item>
+          </Menu.Section>
+        </Menu.Content>
+      </Menu.Root>
+
+      {/* Project menu */}
+      <Menu.Root placement="bottom end">
+        <Menu.Trigger asChild>
+          <IconButton variant="ghost" size="2xs" aria-label="Project" color="rgba(255,255,255,0.7)" _hover={{ color: "white", bg: "rgba(255,255,255,0.1)" }}>
+            <InventoryIcon />
+          </IconButton>
+        </Menu.Trigger>
+        <Menu.Content>
+          <Menu.Section label="Project">
+            <Menu.Item id="my-proj">
+              <Text slot="label">my-project-key</Text>
+            </Menu.Item>
+            <Menu.Item id="staging">
+              <Text slot="label">staging-project</Text>
+            </Menu.Item>
+          </Menu.Section>
+        </Menu.Content>
+      </Menu.Root>
+
+      {/* Profile menu */}
+      <Menu.Root placement="bottom end">
+        <Menu.Trigger asChild>
+          <IconButton variant="ghost" size="2xs" aria-label="Profile" color="rgba(255,255,255,0.7)" _hover={{ color: "white", bg: "rgba(255,255,255,0.1)" }}>
+            <PersonOutline />
+          </IconButton>
+        </Menu.Trigger>
+        <Menu.Content>
+          <Menu.Section label="Account">
+            <Menu.Item id="profile">
+              <Text slot="label">My profile</Text>
+            </Menu.Item>
+            <Menu.Item id="settings">
+              <Text slot="label">Settings</Text>
+            </Menu.Item>
+          </Menu.Section>
+          <Separator />
+          <Menu.Item id="logout" isCritical>
+            <Text slot="label">Sign out</Text>
+          </Menu.Item>
+        </Menu.Content>
+      </Menu.Root>
     </Flex>
   </Flex>
 );
