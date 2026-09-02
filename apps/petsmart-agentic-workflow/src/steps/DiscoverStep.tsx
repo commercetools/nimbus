@@ -161,7 +161,7 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
         {/* Agent insight cards: above the table, compact. Contextual mode only. */}
         {mode === "contextual" && (
           <InlineSlot direction="row" data-tour="inline-slot">
-            <Box data-tour="inventory-card">
+            <Box data-tour="inventory-card" flex="1" display="flex">
               <InlineCard
                 title="Inventory Overview"
                 agentName="Inventory Agent"
@@ -202,7 +202,7 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
               </InlineCard>
             </Box>
 
-            <Box data-tour="strategy-card">
+            <Box data-tour="strategy-card" flex="1" display="flex">
               <InlineCard
                 title="Seasonal Opportunity"
                 agentName="Strategy Agent"

@@ -160,7 +160,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
             panel instead. */}
         {mode === "contextual" && (
           <InlineSlot direction="row" data-tour="inline-slot">
-            <Box data-tour="impact-card">
+            <Box data-tour="impact-card" flex="1" display="flex">
               <InlineCard
                 title="Impact Preview"
                 agentName="Promo Agent"
@@ -218,7 +218,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
               </InlineCard>
             </Box>
 
-            <Box data-tour="stock-card">
+            <Box data-tour="stock-card" flex="1" display="flex">
               <InlineCard
                 title="Stock Validation"
                 agentName="Inventory Agent"
@@ -233,7 +233,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
               </InlineCard>
             </Box>
 
-            <Box data-tour="conflict-card">
+            <Box data-tour="conflict-card" flex="1" display="flex">
               <InlineCard
                 title="Conflict Detection"
                 agentName="Promo Agent"
