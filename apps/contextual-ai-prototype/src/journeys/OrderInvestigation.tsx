@@ -100,7 +100,7 @@ export const OrderInvestigation = () => (
         <>
           {/* Augmentation: risk indicator chip in the header */}
           <Flex alignItems="center" gap="150" px="200" py="100" borderRadius="200" bg="amber.3" borderWidth="1px" borderColor="amber.6">
-            <ProvenanceIndicator agentName={AGENT_NAME} iconSize="2xs" />
+            <ProvenanceIndicator agentName={AGENT_NAME} size="10px" />
             <Text textStyle="xs" fontWeight="semibold" color="amber.11">High Fraud Risk · 87/100</Text>
           </Flex>
           {/* Augmentation: toolbar action */}
@@ -124,9 +124,9 @@ export const OrderInvestigation = () => (
       }
     />
 
-    <Stack gap="300" p="500">
+    <Stack gap="300" p="300">
       {/* Compact state row: order, payment, shipment state badges */}
-      <Flex gap="400" alignItems="center" wrap="wrap">
+      <Flex gap="300" alignItems="center" wrap="wrap">
         <Flex alignItems="center" gap="100">
           <Icon as={CheckCircle} size="2xs" color="neutral.9" />
           <Text textStyle="xs" color="neutral.9">Order state</Text>
@@ -147,7 +147,7 @@ export const OrderInvestigation = () => (
       {/* Horizontal inline slot: customer profile + timeline */}
       <InlineSlot direction="row" data-tour="inline-slot">
         <InlineCard title="Customer Profile" agentName={AGENT_NAME}>
-          <Flex gap="500">
+          <Flex gap="300">
             <Stack gap="100" flex="1">
               <Flex justifyContent="space-between">
                 <Text textStyle="xs" color="neutral.9">Account age</Text>
@@ -195,8 +195,8 @@ export const OrderInvestigation = () => (
       </InlineSlot>
 
       {/* Order details with augmented risk signals */}
-      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" p="500">
-        <Text textStyle="md" fontWeight="semibold" color="neutral.12" mb="300">
+      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300">
+        <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="300">
           Order Details
         </Text>
 
@@ -216,14 +216,14 @@ export const OrderInvestigation = () => (
           <Box borderWidth="1px" borderColor="amber.6" borderRadius="200" p="300" bg="amber.2">
             <Flex alignItems="center" gap="150" mb="150">
               <Text textStyle="xs" fontWeight="semibold" color="neutral.11">Shipping address</Text>
-              <ProvenanceIndicator agentName={AGENT_NAME} iconSize="2xs" />
+              <ProvenanceIndicator agentName={AGENT_NAME} size="10px" />
             </Flex>
             <Text textStyle="xs" color="neutral.12">Jungfernstieg 12, 20354 Hamburg, Germany</Text>
             <Badge size="2xs" colorPalette="warning" mt="150">Changed 2 days before order</Badge>
             <Flex alignItems="center" gap="150" mt="200">
               <Text textStyle="xs" color="neutral.9">Shipping method</Text>
               <Text textStyle="xs" color="neutral.12">Express (1-2 days)</Text>
-              <ProvenanceIndicator agentName={AGENT_NAME} iconSize="2xs" />
+              <ProvenanceIndicator agentName={AGENT_NAME} size="10px" />
             </Flex>
             <Badge size="2xs" colorPalette="warning" mt="150">Unusual for this customer</Badge>
           </Box>

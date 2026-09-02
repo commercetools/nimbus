@@ -57,14 +57,14 @@ export const PricingReview = () => {
       }
     />
 
-    <Stack gap="400" p="500">
+    <Stack gap="300" p="300">
       {/* Horizontal inline slot: margin summary + competitive overview */}
       <InlineSlot direction="row" data-tour="inline-slot">
         <InlineCard title="Margin Analysis" agentName="Pricing Optimizer Agent (proposed)" headerRight={
           <Badge size="2xs" colorPalette="warning">At Risk</Badge>
         }>
-          <Flex gap="400">
-            <Flex gap="400" flexShrink={0}>
+          <Flex gap="300">
+            <Flex gap="300" flexShrink={0}>
               <Box>
                 <Text textStyle="xs" color="neutral.9">Current</Text>
                 <Text textStyle="md" fontWeight="bold" color="red.11">17.3%</Text>
@@ -169,8 +169,8 @@ export const PricingReview = () => {
             {/* Expanded row: inline render target with agent analysis */}
             {expandedRow === i && (
               <Box
-                px="500"
-                py="300"
+                px="300"
+                py="200"
                 bg="neutral.2"
                 borderBottomWidth="1px"
                 borderColor="neutral.4"
@@ -182,7 +182,7 @@ export const PricingReview = () => {
                     <ProvenanceIndicator agentName="Pricing Optimizer Agent (proposed)" reason={`Suggested ${row.suggested} restores margin above 20% floor`} />
                     <Text textStyle="xs" fontWeight="medium" color="indigo.9">Pricing Optimizer Agent (proposed)</Text>
                   </Flex>
-                  <Flex gap="400">
+                  <Flex gap="300">
                     <Box flex="1">
                       <Text textStyle="xs" color="neutral.9" mb="50">Rationale</Text>
                       <Text textStyle="sm" color="neutral.12">

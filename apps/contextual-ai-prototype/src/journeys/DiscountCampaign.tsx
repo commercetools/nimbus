@@ -35,13 +35,13 @@ export const DiscountCampaign = () => (
       }
     />
 
-    <Stack gap="400" p="500">
+    <Stack gap="300" p="300">
       {/* Vertical inline slot: impact preview + conflict analysis */}
       <InlineSlot direction="row" data-tour="inline-slot">
         <InlineCard title="Impact Preview" agentName="Promotions Agent" headerRight={
           <Text textStyle="xs" color="neutral.9">Updates as you configure</Text>
         }>
-          <Flex gap="500">
+          <Flex gap="300">
             <Box>
               <Text textStyle="xl" fontWeight="bold" color="neutral.12">~2,400</Text>
               <Text textStyle="xs" color="neutral.9">Affected products</Text>
@@ -85,13 +85,13 @@ export const DiscountCampaign = () => (
       </InlineSlot>
 
       {/* Discount form */}
-      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" p="500">
-        <Text textStyle="md" fontWeight="semibold" color="neutral.12" mb="400">
+      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300">
+        <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="300">
           Discount Configuration
         </Text>
 
-        <Flex gap="500">
-          <Stack gap="400" flex="1">
+        <Flex gap="300">
+          <Stack gap="300" flex="1">
             <FormField.Root size="sm">
               <FormField.Label>Discount name</FormField.Label>
               <FormField.Input>
@@ -105,7 +105,7 @@ export const DiscountCampaign = () => (
               </FormField.Input>
             </FormField.Root>
           </Stack>
-          <Stack gap="400" flex="1">
+          <Stack gap="300" flex="1">
             <FormField.Root size="sm">
               <FormField.Label>Valid from</FormField.Label>
               <FormField.Input>
@@ -121,7 +121,7 @@ export const DiscountCampaign = () => (
           </Stack>
         </Flex>
 
-        <Separator my="400" />
+        <Separator my="300" />
 
         {/* Augmented conditions section */}
         <FormField.Root size="sm">
@@ -135,8 +135,8 @@ export const DiscountCampaign = () => (
 
           {/* Current conditions */}
           <Flex gap="200" flexWrap="wrap" mb="300">
-            <Badge size="md" colorPalette="neutral">Category = Summer Collection ✕</Badge>
-            <Badge size="md" colorPalette="neutral">Inventory {">"} 50 units ✕</Badge>
+            <Badge size="sm" colorPalette="neutral">Category = Summer Collection ✕</Badge>
+            <Badge size="sm" colorPalette="neutral">Inventory {">"} 50 units ✕</Badge>
           </Flex>
 
           {/* AI suggested condition chips */}
