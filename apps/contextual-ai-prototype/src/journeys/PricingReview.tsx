@@ -63,7 +63,7 @@ export const PricingReview = () => {
       {/* Horizontal inline slot: margin summary + competitive overview */}
       <InlineSlot direction="row">
         <InlineCard title="Margin Analysis" agentName="Pricing Optimizer Agent" headerRight={
-          <Badge size="xs" colorPalette="warning">At Risk</Badge>
+          <Badge size="2xs" colorPalette="warning">At Risk</Badge>
         }>
           <Flex gap="400">
             <ChartThemeProvider>
@@ -101,7 +101,7 @@ export const PricingReview = () => {
               <Flex key={i} alignItems="center" gap="300" py="50">
                 <Text textStyle="sm" color="neutral.12" minWidth="100px">{c.name}</Text>
                 <Text textStyle="sm" fontWeight="medium" color="neutral.12" minWidth="60px">{c.price}</Text>
-                <Badge size="xs" colorPalette="neutral">{c.position}</Badge>
+                <Badge size="2xs" colorPalette="neutral">{c.position}</Badge>
               </Flex>
             ))}
           </Stack>

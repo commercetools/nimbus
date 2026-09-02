@@ -50,7 +50,7 @@ export const CategoryReorg = () => (
       {/* Horizontal inline slot: category health dashboard */}
       <InlineSlot direction="row">
         <InlineCard title="Category Health" agentName="Category Intelligence Agent" headerRight={
-          <Badge size="xs" colorPalette="warning">Below avg</Badge>
+          <Badge size="2xs" colorPalette="warning">Below avg</Badge>
         }>
           <Flex gap="500">
             <Box>
@@ -125,7 +125,7 @@ export const CategoryReorg = () => (
               <Text textStyle="sm" fontWeight="medium" color="neutral.12">{sug.label}</Text>
               <Text textStyle="xs" color="neutral.10">{sug.reason}</Text>
             </Box>
-            <Badge size="xs" colorPalette="info">{sug.confidence}%</Badge>
+            <Badge size="2xs" colorPalette="info">{sug.confidence}%</Badge>
             <Button variant="outline" size="2xs">Apply</Button>
             <Button variant="ghost" size="2xs">Dismiss</Button>
           </Flex>

@@ -93,7 +93,7 @@ export const SelfDocumenting = () => (
         </InlineCard>
 
         <InlineCard title="Getting Started" agentName="Product Enrichment Agent" headerRight={
-          <Badge size="xs" colorPalette="info">For you</Badge>
+          <Badge size="2xs" colorPalette="info">For you</Badge>
         }>
           <Stack gap="300">
             <Text textStyle="sm" color="neutral.11">
@@ -218,7 +218,7 @@ export const SelfDocumenting = () => (
                   <Text textStyle="sm" fontWeight={i === 0 ? "medium" : "regular"} color="neutral.12" flex="1">
                     {sug.label}
                   </Text>
-                  <Badge size="xs" colorPalette="info" variant="subtle">{sug.confidence}%</Badge>
+                  <Badge size="2xs" colorPalette="info" variant="subtle">{sug.confidence}%</Badge>
                 </Flex>
               ))}
             </Box>

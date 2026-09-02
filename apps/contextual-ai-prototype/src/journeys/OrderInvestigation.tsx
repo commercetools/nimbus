@@ -133,7 +133,7 @@ export const OrderInvestigation = () => (
                 <Text textStyle="xs" color="neutral.12">Jungfernstieg 12, 20354 Hamburg, Germany</Text>
                 <ProvenanceIndicator agentName="Order Intelligence Agent" iconSize="2xs" />
               </Flex>
-              <Badge size="xs" colorPalette="warning" mt="100">Changed 2 days before order</Badge>
+              <Badge size="2xs" colorPalette="warning" mt="100">Changed 2 days before order</Badge>
             </Box>
             <Box>
               <Text textStyle="xs" color="neutral.9" mb="50">Shipping method</Text>
@@ -141,7 +141,7 @@ export const OrderInvestigation = () => (
                 <Text textStyle="xs" color="neutral.12">Express (1-2 days)</Text>
                 <ProvenanceIndicator agentName="Order Intelligence Agent" iconSize="2xs" />
               </Flex>
-              <Badge size="xs" colorPalette="warning" mt="100">Unusual for this customer</Badge>
+              <Badge size="2xs" colorPalette="warning" mt="100">Unusual for this customer</Badge>
             </Box>
           </Stack>
         </Flex>

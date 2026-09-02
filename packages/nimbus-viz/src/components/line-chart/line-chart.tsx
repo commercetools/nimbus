@@ -102,13 +102,13 @@ export function LineChart({
             }}
           >
             <GridRows
-              ticks={yScale.ticks(4)}
+              ticks={yScale.ticks(Math.max(2, Math.min(4, Math.floor(innerHeight / 40))))}
               y={(t) => yScale(t)}
               width={innerWidth}
             />
             <AxisLeft
               scale={yScale}
-              numTicks={4}
+              numTicks={Math.max(2, Math.min(4, Math.floor(innerHeight / 40)))}
               hideAxisLine
               hideTicks
               tickFormat={(v) => formatCompact(v as number)}

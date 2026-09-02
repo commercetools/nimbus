@@ -338,7 +338,7 @@ export const ProductLaunch = () => {
                           >
                             {sug.label}
                           </Text>
-                          <Badge size="xs" colorPalette="info" variant="subtle">
+                          <Badge size="2xs" colorPalette="info" variant="subtle">
                             {sug.confidence}%
                           </Badge>
                         </Flex>

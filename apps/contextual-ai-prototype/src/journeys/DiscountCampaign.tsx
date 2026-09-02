@@ -64,7 +64,7 @@ export const DiscountCampaign = () => (
         </InlineCard>
 
         <InlineCard title="Conflict Detection" agentName="Promotions Agent" headerRight={
-          <Badge size="xs" colorPalette="warning">1 conflict</Badge>
+          <Badge size="2xs" colorPalette="warning">1 conflict</Badge>
         }>
           <Flex gap="200" alignItems="flex-start" p="200" bg="amber.2" borderRadius="200" borderWidth="1px" borderColor="amber.6">
             <Icon as={Warning} size="xs" color="amber.9" mt="50" flexShrink={0} />
@@ -164,7 +164,7 @@ export const DiscountCampaign = () => (
                 >
                   <ProvenanceIndicator agentName="Promotions Agent" confidence={chip.confidence} iconSize="2xs" />
                   <Text textStyle="xs" fontWeight="medium" color="indigo.11">{chip.label}</Text>
-                  <Badge size="xs" colorPalette="info" variant="subtle">{chip.confidence}%</Badge>
+                  <Badge size="2xs" colorPalette="info" variant="subtle">{chip.confidence}%</Badge>
                 </Flex>
               ))}
             </Flex>
