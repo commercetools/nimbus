@@ -197,21 +197,17 @@ export const ChatPanel = ({
   placeholder = "Ask about this product...",
   whyContext,
 }: ChatPanelProps) => {
-  // Scroll messages to top on mount, bottom on subsequent changes
+  // Always scroll to the bottom so the latest message is visible
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const prevLengthRef = useRef(messages?.length ?? 0);
   useEffect(() => {
     if (!messagesContainerRef.current) return;
-    const currentLength = messages?.length ?? 0;
-    if (currentLength > prevLengthRef.current) {
-      // New message added: scroll to bottom
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
-    } else {
-      // Initial load or route change: scroll to top
-      messagesContainerRef.current.scrollTop = 0;
-    }
-    prevLengthRef.current = currentLength;
-  }, [messages]);
+    // Use requestAnimationFrame to ensure DOM has painted before scrolling
+    requestAnimationFrame(() => {
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      }
+    });
+  }, [messages, whyContext]);
 
   return (
     <Flex direction="column" position="absolute" top="0" left="0" right="0" bottom="0" overflow="hidden">
