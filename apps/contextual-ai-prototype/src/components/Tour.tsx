@@ -141,8 +141,10 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
             }}
           />
 
-          {/* Popover anchored to a hidden trigger at the spotlight position */}
+          {/* Popover anchored to a hidden trigger at the spotlight position.
+              key forces re-mount on step change so React Aria recomputes position. */}
           <Popover.Root
+            key={currentStep}
             isOpen={true}
             onOpenChange={() => {}}
             placement={(step.placement ?? "bottom") as any}
