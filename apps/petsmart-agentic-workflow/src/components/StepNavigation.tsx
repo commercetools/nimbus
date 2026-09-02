@@ -29,13 +29,13 @@ export const StepNavigation = ({
       {currentStep > 1 ? (
         <Button
           variant="ghost"
-          size="sm"
+          size="2xs"
           onPress={() => goTo(currentStep - 1)}
         >
           ← Previous step
         </Button>
       ) : (
-        <Button variant="ghost" size="sm" onPress={() => navigate("/")}>
+        <Button variant="ghost" size="2xs" onPress={() => navigate("/")}>
           ← Back to start
         </Button>
       )}
@@ -48,7 +48,7 @@ export const StepNavigation = ({
         <Button
           variant="solid"
           colorPalette="primary"
-          size="sm"
+          size="2xs"
           data-tour="next-step-btn"
           onPress={() => goTo(currentStep + 1)}
         >
@@ -58,7 +58,7 @@ export const StepNavigation = ({
         <Button
           variant="solid"
           colorPalette="primary"
-          size="sm"
+          size="2xs"
           onPress={() => navigate("/")}
         >
           Back to start

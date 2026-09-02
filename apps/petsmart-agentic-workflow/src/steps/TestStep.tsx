@@ -107,7 +107,7 @@ export const TestStep = ({ mode }: { mode: FlavorMode }) => {
               <Button
                 variant="solid"
                 colorPalette="primary"
-                size="sm"
+                size="2xs"
                 data-tour="submit-approval"
                 onPress={() => navigate(`/${mode}/step-4`)}
               >

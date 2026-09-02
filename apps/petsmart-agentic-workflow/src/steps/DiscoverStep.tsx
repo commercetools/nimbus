@@ -214,7 +214,7 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
                     <Button
                       variant="solid"
                       colorPalette="primary"
-                      size="sm"
+                      size="2xs"
                       data-tour="create-promotion"
                       onPress={() => navigate(`/${mode}/step-2`)}
                     >

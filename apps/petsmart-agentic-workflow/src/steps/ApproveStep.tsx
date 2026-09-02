@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Flex, Stack, Text, Button } from "@commercetools/nimbus";
+import { Box, Flex, Stack, Text, Button, Tooltip, MakeElementFocusable } from "@commercetools/nimbus";
 import { PageHeader } from "../components/PageHeader";
 import { InlineCard } from "../components/InlineCard";
 import { AgentChain } from "../components/AgentChain";
@@ -67,28 +67,35 @@ const WorkflowPipeline = () => (
     {pipelineSteps.map((step, index) => {
       const status = getStepStatus(step.step);
       const { bg, fg } = getPipelineColors(step, status);
+      const agent = step.agentId ? agents[step.agentId] : undefined;
+      const tooltip = (step as { description?: string }).description ?? agent?.description ?? step.label;
       return (
         <Flex key={step.step} alignItems="center" gap="50">
-          <Flex direction="column" alignItems="center" gap="50" width="1200">
-            <Flex
-              width="500"
-              height="500"
-              borderRadius="full"
-              bg={bg}
-              alignItems="center"
-              justifyContent="center"
-              flexShrink={0}
-              borderWidth={status === "active" ? "2px" : "0"}
-              borderColor="amber.9"
-            >
-              <Text textStyle="xs" fontWeight="bold" color={fg}>
-                {status === "done" ? "✓" : step.step}
-              </Text>
-            </Flex>
-            <Text textStyle="xs" color="neutral.11" textAlign="center" lineHeight="tight">
-              {step.label}
-            </Text>
-          </Flex>
+          <Tooltip.Root>
+            <MakeElementFocusable>
+              <Flex direction="column" alignItems="center" gap="50" width="1200" cursor="default">
+                <Flex
+                  width="500"
+                  height="500"
+                  borderRadius="full"
+                  bg={bg}
+                  alignItems="center"
+                  justifyContent="center"
+                  flexShrink={0}
+                  borderWidth={status === "active" ? "2px" : "0"}
+                  borderColor="amber.9"
+                >
+                  <Text textStyle="xs" fontWeight="bold" color={fg}>
+                    {status === "done" ? "✓" : step.step}
+                  </Text>
+                </Flex>
+                <Text textStyle="xs" color="neutral.11" textAlign="center" lineHeight="tight">
+                  {step.label}
+                </Text>
+              </Flex>
+            </MakeElementFocusable>
+            <Tooltip.Content>{tooltip}</Tooltip.Content>
+          </Tooltip.Root>
           {index < pipelineSteps.length - 1 && (
             <Text as="span" color="neutral.6" textStyle="xs" flexShrink={0} aria-hidden="true">→</Text>
           )}
@@ -117,13 +124,13 @@ export const ApproveStep = ({ mode }: { mode: FlavorMode }) => {
             <Button
               variant="solid"
               colorPalette="positive"
-              size="sm"
+              size="2xs"
               data-tour="approve-btn"
               onPress={() => navigate(`/${mode}/step-5`)}
             >
               Approve &amp; Launch
             </Button>
-            <Button variant="outline" colorPalette="warning" size="sm">
+            <Button variant="outline" colorPalette="warning" size="2xs">
               Request Changes
             </Button>
           </>
@@ -132,12 +139,20 @@ export const ApproveStep = ({ mode }: { mode: FlavorMode }) => {
 
       <Box p={{ base: "300", sm: "500" }}>
         <Stack gap="400">
-          <Box bg="white" borderRadius="300" p="400" shadow="xs" borderWidth="1px" borderColor="neutral.4">
+          <Box
+            bg="white"
+            borderRadius="300"
+            p="400"
+            shadow="xs"
+            borderWidth="1px"
+            borderColor="neutral.4"
+            data-tour="pipeline"
+          >
             <WorkflowPipeline />
           </Box>
 
           {isContextual ? (
-            <Stack gap="200">
+            <Stack gap="200" data-tour="summary-cards">
               {summaryCards.map((card) => (
                 <InlineCard
                   key={card.title}
@@ -152,19 +167,23 @@ export const ApproveStep = ({ mode }: { mode: FlavorMode }) => {
               ))}
             </Stack>
           ) : (
-            <InlineCard title="Promotion Brief" agentName="PetSmart Orchestrator" agentSource="customer">
-              <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-                {executiveSummary}
-              </Text>
-              <AgentChain
-                defaultExpanded
-                contributions={summaryCards.map((card) => ({
-                  agentName: card.agentName,
-                  source: card.agentSource,
-                  contribution: card.summary,
-                }))}
-              />
-            </InlineCard>
+            <Box data-tour="orchestrator-card">
+              <InlineCard title="Promotion Brief" agentName="PetSmart Orchestrator" agentSource="customer">
+                <Text textStyle="xs" color="neutral.11" lineHeight="tall">
+                  {executiveSummary}
+                </Text>
+                <Box data-tour="agent-chain">
+                  <AgentChain
+                    defaultExpanded
+                    contributions={summaryCards.map((card) => ({
+                      agentName: card.agentName,
+                      source: card.agentSource,
+                      contribution: card.summary,
+                    }))}
+                  />
+                </Box>
+              </InlineCard>
+            </Box>
           )}
         </Stack>
       </Box>

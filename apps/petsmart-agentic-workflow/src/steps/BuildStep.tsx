@@ -40,7 +40,7 @@ const ConflictWarning = () => (
     borderWidth="1px"
     borderColor="amber.6"
   >
-    <Icon as={Warning} size="xs" color="amber.9" mt="50" flexShrink={0} />
+    <Icon as={Warning} size="2xs" color="amber.9" mt="50" flexShrink={0} />
     <Box>
       <Text textStyle="sm" fontWeight="medium" color="neutral.12">
         {promotion.conflictProducts} products overlap with &quot;
@@ -68,7 +68,7 @@ const StockWarning = () => (
     borderWidth="1px"
     borderColor="amber.6"
   >
-    <Icon as={Warning} size="xs" color="amber.9" mt="50" flexShrink={0} />
+    <Icon as={Warning} size="2xs" color="amber.9" mt="50" flexShrink={0} />
     <Box>
       <Text textStyle="sm" fontWeight="medium" color="neutral.12">
         Stock check: 312 of {promotion.productsAffected} products have

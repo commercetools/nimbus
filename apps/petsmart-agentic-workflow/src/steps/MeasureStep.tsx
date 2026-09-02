@@ -32,50 +32,54 @@ const Stat = ({ label, value }: { label: string; value: string }) => (
 );
 
 const CtPerformanceCard = () => (
-  <InlineCard title="CT Performance" agentName="Data Agent" agentSource="ct">
-    <Grid templateColumns="1fr 1fr" gap="300">
-      <Stat label="Orders" value={performanceMetrics.ct.orders.toLocaleString()} />
-      <Stat
-        label="Revenue"
-        value={`$${performanceMetrics.ct.revenue.toLocaleString()}`}
-      />
-      <Stat
-        label="Avg order value"
-        value={`$${performanceMetrics.ct.avgOrderValue.toFixed(2)}`}
-      />
-      <Stat label="Code usage" value={performanceMetrics.ct.codeUsageRate} />
-    </Grid>
-  </InlineCard>
+  <Box data-tour="ct-card">
+    <InlineCard title="CT Performance" agentName="Data Agent" agentSource="ct">
+      <Grid templateColumns="1fr 1fr" gap="300">
+        <Stat label="Orders" value={performanceMetrics.ct.orders.toLocaleString()} />
+        <Stat
+          label="Revenue"
+          value={`$${performanceMetrics.ct.revenue.toLocaleString()}`}
+        />
+        <Stat
+          label="Avg order value"
+          value={`$${performanceMetrics.ct.avgOrderValue.toFixed(2)}`}
+        />
+        <Stat label="Code usage" value={performanceMetrics.ct.codeUsageRate} />
+      </Grid>
+    </InlineCard>
+  </Box>
 );
 
 const CrossChannelCard = () => (
-  <InlineCard title="Cross-Channel Impact" agentName="Reporting Agent" agentSource="customer">
-    <Stack gap="200">
-      <Grid templateColumns="1fr 1fr 1fr" gap="200">
-        <Stat label="In-store pickup uplift" value={performanceMetrics.petsmart.inStorePickupUplift} />
-        <Stat label="Online-to-store" value={performanceMetrics.petsmart.onlineToStoreConversion} />
-        <Stat label="Halo effect" value={performanceMetrics.petsmart.haloEffect} />
-      </Grid>
-      <Box>
-        <Text textStyle="xs" color="neutral.9" mb="50">
-          Daily orders over promotion period
-        </Text>
-        <ChartThemeProvider>
-          <ResponsiveContainer height={90}>
-            {(w, h) => (
-              <LineChart
-                width={w}
-                height={h}
-                series={dailyOrdersSeries}
-                yBaselineFromData
-                ariaLabel="Daily orders over the promotion period"
-              />
-            )}
-          </ResponsiveContainer>
-        </ChartThemeProvider>
-      </Box>
-    </Stack>
-  </InlineCard>
+  <Box data-tour="petsmart-card">
+    <InlineCard title="Cross-Channel Impact" agentName="Reporting Agent" agentSource="customer">
+      <Stack gap="200">
+        <Grid templateColumns="1fr 1fr 1fr" gap="200">
+          <Stat label="In-store pickup uplift" value={performanceMetrics.petsmart.inStorePickupUplift} />
+          <Stat label="Online-to-store" value={performanceMetrics.petsmart.onlineToStoreConversion} />
+          <Stat label="Halo effect" value={performanceMetrics.petsmart.haloEffect} />
+        </Grid>
+        <Box>
+          <Text textStyle="xs" color="neutral.9" mb="50">
+            Daily orders over promotion period
+          </Text>
+          <ChartThemeProvider>
+            <ResponsiveContainer height={90}>
+              {(w, h) => (
+                <LineChart
+                  width={w}
+                  height={h}
+                  series={dailyOrdersSeries}
+                  yBaselineFromData
+                  ariaLabel="Daily orders over the promotion period"
+                />
+              )}
+            </ResponsiveContainer>
+          </ChartThemeProvider>
+        </Box>
+      </Stack>
+    </InlineCard>
+  </Box>
 );
 
 const BeforeAfter = ({
@@ -107,23 +111,25 @@ const InventoryClearanceCard = () => {
     performanceMetrics.petsmart;
 
   return (
-    <InlineCard title="Inventory Clearance" agentName="Reporting Agent" agentSource="customer">
-      <Stack gap="150">
-        <Text textStyle="sm" fontWeight="semibold" color="neutral.12">
-          {slowMoversClearedCount} of {slowMoversClearedTotal} slow movers cleared
-        </Text>
-        <BeforeAfter
-          label="Avg days to clear"
-          before={String(avgDaysToClearBefore)}
-          after={String(avgDaysToClearAfter)}
-        />
-        <BeforeAfter
-          label="Overstock value"
-          before={`$${overstockBefore.toLocaleString()}`}
-          after={`$${overstockAfter.toLocaleString()}`}
-        />
-      </Stack>
-    </InlineCard>
+    <Box data-tour="clearance-card">
+      <InlineCard title="Inventory Clearance" agentName="Reporting Agent" agentSource="customer">
+        <Stack gap="150">
+          <Text textStyle="sm" fontWeight="semibold" color="neutral.12">
+            {slowMoversClearedCount} of {slowMoversClearedTotal} slow movers cleared
+          </Text>
+          <BeforeAfter
+            label="Avg days to clear"
+            before={String(avgDaysToClearBefore)}
+            after={String(avgDaysToClearAfter)}
+          />
+          <BeforeAfter
+            label="Overstock value"
+            before={`$${overstockBefore.toLocaleString()}`}
+            after={`$${overstockAfter.toLocaleString()}`}
+          />
+        </Stack>
+      </InlineCard>
+    </Box>
   );
 };
 
@@ -152,50 +158,54 @@ export const MeasureStep = ({ mode }: { mode: FlavorMode }) => {
             </Text>
           </Stack>
         ) : (
-          <InlineCard title="Campaign Results" agentName="PetSmart Orchestrator" agentSource="customer">
-            <Grid templateColumns="1fr 1fr" gap="300" mb="300">
-              <Stat label="Orders" value={performanceMetrics.ct.orders.toLocaleString()} />
-              <Stat label="Revenue" value={`$${performanceMetrics.ct.revenue.toLocaleString()}`} />
-              <Stat label="In-store pickup uplift" value={performanceMetrics.petsmart.inStorePickupUplift} />
-              <Stat label="Halo effect" value={performanceMetrics.petsmart.haloEffect} />
-            </Grid>
-            <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="100">
-              {performanceMetrics.petsmart.slowMoversClearedCount} of{" "}
-              {performanceMetrics.petsmart.slowMoversClearedTotal} slow movers cleared
-            </Text>
-            <Box mb="200">
-              <Text textStyle="xs" color="neutral.9" mb="50">
-                Daily orders over promotion period
+          <Box data-tour="orchestrator-card">
+            <InlineCard title="Campaign Results" agentName="PetSmart Orchestrator" agentSource="customer">
+              <Grid templateColumns="1fr 1fr" gap="300" mb="300">
+                <Stat label="Orders" value={performanceMetrics.ct.orders.toLocaleString()} />
+                <Stat label="Revenue" value={`$${performanceMetrics.ct.revenue.toLocaleString()}`} />
+                <Stat label="In-store pickup uplift" value={performanceMetrics.petsmart.inStorePickupUplift} />
+                <Stat label="Halo effect" value={performanceMetrics.petsmart.haloEffect} />
+              </Grid>
+              <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="100">
+                {performanceMetrics.petsmart.slowMoversClearedCount} of{" "}
+                {performanceMetrics.petsmart.slowMoversClearedTotal} slow movers cleared
               </Text>
-              <ChartThemeProvider>
-                <ResponsiveContainer height={90}>
-                  {(w, h) => (
-                    <LineChart
-                      width={w}
-                      height={h}
-                      series={dailyOrdersSeries}
-                      yBaselineFromData
-                      ariaLabel="Daily orders over the promotion period"
-                    />
-                  )}
-                </ResponsiveContainer>
-              </ChartThemeProvider>
-            </Box>
-            <AgentChain
-              contributions={[
-                {
-                  agentName: "Data Agent",
-                  source: "ct",
-                  contribution: "Provided current order, revenue, and code usage totals from commercetools.",
-                },
-                {
-                  agentName: "Reporting Agent",
-                  source: "customer",
-                  contribution: "Provided daily order trends, cross-channel attribution, and inventory clearance history.",
-                },
-              ]}
-            />
-          </InlineCard>
+              <Box mb="200">
+                <Text textStyle="xs" color="neutral.9" mb="50">
+                  Daily orders over promotion period
+                </Text>
+                <ChartThemeProvider>
+                  <ResponsiveContainer height={90}>
+                    {(w, h) => (
+                      <LineChart
+                        width={w}
+                        height={h}
+                        series={dailyOrdersSeries}
+                        yBaselineFromData
+                        ariaLabel="Daily orders over the promotion period"
+                      />
+                    )}
+                  </ResponsiveContainer>
+                </ChartThemeProvider>
+              </Box>
+              <Box data-tour="agent-chain">
+                <AgentChain
+                  contributions={[
+                    {
+                      agentName: "Data Agent",
+                      source: "ct",
+                      contribution: "Provided current order, revenue, and code usage totals from commercetools.",
+                    },
+                    {
+                      agentName: "Reporting Agent",
+                      source: "customer",
+                      contribution: "Provided daily order trends, cross-channel attribution, and inventory clearance history.",
+                    },
+                  ]}
+                />
+              </Box>
+            </InlineCard>
+          </Box>
         )}
       </Box>
 
