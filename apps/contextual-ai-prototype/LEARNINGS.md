@@ -43,3 +43,15 @@ The Nimbus MCP was essential for discovering these APIs. Without it, the prototy
 5. **The locator-as-context-signal concept deserves its own section** in the Multi-Surface Agent Delivery RFC. Currently locators are described as placement identifiers. The prototype shows they're equally valuable as context signals: the agent uses the locator to determine what data to pre-fetch and what conversation to pre-seed.
 
 6. **Expandable table rows as inline slots work but need careful density management.** When two agents stack vertically in an expanded row, the row can become taller than the viewport. Consider a max-height with scroll, or a "show more" pattern for the expanded area.
+
+7. **nimbus-viz charts integrate naturally into inline cards.** The `ChartThemeProvider` + `ResponsiveContainer` + chart component pattern works well inside `InlineCard` bodies. The `ResponsiveContainer` render-prop API (`(w, h) => <Chart width={w} height={h} />`) fits the fit-content card layout. `StatCard` is particularly useful for headline metrics with delta indicators. Area charts (`LineChart variant="area"`) work well as compact trend sparklines at small heights (80-100px).
+
+8. **Charts in expanded table rows provide per-entity context.** Embedding a small line chart in an expanded price row (showing that SKU's margin trend) demonstrates the "inline render target scoped to the row's entity" pattern from the plan. The chart knows which entity it's rendering for because the row expansion handler passes the context.
+
+9. **The ✦ character works better than any icon as a provenance indicator.** It scales from 8px to 16px cleanly, renders as text (no SVG overhead), and is visually distinctive without being heavy. At 12px default it's readable but doesn't compete with content. The four-pointed star is semantically neutral (unlike AutoAwesome which implies "magic").
+
+10. **Nimbus Button `size="2xs"` matches Badge `size="2xs"` exactly.** This is the right size for inline actions (Create, Apply, Dismiss) that sit alongside badges in data rows. The visual weight matches, so actions don't dominate the data they act on.
+
+11. **MultilineTextInput needs a chat-specific pattern.** Filed [nimbus#1965](https://github.com/commercetools/nimbus/issues/1965). The current component requires CSS overrides to remove borders, and the send button can't be positioned inside the input wrapper. A `trailingElement` prop (matching `TextInput`'s `leadingElement`) and a borderless variant would eliminate the workarounds.
+
+12. **API data and AI suggestions coexisting in the same control is the strongest visual proof of the RFC pattern.** The variants card showing Published (API) above a divider and ✦ Suggested (AI) below, or the ComboBox with "Recently Used" (API) and "✦ Suggested" (AI) sections, makes the value proposition immediately tangible. Every journey should demonstrate this coexistence, not just isolated AI-only views.
