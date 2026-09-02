@@ -143,14 +143,14 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
                 py="100"
                 borderRadius="200"
                 borderWidth="1px"
-                borderColor="primary.6"
+                borderColor="ctteal.10"
                 cursor="pointer"
-                _hover={{ bg: "primary.3" }}
+                _hover={{ bg: "ctteal.3" }}
                 transition="background 150ms"
                 data-tour="suggest-promotion"
               >
                 <ProvenanceIndicator agentName="Strategy Agent" agentSource="ct" reason="Suggest a promotion for slow-moving products in this category" />
-                <Text textStyle="xs" fontWeight="medium" color="primary.11">Suggest promotion</Text>
+                <Text textStyle="xs" fontWeight="medium" color="ctteal.11">Suggest promotion</Text>
               </Flex>
             )}
           </>

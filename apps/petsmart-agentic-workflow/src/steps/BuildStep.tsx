@@ -138,7 +138,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                 py="100"
                 borderRadius="200"
                 borderWidth="1px"
-                borderColor="ctteal.6"
+                borderColor="ctteal.10"
                 cursor="pointer"
                 _hover={{ bg: "ctteal.3" }}
                 transition="background 150ms"
