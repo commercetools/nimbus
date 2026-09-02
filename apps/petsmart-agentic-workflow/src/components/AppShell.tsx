@@ -131,28 +131,26 @@ export const AppShell = () => {
           {/* Main content area */}
           <Box flex="1" overflow="auto" bg="neutral.2" minWidth="0" position="relative">
             <Outlet context={{ panelOpen, setPanelOpen }} />
-            {/* Floating button to re-open the agent panel (visible when panel is closed in orchestrated mode) */}
-            {!panelOpen && isOrchestrated && (
+            {/* Floating ✦ button to open the agent panel */}
+            {!panelOpen && (
               <Flex
                 position="fixed"
-                bottom="300"
-                right="300"
+                bottom="400"
+                right="400"
+                width="600"
+                height="600"
                 alignItems="center"
-                gap="150"
-                px="300"
-                py="200"
+                justifyContent="center"
                 bg="primary.9"
-                color="white"
                 borderRadius="full"
                 shadow="lg"
                 cursor="pointer"
                 zIndex={40}
-                _hover={{ bg: "primary.10" }}
-                transition="background 150ms"
+                _hover={{ bg: "primary.10", transform: "scale(1.1)" }}
+                transition="all 200ms ease"
                 onClick={() => setPanelOpen(true)}
               >
-                <Text as="span" fontSize="250" lineHeight="1">✦</Text>
-                <Text textStyle="xs" fontWeight="semibold" color="white">Open Orchestrator</Text>
+                <Text fontSize="400" lineHeight="1" color="white">✦</Text>
               </Flex>
             )}
           </Box>
