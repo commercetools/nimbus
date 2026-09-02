@@ -4,13 +4,14 @@ import { AiDot } from "./AiDot";
 interface ActivationButtonProps {
   label: string;
   onClick?: () => void;
+  [key: `data-${string}`]: string | undefined;
 }
 
 /**
  * A small AI-action button that appears inline in form fields.
  * Represents the "activation" augmentation data shape.
  */
-export const ActivationButton = ({ label, onClick }: ActivationButtonProps) => {
+export const ActivationButton = ({ label, onClick, ...rest }: ActivationButtonProps) => {
   return (
     <Flex
       as="button"
@@ -26,6 +27,7 @@ export const ActivationButton = ({ label, onClick }: ActivationButtonProps) => {
       _hover={{ bg: "indigo.4" }}
       onClick={onClick}
       border="none"
+      {...rest}
     >
       <AiDot size="7px" />
       <Text textStyle="xs" fontWeight="medium" color="indigo.11">
