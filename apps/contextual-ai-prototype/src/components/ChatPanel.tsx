@@ -1,4 +1,4 @@
-import { Box, Flex, Stack, Text, Separator, IconButton, MultilineTextInput, Button } from "@commercetools/nimbus";
+import { Box, Flex, Stack, Text, Separator, IconButton, MultilineTextInput } from "@commercetools/nimbus";
 import { Close, ArrowUpward } from "@commercetools/nimbus-icons";
 import { AiDot } from "./AiDot";
 
@@ -129,9 +129,9 @@ export const ChatPanel = ({
       {/* Input */}
       <Flex
         alignItems="flex-end"
-        gap="200"
+        gap="100"
         px="300"
-        py="300"
+        py="250"
         flexShrink={0}
       >
         <Box flex="1">
@@ -139,7 +139,7 @@ export const ChatPanel = ({
             placeholder={placeholder}
             aria-label="Chat input"
             autoGrow
-            maxHeight="3200"
+            maxHeight="4800"
             variant="ghost"
             size="sm"
             rows={1}
@@ -147,30 +147,35 @@ export const ChatPanel = ({
               "& textarea": {
                 paddingInlineStart: "var(--nimbus-spacing-200)",
                 paddingInlineEnd: "var(--nimbus-spacing-200)",
-                paddingBlock: "var(--nimbus-spacing-150)",
+                paddingBlock: "var(--nimbus-spacing-200)",
                 fontSize: "var(--nimbus-font-sizes-sm)",
-                borderRadius: "var(--nimbus-radii-200)",
-                background: "var(--nimbus-colors-neutral-3)",
                 border: "none",
-                resize: "none",
+                outline: "none",
+                background: "transparent",
+                resize: "vertical",
               },
               "& textarea:focus": {
-                background: "var(--nimbus-colors-neutral-2)",
-                outline: "1px solid var(--nimbus-colors-neutral-6)",
+                outline: "none",
+                boxShadow: "none",
+              },
+              /* hide the default wrapper border */
+              "& > div": {
+                border: "none",
+                boxShadow: "none",
+                background: "transparent",
               },
             }}
           />
         </Box>
-        <Button
+        <IconButton
           aria-label="Send"
-          variant="solid"
-          colorPalette="primary"
+          variant="ghost"
+          colorPalette="neutral"
           size="xs"
-          borderRadius="200"
-          px="200"
+          flexShrink={0}
         >
           <ArrowUpward />
-        </Button>
+        </IconButton>
       </Flex>
     </Flex>
   );
