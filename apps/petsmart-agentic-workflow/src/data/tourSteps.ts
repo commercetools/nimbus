@@ -12,7 +12,7 @@ export const discoverContextualSteps: TourStep[] = [
 
 export const discoverOrchestratedSteps: TourStep[] = [
   { selector: "[data-tour='chat-panel']", title: "The brief is ready", description: "Maya opens the panel and the Orchestrator has already assembled the picture: 23 slow movers, $47K shelf value, spring promotions lift 28%. One conversation, multiple data sources.", placement: "left", action: "openPanel" },
-  { selector: "[data-tour='product-table']", title: "She confirms against the data", description: "Maya cross-references the brief with the product table she already knows. The products, prices, and stock are right where she expects them.", placement: "bottom" },
+  { selector: "[data-tour='product-table']", title: "She confirms against the data", description: "Maya cross-references the brief with the product table she already knows. The products, prices, and stock are right where she expects them.", placement: "bottom", navigateTo: "/orchestrated/step-2" },
 ];
 
 // Step 2: Build
@@ -27,7 +27,7 @@ export const buildContextualSteps: TourStep[] = [
 
 export const buildOrchestratedSteps: TourStep[] = [
   { selector: "[data-tour='chat-panel']", title: "One conversation, full context", description: "Impact preview, stock validation, conflict detection: the Orchestrator assembled it all. Maya reads the brief, asks about the stacking conflict, and knows what to configure.", placement: "left", action: "openPanel" },
-  { selector: "[data-tour='discount-form']", title: "She configures the discount", description: "Maya fills in the form with the Orchestrator's recommendations in hand. Type, dates, stacking mode: informed by the conversation she just had.", placement: "bottom" },
+  { selector: "[data-tour='discount-form']", title: "She configures the discount", description: "Maya fills in the form with the Orchestrator's recommendations in hand. Type, dates, stacking mode: informed by the conversation she just had.", placement: "bottom", navigateTo: "/orchestrated/step-3" },
 ];
 
 // Step 3: Test
@@ -40,7 +40,7 @@ export const testContextualSteps: TourStep[] = [
 
 export const testOrchestratedSteps: TourStep[] = [
   { selector: "[data-tour='chat-panel']", title: "Simulation results in the conversation", description: "The Orchestrator ran 3 cart simulations and flagged Cart C's margin violation. Maya reads the results, asks about return policy, and gets the answer in the same thread.", placement: "left", action: "openPanel" },
-  { selector: "[data-tour='cart-warning']", title: "Cart C breaks the floor", description: "Three dental chews with loyalty stacking drops the margin to 11%. The Orchestrator already confirmed non-stackable mode prevents this in production.", placement: "top", action: "pulseWarningCart" },
+  { selector: "[data-tour='cart-warning']", title: "Cart C breaks the floor", description: "Three dental chews with loyalty stacking drops the margin to 11%. The Orchestrator already confirmed non-stackable mode prevents this in production.", placement: "top", action: "pulseWarningCart", navigateTo: "/orchestrated/step-4" },
 ];
 
 // Step 4: Approve
@@ -53,7 +53,7 @@ export const approveContextualSteps: TourStep[] = [
 export const approveOrchestratedSteps: TourStep[] = [
   { selector: "[data-tour='chat-panel']", title: "The executive brief", description: "Strategy, discount config, simulation results, inventory status: the Orchestrator compiled everything into one brief. Maya reads it and asks a last question before deciding.", placement: "left", action: "openPanel" },
   { selector: "[data-tour='promotion-details']", title: "She reviews the details", description: "The promotion details confirm what the Orchestrator summarized. Name, predicates, stacking mode, dates: all match.", placement: "bottom" },
-  { selector: "[data-tour='approve-btn']", title: "Her call", description: "The Orchestrator assembled the information, but Maya makes the decision. She clicks Approve & Launch.", placement: "bottom", action: "pulseElement" },
+  { selector: "[data-tour='approve-btn']", title: "Her call", description: "The Orchestrator assembled the information, but Maya makes the decision. She clicks Approve & Launch.", placement: "bottom", action: "pulseElement", navigateTo: "/orchestrated/step-5" },
 ];
 
 // Step 5: Measure

@@ -10,6 +10,8 @@ export interface TourStep {
   placement?: "top" | "bottom" | "left" | "right";
   /** Action to animate when entering this step (before dialog shows) */
   action?: "openPanel" | "pulseElement" | "highlightStars" | "hoverWaffleCells" | "selectSmartphones" | "revealGenerateSeo" | "expandFirstRow" | "clickSuggestedCondition" | "pulseShelfDaysCells" | "pulseWarningCart";
+  /** If set on the last step, navigate to this path instead of clicking the element */
+  navigateTo?: string;
 }
 
 interface TourContextValue {
@@ -382,15 +384,20 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     if (currentStep < steps.length - 1) {
       setCurrentStep((s) => s + 1);
     } else {
-      // On the last step, click the spotlighted element (e.g. "Create Promotion" button)
-      // to navigate to the next page, then signal the new page to start its tour.
+      // On the last step, navigate to the next page and auto-start its tour.
       const lastStep = steps[currentStep];
       if (lastStep) {
-        const el = document.querySelector(lastStep.selector) as HTMLElement | null;
-        if (el) {
-          el.click();
-          // Signal the next page to auto-start its tour
+        if (lastStep.navigateTo) {
+          // Explicit navigation path (used by orchestrated steps)
+          window.location.hash = lastStep.navigateTo;
           setTimeout(() => window.dispatchEvent(new CustomEvent("tour:autoStart")), 600);
+        } else {
+          // Click the spotlighted element (used by contextual steps with CTA buttons)
+          const el = document.querySelector(lastStep.selector) as HTMLElement | null;
+          if (el) {
+            el.click();
+            setTimeout(() => window.dispatchEvent(new CustomEvent("tour:autoStart")), 600);
+          }
         }
       }
       endTour();
