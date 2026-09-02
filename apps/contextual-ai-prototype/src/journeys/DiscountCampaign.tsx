@@ -135,8 +135,8 @@ export const DiscountCampaign = () => (
 
           {/* Current conditions */}
           <Flex gap="200" flexWrap="wrap" mb="300">
-            <Badge size="sm" colorPalette="neutral">Category = Summer Collection ✕</Badge>
-            <Badge size="sm" colorPalette="neutral">Inventory {">"} 50 units ✕</Badge>
+            <Badge size="2xs" colorPalette="neutral">Category = Summer Collection ✕</Badge>
+            <Badge size="2xs" colorPalette="neutral">Inventory {">"} 50 units ✕</Badge>
           </Flex>
 
           {/* AI suggested condition chips */}
