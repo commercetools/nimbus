@@ -286,21 +286,31 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     }
   }, [step]);
 
-  // When step changes: run action animation, then measure & show dialog
+  // When step changes: spotlight the target immediately, run action animation, then show dialog
   useEffect(() => {
     if (!step) return;
     setTransitioning(true);
-    setRect(null);
+
+    // Find and spotlight the target element right away (before running the action).
+    // This keeps the highlight visible while the animation plays.
+    const el = document.querySelector(step.selector);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      setTimeout(() => {
+        setRect(el.getBoundingClientRect());
+      }, 100);
+    } else {
+      setRect(null);
+    }
 
     const timer = setTimeout(async () => {
       await runAction(step);
-      // Now measure the element (it may have appeared, e.g. panel)
-      const el = document.querySelector(step.selector);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      // Re-measure after animation (element may have moved or appeared, e.g. panel)
+      const target = document.querySelector(step.selector);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "nearest" });
         setTimeout(() => {
-          const r = el.getBoundingClientRect();
-          setRect(r);
+          setRect(target.getBoundingClientRect());
           setTransitioning(false);
         }, 200);
       } else {
