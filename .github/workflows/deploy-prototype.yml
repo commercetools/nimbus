@@ -30,13 +30,19 @@ jobs:
           GITHUB_PAGES: "1"
 
       - name: Deploy to gh-pages subdirectory
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git fetch origin gh-pages:gh-pages || git checkout --orphan gh-pages
-          git checkout gh-pages
-          rm -rf multi-surface-rendering-user-journeys
-          cp -r apps/contextual-ai-prototype/dist multi-surface-rendering-user-journeys
-          git add multi-surface-rendering-user-journeys
+          DEPLOY=$(mktemp -d)
+          git clone --branch gh-pages --depth=1 \
+            "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" \
+            "$DEPLOY"
+          rm -rf "$DEPLOY/multi-surface-rendering-user-journeys"
+          cp -r apps/contextual-ai-prototype/dist "$DEPLOY/multi-surface-rendering-user-journeys"
+          cd "$DEPLOY"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -m "deploy: multi-surface-rendering-user-journeys $(date -u +%Y-%m-%dT%H:%M:%SZ)" --allow-empty
+          git add -A
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "deploy: multi-surface-rendering-user-journeys $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push origin gh-pages
