@@ -4,7 +4,7 @@ import { scaleLinear, scaleTime } from "@visx/scale";
 import { AreaClosed, LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveMonotoneX } from "@visx/curve";
-import { extent, max } from "d3-array";
+import { extent, max, min } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
@@ -19,6 +19,10 @@ export interface LineChartProps {
   height: number;
   series: Series[];
   variant?: "line" | "area";
+  /** When true, y-axis starts near the data minimum instead of 0. Useful for
+   *  percentage or ratio data where the variation is small relative to the
+   *  absolute range. */
+  yBaselineFromData?: boolean;
   ariaLabel?: string;
   /** Layer-2 overlays (ReferenceLine, ThresholdBand, BenchmarkSeries…) drawn
    *  in the plot's coordinate space, on top of the series. */
@@ -38,6 +42,7 @@ export function LineChart({
   height,
   series,
   variant = "line",
+  yBaselineFromData = false,
   ariaLabel,
   children,
 }: LineChartProps) {
@@ -50,6 +55,12 @@ export function LineChart({
     [points]
   );
   const yMax = useMemo(() => max(points, (p) => p.y ?? 0) ?? 0, [points]);
+  const yMin = useMemo(() => {
+    if (!yBaselineFromData) return 0;
+    const dataMin = min(points, (p) => p.y ?? 0) ?? 0;
+    // Pad 10% below the data min so the line doesn't touch the bottom
+    return Math.max(0, dataMin - (yMax - dataMin) * 0.1);
+  }, [points, yMax, yBaselineFromData]);
   const color = useEntityColors(
     useMemo(() => series.map((s) => s.id), [series])
   );
@@ -86,7 +97,7 @@ export function LineChart({
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleTime({ domain: xDomain, range: [0, innerWidth] });
         const yScale = scaleLinear({
-          domain: [0, yMax],
+          domain: [yMin, yMax],
           range: [innerHeight, 0],
           nice: true,
         });

@@ -85,7 +85,7 @@ export const PricingReview = () => {
               <ChartThemeProvider>
                 <ResponsiveContainer height={70}>
                   {(w, h) => (
-                    <LineChart width={w} height={h} series={marginTrend} ariaLabel="Margin trend over 6 months" />
+                    <LineChart width={w} height={h} series={marginTrend} yBaselineFromData ariaLabel="Margin trend over 6 months" />
                   )}
                 </ResponsiveContainer>
               </ChartThemeProvider>
@@ -195,7 +195,7 @@ export const PricingReview = () => {
                         <Text textStyle="xs" color="neutral.9" mb="50">6-month trend</Text>
                         <ResponsiveContainer height={80}>
                           {(w, h) => (
-                            <LineChart width={w} height={h} series={marginTrend} ariaLabel={`Margin trend for ${row.entry}`} />
+                            <LineChart width={w} height={h} series={marginTrend} yBaselineFromData ariaLabel={`Margin trend for ${row.entry}`} />
                           )}
                         </ResponsiveContainer>
                       </Box>
