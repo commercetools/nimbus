@@ -1,0 +1,45 @@
+---
+id: Charts-RadialBarChart
+title: Radial Bar Chart
+exportName: RadialBarChart
+description: A compact polar layout of categorical magnitudes.
+lifecycleState: Experimental
+order: 203
+icon: BarChart
+menu:
+  - Charts
+  - Radial Bar Chart
+tags:
+  - chart
+  - magnitude
+---
+
+## Radial Bar Chart
+
+<ChartMeta />
+
+A compact polar layout of categorical magnitudes.
+
+```jsx live
+const data = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+  { category: "Partner", value: 1800 },
+  { category: "Email", value: 1200 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <RadialBarChart width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { RadialBarChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

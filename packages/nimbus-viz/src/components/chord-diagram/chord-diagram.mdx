@@ -1,0 +1,48 @@
+---
+id: Charts-ChordDiagram
+title: Chord Diagram
+exportName: ChordDiagram
+description: Flows between every pair of a shared set of entities.
+lifecycleState: Experimental
+order: 1001
+icon: AccountTree
+menu:
+  - Charts
+  - Chord Diagram
+tags:
+  - chart
+  - flow
+---
+
+## Chord Diagram
+
+<ChartMeta />
+
+Flows between every pair of a shared set of entities.
+
+```jsx live
+const data = {
+  labels: ["Search", "Social", "Email", "Direct", "Referral"],
+  matrix: [
+    [0, 18, 9, 24, 6],
+    [14, 0, 12, 8, 20],
+    [7, 15, 0, 30, 5],
+    [22, 10, 26, 0, 11],
+    [9, 19, 4, 13, 0],
+  ],
+};
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <ChordDiagram width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { ChordDiagram, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

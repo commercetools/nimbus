@@ -1,0 +1,46 @@
+---
+id: Charts-ControlChart
+title: Control Chart
+exportName: ControlChart
+description: Watch a process against its mean and control limits.
+lifecycleState: Experimental
+order: 104
+icon: ShowChart
+menu:
+  - Charts
+  - Control Chart
+tags:
+  - chart
+  - trend
+---
+
+## Control Chart
+
+<ChartMeta />
+
+Watch a process against its mean and control limits.
+
+```jsx live
+const series = [
+  { id: "p", label: "Fill weight", data: [
+    { x: new Date("2026-01-01"), y: 249 }, { x: new Date("2026-01-02"), y: 251 },
+    { x: new Date("2026-01-03"), y: 250 }, { x: new Date("2026-01-04"), y: 258 },
+    { x: new Date("2026-01-05"), y: 247 }, { x: new Date("2026-01-06"), y: 252 },
+    { x: new Date("2026-01-07"), y: 240 }, { x: new Date("2026-01-08"), y: 251 },
+    { x: new Date("2026-01-09"), y: 253 }, { x: new Date("2026-01-10"), y: 249 } ] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <ControlChart width={width} height={height} series={series} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { ControlChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

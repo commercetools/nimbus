@@ -1,0 +1,44 @@
+---
+id: Charts-Sparkline
+title: Sparkline
+exportName: Sparkline
+description: A compact, label-free trend line for inline KPIs.
+lifecycleState: Experimental
+order: 103
+icon: ShowChart
+menu:
+  - Charts
+  - Sparkline
+tags:
+  - chart
+  - trend
+---
+
+## Sparkline
+
+<ChartMeta />
+
+A compact, label-free trend line for inline KPIs.
+
+```jsx live
+const data = [
+  { x: new Date("2026-01-01"), y: 12 }, { x: new Date("2026-02-01"), y: 18 },
+  { x: new Date("2026-03-01"), y: 15 }, { x: new Date("2026-04-01"), y: 22 },
+  { x: new Date("2026-05-01"), y: 28 }, { x: new Date("2026-06-01"), y: 25 },
+  { x: new Date("2026-07-01"), y: 33 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={80}>
+      {(width, height) => <Sparkline width={width} height={height} data={data} showEndDot />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { Sparkline, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

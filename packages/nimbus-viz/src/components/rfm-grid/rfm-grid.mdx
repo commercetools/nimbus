@@ -1,0 +1,47 @@
+---
+id: Charts-RfmGrid
+title: RFM Grid
+exportName: RfmGrid
+description: Customers distributed across recency and frequency.
+lifecycleState: Experimental
+order: 903
+icon: GridView
+menu:
+  - Charts
+  - RFM Grid
+tags:
+  - chart
+  - matrix
+---
+
+## RFM Grid
+
+<ChartMeta />
+
+Customers distributed across recency and frequency.
+
+```jsx live
+const data = [
+  { recency: 1, frequency: 1, count: 40, value: 8000 },
+  { recency: 1, frequency: 3, count: 120, value: 52000 },
+  { recency: 2, frequency: 4, count: 90, value: 61000 },
+  { recency: 3, frequency: 2, count: 70, value: 22000 },
+  { recency: 4, frequency: 5, count: 55, value: 98000 },
+  { recency: 5, frequency: 1, count: 30, value: 5000 },
+  { recency: 5, frequency: 5, count: 140, value: 210000 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <RfmGrid width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { RfmGrid, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

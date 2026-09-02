@@ -1,0 +1,43 @@
+---
+id: Charts-BoxPlot
+title: Box Plot
+exportName: BoxPlot
+description: Five-number summaries compared across groups.
+lifecycleState: Experimental
+order: 800
+icon: Insights
+menu:
+  - Charts
+  - Box Plot
+tags:
+  - chart
+  - distribution
+---
+
+## Box Plot
+
+<ChartMeta />
+
+Five-number summaries compared across groups.
+
+```jsx live
+const groups = [
+  { label: "Web", min: 12, firstQuartile: 28, median: 40, thirdQuartile: 55, max: 78 },
+  { label: "Mobile", min: 8, firstQuartile: 22, median: 34, thirdQuartile: 48, max: 70 },
+  { label: "Retail", min: 18, firstQuartile: 33, median: 46, thirdQuartile: 60, max: 88 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <BoxPlot width={width} height={height} groups={groups} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { BoxPlot, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```

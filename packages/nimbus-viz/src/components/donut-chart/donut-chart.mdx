@@ -1,0 +1,45 @@
+---
+id: Charts-DonutChart
+title: Donut Chart
+exportName: DonutChart
+description: Part-to-whole for a handful of slices, with a center readout.
+lifecycleState: Experimental
+order: 301
+icon: PieChart
+menu:
+  - Charts
+  - Donut Chart
+tags:
+  - chart
+  - part-to-whole
+---
+
+## Donut Chart
+
+<ChartMeta />
+
+Part-to-whole for a handful of slices, with a center readout.
+
+```jsx live
+const data = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+  { category: "Partner", value: 1800 },
+  { category: "Email", value: 1200 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => <DonutChart width={width} height={height} data={data} />}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Import
+
+```tsx
+import { DonutChart, ChartThemeProvider, ResponsiveContainer } from "@commercetools/nimbus-viz";
+```
