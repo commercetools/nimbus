@@ -239,6 +239,12 @@ const suggestedKeywords = [
 
 export const ProductLaunch = () => {
   const [expandedVariant, setExpandedVariant] = useState<string | null>(null);
+  const [createdIds, setCreatedIds] = useState<Set<string>>(new Set());
+
+  // Mark created variants as "existing" (no longer suggested)
+  const rows = allVariantRows.map(row =>
+    createdIds.has(row.id) ? { ...row, isSuggested: false, status: "Created" } : row
+  );
 
   return (
     <Box height="100%" overflow="auto">
@@ -464,10 +470,13 @@ export const ProductLaunch = () => {
 
             <DataTable.Root
               columns={variantColumns}
-              rows={allVariantRows}
+              rows={rows}
               density="condensed"
               allowsPinning={false}
               allowsExpandColumn={false}
+              onRowClick={(row) => {
+                if (row.isSuggested) setCreatedIds(prev => new Set([...prev, row.id]));
+              }}
               renderNestedContent={(row) => {
                 if (!row.isSuggested) {
                   return (

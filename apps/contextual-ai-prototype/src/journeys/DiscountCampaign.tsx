@@ -1,19 +1,29 @@
+import { useState } from "react";
 import { Box, Flex, Stack, Text, Badge, Button, Separator, TextInput, FormField, Icon } from "@commercetools/nimbus";
-import { AutoAwesome, Warning } from "@commercetools/nimbus-icons";
+import { Warning } from "@commercetools/nimbus-icons";
 import { PageHeader } from "../components/PageHeader";
 
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
 
-const conditionChips = [
-  { label: "Category: Summer Collection", confidence: 88 },
-  { label: "Inventory > 50 units", confidence: 82 },
+const allConditions = [
+  { label: "Category = Summer Collection", isDefault: true },
+  { label: "Inventory > 50 units", isDefault: true },
   { label: "Product age > 90 days", confidence: 76 },
   { label: "Exclude: New Arrivals tag", confidence: 71 },
 ];
 
-export const DiscountCampaign = () => (
+export const DiscountCampaign = () => {
+  const [applied, setApplied] = useState<Set<string>>(new Set(["Category = Summer Collection", "Inventory > 50 units"]));
+
+  const appliedList = allConditions.filter(c => applied.has(c.label));
+  const suggestedList = allConditions.filter(c => !applied.has(c.label) && c.confidence);
+
+  const addCondition = (label: string) => setApplied(prev => new Set([...prev, label]));
+  const removeCondition = (label: string) => setApplied(prev => { const next = new Set(prev); next.delete(label); return next; });
+
+  return (
   <Box height="100%" overflow="auto">
     <PageHeader
       breadcrumbs={[
@@ -129,48 +139,45 @@ export const DiscountCampaign = () => (
             <Flex alignItems="center" gap="200">
               <Text>Conditions</Text>
               <Box flex="1" />
-              <Text textStyle="xs" color="neutral.9">2 applied</Text>
+              <Text textStyle="xs" color="neutral.9">{appliedList.length} applied</Text>
             </Flex>
           </FormField.Label>
 
-          {/* Current conditions */}
+          {/* Applied conditions (click ✕ to remove) */}
           <Flex gap="200" flexWrap="wrap" mb="300">
-            <Badge size="2xs" colorPalette="neutral">Category = Summer Collection ✕</Badge>
-            <Badge size="2xs" colorPalette="neutral">Inventory {">"} 50 units ✕</Badge>
+            {appliedList.map((c) => (
+              <Badge key={c.label} size="2xs" colorPalette="neutral" cursor="pointer" onClick={() => removeCondition(c.label)}>
+                {c.label} ✕
+              </Badge>
+            ))}
           </Flex>
 
-          {/* AI suggested condition chips */}
-          <Box data-tour="suggested-conditions">
-            <Flex alignItems="center" gap="150" mb="200">
-              <ProvenanceIndicator agentName="Promotions Agent" reason="Based on discount name and type analysis" />
-              <Text textStyle="xs" fontWeight="semibold" color="indigo.9">Suggested conditions</Text>
-            </Flex>
-            <Flex gap="200" flexWrap="wrap">
-              {conditionChips.map((chip, i) => (
-                <Flex
-                  key={i}
-                  alignItems="center"
-                  gap="150"
-                  px="300"
-                  py="100"
-                  borderRadius="full"
-                  bg="indigo.2"
-                  borderWidth="1px"
-                  borderColor="indigo.6"
-                  cursor="pointer"
-                  _hover={{ bg: "indigo.3" }}
-                  transition="background 150ms"
-                  css={{ animation: `fadeIn 200ms ease ${i * 80}ms both` }}
-                >
-                  <ProvenanceIndicator agentName="Promotions Agent" confidence={chip.confidence} size="10px" />
-                  <Text textStyle="xs" fontWeight="medium" color="indigo.11">{chip.label}</Text>
-                  <Badge size="2xs" colorPalette="info">{chip.confidence}%</Badge>
-                </Flex>
-              ))}
-            </Flex>
-          </Box>
+          {/* AI suggested conditions (click to add) */}
+          {suggestedList.length > 0 && (
+            <Box data-tour="suggested-conditions">
+              <Flex alignItems="center" gap="150" mb="200">
+                <ProvenanceIndicator agentName="Promotions Agent" reason="Based on discount name and type analysis" />
+                <Text textStyle="xs" fontWeight="semibold" color="indigo.9">Suggested conditions</Text>
+              </Flex>
+              <Flex gap="200" flexWrap="wrap">
+                {suggestedList.map((chip) => (
+                  <Badge
+                    key={chip.label}
+                    size="2xs"
+                    colorPalette="info"
+                    cursor="pointer"
+                    onClick={() => addCondition(chip.label)}
+                  >
+                    <ProvenanceIndicator agentName="Promotions Agent" confidence={chip.confidence} size="8px" />
+                    {chip.label} +
+                  </Badge>
+                ))}
+              </Flex>
+            </Box>
+          )}
         </FormField.Root>
       </Box>
     </Stack>
   </Box>
-);
+  );
+};
