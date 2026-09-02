@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Flex, Stack, Text, Separator, Button, Tooltip, MakeElementFocusable } from "@commercetools/nimbus";
+import { Box, Flex, Stack, Text, Separator, Button, Badge } from "@commercetools/nimbus";
 import { AiDot } from "../components/AiDot";
 import { useTour } from "../components/Tour";
 import { pipelineSteps, agents } from "../data/agents";
@@ -15,34 +15,49 @@ const getPipelineColors = (step: (typeof pipelineSteps)[number]): PipelineColors
 };
 
 const WorkflowPipeline = () => (
-  <Flex wrap="wrap" alignItems="flex-start" justifyContent="center" gap="50" rowGap="200">
+  <Flex wrap="wrap" gap="200" justifyContent="center">
     {pipelineSteps.map((step, index) => {
       const { bg, fg } = getPipelineColors(step);
       const agent = step.agentId ? agents[step.agentId] : undefined;
-      const tooltip = (step as { description?: string }).description ?? agent?.description ?? step.label;
+      const description = (step as { description?: string }).description ?? agent?.description;
+      const sourceBadge = step.isHumanGate
+        ? "Human"
+        : agent?.source === "ct"
+          ? "commercetools"
+          : "PetSmart";
       return (
-        <Flex key={step.step} alignItems="center" gap="50">
-          <Tooltip.Root>
-            <MakeElementFocusable>
-              <Flex direction="column" alignItems="center" gap="50" width="1200" cursor="default">
-                <Flex
-                  width="500"
-                  height="500"
-                  borderRadius="full"
-                  bg={bg}
-                  alignItems="center"
-                  justifyContent="center"
-                  flexShrink={0}
-                >
-                  <Text textStyle="xs" fontWeight="bold" color={fg}>{step.step}</Text>
-                </Flex>
-                <Text textStyle="xs" color="neutral.11" textAlign="center" lineHeight="tight">
-                  {step.label}
-                </Text>
+        <Flex key={step.step} alignItems="center" gap="100">
+          <Box
+            bg="white"
+            borderWidth="1px"
+            borderColor="neutral.4"
+            borderRadius="200"
+            p="200"
+            width="130px"
+          >
+            <Flex alignItems="center" gap="150" mb="100">
+              <Flex
+                width="500"
+                height="500"
+                borderRadius="full"
+                bg={bg}
+                alignItems="center"
+                justifyContent="center"
+                flexShrink={0}
+              >
+                <Text textStyle="xs" fontWeight="bold" color={fg}>{step.step}</Text>
               </Flex>
-            </MakeElementFocusable>
-            <Tooltip.Content>{tooltip}</Tooltip.Content>
-          </Tooltip.Root>
+              <Text textStyle="xs" fontWeight="semibold" color="neutral.12">{step.label}</Text>
+            </Flex>
+            <Badge size="2xs" colorPalette={step.isHumanGate ? "warning" : agent?.source === "ct" ? "info" : "primary"} mb="100">
+              {sourceBadge}
+            </Badge>
+            {description && (
+              <Text textStyle="xs" color="neutral.10" lineHeight="tight">
+                {description}
+              </Text>
+            )}
+          </Box>
           {index < pipelineSteps.length - 1 && (
             <Text as="span" color="neutral.6" textStyle="xs" flexShrink={0} aria-hidden="true">→</Text>
           )}
