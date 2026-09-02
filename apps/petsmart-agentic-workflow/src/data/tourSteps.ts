@@ -93,30 +93,27 @@ const stepsByModeAndNumber: Record<FlavorMode, Record<number, TourStep[]>> = {
 
 const LAST_STEP = 5;
 
-type StartTourFn = (steps: TourStep[], onComplete?: () => void) => void;
+type StartTourFn = (steps: TourStep[]) => void;
 
 /**
- * Starts the tour for a given step page, and — unless it's the last step —
- * chains into the next step page's tour once this one finishes. Used so a
- * single "Start" click from the Landing page (or the tour's own advancement
- * pulse) carries Maya continuously through all 5 steps.
+ * Gets the tour steps for a given step page and mode.
+ * Each step's tour runs independently. The contextual action button
+ * at the end of each step (Create Promotion, Save & Simulate, etc.)
+ * handles navigation to the next step.
+ */
+export function getStepTourSteps(mode: FlavorMode, stepNumber: number): TourStep[] | undefined {
+  return stepsByModeAndNumber[mode][stepNumber];
+}
+
+/**
+ * Starts the tour for a single step page. No auto-chaining.
  */
 export function startStepTour(
-  navigate: (path: string) => void,
   startTour: StartTourFn,
   mode: FlavorMode,
   stepNumber: number
 ): void {
   const steps = stepsByModeAndNumber[mode][stepNumber];
   if (!steps) return;
-
-  const onComplete =
-    stepNumber < LAST_STEP
-      ? () => {
-          navigate(`/${mode}/step-${stepNumber + 1}`);
-          setTimeout(() => startStepTour(navigate, startTour, mode, stepNumber + 1), 500);
-        }
-      : undefined;
-
-  startTour(steps, onComplete);
+  startTour(steps);
 }

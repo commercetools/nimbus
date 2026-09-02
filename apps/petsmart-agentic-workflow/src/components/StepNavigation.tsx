@@ -20,9 +20,9 @@ export const StepNavigation = ({
     <Flex
       justifyContent="space-between"
       alignItems="center"
-      py="400"
+      py="200"
       px="300"
-      mt="400"
+      mt="200"
       borderTopWidth="1px"
       borderColor="neutral.4"
     >

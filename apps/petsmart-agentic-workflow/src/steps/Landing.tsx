@@ -88,7 +88,7 @@ export const Landing = () => {
 
   const handleStart = (flavorId: FlavorMode) => {
     navigate(`/${flavorId}/step-1`);
-    setTimeout(() => startStepTour(navigate, startTour, flavorId, 1), 500);
+    setTimeout(() => startStepTour(startTour, flavorId, 1), 500);
   };
 
   return (
