@@ -212,6 +212,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
   const [currentStep, setCurrentStep] = useState(-1);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const [transitioning, setTransitioning] = useState(false);
+  const [endMessage, setEndMessage] = useState(false);
 
   const isActive = currentStep >= 0 && currentStep < steps.length;
   const step = isActive ? steps[currentStep] : null;
@@ -272,6 +273,8 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     setRect(null);
     setTransitioning(false);
     window.dispatchEvent(new CustomEvent("tour:closePanel"));
+    setEndMessage(true);
+    setTimeout(() => setEndMessage(false), 8000);
   }, []);
 
   const next = useCallback(() => {
@@ -365,6 +368,28 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
 
           {/* Click anywhere to advance */}
           <Box position="fixed" inset="0" zIndex={10000} cursor="pointer" onClick={next} />
+        </Box>
+      )}
+      {/* Post-tour message: no overlay, just a floating toast */}
+      {endMessage && (
+        <Box
+          position="fixed"
+          bottom="300"
+          left="50%"
+          zIndex={9999}
+          bg="neutral.12"
+          color="white"
+          px="400"
+          py="200"
+          borderRadius="300"
+          shadow="lg"
+          css={{ transform: "translateX(-50%)", animation: "fadeIn 300ms ease" }}
+          cursor="pointer"
+          onClick={() => setEndMessage(false)}
+        >
+          <Text textStyle="sm" color="white">
+            Back to user journeys whenever you're done clicking around ↑
+          </Text>
         </Box>
       )}
     </TourContext.Provider>
