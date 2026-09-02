@@ -123,9 +123,10 @@ export const Landing = () => {
             </Text>
           </Flex>
           <Text textStyle="sm" color="neutral.11" lineHeight="tall">
-            Six scenarios showing how panel, inline, and augmentation render targets
-            compose into a contextual AI experience. Each journey demonstrates AI that
-            integrates with existing controls rather than replacing them.
+            Interactive prototypes for the Agentic Surface RFC. Six scenarios showing
+            how panel, inline, and augmentation render targets compose into a contextual
+            AI experience. Each journey demonstrates AI that integrates with existing
+            controls rather than replacing them.
           </Text>
         </Box>
 
