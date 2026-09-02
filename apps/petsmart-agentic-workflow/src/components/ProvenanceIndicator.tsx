@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef, createContext, useContext } from "react";
-import { Box, Flex, Text, Popover, Badge, Button, Separator } from "@commercetools/nimbus";
+import { Box, Flex, Text, Popover, Badge, Button, Separator, Icon } from "@commercetools/nimbus";
+import { CommercetoolsCube, Pets } from "@commercetools/nimbus-icons";
 
 // ─── Panel context ──────────────────────────────────────────────────────────
 
@@ -123,12 +124,18 @@ export const ProvenanceIndicator = ({
       </Popover.Trigger>
       <Popover.Content maxWidth="300px" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         <Box p="200">
-          {/* Header: agent name + confidence badge */}
+          {/* Header: agent name + org icon + confidence */}
           <Flex alignItems="center" gap="150" mb="150">
-            <Text as="span" fontSize="10px" color={colors.popoverStar} lineHeight="1">✦</Text>
+            <Text as="span" fontSize="250" color={colors.popoverStar} lineHeight="1">✦</Text>
             <Text textStyle="xs" fontWeight="semibold" color="neutral.12">
               {agentName}
             </Text>
+            <Icon
+              as={agentSource === "ct" ? CommercetoolsCube : Pets}
+              size="2xs"
+              color={agentSource === "ct" ? "ctteal.9" : "primary.9"}
+              flexShrink={0}
+            />
             {confidence !== undefined && (
               <Badge size="2xs" colorPalette="info" ml="auto">{confidence}%</Badge>
             )}
