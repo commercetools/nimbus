@@ -312,9 +312,31 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                   </ComboBox.Root>
                 </FormField.Input>
                 {mode === "contextual" && (
-                  <FormField.Description>
-                    ✦ Suggested: historically lifts pet health 31% vs flat percentage
-                  </FormField.Description>
+                  <Flex
+                    mt="100"
+                    gap="150"
+                    alignItems="center"
+                    px="200"
+                    py="100"
+                    bg="ctteal.2"
+                    borderRadius="200"
+                    borderWidth="1px"
+                    borderColor="ctteal.6"
+                    cursor="pointer"
+                    _hover={{ bg: "ctteal.3" }}
+                    transition="background 150ms"
+                    width="fit-content"
+                  >
+                    <ProvenanceIndicator
+                      agentName="Inventory Agent"
+                      agentSource="customer"
+                      reason="Buy 2 Get 1 Free outperforms flat percentage discounts by 31% in the pet health category, based on PetSmart's 2024-2025 promotion data."
+                      size="10px"
+                    />
+                    <Text textStyle="xs" color="ctteal.11">
+                      Suggested: lifts pet health 31% vs flat percentage
+                    </Text>
+                  </Flex>
                 )}
               </FormField.Root>
             </Stack>
