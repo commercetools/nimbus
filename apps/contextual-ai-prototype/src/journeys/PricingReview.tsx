@@ -1,9 +1,28 @@
+import { useState } from "react";
 import { Box, Flex, Stack, Text, Badge, Button, Separator, Icon } from "@commercetools/nimbus";
-import { AutoAwesome, TrendingUp, Warning } from "@commercetools/nimbus-icons";
+import { TrendingUp, Warning, ExpandMore, ExpandLess } from "@commercetools/nimbus-icons";
+import { ChartThemeProvider, ResponsiveContainer, LineChart, StatCard } from "@commercetools/nimbus-viz";
 import { PageHeader } from "../components/PageHeader";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
+import { AiDot } from "../components/AiDot";
+
+// Margin trend data (past 6 months)
+const marginTrend = [
+  {
+    id: "margin",
+    label: "Gross Margin %",
+    data: [
+      { x: new Date("2026-03-01"), y: 24.1 },
+      { x: new Date("2026-04-01"), y: 23.8 },
+      { x: new Date("2026-05-01"), y: 23.5 },
+      { x: new Date("2026-06-01"), y: 22.9 },
+      { x: new Date("2026-07-01"), y: 20.1 },
+      { x: new Date("2026-08-01"), y: 17.3 },
+    ],
+  },
+];
 
 const priceRows = [
   { entry: "EUR / Online", current: "€899", suggested: "€979", margin: "17.3% → 22.1%", position: "Mid-range", highlight: true },
@@ -13,7 +32,9 @@ const priceRows = [
   { entry: "GBP / Online", current: "£799", suggested: "£869", margin: "18.5% → 22.9%", position: "Mid-range", highlight: false },
 ];
 
-export const PricingReview = () => (
+export const PricingReview = () => {
+  const [expandedRow, setExpandedRow] = useState<number | null>(0); // first row expanded by default
+  return (
   <Box height="100%" overflow="auto">
     <PageHeader
       breadcrumbs={[
@@ -44,26 +65,26 @@ export const PricingReview = () => (
         <InlineCard title="Margin Analysis" agentName="Pricing Optimizer Agent" headerRight={
           <Badge size="xs" colorPalette="warning">At Risk</Badge>
         }>
-          <Flex gap="600" alignItems="center">
-            <Box>
-              <Text textStyle="2xl" fontWeight="bold" color="red.11">17.3%</Text>
-              <Text textStyle="xs" color="neutral.9">Current margin</Text>
-            </Box>
-            <Icon as={TrendingUp} size="sm" color="neutral.8" />
-            <Box>
-              <Text textStyle="2xl" fontWeight="bold" color="green.11">22.1%</Text>
-              <Text textStyle="xs" color="neutral.9">After adjustment</Text>
-            </Box>
-            <Separator orientation="vertical" height="40px" />
-            <Box>
-              <Text textStyle="sm" fontWeight="medium" color="neutral.12">20% floor</Text>
-              <Text textStyle="xs" color="neutral.9">Company minimum</Text>
-            </Box>
+          <Flex gap="400">
+            <ChartThemeProvider>
+              <Stack gap="200" flex="1">
+                <Flex gap="300">
+                  <StatCard label="Current" value={17.3} format={(n) => `${n}%`} previous={24.1} />
+                  <StatCard label="After adj." value={22.1} format={(n) => `${n}%`} previous={17.3} />
+                  <StatCard label="Floor" value={20} format={(n) => `${n}%`} />
+                </Flex>
+                <ResponsiveContainer height={100}>
+                  {(w, h) => (
+                    <LineChart width={w} height={h} series={marginTrend} ariaLabel="Margin trend over 6 months" />
+                  )}
+                </ResponsiveContainer>
+              </Stack>
+            </ChartThemeProvider>
           </Flex>
           <Flex mt="200" gap="100" alignItems="center">
             <Icon as={Warning} size="2xs" color="amber.9" />
             <Text textStyle="xs" color="amber.11">
-              Supplier cost increase of 12% reduced margins below the 20% floor on 5 of 6 price entries
+              Supplier cost +12% dropped margin below 20% floor on 5 of 6 entries
             </Text>
           </Flex>
         </InlineCard>
@@ -106,35 +127,77 @@ export const PricingReview = () => (
           <Text textStyle="xs" fontWeight="semibold" color="neutral.9" width="120px" textAlign="right">Actions</Text>
         </Flex>
 
-        {/* Table rows */}
+        {/* Table rows with expandable detail */}
         {priceRows.map((row, i) => (
-          <Flex
-            key={i}
-            px="400"
-            py="250"
-            alignItems="center"
-            borderBottomWidth="1px"
-            borderColor="neutral.3"
-            bg={row.highlight ? "indigo.2" : undefined}
-            _hover={{ bg: row.highlight ? "indigo.3" : "neutral.2" }}
-            transition="background 150ms"
-            cursor="pointer"
-          >
-            <Flex width="140px" alignItems="center" gap="150">
-              <ProvenanceIndicator agentName="Pricing Optimizer Agent" iconSize="2xs" />
-              <Text textStyle="sm" fontWeight="medium" color="neutral.12">{row.entry}</Text>
+          <Box key={i}>
+            <Flex
+              px="400"
+              py="250"
+              alignItems="center"
+              borderBottomWidth="1px"
+              borderColor="neutral.3"
+              bg={expandedRow === i ? "neutral.2" : row.highlight ? "indigo.2" : undefined}
+              _hover={{ bg: row.highlight ? "indigo.3" : "neutral.2" }}
+              transition="background 150ms"
+              cursor="pointer"
+              onClick={() => setExpandedRow(expandedRow === i ? null : i)}
+            >
+              <Icon as={expandedRow === i ? ExpandLess : ExpandMore} size="2xs" color="neutral.8" />
+              <Flex width="130px" alignItems="center" gap="150" ml="100">
+                <ProvenanceIndicator agentName="Pricing Optimizer Agent" />
+                <Text textStyle="sm" fontWeight="medium" color="neutral.12">{row.entry}</Text>
+              </Flex>
+              <Text textStyle="sm" color="neutral.10" width="80px">{row.current}</Text>
+              <Text textStyle="sm" fontWeight="medium" color="indigo.11" width="90px">{row.suggested}</Text>
+              <Text textStyle="xs" color="neutral.11" width="130px">{row.margin}</Text>
+              <Text textStyle="xs" color="neutral.10" flex="1">{row.position}</Text>
+              <Flex width="120px" justifyContent="flex-end" gap="200">
+                <Button variant="outline" size="2xs">Apply</Button>
+                <Button variant="ghost" size="2xs">Dismiss</Button>
+              </Flex>
             </Flex>
-            <Text textStyle="sm" color="neutral.10" width="80px">{row.current}</Text>
-            <Text textStyle="sm" fontWeight="medium" color="indigo.11" width="90px">{row.suggested}</Text>
-            <Text textStyle="xs" color="neutral.11" width="130px">{row.margin}</Text>
-            <Text textStyle="xs" color="neutral.10" flex="1">{row.position}</Text>
-            <Flex width="120px" justifyContent="flex-end" gap="200">
-              <Button variant="outline" size="2xs">Apply</Button>
-              <Button variant="ghost" size="2xs">Dismiss</Button>
-            </Flex>
-          </Flex>
+
+            {/* Expanded row: inline render target with agent analysis */}
+            {expandedRow === i && (
+              <Box
+                px="500"
+                py="300"
+                bg="neutral.2"
+                borderBottomWidth="1px"
+                borderColor="neutral.4"
+                css={{ animation: "fadeIn 200ms ease" }}
+              >
+                <Stack gap="300">
+                  {/* Vertical inline slot: multiple agents can stack here */}
+                  <Flex alignItems="center" gap="150" mb="100">
+                    <AiDot />
+                    <Text textStyle="xs" fontWeight="medium" color="indigo.9">Pricing Optimizer Agent</Text>
+                  </Flex>
+                  <Flex gap="400">
+                    <Box flex="1">
+                      <Text textStyle="xs" color="neutral.9" mb="50">Rationale</Text>
+                      <Text textStyle="sm" color="neutral.12">
+                        Suggested {row.suggested} restores margin to {row.margin.split("→")[1]?.trim()} while staying within 5% of the category median (€969). Price elasticity model estimates a 2.1% volume decrease at this price point.
+                      </Text>
+                    </Box>
+                    <ChartThemeProvider>
+                      <Box width="200px" flexShrink={0}>
+                        <Text textStyle="xs" color="neutral.9" mb="50">6-month trend</Text>
+                        <ResponsiveContainer height={80}>
+                          {(w, h) => (
+                            <LineChart width={w} height={h} series={marginTrend} ariaLabel={`Margin trend for ${row.entry}`} />
+                          )}
+                        </ResponsiveContainer>
+                      </Box>
+                    </ChartThemeProvider>
+                  </Flex>
+                </Stack>
+              </Box>
+            )}
+          </Box>
         ))}
       </Box>
     </Stack>
   </Box>
-);
+  );
+};

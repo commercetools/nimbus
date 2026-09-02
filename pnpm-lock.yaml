@@ -582,6 +582,9 @@ importers:
       '@commercetools/nimbus-icons':
         specifier: workspace:*
         version: link:../../packages/nimbus-icons
+      '@commercetools/nimbus-viz':
+        specifier: workspace:*
+        version: link:../../packages/nimbus-viz
       react:
         specifier: catalog:react
         version: 19.2.0

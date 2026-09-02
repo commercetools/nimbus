@@ -1,7 +1,34 @@
 import { Box, Flex, Stack, Text, Badge, Button, Separator, TextInput, FormField, Icon, ComboBox } from "@commercetools/nimbus";
 import { AutoAwesome } from "@commercetools/nimbus-icons";
+import { ChartThemeProvider, ResponsiveContainer, BarChart, LineChart } from "@commercetools/nimbus-viz";
 import { PageHeader } from "../components/PageHeader";
 import { AiDot } from "../components/AiDot";
+
+// Category sales data for bar chart
+const categorySalesData = [
+  { category: "Mobile Phones", value: 12400 },
+  { category: "Smartphones", value: 8900 },
+  { category: "Tablets", value: 6200 },
+  { category: "Phone Cases", value: 4100 },
+  { category: "Wearables", value: 3800 },
+];
+
+// Readiness trend (area chart)
+const readinessTrend = [
+  {
+    id: "readiness",
+    label: "Readiness %",
+    data: [
+      { x: new Date("2026-08-25"), y: 12 },
+      { x: new Date("2026-08-26"), y: 25 },
+      { x: new Date("2026-08-27"), y: 35 },
+      { x: new Date("2026-08-28"), y: 42 },
+      { x: new Date("2026-08-29"), y: 55 },
+      { x: new Date("2026-08-30"), y: 62 },
+      { x: new Date("2026-08-31"), y: 68 },
+    ],
+  },
+];
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
@@ -118,10 +145,10 @@ export const ProductLaunch = () => {
               />
             </Box>
 
-            {/* Checklist: 2 columns */}
+            {/* Checklist + trend chart side by side */}
             <Flex gap="400">
               <Stack gap="100" flex="1">
-                {checklist.slice(0, 4).map((item) => (
+                {checklist.map((item) => (
                   <Flex key={item.label} alignItems="center" gap="200">
                     <Text
                       textStyle="xs"
@@ -136,22 +163,17 @@ export const ProductLaunch = () => {
                   </Flex>
                 ))}
               </Stack>
-              <Stack gap="100" flex="1">
-                {checklist.slice(4).map((item) => (
-                  <Flex key={item.label} alignItems="center" gap="200">
-                    <Text
-                      textStyle="xs"
-                      fontWeight="bold"
-                      color={statusIcon[item.status].color}
-                    >
-                      {statusIcon[item.status].symbol}
-                    </Text>
-                    <Text textStyle="xs" color="neutral.11">
-                      {item.label}
-                    </Text>
-                  </Flex>
-                ))}
-              </Stack>
+              {/* Area chart: readiness trend embedded in the card */}
+              <Box flex="1" minWidth="120px">
+                <Text textStyle="xs" color="neutral.9" mb="50">This week</Text>
+                <ChartThemeProvider>
+                  <ResponsiveContainer height={90}>
+                    {(w, h) => (
+                      <LineChart width={w} height={h} series={readinessTrend} variant="area" ariaLabel="Readiness trend this week" />
+                    )}
+                  </ResponsiveContainer>
+                </ChartThemeProvider>
+              </Box>
             </Flex>
           </InlineCard>
 
@@ -210,6 +232,17 @@ export const ProductLaunch = () => {
                     <Button variant="outline" size="2xs">Create</Button>
                   </Flex>
                 ))}
+                {/* Category context chart embedded in variants card */}
+                <Box pt="200">
+                  <Text textStyle="xs" color="neutral.9" mb="50">Category search volume</Text>
+                  <ChartThemeProvider>
+                    <ResponsiveContainer height={80}>
+                      {(w, h) => (
+                        <BarChart width={w} height={h} data={categorySalesData} orientation="horizontal" ariaLabel="Monthly searches by category" />
+                      )}
+                    </ResponsiveContainer>
+                  </ChartThemeProvider>
+                </Box>
               </Stack>
             </Box>
           </Box>

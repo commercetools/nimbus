@@ -13,7 +13,8 @@
     "react-dom": "catalog:react",
     "react-router-dom": "catalog:apps",
     "@commercetools/nimbus": "workspace:*",
-    "@commercetools/nimbus-icons": "workspace:*"
+    "@commercetools/nimbus-icons": "workspace:*",
+    "@commercetools/nimbus-viz": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "catalog:react",
