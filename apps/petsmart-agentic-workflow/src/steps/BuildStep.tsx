@@ -197,6 +197,34 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                     </Text>
                   </Box>
                 </Flex>
+                {/* Margin gauge: how close to the 15% floor */}
+                <Box mt="200">
+                  <Flex justifyContent="space-between" mb="50">
+                    <Text textStyle="xs" color="neutral.9">Avg margin after discount</Text>
+                    <Text textStyle="xs" fontWeight="semibold" color="green.11">15.9%</Text>
+                  </Flex>
+                  <Box height="200" bg="neutral.4" borderRadius="full" position="relative" overflow="hidden">
+                    <Box
+                      height="100%"
+                      width="53%"
+                      bg="green.9"
+                      borderRadius="full"
+                    />
+                    <Box
+                      position="absolute"
+                      top="0"
+                      bottom="0"
+                      left="50%"
+                      width="2px"
+                      bg="neutral.12"
+                    />
+                  </Box>
+                  <Flex justifyContent="space-between" mt="50">
+                    <Text textStyle="xs" color="neutral.9">0%</Text>
+                    <Text textStyle="xs" color="neutral.9">floor: 15%</Text>
+                    <Text textStyle="xs" color="neutral.9">30%</Text>
+                  </Flex>
+                </Box>
                 <Flex
                   mt="200"
                   px="300"
