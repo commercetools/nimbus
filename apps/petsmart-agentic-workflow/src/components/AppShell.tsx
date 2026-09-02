@@ -137,8 +137,8 @@ export const AppShell = () => {
                 position="fixed"
                 bottom="400"
                 right="400"
-                width="600"
-                height="600"
+                width="500"
+                height="500"
                 alignItems="center"
                 justifyContent="center"
                 bg="primary.9"
@@ -146,11 +146,11 @@ export const AppShell = () => {
                 shadow="lg"
                 cursor="pointer"
                 zIndex={40}
-                _hover={{ bg: "primary.10", transform: "scale(1.1)" }}
+                _hover={{ bg: "primary.10", transform: "scale(1.08)" }}
                 transition="all 200ms ease"
                 onClick={() => setPanelOpen(true)}
               >
-                <Text fontSize="400" lineHeight="1" color="white">✦</Text>
+                <Text fontSize="300" lineHeight="1" color="white">✦</Text>
               </Flex>
             )}
           </Box>
