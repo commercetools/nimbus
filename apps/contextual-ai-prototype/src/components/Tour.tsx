@@ -9,7 +9,7 @@ export interface TourStep {
   renderTarget?: "panel" | "inline" | "augmentation" | "all";
   placement?: "top" | "bottom" | "left" | "right";
   /** Action to animate when entering this step (before dialog shows) */
-  action?: "openPanel" | "pulseElement" | "highlightStars";
+  action?: "openPanel" | "pulseElement" | "highlightStars" | "hoverWaffleCells";
 }
 
 interface TourContextValue {
@@ -134,6 +134,29 @@ function runAction(step: TourStep): Promise<void> {
           });
           setTimeout(resolve, 400);
         }, 1800);
+      } else { resolve(); }
+      return;
+    }
+
+    if (step.action === "hoverWaffleCells") {
+      const el = document.querySelector(step.selector);
+      if (el) {
+        const rects = el.querySelectorAll<SVGRectElement>("figure rect[fill]");
+        // Pick two cells to hover sequentially
+        const cells = Array.from(rects).filter(r => r.getAttribute("width") === r.getAttribute("height"));
+        const targets = [cells[5], cells[20]].filter(Boolean);
+        let i = 0;
+        const hoverNext = () => {
+          if (i >= targets.length) { resolve(); return; }
+          const cell = targets[i];
+          cell.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+          setTimeout(() => {
+            cell.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true }));
+            i++;
+            setTimeout(hoverNext, 300);
+          }, 1200);
+        };
+        hoverNext();
       } else { resolve(); }
       return;
     }
