@@ -1,38 +1,39 @@
 import { useState, useCallback } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { Box, Flex, Text, Icon } from "@commercetools/nimbus";
+import { Box, Flex, Text, Icon, Separator } from "@commercetools/nimbus";
 import { HelpOutline, PersonOutline } from "@commercetools/nimbus-icons";
 import { Sidebar } from "./Sidebar";
 import { ChatPanel } from "./ChatPanel";
 import { PanelProvider } from "./ProvenanceIndicator";
 import { chatConfigs } from "../data/chatMessages";
 
-/** Thin top app bar matching the real MC project selector bar */
+/** Top app bar matching the real MC: white bg, box-shadow, project key + user menu */
 const AppBar = () => (
   <Flex
     alignItems="center"
-    height="32px"
-    bg="neutral.12"
+    height="40px"
+    bg="white"
     px="300"
     gap="200"
     flexShrink={0}
-    color="rgba(255,255,255,0.7)"
+    css={{ boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.1)" }}
+    zIndex={100}
   >
-    <Text textStyle="xs" fontWeight="medium" color="rgba(255,255,255,0.9)">
+    <Text textStyle="xs" fontWeight="semibold" color="neutral.12">
       my-project-key
     </Text>
     <Box flex="1" />
-    <Icon as={HelpOutline} size="2xs" cursor="pointer" />
+    <Icon as={HelpOutline} size="xs" color="neutral.9" cursor="pointer" />
     <Flex
-      width="20px"
-      height="20px"
+      width="24px"
+      height="24px"
       borderRadius="full"
-      bg="rgba(255,255,255,0.15)"
+      bg="neutral.4"
       alignItems="center"
       justifyContent="center"
       cursor="pointer"
     >
-      <Icon as={PersonOutline} size="2xs" />
+      <Icon as={PersonOutline} size="2xs" color="neutral.9" />
     </Flex>
   </Flex>
 );
