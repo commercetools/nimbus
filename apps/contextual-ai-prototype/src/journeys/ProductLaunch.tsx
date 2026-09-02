@@ -99,20 +99,22 @@ export const ProductLaunch = () => {
               </Text>
             }
           >
-            {/* Progress bar */}
+            {/* Progress bar with animation */}
             <Box
-              height="3px"
+              height="2px"
               bg="neutral.4"
               borderRadius="full"
-              mb="300"
+              mb="200"
               overflow="hidden"
             >
               <Box
                 height="100%"
-                width="68%"
+                width="0%"
                 bg="amber.9"
                 borderRadius="full"
-                transition="width 600ms ease"
+                css={{
+                  animation: "progressGrow 800ms ease-out 300ms forwards",
+                }}
               />
             </Box>
 
@@ -153,37 +155,64 @@ export const ProductLaunch = () => {
             </Flex>
           </InlineCard>
 
-          {/* Suggested Variants Card */}
-          <InlineCard
-            title="Suggested Variants"
-            agentName="Product Enrichment Agent"
-            headerRight={
-              <Badge size="xs" colorPalette="info">
-                3 new
-              </Badge>
-            }
+          {/* Variants Card: existing API data + AI suggestions coexisting */}
+          <Box
+            bg="white"
+            borderWidth="1px"
+            borderColor="neutral.6"
+            borderRadius="200"
+            overflow="hidden"
+            width="fit-content"
+            maxWidth="100%"
           >
-            <Stack gap="200">
-              {suggestedVariants.map((v, i) => (
-                <Flex
-                  key={i}
-                  alignItems="center"
-                  gap="300"
-                  py="100"
-                >
-                  <Text textStyle="sm" fontWeight="medium" color="neutral.12" minWidth="100px">
-                    {v.color} / {v.storage}
-                  </Text>
-                  <Text textStyle="xs" color="neutral.9" flex="1">
-                    {v.reason}
-                  </Text>
-                  <Button variant="solid" colorPalette="primary" size="xs">
-                    Create
-                  </Button>
+            {/* Card header */}
+            <Flex alignItems="center" gap="150" px="300" py="150" borderBottomWidth="1px" borderColor="neutral.4" bg="neutral.2">
+              <Text textStyle="xs" fontWeight="semibold" color="neutral.12">Variants</Text>
+              <Box flex="1" />
+              <Text textStyle="xs" color="neutral.9">3 existing</Text>
+            </Flex>
+            <Box px="300" py="200">
+              <Stack gap="150">
+                {/* Existing variants (API data, no AI indicator) */}
+                {[
+                  { color: "Black", storage: "128GB", status: "Published" },
+                  { color: "Black", storage: "256GB", status: "Published" },
+                  { color: "White", storage: "128GB", status: "Published" },
+                ].map((v, i) => (
+                  <Flex key={i} alignItems="center" gap="300" py="50">
+                    <Text textStyle="xs" color="neutral.11" minWidth="100px">
+                      {v.color} / {v.storage}
+                    </Text>
+                    <Badge size="2xs" colorPalette="positive">{v.status}</Badge>
+                  </Flex>
+                ))}
+
+                {/* Divider between API data and AI suggestions */}
+                <Flex alignItems="center" gap="150" pt="100">
+                  <Box height="1px" bg="neutral.4" flex="1" />
+                  <Flex alignItems="center" gap="100">
+                    <AiDot size="10px" />
+                    <Text textStyle="xs" color="indigo.9" fontWeight="medium">Suggested</Text>
+                  </Flex>
+                  <Box height="1px" bg="neutral.4" flex="1" />
                 </Flex>
-              ))}
-            </Stack>
-          </InlineCard>
+
+                {/* AI-suggested variants (with ✦ indicator) */}
+                {suggestedVariants.map((v, i) => (
+                  <Flex key={i} alignItems="center" gap="300" py="50">
+                    <Flex alignItems="center" gap="150" minWidth="100px">
+                      <AiDot size="8px" />
+                      <Text textStyle="xs" fontWeight="medium" color="neutral.12">
+                        {v.color} / {v.storage}
+                      </Text>
+                    </Flex>
+                    <Text textStyle="xs" color="neutral.9" flex="1">{v.reason}</Text>
+                    <Button variant="solid" colorPalette="primary" size="xs">Create</Button>
+                  </Flex>
+                ))}
+              </Stack>
+            </Box>
+          </Box>
         </InlineSlot>
 
         {/* === FORM CARD: General Information === */}
@@ -247,6 +276,17 @@ export const ProductLaunch = () => {
                     <ComboBox.Option id="tablets" textValue="Electronics > Tablets">
                       <Text textStyle="sm" color="neutral.12">Electronics {">"} Tablets</Text>
                     </ComboBox.Option>
+                    <ComboBox.Option id="wearables" textValue="Electronics > Wearables">
+                      <Text textStyle="sm" color="neutral.12">Electronics {">"} Wearables</Text>
+                    </ComboBox.Option>
+                  </ComboBox.Section>
+                  <ComboBox.Section label="All categories">
+                    <ComboBox.Option id="audio" textValue="Electronics > Audio">
+                      <Text textStyle="sm" color="neutral.12">Electronics {">"} Audio</Text>
+                    </ComboBox.Option>
+                    <ComboBox.Option id="computing" textValue="Electronics > Computing">
+                      <Text textStyle="sm" color="neutral.12">Electronics {">"} Computing</Text>
+                    </ComboBox.Option>
                   </ComboBox.Section>
                   <ComboBox.Section label="✦ Suggested">
                     {categorySuggestions.map((sug) => (
@@ -281,3 +321,19 @@ export const ProductLaunch = () => {
     </Box>
   );
 };
+
+// Progress bar animation
+if (typeof document !== "undefined") {
+  const styleId = "progress-grow-keyframes";
+  if (!document.getElementById(styleId)) {
+    const style = document.createElement("style");
+    style.id = styleId;
+    style.textContent = `
+      @keyframes progressGrow {
+        from { width: 0%; }
+        to { width: 68%; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}

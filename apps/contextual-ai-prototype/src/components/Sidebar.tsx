@@ -54,7 +54,7 @@ export const Sidebar = () => {
       px="200"
       gap="100"
       overflow="hidden"
-      width="52px"
+      width="48px"
     >
       {/* CT Logo */}
       <Flex

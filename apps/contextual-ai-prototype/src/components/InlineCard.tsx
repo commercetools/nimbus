@@ -25,22 +25,22 @@ export const InlineCard = ({
       bg="white"
       borderWidth="1px"
       borderColor="neutral.6"
-      borderRadius="300"
+      borderRadius="200"
       overflow="hidden"
-      flex="1"
-      minWidth="0"
+      width="fit-content"
+      maxWidth="100%"
     >
       {/* Card header */}
       <Flex
         alignItems="center"
-        gap="200"
-        px="400"
-        py="200"
+        gap="150"
+        px="300"
+        py="150"
         borderBottomWidth="1px"
         borderColor="neutral.4"
         bg="neutral.2"
       >
-        <ProvenanceIndicator agentName={agentName} size={11} />
+        <ProvenanceIndicator agentName={agentName} />
         <Text textStyle="xs" fontWeight="semibold" color="neutral.12">
           {title}
         </Text>
@@ -49,7 +49,7 @@ export const InlineCard = ({
       </Flex>
 
       {/* Card body */}
-      <Box px="400" py="300">
+      <Box px="300" py="250">
         {children}
       </Box>
     </Box>
