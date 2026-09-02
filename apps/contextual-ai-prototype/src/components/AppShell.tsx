@@ -64,12 +64,26 @@ const AppBar = () => (
         </Menu.Content>
       </Menu.Root>
 
-      {/* Profile menu */}
+      {/* Profile menu — avatar trigger */}
       <Menu.Root placement="bottom end">
         <Menu.Trigger asChild>
-          <IconButton variant="ghost" size="2xs" aria-label="Profile" color="rgba(255,255,255,0.7)" _hover={{ color: "white", bg: "rgba(255,255,255,0.1)" }}>
-            <PersonOutline />
-          </IconButton>
+          <Flex
+            as="button"
+            width="24px"
+            height="24px"
+            borderRadius="full"
+            bg="rgba(255,255,255,0.15)"
+            alignItems="center"
+            justifyContent="center"
+            cursor="pointer"
+            border="none"
+            flexShrink={0}
+            color="rgba(255,255,255,0.7)"
+            _hover={{ bg: "rgba(255,255,255,0.25)", color: "white" }}
+            aria-label="Profile"
+          >
+            <Icon as={PersonOutline} size="2xs" />
+          </Flex>
         </Menu.Trigger>
         <Menu.Content>
           <Menu.Section label="Account">
