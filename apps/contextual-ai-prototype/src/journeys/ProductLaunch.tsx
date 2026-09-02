@@ -454,7 +454,7 @@ export const ProductLaunch = () => {
                     </Flex>
                   ))}
                 </Stack>
-                <Box flex="1" minWidth="140px" data-tour="readiness-chart" css={{ "& figure > ul, & figure > table": { srOnly: true, position: "absolute", width: "1px", height: "1px", overflow: "hidden", clip: "rect(0,0,0,0)" } }}>
+                <Box flex="1" minWidth="140px" data-tour="readiness-chart" css={{ "& figure > ul, & figure > table": { position: "absolute", width: "1px", height: "1px", overflow: "hidden", clip: "rect(0,0,0,0)" }, "& svg": { overflow: "visible" }, "& figure, & figure > div": { overflow: "visible" } }}>
                   <Text textStyle="xs" color="neutral.9" mb="100">Completion by area</Text>
                   <ChartThemeProvider>
                     <ResponsiveContainer height={140}>
