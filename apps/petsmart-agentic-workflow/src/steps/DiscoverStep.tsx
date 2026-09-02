@@ -10,7 +10,6 @@ import {
   TextInput,
   FormField,
   Icon,
-  Separator,
 } from "@commercetools/nimbus";
 import type { DataTableColumnItem, DataTableRowItem } from "@commercetools/nimbus";
 import { Search } from "@commercetools/nimbus-icons";
@@ -176,6 +175,67 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
       />
 
       <Stack gap="300" p="300">
+        {/* Agent insight cards: above the table, compact. Contextual mode only. */}
+        {mode === "contextual" && (
+          <InlineSlot direction="row" data-tour="inline-slot">
+            <Box data-tour="inventory-card">
+              <InlineCard
+                title="Inventory Overview"
+                agentName="Inventory Agent"
+                agentSource="customer"
+              >
+                <Flex gap="300" alignItems="center">
+                  {inventoryStats.map((stat) => (
+                    <Box key={stat.label}>
+                      <Text textStyle="sm" fontWeight="bold" color="neutral.12">{stat.value}</Text>
+                      <Text textStyle="xs" color="neutral.9">{stat.label}</Text>
+                    </Box>
+                  ))}
+                  <Box flex="1" minWidth="120px">
+                    <ChartThemeProvider>
+                      <ResponsiveContainer height={40}>
+                        {(w, h) => (
+                          <LineChart
+                            width={w}
+                            height={h}
+                            series={velocityTrendSeries}
+                            yBaselineFromData
+                            ariaLabel="Weekly velocity trend"
+                          />
+                        )}
+                      </ResponsiveContainer>
+                    </ChartThemeProvider>
+                  </Box>
+                </Flex>
+              </InlineCard>
+            </Box>
+
+            <Box data-tour="strategy-card">
+              <InlineCard
+                title="Seasonal Opportunity"
+                agentName="Strategy Agent"
+                agentSource="ct"
+              >
+                <Text textStyle="xs" color="neutral.11" lineHeight="tall">
+                  Spring promotions lift this category 28%.
+                  Window: March 1 through April 15. Bundle slow movers with accessories.
+                </Text>
+                <Flex justifyContent="flex-end" pt="100">
+                  <Button
+                    variant="solid"
+                    colorPalette="primary"
+                    size="2xs"
+                    data-tour="create-promotion"
+                    onPress={() => navigate(`/${mode}/step-2`)}
+                  >
+                    ✦ Create Promotion
+                  </Button>
+                </Flex>
+              </InlineCard>
+            </Box>
+          </InlineSlot>
+        )}
+
         {/* Integrated search + filters + table */}
         <Box
           bg="white"
@@ -184,7 +244,6 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
           borderRadius="200"
           overflow="hidden"
         >
-          {/* Toolbar */}
           <Flex
             px="300"
             py="200"
@@ -212,133 +271,21 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
             <Text textStyle="xs" color="neutral.9">Showing 6 of 847</Text>
           </Flex>
 
-          {/* Product table */}
           <Box data-tour="product-table">
-          <DataTable.Root
-            columns={productColumns}
-            rows={productRows}
-            density="condensed"
-            allowsPinning={false}
-            allowsExpandColumn={false}
-          >
-            <DataTable.Table>
-              <DataTable.Header />
-              <DataTable.Body>{(row) => <DataTable.Row row={row} />}</DataTable.Body>
-            </DataTable.Table>
-          </DataTable.Root>
+            <DataTable.Root
+              columns={productColumns}
+              rows={productRows}
+              density="condensed"
+              allowsPinning={false}
+              allowsExpandColumn={false}
+            >
+              <DataTable.Table>
+                <DataTable.Header />
+                <DataTable.Body>{(row) => <DataTable.Row row={row} />}</DataTable.Body>
+              </DataTable.Table>
+            </DataTable.Root>
           </Box>
         </Box>
-
-        {/* Inline agent cards: contextual mode only. In orchestrated mode, the
-            panel already has this context, so the page stays a normal MC page. */}
-        {mode === "contextual" && (
-          <>
-            <Flex alignItems="center" gap="200" pt="100">
-              <Separator flex="1" />
-              <Text
-                textStyle="xs"
-                fontWeight="semibold"
-                color="indigo.10"
-                textTransform="uppercase"
-                letterSpacing="wide"
-              >
-                Agent insights
-              </Text>
-              <Separator flex="1" />
-            </Flex>
-
-            <InlineSlot direction="row" data-tour="inline-slot">
-              <Box data-tour="inventory-card">
-                <InlineCard
-                  title="Inventory Overview"
-                  agentName="Inventory Agent"
-                  agentSource="customer"
-                >
-                  <Stack gap="200" minWidth="260px">
-                    <Flex gap="300">
-                      {inventoryStats.map((stat) => (
-                        <Box key={stat.label}>
-                          <Text textStyle="lg" fontWeight="bold" color="neutral.12">
-                            {stat.value}
-                          </Text>
-                          <Text textStyle="xs" color="neutral.9">
-                            {stat.label}
-                          </Text>
-                        </Box>
-                      ))}
-                    </Flex>
-                    <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-                      23 products below velocity threshold in Pet Health. Total
-                      shelf value: $47,200. Average days on shelf: 79.
-                    </Text>
-                    <Box>
-                      <Text textStyle="xs" color="neutral.9" mb="50">
-                        Weekly velocity trend
-                      </Text>
-                      <ChartThemeProvider>
-                        <ResponsiveContainer height={60}>
-                          {(w, h) => (
-                            <LineChart
-                              width={w}
-                              height={h}
-                              series={velocityTrendSeries}
-                              yBaselineFromData
-                              ariaLabel="Weekly velocity trend for slow-moving Pet Health products"
-                            />
-                          )}
-                        </ResponsiveContainer>
-                      </ChartThemeProvider>
-                    </Box>
-                  </Stack>
-                </InlineCard>
-              </Box>
-
-              <Box data-tour="strategy-card">
-                <InlineCard
-                  title="Seasonal Opportunity"
-                  agentName="Strategy Agent"
-                  agentSource="ct"
-                >
-                  <Stack gap="150" minWidth="260px">
-                    <Flex alignItems="flex-start" gap="100">
-                      <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-                        Spring Pet Wellness promotions historically lift this
-                        category 28% (based on 2024, 2025 data).
-                      </Text>
-                      <ProvenanceIndicator
-                        agentName="Inventory Agent"
-                        agentSource="customer"
-                        reason="28% lift figure sourced from PetSmart's historical promotion records (2024–2025), not commercetools platform data."
-                      />
-                    </Flex>
-                    <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-                      Optimal window: March 1 - April 15. Recommended: bundle slow
-                      movers with high-velocity accessories.
-                    </Text>
-                    <Flex justifyContent="flex-end" pt="100">
-                      <Button
-                        variant="solid"
-                        colorPalette="primary"
-                        size="2xs"
-                        data-tour="create-promotion"
-                        onPress={() => navigate(`/${mode}/step-2`)}
-                      >
-                        <Flex alignItems="center" gap="100">
-                          <Text as="span" fontSize="250" lineHeight="1" color="inherit">
-                            ✦
-                          </Text>
-                          <Text as="span" textStyle="xs" fontWeight="semibold" color="inherit">
-                            Create Promotion
-                          </Text>
-                        </Flex>
-                      </Button>
-                    </Flex>
-                  </Stack>
-                </InlineCard>
-              </Box>
-            </InlineSlot>
-          </>
-        )}
       </Stack>
     </Box>
   );
