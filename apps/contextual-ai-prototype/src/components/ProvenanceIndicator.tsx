@@ -126,11 +126,9 @@ export const ProvenanceIndicator = ({
           </Flex>
 
           {/* Reasoning */}
-          {reason && (
-            <Text textStyle="xs" color="neutral.11" lineHeight="tall" mb="200">
-              {reason}
-            </Text>
-          )}
+          <Text textStyle="xs" color="neutral.11" lineHeight="tall" mb="200">
+            {reason ?? "This element was generated or suggested by the agent based on the current page context."}
+          </Text>
 
           {/* Confidence bar */}
           {confidence !== undefined && (
@@ -155,14 +153,9 @@ export const ProvenanceIndicator = ({
           <Separator mb="200" />
 
           {/* Actions */}
-          <Flex gap="200">
-            <Button variant="outline" size="2xs" colorPalette="primary" onPress={handleWhyClick}>
-              Ask why
-            </Button>
-            <Button variant="ghost" size="2xs">
-              Dismiss
-            </Button>
-          </Flex>
+          <Button variant="ghost" size="2xs" colorPalette="info" onPress={handleWhyClick}>
+            Ask why
+          </Button>
         </Box>
       </Popover.Content>
     </Popover.Root>
