@@ -1,62 +1,48 @@
-import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Flex, Stack, Text, Separator, Button } from "@commercetools/nimbus";
+import { Box, Flex, Stack, Text, Separator, Button, Tooltip } from "@commercetools/nimbus";
 import { AiDot } from "../components/AiDot";
-import { agents, pipelineSteps } from "../data/agents";
+import { pipelineSteps, agents } from "../data/agents";
 
-interface PipelineColors {
-  bg: string;
-  fg: string;
-}
+interface PipelineColors { bg: string; fg: string }
 
 const getPipelineColors = (step: (typeof pipelineSteps)[number]): PipelineColors => {
-  if (step.isHumanGate) {
-    return { bg: "amber.3", fg: "amber.11" };
-  }
+  if (step.isHumanGate) return { bg: "amber.3", fg: "amber.11" };
   const agent = step.agentId ? agents[step.agentId] : undefined;
-  if (agent?.source === "ct") {
-    return { bg: "ctteal.3", fg: "ctteal.11" };
-  }
+  if (agent?.source === "ct") return { bg: "ctteal.3", fg: "ctteal.11" };
   return { bg: "primary.3", fg: "primary.11" };
 };
 
 const WorkflowPipeline = () => (
-  <Flex wrap="wrap" alignItems="flex-start" justifyContent="center" gap="50" rowGap="300">
+  <Flex wrap="wrap" alignItems="flex-start" justifyContent="center" gap="50" rowGap="200">
     {pipelineSteps.map((step, index) => {
       const { bg, fg } = getPipelineColors(step);
+      const agent = step.agentId ? agents[step.agentId] : undefined;
+      const tooltip = (step as { description?: string }).description ?? agent?.description ?? step.label;
       return (
-        <Fragment key={step.step}>
-          <Flex direction="column" alignItems="center" gap="50" width="64px">
-            <Flex
-              width="24px"
-              height="24px"
-              borderRadius="full"
-              bg={bg}
-              alignItems="center"
-              justifyContent="center"
-              flexShrink={0}
-            >
-              <Text fontSize="11px" fontWeight="bold" color={fg} lineHeight="1">
-                {step.step}
+        <Flex key={step.step} alignItems="center" gap="50">
+          <Tooltip.Root>
+            <Flex direction="column" alignItems="center" gap="50" width="1200" cursor="default">
+              <Flex
+                width="500"
+                height="500"
+                borderRadius="full"
+                bg={bg}
+                alignItems="center"
+                justifyContent="center"
+                flexShrink={0}
+              >
+                <Text textStyle="xs" fontWeight="bold" color={fg}>{step.step}</Text>
+              </Flex>
+              <Text textStyle="xs" color="neutral.11" textAlign="center" lineHeight="tight">
+                {step.label}
               </Text>
             </Flex>
-            <Text fontSize="10px" fontWeight="medium" color="neutral.11" textAlign="center" lineHeight="tight">
-              {step.label}
-            </Text>
-          </Flex>
+            <Tooltip.Content>{tooltip}</Tooltip.Content>
+          </Tooltip.Root>
           {index < pipelineSteps.length - 1 && (
-            <Text
-              as="span"
-              color="neutral.7"
-              fontSize="10px"
-              mt="100"
-              flexShrink={0}
-              aria-hidden="true"
-            >
-              →
-            </Text>
+            <Text as="span" color="neutral.6" textStyle="xs" flexShrink={0} aria-hidden="true">→</Text>
           )}
-        </Fragment>
+        </Flex>
       );
     })}
   </Flex>
@@ -66,23 +52,15 @@ const flavorCards = [
   {
     id: "contextual",
     title: "Contextual",
-    description:
-      "The intelligence comes to you. Insights appear right inside the pages and controls you already use. Your inventory data shows up in the product list. Pricing recommendations appear in the discount form. You stay in your workflow. If you need to ask a follow-up, the chat panel is there, but it's rarely necessary because the answers are already in front of you.",
+    story:
+      "Maya opens the product list and immediately sees which items are slow movers, right in the table. She opens the discount form and suggested conditions are already there. She never opens a separate tool or starts a conversation. When she does have a question, the chat panel already knows what she's looking at.",
   },
   {
     id: "orchestrated",
     title: "Orchestrated",
-    description:
-      "You work through a single coordinator. It assembles information from multiple sources into one view and one conversation. Simpler to start, but the conversation becomes the interface: you ask, it answers, and what you see is shaped by what you asked.",
+    story:
+      "Maya opens a conversation with the PetSmart Orchestrator. She says \"I need a spring promotion for slow-moving pet health products.\" The orchestrator pulls inventory data, checks pricing, drafts the discount, and presents a single brief. Maya reviews, asks follow-ups, and approves.",
   },
-];
-
-const journeySteps = [
-  { title: "Discover", description: "which products need a promotion and what kind" },
-  { title: "Build", description: "configure the discount, validate stock, catch conflicts" },
-  { title: "Test", description: "simulate carts, catch edge cases before launch" },
-  { title: "Approve", description: "review everything, then launch" },
-  { title: "Measure", description: "track performance, close the loop" },
 ];
 
 export const Landing = () => {
@@ -105,36 +83,18 @@ export const Landing = () => {
 
         <Separator />
 
-        <Box bg="white" borderRadius="300" p="400" shadow="xs" borderWidth="1px" borderColor="neutral.4">
+        <Box bg="white" borderRadius="300" p="400" shadow="xs" borderWidth="1px" borderColor="neutral.4" overflowX="auto">
           <WorkflowPipeline />
         </Box>
 
         <Box bg="white" borderRadius="300" p="400" shadow="xs" borderWidth="1px" borderColor="neutral.4">
-          <Text textStyle="sm" color="neutral.11" lineHeight="tall" mb="300">
+          <Text textStyle="sm" color="neutral.11" lineHeight="tall">
             Maya Chen is a category merchandiser at PetSmart. Spring is coming, and slow-moving pet
             health products are tying up shelf space. Over the next five steps, Maya will identify
             what to promote, build the discount, test it against real carts, approve the campaign,
             and measure the results. Eight agents from two organizations (commercetools and
             PetSmart) assist her throughout. She never leaves the Merchant Center.
           </Text>
-
-          <Separator mb="300" />
-
-          <Stack gap="150">
-            {journeySteps.map((step, index) => (
-              <Flex key={step.title} gap="150" alignItems="baseline">
-                <Text textStyle="xs" fontWeight="bold" color="neutral.10" flexShrink={0}>
-                  {index + 1}.
-                </Text>
-                <Text textStyle="xs" color="neutral.11">
-                  <Text as="span" fontWeight="semibold" color="neutral.12">
-                    {step.title}
-                  </Text>
-                  : {step.description}
-                </Text>
-              </Flex>
-            ))}
-          </Stack>
         </Box>
 
         <Flex gap="300" direction={{ base: "column", md: "row" }}>
@@ -153,8 +113,8 @@ export const Landing = () => {
               <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="150">
                 {card.title}
               </Text>
-              <Text textStyle="xs" color="neutral.10" lineHeight="tall" flex="1">
-                {card.description}
+              <Text textStyle="xs" color="neutral.10" lineHeight="tall" flex="1" fontStyle="italic">
+                "{card.story}"
               </Text>
               <Box mt="300">
                 <Button

@@ -26,7 +26,7 @@ export const pipelineSteps = [
   { step: 3, agentId: "promo", label: "Promo" },
   { step: 4, agentId: "preview", label: "Preview" },
   { step: 5, agentId: "badge", label: "Badge" },
-  { step: 6, agentId: null, label: "Approve", isHumanGate: true },
+  { step: 6, agentId: null, label: "Approve", isHumanGate: true, description: "Human review and approval gate. No agent acts here; the merchant decides." },
   { step: 7, agentId: "data", label: "Data" },
   { step: 8, agentId: "reporting", label: "Reporting" },
 ];

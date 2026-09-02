@@ -215,7 +215,7 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
                     onPress={() => navigate(`/${mode}/step-2`)}
                   >
                     <Flex alignItems="center" gap="100">
-                      <Text as="span" fontSize="10px" lineHeight="1" color="inherit">
+                      <Text as="span" fontSize="250" lineHeight="1" color="inherit">
                         ✦
                       </Text>
                       <Text as="span" textStyle="xs" fontWeight="semibold" color="inherit">

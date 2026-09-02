@@ -1,6 +1,5 @@
-import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Flex, Stack, Text, Button } from "@commercetools/nimbus";
+import { Box, Flex, Stack, Text, Button, Tooltip } from "@commercetools/nimbus";
 import { PageHeader } from "../components/PageHeader";
 import { InlineCard } from "../components/InlineCard";
 import { AgentChain } from "../components/AgentChain";
@@ -47,25 +46,13 @@ const executiveSummary =
   "conflict with Loyalty Paw Points. 312 of 340 products are in stock; 28 are excluded for low " +
   "stock. Ready for approval.";
 
-interface PipelineColors {
-  bg: string;
-  fg: string;
-}
+interface PipelineColors { bg: string; fg: string }
 
-const getPipelineColors = (
-  step: (typeof pipelineSteps)[number],
-  status: "done" | "active" | "pending"
-): PipelineColors => {
-  if (status === "pending") {
-    return { bg: "neutral.4", fg: "neutral.9" };
-  }
-  if (step.isHumanGate) {
-    return { bg: "amber.3", fg: "amber.11" };
-  }
+const getPipelineColors = (step: (typeof pipelineSteps)[number], status: "done" | "active" | "pending"): PipelineColors => {
+  if (status === "pending") return { bg: "neutral.4", fg: "neutral.9" };
+  if (step.isHumanGate) return { bg: "amber.3", fg: "amber.11" };
   const agent = step.agentId ? agents[step.agentId] : undefined;
-  if (agent?.source === "ct") {
-    return { bg: "ctteal.3", fg: "ctteal.11" };
-  }
+  if (agent?.source === "ct") return { bg: "ctteal.3", fg: "ctteal.11" };
   return { bg: "primary.3", fg: "primary.11" };
 };
 
@@ -76,38 +63,41 @@ const getStepStatus = (stepNumber: number): "done" | "active" | "pending" => {
 };
 
 const WorkflowPipeline = () => (
-  <Flex wrap="wrap" alignItems="flex-start" justifyContent="center" gap="50" rowGap="300">
+  <Flex wrap="wrap" alignItems="flex-start" justifyContent="center" gap="50" rowGap="200">
     {pipelineSteps.map((step, index) => {
       const status = getStepStatus(step.step);
       const { bg, fg } = getPipelineColors(step, status);
+      const agent = step.agentId ? agents[step.agentId] : undefined;
+      const tooltip = (step as { description?: string }).description ?? agent?.description ?? step.label;
       return (
-        <Fragment key={step.step}>
-          <Flex direction="column" alignItems="center" gap="50" width="64px">
-            <Flex
-              width="24px"
-              height="24px"
-              borderRadius="full"
-              bg={bg}
-              alignItems="center"
-              justifyContent="center"
-              flexShrink={0}
-              borderWidth={status === "active" ? "2px" : "0"}
-              borderColor="amber.9"
-            >
-              <Text fontSize="11px" fontWeight="bold" color={fg} lineHeight="1">
-                {status === "done" ? "✓" : step.step}
+        <Flex key={step.step} alignItems="center" gap="50">
+          <Tooltip.Root>
+            <Flex direction="column" alignItems="center" gap="50" width="1200" cursor="default">
+              <Flex
+                width="500"
+                height="500"
+                borderRadius="full"
+                bg={bg}
+                alignItems="center"
+                justifyContent="center"
+                flexShrink={0}
+                borderWidth={status === "active" ? "2px" : "0"}
+                borderColor="amber.9"
+              >
+                <Text textStyle="xs" fontWeight="bold" color={fg}>
+                  {status === "done" ? "✓" : step.step}
+                </Text>
+              </Flex>
+              <Text textStyle="xs" color="neutral.11" textAlign="center" lineHeight="tight">
+                {step.label}
               </Text>
             </Flex>
-            <Text fontSize="10px" fontWeight="medium" color="neutral.11" textAlign="center" lineHeight="tight">
-              {step.label}
-            </Text>
-          </Flex>
+            <Tooltip.Content>{tooltip}</Tooltip.Content>
+          </Tooltip.Root>
           {index < pipelineSteps.length - 1 && (
-            <Text as="span" color="neutral.7" fontSize="10px" mt="100" flexShrink={0} aria-hidden="true">
-              →
-            </Text>
+            <Text as="span" color="neutral.6" textStyle="xs" flexShrink={0} aria-hidden="true">→</Text>
           )}
-        </Fragment>
+        </Flex>
       );
     })}
   </Flex>

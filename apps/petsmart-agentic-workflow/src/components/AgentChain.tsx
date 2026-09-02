@@ -45,7 +45,7 @@ export const AgentChain = ({
             <Flex key={i} gap="200" alignItems="flex-start">
               <Text
                 as="span"
-                fontSize="10px"
+                fontSize="250"
                 lineHeight="1"
                 color={`${sourceColor(c.source)}.9`}
                 flexShrink={0}
