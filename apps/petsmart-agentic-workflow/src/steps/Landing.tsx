@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { Box, Flex, Stack, Text, Separator, Button, Tooltip, MakeElementFocusable } from "@commercetools/nimbus";
 import { AiDot } from "../components/AiDot";
+import { useTour } from "../components/Tour";
 import { pipelineSteps, agents } from "../data/agents";
+import { startStepTour, type FlavorMode } from "../data/tourSteps";
 
 interface PipelineColors { bg: string; fg: string }
 
@@ -67,6 +69,12 @@ const flavorCards = [
 
 export const Landing = () => {
   const navigate = useNavigate();
+  const { startTour } = useTour();
+
+  const handleStart = (flavorId: FlavorMode) => {
+    navigate(`/${flavorId}/step-1`);
+    setTimeout(() => startStepTour(navigate, startTour, flavorId, 1), 500);
+  };
 
   return (
     <Box height="100%" overflow="auto" p={{ base: "300", sm: "600" }} bg="neutral.1">
@@ -124,7 +132,7 @@ export const Landing = () => {
                   colorPalette="primary"
                   size="sm"
                   width="100%"
-                  onPress={() => navigate(`/${card.id}/step-1`)}
+                  onPress={() => handleStart(card.id as FlavorMode)}
                 >
                   Start: {card.title}
                 </Button>
