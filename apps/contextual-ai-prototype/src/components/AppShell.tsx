@@ -6,7 +6,7 @@ import { ChatPanel } from "./ChatPanel";
 import { chatConfigs } from "../data/chatMessages";
 
 export const AppShell = () => {
-  const [panelOpen, setPanelOpen] = useState(true);
+  const [panelOpen, setPanelOpen] = useState(false);
   const location = useLocation();
   const chatConfig = chatConfigs[location.pathname];
 

@@ -1,33 +1,19 @@
 import { Box, Flex, Stack, Text, Badge, Button, Separator, TextInput, FormField, Icon, ComboBox } from "@commercetools/nimbus";
 import { AutoAwesome } from "@commercetools/nimbus-icons";
-import { ChartThemeProvider, ResponsiveContainer, BarChart, LineChart } from "@commercetools/nimbus-viz";
+import { ChartThemeProvider, ResponsiveContainer, WaffleChart } from "@commercetools/nimbus-viz";
 import { PageHeader } from "../components/PageHeader";
 import { AiDot } from "../components/AiDot";
 
-// Category sales data for bar chart
-const categorySalesData = [
-  { category: "Mobile Phones", value: 12400 },
-  { category: "Smartphones", value: 8900 },
-  { category: "Tablets", value: 6200 },
-  { category: "Phone Cases", value: 4100 },
-  { category: "Wearables", value: 3800 },
-];
-
-// Readiness trend (area chart)
-const readinessTrend = [
-  {
-    id: "readiness",
-    label: "Readiness %",
-    data: [
-      { x: new Date("2026-08-25"), y: 12 },
-      { x: new Date("2026-08-26"), y: 25 },
-      { x: new Date("2026-08-27"), y: 35 },
-      { x: new Date("2026-08-28"), y: 42 },
-      { x: new Date("2026-08-29"), y: 55 },
-      { x: new Date("2026-08-30"), y: 62 },
-      { x: new Date("2026-08-31"), y: 68 },
-    ],
-  },
+// Readiness breakdown for waffle chart (part-to-whole)
+const readinessBreakdown = [
+  { category: "Categories", value: 10 },
+  { category: "Names", value: 12 },
+  { category: "Descriptions", value: 5 },
+  { category: "Images", value: 8 },
+  { category: "Pricing", value: 10 },
+  { category: "Variants", value: 6 },
+  { category: "SEO", value: 2 },
+  { category: "Attributes", value: 15 },
 ];
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
@@ -162,13 +148,12 @@ export const ProductLaunch = () => {
                   </Flex>
                 ))}
               </Stack>
-              {/* Area chart: readiness trend embedded in the card */}
-              <Box flex="1" minWidth="120px">
-                <Text textStyle="xs" color="neutral.9" mb="50" data-tour="readiness-chart">This week</Text>
+              {/* Waffle chart: readiness breakdown by area */}
+              <Box flex="1" minWidth="100px" data-tour="readiness-chart">
                 <ChartThemeProvider>
-                  <ResponsiveContainer height={90}>
+                  <ResponsiveContainer height={120}>
                     {(w, h) => (
-                      <LineChart width={w} height={h} series={readinessTrend} variant="area" ariaLabel="Readiness trend this week" />
+                      <WaffleChart width={w} height={h} data={readinessBreakdown} cells={10} ariaLabel="Readiness breakdown by area" />
                     )}
                   </ResponsiveContainer>
                 </ChartThemeProvider>
@@ -231,17 +216,6 @@ export const ProductLaunch = () => {
                     <Button variant="outline" size="2xs">Create</Button>
                   </Flex>
                 ))}
-                {/* Category context chart embedded in variants card */}
-                <Box pt="200">
-                  <Text textStyle="xs" color="neutral.9" mb="50">Category search volume</Text>
-                  <ChartThemeProvider>
-                    <ResponsiveContainer height={80}>
-                      {(w, h) => (
-                        <BarChart width={w} height={h} data={categorySalesData} orientation="horizontal" ariaLabel="Monthly searches by category" />
-                      )}
-                    </ResponsiveContainer>
-                  </ChartThemeProvider>
-                </Box>
               </Stack>
             </Box>
           </Box>
