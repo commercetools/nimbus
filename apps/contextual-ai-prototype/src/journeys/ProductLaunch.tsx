@@ -284,8 +284,7 @@ export const ProductLaunch = () => {
               cursor="pointer"
               _hover={{ bg: "indigo.3" }}
               transition="all 500ms ease"
-              opacity={tourActive && !seoRevealed ? 0 : 1}
-              transform={tourActive && !seoRevealed ? "translateX(20px)" : "none"}
+              display={tourActive && !seoRevealed ? "none" : "flex"}
             >
               <ProvenanceIndicator agentName="Product Enrichment Agent" reason="Generate SEO titles and descriptions for all configured locales" />
               <Text textStyle="xs" fontWeight="medium" color="indigo.11">
