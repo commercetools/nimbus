@@ -19,7 +19,6 @@ import { PageHeader } from "../components/PageHeader";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
-import { ActivationButton } from "../components/ActivationButton";
 import { slowMovers } from "../data/petsmartProducts";
 import type { PetSmartProduct } from "../data/petsmartProducts";
 

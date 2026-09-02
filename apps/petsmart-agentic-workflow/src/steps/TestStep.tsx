@@ -19,9 +19,7 @@ import {
 import { PageHeader } from "../components/PageHeader";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
-import { AgentChain } from "../components/AgentChain";
 import { ActivationButton } from "../components/ActivationButton";
-import { StepNavigation } from "../components/StepNavigation";
 import { promotion, simulationCarts } from "../data/promotionData";
 
 export type FlavorMode = "contextual" | "orchestrated";
@@ -263,7 +261,7 @@ export const TestStep = ({ mode }: { mode: FlavorMode }) => {
         ]}
         actions={
           <>
-            <ActivationButton label="✦ Simulate" />
+            {isContextual && <ActivationButton label="✦ Simulate" />}
             {isContextual && (
               <Button
                 variant="solid"
@@ -304,17 +302,21 @@ export const TestStep = ({ mode }: { mode: FlavorMode }) => {
             </Button>
           </Flex>
 
-          {isContextual ? (
-            <InlineSlot direction="row" gap="300" data-tour="inline-slot">
-              <Box data-tour="simulation-card">
-                <InlineCard
-                  title="Simulation Results"
-                  agentName="Preview Agent"
-                  agentSource="ct"
-                >
-                  <SimulationResults />
-                </InlineCard>
-              </Box>
+          {/* Simulation results are kept in both modes: they're read-only
+              simulation output, not an augmentation. The separate PetSmart
+              context card is contextual-mode only; in orchestrated mode that
+              context lives in the chat panel. */}
+          <InlineSlot direction="row" gap="300" data-tour="inline-slot">
+            <Box data-tour="simulation-card">
+              <InlineCard
+                title="Simulation Results"
+                agentName="Preview Agent"
+                agentSource="ct"
+              >
+                <SimulationResults />
+              </InlineCard>
+            </Box>
+            {isContextual && (
               <Box data-tour="petsmart-context">
                 <InlineCard
                   title="Inventory Context"
@@ -326,48 +328,10 @@ export const TestStep = ({ mode }: { mode: FlavorMode }) => {
                   </Text>
                 </InlineCard>
               </Box>
-            </InlineSlot>
-          ) : (
-            <Box data-tour="orchestrator-card">
-              <InlineCard
-                title="Simulation Report"
-                agentName="PetSmart Orchestrator"
-                agentSource="customer"
-              >
-                <SimulationResults />
-                <Text
-                  textStyle="xs"
-                  color="neutral.11"
-                  lineHeight="tall"
-                  mt="200"
-                >
-                  {inventoryContextText}
-                </Text>
-                <Box data-tour="agent-chain">
-                  <AgentChain
-                    contributions={[
-                      {
-                        agentName: "Preview Agent",
-                        source: "ct",
-                        contribution:
-                          "Simulated 3 carts against the current discount configuration.",
-                      },
-                      {
-                        agentName: "Inventory Agent",
-                        source: "customer",
-                        contribution:
-                          "Added return policy and in-store pickup context for targeted products.",
-                      },
-                    ]}
-                  />
-                </Box>
-              </InlineCard>
-            </Box>
-          )}
+            )}
+          </InlineSlot>
         </Box>
       </Box>
-
-      <StepNavigation currentStep={3} totalSteps={5} mode={mode} />
     </Box>
   );
 };

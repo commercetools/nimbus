@@ -25,8 +25,6 @@ import { PageHeader } from "../components/PageHeader";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
-import { AgentChain } from "../components/AgentChain";
-import { StepNavigation } from "../components/StepNavigation";
 import { promotion } from "../data/promotionData";
 
 export type FlavorMode = "contextual" | "orchestrated";
@@ -220,11 +218,13 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                 <FormField.Label>
                   <Flex alignItems="center" gap="150">
                     <Text>Discount type</Text>
-                    <ProvenanceIndicator
-                      agentName="Inventory Agent"
-                      agentSource="customer"
-                      reason="Historically lifts pet health 31% vs flat percentage"
-                    />
+                    {mode === "contextual" && (
+                      <ProvenanceIndicator
+                        agentName="Inventory Agent"
+                        agentSource="customer"
+                        reason="Historically lifts pet health 31% vs flat percentage"
+                      />
+                    )}
                   </Flex>
                 </FormField.Label>
                 <FormField.Input>
@@ -234,20 +234,22 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                     defaultValue={promotion.type}
                   />
                 </FormField.Input>
-                <Flex
-                  mt="150"
-                  gap="200"
-                  alignItems="center"
-                  px="300"
-                  py="200"
-                  bg="primary.2"
-                  borderRadius="200"
-                >
-                  <Text textStyle="xs" color="neutral.11">
-                    Suggested: &quot;{promotion.type}&quot; — historically lifts
-                    pet health 31% vs flat percentage
-                  </Text>
-                </Flex>
+                {mode === "contextual" && (
+                  <Flex
+                    mt="150"
+                    gap="200"
+                    alignItems="center"
+                    px="300"
+                    py="200"
+                    bg="primary.2"
+                    borderRadius="200"
+                  >
+                    <Text textStyle="xs" color="neutral.11">
+                      Suggested: &quot;{promotion.type}&quot; — historically
+                      lifts pet health 31% vs flat percentage
+                    </Text>
+                  </Flex>
+                )}
               </FormField.Root>
             </Stack>
             <Stack gap="300" flex="1">
@@ -304,11 +306,13 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                 <FormField.Label>
                   <Flex alignItems="center" gap="150">
                     <Text>Stacking mode</Text>
-                    <ProvenanceIndicator
-                      agentName="Promo Agent"
-                      agentSource="ct"
-                      reason={`Loyalty Paw Points 10% overlaps ${promotion.conflictProducts} products; non-stackable avoids pushing them below the margin floor`}
-                    />
+                    {mode === "contextual" && (
+                      <ProvenanceIndicator
+                        agentName="Promo Agent"
+                        agentSource="ct"
+                        reason={`Loyalty Paw Points 10% overlaps ${promotion.conflictProducts} products; non-stackable avoids pushing them below the margin floor`}
+                      />
+                    )}
                   </Flex>
                 </FormField.Label>
                 <FormField.Input>
@@ -360,8 +364,10 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
               )}
             </Box>
 
-            {/* AI suggested conditions (click to add) */}
-            {suggestedList.length > 0 && (
+            {/* AI suggested conditions (click to add): contextual mode only.
+                In orchestrated mode, these suggestions surface through the
+                chat panel instead of an in-form control. */}
+            {mode === "contextual" && suggestedList.length > 0 && (
               <Box data-tour="suggested-conditions">
                 <Flex alignItems="center" gap="150" mb="200">
                   <ProvenanceIndicator
@@ -395,18 +401,20 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
           </FormField.Root>
         </Box>
 
-        {/* Agent insights: augmentation, separated from the form above */}
-        <Box>
-          <Flex alignItems="baseline" gap="200" mb="200">
-            <Text textStyle="sm" fontWeight="semibold" color="neutral.12">
-              Agent insights
-            </Text>
-            <Text textStyle="xs" color="neutral.9">
-              Automated checks based on the current configuration
-            </Text>
-          </Flex>
+        {/* Agent insights: augmentation, separated from the form above.
+            Contextual mode only — in orchestrated mode, this context lives
+            in the chat panel instead. */}
+        {mode === "contextual" && (
+          <Box>
+            <Flex alignItems="baseline" gap="200" mb="200">
+              <Text textStyle="sm" fontWeight="semibold" color="neutral.12">
+                Agent insights
+              </Text>
+              <Text textStyle="xs" color="neutral.9">
+                Automated checks based on the current configuration
+              </Text>
+            </Flex>
 
-          {mode === "contextual" ? (
             <InlineSlot direction="row" data-tour="inline-slot">
               <Box data-tour="impact-card">
                 <InlineCard
@@ -473,119 +481,9 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                 </InlineCard>
               </Box>
             </InlineSlot>
-          ) : (
-            <InlineSlot direction="row" data-tour="inline-slot">
-              <Box data-tour="orchestrator-card">
-                <InlineCard
-                  title="Promotion Draft"
-                  agentName="PetSmart Orchestrator"
-                  agentSource="customer"
-                >
-                  <Stack gap="300" minWidth={{ base: "auto", md: "480px" }}>
-                    <Box>
-                      <Text
-                        textStyle="xs"
-                        fontWeight="semibold"
-                        color="neutral.11"
-                        mb="150"
-                      >
-                        Impact preview
-                      </Text>
-                      <Flex gap="300">
-                        <Box>
-                          <Text
-                            textStyle="xl"
-                            fontWeight="bold"
-                            color="neutral.12"
-                          >
-                            ~{promotion.productsAffected}
-                          </Text>
-                          <Text textStyle="xs" color="neutral.9">
-                            Products affected
-                          </Text>
-                        </Box>
-                        <Box>
-                          <Text
-                            textStyle="xl"
-                            fontWeight="bold"
-                            color="amber.11"
-                          >
-                            {promotion.marginImpact}
-                          </Text>
-                          <Text textStyle="xs" color="neutral.9">
-                            Est. margin impact
-                          </Text>
-                        </Box>
-                        <Box>
-                          <Text
-                            textStyle="xl"
-                            fontWeight="bold"
-                            color="green.11"
-                          >
-                            0
-                          </Text>
-                          <Text textStyle="xs" color="neutral.9">
-                            Products below floor
-                          </Text>
-                        </Box>
-                      </Flex>
-                    </Box>
-
-                    <Separator />
-
-                    <Box>
-                      <Text
-                        textStyle="xs"
-                        fontWeight="semibold"
-                        color="neutral.11"
-                        mb="150"
-                      >
-                        Stock validation
-                      </Text>
-                      <StockWarning />
-                    </Box>
-
-                    <Separator />
-
-                    <Box>
-                      <Text
-                        textStyle="xs"
-                        fontWeight="semibold"
-                        color="neutral.11"
-                        mb="150"
-                      >
-                        Conflict detection
-                      </Text>
-                      <ConflictWarning />
-                    </Box>
-
-                    <Box data-tour="agent-chain">
-                      <AgentChain
-                        contributions={[
-                          {
-                            agentName: "Promo Agent",
-                            source: "ct",
-                            contribution:
-                              "Impact preview and conflict detection against active discounts",
-                          },
-                          {
-                            agentName: "Inventory Agent",
-                            source: "customer",
-                            contribution:
-                              "Stock validation and reorder lead time analysis; discount-type performance history",
-                          },
-                        ]}
-                      />
-                    </Box>
-                  </Stack>
-                </InlineCard>
-              </Box>
-            </InlineSlot>
-          )}
-        </Box>
+          </Box>
+        )}
       </Stack>
-
-      <StepNavigation currentStep={2} totalSteps={5} mode={mode} />
     </Box>
   );
 };

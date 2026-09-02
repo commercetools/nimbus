@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { Box, Flex, Stack, Text, Button, Tooltip, MakeElementFocusable, Grid } from "@commercetools/nimbus";
 import { PageHeader } from "../components/PageHeader";
 import { InlineCard } from "../components/InlineCard";
-import { AgentChain } from "../components/AgentChain";
-import { StepNavigation } from "../components/StepNavigation";
 import { agents, pipelineSteps } from "../data/agents";
 import { promotion } from "../data/promotionData";
 
@@ -40,12 +38,6 @@ const summaryCards: {
     summary: "312 products in stock. 28 excluded (low stock).",
   },
 ];
-
-const executiveSummary =
-  "Spring Pet Wellness targets 23 slow movers with a Buy 2 Get 1 Free offer across 340 products " +
-  "(-4.1% margin, +28% historical uplift). Cart simulation surfaced and resolved one stacking " +
-  "conflict with Loyalty Paw Points. 312 of 340 products are in stock; 28 are excluded for low " +
-  "stock. Ready for approval.";
 
 interface PipelineColors { bg: string; fg: string }
 
@@ -183,7 +175,10 @@ export const ApproveStep = ({ mode }: { mode: FlavorMode }) => {
               <WorkflowPipeline />
             </Box>
 
-            {isContextual ? (
+            {/* Agent contributions: contextual mode only. In orchestrated
+                mode, the Orchestrator's brief already lives in the panel, so
+                the review page is just the pipeline and promotion details. */}
+            {isContextual && (
               <Stack gap="200" data-tour="summary-cards">
                 <Text textStyle="xs" fontWeight="semibold" color="neutral.10">
                   Agent contributions
@@ -201,24 +196,6 @@ export const ApproveStep = ({ mode }: { mode: FlavorMode }) => {
                   </InlineCard>
                 ))}
               </Stack>
-            ) : (
-              <Box data-tour="orchestrator-card">
-                <InlineCard title="Promotion Brief" agentName="PetSmart Orchestrator" agentSource="customer">
-                  <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-                    {executiveSummary}
-                  </Text>
-                  <Box data-tour="agent-chain">
-                    <AgentChain
-                      defaultExpanded
-                      contributions={summaryCards.map((card) => ({
-                        agentName: card.agentName,
-                        source: card.agentSource,
-                        contribution: card.summary,
-                      }))}
-                    />
-                  </Box>
-                </InlineCard>
-              </Box>
             )}
           </Stack>
         </Stack>
@@ -261,8 +238,6 @@ export const ApproveStep = ({ mode }: { mode: FlavorMode }) => {
           </Flex>
         </Flex>
       </Box>
-
-      <StepNavigation currentStep={4} totalSteps={5} mode={mode} />
     </Box>
   );
 };

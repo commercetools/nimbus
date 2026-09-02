@@ -1,11 +1,10 @@
-import { Box, Flex, Stack, Text, Grid, Icon } from "@commercetools/nimbus";
+import { useNavigate } from "react-router-dom";
+import { Box, Flex, Stack, Text, Grid, Icon, Button } from "@commercetools/nimbus";
 import { CalendarToday } from "@commercetools/nimbus-icons";
 import { ChartThemeProvider, ResponsiveContainer, LineChart, BarChart } from "@commercetools/nimbus-viz";
 import { PageHeader } from "../components/PageHeader";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
-import { AgentChain } from "../components/AgentChain";
-import { StepNavigation } from "../components/StepNavigation";
 import { performanceMetrics, promotion } from "../data/promotionData";
 
 export type FlavorMode = "contextual" | "orchestrated";
@@ -218,6 +217,7 @@ const InventoryClearanceCard = () => {
 
 export const MeasureStep = ({ mode }: { mode: FlavorMode }) => {
   const isContextual = mode === "contextual";
+  const navigate = useNavigate();
 
   return (
     <Box height="100%" overflow="auto" bg="neutral.1">
@@ -242,64 +242,19 @@ export const MeasureStep = ({ mode }: { mode: FlavorMode }) => {
             </Text>
           </Stack>
         ) : (
-          <Stack gap="300">
-            <Box data-tour="orchestrator-card">
-              <InlineCard title="Campaign Results" agentName="PetSmart Orchestrator" agentSource="customer">
-                <Grid templateColumns="repeat(2, 1fr)" gap="200" mb="300">
-                  <StatTile label="Orders" value={performanceMetrics.ct.orders.toLocaleString()} />
-                  <StatTile label="Revenue" value={`$${performanceMetrics.ct.revenue.toLocaleString()}`} />
-                  <StatTile label="In-store pickup uplift" value={performanceMetrics.petsmart.inStorePickupUplift} />
-                  <StatTile label="Halo effect" value={performanceMetrics.petsmart.haloEffect} />
-                </Grid>
-                <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="100">
-                  {performanceMetrics.petsmart.slowMoversClearedCount} of{" "}
-                  {performanceMetrics.petsmart.slowMoversClearedTotal} slow movers cleared
-                </Text>
-                <Box mb="200">
-                  <Text textStyle="xs" color="neutral.9" mb="50">
-                    Daily orders over promotion period
-                  </Text>
-                  <ChartThemeProvider>
-                    <ResponsiveContainer height={90}>
-                      {(w, h) => (
-                        <LineChart
-                          width={w}
-                          height={h}
-                          series={dailyOrdersSeries}
-                          yBaselineFromData
-                          ariaLabel="Daily orders over the promotion period"
-                        />
-                      )}
-                    </ResponsiveContainer>
-                  </ChartThemeProvider>
-                </Box>
-                <Box data-tour="agent-chain">
-                  <AgentChain
-                    contributions={[
-                      {
-                        agentName: "Data Agent",
-                        source: "ct",
-                        contribution: "Provided current order, revenue, and code usage totals from commercetools.",
-                      },
-                      {
-                        agentName: "Reporting Agent",
-                        source: "customer",
-                        contribution: "Provided daily order trends, cross-channel attribution, and inventory clearance history.",
-                      },
-                    ]}
-                  />
-                </Box>
-              </InlineCard>
-            </Box>
-            <Text textStyle="xs" color="neutral.9">
-              Platform data (commercetools) reflects current totals. Time-series trends and
-              cross-channel attribution come from PetSmart's reporting systems.
-            </Text>
-          </Stack>
+          // Orchestrated mode: no cards. The panel already has the full
+          // campaign performance report, so the page stays minimal.
+          <Text textStyle="sm" color="neutral.10">
+            See the panel for your campaign performance report.
+          </Text>
         )}
       </Box>
 
-      <StepNavigation currentStep={5} totalSteps={5} mode={mode} />
+      <Flex justifyContent="center" py="400">
+        <Button variant="ghost" size="2xs" onPress={() => navigate("/")}>
+          ← Back to start
+        </Button>
+      </Flex>
     </Box>
   );
 };
