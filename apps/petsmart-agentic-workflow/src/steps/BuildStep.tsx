@@ -213,7 +213,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                 >
                   <ProvenanceIndicator
                     agentName="Inventory Agent"
-                    agentSource="customer"
+                    agentSource="ct"
                     reason="Spring 2025 ran Buy 1 Get 1 on pet health and lifted orders 22% over 6 weeks. Click to use the same structure."
                   />
                   <Text textStyle="xs" color="ctteal.11" flex="1">
@@ -292,7 +292,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                     {mode === "contextual" && (
                       <ProvenanceIndicator
                         agentName="Inventory Agent"
-                        agentSource="customer"
+                        agentSource="ct"
                         reason="Buy 2 Get 1 Free historically lifts pet health 31% vs flat percentage"
                       />
                     )}
