@@ -207,7 +207,7 @@ export const ProductLaunch = () => {
                       </Text>
                     </Flex>
                     <Text textStyle="xs" color="neutral.9" flex="1">{v.reason}</Text>
-                    <Button variant="solid" colorPalette="primary" size="xs">Create</Button>
+                    <Button variant="solid" colorPalette="primary" size="2xs">Create</Button>
                   </Flex>
                 ))}
               </Stack>

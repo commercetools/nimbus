@@ -126,8 +126,8 @@ export const CategoryReorg = () => (
               <Text textStyle="xs" color="neutral.10">{sug.reason}</Text>
             </Box>
             <Badge size="xs" colorPalette="info">{sug.confidence}%</Badge>
-            <Button variant="solid" colorPalette="primary" size="xs">Apply</Button>
-            <Button variant="ghost" size="xs">Dismiss</Button>
+            <Button variant="solid" colorPalette="primary" size="2xs">Apply</Button>
+            <Button variant="ghost" size="2xs">Dismiss</Button>
           </Flex>
         ))}
       </Box>

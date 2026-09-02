@@ -1,4 +1,4 @@
-import { Box, Flex, Stack, Text, Separator, IconButton } from "@commercetools/nimbus";
+import { Box, Flex, Stack, Text, Separator, IconButton, MultilineTextInput, Button } from "@commercetools/nimbus";
 import { Close, ArrowUpward } from "@commercetools/nimbus-icons";
 import { AiDot } from "./AiDot";
 
@@ -127,23 +127,50 @@ export const ChatPanel = ({
       <Separator />
 
       {/* Input */}
-      <Flex alignItems="center" gap="200" px="400" py="300" flexShrink={0}>
-        <Text
-          textStyle="sm"
-          color="neutral.9"
-          flex="1"
-          cursor="text"
-        >
-          {placeholder}
-        </Text>
-        <IconButton
+      <Flex
+        alignItems="flex-end"
+        gap="200"
+        px="300"
+        py="300"
+        flexShrink={0}
+      >
+        <Box flex="1">
+          <MultilineTextInput
+            placeholder={placeholder}
+            aria-label="Chat input"
+            autoGrow
+            maxHeight="3200"
+            variant="ghost"
+            size="sm"
+            rows={1}
+            css={{
+              "& textarea": {
+                paddingInlineStart: "var(--nimbus-spacing-200)",
+                paddingInlineEnd: "var(--nimbus-spacing-200)",
+                paddingBlock: "var(--nimbus-spacing-150)",
+                fontSize: "var(--nimbus-font-sizes-sm)",
+                borderRadius: "var(--nimbus-radii-200)",
+                background: "var(--nimbus-colors-neutral-3)",
+                border: "none",
+                resize: "none",
+              },
+              "& textarea:focus": {
+                background: "var(--nimbus-colors-neutral-2)",
+                outline: "1px solid var(--nimbus-colors-neutral-6)",
+              },
+            }}
+          />
+        </Box>
+        <Button
           aria-label="Send"
-          variant="ghost"
+          variant="solid"
+          colorPalette="primary"
           size="xs"
-          colorPalette="neutral"
+          borderRadius="200"
+          px="200"
         >
           <ArrowUpward />
-        </IconButton>
+        </Button>
       </Flex>
     </Flex>
   );

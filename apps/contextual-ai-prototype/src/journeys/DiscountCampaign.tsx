@@ -76,8 +76,8 @@ export const DiscountCampaign = () => (
                 Stacking would push 38 products below the 15% margin floor. Consider adding an exclusion rule or making this discount non-stackable.
               </Text>
               <Flex mt="200" gap="200">
-                <Button variant="outline" size="xs">Add exclusion rule</Button>
-                <Button variant="ghost" size="xs">Set non-stackable</Button>
+                <Button variant="outline" size="2xs">Add exclusion</Button>
+                <Button variant="ghost" size="2xs">Non-stackable</Button>
               </Flex>
             </Box>
           </Flex>
