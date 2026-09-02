@@ -183,7 +183,11 @@ export const ChatPanel = ({
           <MultilineTextInput
             placeholder={placeholder}
             aria-label="Chat input"
+            variant="ghost"
             size="sm"
+            rows={1}
+            autoGrow
+            width="100%"
           />
         </Box>
         <IconButton
