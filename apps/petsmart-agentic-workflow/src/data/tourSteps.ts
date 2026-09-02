@@ -11,8 +11,8 @@ export const discoverContextualSteps: TourStep[] = [
 ];
 
 export const discoverOrchestratedSteps: TourStep[] = [
-  { selector: "[data-tour='product-table']", title: "Maya opens the product list", description: "The same Pet Health view she always uses. The table shows her products, prices, and stock. No augmentations in the controls.", placement: "bottom" },
-  { selector: "[data-tour='chat-panel']", title: "She reads the brief", description: "The panel already has a summary: 23 slow movers, $47K shelf value, spring promotions lift 28%, recommended Buy 2 Get 1 Free. Maya reads it, asks a follow-up, and moves on.", placement: "left", action: "openPanel" },
+  { selector: "[data-tour='chat-panel']", title: "The brief is ready", description: "Maya opens the panel and the Orchestrator has already assembled the picture: 23 slow movers, $47K shelf value, spring promotions lift 28%. One conversation, multiple data sources.", placement: "left", action: "openPanel" },
+  { selector: "[data-tour='product-table']", title: "She confirms against the data", description: "Maya cross-references the brief with the product table she already knows. The products, prices, and stock are right where she expects them.", placement: "bottom" },
 ];
 
 // Step 2: Build
@@ -26,8 +26,8 @@ export const buildContextualSteps: TourStep[] = [
 ];
 
 export const buildOrchestratedSteps: TourStep[] = [
-  { selector: "[data-tour='discount-form']", title: "Maya fills in the form", description: "The discount form is the same MC form she always uses. No augmented suggestions in the fields. The Orchestrator's draft is in the panel.", placement: "bottom" },
-  { selector: "[data-tour='chat-panel']", title: "The panel has the full picture", description: "Impact, stock validation, conflict detection: all in one conversation. Maya reads the brief, asks about the stacking conflict, and adjusts the form.", placement: "left", action: "openPanel" },
+  { selector: "[data-tour='chat-panel']", title: "One conversation, full context", description: "Impact preview, stock validation, conflict detection: the Orchestrator assembled it all. Maya reads the brief, asks about the stacking conflict, and knows what to configure.", placement: "left", action: "openPanel" },
+  { selector: "[data-tour='discount-form']", title: "She configures the discount", description: "Maya fills in the form with the Orchestrator's recommendations in hand. Type, dates, stacking mode: informed by the conversation she just had.", placement: "bottom" },
 ];
 
 // Step 3: Test
@@ -39,9 +39,8 @@ export const testContextualSteps: TourStep[] = [
 ];
 
 export const testOrchestratedSteps: TourStep[] = [
-  { selector: "[data-tour='simulation-card']", title: "Maya reviews the simulation", description: "The simulation results are still visible on the page. Cart C's stacking issue is flagged.", placement: "top" },
-  { selector: "[data-tour='cart-warning']", title: "The margin violation", description: "Same problem, same urgency. Cart C drops to 11% margin. The panel explains why and confirms the fix.", placement: "top", action: "pulseWarningCart" },
-  { selector: "[data-tour='chat-panel']", title: "Return policy context in the conversation", description: "Maya asks about in-store returns and pickup eligibility. The Orchestrator answers from the panel. She doesn't need a separate card for it.", placement: "left", action: "openPanel" },
+  { selector: "[data-tour='chat-panel']", title: "Simulation results in the conversation", description: "The Orchestrator ran 3 cart simulations and flagged Cart C's margin violation. Maya reads the results, asks about return policy, and gets the answer in the same thread.", placement: "left", action: "openPanel" },
+  { selector: "[data-tour='cart-warning']", title: "Cart C breaks the floor", description: "Three dental chews with loyalty stacking drops the margin to 11%. The Orchestrator already confirmed non-stackable mode prevents this in production.", placement: "top", action: "pulseWarningCart" },
 ];
 
 // Step 4: Approve
@@ -52,9 +51,9 @@ export const approveContextualSteps: TourStep[] = [
 ];
 
 export const approveOrchestratedSteps: TourStep[] = [
-  { selector: "[data-tour='promotion-details']", title: "Same details", description: "The promotion details are identical. The approval view doesn't change based on how Maya got here.", placement: "bottom" },
-  { selector: "[data-tour='chat-panel']", title: "The brief is in the conversation", description: "The Orchestrator summarized everything: strategy, discount, simulation, stock. Maya reads the brief, asks a last question, then approves.", placement: "left", action: "openPanel" },
-  { selector: "[data-tour='approve-btn']", title: "Still her call", description: "Same button, same decision. The Orchestrator assembled the information, but Maya makes the call.", placement: "bottom", action: "pulseElement" },
+  { selector: "[data-tour='chat-panel']", title: "The executive brief", description: "Strategy, discount config, simulation results, inventory status: the Orchestrator compiled everything into one brief. Maya reads it and asks a last question before deciding.", placement: "left", action: "openPanel" },
+  { selector: "[data-tour='promotion-details']", title: "She reviews the details", description: "The promotion details confirm what the Orchestrator summarized. Name, predicates, stacking mode, dates: all match.", placement: "bottom" },
+  { selector: "[data-tour='approve-btn']", title: "Her call", description: "The Orchestrator assembled the information, but Maya makes the decision. She clicks Approve & Launch.", placement: "bottom", action: "pulseElement" },
 ];
 
 // Step 5: Measure
@@ -65,7 +64,7 @@ export const measureContextualSteps: TourStep[] = [
 ];
 
 export const measureOrchestratedSteps: TourStep[] = [
-  { selector: "[data-tour='chat-panel']", title: "Full results in one conversation", description: "The Orchestrator compiled platform totals, cross-channel trends, and inventory clearance into one report. Maya reads it and asks about the next promotion.", placement: "left", action: "openPanel" },
+  { selector: "[data-tour='chat-panel']", title: "The full report", description: "4,287 orders, $312K revenue, 18 of 23 slow movers cleared. The Orchestrator compiled platform totals, cross-channel trends, and inventory clearance into one report. Maya asks what to promote next.", placement: "left", action: "openPanel" },
 ];
 
 // ─── Lookup ─────────────────────────────────────────────────────────────────
