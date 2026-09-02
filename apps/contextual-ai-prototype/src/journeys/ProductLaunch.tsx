@@ -266,6 +266,18 @@ export const ProductLaunch = () => {
   // Listen for tour to simulate translations appearing
   useEffect(() => {
     const handler = () => {
+      // First, click "Show all languages" to expand the description LocalizedField
+      setTimeout(() => {
+        const buttons = document.querySelectorAll("button");
+        const expandBtns = Array.from(buttons).filter(b =>
+          b.textContent?.includes("Show all languages") || b.getAttribute("aria-label")?.includes("language")
+        );
+        // Click the second one (description field, not product name)
+        const descExpand = expandBtns[1] ?? expandBtns[0];
+        if (descExpand) descExpand.click();
+      }, 500);
+
+      // Then fill in the translations
       setTimeout(() => {
         setDescriptions(prev => ({
           ...prev,
@@ -274,7 +286,7 @@ export const ProductLaunch = () => {
           es: "El Galaxy S25 Ultra cuenta con una impresionante pantalla Dynamic AMOLED 2X de 6,9 pulgadas, procesador Snapdragon 8 Elite y sistema de cámara de 200 MP.",
         }));
         setReadiness(prev => Math.min(prev + 5, 95));
-      }, 1000);
+      }, 1500);
     };
     window.addEventListener("tour:translate", handler);
     return () => window.removeEventListener("tour:translate", handler);
