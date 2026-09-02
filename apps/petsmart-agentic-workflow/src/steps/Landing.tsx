@@ -51,7 +51,7 @@ const WorkflowPipeline = () => (
             >
               <Text textStyle="xs" fontWeight="bold" color={fg}>{step.step}</Text>
             </Flex>
-            <Text textStyle="xs" fontWeight="semibold" color="neutral.12">{step.label}</Text>
+            <Text textStyle="xs" fontWeight="bold" color="neutral.12">{step.label}</Text>
           </Flex>
           <Badge size="2xs" colorPalette={step.isHumanGate ? "warning" : agent?.source === "ct" ? "info" : "primary"} mb="100" width="fit-content">
             {sourceBadge}
@@ -135,7 +135,7 @@ export const Landing = () => {
               borderWidth="1px"
               borderColor="neutral.4"
             >
-              <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="150">
+              <Text textStyle="sm" fontWeight="bold" color="neutral.12" mb="150">
                 {card.title}
               </Text>
               <Text textStyle="xs" color="neutral.10" lineHeight="tall" flex="1" fontStyle="italic">
