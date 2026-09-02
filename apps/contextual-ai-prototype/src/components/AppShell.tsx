@@ -17,6 +17,8 @@ const AppBar = () => (
     gap="200"
     flexShrink={0}
     shadow="sm"
+    borderBottomWidth="1px"
+    borderColor="neutral.4"
     zIndex={100}
   >
     <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-organization-name" aria-label="Organization" width="max-content">
