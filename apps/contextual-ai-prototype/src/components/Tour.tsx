@@ -414,27 +414,50 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
           <Box position="fixed" inset="0" zIndex={10000} cursor="pointer" onClick={next} />
         </Box>
       )}
-      {/* Post-tour message: no overlay, just a floating toast */}
+      {/* Post-tour nudge: small dialog next to sidebar nav, no overlay */}
       {endMessage && (
-        <Box
-          position="fixed"
-          bottom="300"
-          left="50%"
-          zIndex={9999}
-          bg="neutral.12"
-          color="white"
-          px="400"
-          py="200"
-          borderRadius="300"
-          shadow="lg"
-          css={{ transform: "translateX(-50%)", animation: "fadeIn 300ms ease" }}
-          cursor="pointer"
-          onClick={() => setEndMessage(false)}
-        >
-          <Text textStyle="sm" color="white">
-            Back to user journeys whenever you're done clicking around ↑
-          </Text>
-        </Box>
+        <>
+          {/* Bounce the Dashboard + CT logo icons */}
+          <style>{`
+            @keyframes nudgeBounce {
+              0%, 100% { transform: translateX(0); }
+              25% { transform: translateX(3px); }
+              75% { transform: translateX(-2px); }
+            }
+            [data-nudge-bounce] { animation: nudgeBounce 600ms ease 3; }
+          `}</style>
+          <Box
+            ref={(el: HTMLDivElement | null) => {
+              if (!el) return;
+              // Add bounce to first two sidebar nav items (Dashboard + CT logo)
+              const sidebar = document.querySelector("nav, [class*='sidebar']");
+              const links = sidebar?.parentElement?.querySelectorAll("a") ?? document.querySelectorAll("aside a, nav a");
+              links.forEach((a, i) => { if (i < 2) a.setAttribute("data-nudge-bounce", ""); });
+              // Clean up after animation
+              setTimeout(() => links.forEach(a => a.removeAttribute("data-nudge-bounce")), 2000);
+            }}
+          />
+          <Box
+            position="fixed"
+            top="60px"
+            left="56px"
+            zIndex={9999}
+            bg="white"
+            px="300"
+            py="200"
+            borderRadius="200"
+            shadow="lg"
+            borderWidth="1px"
+            borderColor="neutral.6"
+            css={{ animation: "fadeIn 300ms ease" }}
+            cursor="pointer"
+            onClick={() => setEndMessage(false)}
+          >
+            <Text textStyle="xs" color="neutral.12">
+              ← Click to go home when you're done exploring
+            </Text>
+          </Box>
+        </>
       )}
     </TourContext.Provider>
   );
