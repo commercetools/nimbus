@@ -9,7 +9,7 @@ export interface TourStep {
   renderTarget?: "panel" | "inline" | "augmentation" | "all";
   placement?: "top" | "bottom" | "left" | "right";
   /** Action to animate when entering this step (before dialog shows) */
-  action?: "openPanel" | "pulseElement" | "highlightStars" | "hoverWaffleCells";
+  action?: "openPanel" | "pulseElement" | "highlightStars" | "hoverWaffleCells" | "selectSmartphones" | "revealGenerateSeo";
 }
 
 interface TourContextValue {
@@ -169,6 +169,47 @@ function runAction(step: TourStep): Promise<void> {
           }, 1400);
         };
         hoverNext();
+      } else { resolve(); }
+      return;
+    }
+
+    if (step.action === "selectSmartphones") {
+      const el = document.querySelector(step.selector);
+      if (el) {
+        // Highlight stars first
+        const stars = el.querySelectorAll<HTMLElement>('[aria-hidden="true"]');
+        stars.forEach((s) => {
+          s.style.transition = "transform 500ms ease, color 500ms ease, text-shadow 500ms ease";
+          s.style.transform = "scale(2.5)";
+          s.style.color = "var(--nimbus-colors-indigo-11)";
+          s.style.textShadow = "0 0 8px rgba(110, 86, 207, 0.6)";
+        });
+        // Then click the Smartphones checkbox
+        setTimeout(() => {
+          stars.forEach((s) => { s.style.transform = ""; s.style.color = ""; s.style.textShadow = ""; });
+          const checkboxes = el.querySelectorAll<HTMLInputElement>('input[type="checkbox"]');
+          // Smartphones is the second unchecked checkbox (after Electronics)
+          const unchecked = Array.from(checkboxes).filter(c => !c.checked);
+          if (unchecked[0]) unchecked[0].click();
+        }, 1200);
+        setTimeout(resolve, 1800);
+      } else { resolve(); }
+      return;
+    }
+
+    if (step.action === "revealGenerateSeo") {
+      // Hide the button first, then slide it in
+      const btn = document.querySelector('[data-tour="generate-seo"]') as HTMLElement;
+      if (btn) {
+        btn.style.transition = "none";
+        btn.style.opacity = "0";
+        btn.style.transform = "translateX(20px)";
+        setTimeout(() => {
+          btn.style.transition = "opacity 500ms ease, transform 500ms ease";
+          btn.style.opacity = "1";
+          btn.style.transform = "translateX(0)";
+          setTimeout(resolve, 600);
+        }, 300);
       } else { resolve(); }
       return;
     }

@@ -27,6 +27,7 @@ import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
 import { ActivationButton } from "../components/ActivationButton";
+import { useTour } from "../components/Tour";
 
 // ─── Data ───────────────────────────────────────────────────────────────────
 
@@ -240,6 +241,7 @@ const suggestedKeywords = [
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export const ProductLaunch = () => {
+  const { isActive: tourActive } = useTour();
   const [expandedVariant, setExpandedVariant] = useState<string | null>(null);
   const [createdIds, setCreatedIds] = useState<Set<string>>(new Set());
   const [readiness, setReadiness] = useState(68);
@@ -328,7 +330,9 @@ export const ProductLaunch = () => {
               data-tour="generate-seo"
               cursor="pointer"
               _hover={{ bg: "indigo.3" }}
-              transition="background 150ms"
+              transition="all 500ms ease"
+              opacity={tourActive ? 0 : 1}
+              transform={tourActive ? "translateX(20px)" : "none"}
             >
               <ProvenanceIndicator agentName="Product Enrichment Agent" reason="Generate SEO titles and descriptions for all configured locales" />
               <Text textStyle="xs" fontWeight="medium" color="indigo.11">
