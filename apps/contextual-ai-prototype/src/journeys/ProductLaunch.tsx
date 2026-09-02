@@ -149,11 +149,12 @@ export const ProductLaunch = () => {
                 ))}
               </Stack>
               {/* Waffle chart: readiness breakdown by area */}
-              <Box flex="1" minWidth="100px" data-tour="readiness-chart">
+              <Box flex="1" minWidth="140px" data-tour="readiness-chart">
+                <Text textStyle="xs" color="neutral.9" mb="100">Completion by area</Text>
                 <ChartThemeProvider>
-                  <ResponsiveContainer height={120}>
+                  <ResponsiveContainer height={140}>
                     {(w, h) => (
-                      <WaffleChart width={w} height={h} data={readinessBreakdown} cells={10} ariaLabel="Readiness breakdown by area" />
+                      <WaffleChart width={w} height={h} data={readinessBreakdown} cells={10} ariaLabel="Product readiness: completion by area" />
                     )}
                   </ResponsiveContainer>
                 </ChartThemeProvider>
