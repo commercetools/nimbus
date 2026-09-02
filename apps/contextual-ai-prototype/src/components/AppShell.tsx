@@ -19,7 +19,7 @@ const AppBar = () => (
     shadow="xs"
     zIndex={100}
   >
-    <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-organization-name" aria-label="Organization" width="180px">
+    <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-organization-name" aria-label="Organization" width="max-content">
       <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
@@ -28,7 +28,7 @@ const AppBar = () => (
         </ComboBox.ListBox>
       </ComboBox.Popover>
     </ComboBox.Root>
-    <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-project-key" aria-label="Project" width="160px">
+    <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-project-key" aria-label="Project" width="max-content">
       <ComboBox.Trigger />
       <ComboBox.Popover>
         <ComboBox.ListBox>
