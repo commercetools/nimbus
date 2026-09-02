@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, createContext, useContext } from "react";
-import { Box, Flex, Text, Popover, Badge, Button, Separator, MakeElementFocusable } from "@commercetools/nimbus";
+import { Box, Flex, Text, Popover, Badge, Button, Separator } from "@commercetools/nimbus";
 
 // ─── Panel context ──────────────────────────────────────────────────────────
 
@@ -78,25 +78,25 @@ export const ProvenanceIndicator = ({
 
   return (
     <Popover.Root>
-      <Popover.Trigger asChild>
-        <MakeElementFocusable>
-          <Text
-            as="span"
-            fontSize={size}
-            lineHeight="1"
-            color="indigo.9"
-            cursor="pointer"
-            flexShrink={0}
-            transition="transform 200ms ease"
-            _hover={{ color: "indigo.11", transform: "scale(1.3)" }}
-            css={isPulsing ? { animation: "ai-pulse 600ms ease-out" } : undefined}
-            onAnimationEnd={handleAnimationEnd}
-            aria-hidden="true"
-            {...rest}
-          >
-            ✦
-          </Text>
-        </MakeElementFocusable>
+      <Popover.Trigger
+        aria-label="AI provenance"
+        bg="transparent"
+        borderWidth="0"
+        p="0"
+        minWidth="auto"
+        minHeight="auto"
+        height="auto"
+        fontSize={size}
+        lineHeight="1"
+        color="indigo.9"
+        cursor="pointer"
+        flexShrink={0}
+        transition="transform 200ms ease, color 200ms ease"
+        _hover={{ color: "indigo.11", transform: "scale(1.3)" }}
+        animation={isPulsing ? "ai-pulse 600ms ease-out" : undefined}
+        onAnimationEnd={handleAnimationEnd}
+      >
+        ✦
       </Popover.Trigger>
       <Popover.Content maxWidth="300px">
         <Box p="200">
