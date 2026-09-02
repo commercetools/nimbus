@@ -29,8 +29,8 @@ export const DiscountCampaign = () => (
       ]}
       actions={
         <>
-          <Button variant="ghost" size="sm">Discard</Button>
-          <Button variant="solid" colorPalette="primary" size="sm">Save</Button>
+          <Button variant="ghost" size="2xs">Discard</Button>
+          <Button variant="solid" colorPalette="primary" size="2xs">Save</Button>
         </>
       }
     />

@@ -58,10 +58,10 @@ export const ProductLaunch = () => {
         ]}
         actions={
           <>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="2xs">
               Revert
             </Button>
-            <Button variant="solid" colorPalette="primary" size="sm">
+            <Button variant="solid" colorPalette="primary" size="2xs">
               Publish
             </Button>
             <Flex

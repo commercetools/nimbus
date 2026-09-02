@@ -51,7 +51,7 @@ export const OrderInvestigation = () => (
             <Icon as={CheckCircle} size="2xs" color="green.9" />
             <Text textStyle="xs" fontWeight="medium" color="green.11">Release Order</Text>
           </Flex>
-          <Button variant="ghost" size="sm" colorPalette="critical">Cancel Order</Button>
+          <Button variant="ghost" size="2xs" colorPalette="critical">Cancel Order</Button>
         </>
       }
     />

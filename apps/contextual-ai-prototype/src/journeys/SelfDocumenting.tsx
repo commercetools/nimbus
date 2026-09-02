@@ -45,8 +45,8 @@ export const SelfDocumenting = () => (
       ]}
       actions={
         <>
-          <Button variant="ghost" size="sm">Revert</Button>
-          <Button variant="solid" colorPalette="primary" size="sm">Publish</Button>
+          <Button variant="ghost" size="2xs">Revert</Button>
+          <Button variant="solid" colorPalette="primary" size="2xs">Publish</Button>
           {/* Augmentation: toolbar action that surfaces a capability */}
           <Flex
             alignItems="center"

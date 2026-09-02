@@ -134,7 +134,7 @@ export const ChatPanel = ({
         py="250"
         flexShrink={0}
       >
-        <Box flex="1">
+        <Box flex="1" minWidth="0" width="100%">
           <MultilineTextInput
             placeholder={placeholder}
             aria-label="Chat input"
@@ -144,7 +144,9 @@ export const ChatPanel = ({
             size="sm"
             rows={1}
             css={{
+              width: "100%",
               "& textarea": {
+                width: "100%",
                 paddingInlineStart: "var(--nimbus-spacing-200)",
                 paddingInlineEnd: "var(--nimbus-spacing-200)",
                 paddingBlock: "var(--nimbus-spacing-200)",
@@ -158,11 +160,11 @@ export const ChatPanel = ({
                 outline: "none",
                 boxShadow: "none",
               },
-              /* hide the default wrapper border */
               "& > div": {
                 border: "none",
                 boxShadow: "none",
                 background: "transparent",
+                width: "100%",
               },
             }}
           />

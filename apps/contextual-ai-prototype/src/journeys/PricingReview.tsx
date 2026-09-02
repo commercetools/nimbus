@@ -32,8 +32,8 @@ export const PricingReview = () => (
       ]}
       actions={
         <>
-          <Button variant="ghost" size="sm">Revert</Button>
-          <Button variant="solid" colorPalette="primary" size="sm">Save</Button>
+          <Button variant="ghost" size="2xs">Revert</Button>
+          <Button variant="solid" colorPalette="primary" size="2xs">Save</Button>
         </>
       }
     />
