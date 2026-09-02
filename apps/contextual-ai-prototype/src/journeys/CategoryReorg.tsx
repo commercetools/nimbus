@@ -214,7 +214,8 @@ export const CategoryReorg = () => (
             key={i}
             px="300"
             py="200"
-            alignItems="center"
+            alignItems={{ base: "flex-start", sm: "center" }}
+            direction={{ base: "column", sm: "row" }}
             gap="300"
             borderBottomWidth="1px"
             borderColor="neutral.3"
@@ -222,20 +223,24 @@ export const CategoryReorg = () => (
             transition="background 150ms"
             css={{ animation: `fadeIn 200ms ease ${i * 100}ms both` }}
           >
-            <ProvenanceIndicator agentName={AGENT_NAME} confidence={sug.confidence} size="10px" />
-            <Box flex="1">
-              <Text textStyle="sm" fontWeight="medium" color="neutral.12">{sug.label}</Text>
-              <Text textStyle="xs" color="neutral.10">{sug.reason}</Text>
-            </Box>
-            <Badge size="2xs" colorPalette="info">{sug.confidence}%</Badge>
-            <Button variant="outline" size="2xs">Apply</Button>
-            <Button variant="ghost" size="2xs">Dismiss</Button>
+            <Flex alignItems="center" gap="300" flex="1" minWidth="0">
+              <ProvenanceIndicator agentName={AGENT_NAME} confidence={sug.confidence} size="10px" />
+              <Box flex="1" minWidth="0">
+                <Text textStyle="sm" fontWeight="medium" color="neutral.12">{sug.label}</Text>
+                <Text textStyle="xs" color="neutral.10">{sug.reason}</Text>
+              </Box>
+            </Flex>
+            <Flex gap="200" alignItems="center" flexShrink={0}>
+              <Badge size="2xs" colorPalette="info">{sug.confidence}%</Badge>
+              <Button variant="outline" size="2xs">Apply</Button>
+              <Button variant="ghost" size="2xs">Dismiss</Button>
+            </Flex>
           </Flex>
         ))}
       </Box>
 
       {/* Impact analysis table */}
-      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden" data-tour="impact-analysis">
+      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden" overflowX="auto" data-tour="impact-analysis">
         <Flex px="300" py="200" alignItems="center" gap="200" borderBottomWidth="1px" borderColor="neutral.4">
           <ProvenanceIndicator agentName={AGENT_NAME} size="10px" />
           <Text textStyle="sm" fontWeight="semibold" color="neutral.12">Impact Analysis</Text>

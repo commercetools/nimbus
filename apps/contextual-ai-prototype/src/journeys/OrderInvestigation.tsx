@@ -207,7 +207,7 @@ export const OrderInvestigation = () => (
         </Box>
 
         {/* Billing / shipping addresses side by side */}
-        <Grid templateColumns="1fr 1fr" gap="300">
+        <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap="300">
           <Box borderWidth="1px" borderColor="neutral.5" borderRadius="200" p="300">
             <Text textStyle="xs" fontWeight="semibold" color="neutral.11" mb="150">Billing address</Text>
             <Text textStyle="xs" color="neutral.12">Marienplatz 8, 80331 Munich, Germany</Text>

@@ -106,13 +106,14 @@ export const AppShell = () => {
         {/* Top app bar */}
         <AppBar />
 
-        <Flex flex="1" overflow="hidden">
-          {/* Icon-only sidebar */}
+        <Flex flex="1" overflow="hidden" position="relative">
+          {/* Icon-only sidebar: hidden on small screens */}
           <Box
             flexShrink={0}
             borderRightWidth="1px"
             borderColor="neutral.4"
             height="100%"
+            display={{ base: "none", sm: "block" }}
           >
             <Sidebar />
           </Box>
@@ -122,19 +123,24 @@ export const AppShell = () => {
             <Outlet context={{ panelOpen, setPanelOpen }} />
           </Box>
 
-          {/* Chat panel: slide in/out */}
+          {/* Chat panel: inline on large screens, overlay on small */}
           <Box
             data-tour="chat-panel"
-            width={panelOpen ? "380px" : "0px"}
-            minWidth={panelOpen ? "380px" : "0px"}
+            width={panelOpen ? { base: "100%", lg: "380px" } : "0px"}
+            minWidth={panelOpen ? { base: "100%", lg: "380px" } : "0px"}
+            maxWidth={panelOpen ? { base: "100%", lg: "380px" } : "0px"}
+            position={{ base: "absolute", lg: "relative" }}
+            right="0"
+            top="0"
             overflow="hidden"
-            transition="width 200ms ease, min-width 200ms ease, opacity 200ms ease"
+            transition="width 200ms ease, min-width 200ms ease, max-width 200ms ease, opacity 200ms ease"
             opacity={panelOpen ? 1 : 0}
             borderLeftWidth="1px"
             borderColor="neutral.4"
             bg="white"
             height="100%"
             flexShrink={0}
+            zIndex={{ base: 50, lg: "auto" }}
           >
             <ChatPanel
               onClose={() => {

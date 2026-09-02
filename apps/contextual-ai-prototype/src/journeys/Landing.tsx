@@ -113,7 +113,7 @@ export const Landing = () => {
   };
 
   return (
-    <Box height="100%" overflow="auto" p="600" bg="neutral.1">
+    <Box height="100%" overflow="auto" p={{ base: "300", sm: "600" }} bg="neutral.1">
       <Stack gap="500" maxWidth="800px" mx="auto">
         <Box>
           <Flex alignItems="center" gap="200" mb="200">

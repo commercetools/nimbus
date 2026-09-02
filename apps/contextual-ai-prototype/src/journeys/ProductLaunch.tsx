@@ -296,9 +296,9 @@ export const ProductLaunch = () => {
       />
 
       {/* ── Two-column body ─────────────────────────────────────────── */}
-      <Flex gap="300" p="300" alignItems="flex-start">
+      <Flex gap="300" p="300" alignItems="flex-start" direction={{ base: "column", lg: "row" }}>
         {/* ── Left column (~65%) ─────────────────────────────────────── */}
-        <Stack gap="300" flex="2" minWidth="0">
+        <Stack gap="300" flex="2" minWidth="0" width={{ base: "100%", lg: "auto" }}>
           {/* General info form */}
           <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300">
             <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="300">
@@ -335,7 +335,7 @@ export const ProductLaunch = () => {
                 />
               </Box>
 
-              <Grid gridTemplateColumns="1fr 1fr" gap="300">
+              <Grid gridTemplateColumns={{ base: "1fr", sm: "1fr 1fr" }} gap="300">
                 <FormField.Root size="sm">
                   <FormField.Label>Product key</FormField.Label>
                   <FormField.Input>
@@ -536,7 +536,7 @@ export const ProductLaunch = () => {
         </Stack>
 
         {/* ── Right column (~35%) ──────────────────────────────────────── */}
-        <Stack gap="300" flex="1" minWidth="260px">
+        <Stack gap="300" flex="1" minWidth={{ base: "0", lg: "260px" }} width={{ base: "100%", lg: "auto" }}>
           {/* Categories tree */}
           <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300">
             <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="200">

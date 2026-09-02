@@ -15,6 +15,9 @@ interface InlineSlotProps {
  * Container for inline render targets. Renders agent cards in a
  * horizontal row (dashboards, wide content) or vertical stack
  * (narrow columns, expanded table rows).
+ *
+ * When direction is "row", it automatically stacks to column on
+ * narrow viewports (below md breakpoint).
  */
 export const InlineSlot = ({
   direction = "column",
@@ -22,9 +25,12 @@ export const InlineSlot = ({
   gap = "300",
   ...rest
 }: InlineSlotProps) => {
+  const responsiveDirection =
+    direction === "row" ? { base: "column" as const, md: "row" as const } : direction;
+
   return (
     <Flex
-      direction={direction}
+      direction={responsiveDirection}
       gap={gap}
       width="100%"
       data-slot-direction={direction}

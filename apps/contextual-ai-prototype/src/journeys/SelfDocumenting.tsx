@@ -199,7 +199,7 @@ export const SelfDocumenting = () => (
           General Information
         </Text>
 
-        <Flex gap="300">
+        <Flex gap="300" direction={{ base: "column", md: "row" }}>
           <Stack gap="300" flex="1">
             <FormField.Root size="sm">
               <FormField.Label>Product name (EN)</FormField.Label>

@@ -39,11 +39,12 @@ export const PageHeader = ({
         px="300"
         pt="100"
         pb={tabs ? "0" : "200"}
-        alignItems="center"
+        alignItems={{ base: "flex-start", sm: "center" }}
+        flexDirection={{ base: "column", sm: "row" }}
         gap="300"
       >
         <Box flex="1" minWidth="0">
-          <Flex alignItems="baseline" gap="200">
+          <Flex alignItems="baseline" gap="200" flexWrap="wrap">
             <Text textStyle="lg" fontWeight="semibold" color="neutral.12">
               {title}
             </Text>
@@ -55,7 +56,7 @@ export const PageHeader = ({
           </Flex>
         </Box>
         {actions && (
-          <Flex gap="200" alignItems="center" flexShrink={0}>
+          <Flex gap="200" alignItems="center" flexWrap="wrap" flexShrink={0}>
             {actions}
           </Flex>
         )}

@@ -118,7 +118,7 @@ export const PricingReview = () => {
       </InlineSlot>
 
       {/* Augmented price table */}
-      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden" data-tour="price-table">
+      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden" overflowX="auto" data-tour="price-table">
         <Flex px="400" py="300" alignItems="center" gap="200" borderBottomWidth="1px" borderColor="neutral.4">
           <ProvenanceIndicator agentName="Pricing Optimizer Agent (proposed)" size="10px" />
           <Text textStyle="sm" fontWeight="semibold" color="neutral.12">Price Adjustments</Text>
@@ -127,7 +127,7 @@ export const PricingReview = () => {
         </Flex>
 
         {/* Table header */}
-        <Flex px="400" py="200" bg="neutral.2" borderBottomWidth="1px" borderColor="neutral.4">
+        <Flex px="400" py="200" bg="neutral.2" borderBottomWidth="1px" borderColor="neutral.4" minWidth="640px">
           <Text textStyle="xs" fontWeight="semibold" color="neutral.9" width="140px">Price Entry</Text>
           <Text textStyle="xs" fontWeight="semibold" color="neutral.9" width="80px">Current</Text>
           <Text textStyle="xs" fontWeight="semibold" color="neutral.9" width="90px">Suggested</Text>
@@ -150,6 +150,7 @@ export const PricingReview = () => {
               transition="background 150ms"
               cursor="pointer"
               onClick={() => setExpandedRow(expandedRow === i ? null : i)}
+              minWidth="640px"
             >
               <Icon as={expandedRow === i ? ExpandLess : ExpandMore} size="2xs" color="neutral.8" />
               <Flex width="130px" alignItems="center" gap="150" ml="100">
@@ -183,7 +184,7 @@ export const PricingReview = () => {
                     <ProvenanceIndicator agentName="Pricing Optimizer Agent (proposed)" reason={`Suggested ${row.suggested} restores margin above 20% floor`} />
                     <Text textStyle="xs" fontWeight="medium" color="indigo.9">Pricing Optimizer Agent (proposed)</Text>
                   </Flex>
-                  <Flex gap="300">
+                  <Flex gap="300" direction={{ base: "column", md: "row" }}>
                     <Box flex="1">
                       <Text textStyle="xs" color="neutral.9" mb="50">Rationale</Text>
                       <Text textStyle="sm" color="neutral.12">
@@ -191,7 +192,7 @@ export const PricingReview = () => {
                       </Text>
                     </Box>
                     <ChartThemeProvider>
-                      <Box width="200px" flexShrink={0}>
+                      <Box width={{ base: "100%", md: "200px" }} flexShrink={0}>
                         <Text textStyle="xs" color="neutral.9" mb="50">6-month trend</Text>
                         <ResponsiveContainer height={80}>
                           {(w, h) => (
