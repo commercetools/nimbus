@@ -24,8 +24,8 @@ const NavItem = ({ icon, label, to }: NavItemProps) => (
         <Flex
           alignItems="center"
           justifyContent="center"
-          width="36px"
-          height="36px"
+          width="500"
+          height="500"
           borderRadius="200"
           bg={isActive ? "rgba(255,255,255,0.15)" : undefined}
           _hover={{ bg: "rgba(255,255,255,0.1)" }}
@@ -54,37 +54,37 @@ export const Sidebar = () => {
       px="200"
       gap="100"
       overflow="hidden"
-      width="48px"
+      width="900"
     >
       {/* Navigation: matching real MC sidebar icons per plan */}
       <Stack gap="100" pt="100" flex="1" alignItems="center">
         <NavItem
-          icon={<Icon as={Speed} size="xs" />}
+          icon={<Icon as={Speed} size="2xs" />}
           label="Dashboard"
           to="/"
         />
         <NavItem
-          icon={<Icon as={Inventory} size="xs" />}
+          icon={<Icon as={Inventory} size="2xs" />}
           label="Products"
           to="/products/galaxy-s25-ultra"
         />
         <NavItem
-          icon={<Icon as={AccountTree} size="xs" />}
+          icon={<Icon as={AccountTree} size="2xs" />}
           label="Categories"
           to="/categories/phone-cases"
         />
         <NavItem
-          icon={<Icon as={PersonOutline} size="xs" />}
+          icon={<Icon as={PersonOutline} size="2xs" />}
           label="Customers"
           to="/products/pour-over-kettle"
         />
         <NavItem
-          icon={<Icon as={ShoppingCart} size="xs" />}
+          icon={<Icon as={ShoppingCart} size="2xs" />}
           label="Orders"
           to="/orders/mc-2026-847291"
         />
         <NavItem
-          icon={<Icon as={LocalOffer} size="xs" />}
+          icon={<Icon as={LocalOffer} size="2xs" />}
           label="Discounts"
           to="/discounts/summer-clearance"
         />
@@ -94,7 +94,7 @@ export const Sidebar = () => {
 
       <Box pt="200">
         <NavItem
-          icon={<Icon as={Settings} size="xs" />}
+          icon={<Icon as={Settings} size="2xs" />}
           label="Settings"
           to="/settings"
         />
