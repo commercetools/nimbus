@@ -96,6 +96,10 @@ function runAction(step: TourStep): Promise<void> {
         el.style.transition = "box-shadow 500ms ease, transform 500ms ease";
         el.style.boxShadow = "0 0 0 6px rgba(110, 86, 207, 0.5), 0 0 20px rgba(110, 86, 207, 0.3)";
         el.style.transform = "scale(1.03)";
+        // Simulate translate action when pulsing the translate button
+        if (step.selector.includes("translate-btn")) {
+          window.dispatchEvent(new CustomEvent("tour:translate"));
+        }
         setTimeout(() => {
           el.style.transition = "box-shadow 800ms ease, transform 800ms ease";
           el.style.boxShadow = "";

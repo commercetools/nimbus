@@ -243,6 +243,10 @@ export const ProductLaunch = () => {
   const [expandedVariant, setExpandedVariant] = useState<string | null>(null);
   const [createdIds, setCreatedIds] = useState<Set<string>>(new Set());
   const [readiness, setReadiness] = useState(68);
+  const [descriptions, setDescriptions] = useState({
+    en: 'The Galaxy S25 Ultra features a stunning 6.9" Dynamic AMOLED 2X display, Snapdragon 8 Elite processor, and a 200MP camera system.',
+    de: "", fr: "", es: "", it: "",
+  });
 
   // Bump readiness when variants are created
   useEffect(() => {
@@ -250,14 +254,30 @@ export const ProductLaunch = () => {
     setReadiness(68 + count * 7); // each created variant adds ~7%
   }, [createdIds]);
 
-  // Listen for tour to auto-create suggested variants (simulates Lena clicking Create)
+  // Listen for tour to auto-create suggested variants
   useEffect(() => {
     const handler = () => {
-      // Auto-create all suggested variants after a delay (tour animation)
       setTimeout(() => setCreatedIds(new Set(["s1", "s2"])), 1500);
     };
     window.addEventListener("tour:createVariants", handler);
     return () => window.removeEventListener("tour:createVariants", handler);
+  }, []);
+
+  // Listen for tour to simulate translations appearing
+  useEffect(() => {
+    const handler = () => {
+      setTimeout(() => {
+        setDescriptions(prev => ({
+          ...prev,
+          de: "Das Galaxy S25 Ultra bietet ein beeindruckendes 6,9-Zoll Dynamic AMOLED 2X Display, Snapdragon 8 Elite Prozessor und ein 200-MP-Kamerasystem.",
+          fr: "Le Galaxy S25 Ultra dispose d'un superbe écran Dynamic AMOLED 2X de 6,9 pouces, d'un processeur Snapdragon 8 Elite et d'un système photo 200 MP.",
+          es: "El Galaxy S25 Ultra cuenta con una impresionante pantalla Dynamic AMOLED 2X de 6,9 pulgadas, procesador Snapdragon 8 Elite y sistema de cámara de 200 MP.",
+        }));
+        setReadiness(prev => Math.min(prev + 5, 95));
+      }, 1000);
+    };
+    window.addEventListener("tour:translate", handler);
+    return () => window.removeEventListener("tour:translate", handler);
   }, []);
 
   // Mark created variants as "existing" (no longer suggested)
@@ -340,8 +360,10 @@ export const ProductLaunch = () => {
                   type="multiLine"
                   defaultLocaleOrCurrency="en"
                   width="100%"
-                  valuesByLocaleOrCurrency={{ en: 'The Galaxy S25 Ultra features a stunning 6.9" Dynamic AMOLED 2X display, Snapdragon 8 Elite processor, and a 200MP camera system.', de: "", fr: "", es: "", it: "" }}
-                  onChange={() => {}}
+                  autoGrow
+                  rows={2}
+                  valuesByLocaleOrCurrency={descriptions}
+                  onChange={(e) => setDescriptions(prev => ({ ...prev, [e.target.locale as string]: e.target.value as string }))}
                 />
               </Box>
 
