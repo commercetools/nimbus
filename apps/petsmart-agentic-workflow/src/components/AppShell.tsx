@@ -80,6 +80,16 @@ export const AppShell = () => {
   const location = useLocation();
   const chatConfig = chatConfigs[location.pathname];
 
+  // Auto-open panel in orchestrated mode (the conversation IS the interface)
+  const isOrchestrated = location.pathname.includes("/orchestrated/");
+  useEffect(() => {
+    if (isOrchestrated) {
+      setPanelOpen(true);
+    } else {
+      setPanelOpen(false);
+    }
+  }, [isOrchestrated]);
+
   const handleOpenPanel = useCallback((ctx?: string) => {
     setWhyContext(ctx);
     setPanelOpen(true);
