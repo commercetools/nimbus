@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Box, Flex, Icon, Menu, Text, Separator, Avatar, ComboBox } from "@commercetools/nimbus";
 import { CommercetoolsCube } from "@commercetools/nimbus-icons";
@@ -110,6 +110,26 @@ export const AppShell = () => {
     };
   }, []);
 
+  // Track previous page's message count for progressive reveal carry-over
+  const prevMessageCountRef = useRef(0);
+  const carriedCount = useMemo(() => {
+    const prev = prevMessageCountRef.current;
+    return prev;
+  }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Memoize mapped messages so progressive reveal doesn't reset on every render
+  const mappedMessages = useMemo(() => {
+    const mapped = chatConfig?.messages.map((m) => ({
+      sender: m.role === "assistant" ? "agent" as const : "user" as const,
+      agentLabel: m.role === "assistant" ? chatConfig.agentName : undefined,
+      content: m.content,
+      richContent: m.richContent,
+    }));
+    // Update prev count AFTER computing carried (for next navigation)
+    prevMessageCountRef.current = mapped?.length ?? 0;
+    return mapped;
+  }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <PanelProvider openPanel={handleOpenPanel}>
       <Flex direction="column" height="100vh" width="100vw" overflow="hidden">
@@ -181,15 +201,11 @@ export const AppShell = () => {
                 setWhyContext(undefined);
               }}
               agentName={chatConfig?.agentName}
-              messages={chatConfig?.messages.map((m) => ({
-                sender: m.role === "assistant" ? "agent" as const : "user" as const,
-                agentLabel: m.role === "assistant" ? chatConfig.agentName : undefined,
-                content: m.content,
-                richContent: m.richContent,
-              }))}
+              messages={mappedMessages}
               placeholder={chatConfig?.placeholder}
               whyContext={whyContext}
               progressive={isOrchestrated}
+              carriedCount={carriedCount}
             />
           </Flex>
         </Flex>

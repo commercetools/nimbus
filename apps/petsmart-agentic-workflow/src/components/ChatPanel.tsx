@@ -104,71 +104,62 @@ interface ChatPanelProps {
   whyContext?: string;
   /** When true, messages reveal progressively with typing animation in the input */
   progressive?: boolean;
+  /** Number of messages to show immediately (carried from previous pages) */
+  carriedCount?: number;
 }
 
 /** Hook: progressively reveals messages with typing-in-input animation.
- *  Returns the visible messages slice and current "typing" text for the input. */
-function useProgressiveReveal(messages: ChatMessage[], active: boolean) {
-  const [revealedCount, setRevealedCount] = useState(0);
+ *  Uses a single imperative timer chain to avoid effect re-fire issues. */
+function useProgressiveReveal(messages: ChatMessage[], active: boolean, carriedCount: number) {
+  const [revealedCount, setRevealedCount] = useState(active ? carriedCount : messages.length);
   const [inputText, setInputText] = useState("");
-  const [phase, setPhase] = useState<"idle" | "typing" | "sending" | "responding">("idle");
-  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const prevMessagesRef = useRef<ChatMessage[]>([]);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  // Reset when messages change (new page)
   useEffect(() => {
-    if (!active) { setRevealedCount(messages.length); return; }
-    // Find how many messages are "old" (carried from previous page)
-    const prevLen = prevMessagesRef.current.length;
-    const carried = messages.slice(0, prevLen).every((m, i) =>
-      m.content === prevMessagesRef.current[i]?.content
-    ) ? prevLen : 0;
-    prevMessagesRef.current = messages;
-    setRevealedCount(carried);
+    // Clear any previous animation
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+
+    if (!active) { setRevealedCount(messages.length); setInputText(""); return; }
+
+    // Start from carriedCount (previously shown messages)
+    let shown = carriedCount;
+    setRevealedCount(shown);
     setInputText("");
-    setPhase("idle");
-  }, [messages, active]);
 
-  // Animation loop: reveal next message
-  const revealNext = useCallback(() => {
-    if (revealedCount >= messages.length) { setPhase("idle"); return; }
-    const next = messages[revealedCount];
 
-    if (next.sender === "user") {
-      // Phase 1: Show text in input
-      setPhase("typing");
-      setInputText(next.content);
-      timerRef.current = setTimeout(() => {
-        // Phase 2: Clear input, show as bubble
-        setPhase("sending");
-        setInputText("");
-        setRevealedCount((c) => c + 1);
-        // Phase 3: Brief pause then reveal agent response
-        timerRef.current = setTimeout(() => {
-          setPhase("responding");
-          // Auto-advance to next (agent) message
-          timerRef.current = setTimeout(() => {
-            setRevealedCount((c) => c + 1);
-            setPhase("idle");
-          }, 800);
-        }, 300);
-      }, 1500);
-    } else {
-      // Agent message without preceding user message: just fade in
-      setRevealedCount((c) => c + 1);
-      timerRef.current = setTimeout(() => setPhase("idle"), 600);
+    // Build the entire animation timeline upfront
+    let delay = 400; // initial pause
+
+    for (let i = carriedCount; i < messages.length; i++) {
+      const msg = messages[i];
+      if (msg.sender === "user") {
+        // Show text in input
+        const showDelay = delay;
+        timersRef.current.push(setTimeout(() => setInputText(msg.content), showDelay));
+        delay += 1500;
+        // Clear input, reveal as bubble
+        const sendDelay = delay;
+        const sendIdx = i + 1;
+        timersRef.current.push(setTimeout(() => {
+          setInputText("");
+          setRevealedCount(sendIdx);
+        }, sendDelay));
+        delay += 400;
+      } else {
+        // Reveal agent response
+        const revealDelay = delay;
+        const revealIdx = i + 1;
+        timersRef.current.push(setTimeout(() => setRevealedCount(revealIdx), revealDelay));
+        delay += 800;
+      }
     }
-  }, [revealedCount, messages]);
 
-  // Kick off next reveal when idle and more to show
-  useEffect(() => {
-    if (!active || phase !== "idle" || revealedCount >= messages.length) return;
-    timerRef.current = setTimeout(revealNext, 600);
-    return () => clearTimeout(timerRef.current);
-  }, [active, phase, revealedCount, messages.length, revealNext]);
-
-  // Cleanup
-  useEffect(() => () => clearTimeout(timerRef.current), []);
+    return () => {
+      timersRef.current.forEach(clearTimeout);
+      timersRef.current = [];
+    };
+  }, [messages, active, carriedCount]);
 
   return {
     visibleMessages: messages.slice(0, revealedCount),
@@ -270,8 +261,9 @@ export const ChatPanel = ({
   placeholder = "Ask about this product...",
   whyContext,
   progressive = false,
+  carriedCount = 0,
 }: ChatPanelProps) => {
-  const { visibleMessages, inputText, isAnimating } = useProgressiveReveal(messages, progressive);
+  const { visibleMessages, inputText, isAnimating } = useProgressiveReveal(messages, progressive, carriedCount);
   const displayMessages = progressive ? visibleMessages : messages;
 
   // Always scroll to the bottom so the latest message is visible
