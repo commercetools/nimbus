@@ -194,7 +194,7 @@ export const SelfDocumenting = () => (
       </InlineSlot>
 
       {/* Form with augmented fields */}
-      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300">
+      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300" overflow="hidden">
         <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="300">
           General Information
         </Text>

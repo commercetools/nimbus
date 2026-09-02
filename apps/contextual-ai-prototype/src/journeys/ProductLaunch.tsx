@@ -300,12 +300,12 @@ export const ProductLaunch = () => {
         {/* ── Left column (~65%) ─────────────────────────────────────── */}
         <Stack gap="300" flex="2" minWidth="0" width={{ base: "100%", lg: "auto" }}>
           {/* General info form */}
-          <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300">
+          <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300" overflow="hidden">
             <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="300">
               General Information
             </Text>
 
-            <Stack gap="300" width="100%">
+            <Stack gap="300" width="100%" minWidth="0">
               <LocalizedField
                 size="sm"
                 type="text"
