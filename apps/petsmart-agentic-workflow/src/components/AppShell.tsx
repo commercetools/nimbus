@@ -19,11 +19,6 @@ const AppBar = () => (
     flexShrink={0}
     zIndex={100}
   >
-    <NavLink to="/" style={{ textDecoration: "none" }}>
-      <Flex alignItems="center" justifyContent="center" color="white" _hover={{ opacity: 0.8 }} cursor="pointer">
-        <Icon as={CommercetoolsCube} size="md" />
-      </Flex>
-    </NavLink>
     <Box flex="1" />
     <Flex alignItems="center" gap="200">
       {/* Organization selector */}

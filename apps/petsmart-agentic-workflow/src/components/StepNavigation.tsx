@@ -49,6 +49,7 @@ export const StepNavigation = ({
           variant="solid"
           colorPalette="primary"
           size="sm"
+          data-tour="next-step-btn"
           onPress={() => goTo(currentStep + 1)}
         >
           Next step →

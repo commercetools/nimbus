@@ -141,7 +141,7 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
           borderColor="neutral.6"
           borderRadius="200"
           overflow="hidden"
-          data-tour="products-table"
+          data-tour="product-table"
         >
           <DataTable.Root
             columns={productColumns}
@@ -160,91 +160,99 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
         {/* Inline agent cards */}
         {mode === "contextual" ? (
           <InlineSlot direction="row" data-tour="inline-slot">
-            <InlineCard
-              title="Inventory Overview"
-              agentName="Inventory Agent"
-              agentSource="customer"
-            >
-              <Stack gap="200" minWidth="260px">
-                <Flex gap="300">
-                  {inventoryStats.map((stat) => (
-                    <Box key={stat.label}>
-                      <Text textStyle="lg" fontWeight="bold" color="neutral.12">
-                        {stat.value}
-                      </Text>
-                      <Text textStyle="xs" color="neutral.9">
-                        {stat.label}
-                      </Text>
-                    </Box>
-                  ))}
-                </Flex>
-                <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-                  23 products below velocity threshold in Pet Health. Total
-                  shelf value: $47,200. Average days on shelf: 79.
-                </Text>
-              </Stack>
-            </InlineCard>
-
-            <InlineCard
-              title="Seasonal Opportunity"
-              agentName="Strategy Agent"
-              agentSource="ct"
-            >
-              <Stack gap="150" minWidth="260px">
-                <Flex alignItems="flex-start" gap="100">
+            <Box data-tour="inventory-card">
+              <InlineCard
+                title="Inventory Overview"
+                agentName="Inventory Agent"
+                agentSource="customer"
+              >
+                <Stack gap="200" minWidth="260px">
+                  <Flex gap="300">
+                    {inventoryStats.map((stat) => (
+                      <Box key={stat.label}>
+                        <Text textStyle="lg" fontWeight="bold" color="neutral.12">
+                          {stat.value}
+                        </Text>
+                        <Text textStyle="xs" color="neutral.9">
+                          {stat.label}
+                        </Text>
+                      </Box>
+                    ))}
+                  </Flex>
                   <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-                    Spring Pet Wellness promotions historically lift this
-                    category 28% (based on 2024, 2025 data).
+                    23 products below velocity threshold in Pet Health. Total
+                    shelf value: $47,200. Average days on shelf: 79.
                   </Text>
-                  <ProvenanceIndicator
-                    agentName="Inventory Agent"
-                    agentSource="customer"
-                    reason="28% lift figure sourced from PetSmart's historical promotion records (2024–2025), not commercetools platform data."
-                  />
-                </Flex>
-                <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-                  Optimal window: March 1 - April 15. Recommended: bundle slow
-                  movers with high-velocity accessories.
-                </Text>
-                <Flex justifyContent="flex-end" pt="100">
-                  <Button
-                    variant="solid"
-                    colorPalette="primary"
-                    size="sm"
-                    data-tour="create-promotion"
-                    onPress={() => navigate(`/${mode}/step-2`)}
-                  >
-                    <Flex alignItems="center" gap="100">
-                      <Text as="span" fontSize="250" lineHeight="1" color="inherit">
-                        ✦
-                      </Text>
-                      <Text as="span" textStyle="xs" fontWeight="semibold" color="inherit">
-                        Create Promotion
-                      </Text>
-                    </Flex>
-                  </Button>
-                </Flex>
-              </Stack>
-            </InlineCard>
+                </Stack>
+              </InlineCard>
+            </Box>
+
+            <Box data-tour="strategy-card">
+              <InlineCard
+                title="Seasonal Opportunity"
+                agentName="Strategy Agent"
+                agentSource="ct"
+              >
+                <Stack gap="150" minWidth="260px">
+                  <Flex alignItems="flex-start" gap="100">
+                    <Text textStyle="xs" color="neutral.11" lineHeight="tall">
+                      Spring Pet Wellness promotions historically lift this
+                      category 28% (based on 2024, 2025 data).
+                    </Text>
+                    <ProvenanceIndicator
+                      agentName="Inventory Agent"
+                      agentSource="customer"
+                      reason="28% lift figure sourced from PetSmart's historical promotion records (2024–2025), not commercetools platform data."
+                    />
+                  </Flex>
+                  <Text textStyle="xs" color="neutral.11" lineHeight="tall">
+                    Optimal window: March 1 - April 15. Recommended: bundle slow
+                    movers with high-velocity accessories.
+                  </Text>
+                  <Flex justifyContent="flex-end" pt="100">
+                    <Button
+                      variant="solid"
+                      colorPalette="primary"
+                      size="sm"
+                      data-tour="create-promotion"
+                      onPress={() => navigate(`/${mode}/step-2`)}
+                    >
+                      <Flex alignItems="center" gap="100">
+                        <Text as="span" fontSize="250" lineHeight="1" color="inherit">
+                          ✦
+                        </Text>
+                        <Text as="span" textStyle="xs" fontWeight="semibold" color="inherit">
+                          Create Promotion
+                        </Text>
+                      </Flex>
+                    </Button>
+                  </Flex>
+                </Stack>
+              </InlineCard>
+            </Box>
           </InlineSlot>
         ) : (
           <InlineSlot direction="row" data-tour="inline-slot">
-            <InlineCard
-              title="Promotion Opportunity"
-              agentName="PetSmart Orchestrator"
-              agentSource="customer"
-            >
-              <Stack gap="200" minWidth="320px">
-                <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-                  23 slow-moving products detected in Pet Health ($47K shelf
-                  value). Spring promotions historically lift this category
-                  28%. Recommended: Buy 2 Get 1 Free on pet health products,
-                  bundled with accessories. Optimal window: March 1 - April
-                  15.
-                </Text>
-                <AgentChain contributions={agentChainContributions} />
-              </Stack>
-            </InlineCard>
+            <Box data-tour="orchestrator-card">
+              <InlineCard
+                title="Promotion Opportunity"
+                agentName="PetSmart Orchestrator"
+                agentSource="customer"
+              >
+                <Stack gap="200" minWidth="320px">
+                  <Text textStyle="xs" color="neutral.11" lineHeight="tall">
+                    23 slow-moving products detected in Pet Health ($47K shelf
+                    value). Spring promotions historically lift this category
+                    28%. Recommended: Buy 2 Get 1 Free on pet health products,
+                    bundled with accessories. Optimal window: March 1 - April
+                    15.
+                  </Text>
+                  <Box data-tour="agent-chain">
+                    <AgentChain contributions={agentChainContributions} />
+                  </Box>
+                </Stack>
+              </InlineCard>
+            </Box>
           </InlineSlot>
         )}
       </Stack>

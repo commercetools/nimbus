@@ -1,5 +1,6 @@
 import { Box, Flex, Stack, Separator, Icon, Tooltip } from "@commercetools/nimbus";
 import {
+  CommercetoolsCube,
   Speed,
   Inventory,
   AccountTree,
@@ -56,7 +57,16 @@ export const Sidebar = () => {
       overflow="hidden"
       width="900"
     >
-      {/* Navigation: matching real MC sidebar icons per plan */}
+      {/* CT logo */}
+      <NavLink to="/" style={{ textDecoration: "none" }}>
+        <Flex alignItems="center" justifyContent="center" color="white" _hover={{ opacity: 0.8 }} cursor="pointer" mb="100">
+          <Icon as={CommercetoolsCube} size="xs" />
+        </Flex>
+      </NavLink>
+
+      <Separator borderColor="rgba(255,255,255,0.12)" />
+
+      {/* Navigation */}
       <Stack gap="100" pt="100" flex="1" alignItems="center">
         <NavItem
           icon={<Icon as={Speed} size="2xs" />}
