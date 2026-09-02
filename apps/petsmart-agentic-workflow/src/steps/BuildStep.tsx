@@ -52,10 +52,23 @@ const ConflictWarning = () => (
       <Text textStyle="xs" color="neutral.10" mt="50">
         Stacking would push 12 products below 15% margin floor.
       </Text>
-      <Flex mt="200">
-        <Button variant="outline" size="2xs">
-          Add exclusion
-        </Button>
+      <Flex
+        mt="200"
+        gap="150"
+        alignItems="center"
+        px="200"
+        py="100"
+        bg="ctteal.2"
+        borderRadius="200"
+        borderWidth="1px"
+        borderColor="ctteal.6"
+        cursor="pointer"
+        _hover={{ bg: "ctteal.3" }}
+        transition="background 150ms"
+        width="fit-content"
+      >
+        <Text as="span" fontSize="250" color="ctteal.9" lineHeight="1">✦</Text>
+        <Text textStyle="xs" color="ctteal.11">Set non-stackable</Text>
       </Flex>
     </Box>
   </Flex>
@@ -79,8 +92,25 @@ const StockWarning = () => (
       </Text>
       <Text textStyle="xs" color="neutral.10" mt="50">
         28 products are low-stock (reorder lead time exceeds promo window).
-        Consider exclusion.
       </Text>
+      <Flex
+        mt="200"
+        gap="150"
+        alignItems="center"
+        px="200"
+        py="100"
+        bg="ctteal.2"
+        borderRadius="200"
+        borderWidth="1px"
+        borderColor="ctteal.6"
+        cursor="pointer"
+        _hover={{ bg: "ctteal.3" }}
+        transition="background 150ms"
+        width="fit-content"
+      >
+        <Text as="span" fontSize="250" color="ctteal.9" lineHeight="1">✦</Text>
+        <Text textStyle="xs" color="ctteal.11">Exclude 28 low-stock products</Text>
+      </Flex>
     </Box>
   </Flex>
 );
