@@ -163,16 +163,25 @@ export const Landing = () => {
                 </Text>
               </Flex>
               <Box flex="1" minWidth="0">
-                <Text textStyle="sm" fontWeight="semibold" color="neutral.12">{j.title}</Text>
+                <Flex alignItems="center" justifyContent="space-between" gap="200">
+                  <Text textStyle="sm" fontWeight="semibold" color="neutral.12">{j.title}</Text>
+                  <Flex gap="100" flexShrink={0} display={{ base: "none", sm: "flex" }}>
+                    {j.targets.map((t) => (
+                      <Badge key={t} size="2xs" colorPalette={renderTargetColors[t] as any}>
+                        {t}
+                      </Badge>
+                    ))}
+                  </Flex>
+                </Flex>
                 <Text textStyle="xs" color="neutral.10" mt="50">{j.description}</Text>
+                <Flex gap="100" mt="150" display={{ base: "flex", sm: "none" }}>
+                  {j.targets.map((t) => (
+                    <Badge key={t} size="2xs" colorPalette={renderTargetColors[t] as any}>
+                      {t}
+                    </Badge>
+                  ))}
+                </Flex>
               </Box>
-              <Flex gap="100" flexShrink={0}>
-                {j.targets.map((t) => (
-                  <Badge key={t} size="2xs" colorPalette={renderTargetColors[t] as any}>
-                    {t}
-                  </Badge>
-                ))}
-              </Flex>
             </Flex>
           ))}
         </Stack>
