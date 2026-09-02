@@ -13,7 +13,6 @@ import {
 } from "@commercetools/nimbus";
 import type { DataTableColumnItem, DataTableRowItem } from "@commercetools/nimbus";
 import { Search } from "@commercetools/nimbus-icons";
-import { ChartThemeProvider, ResponsiveContainer, LineChart } from "@commercetools/nimbus-viz";
 import { PageHeader } from "../components/PageHeader";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
@@ -121,22 +120,6 @@ const inventoryStats = [
   { label: "Avg. days on shelf", value: "79" },
 ];
 
-// Weekly velocity trend for slow movers - PetSmart warehouse time-series data
-// that commercetools platform data doesn't include.
-const velocityTrendSeries = [
-  {
-    id: "velocity",
-    label: "Weekly velocity",
-    data: [
-      { x: new Date("2026-01-06"), y: -8 },
-      { x: new Date("2026-01-13"), y: -12 },
-      { x: new Date("2026-01-20"), y: -18 },
-      { x: new Date("2026-01-27"), y: -22 },
-      { x: new Date("2026-02-03"), y: -29 },
-      { x: new Date("2026-02-10"), y: -34 },
-    ],
-  },
-];
 
 export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
   const navigate = useNavigate();
@@ -191,20 +174,29 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
                       <Text textStyle="xs" color="neutral.9">{stat.label}</Text>
                     </Box>
                   ))}
-                  <Box flex="1" minWidth="120px">
-                    <ChartThemeProvider>
-                      <ResponsiveContainer height={40}>
-                        {(w, h) => (
-                          <LineChart
-                            width={w}
-                            height={h}
-                            series={velocityTrendSeries}
-                            yBaselineFromData
-                            ariaLabel="Weekly velocity trend"
-                          />
-                        )}
-                      </ResponsiveContainer>
-                    </ChartThemeProvider>
+                  {/* Threshold bar: 79 avg days vs 60 day target */}
+                  <Box flex="1" minWidth="100px">
+                    <Text textStyle="xs" color="neutral.9" mb="50">Avg shelf age vs 60-day target</Text>
+                    <Box height="200" bg="neutral.4" borderRadius="full" position="relative" overflow="hidden">
+                      <Box
+                        height="100%"
+                        width={`${Math.min((79 / 100) * 100, 100)}%`}
+                        bg="amber.9"
+                        borderRadius="full"
+                      />
+                      <Box
+                        position="absolute"
+                        top="0"
+                        bottom="0"
+                        left="60%"
+                        width="2px"
+                        bg="neutral.12"
+                      />
+                    </Box>
+                    <Flex justifyContent="space-between" mt="50">
+                      <Text textStyle="xs" color="amber.11" fontWeight="semibold">79 days</Text>
+                      <Text textStyle="xs" color="neutral.9">target: 60</Text>
+                    </Flex>
                   </Box>
                 </Flex>
               </InlineCard>
@@ -222,8 +214,7 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
                 </Text>
                 <Flex justifyContent="flex-end" pt="100">
                   <Button
-                    variant="solid"
-                    colorPalette="primary"
+                    variant="outline"
                     size="2xs"
                     data-tour="create-promotion"
                     onPress={() => navigate(`/${mode}/step-2`)}
