@@ -76,16 +76,16 @@ const getStepStatus = (stepNumber: number): "done" | "active" | "pending" => {
 };
 
 const WorkflowPipeline = () => (
-  <Flex wrap="wrap" alignItems="flex-start" justifyContent="center" gap="100" rowGap="400">
+  <Flex wrap="wrap" alignItems="flex-start" justifyContent="center" gap="50" rowGap="300">
     {pipelineSteps.map((step, index) => {
       const status = getStepStatus(step.step);
       const { bg, fg } = getPipelineColors(step, status);
       return (
         <Fragment key={step.step}>
-          <Flex direction="column" alignItems="center" gap="100" width="88px">
+          <Flex direction="column" alignItems="center" gap="50" width="64px">
             <Flex
-              width="40px"
-              height="40px"
+              width="24px"
+              height="24px"
               borderRadius="full"
               bg={bg}
               alignItems="center"
@@ -94,17 +94,17 @@ const WorkflowPipeline = () => (
               borderWidth={status === "active" ? "2px" : "0"}
               borderColor="amber.9"
             >
-              <Text textStyle="sm" fontWeight="bold" color={fg}>
+              <Text fontSize="11px" fontWeight="bold" color={fg} lineHeight="1">
                 {status === "done" ? "✓" : step.step}
               </Text>
             </Flex>
-            <Text textStyle="xs" fontWeight="medium" color="neutral.12" textAlign="center">
+            <Text fontSize="10px" fontWeight="medium" color="neutral.11" textAlign="center" lineHeight="tight">
               {step.label}
             </Text>
           </Flex>
           {index < pipelineSteps.length - 1 && (
-            <Text as="span" color="neutral.7" mt="150" flexShrink={0} aria-hidden="true">
-              &rarr;
+            <Text as="span" color="neutral.7" fontSize="10px" mt="100" flexShrink={0} aria-hidden="true">
+              →
             </Text>
           )}
         </Fragment>

@@ -21,26 +21,26 @@ const getPipelineColors = (step: (typeof pipelineSteps)[number]): PipelineColors
 };
 
 const WorkflowPipeline = () => (
-  <Flex wrap="wrap" alignItems="flex-start" justifyContent="center" gap="100" rowGap="400">
+  <Flex wrap="wrap" alignItems="flex-start" justifyContent="center" gap="50" rowGap="300">
     {pipelineSteps.map((step, index) => {
       const { bg, fg } = getPipelineColors(step);
       return (
         <Fragment key={step.step}>
-          <Flex direction="column" alignItems="center" gap="100" width="88px">
+          <Flex direction="column" alignItems="center" gap="50" width="64px">
             <Flex
-              width="40px"
-              height="40px"
+              width="24px"
+              height="24px"
               borderRadius="full"
               bg={bg}
               alignItems="center"
               justifyContent="center"
               flexShrink={0}
             >
-              <Text textStyle="sm" fontWeight="bold" color={fg}>
+              <Text fontSize="11px" fontWeight="bold" color={fg} lineHeight="1">
                 {step.step}
               </Text>
             </Flex>
-            <Text textStyle="xs" fontWeight="medium" color="neutral.12" textAlign="center">
+            <Text fontSize="10px" fontWeight="medium" color="neutral.11" textAlign="center" lineHeight="tight">
               {step.label}
             </Text>
           </Flex>
@@ -48,11 +48,12 @@ const WorkflowPipeline = () => (
             <Text
               as="span"
               color="neutral.7"
-              mt="150"
+              fontSize="10px"
+              mt="100"
               flexShrink={0}
               aria-hidden="true"
             >
-              &rarr;
+              →
             </Text>
           )}
         </Fragment>
