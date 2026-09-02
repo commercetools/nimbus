@@ -1,4 +1,4 @@
-import { useRef, useEffect, type ReactNode } from "react";
+import { useRef, useEffect, useState, useCallback, type ReactNode } from "react";
 import { Box, Flex, Stack, Text, Separator, IconButton, MultilineTextInput, Badge } from "@commercetools/nimbus";
 import { Close, ArrowUpward } from "@commercetools/nimbus-icons";
 import { AiDot } from "./AiDot";
@@ -102,6 +102,79 @@ interface ChatPanelProps {
   placeholder?: string;
   /** Context string passed from a ProvenanceIndicator "Why?" click */
   whyContext?: string;
+  /** When true, messages reveal progressively with typing animation in the input */
+  progressive?: boolean;
+}
+
+/** Hook: progressively reveals messages with typing-in-input animation.
+ *  Returns the visible messages slice and current "typing" text for the input. */
+function useProgressiveReveal(messages: ChatMessage[], active: boolean) {
+  const [revealedCount, setRevealedCount] = useState(0);
+  const [inputText, setInputText] = useState("");
+  const [phase, setPhase] = useState<"idle" | "typing" | "sending" | "responding">("idle");
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const prevMessagesRef = useRef<ChatMessage[]>([]);
+
+  // Reset when messages change (new page)
+  useEffect(() => {
+    if (!active) { setRevealedCount(messages.length); return; }
+    // Find how many messages are "old" (carried from previous page)
+    const prevLen = prevMessagesRef.current.length;
+    const carried = messages.slice(0, prevLen).every((m, i) =>
+      m.content === prevMessagesRef.current[i]?.content
+    ) ? prevLen : 0;
+    prevMessagesRef.current = messages;
+    setRevealedCount(carried);
+    setInputText("");
+    setPhase("idle");
+  }, [messages, active]);
+
+  // Animation loop: reveal next message
+  const revealNext = useCallback(() => {
+    if (revealedCount >= messages.length) { setPhase("idle"); return; }
+    const next = messages[revealedCount];
+
+    if (next.sender === "user") {
+      // Phase 1: Show text in input
+      setPhase("typing");
+      setInputText(next.content);
+      timerRef.current = setTimeout(() => {
+        // Phase 2: Clear input, show as bubble
+        setPhase("sending");
+        setInputText("");
+        setRevealedCount((c) => c + 1);
+        // Phase 3: Brief pause then reveal agent response
+        timerRef.current = setTimeout(() => {
+          setPhase("responding");
+          // Auto-advance to next (agent) message
+          timerRef.current = setTimeout(() => {
+            setRevealedCount((c) => c + 1);
+            setPhase("idle");
+          }, 800);
+        }, 300);
+      }, 1500);
+    } else {
+      // Agent message without preceding user message: just fade in
+      setRevealedCount((c) => c + 1);
+      timerRef.current = setTimeout(() => setPhase("idle"), 600);
+    }
+  }, [revealedCount, messages]);
+
+  // Kick off next reveal when idle and more to show
+  useEffect(() => {
+    if (!active || phase !== "idle" || revealedCount >= messages.length) return;
+    timerRef.current = setTimeout(revealNext, 600);
+    return () => clearTimeout(timerRef.current);
+  }, [active, phase, revealedCount, messages.length, revealNext]);
+
+  // Cleanup
+  useEffect(() => () => clearTimeout(timerRef.current), []);
+
+  return {
+    visibleMessages: messages.slice(0, revealedCount),
+    inputText,
+    isAnimating: active && revealedCount < messages.length,
+  };
 }
 
 const AgentMessage = ({ message }: { message: ChatMessage }) => (
@@ -196,18 +269,21 @@ export const ChatPanel = ({
   messages = [],
   placeholder = "Ask about this product...",
   whyContext,
+  progressive = false,
 }: ChatPanelProps) => {
+  const { visibleMessages, inputText, isAnimating } = useProgressiveReveal(messages, progressive);
+  const displayMessages = progressive ? visibleMessages : messages;
+
   // Always scroll to the bottom so the latest message is visible
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!messagesContainerRef.current) return;
-    // Use requestAnimationFrame to ensure DOM has painted before scrolling
     requestAnimationFrame(() => {
       if (messagesContainerRef.current) {
         messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
       }
     });
-  }, [messages, whyContext]);
+  }, [displayMessages.length, whyContext]);
 
   return (
     <Flex direction="column" position="absolute" top="0" left="0" right="0" bottom="0" overflow="hidden">
@@ -252,7 +328,7 @@ export const ChatPanel = ({
         minHeight="0"
         overflow="auto"
       >
-        {messages.map((msg, i) =>
+        {displayMessages.map((msg, i) =>
           msg.sender === "agent" ? (
             <AgentMessage key={i} message={msg} />
           ) : (
@@ -269,26 +345,32 @@ export const ChatPanel = ({
 
       {/* Input */}
       <Flex
-        alignItems="flex-start"
+        alignItems="flex-end"
         gap="100"
         px="300"
         py="250"
         flexShrink={0}
+        maxHeight="max-content"
+        borderTopWidth="1px"
+        borderColor="neutral.4"
       >
         <Box minWidth="0" width="100%">
           <MultilineTextInput
-            placeholder={placeholder}
+            placeholder={inputText ? undefined : placeholder}
+            value={inputText}
             aria-label="Chat input"
             variant="ghost"
             size="sm"
             rows={1}
+            autoGrow
             width="100%"
+            isReadOnly={isAnimating}
           />
         </Box>
         <IconButton
           aria-label="Send"
           variant="ghost"
-          colorPalette="neutral"
+          colorPalette={inputText ? "primary" : "neutral"}
           size="2xs"
           flexShrink={0}
         >

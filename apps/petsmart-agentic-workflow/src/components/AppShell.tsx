@@ -189,6 +189,7 @@ export const AppShell = () => {
               }))}
               placeholder={chatConfig?.placeholder}
               whyContext={whyContext}
+              progressive={isOrchestrated}
             />
           </Flex>
         </Flex>
