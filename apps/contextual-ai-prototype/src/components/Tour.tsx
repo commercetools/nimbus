@@ -141,20 +141,32 @@ function runAction(step: TourStep): Promise<void> {
     if (step.action === "hoverWaffleCells") {
       const el = document.querySelector(step.selector);
       if (el) {
-        const rects = el.querySelectorAll<SVGRectElement>("figure rect[fill]");
-        // Pick two cells to hover sequentially
-        const cells = Array.from(rects).filter(r => r.getAttribute("width") === r.getAttribute("height"));
-        const targets = [cells[5], cells[20]].filter(Boolean);
+        const rects = el.querySelectorAll<SVGRectElement>("figure rect");
+        const cells = Array.from(rects).filter(r => {
+          const w = r.getAttribute("width");
+          const h = r.getAttribute("height");
+          return w && h && w === h && r.getAttribute("fill") && r.getAttribute("fill") !== "var(--chart-empty)";
+        });
+        const targets = [cells[3], cells[25]].filter(Boolean);
         let i = 0;
         const hoverNext = () => {
           if (i >= targets.length) { resolve(); return; }
           const cell = targets[i];
-          cell.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+          const rect = cell.getBoundingClientRect();
+          const cx = rect.x + rect.width / 2;
+          const cy = rect.y + rect.height / 2;
+          // Use pointer events which React's event system captures
+          cell.dispatchEvent(new PointerEvent("pointerenter", { bubbles: true, clientX: cx, clientY: cy }));
+          cell.dispatchEvent(new PointerEvent("pointerover", { bubbles: true, clientX: cx, clientY: cy }));
+          cell.dispatchEvent(new MouseEvent("mouseover", { bubbles: true, clientX: cx, clientY: cy }));
+          cell.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true, clientX: cx, clientY: cy }));
           setTimeout(() => {
+            cell.dispatchEvent(new PointerEvent("pointerleave", { bubbles: true }));
             cell.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true }));
+            cell.dispatchEvent(new MouseEvent("mouseout", { bubbles: true }));
             i++;
-            setTimeout(hoverNext, 300);
-          }, 1200);
+            setTimeout(hoverNext, 400);
+          }, 1400);
         };
         hoverNext();
       } else { resolve(); }
