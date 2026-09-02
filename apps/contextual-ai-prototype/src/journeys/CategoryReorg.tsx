@@ -99,7 +99,7 @@ export const CategoryReorg = () => (
           </Flex>
 
           {/* Category health: product density breakdown across child categories */}
-          <Box mt="200">
+          <Box mt="200" data-tour="density-chart">
             <Text textStyle="xs" fontWeight="semibold" color="neutral.10" mb="100">
               Product density by subcategory
             </Text>
@@ -121,7 +121,7 @@ export const CategoryReorg = () => (
           </Box>
         </InlineCard>
 
-        <InlineCard title="Category Hierarchy" agentName={AGENT_NAME} headerRight={
+        <Box data-tour="category-tree"><InlineCard title="Category Hierarchy" agentName={AGENT_NAME} headerRight={
           <Badge size="2xs" colorPalette="info">1 suggestion</Badge>
         }>
           <FormField.Root size="sm" mb="200">
@@ -199,11 +199,11 @@ export const CategoryReorg = () => (
               </Tree.Item>
             </Tree.Item>
           </Tree.Root>
-        </InlineCard>
+        </InlineCard></Box>
       </InlineSlot>
 
       {/* Augmented restructuring suggestions */}
-      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden">
+      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden" data-tour="restructuring-suggestions">
         <Flex px="300" py="200" alignItems="center" gap="200" borderBottomWidth="1px" borderColor="neutral.4">
           <ProvenanceIndicator agentName={AGENT_NAME} iconSize="2xs" />
           <Text textStyle="sm" fontWeight="semibold" color="neutral.12">Restructuring Suggestions</Text>
@@ -235,7 +235,7 @@ export const CategoryReorg = () => (
       </Box>
 
       {/* Impact analysis table */}
-      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden">
+      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden" data-tour="impact-analysis">
         <Flex px="300" py="200" alignItems="center" gap="200" borderBottomWidth="1px" borderColor="neutral.4">
           <ProvenanceIndicator agentName={AGENT_NAME} iconSize="2xs" />
           <Text textStyle="sm" fontWeight="semibold" color="neutral.12">Impact Analysis</Text>

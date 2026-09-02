@@ -123,7 +123,7 @@ export const PricingReview = () => {
           <ProvenanceIndicator agentName="Pricing Optimizer Agent (proposed)" size="10px" />
           <Text textStyle="sm" fontWeight="semibold" color="neutral.12">Price Adjustments</Text>
           <Box flex="1" />
-          <Button variant="outline" size="2xs">Apply All</Button>
+          <Button variant="outline" size="2xs" data-tour="apply-all">Apply All</Button>
         </Flex>
 
         {/* Table header */}
@@ -175,6 +175,7 @@ export const PricingReview = () => {
                 borderBottomWidth="1px"
                 borderColor="neutral.4"
                 css={{ animation: "fadeIn 200ms ease" }}
+                data-tour="expanded-row"
               >
                 <Stack gap="300">
                   {/* Vertical inline slot: multiple agents can stack here */}

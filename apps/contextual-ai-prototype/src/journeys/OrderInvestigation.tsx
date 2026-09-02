@@ -99,7 +99,7 @@ export const OrderInvestigation = () => (
       actions={
         <>
           {/* Augmentation: risk indicator chip in the header */}
-          <Flex alignItems="center" gap="150" px="200" py="100" borderRadius="200" bg="amber.3" borderWidth="1px" borderColor="amber.6">
+          <Flex alignItems="center" gap="150" px="200" py="100" borderRadius="200" bg="amber.3" borderWidth="1px" borderColor="amber.6" data-tour="risk-badge">
             <ProvenanceIndicator agentName={AGENT_NAME} size="10px" />
             <Text textStyle="xs" fontWeight="semibold" color="amber.11">High Fraud Risk · 87/100</Text>
           </Flex>
@@ -126,7 +126,7 @@ export const OrderInvestigation = () => (
 
     <Stack gap="300" p="300">
       {/* Compact state row: order, payment, shipment state badges */}
-      <Flex gap="300" alignItems="center" wrap="wrap">
+      <Flex gap="300" alignItems="center" wrap="wrap" data-tour="state-badges">
         <Flex alignItems="center" gap="100">
           <Icon as={CheckCircle} size="2xs" color="neutral.9" />
           <Text textStyle="xs" color="neutral.9">Order state</Text>
@@ -213,7 +213,7 @@ export const OrderInvestigation = () => (
             <Text textStyle="xs" color="neutral.12">Marienplatz 8, 80331 Munich, Germany</Text>
             <Badge size="2xs" colorPalette="positive" mt="150">Consistent across 14 orders</Badge>
           </Box>
-          <Box borderWidth="1px" borderColor="amber.6" borderRadius="200" p="300" bg="amber.2">
+          <Box borderWidth="1px" borderColor="amber.6" borderRadius="200" p="300" bg="amber.2" data-tour="shipping-flagged">
             <Flex alignItems="center" gap="150" mb="150">
               <Text textStyle="xs" fontWeight="semibold" color="neutral.11">Shipping address</Text>
               <ProvenanceIndicator agentName={AGENT_NAME} size="10px" />
@@ -233,7 +233,7 @@ export const OrderInvestigation = () => (
 
         {/* Line items */}
         <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="200">Line Items</Text>
-        <Box borderWidth="1px" borderColor="neutral.4" borderRadius="200" overflow="hidden">
+        <Box borderWidth="1px" borderColor="neutral.4" borderRadius="200" overflow="hidden" data-tour="line-items">
           <DataTable.Root columns={lineItemColumns} rows={lineItems} density="condensed" allowsPinning={false} allowsExpandColumn={false}>
             <DataTable.Table>
               <DataTable.Header />

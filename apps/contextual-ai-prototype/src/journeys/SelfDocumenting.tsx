@@ -100,6 +100,7 @@ export const SelfDocumenting = () => (
             cursor="pointer"
             _hover={{ bg: "indigo.3" }}
             transition="background 150ms"
+            data-tour="generate-btn"
           >
             <ProvenanceIndicator agentName="Product Enrichment Agent" reason="Generate descriptions for all configured locales" />
             <Text textStyle="xs" fontWeight="medium" color="indigo.11">Generate description</Text>
@@ -120,7 +121,7 @@ export const SelfDocumenting = () => (
           </Box>
 
           <Flex gap="200">
-            <Stack gap="100" flex="1">
+            <Stack gap="100" flex="1" data-tour="readiness-checklist">
               {checklist.map((item, i) => (
                 <Flex key={item.label} alignItems="center" gap="150">
                   <Box
@@ -161,7 +162,7 @@ export const SelfDocumenting = () => (
           </Flex>
         </InlineCard>
 
-        <InlineCard title="Getting Started" agentName="Product Enrichment Agent" headerRight={
+        <Box data-tour="getting-started"><InlineCard title="Getting Started" agentName="Product Enrichment Agent" headerRight={
           <Badge size="2xs" colorPalette="info">For you</Badge>
         }>
           <Stack gap="300">
@@ -189,7 +190,7 @@ export const SelfDocumenting = () => (
               ))}
             </Stack>
           </Stack>
-        </InlineCard>
+        </InlineCard></Box>
       </InlineSlot>
 
       {/* Form with augmented fields */}
@@ -261,9 +262,11 @@ export const SelfDocumenting = () => (
               borderWidth="1px"
               borderColor="neutral.6"
               borderRadius="200"
+              data-tour="category-suggestions"
               overflow="hidden"
               zIndex={10}
               shadow="md"
+              data-tour="category-suggestions"
             >
               <Flex px="300" pt="200" pb="100" alignItems="center" gap="150">
                 <ProvenanceIndicator agentName="Product Enrichment Agent" reason="Based on product name and attributes" />

@@ -63,7 +63,7 @@ export const DiscountCampaign = () => (
           </Flex>
         </InlineCard>
 
-        <InlineCard title="Conflict Detection" agentName="Promotions Agent" headerRight={
+        <Box data-tour="conflict-card"><InlineCard title="Conflict Detection" agentName="Promotions Agent" headerRight={
           <Badge size="2xs" colorPalette="warning">1 conflict</Badge>
         }>
           <Flex gap="200" alignItems="flex-start" p="200" bg="amber.2" borderRadius="200" borderWidth="1px" borderColor="amber.6">
@@ -81,11 +81,11 @@ export const DiscountCampaign = () => (
               </Flex>
             </Box>
           </Flex>
-        </InlineCard>
+        </InlineCard></Box>
       </InlineSlot>
 
       {/* Discount form */}
-      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300">
+      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300" data-tour="discount-form">
         <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="300">
           Discount Configuration
         </Text>
@@ -140,7 +140,7 @@ export const DiscountCampaign = () => (
           </Flex>
 
           {/* AI suggested condition chips */}
-          <Box>
+          <Box data-tour="suggested-conditions">
             <Flex alignItems="center" gap="150" mb="200">
               <ProvenanceIndicator agentName="Promotions Agent" reason="Based on discount name and type analysis" />
               <Text textStyle="xs" fontWeight="semibold" color="indigo.9">Suggested conditions</Text>
