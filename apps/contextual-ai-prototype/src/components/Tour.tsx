@@ -53,9 +53,9 @@ function dialogPosition(rect: DOMRect, placement: string) {
 
   switch (placement) {
     case "top":
-      top = rect.top - GAP - 160;
+      top = rect.top - GAP - 220;
       left = rect.left + rect.width / 2 - DIALOG_W / 2;
-      if (top < 12) { top = rect.bottom + GAP; }
+      if (top < 12) { top = 12; }
       break;
     case "left":
       top = rect.top + rect.height / 2 - 80;

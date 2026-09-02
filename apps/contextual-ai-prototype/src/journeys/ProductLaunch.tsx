@@ -296,31 +296,33 @@ export const ProductLaunch = () => {
               General Information
             </Text>
 
-            <Stack gap="300">
+            <Stack gap="300" width="100%">
               <LocalizedField
                 size="sm"
                 type="text"
                 label="Product name"
                 defaultLocaleOrCurrency="en"
+                width="100%"
                 valuesByLocaleOrCurrency={{ en: "Galaxy S25 Ultra", de: "Galaxy S25 Ultra", fr: "Galaxy S25 Ultra", es: "Galaxy S25 Ultra", it: "Galaxy S25 Ultra" }}
                 onChange={() => {}}
               />
 
-              <Flex alignItems="flex-end" gap="200">
-                <Box flex="1">
-                  <LocalizedField
-                    size="sm"
-                    type="multiLine"
-                    label="Description"
-                    defaultLocaleOrCurrency="en"
-                    valuesByLocaleOrCurrency={{ en: 'The Galaxy S25 Ultra features a stunning 6.9" Dynamic AMOLED 2X display, Snapdragon 8 Elite processor, and a 200MP camera system.', de: "", fr: "", es: "", it: "" }}
-                    onChange={() => {}}
-                  />
-                </Box>
-                <Box pb="100" data-tour="translate-btn">
-                  <ActivationButton label="Translate" />
-                </Box>
-              </Flex>
+              <Box width="100%">
+                <Flex alignItems="center" gap="200" mb="100">
+                  <Text textStyle="xs" fontWeight="medium" color="neutral.12">Description</Text>
+                  <Box data-tour="translate-btn">
+                    <ActivationButton label="Translate" />
+                  </Box>
+                </Flex>
+                <LocalizedField
+                  size="sm"
+                  type="multiLine"
+                  defaultLocaleOrCurrency="en"
+                  width="100%"
+                  valuesByLocaleOrCurrency={{ en: 'The Galaxy S25 Ultra features a stunning 6.9" Dynamic AMOLED 2X display, Snapdragon 8 Elite processor, and a 200MP camera system.', de: "", fr: "", es: "", it: "" }}
+                  onChange={() => {}}
+                />
+              </Box>
 
               <Grid gridTemplateColumns="1fr 1fr" gap="300">
                 <FormField.Root size="sm">
