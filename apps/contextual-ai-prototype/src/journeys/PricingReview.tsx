@@ -93,7 +93,7 @@ export const PricingReview = () => (
           <ProvenanceIndicator agentName="Pricing Optimizer Agent" iconSize="2xs" />
           <Text textStyle="sm" fontWeight="semibold" color="neutral.12">Price Adjustments</Text>
           <Box flex="1" />
-          <Button variant="solid" colorPalette="primary" size="2xs">Apply All Suggestions</Button>
+          <Button variant="outline" size="2xs">Apply All</Button>
         </Flex>
 
         {/* Table header */}
@@ -129,7 +129,7 @@ export const PricingReview = () => (
             <Text textStyle="xs" color="neutral.11" width="130px">{row.margin}</Text>
             <Text textStyle="xs" color="neutral.10" flex="1">{row.position}</Text>
             <Flex width="120px" justifyContent="flex-end" gap="200">
-              <Button variant="solid" colorPalette="primary" size="2xs">Apply</Button>
+              <Button variant="outline" size="2xs">Apply</Button>
               <Button variant="ghost" size="2xs">Dismiss</Button>
             </Flex>
           </Flex>
