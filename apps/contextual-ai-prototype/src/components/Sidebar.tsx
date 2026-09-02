@@ -7,7 +7,6 @@ import {
   ShoppingCart,
   LocalOffer,
   Settings,
-  CommercetoolsCube,
 } from "@commercetools/nimbus-icons";
 import { NavLink } from "react-router-dom";
 import type { ReactNode } from "react";
@@ -57,26 +56,8 @@ export const Sidebar = () => {
       overflow="hidden"
       width="48px"
     >
-      {/* CT Logo → Landing / Dashboard */}
-      <NavLink to="/" style={{ textDecoration: "none" }}>
-        <Flex
-          alignItems="center"
-          justifyContent="center"
-          width="32px"
-          height="32px"
-          flexShrink={0}
-          color="white"
-          _hover={{ opacity: 0.8 }}
-          cursor="pointer"
-        >
-          <Icon as={CommercetoolsCube} size="md" />
-        </Flex>
-      </NavLink>
-
-      <Separator borderColor="rgba(255,255,255,0.12)" />
-
       {/* Navigation: matching real MC sidebar icons per plan */}
-      <Stack gap="100" pt="200" flex="1" alignItems="center">
+      <Stack gap="100" pt="100" flex="1" alignItems="center">
         <NavItem
           icon={<Icon as={Speed} size="xs" />}
           label="Dashboard"

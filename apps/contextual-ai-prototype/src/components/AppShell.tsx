@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Box, Flex, Icon, ComboBox } from "@commercetools/nimbus";
-import { HelpOutline, PersonOutline } from "@commercetools/nimbus-icons";
+import { HelpOutline, PersonOutline, CommercetoolsCube } from "@commercetools/nimbus-icons";
+import { NavLink } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { ChatPanel } from "./ChatPanel";
 import { PanelProvider } from "./ProvenanceIndicator";
@@ -18,6 +19,11 @@ const AppBar = () => (
     flexShrink={0}
     zIndex={100}
   >
+    <NavLink to="/" style={{ textDecoration: "none" }}>
+      <Flex alignItems="center" justifyContent="center" color="white" _hover={{ opacity: 0.8 }} cursor="pointer">
+        <Icon as={CommercetoolsCube} size="md" />
+      </Flex>
+    </NavLink>
     <Box flex="1" />
     <Flex alignItems="center" gap="200" color="rgba(255,255,255,0.7)">
       <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-organization-name" aria-label="Organization" width="max-content" css={{ "& [slot=clear]": { display: "none" }, "& input": { color: "rgba(255,255,255,0.9)", fontSize: "var(--nimbus-font-sizes-xs)" }, "& button": { color: "rgba(255,255,255,0.6)" } }}>
