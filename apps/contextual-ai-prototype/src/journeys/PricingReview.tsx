@@ -6,7 +6,6 @@ import { PageHeader } from "../components/PageHeader";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
-import { AiDot } from "../components/AiDot";
 
 // Margin trend data (past 6 months)
 const marginTrend = [
@@ -61,7 +60,7 @@ export const PricingReview = () => {
     <Stack gap="400" p="500">
       {/* Horizontal inline slot: margin summary + competitive overview */}
       <InlineSlot direction="row" data-tour="inline-slot">
-        <InlineCard title="Margin Analysis" agentName="Pricing Optimizer Agent" headerRight={
+        <InlineCard title="Margin Analysis" agentName="Pricing Optimizer Agent (proposed)" headerRight={
           <Badge size="2xs" colorPalette="warning">At Risk</Badge>
         }>
           <Flex gap="400">
@@ -99,7 +98,7 @@ export const PricingReview = () => {
           </Flex>
         </InlineCard>
 
-        <InlineCard title="Competitive Context" agentName="Pricing Optimizer Agent" headerRight={
+        <InlineCard title="Competitive Context" agentName="Pricing Optimizer Agent (proposed)" headerRight={
           <Text textStyle="xs" color="neutral.9">Last sync: 3 days ago</Text>
         }>
           <Stack gap="200">
@@ -121,7 +120,7 @@ export const PricingReview = () => {
       {/* Augmented price table */}
       <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden" data-tour="price-table">
         <Flex px="400" py="300" alignItems="center" gap="200" borderBottomWidth="1px" borderColor="neutral.4">
-          <ProvenanceIndicator agentName="Pricing Optimizer Agent" iconSize="2xs" />
+          <ProvenanceIndicator agentName="Pricing Optimizer Agent (proposed)" size="10px" />
           <Text textStyle="sm" fontWeight="semibold" color="neutral.12">Price Adjustments</Text>
           <Box flex="1" />
           <Button variant="outline" size="2xs">Apply All</Button>
@@ -154,7 +153,7 @@ export const PricingReview = () => {
             >
               <Icon as={expandedRow === i ? ExpandLess : ExpandMore} size="2xs" color="neutral.8" />
               <Flex width="130px" alignItems="center" gap="150" ml="100">
-                <ProvenanceIndicator agentName="Pricing Optimizer Agent" />
+                <ProvenanceIndicator agentName="Pricing Optimizer Agent (proposed)" />
                 <Text textStyle="sm" fontWeight="medium" color="neutral.12">{row.entry}</Text>
               </Flex>
               <Text textStyle="sm" color="neutral.10" width="80px">{row.current}</Text>
@@ -180,8 +179,8 @@ export const PricingReview = () => {
                 <Stack gap="300">
                   {/* Vertical inline slot: multiple agents can stack here */}
                   <Flex alignItems="center" gap="150" mb="100">
-                    <AiDot />
-                    <Text textStyle="xs" fontWeight="medium" color="indigo.9">Pricing Optimizer Agent</Text>
+                    <ProvenanceIndicator agentName="Pricing Optimizer Agent (proposed)" reason={`Suggested ${row.suggested} restores margin above 20% floor`} />
+                    <Text textStyle="xs" fontWeight="medium" color="indigo.9">Pricing Optimizer Agent (proposed)</Text>
                   </Flex>
                   <Flex gap="400">
                     <Box flex="1">

@@ -22,7 +22,6 @@ import {
   WaffleChart,
 } from "@commercetools/nimbus-viz";
 import { PageHeader } from "../components/PageHeader";
-import { AiDot } from "../components/AiDot";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
@@ -44,11 +43,11 @@ const readinessBreakdown = [
 const checklist = [
   { status: "done" as const, label: "Categories", detail: "Electronics > Mobile Phones" },
   { status: "done" as const, label: "Name (5 locales)", detail: "Complete" },
-  { status: "missing" as const, label: "Descriptions", detail: "2 of 5 locales" },
-  { status: "warn" as const, label: "Images", detail: "6 uploaded, unordered" },
+  { status: "missing" as const, label: "Descriptions", detail: "2 of 5 locales", suggestion: "Use ✦ Translate to generate for remaining 3 locales" },
+  { status: "warn" as const, label: "Images", detail: "6 uploaded, unordered", suggestion: "Reorder suggested: lifestyle shots perform 2.3x better as hero" },
   { status: "done" as const, label: "Pricing", detail: "Set for 3 markets" },
-  { status: "warn" as const, label: "Variants", detail: "3 of est. 8" },
-  { status: "missing" as const, label: "SEO metadata", detail: "Missing" },
+  { status: "warn" as const, label: "Variants", detail: "3 of est. 8", suggestion: "3 variant suggestions available: Navy/256GB, Green/128GB, White/512GB" },
+  { status: "missing" as const, label: "SEO metadata", detail: "Missing", suggestion: "Use ✦ Generate SEO in toolbar to create titles and descriptions" },
   { status: "done" as const, label: "Attributes", detail: "12/12 required" },
 ];
 
@@ -202,7 +201,7 @@ export const ProductLaunch = () => {
               _hover={{ bg: "indigo.3" }}
               transition="background 150ms"
             >
-              <AiDot />
+              <ProvenanceIndicator agentName="Product Enrichment Agent" reason="Generate SEO titles and descriptions for all configured locales" />
               <Text textStyle="xs" fontWeight="medium" color="indigo.11">
                 Generate SEO
               </Text>
@@ -312,6 +311,9 @@ export const ProductLaunch = () => {
                         {statusIcon[item.status].symbol}
                       </Text>
                       <Text textStyle="xs" color="neutral.11">{item.label}</Text>
+                      {item.suggestion && (
+                        <ProvenanceIndicator agentName="Product Enrichment Agent" reason={item.suggestion} size="8px" />
+                      )}
                     </Flex>
                   ))}
                 </Stack>

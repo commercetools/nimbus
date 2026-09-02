@@ -1,7 +1,7 @@
 import { Box, Flex, Stack, Text, Badge, Button, Separator, TextInput, FormField, Icon } from "@commercetools/nimbus";
 import { AutoAwesome, Warning } from "@commercetools/nimbus-icons";
 import { PageHeader } from "../components/PageHeader";
-import { AiDot } from "../components/AiDot";
+
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
@@ -56,7 +56,7 @@ export const DiscountCampaign = () => (
             </Box>
           </Flex>
           <Flex mt="200" px="300" py="200" bg="neutral.3" borderRadius="200" gap="200" alignItems="center">
-            <AiDot />
+            <ProvenanceIndicator agentName="Promotions Agent" reason="Based on Summer Clearance 2025 (Q3) performance data" />
             <Text textStyle="xs" color="neutral.11">
               Comparable: Summer Clearance 2025 (Q3) lifted orders 18% over 4 weeks
             </Text>
@@ -142,7 +142,7 @@ export const DiscountCampaign = () => (
           {/* AI suggested condition chips */}
           <Box>
             <Flex alignItems="center" gap="150" mb="200">
-              <AiDot />
+              <ProvenanceIndicator agentName="Promotions Agent" reason="Based on discount name and type analysis" />
               <Text textStyle="xs" fontWeight="semibold" color="indigo.9">Suggested conditions</Text>
             </Flex>
             <Flex gap="200" flexWrap="wrap">

@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react";
 import { Box, Flex, Stack, Text, Separator, IconButton, MultilineTextInput } from "@commercetools/nimbus";
 import { Close, ArrowUpward } from "@commercetools/nimbus-icons";
 import { AiDot } from "./AiDot";
@@ -107,6 +108,12 @@ export const ChatPanel = ({
   placeholder = "Ask about this product...",
   whyContext,
 }: ChatPanelProps) => {
+  // Auto-scroll messages to bottom
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, whyContext]);
+
   return (
     <Flex direction="column" height="100%" overflow="hidden">
       {/* Header */}
@@ -159,6 +166,7 @@ export const ChatPanel = ({
         {whyContext && (
           <WhyContextResponse context={whyContext} agentName={agentName} />
         )}
+        <div ref={messagesEndRef} />
       </Stack>
 
       <Separator />
@@ -184,14 +192,18 @@ export const ChatPanel = ({
               width: "100%",
               "& textarea": {
                 width: "100%",
+                height: "auto !important",
+                minHeight: "unset !important",
                 paddingInlineStart: "var(--nimbus-spacing-200)",
                 paddingInlineEnd: "var(--nimbus-spacing-200)",
-                paddingBlock: "var(--nimbus-spacing-200)",
+                paddingBlock: "var(--nimbus-spacing-100)",
                 fontSize: "var(--nimbus-font-sizes-sm)",
+                lineHeight: "1.4",
                 border: "none",
                 outline: "none",
                 background: "transparent",
-                resize: "vertical",
+                resize: "none",
+                overflow: "hidden",
               },
               "& textarea:focus": {
                 outline: "none",

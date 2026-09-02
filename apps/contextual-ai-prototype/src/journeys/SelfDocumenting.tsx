@@ -1,27 +1,39 @@
 import { Box, Flex, Stack, Text, Badge, Button, Separator, TextInput, FormField, Icon } from "@commercetools/nimbus";
-import { AutoAwesome, CheckCircle, Error as ErrorIcon, Warning } from "@commercetools/nimbus-icons";
+import { CheckCircle, Error as ErrorIcon, Warning } from "@commercetools/nimbus-icons";
+import { ChartThemeProvider, ResponsiveContainer, WaffleChart } from "@commercetools/nimbus-viz";
 import { PageHeader } from "../components/PageHeader";
-import { AiDot } from "../components/AiDot";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
 import { ActivationButton } from "../components/ActivationButton";
 
+// Readiness breakdown for waffle chart
+const readinessBreakdown = [
+  { category: "Categories", value: 0 },
+  { category: "Descriptions", value: 0 },
+  { category: "Images", value: 4 },
+  { category: "Name", value: 10 },
+  { category: "Price", value: 8 },
+  { category: "Variants", value: 10 },
+];
+
 const checklist = [
-  { status: "missing" as const, label: "Categories", detail: "Unassigned (required for storefront)" },
-  { status: "missing" as const, label: "Description (EN)", detail: "Empty (required for SEO)" },
-  { status: "missing" as const, label: "Description (DE, FR)", detail: "Empty (required for EU)" },
-  { status: "warn" as const, label: "Images", detail: "2 uploaded (min 3 recommended)" },
+  { status: "missing" as const, label: "Categories", detail: "Unassigned (required for storefront)", suggestion: "Suggested: Home & Garden > Kitchen > Small Appliances (89%)" },
+  { status: "missing" as const, label: "Description (EN)", detail: "Empty (required for SEO)", suggestion: 'Use "Generate description" in toolbar for a draft' },
+  { status: "missing" as const, label: "Description (DE, FR)", detail: "Empty (required for EU)", suggestion: "Translate after EN description is written" },
+  { status: "warn" as const, label: "Images", detail: "2 uploaded (min 3 recommended)", suggestion: "Coffee & Tea category recommends 3+ lifestyle shots" },
   { status: "done" as const, label: "Name", detail: "Complete in all locales" },
   { status: "done" as const, label: "Price", detail: "Set for 2 markets" },
   { status: "done" as const, label: "Variants", detail: "4 configured" },
 ];
 
-const statusConfig = {
-  done: { icon: CheckCircle, color: "green.11" as const },
-  warn: { icon: Warning, color: "amber.11" as const },
-  missing: { icon: ErrorIcon, color: "red.11" as const },
+const statusIcon = {
+  done: { symbol: "✓", color: "green.11" as const },
+  warn: { symbol: "⚠", color: "amber.11" as const },
+  missing: { symbol: "✗", color: "red.11" as const },
 };
+
+const chartColors = ["#e34948", "#e34948", "#eda100", "#1baf7a", "#2a78d6", "#008300"];
 
 const categorySuggestions = [
   { label: "Home & Garden > Kitchen > Small Appliances", confidence: 89 },
@@ -47,7 +59,6 @@ export const SelfDocumenting = () => (
         <>
           <Button variant="ghost" size="2xs">Revert</Button>
           <Button variant="solid" colorPalette="primary" size="2xs">Publish</Button>
-          {/* Augmentation: toolbar action that surfaces a capability */}
           <Flex
             alignItems="center"
             gap="100"
@@ -60,36 +71,64 @@ export const SelfDocumenting = () => (
             _hover={{ bg: "indigo.3" }}
             transition="background 150ms"
           >
-            <AiDot />
+            <ProvenanceIndicator agentName="Product Enrichment Agent" reason="Generate descriptions for all configured locales" />
             <Text textStyle="xs" fontWeight="medium" color="indigo.11">Generate description</Text>
           </Flex>
         </>
       }
     />
 
-    <Stack gap="400" p="500">
+    <Stack gap="300" p="300">
       {/* Horizontal inline slot: readiness + getting started */}
-      <InlineSlot direction="row" data-tour="inline-slot">
+      <InlineSlot direction="row" gap="300" data-tour="inline-slot">
         <InlineCard title="Product Readiness" agentName="Product Enrichment Agent" headerRight={
           <Text textStyle="lg" fontWeight="bold" color="red.11">41%</Text>
         }>
-          <Box height="3px" bg="neutral.4" borderRadius="full" mb="300" overflow="hidden">
+          {/* Progress bar */}
+          <Box height="2px" bg="neutral.4" borderRadius="full" mb="200" overflow="hidden">
             <Box height="100%" width="41%" bg="red.9" borderRadius="full" transition="width 600ms ease" />
           </Box>
-          <Stack gap="100">
-            {checklist.map((item) => {
-              const config = statusConfig[item.status];
-              return (
-                <Flex key={item.label} alignItems="center" gap="200">
-                  <Icon as={config.icon} size="2xs" color={config.color} />
+
+          <Flex gap="200">
+            <Stack gap="100" flex="1">
+              {checklist.map((item, i) => (
+                <Flex key={item.label} alignItems="center" gap="150">
+                  <Box
+                    width="6px"
+                    height="6px"
+                    borderRadius="full"
+                    flexShrink={0}
+                    css={{ background: chartColors[i] ?? "#999" }}
+                  />
+                  <Text textStyle="xs" fontWeight="bold" color={statusIcon[item.status].color}>
+                    {statusIcon[item.status].symbol}
+                  </Text>
                   <Text textStyle="xs" color="neutral.12" fontWeight={item.status === "missing" ? "medium" : "regular"}>
                     {item.label}
                   </Text>
-                  <Text textStyle="xs" color="neutral.9" ml="auto">{item.detail}</Text>
+                  {item.suggestion && (
+                    <ProvenanceIndicator agentName="Product Enrichment Agent" reason={item.suggestion} size="8px" />
+                  )}
                 </Flex>
-              );
-            })}
-          </Stack>
+              ))}
+            </Stack>
+            <Box flex="1" minWidth="120px">
+              <Text textStyle="xs" color="neutral.9" mb="100">Completion by area</Text>
+              <ChartThemeProvider>
+                <ResponsiveContainer height={120}>
+                  {(w, h) => (
+                    <WaffleChart
+                      width={w}
+                      height={h}
+                      data={readinessBreakdown}
+                      cells={10}
+                      ariaLabel="Product readiness: completion by area"
+                    />
+                  )}
+                </ResponsiveContainer>
+              </ChartThemeProvider>
+            </Box>
+          </Flex>
         </InlineCard>
 
         <InlineCard title="Getting Started" agentName="Product Enrichment Agent" headerRight={
@@ -124,13 +163,13 @@ export const SelfDocumenting = () => (
       </InlineSlot>
 
       {/* Form with augmented fields */}
-      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" p="500">
-        <Text textStyle="md" fontWeight="semibold" color="neutral.12" mb="400">
+      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300">
+        <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="300">
           General Information
         </Text>
 
-        <Flex gap="500">
-          <Stack gap="400" flex="1">
+        <Flex gap="300">
+          <Stack gap="300" flex="1">
             <FormField.Root size="sm">
               <FormField.Label>Product name (EN)</FormField.Label>
               <FormField.Input>
@@ -151,7 +190,7 @@ export const SelfDocumenting = () => (
               <FormField.Description>Required for SEO and storefront display</FormField.Description>
             </FormField.Root>
           </Stack>
-          <Stack gap="400" flex="1">
+          <Stack gap="300" flex="1">
             <FormField.Root size="sm">
               <FormField.Label>SKU</FormField.Label>
               <FormField.Input>
@@ -173,7 +212,7 @@ export const SelfDocumenting = () => (
           </Stack>
         </Flex>
 
-        <Separator my="400" />
+        <Separator my="300" />
 
         {/* Categories with AI suggestions */}
         <FormField.Root size="sm">
@@ -197,7 +236,7 @@ export const SelfDocumenting = () => (
               shadow="md"
             >
               <Flex px="300" pt="200" pb="100" alignItems="center" gap="150">
-                <AiDot />
+                <ProvenanceIndicator agentName="Product Enrichment Agent" reason="Based on product name and attributes" />
                 <Text textStyle="xs" fontWeight="semibold" color="indigo.9">Suggested for this product</Text>
               </Flex>
 
@@ -214,7 +253,11 @@ export const SelfDocumenting = () => (
                   transition="background 150ms"
                   css={{ animation: `fadeIn 200ms ease ${i * 80}ms both` }}
                 >
-                  <ProvenanceIndicator agentName="Product Enrichment Agent" confidence={sug.confidence} iconSize="2xs" />
+                  <ProvenanceIndicator
+                    agentName="Product Enrichment Agent"
+                    confidence={sug.confidence}
+                    reason={i === 0 ? "Based on product name 'Pour-Over Kettle', capacity 1.2L, stainless steel material" : "Alternative: coffee-specific category with higher search volume"}
+                  />
                   <Text textStyle="sm" fontWeight={i === 0 ? "medium" : "regular"} color="neutral.12" flex="1">
                     {sug.label}
                   </Text>
