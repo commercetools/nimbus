@@ -293,7 +293,7 @@ export const ProductLaunch = () => {
               <FormField.Root size="sm">
                 <FormField.Label>Product name (EN)</FormField.Label>
                 <FormField.Input>
-                  <TextInput size="sm" defaultValue="Galaxy S25 Ultra" />
+                  <TextInput size="sm" width="100%" defaultValue="Galaxy S25 Ultra" />
                 </FormField.Input>
               </FormField.Root>
 
@@ -316,28 +316,28 @@ export const ProductLaunch = () => {
               <FormField.Root size="sm">
                 <FormField.Label>Product key</FormField.Label>
                 <FormField.Input>
-                  <TextInput size="sm" defaultValue="galaxy-s25-ultra" />
+                  <TextInput size="sm" width="100%" defaultValue="galaxy-s25-ultra" />
                 </FormField.Input>
               </FormField.Root>
 
               <FormField.Root size="sm">
                 <FormField.Label>External ID</FormField.Label>
                 <FormField.Input>
-                  <TextInput size="sm" defaultValue="EXT-GS25U-2026" />
+                  <TextInput size="sm" width="100%" defaultValue="EXT-GS25U-2026" />
                 </FormField.Input>
               </FormField.Root>
 
               <FormField.Root size="sm">
                 <FormField.Label>Tax category</FormField.Label>
                 <FormField.Input>
-                  <TextInput size="sm" defaultValue="Standard Rate (19%)" />
+                  <TextInput size="sm" width="100%" defaultValue="Standard Rate (19%)" />
                 </FormField.Input>
               </FormField.Root>
 
               <FormField.Root size="sm">
                 <FormField.Label>Price mode</FormField.Label>
                 <FormField.Input>
-                  <TextInput size="sm" defaultValue="Embedded" />
+                  <TextInput size="sm" width="100%" defaultValue="Embedded" />
                 </FormField.Input>
               </FormField.Root>
             </Grid>
@@ -547,7 +547,7 @@ export const ProductLaunch = () => {
                     <Flex alignItems="center" gap="150" flex="1">
                       <ProvenanceIndicator agentName="Product Enrichment Agent" confidence={78} reason="Products with 5G + AMOLED display are 78% categorized here" />
                       <Text textStyle="xs" color="indigo.11">Smartphones</Text>
-                      <Badge size="2xs" colorPalette="info" variant="subtle">78%</Badge>
+                      <Badge size="2xs" colorPalette="info">78%</Badge>
                     </Flex>
                   </Tree.ItemContent>
                 </Tree.Item>
@@ -565,7 +565,7 @@ export const ProductLaunch = () => {
                     <Flex alignItems="center" gap="150" flex="1">
                       <ProvenanceIndicator agentName="Product Enrichment Agent" confidence={67} reason="Cross-sell category: 34% of phone buyers also buy cases" />
                       <Text textStyle="xs" color="indigo.11">Phone Cases</Text>
-                      <Badge size="2xs" colorPalette="info" variant="subtle">67%</Badge>
+                      <Badge size="2xs" colorPalette="info">67%</Badge>
                     </Flex>
                   </Tree.ItemContent>
                 </Tree.Item>
@@ -631,7 +631,7 @@ export const ProductLaunch = () => {
               {suggestedKeywords.map((kw) => (
                 <Flex key={kw.term} alignItems="center" gap="200">
                   <ProvenanceIndicator agentName="Product Enrichment Agent" size="10px" />
-                  <Badge size="2xs" colorPalette="info" variant="subtle">{kw.term}</Badge>
+                  <Badge size="2xs" colorPalette="info">{kw.term}</Badge>
                   <Text textStyle="xs" color="neutral.9">{kw.source}</Text>
                 </Flex>
               ))}

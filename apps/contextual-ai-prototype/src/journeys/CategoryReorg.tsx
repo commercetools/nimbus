@@ -205,7 +205,7 @@ export const CategoryReorg = () => (
       {/* Augmented restructuring suggestions */}
       <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden" data-tour="restructuring-suggestions">
         <Flex px="300" py="200" alignItems="center" gap="200" borderBottomWidth="1px" borderColor="neutral.4">
-          <ProvenanceIndicator agentName={AGENT_NAME} iconSize="2xs" />
+          <ProvenanceIndicator agentName={AGENT_NAME} size="10px" />
           <Text textStyle="sm" fontWeight="semibold" color="neutral.12">Restructuring Suggestions</Text>
         </Flex>
 
@@ -222,7 +222,7 @@ export const CategoryReorg = () => (
             transition="background 150ms"
             css={{ animation: `fadeIn 200ms ease ${i * 100}ms both` }}
           >
-            <ProvenanceIndicator agentName={AGENT_NAME} confidence={sug.confidence} iconSize="2xs" />
+            <ProvenanceIndicator agentName={AGENT_NAME} confidence={sug.confidence} size="10px" />
             <Box flex="1">
               <Text textStyle="sm" fontWeight="medium" color="neutral.12">{sug.label}</Text>
               <Text textStyle="xs" color="neutral.10">{sug.reason}</Text>
@@ -237,7 +237,7 @@ export const CategoryReorg = () => (
       {/* Impact analysis table */}
       <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden" data-tour="impact-analysis">
         <Flex px="300" py="200" alignItems="center" gap="200" borderBottomWidth="1px" borderColor="neutral.4">
-          <ProvenanceIndicator agentName={AGENT_NAME} iconSize="2xs" />
+          <ProvenanceIndicator agentName={AGENT_NAME} size="10px" />
           <Text textStyle="sm" fontWeight="semibold" color="neutral.12">Impact Analysis</Text>
         </Flex>
 

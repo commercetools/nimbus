@@ -204,7 +204,7 @@ export const SelfDocumenting = () => (
             <FormField.Root size="sm">
               <FormField.Label>Product name (EN)</FormField.Label>
               <FormField.Input>
-                <TextInput size="sm" defaultValue="Precision Pour-Over Kettle" />
+                <TextInput size="sm" width="100%" defaultValue="Precision Pour-Over Kettle" />
               </FormField.Input>
             </FormField.Root>
             <FormField.Root size="sm">
@@ -216,7 +216,7 @@ export const SelfDocumenting = () => (
                 </Flex>
               </FormField.Label>
               <FormField.Input>
-                <TextInput size="sm" placeholder="Write a product description..." />
+                <TextInput size="sm" width="100%" placeholder="Write a product description..." />
               </FormField.Input>
               <FormField.Description>Required for SEO and storefront display</FormField.Description>
             </FormField.Root>
@@ -225,7 +225,7 @@ export const SelfDocumenting = () => (
             <FormField.Root size="sm">
               <FormField.Label>SKU</FormField.Label>
               <FormField.Input>
-                <TextInput size="sm" defaultValue="SKU-POK-2026" />
+                <TextInput size="sm" width="100%" defaultValue="SKU-POK-2026" />
               </FormField.Input>
             </FormField.Root>
             <FormField.Root size="sm">
@@ -237,7 +237,7 @@ export const SelfDocumenting = () => (
                 </Flex>
               </FormField.Label>
               <FormField.Input>
-                <TextInput size="sm" placeholder="German description..." />
+                <TextInput size="sm" width="100%" placeholder="German description..." />
               </FormField.Input>
             </FormField.Root>
           </Stack>
@@ -250,7 +250,7 @@ export const SelfDocumenting = () => (
           <FormField.Label>Categories</FormField.Label>
           <Box position="relative">
             <FormField.Input>
-              <TextInput size="sm" placeholder="Search categories..." />
+              <TextInput size="sm" width="100%" placeholder="Search categories..." />
             </FormField.Input>
             <Box
               position="absolute"
@@ -262,7 +262,6 @@ export const SelfDocumenting = () => (
               borderWidth="1px"
               borderColor="neutral.6"
               borderRadius="200"
-              data-tour="category-suggestions"
               overflow="hidden"
               zIndex={10}
               shadow="md"
@@ -294,7 +293,7 @@ export const SelfDocumenting = () => (
                   <Text textStyle="sm" fontWeight={i === 0 ? "medium" : "regular"} color="neutral.12" flex="1">
                     {sug.label}
                   </Text>
-                  <Badge size="2xs" colorPalette="info" variant="subtle">{sug.confidence}%</Badge>
+                  <Badge size="2xs" colorPalette="info">{sug.confidence}%</Badge>
                 </Flex>
               ))}
             </Box>

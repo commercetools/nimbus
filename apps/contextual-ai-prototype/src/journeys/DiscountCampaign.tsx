@@ -95,13 +95,13 @@ export const DiscountCampaign = () => (
             <FormField.Root size="sm">
               <FormField.Label>Discount name</FormField.Label>
               <FormField.Input>
-                <TextInput size="sm" defaultValue="Summer Clearance 2026" />
+                <TextInput size="sm" width="100%" defaultValue="Summer Clearance 2026" />
               </FormField.Input>
             </FormField.Root>
             <FormField.Root size="sm">
               <FormField.Label>Discount type</FormField.Label>
               <FormField.Input>
-                <TextInput size="sm" defaultValue="Percentage (20%)" />
+                <TextInput size="sm" width="100%" defaultValue="Percentage (20%)" />
               </FormField.Input>
             </FormField.Root>
           </Stack>
@@ -109,13 +109,13 @@ export const DiscountCampaign = () => (
             <FormField.Root size="sm">
               <FormField.Label>Valid from</FormField.Label>
               <FormField.Input>
-                <TextInput size="sm" defaultValue="2026-06-01" />
+                <TextInput size="sm" width="100%" defaultValue="2026-06-01" />
               </FormField.Input>
             </FormField.Root>
             <FormField.Root size="sm">
               <FormField.Label>Valid until</FormField.Label>
               <FormField.Input>
-                <TextInput size="sm" defaultValue="2026-08-31" />
+                <TextInput size="sm" width="100%" defaultValue="2026-08-31" />
               </FormField.Input>
             </FormField.Root>
           </Stack>
@@ -162,9 +162,9 @@ export const DiscountCampaign = () => (
                   transition="background 150ms"
                   css={{ animation: `fadeIn 200ms ease ${i * 80}ms both` }}
                 >
-                  <ProvenanceIndicator agentName="Promotions Agent" confidence={chip.confidence} iconSize="2xs" />
+                  <ProvenanceIndicator agentName="Promotions Agent" confidence={chip.confidence} size="10px" />
                   <Text textStyle="xs" fontWeight="medium" color="indigo.11">{chip.label}</Text>
-                  <Badge size="2xs" colorPalette="info" variant="subtle">{chip.confidence}%</Badge>
+                  <Badge size="2xs" colorPalette="info">{chip.confidence}%</Badge>
                 </Flex>
               ))}
             </Flex>

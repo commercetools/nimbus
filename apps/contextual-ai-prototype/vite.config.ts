@@ -4,24 +4,12 @@ import { UNSAFE_nimbusOptionalDependency } from "@commercetools/nimbus/plugins/v
 
 // https://vite.dev/config/
 export default defineConfig(() => {
-  const isAnalyzeMode = !!process.env.ANALYZE_BUNDLE;
-
   return {
-    // GitHub Pages serves from /contextual-ai-prototype/ subpath
+    // GitHub Pages serves from /nimbus/ subpath
     base: process.env.GITHUB_PAGES ? "/nimbus/" : "/",
     plugins: [
       react(),
       UNSAFE_nimbusOptionalDependency(),
-      ...(isAnalyzeMode
-        ? [
-            import("rollup-plugin-visualizer").then((m) =>
-              m.visualizer({
-                filename: "bundle-report.html",
-                gzipSize: true,
-              })
-            ),
-          ]
-        : []),
     ],
   };
 });
