@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { Box, Flex, Text, Icon, Separator } from "@commercetools/nimbus";
+import { Box, Flex, Text, Icon } from "@commercetools/nimbus";
 import { HelpOutline, PersonOutline } from "@commercetools/nimbus-icons";
 import { Sidebar } from "./Sidebar";
 import { ChatPanel } from "./ChatPanel";
@@ -47,6 +47,21 @@ export const AppShell = () => {
   const handleOpenPanel = useCallback((ctx?: string) => {
     setWhyContext(ctx);
     setPanelOpen(true);
+  }, []);
+
+  // Listen for tour events to open/close the panel programmatically
+  useEffect(() => {
+    const handleTourOpen = () => setPanelOpen(true);
+    const handleTourClose = () => {
+      setPanelOpen(false);
+      setWhyContext(undefined);
+    };
+    window.addEventListener("tour:openPanel", handleTourOpen);
+    window.addEventListener("tour:closePanel", handleTourClose);
+    return () => {
+      window.removeEventListener("tour:openPanel", handleTourOpen);
+      window.removeEventListener("tour:closePanel", handleTourClose);
+    };
   }, []);
 
   return (

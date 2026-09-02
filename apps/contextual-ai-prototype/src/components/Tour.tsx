@@ -1,18 +1,15 @@
-import { useState, useEffect, useRef, useCallback, createContext, useContext } from "react";
-import { Box, Flex, Text, Button, Badge, Popover } from "@commercetools/nimbus";
+import { useState, useEffect, useCallback, createContext, useContext } from "react";
+import { Box, Flex, Text, Button, Badge } from "@commercetools/nimbus";
 import { AiDot } from "./AiDot";
 
-interface TourStep {
-  /** CSS selector for the element to spotlight */
+export interface TourStep {
   selector: string;
-  /** Title of the step */
   title: string;
-  /** Explanation text */
   description: string;
-  /** Which render target type this demonstrates */
   renderTarget?: "panel" | "inline" | "augmentation" | "all";
-  /** Position of the popover relative to the spotlight */
   placement?: "top" | "bottom" | "left" | "right";
+  /** Action to animate when entering this step (before dialog shows) */
+  action?: "openPanel" | "pulseElement" | "highlightStars";
 }
 
 interface TourContextValue {
@@ -35,7 +32,6 @@ const renderTargetColors: Record<string, string> = {
   augmentation: "amber",
   all: "neutral",
 };
-
 const renderTargetLabels: Record<string, string> = {
   panel: "Panel render target",
   inline: "Inline render target",
@@ -43,37 +39,154 @@ const renderTargetLabels: Record<string, string> = {
   all: "All render targets",
 };
 
+const DIALOG_W = 340;
+const GAP = 16;
+
+function clamp(val: number, min: number, max: number) {
+  return Math.max(min, Math.min(val, max));
+}
+
+function dialogPosition(rect: DOMRect, placement: string) {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  let top: number, left: number;
+
+  switch (placement) {
+    case "top":
+      top = rect.top - GAP - 160;
+      left = rect.left + rect.width / 2 - DIALOG_W / 2;
+      if (top < 12) { top = rect.bottom + GAP; }
+      break;
+    case "left":
+      top = rect.top + rect.height / 2 - 80;
+      left = rect.left - DIALOG_W - GAP;
+      if (left < 12) { left = rect.right + GAP; }
+      break;
+    case "right":
+      top = rect.top + rect.height / 2 - 80;
+      left = rect.right + GAP;
+      if (left + DIALOG_W > vw - 12) { left = rect.left - DIALOG_W - GAP; }
+      break;
+    default: // bottom
+      top = rect.bottom + GAP;
+      left = rect.left + rect.width / 2 - DIALOG_W / 2;
+      break;
+  }
+
+  return {
+    top: clamp(top, 12, vh - 200),
+    left: clamp(left, 12, vw - DIALOG_W - 12),
+  };
+}
+
+/** Run a step's enter animation. Returns a promise that resolves when done. */
+function runAction(step: TourStep): Promise<void> {
+  return new Promise((resolve) => {
+    if (!step.action) { resolve(); return; }
+
+    if (step.action === "openPanel") {
+      window.dispatchEvent(new CustomEvent("tour:openPanel"));
+      setTimeout(resolve, 800); // wait for panel slide animation
+      return;
+    }
+
+    if (step.action === "pulseElement") {
+      const el = document.querySelector(step.selector) as HTMLElement | null;
+      if (el) {
+        el.style.transition = "box-shadow 500ms ease, transform 500ms ease";
+        el.style.boxShadow = "0 0 0 6px rgba(110, 86, 207, 0.5), 0 0 20px rgba(110, 86, 207, 0.3)";
+        el.style.transform = "scale(1.03)";
+        setTimeout(() => {
+          el.style.transition = "box-shadow 800ms ease, transform 800ms ease";
+          el.style.boxShadow = "";
+          el.style.transform = "";
+          setTimeout(resolve, 400);
+        }, 1500);
+      } else { resolve(); }
+      return;
+    }
+
+    if (step.action === "highlightStars") {
+      const el = document.querySelector(step.selector);
+      if (el) {
+        const stars = el.querySelectorAll<HTMLElement>('[aria-hidden="true"]');
+        // All at once, more pronounced
+        stars.forEach((s) => {
+          s.style.transition = "transform 500ms ease, color 500ms ease, text-shadow 500ms ease";
+          s.style.transform = "scale(2.5)";
+          s.style.color = "var(--nimbus-colors-indigo-11)";
+          s.style.textShadow = "0 0 8px rgba(110, 86, 207, 0.6)";
+        });
+        setTimeout(() => {
+          stars.forEach((s) => {
+            s.style.transition = "transform 800ms ease, color 800ms ease, text-shadow 800ms ease";
+            s.style.transform = "";
+            s.style.color = "";
+            s.style.textShadow = "";
+          });
+          setTimeout(resolve, 400);
+        }, 1800);
+      } else { resolve(); }
+      return;
+    }
+
+    resolve();
+  });
+}
+
 export function TourProvider({ children }: { children: React.ReactNode }) {
   const [steps, setSteps] = useState<TourStep[]>([]);
   const [currentStep, setCurrentStep] = useState(-1);
   const [rect, setRect] = useState<DOMRect | null>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
+  const [transitioning, setTransitioning] = useState(false);
 
   const isActive = currentStep >= 0 && currentStep < steps.length;
   const step = isActive ? steps[currentStep] : null;
 
-  const measureElement = useCallback(() => {
+  // Measure the target element and scroll into view
+  const measure = useCallback(() => {
     if (!step) return;
     const el = document.querySelector(step.selector);
     if (el) {
-      const r = el.getBoundingClientRect();
-      setRect(r);
-      // Scroll element into view if needed
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      // Measure after scroll settles
+      setTimeout(() => {
+        const r = el.getBoundingClientRect();
+        setRect(r);
+      }, 100);
+    } else {
+      setRect(null);
     }
   }, [step]);
 
+  // When step changes: run action animation, then measure & show dialog
   useEffect(() => {
-    if (isActive) {
-      // Small delay to let the page settle after navigation
-      const timer = setTimeout(measureElement, 300);
-      window.addEventListener("resize", measureElement);
-      return () => {
-        clearTimeout(timer);
-        window.removeEventListener("resize", measureElement);
-      };
-    }
-  }, [isActive, measureElement, currentStep]);
+    if (!step) return;
+    setTransitioning(true);
+    setRect(null);
+
+    const timer = setTimeout(async () => {
+      await runAction(step);
+      // Now measure the element (it may have appeared, e.g. panel)
+      const el = document.querySelector(step.selector);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        setTimeout(() => {
+          const r = el.getBoundingClientRect();
+          setRect(r);
+          setTransitioning(false);
+        }, 200);
+      } else {
+        setTransitioning(false);
+      }
+    }, 200);
+
+    window.addEventListener("resize", measure);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", measure);
+    };
+  }, [step, measure]);
 
   const startTour = useCallback((tourSteps: TourStep[]) => {
     setSteps(tourSteps);
@@ -84,6 +197,8 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     setCurrentStep(-1);
     setSteps([]);
     setRect(null);
+    setTransitioning(false);
+    window.dispatchEvent(new CustomEvent("tour:closePanel"));
   }, []);
 
   const next = useCallback(() => {
@@ -98,76 +213,50 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     if (currentStep > 0) setCurrentStep((s) => s - 1);
   }, [currentStep]);
 
-  // Popover positioning is now handled by Nimbus Popover.Root placement prop
+  const pos = rect && step ? dialogPosition(rect, step.placement ?? "bottom") : null;
+  const showDialog = isActive && rect && step && pos && !transitioning;
 
   return (
     <TourContext.Provider value={{ startTour, endTour, isActive }}>
       {children}
 
-      {/* Spotlight overlay */}
-      {isActive && rect && step && (
-        <Box
-          ref={overlayRef}
-          position="fixed"
-          inset="0"
-          zIndex={9999}
-          pointerEvents="auto"
-          css={{ animation: "fadeIn 200ms ease" }}
-        >
-          {/* Dark overlay with spotlight cutout via box-shadow */}
-          <Box
-            position="fixed"
-            inset="0"
-            css={{
-              boxShadow: `0 0 0 9999px rgba(0, 0, 0, 0.45)`,
-              pointerEvents: "none",
-            }}
-          />
+      {isActive && (
+        <Box position="fixed" inset="0" zIndex={9999} pointerEvents="auto">
+          {/* Spotlight + overlay */}
+          {rect && (
+            <Box
+              position="fixed"
+              borderRadius="200"
+              borderWidth="2px"
+              borderColor="indigo.9"
+              pointerEvents="none"
+              transition="all 300ms ease"
+              css={{
+                top: `${rect.top - 4}px`,
+                left: `${rect.left - 4}px`,
+                width: `${rect.width + 8}px`,
+                height: `${rect.height + 8}px`,
+                boxShadow: "0 0 0 4px rgba(110, 86, 207, 0.2), 0 0 0 9999px rgba(0, 0, 0, 0.45)",
+              }}
+            />
+          )}
 
-          {/* Spotlight ring around the element */}
-          <Box
-            position="fixed"
-            borderRadius="200"
-            borderWidth="2px"
-            borderColor="indigo.9"
-            pointerEvents="none"
-            transition="all 300ms ease"
-            css={{
-              top: `${rect.top - 4}px`,
-              left: `${rect.left - 4}px`,
-              width: `${rect.width + 8}px`,
-              height: `${rect.height + 8}px`,
-              boxShadow: "0 0 0 4px rgba(110, 86, 207, 0.2), 0 0 0 9999px rgba(0, 0, 0, 0.45)",
-            }}
-          />
-
-          {/* Popover anchored to a hidden trigger at the spotlight position.
-              key forces re-mount on step change so React Aria recomputes position. */}
-          <Popover.Root
-            key={currentStep}
-            isOpen={true}
-            onOpenChange={() => {}}
-            placement={(step.placement ?? "bottom") as any}
-            offset={16}
-            isNonModal
-          >
-            {/* Hidden trigger positioned at the spotlight element */}
-            <Popover.Trigger asChild>
-              <Box
-                position="fixed"
-                pointerEvents="none"
-                css={{
-                  top: `${rect.top + rect.height / 2}px`,
-                  left: `${rect.left + rect.width / 2}px`,
-                  width: "1px",
-                  height: "1px",
-                }}
-              />
-            </Popover.Trigger>
-            <Popover.Content
-              aria-label={step.title}
-              maxWidth="340px"
-              css={{ zIndex: 10000, animation: "fadeIn 200ms ease" }}
+          {/* Dialog */}
+          {showDialog && (
+            <Box
+              position="fixed"
+              bg="white"
+              borderRadius="300"
+              shadow="lg"
+              p="300"
+              width={`${DIALOG_W}px`}
+              zIndex={10001}
+              pointerEvents="auto"
+              css={{
+                top: `${pos.top}px`,
+                left: `${pos.left}px`,
+                animation: "fadeIn 250ms ease",
+              }}
             >
               <Flex alignItems="center" gap="200" mb="200">
                 <AiDot size="14px" />
@@ -191,26 +280,18 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
                 </Text>
                 <Flex gap="200">
                   {currentStep > 0 && (
-                    <Button variant="ghost" size="2xs" onPress={prev}>
-                      Back
-                    </Button>
+                    <Button variant="ghost" size="2xs" onPress={prev}>Back</Button>
                   )}
                   <Button variant="solid" colorPalette="primary" size="2xs" onPress={next}>
                     {currentStep === steps.length - 1 ? "Done" : "Next"}
                   </Button>
                 </Flex>
               </Flex>
-            </Popover.Content>
-          </Popover.Root>
+            </Box>
+          )}
 
-          {/* Click shield (click anywhere to advance) */}
-          <Box
-            position="fixed"
-            inset="0"
-            zIndex={9998}
-            cursor="pointer"
-            onClick={next}
-          />
+          {/* Click anywhere to advance */}
+          <Box position="fixed" inset="0" zIndex={10000} cursor="pointer" onClick={next} />
         </Box>
       )}
     </TourContext.Provider>
