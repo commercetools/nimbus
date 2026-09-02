@@ -29,12 +29,14 @@ jobs:
         env:
           GITHUB_PAGES: "1"
 
-      - name: Deploy to gh-pages branch
+      - name: Deploy to gh-pages subdirectory
         run: |
-          cd apps/contextual-ai-prototype/dist
-          git init
+          git fetch origin gh-pages:gh-pages || git checkout --orphan gh-pages
+          git checkout gh-pages
+          rm -rf multi-surface-rendering-user-journeys
+          cp -r apps/contextual-ai-prototype/dist multi-surface-rendering-user-journeys
+          git add multi-surface-rendering-user-journeys
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "deploy: contextual-ai-prototype $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          git push --force "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:gh-pages
+          git commit -m "deploy: multi-surface-rendering-user-journeys $(date -u +%Y-%m-%dT%H:%M:%SZ)" --allow-empty
+          git push origin gh-pages

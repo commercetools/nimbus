@@ -6,7 +6,7 @@ import { UNSAFE_nimbusOptionalDependency } from "@commercetools/nimbus/plugins/v
 export default defineConfig(() => {
   return {
     // GitHub Pages serves from /nimbus/ subpath
-    base: process.env.GITHUB_PAGES ? "/nimbus/" : "/",
+    base: process.env.GITHUB_PAGES ? "/nimbus/multi-surface-rendering-user-journeys/" : "/",
     plugins: [
       react(),
       UNSAFE_nimbusOptionalDependency(),
