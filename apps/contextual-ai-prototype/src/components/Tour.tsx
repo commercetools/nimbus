@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, createContext, useContext } from "react";
-import { Box, Flex, Text, Button, Badge } from "@commercetools/nimbus";
+import { Box, Flex, Text, Button, Badge, Popover } from "@commercetools/nimbus";
 import { AiDot } from "./AiDot";
 
 interface TourStep {
@@ -98,41 +98,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     if (currentStep > 0) setCurrentStep((s) => s - 1);
   }, [currentStep]);
 
-  // Compute popover position, clamped to viewport
-  const pad = 12;
-  const popoverWidth = 340;
-  const popoverHeight = 200; // approximate
-  const popoverStyle: React.CSSProperties = {};
-  if (rect && step) {
-    const placement = step.placement ?? "bottom";
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    // Compute initial position
-    let top = 0;
-    let left = 0;
-
-    if (placement === "bottom") {
-      top = rect.bottom + pad;
-      left = rect.left;
-    } else if (placement === "top") {
-      top = rect.top - popoverHeight - pad;
-      left = rect.left;
-    } else if (placement === "right") {
-      top = rect.top;
-      left = rect.right + pad;
-    } else if (placement === "left") {
-      top = rect.top;
-      left = rect.left - popoverWidth - pad;
-    }
-
-    // Clamp to viewport
-    left = Math.max(pad, Math.min(left, vw - popoverWidth - pad));
-    top = Math.max(pad, Math.min(top, vh - popoverHeight - pad));
-
-    popoverStyle.top = top;
-    popoverStyle.left = left;
-  }
+  // Popover positioning is now handled by Nimbus Popover.Root placement prop
 
   return (
     <TourContext.Provider value={{ startTour, endTour, isActive }}>
@@ -175,52 +141,65 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
             }}
           />
 
-          {/* Popover */}
-          <Box
-            position="fixed"
-            bg="white"
-            borderRadius="300"
-            shadow="lg"
-            p="400"
-            maxWidth="340px"
-            zIndex={10000}
-            css={{
-              ...popoverStyle,
-              animation: "fadeIn 200ms ease 100ms both",
-            }}
+          {/* Popover anchored to a hidden trigger at the spotlight position */}
+          <Popover.Root
+            isOpen={true}
+            onOpenChange={() => {}}
+            placement={(step.placement ?? "bottom") as any}
+            offset={16}
+            isNonModal
           >
-            <Flex alignItems="center" gap="200" mb="200">
-              <AiDot size="14px" />
-              <Text textStyle="sm" fontWeight="semibold" color="neutral.12">
-                {step.title}
-              </Text>
-              {step.renderTarget && (
-                <Badge size="2xs" colorPalette={renderTargetColors[step.renderTarget] as any}>
-                  {renderTargetLabels[step.renderTarget]}
-                </Badge>
-              )}
-            </Flex>
-
-            <Text textStyle="sm" color="neutral.11" mb="300" lineHeight="tall">
-              {step.description}
-            </Text>
-
-            <Flex justifyContent="space-between" alignItems="center">
-              <Text textStyle="xs" color="neutral.9">
-                {currentStep + 1} of {steps.length}
-              </Text>
-              <Flex gap="200">
-                {currentStep > 0 && (
-                  <Button variant="ghost" size="2xs" onClick={prev}>
-                    Back
-                  </Button>
+            {/* Hidden trigger positioned at the spotlight element */}
+            <Popover.Trigger asChild>
+              <Box
+                position="fixed"
+                pointerEvents="none"
+                css={{
+                  top: `${rect.top + rect.height / 2}px`,
+                  left: `${rect.left + rect.width / 2}px`,
+                  width: "1px",
+                  height: "1px",
+                }}
+              />
+            </Popover.Trigger>
+            <Popover.Content
+              aria-label={step.title}
+              maxWidth="340px"
+              css={{ zIndex: 10000, animation: "fadeIn 200ms ease" }}
+            >
+              <Flex alignItems="center" gap="200" mb="200">
+                <AiDot size="14px" />
+                <Text textStyle="sm" fontWeight="semibold" color="neutral.12">
+                  {step.title}
+                </Text>
+                {step.renderTarget && (
+                  <Badge size="2xs" colorPalette={renderTargetColors[step.renderTarget] as any}>
+                    {renderTargetLabels[step.renderTarget]}
+                  </Badge>
                 )}
-                <Button variant="solid" colorPalette="primary" size="2xs" onClick={next}>
-                  {currentStep === steps.length - 1 ? "Done" : "Next"}
-                </Button>
               </Flex>
-            </Flex>
-          </Box>
+
+              <Text textStyle="sm" color="neutral.11" mb="300" lineHeight="tall">
+                {step.description}
+              </Text>
+
+              <Flex justifyContent="space-between" alignItems="center">
+                <Text textStyle="xs" color="neutral.9">
+                  {currentStep + 1} of {steps.length}
+                </Text>
+                <Flex gap="200">
+                  {currentStep > 0 && (
+                    <Button variant="ghost" size="2xs" onPress={prev}>
+                      Back
+                    </Button>
+                  )}
+                  <Button variant="solid" colorPalette="primary" size="2xs" onPress={next}>
+                    {currentStep === steps.length - 1 ? "Done" : "Next"}
+                  </Button>
+                </Flex>
+              </Flex>
+            </Popover.Content>
+          </Popover.Root>
 
           {/* Click shield (click anywhere to advance) */}
           <Box
