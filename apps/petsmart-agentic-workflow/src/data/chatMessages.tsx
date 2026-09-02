@@ -1,6 +1,6 @@
-import type { ReactNode } from "react";
-import { Box, Flex, Stack, Text, Badge, Grid, Icon } from "@commercetools/nimbus";
-import { CheckCircle, Warning, Info } from "@commercetools/nimbus-icons";
+import { useState, type ReactNode } from "react";
+import { Box, Flex, Stack, Text, Badge, Grid, Icon, Button, Separator } from "@commercetools/nimbus";
+import { CheckCircle, Warning, Info, OpenInNew } from "@commercetools/nimbus-icons";
 
 /** Compact stat tile for panel responses */
 const PanelStat = ({ label, value, color = "neutral.12" }: { label: string; value: string; color?: string }) => (
@@ -26,6 +26,52 @@ const StatusRow = ({ status, children }: { status: "pass" | "warn" | "info"; chi
 const Sources = ({ agents }: { agents: string[] }) => (
   <Flex gap="100" flexWrap="wrap" mt="100">
     {agents.map((a) => <Badge key={a} size="2xs" colorPalette="neutral">{a}</Badge>)}
+  </Flex>
+);
+
+/** Interactive approval card: agent proposes an action, human clicks to execute.
+ *  Follows the commerce-agents suspend/resume HITL pattern. */
+const ApprovalCard = ({ action, detail, onApprove }: { action: string; detail: string; onApprove?: string }) => {
+  const [state, setState] = useState<"pending" | "approved">("pending");
+  return (
+    <Box borderRadius="200" borderWidth="1px" borderColor={state === "approved" ? "green.6" : "primary.6"} overflow="hidden" mt="100">
+      <Box bg={state === "approved" ? "green.2" : "primary.2"} px="200" py="100">
+        <Flex alignItems="center" gap="150">
+          {state === "approved" && <Icon as={CheckCircle} size="2xs" color="green.9" />}
+          <Text textStyle="xs" fontWeight="semibold" color={state === "approved" ? "green.11" : "primary.11"}>
+            {state === "approved" ? "Done" : "Action required"}
+          </Text>
+        </Flex>
+      </Box>
+      <Box px="200" py="150">
+        <Text textStyle="xs" fontWeight="semibold" color="neutral.12">{action}</Text>
+        <Text textStyle="xs" color="neutral.11" lineHeight="tall" mt="50">{detail}</Text>
+        {state === "pending" ? (
+          <Button variant="solid" colorPalette="primary" size="2xs" mt="150" onPress={() => setState("approved")}>
+            {action}
+          </Button>
+        ) : (
+          <Flex alignItems="center" gap="150" mt="150">
+            <Icon as={CheckCircle} size="2xs" color="green.9" />
+            <Text textStyle="xs" color="green.11" fontWeight="medium">
+              {onApprove ?? "Saved as inactive draft"}
+            </Text>
+            <Flex alignItems="center" gap="50" ml="auto" cursor="pointer" _hover={{ textDecoration: "underline" }}>
+              <Text textStyle="xs" color="primary.11">View in MC</Text>
+              <Icon as={OpenInNew} size="2xs" color="primary.9" />
+            </Flex>
+          </Flex>
+        )}
+      </Box>
+    </Box>
+  );
+};
+
+/** Success status shown after an action is complete */
+const ActionSuccess = ({ label }: { label: string }) => (
+  <Flex alignItems="center" gap="150" px="200" py="100" bg="green.2" borderRadius="200" borderWidth="1px" borderColor="green.6" mt="100">
+    <Icon as={CheckCircle} size="2xs" color="green.9" />
+    <Text textStyle="xs" fontWeight="medium" color="green.11">{label}</Text>
   </Flex>
 );
 
@@ -86,6 +132,10 @@ const msg2_agent: Msg = {
         <StatusRow status="pass">Stacking mode set to non-stackable (conflict resolved)</StatusRow>
       </Stack>
       <Sources agents={["Promo Agent", "Inventory Agent"]} />
+      <ApprovalCard
+        action="Save as draft"
+        detail="Creates cart discount 'spring-pet-wellness-2026' as an inactive draft. 340 products, Buy 2 Get 1 Free, non-stackable."
+      />
     </Stack>
   ),
 };
@@ -157,13 +207,19 @@ const msg4_agent: Msg = {
         </Text>
       </Box>
       <Sources agents={["Strategy Agent", "Promo Agent", "Preview Agent", "Inventory Agent"]} />
+      <Separator my="100" />
+      <ApprovalCard
+        action="Approve & Launch"
+        detail="Activates cart discount 'spring-pet-wellness-2026'. Discount goes live immediately for all eligible carts."
+        onApprove="Promotion is now live"
+      />
     </Stack>
   ),
 };
 
 const msg5_user: Msg = {
   role: "user",
-  content: "Approved. How did it perform?",
+  content: "It's live. How did it perform?",
 };
 
 const msg5_agent: Msg = {
