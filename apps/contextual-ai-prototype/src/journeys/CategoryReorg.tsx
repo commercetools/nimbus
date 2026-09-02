@@ -11,7 +11,7 @@ import {
   FormField,
   TextInput,
 } from "@commercetools/nimbus";
-import { ChartThemeProvider, ResponsiveContainer, WaffleChart } from "@commercetools/nimbus-viz";
+import { ChartThemeProvider, ResponsiveContainer, StackedBarChart } from "@commercetools/nimbus-viz";
 import { Search, TrendingDown } from "@commercetools/nimbus-icons";
 import { PageHeader } from "../components/PageHeader";
 import { InlineSlot } from "../components/InlineSlot";
@@ -104,15 +104,20 @@ export const CategoryReorg = () => (
               Product density by subcategory
             </Text>
             <ChartThemeProvider>
-              <ResponsiveContainer height={120}>
+              <ResponsiveContainer height={100}>
                 {(w, h) => (
-                  <WaffleChart
+                  <StackedBarChart
                     width={w}
                     height={h}
-                    data={childCategories.map((cat) => ({
-                      category: cat.name,
-                      value: cat.products,
-                    }))}
+                    data={[
+                      {
+                        category: "Products",
+                        segments: childCategories.map((cat) => ({
+                          key: cat.name,
+                          value: cat.products,
+                        })),
+                      },
+                    ]}
                     ariaLabel="Product density by subcategory"
                   />
                 )}

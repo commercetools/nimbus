@@ -22,9 +22,9 @@ export const PageHeader = ({
   actions,
 }: PageHeaderProps) => {
   return (
-    <Box bg="white">
+    <Box bg="white" flexShrink={0}>
       {/* Breadcrumbs */}
-      <Flex px="500" pt="250" pb="0">
+      <Flex px="300" pt="200" pb="0">
         <Breadcrumbs.Root aria-label="Breadcrumb" size="sm" separator="/">
           {breadcrumbs.map((bc, i) => (
             <Breadcrumbs.Item key={i} href={bc.href}>
@@ -36,9 +36,9 @@ export const PageHeader = ({
 
       {/* Title row */}
       <Flex
-        px="500"
-        pt="200"
-        pb="0"
+        px="300"
+        pt="100"
+        pb={tabs ? "0" : "200"}
         alignItems="center"
         gap="300"
       >
@@ -63,12 +63,12 @@ export const PageHeader = ({
 
       {/* Tabs */}
       {tabs && (
-        <Flex px="500" pt="200" gap="0">
+        <Flex px="300" pt="100" gap="0">
           {tabs.map((tab, i) => (
             <Box
               key={i}
               px="300"
-              py="200"
+              py="150"
               cursor="pointer"
               borderBottomWidth="2px"
               borderColor={tab.active ? "indigo.9" : "transparent"}

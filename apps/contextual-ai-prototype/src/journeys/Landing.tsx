@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Box, Flex, Stack, Text, Button, Badge, Separator } from "@commercetools/nimbus";
+import { Box, Flex, Stack, Text, Badge, Separator } from "@commercetools/nimbus";
 import { AiDot } from "../components/AiDot";
 import { useTour } from "../components/Tour";
 
@@ -10,14 +10,15 @@ const journeys = [
     path: "/products/galaxy-s25-ultra",
     description: "Complete a product for launch with AI-assisted category assignment, variant suggestions, and readiness tracking.",
     targets: ["inline", "augmentation", "panel"],
+    accent: "teal",
     steps: [
-      { selector: "[data-tour='inline-slot']", title: "Inline Render Targets", description: "Two compact cards from the Product Enrichment Agent provide persistent context: a readiness scorecard with trend chart, and a variants card showing API data alongside AI suggestions.", renderTarget: "inline" as const, placement: "bottom" as const },
-      { selector: "[data-tour='readiness-chart']", title: "Embedded Visualization", description: "An area chart shows readiness climbing over the past week. This is a nimbus-viz LineChart rendered directly inside the inline card.", renderTarget: "inline" as const, placement: "right" as const },
-      { selector: "[data-tour='variants-suggested']", title: "API + AI Coexistence", description: "Existing variants (API data) appear above the divider. AI-suggested variants appear below with ✦ markers. Same card, same control, different data sources.", renderTarget: "augmentation" as const, placement: "bottom" as const },
-      { selector: "[data-tour='generate-seo']", title: "Activation Button", description: "An augmentation render target of kind 'activation': a single action the agent surfaces in the toolbar. Clicking triggers the agent without navigating away.", renderTarget: "augmentation" as const, placement: "bottom" as const },
+      { selector: "[data-tour='inline-slot']", title: "Inline Render Targets", description: "Two compact cards from the Product Enrichment Agent provide persistent context: a readiness scorecard with waffle chart, and product metadata.", renderTarget: "inline" as const, placement: "bottom" as const },
+      { selector: "[data-tour='readiness-chart']", title: "Waffle Chart Readiness", description: "A waffle chart breaks down readiness by area. Colored dots on the checklist double as the chart legend. Items with ✦ have agent suggestions.", renderTarget: "inline" as const, placement: "right" as const },
+      { selector: "[data-tour='variants-table']", title: "Variants DataTable", description: "Existing variants (API data) and AI-suggested variants coexist in the same DataTable. Suggested rows show ✦ provenance indicators with Create buttons.", renderTarget: "augmentation" as const, placement: "bottom" as const },
+      { selector: "[data-tour='generate-seo']", title: "Activation Button", description: "An augmentation activation: a single action the agent surfaces in the toolbar. Hover ✦ for agent info, click to trigger without navigating away.", renderTarget: "augmentation" as const, placement: "bottom" as const },
       { selector: "[data-tour='translate-btn']", title: "Field-Level Activation", description: "Another activation augmentation, scoped to a single form field. The agent can translate this field's content to all configured locales.", renderTarget: "augmentation" as const, placement: "left" as const },
-      { selector: "[data-tour='category-combobox']", title: "Augmented Combobox", description: "The category picker uses Nimbus ComboBox.Section to show 'Recently Used' (API) and '✦ Suggested' (AI) sections side by side. Each suggestion has a provenance indicator with confidence score.", renderTarget: "augmentation" as const, placement: "bottom" as const },
-      { selector: "[data-tour='chat-panel']", title: "Panel Render Target", description: "The chat panel is locator-aware: it knows you're on the product detail page and pre-seeds the conversation with relevant context. No blank prompt.", renderTarget: "panel" as const, placement: "left" as const },
+      { selector: "[data-tour='category-tree']", title: "Category Tree with Suggestions", description: "The Nimbus Tree shows the category hierarchy. Assigned categories have a ✓. AI-suggested categories show ✦ with confidence percentages.", renderTarget: "augmentation" as const, placement: "left" as const },
+      { selector: "[data-tour='chat-panel']", title: "Panel Render Target", description: "The chat panel is locator-aware: it knows you're on the product detail page. Click any ✦ 'Why this suggestion?' to open the panel with contextual follow-up.", renderTarget: "panel" as const, placement: "left" as const },
     ],
   },
   {
@@ -26,10 +27,10 @@ const journeys = [
     path: "/products/pricing",
     description: "Review and adjust prices after a supplier cost increase with margin analysis, competitive context, and per-SKU optimization.",
     targets: ["inline", "augmentation", "panel"],
+    accent: "amber",
     steps: [
       { selector: "[data-tour='inline-slot']", title: "Margin + Competitive Cards", description: "Two inline cards side by side: margin analysis with stat indicators and a trend chart, competitive context with position badges.", renderTarget: "inline" as const, placement: "bottom" as const },
       { selector: "[data-tour='price-table']", title: "Augmented Price Table", description: "Each row has a ✦ provenance indicator showing AI-suggested prices. Click a row to expand the inline detail view.", renderTarget: "augmentation" as const, placement: "bottom" as const },
-      { selector: "[data-tour='expanded-row']", title: "Expandable Row as Inline Slot", description: "The expanded area is an inline render target scoped to this row's entity. It shows agent rationale and an embedded trend chart.", renderTarget: "inline" as const, placement: "bottom" as const },
     ],
   },
   {
@@ -38,9 +39,9 @@ const journeys = [
     path: "/discounts/summer-clearance",
     description: "Design a promotional discount with AI-suggested conditions, real-time impact preview, and conflict detection.",
     targets: ["inline", "augmentation", "panel"],
+    accent: "indigo",
     steps: [
       { selector: "[data-tour='inline-slot']", title: "Impact + Conflict Cards", description: "Inline cards update as you configure: affected product count, margin impact, and a conflict warning about overlapping promotions.", renderTarget: "inline" as const, placement: "bottom" as const },
-      { selector: "[data-tour='condition-chips']", title: "Suggested Condition Chips", description: "Augmentation items rendered as clickable chips below the conditions form. Each has a confidence score. Clicking adds the condition.", renderTarget: "augmentation" as const, placement: "top" as const },
     ],
   },
   {
@@ -49,8 +50,8 @@ const journeys = [
     path: "/orders/mc-2026-847291",
     description: "Investigate a flagged order with ambient risk signals, customer context, and conversational investigation.",
     targets: ["inline", "augmentation", "panel"],
+    accent: "amber",
     steps: [
-      { selector: "[data-tour='risk-badge']", title: "Ambient Risk Signal", description: "An augmentation item in the page header: a risk badge with provenance indicator. The user sees the risk score without asking for it.", renderTarget: "augmentation" as const, placement: "bottom" as const },
       { selector: "[data-tour='inline-slot']", title: "Investigation Context", description: "Customer profile and timeline cards assembled by the agent, replacing manual lookups across multiple tabs and systems.", renderTarget: "inline" as const, placement: "bottom" as const },
     ],
   },
@@ -60,6 +61,7 @@ const journeys = [
     path: "/categories/phone-cases",
     description: "Restructure the category tree with search data, health metrics, and impact analysis.",
     targets: ["inline", "augmentation", "panel"],
+    accent: "teal",
     steps: [
       { selector: "[data-tour='inline-slot']", title: "Category Health Dashboard", description: "Inline cards showing data you'd normally pull from analytics: search volume, conversion rate, product density, search term mismatches.", renderTarget: "inline" as const, placement: "bottom" as const },
     ],
@@ -70,11 +72,24 @@ const journeys = [
     path: "/products/pour-over-kettle",
     description: "A new user discovers capabilities through ambient augmentations and contextual guidance.",
     targets: ["inline", "augmentation", "panel"],
+    accent: "indigo",
     steps: [
       { selector: "[data-tour='inline-slot']", title: "Readiness + Getting Started", description: "For a new user, the inline cards serve as onboarding: what's missing and what to do first. The AI surfaces capabilities the user might not know exist.", renderTarget: "inline" as const, placement: "bottom" as const },
     ],
   },
 ];
+
+const accentBg: Record<string, string> = {
+  teal: "teal.3",
+  amber: "amber.3",
+  indigo: "indigo.3",
+};
+
+const accentFg: Record<string, string> = {
+  teal: "teal.11",
+  amber: "amber.11",
+  indigo: "indigo.11",
+};
 
 export const Landing = () => {
   const navigate = useNavigate();
@@ -82,12 +97,11 @@ export const Landing = () => {
 
   const handleStartTour = (journey: typeof journeys[0]) => {
     navigate(journey.path);
-    // Delay tour start to let the page render
     setTimeout(() => startTour(journey.steps), 500);
   };
 
   return (
-    <Box height="100%" overflow="auto" p="600">
+    <Box height="100%" overflow="auto" p="600" bg="neutral.1">
       <Stack gap="500" maxWidth="800px" mx="auto">
         <Box>
           <Flex alignItems="center" gap="200" mb="200">
@@ -110,29 +124,31 @@ export const Landing = () => {
             <Flex
               key={j.id}
               bg="white"
-              borderWidth="1px"
-              borderColor="neutral.6"
-              borderRadius="200"
+              borderRadius="300"
               p="400"
               gap="400"
               alignItems="center"
-              _hover={{ borderColor: "indigo.6", bg: "indigo.1" }}
+              shadow="xs"
+              _hover={{ shadow: "md", borderColor: "indigo.6" }}
               transition="all 150ms"
               cursor="pointer"
               onClick={() => handleStartTour(j)}
+              borderWidth="1px"
+              borderColor="neutral.4"
             >
-              <Box
-                width="28px"
-                height="28px"
+              <Flex
+                width="32px"
+                height="32px"
                 borderRadius="full"
-                bg="neutral.3"
-                display="flex"
+                bg={accentBg[j.accent] ?? "neutral.3"}
                 alignItems="center"
                 justifyContent="center"
                 flexShrink={0}
               >
-                <Text textStyle="sm" fontWeight="bold" color="neutral.11">{j.id}</Text>
-              </Box>
+                <Text textStyle="sm" fontWeight="bold" color={accentFg[j.accent] ?? "neutral.11"}>
+                  {j.id}
+                </Text>
+              </Flex>
               <Box flex="1" minWidth="0">
                 <Text textStyle="sm" fontWeight="semibold" color="neutral.12">{j.title}</Text>
                 <Text textStyle="xs" color="neutral.10" mt="50">{j.description}</Text>
@@ -148,7 +164,7 @@ export const Landing = () => {
           ))}
         </Stack>
 
-        <Box bg="neutral.3" borderRadius="200" p="400">
+        <Box bg="white" borderRadius="300" p="400" shadow="xs" borderWidth="1px" borderColor="neutral.4">
           <Text textStyle="xs" color="neutral.10" lineHeight="tall">
             Click any journey to navigate to it and start a guided tour highlighting
             the render targets in action. Or use the sidebar to navigate directly.
