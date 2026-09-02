@@ -29,6 +29,7 @@ export const AppShell = () => {
 
       {/* Chat panel: slide in/out */}
       <Box
+        data-tour="chat-panel"
         width={panelOpen ? "380px" : "0px"}
         minWidth={panelOpen ? "380px" : "0px"}
         overflow="hidden"

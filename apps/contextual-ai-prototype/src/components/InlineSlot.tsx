@@ -6,6 +6,9 @@ interface InlineSlotProps {
   direction?: "row" | "column";
   children: ReactNode;
   gap?: string;
+  /** Pass-through for tour spotlight targeting */
+  "data-tour"?: string;
+  [key: `data-${string}`]: string | undefined;
 }
 
 /**
@@ -17,6 +20,7 @@ export const InlineSlot = ({
   direction = "column",
   children,
   gap = "300",
+  ...rest
 }: InlineSlotProps) => {
   return (
     <Flex
@@ -24,6 +28,7 @@ export const InlineSlot = ({
       gap={gap}
       width="100%"
       data-slot-direction={direction}
+      {...rest}
     >
       {children}
     </Flex>

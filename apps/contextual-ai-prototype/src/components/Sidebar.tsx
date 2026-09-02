@@ -56,18 +56,21 @@ export const Sidebar = () => {
       overflow="hidden"
       width="48px"
     >
-      {/* CT Logo */}
-      <Flex
-        alignItems="center"
-        justifyContent="center"
-        width="32px"
-        height="32px"
-        mb="200"
-        flexShrink={0}
-        color="white"
-      >
-        <Icon as={CommercetoolsCube} size="md" />
-      </Flex>
+      {/* CT Logo - links to landing page */}
+      <NavLink to="/" style={{ textDecoration: "none" }}>
+        <Flex
+          alignItems="center"
+          justifyContent="center"
+          width="32px"
+          height="32px"
+          flexShrink={0}
+          color="white"
+          _hover={{ opacity: 0.8 }}
+          cursor="pointer"
+        >
+          <Icon as={CommercetoolsCube} size="md" />
+        </Flex>
+      </NavLink>
 
       <Separator css={{ borderColor: "rgba(255,255,255,0.12)" }} />
 

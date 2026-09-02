@@ -69,7 +69,7 @@ export const SelfDocumenting = () => (
 
     <Stack gap="400" p="500">
       {/* Horizontal inline slot: readiness + getting started */}
-      <InlineSlot direction="row">
+      <InlineSlot direction="row" data-tour="inline-slot">
         <InlineCard title="Product Readiness" agentName="Product Enrichment Agent" headerRight={
           <Text textStyle="lg" fontWeight="bold" color="red.11">41%</Text>
         }>

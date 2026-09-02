@@ -58,7 +58,7 @@ export const OrderInvestigation = () => (
 
     <Stack gap="400" p="500">
       {/* Horizontal inline slot: customer profile + timeline */}
-      <InlineSlot direction="row">
+      <InlineSlot direction="row" data-tour="inline-slot">
         <InlineCard title="Customer Profile" agentName="Order Intelligence Agent">
           <Flex gap="500">
             <Stack gap="100" flex="1">

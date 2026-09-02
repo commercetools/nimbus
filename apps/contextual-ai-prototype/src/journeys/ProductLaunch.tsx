@@ -97,7 +97,7 @@ export const ProductLaunch = () => {
               py="100"
               borderRadius="200"
               borderWidth="1px"
-              borderColor="indigo.6"
+              borderColor="indigo.6" data-tour="generate-seo"
               cursor="pointer"
               _hover={{ bg: "indigo.3" }}
               transition="background 150ms"
@@ -114,7 +114,7 @@ export const ProductLaunch = () => {
       {/* Content area */}
       <Stack gap="400" p="500">
         {/* === INLINE SLOT: horizontal, two compact cards === */}
-        <InlineSlot direction="row" gap="300">
+        <InlineSlot direction="row" gap="300" data-tour="inline-slot">
           {/* Readiness Card */}
           <InlineCard
             title="Readiness"
@@ -164,7 +164,7 @@ export const ProductLaunch = () => {
               </Stack>
               {/* Area chart: readiness trend embedded in the card */}
               <Box flex="1" minWidth="120px">
-                <Text textStyle="xs" color="neutral.9" mb="50">This week</Text>
+                <Text textStyle="xs" color="neutral.9" mb="50" data-tour="readiness-chart">This week</Text>
                 <ChartThemeProvider>
                   <ResponsiveContainer height={90}>
                     {(w, h) => (
@@ -213,7 +213,7 @@ export const ProductLaunch = () => {
                   <Box height="1px" bg="neutral.4" flex="1" />
                   <Flex alignItems="center" gap="100">
                     <AiDot size="10px" />
-                    <Text textStyle="xs" color="indigo.9" fontWeight="medium">Suggested</Text>
+                    <Text textStyle="xs" color="indigo.9" fontWeight="medium" data-tour="variants-suggested">Suggested</Text>
                   </Flex>
                   <Box height="1px" bg="neutral.4" flex="1" />
                 </Flex>
@@ -275,7 +275,7 @@ export const ProductLaunch = () => {
                   <Flex alignItems="center" gap="200" width="100%">
                     <Text>Description (EN)</Text>
                     <Box flex="1" />
-                    <ActivationButton label="Translate" />
+                    <ActivationButton label="Translate" data-tour="translate-btn" />
                   </Flex>
                 </FormField.Label>
                 <FormField.Input>
@@ -298,7 +298,7 @@ export const ProductLaunch = () => {
             <FormField.Label>Categories</FormField.Label>
             <ComboBox.Root
               placeholder="Search categories..."
-              aria-label="Assign categories"
+              aria-label="Assign categories" data-tour="category-combobox"
               menuTrigger="focus"
             >
               <ComboBox.Trigger />

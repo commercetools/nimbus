@@ -60,7 +60,7 @@ export const PricingReview = () => {
 
     <Stack gap="400" p="500">
       {/* Horizontal inline slot: margin summary + competitive overview */}
-      <InlineSlot direction="row">
+      <InlineSlot direction="row" data-tour="inline-slot">
         <InlineCard title="Margin Analysis" agentName="Pricing Optimizer Agent" headerRight={
           <Badge size="2xs" colorPalette="warning">At Risk</Badge>
         }>
@@ -119,7 +119,7 @@ export const PricingReview = () => {
       </InlineSlot>
 
       {/* Augmented price table */}
-      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden">
+      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden" data-tour="price-table">
         <Flex px="400" py="300" alignItems="center" gap="200" borderBottomWidth="1px" borderColor="neutral.4">
           <ProvenanceIndicator agentName="Pricing Optimizer Agent" iconSize="2xs" />
           <Text textStyle="sm" fontWeight="semibold" color="neutral.12">Price Adjustments</Text>

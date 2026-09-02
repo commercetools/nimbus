@@ -37,7 +37,7 @@ export const DiscountCampaign = () => (
 
     <Stack gap="400" p="500">
       {/* Vertical inline slot: impact preview + conflict analysis */}
-      <InlineSlot direction="row">
+      <InlineSlot direction="row" data-tour="inline-slot">
         <InlineCard title="Impact Preview" agentName="Promotions Agent" headerRight={
           <Text textStyle="xs" color="neutral.9">Updates as you configure</Text>
         }>

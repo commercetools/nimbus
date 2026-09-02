@@ -48,7 +48,7 @@ export const CategoryReorg = () => (
 
     <Stack gap="400" p="500">
       {/* Horizontal inline slot: category health dashboard */}
-      <InlineSlot direction="row">
+      <InlineSlot direction="row" data-tour="inline-slot">
         <InlineCard title="Category Health" agentName="Category Intelligence Agent" headerRight={
           <Badge size="2xs" colorPalette="warning">Below avg</Badge>
         }>
