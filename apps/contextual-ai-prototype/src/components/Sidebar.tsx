@@ -1,6 +1,6 @@
 import { Box, Flex, Stack, Separator, Icon, Tooltip } from "@commercetools/nimbus";
 import {
-  Dashboard,
+  Speed,
   Inventory,
   AccountTree,
   PersonOutline,
@@ -57,7 +57,7 @@ export const Sidebar = () => {
       overflow="hidden"
       width="48px"
     >
-      {/* CT Logo */}
+      {/* CT Logo → Landing / Dashboard */}
       <NavLink to="/" style={{ textDecoration: "none" }}>
         <Flex
           alignItems="center"
@@ -75,27 +75,17 @@ export const Sidebar = () => {
 
       <Separator css={{ borderColor: "rgba(255,255,255,0.12)" }} />
 
-      {/* Navigation - matching real MC sidebar icons */}
+      {/* Navigation: matching real MC sidebar icons per plan */}
       <Stack gap="100" pt="200" flex="1" alignItems="center">
+        <NavItem
+          icon={<Icon as={Speed} size="xs" />}
+          label="Dashboard"
+          to="/"
+        />
         <NavItem
           icon={<Icon as={Inventory} size="xs" />}
           label="Products"
           to="/products/galaxy-s25-ultra"
-        />
-        <NavItem
-          icon={<Icon as={ShoppingCart} size="xs" />}
-          label="Orders"
-          to="/orders/mc-2026-847291"
-        />
-        <NavItem
-          icon={<Icon as={PersonOutline} size="xs" />}
-          label="Customers"
-          to="/products/pour-over-kettle"
-        />
-        <NavItem
-          icon={<Icon as={LocalOffer} size="xs" />}
-          label="Discounts"
-          to="/discounts/summer-clearance"
         />
         <NavItem
           icon={<Icon as={AccountTree} size="xs" />}
@@ -103,9 +93,19 @@ export const Sidebar = () => {
           to="/categories/phone-cases"
         />
         <NavItem
-          icon={<Icon as={Dashboard} size="xs" />}
-          label="Pricing"
-          to="/products/pricing"
+          icon={<Icon as={PersonOutline} size="xs" />}
+          label="Customers"
+          to="/products/pour-over-kettle"
+        />
+        <NavItem
+          icon={<Icon as={ShoppingCart} size="xs" />}
+          label="Orders"
+          to="/orders/mc-2026-847291"
+        />
+        <NavItem
+          icon={<Icon as={LocalOffer} size="xs" />}
+          label="Discounts"
+          to="/discounts/summer-clearance"
         />
       </Stack>
 

@@ -1,10 +1,41 @@
 import { useState, useCallback } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { Box, Flex } from "@commercetools/nimbus";
+import { Box, Flex, Text, Icon } from "@commercetools/nimbus";
+import { HelpOutline, PersonOutline } from "@commercetools/nimbus-icons";
 import { Sidebar } from "./Sidebar";
 import { ChatPanel } from "./ChatPanel";
 import { PanelProvider } from "./ProvenanceIndicator";
 import { chatConfigs } from "../data/chatMessages";
+
+/** Thin top app bar matching the real MC project selector bar */
+const AppBar = () => (
+  <Flex
+    alignItems="center"
+    height="32px"
+    bg="neutral.12"
+    px="300"
+    gap="200"
+    flexShrink={0}
+    color="rgba(255,255,255,0.7)"
+  >
+    <Text textStyle="xs" fontWeight="medium" color="rgba(255,255,255,0.9)">
+      my-project-key
+    </Text>
+    <Box flex="1" />
+    <Icon as={HelpOutline} size="2xs" cursor="pointer" />
+    <Flex
+      width="20px"
+      height="20px"
+      borderRadius="full"
+      bg="rgba(255,255,255,0.15)"
+      alignItems="center"
+      justifyContent="center"
+      cursor="pointer"
+    >
+      <Icon as={PersonOutline} size="2xs" />
+    </Flex>
+  </Flex>
+);
 
 export const AppShell = () => {
   const [panelOpen, setPanelOpen] = useState(false);
@@ -19,47 +50,52 @@ export const AppShell = () => {
 
   return (
     <PanelProvider openPanel={handleOpenPanel}>
-      <Flex height="100vh" width="100vw" overflow="hidden">
-        {/* Icon-only sidebar */}
-        <Box
-          flexShrink={0}
-          borderRightWidth="1px"
-          borderColor="neutral.4"
-          height="100%"
-        >
-          <Sidebar />
-        </Box>
+      <Flex direction="column" height="100vh" width="100vw" overflow="hidden">
+        {/* Top app bar */}
+        <AppBar />
 
-        {/* Main content area */}
-        <Box flex="1" overflow="auto" bg="neutral.2" minWidth="0">
-          <Outlet context={{ panelOpen, setPanelOpen }} />
-        </Box>
+        <Flex flex="1" overflow="hidden">
+          {/* Icon-only sidebar */}
+          <Box
+            flexShrink={0}
+            borderRightWidth="1px"
+            borderColor="neutral.4"
+            height="100%"
+          >
+            <Sidebar />
+          </Box>
 
-        {/* Chat panel: slide in/out */}
-        <Box
-          data-tour="chat-panel"
-          width={panelOpen ? "380px" : "0px"}
-          minWidth={panelOpen ? "380px" : "0px"}
-          overflow="hidden"
-          transition="width 200ms ease, min-width 200ms ease, opacity 200ms ease"
-          opacity={panelOpen ? 1 : 0}
-          borderLeftWidth="1px"
-          borderColor="neutral.4"
-          bg="white"
-          height="100%"
-          flexShrink={0}
-        >
-          <ChatPanel
-            onClose={() => {
-              setPanelOpen(false);
-              setWhyContext(undefined);
-            }}
-            agentName={chatConfig?.agentName}
-            messages={chatConfig?.messages}
-            placeholder={chatConfig?.placeholder}
-            whyContext={whyContext}
-          />
-        </Box>
+          {/* Main content area */}
+          <Box flex="1" overflow="auto" bg="neutral.2" minWidth="0">
+            <Outlet context={{ panelOpen, setPanelOpen }} />
+          </Box>
+
+          {/* Chat panel: slide in/out */}
+          <Box
+            data-tour="chat-panel"
+            width={panelOpen ? "380px" : "0px"}
+            minWidth={panelOpen ? "380px" : "0px"}
+            overflow="hidden"
+            transition="width 200ms ease, min-width 200ms ease, opacity 200ms ease"
+            opacity={panelOpen ? 1 : 0}
+            borderLeftWidth="1px"
+            borderColor="neutral.4"
+            bg="white"
+            height="100%"
+            flexShrink={0}
+          >
+            <ChatPanel
+              onClose={() => {
+                setPanelOpen(false);
+                setWhyContext(undefined);
+              }}
+              agentName={chatConfig?.agentName}
+              messages={chatConfig?.messages}
+              placeholder={chatConfig?.placeholder}
+              whyContext={whyContext}
+            />
+          </Box>
+        </Flex>
       </Flex>
     </PanelProvider>
   );
