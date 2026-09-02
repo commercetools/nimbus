@@ -92,30 +92,30 @@ export const DiscountCampaign = () => (
 
         <Flex gap="500">
           <Stack gap="400" flex="1">
-            <FormField.Root>
+            <FormField.Root size="sm">
               <FormField.Label>Discount name</FormField.Label>
               <FormField.Input>
-                <TextInput defaultValue="Summer Clearance 2026" />
+                <TextInput size="sm" defaultValue="Summer Clearance 2026" />
               </FormField.Input>
             </FormField.Root>
-            <FormField.Root>
+            <FormField.Root size="sm">
               <FormField.Label>Discount type</FormField.Label>
               <FormField.Input>
-                <TextInput defaultValue="Percentage (20%)" />
+                <TextInput size="sm" defaultValue="Percentage (20%)" />
               </FormField.Input>
             </FormField.Root>
           </Stack>
           <Stack gap="400" flex="1">
-            <FormField.Root>
+            <FormField.Root size="sm">
               <FormField.Label>Valid from</FormField.Label>
               <FormField.Input>
-                <TextInput defaultValue="2026-06-01" />
+                <TextInput size="sm" defaultValue="2026-06-01" />
               </FormField.Input>
             </FormField.Root>
-            <FormField.Root>
+            <FormField.Root size="sm">
               <FormField.Label>Valid until</FormField.Label>
               <FormField.Input>
-                <TextInput defaultValue="2026-08-31" />
+                <TextInput size="sm" defaultValue="2026-08-31" />
               </FormField.Input>
             </FormField.Root>
           </Stack>
@@ -124,7 +124,7 @@ export const DiscountCampaign = () => (
         <Separator my="400" />
 
         {/* Augmented conditions section */}
-        <FormField.Root>
+        <FormField.Root size="sm">
           <FormField.Label>
             <Flex alignItems="center" gap="200">
               <Text>Conditions</Text>

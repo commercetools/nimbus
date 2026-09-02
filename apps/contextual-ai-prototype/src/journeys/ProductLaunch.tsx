@@ -224,21 +224,21 @@ export const ProductLaunch = () => {
           {/* 2-column form grid */}
           <Flex gap="500">
             <Stack gap="400" flex="1">
-              <FormField.Root>
+              <FormField.Root size="sm">
                 <FormField.Label>Product name (EN)</FormField.Label>
                 <FormField.Input>
-                  <TextInput defaultValue="Galaxy S25 Ultra" />
+                  <TextInput size="sm" defaultValue="Galaxy S25 Ultra" />
                 </FormField.Input>
               </FormField.Root>
-              <FormField.Root>
+              <FormField.Root size="sm">
                 <FormField.Label>SKU</FormField.Label>
                 <FormField.Input>
-                  <TextInput defaultValue="SKU-GS25U-001" />
+                  <TextInput size="sm" defaultValue="SKU-GS25U-001" />
                 </FormField.Input>
               </FormField.Root>
             </Stack>
             <Stack gap="400" flex="1">
-              <FormField.Root>
+              <FormField.Root size="sm">
                 <FormField.Label>
                   <Flex alignItems="center" gap="200" width="100%">
                     <Text>Description (EN)</Text>
@@ -247,13 +247,13 @@ export const ProductLaunch = () => {
                   </Flex>
                 </FormField.Label>
                 <FormField.Input>
-                  <TextInput defaultValue='The Galaxy S25 Ultra features a stunning 6.9" Dynamic AMOLED...' />
+                  <TextInput size="sm" defaultValue='The Galaxy S25 Ultra features a stunning 6.9" Dynamic AMOLED...' />
                 </FormField.Input>
               </FormField.Root>
-              <FormField.Root>
+              <FormField.Root size="sm">
                 <FormField.Label>Product key</FormField.Label>
                 <FormField.Input>
-                  <TextInput defaultValue="galaxy-s25-ultra" />
+                  <TextInput size="sm" defaultValue="galaxy-s25-ultra" />
                 </FormField.Input>
               </FormField.Root>
             </Stack>
@@ -262,7 +262,7 @@ export const ProductLaunch = () => {
           <Separator my="400" />
 
           {/* === AUGMENTATION: Category picker with real Nimbus ComboBox + sections === */}
-          <FormField.Root>
+          <FormField.Root size="sm">
             <FormField.Label>Categories</FormField.Label>
             <ComboBox.Root
               placeholder="Search categories..."

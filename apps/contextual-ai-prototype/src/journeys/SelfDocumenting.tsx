@@ -131,13 +131,13 @@ export const SelfDocumenting = () => (
 
         <Flex gap="500">
           <Stack gap="400" flex="1">
-            <FormField.Root>
+            <FormField.Root size="sm">
               <FormField.Label>Product name (EN)</FormField.Label>
               <FormField.Input>
-                <TextInput defaultValue="Precision Pour-Over Kettle" />
+                <TextInput size="sm" defaultValue="Precision Pour-Over Kettle" />
               </FormField.Input>
             </FormField.Root>
-            <FormField.Root>
+            <FormField.Root size="sm">
               <FormField.Label>
                 <Flex alignItems="center" gap="200" width="100%">
                   <Text>Description (EN)</Text>
@@ -146,19 +146,19 @@ export const SelfDocumenting = () => (
                 </Flex>
               </FormField.Label>
               <FormField.Input>
-                <TextInput placeholder="Write a product description..." />
+                <TextInput size="sm" placeholder="Write a product description..." />
               </FormField.Input>
               <FormField.Description>Required for SEO and storefront display</FormField.Description>
             </FormField.Root>
           </Stack>
           <Stack gap="400" flex="1">
-            <FormField.Root>
+            <FormField.Root size="sm">
               <FormField.Label>SKU</FormField.Label>
               <FormField.Input>
-                <TextInput defaultValue="SKU-POK-2026" />
+                <TextInput size="sm" defaultValue="SKU-POK-2026" />
               </FormField.Input>
             </FormField.Root>
-            <FormField.Root>
+            <FormField.Root size="sm">
               <FormField.Label>
                 <Flex alignItems="center" gap="200" width="100%">
                   <Text>Description (DE)</Text>
@@ -167,7 +167,7 @@ export const SelfDocumenting = () => (
                 </Flex>
               </FormField.Label>
               <FormField.Input>
-                <TextInput placeholder="German description..." />
+                <TextInput size="sm" placeholder="German description..." />
               </FormField.Input>
             </FormField.Root>
           </Stack>
@@ -176,11 +176,11 @@ export const SelfDocumenting = () => (
         <Separator my="400" />
 
         {/* Categories with AI suggestions */}
-        <FormField.Root>
+        <FormField.Root size="sm">
           <FormField.Label>Categories</FormField.Label>
           <Box position="relative">
             <FormField.Input>
-              <TextInput placeholder="Search categories..." />
+              <TextInput size="sm" placeholder="Search categories..." />
             </FormField.Input>
             <Box
               position="absolute"
