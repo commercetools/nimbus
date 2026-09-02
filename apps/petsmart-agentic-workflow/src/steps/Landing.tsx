@@ -75,7 +75,7 @@ export const Landing = () => {
           <Flex alignItems="center" gap="200" mb="200">
             <AiDot size="18px" />
             <Text textStyle="xl" fontWeight="bold" color="neutral.12">
-              PetSmart Promotion Lifecycle
+              PetSmart Promotion Lifecycle User Journey
             </Text>
           </Flex>
           <Text textStyle="sm" color="neutral.11" lineHeight="tall">
