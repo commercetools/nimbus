@@ -328,8 +328,8 @@ export const ProductLaunch = () => {
                   type="multiLine"
                   defaultLocaleOrCurrency="en"
                   width="100%"
-                  autoGrow
-                  rows={2}
+                  
+                  
                   valuesByLocaleOrCurrency={descriptions}
                   onChange={(e) => setDescriptions(prev => ({ ...prev, [e.target.locale as string]: e.target.value as string }))}
                 />
