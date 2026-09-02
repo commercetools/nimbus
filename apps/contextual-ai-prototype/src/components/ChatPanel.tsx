@@ -1,0 +1,166 @@
+import { Box, Flex, Stack, Text, Separator, IconButton, Icon } from "@commercetools/nimbus";
+import { AutoAwesome, Close, ArrowUpward } from "@commercetools/nimbus-icons";
+
+import type { ChatMessage } from "../data/chatMessages";
+
+interface ChatPanelProps {
+  onClose: () => void;
+  agentName?: string;
+  messages?: ChatMessage[];
+  placeholder?: string;
+}
+
+const AgentMessage = ({ message }: { message: ChatMessage }) => (
+  <Box
+    pl="300"
+    borderLeftWidth="2px"
+    borderColor="indigo.6"
+    css={{ animation: "fadeIn 300ms ease" }}
+  >
+    {message.agentLabel && (
+      <Flex alignItems="center" gap="150" mb="100">
+        <Icon as={AutoAwesome} size="2xs" color="indigo.9" />
+        <Text textStyle="xs" fontWeight="medium" color="indigo.9">
+          {message.agentLabel}
+        </Text>
+      </Flex>
+    )}
+    <Text textStyle="sm" color="neutral.12" lineHeight="tall">
+      {message.content}
+    </Text>
+    {message.items && (
+      <Stack gap="200" mt="200">
+        {message.items.map((item, i) => (
+          <Box key={i}>
+            <Text textStyle="sm" fontWeight="medium" color="neutral.12">
+              {item.label}
+            </Text>
+            <Text textStyle="xs" color="neutral.10">
+              {item.detail}
+            </Text>
+          </Box>
+        ))}
+      </Stack>
+    )}
+    {message.footnote && (
+      <Text textStyle="xs" color="neutral.9" mt="200">
+        {message.footnote}
+      </Text>
+    )}
+  </Box>
+);
+
+const UserMessage = ({ message }: { message: ChatMessage }) => (
+  <Flex justifyContent="flex-end">
+    <Box
+      bg="neutral.3"
+      borderRadius="300"
+      px="300"
+      py="200"
+      maxWidth="85%"
+      css={{ animation: "fadeIn 200ms ease" }}
+    >
+      <Text textStyle="sm" fontWeight="medium" color="neutral.12">
+        {message.content}
+      </Text>
+    </Box>
+  </Flex>
+);
+
+export const ChatPanel = ({
+  onClose,
+  agentName = "Product Enrichment",
+  messages = [],
+  placeholder = "Ask about this product...",
+}: ChatPanelProps) => {
+  return (
+    <Flex direction="column" height="100%" overflow="hidden">
+      {/* Header */}
+      <Flex
+        alignItems="center"
+        gap="200"
+        px="400"
+        py="300"
+        flexShrink={0}
+      >
+        <Box
+          width="6px"
+          height="6px"
+          borderRadius="full"
+          bg="indigo.9"
+          flexShrink={0}
+        />
+        <Text textStyle="sm" fontWeight="semibold" color="neutral.12">
+          {agentName}
+        </Text>
+        <Box flex="1" />
+        <IconButton
+          aria-label="Close panel"
+          variant="ghost"
+          size="xs"
+          onClick={onClose}
+        >
+          <Close />
+        </IconButton>
+      </Flex>
+
+      <Separator />
+
+      {/* Messages */}
+      <Stack
+        gap="500"
+        px="400"
+        py="400"
+        flex="1"
+        overflow="auto"
+      >
+        {messages.map((msg, i) =>
+          msg.sender === "agent" ? (
+            <AgentMessage key={i} message={msg} />
+          ) : (
+            <UserMessage key={i} message={msg} />
+          )
+        )}
+      </Stack>
+
+      <Separator />
+
+      {/* Input */}
+      <Flex alignItems="center" gap="200" px="400" py="300" flexShrink={0}>
+        <Text
+          textStyle="sm"
+          color="neutral.9"
+          flex="1"
+          cursor="text"
+        >
+          {placeholder}
+        </Text>
+        <IconButton
+          aria-label="Send"
+          variant="ghost"
+          size="xs"
+          colorPalette="neutral"
+        >
+          <ArrowUpward />
+        </IconButton>
+      </Flex>
+    </Flex>
+  );
+};
+
+// Inject fadeIn animation
+if (typeof document !== "undefined") {
+  const styleId = "chat-fade-keyframes";
+  if (!document.getElementById(styleId)) {
+    const style = document.createElement("style");
+    style.id = styleId;
+    style.textContent = `
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(4px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
+
