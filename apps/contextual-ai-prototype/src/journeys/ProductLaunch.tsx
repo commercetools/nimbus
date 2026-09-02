@@ -30,14 +30,14 @@ import { ActivationButton } from "../components/ActivationButton";
 // ─── Data ───────────────────────────────────────────────────────────────────
 
 const readinessBreakdown = [
-  { category: "Categories", value: 10 },
-  { category: "Names", value: 12 },
-  { category: "Descriptions", value: 5 },
-  { category: "Images", value: 8 },
-  { category: "Pricing", value: 10 },
-  { category: "Variants", value: 6 },
-  { category: "SEO", value: 2 },
-  { category: "Attributes", value: 15 },
+  { category: "Categories · 10 pts", value: 10 },
+  { category: "Names · 12 pts", value: 12 },
+  { category: "Descriptions · 5 pts", value: 5 },
+  { category: "Images · 8 pts", value: 8 },
+  { category: "Pricing · 10 pts", value: 10 },
+  { category: "Variants · 6 pts", value: 6 },
+  { category: "SEO · 2 pts", value: 2 },
+  { category: "Attributes · 15 pts", value: 15 },
 ];
 
 const checklist = [

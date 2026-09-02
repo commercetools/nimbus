@@ -9,12 +9,12 @@ import { ActivationButton } from "../components/ActivationButton";
 
 // Readiness breakdown for waffle chart
 const readinessBreakdown = [
-  { category: "Categories", value: 0 },
-  { category: "Descriptions", value: 0 },
-  { category: "Images", value: 4 },
-  { category: "Name", value: 10 },
-  { category: "Price", value: 8 },
-  { category: "Variants", value: 10 },
+  { category: "Categories · 0 pts", value: 0 },
+  { category: "Descriptions · 0 pts", value: 0 },
+  { category: "Images · 4 pts", value: 4 },
+  { category: "Name · 10 pts", value: 10 },
+  { category: "Price · 8 pts", value: 8 },
+  { category: "Variants · 10 pts", value: 10 },
 ];
 
 const checklist = [
