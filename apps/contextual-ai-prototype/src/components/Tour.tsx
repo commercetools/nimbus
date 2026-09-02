@@ -40,6 +40,7 @@ const renderTargetLabels: Record<string, string> = {
 };
 
 const DIALOG_W = 340;
+const DIALOG_H_EST = 300; // conservative estimate for dialog height
 const GAP = 16;
 
 function clamp(val: number, min: number, max: number) {
@@ -51,9 +52,17 @@ function dialogPosition(rect: DOMRect, placement: string) {
   const vh = window.innerHeight;
   let top: number, left: number;
 
-  switch (placement) {
+  // Auto-flip vertical placements when the dialog would overflow
+  let resolved = placement;
+  if (resolved === "bottom" && rect.bottom + GAP + DIALOG_H_EST > vh - 12) {
+    resolved = "top";
+  } else if (resolved === "top" && rect.top - GAP - DIALOG_H_EST < 12) {
+    resolved = "bottom";
+  }
+
+  switch (resolved) {
     case "top":
-      top = rect.top - GAP - 220;
+      top = rect.top - GAP - DIALOG_H_EST;
       left = rect.left + rect.width / 2 - DIALOG_W / 2;
       if (top < 12) { top = 12; }
       break;
@@ -74,7 +83,7 @@ function dialogPosition(rect: DOMRect, placement: string) {
   }
 
   return {
-    top: clamp(top, 12, vh - 200),
+    top: clamp(top, 12, vh - DIALOG_H_EST),
     left: clamp(left, 12, vw - DIALOG_W - 12),
   };
 }
@@ -372,6 +381,8 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
               width={`${DIALOG_W}px`}
               zIndex={10001}
               pointerEvents="auto"
+              maxHeight="calc(100vh - 24px)"
+              overflow="auto"
               css={{
                 top: `${pos.top}px`,
                 left: `${pos.left}px`,
@@ -442,18 +453,18 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
             top="60px"
             left="56px"
             zIndex={9999}
-            bg="white"
+            bg="indigo.2"
             px="300"
             py="200"
             borderRadius="200"
             shadow="lg"
             borderWidth="1px"
-            borderColor="neutral.6"
+            borderColor="indigo.6"
             css={{ animation: "fadeIn 300ms ease" }}
             cursor="pointer"
             onClick={() => setEndMessage(false)}
           >
-            <Text textStyle="xs" color="neutral.12">
+            <Text textStyle="xs" color="indigo.12">
               ← Click to go home when you're done exploring
             </Text>
           </Box>
