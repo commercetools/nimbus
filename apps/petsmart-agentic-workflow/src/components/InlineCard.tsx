@@ -30,8 +30,7 @@ export const InlineCard = ({
       borderColor="neutral.6"
       borderRadius="200"
       overflow="visible"
-      width="fit-content"
-      maxWidth="100%"
+      width="100%"
     >
       {/* Card header */}
       <Flex

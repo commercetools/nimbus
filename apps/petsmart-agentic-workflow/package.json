@@ -12,6 +12,7 @@
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "react-router-dom": "catalog:apps",
+    "@internationalized/date": "catalog:react",
     "@commercetools/nimbus": "workspace:*",
     "@commercetools/nimbus-icons": "workspace:*",
     "@commercetools/nimbus-viz": "workspace:*"

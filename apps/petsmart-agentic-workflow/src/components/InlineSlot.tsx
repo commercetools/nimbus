@@ -33,6 +33,7 @@ export const InlineSlot = ({
       direction={responsiveDirection}
       gap={gap}
       width="100%"
+      alignItems="stretch"
       data-slot-direction={direction}
       {...rest}
     >

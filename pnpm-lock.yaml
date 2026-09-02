@@ -819,6 +819,9 @@ importers:
       '@commercetools/nimbus-viz':
         specifier: workspace:*
         version: link:../../packages/nimbus-viz
+      '@internationalized/date':
+        specifier: catalog:react
+        version: 3.12.3
       react:
         specifier: catalog:react
         version: 19.2.0

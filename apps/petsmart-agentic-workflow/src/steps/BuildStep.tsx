@@ -13,8 +13,11 @@ import {
   NumberInput,
   FormField,
   Icon,
+  ComboBox,
+  DateInput,
 } from "@commercetools/nimbus";
 import { Warning } from "@commercetools/nimbus-icons";
+import { CalendarDate } from "@internationalized/date";
 import { PageHeader } from "../components/PageHeader";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
@@ -190,7 +193,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                   mt="200"
                   px="300"
                   py="200"
-                  bg="neutral.3"
+                  bg="info.2"
                   borderRadius="200"
                   gap="200"
                   alignItems="center"
@@ -200,7 +203,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                     agentSource="customer"
                     reason="Based on Spring 2025 promotional performance data"
                   />
-                  <Text textStyle="xs" color="neutral.11">
+                  <Text textStyle="xs" color="info.11">
                     Comparable: Spring 2025 lifted orders 22% over 6 weeks
                   </Text>
                 </Flex>
@@ -277,33 +280,33 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                       <ProvenanceIndicator
                         agentName="Inventory Agent"
                         agentSource="customer"
-                        reason="Historically lifts pet health 31% vs flat percentage"
+                        reason="Buy 2 Get 1 Free historically lifts pet health 31% vs flat percentage"
                       />
                     )}
                   </Flex>
                 </FormField.Label>
                 <FormField.Input>
-                  <TextInput
-                    size="sm"
-                    width="100%"
-                    defaultValue={promotion.type}
-                  />
+                  <ComboBox.Root size="sm" defaultValue="Buy 2 Get 1 Free" width="100%">
+                    <ComboBox.Trigger />
+                    <ComboBox.Popover>
+                      <ComboBox.ListBox>
+                        <ComboBox.Option id="buy-2-get-1" textValue="Buy 2 Get 1 Free">
+                          <Flex alignItems="center" gap="100">
+                            {mode === "contextual" && <ProvenanceIndicator agentName="Inventory Agent" agentSource="customer" size="8px" />}
+                            Buy 2 Get 1 Free
+                          </Flex>
+                        </ComboBox.Option>
+                        <ComboBox.Option id="percentage" textValue="Percentage (20%)">Percentage (20%)</ComboBox.Option>
+                        <ComboBox.Option id="fixed" textValue="Fixed amount ($10 off)">Fixed amount ($10 off)</ComboBox.Option>
+                        <ComboBox.Option id="tiered" textValue="Tiered (15%/20%/25%)">Tiered (15%/20%/25%)</ComboBox.Option>
+                      </ComboBox.ListBox>
+                    </ComboBox.Popover>
+                  </ComboBox.Root>
                 </FormField.Input>
                 {mode === "contextual" && (
-                  <Flex
-                    mt="150"
-                    gap="200"
-                    alignItems="center"
-                    px="300"
-                    py="200"
-                    bg="primary.2"
-                    borderRadius="200"
-                  >
-                    <Text textStyle="xs" color="neutral.11">
-                      Suggested: &quot;{promotion.type}&quot; — historically
-                      lifts pet health 31% vs flat percentage
-                    </Text>
-                  </Flex>
+                  <FormField.Description>
+                    ✦ Suggested: historically lifts pet health 31% vs flat percentage
+                  </FormField.Description>
                 )}
               </FormField.Root>
             </Stack>
@@ -311,13 +314,13 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
               <FormField.Root size="sm">
                 <FormField.Label>Valid from</FormField.Label>
                 <FormField.Input>
-                  <TextInput size="sm" width="100%" defaultValue="2026-03-01" />
+                  <DateInput size="sm" width="100%" defaultValue={new CalendarDate(2026, 3, 1)} />
                 </FormField.Input>
               </FormField.Root>
               <FormField.Root size="sm">
                 <FormField.Label>Valid until</FormField.Label>
                 <FormField.Input>
-                  <TextInput size="sm" width="100%" defaultValue="2026-04-15" />
+                  <DateInput size="sm" width="100%" defaultValue={new CalendarDate(2026, 4, 15)} />
                 </FormField.Input>
               </FormField.Root>
             </Stack>
