@@ -4,74 +4,71 @@ export type FlavorMode = "contextual" | "orchestrated";
 
 // Step 1: Discover
 export const discoverContextualSteps: TourStep[] = [
-  { selector: "[data-tour='product-table']", title: "Maya sees the slow movers", description: "The product table shows Pet Health products. The Shelf Days and Velocity columns come from PetSmart's Inventory Agent (notice the colored ✦). Products over 80 days are highlighted in amber.", placement: "bottom", action: "pulseShelfDaysCells" },
-  { selector: "[data-tour='inventory-card']", title: "PetSmart's warehouse data", description: "The Inventory Agent surfaces 23 slow-moving products worth $47,200 in shelf value. This data comes from PetSmart's warehouse system, not commercetools.", placement: "top" },
-  { selector: "[data-tour='strategy-card']", title: "CT adds strategy context", description: "The Strategy Agent analyzes the current catalog and notes that spring promotions historically lift this category 28%. The historical data comes from PetSmart's records.", placement: "top" },
-  { selector: "[data-tour='create-promotion']", title: "Maya decides to act", description: "With both agents' input visible on the same page, Maya clicks Create Promotion. She never opened a separate tool or typed a prompt.", placement: "left", action: "pulseElement" },
+  { selector: "[data-tour='product-table']", title: "Maya spots the problem", description: "She opens the Pet Health product list and immediately sees which items are stalling. Shelf days and velocity are right in the table, highlighted amber when they're overdue. She didn't run a report or open a spreadsheet.", placement: "bottom", action: "pulseShelfDaysCells" },
+  { selector: "[data-tour='inventory-card']", title: "The numbers are already there", description: "23 slow movers, $47,200 in shelf value, trending down. Maya didn't ask for this summary. It appeared because she's looking at Pet Health products.", placement: "top" },
+  { selector: "[data-tour='strategy-card']", title: "A recommendation, not a blank page", description: "Spring promotions have lifted this category 28% in the past. Bundle slow movers with accessories. Maya reads a recommendation, not a raw data dump.", placement: "top" },
+  { selector: "[data-tour='create-promotion']", title: "She acts", description: "Maya clicks Create Promotion. She never left this page, never opened another tool, never typed a prompt. The decision was hers; the context was ready.", placement: "left", action: "pulseElement" },
 ];
 
 export const discoverOrchestratedSteps: TourStep[] = [
-  { selector: "[data-tour='product-table']", title: "Same data, different delivery", description: "The product table looks the same. The Orchestrator called the Inventory Agent behind the scenes and injected the shelf data.", placement: "bottom", action: "pulseShelfDaysCells" },
-  { selector: "[data-tour='chat-panel']", title: "The conversation drives everything", description: "The panel is open by default. The Orchestrator has already assembled a recommendation from the Inventory Agent and Strategy Agent. Maya reads the brief and asks follow-ups here.", placement: "left", action: "openPanel" },
-  { selector: "[data-tour='next-step-btn']", title: "Maya moves forward", description: "The Orchestrator's recommendation is the promotion brief. Maya advances to Build.", placement: "top", action: "pulseElement" },
+  { selector: "[data-tour='product-table']", title: "Maya opens the product list", description: "The same Pet Health view she always uses. The table shows her products, prices, and stock. No augmentations in the controls.", placement: "bottom" },
+  { selector: "[data-tour='chat-panel']", title: "She reads the brief", description: "The panel already has a summary: 23 slow movers, $47K shelf value, spring promotions lift 28%, recommended Buy 2 Get 1 Free. Maya reads it, asks a follow-up, and moves on.", placement: "left", action: "openPanel" },
 ];
 
 // Step 2: Build
 export const buildContextualSteps: TourStep[] = [
-  { selector: "[data-tour='discount-type']", title: "PetSmart knows what works", description: "The suggested discount type 'Buy 2 Get 1 Free' comes from PetSmart's Inventory Agent with historical performance data: this structure lifts pet health 31% vs flat percentage.", placement: "bottom" },
-  { selector: "[data-tour='suggested-conditions']", title: "A suggested condition, one click away", description: "The Promo Agent suggests a product predicate based on the catalog and current rules. Maya clicks the chip to add it — no need to write the predicate herself.", placement: "top", action: "clickSuggestedCondition" },
-  { selector: "[data-tour='impact-card']", title: "CT calculates the impact", description: "The Promo Agent shows 340 products affected with a -4.1% margin impact, calculated from current commercetools pricing data.", placement: "top" },
-  { selector: "[data-tour='stock-card']", title: "PetSmart checks the warehouse", description: "The Inventory Agent flags 28 low-stock products where the reorder lead time exceeds the promotion window. This data is from the warehouse, not commercetools.", placement: "top" },
-  { selector: "[data-tour='conflict-card']", title: "CT catches a conflict", description: "The Promo Agent detects 67 products that overlap with the Loyalty Paw Points discount. Stacking would push 12 products below the margin floor.", placement: "top", action: "pulseElement" },
-  { selector: "[data-tour='save-simulate']", title: "Maya saves and moves to simulation", description: "With the discount configured and the conflict noted, Maya clicks Save & Simulate to see how it plays out against real carts.", placement: "bottom", action: "pulseElement" },
+  { selector: "[data-tour='discount-type']", title: "The form knows what works", description: "Buy 2 Get 1 Free is already suggested, with a note that it outperforms flat percentages by 31% in this category. Maya sees the recommendation right where she'd normally type.", placement: "bottom" },
+  { selector: "[data-tour='suggested-conditions']", title: "One click to add a condition", description: "A product predicate is suggested: shelf-days over 60. Maya clicks the chip to add it. She didn't have to write the predicate syntax.", placement: "top", action: "clickSuggestedCondition" },
+  { selector: "[data-tour='impact-card']", title: "She sees the impact immediately", description: "340 products affected, -4.1% margin impact. This updates as she configures. Maya knows the cost before she commits.", placement: "top" },
+  { selector: "[data-tour='stock-card']", title: "A stock problem she would have missed", description: "28 products don't have enough inventory to last the promotion window. Maya would have found this after launch. Now she sees it before.", placement: "top" },
+  { selector: "[data-tour='conflict-card']", title: "A conflict, caught early", description: "67 products overlap with the Loyalty Paw Points discount. Stacking would break the margin floor. Maya adds an exclusion before it becomes a production issue.", placement: "top", action: "pulseElement" },
+  { selector: "[data-tour='save-simulate']", title: "She saves and tests", description: "Maya clicks Save & Simulate. The discount is configured, the conflicts are noted. Now she wants to see it work against real carts.", placement: "bottom", action: "pulseElement" },
 ];
 
 export const buildOrchestratedSteps: TourStep[] = [
-  { selector: "[data-tour='discount-type']", title: "The Orchestrator drafts the discount", description: "The Orchestrator chose 'Buy 2 Get 1 Free' after consulting both the Promo Agent (discount model) and Inventory Agent (historical performance).", placement: "bottom" },
-  { selector: "[data-tour='orchestrator-card']", title: "Impact, stock, and conflicts in one view", description: "The Orchestrator composed impact analysis, stock validation, and conflict detection into a single card. Three agents' worth of work, one reading experience.", placement: "top" },
-  { selector: "[data-tour='agent-chain']", title: "See who contributed what", description: "The agent chain shows the Promo Agent handled discount configuration and conflict detection, while the Inventory Agent provided stock validation.", placement: "bottom" },
-  { selector: "[data-tour='next-step-btn']", title: "On to simulation", description: "The draft is composed and reviewed. Maya advances to cart simulation.", placement: "top", action: "pulseElement" },
+  { selector: "[data-tour='discount-form']", title: "Maya fills in the form", description: "The discount form is the same MC form she always uses. No augmented suggestions in the fields. The Orchestrator's draft is in the panel.", placement: "bottom" },
+  { selector: "[data-tour='chat-panel']", title: "The panel has the full picture", description: "Impact, stock validation, conflict detection: all in one conversation. Maya reads the brief, asks about the stacking conflict, and adjusts the form.", placement: "left", action: "openPanel" },
 ];
 
 // Step 3: Test
 export const testContextualSteps: TourStep[] = [
-  { selector: "[data-tour='simulation-card']", title: "Carts the merchant never had to build", description: "The Preview Agent simulated three carts automatically. No test orders, no manual checking. This capability didn't exist before.", placement: "top" },
-  { selector: "[data-tour='cart-warning']", title: "A stacking problem caught before launch", description: "Cart C triggers a stacking violation: Buy 2 Get 1 Free plus Loyalty Paw Points drops the margin to 11%, below the 15% floor. This would have reached production.", placement: "top", action: "pulseWarningCart" },
-  { selector: "[data-tour='petsmart-context']", title: "PetSmart adds return and pickup rules", description: "The Inventory Agent adds context the Preview Agent doesn't have: return policy implications and in-store pickup eligibility for the promoted products.", placement: "top" },
-  { selector: "[data-tour='submit-approval']", title: "Maya submits for approval", description: "Simulation looks good and the one stacking issue is understood. Maya submits the promotion for approval.", placement: "bottom", action: "pulseElement" },
+  { selector: "[data-tour='simulation-card']", title: "Three carts, tested automatically", description: "Maya used to test discounts by placing real orders. Now she sees three simulated carts with full line-item math. This didn't exist before.", placement: "top" },
+  { selector: "[data-tour='cart-warning']", title: "Cart C breaks the floor", description: "Three dental chews with loyalty stacking drops the margin to 11%. This would have reached production and eroded margins for weeks before anyone noticed.", placement: "top", action: "pulseWarningCart" },
+  { selector: "[data-tour='petsmart-context']", title: "Return and pickup rules", description: "If a customer returns a bundled item in-store, does the discount still apply? Maya sees the answer here, alongside the simulation. She didn't have to call the returns team.", placement: "top" },
+  { selector: "[data-tour='submit-approval']", title: "She submits for approval", description: "The simulation passed. The stacking issue is understood and handled. Maya submits for review.", placement: "bottom", action: "pulseElement" },
 ];
 
 export const testOrchestratedSteps: TourStep[] = [
-  { selector: "[data-tour='orchestrator-card']", title: "Simulation with business rules", description: "The Orchestrator ran cart simulations through the Preview Agent, then enriched the results with PetSmart's return and pickup policies from the Inventory Agent.", placement: "top" },
-  { selector: "[data-tour='cart-warning']", title: "The stacking issue", description: "Cart C's stacking violation is the same regardless of flavor. The Orchestrator surfaces it with the same urgency.", placement: "top", action: "pulseWarningCart" },
-  { selector: "[data-tour='agent-chain']", title: "Two agents, one report", description: "The Preview Agent handled cart math. The Inventory Agent added return policy and pickup context.", placement: "bottom" },
-  { selector: "[data-tour='next-step-btn']", title: "On to approval", description: "The simulation report is complete. Maya advances to the approval gate.", placement: "top", action: "pulseElement" },
+  { selector: "[data-tour='simulation-card']", title: "Maya reviews the simulation", description: "The simulation results are still visible on the page. Cart C's stacking issue is flagged.", placement: "top" },
+  { selector: "[data-tour='cart-warning']", title: "The margin violation", description: "Same problem, same urgency. Cart C drops to 11% margin. The panel explains why and confirms the fix.", placement: "top", action: "pulseWarningCart" },
+  { selector: "[data-tour='chat-panel']", title: "Return policy context in the conversation", description: "Maya asks about in-store returns and pickup eligibility. The Orchestrator answers from the panel. She doesn't need a separate card for it.", placement: "left", action: "openPanel" },
 ];
 
 // Step 4: Approve
 export const approveContextualSteps: TourStep[] = [
-  { selector: "[data-tour='pipeline']", title: "The full picture", description: "The pipeline shows all 8 agents. Steps 1-5 are complete (checkmarks). Maya is at step 6: the human approval gate.", placement: "bottom" },
-  { selector: "[data-tour='summary-cards']", title: "Each agent's contribution, traceable", description: "Four compact cards summarize what each agent produced. Every piece of data is labeled with its source: CT brand green for platform agents, blue for PetSmart agents.", placement: "top" },
-  { selector: "[data-tour='approve-btn']", title: "The human decides", description: "No agent can launch this promotion. The Approve button has no AI augmentation. Maya reviews, then decides.", placement: "bottom", action: "pulseElement" },
+  { selector: "[data-tour='pipeline']", title: "Maya sees the full chain", description: "Eight steps, five complete. She's at the approval gate. Every step that got her here is visible with a checkmark.", placement: "bottom" },
+  { selector: "[data-tour='summary-cards']", title: "Everything in one view", description: "Strategy, discount, simulation, inventory: four compact summaries, each labeled by source. Maya doesn't have to dig through tabs or emails to review.", placement: "top" },
+  { selector: "[data-tour='approve-btn']", title: "Her call", description: "No automation can click this button. Maya reads the brief, confirms the numbers, and launches the promotion. The decision is hers.", placement: "bottom", action: "pulseElement" },
 ];
 
 export const approveOrchestratedSteps: TourStep[] = [
-  { selector: "[data-tour='pipeline']", title: "Same gate, different view", description: "The pipeline is identical. The human approval gate is the same regardless of how the information was assembled.", placement: "bottom" },
-  { selector: "[data-tour='orchestrator-card']", title: "One brief, fully expanded", description: "The Orchestrator composed an executive summary. The agent chain is expanded by default so Maya can see every source.", placement: "top" },
-  { selector: "[data-tour='approve-btn']", title: "Still the human's call", description: "Same approval gate. The Orchestrator assembled the brief, but the decision is Maya's.", placement: "bottom", action: "pulseElement" },
+  { selector: "[data-tour='pipeline']", title: "Same gate", description: "The pipeline is identical. The approval step doesn't change based on how Maya got here.", placement: "bottom" },
+  { selector: "[data-tour='chat-panel']", title: "The brief is in the conversation", description: "The Orchestrator summarized everything: strategy, discount, simulation, stock. Maya reads the brief, asks a last question, then approves.", placement: "left", action: "openPanel" },
+  { selector: "[data-tour='approve-btn']", title: "Still her call", description: "Same button, same decision. The Orchestrator assembled the information, but Maya makes the call.", placement: "bottom", action: "pulseElement" },
 ];
 
 // Step 5: Measure
 export const measureContextualSteps: TourStep[] = [
-  { selector: "[data-tour='ct-card']", title: "CT shows the current totals", description: "The Data Agent provides 4,287 orders and $312K revenue. These are point-in-time totals from commercetools. No trend lines, no daily breakdowns: CT provides current state.", placement: "top" },
-  { selector: "[data-tour='petsmart-card']", title: "PetSmart shows how it played out", description: "The Reporting Agent adds what CT can't: daily order trends, in-store pickup uplift (+12%), and cross-channel attribution. This time-series data comes from PetSmart's BI system.", placement: "top" },
-  { selector: "[data-tour='clearance-card']", title: "The loop is closed", description: "18 of 23 slow movers cleared. Overstock went from $47K to $8K. The same products Maya spotted in Step 1 are now measured.", placement: "top" },
+  { selector: "[data-tour='ct-card']", title: "The numbers are in", description: "4,287 orders, $312K revenue, 34% code usage. Maya sees the platform totals immediately. No waiting for a report request.", placement: "top" },
+  { selector: "[data-tour='petsmart-card']", title: "The full story", description: "In-store pickup was up 12%. Online browsers drove store visits. Non-promoted items got a 7% halo. Maya sees what happened beyond the website.", placement: "top" },
+  { selector: "[data-tour='clearance-card']", title: "The problem is solved", description: "18 of 23 slow movers cleared. Overstock dropped from $47K to $8K. The products Maya spotted in Step 1 are now measured. The loop is closed.", placement: "top" },
 ];
 
 export const measureOrchestratedSteps: TourStep[] = [
-  { selector: "[data-tour='orchestrator-card']", title: "Unified performance report", description: "The Orchestrator composed CT's current totals with PetSmart's time-series data into a single results card.", placement: "top" },
-  { selector: "[data-tour='agent-chain']", title: "CT totals + PetSmart trends", description: "The Data Agent contributed order counts and revenue. The Reporting Agent contributed daily trends, cross-channel data, and inventory clearance.", placement: "bottom" },
+  { selector: "[data-tour='chat-panel']", title: "Full results in one conversation", description: "The Orchestrator compiled platform totals, cross-channel trends, and inventory clearance into one report. Maya reads it and asks about the next promotion.", placement: "left", action: "openPanel" },
 ];
+
+// ─── Lookup ─────────────────────────────────────────────────────────────────
 
 const stepsByModeAndNumber: Record<FlavorMode, Record<number, TourStep[]>> = {
   contextual: {
@@ -90,22 +87,17 @@ const stepsByModeAndNumber: Record<FlavorMode, Record<number, TourStep[]>> = {
   },
 };
 
-const LAST_STEP = 5;
-
 type StartTourFn = (steps: TourStep[]) => void;
 
 /**
  * Gets the tour steps for a given step page and mode.
- * Each step's tour runs independently. The contextual action button
- * at the end of each step (Create Promotion, Save & Simulate, etc.)
- * handles navigation to the next step.
  */
 export function getStepTourSteps(mode: FlavorMode, stepNumber: number): TourStep[] | undefined {
   return stepsByModeAndNumber[mode][stepNumber];
 }
 
 /**
- * Starts the tour for a single step page. No auto-chaining.
+ * Starts the tour for a single step page.
  */
 export function startStepTour(
   startTour: StartTourFn,
