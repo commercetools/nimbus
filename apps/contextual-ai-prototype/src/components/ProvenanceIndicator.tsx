@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, createContext, useContext } from "react";
+import { useState, useEffect, useCallback, useRef, createContext, useContext } from "react";
 import { Box, Flex, Text, Popover, Badge, Button, Separator } from "@commercetools/nimbus";
 
 // ─── Panel context ──────────────────────────────────────────────────────────
@@ -52,6 +52,8 @@ export const ProvenanceIndicator = ({
 }: ProvenanceIndicatorProps) => {
   const { openPanel } = usePanelContext();
   const [isPulsing, setIsPulsing] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (pulse) {
@@ -76,8 +78,18 @@ export const ProvenanceIndicator = ({
     }
   }, [onWhyClick, openPanel, agentName, confidence, reason]);
 
+  const handleMouseEnter = useCallback(() => {
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    hoverTimeout.current = setTimeout(() => setIsOpen(true), 200);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    hoverTimeout.current = setTimeout(() => setIsOpen(false), 300);
+  }, []);
+
   return (
-    <Popover.Root>
+    <Popover.Root isOpen={isOpen} onOpenChange={setIsOpen} isNonModal>
       <Popover.Trigger
         aria-label="AI provenance"
         bg="transparent"
@@ -95,10 +107,12 @@ export const ProvenanceIndicator = ({
         _hover={{ color: "indigo.11", transform: "scale(1.3)" }}
         animation={isPulsing ? "ai-pulse 600ms ease-out" : undefined}
         onAnimationEnd={handleAnimationEnd}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         ✦
       </Popover.Trigger>
-      <Popover.Content maxWidth="300px">
+      <Popover.Content maxWidth="300px" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         <Box p="200">
           {/* Header: agent name + confidence badge */}
           <Flex alignItems="center" gap="150" mb="150">
