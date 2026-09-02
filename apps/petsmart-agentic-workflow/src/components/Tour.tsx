@@ -13,13 +13,7 @@ export interface TourStep {
 }
 
 interface TourContextValue {
-  /**
-   * Start a tour. `onComplete`, if provided, runs instead of the default
-   * post-tour nudge once the last step is dismissed (via "Done" or clicking
-   * through) — used to chain into the next step page's tour for a
-   * continuous walkthrough.
-   */
-  startTour: (steps: TourStep[], onComplete?: () => void) => void;
+  startTour: (steps: TourStep[]) => void;
   endTour: () => void;
   isActive: boolean;
 }
@@ -312,8 +306,6 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
   const [currentStep, setCurrentStep] = useState(-1);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const [transitioning, setTransitioning] = useState(false);
-  const [endMessage, setEndMessage] = useState(false);
-  const [onCompleteCb, setOnCompleteCb] = useState<(() => void) | null>(null);
 
   const isActive = currentStep >= 0 && currentStep < steps.length;
   const step = isActive ? steps[currentStep] : null;
@@ -373,10 +365,9 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     };
   }, [step, measure]);
 
-  const startTour = useCallback((tourSteps: TourStep[], onComplete?: () => void) => {
+  const startTour = useCallback((tourSteps: TourStep[]) => {
     setSteps(tourSteps);
     setCurrentStep(0);
-    setOnCompleteCb(onComplete ?? null);
   }, []);
 
   const endTour = useCallback(() => {
@@ -385,17 +376,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     setRect(null);
     setTransitioning(false);
     window.dispatchEvent(new CustomEvent("tour:closePanel"));
-    if (onCompleteCb) {
-      // Chain straight into the next step page's tour instead of showing
-      // the post-tour nudge — keeps the walkthrough feeling continuous.
-      const cb = onCompleteCb;
-      setOnCompleteCb(null);
-      cb();
-    } else {
-      setEndMessage(true);
-      setTimeout(() => setEndMessage(false), 8000);
-    }
-  }, [onCompleteCb]);
+  }, []);
 
   const next = useCallback(() => {
     if (currentStep < steps.length - 1) {
@@ -491,51 +472,6 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
           {/* Click anywhere to advance */}
           <Box position="fixed" inset="0" zIndex={10000} cursor="pointer" onClick={next} />
         </Box>
-      )}
-      {/* Post-tour nudge: small dialog next to sidebar nav, no overlay */}
-      {endMessage && (
-        <>
-          {/* Bounce the Dashboard + CT logo icons */}
-          <style>{`
-            @keyframes nudgeBounce {
-              0%, 100% { transform: translateX(0); }
-              25% { transform: translateX(3px); }
-              75% { transform: translateX(-2px); }
-            }
-            [data-nudge-bounce] { animation: nudgeBounce 600ms ease 3; }
-          `}</style>
-          <Box
-            ref={(el: HTMLDivElement | null) => {
-              if (!el) return;
-              // Add bounce to first two sidebar nav items (Dashboard + CT logo)
-              const sidebar = document.querySelector("nav, [class*='sidebar']");
-              const links = sidebar?.parentElement?.querySelectorAll("a") ?? document.querySelectorAll("aside a, nav a");
-              links.forEach((a, i) => { if (i < 2) a.setAttribute("data-nudge-bounce", ""); });
-              // Clean up after animation
-              setTimeout(() => links.forEach(a => a.removeAttribute("data-nudge-bounce")), 2000);
-            }}
-          />
-          <Box
-            position="fixed"
-            top="60px"
-            left="56px"
-            zIndex={9999}
-            bg="indigo.2"
-            px="300"
-            py="200"
-            borderRadius="200"
-            shadow="lg"
-            borderWidth="1px"
-            borderColor="indigo.6"
-            css={{ animation: "fadeIn 300ms ease" }}
-            cursor="pointer"
-            onClick={() => setEndMessage(false)}
-          >
-            <Text textStyle="xs" color="indigo.12">
-              ← Click to go home when you're done exploring
-            </Text>
-          </Box>
-        </>
       )}
     </TourContext.Provider>
   );
