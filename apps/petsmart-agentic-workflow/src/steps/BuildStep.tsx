@@ -335,7 +335,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                   >
                     <ProvenanceIndicator
                       agentName="Inventory Agent"
-                      agentSource="customer"
+                      agentSource="ct"
                       reason="Buy 2 Get 1 Free outperforms flat percentage discounts by 31% in the pet health category, based on PetSmart's 2024-2025 promotion data."
                       size="10px"
                     />
