@@ -95,7 +95,7 @@ export const DiscountCampaign = () => {
       </InlineSlot>
 
       {/* Discount form */}
-      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300" overflow="hidden" data-tour="discount-form">
+      <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="200" p="300" data-tour="discount-form">
         <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="300">
           Discount Configuration
         </Text>
