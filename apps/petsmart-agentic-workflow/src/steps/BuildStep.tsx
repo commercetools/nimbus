@@ -171,7 +171,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                   </Text>
                 }
               >
-                <Flex gap="300" justifyContent="center">
+                <Flex gap="300" justifyContent="space-between">
                   <Box textAlign="center">
                     <Text textStyle="xl" fontWeight="bold" color="neutral.12">
                       ~{promotion.productsAffected}
