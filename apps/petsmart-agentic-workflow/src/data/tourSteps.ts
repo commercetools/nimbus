@@ -32,9 +32,9 @@ export const buildOrchestratedSteps: TourStep[] = [
 
 // Step 3: Test
 export const testContextualSteps: TourStep[] = [
-  { selector: "[data-tour='simulation-card']", title: "Three carts, tested automatically", description: "Maya used to test discounts by placing real orders. Now she sees three simulated carts with full line-item math. This didn't exist before.", placement: "top" },
+  { selector: "[data-tour='simulation-card']", title: "Margin at a glance", description: "The chart shows margin by cart against the 15% floor. Cart C is immediately visible as the problem. Maya used to test discounts by placing real orders. This didn't exist before.", placement: "top" },
   { selector: "[data-tour='cart-warning']", title: "Cart C breaks the floor", description: "Three dental chews with loyalty stacking drops the margin to 11%. This would have reached production and eroded margins for weeks before anyone noticed.", placement: "top", action: "pulseWarningCart" },
-  { selector: "[data-tour='petsmart-context']", title: "Return and pickup rules", description: "If a customer returns a bundled item in-store, does the discount still apply? Maya sees the answer here, alongside the simulation. She didn't have to call the returns team.", placement: "top" },
+  { selector: "[data-tour='petsmart-context']", title: "Return and pickup rules", description: "If a customer returns a bundled item in-store, does the discount still apply? 78% of products are available for pickup. Maya sees the answers here, not in a separate system.", placement: "top" },
   { selector: "[data-tour='submit-approval']", title: "She submits for approval", description: "The simulation passed. The stacking issue is understood and handled. Maya submits for review.", placement: "bottom", action: "pulseElement" },
 ];
 
@@ -46,13 +46,13 @@ export const testOrchestratedSteps: TourStep[] = [
 
 // Step 4: Approve
 export const approveContextualSteps: TourStep[] = [
-  { selector: "[data-tour='pipeline']", title: "Maya sees the full chain", description: "Eight steps, five complete. She's at the approval gate. Every step that got her here is visible with a checkmark.", placement: "bottom" },
-  { selector: "[data-tour='summary-cards']", title: "Everything in one view", description: "Strategy, discount, simulation, inventory: four compact summaries, each labeled by source. Maya doesn't have to dig through tabs or emails to review.", placement: "top" },
+  { selector: "[data-tour='promotion-details']", title: "The full picture", description: "Name, key, predicates, stacking mode, conflict resolution: everything Maya configured is laid out in the format she recognizes from the Merchant Center. No surprises.", placement: "bottom" },
+  { selector: "[data-tour='review-checklist']", title: "Pre-launch checklist", description: "Five checks, each traced to its source. Inventory coverage, margin safety, conflict resolution, cart simulation, historical benchmark. Maya reads pass/warn/info, not agent names.", placement: "top" },
   { selector: "[data-tour='approve-btn']", title: "Her call", description: "No automation can click this button. Maya reads the brief, confirms the numbers, and launches the promotion. The decision is hers.", placement: "bottom", action: "pulseElement" },
 ];
 
 export const approveOrchestratedSteps: TourStep[] = [
-  { selector: "[data-tour='pipeline']", title: "Same gate", description: "The pipeline is identical. The approval step doesn't change based on how Maya got here.", placement: "bottom" },
+  { selector: "[data-tour='promotion-details']", title: "Same details", description: "The promotion details are identical. The approval view doesn't change based on how Maya got here.", placement: "bottom" },
   { selector: "[data-tour='chat-panel']", title: "The brief is in the conversation", description: "The Orchestrator summarized everything: strategy, discount, simulation, stock. Maya reads the brief, asks a last question, then approves.", placement: "left", action: "openPanel" },
   { selector: "[data-tour='approve-btn']", title: "Still her call", description: "Same button, same decision. The Orchestrator assembled the information, but Maya makes the call.", placement: "bottom", action: "pulseElement" },
 ];

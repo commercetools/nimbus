@@ -1,12 +1,96 @@
-import { useRef, useEffect } from "react";
-import { Box, Flex, Stack, Text, Separator, IconButton, MultilineTextInput } from "@commercetools/nimbus";
+import { useRef, useEffect, type ReactNode } from "react";
+import { Box, Flex, Stack, Text, Separator, IconButton, MultilineTextInput, Badge } from "@commercetools/nimbus";
 import { Close, ArrowUpward } from "@commercetools/nimbus-icons";
 import { AiDot } from "./AiDot";
+
+/** Simple markdown-like renderer for chat content: **bold**, bullets (•), [Sources: ...], ✓/⚠️ status */
+const RichContent = ({ text }: { text: string }) => {
+  // Split into paragraphs on double newlines
+  const paragraphs = text.split("\n\n");
+  const elements: ReactNode[] = [];
+
+  paragraphs.forEach((para, pi) => {
+    const trimmed = para.trim();
+    if (!trimmed) return;
+
+    // Sources footnote
+    if (trimmed.startsWith("[Sources:") || trimmed.startsWith("[Source:")) {
+      const sourceText = trimmed.replace(/^\[Sources?:\s*/, "").replace(/\]$/, "");
+      elements.push(
+        <Flex key={pi} gap="100" flexWrap="wrap" mt="100">
+          {sourceText.split(",").map((s, i) => (
+            <Badge key={i} size="2xs" colorPalette="neutral">{s.trim().replace(/[()]/g, "")}</Badge>
+          ))}
+        </Flex>
+      );
+      return;
+    }
+
+    // Check for bullet lines
+    const lines = trimmed.split("\n");
+    const isBulletBlock = lines.every((l) => l.trim().startsWith("•") || l.trim().startsWith("- "));
+
+    if (isBulletBlock) {
+      elements.push(
+        <Stack key={pi} gap="50" pl="200">
+          {lines.map((line, li) => {
+            const bulletText = line.trim().replace(/^[•\-]\s*/, "");
+            return (
+              <Flex key={li} gap="100" alignItems="flex-start">
+                <Text textStyle="xs" color="neutral.9" flexShrink={0}>•</Text>
+                <Text textStyle="xs" color="neutral.12" lineHeight="tall">{renderInline(bulletText)}</Text>
+              </Flex>
+            );
+          })}
+        </Stack>
+      );
+      return;
+    }
+
+    // Regular paragraph (may contain single newlines as line breaks)
+    elements.push(
+      <Text key={pi} textStyle="xs" color="neutral.12" lineHeight="tall">
+        {lines.map((line, li) => (
+          <Text as="span" key={li}>
+            {li > 0 && <br />}
+            {renderInline(line)}
+          </Text>
+        ))}
+      </Text>
+    );
+  });
+
+  return <Stack gap="200">{elements}</Stack>;
+};
+
+/** Render inline formatting: **bold**, ✓, ⚠️ */
+function renderInline(text: string): ReactNode[] {
+  const parts: ReactNode[] = [];
+  const regex = /\*\*(.+?)\*\*/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    parts.push(
+      <Text as="span" key={match.index} fontWeight="semibold">{match[1]}</Text>
+    );
+    lastIndex = regex.lastIndex;
+  }
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+  return parts;
+}
 
 export interface ChatMessage {
   sender: "agent" | "user";
   agentLabel?: string;
   content: string;
+  /** Rich JSX content rendered after the text content. Use for Nimbus components (stat tiles, badges, tables). */
+  richContent?: ReactNode;
   items?: { label: string; detail: string }[];
   footnote?: string;
 }
@@ -24,20 +108,19 @@ const AgentMessage = ({ message }: { message: ChatMessage }) => (
   <Box
     pl="300"
     borderLeftWidth="2px"
-    borderColor="indigo.6"
+    borderColor="primary.6"
     css={{ animation: "fadeIn 300ms ease" }}
   >
     {message.agentLabel && (
       <Flex alignItems="center" gap="150" mb="100">
         <AiDot size="7px" />
-        <Text textStyle="xs" fontWeight="medium" color="indigo.9">
+        <Text textStyle="xs" fontWeight="medium" color="primary.9">
           {message.agentLabel}
         </Text>
       </Flex>
     )}
-    <Text textStyle="sm" color="neutral.12" lineHeight="tall">
-      {message.content}
-    </Text>
+    {message.content && <RichContent text={message.content} />}
+    {message.richContent}
     {message.items && (
       <Stack gap="200" mt="200">
         {message.items.map((item, i) => (
@@ -93,7 +176,7 @@ const WhyContextResponse = ({ context, agentName }: { context: string; agentName
     <Box pl="300" borderLeftWidth="2px" borderColor="indigo.6">
       <Flex alignItems="center" gap="150" mb="100">
         <AiDot size="7px" />
-        <Text textStyle="xs" fontWeight="medium" color="indigo.9">
+        <Text textStyle="xs" fontWeight="medium" color="primary.9">
           {agentName}
         </Text>
       </Flex>

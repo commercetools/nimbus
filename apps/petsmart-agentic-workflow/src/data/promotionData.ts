@@ -1,8 +1,25 @@
 export const promotion = {
+  // General
   name: "Spring Pet Wellness 2026",
+  key: "spring-pet-wellness-2026",
+  description: "Seasonal promotion targeting slow-moving pet health products. Buy 2 items, get the cheapest free.",
+  status: "Inactive" as const,
+  requiresDiscountCode: false,
+
+  // Value & targeting
   type: "Buy 2 Get 1 Free",
+  valueType: "Pattern discount" as const,
+  target: "Line items",
+  cartPredicate: 'lineItems.count > 1',
+  targetPredicate: 'categories.key = "pet-health" and attributes.shelfDays > 60',
+
+  // Schedule
   startDate: "March 1, 2026",
   endDate: "April 15, 2026",
+  sortOrder: "0.5",
+  stackingMode: "StopAfterThisDiscount" as const,
+
+  // Computed / agent-enriched
   targetCategory: "Pet Health",
   productsAffected: 340,
   marginImpact: "-4.1%",

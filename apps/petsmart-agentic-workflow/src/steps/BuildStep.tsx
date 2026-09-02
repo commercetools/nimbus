@@ -14,8 +14,9 @@ import {
   FormField,
   Icon,
   ComboBox,
-  DateInput,
+  DateRangePickerField,
 } from "@commercetools/nimbus";
+import type { DateRangePickerProps } from "@commercetools/nimbus";
 import { Warning } from "@commercetools/nimbus-icons";
 import { CalendarDate } from "@internationalized/date";
 import { PageHeader } from "../components/PageHeader";
@@ -52,24 +53,6 @@ const ConflictWarning = () => (
       <Text textStyle="xs" color="neutral.10" mt="50">
         Stacking would push 12 products below 15% margin floor.
       </Text>
-      <Flex
-        mt="200"
-        gap="150"
-        alignItems="center"
-        px="200"
-        py="100"
-        bg="ctteal.2"
-        borderRadius="200"
-        borderWidth="1px"
-        borderColor="ctteal.6"
-        cursor="pointer"
-        _hover={{ bg: "ctteal.3" }}
-        transition="background 150ms"
-        width="fit-content"
-      >
-        <Text as="span" fontSize="250" color="ctteal.9" lineHeight="1">✦</Text>
-        <Text textStyle="xs" color="ctteal.11">Set non-stackable</Text>
-      </Flex>
     </Box>
   </Flex>
 );
@@ -93,24 +76,6 @@ const StockWarning = () => (
       <Text textStyle="xs" color="neutral.10" mt="50">
         28 products are low-stock (reorder lead time exceeds promo window).
       </Text>
-      <Flex
-        mt="200"
-        gap="150"
-        alignItems="center"
-        px="200"
-        py="100"
-        bg="ctteal.2"
-        borderRadius="200"
-        borderWidth="1px"
-        borderColor="ctteal.6"
-        cursor="pointer"
-        _hover={{ bg: "ctteal.3" }}
-        transition="background 150ms"
-        width="fit-content"
-      >
-        <Text as="span" fontSize="250" color="ctteal.9" lineHeight="1">✦</Text>
-        <Text textStyle="xs" color="ctteal.11">Exclude 28 low-stock products</Text>
-      </Flex>
     </Box>
   </Flex>
 );
@@ -136,7 +101,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
     });
 
   return (
-    <Box height="100%" overflow="auto">
+    <Box height="100%" overflow="auto" bg="neutral.1">
       <PageHeader
         breadcrumbs={[
           { label: "Discounts", href: "#" },
@@ -189,6 +154,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
             configures. In orchestrated mode, this context lives in the chat
             panel instead. */}
         {mode === "contextual" && (
+          <>
           <InlineSlot direction="row" data-tour="inline-slot">
             <Box data-tour="impact-card" flex="1" display="flex">
               <InlineCard
@@ -255,30 +221,6 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                     <Text textStyle="xs" color="neutral.9">30%</Text>
                   </Flex>
                 </Box>
-                <Flex
-                  mt="200"
-                  px="300"
-                  py="200"
-                  bg="ctteal.2"
-                  borderRadius="200"
-                  borderWidth="1px"
-                  borderColor="ctteal.6"
-                  gap="200"
-                  alignItems="center"
-                  cursor="pointer"
-                  _hover={{ bg: "ctteal.3" }}
-                  transition="background 150ms"
-                >
-                  <ProvenanceIndicator
-                    agentName="Inventory Agent"
-                    agentSource="ct"
-                    reason="Spring 2025 ran Buy 1 Get 1 on pet health and lifted orders 22% over 6 weeks. Click to use the same structure."
-                  />
-                  <Text textStyle="xs" color="ctteal.11" flex="1">
-                    Comparable: Spring 2025 lifted orders 22% over 6 weeks
-                  </Text>
-                  <Text textStyle="xs" fontWeight="medium" color="ctteal.11">Use template →</Text>
-                </Flex>
               </InlineCard>
             </Box>
 
@@ -312,6 +254,28 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
               </InlineCard>
             </Box>
           </InlineSlot>
+
+          {/* Full-width suggestions row */}
+          <Flex gap="200" flexWrap="wrap">
+            <Flex alignItems="center" gap="100" px="200" py="50" bg="ctteal.2" borderRadius="200" borderWidth="1px" borderColor="ctteal.6" cursor="pointer" _hover={{ bg: "ctteal.3" }} transition="background 150ms">
+              <ProvenanceIndicator agentName="Inventory Agent" agentSource="ct" reason="Spring 2025 ran Buy 1 Get 1 on pet health and lifted orders 22% over 6 weeks." size="8px" />
+              <Text textStyle="xs" color="ctteal.11">
+                Comparable: <Text as="span" fontWeight="bold">Spring 2025</Text> lifted orders <Text as="span" fontWeight="bold">22%</Text> over 6 weeks
+              </Text>
+              <Flex as="span" alignItems="center" gap="50" px="150" py="50" borderRadius="200" borderWidth="1px" borderColor="ctteal.9" ml="50" flexShrink={0}>
+                <Text textStyle="xs" fontWeight="semibold" color="ctteal.11">Use template</Text>
+              </Flex>
+            </Flex>
+            <Flex alignItems="center" gap="100" px="200" py="50" bg="primary.2" borderRadius="200" borderWidth="1px" borderColor="primary.6" cursor="pointer" _hover={{ bg: "primary.3" }} transition="background 150ms">
+              <ProvenanceIndicator agentName="Inventory Agent" agentSource="customer" reason="28 products have reorder lead times exceeding the promotion window." size="8px" />
+              <Text textStyle="xs" color="primary.11">Exclude 28 low-stock products</Text>
+            </Flex>
+            <Flex alignItems="center" gap="100" px="200" py="50" bg="ctteal.2" borderRadius="200" borderWidth="1px" borderColor="ctteal.6" cursor="pointer" _hover={{ bg: "ctteal.3" }} transition="background 150ms">
+              <ProvenanceIndicator agentName="Promo Agent" agentSource="ct" reason="Loyalty Paw Points 10% overlaps 67 products. Non-stackable prevents margin floor violations." size="8px" />
+              <Text textStyle="xs" color="ctteal.11">Set non-stackable</Text>
+            </Flex>
+          </Flex>
+          </>
         )}
 
         {/* Discount form */}
@@ -332,110 +296,111 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
             Discount Configuration
           </Text>
 
-          <Flex gap="300" direction={{ base: "column", md: "row" }}>
-            <Stack gap="300" flex="1">
-              <FormField.Root size="sm">
-                <FormField.Label>Discount name</FormField.Label>
-                <FormField.Input>
-                  <TextInput
-                    size="sm"
-                    width="100%"
-                    defaultValue={promotion.name}
-                  />
-                </FormField.Input>
-              </FormField.Root>
-              <FormField.Root size="sm" data-tour="discount-type">
-                <FormField.Label>
-                  <Flex alignItems="center" gap="150">
-                    {mode === "contextual" && (
+          <Stack gap="300">
+            {/* Row 1: Discount name (full width) */}
+            <FormField.Root size="sm">
+              <FormField.Label>Discount name</FormField.Label>
+              <FormField.Input>
+                <TextInput
+                  size="sm"
+                  width="100%"
+                  defaultValue={promotion.name}
+                />
+              </FormField.Input>
+            </FormField.Root>
+
+            {/* Row 2: Discount type + Promotion period */}
+            <Flex gap="300" direction={{ base: "column", md: "row" }}>
+              <Box flex="1">
+                <FormField.Root size="sm" data-tour="discount-type">
+                  <FormField.Label>
+                    <Flex alignItems="center" gap="150">
+                      {mode === "contextual" && (
+                        <ProvenanceIndicator
+                          agentName="Inventory Agent"
+                          agentSource="ct"
+                          reason="Buy 2 Get 1 Free historically lifts pet health 31% vs flat percentage"
+                        />
+                      )}
+                      <Text>Discount type</Text>
+                    </Flex>
+                  </FormField.Label>
+                  <FormField.Input>
+                    <ComboBox.Root
+                      size="sm"
+                      width="100%"
+                      selectedKeys={["buy-2-get-1"]}
+                      selectionMode="single"
+                      aria-label="Discount type"
+                    >
+                      <ComboBox.Trigger />
+                      <ComboBox.Popover>
+                        <ComboBox.ListBox>
+                          <ComboBox.Option id="buy-2-get-1" textValue="Buy 2 Get 1 Free">
+                            <Flex alignItems="center" gap="100">
+                              {mode === "contextual" && <ProvenanceIndicator agentName="Inventory Agent" agentSource="customer" size="8px" />}
+                              Buy 2 Get 1 Free
+                            </Flex>
+                          </ComboBox.Option>
+                          <ComboBox.Option id="percentage" textValue="Percentage (20%)">Percentage (20%)</ComboBox.Option>
+                          <ComboBox.Option id="fixed" textValue="Fixed amount ($10 off)">Fixed amount ($10 off)</ComboBox.Option>
+                          <ComboBox.Option id="tiered" textValue="Tiered (15%/20%/25%)">Tiered (15%/20%/25%)</ComboBox.Option>
+                        </ComboBox.ListBox>
+                      </ComboBox.Popover>
+                    </ComboBox.Root>
+                  </FormField.Input>
+                  {mode === "contextual" && (
+                    <Flex
+                      mt="100"
+                      gap="150"
+                      alignItems="center"
+                      px="200"
+                      py="100"
+                      bg="ctteal.2"
+                      borderRadius="200"
+                      borderWidth="1px"
+                      borderColor="ctteal.6"
+                      cursor="pointer"
+                      _hover={{ bg: "ctteal.3" }}
+                      transition="background 150ms"
+                      width="fit-content"
+                    >
                       <ProvenanceIndicator
                         agentName="Inventory Agent"
                         agentSource="ct"
-                        reason="Buy 2 Get 1 Free historically lifts pet health 31% vs flat percentage"
+                        reason="Buy 2 Get 1 Free outperforms flat percentage discounts by 31% in the pet health category, based on PetSmart's 2024-2025 promotion data."
+                        size="10px"
                       />
-                    )}
-                    <Text>Discount type</Text>
-                  </Flex>
-                </FormField.Label>
-                <FormField.Input>
-                  <ComboBox.Root size="sm" defaultValue="Buy 2 Get 1 Free" width="100%">
-                    <ComboBox.Trigger />
-                    <ComboBox.Popover>
-                      <ComboBox.ListBox>
-                        <ComboBox.Option id="buy-2-get-1" textValue="Buy 2 Get 1 Free">
-                          <Flex alignItems="center" gap="100">
-                            {mode === "contextual" && <ProvenanceIndicator agentName="Inventory Agent" agentSource="customer" size="8px" />}
-                            Buy 2 Get 1 Free
-                          </Flex>
-                        </ComboBox.Option>
-                        <ComboBox.Option id="percentage" textValue="Percentage (20%)">Percentage (20%)</ComboBox.Option>
-                        <ComboBox.Option id="fixed" textValue="Fixed amount ($10 off)">Fixed amount ($10 off)</ComboBox.Option>
-                        <ComboBox.Option id="tiered" textValue="Tiered (15%/20%/25%)">Tiered (15%/20%/25%)</ComboBox.Option>
-                      </ComboBox.ListBox>
-                    </ComboBox.Popover>
-                  </ComboBox.Root>
-                </FormField.Input>
-                {mode === "contextual" && (
-                  <Flex
-                    mt="100"
-                    gap="150"
-                    alignItems="center"
-                    px="200"
-                    py="100"
-                    bg="ctteal.2"
-                    borderRadius="200"
-                    borderWidth="1px"
-                    borderColor="ctteal.6"
-                    cursor="pointer"
-                    _hover={{ bg: "ctteal.3" }}
-                    transition="background 150ms"
-                    width="fit-content"
-                  >
-                    <ProvenanceIndicator
-                      agentName="Inventory Agent"
-                      agentSource="ct"
-                      reason="Buy 2 Get 1 Free outperforms flat percentage discounts by 31% in the pet health category, based on PetSmart's 2024-2025 promotion data."
-                      size="10px"
-                    />
-                    <Text textStyle="xs" color="ctteal.11">
-                      Suggested: lifts pet health 31% vs flat percentage
-                    </Text>
-                  </Flex>
-                )}
-              </FormField.Root>
-            </Stack>
-            <Stack gap="300" flex="1">
-              <FormField.Root size="sm">
-                <FormField.Label>Valid from</FormField.Label>
-                <FormField.Input>
-                  <DateInput size="sm" width="100%" defaultValue={new CalendarDate(2026, 3, 1)} />
-                </FormField.Input>
-              </FormField.Root>
-              <FormField.Root size="sm">
-                <FormField.Label>Valid until</FormField.Label>
-                <FormField.Input>
-                  <DateInput size="sm" width="100%" defaultValue={new CalendarDate(2026, 4, 15)} />
-                </FormField.Input>
-              </FormField.Root>
-            </Stack>
-          </Flex>
+                      <Text textStyle="xs" color="ctteal.11">
+                        Suggested: lifts pet health 31% vs flat percentage
+                      </Text>
+                    </Flex>
+                  )}
+                </FormField.Root>
+              </Box>
+              <Box flex="1">
+                <DateRangePickerField
+                  label="Promotion period"
+                  size="sm"
+                  defaultValue={{ start: new CalendarDate(2026, 3, 1), end: new CalendarDate(2026, 4, 15) } as DateRangePickerProps["value"]}
+                />
+              </Box>
+            </Flex>
 
-          <Separator my="300" />
-
-          {/* Additional discount editor fields */}
-          <Stack gap="300">
+            {/* Row 3: Description */}
             <FormField.Root size="sm">
               <FormField.Label>Description</FormField.Label>
               <FormField.Input>
                 <MultilineTextInput
                   size="sm"
                   width="100%"
-                  rows={2}
+                  rows={3}
                   placeholder="Add a description for internal reference (optional)"
                 />
               </FormField.Input>
             </FormField.Root>
 
+            {/* Row 4: Sort order + Stacking mode + Max applications (side by side) */}
             <Flex gap="300" direction={{ base: "column", md: "row" }}>
               <FormField.Root size="sm" flex="1">
                 <FormField.Label>Sort order</FormField.Label>
@@ -449,15 +414,8 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                 </FormField.Input>
               </FormField.Root>
               <FormField.Root size="sm" flex="1">
-                <FormField.Label>Max applications</FormField.Label>
-                <FormField.Input>
-                  <TextInput size="sm" width="100%" defaultValue="1 per cart" />
-                </FormField.Input>
-              </FormField.Root>
-              <FormField.Root size="sm" flex="1">
                 <FormField.Label>
                   <Flex alignItems="center" gap="150">
-                    <Text>Stacking mode</Text>
                     {mode === "contextual" && (
                       <ProvenanceIndicator
                         agentName="Promo Agent"
@@ -465,14 +423,47 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                         reason={`Loyalty Paw Points 10% overlaps ${promotion.conflictProducts} products; non-stackable avoids pushing them below the margin floor`}
                       />
                     )}
+                    <Text>Stacking mode</Text>
                   </Flex>
                 </FormField.Label>
                 <FormField.Input>
-                  <TextInput
+                  <ComboBox.Root
                     size="sm"
                     width="100%"
-                    defaultValue="Non-stackable"
-                  />
+                    selectedKeys={["non-stackable"]}
+                    selectionMode="single"
+                    aria-label="Stacking mode"
+                  >
+                    <ComboBox.Trigger />
+                    <ComboBox.Popover>
+                      <ComboBox.ListBox>
+                        <ComboBox.Option id="non-stackable" textValue="Non-stackable">Non-stackable</ComboBox.Option>
+                        <ComboBox.Option id="stackable" textValue="Stackable">Stackable</ComboBox.Option>
+                        <ComboBox.Option id="stop-after" textValue="Stop after this discount">Stop after this discount</ComboBox.Option>
+                      </ComboBox.ListBox>
+                    </ComboBox.Popover>
+                  </ComboBox.Root>
+                </FormField.Input>
+              </FormField.Root>
+              <FormField.Root size="sm" flex="1">
+                <FormField.Label>Max applications</FormField.Label>
+                <FormField.Input>
+                  <ComboBox.Root
+                    size="sm"
+                    width="100%"
+                    selectedKeys={["1-per-cart"]}
+                    selectionMode="single"
+                    aria-label="Max applications"
+                  >
+                    <ComboBox.Trigger />
+                    <ComboBox.Popover>
+                      <ComboBox.ListBox>
+                        <ComboBox.Option id="1-per-cart" textValue="1 per cart">1 per cart</ComboBox.Option>
+                        <ComboBox.Option id="3-per-cart" textValue="3 per cart">3 per cart</ComboBox.Option>
+                        <ComboBox.Option id="unlimited" textValue="Unlimited">Unlimited</ComboBox.Option>
+                      </ComboBox.ListBox>
+                    </ComboBox.Popover>
+                  </ComboBox.Root>
                 </FormField.Input>
               </FormField.Root>
             </Flex>

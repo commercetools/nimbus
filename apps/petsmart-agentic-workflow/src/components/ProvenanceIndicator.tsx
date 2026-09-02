@@ -41,8 +41,8 @@ interface ProvenanceIndicatorProps {
 }
 
 const sourceColors = {
-  ct: { star: "ctteal.9", starHover: "ctteal.11", popoverStar: "ctteal.9" },
-  customer: { star: "primary.9", starHover: "primary.11", popoverStar: "primary.9" },
+  ct: { star: "ctteal.9", starHover: "ctteal.11", popoverStar: "ctteal.11" },
+  customer: { star: "primary.9", starHover: "primary.11", popoverStar: "primary.11" },
 };
 
 /**

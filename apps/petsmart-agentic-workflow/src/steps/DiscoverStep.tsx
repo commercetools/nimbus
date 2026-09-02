@@ -115,10 +115,10 @@ const getProductColumns = (
 ];
 
 const inventoryStats = [
-  { label: "Slow movers", value: "23" },
-  { label: "Shelf value", value: "$47,200" },
-  { label: "Avg. days on shelf", value: "79" },
-];
+  { label: "Slow movers", value: "23", color: "amber.11" },
+  { label: "Shelf value", value: "$47,200", color: "red.11" },
+  { label: "Avg. days on shelf", value: "79", color: "amber.11" },
+] as const;
 
 
 export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
@@ -126,7 +126,7 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
   const productColumns = getProductColumns(mode);
 
   return (
-    <Box height="100%" overflow="auto">
+    <Box height="100%" overflow="auto" bg="neutral.1">
       <PageHeader
         breadcrumbs={[{ label: "Products", href: "#" }, { label: "Pet Health" }]}
         title="Pet Health Products"
@@ -169,8 +169,8 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
               >
                 <Flex gap="300" alignItems="center">
                   {inventoryStats.map((stat) => (
-                    <Box key={stat.label}>
-                      <Text textStyle="sm" fontWeight="bold" color="neutral.12">{stat.value}</Text>
+                    <Box key={stat.label} textAlign="center">
+                      <Text textStyle="sm" fontWeight="bold" color={stat.color}>{stat.value}</Text>
                       <Text textStyle="xs" color="neutral.9">{stat.label}</Text>
                     </Box>
                   ))}

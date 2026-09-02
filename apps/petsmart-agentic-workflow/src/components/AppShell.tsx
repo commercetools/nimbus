@@ -158,7 +158,12 @@ export const AppShell = () => {
                 setWhyContext(undefined);
               }}
               agentName={chatConfig?.agentName}
-              messages={chatConfig?.messages as unknown as ChatMessage[] | undefined}
+              messages={chatConfig?.messages.map((m) => ({
+                sender: m.role === "assistant" ? "agent" as const : "user" as const,
+                agentLabel: m.role === "assistant" ? chatConfig.agentName : undefined,
+                content: m.content,
+                richContent: m.richContent,
+              }))}
               placeholder={chatConfig?.placeholder}
               whyContext={whyContext}
             />

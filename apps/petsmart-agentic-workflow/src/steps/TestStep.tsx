@@ -19,7 +19,7 @@ import {
 import { PageHeader } from "../components/PageHeader";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
-import { ActivationButton } from "../components/ActivationButton";
+import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
 import { promotion, simulationCarts } from "../data/promotionData";
 
 export type FlavorMode = "contextual" | "orchestrated";
@@ -221,24 +221,12 @@ const CartWarningAlert = ({
   </Flex>
 );
 
-const SimulationResults = () => (
-  <Stack gap="200">
-    <MarginComparisonChart />
-    {simulationCarts.map((cart) => (
-      <Box key={cart.id}>
-        {cart.status === "warning" && cart.warning && (
-          <Box mb="150">
-            <CartWarningAlert label={cart.label} warning={cart.warning} />
-          </Box>
-        )}
-        <CartCard cart={cart} />
-      </Box>
-    ))}
-  </Stack>
-);
-
-const inventoryContextText =
-  "Return policy: if returned in-store, discount still applies to the bundle. In-store pickup: 78% of targeted products are available at local stores.";
+const inventoryContextItems = [
+  { label: "Return policy", detail: "If returned in-store, discount still applies to the bundle." },
+  { label: "In-store pickup", detail: "78% of targeted products are available at local stores." },
+  { label: "Store coverage", detail: "1,247 of 1,380 stores carry at least one promoted SKU." },
+  { label: "Reorder buffer", detail: "Lead time for 28 low-stock items exceeds the 45-day promo window." },
+];
 
 export const TestStep = ({ mode }: { mode: FlavorMode }) => {
   const isContextual = mode === "contextual";
@@ -261,7 +249,23 @@ export const TestStep = ({ mode }: { mode: FlavorMode }) => {
         ]}
         actions={
           <>
-            {isContextual && <ActivationButton label="✦ Simulate" />}
+            {isContextual && (
+              <Flex
+                alignItems="center"
+                gap="100"
+                px="200"
+                py="100"
+                borderRadius="200"
+                borderWidth="1px"
+                borderColor="ctteal.10"
+                cursor="pointer"
+                _hover={{ bg: "ctteal.3" }}
+                transition="background 150ms"
+              >
+                <ProvenanceIndicator agentName="Preview Agent" agentSource="ct" reason="Run cart simulation against the current discount configuration" />
+                <Text textStyle="xs" fontWeight="medium" color="ctteal.11">Simulate</Text>
+              </Flex>
+            )}
             {isContextual && (
               <Button
                 variant="solid"
@@ -302,34 +306,51 @@ export const TestStep = ({ mode }: { mode: FlavorMode }) => {
             </Button>
           </Flex>
 
-          {/* Simulation results are kept in both modes: they're read-only
-              simulation output, not an augmentation. The separate PetSmart
-              context card is contextual-mode only; in orchestrated mode that
-              context lives in the chat panel. */}
-          <InlineSlot direction="row" gap="300" data-tour="inline-slot">
-            <Box data-tour="simulation-card">
-              <InlineCard
-                title="Simulation Results"
-                agentName="Preview Agent"
-                agentSource="ct"
-              >
-                <SimulationResults />
-              </InlineCard>
-            </Box>
-            {isContextual && (
-              <Box data-tour="petsmart-context">
+          {/* Insight cards: margin chart + PetSmart context side by side */}
+          {isContextual && (
+            <InlineSlot direction="row" gap="300" data-tour="inline-slot">
+              <Box data-tour="simulation-card" flex="1" display="flex">
+                <InlineCard
+                  title="Simulation Results"
+                  agentName="Preview Agent"
+                  agentSource="ct"
+                  headerRight={<Text textStyle="xs" color="neutral.9">{simulationCarts.length} carts tested</Text>}
+                >
+                  <MarginComparisonChart />
+                </InlineCard>
+              </Box>
+              <Box data-tour="petsmart-context" flex="1" display="flex">
                 <InlineCard
                   title="Inventory Context"
                   agentName="Inventory Agent"
                   agentSource="customer"
                 >
-                  <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-                    {inventoryContextText}
-                  </Text>
+                  <Stack gap="150">
+                    {inventoryContextItems.map((item) => (
+                      <Box key={item.label}>
+                        <Text textStyle="xs" fontWeight="semibold" color="neutral.12">{item.label}</Text>
+                        <Text textStyle="xs" color="neutral.11" lineHeight="tall">{item.detail}</Text>
+                      </Box>
+                    ))}
+                  </Stack>
                 </InlineCard>
               </Box>
-            )}
-          </InlineSlot>
+            </InlineSlot>
+          )}
+
+          {/* Cart simulation cards: full width, side by side */}
+          <Grid templateColumns={{ base: "1fr", md: `repeat(${simulationCarts.length}, 1fr)` }} gap="200">
+            {simulationCarts.map((cart) => (
+              <Box key={cart.id}>
+                {cart.status === "warning" && cart.warning && (
+                  <Box mb="150">
+                    <CartWarningAlert label={cart.label} warning={cart.warning} />
+                  </Box>
+                )}
+                <CartCard cart={cart} />
+              </Box>
+            ))}
+          </Grid>
         </Box>
       </Box>
     </Box>
