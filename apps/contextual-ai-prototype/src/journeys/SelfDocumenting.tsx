@@ -1,6 +1,7 @@
 import { Box, Flex, Stack, Text, Badge, Button, Separator, TextInput, FormField, Icon } from "@commercetools/nimbus";
 import { AutoAwesome, CheckCircle, Error as ErrorIcon, Warning } from "@commercetools/nimbus-icons";
 import { PageHeader } from "../components/PageHeader";
+import { AiDot } from "../components/AiDot";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
@@ -59,7 +60,7 @@ export const SelfDocumenting = () => (
             _hover={{ bg: "indigo.3" }}
             transition="background 150ms"
           >
-            <Icon as={AutoAwesome} size="2xs" color="indigo.9" />
+            <AiDot />
             <Text textStyle="xs" fontWeight="medium" color="indigo.11">Generate description</Text>
           </Flex>
         </>
@@ -186,7 +187,7 @@ export const SelfDocumenting = () => (
               shadow="md"
             >
               <Flex px="300" pt="200" pb="100" alignItems="center" gap="150">
-                <Icon as={AutoAwesome} size="2xs" color="indigo.9" />
+                <AiDot />
                 <Text textStyle="xs" fontWeight="semibold" color="indigo.9">Suggested for this product</Text>
               </Flex>
 

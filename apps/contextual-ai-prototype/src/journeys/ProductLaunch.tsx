@@ -1,6 +1,7 @@
 import { Box, Flex, Stack, Text, Badge, Button, Separator, TextInput, FormField, Icon, ComboBox } from "@commercetools/nimbus";
 import { AutoAwesome } from "@commercetools/nimbus-icons";
 import { PageHeader } from "../components/PageHeader";
+import { AiDot } from "../components/AiDot";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
@@ -75,7 +76,7 @@ export const ProductLaunch = () => {
               _hover={{ bg: "indigo.3" }}
               transition="background 150ms"
             >
-              <Icon as={AutoAwesome} size="2xs" color="indigo.9" />
+              <AiDot />
               <Text textStyle="xs" fontWeight="medium" color="indigo.11">
                 Generate SEO
               </Text>
@@ -246,6 +247,7 @@ export const ProductLaunch = () => {
                           <ProvenanceIndicator
                             agentName="Product Enrichment Agent"
                             confidence={sug.confidence}
+                            size="16px"
                           />
                           <Text
                             textStyle="sm"

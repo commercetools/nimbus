@@ -1,5 +1,6 @@
-import { Box, Flex, Stack, Text, Separator, IconButton, Icon } from "@commercetools/nimbus";
-import { AutoAwesome, Close, ArrowUpward } from "@commercetools/nimbus-icons";
+import { Box, Flex, Stack, Text, Separator, IconButton } from "@commercetools/nimbus";
+import { Close, ArrowUpward } from "@commercetools/nimbus-icons";
+import { AiDot } from "./AiDot";
 
 import type { ChatMessage } from "../data/chatMessages";
 
@@ -19,7 +20,7 @@ const AgentMessage = ({ message }: { message: ChatMessage }) => (
   >
     {message.agentLabel && (
       <Flex alignItems="center" gap="150" mb="100">
-        <Icon as={AutoAwesome} size="2xs" color="indigo.9" />
+        <AiDot size="7px" />
         <Text textStyle="xs" fontWeight="medium" color="indigo.9">
           {message.agentLabel}
         </Text>

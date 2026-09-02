@@ -1,22 +1,23 @@
 import { useState, useEffect, useCallback } from "react";
-import { Box, Flex, Text, Tooltip, Icon, MakeElementFocusable } from "@commercetools/nimbus";
-import { AutoAwesome } from "@commercetools/nimbus-icons";
-
-type IconSize = "2xs" | "xs" | "sm" | "md";
+import { Box, Flex, Text, Tooltip, MakeElementFocusable } from "@commercetools/nimbus";
 
 interface ProvenanceIndicatorProps {
   agentName: string;
   confidence?: number;
-  /** Nimbus Icon size token */
-  iconSize?: IconSize;
+  /** Font size for the ✦. Default "8px". */
+  size?: string;
   /** When true, plays a one-shot pulse animation */
   pulse?: boolean;
 }
 
+/**
+ * A tiny ✦ star that indicates AI provenance.
+ * Hover shows a tooltip with agent name, confidence, and "Why?" link.
+ */
 export const ProvenanceIndicator = ({
   agentName,
   confidence,
-  iconSize = "2xs",
+  size = "8px",
   pulse = false,
 }: ProvenanceIndicatorProps) => {
   const [isPulsing, setIsPulsing] = useState(false);
@@ -36,29 +37,26 @@ export const ProvenanceIndicator = ({
   return (
     <Tooltip.Root>
       <MakeElementFocusable>
-        <Box
-          display="inline-flex"
-          alignItems="center"
-          justifyContent="center"
-          color="indigo.8"
+        <Text
+          as="span"
+          fontSize={size}
+          lineHeight="1"
+          color="indigo.9"
           cursor="help"
           flexShrink={0}
-          transition="transform 200ms ease, filter 200ms ease"
-          _hover={{ color: "indigo.11", transform: "scale(1.15)" }}
-          css={
-            isPulsing
-              ? { animation: "ai-pulse 600ms ease-out" }
-              : undefined
-          }
+          transition="transform 200ms ease"
+          _hover={{ color: "indigo.11", transform: "scale(1.3)" }}
+          css={isPulsing ? { animation: "ai-pulse 600ms ease-out" } : undefined}
           onAnimationEnd={handleAnimationEnd}
+          aria-hidden="true"
         >
-          <Icon as={AutoAwesome} boxSize="350" />
-        </Box>
+          ✦
+        </Text>
       </MakeElementFocusable>
       <Tooltip.Content>
         <Flex direction="column" gap="100" maxWidth="220px">
-          <Flex alignItems="center" gap="100">
-            <Icon as={AutoAwesome} size="2xs" />
+          <Flex alignItems="center" gap="150">
+            <Text as="span" fontSize="7px" color="indigo.9" lineHeight="1">✦</Text>
             <Text textStyle="xs" fontWeight="semibold">
               {agentName}
             </Text>
@@ -90,9 +88,9 @@ if (typeof document !== "undefined") {
     style.id = styleId;
     style.textContent = `
       @keyframes ai-pulse {
-        0% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
-        40% { transform: scale(1.3); filter: drop-shadow(0 0 6px rgba(110, 86, 207, 0.4)); }
-        100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
+        0% { transform: scale(1); }
+        40% { transform: scale(1.5); }
+        100% { transform: scale(1); }
       }
     `;
     document.head.appendChild(style);

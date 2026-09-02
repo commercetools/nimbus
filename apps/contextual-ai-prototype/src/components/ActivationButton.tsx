@@ -1,5 +1,5 @@
-import { Flex, Text, Icon } from "@commercetools/nimbus";
-import { AutoAwesome } from "@commercetools/nimbus-icons";
+import { Flex, Text } from "@commercetools/nimbus";
+import { AiDot } from "./AiDot";
 
 interface ActivationButtonProps {
   label: string;
@@ -27,7 +27,7 @@ export const ActivationButton = ({ label, onClick }: ActivationButtonProps) => {
       onClick={onClick}
       border="none"
     >
-      <Icon as={AutoAwesome} size="2xs" color="indigo.9" />
+      <AiDot size="7px" />
       <Text textStyle="xs" fontWeight="medium" color="indigo.11">
         {label}
       </Text>
