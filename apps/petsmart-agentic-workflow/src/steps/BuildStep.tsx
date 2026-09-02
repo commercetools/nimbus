@@ -394,7 +394,8 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                 <MultilineTextInput
                   size="sm"
                   width="100%"
-                  rows={3}
+                  rows={1}
+                  autoGrow
                   placeholder="Add a description for internal reference (optional)"
                 />
               </FormField.Input>
