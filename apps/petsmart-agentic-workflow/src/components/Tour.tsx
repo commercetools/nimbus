@@ -382,9 +382,20 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     if (currentStep < steps.length - 1) {
       setCurrentStep((s) => s + 1);
     } else {
+      // On the last step, click the spotlighted element (e.g. "Create Promotion" button)
+      // to navigate to the next page, then signal the new page to start its tour.
+      const lastStep = steps[currentStep];
+      if (lastStep) {
+        const el = document.querySelector(lastStep.selector) as HTMLElement | null;
+        if (el) {
+          el.click();
+          // Signal the next page to auto-start its tour
+          setTimeout(() => window.dispatchEvent(new CustomEvent("tour:autoStart")), 600);
+        }
+      }
       endTour();
     }
-  }, [currentStep, steps.length, endTour]);
+  }, [currentStep, steps, endTour]);
 
   const prev = useCallback(() => {
     if (currentStep > 0) setCurrentStep((s) => s - 1);
@@ -462,7 +473,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
                     <Button variant="ghost" size="2xs" onPress={prev}>Back</Button>
                   )}
                   <Button variant="solid" colorPalette="primary" size="2xs" onPress={next}>
-                    {currentStep === steps.length - 1 ? "Done" : "Next"}
+                    Next
                   </Button>
                 </Flex>
               </Flex>

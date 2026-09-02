@@ -57,48 +57,20 @@ export const Sidebar = () => {
       overflow="hidden"
       width="900"
     >
-      {/* Navigation */}
+      {/* Navigation: decorative MC sidebar matching real MC layout */}
       <Stack gap="100" pt="100" flex="1" alignItems="center">
-        <NavItem
-          icon={<Icon as={Speed} size="2xs" />}
-          label="Dashboard"
-          to="/"
-        />
-        <NavItem
-          icon={<Icon as={Inventory} size="2xs" />}
-          label="Products"
-          to="/products/galaxy-s25-ultra"
-        />
-        <NavItem
-          icon={<Icon as={AccountTree} size="2xs" />}
-          label="Categories"
-          to="/categories/phone-cases"
-        />
-        <NavItem
-          icon={<Icon as={PersonOutline} size="2xs" />}
-          label="Customers"
-          to="/products/pour-over-kettle"
-        />
-        <NavItem
-          icon={<Icon as={ShoppingCart} size="2xs" />}
-          label="Orders"
-          to="/orders/mc-2026-847291"
-        />
-        <NavItem
-          icon={<Icon as={LocalOffer} size="2xs" />}
-          label="Discounts"
-          to="/discounts/summer-clearance"
-        />
+        <NavItem icon={<Icon as={Speed} size="2xs" />} label="Home" to="/" />
+        <NavItem icon={<Icon as={Inventory} size="2xs" />} label="Products" to="/" />
+        <NavItem icon={<Icon as={AccountTree} size="2xs" />} label="Categories" to="/" />
+        <NavItem icon={<Icon as={PersonOutline} size="2xs" />} label="Customers" to="/" />
+        <NavItem icon={<Icon as={ShoppingCart} size="2xs" />} label="Orders" to="/" />
+        <NavItem icon={<Icon as={LocalOffer} size="2xs" />} label="Discounts" to="/" />
       </Stack>
 
       <Separator borderColor="rgba(255,255,255,0.12)" />
 
       <Box pt="200">
-        <NavItem
-          icon={<Icon as={Settings} size="2xs" />}
-          label="Settings"
-          to="/settings"
-        />
+        <NavItem icon={<Icon as={Settings} size="2xs" />} label="Settings" to="/" />
       </Box>
     </Flex>
   );

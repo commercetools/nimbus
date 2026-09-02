@@ -219,7 +219,7 @@ export const DiscoverStep = ({ mode }: { mode: FlavorMode }) => {
                     data-tour="create-promotion"
                     onPress={() => navigate(`/${mode}/step-2`)}
                   >
-                    ✦ Create Promotions
+                    ✦ Create Promotion
                   </Button>
                 </Box>
               </InlineCard>
