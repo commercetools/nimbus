@@ -7,10 +7,11 @@ export default defineConfig(() => {
   const isAnalyzeMode = !!process.env.ANALYZE_BUNDLE;
 
   return {
+    // GitHub Pages serves from /contextual-ai-prototype/ subpath
+    base: process.env.GITHUB_PAGES ? "/nimbus/" : "/",
     plugins: [
       react(),
       UNSAFE_nimbusOptionalDependency(),
-      // Bundle visualizer — run with `pnpm build:analyze` to generate bundle-report.html
       ...(isAnalyzeMode
         ? [
             import("rollup-plugin-visualizer").then((m) =>

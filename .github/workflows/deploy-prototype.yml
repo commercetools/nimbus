@@ -1,0 +1,61 @@
+name: Deploy Contextual AI Prototype
+
+on:
+  push:
+    branches: [bw/contextual-ai-prototype]
+    paths:
+      - 'apps/contextual-ai-prototype/**'
+      - 'packages/nimbus/**'
+      - 'packages/nimbus-viz/**'
+      - 'packages/nimbus-icons/**'
+      - 'packages/tokens/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build:packages
+
+      - name: Build prototype
+        run: pnpm --filter contextual-ai-prototype build
+        env:
+          GITHUB_PAGES: "1"
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/contextual-ai-prototype/dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
