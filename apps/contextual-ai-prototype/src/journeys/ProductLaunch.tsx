@@ -29,15 +29,84 @@ import { ActivationButton } from "../components/ActivationButton";
 
 // ─── Data ───────────────────────────────────────────────────────────────────
 
+// Each cell = one specific completion criterion (hover shows what it is)
 const readinessBreakdown = [
-  { category: "Categories · 10 pts", value: 10 },
-  { category: "Names · 12 pts", value: 12 },
-  { category: "Descriptions · 5 pts", value: 5 },
-  { category: "Images · 8 pts", value: 8 },
-  { category: "Pricing · 10 pts", value: 10 },
-  { category: "Variants · 6 pts", value: 6 },
-  { category: "SEO · 2 pts", value: 2 },
-  { category: "Attributes · 15 pts", value: 15 },
+  // Categories (10 cells)
+  { category: "Primary category assigned", value: 1 },
+  { category: "Subcategory validated", value: 1 },
+  { category: "Category path indexed", value: 1 },
+  { category: "Parent category active", value: 1 },
+  { category: "Category slug set", value: 1 },
+  { category: "Breadcrumb path valid", value: 1 },
+  { category: "Category meta title", value: 1 },
+  { category: "Category facets configured", value: 1 },
+  { category: "Storefront navigation linked", value: 1 },
+  { category: "Category order hint set", value: 1 },
+  // Names (12 cells)
+  { category: "Name EN complete", value: 1 },
+  { category: "Name DE complete", value: 1 },
+  { category: "Name FR complete", value: 1 },
+  { category: "Name ES complete", value: 1 },
+  { category: "Name IT complete", value: 1 },
+  { category: "Name length ≤ 80 chars", value: 1 },
+  { category: "Name has brand prefix", value: 1 },
+  { category: "Name contains model", value: 1 },
+  { category: "Name SEO keywords", value: 1 },
+  { category: "Name no special chars", value: 1 },
+  { category: "Name title case", value: 1 },
+  { category: "Name slug generated", value: 1 },
+  // Descriptions (5 cells, partially done)
+  { category: "Description EN exists", value: 1 },
+  { category: "Description EN > 100 chars", value: 1 },
+  { category: "Description EN has features", value: 1 },
+  { category: "Description DE exists", value: 1 },
+  { category: "Description FR exists", value: 1 },
+  // Images (8 cells)
+  { category: "Hero image uploaded", value: 1 },
+  { category: "Front view image", value: 1 },
+  { category: "Back view image", value: 1 },
+  { category: "Side view image", value: 1 },
+  { category: "Lifestyle shot", value: 1 },
+  { category: "Detail close-up", value: 1 },
+  { category: "Images ≥ 1000px", value: 1 },
+  { category: "Alt text set", value: 1 },
+  // Pricing (10 cells)
+  { category: "EUR Online price set", value: 1 },
+  { category: "EUR Retail price set", value: 1 },
+  { category: "USD Online price set", value: 1 },
+  { category: "USD Retail price set", value: 1 },
+  { category: "GBP Online price set", value: 1 },
+  { category: "Margin above floor", value: 1 },
+  { category: "Competitive range", value: 1 },
+  { category: "Currency formatting", value: 1 },
+  { category: "Tax category assigned", value: 1 },
+  { category: "Price mode configured", value: 1 },
+  // Variants (6 cells)
+  { category: "Master variant set", value: 1 },
+  { category: "Variant SKUs unique", value: 1 },
+  { category: "Variant attributes filled", value: 1 },
+  { category: "Variant images linked", value: 1 },
+  { category: "Variant prices set", value: 1 },
+  { category: "Inventory tracked", value: 1 },
+  // SEO (2 cells)
+  { category: "Meta title", value: 1 },
+  { category: "Meta description", value: 1 },
+  // Attributes (15 cells)
+  { category: "Display spec", value: 1 },
+  { category: "Battery spec", value: 1 },
+  { category: "Connectivity spec", value: 1 },
+  { category: "Weight spec", value: 1 },
+  { category: "Processor spec", value: 1 },
+  { category: "RAM spec", value: 1 },
+  { category: "OS spec", value: 1 },
+  { category: "Water resistance spec", value: 1 },
+  { category: "Camera spec", value: 1 },
+  { category: "Storage spec", value: 1 },
+  { category: "Color spec", value: 1 },
+  { category: "Dimensions spec", value: 1 },
+  { category: "Warranty info", value: 1 },
+  { category: "Manufacturer set", value: 1 },
+  { category: "Country of origin", value: 1 },
 ];
 
 const checklist = [
@@ -317,7 +386,7 @@ export const ProductLaunch = () => {
                     </Flex>
                   ))}
                 </Stack>
-                <Box flex="1" minWidth="140px" data-tour="readiness-chart">
+                <Box flex="1" minWidth="140px" data-tour="readiness-chart" css={{ "& figure > ul, & figure > table": { srOnly: true, position: "absolute", width: "1px", height: "1px", overflow: "hidden", clip: "rect(0,0,0,0)" } }}>
                   <Text textStyle="xs" color="neutral.9" mb="100">Completion by area</Text>
                   <ChartThemeProvider>
                     <ResponsiveContainer height={140}>

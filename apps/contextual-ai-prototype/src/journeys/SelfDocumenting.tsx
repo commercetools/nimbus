@@ -7,14 +7,44 @@ import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
 import { ActivationButton } from "../components/ActivationButton";
 
-// Readiness breakdown for waffle chart
+// Each cell = one specific completion criterion
 const readinessBreakdown = [
-  { category: "Categories · 0 pts", value: 0 },
-  { category: "Descriptions · 0 pts", value: 0 },
-  { category: "Images · 4 pts", value: 4 },
-  { category: "Name · 10 pts", value: 10 },
-  { category: "Price · 8 pts", value: 8 },
-  { category: "Variants · 10 pts", value: 10 },
+  // Images (4 cells)
+  { category: "Hero image uploaded", value: 1 },
+  { category: "Product angle shot", value: 1 },
+  { category: "Images ≥ 1000px", value: 1 },
+  { category: "Alt text set", value: 1 },
+  // Name (10 cells)
+  { category: "Name EN complete", value: 1 },
+  { category: "Name DE complete", value: 1 },
+  { category: "Name FR complete", value: 1 },
+  { category: "Name ES complete", value: 1 },
+  { category: "Name IT complete", value: 1 },
+  { category: "Name length ≤ 80 chars", value: 1 },
+  { category: "Name has brand prefix", value: 1 },
+  { category: "Name title case", value: 1 },
+  { category: "Name slug generated", value: 1 },
+  { category: "Name no special chars", value: 1 },
+  // Price (8 cells)
+  { category: "EUR price set", value: 1 },
+  { category: "USD price set", value: 1 },
+  { category: "Margin above floor", value: 1 },
+  { category: "Tax category assigned", value: 1 },
+  { category: "Price mode set", value: 1 },
+  { category: "Currency formatting", value: 1 },
+  { category: "Competitive range", value: 1 },
+  { category: "Price valid dates", value: 1 },
+  // Variants (10 cells)
+  { category: "Master variant set", value: 1 },
+  { category: "Variant 1 configured", value: 1 },
+  { category: "Variant 2 configured", value: 1 },
+  { category: "Variant 3 configured", value: 1 },
+  { category: "Variant SKUs unique", value: 1 },
+  { category: "Variant attributes filled", value: 1 },
+  { category: "Variant images linked", value: 1 },
+  { category: "Variant prices set", value: 1 },
+  { category: "Inventory tracked", value: 1 },
+  { category: "Variant keys set", value: 1 },
 ];
 
 const checklist = [
@@ -112,7 +142,7 @@ export const SelfDocumenting = () => (
                 </Flex>
               ))}
             </Stack>
-            <Box flex="1" minWidth="120px">
+            <Box flex="1" minWidth="120px" css={{ "& figure > ul, & figure > table": { position: "absolute", width: "1px", height: "1px", overflow: "hidden", clip: "rect(0,0,0,0)" } }}>
               <Text textStyle="xs" color="neutral.9" mb="100">Completion by area</Text>
               <ChartThemeProvider>
                 <ResponsiveContainer height={120}>
