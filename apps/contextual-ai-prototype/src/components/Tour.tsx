@@ -98,24 +98,40 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     if (currentStep > 0) setCurrentStep((s) => s - 1);
   }, [currentStep]);
 
-  // Compute popover position
+  // Compute popover position, clamped to viewport
   const pad = 12;
+  const popoverWidth = 340;
+  const popoverHeight = 200; // approximate
   const popoverStyle: React.CSSProperties = {};
   if (rect && step) {
     const placement = step.placement ?? "bottom";
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    // Compute initial position
+    let top = 0;
+    let left = 0;
+
     if (placement === "bottom") {
-      popoverStyle.top = rect.bottom + pad;
-      popoverStyle.left = rect.left;
+      top = rect.bottom + pad;
+      left = rect.left;
     } else if (placement === "top") {
-      popoverStyle.bottom = window.innerHeight - rect.top + pad;
-      popoverStyle.left = rect.left;
+      top = rect.top - popoverHeight - pad;
+      left = rect.left;
     } else if (placement === "right") {
-      popoverStyle.top = rect.top;
-      popoverStyle.left = rect.right + pad;
+      top = rect.top;
+      left = rect.right + pad;
     } else if (placement === "left") {
-      popoverStyle.top = rect.top;
-      popoverStyle.right = window.innerWidth - rect.left + pad;
+      top = rect.top;
+      left = rect.left - popoverWidth - pad;
     }
+
+    // Clamp to viewport
+    left = Math.max(pad, Math.min(left, vw - popoverWidth - pad));
+    top = Math.max(pad, Math.min(top, vh - popoverHeight - pad));
+
+    popoverStyle.top = top;
+    popoverStyle.left = left;
   }
 
   return (
