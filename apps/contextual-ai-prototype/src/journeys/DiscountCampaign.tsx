@@ -94,21 +94,29 @@ export const DiscountCampaign = () => (
           <Stack gap="400" flex="1">
             <FormField.Root>
               <FormField.Label>Discount name</FormField.Label>
-              <TextInput defaultValue="Summer Clearance 2026" />
+              <FormField.Input>
+                <TextInput defaultValue="Summer Clearance 2026" />
+              </FormField.Input>
             </FormField.Root>
             <FormField.Root>
               <FormField.Label>Discount type</FormField.Label>
-              <TextInput defaultValue="Percentage (20%)" />
+              <FormField.Input>
+                <TextInput defaultValue="Percentage (20%)" />
+              </FormField.Input>
             </FormField.Root>
           </Stack>
           <Stack gap="400" flex="1">
             <FormField.Root>
               <FormField.Label>Valid from</FormField.Label>
-              <TextInput defaultValue="2026-06-01" />
+              <FormField.Input>
+                <TextInput defaultValue="2026-06-01" />
+              </FormField.Input>
             </FormField.Root>
             <FormField.Root>
               <FormField.Label>Valid until</FormField.Label>
-              <TextInput defaultValue="2026-08-31" />
+              <FormField.Input>
+                <TextInput defaultValue="2026-08-31" />
+              </FormField.Input>
             </FormField.Root>
           </Stack>
         </Flex>

@@ -197,11 +197,15 @@ export const ProductLaunch = () => {
             <Stack gap="400" flex="1">
               <FormField.Root>
                 <FormField.Label>Product name (EN)</FormField.Label>
-                <TextInput defaultValue="Galaxy S25 Ultra" />
+                <FormField.Input>
+                  <TextInput defaultValue="Galaxy S25 Ultra" />
+                </FormField.Input>
               </FormField.Root>
               <FormField.Root>
                 <FormField.Label>SKU</FormField.Label>
-                <TextInput defaultValue="SKU-GS25U-001" />
+                <FormField.Input>
+                  <TextInput defaultValue="SKU-GS25U-001" />
+                </FormField.Input>
               </FormField.Root>
             </Stack>
             <Stack gap="400" flex="1">
@@ -213,11 +217,15 @@ export const ProductLaunch = () => {
                     <ActivationButton label="Translate" />
                   </Flex>
                 </FormField.Label>
-                <TextInput defaultValue='The Galaxy S25 Ultra features a stunning 6.9" Dynamic AMOLED...' />
+                <FormField.Input>
+                  <TextInput defaultValue='The Galaxy S25 Ultra features a stunning 6.9" Dynamic AMOLED...' />
+                </FormField.Input>
               </FormField.Root>
               <FormField.Root>
                 <FormField.Label>Product key</FormField.Label>
-                <TextInput defaultValue="galaxy-s25-ultra" />
+                <FormField.Input>
+                  <TextInput defaultValue="galaxy-s25-ultra" />
+                </FormField.Input>
               </FormField.Root>
             </Stack>
           </Flex>

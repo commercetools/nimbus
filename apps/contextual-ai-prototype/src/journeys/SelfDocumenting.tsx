@@ -133,7 +133,9 @@ export const SelfDocumenting = () => (
           <Stack gap="400" flex="1">
             <FormField.Root>
               <FormField.Label>Product name (EN)</FormField.Label>
-              <TextInput defaultValue="Precision Pour-Over Kettle" />
+              <FormField.Input>
+                <TextInput defaultValue="Precision Pour-Over Kettle" />
+              </FormField.Input>
             </FormField.Root>
             <FormField.Root>
               <FormField.Label>
@@ -143,14 +145,18 @@ export const SelfDocumenting = () => (
                   <ActivationButton label="Generate" />
                 </Flex>
               </FormField.Label>
-              <TextInput placeholder="Write a product description..." />
+              <FormField.Input>
+                <TextInput placeholder="Write a product description..." />
+              </FormField.Input>
               <FormField.Description>Required for SEO and storefront display</FormField.Description>
             </FormField.Root>
           </Stack>
           <Stack gap="400" flex="1">
             <FormField.Root>
               <FormField.Label>SKU</FormField.Label>
-              <TextInput defaultValue="SKU-POK-2026" />
+              <FormField.Input>
+                <TextInput defaultValue="SKU-POK-2026" />
+              </FormField.Input>
             </FormField.Root>
             <FormField.Root>
               <FormField.Label>
@@ -160,7 +166,9 @@ export const SelfDocumenting = () => (
                   <ActivationButton label="Translate" />
                 </Flex>
               </FormField.Label>
-              <TextInput placeholder="German description..." />
+              <FormField.Input>
+                <TextInput placeholder="German description..." />
+              </FormField.Input>
             </FormField.Root>
           </Stack>
         </Flex>
@@ -171,7 +179,9 @@ export const SelfDocumenting = () => (
         <FormField.Root>
           <FormField.Label>Categories</FormField.Label>
           <Box position="relative">
-            <TextInput placeholder="Search categories..." />
+            <FormField.Input>
+              <TextInput placeholder="Search categories..." />
+            </FormField.Input>
             <Box
               position="absolute"
               top="100%"
