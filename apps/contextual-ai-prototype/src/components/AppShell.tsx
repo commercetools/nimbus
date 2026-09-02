@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { Box, Flex, Icon, IconButton, Menu, Text, Separator } from "@commercetools/nimbus";
-import { PersonOutline, CommercetoolsCube, Business, Inventory as InventoryIcon } from "@commercetools/nimbus-icons";
+import { Box, Flex, Icon, IconButton, Menu, Text, Separator, Avatar } from "@commercetools/nimbus";
+import { CommercetoolsCube, Business, Inventory as InventoryIcon } from "@commercetools/nimbus-icons";
 import { NavLink } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { ChatPanel } from "./ChatPanel";
@@ -67,23 +67,9 @@ const AppBar = () => (
       {/* Profile menu — avatar trigger */}
       <Menu.Root placement="bottom end">
         <Menu.Trigger asChild>
-          <Flex
-            as="button"
-            width="24px"
-            height="24px"
-            borderRadius="full"
-            bg="rgba(255,255,255,0.15)"
-            alignItems="center"
-            justifyContent="center"
-            cursor="pointer"
-            border="none"
-            flexShrink={0}
-            color="rgba(255,255,255,0.7)"
-            _hover={{ bg: "rgba(255,255,255,0.25)", color: "white" }}
-            aria-label="Profile"
-          >
-            <Icon as={PersonOutline} size="2xs" />
-          </Flex>
+          <Box cursor="pointer">
+            <Avatar firstName="Lena" lastName="M" size="2xs" colorPalette="primary" />
+          </Box>
         </Menu.Trigger>
         <Menu.Content>
           <Menu.Section label="Account">
