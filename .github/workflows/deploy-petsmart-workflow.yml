@@ -1,0 +1,48 @@
+name: Deploy PetSmart Agentic Workflow
+
+on:
+  push:
+    branches: [bw/petsmart-agentic-workflow]
+    paths:
+      - 'apps/petsmart-agentic-workflow/**'
+      - 'packages/nimbus/**'
+      - 'packages/nimbus-viz/**'
+      - 'packages/nimbus-icons/**'
+      - 'packages/tokens/**'
+      - '.github/workflows/deploy-petsmart-workflow.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install and build
+        uses: ./.github/actions/ci
+
+      - name: Build prototype
+        run: pnpm --filter petsmart-agentic-workflow build
+        env:
+          GITHUB_PAGES: "1"
+
+      - name: Deploy to gh-pages subdirectory
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DEPLOY=$(mktemp -d)
+          git clone --branch gh-pages --depth=1 \
+            "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" \
+            "$DEPLOY"
+          rm -rf "$DEPLOY/petsmart-agentic-workflow"
+          cp -r apps/petsmart-agentic-workflow/dist "$DEPLOY/petsmart-agentic-workflow"
+          cd "$DEPLOY"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "deploy: petsmart-agentic-workflow $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push origin gh-pages
