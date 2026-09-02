@@ -131,15 +131,23 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
               Save
             </Button>
             {mode === "contextual" && (
-              <Button
-                variant="solid"
-                colorPalette="info"
-                size="2xs"
+              <Flex
+                alignItems="center"
+                gap="100"
+                px="200"
+                py="100"
+                borderRadius="200"
+                borderWidth="1px"
+                borderColor="ctteal.6"
+                cursor="pointer"
+                _hover={{ bg: "ctteal.3" }}
+                transition="background 150ms"
                 data-tour="save-simulate"
-                onPress={() => navigate(`/${mode}/step-3`)}
+                onClick={() => navigate(`/${mode}/step-3`)}
               >
-                Save &amp; Simulate
-              </Button>
+                <ProvenanceIndicator agentName="Preview Agent" agentSource="ct" reason="Simulate this discount against real cart scenarios before launching" />
+                <Text textStyle="xs" fontWeight="medium" color="ctteal.11">Save &amp; Simulate</Text>
+              </Flex>
             )}
           </>
         }
