@@ -9,6 +9,7 @@ import {
   Separator,
   TextInput,
   FormField,
+  LocalizedField,
   Icon,
   Tree,
   DataTable,
@@ -295,58 +296,62 @@ export const ProductLaunch = () => {
               General Information
             </Text>
 
-            <Grid gridTemplateColumns="1fr 1fr" gap="300">
-              <FormField.Root size="sm">
-                <FormField.Label>Product name (EN)</FormField.Label>
-                <FormField.Input>
-                  <TextInput size="sm" width="100%" defaultValue="Galaxy S25 Ultra" />
-                </FormField.Input>
-              </FormField.Root>
+            <Stack gap="300">
+              <LocalizedField
+                size="sm"
+                type="text"
+                label="Product name"
+                defaultLocaleOrCurrency="en"
+                valuesByLocaleOrCurrency={{ en: "Galaxy S25 Ultra", de: "Galaxy S25 Ultra", fr: "Galaxy S25 Ultra", es: "Galaxy S25 Ultra", it: "Galaxy S25 Ultra" }}
+                onChange={() => {}}
+              />
 
-              <FormField.Root size="sm">
-                <FormField.Label>
-                  <Flex alignItems="center" gap="200" width="100%">
-                    <Text>Description (EN)</Text>
-                    <Box flex="1" />
-                    <ActivationButton label="Translate" data-tour="translate-btn" />
-                  </Flex>
-                </FormField.Label>
-                <FormField.Input>
-                  <TextInput
+              <Flex alignItems="flex-end" gap="200">
+                <Box flex="1">
+                  <LocalizedField
                     size="sm"
-                    defaultValue='The Galaxy S25 Ultra features a stunning 6.9" Dynamic AMOLED...'
+                    type="multiLine"
+                    label="Description"
+                    defaultLocaleOrCurrency="en"
+                    valuesByLocaleOrCurrency={{ en: 'The Galaxy S25 Ultra features a stunning 6.9" Dynamic AMOLED 2X display, Snapdragon 8 Elite processor, and a 200MP camera system.', de: "", fr: "", es: "", it: "" }}
+                    onChange={() => {}}
                   />
+                </Box>
+                <Box pb="100" data-tour="translate-btn">
+                  <ActivationButton label="Translate" />
+                </Box>
+              </Flex>
+
+              <Grid gridTemplateColumns="1fr 1fr" gap="300">
+                <FormField.Root size="sm">
+                  <FormField.Label>Product key</FormField.Label>
+                  <FormField.Input>
+                    <TextInput size="sm" width="100%" defaultValue="galaxy-s25-ultra" />
+                  </FormField.Input>
+                </FormField.Root>
+
+                <FormField.Root size="sm">
+                  <FormField.Label>External ID</FormField.Label>
+                  <FormField.Input>
+                    <TextInput size="sm" width="100%" defaultValue="EXT-GS25U-2026" />
+                  </FormField.Input>
+                </FormField.Root>
+
+                <FormField.Root size="sm">
+                  <FormField.Label>Tax category</FormField.Label>
+                  <FormField.Input>
+                    <TextInput size="sm" width="100%" defaultValue="Standard Rate (19%)" />
                 </FormField.Input>
               </FormField.Root>
 
-              <FormField.Root size="sm">
-                <FormField.Label>Product key</FormField.Label>
-                <FormField.Input>
-                  <TextInput size="sm" width="100%" defaultValue="galaxy-s25-ultra" />
-                </FormField.Input>
-              </FormField.Root>
-
-              <FormField.Root size="sm">
-                <FormField.Label>External ID</FormField.Label>
-                <FormField.Input>
-                  <TextInput size="sm" width="100%" defaultValue="EXT-GS25U-2026" />
-                </FormField.Input>
-              </FormField.Root>
-
-              <FormField.Root size="sm">
-                <FormField.Label>Tax category</FormField.Label>
-                <FormField.Input>
-                  <TextInput size="sm" width="100%" defaultValue="Standard Rate (19%)" />
-                </FormField.Input>
-              </FormField.Root>
-
-              <FormField.Root size="sm">
-                <FormField.Label>Price mode</FormField.Label>
-                <FormField.Input>
-                  <TextInput size="sm" width="100%" defaultValue="Embedded" />
-                </FormField.Input>
-              </FormField.Root>
-            </Grid>
+                <FormField.Root size="sm">
+                  <FormField.Label>Price mode</FormField.Label>
+                  <FormField.Input>
+                    <TextInput size="sm" width="100%" defaultValue="Embedded" />
+                  </FormField.Input>
+                </FormField.Root>
+              </Grid>
+            </Stack>
           </Box>
 
           {/* Inline widgets: Readiness + Product Info */}
