@@ -147,7 +147,7 @@ function runAction(step: TourStep): Promise<void> {
           const h = r.getAttribute("height");
           return w && h && w === h && r.getAttribute("fill") && r.getAttribute("fill") !== "var(--chart-empty)";
         });
-        const targets = [cells[3], cells[25]].filter(Boolean);
+        const targets = [cells[0], cells[22]].filter(Boolean);
         let i = 0;
         const hoverNext = () => {
           if (i >= targets.length) { resolve(); return; }
@@ -198,19 +198,8 @@ function runAction(step: TourStep): Promise<void> {
     }
 
     if (step.action === "revealGenerateSeo") {
-      // Hide the button first, then slide it in
-      const btn = document.querySelector('[data-tour="generate-seo"]') as HTMLElement;
-      if (btn) {
-        btn.style.transition = "none";
-        btn.style.opacity = "0";
-        btn.style.transform = "translateX(20px)";
-        setTimeout(() => {
-          btn.style.transition = "opacity 500ms ease, transform 500ms ease";
-          btn.style.opacity = "1";
-          btn.style.transform = "translateX(0)";
-          setTimeout(resolve, 600);
-        }, 300);
-      } else { resolve(); }
+      window.dispatchEvent(new CustomEvent("tour:revealSeo"));
+      setTimeout(resolve, 700);
       return;
     }
 
