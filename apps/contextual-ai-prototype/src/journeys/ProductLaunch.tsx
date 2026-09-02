@@ -38,6 +38,9 @@ const statusIcon = {
   missing: { symbol: "✗", color: "red.11" as const },
 };
 
+// Chart categorical colors (light theme), matching waffle chart assignment order
+const chartColors = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"];
+
 // Suggested variants data
 const suggestedVariants = [
   { color: "Navy", storage: "256GB", reason: "Top seller DE/FR", market: "EU" },
@@ -133,8 +136,15 @@ export const ProductLaunch = () => {
             {/* Checklist + trend chart side by side */}
             <Flex gap="400">
               <Stack gap="100" flex="1">
-                {checklist.map((item) => (
-                  <Flex key={item.label} alignItems="center" gap="200">
+                {checklist.map((item, i) => (
+                  <Flex key={item.label} alignItems="center" gap="150">
+                    <Box
+                      width="6px"
+                      height="6px"
+                      borderRadius="full"
+                      flexShrink={0}
+                      css={{ background: chartColors[i] ?? "#999" }}
+                    />
                     <Text
                       textStyle="xs"
                       fontWeight="bold"
