@@ -17,7 +17,7 @@ interface ProvenanceIndicatorProps {
 export const ProvenanceIndicator = ({
   agentName,
   confidence,
-  size = "8px",
+  size = "12px",
   pulse = false,
 }: ProvenanceIndicatorProps) => {
   const [isPulsing, setIsPulsing] = useState(false);

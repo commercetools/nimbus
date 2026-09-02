@@ -6,7 +6,7 @@ interface AiDotProps {
 }
 
 /** Tiny ✦ star used as an inline AI provenance marker. */
-export const AiDot = ({ size = "8px" }: AiDotProps) => (
+export const AiDot = ({ size = "12px" }: AiDotProps) => (
   <Text
     as="span"
     fontSize={size}
