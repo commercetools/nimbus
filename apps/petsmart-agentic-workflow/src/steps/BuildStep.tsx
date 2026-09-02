@@ -1,12 +1,416 @@
-import { Box, Text } from "@commercetools/nimbus";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Flex,
+  Stack,
+  Text,
+  Badge,
+  Button,
+  Separator,
+  TextInput,
+  FormField,
+  Icon,
+} from "@commercetools/nimbus";
+import { Warning } from "@commercetools/nimbus-icons";
+import { PageHeader } from "../components/PageHeader";
+import { InlineSlot } from "../components/InlineSlot";
+import { InlineCard } from "../components/InlineCard";
+import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
+import { AgentChain } from "../components/AgentChain";
+import { StepNavigation } from "../components/StepNavigation";
+import { promotion } from "../data/promotionData";
 
 export type FlavorMode = "contextual" | "orchestrated";
 
-export const BuildStep = ({ mode }: { mode: FlavorMode }) => (
-  <Box p="600">
-    <Text textStyle="xl">Build step - TODO</Text>
-    <Text textStyle="sm" color="neutral.10">
-      Mode: {mode}
-    </Text>
-  </Box>
+const allConditions = [
+  { label: "Category = Pet Health", isDefault: true },
+  { label: "Inventory > 50 units", isDefault: true },
+  { label: "Product predicate: shelf-days > 60", confidence: 82 },
+  { label: "Exclude: New Arrivals tag", confidence: 68 },
+];
+
+const ConflictWarning = () => (
+  <Flex
+    gap="200"
+    alignItems="flex-start"
+    p="200"
+    bg="amber.2"
+    borderRadius="200"
+    borderWidth="1px"
+    borderColor="amber.6"
+  >
+    <Icon as={Warning} size="xs" color="amber.9" mt="50" flexShrink={0} />
+    <Box>
+      <Text textStyle="sm" fontWeight="medium" color="neutral.12">
+        {promotion.conflictProducts} products overlap with &quot;
+        {promotion.conflictDiscount}&quot;
+      </Text>
+      <Text textStyle="xs" color="neutral.10" mt="50">
+        Stacking would push 12 products below 15% margin floor.
+      </Text>
+      <Flex mt="200">
+        <Button variant="outline" size="2xs">
+          Add exclusion
+        </Button>
+      </Flex>
+    </Box>
+  </Flex>
 );
+
+const StockWarning = () => (
+  <Flex
+    gap="200"
+    alignItems="flex-start"
+    p="200"
+    bg="amber.2"
+    borderRadius="200"
+    borderWidth="1px"
+    borderColor="amber.6"
+  >
+    <Icon as={Warning} size="xs" color="amber.9" mt="50" flexShrink={0} />
+    <Box>
+      <Text textStyle="sm" fontWeight="medium" color="neutral.12">
+        Stock check: 312 of {promotion.productsAffected} products have
+        sufficient inventory (&gt;50 units)
+      </Text>
+      <Text textStyle="xs" color="neutral.10" mt="50">
+        28 products are low-stock (reorder lead time exceeds promo window).
+        Consider exclusion.
+      </Text>
+    </Box>
+  </Flex>
+);
+
+export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
+  const navigate = useNavigate();
+  const [applied, setApplied] = useState<Set<string>>(
+    new Set(["Category = Pet Health", "Inventory > 50 units"])
+  );
+
+  const appliedList = allConditions.filter((c) => applied.has(c.label));
+  const suggestedList = allConditions.filter(
+    (c) => !applied.has(c.label) && c.confidence
+  );
+
+  const addCondition = (label: string) =>
+    setApplied((prev) => new Set([...prev, label]));
+  const removeCondition = (label: string) =>
+    setApplied((prev) => {
+      const next = new Set(prev);
+      next.delete(label);
+      return next;
+    });
+
+  return (
+    <Box height="100%" overflow="auto">
+      <PageHeader
+        breadcrumbs={[
+          { label: "Discounts", href: "#" },
+          { label: promotion.name },
+        ]}
+        title={promotion.name}
+        subtitle="Cart discount · Draft"
+        tabs={[
+          { label: "General", active: true },
+          { label: "Rules" },
+          { label: "Schedule" },
+        ]}
+        actions={
+          <>
+            <Button variant="ghost" size="2xs">
+              Discard
+            </Button>
+            <Button variant="solid" colorPalette="primary" size="2xs">
+              Save
+            </Button>
+            {mode === "contextual" && (
+              <Button
+                variant="solid"
+                colorPalette="info"
+                size="2xs"
+                onPress={() => navigate(`/${mode}/step-3`)}
+              >
+                Save &amp; Simulate
+              </Button>
+            )}
+          </>
+        }
+      />
+
+      <Stack gap="300" p="300">
+        {/* Discount form */}
+        <Box
+          bg="white"
+          borderWidth="1px"
+          borderColor="neutral.6"
+          borderRadius="200"
+          p="300"
+          data-tour="discount-form"
+        >
+          <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="300">
+            Discount Configuration
+          </Text>
+
+          <Flex gap="300" direction={{ base: "column", md: "row" }}>
+            <Stack gap="300" flex="1">
+              <FormField.Root size="sm">
+                <FormField.Label>Discount name</FormField.Label>
+                <FormField.Input>
+                  <TextInput size="sm" width="100%" defaultValue={promotion.name} />
+                </FormField.Input>
+              </FormField.Root>
+              <FormField.Root size="sm">
+                <FormField.Label>
+                  <Flex alignItems="center" gap="150">
+                    <Text>Discount type</Text>
+                    <ProvenanceIndicator
+                      agentName="Inventory Agent"
+                      agentSource="customer"
+                      reason="Historically lifts pet health 31% vs flat percentage"
+                    />
+                  </Flex>
+                </FormField.Label>
+                <FormField.Input>
+                  <TextInput size="sm" width="100%" defaultValue={promotion.type} />
+                </FormField.Input>
+                <Flex
+                  mt="150"
+                  gap="200"
+                  alignItems="center"
+                  px="300"
+                  py="200"
+                  bg="primary.2"
+                  borderRadius="200"
+                >
+                  <Text textStyle="xs" color="neutral.11">
+                    Suggested: &quot;{promotion.type}&quot; — historically
+                    lifts pet health 31% vs flat percentage
+                  </Text>
+                </Flex>
+              </FormField.Root>
+            </Stack>
+            <Stack gap="300" flex="1">
+              <FormField.Root size="sm">
+                <FormField.Label>Valid from</FormField.Label>
+                <FormField.Input>
+                  <TextInput size="sm" width="100%" defaultValue="2026-03-01" />
+                </FormField.Input>
+              </FormField.Root>
+              <FormField.Root size="sm">
+                <FormField.Label>Valid until</FormField.Label>
+                <FormField.Input>
+                  <TextInput size="sm" width="100%" defaultValue="2026-04-15" />
+                </FormField.Input>
+              </FormField.Root>
+            </Stack>
+          </Flex>
+
+          <Separator my="300" />
+
+          {/* Conditions section */}
+          <FormField.Root size="sm">
+            <FormField.Label>
+              <Flex alignItems="center" gap="200">
+                <Text>Conditions</Text>
+                <Box flex="1" />
+                <Text textStyle="xs" color="neutral.9">
+                  {appliedList.length} applied
+                </Text>
+              </Flex>
+            </FormField.Label>
+
+            {/* Applied conditions (click ✕ to remove) */}
+            <Flex gap="200" flexWrap="wrap" mb="300">
+              {appliedList.map((c) => (
+                <Badge
+                  key={c.label}
+                  size="2xs"
+                  colorPalette="neutral"
+                  cursor="pointer"
+                  onClick={() => removeCondition(c.label)}
+                >
+                  {c.label} ✕
+                </Badge>
+              ))}
+            </Flex>
+
+            {/* AI suggested conditions (click to add) */}
+            {suggestedList.length > 0 && (
+              <Box data-tour="suggested-conditions">
+                <Flex alignItems="center" gap="150" mb="200">
+                  <ProvenanceIndicator
+                    agentName="Promo Agent"
+                    reason="Predicate suggestions based on current discount rules and product catalog"
+                  />
+                  <Text textStyle="xs" fontWeight="semibold" color="ctteal.11">
+                    Suggested conditions
+                  </Text>
+                </Flex>
+                <Flex gap="200" flexWrap="wrap">
+                  {suggestedList.map((chip) => (
+                    <Badge
+                      key={chip.label}
+                      size="2xs"
+                      colorPalette="info"
+                      cursor="pointer"
+                      onClick={() => addCondition(chip.label)}
+                    >
+                      <ProvenanceIndicator
+                        agentName="Promo Agent"
+                        confidence={chip.confidence}
+                        size="8px"
+                      />
+                      {chip.label} +
+                    </Badge>
+                  ))}
+                </Flex>
+              </Box>
+            )}
+          </FormField.Root>
+        </Box>
+
+        {/* Inline agent cards */}
+        {mode === "contextual" ? (
+          <InlineSlot direction="row" data-tour="inline-slot">
+            <InlineCard title="Impact Preview" agentName="Promo Agent" agentSource="ct">
+              <Flex gap="300">
+                <Box>
+                  <Text textStyle="xl" fontWeight="bold" color="neutral.12">
+                    ~{promotion.productsAffected}
+                  </Text>
+                  <Text textStyle="xs" color="neutral.9">
+                    Products affected
+                  </Text>
+                </Box>
+                <Box>
+                  <Text textStyle="xl" fontWeight="bold" color="amber.11">
+                    {promotion.marginImpact}
+                  </Text>
+                  <Text textStyle="xs" color="neutral.9">
+                    Est. margin impact
+                  </Text>
+                </Box>
+                <Box>
+                  <Text textStyle="xl" fontWeight="bold" color="green.11">
+                    0
+                  </Text>
+                  <Text textStyle="xs" color="neutral.9">
+                    Products below floor
+                  </Text>
+                </Box>
+              </Flex>
+            </InlineCard>
+
+            <InlineCard
+              title="Stock Validation"
+              agentName="Inventory Agent"
+              agentSource="customer"
+              headerRight={
+                <Badge size="2xs" colorPalette="warning">
+                  {promotion.lowStockProducts} low-stock
+                </Badge>
+              }
+            >
+              <StockWarning />
+            </InlineCard>
+
+            <Box data-tour="conflict-card">
+              <InlineCard
+                title="Conflict Detection"
+                agentName="Promo Agent"
+                agentSource="ct"
+                headerRight={
+                  <Badge size="2xs" colorPalette="warning">
+                    {promotion.conflictProducts} conflicts
+                  </Badge>
+                }
+              >
+                <ConflictWarning />
+              </InlineCard>
+            </Box>
+          </InlineSlot>
+        ) : (
+          <InlineSlot direction="row" data-tour="inline-slot">
+            <InlineCard
+              title="Promotion Draft"
+              agentName="PetSmart Orchestrator"
+              agentSource="customer"
+            >
+              <Stack gap="300" minWidth={{ base: "auto", md: "480px" }}>
+                <Box>
+                  <Text textStyle="xs" fontWeight="semibold" color="neutral.11" mb="150">
+                    Impact preview
+                  </Text>
+                  <Flex gap="300">
+                    <Box>
+                      <Text textStyle="xl" fontWeight="bold" color="neutral.12">
+                        ~{promotion.productsAffected}
+                      </Text>
+                      <Text textStyle="xs" color="neutral.9">
+                        Products affected
+                      </Text>
+                    </Box>
+                    <Box>
+                      <Text textStyle="xl" fontWeight="bold" color="amber.11">
+                        {promotion.marginImpact}
+                      </Text>
+                      <Text textStyle="xs" color="neutral.9">
+                        Est. margin impact
+                      </Text>
+                    </Box>
+                    <Box>
+                      <Text textStyle="xl" fontWeight="bold" color="green.11">
+                        0
+                      </Text>
+                      <Text textStyle="xs" color="neutral.9">
+                        Products below floor
+                      </Text>
+                    </Box>
+                  </Flex>
+                </Box>
+
+                <Separator />
+
+                <Box>
+                  <Text textStyle="xs" fontWeight="semibold" color="neutral.11" mb="150">
+                    Stock validation
+                  </Text>
+                  <StockWarning />
+                </Box>
+
+                <Separator />
+
+                <Box>
+                  <Text textStyle="xs" fontWeight="semibold" color="neutral.11" mb="150">
+                    Conflict detection
+                  </Text>
+                  <ConflictWarning />
+                </Box>
+
+                <AgentChain
+                  contributions={[
+                    {
+                      agentName: "Promo Agent",
+                      source: "ct",
+                      contribution:
+                        "Impact preview and conflict detection against active discounts",
+                    },
+                    {
+                      agentName: "Inventory Agent",
+                      source: "customer",
+                      contribution:
+                        "Stock validation and reorder lead time analysis; discount-type performance history",
+                    },
+                  ]}
+                />
+              </Stack>
+            </InlineCard>
+          </InlineSlot>
+        )}
+      </Stack>
+
+      <StepNavigation currentStep={2} totalSteps={5} mode={mode} />
+    </Box>
+  );
+};
