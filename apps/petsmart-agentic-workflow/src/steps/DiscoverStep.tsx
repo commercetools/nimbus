@@ -77,6 +77,9 @@ const getProductColumns = (
           bg={isHigh ? "amber.4" : undefined}
           data-tour={isHigh ? "shelf-days-highlight" : undefined}
         >
+          {mode === "contextual" && (
+            <ProvenanceIndicator agentName="Inventory Agent" agentSource="customer" />
+          )}
           <Text
             textStyle="xs"
             fontWeight={isHigh ? "semibold" : "medium"}
@@ -84,9 +87,6 @@ const getProductColumns = (
           >
             {row.shelfDays}
           </Text>
-          {mode === "contextual" && (
-            <ProvenanceIndicator agentName="Inventory Agent" agentSource="customer" />
-          )}
         </Flex>
       );
     },
@@ -96,12 +96,12 @@ const getProductColumns = (
     header: "Velocity",
     accessor: (row) => (
       <Flex alignItems="center" gap="100">
-        <Text textStyle="xs" fontWeight="medium" color="neutral.12">
-          {row.velocity}
-        </Text>
         {mode === "contextual" && (
           <ProvenanceIndicator agentName="Inventory Agent" agentSource="customer" />
         )}
+        <Text textStyle="xs" fontWeight="medium" color="neutral.12">
+          {row.velocity}
+        </Text>
       </Flex>
     ),
   },
