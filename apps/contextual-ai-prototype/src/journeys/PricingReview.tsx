@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, Flex, Stack, Text, Badge, Button, Separator, Icon } from "@commercetools/nimbus";
 import { TrendingUp, Warning, ExpandMore, ExpandLess } from "@commercetools/nimbus-icons";
-import { ChartThemeProvider, ResponsiveContainer, LineChart, StatCard } from "@commercetools/nimbus-viz";
+import { ChartThemeProvider, ResponsiveContainer, LineChart } from "@commercetools/nimbus-viz";
 import { PageHeader } from "../components/PageHeader";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
@@ -47,9 +47,8 @@ export const PricingReview = () => {
       tabs={[
         { label: "General" },
         { label: "Variants" },
-        { label: "Images" },
+        { label: "Search" },
         { label: "Prices", active: true },
-        { label: "SEO" },
       ]}
       actions={
         <>
@@ -66,20 +65,31 @@ export const PricingReview = () => {
           <Badge size="2xs" colorPalette="warning">At Risk</Badge>
         }>
           <Flex gap="400">
-            <ChartThemeProvider>
-              <Stack gap="200" flex="1">
-                <Flex gap="300">
-                  <StatCard label="Current" value={17.3} format={(n) => `${n}%`} previous={24.1} />
-                  <StatCard label="After adj." value={22.1} format={(n) => `${n}%`} previous={17.3} />
-                  <StatCard label="Floor" value={20} format={(n) => `${n}%`} />
-                </Flex>
-                <ResponsiveContainer height={100}>
+            <Flex gap="400" flexShrink={0}>
+              <Box>
+                <Text textStyle="xs" color="neutral.9">Current</Text>
+                <Text textStyle="md" fontWeight="bold" color="red.11">17.3%</Text>
+                <Text textStyle="xs" color="red.10">▼ −28%</Text>
+              </Box>
+              <Box>
+                <Text textStyle="xs" color="neutral.9">After adj.</Text>
+                <Text textStyle="md" fontWeight="bold" color="green.11">22.1%</Text>
+                <Text textStyle="xs" color="green.10">▲ +28%</Text>
+              </Box>
+              <Box>
+                <Text textStyle="xs" color="neutral.9">Floor</Text>
+                <Text textStyle="md" fontWeight="bold" color="neutral.12">20%</Text>
+              </Box>
+            </Flex>
+            <Box flex="1" minWidth="120px">
+              <ChartThemeProvider>
+                <ResponsiveContainer height={70}>
                   {(w, h) => (
                     <LineChart width={w} height={h} series={marginTrend} ariaLabel="Margin trend over 6 months" />
                   )}
                 </ResponsiveContainer>
-              </Stack>
-            </ChartThemeProvider>
+              </ChartThemeProvider>
+            </Box>
           </Flex>
           <Flex mt="200" gap="100" alignItems="center">
             <Icon as={Warning} size="2xs" color="amber.9" />

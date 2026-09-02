@@ -79,9 +79,8 @@ export const ProductLaunch = () => {
         tabs={[
           { label: "General", active: true },
           { label: "Variants" },
-          { label: "Images" },
-          { label: "Prices" },
-          { label: "SEO" },
+          { label: "Search" },
+          { label: "Selections" },
         ]}
         actions={
           <>
