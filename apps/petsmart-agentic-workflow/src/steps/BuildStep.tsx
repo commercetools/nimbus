@@ -283,7 +283,6 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
               <FormField.Root size="sm" data-tour="discount-type">
                 <FormField.Label>
                   <Flex alignItems="center" gap="150">
-                    <Text>Discount type</Text>
                     {mode === "contextual" && (
                       <ProvenanceIndicator
                         agentName="Inventory Agent"
@@ -291,6 +290,7 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                         reason="Buy 2 Get 1 Free historically lifts pet health 31% vs flat percentage"
                       />
                     )}
+                    <Text>Discount type</Text>
                   </Flex>
                 </FormField.Label>
                 <FormField.Input>
@@ -451,28 +451,39 @@ export const BuildStep = ({ mode }: { mode: FlavorMode }) => {
                 <Flex alignItems="center" gap="150" mb="200">
                   <ProvenanceIndicator
                     agentName="Promo Agent"
+                    agentSource="ct"
                     reason="Predicate suggestions based on current discount rules and product catalog"
                   />
-                  <Text textStyle="xs" fontWeight="semibold" color="ctteal.11">
+                  <Text textStyle="xs" fontWeight="medium" color="neutral.12">
                     Suggested conditions
                   </Text>
                 </Flex>
                 <Flex gap="200" flexWrap="wrap">
                   {suggestedList.map((chip) => (
-                    <Badge
+                    <Flex
                       key={chip.label}
-                      size="2xs"
-                      colorPalette="info"
+                      alignItems="center"
+                      gap="100"
+                      px="200"
+                      py="50"
+                      bg="ctteal.2"
+                      borderRadius="200"
+                      borderWidth="1px"
+                      borderColor="ctteal.6"
                       cursor="pointer"
+                      _hover={{ bg: "ctteal.3" }}
+                      transition="background 150ms"
                       onClick={() => addCondition(chip.label)}
                     >
                       <ProvenanceIndicator
                         agentName="Promo Agent"
+                        agentSource="ct"
                         confidence={chip.confidence}
                         size="8px"
                       />
-                      {chip.label} +
-                    </Badge>
+                      <Text textStyle="xs" color="ctteal.11">{chip.label}</Text>
+                      <Text textStyle="xs" color="ctteal.9">+</Text>
+                    </Flex>
                   ))}
                 </Flex>
               </Box>
