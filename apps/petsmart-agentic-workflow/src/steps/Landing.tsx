@@ -109,28 +109,6 @@ export const Landing = () => {
           <WorkflowPipeline />
         </Box>
 
-        <Flex gap="300" direction={{ base: "column", md: "row" }}>
-          {flavorCards.map((card) => (
-            <Box
-              key={card.id}
-              flex="1"
-              bg="white"
-              borderRadius="300"
-              p="400"
-              shadow="xs"
-              borderWidth="1px"
-              borderColor="neutral.4"
-            >
-              <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="150">
-                {card.title}
-              </Text>
-              <Text textStyle="xs" color="neutral.10" lineHeight="tall">
-                {card.description}
-              </Text>
-            </Box>
-          ))}
-        </Flex>
-
         <Box bg="white" borderRadius="300" p="400" shadow="xs" borderWidth="1px" borderColor="neutral.4">
           <Text textStyle="sm" color="neutral.11" lineHeight="tall" mb="300">
             Maya Chen is a category merchandiser at PetSmart. Spring is coming, and slow-moving pet
@@ -159,22 +137,38 @@ export const Landing = () => {
           </Stack>
         </Box>
 
-        <Flex gap="300" justifyContent="center" wrap="wrap">
-          <Button
-            variant="solid"
-            colorPalette="primary"
-            size="sm"
-            onPress={() => navigate("/contextual/step-1")}
-          >
-            Start: Contextual
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onPress={() => navigate("/orchestrated/step-1")}
-          >
-            Start: Orchestrated
-          </Button>
+        <Flex gap="300" direction={{ base: "column", md: "row" }}>
+          {flavorCards.map((card) => (
+            <Flex
+              key={card.id}
+              flex="1"
+              direction="column"
+              bg="white"
+              borderRadius="300"
+              p="400"
+              shadow="xs"
+              borderWidth="1px"
+              borderColor="neutral.4"
+            >
+              <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="150">
+                {card.title}
+              </Text>
+              <Text textStyle="xs" color="neutral.10" lineHeight="tall" flex="1">
+                {card.description}
+              </Text>
+              <Box mt="300">
+                <Button
+                  variant="solid"
+                  colorPalette="primary"
+                  size="sm"
+                  width="100%"
+                  onPress={() => navigate(`/${card.id}/step-1`)}
+                >
+                  Start: {card.title}
+                </Button>
+              </Box>
+            </Flex>
+          ))}
         </Flex>
       </Stack>
     </Box>
