@@ -1,25 +1,57 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, createContext, useContext } from "react";
 import { Box, Flex, Text, Tooltip, MakeElementFocusable } from "@commercetools/nimbus";
+
+// ─── Panel context ──────────────────────────────────────────────────────────
+
+type PanelContextValue = {
+  /** Open the chat panel, optionally with a contextual "Why?" message */
+  openPanel: (whyContext?: string) => void;
+};
+
+const PanelContext = createContext<PanelContextValue>({ openPanel: () => {} });
+
+export const PanelProvider = ({
+  openPanel,
+  children,
+}: {
+  openPanel: (whyContext?: string) => void;
+  children: React.ReactNode;
+}) => <PanelContext.Provider value={{ openPanel }}>{children}</PanelContext.Provider>;
+
+export const usePanelContext = () => useContext(PanelContext);
+
+// ─── ProvenanceIndicator ────────────────────────────────────────────────────
 
 interface ProvenanceIndicatorProps {
   agentName: string;
   confidence?: number;
-  /** Font size for the ✦. Default "8px". */
+  /** One-line reasoning summary shown in the tooltip */
+  reason?: string;
+  /** Font size for the ✦. Default "12px". */
   size?: string;
   /** When true, plays a one-shot pulse animation */
   pulse?: boolean;
+  /** Explicit callback; falls back to PanelContext.openPanel */
+  onWhyClick?: () => void;
+  /** Extra props forwarded from parent (e.g. data-tour) */
+  [key: `data-${string}`]: string | undefined;
 }
 
 /**
  * A tiny ✦ star that indicates AI provenance.
- * Hover shows a tooltip with agent name, confidence, and "Why?" link.
+ * Hover shows a tooltip with agent name, confidence, reasoning, and "Why?" link.
+ * Clicking "Why this suggestion?" opens the chat panel with contextual response.
  */
 export const ProvenanceIndicator = ({
   agentName,
   confidence,
+  reason,
   size = "12px",
   pulse = false,
+  onWhyClick,
+  ...rest
 }: ProvenanceIndicatorProps) => {
+  const { openPanel } = usePanelContext();
   const [isPulsing, setIsPulsing] = useState(false);
 
   useEffect(() => {
@@ -33,6 +65,18 @@ export const ProvenanceIndicator = ({
   const handleAnimationEnd = useCallback(() => {
     setIsPulsing(false);
   }, []);
+
+  const handleWhyClick = useCallback(() => {
+    if (onWhyClick) {
+      onWhyClick();
+    } else {
+      // Build contextual "Why?" message from props
+      const parts = [agentName];
+      if (confidence !== undefined) parts.push(`${confidence}% confidence`);
+      if (reason) parts.push(reason);
+      openPanel(parts.join(" · "));
+    }
+  }, [onWhyClick, openPanel, agentName, confidence, reason]);
 
   return (
     <Tooltip.Root>
@@ -49,12 +93,13 @@ export const ProvenanceIndicator = ({
           css={isPulsing ? { animation: "ai-pulse 600ms ease-out" } : undefined}
           onAnimationEnd={handleAnimationEnd}
           aria-hidden="true"
+          {...rest}
         >
           ✦
         </Text>
       </MakeElementFocusable>
       <Tooltip.Content>
-        <Flex direction="column" gap="100" maxWidth="220px">
+        <Flex direction="column" gap="100" maxWidth="240px">
           <Flex alignItems="center" gap="150">
             <Text as="span" fontSize="7px" color="indigo.9" lineHeight="1">✦</Text>
             <Text textStyle="xs" fontWeight="semibold">
@@ -66,11 +111,18 @@ export const ProvenanceIndicator = ({
               {confidence}% confidence
             </Text>
           )}
+          {reason && (
+            <Text textStyle="xs" color="neutral.11" lineHeight="snug">
+              {reason}
+            </Text>
+          )}
           <Text
+            as="span"
             textStyle="xs"
             color="indigo.11"
             cursor="pointer"
             _hover={{ textDecoration: "underline" }}
+            onClick={handleWhyClick}
           >
             Why this suggestion?
           </Text>

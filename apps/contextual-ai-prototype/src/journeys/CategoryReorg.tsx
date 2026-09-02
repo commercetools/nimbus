@@ -1,9 +1,24 @@
-import { Box, Flex, Stack, Text, Badge, Button, Separator, Icon } from "@commercetools/nimbus";
-import { AutoAwesome, Search, TrendingDown } from "@commercetools/nimbus-icons";
+import {
+  Box,
+  Flex,
+  Stack,
+  Text,
+  Badge,
+  Button,
+  Separator,
+  Icon,
+  Tree,
+  FormField,
+  TextInput,
+} from "@commercetools/nimbus";
+import { ChartThemeProvider, ResponsiveContainer, WaffleChart } from "@commercetools/nimbus-viz";
+import { Search, TrendingDown } from "@commercetools/nimbus-icons";
 import { PageHeader } from "../components/PageHeader";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
+
+const AGENT_NAME = "Category Intelligence Agent (proposed)";
 
 const suggestions = [
   { label: 'Split Silicone Cases into "Clear" and "Colored"', reason: "Product density 4.3x recommended max", confidence: 85 },
@@ -18,10 +33,19 @@ const impactRows = [
 ];
 
 const childCategories = [
-  { name: "Silicone Cases", products: 612, conversion: "1.8%", density: "High" },
-  { name: "Leather Cases", products: 142, conversion: "3.1%", density: "Normal" },
-  { name: "Rugged Cases", products: 93, conversion: "2.7%", density: "Low" },
+  { id: "silicone-cases", name: "Silicone Cases", products: 612, conversion: "1.8%", density: "High" },
+  { id: "leather-cases", name: "Leather Cases", products: 142, conversion: "3.1%", density: "Normal" },
+  { id: "rugged-cases", name: "Rugged Cases", products: 93, conversion: "2.7%", density: "Low" },
 ];
+
+// Agent-proposed children, not yet part of the category tree — rendered as
+// ✦-marked nodes so they read as suggestions rather than existing structure.
+const suggestedChildren = [
+  { id: "magsafe-compatible", name: "MagSafe Compatible", reason: "187 products with MagSafe attr, no category", confidence: 91 },
+];
+
+const densityPalette = (density: string) =>
+  density === "High" ? "warning" : density === "Low" ? "info" : "neutral";
 
 export const CategoryReorg = () => (
   <Box height="100%" overflow="auto">
@@ -33,11 +57,6 @@ export const CategoryReorg = () => (
       ]}
       title="Accessories > Phone Cases"
       subtitle="847 products · 3 children"
-      tabs={[
-        { label: "General", active: true },
-        { label: "Products" },
-        { label: "Search" },
-      ]}
       actions={
         <>
           <Button variant="ghost" size="2xs">Revert</Button>
@@ -46,13 +65,13 @@ export const CategoryReorg = () => (
       }
     />
 
-    <Stack gap="400" p="500">
+    <Stack gap="300" p="300">
       {/* Horizontal inline slot: category health dashboard */}
       <InlineSlot direction="row" data-tour="inline-slot">
-        <InlineCard title="Category Health" agentName="Category Intelligence Agent" headerRight={
+        <InlineCard title="Category Health" agentName={AGENT_NAME} headerRight={
           <Badge size="2xs" colorPalette="warning">Below avg</Badge>
         }>
-          <Flex gap="500">
+          <Flex gap="300">
             <Box>
               <Text textStyle="xl" fontWeight="bold" color="neutral.12">847</Text>
               <Text textStyle="xs" color="neutral.9">Products</Text>
@@ -78,40 +97,123 @@ export const CategoryReorg = () => (
               Conversion 38% below the Accessories average
             </Text>
           </Flex>
+
+          {/* Category health: product density breakdown across child categories */}
+          <Box mt="200">
+            <Text textStyle="xs" fontWeight="semibold" color="neutral.10" mb="100">
+              Product density by subcategory
+            </Text>
+            <ChartThemeProvider>
+              <ResponsiveContainer height={120}>
+                {(w, h) => (
+                  <WaffleChart
+                    width={w}
+                    height={h}
+                    data={childCategories.map((cat) => ({
+                      category: cat.name,
+                      value: cat.products,
+                    }))}
+                    ariaLabel="Product density by subcategory"
+                  />
+                )}
+              </ResponsiveContainer>
+            </ChartThemeProvider>
+          </Box>
         </InlineCard>
 
-        <InlineCard title="Child Categories" agentName="Category Intelligence Agent">
-          <Stack gap="0" borderWidth="1px" borderColor="neutral.4" borderRadius="200" overflow="hidden">
-            <Flex px="300" py="150" bg="neutral.2" borderBottomWidth="1px" borderColor="neutral.4">
-              <Text textStyle="xs" fontWeight="semibold" color="neutral.9" flex="1">Category</Text>
-              <Text textStyle="xs" fontWeight="semibold" color="neutral.9" width="70px" textAlign="right">Products</Text>
-              <Text textStyle="xs" fontWeight="semibold" color="neutral.9" width="80px" textAlign="right">Conv. Rate</Text>
-              <Text textStyle="xs" fontWeight="semibold" color="neutral.9" width="60px" textAlign="right">Density</Text>
-            </Flex>
-            {childCategories.map((cat, i) => (
-              <Flex key={i} px="300" py="200" borderBottomWidth={i < childCategories.length - 1 ? "1px" : "0"} borderColor="neutral.4" alignItems="center">
-                <Text textStyle="sm" color="neutral.12" flex="1">{cat.name}</Text>
-                <Text textStyle="xs" color="neutral.11" width="70px" textAlign="right">{cat.products}</Text>
-                <Text textStyle="xs" color="neutral.11" width="80px" textAlign="right">{cat.conversion}</Text>
-                <Badge size="xs" colorPalette={cat.density === "High" ? "warning" : cat.density === "Low" ? "info" : "neutral"} width="60px" justifyContent="center">{cat.density}</Badge>
-              </Flex>
-            ))}
-          </Stack>
+        <InlineCard title="Category Hierarchy" agentName={AGENT_NAME} headerRight={
+          <Badge size="2xs" colorPalette="info">1 suggestion</Badge>
+        }>
+          <FormField.Root size="sm" mb="200">
+            <FormField.Input>
+              <TextInput
+                width="100%"
+                size="sm"
+                placeholder="Search categories"
+                leadingElement={<Icon as={Search} size="2xs" color="neutral.8" />}
+              />
+            </FormField.Input>
+          </FormField.Root>
+
+          <Tree.Root
+            aria-label="Category hierarchy"
+            size="sm"
+            defaultExpandedKeys={["accessories", "phone-cases"]}
+          >
+            <Tree.Item id="accessories" textValue="Accessories">
+              <Tree.ItemContent>
+                <Tree.Indicator />
+                <Text textStyle="sm" fontWeight="medium" color="neutral.12">
+                  Accessories
+                </Text>
+              </Tree.ItemContent>
+
+              <Tree.Item id="phone-cases" textValue="Phone Cases">
+                <Tree.ItemContent>
+                  <Tree.Indicator />
+                  <Flex flex="1" alignItems="center" justifyContent="space-between" gap="200">
+                    <Text textStyle="sm" fontWeight="semibold" color="neutral.12">
+                      Phone Cases
+                    </Text>
+                    <Flex alignItems="center" gap="150">
+                      <Text textStyle="xs" color="neutral.9">847 products</Text>
+                      <Badge size="2xs" colorPalette="info">Current</Badge>
+                    </Flex>
+                  </Flex>
+                </Tree.ItemContent>
+
+                {childCategories.map((cat) => (
+                  <Tree.Item key={cat.id} id={cat.id} textValue={cat.name}>
+                    <Tree.ItemContent>
+                      <Tree.Indicator />
+                      <Flex flex="1" alignItems="center" justifyContent="space-between" gap="200">
+                        <Text textStyle="sm" color="neutral.12">{cat.name}</Text>
+                        <Flex alignItems="center" gap="150">
+                          <Text textStyle="xs" color="neutral.10">{cat.products} products</Text>
+                          <Text textStyle="xs" color="neutral.9">{cat.conversion}</Text>
+                          <Badge size="2xs" colorPalette={densityPalette(cat.density)}>
+                            {cat.density}
+                          </Badge>
+                        </Flex>
+                      </Flex>
+                    </Tree.ItemContent>
+                  </Tree.Item>
+                ))}
+
+                {suggestedChildren.map((sug) => (
+                  <Tree.Item key={sug.id} id={sug.id} textValue={sug.name}>
+                    <Tree.ItemContent>
+                      <Tree.Indicator />
+                      <Flex flex="1" alignItems="center" justifyContent="space-between" gap="200">
+                        <Flex alignItems="center" gap="150">
+                          <ProvenanceIndicator agentName={AGENT_NAME} confidence={sug.confidence} size="10px" />
+                          <Text textStyle="sm" fontStyle="italic" color="indigo.11">
+                            {sug.name}
+                          </Text>
+                        </Flex>
+                        <Badge size="2xs" colorPalette="info">Suggested</Badge>
+                      </Flex>
+                    </Tree.ItemContent>
+                  </Tree.Item>
+                ))}
+              </Tree.Item>
+            </Tree.Item>
+          </Tree.Root>
         </InlineCard>
       </InlineSlot>
 
       {/* Augmented restructuring suggestions */}
       <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden">
-        <Flex px="400" py="300" alignItems="center" gap="200" borderBottomWidth="1px" borderColor="neutral.4">
-          <ProvenanceIndicator agentName="Category Intelligence Agent" iconSize="2xs" />
+        <Flex px="300" py="200" alignItems="center" gap="200" borderBottomWidth="1px" borderColor="neutral.4">
+          <ProvenanceIndicator agentName={AGENT_NAME} iconSize="2xs" />
           <Text textStyle="sm" fontWeight="semibold" color="neutral.12">Restructuring Suggestions</Text>
         </Flex>
 
         {suggestions.map((sug, i) => (
           <Flex
             key={i}
-            px="400"
-            py="300"
+            px="300"
+            py="200"
             alignItems="center"
             gap="300"
             borderBottomWidth="1px"
@@ -120,7 +222,7 @@ export const CategoryReorg = () => (
             transition="background 150ms"
             css={{ animation: `fadeIn 200ms ease ${i * 100}ms both` }}
           >
-            <ProvenanceIndicator agentName="Category Intelligence Agent" confidence={sug.confidence} iconSize="2xs" />
+            <ProvenanceIndicator agentName={AGENT_NAME} confidence={sug.confidence} iconSize="2xs" />
             <Box flex="1">
               <Text textStyle="sm" fontWeight="medium" color="neutral.12">{sug.label}</Text>
               <Text textStyle="xs" color="neutral.10">{sug.reason}</Text>
@@ -134,12 +236,12 @@ export const CategoryReorg = () => (
 
       {/* Impact analysis table */}
       <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" overflow="hidden">
-        <Flex px="400" py="300" alignItems="center" gap="200" borderBottomWidth="1px" borderColor="neutral.4">
-          <ProvenanceIndicator agentName="Category Intelligence Agent" iconSize="2xs" />
+        <Flex px="300" py="200" alignItems="center" gap="200" borderBottomWidth="1px" borderColor="neutral.4">
+          <ProvenanceIndicator agentName={AGENT_NAME} iconSize="2xs" />
           <Text textStyle="sm" fontWeight="semibold" color="neutral.12">Impact Analysis</Text>
         </Flex>
 
-        <Flex px="400" py="200" bg="neutral.2" borderBottomWidth="1px" borderColor="neutral.4">
+        <Flex px="300" py="150" bg="neutral.2" borderBottomWidth="1px" borderColor="neutral.4">
           <Text textStyle="xs" fontWeight="semibold" color="neutral.9" flex="1">Change</Text>
           <Text textStyle="xs" fontWeight="semibold" color="neutral.9" width="80px" textAlign="right">Products</Text>
           <Text textStyle="xs" fontWeight="semibold" color="neutral.9" width="80px" textAlign="right">Redirects</Text>
@@ -147,7 +249,7 @@ export const CategoryReorg = () => (
         </Flex>
 
         {impactRows.map((row, i) => (
-          <Flex key={i} px="400" py="250" borderBottomWidth="1px" borderColor="neutral.3" alignItems="center">
+          <Flex key={i} px="300" py="200" borderBottomWidth="1px" borderColor="neutral.3" alignItems="center">
             <Text textStyle="sm" color="neutral.12" flex="1">{row.change}</Text>
             <Text textStyle="xs" color="neutral.11" width="80px" textAlign="right">{row.products}</Text>
             <Text textStyle="xs" color="neutral.11" width="80px" textAlign="right">{row.redirects}</Text>

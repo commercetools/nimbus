@@ -9,6 +9,8 @@ interface ChatPanelProps {
   agentName?: string;
   messages?: ChatMessage[];
   placeholder?: string;
+  /** Context string passed from a ProvenanceIndicator "Why?" click */
+  whyContext?: string;
 }
 
 const AgentMessage = ({ message }: { message: ChatMessage }) => (
@@ -68,11 +70,42 @@ const UserMessage = ({ message }: { message: ChatMessage }) => (
   </Flex>
 );
 
+/** Renders a contextual "Why?" follow-up when the panel was opened via a provenance indicator */
+const WhyContextResponse = ({ context, agentName }: { context: string; agentName: string }) => (
+  <Box css={{ animation: "fadeIn 400ms ease" }}>
+    {/* User's implicit question */}
+    <Flex justifyContent="flex-end" mb="400">
+      <Box bg="neutral.3" borderRadius="300" px="300" py="200" maxWidth="85%">
+        <Text textStyle="sm" fontWeight="medium" color="neutral.12">
+          Why this suggestion?
+        </Text>
+      </Box>
+    </Flex>
+
+    {/* Agent's contextual response */}
+    <Box pl="300" borderLeftWidth="2px" borderColor="indigo.6">
+      <Flex alignItems="center" gap="150" mb="100">
+        <AiDot size="7px" />
+        <Text textStyle="xs" fontWeight="medium" color="indigo.9">
+          {agentName}
+        </Text>
+      </Flex>
+      <Text textStyle="sm" color="neutral.12" lineHeight="tall">
+        {context}
+      </Text>
+      <Text textStyle="xs" color="neutral.9" mt="200">
+        You can ask follow-up questions below, or dismiss this suggestion on the page.
+      </Text>
+    </Box>
+  </Box>
+);
+
 export const ChatPanel = ({
   onClose,
   agentName = "Product Enrichment",
   messages = [],
   placeholder = "Ask about this product...",
+  whyContext,
 }: ChatPanelProps) => {
   return (
     <Flex direction="column" height="100%" overflow="hidden">
@@ -98,7 +131,7 @@ export const ChatPanel = ({
         <IconButton
           aria-label="Close panel"
           variant="ghost"
-          size="xs"
+          size="2xs"
           onClick={onClose}
         >
           <Close />
@@ -121,6 +154,10 @@ export const ChatPanel = ({
           ) : (
             <UserMessage key={i} message={msg} />
           )
+        )}
+        {/* Contextual "Why?" follow-up from provenance indicator click */}
+        {whyContext && (
+          <WhyContextResponse context={whyContext} agentName={agentName} />
         )}
       </Stack>
 
@@ -173,7 +210,7 @@ export const ChatPanel = ({
           aria-label="Send"
           variant="ghost"
           colorPalette="neutral"
-          size="xs"
+          size="2xs"
           flexShrink={0}
         >
           <ArrowUpward />
@@ -198,4 +235,3 @@ if (typeof document !== "undefined") {
     document.head.appendChild(style);
   }
 }
-

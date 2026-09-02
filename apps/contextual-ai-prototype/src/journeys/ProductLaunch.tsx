@@ -107,8 +107,10 @@ const variantColumns: DataTableColumnItem<VariantRow>[] = [
     isRowHeader: true,
     accessor: (row) => (
       <Flex alignItems="center" gap="100">
-        {row.isSuggested && <AiDot size="8px" />}
-        <Text textStyle="xs" fontWeight="medium" color="neutral.12">
+        {row.isSuggested && (
+          <ProvenanceIndicator agentName="Product Enrichment Agent" reason={row.reason} />
+        )}
+        <Text textStyle="xs" fontWeight="medium" color={row.isSuggested ? "indigo.11" : "neutral.12"}>
           {row.color} / {row.storage}
         </Text>
       </Flex>
@@ -295,7 +297,7 @@ export const ProductLaunch = () => {
                 />
               </Box>
 
-              <Flex gap="300">
+              <Flex gap="200">
                 <Stack gap="100" flex="1">
                   {checklist.map((item, i) => (
                     <Flex key={item.label} alignItems="center" gap="150">
@@ -382,7 +384,7 @@ export const ProductLaunch = () => {
               <Text textStyle="xs" color="neutral.9">3 existing</Text>
               <Box flex="1" />
               <Flex alignItems="center" gap="100">
-                <AiDot size="8px" />
+                <ProvenanceIndicator agentName="Product Enrichment Agent" />
                 <Text textStyle="xs" color="indigo.9" fontWeight="medium" data-tour="variants-suggested">
                   +3 suggested
                 </Text>
@@ -408,7 +410,7 @@ export const ProductLaunch = () => {
                 return (
                   <Box px="300" py="150" bg="indigo.2">
                     <Flex alignItems="center" gap="150" mb="100">
-                      <AiDot />
+                      <ProvenanceIndicator agentName="Product Enrichment Agent" />
                       <Text textStyle="xs" fontWeight="medium" color="indigo.9">
                         Product Enrichment Agent
                       </Text>
@@ -472,7 +474,7 @@ export const ProductLaunch = () => {
                   <Tree.ItemContent>
                     <Tree.Indicator />
                     <Flex alignItems="center" gap="150" flex="1">
-                      <AiDot size="8px" />
+                      <ProvenanceIndicator agentName="Product Enrichment Agent" confidence={78} reason="Products with 5G + AMOLED display are 78% categorized here" />
                       <Text textStyle="xs" color="indigo.11">Smartphones</Text>
                       <Badge size="2xs" colorPalette="info" variant="subtle">78%</Badge>
                     </Flex>
@@ -490,7 +492,7 @@ export const ProductLaunch = () => {
                   <Tree.ItemContent>
                     <Tree.Indicator />
                     <Flex alignItems="center" gap="150" flex="1">
-                      <AiDot size="8px" />
+                      <ProvenanceIndicator agentName="Product Enrichment Agent" confidence={67} reason="Cross-sell category: 34% of phone buyers also buy cases" />
                       <Text textStyle="xs" color="indigo.11">Phone Cases</Text>
                       <Badge size="2xs" colorPalette="info" variant="subtle">67%</Badge>
                     </Flex>
@@ -527,7 +529,7 @@ export const ProductLaunch = () => {
                     </Text>
                   ) : (
                     <Flex alignItems="center" gap="100" flex="1">
-                      <AiDot size="8px" />
+                      <ProvenanceIndicator agentName="Product Enrichment Agent" reason="Inferred from manufacturer spec sheet and similar products in catalog" />
                       <Text textStyle="xs" fontWeight="medium" color="indigo.11">
                         {attr.suggested}
                       </Text>
@@ -551,12 +553,13 @@ export const ProductLaunch = () => {
             </Flex>
 
             <Flex alignItems="center" gap="100" mb="150">
-              <AiDot size="8px" />
+              <ProvenanceIndicator agentName="Product Enrichment Agent" />
               <Text textStyle="xs" fontWeight="medium" color="indigo.9">Suggested</Text>
             </Flex>
             <Stack gap="100">
               {suggestedKeywords.map((kw) => (
                 <Flex key={kw.term} alignItems="center" gap="200">
+                  <ProvenanceIndicator agentName="Product Enrichment Agent" size="10px" />
                   <Badge size="2xs" colorPalette="info" variant="subtle">{kw.term}</Badge>
                   <Text textStyle="xs" color="neutral.9">{kw.source}</Text>
                 </Flex>

@@ -1,15 +1,90 @@
-import { Box, Flex, Stack, Text, Badge, Button, Separator, Icon } from "@commercetools/nimbus";
-import { AutoAwesome, Warning, CheckCircle, Error as ErrorIcon } from "@commercetools/nimbus-icons";
+import {
+  Box,
+  Flex,
+  Stack,
+  Text,
+  Badge,
+  Button,
+  Separator,
+  Icon,
+  DataTable,
+  Grid,
+} from "@commercetools/nimbus";
+import type { DataTableColumnItem, DataTableRowItem } from "@commercetools/nimbus";
+import {
+  Warning,
+  CheckCircle,
+  Error as ErrorIcon,
+  LocalShipping,
+  Payment,
+} from "@commercetools/nimbus-icons";
 import { PageHeader } from "../components/PageHeader";
 import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
+
+const AGENT_NAME = "Order Intelligence Agent (proposed)";
 
 const timeline = [
   { date: "Aug 29", event: "Shipping address changed to Hamburg (was Munich)", type: "warning" as const },
   { date: "Aug 31", event: "Order placed with expedited shipping", type: "info" as const },
   { date: "Aug 31", event: "Fraud alert triggered (automated)", type: "error" as const },
   { date: "Sep 1", event: "Assigned to David for investigation", type: "info" as const },
+];
+
+interface LineItem {
+  name: string;
+  qty: number;
+  unitPrice: string;
+  total: string;
+}
+
+const lineItems: DataTableRowItem<LineItem>[] = [
+  { id: "li1", name: "Galaxy S25 Ultra (Black, 256GB)", qty: 1, unitPrice: "€399.00", total: "€399.00" },
+  { id: "li2", name: "Premium Leather Case", qty: 1, unitPrice: "€32.00", total: "€32.00" },
+];
+
+const lineItemColumns: DataTableColumnItem<LineItem>[] = [
+  {
+    id: "name",
+    header: "Item",
+    isRowHeader: true,
+    accessor: (row) => (
+      <Text textStyle="sm" color="neutral.12">
+        {row.name}
+      </Text>
+    ),
+  },
+  {
+    id: "qty",
+    header: "Qty",
+    align: "end",
+    accessor: (row) => (
+      <Text textStyle="xs" color="neutral.10">
+        {row.qty}
+      </Text>
+    ),
+  },
+  {
+    id: "unitPrice",
+    header: "Unit Price",
+    align: "end",
+    accessor: (row) => (
+      <Text textStyle="xs" color="neutral.11">
+        {row.unitPrice}
+      </Text>
+    ),
+  },
+  {
+    id: "total",
+    header: "Total",
+    align: "end",
+    accessor: (row) => (
+      <Text textStyle="sm" fontWeight="medium" color="neutral.12">
+        {row.total}
+      </Text>
+    ),
+  },
 ];
 
 export const OrderInvestigation = () => (
@@ -21,18 +96,11 @@ export const OrderInvestigation = () => (
       ]}
       title="Order #MC-2026-847291"
       subtitle="€431.00 · Expedited shipping"
-      tabs={[
-        { label: "General", active: true },
-        { label: "Line Items" },
-        { label: "Shipping" },
-        { label: "Payment" },
-        { label: "Returns" },
-      ]}
       actions={
         <>
           {/* Augmentation: risk indicator chip in the header */}
           <Flex alignItems="center" gap="150" px="200" py="100" borderRadius="200" bg="amber.3" borderWidth="1px" borderColor="amber.6">
-            <ProvenanceIndicator agentName="Order Intelligence Agent" iconSize="2xs" />
+            <ProvenanceIndicator agentName={AGENT_NAME} iconSize="2xs" />
             <Text textStyle="xs" fontWeight="semibold" color="amber.11">High Fraud Risk · 87/100</Text>
           </Flex>
           {/* Augmentation: toolbar action */}
@@ -56,10 +124,29 @@ export const OrderInvestigation = () => (
       }
     />
 
-    <Stack gap="400" p="500">
+    <Stack gap="300" p="500">
+      {/* Compact state row: order, payment, shipment state badges */}
+      <Flex gap="400" alignItems="center" wrap="wrap">
+        <Flex alignItems="center" gap="100">
+          <Icon as={CheckCircle} size="2xs" color="neutral.9" />
+          <Text textStyle="xs" color="neutral.9">Order state</Text>
+          <Badge size="2xs" colorPalette="info">Open</Badge>
+        </Flex>
+        <Flex alignItems="center" gap="100">
+          <Icon as={Payment} size="2xs" color="neutral.9" />
+          <Text textStyle="xs" color="neutral.9">Payment state</Text>
+          <Badge size="2xs" colorPalette="warning">Pending</Badge>
+        </Flex>
+        <Flex alignItems="center" gap="100">
+          <Icon as={LocalShipping} size="2xs" color="neutral.9" />
+          <Text textStyle="xs" color="neutral.9">Shipment state</Text>
+          <Badge size="2xs" colorPalette="critical">Backorder</Badge>
+        </Flex>
+      </Flex>
+
       {/* Horizontal inline slot: customer profile + timeline */}
       <InlineSlot direction="row" data-tour="inline-slot">
-        <InlineCard title="Customer Profile" agentName="Order Intelligence Agent">
+        <InlineCard title="Customer Profile" agentName={AGENT_NAME}>
           <Flex gap="500">
             <Stack gap="100" flex="1">
               <Flex justifyContent="space-between">
@@ -86,7 +173,7 @@ export const OrderInvestigation = () => (
           </Flex>
         </InlineCard>
 
-        <InlineCard title="Investigation Timeline" agentName="Order Intelligence Agent">
+        <InlineCard title="Investigation Timeline" agentName={AGENT_NAME}>
           <Stack gap="200">
             {timeline.map((item, i) => (
               <Flex key={i} gap="200" alignItems="flex-start">
@@ -109,59 +196,51 @@ export const OrderInvestigation = () => (
 
       {/* Order details with augmented risk signals */}
       <Box bg="white" borderWidth="1px" borderColor="neutral.6" borderRadius="300" p="500">
-        <Text textStyle="md" fontWeight="semibold" color="neutral.12" mb="400">
+        <Text textStyle="md" fontWeight="semibold" color="neutral.12" mb="300">
           Order Details
         </Text>
 
-        <Flex gap="500">
-          <Stack gap="300" flex="1">
-            <Box>
-              <Text textStyle="xs" color="neutral.9" mb="50">Customer</Text>
-              <Text textStyle="sm" fontWeight="medium" color="neutral.12">Sarah Chen</Text>
-              <Text textStyle="xs" color="neutral.10">customer@example.com</Text>
-            </Box>
-            <Box>
-              <Text textStyle="xs" color="neutral.9" mb="50">Billing address</Text>
-              <Text textStyle="xs" color="neutral.12">Marienplatz 8, 80331 Munich, Germany</Text>
-              <Badge size="xs" colorPalette="positive" mt="100">Consistent across 14 orders</Badge>
-            </Box>
-          </Stack>
-          <Stack gap="300" flex="1">
-            <Box>
-              <Text textStyle="xs" color="neutral.9" mb="50">Shipping address</Text>
-              <Flex alignItems="center" gap="150">
-                <Text textStyle="xs" color="neutral.12">Jungfernstieg 12, 20354 Hamburg, Germany</Text>
-                <ProvenanceIndicator agentName="Order Intelligence Agent" iconSize="2xs" />
-              </Flex>
-              <Badge size="2xs" colorPalette="warning" mt="100">Changed 2 days before order</Badge>
-            </Box>
-            <Box>
-              <Text textStyle="xs" color="neutral.9" mb="50">Shipping method</Text>
-              <Flex alignItems="center" gap="150">
-                <Text textStyle="xs" color="neutral.12">Express (1-2 days)</Text>
-                <ProvenanceIndicator agentName="Order Intelligence Agent" iconSize="2xs" />
-              </Flex>
-              <Badge size="2xs" colorPalette="warning" mt="100">Unusual for this customer</Badge>
-            </Box>
-          </Stack>
-        </Flex>
+        <Box mb="300">
+          <Text textStyle="xs" color="neutral.9" mb="50">Customer</Text>
+          <Text textStyle="sm" fontWeight="medium" color="neutral.12">Sarah Chen</Text>
+          <Text textStyle="xs" color="neutral.10">customer@example.com</Text>
+        </Box>
 
-        <Separator my="400" />
+        {/* Billing / shipping addresses side by side */}
+        <Grid templateColumns="1fr 1fr" gap="300">
+          <Box borderWidth="1px" borderColor="neutral.5" borderRadius="200" p="300">
+            <Text textStyle="xs" fontWeight="semibold" color="neutral.11" mb="150">Billing address</Text>
+            <Text textStyle="xs" color="neutral.12">Marienplatz 8, 80331 Munich, Germany</Text>
+            <Badge size="2xs" colorPalette="positive" mt="150">Consistent across 14 orders</Badge>
+          </Box>
+          <Box borderWidth="1px" borderColor="amber.6" borderRadius="200" p="300" bg="amber.2">
+            <Flex alignItems="center" gap="150" mb="150">
+              <Text textStyle="xs" fontWeight="semibold" color="neutral.11">Shipping address</Text>
+              <ProvenanceIndicator agentName={AGENT_NAME} iconSize="2xs" />
+            </Flex>
+            <Text textStyle="xs" color="neutral.12">Jungfernstieg 12, 20354 Hamburg, Germany</Text>
+            <Badge size="2xs" colorPalette="warning" mt="150">Changed 2 days before order</Badge>
+            <Flex alignItems="center" gap="150" mt="200">
+              <Text textStyle="xs" color="neutral.9">Shipping method</Text>
+              <Text textStyle="xs" color="neutral.12">Express (1-2 days)</Text>
+              <ProvenanceIndicator agentName={AGENT_NAME} iconSize="2xs" />
+            </Flex>
+            <Badge size="2xs" colorPalette="warning" mt="150">Unusual for this customer</Badge>
+          </Box>
+        </Grid>
+
+        <Separator my="300" />
 
         {/* Line items */}
         <Text textStyle="sm" fontWeight="semibold" color="neutral.12" mb="200">Line Items</Text>
-        <Stack gap="0" borderWidth="1px" borderColor="neutral.4" borderRadius="200" overflow="hidden">
-          {[
-            { name: "Galaxy S25 Ultra (Black, 256GB)", qty: 1, price: "€399.00" },
-            { name: "Premium Leather Case", qty: 1, price: "€32.00" },
-          ].map((item, i) => (
-            <Flex key={i} px="300" py="200" alignItems="center" borderBottomWidth={i < 1 ? "1px" : "0"} borderColor="neutral.4">
-              <Text textStyle="sm" color="neutral.12" flex="1">{item.name}</Text>
-              <Text textStyle="xs" color="neutral.9" width="40px" textAlign="center">×{item.qty}</Text>
-              <Text textStyle="sm" fontWeight="medium" color="neutral.12" width="80px" textAlign="right">{item.price}</Text>
-            </Flex>
-          ))}
-        </Stack>
+        <Box borderWidth="1px" borderColor="neutral.4" borderRadius="200" overflow="hidden">
+          <DataTable.Root columns={lineItemColumns} rows={lineItems} density="condensed" allowsPinning={false} allowsExpandColumn={false}>
+            <DataTable.Table>
+              <DataTable.Header />
+              <DataTable.Body />
+            </DataTable.Table>
+          </DataTable.Root>
+        </Box>
       </Box>
     </Stack>
   </Box>
