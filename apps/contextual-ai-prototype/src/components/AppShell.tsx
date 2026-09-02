@@ -7,50 +7,52 @@ import { ChatPanel } from "./ChatPanel";
 import { PanelProvider } from "./ProvenanceIndicator";
 import { chatConfigs } from "../data/chatMessages";
 
-/** Top app bar matching the real MC: white bg, box-shadow, org + project selectors + user menu */
+/** Top app bar: dark bg matching sidebar, menu toolbar on the right */
 const AppBar = () => (
   <Flex
     alignItems="center"
-    height="40px"
-    bg="white"
+    height="36px"
+    bg="neutral.12"
     px="300"
     gap="200"
     flexShrink={0}
-    shadow="sm"
-    borderBottomWidth="1px"
-    borderColor="neutral.4"
     zIndex={100}
   >
-    <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-organization-name" aria-label="Organization" width="max-content" css={{ "& [slot=clear]": { display: "none" } }}>
-      <ComboBox.Trigger />
-      <ComboBox.Popover>
-        <ComboBox.ListBox>
-          <ComboBox.Option id="my-org" textValue="my-organization-name">my-organization-name</ComboBox.Option>
-          <ComboBox.Option id="other-org" textValue="other-org">other-org</ComboBox.Option>
-        </ComboBox.ListBox>
-      </ComboBox.Popover>
-    </ComboBox.Root>
-    <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-project-key" aria-label="Project" width="max-content" css={{ "& [slot=clear]": { display: "none" } }}>
-      <ComboBox.Trigger />
-      <ComboBox.Popover>
-        <ComboBox.ListBox>
-          <ComboBox.Option id="my-proj" textValue="my-project-key">my-project-key</ComboBox.Option>
-          <ComboBox.Option id="staging" textValue="staging-project">staging-project</ComboBox.Option>
-        </ComboBox.ListBox>
-      </ComboBox.Popover>
-    </ComboBox.Root>
     <Box flex="1" />
-    <Box cursor="pointer" color="neutral.9"><Icon as={HelpOutline} size="xs" /></Box>
-    <Flex
-      width="24px"
-      height="24px"
-      borderRadius="full"
-      bg="neutral.4"
-      alignItems="center"
-      justifyContent="center"
-      cursor="pointer"
-    >
-      <Icon as={PersonOutline} size="2xs" color="neutral.9" />
+    <Flex alignItems="center" gap="200" color="rgba(255,255,255,0.7)">
+      <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-organization-name" aria-label="Organization" width="max-content" css={{ "& [slot=clear]": { display: "none" }, "& input": { color: "rgba(255,255,255,0.9)", fontSize: "var(--nimbus-font-sizes-xs)" }, "& button": { color: "rgba(255,255,255,0.6)" } }}>
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            <ComboBox.Option id="my-org" textValue="my-organization-name">my-organization-name</ComboBox.Option>
+            <ComboBox.Option id="other-org" textValue="other-org">other-org</ComboBox.Option>
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
+      <Box width="1px" height="16px" bg="rgba(255,255,255,0.2)" />
+      <ComboBox.Root size="sm" variant="ghost" defaultInputValue="my-project-key" aria-label="Project" width="max-content" css={{ "& [slot=clear]": { display: "none" }, "& input": { color: "rgba(255,255,255,0.9)", fontSize: "var(--nimbus-font-sizes-xs)" }, "& button": { color: "rgba(255,255,255,0.6)" } }}>
+        <ComboBox.Trigger />
+        <ComboBox.Popover>
+          <ComboBox.ListBox>
+            <ComboBox.Option id="my-proj" textValue="my-project-key">my-project-key</ComboBox.Option>
+            <ComboBox.Option id="staging" textValue="staging-project">staging-project</ComboBox.Option>
+          </ComboBox.ListBox>
+        </ComboBox.Popover>
+      </ComboBox.Root>
+      <Box width="1px" height="16px" bg="rgba(255,255,255,0.2)" />
+      <Box cursor="pointer" _hover={{ color: "white" }}><Icon as={HelpOutline} size="xs" /></Box>
+      <Flex
+        width="22px"
+        height="22px"
+        borderRadius="full"
+        bg="rgba(255,255,255,0.15)"
+        alignItems="center"
+        justifyContent="center"
+        cursor="pointer"
+        _hover={{ bg: "rgba(255,255,255,0.25)" }}
+      >
+        <Icon as={PersonOutline} size="2xs" />
+      </Flex>
     </Flex>
   </Flex>
 );
