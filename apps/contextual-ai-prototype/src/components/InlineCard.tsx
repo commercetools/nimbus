@@ -26,7 +26,7 @@ export const InlineCard = ({
       borderWidth="1px"
       borderColor="neutral.6"
       borderRadius="200"
-      overflow="hidden"
+      overflow="visible"
       width="fit-content"
       maxWidth="100%"
     >
