@@ -9,7 +9,7 @@ export interface TourStep {
   renderTarget?: "panel" | "inline" | "augmentation" | "all";
   placement?: "top" | "bottom" | "left" | "right";
   /** Action to animate when entering this step (before dialog shows) */
-  action?: "openPanel" | "pulseElement" | "highlightStars" | "hoverWaffleCells" | "selectSmartphones" | "revealGenerateSeo";
+  action?: "openPanel" | "pulseElement" | "highlightStars" | "hoverWaffleCells" | "selectSmartphones" | "revealGenerateSeo" | "expandFirstRow" | "clickSuggestedCondition";
 }
 
 interface TourContextValue {
@@ -169,6 +169,50 @@ function runAction(step: TourStep): Promise<void> {
           }, 1400);
         };
         hoverNext();
+      } else { resolve(); }
+      return;
+    }
+
+    if (step.action === "expandFirstRow") {
+      // Click the first expandable row in a price table
+      const el = document.querySelector(step.selector);
+      if (el) {
+        // Highlight stars first
+        const stars = el.querySelectorAll<HTMLElement>('[aria-hidden="true"]');
+        stars.forEach((s) => {
+          s.style.transition = "transform 400ms ease, color 400ms ease";
+          s.style.transform = "scale(2)";
+          s.style.color = "var(--nimbus-colors-indigo-11)";
+        });
+        setTimeout(() => {
+          stars.forEach((s) => { s.style.transform = ""; s.style.color = ""; });
+          // Click the first data row to expand it
+          const rows = el.querySelectorAll<HTMLElement>("tr[data-href], tr[role='row']");
+          const clickable = Array.from(rows).find(r => r.querySelector("td, [role='gridcell']"));
+          if (clickable) clickable.click();
+        }, 1000);
+        setTimeout(resolve, 1600);
+      } else { resolve(); }
+      return;
+    }
+
+    if (step.action === "clickSuggestedCondition") {
+      const el = document.querySelector(step.selector);
+      if (el) {
+        // Highlight stars
+        const stars = el.querySelectorAll<HTMLElement>('[aria-hidden="true"]');
+        stars.forEach((s) => {
+          s.style.transition = "transform 400ms ease, color 400ms ease";
+          s.style.transform = "scale(2)";
+          s.style.color = "var(--nimbus-colors-indigo-11)";
+        });
+        setTimeout(() => {
+          stars.forEach((s) => { s.style.transform = ""; s.style.color = ""; });
+          // Click the first suggested condition badge
+          const badge = el.querySelector<HTMLElement>("[class*='badge'], [class*='Badge']");
+          if (badge) badge.click();
+        }, 1000);
+        setTimeout(resolve, 1600);
       } else { resolve(); }
       return;
     }
