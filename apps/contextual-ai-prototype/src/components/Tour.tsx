@@ -117,6 +117,10 @@ function runAction(step: TourStep): Promise<void> {
           s.style.color = "var(--nimbus-colors-indigo-11)";
           s.style.textShadow = "0 0 8px rgba(110, 86, 207, 0.6)";
         });
+        // If this is the variants table, simulate creating variants
+        if (step.selector.includes("variants-table")) {
+          window.dispatchEvent(new CustomEvent("tour:createVariants"));
+        }
         setTimeout(() => {
           stars.forEach((s) => {
             s.style.transition = "transform 800ms ease, color 800ms ease, text-shadow 800ms ease";

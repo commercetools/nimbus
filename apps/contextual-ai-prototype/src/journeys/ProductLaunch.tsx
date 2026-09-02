@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -211,7 +211,8 @@ const variantColumns: DataTableColumnItem<VariantRow>[] = [
       if (row.isSuggested) {
         return <Button variant="outline" size="2xs">Create</Button>;
       }
-      return <Badge size="2xs" colorPalette="positive">{row.status}</Badge>;
+      const palette = row.status === "Published" ? "positive" : row.status === "Staged" ? "info" : "neutral";
+      return <Badge size="2xs" colorPalette={palette}>{row.status}</Badge>;
     },
   },
 ];
@@ -241,11 +242,31 @@ const suggestedKeywords = [
 export const ProductLaunch = () => {
   const [expandedVariant, setExpandedVariant] = useState<string | null>(null);
   const [createdIds, setCreatedIds] = useState<Set<string>>(new Set());
+  const [readiness, setReadiness] = useState(68);
+
+  // Bump readiness when variants are created
+  useEffect(() => {
+    const count = createdIds.size;
+    setReadiness(68 + count * 7); // each created variant adds ~7%
+  }, [createdIds]);
+
+  // Listen for tour to auto-create suggested variants (simulates Lena clicking Create)
+  useEffect(() => {
+    const handler = () => {
+      // Auto-create all suggested variants after a delay (tour animation)
+      setTimeout(() => setCreatedIds(new Set(["s1", "s2"])), 1500);
+    };
+    window.addEventListener("tour:createVariants", handler);
+    return () => window.removeEventListener("tour:createVariants", handler);
+  }, []);
 
   // Mark created variants as "existing" (no longer suggested)
-  const rows = allVariantRows.map(row =>
-    createdIds.has(row.id) ? { ...row, isSuggested: false, status: "Created" } : row
-  );
+  const rows = allVariantRows.map(row => {
+    if (!createdIds.has(row.id)) return row;
+    // First created variant moves to "Staged", rest to "Created"
+    const isFirst = row.id === Array.from(createdIds)[0];
+    return { ...row, isSuggested: false, status: isFirst ? "Staged" : "Created" };
+  });
 
   return (
     <Box height="100%" overflow="auto">
@@ -363,18 +384,18 @@ export const ProductLaunch = () => {
               title="Readiness"
               agentName="Product Enrichment Agent"
               headerRight={
-                <Text textStyle="lg" fontWeight="bold" color="amber.11">
-                  68%
+                <Text textStyle="lg" fontWeight="bold" color={readiness >= 80 ? "green.11" : "amber.11"} transition="color 300ms ease">
+                  {readiness}%
                 </Text>
               }
             >
               <Box height="2px" bg="neutral.4" borderRadius="full" mb="200" overflow="hidden">
                 <Box
                   height="100%"
-                  width="0%"
-                  bg="amber.9"
+                  width={`${readiness}%`}
+                  bg={readiness >= 80 ? "green.9" : "amber.9"}
                   borderRadius="full"
-                  css={{ animation: "progressGrow 800ms ease-out 300ms forwards" }}
+                  transition="width 600ms ease, background 300ms ease"
                 />
               </Box>
 
