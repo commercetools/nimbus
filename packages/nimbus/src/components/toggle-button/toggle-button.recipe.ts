@@ -13,10 +13,13 @@ import { defineRecipe } from "@chakra-ui/react/styled-system";
 // omits the `ghost` variant (a group needs a resting binding affordance).
 const activeFill = {
   tint: {
-    bg: "colorPalette.3",
-    color: "colorPalette.11",
+    bg: "colorPalette.5",
+    // Step 12 (not 11) for AA: on the deepened .5/.6 fill, step 11 text drops
+    // below 4.5:1 for the neutral and critical palettes in light mode; step 12
+    // clears it on every palette/theme (worst case 7.48:1).
+    color: "colorPalette.12",
     "&[data-hovered='true']": {
-      bg: "colorPalette.4",
+      bg: "colorPalette.6",
     },
   },
   solid: {
@@ -44,8 +47,11 @@ export const toggleButtonRecipe = defineRecipe({
       outline: {
         borderColor: "neutral.7",
         color: "neutral.11",
+        // Off-state hover matches Button's outline hover step (bg .3, border
+        // .8); the palette stays neutral (resting chrome never carries the
+        // accent — that's reserved for the selected state).
         "&[data-hovered='true']": {
-          bg: "neutral.2",
+          bg: "neutral.3",
           borderColor: "neutral.8",
         },
       },
