@@ -34,7 +34,7 @@ type ToggleButtonGroupRecipeVariantProps = {
    * (full accent fill). Defaults from `selectionMode` — `single` → `solid`,
    * `multiple` → `tint` — and is overridable.
    */
-  fillStyle?: SlotRecipeProps<"nimbusToggleButtonGroup">["fillStyle"];
+  activeFillStyle?: SlotRecipeProps<"nimbusToggleButtonGroup">["activeFillStyle"];
 };
 
 // ============================================================

@@ -2,14 +2,15 @@ import { buttonRecipe } from "@/components/button/button.recipe";
 import { defineRecipe } from "@chakra-ui/react/styled-system";
 
 // FEC-1170: the active (selected) fill. Resting is always neutral; the chosen
-// `colorPalette` applies only to the selected state. `fillStyle` sets how heavy
-// that active fill is — a light `tint` or a full `solid`. Selection always
+// `colorPalette` applies only to the selected state. `activeFillStyle` sets how
+// heavy that active fill is — a light `tint` or a full `solid`. Selection always
 // changes the *fill* (not hue alone), so it is never signalled by color alone
 // (WCAG 1.4.1). The border is deliberately NOT set here: border presence is
 // owned by the `variant` (resting chrome), so only `outline` — the one variant
 // with a resting border — recolors it on selection (see `compoundVariants`);
-// `ghost`/`subtle` must not grow a border when selected. Kept in sync with
-// toggle-button-group.recipe.tsx.
+// `ghost`/`subtle` must not grow a border when selected. The active-fill logic
+// is kept in sync with toggle-button-group.recipe.tsx; the group intentionally
+// omits the `ghost` variant (a group needs a resting binding affordance).
 const activeFill = {
   tint: {
     bg: "colorPalette.3",
@@ -65,7 +66,7 @@ export const toggleButtonRecipe = defineRecipe({
     // Active-state fill weight (applies to the selected state only). Border
     // width is constant (1px from the Button base), so the color change causes
     // no layout shift between states.
-    fillStyle: {
+    activeFillStyle: {
       tint: {
         "&[data-selected='true']": activeFill.tint,
       },
@@ -80,7 +81,7 @@ export const toggleButtonRecipe = defineRecipe({
   compoundVariants: [
     {
       variant: "outline",
-      fillStyle: "tint",
+      activeFillStyle: "tint",
       css: {
         "&[data-selected='true']": {
           borderColor: "colorPalette.8",
@@ -95,7 +96,7 @@ export const toggleButtonRecipe = defineRecipe({
     },
     {
       variant: "outline",
-      fillStyle: "solid",
+      activeFillStyle: "solid",
       css: {
         "&[data-selected='true']": {
           borderColor: "colorPalette.9",
@@ -110,6 +111,6 @@ export const toggleButtonRecipe = defineRecipe({
     size: "md",
     variant: "outline",
     // Standalone toggles are independent binaries → quiet by default.
-    fillStyle: "tint",
+    activeFillStyle: "tint",
   },
 });

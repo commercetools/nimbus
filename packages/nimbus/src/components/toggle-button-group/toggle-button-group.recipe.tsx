@@ -6,14 +6,15 @@ import { buttonRecipe } from "../button/button.recipe";
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 
-// FEC-1170: the active (selected) fill — kept in sync with
-// toggle-button.recipe.ts. Resting is always neutral; the chosen `colorPalette`
-// applies only to the selected state. `fillStyle` sets how heavy the active
-// fill is (light `tint` vs full `solid`); selection always changes the fill
-// (not hue alone), so it is never signalled by color alone (WCAG 1.4.1). The
-// border is NOT set here: border presence is owned by the `variant` (resting
-// chrome), so only `outline` recolors its border on selection (see
-// `compoundVariants`); `ghost`/`subtle` must not grow a border when selected.
+// FEC-1170: the active (selected) fill — the active-fill logic is kept in sync
+// with toggle-button.recipe.ts. Resting is always neutral; the chosen
+// `colorPalette` applies only to the selected state. `activeFillStyle` sets how
+// heavy the active fill is (light `tint` vs full `solid`); selection always
+// changes the fill (not hue alone), so it is never signalled by color alone
+// (WCAG 1.4.1). The border is NOT set here: border presence is owned by the
+// `variant` (resting chrome), so only `outline` recolors its border on
+// selection (see `compoundVariants`); `subtle` must not grow a border when
+// selected.
 const activeFill = {
   tint: {
     bg: "colorPalette.3",
@@ -62,6 +63,13 @@ export const buttonGroupRecipe = defineSlotRecipe({
   variants: {
     // FEC-1170: resting chrome — always neutral. `colorPalette` is reserved for
     // the active state, so unselected options never carry the accent hue.
+    //
+    // NOTE: unlike the standalone ToggleButton, the group intentionally omits
+    // `ghost`. A group's job is to present mutually-related options as one
+    // control, and its segmenting chrome (shared borders) is what binds them;
+    // `ghost` (no border, no fill) leaves nothing to bind at rest, so it reads
+    // as a loose row rather than a control. For a quiet grouped control use
+    // `subtle` (a filled track that still binds the set).
     variant: {
       outline: {
         button: {
@@ -70,14 +78,6 @@ export const buttonGroupRecipe = defineSlotRecipe({
           _hover: {
             bg: "neutral.2",
             borderColor: "neutral.8",
-          },
-        },
-      },
-      ghost: {
-        button: {
-          color: "neutral.11",
-          _hover: {
-            bg: "neutral.3",
           },
         },
       },
@@ -94,7 +94,7 @@ export const buttonGroupRecipe = defineSlotRecipe({
 
     // FEC-1170: active-state fill weight. Default is resolved from
     // `selectionMode` in the Root wrapper (single → solid, multiple → tint).
-    fillStyle: {
+    activeFillStyle: {
       tint: {
         button: {
           "&[data-selected=true]": activeFill.tint,
@@ -130,8 +130,8 @@ export const buttonGroupRecipe = defineSlotRecipe({
   },
 
   // Border presence is owned by `variant`: only `outline` has a resting border,
-  // so only `outline` recolors it on selection. `ghost`/`subtle` keep the
-  // Button base's transparent 1px border, so selecting them never adds a ring.
+  // so only `outline` recolors it on selection. `subtle` keeps the Button
+  // base's transparent 1px border, so selecting it never adds a ring.
   //
   // Segments collapse their right border (`borderRightWidth: 0`), so a selected
   // button's right divider is physically drawn by the NEXT button's left
@@ -142,7 +142,7 @@ export const buttonGroupRecipe = defineSlotRecipe({
   compoundVariants: [
     {
       variant: "outline",
-      fillStyle: "tint",
+      activeFillStyle: "tint",
       css: {
         button: {
           "&[data-selected=true]": {
@@ -162,7 +162,7 @@ export const buttonGroupRecipe = defineSlotRecipe({
     },
     {
       variant: "outline",
-      fillStyle: "solid",
+      activeFillStyle: "solid",
       css: {
         button: {
           "&[data-selected=true]": {
@@ -183,6 +183,6 @@ export const buttonGroupRecipe = defineSlotRecipe({
     size: "md",
     variant: "outline",
     // Fallback; the Root wrapper resolves this from selectionMode.
-    fillStyle: "solid",
+    activeFillStyle: "solid",
   },
 });

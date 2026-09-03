@@ -10,17 +10,20 @@ import {
 } from "@commercetools/nimbus";
 
 /**
- * FEC-1170 — variant × fillStyle exploration (NOT the final component stories).
+ * FEC-1170 — variant × activeFillStyle exploration (NOT the final component
+ * stories).
  *
  * Read top to bottom: Button (the variant vocabulary we build on) →
  * ToggleButton (resting chrome × active fill) → ToggleButtonGroup.
  *
  * Two orthogonal style axes on the toggles:
- *   - `variant`   → resting chrome, always neutral: outline | ghost | subtle
- *   - `fillStyle` → active-state fill: tint (light wash) | solid (full fill)
+ *   - `variant`         → resting chrome, always neutral. Standalone
+ *     ToggleButton: outline | ghost | subtle. The group omits `ghost`
+ *     (outline | subtle) — it needs a resting affordance to bind the set.
+ *   - `activeFillStyle` → active-state fill: tint (light wash) | solid (full)
  *
  * `colorPalette` applies to the ACTIVE state only; resting is always neutral.
- * In a group, `fillStyle` defaults from `selectionMode` (single → solid,
+ * In a group, `activeFillStyle` defaults from `selectionMode` (single → solid,
  * multiple → tint) and is overridable.
  *
  * Replaced by real stories + play tests before this change leaves draft.
@@ -39,10 +42,14 @@ export default meta;
 type Story = StoryObj<typeof ToggleButtonGroup.Root>;
 
 const buttonVariants = ["solid", "subtle", "outline", "ghost", "link"] as const;
-const variants = ["outline", "ghost", "subtle"] as const;
+// Standalone ToggleButton keeps `ghost`; the group omits it (a group needs a
+// resting affordance to bind the set), so the group matrix iterates the
+// narrower set.
+const toggleButtonVariants = ["outline", "ghost", "subtle"] as const;
+const groupVariants = ["outline", "subtle"] as const;
 const fillStyles = ["tint", "solid"] as const;
 
-type Variant = (typeof variants)[number];
+type GroupVariant = (typeof groupVariants)[number];
 type FillStyle = (typeof fillStyles)[number];
 
 const SectionHeading = ({ children }: { children: ReactNode }) => (
@@ -59,22 +66,22 @@ const SubHeading = ({ children }: { children: ReactNode }) => (
 
 const GroupCell = ({
   variant,
-  fillStyle,
+  activeFillStyle,
   selectionMode,
   selectedKeys,
 }: {
-  variant: Variant;
-  fillStyle: FillStyle;
+  variant: GroupVariant;
+  activeFillStyle: FillStyle;
   selectionMode: "single" | "multiple";
   selectedKeys: string[];
 }) => (
   <ToggleButtonGroup.Root
     variant={variant}
-    fillStyle={fillStyle}
+    activeFillStyle={activeFillStyle}
     selectionMode={selectionMode}
     colorPalette="primary"
     defaultSelectedKeys={selectedKeys}
-    aria-label={`${variant} ${fillStyle} ${selectionMode}`}
+    aria-label={`${variant} ${activeFillStyle} ${selectionMode}`}
   >
     <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
     <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
@@ -82,9 +89,10 @@ const GroupCell = ({
   </ToggleButtonGroup.Root>
 );
 
-// variant × fillStyle grid for one selection mode. Both matrices set fillStyle
-// explicitly, so the columns show the full cross product regardless of the
-// selectionMode-derived default (which the "defaults" block below illustrates).
+// variant × activeFillStyle grid for one selection mode. Both matrices set
+// activeFillStyle explicitly, so the columns show the full cross product
+// regardless of the selectionMode-derived default (which the "defaults" block
+// below illustrates).
 const GroupMatrix = ({
   selectionMode,
   selectedKeys,
@@ -103,7 +111,7 @@ const GroupMatrix = ({
       ))}
     </Stack>
 
-    {variants.map((v) => (
+    {groupVariants.map((v) => (
       <Stack key={v} direction="row" gap="600" alignItems="center">
         <Box width="90px" flexShrink="0">
           <Text fontWeight="600">{v}</Text>
@@ -112,7 +120,7 @@ const GroupMatrix = ({
           <Box key={f} width="240px" flexShrink="0">
             <GroupCell
               variant={v}
-              fillStyle={f}
+              activeFillStyle={f}
               selectionMode={selectionMode}
               selectedKeys={selectedKeys}
             />
@@ -141,7 +149,7 @@ export const VariantExploration: Story = {
       {/* 2 — ToggleButton (standalone) -------------------------------- */}
       <Stack gap="400">
         <SectionHeading>
-          2 · ToggleButton — variant × fillStyle (resting vs selected)
+          2 · ToggleButton — variant × activeFillStyle (resting vs selected)
         </SectionHeading>
 
         {/* column headers */}
@@ -158,7 +166,7 @@ export const VariantExploration: Story = {
           </Box>
         </Stack>
 
-        {variants.map((v) => (
+        {toggleButtonVariants.map((v) => (
           <Stack key={v} direction="row" gap="600" alignItems="center">
             <Box width="90px" flexShrink="0">
               <Text fontWeight="600">{v}</Text>
@@ -167,12 +175,12 @@ export const VariantExploration: Story = {
               <ToggleButton variant={v}>{v}</ToggleButton>
             </Box>
             <Box width="120px" flexShrink="0">
-              <ToggleButton variant={v} fillStyle="tint" defaultSelected>
+              <ToggleButton variant={v} activeFillStyle="tint" defaultSelected>
                 {v}
               </ToggleButton>
             </Box>
             <Box width="120px" flexShrink="0">
-              <ToggleButton variant={v} fillStyle="solid" defaultSelected>
+              <ToggleButton variant={v} activeFillStyle="solid" defaultSelected>
                 {v}
               </ToggleButton>
             </Box>
@@ -183,7 +191,7 @@ export const VariantExploration: Story = {
       {/* 3 — ToggleButtonGroup ---------------------------------------- */}
       <Stack gap="800">
         <SectionHeading>
-          3 · ToggleButtonGroup — variant × fillStyle
+          3 · ToggleButtonGroup — variant × activeFillStyle
         </SectionHeading>
 
         {/* 3a — single-select matrix */}
@@ -201,10 +209,11 @@ export const VariantExploration: Story = {
           />
         </Stack>
 
-        {/* 3c — the selectionMode-derived fillStyle default (no explicit prop) */}
+        {/* 3c — the selectionMode-derived activeFillStyle default (no explicit prop) */}
         <Stack gap="300">
           <SubHeading>
-            Default fillStyle derives from selectionMode (no fillStyle prop)
+            Default activeFillStyle derives from selectionMode (no
+            activeFillStyle prop)
           </SubHeading>
           <Stack
             direction="row"
@@ -236,7 +245,7 @@ export const VariantExploration: Story = {
               <Text marginBottom="200">multiple → tint (no wall of solid)</Text>
               <ToggleButtonGroup.Root
                 selectionMode="multiple"
-                variant="ghost"
+                variant="subtle"
                 colorPalette="primary"
                 defaultSelectedKeys={["bold", "italic"]}
                 aria-label="multi-select default"

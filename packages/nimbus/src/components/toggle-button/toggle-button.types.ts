@@ -26,7 +26,7 @@ type ToggleButtonRecipeProps = {
    * (full accent fill).
    * @default "tint"
    */
-  fillStyle?: RecipeProps<"nimbusToggleButton">["fillStyle"];
+  activeFillStyle?: RecipeProps<"nimbusToggleButton">["activeFillStyle"];
 };
 
 // ============================================================
