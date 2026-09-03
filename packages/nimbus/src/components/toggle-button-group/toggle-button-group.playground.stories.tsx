@@ -15,6 +15,11 @@ import {
 import {
   Add,
   AttachFile,
+  Computer,
+  Contrast,
+  CropFree,
+  DarkMode,
+  Draw,
   FormatAlignCenter,
   FormatAlignJustify,
   FormatAlignLeft,
@@ -26,14 +31,20 @@ import {
   FormatStrikethrough,
   FormatUnderlined,
   GridView,
+  Highlight,
   Image,
+  LightMode,
   Link,
+  NearMe,
+  PanTool,
   Redo,
   Settings,
   Star,
   Undo,
   ViewKanban,
   ViewList,
+  ZoomIn,
+  ZoomOut,
 } from "@commercetools/nimbus-icons";
 
 /**
@@ -45,7 +56,9 @@ import {
  *   1. Show how these components are actually put to use — read top to bottom:
  *      Button (the variant vocabulary) → ToggleButton (resting chrome × active
  *      fill) → ToggleButtonGroup → the three composed into real assemblies
- *      (rich-text editor, panel header, filter bar).
+ *      (rich-text editor, panel header, filter bar, a vertical tool palette, a
+ *      multi-select repeat-days picker, a billing-period switch, a settings
+ *      panel).
  *   2. Act as an integration proving-ground for Chromatic: it is snapshotted, so
  *      a change to any underlying component (or the Toolbar) that has an
  *      unintended visual side-effect here surfaces as a snapshot diff.
@@ -409,6 +422,206 @@ const FilterBarAssembly = () => (
   </Stack>
 );
 
+/**
+ * A canvas tool palette in a VERTICAL `Toolbar` (variant "outline"). The tools
+ * are mutually exclusive, so a single-select `ToggleButtonGroup.Root` manages
+ * selection — but around bare `IconToggleButton`s, not segmented `.Button`s: a
+ * segmented control is horizontal-only (its buttons collapse shared side borders
+ * and round only the outer corners), whereas a vertical toolbar STACKS its
+ * cluster into a column. The toolbar recipe handles exactly this bare-toggle
+ * case — it stacks the cluster and keeps the inter-item gap. Zoom controls are
+ * plain `IconButton`s. This is the page's only vertical layout, so it proves the
+ * vertical toolbar path (direction + separator) has no unintended side-effects.
+ */
+const ToolPaletteAssembly = () => (
+  <Toolbar orientation="vertical" variant="outline" aria-label="Canvas tools">
+    <ToggleButtonGroup.Root
+      selectionMode="single"
+      defaultSelectedKeys={["draw"]}
+      aria-label="Active tool"
+    >
+      <IconToggleButton
+        id="select"
+        variant="ghost"
+        colorPalette="primary"
+        aria-label="Select"
+      >
+        <NearMe />
+      </IconToggleButton>
+      <IconToggleButton
+        id="pan"
+        variant="ghost"
+        colorPalette="primary"
+        aria-label="Pan"
+      >
+        <PanTool />
+      </IconToggleButton>
+      <IconToggleButton
+        id="draw"
+        variant="ghost"
+        colorPalette="primary"
+        aria-label="Draw"
+      >
+        <Draw />
+      </IconToggleButton>
+      <IconToggleButton
+        id="highlight"
+        variant="ghost"
+        colorPalette="primary"
+        aria-label="Highlight"
+      >
+        <Highlight />
+      </IconToggleButton>
+    </ToggleButtonGroup.Root>
+    <Separator />
+    <IconButton variant="ghost" aria-label="Zoom in">
+      <ZoomIn />
+    </IconButton>
+    <IconButton variant="ghost" aria-label="Zoom out">
+      <ZoomOut />
+    </IconButton>
+    <IconButton variant="ghost" aria-label="Fit to screen">
+      <CropFree />
+    </IconButton>
+  </Toolbar>
+);
+
+/**
+ * A "repeat on" day picker: a MULTI-select segmented `ToggleButtonGroup` at the
+ * default `md` size. Multi-select derives the `tint` fill (several days can be on
+ * at once, so a full solid run would read as too heavy). Mon–Fri preselected, so
+ * the adjacent-selection border join is on show.
+ */
+const RepeatDaysAssembly = () => (
+  <Stack
+    gap="200"
+    maxWidth="760px"
+    borderWidth="1px"
+    borderColor="neutral.6"
+    borderRadius="300"
+    padding="300"
+  >
+    <Text fontWeight="600">Repeat on</Text>
+    <ToggleButtonGroup.Root
+      variant="outline"
+      colorPalette="primary"
+      selectionMode="multiple"
+      defaultSelectedKeys={["mon", "tue", "wed", "thu", "fri"]}
+      aria-label="Repeat on days"
+    >
+      <ToggleButtonGroup.Button id="mon">Mon</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="tue">Tue</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="wed">Wed</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="thu">Thu</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="fri">Fri</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="sat">Sat</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="sun">Sun</ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+  </Stack>
+);
+
+/**
+ * A pricing billing-period switch: a prominent single-select segmented group at
+ * the default `md` size (everything else on the page is `xs`). Single-select
+ * derives the `solid` fill, so the chosen period reads as firmly picked.
+ */
+const BillingPeriodAssembly = () => (
+  <Stack
+    direction="row"
+    gap="400"
+    alignItems="center"
+    maxWidth="760px"
+    borderWidth="1px"
+    borderColor="neutral.6"
+    borderRadius="300"
+    padding="400"
+  >
+    <ToggleButtonGroup.Root
+      variant="outline"
+      colorPalette="primary"
+      selectionMode="single"
+      defaultSelectedKeys={["annual"]}
+      aria-label="Billing period"
+    >
+      <ToggleButtonGroup.Button id="monthly">Monthly</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="annual">
+        Annual · save 20%
+      </ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+    <Stack gap="0">
+      <Text fontWeight="700" fontSize="600">
+        $24 / mo
+      </Text>
+      <Caption>billed annually</Caption>
+    </Stack>
+  </Stack>
+);
+
+/**
+ * A settings panel: a single-select theme switcher (segmented, icon + text,
+ * derives `solid`) and an independent standalone `subtle` ToggleButton for a
+ * boolean preference. Two labeled rows, like a real form — the group and the
+ * standalone toggle sit side by side, both at the default `md` size.
+ */
+const SettingsAssembly = () => (
+  <Stack
+    gap="400"
+    maxWidth="760px"
+    borderWidth="1px"
+    borderColor="neutral.6"
+    borderRadius="300"
+    padding="400"
+  >
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      gap="400"
+    >
+      <Stack gap="0">
+        <Text fontWeight="600">Appearance</Text>
+        <Caption>Choose how Nimbus looks to you.</Caption>
+      </Stack>
+      <ToggleButtonGroup.Root
+        variant="outline"
+        colorPalette="primary"
+        selectionMode="single"
+        defaultSelectedKeys={["system"]}
+        aria-label="Theme"
+      >
+        <ToggleButtonGroup.Button id="light">
+          <LightMode />
+          Light
+        </ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="dark">
+          <DarkMode />
+          Dark
+        </ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="system">
+          <Computer />
+          System
+        </ToggleButtonGroup.Button>
+      </ToggleButtonGroup.Root>
+    </Stack>
+    <Separator />
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      gap="400"
+    >
+      <Stack gap="0">
+        <Text fontWeight="600">High contrast</Text>
+        <Caption>Increase contrast for better legibility.</Caption>
+      </Stack>
+      <ToggleButton variant="subtle" colorPalette="primary" defaultSelected>
+        <Contrast />
+        Enabled
+      </ToggleButton>
+    </Stack>
+  </Stack>
+);
+
 export const VariantExploration: Story = {
   render: () => (
     <Stack gap="1200" padding="600">
@@ -519,6 +732,42 @@ export const VariantExploration: Story = {
             ghost + solid Buttons
           </Caption>
           <FilterBarAssembly />
+        </Stack>
+
+        <Stack gap="300">
+          <SubHeading>Canvas tool palette (vertical toolbar)</SubHeading>
+          <Caption>
+            vertical outline Toolbar · single-select manager around bare
+            IconToggleButtons (tools) · plain icon buttons (zoom)
+          </Caption>
+          <ToolPaletteAssembly />
+        </Stack>
+
+        <Stack gap="300">
+          <SubHeading>Repeat-days picker (multi-select)</SubHeading>
+          <Caption>
+            multi-select segmented group at md · derives the tint fill ·
+            adjacent selection shows the border join
+          </Caption>
+          <RepeatDaysAssembly />
+        </Stack>
+
+        <Stack gap="300">
+          <SubHeading>Billing period</SubHeading>
+          <Caption>
+            prominent single-select segmented group at md · derives the solid
+            fill · paired with plain text
+          </Caption>
+          <BillingPeriodAssembly />
+        </Stack>
+
+        <Stack gap="300">
+          <SubHeading>Settings panel</SubHeading>
+          <Caption>
+            single-select theme switcher (icon + text, solid) · standalone
+            subtle toggle · both at md
+          </Caption>
+          <SettingsAssembly />
         </Stack>
       </Stack>
     </Stack>
