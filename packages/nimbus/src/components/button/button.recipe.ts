@@ -130,9 +130,6 @@ export const buttonRecipe = defineRecipe({
         _hover: {
           bg: "colorPalette.10",
         },
-        _expanded: {
-          bg: "colorPalette.10",
-        },
       },
       subtle: {
         bg: "colorPalette.3",
@@ -140,9 +137,6 @@ export const buttonRecipe = defineRecipe({
         _hover: {
           bg: "colorPalette.4",
           color: "colorPalette.12",
-        },
-        _expanded: {
-          bg: "colorPalette.4",
         },
       },
       outline: {
@@ -155,9 +149,6 @@ export const buttonRecipe = defineRecipe({
           bg: "colorPalette.3",
           borderColor: "colorPalette.8",
         },
-        _expanded: {
-          bg: "colorPalette.subtle",
-        },
       },
       ghost: {
         color: "colorPalette.11",
@@ -165,9 +156,6 @@ export const buttonRecipe = defineRecipe({
           // Radix ladder: ghost has nothing at rest, so its hover fill is the
           // first (gentle) component-background step, 3 (pressed/open steps to 4).
           bg: "colorPalette.3",
-        },
-        _expanded: {
-          bg: "colorPalette.4",
         },
       },
       link: {
