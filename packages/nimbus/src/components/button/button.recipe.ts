@@ -139,6 +139,7 @@ export const buttonRecipe = defineRecipe({
         color: "colorPalette.11",
         _hover: {
           bg: "colorPalette.4",
+          color: "colorPalette.12",
         },
         _expanded: {
           bg: "colorPalette.4",
