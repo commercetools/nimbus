@@ -16,4 +16,10 @@ export const conditions = defineConditions({
    * Used for animations when a component is closing/exiting
    */
   closed: "&:is([data-exiting], [data-closed])",
+
+  /**
+   * Maps to React Aria's pressed state on pressable elements
+   * Used to style a component while it is held down (active press)
+   */
+  pressed: "&[data-react-aria-pressable]&[data-pressed='true']",
 });
