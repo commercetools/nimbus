@@ -10,18 +10,11 @@ export const toolbarRecipe = defineRecipe({
     alignItems: "center",
     flexDirection: "var(--toolbar-direction)",
 
-    // Align, and (for a vertical toolbar) stack, any nested cluster, and give
-    // independent controls inter-item spacing. This includes a ToggleButtonGroup
-    // used only as a selection manager around bare toggles (IconToggleButton
-    // children), which need the spacing to breathe.
     "& .nimbus-group, & .nimbus-toggle-button-group__root": {
       alignItems: "center",
       flexDirection: "var(--toolbar-direction)",
       gap: "var(--toolbar-spacing)",
     },
-    // ...but a real segmented ToggleButtonGroup (its children are `.Button`s)
-    // must stay flush: the buttons collapse their shared borders and only the
-    // outer corners round, so any gap would split it into detached islands.
     "& .nimbus-toggle-button-group__root:has(> .nimbus-toggle-button-group__button)":
       {
         gap: "0",

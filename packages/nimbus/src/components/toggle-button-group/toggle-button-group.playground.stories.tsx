@@ -47,48 +47,14 @@ import {
   ZoomOut,
 } from "@commercetools/nimbus-icons";
 
-/**
- * ToggleButtonGroup — Playground.
- *
- * A permanent gallery of realistic, in-context usages of Button, ToggleButton,
- * and ToggleButtonGroup working together. It serves two ends:
- *
- *   1. Show how these components are actually put to use — read top to bottom:
- *      Button (the variant vocabulary) → ToggleButton (resting chrome × active
- *      fill) → ToggleButtonGroup → the three composed into real assemblies
- *      (rich-text editor, panel header, filter bar, a vertical tool palette, a
- *      multi-select repeat-days picker, a billing-period switch, a settings
- *      panel).
- *   2. Act as an integration proving-ground for Chromatic: it is snapshotted, so
- *      a change to any underlying component (or the Toolbar) that has an
- *      unintended visual side-effect here surfaces as a snapshot diff.
- *
- * Style axes exercised on the toggles:
- *   - `variant`         → resting chrome, always neutral. Standalone
- *     ToggleButton: outline | ghost | subtle. The group omits `ghost`
- *     (outline | subtle) — it needs a resting affordance to bind the set.
- *   - `activeFillStyle` → active-state fill: tint (light wash) | solid (full).
- *     In a group it defaults from `selectionMode` (single → solid, multiple →
- *     tint) and is overridable.
- *
- * `colorPalette` applies to the ACTIVE state only; resting is always neutral.
- */
 const meta: Meta<typeof ToggleButtonGroup.Root> = {
   title: "Playground/ToggleButtonGroup",
   component: ToggleButtonGroup.Root,
-  // Snapshotted on purpose: this playground is an integration proving-ground for
-  // Chromatic — it catches unintended visual side-effects across the components
-  // it composes (Button, ToggleButton, ToggleButtonGroup, Toolbar).
   tags: ["vrt"],
   parameters: {
     chromatic: { disableSnapshot: false },
     a11y: {
       config: {
-        // React Aria demotes a ToggleButtonGroup nested in a Toolbar from
-        // role="toolbar" to role="group" but leaves aria-orientation on it,
-        // which axe flags (aria-orientation isn't allowed on a plain group).
-        // Known RA limitation — same suppression the Toolbar's RichTextEditor
-        // story uses.
         rules: [
           {
             id: "aria-allowed-attr",
@@ -106,9 +72,6 @@ export default meta;
 type Story = StoryObj<typeof ToggleButtonGroup.Root>;
 
 const buttonVariants = ["solid", "subtle", "outline", "ghost", "link"] as const;
-// Standalone ToggleButton keeps `ghost`; the group omits it (a group needs a
-// resting affordance to bind the set), so the group matrix iterates the
-// narrower set.
 const toggleButtonVariants = ["outline", "ghost", "subtle"] as const;
 const groupVariants = ["outline", "subtle"] as const;
 const fillStyles = ["tint", "solid"] as const;
@@ -159,10 +122,6 @@ const GroupCell = ({
   </ToggleButtonGroup.Root>
 );
 
-// variant × activeFillStyle grid for one selection mode. Both matrices set
-// activeFillStyle explicitly, so the columns show the full cross product
-// regardless of the selectionMode-derived default (which the "defaults" block
-// below illustrates).
 const GroupMatrix = ({
   selectionMode,
   selectedKeys,
@@ -171,7 +130,6 @@ const GroupMatrix = ({
   selectedKeys: string[];
 }) => (
   <Stack gap="400">
-    {/* column headers */}
     <Stack direction="row" gap="600" alignItems="center">
       <Box width="90px" flexShrink="0" />
       {fillStyles.map((f) => (
@@ -201,18 +159,6 @@ const GroupMatrix = ({
   </Stack>
 );
 
-// ============================================================================
-// In-use assemblies — Button + ToggleButton + ToggleButtonGroup together.
-// ============================================================================
-
-/**
- * Rich-text editor. Independent inline formats (Bold/Italic/…) are standalone
- * `ghost` IconToggleButtons — each toggles on its own, and `ghost` is the right
- * bare-toolbar chrome. Mutually-exclusive clusters (alignment, lists) are
- * single-select ToggleButtonGroups (`subtle`, since a group needs a resting
- * affordance). History and insert actions are plain IconButtons. Everything
- * lives in a `Toolbar`, which gives roving arrow-key focus across the row.
- */
 const RichTextEditorAssembly = () => (
   <Box
     borderWidth="1px"
@@ -322,10 +268,6 @@ const RichTextEditorAssembly = () => (
   </Box>
 );
 
-/**
- * A panel header: a single-select `outline` ToggleButtonGroup as the view-mode
- * switcher, a ghost icon action, and a solid primary Button as the main action.
- */
 const PanelHeaderAssembly = () => (
   <Stack
     direction="row"
@@ -374,10 +316,6 @@ const PanelHeaderAssembly = () => (
   </Stack>
 );
 
-/**
- * A filter bar: a single-select `outline` status group, a couple of independent
- * standalone `subtle` ToggleButtons, and plain Buttons for the actions.
- */
 const FilterBarAssembly = () => (
   <Stack
     direction="row"
@@ -422,17 +360,6 @@ const FilterBarAssembly = () => (
   </Stack>
 );
 
-/**
- * A canvas tool palette in a VERTICAL `Toolbar` (variant "outline"). The tools
- * are mutually exclusive, so a single-select `ToggleButtonGroup.Root` manages
- * selection — but around bare `IconToggleButton`s, not segmented `.Button`s: a
- * segmented control is horizontal-only (its buttons collapse shared side borders
- * and round only the outer corners), whereas a vertical toolbar STACKS its
- * cluster into a column. The toolbar recipe handles exactly this bare-toggle
- * case — it stacks the cluster and keeps the inter-item gap. Zoom controls are
- * plain `IconButton`s. This is the page's only vertical layout, so it proves the
- * vertical toolbar path (direction + separator) has no unintended side-effects.
- */
 const ToolPaletteAssembly = () => (
   <Toolbar orientation="vertical" variant="outline" aria-label="Canvas tools">
     <ToggleButtonGroup.Root
@@ -486,12 +413,6 @@ const ToolPaletteAssembly = () => (
   </Toolbar>
 );
 
-/**
- * A "repeat on" day picker: a MULTI-select segmented `ToggleButtonGroup` at the
- * default `md` size. Multi-select derives the `tint` fill (several days can be on
- * at once, so a full solid run would read as too heavy). Mon–Fri preselected, so
- * the adjacent-selection border join is on show.
- */
 const RepeatDaysAssembly = () => (
   <Stack
     gap="200"
@@ -520,11 +441,6 @@ const RepeatDaysAssembly = () => (
   </Stack>
 );
 
-/**
- * A pricing billing-period switch: a prominent single-select segmented group at
- * the default `md` size (everything else on the page is `xs`). Single-select
- * derives the `solid` fill, so the chosen period reads as firmly picked.
- */
 const BillingPeriodAssembly = () => (
   <Stack
     direction="row"
@@ -557,12 +473,6 @@ const BillingPeriodAssembly = () => (
   </Stack>
 );
 
-/**
- * A settings panel: a single-select theme switcher (segmented, icon + text,
- * derives `solid`) and an independent standalone `subtle` ToggleButton for a
- * boolean preference. Two labeled rows, like a real form — the group and the
- * standalone toggle sit side by side, both at the default `md` size.
- */
 const SettingsAssembly = () => (
   <Stack
     gap="400"
@@ -625,7 +535,6 @@ const SettingsAssembly = () => (
 export const VariantExploration: Story = {
   render: () => (
     <Stack gap="1200" padding="600">
-      {/* 1 — Button (reference, primary palette) ---------------------- */}
       <Stack gap="300">
         <SectionHeading>1 · Button — variants (reference)</SectionHeading>
         <Stack direction="row" gap="400" alignItems="center" flexWrap="wrap">
@@ -637,13 +546,11 @@ export const VariantExploration: Story = {
         </Stack>
       </Stack>
 
-      {/* 2 — ToggleButton (standalone) -------------------------------- */}
       <Stack gap="400">
         <SectionHeading>
           2 · ToggleButton — variant × activeFillStyle (resting vs selected)
         </SectionHeading>
 
-        {/* column headers */}
         <Stack direction="row" gap="600" alignItems="center">
           <Box width="90px" flexShrink="0" />
           <Box width="120px" flexShrink="0">
@@ -679,19 +586,16 @@ export const VariantExploration: Story = {
         ))}
       </Stack>
 
-      {/* 3 — ToggleButtonGroup ---------------------------------------- */}
       <Stack gap="800">
         <SectionHeading>
           3 · ToggleButtonGroup — variant × activeFillStyle
         </SectionHeading>
 
-        {/* 3a — single-select matrix */}
         <Stack gap="400">
           <SubHeading>Single-select — Center = ON</SubHeading>
           <GroupMatrix selectionMode="single" selectedKeys={["center"]} />
         </Stack>
 
-        {/* 3b — multi-select matrix (adjacent selection shows the border join) */}
         <Stack gap="400">
           <SubHeading>Multi-select — Left + Center = ON</SubHeading>
           <GroupMatrix
@@ -701,7 +605,6 @@ export const VariantExploration: Story = {
         </Stack>
       </Stack>
 
-      {/* 4 — In use: assemblies --------------------------------------- */}
       <Stack gap="800">
         <SectionHeading>
           4 · In use — Button + ToggleButton + ToggleButtonGroup

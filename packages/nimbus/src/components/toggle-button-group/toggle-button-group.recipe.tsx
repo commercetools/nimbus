@@ -6,21 +6,9 @@ import { buttonRecipe } from "../button/button.recipe";
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  */
 
-// FEC-1170: the active (selected) fill — the active-fill logic is kept in sync
-// with toggle-button.recipe.ts. Resting is always neutral; the chosen
-// `colorPalette` applies only to the selected state. `activeFillStyle` sets how
-// heavy the active fill is (light `tint` vs full `solid`); selection always
-// changes the fill (not hue alone), so it is never signalled by color alone
-// (WCAG 1.4.1). The border is NOT set here: border presence is owned by the
-// `variant` (resting chrome), so only `outline` recolors its border on
-// selection (see `compoundVariants`); `subtle` must not grow a border when
-// selected.
 const activeFill = {
   tint: {
     bg: "colorPalette.5",
-    // Step 12 (not 11) for AA: on the deepened .5/.6 fill, step 11 text drops
-    // below 4.5:1 for the neutral and critical palettes in light mode; step 12
-    // clears it on every palette/theme (worst case 7.48:1).
     color: "colorPalette.12",
     _hover: {
       bg: "colorPalette.6",
@@ -48,9 +36,6 @@ export const buttonGroupRecipe = defineSlotRecipe({
     button: {
       // Base style is the same as our Button
       ...buttonRecipe.base,
-      // Structural overrides so the buttons read as one segmented control.
-      // borderWidth stays 1px (transparent) from the Button base; variants only
-      // recolor the border, so state changes never shift layout.
       borderRadius: "0",
       borderRightWidth: "0",
       "&:first-of-type": {
@@ -64,23 +49,11 @@ export const buttonGroupRecipe = defineSlotRecipe({
   },
 
   variants: {
-    // FEC-1170: resting chrome — always neutral. `colorPalette` is reserved for
-    // the active state, so unselected options never carry the accent hue.
-    //
-    // NOTE: unlike the standalone ToggleButton, the group intentionally omits
-    // `ghost`. A group's job is to present mutually-related options as one
-    // control, and its segmenting chrome (shared borders) is what binds them;
-    // `ghost` (no border, no fill) leaves nothing to bind at rest, so it reads
-    // as a loose row rather than a control. For a quiet grouped control use
-    // `subtle` (a filled track that still binds the set).
     variant: {
       outline: {
         button: {
           borderColor: "neutral.7",
           color: "neutral.11",
-          // Off-state hover matches Button's outline hover step (bg .3, border
-          // .8); the palette stays neutral (resting chrome never carries the
-          // accent — that's reserved for the selected state).
           _hover: {
             bg: "neutral.3",
             borderColor: "neutral.8",
@@ -98,8 +71,6 @@ export const buttonGroupRecipe = defineSlotRecipe({
       },
     },
 
-    // FEC-1170: active-state fill weight. Default is resolved from
-    // `selectionMode` in the Root wrapper (single → solid, multiple → tint).
     activeFillStyle: {
       tint: {
         button: {
@@ -135,16 +106,6 @@ export const buttonGroupRecipe = defineSlotRecipe({
     },
   },
 
-  // Border presence is owned by `variant`: only `outline` has a resting border,
-  // so only `outline` recolors it on selection. `subtle` keeps the Button
-  // base's transparent 1px border, so selecting it never adds a ring.
-  //
-  // Segments collapse their right border (`borderRightWidth: 0`), so a selected
-  // button's right divider is physically drawn by the NEXT button's left
-  // border. We recolor that sibling's left border too — otherwise the selection
-  // outline is accent on three sides and neutral on the right. (When the
-  // selected button is last, it keeps its own right border, and there is no
-  // sibling to recolor.)
   compoundVariants: [
     {
       variant: "outline",
@@ -153,9 +114,6 @@ export const buttonGroupRecipe = defineSlotRecipe({
         button: {
           "&[data-selected=true]": {
             borderColor: "colorPalette.8",
-            // Hold the accent border on hover. The `variant.outline` hover sets
-            // a neutral border; without this the selected button would revert to
-            // gray on hover (this selector is more specific, so it wins).
             _hover: {
               borderColor: "colorPalette.8",
             },
@@ -188,7 +146,6 @@ export const buttonGroupRecipe = defineSlotRecipe({
   defaultVariants: {
     size: "md",
     variant: "outline",
-    // Fallback; the Root wrapper resolves this from selectionMode.
     activeFillStyle: "solid",
   },
 });
