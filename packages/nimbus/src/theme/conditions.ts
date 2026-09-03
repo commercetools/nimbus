@@ -22,4 +22,9 @@ export const conditions = defineConditions({
    * Used to style a component while it is held down (active press)
    */
   pressed: "&[data-react-aria-pressable]&[data-pressed='true']",
+  /**
+   * Maps to React Aria's selected state on pressable elements
+   * Used to style a component while it is selected
+   */
+  selected: "&[data-react-aria-pressable]&[data-selected='true']",
 });

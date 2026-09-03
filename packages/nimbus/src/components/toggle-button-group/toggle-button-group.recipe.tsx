@@ -74,12 +74,12 @@ export const buttonGroupRecipe = defineSlotRecipe({
     activeFillStyle: {
       tint: {
         button: {
-          "&[data-selected=true]": activeFill.tint,
+          _selected: activeFill.tint,
         },
       },
       solid: {
         button: {
-          "&[data-selected=true]": activeFill.solid,
+          _selected: activeFill.solid,
         },
       },
     },
@@ -112,14 +112,14 @@ export const buttonGroupRecipe = defineSlotRecipe({
       activeFillStyle: "tint",
       css: {
         button: {
-          "&[data-selected=true]": {
+          _selected: {
             borderColor: "colorPalette.8",
             _hover: {
               borderColor: "colorPalette.8",
             },
-          },
-          "&[data-selected=true] + button": {
-            borderLeftColor: "colorPalette.8",
+            "& + button": {
+              borderLeftColor: "colorPalette.8",
+            },
           },
         },
       },
@@ -129,14 +129,14 @@ export const buttonGroupRecipe = defineSlotRecipe({
       activeFillStyle: "solid",
       css: {
         button: {
-          "&[data-selected=true]": {
+          _selected: {
             borderColor: "colorPalette.9",
             _hover: {
               borderColor: "colorPalette.10",
             },
-          },
-          "&[data-selected=true] + button": {
-            borderLeftColor: "colorPalette.9",
+            "& + button": {
+              borderLeftColor: "colorPalette.9",
+            },
           },
         },
       },

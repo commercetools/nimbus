@@ -27,7 +27,7 @@ export const buttonRecipe = defineRecipe({
     // only — no scaling — so text/icons stay crisp and layout never reflows.
     // Keyed off react-aria's `data-pressed` (set from `isPressed`) so it fires
     // for pointer, keyboard, and touch alike.
-    "&[data-pressed]": {
+    _pressed: {
       transform: "translateY(1px)",
     },
     _disabled: {
@@ -138,6 +138,10 @@ export const buttonRecipe = defineRecipe({
           bg: "colorPalette.4",
           color: "colorPalette.12",
         },
+        _pressed: {
+          bg: "colorPalette.5",
+          color: "colorPalette.12",
+        },
       },
       outline: {
         borderWidth: "1px",
@@ -146,8 +150,13 @@ export const buttonRecipe = defineRecipe({
         transitionProperty: "background-color, border-color, color, transform",
         transitionDuration: "moderate",
         _hover: {
-          bg: "colorPalette.3",
+          bg: "colorPalette.4",
+          color: "colorPalette.12",
           borderColor: "colorPalette.8",
+        },
+        _pressed: {
+          bg: "colorPalette.5",
+          color: "colorPalette.12",
         },
       },
       ghost: {
@@ -155,7 +164,12 @@ export const buttonRecipe = defineRecipe({
         _hover: {
           // Radix ladder: ghost has nothing at rest, so its hover fill is the
           // first (gentle) component-background step, 3 (pressed/open steps to 4).
-          bg: "colorPalette.3",
+          bg: "colorPalette.4",
+          color: "colorPalette.12",
+        },
+        _pressed: {
+          bg: "colorPalette.5",
+          color: "colorPalette.12",
         },
       },
       link: {

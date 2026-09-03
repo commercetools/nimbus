@@ -53,10 +53,10 @@ export const toggleButtonRecipe = defineRecipe({
     },
     activeFillStyle: {
       tint: {
-        "&[data-selected='true']": activeFill.tint,
+        _selected: activeFill.tint,
       },
       solid: {
-        "&[data-selected='true']": activeFill.solid,
+        _selected: activeFill.solid,
       },
     },
   },
@@ -65,7 +65,7 @@ export const toggleButtonRecipe = defineRecipe({
       variant: "outline",
       activeFillStyle: "tint",
       css: {
-        "&[data-selected='true']": {
+        _selected: {
           borderColor: "colorPalette.8",
           "&[data-hovered='true']": {
             borderColor: "colorPalette.8",
@@ -77,7 +77,7 @@ export const toggleButtonRecipe = defineRecipe({
       variant: "outline",
       activeFillStyle: "solid",
       css: {
-        "&[data-selected='true']": {
+        _selected: {
           borderColor: "colorPalette.9",
           "&[data-hovered='true']": {
             borderColor: "colorPalette.10",
