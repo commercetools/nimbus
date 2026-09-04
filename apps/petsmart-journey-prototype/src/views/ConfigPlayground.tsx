@@ -10,7 +10,6 @@ import {
   Button,
   TextInput,
   FormField,
-  Switch,
   ComboBox,
 } from "@commercetools/nimbus";
 import { PageHeader } from "../components/PageHeader";
@@ -296,12 +295,17 @@ const ExpandedConfig = ({
       {/* Stacking */}
       {config.stacking && (
         <Flex mt="200" alignItems="center" gap="200">
-          <Switch size="sm" defaultSelected={config.stacking === "allowed"}>
+          <Text slot={null} textStyle="xs" color="neutral.10">
             Stacking
-          </Switch>
-          <Text textStyle="xs" color="neutral.12">
-            {config.stacking}
           </Text>
+          <Badge
+            size="2xs"
+            colorPalette={
+              config.stacking === "allowed" ? "positive" : "neutral"
+            }
+          >
+            {config.stacking}
+          </Badge>
         </Flex>
       )}
     </Box>

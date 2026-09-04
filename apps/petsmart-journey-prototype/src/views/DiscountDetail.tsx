@@ -9,7 +9,6 @@ import {
   Separator,
   TextInput,
   FormField,
-  Switch,
   Grid,
 } from "@commercetools/nimbus";
 import { PageHeader } from "../components/PageHeader";
@@ -19,7 +18,6 @@ import { ActivationButton } from "../components/ActivationButton";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
 import { ProvenanceBadge } from "../components/ProvenanceBadge";
 import { useJourney } from "../components/JourneyContext";
-import { TagGroup } from "@commercetools/nimbus";
 
 // ─── Discount data lookup ───────────────────────────────────────────────────
 
@@ -66,25 +64,23 @@ const J3PredicateCard = () => (
     data-tour="inline-slot"
   >
     <Stack gap="200">
-      <Text textStyle="xs" color="neutral.10">
+      <Text slot={null} textStyle="xs" color="neutral.10">
         Suggested targeting rules:
       </Text>
-      <TagGroup.Root size="sm" aria-label="Suggested predicates">
-        <TagGroup.TagList>
-          <TagGroup.Tag id="cat-pred">
-            <Flex alignItems="center" gap="100">
-              <ProvenanceBadge size="10px" agentSource="ct" />
-              Category: Dog Supplies &gt; Collars &amp; Leashes
-            </Flex>
-          </TagGroup.Tag>
-          <TagGroup.Tag id="inv-pred">
-            <Flex alignItems="center" gap="100">
-              <ProvenanceBadge size="10px" agentSource="petsmart" />
-              Inventory &gt; 20 units
-            </Flex>
-          </TagGroup.Tag>
-        </TagGroup.TagList>
-      </TagGroup.Root>
+      <Flex gap="100" flexWrap="wrap">
+        <Badge size="2xs" colorPalette="info">
+          <Flex alignItems="center" gap="100">
+            <ProvenanceBadge size="10px" agentSource="ct" />
+            Category: Dog Supplies &gt; Collars &amp; Leashes
+          </Flex>
+        </Badge>
+        <Badge size="2xs" colorPalette="info">
+          <Flex alignItems="center" gap="100">
+            <ProvenanceBadge size="10px" agentSource="petsmart" />
+            Inventory &gt; 20 units
+          </Flex>
+        </Badge>
+      </Flex>
       <Box
         bg="red.2"
         px="200"
@@ -278,10 +274,18 @@ export const DiscountDetail = () => {
                   <FormField.Label>Key</FormField.Label>
                   <TextInput defaultValue={discount.key} size="sm" isReadOnly />
                 </FormField.Root>
-                <Switch defaultSelected={discount.isActive} size="sm">
-                  Active
-                </Switch>
               </Stack>
+              <Flex gap="200" alignItems="center" mt="200">
+                <Text slot={null} textStyle="xs" color="neutral.10">
+                  Status
+                </Text>
+                <Badge
+                  size="2xs"
+                  colorPalette={discount.isActive ? "positive" : "neutral"}
+                >
+                  {discount.isActive ? "active" : "inactive"}
+                </Badge>
+              </Flex>
             </Box>
 
             {/* Discount value */}
