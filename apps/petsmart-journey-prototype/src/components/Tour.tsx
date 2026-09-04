@@ -172,43 +172,11 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     }
   }, [step]);
 
-  // When step changes: handle navigation, spotlight, run action, show dialog
+  // When step changes: spotlight the target, run action, show dialog
   useEffect(() => {
     if (!step) return;
     setTransitioning(true);
 
-    // If this step requires navigation, do it first
-    if (step.navigateTo) {
-      // Navigate via hash router
-      window.location.hash = step.navigateTo;
-      // Wait for the new page to render, then measure
-      const navTimer = setTimeout(() => {
-        const el = document.querySelector(step.selector);
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth", block: "nearest" });
-          setTimeout(() => {
-            setRect(el.getBoundingClientRect());
-            runAction(step).then(() => {
-              const target = document.querySelector(step.selector);
-              if (target) {
-                setTimeout(() => {
-                  setRect(target.getBoundingClientRect());
-                  setTransitioning(false);
-                }, 200);
-              } else {
-                setTransitioning(false);
-              }
-            });
-          }, 100);
-        } else {
-          setRect(null);
-          setTransitioning(false);
-        }
-      }, 600); // Give the new page time to render
-      return () => clearTimeout(navTimer);
-    }
-
-    // No navigation — spotlight and animate on current page
     const el = document.querySelector(step.selector);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -256,12 +224,21 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const next = useCallback(() => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep((s) => s + 1);
-    } else {
+    if (currentStep >= steps.length - 1) {
       endTour();
+      return;
     }
-  }, [currentStep, steps.length, endTour]);
+    const currentStepDef = steps[currentStep];
+    if (currentStepDef?.navigateTo) {
+      // Navigate first, then advance after the new page renders
+      window.location.hash = currentStepDef.navigateTo;
+      setTimeout(() => {
+        setCurrentStep((s) => s + 1);
+      }, 600);
+    } else {
+      setCurrentStep((s) => s + 1);
+    }
+  }, [currentStep, steps, endTour]);
 
   const prev = useCallback(() => {
     if (currentStep > 0) setCurrentStep((s) => s - 1);
@@ -276,7 +253,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
       {children}
 
       {isActive && (
-        <Box position="fixed" inset="0" zIndex={9999} pointerEvents="auto">
+        <Box position="fixed" inset="0" zIndex={9999} pointerEvents="none">
           {/* Spotlight + overlay */}
           {rect && (
             <Box
@@ -355,14 +332,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
             </Box>
           )}
 
-          {/* Click anywhere to advance */}
-          <Box
-            position="fixed"
-            inset="0"
-            zIndex={10000}
-            cursor="pointer"
-            onClick={next}
-          />
+          {/* No click interceptor — users can interact with the page while tour is active */}
         </Box>
       )}
 

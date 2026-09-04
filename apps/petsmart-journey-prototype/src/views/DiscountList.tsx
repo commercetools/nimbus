@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Flex,
@@ -275,6 +276,7 @@ const j4ExtraColumns: DataTableColumnItem<Discount>[] = [
 
 export const DiscountList = () => {
   const { activeJourney } = useJourney();
+  const navigate = useNavigate();
   const journeyId = activeJourney?.id ?? null;
 
   const columns =
@@ -315,6 +317,7 @@ export const DiscountList = () => {
             columns={columns}
             rows={rows}
             density="condensed"
+            onRowClick={(row) => navigate(`/discounts/${row.id}`)}
             allowsPinning={false}
           >
             <DataTable.Table>

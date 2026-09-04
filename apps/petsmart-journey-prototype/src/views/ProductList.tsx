@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Box,
   Flex,
@@ -392,6 +392,7 @@ const j3ExtraColumns: DataTableColumnItem<Product>[] = [
 
 export const ProductList = () => {
   const { activeJourney } = useJourney();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const journeyId = activeJourney?.id ?? null;
   const filter = searchParams.get("filter") ?? undefined;
@@ -499,6 +500,7 @@ export const ProductList = () => {
             rows={rows}
             density="condensed"
             allowsPinning={false}
+            onRowClick={(row) => navigate(`/products/${row.id}`)}
           >
             <DataTable.Table>
               <DataTable.Header />
