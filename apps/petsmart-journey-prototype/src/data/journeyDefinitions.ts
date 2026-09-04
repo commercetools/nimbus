@@ -170,14 +170,14 @@ const j2Steps: TourStep[] = [
 const j3Steps: TourStep[] = [
   // Discount Detail
   {
-    selector: "[data-tour='predicate-builder']",
+    selector: "[data-tour='inline-slot']",
     title: "Dana's targeting rule has a hidden problem",
     description:
       "Dana is building the collars discount. Commercetools validates that the predicate syntax is correct. PetSmart's agent goes further: it understands PetSmart's category hierarchy and flags that this rule accidentally matches 34 Cat Collar SKUs. Dana catches an error that would have gone live.",
-    placement: "right",
+    placement: "left",
   },
   {
-    selector: "[data-tour='provenance-demo']",
+    selector: "[data-tour='chat-panel']",
     title: "Dana understands the overlap before deciding",
     description:
       "Dana opens a conversation to understand exactly why the overlap exists and which products are affected. She can make an informed decision about adding an exclusion rule rather than guessing at the scope of the problem.",
@@ -186,9 +186,9 @@ const j3Steps: TourStep[] = [
   },
   {
     selector: "[data-tour='simulate-campaign-btn']",
-    title: "Dana tests all three discounts as a campaign",
+    title: "Dana tests the full campaign together",
     description:
-      "Each discount passes validation individually, but Dana needs to know if they work together. She runs a campaign simulation to catch stacking conflicts and coverage gaps that only surface when all three discounts are evaluated against the same catalog.",
+      "The Back to School campaign has three discounts: 10% off collars, 15% off leashes, and 20% off crates. Each passes validation individually, but Dana needs to know if they work together. She runs a campaign simulation to catch stacking conflicts and coverage gaps.",
     placement: "bottom",
     navigateTo: "/playground",
   },
@@ -261,10 +261,10 @@ const j4Steps: TourStep[] = [
     placement: "bottom",
   },
   {
-    selector: "[data-tour='provenance-demo']",
+    selector: "[data-tour='chat-panel']",
     title: "Priya checks when the competitor was detected",
     description:
-      "Priya hovers the ✦ to see exactly when PetCo's promotion was first detected, whether it is still active, and what the SKU overlap is. She needs to know if this competitive pressure is temporary or structural before deciding how to respond.",
+      "Priya asks the agent when PetCo's promotion was first detected, whether it is still active, and what the SKU overlap is. She needs to know if this competitive pressure is temporary or structural before deciding how to respond.",
     placement: "left",
     action: "openPanel",
   },
@@ -285,7 +285,7 @@ const j4Steps: TourStep[] = [
     placement: "left",
   },
   {
-    selector: "[data-tour='chat-panel']",
+    selector: "[data-tour='inline-slot']",
     title: "Priya asks when the underperformance started",
     description:
       "Priya opens a conversation and asks about timing. The agent shows that leashes was already underperforming at 8% before PetCo's launch, then cratered to 1% after. Two problems with different timelines means the fix likely needs both badge updates and a pricing adjustment.",
@@ -293,11 +293,11 @@ const j4Steps: TourStep[] = [
     action: "openPanel",
   },
   {
-    selector: "[data-tour='view-badge-gap-btn']",
+    selector: "[data-tour='provenance-demo']",
     title: "Priya looks at the impact on a real product",
     description:
       "Priya clicks through to see what the badge gap looks like on an actual product listing. She wants to understand the measurable cost of missing visibility before deciding how aggressively to respond.",
-    placement: "right",
+    placement: "left",
     navigateTo: "/products/nylon-leash-medium",
   },
   // Product Detail

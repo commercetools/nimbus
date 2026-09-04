@@ -455,6 +455,14 @@ const buyXGetYConfig: ScenarioConfig = {
   value: "Buy 2 Get 1",
   predicates: ["category = Dog Toys > Outdoor", "inventory.daysOnHand > 60"],
   stacking: "not allowed",
+  suggestions: [
+    {
+      label: "brand = house-brand only",
+      confidence: 67,
+      agentSource: "petsmart",
+    },
+    { label: "price.centAmount > 1500", confidence: 58, agentSource: "ct" },
+  ],
 };
 
 const bundleConfig: ScenarioConfig = {
@@ -462,6 +470,14 @@ const bundleConfig: ScenarioConfig = {
   value: "Combined price",
   predicates: ["sku IN aging-outdoor-toys", "sku IN fast-moving-treats"],
   stacking: "allowed",
+  suggestions: [
+    {
+      label: "treats.velocity = rising",
+      confidence: 81,
+      agentSource: "petsmart",
+    },
+    { label: "margin.combined > 15%", confidence: 73, agentSource: "petsmart" },
+  ],
 };
 
 const flashSaleConfig: ScenarioConfig = {
@@ -474,6 +490,14 @@ const flashSaleConfig: ScenarioConfig = {
   ],
   exclusions: ["In-store only SKUs"],
   stacking: "not allowed",
+  suggestions: [
+    {
+      label: "impressions.weekly > 200",
+      confidence: 74,
+      agentSource: "petsmart",
+    },
+    { label: "returns.rate < 5%", confidence: 69, agentSource: "ct" },
+  ],
 };
 
 const costBundleConfig: ScenarioConfig = {
@@ -506,6 +530,14 @@ const volumeConfig: ScenarioConfig = {
   value: "$5 off 2+",
   predicates: ["brand = Hill's Science Diet", "quantity >= 2"],
   stacking: "allowed",
+  suggestions: [
+    { label: "channel = online + in-store", confidence: 82, agentSource: "ct" },
+    {
+      label: "customer.purchaseHistory >= 2",
+      confidence: 66,
+      agentSource: "petsmart",
+    },
+  ],
 };
 
 const passConfig: ScenarioConfig = {
@@ -514,6 +546,14 @@ const passConfig: ScenarioConfig = {
   predicates: ["brand = Hill's Science Diet", "cost_increase > 5%"],
   exclusions: ["Small Paws (above floor)"],
   stacking: "allowed",
+  suggestions: [
+    { label: "competitor.gap < $3", confidence: 77, agentSource: "petsmart" },
+    {
+      label: "shelf.position = premium",
+      confidence: 63,
+      agentSource: "petsmart",
+    },
+  ],
 };
 
 const deepenConfig: ScenarioConfig = {
@@ -557,12 +597,36 @@ const leashBundleConfig: ScenarioConfig = {
     "category = Collars & Leashes > Collars",
   ],
   stacking: "allowed",
+  suggestions: [
+    {
+      label: "cross-sell.affinity > 60%",
+      confidence: 79,
+      agentSource: "petsmart",
+    },
+    {
+      label: "inventory.both_in_stock = true",
+      confidence: 85,
+      agentSource: "ct",
+    },
+  ],
 };
 
 const badgeFixConfig: ScenarioConfig = {
   type: "Badge update only",
   value: "No discount change",
   predicates: ["matchedBy = bts-leashes-15", "badge.status = missing"],
+  suggestions: [
+    {
+      label: "badge.copy = 'Back to School 15% Off'",
+      confidence: 92,
+      agentSource: "ct",
+    },
+    {
+      label: "impressions.weekly < 500",
+      confidence: 84,
+      agentSource: "petsmart",
+    },
+  ],
 };
 
 // ─── Journey-specific scenario sets ─────────────────────────────────────────
