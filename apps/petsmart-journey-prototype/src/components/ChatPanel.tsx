@@ -176,7 +176,7 @@ export const ChatPanel = ({
 
       {/* Input */}
       <Flex
-        alignItems="flex-end"
+        alignItems="flex-start"
         gap="100"
         px="300"
         py="150"
