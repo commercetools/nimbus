@@ -40,7 +40,7 @@ export const InlineCard = ({
         py="100"
         borderBottomWidth="1px"
         borderColor="neutral.4"
-        bg={agentSource === "petsmart" ? "primary.2" : "teal.2"}
+        bg={agentSource === "petsmart" ? "primary.2" : "ctteal.2"}
       >
         <ProvenanceIndicator agentName={agentName} agentSource={agentSource} />
         <Text textStyle="xs" fontWeight="semibold" color="neutral.12">

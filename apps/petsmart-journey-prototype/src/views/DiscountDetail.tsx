@@ -226,7 +226,7 @@ export const DiscountDetail = () => {
       <Button variant="ghost" size="2xs">
         Revert
       </Button>
-      <Button variant="solid" size="2xs">
+      <Button variant="solid" colorPalette="primary" size="2xs">
         Save
       </Button>
     </Flex>

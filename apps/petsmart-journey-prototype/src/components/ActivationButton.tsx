@@ -13,7 +13,7 @@ const sourceBgColors: Record<
   AgentSource,
   { bg: string; hover: string; fg: string }
 > = {
-  ct: { bg: "teal.3", hover: "teal.4", fg: "teal.11" },
+  ct: { bg: "ctteal.3", hover: "ctteal.4", fg: "ctteal.11" },
   petsmart: { bg: "primary.3", hover: "primary.4", fg: "primary.11" },
 };
 

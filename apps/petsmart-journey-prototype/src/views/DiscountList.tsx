@@ -294,7 +294,7 @@ export const DiscountList = () => {
             : "Cart Discounts"
         }
         actions={
-          <Button variant="solid" size="2xs">
+          <Button variant="solid" colorPalette="primary" size="2xs">
             Add discount
           </Button>
         }

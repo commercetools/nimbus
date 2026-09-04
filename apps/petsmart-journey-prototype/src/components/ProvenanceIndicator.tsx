@@ -67,7 +67,7 @@ const sourceColors: Record<
   AgentSource,
   { star: string; starHover: string; popoverStar: string }
 > = {
-  ct: { star: "teal.9", starHover: "teal.11", popoverStar: "teal.11" },
+  ct: { star: "ctteal.9", starHover: "ctteal.11", popoverStar: "ctteal.11" },
   petsmart: {
     star: "primary.9",
     starHover: "primary.11",
@@ -176,7 +176,7 @@ export const ProvenanceIndicator = ({
             <Icon
               as={agentSource === "ct" ? CommercetoolsCube : Pets}
               size="2xs"
-              color={agentSource === "ct" ? "teal.9" : "primary.9"}
+              color={agentSource === "ct" ? "ctteal.9" : "primary.9"}
               flexShrink={0}
             />
             {confidence !== undefined && (

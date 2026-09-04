@@ -26,91 +26,89 @@ export const Homepage = () => {
 
   return (
     <Box height="100%" overflow="auto" p="300" bg="neutral.1">
-      <Stack gap="300" maxWidth="1100px" mx="auto">
-        {/* Header row: title + personas + legend */}
-        <Flex alignItems="flex-start" gap="300" wrap="wrap">
-          <Box flex="1" minWidth="300px">
-            <Flex alignItems="center" gap="150" mb="100">
-              <ProvenanceBadge size="14px" agentSource="petsmart" />
-              <Text textStyle="lg" fontWeight="bold" color="neutral.12">
-                PetSmart Contextual AI Journeys
+      <Stack gap="200" maxWidth="1100px" mx="auto">
+        {/* Header */}
+        <Box>
+          <Flex alignItems="center" gap="150" mb="100">
+            <ProvenanceBadge size="14px" agentSource="petsmart" />
+            <Text textStyle="lg" fontWeight="bold" color="neutral.12">
+              PetSmart Contextual AI Journeys
+            </Text>
+          </Flex>
+          <Text textStyle="xs" color="neutral.11" lineHeight="tall">
+            A single external agent surfaces inventory, margin, competitive, and
+            analytics data directly into the MC — adding context that doesn't
+            exist in commercetools. Click a journey to walk through it.
+          </Text>
+        </Box>
+
+        {/* Personas + legend row */}
+        <Flex gap="200" alignItems="center" wrap="wrap">
+          {personaList.map((p) => (
+            <Flex
+              key={p.id}
+              alignItems="center"
+              gap="100"
+              bg="white"
+              px="200"
+              py="100"
+              borderRadius="200"
+              borderWidth="1px"
+              borderColor="neutral.4"
+            >
+              <Box
+                width="400"
+                height="400"
+                borderRadius="full"
+                overflow="hidden"
+                flexShrink={0}
+                bg="neutral.3"
+              >
+                <img
+                  src={p.avatarUrl}
+                  alt={p.name}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </Box>
+              <Box>
+                <Text textStyle="xs" fontWeight="semibold" color="neutral.12">
+                  {p.name}
+                </Text>
+                <Text textStyle="xs" color="neutral.10">
+                  {p.role}
+                </Text>
+              </Box>
+            </Flex>
+          ))}
+          <Box flex="1" />
+          <Flex gap="200" alignItems="center">
+            <Flex alignItems="center" gap="100">
+              <Box
+                width="100"
+                height="100"
+                borderRadius="full"
+                bg="neutral.9"
+              />
+              <Text textStyle="xs" color="neutral.10">
+                ct data
               </Text>
             </Flex>
-            <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-              A single external agent surfaces inventory, margin, competitive,
-              and analytics data directly into the MC — adding context that
-              doesn't exist in commercetools. Click a journey to walk through
-              it.
-            </Text>
-          </Box>
-          {/* Personas inline */}
-          <Flex gap="200" alignItems="center" flexShrink={0}>
-            {personaList.map((p) => (
-              <Flex
-                key={p.id}
-                alignItems="center"
-                gap="100"
-                bg="white"
-                px="200"
-                py="100"
-                borderRadius="200"
-                borderWidth="1px"
-                borderColor="neutral.4"
-              >
-                <Box
-                  width="400"
-                  height="400"
-                  borderRadius="full"
-                  overflow="hidden"
-                  flexShrink={0}
-                  bg="neutral.3"
-                >
-                  <img
-                    src={p.avatarUrl}
-                    alt={p.name}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                </Box>
-                <Box>
-                  <Text textStyle="xs" fontWeight="semibold" color="neutral.12">
-                    {p.name}
-                  </Text>
-                  <Text textStyle="xs" color="neutral.10">
-                    {p.role}
-                  </Text>
-                </Box>
-              </Flex>
-            ))}
+            <Flex alignItems="center" gap="100">
+              <ProvenanceBadge size="10px" agentSource="ct" />
+              <Text textStyle="xs" color="neutral.10">
+                ct agent
+              </Text>
+            </Flex>
+            <Flex alignItems="center" gap="100">
+              <ProvenanceBadge size="10px" agentSource="petsmart" />
+              <Text textStyle="xs" color="neutral.10">
+                PetSmart agent
+              </Text>
+            </Flex>
           </Flex>
         </Flex>
 
-        {/* Data sources legend — inline */}
-        <Flex gap="300" alignItems="center">
-          <Flex alignItems="center" gap="100">
-            <Box width="100" height="100" borderRadius="full" bg="neutral.9" />
-            <Text textStyle="xs" color="neutral.10">
-              ct data
-            </Text>
-          </Flex>
-          <Flex alignItems="center" gap="100">
-            <ProvenanceBadge size="10px" agentSource="ct" />
-            <Text textStyle="xs" color="neutral.10">
-              ct agent
-            </Text>
-          </Flex>
-          <Flex alignItems="center" gap="100">
-            <ProvenanceBadge size="10px" agentSource="petsmart" />
-            <Text textStyle="xs" color="neutral.10">
-              PetSmart agent
-            </Text>
-          </Flex>
-        </Flex>
-
-        {/* Journey cards — 2x2 grid */}
+        {/* Journey cards */}
         <Grid columns={{ base: 1, md: 2 }} gap="200">
           {journeys.map((j) => (
             <Flex

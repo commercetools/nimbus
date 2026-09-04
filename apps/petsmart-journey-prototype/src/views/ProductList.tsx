@@ -483,7 +483,7 @@ export const ProductList = () => {
         data-tour="model-scenarios-btn"
       />
     ) : (
-      <Button variant="solid" size="2xs">
+      <Button variant="solid" colorPalette="primary" size="2xs">
         Add product
       </Button>
     );

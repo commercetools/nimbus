@@ -9,7 +9,7 @@ interface ProvenanceBadgeProps {
 }
 
 const sourceColors: Record<AgentSource, string> = {
-  ct: "teal.9",
+  ct: "ctteal.9",
   petsmart: "primary.9",
 };
 
