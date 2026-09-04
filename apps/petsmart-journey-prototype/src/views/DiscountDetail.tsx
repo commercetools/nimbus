@@ -258,8 +258,8 @@ export const DiscountDetail = () => {
               p="300"
             >
               <Text
-                textStyle="sm"
-                fontWeight="semibold"
+                textStyle="md"
+                fontWeight="bold"
                 color="neutral.12"
                 mb="200"
               >
@@ -297,8 +297,8 @@ export const DiscountDetail = () => {
               p="300"
             >
               <Text
-                textStyle="sm"
-                fontWeight="semibold"
+                textStyle="md"
+                fontWeight="bold"
                 color="neutral.12"
                 mb="200"
               >
@@ -330,8 +330,8 @@ export const DiscountDetail = () => {
               data-tour="predicate-builder"
             >
               <Text
-                textStyle="sm"
-                fontWeight="semibold"
+                textStyle="md"
+                fontWeight="bold"
                 color="neutral.12"
                 mb="200"
               >
@@ -354,8 +354,8 @@ export const DiscountDetail = () => {
               p="300"
             >
               <Text
-                textStyle="sm"
-                fontWeight="semibold"
+                textStyle="md"
+                fontWeight="bold"
                 color="neutral.12"
                 mb="200"
               >
@@ -398,8 +398,8 @@ export const DiscountDetail = () => {
               p="300"
             >
               <Text
-                textStyle="sm"
-                fontWeight="semibold"
+                textStyle="md"
+                fontWeight="bold"
                 color="neutral.12"
                 mb="200"
               >

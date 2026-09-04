@@ -338,7 +338,7 @@ export const DiscountList = () => {
         {/* J4: Inline analytics + diagnosis */}
         {journeyId === 4 && (
           <Box mb="400">
-            <InlineSlot direction="column" gap="200">
+            <InlineSlot direction="row" gap="200">
               <J4AnalyticsCard />
               <J4DiagnosisCard />
             </InlineSlot>
