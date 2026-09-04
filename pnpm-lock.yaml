@@ -317,8 +317,8 @@ catalogs:
       specifier: ^4.18.1
       version: 4.18.1
     react-intl:
-      specifier: ^7.1.4
-      version: 7.1.14
+      specifier: ^10.0.0
+      version: 10.1.26
     zod:
       specifier: ^4.4.3
       version: 4.4.3
@@ -647,7 +647,7 @@ importers:
     dependencies:
       '@commercetools-frontend/ui-kit':
         specifier: catalog:tooling
-        version: 20.6.7(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+        version: 20.6.7(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
       '@commercetools/nimbus':
         specifier: workspace:*
         version: link:../../packages/nimbus
@@ -665,7 +665,7 @@ importers:
         version: 19.2.0(react@19.2.0)
       react-intl:
         specifier: catalog:utils
-        version: 7.1.14(react@19.2.0)(typescript@5.9.3)
+        version: 10.1.26(@types/react@19.2.18)(react@19.2.0)
     devDependencies:
       '@commercetools/nimbus-mcp':
         specifier: workspace:*
@@ -2264,11 +2264,20 @@ packages:
   '@formatjs/fast-memoize@2.2.7':
     resolution: {integrity: sha512-Yabmi9nSvyOMrlSeGGWDiH7rf3a7sIwplbvo/dlz9WCIjzIQAfy1RMf4S0X3yG724n5Ghu2GmEl5NJIV6O9sZQ==}
 
+  '@formatjs/fast-memoize@3.1.7':
+    resolution: {integrity: sha512-zXfhLpvA6T7+efdt9JLbBwZ00tT7NsBMDVnDu8rpHeNNv8KfRZAMo2gkG0k9lK/Nzc//3kJ9pImsfuJxk3KhUA==}
+
   '@formatjs/icu-messageformat-parser@2.11.4':
     resolution: {integrity: sha512-7kR78cRrPNB4fjGFZg3Rmj5aah8rQj9KPzuLsmcSn4ipLXQvC04keycTI1F7kJYDwIXtT2+7IDEto842CfZBtw==}
 
+  '@formatjs/icu-messageformat-parser@3.5.17':
+    resolution: {integrity: sha512-cN9jhVqT7u0K9tix43fhjoUwL0nazyW6zsNIXs2QdPADr+nurPfYyssUiMqcSCGlPcCiqnYVxgSn7zBSuI+5Bg==}
+
   '@formatjs/icu-skeleton-parser@1.8.16':
     resolution: {integrity: sha512-H13E9Xl+PxBd8D5/6TVUluSpxGNvFSlN/b3coUp0e0JpuWXXnQDiavIpY3NnvSp4xhEMoXyyBvVfdFX8jglOHQ==}
+
+  '@formatjs/icu-skeleton-parser@2.1.11':
+    resolution: {integrity: sha512-j8cUmOJzVgkHuS0QiQ6ga76UIoLOFSAMWhs7aZJztH3aAdCOAE6vpC8KVvFB4cU10ON0y2/5oOVmPJ43s2lTwA==}
 
   '@formatjs/intl-localematcher@0.6.2':
     resolution: {integrity: sha512-XOMO2Hupl0wdd172Y06h6kLpBz6Dv+J4okPLl4LPtzbr8f66WbIoy4ev98EBuZ6ZK4h5ydTN6XneT4QVpD7cdA==}
@@ -2280,6 +2289,9 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  '@formatjs/intl@4.1.20':
+    resolution: {integrity: sha512-q3gaFvc1mXrl0fcSY2QKSS+WzJxpbIXs48O+QLA3UsRtIwVhazvxtLrLGKEse5Mq4U8hAYyTB6Y9buU2ZRFz/w==}
 
   '@github-ui/storybook-addon-performance-panel@1.1.4':
     resolution: {integrity: sha512-clVeSoS1BM2z+nHffOXpnA1J034XALEDfJez6yg7TS7Clfn8eBjgw5FwLjfMvM+kWeG2nwfP6LujRMvJDqj+yg==}
@@ -6512,6 +6524,9 @@ packages:
   intl-messageformat@10.7.18:
     resolution: {integrity: sha512-m3Ofv/X/tV8Y3tHXLohcuVuhWKo7BBq62cqY15etqmLxg2DZ34AGGgQDeR+SCta2+zICb1NX83af0GJmbQ1++g==}
 
+  intl-messageformat@11.2.14:
+    resolution: {integrity: sha512-9f2VD1HFuxUvMw0RxsaP8WmMns6JRTnsNB/zghTFrp11ZktiXWwVDeZBPQchBKEmo+Gx/ZhxI7Qht7YglFD4PA==}
+
   ip-address@10.5.0:
     resolution: {integrity: sha512-R5SnVLJmgYYvf2F2ZgwSBnelz5G4q5AxIC277GDfUaNbrZKNANcBC7RHqYYePlszf4kBolVkJauG0ZjHHFh55g==}
     engines: {node: '>= 12'}
@@ -7857,6 +7872,12 @@ packages:
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
+
+  react-intl@10.1.26:
+    resolution: {integrity: sha512-3Sf4enrUzJqyPpH/NxIJtlwrNzuR7Cu1qey/ZxKXs3XGUxmwyAV2OZUTL4cFY3L+ebUBtkB1mf0KzpvmQ6ZfFA==}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      react: '>=18.0.0'
 
   react-intl@7.1.14:
     resolution: {integrity: sha512-VE/0Wi/lHJlBC7APQpCzLUdIt3GB5B0GZrRW8Q+ACbkHI4j+Wwgg9J1TniN6zmLHmPH5gxXcMy+fkSPfw5p1WQ==}
@@ -9940,6 +9961,61 @@ snapshots:
   '@colors/colors@1.5.0':
     optional: true
 
+  '@commercetools-frontend/ui-kit@20.6.7(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/accessible-hidden': 20.6.7(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/avatar': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/buttons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/card': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/collapsible': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/collapsible-motion': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/collapsible-panel': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/data-table': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/data-table-manager': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/dropdown-menu': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/field-errors': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/field-label': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/fields': 20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/filters': 20.6.7(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/grid': 20.6.7(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/i18n': 20.6.7
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/inputs': 20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/label': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/link': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/loading-spinner': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/messages': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/notifications': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/pagination': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/primary-action-dropdown': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/progress-bar': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/quick-filters': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/select-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/selectable-search-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/stamp': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/tag': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/tooltip': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@commercetools-uikit/view-switcher': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      moment: 2.30.1
+      moment-timezone: 0.6.2
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-router-dom: 5.3.4(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@types/react-dom'
+      - react-dom
+      - supports-color
+      - typescript
+
   '@commercetools-frontend/ui-kit@20.6.7(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -10045,6 +10121,31 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/async-creatable-select-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/loading-spinner': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/select-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/is-prop-valid': 1.4.0
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      lodash: 4.18.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/async-creatable-select-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -10093,6 +10194,30 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/async-select-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/loading-spinner': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/select-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      lodash: 4.18.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/async-select-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -10132,6 +10257,27 @@ snapshots:
       - react-dom
       - supports-color
 
+  '@commercetools-uikit/buttons@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/accessible-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/flat-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/icon-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/link-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/primary-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/secondary-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/secondary-icon-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-router-dom: 5.3.4(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/buttons@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -10161,6 +10307,33 @@ snapshots:
       moment-timezone: 0.6.2
     transitivePeerDependencies:
       - react
+
+  '@commercetools-uikit/calendar-utils@20.6.7(@types/react@19.2.18)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/accessible-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/secondary-icon-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/tooltip': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      lodash: 4.18.1
+      moment: 2.30.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+      - typescript
 
   '@commercetools-uikit/calendar-utils@20.6.7(@types/react@19.2.18)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
@@ -10316,6 +10489,29 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/creatable-select-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/select-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      lodash: 4.18.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/creatable-select-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -10336,6 +10532,47 @@ snapshots:
       react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
     transitivePeerDependencies:
       - '@types/react'
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/data-table-manager@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/accessible-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/accessible-hidden': 20.6.7(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/async-select-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/card': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/collapsible-motion': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/dropdown-menu': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/field-label': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/grid': 20.6.7(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icon-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/primary-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/radio-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/secondary-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/secondary-icon-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/select-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/tag': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/tooltip': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@hello-pangea/dnd': 18.0.1(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@types/debounce-promise': 3.1.9
+      debounce-promise: 3.1.2
+      lodash: 4.18.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-router-dom
       - supports-color
       - typescript
 
@@ -10427,6 +10664,38 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/date-input@20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/accessible-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/calendar-time-utils': 20.6.7(moment-timezone@0.6.2)(react@19.2.0)
+      '@commercetools-uikit/calendar-utils': 20.6.7(@types/react@19.2.18)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/secondary-icon-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/select-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/tooltip': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      downshift: 9.3.3(react@19.2.0)
+      moment: 2.30.1
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-is: 19.2.6
+      warning: 4.0.3
+    transitivePeerDependencies:
+      - '@types/react'
+      - moment-timezone
+      - react-dom
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/date-input@20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -10483,6 +10752,38 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/date-range-input@20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/accessible-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/calendar-time-utils': 20.6.7(moment-timezone@0.6.2)(react@19.2.0)
+      '@commercetools-uikit/calendar-utils': 20.6.7(@types/react@19.2.18)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/secondary-icon-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/select-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/tooltip': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      downshift: 9.3.3(react@19.2.0)
+      moment: 2.30.1
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-is: 19.2.6
+      warning: 4.0.3
+    transitivePeerDependencies:
+      - '@types/react'
+      - moment-timezone
+      - react-dom
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/date-range-input@20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -10534,6 +10835,38 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
       - moment
+      - moment-timezone
+      - react-dom
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/date-time-input@20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/accessible-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/calendar-time-utils': 20.6.7(moment-timezone@0.6.2)(react@19.2.0)
+      '@commercetools-uikit/calendar-utils': 20.6.7(@types/react@19.2.18)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/secondary-icon-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/select-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/tooltip': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      downshift: 9.3.3(react@19.2.0)
+      moment: 2.30.1
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-is: 19.2.6
+      warning: 4.0.3
+    transitivePeerDependencies:
+      - '@types/react'
       - moment-timezone
       - react-dom
       - supports-color
@@ -10620,6 +10953,21 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/field-errors@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/messages': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/field-errors@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -10659,6 +11007,21 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/field-warnings@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/messages': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/field-warnings@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -10670,6 +11033,38 @@ snapshots:
       react-intl: 7.1.14(react@19.2.0)(typescript@5.9.3)
     transitivePeerDependencies:
       - '@types/react'
+      - react-dom
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/fields@20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/async-creatable-select-field': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/async-select-field': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/creatable-select-field': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/date-field': 20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/date-range-field': 20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/date-time-field': 20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/localized-multiline-text-field': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/localized-text-field': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/money-field': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/multiline-text-field': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/number-field': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/password-field': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/radio-field': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/search-select-field': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/select-field': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/text-field': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/time-field': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-router-dom: 5.3.4(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - moment
+      - moment-timezone
       - react-dom
       - supports-color
       - typescript
@@ -10831,6 +11226,24 @@ snapshots:
       - react-dom
       - supports-color
 
+  '@commercetools-uikit/input-utils@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/flat-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-textarea-autosize: 8.5.9(@types/react@19.2.18)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/input-utils@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -10845,6 +11258,45 @@ snapshots:
       react-textarea-autosize: 8.5.9(@types/react@19.2.18)(react@19.2.0)
     transitivePeerDependencies:
       - '@types/react'
+      - react-dom
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/inputs@20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/async-creatable-select-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/async-select-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/checkbox-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/creatable-select-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/date-input': 20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/date-range-input': 20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/date-time-input': 20.6.7(@types/react@19.2.18)(moment-timezone@0.6.2)(moment@2.30.1)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/localized-money-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/localized-multiline-text-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/localized-rich-text-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/localized-text-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/money-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/multiline-text-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/number-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/password-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/radio-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/rich-text-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/search-select-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/search-text-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/select-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/selectable-search-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/text-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/time-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/toggle-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-router-dom: 5.3.4(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - moment
+      - moment-timezone
       - react-dom
       - supports-color
       - typescript
@@ -10888,6 +11340,22 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/label@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - supports-color
+
   '@commercetools-uikit/label@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -10899,6 +11367,27 @@ snapshots:
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
       react: 19.2.0
       react-intl: 7.1.14(react@19.2.0)(typescript@5.9.3)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - supports-color
+
+  '@commercetools-uikit/link-button@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/accessible-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      history: 4.10.1
+      lodash: 4.18.1
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-router-dom: 5.3.4(react@19.2.0)
     transitivePeerDependencies:
       - '@types/react'
       - react-dom
@@ -10919,6 +11408,27 @@ snapshots:
       lodash: 4.18.1
       react: 19.2.0
       react-intl: 7.1.14(react@19.2.0)(typescript@5.9.3)
+      react-router-dom: 5.3.4(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - supports-color
+
+  '@commercetools-uikit/link@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@types/history': 4.7.11
+      '@types/react-router-dom': 5.3.3
+      history: 4.10.1
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
       react-router-dom: 5.3.4(react@19.2.0)
     transitivePeerDependencies:
       - '@types/react'
@@ -10960,6 +11470,34 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
       - react-dom
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/localized-money-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/flat-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/localized-utils': 20.6.7(react@19.2.0)
+      '@commercetools-uikit/messages': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/money-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/select-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings-stack': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/tooltip': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - '@types/react'
       - supports-color
       - typescript
 
@@ -11013,6 +11551,33 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/localized-multiline-text-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/flat-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/localized-utils': 20.6.7(react@19.2.0)
+      '@commercetools-uikit/messages': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings-stack': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      react-textarea-autosize: 8.5.9(@types/react@19.2.18)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/localized-multiline-text-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -11035,6 +11600,43 @@ snapshots:
       react-intl: 7.1.14(react@19.2.0)(typescript@5.9.3)
       react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
       react-textarea-autosize: 8.5.9(@types/react@19.2.18)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/localized-rich-text-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/collapsible-motion': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/flat-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/localized-utils': 20.6.7(react@19.2.0)
+      '@commercetools-uikit/messages': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/rich-text-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/spacings-stack': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/tooltip': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      downshift: 9.3.3(react@19.2.0)
+      immutable: 4.3.9
+      is-hotkey: 0.2.0
+      lodash: 4.18.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-textarea-autosize: 8.5.9(@types/react@19.2.18)(react@19.2.0)
+      slate: 0.75.0
+      slate-history: 0.113.1(slate@0.75.0)
+      slate-react: 0.75.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate@0.75.0)
     transitivePeerDependencies:
       - '@types/react'
       - supports-color
@@ -11093,6 +11695,32 @@ snapshots:
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
       react: 19.2.0
       react-intl: 7.1.14(react@19.2.0)(typescript@5.9.3)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/localized-text-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/flat-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/localized-utils': 20.6.7(react@19.2.0)
+      '@commercetools-uikit/messages': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings-stack': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
     transitivePeerDependencies:
       - '@types/react'
       - react-dom
@@ -11174,6 +11802,30 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/money-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/select-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/tooltip': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      lodash: 4.18.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/money-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -11220,6 +11872,33 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/multiline-text-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/flat-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/secondary-icon-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/spacings-stack': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/tooltip': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      downshift: 9.3.3(react@19.2.0)
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-textarea-autosize: 8.5.9(@types/react@19.2.18)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/multiline-text-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -11246,6 +11925,22 @@ snapshots:
       - react-dom
       - supports-color
       - typescript
+
+  '@commercetools-uikit/notifications@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/accessible-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - supports-color
 
   '@commercetools-uikit/notifications@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)':
     dependencies:
@@ -11285,6 +11980,24 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/number-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - react-intl
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/number-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -11300,6 +12013,32 @@ snapshots:
       - '@types/react'
       - react-dom
       - react-intl
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/pagination@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/label': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/number-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/secondary-icon-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/select-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      formik: 2.4.9(@types/react@19.2.18)(react@19.2.0)
+      lodash: 4.18.1
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
       - supports-color
       - typescript
 
@@ -11329,6 +12068,32 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/password-field@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/field-errors': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/field-label': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/field-warnings': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/flat-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/password-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/spacings-stack': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/password-field@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -11352,6 +12117,24 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
       - react-dom
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/password-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - react-intl
       - supports-color
       - typescript
 
@@ -11475,6 +12258,29 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/radio-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/spacings-inset': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/spacings-stack': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+      react-is: 19.2.6
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - react-intl
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/radio-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -11495,6 +12301,39 @@ snapshots:
       - '@types/react'
       - react-dom
       - react-intl
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/rich-text-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/collapsible-motion': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/flat-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/rich-text-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/spacings-stack': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/tooltip': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      downshift: 9.3.3(react@19.2.0)
+      immutable: 4.3.9
+      is-hotkey: 0.2.0
+      lodash: 4.18.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      slate: 0.75.0
+      slate-history: 0.113.1(slate@0.75.0)
+      slate-react: 0.75.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate@0.75.0)
+    transitivePeerDependencies:
+      - '@types/react'
       - supports-color
       - typescript
 
@@ -11526,6 +12365,39 @@ snapshots:
       slate: 0.75.0
       slate-history: 0.113.1(slate@0.75.0)
       slate-react: 0.75.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate@0.75.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/rich-text-utils@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/tooltip': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@types/dompurify': 2.4.0
+      '@types/escape-html': 1.0.4
+      dompurify: 3.4.13
+      downshift: 9.3.3(react@19.2.0)
+      escape-html: 1.0.3
+      is-hotkey: 0.2.0
+      is-url: 1.2.4
+      lodash: 4.18.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      slate: 0.75.0
+      slate-history: 0.113.1(slate@0.75.0)
+      slate-hyperscript: 0.100.0(slate@0.75.0)
+      slate-react: 0.75.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate@0.75.0)
+      style-to-object: 0.4.4
     transitivePeerDependencies:
       - '@types/react'
       - supports-color
@@ -11588,6 +12460,27 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/search-select-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/async-select-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/select-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/search-select-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -11606,6 +12499,26 @@ snapshots:
       react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
     transitivePeerDependencies:
       - '@types/react'
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/search-text-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/secondary-icon-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - react-intl
       - supports-color
       - typescript
 
@@ -11628,6 +12541,26 @@ snapshots:
       - react-intl
       - supports-color
       - typescript
+
+  '@commercetools-uikit/secondary-button@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/accessible-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      lodash: 4.18.1
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-router-dom: 5.3.4(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - supports-color
 
   '@commercetools-uikit/secondary-button@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react-router-dom@5.3.4(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)':
     dependencies:
@@ -11692,6 +12625,28 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/select-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/select-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/is-prop-valid': 1.4.0
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      lodash: 4.18.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/select-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -11708,6 +12663,29 @@ snapshots:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
       react-intl: 7.1.14(react@19.2.0)(typescript@5.9.3)
+      react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/select-utils@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/accessible-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/checkbox-input': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/spacings': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      lodash: 4.18.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
       react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
     transitivePeerDependencies:
       - '@types/react'
@@ -11731,6 +12709,31 @@ snapshots:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
       react-intl: 7.1.14(react@19.2.0)(typescript@5.9.3)
+      react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - '@types/react'
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/selectable-search-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icon-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/secondary-icon-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/select-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      lodash: 4.18.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
       react-select: 5.10.2(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
     transitivePeerDependencies:
       - '@types/react'
@@ -11828,6 +12831,22 @@ snapshots:
       - react-dom
       - supports-color
 
+  '@commercetools-uikit/stamp@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/text': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - react-intl
+      - supports-color
+
   '@commercetools-uikit/stamp@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -11890,6 +12909,24 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/text-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - react-intl
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/text-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -11907,6 +12944,22 @@ snapshots:
       - react-intl
       - supports-color
       - typescript
+
+  '@commercetools-uikit/text@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      lodash: 4.18.1
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+      warning: 4.0.3
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - supports-color
 
   '@commercetools-uikit/text@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)':
     dependencies:
@@ -11946,6 +12999,29 @@ snapshots:
       - supports-color
       - typescript
 
+  '@commercetools-uikit/time-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/accessible-button': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/hooks': 20.6.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@commercetools-uikit/icons': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/spacings-inline': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/is-prop-valid': 1.4.0
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+      react-intl: 10.1.26(@types/react@19.2.18)(react@19.2.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - supports-color
+      - typescript
+
   '@commercetools-uikit/time-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@7.1.14(react@19.2.0)(typescript@5.9.3))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
     dependencies:
       '@babel/runtime': 7.29.7
@@ -11966,6 +13042,24 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
       - react-dom
+      - supports-color
+      - typescript
+
+  '@commercetools-uikit/toggle-input@20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)':
+    dependencies:
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@commercetools-uikit/constraints': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/design-system': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)
+      '@commercetools-uikit/input-utils': 20.6.7(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0))(react@19.2.0)(supports-color@8.1.1)(typescript@5.9.3)
+      '@commercetools-uikit/utils': 20.6.7(react@19.2.0)
+      '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
+      react: 19.2.0
+    transitivePeerDependencies:
+      - '@types/react'
+      - react-dom
+      - react-intl
       - supports-color
       - typescript
 
@@ -12379,16 +13473,24 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
+  '@formatjs/fast-memoize@3.1.7': {}
+
   '@formatjs/icu-messageformat-parser@2.11.4':
     dependencies:
       '@formatjs/ecma402-abstract': 2.3.6
       '@formatjs/icu-skeleton-parser': 1.8.16
       tslib: 2.8.1
 
+  '@formatjs/icu-messageformat-parser@3.5.17':
+    dependencies:
+      '@formatjs/icu-skeleton-parser': 2.1.11
+
   '@formatjs/icu-skeleton-parser@1.8.16':
     dependencies:
       '@formatjs/ecma402-abstract': 2.3.6
       tslib: 2.8.1
+
+  '@formatjs/icu-skeleton-parser@2.1.11': {}
 
   '@formatjs/intl-localematcher@0.6.2':
     dependencies:
@@ -12403,6 +13505,12 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       typescript: 5.9.3
+
+  '@formatjs/intl@4.1.20':
+    dependencies:
+      '@formatjs/fast-memoize': 3.1.7
+      '@formatjs/icu-messageformat-parser': 3.5.17
+      intl-messageformat: 11.2.14
 
   '@github-ui/storybook-addon-performance-panel@1.1.4(@storybook/icons@2.0.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@storybook/react@10.5.10(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(storybook@10.5.10(@types/react@19.2.18)(prettier@3.9.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(supports-color@8.1.1)(typescript@5.9.3))(react@19.2.0)(storybook@10.5.10(@types/react@19.2.18)(prettier@3.9.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
     dependencies:
@@ -17236,6 +18344,11 @@ snapshots:
       '@formatjs/icu-messageformat-parser': 2.11.4
       tslib: 2.8.1
 
+  intl-messageformat@11.2.14:
+    dependencies:
+      '@formatjs/fast-memoize': 3.1.7
+      '@formatjs/icu-messageformat-parser': 3.5.17
+
   ip-address@10.5.0: {}
 
   ipaddr.js@1.9.1: {}
@@ -18786,6 +19899,14 @@ snapshots:
     dependencies:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
+
+  react-intl@10.1.26(@types/react@19.2.18)(react@19.2.0):
+    dependencies:
+      '@formatjs/icu-messageformat-parser': 3.5.17
+      '@formatjs/intl': 4.1.20
+      '@types/react': 19.2.18
+      intl-messageformat: 11.2.14
+      react: 19.2.0
 
   react-intl@7.1.14(react@19.2.0)(typescript@5.9.3):
     dependencies:
