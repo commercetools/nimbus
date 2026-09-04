@@ -12,9 +12,13 @@ export const toolbarRecipe = defineRecipe({
 
     "& .nimbus-group, & .nimbus-toggle-button-group__root": {
       alignItems: "center",
-      gap: "var(--toolbar-spacing)",
       flexDirection: "var(--toolbar-direction)",
+      gap: "var(--toolbar-spacing)",
     },
+    "& .nimbus-toggle-button-group__root:has(> .nimbus-toggle-button-group__button)":
+      {
+        gap: "0",
+      },
   },
   variants: {
     size: {

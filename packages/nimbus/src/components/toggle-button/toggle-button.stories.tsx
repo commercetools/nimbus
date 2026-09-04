@@ -16,7 +16,9 @@ type Story = StoryObj<typeof ToggleButton>;
 
 const sizes = ["md", "xs", "2xs"] as const;
 
-const variants = ["outline", "ghost"] as const;
+const variants = ["outline", "ghost", "subtle"] as const;
+
+const activeFillStyles = ["tint", "solid"] as const;
 
 const colorPalettes = ["primary", "neutral", "critical", "info"] as const;
 
@@ -171,6 +173,37 @@ export const Variants: Story = {
       </Stack>
     );
   },
+};
+
+/**
+ * `activeFillStyle` sets the weight of the active (selected) fill, independent of
+ * the resting `variant`: `tint` (default) is a light accent wash, `solid` a full
+ * accent fill. Each variant is shown selected in both fills — `outline` also
+ * shifts its border per fill (recipe compoundVariants), so it needs its own cells.
+ */
+export const ActiveFillStyles: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="600">
+      {variants.map((variant) => (
+        <Stack key={variant} direction="row" gap="400" align="center">
+          <Text width="96px">{variant}</Text>
+          {activeFillStyles.map((activeFillStyle) => (
+            <ToggleButton
+              key={activeFillStyle}
+              variant={variant}
+              activeFillStyle={activeFillStyle}
+              colorPalette="primary"
+              isSelected
+            >
+              {activeFillStyle}
+            </ToggleButton>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  ),
 };
 
 export const Focused: Story = {

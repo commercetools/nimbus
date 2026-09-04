@@ -23,6 +23,13 @@ export const buttonRecipe = defineRecipe({
     transitionProperty: "common",
     transitionDuration: "moderate",
     focusVisibleRing: "outside",
+    // Tactile press feedback: nudge the button down 1px while held. Translate
+    // only — no scaling — so text/icons stay crisp and layout never reflows.
+    // Keyed off react-aria's `data-pressed` (set from `isPressed`) so it fires
+    // for pointer, keyboard, and touch alike.
+    _pressed: {
+      transform: "translateY(1px)",
+    },
     _disabled: {
       layerStyle: "disabled",
     },
@@ -123,8 +130,8 @@ export const buttonRecipe = defineRecipe({
         _hover: {
           bg: "colorPalette.10",
         },
-        _expanded: {
-          bg: "colorPalette.10",
+        _pressed: {
+          bg: "color-mix(in oklab, {colors.colorPalette.10} 95%,  black 5%)",
         },
       },
       subtle: {
@@ -132,32 +139,38 @@ export const buttonRecipe = defineRecipe({
         color: "colorPalette.11",
         _hover: {
           bg: "colorPalette.4",
+          color: "colorPalette.12",
         },
-        _expanded: {
-          bg: "colorPalette.4",
+        _pressed: {
+          bg: "colorPalette.5",
+          color: "colorPalette.12",
         },
       },
       outline: {
         borderWidth: "1px",
         borderColor: "colorPalette.7",
         color: "colorPalette.11",
-        transitionProperty: "background-color, border-color, color",
+        transitionProperty: "background-color, border-color, color, transform",
         transitionDuration: "moderate",
         _hover: {
-          bg: "colorPalette.3",
+          bg: "colorPalette.4",
+          color: "colorPalette.12",
           borderColor: "colorPalette.8",
         },
-        _expanded: {
-          bg: "colorPalette.subtle",
+        _pressed: {
+          bg: "colorPalette.5",
+          color: "colorPalette.12",
         },
       },
       ghost: {
         color: "colorPalette.11",
         _hover: {
           bg: "colorPalette.4",
+          color: "colorPalette.12",
         },
-        _expanded: {
-          bg: "colorPalette.4",
+        _pressed: {
+          bg: "colorPalette.5",
+          color: "colorPalette.12",
         },
       },
       link: {

@@ -28,6 +28,8 @@ const App = () => (
 
 By default, the group operates in single-selection mode where only one button can be selected at a time. Each button must have a unique `id` prop that identifies it within the group.
 
+`ToggleButtonGroup.Button` is the standard [`ToggleButton`](/components/buttons/togglebutton) exposed under the compound name. It inherits the group's `variant`, `activeFillStyle`, `size`, and `colorPalette`, and you can override any of them on a single button (see [Overriding individual buttons](#overriding-individual-buttons)).
+
 ## Usage examples
 
 ### Size options
@@ -52,9 +54,68 @@ const App = () => (
 )
 ```
 
+### Variant
+
+`variant` sets the resting chrome shared by every button in the group. The group
+renders segmented (buttons sit flush with shared borders) regardless of variant.
+
+- `outline` (default): a neutral segmented bar.
+- `subtle`: filled neutral segments.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <ToggleButtonGroup.Root variant="outline" defaultSelectedKeys={["center"]} aria-label="Outline alignment">
+      <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+
+    <ToggleButtonGroup.Root variant="subtle" defaultSelectedKeys={["center"]} aria-label="Subtle alignment">
+      <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+  </Stack>
+)
+```
+
+### Active fill style
+
+`activeFillStyle` sets the weight of the selected fill for the buttons. Its
+default follows `selectionMode`: **single** selection defaults to `solid` (one
+choice stands out), **multiple** selection defaults to `tint` (several can be on
+at once). Set it explicitly to override that default.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="column" gap="200">
+      <Text fontSize="350" fontWeight="600">Single selection → solid (default)</Text>
+      <ToggleButtonGroup.Root colorPalette="primary" defaultSelectedKeys={["center"]} aria-label="Solid alignment">
+        <ToggleButtonGroup.Button id="left">Left</ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="center">Center</ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="right">Right</ToggleButtonGroup.Button>
+      </ToggleButtonGroup.Root>
+    </Stack>
+
+    <Stack direction="column" gap="200">
+      <Text fontSize="350" fontWeight="600">Multiple selection → tint (default)</Text>
+      <ToggleButtonGroup.Root selectionMode="multiple" colorPalette="primary" defaultSelectedKeys={["bold", "italic"]} aria-label="Tint formatting">
+        <ToggleButtonGroup.Button id="bold">Bold</ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="italic">Italic</ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="underline">Underline</ToggleButtonGroup.Button>
+      </ToggleButtonGroup.Root>
+    </Stack>
+  </Stack>
+)
+```
+
 ### Color palettes
 
-Choose from semantic color palettes to match your design context:
+Choose from semantic color palettes to match your design context. As with a
+standalone toggle button, the resting group is neutral — `colorPalette` tints the
+active (selected) segments:
 
 ```jsx live-dev
 const App = () => (
@@ -95,6 +156,25 @@ const App = () => (
       </ToggleButtonGroup.Button>
     </ToggleButtonGroup.Root>
   </Stack>
+)
+```
+
+### Overriding individual buttons
+
+Because each `ToggleButtonGroup.Button` is a full `ToggleButton`, any prop set on
+a single button overrides the value inherited from the group. This is useful for
+drawing attention to a destructive or primary option within an otherwise uniform
+group:
+
+```jsx live-dev
+const App = () => (
+  <ToggleButtonGroup.Root colorPalette="primary" defaultSelectedKeys={["keep"]} aria-label="Row action">
+    <ToggleButtonGroup.Button id="keep">Keep</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="archive">Archive</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="delete" colorPalette="critical">
+      Delete
+    </ToggleButtonGroup.Button>
+  </ToggleButtonGroup.Root>
 )
 ```
 
