@@ -18,16 +18,15 @@ export const PageHeader = ({
 }: PageHeaderProps) => (
   <Box
     px="300"
-    pt="100"
-    pb="200"
+    py="100"
     bg="white"
     borderBottomWidth="1px"
     borderColor="neutral.4"
   >
-    <Flex alignItems="center" justifyContent="space-between" gap="300">
+    <Flex alignItems="center" justifyContent="space-between" gap="200">
       <Box>
         <Flex alignItems="center" gap="200">
-          <Text textStyle="lg" fontWeight="bold" color="neutral.12">
+          <Text textStyle="md" fontWeight="bold" color="neutral.12">
             {title}
           </Text>
           {status && (
