@@ -33,11 +33,11 @@ const j1Steps: TourStep[] = [
     placement: "bottom",
   },
   {
-    selector: "[data-tour='product-table']",
+    selector: "[data-tour='agent-columns']",
     title: "External data in existing controls",
     description:
-      "Days-on-hand, velocity, and margin come from PetSmart's systems. They appear as extra columns. not in a separate tool. Dana scans the table the same way she always does, but now the aging problem is visible at a glance.",
-    placement: "top",
+      "Days-on-hand, velocity, and margin come from PetSmart's systems. They appear as extra columns, not in a separate tool. Dana scans the table the same way she always does, but now the aging problem is visible at a glance.",
+    placement: "left",
   },
   {
     selector: "[data-tour='view-inventory-action']",
@@ -101,11 +101,11 @@ const j2Steps: TourStep[] = [
     placement: "bottom",
   },
   {
-    selector: "[data-tour='product-table']",
+    selector: "[data-tour='agent-columns']",
     title: "Before/after margin on every SKU",
     description:
-      "Each row shows old and new margin side-by-side. Carlos can scan the entire affected product line without building a spreadsheet. the agent assembled the view the moment he filtered to this brand.",
-    placement: "top",
+      "Each row shows old and new margin side-by-side. Carlos can scan the entire affected product line without building a spreadsheet. The agent assembled the view the moment he filtered to this brand.",
+    placement: "left",
   },
   {
     selector: "[data-tour='view-response-action']",
@@ -141,11 +141,11 @@ const j2Steps: TourStep[] = [
   },
   // Product List (house-brand)
   {
-    selector: "[data-tour='product-table']",
+    selector: "[data-tour='agent-columns']",
     title: "Substitution isn't simple",
     description:
-      "The agent doesn't just show alternatives. it flags the churn risk from PetSmart's customer data. This nuance changes how Carlos frames the recommendation to stakeholders.",
-    placement: "top",
+      "The agent doesn't just show alternatives. It flags the churn risk from PetSmart's customer data. This nuance changes how Carlos frames the recommendation to stakeholders.",
+    placement: "left",
   },
   {
     selector: "[data-tour='model-scenarios-btn']",
@@ -218,11 +218,11 @@ const j3Steps: TourStep[] = [
   },
   // Product List
   {
-    selector: "[data-tour='product-table']",
+    selector: "[data-tour='agent-columns']",
     title: "Coverage and badge status at a glance",
     description:
       "The table now shows campaign-specific columns: which discount matches each product, the effective discount, and whether the promo badge is set. Red badges mean customers won't see the offer.",
-    placement: "top",
+    placement: "left",
   },
   {
     selector: "[data-tour='set-badge-action']",

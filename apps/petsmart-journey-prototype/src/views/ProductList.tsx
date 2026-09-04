@@ -205,7 +205,17 @@ const j1ExtraColumns: DataTableColumnItem<Product>[] = [
     id: "daysOnHand",
     header: "Days on Hand",
     accessor: (row) => (
-      <Flex alignItems="center" gap="100">
+      <Flex
+        alignItems="center"
+        gap="100"
+        data-tour={
+          row.id === "outdoor-fetch-toy" ||
+          row.id === "hills-science-diet-30lb" ||
+          row.id === "nylon-collar-sm"
+            ? "agent-columns"
+            : undefined
+        }
+      >
         <ProvenanceIndicator
           agentName="PetSmart Commerce Intelligence"
           agentSource="petsmart"
@@ -278,7 +288,16 @@ const j2ExtraColumns: DataTableColumnItem<Product>[] = [
     id: "currentMargin",
     header: "Margin Now",
     accessor: (row) => (
-      <Flex alignItems="center" gap="100">
+      <Flex
+        alignItems="center"
+        gap="100"
+        data-tour={
+          row.id === "hills-science-diet-30lb" ||
+          row.id === "ps-premium-adult-30lb"
+            ? "agent-columns"
+            : undefined
+        }
+      >
         <ProvenanceIndicator
           agentName="PetSmart Commerce Intelligence"
           agentSource="petsmart"
@@ -361,7 +380,11 @@ const j3ExtraColumns: DataTableColumnItem<Product>[] = [
     header: "Discount",
     accessor: (row) =>
       row.matchedDiscount ? (
-        <Flex alignItems="center" gap="100">
+        <Flex
+          alignItems="center"
+          gap="100"
+          data-tour={row.id === "nylon-collar-sm" ? "agent-columns" : undefined}
+        >
           <ProvenanceIndicator
             agentName="Promotions Agent"
             agentSource="ct"
