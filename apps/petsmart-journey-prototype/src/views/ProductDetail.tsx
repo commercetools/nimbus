@@ -233,7 +233,7 @@ const BadgeGapCard = ({ journeyId }: { journeyId: number }) => (
     }
     agentSource={journeyId === 4 ? "petsmart" : "ct"}
     headerRight={
-      <Badge size="xs" colorPalette="error">
+      <Badge size="2xs" colorPalette="error">
         missing badge
       </Badge>
     }
@@ -335,10 +335,10 @@ export const ProductDetail = () => {
           data-tour="model-pivot-btn"
         />
       )}
-      <Button variant="ghost" size="xs">
+      <Button variant="ghost" size="2xs">
         Revert
       </Button>
-      <Button variant="solid" size="xs">
+      <Button variant="solid" size="2xs">
         Save
       </Button>
     </Flex>
@@ -353,10 +353,10 @@ export const ProductDetail = () => {
         actions={toolbarActions}
       />
 
-      <Box p="400">
-        <Flex gap="400" direction={{ base: "column", lg: "row" }}>
+      <Box p="300">
+        <Flex gap="300" direction={{ base: "column", lg: "row" }}>
           {/* Left column: form */}
-          <Stack gap="400" flex="2" minWidth="0">
+          <Stack gap="300" flex="2" minWidth="0">
             {/* Product info */}
             <Box
               bg="white"
@@ -475,7 +475,7 @@ export const ProductDetail = () => {
                   <Text textStyle="xs" color="neutral.10">
                     Status
                   </Text>
-                  <Badge size="xs" colorPalette="success">
+                  <Badge size="2xs" colorPalette="success">
                     {product.status}
                   </Badge>
                 </Flex>

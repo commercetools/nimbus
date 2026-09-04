@@ -26,12 +26,12 @@ const J1SummaryCard = () => (
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
     headerRight={
-      <Badge size="xs" colorPalette="warning">
+      <Badge size="2xs" colorPalette="warning">
         47 SKUs aging
       </Badge>
     }
   >
-    <Flex gap="400" alignItems="center" wrap="wrap">
+    <Flex gap="300" alignItems="center" wrap="wrap">
       <Flex alignItems="baseline" gap="100">
         <Text textStyle="lg" fontWeight="bold" color="neutral.12">
           $340K
@@ -52,7 +52,7 @@ const J1SummaryCard = () => (
           <Text textStyle="xs" color="neutral.10">
             Online
           </Text>
-          <Text textStyle="sm" fontWeight="bold" color="red.11">
+          <Text textStyle="xs" fontWeight="bold" color="red.11">
             ↓ 12%
           </Text>
         </Flex>
@@ -67,7 +67,7 @@ const J1SummaryCard = () => (
           <Text textStyle="xs" color="neutral.10">
             In-Store
           </Text>
-          <Text textStyle="sm" fontWeight="bold" color="neutral.11">
+          <Text textStyle="xs" fontWeight="bold" color="neutral.11">
             — flat
           </Text>
         </Flex>
@@ -85,12 +85,12 @@ const J2SummaryCard = () => (
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
     headerRight={
-      <Badge size="xs" colorPalette="error">
+      <Badge size="2xs" colorPalette="error">
         68 below floor
       </Badge>
     }
   >
-    <Flex gap="400" alignItems="center" wrap="wrap">
+    <Flex gap="300" alignItems="center" wrap="wrap">
       <Flex alignItems="baseline" gap="100">
         <Text textStyle="lg" fontWeight="bold" color="red.11">
           $2.1M
@@ -127,7 +127,7 @@ const J2HouseBrandCard = () => (
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
     headerRight={
-      <Badge size="xs" colorPalette="warning">
+      <Badge size="2xs" colorPalette="warning">
         churn risk
       </Badge>
     }
@@ -165,7 +165,7 @@ const baseColumns: DataTableColumnItem<Product>[] = [
     isRowHeader: true,
     accessor: (row) => (
       <Box>
-        <Text textStyle="sm" fontWeight="medium" color="neutral.12">
+        <Text textStyle="xs" fontWeight="medium" color="neutral.12">
           {row.name}
         </Text>
         <Text textStyle="xs" color="neutral.10" fontFamily="mono">
@@ -183,7 +183,7 @@ const baseColumns: DataTableColumnItem<Product>[] = [
     id: "status",
     header: "Status",
     accessor: (row) => (
-      <Badge size="xs" colorPalette={statusPalettes[row.status] as any}>
+      <Badge size="2xs" colorPalette={statusPalettes[row.status] as any}>
         {row.status}
       </Badge>
     ),
@@ -213,7 +213,7 @@ const j1ExtraColumns: DataTableColumnItem<Product>[] = [
           reason={`${row.daysOnHand}d on hand from PetSmart's inventory system`}
         />
         <Text
-          textStyle="sm"
+          textStyle="xs"
           fontWeight={row.isAging ? "semibold" : "regular"}
           color={row.isAging ? "amber.11" : "neutral.12"}
         >
@@ -235,7 +235,7 @@ const j1ExtraColumns: DataTableColumnItem<Product>[] = [
             size="10px"
             reason="Sales velocity trend from PetSmart's analytics provider"
           />
-          <Text textStyle="sm" color={trend?.color ?? "neutral.10"}>
+          <Text textStyle="xs" color={trend?.color ?? "neutral.10"}>
             {trend?.symbol ?? "—"}
           </Text>
         </Flex>
@@ -253,7 +253,7 @@ const j1ExtraColumns: DataTableColumnItem<Product>[] = [
           size="10px"
           reason="Margin calculated from PetSmart's supplier cost data and ct pricing"
         />
-        <Text textStyle="sm" color="neutral.12">
+        <Text textStyle="xs" color="neutral.12">
           {row.marginHeadroom ?? "—"}%
         </Text>
       </Flex>
@@ -290,7 +290,7 @@ const j2ExtraColumns: DataTableColumnItem<Product>[] = [
           }
         />
         <Text
-          textStyle="sm"
+          textStyle="xs"
           fontWeight="semibold"
           color={
             row.isHouseBrand
@@ -311,7 +311,7 @@ const j2ExtraColumns: DataTableColumnItem<Product>[] = [
     header: "Margin Was",
     accessor: (row) =>
       row.previousMargin != null ? (
-        <Text textStyle="sm" color="neutral.10">
+        <Text textStyle="xs" color="neutral.10">
           {row.previousMargin}%
         </Text>
       ) : null,
@@ -334,7 +334,7 @@ const j2ExtraColumns: DataTableColumnItem<Product>[] = [
             size="10px"
             reason="Margin floor assessment from PetSmart's cost data"
           />
-          <Badge size="xs" colorPalette={palette as any}>
+          <Badge size="2xs" colorPalette={palette as any}>
             {label}
           </Badge>
         </Flex>
@@ -386,7 +386,7 @@ const j3ExtraColumns: DataTableColumnItem<Product>[] = [
             size="10px"
             reason={`${row.effectiveDiscount}% effective discount after stacking rules`}
           />
-          <Text textStyle="sm" color="neutral.12">
+          <Text textStyle="xs" color="neutral.12">
             {row.effectiveDiscount}%
           </Text>
         </Flex>
@@ -408,7 +408,7 @@ const j3ExtraColumns: DataTableColumnItem<Product>[] = [
                 : "No promotional badge set — customers won't see the offer"
             }
           />
-          <Badge size="xs" colorPalette={row.hasBadge ? "success" : "error"}>
+          <Badge size="2xs" colorPalette={row.hasBadge ? "success" : "error"}>
             {row.hasBadge ? "set" : "missing"}
           </Badge>
         </Flex>
@@ -483,7 +483,7 @@ export const ProductList = () => {
         data-tour="model-scenarios-btn"
       />
     ) : (
-      <Button variant="solid" size="xs">
+      <Button variant="solid" size="2xs">
         Add product
       </Button>
     );
@@ -496,7 +496,7 @@ export const ProductList = () => {
         actions={toolbarActions}
       />
 
-      <Box p="400">
+      <Box p="300">
         {/* Inline render target — agent summary cards */}
         {journeyId && (
           <Box mb="400" data-tour="inline-slot">
@@ -534,16 +534,7 @@ export const ProductList = () => {
         </Flex>
 
         {/* Product table */}
-        <Box
-          data-tour="product-table"
-          css={{
-            "& td, & th": {
-              paddingTop: "var(--nimbus-sizes-100) !important",
-              paddingBottom: "var(--nimbus-sizes-100) !important",
-            },
-            "& td": { fontSize: "var(--nimbus-font-sizes-xs)" },
-          }}
-        >
+        <Box data-tour="product-table">
           <DataTable.Root
             columns={columns}
             rows={rows}

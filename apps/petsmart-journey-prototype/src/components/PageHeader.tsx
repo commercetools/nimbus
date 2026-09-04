@@ -31,7 +31,7 @@ export const PageHeader = ({
             {title}
           </Text>
           {status && (
-            <Badge size="xs" colorPalette={status.colorPalette as any}>
+            <Badge size="2xs" colorPalette={status.colorPalette as any}>
               {status.label}
             </Badge>
           )}

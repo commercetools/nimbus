@@ -143,8 +143,8 @@ export const Homepage = () => {
                 key={j.id}
                 bg="white"
                 borderRadius="300"
-                p="400"
-                gap="400"
+                p="300"
+                gap="300"
                 alignItems="flex-start"
                 shadow="xs"
                 _hover={{ shadow: "md", borderColor: "primary.6" }}
@@ -180,7 +180,7 @@ export const Homepage = () => {
                     >
                       {j.title}
                     </Text>
-                    <Badge size="xs" colorPalette={modeColors[j.mode] as any}>
+                    <Badge size="2xs" colorPalette={modeColors[j.mode] as any}>
                       {j.mode}
                     </Badge>
                     <Text
@@ -215,7 +215,7 @@ export const Homepage = () => {
         <Box
           bg="white"
           borderRadius="300"
-          p="400"
+          p="300"
           shadow="xs"
           borderWidth="1px"
           borderColor="neutral.4"
@@ -235,7 +235,7 @@ export const Homepage = () => {
             carries a provenance indicator so the user always knows where data
             came from.
           </Text>
-          <Flex gap="400" wrap="wrap">
+          <Flex gap="300" wrap="wrap">
             <Flex alignItems="center" gap="150">
               <Box
                 width="100"

@@ -24,7 +24,7 @@ const J4AnalyticsCard = () => (
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
     headerRight={
-      <Badge size="xs" colorPalette="warning">
+      <Badge size="2xs" colorPalette="warning">
         10d running · 11d left
       </Badge>
     }
@@ -41,7 +41,7 @@ const J4AnalyticsCard = () => (
         <Text textStyle="xs" color="neutral.10">
           Collars 10%
         </Text>
-        <Text textStyle="sm" fontWeight="bold" color="green.11">
+        <Text textStyle="xs" fontWeight="bold" color="green.11">
           14%
         </Text>
         <Text textStyle="xs" color="green.10">
@@ -59,7 +59,7 @@ const J4AnalyticsCard = () => (
         <Text textStyle="xs" color="neutral.10">
           Crates 20%
         </Text>
-        <Text textStyle="sm" fontWeight="bold" color="green.11">
+        <Text textStyle="xs" fontWeight="bold" color="green.11">
           17%
         </Text>
         <Text textStyle="xs" color="green.10">
@@ -77,7 +77,7 @@ const J4AnalyticsCard = () => (
         <Text textStyle="xs" color="neutral.10">
           Leashes 15%
         </Text>
-        <Text textStyle="sm" fontWeight="bold" color="red.11">
+        <Text textStyle="xs" fontWeight="bold" color="red.11">
           3%
         </Text>
         <Text textStyle="xs" color="red.10">
@@ -94,7 +94,7 @@ const J4DiagnosisCard = () => (
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
     headerRight={
-      <Badge size="xs" colorPalette="error">
+      <Badge size="2xs" colorPalette="error">
         2 factors identified
       </Badge>
     }
@@ -108,7 +108,7 @@ const J4DiagnosisCard = () => (
             60% below category average
           </Text>
         </Text>
-        <Badge size="xs" colorPalette="neutral">
+        <Badge size="2xs" colorPalette="neutral">
           PetSmart Analytics
         </Badge>
       </Flex>
@@ -121,7 +121,7 @@ const J4DiagnosisCard = () => (
           </Text>{" "}
           5 days ago
         </Text>
-        <Badge size="xs" colorPalette="neutral">
+        <Badge size="2xs" colorPalette="neutral">
           Competitive Feed
         </Badge>
       </Flex>
@@ -164,7 +164,7 @@ const baseColumns: DataTableColumnItem<Discount>[] = [
     isRowHeader: true,
     accessor: (row) => (
       <Box>
-        <Text textStyle="sm" fontWeight="medium" color="neutral.12">
+        <Text textStyle="xs" fontWeight="medium" color="neutral.12">
           {row.name}
         </Text>
         <Text textStyle="xs" color="neutral.10" fontFamily="mono">
@@ -177,7 +177,7 @@ const baseColumns: DataTableColumnItem<Discount>[] = [
     id: "type",
     header: "Type",
     accessor: (row) => (
-      <Badge size="xs" colorPalette={typePalettes[row.type] as any}>
+      <Badge size="2xs" colorPalette={typePalettes[row.type] as any}>
         {row.typeLabel}
       </Badge>
     ),
@@ -186,7 +186,7 @@ const baseColumns: DataTableColumnItem<Discount>[] = [
     id: "value",
     header: "Value",
     accessor: (row) => (
-      <Text textStyle="sm" fontWeight="semibold" color="neutral.12">
+      <Text textStyle="xs" fontWeight="semibold" color="neutral.12">
         {row.value}
       </Text>
     ),
@@ -195,7 +195,7 @@ const baseColumns: DataTableColumnItem<Discount>[] = [
     id: "status",
     header: "Status",
     accessor: (row) => (
-      <Badge size="xs" colorPalette={row.isActive ? "success" : "neutral"}>
+      <Badge size="2xs" colorPalette={row.isActive ? "success" : "neutral"}>
         {row.isActive ? "active" : "inactive"}
       </Badge>
     ),
@@ -229,7 +229,7 @@ const j4ExtraColumns: DataTableColumnItem<Discount>[] = [
         <Flex alignItems="center" gap="100">
           <ProvenanceBadge size="12px" agentSource="petsmart" />
           <Text
-            textStyle="sm"
+            textStyle="xs"
             fontWeight="bold"
             color={
               row.performanceStatus === "underperforming"
@@ -251,7 +251,7 @@ const j4ExtraColumns: DataTableColumnItem<Discount>[] = [
     accessor: (row) =>
       row.performanceStatus ? (
         <Badge
-          size="xs"
+          size="2xs"
           colorPalette={performancePalettes[row.performanceStatus] as any}
         >
           {row.performanceStatus.replace("-", " ")}
@@ -294,13 +294,13 @@ export const DiscountList = () => {
             : "Cart Discounts"
         }
         actions={
-          <Button variant="solid" size="xs">
+          <Button variant="solid" size="2xs">
             Add discount
           </Button>
         }
       />
 
-      <Box p="400">
+      <Box p="300">
         {/* J4: Inline analytics + diagnosis */}
         {journeyId === 4 && (
           <Box mb="400" data-tour="inline-slot">
@@ -312,16 +312,7 @@ export const DiscountList = () => {
         )}
 
         {/* Discount table */}
-        <Box
-          data-tour="discount-table"
-          css={{
-            "& td, & th": {
-              paddingTop: "var(--nimbus-sizes-100) !important",
-              paddingBottom: "var(--nimbus-sizes-100) !important",
-            },
-            "& td": { fontSize: "var(--nimbus-font-sizes-xs)" },
-          }}
-        >
+        <Box data-tour="discount-table">
           <DataTable.Root
             columns={columns}
             rows={rows}
