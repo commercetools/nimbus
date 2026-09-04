@@ -47,7 +47,7 @@ export type ToggleButtonRootSlotProps = Omit<
 // HELPER TYPES
 // ============================================================
 
-type ExcludedProps = "css" | "colorScheme" | "recipe" | "as" | "asChild";
+type ExcludedProps = "as" | "asChild";
 
 // ============================================================
 // MAIN PROPS
