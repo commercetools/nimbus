@@ -6,7 +6,6 @@ import {
   Text,
   Separator,
   IconButton,
-  MultilineTextInput,
 } from "@commercetools/nimbus";
 import { Close, ArrowUpward } from "@commercetools/nimbus-icons";
 import { ProvenanceBadge } from "./ProvenanceBadge";
@@ -175,16 +174,30 @@ export const ChatPanel = ({
       <Separator />
 
       {/* Input */}
-      <Flex alignItems="flex-start" gap="100" px="300" py="250" flexShrink={0}>
+      <Flex alignItems="flex-end" gap="100" px="300" py="150" flexShrink={0}>
         <Box flex="1" minWidth="0" width="100%">
-          <MultilineTextInput
+          <textarea
             placeholder={placeholder}
             aria-label="Chat input"
-            variant="ghost"
-            size="sm"
             rows={1}
-            autoGrow
-            width="100%"
+            style={{
+              width: "100%",
+              border: "none",
+              outline: "none",
+              resize: "none",
+              background: "transparent",
+              color: "var(--nimbus-colors-neutral-12)",
+              fontSize: "var(--nimbus-font-sizes-sm)",
+              lineHeight: "var(--nimbus-line-heights-tall)",
+              padding: 0,
+              fontFamily: "inherit",
+              overflow: "hidden",
+            }}
+            onInput={(e) => {
+              const el = e.currentTarget;
+              el.style.height = "auto";
+              el.style.height = `${el.scrollHeight}px`;
+            }}
           />
         </Box>
         <IconButton

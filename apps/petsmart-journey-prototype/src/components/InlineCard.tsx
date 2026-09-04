@@ -30,18 +30,17 @@ export const InlineCard = ({
       borderColor="neutral.6"
       borderRadius="200"
       overflow="visible"
-      width="fit-content"
-      maxWidth="100%"
+      width="100%"
     >
-      {/* Card header */}
+      {/* Card header — tinted by agent source */}
       <Flex
         alignItems="center"
         gap="150"
-        px="300"
-        py="150"
+        px="200"
+        py="100"
         borderBottomWidth="1px"
         borderColor="neutral.4"
-        bg="neutral.2"
+        bg={agentSource === "petsmart" ? "primary.2" : "teal.2"}
       >
         <ProvenanceIndicator agentName={agentName} agentSource={agentSource} />
         <Text textStyle="xs" fontWeight="semibold" color="neutral.12">
@@ -52,7 +51,7 @@ export const InlineCard = ({
       </Flex>
 
       {/* Card body */}
-      <Box px="300" py="250">
+      <Box px="200" py="150">
         {children}
       </Box>
     </Box>

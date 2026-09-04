@@ -57,13 +57,13 @@ const J1ContextCard = () => (
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
   >
-    <Stack gap="300">
-      <Grid columns={3} gap="300">
+    <Stack gap="150">
+      <Grid columns={3} gap="200">
         <Box>
           <Text textStyle="xs" color="neutral.10">
             Days on Hand
           </Text>
-          <Text textStyle="lg" fontWeight="bold" color="amber.11">
+          <Text textStyle="md" fontWeight="bold" color="amber.11">
             89d
           </Text>
         </Box>
@@ -72,7 +72,7 @@ const J1ContextCard = () => (
             Conversion Rate
           </Text>
           <Flex alignItems="baseline" gap="100">
-            <Text textStyle="lg" fontWeight="bold" color="green.11">
+            <Text textStyle="md" fontWeight="bold" color="green.11">
               3.8%
             </Text>
             <Text textStyle="xs" color="neutral.10">
@@ -84,48 +84,50 @@ const J1ContextCard = () => (
           <Text textStyle="xs" color="neutral.10">
             Online Impressions
           </Text>
-          <Text textStyle="lg" fontWeight="bold" color="red.11">
+          <Text textStyle="md" fontWeight="bold" color="red.11">
             Low
           </Text>
         </Box>
       </Grid>
-      <Separator />
-      <Box data-tour="provenance-demo">
-        <Flex alignItems="center" gap="150" mb="100">
+      <Box
+        data-tour="provenance-demo"
+        bg="amber.2"
+        px="200"
+        py="100"
+        borderRadius="100"
+        borderLeftWidth="2px"
+        borderColor="amber.8"
+      >
+        <Flex alignItems="center" gap="100" mb="50">
           <ProvenanceIndicator
             agentName="PetSmart Commerce Intelligence"
             agentSource="petsmart"
             confidence={88}
             reason="Calculated from PetSmart analytics: 412 purchases out of 10,842 product page views over 30 days"
           />
-          <Text textStyle="xs" fontWeight="medium" color="neutral.12">
+          <Text textStyle="xs" fontWeight="medium" color="amber.12">
             Key Insight
           </Text>
         </Flex>
-        <Text textStyle="xs" color="neutral.11" lineHeight="tall">
-          This SKU has strong conversion when viewed (3.8% vs. 2.1% category
-          avg) but low impressions online — it sells 3x faster in stores with
-          dedicated outdoor displays. The online channel is the drag.
+        <Text textStyle="xs" color="amber.12">
+          Strong conversion when viewed but low online impressions — sells 3x
+          faster in stores. Online channel is the drag.
         </Text>
       </Box>
-      <Separator />
-      <Text textStyle="xs" fontWeight="semibold" color="neutral.12">
-        Channel Breakdown
-      </Text>
-      <Grid columns={2} gap="200">
-        <Box bg="neutral.2" p="200" borderRadius="100">
+      <Grid columns={2} gap="150">
+        <Box bg="neutral.2" px="200" py="100" borderRadius="100">
           <Text textStyle="xs" color="neutral.10">
             Online
           </Text>
-          <Text textStyle="sm" fontWeight="semibold" color="red.11">
+          <Text textStyle="xs" fontWeight="semibold" color="red.11">
             142 orders / 30d · ↓ 18%
           </Text>
         </Box>
-        <Box bg="neutral.2" p="200" borderRadius="100">
+        <Box bg="neutral.2" px="200" py="100" borderRadius="100">
           <Text textStyle="xs" color="neutral.10">
             In-Store
           </Text>
-          <Text textStyle="sm" fontWeight="semibold" color="green.11">
+          <Text textStyle="xs" fontWeight="semibold" color="green.11">
             270 orders / 30d · ↑ 4%
           </Text>
         </Box>
