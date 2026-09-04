@@ -30,14 +30,14 @@ const j1Steps: TourStep[] = [
     title: "Inventory data meets the product list",
     description:
       "This summary card combines PetSmart's inventory system data with ct product data. Neither system alone could tell Dana that $340K in aging stock is a channel-specific problem. that insight requires correlating inventory days-on-hand with sales analytics.",
-    placement: "right",
+    placement: "bottom",
   },
   {
     selector: "[data-tour='product-table']",
     title: "External data in existing controls",
     description:
       "Days-on-hand, velocity, and margin come from PetSmart's systems. They appear as extra columns. not in a separate tool. Dana scans the table the same way she always does, but now the aging problem is visible at a glance.",
-    placement: "right",
+    placement: "top",
   },
   {
     selector: "[data-tour='view-inventory-action']",
@@ -53,14 +53,14 @@ const j1Steps: TourStep[] = [
     title: "Three data sources, one conclusion",
     description:
       "ct order data, PetSmart analytics, and PetSmart inventory are combined into a single view. The conclusion. strong conversion but low online impressions. changes the promotion strategy entirely. A deeper discount won't help if the problem is visibility, not price.",
-    placement: "right",
+    placement: "left",
   },
   {
     selector: "[data-tour='provenance-demo']",
     title: "Every number is verifiable",
     description:
       "Hover any ✦ to see which agent produced it and why. Click to open a chat with full context about that specific data point. the agent explains its sources and offers to go deeper.",
-    placement: "right",
+    placement: "left",
     action: "openPanel",
   },
   {
@@ -68,7 +68,7 @@ const j1Steps: TourStep[] = [
     title: "Intent-driven navigation",
     description:
       "This button appeared because the agent inferred Dana is evaluating promotion-worthiness. The agent's navigation cues reflect accumulated context. it wouldn't suggest modeling if Dana hadn't been reviewing aging inventory.",
-    placement: "right",
+    placement: "bottom",
     navigateTo: "/playground",
   },
   // Configuration Playground
@@ -77,7 +77,7 @@ const j1Steps: TourStep[] = [
     title: "Scenarios from context, not from scratch",
     description:
       "Dana didn't configure these scenarios. the agent pre-populated them from her navigation path. Each includes projected impact and historical outcomes, so she can compare strategies without leaving this page.",
-    placement: "right",
+    placement: "top",
   },
   {
     selector: "[data-tour='chat-panel']",
@@ -98,14 +98,14 @@ const j2Steps: TourStep[] = [
     title: "Margin impact requires cost data ct doesn't have",
     description:
       "The supplier cost feed is PetSmart's data. ct knows prices but not wholesale costs. The agent correlates both to show which SKUs dropped below the margin floor, a calculation impossible with ct data alone.",
-    placement: "right",
+    placement: "bottom",
   },
   {
     selector: "[data-tour='product-table']",
     title: "Before/after margin on every SKU",
     description:
       "Each row shows old and new margin side-by-side. Carlos can scan the entire affected product line without building a spreadsheet. the agent assembled the view the moment he filtered to this brand.",
-    placement: "right",
+    placement: "top",
   },
   {
     selector: "[data-tour='view-response-action']",
@@ -121,7 +121,7 @@ const j2Steps: TourStep[] = [
     title: "Five levers, not just one",
     description:
       "The agent doesn't default to the obvious answer. It lays out absorb, pass-through, substitute, and promotional offset. each with competitive pricing context that requires PetSmart's external data.",
-    placement: "right",
+    placement: "left",
   },
   {
     selector: "[data-tour='provenance-demo']",
@@ -136,7 +136,7 @@ const j2Steps: TourStep[] = [
     title: "The agent tracks which lever Carlos explores",
     description:
       "Clicking 'View alternatives' vs 'Model promotional offset' tells the agent which direction Carlos is leaning. The next page's data will reflect that choice.",
-    placement: "right",
+    placement: "bottom",
     navigateTo: "/products?filter=house-brand",
   },
   // Product List (house-brand)
@@ -145,7 +145,7 @@ const j2Steps: TourStep[] = [
     title: "Substitution isn't simple",
     description:
       "The agent doesn't just show alternatives. it flags the churn risk from PetSmart's customer data. This nuance changes how Carlos frames the recommendation to stakeholders.",
-    placement: "right",
+    placement: "top",
   },
   {
     selector: "[data-tour='model-scenarios-btn']",
@@ -161,7 +161,7 @@ const j2Steps: TourStep[] = [
     title: "Quantitative backing for a stakeholder meeting",
     description:
       "Every scenario includes projected impact and historical outcomes. Carlos walks into the meeting with numbers, not opinions. assembled entirely from his navigation path through the MC.",
-    placement: "right",
+    placement: "top",
   },
 ];
 
@@ -189,7 +189,7 @@ const j3Steps: TourStep[] = [
     title: "Test all three discounts together",
     description:
       "Individual discounts pass validation. But do they work as a campaign? Simulation catches stacking conflicts and coverage gaps that only appear when discounts are evaluated as a portfolio.",
-    placement: "right",
+    placement: "bottom",
     navigateTo: "/playground",
   },
   // Configuration Playground
@@ -198,7 +198,7 @@ const j3Steps: TourStep[] = [
     title: "A stacking conflict caught before production",
     description:
       "The Loyalty discount stacks with the crates discount on 12 SKUs, pushing them below the margin floor. This would have eroded margin for weeks before anyone noticed. The simulation caught it in seconds.",
-    placement: "right",
+    placement: "top",
   },
   {
     selector: "[data-tour='chat-panel']",
@@ -213,7 +213,7 @@ const j3Steps: TourStep[] = [
     title: "From simulation to verification",
     description:
       "Click to see every product matched by the campaign, with badge status. The coverage check that happens manually after launch now happens before it.",
-    placement: "right",
+    placement: "left",
     navigateTo: "/products?filter=back-to-school",
   },
   // Product List
@@ -222,7 +222,7 @@ const j3Steps: TourStep[] = [
     title: "Coverage and badge status at a glance",
     description:
       "The table now shows campaign-specific columns: which discount matches each product, the effective discount, and whether the promo badge is set. Red badges mean customers won't see the offer.",
-    placement: "right",
+    placement: "top",
   },
   {
     selector: "[data-tour='set-badge-action']",
@@ -238,7 +238,7 @@ const j3Steps: TourStep[] = [
     title: "23 of 89 products are invisible to customers",
     description:
       "The discount is active and correctly configured. But 23 products don't show it because their badge attribute is empty. The agent surfaces the gap and suggests copy. Dana still approves, but she's fixing a list, not hunting for problems.",
-    placement: "right",
+    placement: "left",
   },
 ];
 
@@ -251,14 +251,14 @@ const j4Steps: TourStep[] = [
     title: "Campaign performance at a glance",
     description:
       "Redemption data comes from ct orders. But knowing that leashes is at 3% vs. a 15% target only tells Priya there's a problem. not why. The diagnosis below needs PetSmart's impression and competitive data to explain the cause.",
-    placement: "right",
+    placement: "bottom",
   },
   {
     selector: "[data-tour='diagnosis-card']",
     title: "Two causes, two data sources",
     description:
       "Low impressions (PetSmart analytics) and competitive undercut (PetSmart competitive feed) are separate problems with different fixes. Neither is visible from ct data alone. The agent assembled this diagnosis from multiple external sources.",
-    placement: "right",
+    placement: "bottom",
   },
   {
     selector: "[data-tour='provenance-demo']",
@@ -282,7 +282,7 @@ const j4Steps: TourStep[] = [
     title: "The gap is leashes-specific",
     description:
       "Collars and crates have >90% badge coverage. Leashes has 39%. The badge gap explains why the conversion rate for viewed products is normal but overall redemption is low. most customers never see the offer.",
-    placement: "right",
+    placement: "left",
   },
   {
     selector: "[data-tour='chat-panel']",
@@ -306,14 +306,14 @@ const j4Steps: TourStep[] = [
     title: "Measurable lost visibility",
     description:
       "412 impressions vs. 1,100 for badged products. The missing badge isn't just a data quality issue. it's a quantifiable conversion gap that the agent can measure because it has both ct order data and PetSmart impression data.",
-    placement: "right",
+    placement: "left",
   },
   {
     selector: "[data-tour='model-pivot-btn']",
     title: "From diagnosis to action",
     description:
       "Priya now has the full diagnostic picture across three views. The pivot scenarios will reflect everything she's seen. including the option that the cheapest fix (badges) might recover most of the lost performance.",
-    placement: "right",
+    placement: "bottom",
     navigateTo: "/playground",
   },
   // Configuration Playground
@@ -322,7 +322,7 @@ const j4Steps: TourStep[] = [
     title: "The cheapest fix gets most of the way there",
     description:
       "Fixing badges alone projects ~9% redemption (from 3%). Deepening to 20% adds incremental lift to ~16% but costs margin. The agent gives Priya the numbers to make a proportionate decision rather than an overreaction.",
-    placement: "right",
+    placement: "top",
   },
 ];
 
