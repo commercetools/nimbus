@@ -223,7 +223,7 @@ const ExpandedConfig = ({
               <Badge
                 key={e}
                 size="2xs"
-                colorPalette="error"
+                colorPalette="critical"
                 cursor="pointer"
                 onClick={() => removeExclusion(e)}
               >

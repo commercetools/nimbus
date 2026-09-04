@@ -94,7 +94,7 @@ const J4DiagnosisCard = () => (
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
     headerRight={
-      <Badge size="2xs" colorPalette="error">
+      <Badge size="2xs" colorPalette="critical">
         2 factors identified
       </Badge>
     }
@@ -147,14 +147,14 @@ const J4DiagnosisCard = () => (
 
 const typePalettes: Record<string, string> = {
   cart: "info",
-  product: "success",
+  product: "positive",
   code: "warning",
 };
 
 const performancePalettes: Record<string, string> = {
-  "on-target": "success",
-  "above-target": "success",
-  underperforming: "error",
+  "on-target": "positive",
+  "above-target": "positive",
+  underperforming: "critical",
 };
 
 const baseColumns: DataTableColumnItem<Discount>[] = [
@@ -190,7 +190,7 @@ const baseColumns: DataTableColumnItem<Discount>[] = [
     id: "status",
     header: "Status",
     accessor: (row) => (
-      <Badge size="2xs" colorPalette={row.isActive ? "success" : "neutral"}>
+      <Badge size="2xs" colorPalette={row.isActive ? "positive" : "neutral"}>
         {row.isActive ? "active" : "inactive"}
       </Badge>
     ),

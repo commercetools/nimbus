@@ -197,10 +197,10 @@ const J2DecisionCard = () => (
             size="xs"
             colorPalette={
               opt.risk === "high"
-                ? "error"
+                ? "critical"
                 : opt.risk === "medium"
                   ? "warning"
-                  : "success"
+                  : "positive"
             }
           >
             {opt.risk} risk
@@ -233,7 +233,7 @@ const BadgeGapCard = ({ journeyId }: { journeyId: number }) => (
     }
     agentSource={journeyId === 4 ? "petsmart" : "ct"}
     headerRight={
-      <Badge size="2xs" colorPalette="error">
+      <Badge size="2xs" colorPalette="critical">
         missing badge
       </Badge>
     }
@@ -349,7 +349,7 @@ export const ProductDetail = () => {
       <PageHeader
         title={product.name}
         subtitle={`${product.key} · ${product.productType}`}
-        status={{ label: product.status, colorPalette: "success" }}
+        status={{ label: product.status, colorPalette: "positive" }}
         actions={toolbarActions}
       />
 
@@ -475,7 +475,7 @@ export const ProductDetail = () => {
                   <Text textStyle="xs" color="neutral.10">
                     Status
                   </Text>
-                  <Badge size="2xs" colorPalette="success">
+                  <Badge size="2xs" colorPalette="positive">
                     {product.status}
                   </Badge>
                 </Flex>

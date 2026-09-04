@@ -114,7 +114,7 @@ const J4BadgeCoverageCard = () => (
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
     headerRight={
-      <Badge size="2xs" colorPalette="error">
+      <Badge size="2xs" colorPalette="critical">
         61% missing
       </Badge>
     }
@@ -239,7 +239,7 @@ export const DiscountDetail = () => {
         subtitle={discount.key}
         status={{
           label: discount.isActive ? "active" : "inactive",
-          colorPalette: discount.isActive ? "success" : "neutral",
+          colorPalette: discount.isActive ? "positive" : "neutral",
         }}
         actions={toolbarActions}
       />

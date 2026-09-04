@@ -85,7 +85,7 @@ const J2SummaryCard = () => (
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
     headerRight={
-      <Badge size="2xs" colorPalette="error">
+      <Badge size="2xs" colorPalette="critical">
         68 below floor
       </Badge>
     }
@@ -147,7 +147,7 @@ const J2HouseBrandCard = () => (
 // ─── Column definitions ─────────────────────────────────────────────────────
 
 const statusPalettes: Record<string, string> = {
-  published: "success",
+  published: "positive",
   modified: "warning",
   unpublished: "neutral",
 };
@@ -351,7 +351,7 @@ const j2ExtraColumns: DataTableColumnItem<Product>[] = [
         : row.belowFloor
           ? "below 18%"
           : "OK";
-      const palette = row.isHouseBrand || !row.belowFloor ? "success" : "error";
+      const palette = row.isHouseBrand || !row.belowFloor ? "positive" : "critical";
       return (
         <Flex alignItems="center" gap="100">
           <ProvenanceIndicator
@@ -438,7 +438,7 @@ const j3ExtraColumns: DataTableColumnItem<Product>[] = [
                 : "No promotional badge set — customers won't see the offer"
             }
           />
-          <Badge size="2xs" colorPalette={row.hasBadge ? "success" : "error"}>
+          <Badge size="2xs" colorPalette={row.hasBadge ? "positive" : "critical"}>
             {row.hasBadge ? "set" : "missing"}
           </Badge>
         </Flex>
