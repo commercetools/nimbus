@@ -141,7 +141,7 @@ const j2Steps: TourStep[] = [
   },
   // Product List (house-brand)
   {
-    selector: "[data-tour='agent-columns']",
+    selector: "[data-tour='inline-slot']",
     title: "Carlos sees the churn risk in substitution",
     description:
       "Carlos is reviewing house-brand alternatives, but the agent adds a critical data point from PetSmart's customer analytics: Hill's customers have a 74% repurchase rate. Pushing substitution too hard risks losing loyal customers. This changes how Carlos frames the recommendation.",
