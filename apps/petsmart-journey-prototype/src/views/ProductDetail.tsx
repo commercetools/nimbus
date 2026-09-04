@@ -335,10 +335,10 @@ export const ProductDetail = () => {
           data-tour="model-pivot-btn"
         />
       )}
-      <Button variant="ghost" size="sm">
+      <Button variant="ghost" size="xs">
         Revert
       </Button>
-      <Button variant="solid" size="sm">
+      <Button variant="solid" size="xs">
         Save
       </Button>
     </Flex>

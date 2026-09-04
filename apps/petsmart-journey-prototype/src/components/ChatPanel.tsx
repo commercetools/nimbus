@@ -147,7 +147,7 @@ export const ChatPanel = ({
         <IconButton
           aria-label="Close panel"
           variant="ghost"
-          size="2xs"
+          size="xs"
           onClick={onClose}
         >
           <Close />
@@ -208,7 +208,7 @@ export const ChatPanel = ({
           aria-label="Send"
           variant="ghost"
           colorPalette="neutral"
-          size="2xs"
+          size="xs"
           flexShrink={0}
         >
           <ArrowUpward />

@@ -315,14 +315,14 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
                 </Text>
                 <Flex gap="200">
                   {currentStep > 0 && (
-                    <Button variant="ghost" size="2xs" onPress={prev}>
+                    <Button variant="ghost" size="xs" onPress={prev}>
                       Back
                     </Button>
                   )}
                   <Button
                     variant="solid"
                     colorPalette="primary"
-                    size="2xs"
+                    size="xs"
                     onPress={next}
                   >
                     {currentStep === steps.length - 1 ? "Done" : "Next"}

@@ -45,8 +45,14 @@ export const ActivationButton = ({
       border="none"
       {...rest}
     >
-      <ProvenanceBadge size="7px" agentSource={agentSource} />
-      <Text textStyle="xs" fontWeight="medium" color={colors.fg}>
+      <ProvenanceBadge size="10px" agentSource={agentSource} />
+      <Text
+        fontSize="11px"
+        fontWeight="medium"
+        color={colors.fg}
+        lineHeight="1"
+        whiteSpace="nowrap"
+      >
         {label}
       </Text>
     </Flex>

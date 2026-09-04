@@ -15,7 +15,6 @@ import { InlineSlot } from "../components/InlineSlot";
 import { InlineCard } from "../components/InlineCard";
 import { ActivationButton } from "../components/ActivationButton";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
-import { ProvenanceBadge } from "../components/ProvenanceBadge";
 import { useJourney } from "../components/JourneyContext";
 import { getProductsForJourney, type Product } from "../data/products";
 
@@ -207,7 +206,12 @@ const j1ExtraColumns: DataTableColumnItem<Product>[] = [
     header: "Days on Hand",
     accessor: (row) => (
       <Flex alignItems="center" gap="100">
-        {row.isAging && <ProvenanceBadge size="12px" agentSource="petsmart" />}
+        <ProvenanceIndicator
+          agentName="PetSmart Commerce Intelligence"
+          agentSource="petsmart"
+          size="10px"
+          reason={`${row.daysOnHand}d on hand from PetSmart's inventory system`}
+        />
         <Text
           textStyle="sm"
           fontWeight={row.isAging ? "semibold" : "regular"}
@@ -223,14 +227,18 @@ const j1ExtraColumns: DataTableColumnItem<Product>[] = [
     header: "Velocity",
     accessor: (row) => {
       const trend = row.velocityTrend ? trendIcons[row.velocityTrend] : null;
-      return trend ? (
-        <Text textStyle="sm" color={trend.color}>
-          {trend.symbol}
-        </Text>
-      ) : (
-        <Text textStyle="sm" color="neutral.10">
-          —
-        </Text>
+      return (
+        <Flex alignItems="center" gap="100">
+          <ProvenanceIndicator
+            agentName="PetSmart Commerce Intelligence"
+            agentSource="petsmart"
+            size="10px"
+            reason="Sales velocity trend from PetSmart's analytics provider"
+          />
+          <Text textStyle="sm" color={trend?.color ?? "neutral.10"}>
+            {trend?.symbol ?? "—"}
+          </Text>
+        </Flex>
       );
     },
   },
@@ -238,9 +246,17 @@ const j1ExtraColumns: DataTableColumnItem<Product>[] = [
     id: "marginHeadroom",
     header: "Margin %",
     accessor: (row) => (
-      <Text textStyle="sm" color="neutral.12">
-        {row.marginHeadroom ?? "—"}%
-      </Text>
+      <Flex alignItems="center" gap="100">
+        <ProvenanceIndicator
+          agentName="PetSmart Commerce Intelligence"
+          agentSource="petsmart"
+          size="10px"
+          reason="Margin calculated from PetSmart's supplier cost data and ct pricing"
+        />
+        <Text textStyle="sm" color="neutral.12">
+          {row.marginHeadroom ?? "—"}%
+        </Text>
+      </Flex>
     ),
   },
   {
@@ -261,32 +277,34 @@ const j2ExtraColumns: DataTableColumnItem<Product>[] = [
   {
     id: "currentMargin",
     header: "Margin Now",
-    accessor: (row) => {
-      if (row.isHouseBrand) {
-        return (
-          <Flex alignItems="center" gap="100">
-            <ProvenanceBadge size="12px" agentSource="petsmart" />
-            <Text textStyle="sm" fontWeight="semibold" color="green.11">
-              {row.houseBrandMargin}%
-            </Text>
-          </Flex>
-        );
-      }
-      return (
-        <Flex alignItems="center" gap="100">
-          {row.belowFloor && (
-            <ProvenanceBadge size="12px" agentSource="petsmart" />
-          )}
-          <Text
-            textStyle="sm"
-            fontWeight="semibold"
-            color={row.belowFloor ? "red.11" : "neutral.12"}
-          >
-            {row.currentMargin ?? "—"}%
-          </Text>
-        </Flex>
-      );
-    },
+    accessor: (row) => (
+      <Flex alignItems="center" gap="100">
+        <ProvenanceIndicator
+          agentName="PetSmart Commerce Intelligence"
+          agentSource="petsmart"
+          size="10px"
+          reason={
+            row.isHouseBrand
+              ? `House-brand margin from PetSmart's cost data`
+              : `Current margin after 8% cost increase, from PetSmart's supplier cost feed`
+          }
+        />
+        <Text
+          textStyle="sm"
+          fontWeight="semibold"
+          color={
+            row.isHouseBrand
+              ? "green.11"
+              : row.belowFloor
+                ? "red.11"
+                : "neutral.12"
+          }
+        >
+          {row.isHouseBrand ? row.houseBrandMargin : (row.currentMargin ?? "—")}
+          %
+        </Text>
+      </Flex>
+    ),
   },
   {
     id: "previousMargin",
@@ -302,21 +320,24 @@ const j2ExtraColumns: DataTableColumnItem<Product>[] = [
     id: "floorStatus",
     header: "Floor",
     accessor: (row) => {
-      if (row.isHouseBrand) {
-        return (
-          <Badge size="xs" colorPalette="success">
-            above floor
+      const label = row.isHouseBrand
+        ? "above floor"
+        : row.belowFloor
+          ? "below 18%"
+          : "OK";
+      const palette = row.isHouseBrand || !row.belowFloor ? "success" : "error";
+      return (
+        <Flex alignItems="center" gap="100">
+          <ProvenanceIndicator
+            agentName="PetSmart Commerce Intelligence"
+            agentSource="petsmart"
+            size="10px"
+            reason="Margin floor assessment from PetSmart's cost data"
+          />
+          <Badge size="xs" colorPalette={palette as any}>
+            {label}
           </Badge>
-        );
-      }
-      return row.belowFloor ? (
-        <Badge size="xs" colorPalette="error">
-          below 18%
-        </Badge>
-      ) : (
-        <Badge size="xs" colorPalette="success">
-          OK
-        </Badge>
+        </Flex>
       );
     },
   },
@@ -341,7 +362,12 @@ const j3ExtraColumns: DataTableColumnItem<Product>[] = [
     accessor: (row) =>
       row.matchedDiscount ? (
         <Flex alignItems="center" gap="100">
-          <ProvenanceBadge size="12px" agentSource="ct" />
+          <ProvenanceIndicator
+            agentName="Promotions Agent"
+            agentSource="ct"
+            size="10px"
+            reason="Discount match from ct predicate evaluation"
+          />
           <Text textStyle="xs" color="neutral.12">
             {row.matchedDiscount}
           </Text>
@@ -353,9 +379,17 @@ const j3ExtraColumns: DataTableColumnItem<Product>[] = [
     header: "Eff. %",
     accessor: (row) =>
       row.effectiveDiscount != null ? (
-        <Text textStyle="sm" color="neutral.12">
-          {row.effectiveDiscount}%
-        </Text>
+        <Flex alignItems="center" gap="100">
+          <ProvenanceIndicator
+            agentName="Promotions Agent"
+            agentSource="ct"
+            size="10px"
+            reason={`${row.effectiveDiscount}% effective discount after stacking rules`}
+          />
+          <Text textStyle="sm" color="neutral.12">
+            {row.effectiveDiscount}%
+          </Text>
+        </Flex>
       ) : null,
   },
   {
@@ -363,15 +397,21 @@ const j3ExtraColumns: DataTableColumnItem<Product>[] = [
     header: "Badge",
     accessor: (row) =>
       row.hasBadge != null ? (
-        row.hasBadge ? (
-          <Badge size="xs" colorPalette="success">
-            set
+        <Flex alignItems="center" gap="100">
+          <ProvenanceIndicator
+            agentName="Promotions Agent"
+            agentSource="ct"
+            size="10px"
+            reason={
+              row.hasBadge
+                ? "Badge attribute is set on this product"
+                : "No promotional badge set — customers won't see the offer"
+            }
+          />
+          <Badge size="xs" colorPalette={row.hasBadge ? "success" : "error"}>
+            {row.hasBadge ? "set" : "missing"}
           </Badge>
-        ) : (
-          <Badge size="xs" colorPalette="error">
-            missing
-          </Badge>
-        )
+        </Flex>
       ) : null,
   },
   {
@@ -443,7 +483,7 @@ export const ProductList = () => {
         data-tour="model-scenarios-btn"
       />
     ) : (
-      <Button variant="solid" size="sm">
+      <Button variant="solid" size="xs">
         Add product
       </Button>
     );

@@ -17,8 +17,9 @@ export const PageHeader = ({
   actions,
 }: PageHeaderProps) => (
   <Box
-    px="400"
-    py="300"
+    px="300"
+    pt="100"
+    pb="200"
     bg="white"
     borderBottomWidth="1px"
     borderColor="neutral.4"
