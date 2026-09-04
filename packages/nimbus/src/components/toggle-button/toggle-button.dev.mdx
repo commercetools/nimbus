@@ -106,7 +106,13 @@ const App = () => (
 
 ### Visual variants
 
-Choose between visual variants to match your design context:
+The `variant` prop controls the resting chrome. In every variant the resting
+button is neutral — `colorPalette` is reserved for the active (selected) state
+(see "Color palettes" below). Choose the variant that matches your surface:
+
+- `outline` (default): a neutral border over a transparent fill.
+- `ghost`: no border and no fill until hover — good for dense toolbars.
+- `subtle`: a filled neutral chip at rest.
 
 ```jsx live-dev
 const App = () => (
@@ -130,13 +136,63 @@ const App = () => (
         Ghost Selected
       </ToggleButton>
     </Stack>
+
+    <Stack direction="row" gap="400" wrap="wrap">
+      <ToggleButton variant="subtle">
+        Subtle
+      </ToggleButton>
+
+      <ToggleButton variant="subtle" isSelected>
+        Subtle Selected
+      </ToggleButton>
+    </Stack>
+  </Stack>
+)
+```
+
+### Active fill style
+
+`activeFillStyle` controls the weight of the active (selected) fill. It is
+independent of `variant`, which only styles the resting state.
+
+- `tint` (default): a light accent wash — `colorPalette.5` fill with
+  `colorPalette.12` text.
+- `solid`: a full accent fill — `colorPalette.9` fill with contrast text.
+
+Use `tint` for multi-select sets where several buttons can be on at once, and
+`solid` when a single choice should stand out.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Stack direction="row" gap="400" wrap="wrap">
+      <ToggleButton activeFillStyle="tint" isSelected>
+        Tint (default)
+      </ToggleButton>
+
+      <ToggleButton activeFillStyle="solid" isSelected>
+        Solid
+      </ToggleButton>
+    </Stack>
+
+    <Stack direction="row" gap="400" wrap="wrap">
+      <ToggleButton colorPalette="primary" activeFillStyle="tint" isSelected>
+        Primary tint
+      </ToggleButton>
+
+      <ToggleButton colorPalette="primary" activeFillStyle="solid" isSelected>
+        Primary solid
+      </ToggleButton>
+    </Stack>
   </Stack>
 )
 ```
 
 ### Color palettes
 
-Use different color palettes to indicate different types of actions:
+`colorPalette` tints the **active (selected)** state — the resting button stays
+neutral, so the palette only shows once a button is selected. Use different color
+palettes to indicate different types of actions:
 
 ```jsx live-dev
 const App = () => (

@@ -28,6 +28,8 @@ const defaultChildren = (
 
 type ToggleButtonGroupSize = "md" | "xs"; // Replace with actual derived type if possible
 type ToggleButtonGroupColorPalette = "primary" | "critical" | "neutral"; // Replace with actual derived type
+type ToggleButtonGroupVariant = "outline" | "subtle";
+type ToggleButtonGroupActiveFillStyle = "tint" | "solid";
 
 const sizes: ToggleButtonGroupSize[] = ["md", "xs"];
 const colorPalettes: ToggleButtonGroupColorPalette[] = [
@@ -35,6 +37,8 @@ const colorPalettes: ToggleButtonGroupColorPalette[] = [
   "critical",
   "neutral",
 ];
+const variants: ToggleButtonGroupVariant[] = ["outline", "subtle"];
+const activeFillStyles: ToggleButtonGroupActiveFillStyle[] = ["tint", "solid"];
 
 /**
  * Base story
@@ -346,6 +350,91 @@ export const ColorPalettes: Story = {
       await expect(
         within(groups[2]).getAllByRole("radio").length
       ).toBeGreaterThan(0);
+    });
+  },
+};
+
+/**
+ * `variant` sets the resting chrome shared by the whole group; the group stays
+ * segmented in either variant.
+ */
+export const Variants: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="400" direction="column">
+      {variants.map((variant) => (
+        <ToggleButtonGroup.Root
+          key={variant}
+          variant={variant}
+          colorPalette="primary"
+          defaultSelectedKeys={["center"]}
+          aria-label={`${variant} variant group`}
+        >
+          {defaultChildren}
+        </ToggleButtonGroup.Root>
+      ))}
+    </Stack>
+  ),
+};
+
+/**
+ * `activeFillStyle` weights the selected segments. The default follows the
+ * selection mode (single → solid, multiple → tint); both fills are shown here
+ * explicitly.
+ */
+export const ActiveFillStyles: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="400" direction="column">
+      {activeFillStyles.map((activeFillStyle) => (
+        <ToggleButtonGroup.Root
+          key={activeFillStyle}
+          activeFillStyle={activeFillStyle}
+          colorPalette="primary"
+          defaultSelectedKeys={["center"]}
+          aria-label={`${activeFillStyle} fill group`}
+        >
+          {defaultChildren}
+        </ToggleButtonGroup.Root>
+      ))}
+    </Stack>
+  ),
+};
+
+/**
+ * Every `ToggleButtonGroup.Button` is a full `ToggleButton`, so a prop set on a
+ * single button overrides the value inherited from the group — here the last
+ * button overrides the group `colorPalette`.
+ */
+export const PerButtonOverride: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    colorPalette: "primary",
+    defaultSelectedKeys: ["delete"],
+    "aria-label": "Per button override group",
+  },
+  render: (args) => (
+    <ToggleButtonGroup.Root {...args}>
+      <ToggleButtonGroup.Button id="keep">Keep</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="archive">Archive</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="delete" colorPalette="critical">
+        Delete
+      </ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const group = canvas.getByRole("radiogroup", {
+      name: /Per button override group/i,
+    });
+    const buttons = within(group).getAllByRole("radio");
+
+    await step("Renders three buttons with the last one selected", async () => {
+      await expect(buttons).toHaveLength(3);
+      await expect(buttons[2]).toHaveAttribute("aria-checked", "true");
     });
   },
 };
