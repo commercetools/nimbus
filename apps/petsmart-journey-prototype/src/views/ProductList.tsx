@@ -564,15 +564,7 @@ export const ProductList = () => {
         </Flex>
 
         {/* Product table */}
-        <Box
-          data-tour="product-table"
-          css={{
-            "& th, & td": {
-              paddingLeft: "var(--nimbus-sizes-200) !important",
-              paddingRight: "var(--nimbus-sizes-200) !important",
-            },
-          }}
-        >
+        <Box data-tour="product-table">
           <DataTable.Root
             columns={columns}
             rows={rows}

@@ -30,7 +30,8 @@ export const InlineCard = ({
       borderColor="neutral.6"
       borderRadius="200"
       overflow="visible"
-      width="100%"
+      width="fit-content"
+      maxWidth="100%"
     >
       {/* Card header — tinted by agent source */}
       <Flex

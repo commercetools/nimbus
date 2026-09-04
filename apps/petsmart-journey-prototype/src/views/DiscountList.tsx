@@ -307,15 +307,7 @@ export const DiscountList = () => {
         )}
 
         {/* Discount table */}
-        <Box
-          data-tour="discount-table"
-          css={{
-            "& th, & td": {
-              paddingLeft: "var(--nimbus-sizes-200) !important",
-              paddingRight: "var(--nimbus-sizes-200) !important",
-            },
-          }}
-        >
+        <Box data-tour="discount-table">
           <DataTable.Root
             columns={columns}
             rows={rows}
