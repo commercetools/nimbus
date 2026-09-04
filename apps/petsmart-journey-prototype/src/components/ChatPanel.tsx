@@ -182,27 +182,31 @@ export const ChatPanel = ({
         py="150"
         flexShrink={0}
         flexGrow={0}
+        borderTopWidth="1px"
+        borderColor="neutral.4"
       >
-        <Box minWidth="0" width="100%">
-          <Box
-            css={{
-              "& [class*='nimbus-multiline-text-input']": {
-                minHeight: "auto !important",
-                resize: "none !important",
-              },
-              "& textarea": { overflow: "hidden !important" },
-            }}
-          >
-            <MultilineTextInput
-              placeholder={placeholder}
-              aria-label="Chat input"
-              variant="ghost"
-              size="sm"
-              rows={1}
-              autoGrow
-              width="100%"
-            />
-          </Box>
+        <Box
+          minWidth="0"
+          width="100%"
+          css={{
+            "& [class*='nimbus-multiline-text-input']": {
+              minHeight: "auto !important",
+              height: "auto !important",
+              resize: "none !important",
+              overflowY: "hidden !important",
+            },
+            "& textarea": { overflow: "hidden !important" },
+          }}
+        >
+          <MultilineTextInput
+            placeholder={placeholder}
+            aria-label="Chat input"
+            variant="ghost"
+            size="sm"
+            rows={1}
+            autoGrow
+            width="100%"
+          />
         </Box>
         <IconButton
           aria-label="Send"

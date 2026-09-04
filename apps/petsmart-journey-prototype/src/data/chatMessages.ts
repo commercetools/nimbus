@@ -14,7 +14,8 @@ export interface ChatConfig {
 
 /**
  * Pre-seeded chat conversations keyed by journey ID + view path.
- * The chat panel never opens blank — it always has context.
+ * The chat panel never opens blank; it always has context.
+ * Agent messages use `items` for structured data and `footnote` for next steps.
  */
 export const chatConfigs: Record<string, ChatConfig> = {
   // Journey 1 — Product Detail
@@ -26,7 +27,20 @@ export const chatConfigs: Record<string, ChatConfig> = {
         sender: "agent",
         agentLabel: "PetSmart Commerce Intelligence",
         content:
-          "You're asking about the conversion rate for this SKU. It's calculated from PetSmart analytics: 412 purchases out of 10,842 product page views over the last 30 days, giving a 3.8% rate. The category average of 2.1% is across all 47 SKUs in Dog Toys > Outdoor. Want me to break this down by channel or compare it to similar products?",
+          "Conversion rate for this SKU, calculated from PetSmart analytics over the last 30 days:",
+        items: [
+          {
+            label: "Conversion rate",
+            detail: "3.8% (412 purchases / 10,842 page views)",
+          },
+          {
+            label: "Category average",
+            detail: "2.1% across all 47 SKUs in Dog Toys > Outdoor",
+          },
+          { label: "Channel split", detail: "Online: 2.9% · In-store: 5.1%" },
+        ],
+        footnote:
+          "Want me to break this down further by channel, time period, or compare to similar products?",
       },
     ],
   },
@@ -39,7 +53,9 @@ export const chatConfigs: Record<string, ChatConfig> = {
         sender: "agent",
         agentLabel: "PetSmart Commerce Intelligence",
         content:
-          "You've been reviewing aging inventory in Dog Toys > Outdoor. I've pre-populated clearance scenarios for the 47 SKUs aging past 60 days. Want me to adjust the product scope, discount depth, or channel targeting?",
+          "Based on your review of aging inventory in Dog Toys > Outdoor, I've pre-populated clearance scenarios for the 47 SKUs aging past 60 days.",
+        footnote:
+          "Want me to adjust the product scope, discount depth, or channel targeting?",
       },
       {
         sender: "user",
@@ -49,8 +65,23 @@ export const chatConfigs: Record<string, ChatConfig> = {
       {
         sender: "agent",
         agentLabel: "PetSmart Commerce Intelligence",
-        content:
-          "Online-only flash sale targeting 47 aging SKUs: projected to clear 65% of online aging stock in 2 weeks. In-store inventory is unaffected — those products continue selling at current velocity. Margin impact: -2.8% online channel only, vs. -4.1% if applied to all channels. The narrower scope preserves your in-store margins while addressing the channel where the problem is.",
+        content: "Online-only flash sale targeting 47 aging SKUs:",
+        items: [
+          {
+            label: "Projected clearance",
+            detail: "65% of online aging stock in 2 weeks",
+          },
+          {
+            label: "In-store impact",
+            detail: "None. Products continue selling at current velocity",
+          },
+          {
+            label: "Margin impact",
+            detail: "-2.8% online only (vs. -4.1% all channels)",
+          },
+        ],
+        footnote:
+          "The narrower scope preserves in-store margins while addressing the channel where the problem is.",
       },
     ],
   },
@@ -63,7 +94,20 @@ export const chatConfigs: Record<string, ChatConfig> = {
         sender: "agent",
         agentLabel: "PetSmart Commerce Intelligence",
         content:
-          "PetCo's price of $52.99 comes from PetSmart's competitive intelligence feed, last updated 2 days ago via automated price monitoring of petco.com. This SKU has been at this price for 3 weeks. Want me to show the price history, compare across other competitors, or model the impact of different pass-through levels?",
+          "Competitive price data for this SKU from PetSmart's intelligence feed:",
+        items: [
+          {
+            label: "PetCo price",
+            detail: "$52.99 (stable for 3 weeks, last updated 2 days ago)",
+          },
+          {
+            label: "Source",
+            detail: "Automated price monitoring of petco.com",
+          },
+          { label: "Your current price", detail: "$54.99" },
+        ],
+        footnote:
+          "Want me to show price history, compare across other competitors, or model different pass-through levels?",
       },
       {
         sender: "user",
@@ -73,8 +117,24 @@ export const chatConfigs: Record<string, ChatConfig> = {
       {
         sender: "agent",
         agentLabel: "PetSmart Commerce Intelligence",
-        content:
-          "Based on 18 months of price-change data for this SKU: a 5% increase historically reduced volume by ~2% over 6 weeks, then recovered. An 8% increase (full pass-through) reduced volume by ~4% and only partially recovered. At 5% pass-through, your margin recovers to 19.4% (above the 18% floor) while keeping volume impact minimal. PetCo is currently at $52.99 — a 5% pass-through puts you at $54.49, creating a $1.50 gap.",
+        content: "Based on 18 months of price-change data for this SKU:",
+        items: [
+          {
+            label: "5% pass-through",
+            detail:
+              "Volume drops ~2% over 6 weeks, then recovers. Margin: 19.4% (above floor)",
+          },
+          {
+            label: "8% full pass-through",
+            detail:
+              "Volume drops ~4%, only partial recovery. Price gap vs PetCo: $6.40",
+          },
+          {
+            label: "Recommendation",
+            detail:
+              "5% pass-through recovers margin above floor with minimal volume impact",
+          },
+        ],
       },
     ],
   },
@@ -86,8 +146,23 @@ export const chatConfigs: Record<string, ChatConfig> = {
       {
         sender: "agent",
         agentLabel: "Promotions Agent",
-        content:
-          "Your rule targets 'Collars & Leashes,' which matches Dog Supplies > Collars & Leashes (55 SKUs) as intended, but also matches Pet Supplies > Cat > Cat Collars (34 SKUs) because of the shared keyword 'Collars' in the category path. Want me to suggest an exclusion rule, or show you the full list of unintended matches?",
+        content: "Targeting rule overlap detected:",
+        items: [
+          {
+            label: "Intended match",
+            detail: "Dog Supplies > Collars & Leashes (55 SKUs)",
+          },
+          {
+            label: "Unintended match",
+            detail: "Pet Supplies > Cat > Cat Collars (34 SKUs)",
+          },
+          {
+            label: "Cause",
+            detail: "Shared keyword 'Collars' in the category path",
+          },
+        ],
+        footnote:
+          "Want me to suggest an exclusion rule, or show the full list of unintended matches?",
       },
     ],
   },
@@ -99,8 +174,20 @@ export const chatConfigs: Record<string, ChatConfig> = {
       {
         sender: "agent",
         agentLabel: "Promotions Agent",
-        content:
-          "I found a stacking conflict: your 'Loyalty 10%' discount combines with the crates discount (20% off) on 12 SKUs, pushing them below your margin floor. I can help you evaluate options: make crates non-stackable, add an exclusion rule for those 12 SKUs, or adjust the discount depth on crates.",
+        content: "Stacking conflict found in the campaign simulation:",
+        items: [
+          {
+            label: "Conflict",
+            detail: "'Loyalty 10%' combines with crates (20%) on 12 SKUs",
+          },
+          { label: "Impact", detail: "12 SKUs pushed below margin floor" },
+          {
+            label: "Affected customers",
+            detail: "~340 Loyalty members (past 30 days)",
+          },
+        ],
+        footnote:
+          "Options: make crates non-stackable, add exclusion for 12 high-cost SKUs, or adjust discount depth.",
       },
       {
         sender: "user",
@@ -110,7 +197,21 @@ export const chatConfigs: Record<string, ChatConfig> = {
         sender: "agent",
         agentLabel: "Promotions Agent",
         content:
-          "Making crates non-stackable resolves the margin floor violation for all 12 SKUs. However, it also means Loyalty members lose their 10% on crate purchases during the campaign — that's ~340 customers based on past 30 days. An alternative: add an exclusion rule for the 12 high-cost SKUs only. This keeps the discount stackable for the other 77 crate products while protecting margin on the ones that would breach the floor.",
+          "Making crates non-stackable resolves the margin floor violation for all 12 SKUs. Trade-offs:",
+        items: [
+          { label: "Margin", detail: "All 12 SKUs restored above floor ✓" },
+          {
+            label: "Loyalty impact",
+            detail: "~340 members lose 10% on crate purchases during campaign",
+          },
+          {
+            label: "Alternative",
+            detail:
+              "Exclude only the 12 high-cost SKUs. Keeps stacking for the other 77 crate products",
+          },
+        ],
+        footnote:
+          "The exclusion approach is narrower and preserves the Loyalty benefit on most crate products.",
       },
     ],
   },
@@ -123,7 +224,25 @@ export const chatConfigs: Record<string, ChatConfig> = {
         sender: "agent",
         agentLabel: "PetSmart Commerce Intelligence",
         content:
-          "You're asking about the PetCo competitor promotion. Their 'Leash & Harness Sale' (20% off) was first detected on Aug 26 via PetSmart's competitive intelligence feed, and it's confirmed still active as of today. 78% of your leash products have a matching SKU on PetCo's promotion. Want me to show the product-by-product price comparison, or estimate how much of the leash discount's drop is attributable to the competitive pressure vs. the badge gap?",
+          "Competitor promotion details from PetSmart's intelligence feed:",
+        items: [
+          {
+            label: "Promotion",
+            detail: "PetCo 'Leash & Harness Sale' (20% off)",
+          },
+          {
+            label: "First detected",
+            detail: "August 26 via automated monitoring",
+          },
+          { label: "Status", detail: "Confirmed still active as of today" },
+          {
+            label: "SKU overlap",
+            detail:
+              "78% of your leash products have a matching SKU on PetCo's promotion",
+          },
+        ],
+        footnote:
+          "Want me to show the product-by-product price comparison, or estimate how much of the drop is competitive pressure vs. the badge gap?",
       },
     ],
   },
@@ -135,8 +254,19 @@ export const chatConfigs: Record<string, ChatConfig> = {
       {
         sender: "agent",
         agentLabel: "PetSmart Commerce Intelligence",
-        content:
-          "The leashes discount has two problems: 61% of targeted products are missing their promotional badge, and PetCo launched a competing 20% off leashes promotion 5 days ago. I can help you understand the timeline, model a discount adjustment, or plan a badge fix. Where would you like to start?",
+        content: "The leashes discount has two identified problems:",
+        items: [
+          {
+            label: "Badge gap",
+            detail: "61% of targeted products missing promotional badge",
+          },
+          {
+            label: "Competitive undercut",
+            detail: "PetCo launched 20% off leashes 5 days ago",
+          },
+        ],
+        footnote:
+          "I can help with the timeline, model a discount adjustment, or plan a badge fix. Where would you like to start?",
       },
       {
         sender: "user",
@@ -146,8 +276,17 @@ export const chatConfigs: Record<string, ChatConfig> = {
       {
         sender: "agent",
         agentLabel: "PetSmart Commerce Intelligence",
-        content:
-          "Daily redemption timeline: the leashes discount started at 8% redemption in the first 5 days (below target but reasonable), then dropped to 1% the day after PetCo's launch on Aug 26. The badge gap was present from day one — it suppressed performance from the start — but the competitive undercut pushed it from underperforming to failing. Two problems, different timing. Fixing badges alone won't fully recover if PetCo is still running their promotion.",
+        content: "Daily redemption timeline for the leashes discount:",
+        items: [
+          {
+            label: "Days 1-5",
+            detail: "8% redemption (below target but reasonable)",
+          },
+          { label: "Day 6 (PetCo launch)", detail: "Dropped to 1% redemption" },
+          { label: "Days 7-10", detail: "Holding at 1-2% redemption" },
+        ],
+        footnote:
+          "The badge gap suppressed performance from day one. The competitive undercut pushed it from underperforming to failing. The fix likely needs both badges and a price adjustment.",
       },
     ],
   },
