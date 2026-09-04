@@ -339,28 +339,17 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
         </Box>
       )}
 
-      {/* Post-tour nudge */}
+      {/* Post-tour: pulse the Home nav icon */}
       {endMessage && (
-        <Box
-          position="fixed"
-          top="60px"
-          left="56px"
-          zIndex={9999}
-          bg="primary.2"
-          px="300"
-          py="200"
-          borderRadius="200"
-          shadow="lg"
-          borderWidth="1px"
-          borderColor="primary.6"
-          css={{ animation: "fadeIn 300ms ease" }}
-          cursor="pointer"
-          onClick={() => setEndMessage(false)}
-        >
-          <Text textStyle="xs" color="primary.12">
-            ← Click to go home when you're done exploring
-          </Text>
-        </Box>
+        <style>{`
+          nav a:first-child, [class*='sidebar'] a:first-child {
+            animation: homePulse 1s ease-in-out 5;
+          }
+          @keyframes homePulse {
+            0%, 100% { box-shadow: none; }
+            50% { box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.4); border-radius: 8px; }
+          }
+        `}</style>
       )}
     </TourContext.Provider>
   );
