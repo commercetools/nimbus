@@ -69,7 +69,10 @@ function dialogPosition(rect: DOMRect, placement: string) {
     case "right":
       top = rect.top + rect.height / 2 - 80;
       left = rect.right + GAP;
-      if (left + DIALOG_W > vw - 12) left = rect.left - DIALOG_W - GAP;
+      if (left + DIALOG_W > vw - 12) {
+        // Doesn't fit right; try inside the element, aligned to right edge
+        left = Math.max(60, vw - DIALOG_W - 12);
+      }
       break;
     default: // bottom
       top = rect.bottom + GAP;
