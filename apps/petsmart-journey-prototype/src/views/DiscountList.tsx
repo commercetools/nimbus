@@ -316,9 +316,13 @@ export const DiscountList = () => {
           data-tour="discount-table"
           css={{
             "& th, & td": {
-              paddingTop: "var(--nimbus-sizes-100) !important",
-              paddingBottom: "var(--nimbus-sizes-100) !important",
+              padding:
+                "var(--nimbus-sizes-50) var(--nimbus-sizes-200) !important",
               fontSize: "var(--nimbus-font-sizes-xs) !important",
+              lineHeight: "var(--nimbus-line-heights-normal) !important",
+            },
+            "& th *, & td *": {
+              fontSize: "inherit !important",
             },
           }}
         >
