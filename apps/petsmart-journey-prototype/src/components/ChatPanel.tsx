@@ -6,6 +6,7 @@ import {
   Text,
   Separator,
   IconButton,
+  MultilineTextInput,
 } from "@commercetools/nimbus";
 import { Close, ArrowUpward } from "@commercetools/nimbus-icons";
 import { ProvenanceBadge } from "./ProvenanceBadge";
@@ -174,31 +175,34 @@ export const ChatPanel = ({
       <Separator />
 
       {/* Input */}
-      <Flex alignItems="flex-end" gap="100" px="300" py="150" flexShrink={0}>
-        <Box flex="1" minWidth="0" width="100%">
-          <textarea
-            placeholder={placeholder}
-            aria-label="Chat input"
-            rows={1}
-            style={{
-              width: "100%",
-              border: "none",
-              outline: "none",
-              resize: "none",
-              background: "transparent",
-              color: "var(--nimbus-colors-neutral-12)",
-              fontSize: "var(--nimbus-font-sizes-sm)",
-              lineHeight: "var(--nimbus-line-heights-tall)",
-              padding: 0,
-              fontFamily: "inherit",
-              overflow: "hidden",
+      <Flex
+        alignItems="flex-end"
+        gap="100"
+        px="300"
+        py="150"
+        flexShrink={0}
+        flexGrow={0}
+      >
+        <Box minWidth="0" width="100%">
+          <Box
+            css={{
+              "& [class*='nimbus-multiline-text-input']": {
+                minHeight: "auto !important",
+                resize: "none !important",
+              },
+              "& textarea": { overflow: "hidden !important" },
             }}
-            onInput={(e) => {
-              const el = e.currentTarget;
-              el.style.height = "auto";
-              el.style.height = `${el.scrollHeight}px`;
-            }}
-          />
+          >
+            <MultilineTextInput
+              placeholder={placeholder}
+              aria-label="Chat input"
+              variant="ghost"
+              size="sm"
+              rows={1}
+              autoGrow
+              width="100%"
+            />
+          </Box>
         </Box>
         <IconButton
           aria-label="Send"
