@@ -16,7 +16,12 @@ import {
   Separator,
   Icon,
 } from "@commercetools/nimbus";
-import { CommercetoolsCube, Pets } from "@commercetools/nimbus-icons";
+import {
+  CommercetoolsCube,
+  Pets,
+  ThumbUp,
+  ThumbDown,
+} from "@commercetools/nimbus-icons";
 import type { AgentSource } from "../data/agents";
 
 // ─── Panel context ──────────────────────────────────────────────────────────
@@ -242,7 +247,26 @@ export const ProvenanceIndicator = ({
           <Separator mb="200" />
 
           {/* Actions */}
-          <Flex gap="100">
+          <Flex gap="100" alignItems="center">
+            <Flex gap="50">
+              <Button
+                variant="ghost"
+                size="2xs"
+                aria-label="Helpful"
+                onPress={() => {}}
+              >
+                <Icon as={ThumbUp} boxSize="16px" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="2xs"
+                aria-label="Not helpful"
+                onPress={() => {}}
+              >
+                <Icon as={ThumbDown} boxSize="16px" />
+              </Button>
+            </Flex>
+            <Box flex="1" />
             <Button
               variant="ghost"
               size="2xs"

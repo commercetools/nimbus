@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -6,6 +7,7 @@ import {
   Badge,
   Button,
   DataTable,
+  SearchInput,
 } from "@commercetools/nimbus";
 import type { DataTableColumnItem } from "@commercetools/nimbus";
 import { PageHeader } from "../components/PageHeader";
@@ -23,6 +25,8 @@ const J4AnalyticsCard = () => (
     title="Campaign Performance — Back to School Pet Prep"
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
+    reason="Redemption rates from commercetools order data, matched against campaign targets set by the merchandising team"
+    data-tour="inline-slot"
     headerRight={
       <Badge size="2xs" colorPalette="warning">
         10d running · 11d left
@@ -93,6 +97,7 @@ const J4DiagnosisCard = () => (
     title="Preliminary Diagnosis — Leashes"
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
+    reason="Root cause analysis combining PetSmart's web analytics (page impressions) and competitive intelligence feed (competitor promotions)"
     headerRight={
       <Badge size="2xs" colorPalette="critical">
         2 factors identified
@@ -267,27 +272,61 @@ const j4ExtraColumns: DataTableColumnItem<Discount>[] = [
   },
 ];
 
+// ─── Tab types ─────────────────────────────────────────────────────────────
+
+type DiscountTab = "all" | "cart" | "product" | "code";
+
+const tabs: Array<{ id: DiscountTab; label: string }> = [
+  { id: "all", label: "All" },
+  { id: "cart", label: "Cart Discounts" },
+  { id: "product", label: "Product Discounts" },
+  { id: "code", label: "Discount Codes" },
+];
+
 // ─── DiscountList view ──────────────────────────────────────────────────────
+
+const PAGE_SIZE = 10;
 
 export const DiscountList = () => {
   const { activeJourney } = useJourney();
   const navigate = useNavigate();
   const journeyId = activeJourney?.id ?? null;
 
+  const [activeTab, setActiveTab] = useState<DiscountTab>("all");
+  const [search, setSearch] = useState("");
+
   const columns =
     journeyId === 4 ? [...baseColumns, ...j4ExtraColumns] : baseColumns;
 
-  const rows = allDiscounts.map((d) => ({ ...d }));
+  const filteredRows = useMemo(() => {
+    let rows = allDiscounts;
+    if (activeTab !== "all") {
+      rows = rows.filter((d) => d.type === activeTab);
+    }
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      rows = rows.filter(
+        (d) =>
+          d.name.toLowerCase().includes(q) ||
+          d.key.toLowerCase().includes(q) ||
+          d.value.toLowerCase().includes(q)
+      );
+    }
+    return rows.map((d) => ({ ...d }));
+  }, [activeTab, search]);
+
+  const subtitleText =
+    journeyId === 4
+      ? "Back to School Pet Prep — Campaign Review"
+      : activeTab === "all"
+        ? "All Discounts"
+        : (tabs.find((t) => t.id === activeTab)?.label ?? "Discounts");
 
   return (
     <Box>
       <PageHeader
         title="Discounts"
-        subtitle={
-          journeyId === 4
-            ? "Back to School Pet Prep — Campaign Review"
-            : "Cart Discounts"
-        }
+        subtitle={subtitleText}
         actions={
           <Button variant="solid" colorPalette="primary" size="2xs">
             Add discount
@@ -298,7 +337,7 @@ export const DiscountList = () => {
       <Box p="300">
         {/* J4: Inline analytics + diagnosis */}
         {journeyId === 4 && (
-          <Box mb="400" data-tour="inline-slot">
+          <Box mb="400">
             <InlineSlot direction="column" gap="200">
               <J4AnalyticsCard />
               <J4DiagnosisCard />
@@ -306,11 +345,41 @@ export const DiscountList = () => {
           </Box>
         )}
 
+        {/* Tabs */}
+        <Flex gap="100" mb="300">
+          {tabs.map((tab) => (
+            <Button
+              key={tab.id}
+              variant={activeTab === tab.id ? "solid" : "ghost"}
+              colorPalette={activeTab === tab.id ? "primary" : undefined}
+              size="2xs"
+              onPress={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </Button>
+          ))}
+        </Flex>
+
+        {/* Search + filter bar */}
+        <Flex gap="200" mb="300" alignItems="center" wrap="wrap">
+          <SearchInput
+            placeholder="Search discounts..."
+            aria-label="Search discounts"
+            size="sm"
+            width="240px"
+            value={search}
+            onChange={(val) => setSearch(val)}
+          />
+          <Text textStyle="xs" color="neutral.9" ml="auto">
+            {filteredRows.length} discount{filteredRows.length !== 1 ? "s" : ""}
+          </Text>
+        </Flex>
+
         {/* Discount table */}
         <Box data-tour="discount-table">
           <DataTable.Root
             columns={columns}
-            rows={rows}
+            rows={filteredRows}
             density="condensed"
             onRowClick={(row) => navigate(`/discounts/${row.id}`)}
             allowsPinning={false}
@@ -323,6 +392,33 @@ export const DiscountList = () => {
             </DataTable.Table>
           </DataTable.Root>
         </Box>
+
+        {/* Pagination */}
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          mt="300"
+          pt="200"
+          borderTopWidth="1px"
+          borderColor="neutral.4"
+        >
+          <Text textStyle="xs" color="neutral.9">
+            Showing {Math.min(filteredRows.length, PAGE_SIZE)} of{" "}
+            {filteredRows.length} results
+          </Text>
+          <Flex gap="100">
+            <Button variant="ghost" size="2xs" isDisabled>
+              Previous
+            </Button>
+            <Button
+              variant="ghost"
+              size="2xs"
+              isDisabled={filteredRows.length <= PAGE_SIZE}
+            >
+              Next
+            </Button>
+          </Flex>
+        </Flex>
       </Box>
     </Box>
   );

@@ -7,9 +7,12 @@ interface InlineCardProps {
   title: string;
   agentName: string;
   agentSource?: AgentSource;
+  /** One-line reasoning shown in the provenance popover */
+  reason?: string;
   /** Optional right-side header content (badge, count, etc.) */
   headerRight?: ReactNode;
   children: ReactNode;
+  [key: `data-${string}`]: string | undefined;
 }
 
 /**
@@ -20,18 +23,21 @@ export const InlineCard = ({
   title,
   agentName,
   agentSource = "ct",
+  reason,
   headerRight,
   children,
+  ...rest
 }: InlineCardProps) => {
   return (
     <Box
       bg="white"
       borderWidth="1px"
-      borderColor="neutral.6"
+      borderColor="neutral.4"
       borderRadius="200"
       overflow="visible"
       width="fit-content"
       maxWidth="100%"
+      {...rest}
     >
       {/* Card header — tinted by agent source */}
       <Flex
@@ -43,7 +49,11 @@ export const InlineCard = ({
         borderColor="neutral.4"
         bg={agentSource === "petsmart" ? "primary.2" : "ctteal.2"}
       >
-        <ProvenanceIndicator agentName={agentName} agentSource={agentSource} />
+        <ProvenanceIndicator
+          agentName={agentName}
+          agentSource={agentSource}
+          reason={reason}
+        />
         <Text textStyle="xs" fontWeight="semibold" color="neutral.12">
           {title}
         </Text>

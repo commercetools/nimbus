@@ -56,6 +56,8 @@ const J1ContextCard = () => (
     title="Channel Performance & Inventory"
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
+    reason="Channel-level sales and inventory data from PetSmart's analytics and warehouse systems, combined with commercetools order data"
+    data-tour="inline-slot"
   >
     <Stack gap="150">
       <Grid columns={3} gap="200">
@@ -143,6 +145,8 @@ const J2DecisionCard = () => (
     title="Response Options"
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
+    reason="Response levers generated from PetSmart's supplier cost data, competitive pricing feed, and house-brand catalog"
+    data-tour="inline-slot"
   >
     <Stack gap="250">
       {[
@@ -232,6 +236,12 @@ const BadgeGapCard = ({ journeyId }: { journeyId: number }) => (
       journeyId === 4 ? "PetSmart Commerce Intelligence" : "Promotions Agent"
     }
     agentSource={journeyId === 4 ? "petsmart" : "ct"}
+    reason={
+      journeyId === 4
+        ? "Badge coverage and impression data from PetSmart's analytics, combined with competitive pricing from the intelligence feed"
+        : "Badge attribute status from commercetools product data, checked against active campaign predicates"
+    }
+    data-tour="inline-slot"
     headerRight={
       <Badge size="2xs" colorPalette="critical">
         missing badge
@@ -361,7 +371,7 @@ export const ProductDetail = () => {
             <Box
               bg="white"
               borderWidth="1px"
-              borderColor="neutral.6"
+              borderColor="neutral.4"
               borderRadius="200"
               p="300"
             >
@@ -397,7 +407,7 @@ export const ProductDetail = () => {
             <Box
               bg="white"
               borderWidth="1px"
-              borderColor="neutral.6"
+              borderColor="neutral.4"
               borderRadius="200"
               p="300"
             >
@@ -420,7 +430,7 @@ export const ProductDetail = () => {
             <Box
               bg="white"
               borderWidth="1px"
-              borderColor="neutral.6"
+              borderColor="neutral.4"
               borderRadius="200"
               p="300"
             >
@@ -446,7 +456,6 @@ export const ProductDetail = () => {
             flex="1"
             minWidth={{ base: "0", lg: "300px" }}
             width={{ base: "100%", lg: "auto" }}
-            data-tour="inline-slot"
           >
             {journeyId === 1 && <J1ContextCard />}
             {journeyId === 2 && <J2DecisionCard />}
@@ -458,7 +467,7 @@ export const ProductDetail = () => {
             <Box
               bg="white"
               borderWidth="1px"
-              borderColor="neutral.6"
+              borderColor="neutral.4"
               borderRadius="200"
               p="300"
             >

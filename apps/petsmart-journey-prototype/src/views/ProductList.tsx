@@ -25,6 +25,8 @@ const J1SummaryCard = () => (
     title="Category Inventory Summary"
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
+    reason="Inventory aging totals from PetSmart's warehouse system, correlated with online and in-store channel sales from web analytics"
+    data-tour="inline-slot"
     headerRight={
       <Badge size="2xs" colorPalette="warning">
         47 SKUs aging
@@ -84,6 +86,8 @@ const J2SummaryCard = () => (
     title="Cost Increase Impact"
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
+    reason="Margin impact calculated by comparing PetSmart's updated supplier cost feed against commercetools pricing for each SKU"
+    data-tour="inline-slot"
     headerRight={
       <Badge size="2xs" colorPalette="critical">
         68 below floor
@@ -126,6 +130,8 @@ const J2HouseBrandCard = () => (
     title="Substitution Risk"
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
+    reason="Customer loyalty and repurchase rate data from PetSmart's CRM, used to assess churn risk of brand substitution"
+    data-tour="inline-slot"
     headerRight={
       <Badge size="2xs" colorPalette="warning">
         churn risk
@@ -351,7 +357,8 @@ const j2ExtraColumns: DataTableColumnItem<Product>[] = [
         : row.belowFloor
           ? "below 18%"
           : "OK";
-      const palette = row.isHouseBrand || !row.belowFloor ? "positive" : "critical";
+      const palette =
+        row.isHouseBrand || !row.belowFloor ? "positive" : "critical";
       return (
         <Flex alignItems="center" gap="100">
           <ProvenanceIndicator
@@ -438,7 +445,10 @@ const j3ExtraColumns: DataTableColumnItem<Product>[] = [
                 : "No promotional badge set — customers won't see the offer"
             }
           />
-          <Badge size="2xs" colorPalette={row.hasBadge ? "positive" : "critical"}>
+          <Badge
+            size="2xs"
+            colorPalette={row.hasBadge ? "positive" : "critical"}
+          >
             {row.hasBadge ? "set" : "missing"}
           </Badge>
         </Flex>
@@ -529,7 +539,7 @@ export const ProductList = () => {
       <Box p="300">
         {/* Inline render target — agent summary cards */}
         {journeyId && (
-          <Box mb="400" data-tour="inline-slot">
+          <Box mb="400">
             <InlineSlot direction="row">
               {journeyId === 1 && <J1SummaryCard />}
               {journeyId === 2 && filter !== "house-brand" && <J2SummaryCard />}
@@ -580,6 +590,28 @@ export const ProductList = () => {
             </DataTable.Table>
           </DataTable.Root>
         </Box>
+
+        {/* Pagination */}
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          mt="300"
+          pt="200"
+          borderTopWidth="1px"
+          borderColor="neutral.4"
+        >
+          <Text textStyle="xs" color="neutral.9">
+            Showing {Math.min(rows.length, 20)} of {rows.length} results
+          </Text>
+          <Flex gap="100">
+            <Button variant="ghost" size="2xs" isDisabled>
+              Previous
+            </Button>
+            <Button variant="ghost" size="2xs" isDisabled={rows.length <= 20}>
+              Next
+            </Button>
+          </Flex>
+        </Flex>
       </Box>
     </Box>
   );

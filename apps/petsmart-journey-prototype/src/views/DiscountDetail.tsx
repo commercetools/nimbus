@@ -62,6 +62,8 @@ const J3PredicateCard = () => (
     title="Targeting Assistance"
     agentName="Promotions Agent"
     agentSource="ct"
+    reason="Predicate suggestions and overlap detection from ct's promotion engine, validated against PetSmart's category hierarchy"
+    data-tour="inline-slot"
   >
     <Stack gap="200">
       <Text textStyle="xs" color="neutral.10">
@@ -113,6 +115,8 @@ const J4BadgeCoverageCard = () => (
     title="Badge Coverage Analysis"
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
+    reason="Badge attribute coverage from commercetools product data, with conversion comparison from PetSmart's web analytics"
+    data-tour="inline-slot"
     headerRight={
       <Badge size="2xs" colorPalette="critical">
         61% missing
@@ -172,6 +176,7 @@ const J4CompetitiveCard = () => (
     title="Competitive Context"
     agentName="PetSmart Commerce Intelligence"
     agentSource="petsmart"
+    reason="Competitor promotion detected by PetSmart's automated competitive intelligence feed, confirmed still active"
   >
     <Flex alignItems="center" gap="150" data-tour="provenance-demo">
       <ProvenanceIndicator
@@ -252,7 +257,7 @@ export const DiscountDetail = () => {
             <Box
               bg="white"
               borderWidth="1px"
-              borderColor="neutral.6"
+              borderColor="neutral.4"
               borderRadius="200"
               p="300"
             >
@@ -273,12 +278,9 @@ export const DiscountDetail = () => {
                   <FormField.Label>Key</FormField.Label>
                   <TextInput defaultValue={discount.key} size="sm" isReadOnly />
                 </FormField.Root>
-                <Flex gap="200" alignItems="center">
-                  <Text textStyle="xs" color="neutral.10">
-                    Active
-                  </Text>
-                  <Switch defaultSelected={discount.isActive} size="sm" />
-                </Flex>
+                <Switch defaultSelected={discount.isActive} size="sm">
+                  Active
+                </Switch>
               </Stack>
             </Box>
 
@@ -286,7 +288,7 @@ export const DiscountDetail = () => {
             <Box
               bg="white"
               borderWidth="1px"
-              borderColor="neutral.6"
+              borderColor="neutral.4"
               borderRadius="200"
               p="300"
             >
@@ -318,7 +320,7 @@ export const DiscountDetail = () => {
             <Box
               bg="white"
               borderWidth="1px"
-              borderColor="neutral.6"
+              borderColor="neutral.4"
               borderRadius="200"
               p="300"
               data-tour="predicate-builder"
@@ -343,7 +345,7 @@ export const DiscountDetail = () => {
             <Box
               bg="white"
               borderWidth="1px"
-              borderColor="neutral.6"
+              borderColor="neutral.4"
               borderRadius="200"
               p="300"
             >
@@ -374,7 +376,6 @@ export const DiscountDetail = () => {
             flex="1"
             minWidth={{ base: "0", lg: "300px" }}
             width={{ base: "100%", lg: "auto" }}
-            data-tour="inline-slot"
           >
             {journeyId === 3 && <J3PredicateCard />}
             {journeyId === 4 && (
@@ -388,7 +389,7 @@ export const DiscountDetail = () => {
             <Box
               bg="white"
               borderWidth="1px"
-              borderColor="neutral.6"
+              borderColor="neutral.4"
               borderRadius="200"
               p="300"
             >

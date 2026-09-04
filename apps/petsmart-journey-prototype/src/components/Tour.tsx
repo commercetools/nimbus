@@ -15,7 +15,7 @@ export interface TourStep {
   renderTarget?: "panel" | "inline" | "augmentation" | "all";
   placement?: "top" | "bottom" | "left" | "right";
   /** Action to animate when entering this step (before dialog shows) */
-  action?: "openPanel" | "pulseElement" | "highlightStars";
+  action?: "openPanel" | "pulseElement" | "highlightStars" | "openProvenance";
   /** If set, navigate to this path before showing the step */
   navigateTo?: string;
 }
@@ -113,6 +113,24 @@ function runAction(step: TourStep): Promise<void> {
           el.style.transform = "";
           setTimeout(resolve, 400);
         }, 1500);
+      } else {
+        resolve();
+      }
+      return;
+    }
+
+    if (step.action === "openProvenance") {
+      const el = document.querySelector(step.selector);
+      if (el) {
+        const trigger = el.querySelector<HTMLButtonElement>(
+          '[aria-label="AI provenance"]'
+        );
+        if (trigger) {
+          trigger.click();
+          setTimeout(resolve, 600);
+        } else {
+          resolve();
+        }
       } else {
         resolve();
       }
@@ -233,6 +251,8 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
     }
     const currentStepDef = steps[currentStep];
     if (currentStepDef?.navigateTo) {
+      // Close the chat panel before navigating to keep spotlight positioning correct
+      window.dispatchEvent(new CustomEvent("tour:closePanel"));
       // Navigate first, then advance after the new page renders
       window.location.hash = currentStepDef.navigateTo;
       setTimeout(() => {
@@ -342,7 +362,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
       {/* Post-tour: pulse the Home nav icon */}
       {endMessage && (
         <style>{`
-          nav a:first-child, [class*='sidebar'] a:first-child {
+          a[href="/"] > div {
             animation: homePulse 1s ease-in-out 5;
           }
           @keyframes homePulse {

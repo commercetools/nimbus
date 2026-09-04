@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -15,6 +15,7 @@ import {
 } from "@commercetools/nimbus";
 import { PageHeader } from "../components/PageHeader";
 import { InlineCard } from "../components/InlineCard";
+import { ActivationButton } from "../components/ActivationButton";
 import { ProvenanceBadge } from "../components/ProvenanceBadge";
 import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
 import { useJourney } from "../components/JourneyContext";
@@ -34,6 +35,7 @@ interface ScenarioConfig {
   exclusions?: string[];
   stacking?: string;
   suggestions?: SuggestedPredicate[];
+  suggestedExclusions?: SuggestedPredicate[];
 }
 
 // ─── Expanded config panel (matches petsmart-agentic-workflow pattern) ───────
@@ -150,6 +152,7 @@ const ExpandedConfig = ({
                       agentSource={s.agentSource}
                       confidence={s.confidence}
                       size="8px"
+                      reason={`Suggested predicate "${s.label}" with ${s.confidence}% confidence, based on scenario context and catalog analysis`}
                     />
                     <Text textStyle="xs" color={`${agentColor}.11`}>
                       {s.label}
@@ -208,17 +211,12 @@ const ExpandedConfig = ({
       </Box>
 
       {/* Exclusions */}
-      {exclusions.size > 0 && (
-        <Box mt="200">
-          <Text
-            textStyle="xs"
-            fontWeight="semibold"
-            color="neutral.12"
-            mb="100"
-          >
-            Exclusions
-          </Text>
-          <Flex gap="100" flexWrap="wrap">
+      <Box mt="200">
+        <Text textStyle="xs" fontWeight="semibold" color="neutral.12" mb="100">
+          Exclusions
+        </Text>
+        {exclusions.size > 0 && (
+          <Flex gap="100" flexWrap="wrap" mb="150">
             {[...exclusions].map((e) => (
               <Badge
                 key={e}
@@ -231,16 +229,76 @@ const ExpandedConfig = ({
               </Badge>
             ))}
           </Flex>
-        </Box>
-      )}
+        )}
+
+        {/* Agent-suggested exclusions */}
+        {config.suggestedExclusions &&
+          config.suggestedExclusions.length > 0 && (
+            <Box>
+              <Flex alignItems="center" gap="100" mb="100">
+                <ProvenanceIndicator
+                  agentName={
+                    agentSource === "petsmart"
+                      ? "PetSmart Commerce Intelligence"
+                      : "Promotions Agent"
+                  }
+                  agentSource={agentSource}
+                  size="10px"
+                  reason="Exclusion suggestions based on category overlap analysis and past campaign errors"
+                />
+                <Text textStyle="xs" fontWeight="medium" color="neutral.12">
+                  Suggested exclusions
+                </Text>
+              </Flex>
+              <Flex gap="100" flexWrap="wrap">
+                {config.suggestedExclusions
+                  .filter((s) => !exclusions.has(s.label))
+                  .map((s) => (
+                    <Flex
+                      key={s.label}
+                      alignItems="center"
+                      gap="100"
+                      px="200"
+                      py="50"
+                      bg="red.2"
+                      borderRadius="200"
+                      borderWidth="1px"
+                      borderColor="red.6"
+                      cursor="pointer"
+                      _hover={{ bg: "red.3" }}
+                      transition="background 150ms"
+                      onClick={() => addExclusion(s.label)}
+                    >
+                      <ProvenanceIndicator
+                        agentName={
+                          s.agentSource === "petsmart"
+                            ? "PetSmart Commerce Intelligence"
+                            : "Promotions Agent"
+                        }
+                        agentSource={s.agentSource}
+                        confidence={s.confidence}
+                        size="8px"
+                        reason={`Suggested exclusion "${s.label}" with ${s.confidence}% confidence, to prevent unintended matches`}
+                      />
+                      <Text textStyle="xs" color="red.11">
+                        {s.label}
+                      </Text>
+                      <Text textStyle="xs" color="red.9">
+                        +
+                      </Text>
+                    </Flex>
+                  ))}
+              </Flex>
+            </Box>
+          )}
+      </Box>
 
       {/* Stacking */}
       {config.stacking && (
         <Flex mt="200" alignItems="center" gap="200">
-          <Text textStyle="xs" color="neutral.10">
+          <Switch size="sm" defaultSelected={config.stacking === "allowed"}>
             Stacking
-          </Text>
-          <Switch size="sm" defaultSelected={config.stacking === "allowed"} />
+          </Switch>
           <Text textStyle="xs" color="neutral.12">
             {config.stacking}
           </Text>
@@ -268,6 +326,14 @@ const ScenarioCard = ({
   config,
 }: ScenarioProps) => {
   const [expanded, setExpanded] = useState(false);
+
+  // Open the recommended card's config when the chat panel opens (tour action)
+  useEffect(() => {
+    if (!isRecommended) return;
+    const handler = () => setExpanded(true);
+    window.addEventListener("tour:openPanel", handler);
+    return () => window.removeEventListener("tour:openPanel", handler);
+  }, [isRecommended]);
 
   return (
     <Box
@@ -365,10 +431,17 @@ const clearanceConfig: ScenarioConfig = {
       agentSource: "petsmart",
     },
     { label: "margin.headroom > 20%", confidence: 72, agentSource: "petsmart" },
+  ],
+  suggestedExclusions: [
     {
-      label: "exclude: seasonal-holiday-2026",
+      label: "seasonal-holiday-2026 SKUs",
       confidence: 64,
       agentSource: "ct",
+    },
+    {
+      label: "margin.headroom < 10%",
+      confidence: 78,
+      agentSource: "petsmart",
     },
   ],
 };
@@ -415,6 +488,13 @@ const costBundleConfig: ScenarioConfig = {
     },
     { label: "inventory.quantity > 100", confidence: 71, agentSource: "ct" },
   ],
+  suggestedExclusions: [
+    {
+      label: "competitor.price < cost (loss leader)",
+      confidence: 68,
+      agentSource: "petsmart",
+    },
+  ],
 };
 
 const volumeConfig: ScenarioConfig = {
@@ -449,6 +529,18 @@ const deepenConfig: ScenarioConfig = {
       label: "impressions.weekly < 500",
       confidence: 76,
       agentSource: "petsmart",
+    },
+  ],
+  suggestedExclusions: [
+    {
+      label: "Loyalty program members (active)",
+      confidence: 82,
+      agentSource: "petsmart",
+    },
+    {
+      label: "Already discounted > 15%",
+      confidence: 74,
+      agentSource: "ct",
     },
   ],
 };
@@ -567,6 +659,7 @@ const J3Scenarios = () => (
       title="Campaign Simulation Results"
       agentName="Promotions Agent"
       agentSource="ct"
+      reason="Simulation of all three discounts against the product catalog, checking stacking rules, predicate coverage, and sample cart outcomes"
     >
       <Stack gap="200">
         <Grid columns={3} gap="200">
@@ -633,6 +726,13 @@ const J3Scenarios = () => (
             </Text>
           </Flex>
         </Box>
+        <Flex justifyContent="flex-end" mt="100">
+          <ActivationButton
+            label="Check coverage"
+            agentSource="ct"
+            data-tour="check-coverage-btn"
+          />
+        </Flex>
       </Stack>
     </InlineCard>
   </Stack>
@@ -697,6 +797,17 @@ export const ConfigPlayground = () => {
       <PageHeader title="Configuration Playground" subtitle={subtitle} />
 
       <Box p="300">
+        <Box mb="400">
+          <Text textStyle="lg" fontWeight="bold" color="neutral.12" mb="100">
+            {subtitle}
+          </Text>
+          <Text textStyle="xs" color="neutral.10">
+            {journeyId
+              ? "Compare agent-generated scenarios. Click Configure to adjust parameters."
+              : "Configure a discount to see projected outcomes."}
+          </Text>
+        </Box>
+
         {journeyId === 1 && <J1Scenarios />}
         {journeyId === 2 && <J2Scenarios />}
         {journeyId === 3 && <J3Scenarios />}
