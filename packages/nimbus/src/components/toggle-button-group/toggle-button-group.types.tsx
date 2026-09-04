@@ -3,15 +3,10 @@ import type {
   RecipeProps,
   SlotRecipeProps,
 } from "@chakra-ui/react/styled-system";
-import type {
-  AriaToggleButtonGroupProps,
-  AriaToggleButtonProps,
-} from "react-aria";
-import {
-  ToggleButton as RaToggleButton,
-  ToggleButtonGroup as RaToggleButtonGroup,
-} from "react-aria-components";
+import type { AriaToggleButtonGroupProps } from "react-aria";
+import { ToggleButtonGroup as RaToggleButtonGroup } from "react-aria-components";
 import type { SemanticPalettesOnly } from "@/type-utils";
+import type { ToggleButtonProps } from "../toggle-button/toggle-button.types";
 
 // ============================================================
 // RECIPE PROPS
@@ -51,11 +46,6 @@ type ToggleButtonGroupRootSlotProps = Omit<
   colorPalette?: SemanticPalettesOnly;
 };
 
-type ToggleButtonGroupButtonSlotProps = HTMLChakraProps<
-  "button",
-  RecipeProps<"button">
->;
-
 // ============================================================
 // HELPER TYPES
 // ============================================================
@@ -77,10 +67,12 @@ export type ToggleButtonGroupProps = ToggleButtonGroupRecipeVariantProps &
  */
 export type ToggleButtonGroupRootComponent = React.FC<ToggleButtonGroupProps>;
 
-export type ToggleButtonGroupButtonProps = ToggleButtonGroupButtonSlotProps &
-  AriaToggleButtonProps & {
-    ref?: React.Ref<typeof RaToggleButton>;
-  };
+/**
+ * A `ToggleButtonGroup.Button` is the regular `ToggleButton`, exposed under the
+ * compound name. It inherits the group's `variant` / `activeFillStyle` / `size` /
+ * `colorPalette` via context, and any prop set here overrides that.
+ */
+export type ToggleButtonGroupButtonProps = ToggleButtonProps;
 
 /**
  * Type signature for the ToggleButtonGroup.Button sub-component.
