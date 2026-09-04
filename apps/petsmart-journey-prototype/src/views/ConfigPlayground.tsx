@@ -11,14 +11,21 @@ import {
   TextInput,
   FormField,
   Switch,
-  TagGroup,
+  ComboBox,
 } from "@commercetools/nimbus";
 import { PageHeader } from "../components/PageHeader";
 import { InlineCard } from "../components/InlineCard";
 import { ProvenanceBadge } from "../components/ProvenanceBadge";
+import { ProvenanceIndicator } from "../components/ProvenanceIndicator";
 import { useJourney } from "../components/JourneyContext";
 
 // ─── Scenario card with expandable config ───────────────────────────────────
+
+interface SuggestedPredicate {
+  label: string;
+  confidence: number;
+  agentSource: "ct" | "petsmart";
+}
 
 interface ScenarioConfig {
   type: string;
@@ -26,7 +33,222 @@ interface ScenarioConfig {
   predicates: string[];
   exclusions?: string[];
   stacking?: string;
+  suggestions?: SuggestedPredicate[];
 }
+
+// ─── Expanded config panel (matches petsmart-agentic-workflow pattern) ───────
+
+const ExpandedConfig = ({
+  config,
+  agentSource,
+}: {
+  config: ScenarioConfig;
+  agentSource: "ct" | "petsmart";
+}) => {
+  const [applied, setApplied] = useState<Set<string>>(
+    new Set(config.predicates)
+  );
+  const [exclusions, setExclusions] = useState<Set<string>>(
+    new Set(config.exclusions ?? [])
+  );
+
+  const addPredicate = (label: string) =>
+    setApplied((prev) => new Set([...prev, label]));
+  const removePredicate = (label: string) =>
+    setApplied((prev) => {
+      const next = new Set(prev);
+      next.delete(label);
+      return next;
+    });
+  const addExclusion = (label: string) =>
+    setExclusions((prev) => new Set([...prev, label]));
+  const removeExclusion = (label: string) =>
+    setExclusions((prev) => {
+      const next = new Set(prev);
+      next.delete(label);
+      return next;
+    });
+
+  const agentColor = agentSource === "petsmart" ? "primary" : "ctteal";
+
+  return (
+    <Box mt="200">
+      <Separator mb="200" />
+      <Grid columns={2} gap="200">
+        <FormField.Root size="sm">
+          <FormField.Label>Discount Type</FormField.Label>
+          <TextInput size="sm" defaultValue={config.type} />
+        </FormField.Root>
+        <FormField.Root size="sm">
+          <FormField.Label>Value</FormField.Label>
+          <TextInput size="sm" defaultValue={config.value} />
+        </FormField.Root>
+      </Grid>
+
+      {/* Applied conditions (removable) */}
+      <Box mt="200">
+        <Text textStyle="xs" fontWeight="semibold" color="neutral.12" mb="100">
+          Targeting Predicates
+        </Text>
+        <Flex gap="100" flexWrap="wrap" mb="150">
+          {[...applied].map((p) => (
+            <Badge
+              key={p}
+              size="2xs"
+              colorPalette="neutral"
+              cursor="pointer"
+              onClick={() => removePredicate(p)}
+            >
+              {p} ✕
+            </Badge>
+          ))}
+        </Flex>
+
+        {/* Agent-suggested conditions */}
+        {config.suggestions && config.suggestions.length > 0 && (
+          <Box>
+            <Flex alignItems="center" gap="100" mb="100">
+              <ProvenanceIndicator
+                agentName={
+                  agentSource === "petsmart"
+                    ? "PetSmart Commerce Intelligence"
+                    : "Promotions Agent"
+                }
+                agentSource={agentSource}
+                size="10px"
+                reason="Predicate suggestions based on the scenario context and product catalog"
+              />
+              <Text textStyle="xs" fontWeight="medium" color="neutral.12">
+                Suggested conditions
+              </Text>
+            </Flex>
+            <Flex gap="100" flexWrap="wrap">
+              {config.suggestions
+                .filter((s) => !applied.has(s.label))
+                .map((s) => (
+                  <Flex
+                    key={s.label}
+                    alignItems="center"
+                    gap="100"
+                    px="200"
+                    py="50"
+                    bg={`${agentColor}.2`}
+                    borderRadius="200"
+                    borderWidth="1px"
+                    borderColor={`${agentColor}.6`}
+                    cursor="pointer"
+                    _hover={{ bg: `${agentColor}.3` }}
+                    transition="background 150ms"
+                    onClick={() => addPredicate(s.label)}
+                  >
+                    <ProvenanceIndicator
+                      agentName={
+                        s.agentSource === "petsmart"
+                          ? "PetSmart Commerce Intelligence"
+                          : "Promotions Agent"
+                      }
+                      agentSource={s.agentSource}
+                      confidence={s.confidence}
+                      size="8px"
+                    />
+                    <Text textStyle="xs" color={`${agentColor}.11`}>
+                      {s.label}
+                    </Text>
+                    <Text textStyle="xs" color={`${agentColor}.9`}>
+                      +
+                    </Text>
+                  </Flex>
+                ))}
+            </Flex>
+          </Box>
+        )}
+
+        {/* Search for additional predicates */}
+        <Box mt="150">
+          <ComboBox.Root
+            size="sm"
+            aria-label="Search predicates"
+            width="100%"
+            placeholder="Search for conditions..."
+          >
+            <ComboBox.Trigger />
+            <ComboBox.Popover>
+              <ComboBox.ListBox>
+                <ComboBox.Option id="cat-pred" textValue="category = ...">
+                  category = ...
+                </ComboBox.Option>
+                <ComboBox.Option id="sku-pred" textValue="sku IN ...">
+                  sku IN ...
+                </ComboBox.Option>
+                <ComboBox.Option
+                  id="inv-pred"
+                  textValue="inventory.quantity > ..."
+                >
+                  inventory.quantity &gt; ...
+                </ComboBox.Option>
+                <ComboBox.Option id="brand-pred" textValue="brand = ...">
+                  brand = ...
+                </ComboBox.Option>
+                <ComboBox.Option
+                  id="price-pred"
+                  textValue="price.centAmount > ..."
+                >
+                  price.centAmount &gt; ...
+                </ComboBox.Option>
+                <ComboBox.Option
+                  id="attr-pred"
+                  textValue="attributes.custom = ..."
+                >
+                  attributes.custom = ...
+                </ComboBox.Option>
+              </ComboBox.ListBox>
+            </ComboBox.Popover>
+          </ComboBox.Root>
+        </Box>
+      </Box>
+
+      {/* Exclusions */}
+      {exclusions.size > 0 && (
+        <Box mt="200">
+          <Text
+            textStyle="xs"
+            fontWeight="semibold"
+            color="neutral.12"
+            mb="100"
+          >
+            Exclusions
+          </Text>
+          <Flex gap="100" flexWrap="wrap">
+            {[...exclusions].map((e) => (
+              <Badge
+                key={e}
+                size="2xs"
+                colorPalette="error"
+                cursor="pointer"
+                onClick={() => removeExclusion(e)}
+              >
+                {e} ✕
+              </Badge>
+            ))}
+          </Flex>
+        </Box>
+      )}
+
+      {/* Stacking */}
+      {config.stacking && (
+        <Flex mt="200" alignItems="center" gap="200">
+          <Text textStyle="xs" color="neutral.10">
+            Stacking
+          </Text>
+          <Switch size="sm" defaultSelected={config.stacking === "allowed"} />
+          <Text textStyle="xs" color="neutral.12">
+            {config.stacking}
+          </Text>
+        </Flex>
+      )}
+    </Box>
+  );
+};
 
 interface ScenarioProps {
   title: string;
@@ -122,73 +344,7 @@ const ScenarioCard = ({
       )}
       {/* Expandable discount configuration */}
       {expanded && config && (
-        <Box mt="200">
-          <Separator mb="200" />
-          <Grid columns={2} gap="200">
-            <FormField.Root size="sm">
-              <FormField.Label>Discount Type</FormField.Label>
-              <TextInput size="sm" defaultValue={config.type} />
-            </FormField.Root>
-            <FormField.Root size="sm">
-              <FormField.Label>Value</FormField.Label>
-              <TextInput size="sm" defaultValue={config.value} />
-            </FormField.Root>
-          </Grid>
-          <Box mt="200">
-            <Text
-              textStyle="xs"
-              fontWeight="semibold"
-              color="neutral.12"
-              mb="100"
-            >
-              Targeting Predicates
-            </Text>
-            <TagGroup.Root size="sm" aria-label="Predicates">
-              <TagGroup.TagList>
-                {config.predicates.map((p, i) => (
-                  <TagGroup.Tag key={i} id={`pred-${i}`}>
-                    {p}
-                  </TagGroup.Tag>
-                ))}
-              </TagGroup.TagList>
-            </TagGroup.Root>
-          </Box>
-          {config.exclusions && config.exclusions.length > 0 && (
-            <Box mt="200">
-              <Text
-                textStyle="xs"
-                fontWeight="semibold"
-                color="neutral.12"
-                mb="100"
-              >
-                Exclusions
-              </Text>
-              <TagGroup.Root size="sm" aria-label="Exclusions">
-                <TagGroup.TagList>
-                  {config.exclusions.map((e, i) => (
-                    <TagGroup.Tag key={i} id={`excl-${i}`}>
-                      {e}
-                    </TagGroup.Tag>
-                  ))}
-                </TagGroup.TagList>
-              </TagGroup.Root>
-            </Box>
-          )}
-          {config.stacking && (
-            <Flex mt="200" alignItems="center" gap="200">
-              <Text textStyle="xs" color="neutral.10">
-                Stacking
-              </Text>
-              <Switch
-                size="sm"
-                defaultSelected={config.stacking === "allowed"}
-              />
-              <Text textStyle="xs" color="neutral.12">
-                {config.stacking}
-              </Text>
-            </Flex>
-          )}
-        </Box>
+        <ExpandedConfig config={config} agentSource={agentSource} />
       )}
     </Box>
   );
@@ -202,6 +358,19 @@ const clearanceConfig: ScenarioConfig = {
   predicates: ["category = Dog Toys > Outdoor", "inventory.daysOnHand > 60"],
   exclusions: ["New arrivals (last 30d)"],
   stacking: "allowed",
+  suggestions: [
+    {
+      label: "velocity.trend = declining",
+      confidence: 85,
+      agentSource: "petsmart",
+    },
+    { label: "margin.headroom > 20%", confidence: 72, agentSource: "petsmart" },
+    {
+      label: "exclude: seasonal-holiday-2026",
+      confidence: 64,
+      agentSource: "ct",
+    },
+  ],
 };
 
 const buyXGetYConfig: ScenarioConfig = {
@@ -238,6 +407,14 @@ const costBundleConfig: ScenarioConfig = {
     "category = Dog Treats > House Brand",
   ],
   stacking: "allowed",
+  suggestions: [
+    {
+      label: "customer.segment = loyal-premium",
+      confidence: 79,
+      agentSource: "petsmart",
+    },
+    { label: "inventory.quantity > 100", confidence: 71, agentSource: "ct" },
+  ],
 };
 
 const volumeConfig: ScenarioConfig = {
@@ -261,6 +438,19 @@ const deepenConfig: ScenarioConfig = {
   predicates: ["category = Collars & Leashes > Leashes"],
   exclusions: ["Cat collars"],
   stacking: "not allowed",
+  suggestions: [
+    {
+      label: "competitor.priceMatch = PetCo",
+      confidence: 91,
+      agentSource: "petsmart",
+    },
+    { label: "badge.status = missing", confidence: 88, agentSource: "ct" },
+    {
+      label: "impressions.weekly < 500",
+      confidence: 76,
+      agentSource: "petsmart",
+    },
+  ],
 };
 
 const leashBundleConfig: ScenarioConfig = {
@@ -513,17 +703,26 @@ export const ConfigPlayground = () => {
         {journeyId === 4 && <J4Scenarios />}
 
         {!journeyId && (
-          <Box
-            bg="white"
-            borderRadius="200"
-            p="300"
-            borderWidth="1px"
-            borderColor="neutral.4"
-          >
-            <Text textStyle="xs" color="neutral.10">
-              Select a journey from the homepage to see pre-populated scenarios.
-            </Text>
-          </Box>
+          <ScenarioCard
+            title="Configure a discount to preview"
+            agentSource="ct"
+            config={{
+              type: "",
+              value: "",
+              predicates: [],
+              stacking: "allowed",
+              suggestions: [
+                { label: "category = ...", confidence: 0, agentSource: "ct" },
+                {
+                  label: "inventory.daysOnHand > 60",
+                  confidence: 78,
+                  agentSource: "petsmart",
+                },
+                { label: "brand = ...", confidence: 0, agentSource: "ct" },
+              ],
+            }}
+            metrics={[]}
+          />
         )}
       </Box>
     </Box>
