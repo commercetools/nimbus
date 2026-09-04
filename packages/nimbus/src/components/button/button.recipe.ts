@@ -130,6 +130,9 @@ export const buttonRecipe = defineRecipe({
         _hover: {
           bg: "colorPalette.10",
         },
+        _pressed: {
+          bg: "color-mix(in oklab, {colors.colorPalette.10} 95%,  black 5%)",
+        },
       },
       subtle: {
         bg: "colorPalette.3",
@@ -162,8 +165,6 @@ export const buttonRecipe = defineRecipe({
       ghost: {
         color: "colorPalette.11",
         _hover: {
-          // Radix ladder: ghost has nothing at rest, so its hover fill is the
-          // first (gentle) component-background step, 3 (pressed/open steps to 4).
           bg: "colorPalette.4",
           color: "colorPalette.12",
         },
