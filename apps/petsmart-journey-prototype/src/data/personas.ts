@@ -12,12 +12,14 @@ export interface Persona {
  * Persona avatars are real photos in public/avatars/.
  * The active persona's avatar is shown in the app bar and journey cards.
  */
+const base = import.meta.env.BASE_URL;
+
 export const personas: Record<string, Persona> = {
   dana: {
     id: "dana",
     name: "Dana",
     role: "Merchandiser",
-    avatarUrl: "/avatars/dana.jpg",
+    avatarUrl: `${base}avatars/dana.jpg`,
     description:
       "Hands-on merchandiser who builds promotions and works with inventory day to day.",
     journeyIds: [1, 3],
@@ -26,7 +28,7 @@ export const personas: Record<string, Persona> = {
     id: "carlos",
     name: "Carlos",
     role: "Category Manager",
-    avatarUrl: "/avatars/carlos.jpg",
+    avatarUrl: `${base}avatars/carlos.jpg`,
     description:
       "Owns the category P&L and builds recommendations for stakeholders.",
     journeyIds: [2],
@@ -35,7 +37,7 @@ export const personas: Record<string, Persona> = {
     id: "priya",
     name: "Priya",
     role: "Merchandising Manager",
-    avatarUrl: "/avatars/priya.jpg",
+    avatarUrl: `${base}avatars/priya.jpg`,
     description:
       "Manages the merchandising team and reviews campaign performance.",
     journeyIds: [4],
