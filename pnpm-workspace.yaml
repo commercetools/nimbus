@@ -272,7 +272,7 @@ catalogs:
     is-hotkey: ^0.2.0
     "@types/is-hotkey": ^0.1.10
     is-plain-obj: ^4.1.0
-    react-intl: ^7.1.4
+    react-intl: ^10.0.0
   # Markdown rendering stack for the Markdown component (react-markdown +
   # remark plugins). Grouped here so the whole pipeline is versioned together.
   # Markdown is safe by default (no raw HTML), so no rehype-raw/rehype-sanitize;
