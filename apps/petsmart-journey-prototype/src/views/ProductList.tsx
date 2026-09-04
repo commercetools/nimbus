@@ -207,7 +207,7 @@ const j1ExtraColumns: DataTableColumnItem<Product>[] = [
     header: "Days on Hand",
     accessor: (row) => (
       <Flex alignItems="center" gap="100">
-        {row.isAging && <ProvenanceBadge size="8px" agentSource="petsmart" />}
+        {row.isAging && <ProvenanceBadge size="12px" agentSource="petsmart" />}
         <Text
           textStyle="sm"
           fontWeight={row.isAging ? "semibold" : "regular"}
@@ -265,7 +265,7 @@ const j2ExtraColumns: DataTableColumnItem<Product>[] = [
       if (row.isHouseBrand) {
         return (
           <Flex alignItems="center" gap="100">
-            <ProvenanceBadge size="8px" agentSource="petsmart" />
+            <ProvenanceBadge size="12px" agentSource="petsmart" />
             <Text textStyle="sm" fontWeight="semibold" color="green.11">
               {row.houseBrandMargin}%
             </Text>
@@ -275,7 +275,7 @@ const j2ExtraColumns: DataTableColumnItem<Product>[] = [
       return (
         <Flex alignItems="center" gap="100">
           {row.belowFloor && (
-            <ProvenanceBadge size="8px" agentSource="petsmart" />
+            <ProvenanceBadge size="12px" agentSource="petsmart" />
           )}
           <Text
             textStyle="sm"
@@ -341,7 +341,7 @@ const j3ExtraColumns: DataTableColumnItem<Product>[] = [
     accessor: (row) =>
       row.matchedDiscount ? (
         <Flex alignItems="center" gap="100">
-          <ProvenanceBadge size="8px" agentSource="ct" />
+          <ProvenanceBadge size="12px" agentSource="ct" />
           <Text textStyle="xs" color="neutral.12">
             {row.matchedDiscount}
           </Text>
@@ -486,7 +486,7 @@ export const ProductList = () => {
                 data-tour="provenance-demo"
               />
               <Text textStyle="xs" color="neutral.10">
-                Agent-enriched view
+                PetSmart Commerce Intelligence
               </Text>
             </Flex>
           )}
