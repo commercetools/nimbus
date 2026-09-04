@@ -163,14 +163,9 @@ const baseColumns: DataTableColumnItem<Discount>[] = [
     header: "Discount",
     isRowHeader: true,
     accessor: (row) => (
-      <Box>
-        <Text textStyle="xs" fontWeight="medium" color="neutral.12">
-          {row.name}
-        </Text>
-        <Text textStyle="xs" color="neutral.10" fontFamily="mono">
-          {row.key}
-        </Text>
-      </Box>
+      <Text textStyle="xs" fontWeight="medium" color="neutral.12">
+        {row.name}
+      </Text>
     ),
   },
   {
@@ -316,13 +311,8 @@ export const DiscountList = () => {
           data-tour="discount-table"
           css={{
             "& th, & td": {
-              padding:
-                "var(--nimbus-sizes-50) var(--nimbus-sizes-200) !important",
-              fontSize: "var(--nimbus-font-sizes-xs) !important",
-              lineHeight: "var(--nimbus-line-heights-normal) !important",
-            },
-            "& th *, & td *": {
-              fontSize: "inherit !important",
+              paddingLeft: "var(--nimbus-sizes-200) !important",
+              paddingRight: "var(--nimbus-sizes-200) !important",
             },
           }}
         >

@@ -164,20 +164,19 @@ const baseColumns: DataTableColumnItem<Product>[] = [
     header: "Product",
     isRowHeader: true,
     accessor: (row) => (
-      <Box>
-        <Text textStyle="xs" fontWeight="medium" color="neutral.12">
-          {row.name}
-        </Text>
-        <Text textStyle="xs" color="neutral.10" fontFamily="mono">
-          {row.key}
-        </Text>
-      </Box>
+      <Text textStyle="xs" fontWeight="medium" color="neutral.12">
+        {row.name}
+      </Text>
     ),
   },
   {
     id: "productType",
     header: "Type",
-    accessor: (row) => row.productType,
+    accessor: (row) => (
+      <Text textStyle="xs" color="neutral.12">
+        {row.productType}
+      </Text>
+    ),
   },
   {
     id: "status",
@@ -191,12 +190,20 @@ const baseColumns: DataTableColumnItem<Product>[] = [
   {
     id: "priceRange",
     header: "Price Range",
-    accessor: (row) => row.priceRange,
+    accessor: (row) => (
+      <Text textStyle="xs" color="neutral.12">
+        {row.priceRange}
+      </Text>
+    ),
   },
   {
     id: "variantCount",
     header: "Variants",
-    accessor: (row) => row.variantCount,
+    accessor: (row) => (
+      <Text textStyle="xs" color="neutral.12">
+        {row.variantCount}
+      </Text>
+    ),
   },
 ];
 
@@ -561,13 +568,8 @@ export const ProductList = () => {
           data-tour="product-table"
           css={{
             "& th, & td": {
-              padding:
-                "var(--nimbus-sizes-50) var(--nimbus-sizes-200) !important",
-              fontSize: "var(--nimbus-font-sizes-xs) !important",
-              lineHeight: "var(--nimbus-line-heights-normal) !important",
-            },
-            "& th *, & td *": {
-              fontSize: "inherit !important",
+              paddingLeft: "var(--nimbus-sizes-200) !important",
+              paddingRight: "var(--nimbus-sizes-200) !important",
             },
           }}
         >
