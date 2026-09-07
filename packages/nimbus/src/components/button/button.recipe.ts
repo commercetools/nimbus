@@ -30,6 +30,11 @@ export const buttonRecipe = defineRecipe({
     _pressed: {
       transform: "translateY(1px)",
     },
+    // Disclosure/menu triggers (`aria-expanded`/`data-expanded`) share the
+    // pressed treatment so an open trigger reads the same as a held one.
+    _expanded: {
+      transform: "translateY(1px)",
+    },
     _disabled: {
       layerStyle: "disabled",
     },
@@ -133,6 +138,9 @@ export const buttonRecipe = defineRecipe({
         _pressed: {
           bg: "color-mix(in oklab, {colors.colorPalette.10} 95%,  black 5%)",
         },
+        _expanded: {
+          bg: "color-mix(in oklab, {colors.colorPalette.10} 95%,  black 5%)",
+        },
       },
       subtle: {
         bg: "colorPalette.3",
@@ -142,6 +150,10 @@ export const buttonRecipe = defineRecipe({
           color: "colorPalette.12",
         },
         _pressed: {
+          bg: "colorPalette.5",
+          color: "colorPalette.12",
+        },
+        _expanded: {
           bg: "colorPalette.5",
           color: "colorPalette.12",
         },
@@ -161,6 +173,10 @@ export const buttonRecipe = defineRecipe({
           bg: "colorPalette.5",
           color: "colorPalette.12",
         },
+        _expanded: {
+          bg: "colorPalette.5",
+          color: "colorPalette.12",
+        },
       },
       ghost: {
         color: "colorPalette.11",
@@ -169,6 +185,10 @@ export const buttonRecipe = defineRecipe({
           color: "colorPalette.12",
         },
         _pressed: {
+          bg: "colorPalette.5",
+          color: "colorPalette.12",
+        },
+        _expanded: {
           bg: "colorPalette.5",
           color: "colorPalette.12",
         },
