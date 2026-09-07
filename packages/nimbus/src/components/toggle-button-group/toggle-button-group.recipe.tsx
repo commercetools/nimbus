@@ -33,7 +33,7 @@ export const buttonGroupRecipe = defineSlotRecipe({
   variants: {
     variant: { outline: {}, subtle: {} },
     activeFillStyle: { tint: {}, solid: {} },
-    size: { xs: {}, md: {} },
+    size: { xs: {}, sm: {}, md: {} },
     colorPalette: { primary: {}, critical: {}, neutral: {} },
   },
 
