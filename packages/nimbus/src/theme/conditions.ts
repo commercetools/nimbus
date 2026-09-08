@@ -57,8 +57,28 @@ export const conditions = defineConditions({
    */
   pressed: "&[data-pressed='true']",
   /**
-   * Maps to React Aria's selected state.
-   * Bare (0,2,0), matching `pressed` and beating `_hover` (0,1,0) with no boost.
+   * Maps to React Aria's `data-selected` AND ARIA's `aria-selected`.
+   *
+   * Two arms in one `:is()`:
+   *  - `[aria-selected='true']` — the only selection signal the primitive
+   *    `Table` exposes. That component has no `data-selected` wiring; a consumer
+   *    marks a selected row with `aria-selected` on the `<tr>`, and `table`'s
+   *    `row._selected` style depends on this arm. It mirrors Chakra's built-in
+   *    `selected` and must not be dropped (an earlier version of this override
+   *    did, which silently killed the Table's selected-row style).
+   *  - `[data-selected='true']` — React Aria's data attribute (ToggleButton,
+   *    GridList rows, …).
+   *
+   * `:is()` takes the specificity of its most specific argument, so both arms
+   * together are (0,1,0); with the `&` recipe class the selector is (0,2,0) —
+   * matching `pressed` and beating the neutralized `_hover` (0,1,0) with no
+   * boost, and staying below the Tabs `[data-animated] &[data-selected]`
+   * suppression (0,3,0).
+   *
+   * The `='true'` on `data-selected` is deliberate: `Switch` and `Checkbox`
+   * render `data-selected="false"` when off, so a bare `[data-selected]` would
+   * match their unselected state. (`aria-selected` is only ever `true`/`false`,
+   * so its quoting is just for symmetry.)
    */
-  selected: "&[data-selected='true']",
+  selected: "&:is([aria-selected='true'], [data-selected='true'])",
 });
