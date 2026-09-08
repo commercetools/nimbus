@@ -26,12 +26,12 @@ const defaultChildren = (
   </>
 );
 
-type ToggleButtonGroupSize = "md" | "xs"; // Replace with actual derived type if possible
+type ToggleButtonGroupSize = "2xs" | "xs" | "sm" | "md" | "xl"; // matches Button / ToggleButton
 type ToggleButtonGroupColorPalette = "primary" | "critical" | "neutral"; // Replace with actual derived type
 type ToggleButtonGroupVariant = "outline" | "subtle";
 type ToggleButtonGroupActiveFillStyle = "tint" | "solid";
 
-const sizes: ToggleButtonGroupSize[] = ["md", "xs"];
+const sizes: ToggleButtonGroupSize[] = ["2xs", "xs", "sm", "md", "xl"];
 const colorPalettes: ToggleButtonGroupColorPalette[] = [
   "primary",
   "critical",
@@ -405,24 +405,26 @@ export const ActiveFillStyles: Story = {
 
 /**
  * Every `ToggleButtonGroup.Button` is a full `ToggleButton`, so a prop set on a
- * single button overrides the value inherited from the group — here the last
- * button overrides the group `colorPalette`.
+ * single button overrides the value inherited from the group. Here a **middle**
+ * button overrides the group `colorPalette` and is selected — its seams (both
+ * the left border and the right box-shadow) are drawn from its own palette
+ * regardless of its position, so the override is not hidden by being last.
  */
 export const PerButtonOverride: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   args: {
     colorPalette: "primary",
-    defaultSelectedKeys: ["delete"],
+    defaultSelectedKeys: ["archive"],
     "aria-label": "Per button override group",
   },
   render: (args) => (
     <ToggleButtonGroup.Root {...args}>
       <ToggleButtonGroup.Button id="keep">Keep</ToggleButtonGroup.Button>
-      <ToggleButtonGroup.Button id="archive">Archive</ToggleButtonGroup.Button>
-      <ToggleButtonGroup.Button id="delete" colorPalette="critical">
-        Delete
+      <ToggleButtonGroup.Button id="archive" colorPalette="critical">
+        Archive
       </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="delete">Delete</ToggleButtonGroup.Button>
     </ToggleButtonGroup.Root>
   ),
   play: async ({ canvasElement, step }) => {
@@ -432,10 +434,13 @@ export const PerButtonOverride: Story = {
     });
     const buttons = within(group).getAllByRole("radio");
 
-    await step("Renders three buttons with the last one selected", async () => {
-      await expect(buttons).toHaveLength(3);
-      await expect(buttons[2]).toHaveAttribute("aria-checked", "true");
-    });
+    await step(
+      "Renders three buttons with the middle one selected",
+      async () => {
+        await expect(buttons).toHaveLength(3);
+        await expect(buttons[1]).toHaveAttribute("aria-checked", "true");
+      }
+    );
   },
 };
 

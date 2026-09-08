@@ -13,6 +13,8 @@ shared neutral-at-rest visual model, and `Button` gains pressed-state feedback.
 - New `activeFillStyle` prop (`tint` | `solid`) sets the weight of the selected
   fill. It defaults from `selectionMode` — `single` uses `solid`, `multiple`
   uses `tint` — and can be overridden per group or per button.
+- Fixed: `colorPalette` now applies for every semantic palette on the group.
+  Values other than `primary` / `critical` / `neutral` were previously ignored.
 - `ToggleButtonGroup.Button` is the standard `ToggleButton`: it inherits the
   group's `variant`, `activeFillStyle`, `size` and `colorPalette` (each
   overridable per button) and accepts the same style props and `css` as other
@@ -32,3 +34,14 @@ shared neutral-at-rest visual model, and `Button` gains pressed-state feedback.
   of the existing hover feedback. A button used as a menu or disclosure trigger
   no longer paints a separate background while its overlay is open; hover and
   pressed feedback cover the interaction.
+- Hover text color now uses `colorPalette.12`.
+
+### Visual changes to review after upgrading
+
+- **`selectionMode="multiple"` groups now default to `tint`** instead of the
+  previous solid fill. Pass `activeFillStyle="solid"` to keep the old look.
+- The selected `tint` fill deepened (`colorPalette.3` → `.5`) and selected text
+  moved to `colorPalette.12`, so **every already-selected `ToggleButton` and
+  `IconToggleButton` changes appearance**. `IconToggleButton` wraps
+  `ToggleButton`, so it inherits `activeFillStyle`, the group context
+  inheritance, and this new selected fill.

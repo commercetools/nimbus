@@ -38,7 +38,7 @@ export type ToggleButtonRootSlotProps = Omit<
   "colorPalette"
 > & {
   /**
-   * Color palette for the toggle button
+   * Color palette applied to the toggle button's selected (active) state.
    */
   colorPalette?: SemanticPalettesOnly;
 };

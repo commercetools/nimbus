@@ -41,7 +41,7 @@ type ToggleButtonGroupRootSlotProps = Omit<
   "colorPalette"
 > & {
   /**
-   * Color palette for the button group
+   * Color palette applied to the buttons' selected (active) state.
    */
   colorPalette?: SemanticPalettesOnly;
 };

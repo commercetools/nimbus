@@ -19,6 +19,13 @@ export const buttonGroupRecipe = defineSlotRecipe({
       "& > .nimbus-toggle-button-group__button": {
         borderRadius: "0",
         borderRightWidth: "0",
+        // Segmented buttons share edges, so suppress the standalone 1px press
+        // nudge (from buttonRecipe.base._pressed) — a pressed segment must stay
+        // flush with its neighbours instead of dropping out of alignment. The
+        // child selector out-specifies the toggle button's own _pressed rule.
+        _pressed: {
+          transform: "none",
+        },
         "&:first-of-type": {
           borderLeftRadius: "200",
         },
@@ -33,8 +40,11 @@ export const buttonGroupRecipe = defineSlotRecipe({
   variants: {
     variant: { outline: {}, subtle: {} },
     activeFillStyle: { tint: {}, solid: {} },
-    size: { xs: {}, sm: {}, md: {} },
-    colorPalette: { primary: {}, critical: {}, neutral: {} },
+    size: { "2xs": {}, xs: {}, sm: {}, md: {}, xl: {} },
+    // `colorPalette` is intentionally NOT a recipe variant. As a variant it would
+    // be stripped by `splitVariantProps` and only the enumerated values would
+    // work; as a plain style prop it sets `--colorPalette` on the root and
+    // cascades to the buttons, so consumers can use any registered palette.
   },
 
   compoundVariants: [
@@ -44,8 +54,15 @@ export const buttonGroupRecipe = defineSlotRecipe({
       css: {
         button: {
           _selected: {
-            "& + button": {
-              borderLeftColor: "colorPalette.8",
+            // Draw the right-hand seam from the SELECTED segment itself (a 1px
+            // box-shadow), not the neighbour's borderLeftColor — so the colour
+            // resolves on the selected button and honours any per-button
+            // `colorPalette` override regardless of the segment's position.
+            // Lift it above the next segment so the shadow covers that segment's
+            // border-left; the last segment keeps its own real rounded border.
+            "&:not(:last-of-type)": {
+              zIndex: "1",
+              boxShadow: "1px 0 0 0 {colors.colorPalette.8}",
             },
           },
         },
@@ -57,8 +74,9 @@ export const buttonGroupRecipe = defineSlotRecipe({
       css: {
         button: {
           _selected: {
-            "& + button": {
-              borderLeftColor: "colorPalette.9",
+            "&:not(:last-of-type)": {
+              zIndex: "1",
+              boxShadow: "1px 0 0 0 {colors.colorPalette.9}",
             },
           },
         },
