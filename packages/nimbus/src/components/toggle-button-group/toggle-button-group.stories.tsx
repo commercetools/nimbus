@@ -34,9 +34,20 @@ type ToggleButtonGroupSize = Extract<
   NonNullable<SlotRecipeProps<"nimbusToggleButtonGroup">["size"]>,
   string
 >;
-type ToggleButtonGroupColorPalette = "primary" | "critical" | "neutral"; // Replace with actual derived type
-type ToggleButtonGroupVariant = "outline" | "subtle";
-type ToggleButtonGroupActiveFillStyle = "tint" | "solid";
+// `variant` and `activeFillStyle` are recipe variants, so derive them the same
+// way as `size` above — a value change in the recipe becomes a compile error here.
+type ToggleButtonGroupVariant = Extract<
+  NonNullable<SlotRecipeProps<"nimbusToggleButtonGroup">["variant"]>,
+  string
+>;
+type ToggleButtonGroupActiveFillStyle = Extract<
+  NonNullable<SlotRecipeProps<"nimbusToggleButtonGroup">["activeFillStyle"]>,
+  string
+>;
+// `colorPalette` is NOT a recipe variant (it's a style prop applying any semantic
+// palette to the selected state), so it can't derive from the recipe like the
+// others — this is a curated demo subset of the full `SemanticPalettesOnly` set.
+type ToggleButtonGroupColorPalette = "primary" | "critical" | "neutral";
 
 const sizes: ToggleButtonGroupSize[] = ["2xs", "xs", "sm", "md", "xl"];
 const colorPalettes: ToggleButtonGroupColorPalette[] = [
