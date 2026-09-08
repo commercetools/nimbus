@@ -56,6 +56,16 @@ const meta: Meta<typeof ToggleButtonGroup.Root> = {
     a11y: {
       config: {
         rules: [
+          // React Aria's ToggleButtonGroup always emits `aria-orientation`
+          // (defaulting to "horizontal") on the group root, including multi-select
+          // groups whose resolved role is `group` — and ARIA disallows
+          // `aria-orientation` on `role="group"` (it is only valid on
+          // `radiogroup`, which single-select groups use). RAC sets the attribute
+          // unconditionally, so we can't drop it from our side without
+          // post-processing the DOM. This suppresses the correct-but-unfixable-here
+          // axe finding; revisit (and remove) if react-aria stops emitting
+          // `aria-orientation` for the `group` role.
+          // Upstream: https://github.com/adobe/react-spectrum/issues (ToggleButtonGroup aria-orientation on role=group)
           {
             id: "aria-allowed-attr",
             selector: '[role="group"][aria-orientation]',

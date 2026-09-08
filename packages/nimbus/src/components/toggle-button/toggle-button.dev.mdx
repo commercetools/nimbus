@@ -84,7 +84,8 @@ const App = () => (
 
 ### Size variants
 
-The component supports three size variants to match your interface density:
+The component supports five size variants (`2xs`, `xs`, `sm`, `md`, `xl`) to
+match your interface density — the same scale as `Button`:
 
 ```jsx live-dev
 const App = () => (
@@ -97,8 +98,16 @@ const App = () => (
       Extra Small
     </ToggleButton>
 
+    <ToggleButton size="sm">
+      Small
+    </ToggleButton>
+
     <ToggleButton size="md">
       Medium (default)
+    </ToggleButton>
+
+    <ToggleButton size="xl">
+      Extra Large
     </ToggleButton>
   </Stack>
 )
