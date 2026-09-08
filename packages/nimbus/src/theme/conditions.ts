@@ -28,18 +28,22 @@ export const conditions = defineConditions({
    * regardless of source order.
    *
    * Wrapping BOTH groups in `:where()` (specificity 0) drops the selector to
-   * (0,1,0) — just the `&` recipe class — WITHOUT changing which elements match
-   * or dropping the `@media (hover: hover)` gate. Hover thus becomes the weakest
-   * interaction state: any state selector carrying a single data-attribute
-   * (`&[data-pressed]`, `&[data-selected]`, `&[data-focused]`, …) is (0,2,0) and
-   * outranks it with no artificial boost. The trade-off is that hover no longer
-   * carries the `:not()` specificity point either, so where a recipe layers hover
-   * against an equally-specific resting selector on the same element, precedence
-   * falls to source order (hover is authored last) rather than specificity.
+   * (0,1,0) — just the `&` recipe class — without dropping the
+   * `@media (hover: hover)` gate. Hover thus becomes the weakest interaction
+   * state: any state selector carrying a single data-attribute (`&[data-pressed]`,
+   * `&[data-selected]`, `&[data-focused]`, …) is (0,2,0) and outranks it with no
+   * artificial boost. The trade-off is that hover no longer carries the `:not()`
+   * specificity point either, so where a recipe layers hover against an
+   * equally-specific resting selector on the same element, precedence falls to
+   * source order (hover is authored last) rather than specificity.
+   *
+   * The positive match also includes React Aria's `[data-hovered]` (set by
+   * `useHover`) alongside native `:hover` and Chakra's `[data-hover]`, so RAC
+   * components can use `_hover` uniformly instead of a raw `&[data-hovered]`.
    */
   hover: [
     "@media (hover: hover)",
-    "&:where(:hover, [data-hover]):where(:not(:disabled, [data-disabled]))",
+    "&:where(:hover, [data-hover], [data-hovered]):where(:not(:disabled, [data-disabled]))",
   ],
 
   /**

@@ -5,14 +5,14 @@ const activeFill = {
   tint: {
     bg: "colorPalette.5",
     color: "colorPalette.12",
-    "&[data-hovered='true']": {
+    _hover: {
       bg: "colorPalette.6",
     },
   },
   solid: {
     bg: "colorPalette.9",
     color: "colorPalette.contrast",
-    "&[data-hovered='true']": {
+    _hover: {
       bg: "colorPalette.10",
     },
   },
@@ -32,21 +32,21 @@ export const toggleButtonRecipe = defineRecipe({
       outline: {
         borderColor: "neutral.7",
         color: "neutral.11",
-        "&[data-hovered='true']": {
+        _hover: {
           bg: "neutral.3",
           borderColor: "neutral.8",
         },
       },
       ghost: {
         color: "neutral.11",
-        "&[data-hovered='true']": {
+        _hover: {
           bg: "neutral.3",
         },
       },
       subtle: {
         bg: "neutral.3",
         color: "neutral.11",
-        "&[data-hovered='true']": {
+        _hover: {
           bg: "neutral.4",
         },
       },
@@ -67,7 +67,7 @@ export const toggleButtonRecipe = defineRecipe({
       css: {
         _selected: {
           borderColor: "colorPalette.8",
-          "&[data-hovered='true']": {
+          _hover: {
             borderColor: "colorPalette.8",
           },
         },
@@ -79,7 +79,7 @@ export const toggleButtonRecipe = defineRecipe({
       css: {
         _selected: {
           borderColor: "colorPalette.9",
-          "&[data-hovered='true']": {
+          _hover: {
             borderColor: "colorPalette.10",
           },
         },
