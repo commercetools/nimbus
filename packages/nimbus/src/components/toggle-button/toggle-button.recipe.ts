@@ -1,23 +1,6 @@
 import { buttonRecipe } from "@/components/button/button.recipe";
 import { defineRecipe } from "@chakra-ui/react/styled-system";
 
-const activeFill = {
-  tint: {
-    bg: "colorPalette.5",
-    color: "colorPalette.12",
-    _hover: {
-      bg: "colorPalette.6",
-    },
-  },
-  solid: {
-    bg: "colorPalette.9",
-    color: "colorPalette.contrast",
-    _hover: {
-      bg: "colorPalette.10",
-    },
-  },
-};
-
 export const toggleButtonRecipe = defineRecipe({
   className: "nimbus-toggle-button",
   base: {
@@ -53,10 +36,22 @@ export const toggleButtonRecipe = defineRecipe({
     },
     activeFillStyle: {
       tint: {
-        _selected: activeFill.tint,
+        _selected: {
+          bg: "colorPalette.5",
+          color: "colorPalette.12",
+          _hover: {
+            bg: "colorPalette.6",
+          },
+        },
       },
       solid: {
-        _selected: activeFill.solid,
+        _selected: {
+          bg: "colorPalette.9",
+          color: "colorPalette.contrast",
+          _hover: {
+            bg: "colorPalette.10",
+          },
+        },
       },
     },
   },
