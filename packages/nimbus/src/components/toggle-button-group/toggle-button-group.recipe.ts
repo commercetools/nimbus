@@ -60,6 +60,12 @@ export const buttonGroupRecipe = defineSlotRecipe({
             // `colorPalette` override regardless of the segment's position.
             // Lift it above the next segment so the shadow covers that segment's
             // border-left; the last segment keeps its own real rounded border.
+            //
+            // Known limitation (selectionMode="multiple" only): two ADJACENT
+            // selected segments both carry zIndex 1, so the later sibling's own
+            // border-left paints over the earlier one's seam shadow. Purely
+            // cosmetic, and only at the boundary between two selected neighbours;
+            // single-select can never reach it.
             "&:not(:last-of-type)": {
               zIndex: "1",
               boxShadow: "1px 0 0 0 {colors.colorPalette.8}",

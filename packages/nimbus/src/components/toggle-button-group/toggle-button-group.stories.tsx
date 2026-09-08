@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { SlotRecipeProps } from "@chakra-ui/react/styled-system";
 import { Stack, ToggleButtonGroup } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { SentimentSatisfied as DemoIcon } from "@commercetools/nimbus-icons";
@@ -26,7 +27,13 @@ const defaultChildren = (
   </>
 );
 
-type ToggleButtonGroupSize = "2xs" | "xs" | "sm" | "md" | "xl"; // matches Button / ToggleButton
+// Derived from the recipe so a size-scale change is a compile error here rather
+// than silent drift. `Extract<…, string>` strips the responsive `ConditionalValue`
+// object/array forms, leaving the plain union (needed for `key` / template use).
+type ToggleButtonGroupSize = Extract<
+  NonNullable<SlotRecipeProps<"nimbusToggleButtonGroup">["size"]>,
+  string
+>;
 type ToggleButtonGroupColorPalette = "primary" | "critical" | "neutral"; // Replace with actual derived type
 type ToggleButtonGroupVariant = "outline" | "subtle";
 type ToggleButtonGroupActiveFillStyle = "tint" | "solid";
@@ -407,8 +414,11 @@ export const ActiveFillStyles: Story = {
  * Every `ToggleButtonGroup.Button` is a full `ToggleButton`, so a prop set on a
  * single button overrides the value inherited from the group. Here a **middle**
  * button overrides the group `colorPalette` and is selected — its seams (both
- * the left border and the right box-shadow) are drawn from its own palette
- * regardless of its position, so the override is not hidden by being last.
+ * the left border and the right box-shadow) are drawn from its own palette, so
+ * a non-last override is not hidden behind a neighbour's chrome. (One edge case
+ * the seam can't own: where two *adjacent* selected segments meet in
+ * `selectionMode="multiple"`, the later one's border-left paints over the
+ * earlier one's shadow — see the recipe's seam comment.)
  */
 export const PerButtonOverride: Story = {
   tags: ["vrt"],
