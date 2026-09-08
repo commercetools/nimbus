@@ -84,7 +84,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           position: "sticky",
           right: 0,
           zIndex: 3,
-          backgroundColor: "bg",
+          backgroundColor: "var(--dt-row-bg, inherit)",
+          transition: "background-color 100ms ease",
           ...stickyBgOverlap,
           "&::before": { right: 0 },
           "& [data-slot='nimbus-table-cell-pin-button']": {
@@ -97,7 +98,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         "& .data-table-sticky-cell:not([data-slot='pin-row-cell'])": {
           position: "sticky",
           left: 0,
-          backgroundColor: "bg",
+          backgroundColor: "var(--dt-row-bg, inherit)",
+          transition: "background-color 100ms ease",
           ...stickyBgOverlap,
         },
         "& [data-slot='drag']": {
@@ -127,29 +129,16 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           {
             left: "2400",
           },
+        // Reveal the pin button on row hover. The row-highlight background is
+        // driven by the row's `--dt-row-bg` variable (frozen cells read it), so
+        // there is no sticky-cell background rule here — and therefore no
+        // specificity race with the resting background.
         _hover: {
-          "& .data-table-sticky-cell": {
-            transition: "background-color 100ms ease",
-            backgroundColor: "inherit",
-          },
-          // Pin cell keeps base zIndex (3) on hover — left-sticky and
-          // right-sticky cells don't overlap, so the old hover zIndex (10)
-          // was unnecessary. Verified visually with pinned rows.
           "& [data-slot='pin-row-cell']": {
             "& [data-slot='nimbus-table-cell-pin-button']": {
               opacity: 1,
             },
           },
-        },
-      },
-      "& .data-table-row[data-selected='true']": {
-        "& .data-table-sticky-cell": {
-          backgroundColor: "inherit",
-        },
-      },
-      "& .data-table-row[data-custom-bg]": {
-        "& .data-table-sticky-cell": {
-          backgroundColor: "inherit",
         },
       },
       "& .data-table-row[data-disabled='true']": {
@@ -189,7 +178,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
             left: "2400",
           },
         "& [data-slot='pin-row-cell']": {
-          backgroundColor: "bg",
+          backgroundColor: "var(--dt-row-bg, inherit)",
           position: "sticky",
           clipPath: "inset(2px 2px 2px 0)",
         },
@@ -391,6 +380,14 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     },
     row: {
       position: "relative",
+      // Single source of truth for the row background. Frozen (sticky) cells read
+      // this variable (`background-color: var(--dt-row-bg, inherit)`) so they
+      // mirror the row without a specificity race. Custom-bg rows deliberately
+      // leave it unset (the `:not([data-custom-bg])` guards below), so the frozen
+      // cell falls back to `inherit` and picks up the consumer-provided color.
+      "&:not([data-custom-bg])": {
+        "--dt-row-bg": "{colors.bg}",
+      },
       borderBottom: "1px solid {colors.neutral.3}",
       focusVisibleRing: "inside",
       "&[data-dragging='true']": {
@@ -404,6 +401,11 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         backgroundColor: "{colors.primary.3}",
         transition: "background-color 200ms ease",
       },
+      // Frozen cells mirror the hover highlight through the variable. Skipped for
+      // custom-bg rows so their frozen cells keep inheriting the consumer color.
+      "&:hover:not([data-nested-row-expanded]):not([data-custom-bg])": {
+        "--dt-row-bg": "{colors.primary.3}",
+      },
       _last: {
         borderBottom: "none",
       },
@@ -412,6 +414,9 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
       "&[data-selected='true']": {
         background: "{colors.primary.4}",
+      },
+      "&[data-selected='true']:not([data-custom-bg])": {
+        "--dt-row-bg": "{colors.primary.4}",
       },
       "&[data-disabled='true']": {
         // layerStyle: "disabled",
