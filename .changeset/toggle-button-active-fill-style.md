@@ -33,6 +33,7 @@ shared neutral-at-rest visual model, and `Button` gains pressed-state feedback.
 - New pressed-state feedback — a 1px downward nudge plus a darker fill — on top
   of the existing hover feedback.
 - Hover and pressed text now use `colorPalette.12` for contrast on those fills.
+- The `outline` variant's hover background deepened (`colorPalette.3` → `.4`).
 - The open-state background for disclosure/menu triggers (`aria-expanded`, e.g.
   `Menu.Trigger`) was realigned to the new pressed fill so an open trigger reads
   like a held one: `solid` → a slightly darkened step 10; `subtle` / `outline` /
@@ -52,3 +53,5 @@ shared neutral-at-rest visual model, and `Button` gains pressed-state feedback.
   (`aria-expanded`) background than before — the `_expanded` fills were
   realigned to the new pressed fills (per variant above). The state itself is
   unchanged; only the shade shifts.
+- **`outline` `Button`s** hover to a slightly deeper background than before
+  (`colorPalette.3` → `.4`), so every hovered `outline` Button changes shade.
