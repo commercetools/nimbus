@@ -30,11 +30,14 @@ shared neutral-at-rest visual model, and `Button` gains pressed-state feedback.
 
 ### `Button`
 
-- New pressed-state feedback — a 1px downward nudge with a darker fill — on top
-  of the existing hover feedback. A button used as a menu or disclosure trigger
-  no longer paints a separate background while its overlay is open; hover and
-  pressed feedback cover the interaction.
-- Hover text color now uses `colorPalette.12`.
+- New pressed-state feedback — a 1px downward nudge plus a darker fill — on top
+  of the existing hover feedback.
+- Hover and pressed text now use `colorPalette.12` for contrast on those fills.
+- The open-state background for disclosure/menu triggers (`aria-expanded`, e.g.
+  `Menu.Trigger`) was realigned to the new pressed fill so an open trigger reads
+  like a held one: `solid` → a slightly darkened step 10; `subtle` / `outline` /
+  `ghost` → step 5 with step-12 text. The open state keeps the fill only — no
+  press nudge, which would otherwise persist for as long as the overlay is open.
 
 ### Visual changes to review after upgrading
 
@@ -45,3 +48,7 @@ shared neutral-at-rest visual model, and `Button` gains pressed-state feedback.
   `IconToggleButton` changes appearance**. `IconToggleButton` wraps
   `ToggleButton`, so it inherits `activeFillStyle`, the group context
   inheritance, and this new selected fill.
+- **Disclosure/menu-trigger `Button`s** paint a deeper open-state
+  (`aria-expanded`) background than before — the `_expanded` fills were
+  realigned to the new pressed fills (per variant above). The state itself is
+  unchanged; only the shade shifts.

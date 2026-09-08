@@ -62,6 +62,17 @@ The `_expanded` variant styling was removed from the button. It was unwired dead
 styling (no `aria-expanded`/`data-expanded` path in `button.tsx`, and no doc or
 story referenced it); hover and pressed feedback now cover interaction states.
 
+> **Update — reverted before merge.** The "dead styling" premise was wrong:
+> localized-field's show/hide languages/currencies toggle renders a ghost
+> `Button` with `aria-expanded` and relied on the open-state fill. `_expanded`
+> was restored on every variant, realigned to the new pressed fill (`solid` → a
+> darkened step 10; `subtle`/`outline`/`ghost` → step 5 with step-12 text). It
+> deliberately keeps the fill only — no press `translateY` — because "expanded"
+> is a sustained state and a persistent nudge would sit 1px off a React Aria
+> overlay's anchor and break a segmented group's shared border. The paragraph
+> above is kept for the historical record; the shipped behaviour is specified in
+> the `nimbus-button` spec, "Expanded (disclosure) State".
+
 ## Decision 6: `_pressed` / `_selected` conditions
 
 `data-react-aria-pressable` is emitted by React Aria's `usePress` on all

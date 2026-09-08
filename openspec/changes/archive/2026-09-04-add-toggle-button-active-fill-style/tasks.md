@@ -27,6 +27,11 @@
 - [x] 3.1 Add base `_pressed` `translateY(1px)` tactile feedback
 - [x] 3.2 Add pressed fill/text to `subtle` / `outline` / `ghost`
 - [x] 3.3 Remove the unwired `_expanded` variant styling
+  > Reverted before merge: `_expanded` was not dead styling — a live consumer
+  > (localized-field's show/hide languages/currencies toggle) renders a ghost
+  > `Button` with `aria-expanded` and relied on the open-state fill. It was
+  > restored on every variant, realigned to the new pressed fill (fill only, no
+  > press nudge). See the `nimbus-button` spec, "Expanded (disclosure) State".
 
 ## 4. Theme
 
