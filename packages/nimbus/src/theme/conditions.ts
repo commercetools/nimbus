@@ -18,13 +18,43 @@ export const conditions = defineConditions({
   closed: "&:is([data-exiting], [data-closed])",
 
   /**
-   * Maps to React Aria's pressed state on pressable elements
-   * Used to style a component while it is held down (active press)
+   * Overrides Chakra's default `hover` condition to strip ALL of its specificity.
+   *
+   * Chakra ships `hover` as
+   *   ["@media (hover: hover)", "&:is(:hover, [data-hover]):not(:disabled, [data-disabled])"]
+   * whose selector is (0,3,0): `&` (one class) plus the `:is()` and `:not()`
+   * groups, each contributing (0,1,0). That is HIGHER than a plain state selector
+   * like `&[data-selected]` (0,2,0), so `_hover` would beat `_pressed`/`_selected`
+   * regardless of source order.
+   *
+   * Wrapping BOTH groups in `:where()` (specificity 0) drops the selector to
+   * (0,1,0) — just the `&` recipe class — WITHOUT changing which elements match
+   * or dropping the `@media (hover: hover)` gate. Hover thus becomes the weakest
+   * interaction state: any state selector carrying a single data-attribute
+   * (`&[data-pressed]`, `&[data-selected]`, `&[data-focused]`, …) is (0,2,0) and
+   * outranks it with no artificial boost. The trade-off is that hover no longer
+   * carries the `:not()` specificity point either, so where a recipe layers hover
+   * against an equally-specific resting selector on the same element, precedence
+   * falls to source order (hover is authored last) rather than specificity.
    */
-  pressed: "&[data-react-aria-pressable]&[data-pressed='true']",
+  hover: [
+    "@media (hover: hover)",
+    "&:where(:hover, [data-hover]):where(:not(:disabled, [data-disabled]))",
+  ],
+
   /**
-   * Maps to React Aria's selected state on pressable elements
-   * Used to style a component while it is selected
+   * Maps to React Aria's pressed state (held-down active press).
+   *
+   * Bare (0,2,0) — the `&` recipe class plus one state attribute — which is
+   * enough to beat the neutralized `_hover` (0,1,0) on its own. No `&&` / no
+   * `[data-react-aria-pressable]` guard is needed for specificity anymore; the
+   * `&` already scopes the rule to this recipe's element, and React Aria only
+   * sets `data-pressed` on pressable elements.
    */
-  selected: "&[data-react-aria-pressable]&[data-selected='true']",
+  pressed: "&[data-pressed='true']",
+  /**
+   * Maps to React Aria's selected state.
+   * Bare (0,2,0), matching `pressed` and beating `_hover` (0,1,0) with no boost.
+   */
+  selected: "&[data-selected='true']",
 });
