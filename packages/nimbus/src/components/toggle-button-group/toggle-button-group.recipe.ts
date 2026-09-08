@@ -87,6 +87,8 @@ export const buttonGroupRecipe = defineSlotRecipe({
   defaultVariants: {
     size: "md",
     variant: "outline",
-    activeFillStyle: "solid",
+    // activeFillStyle intentionally omitted: the root always resolves it from
+    // selectionMode (single → solid, multiple → tint), so a recipe default would
+    // never apply and would disagree with the standalone ToggleButton (tint).
   },
 });
