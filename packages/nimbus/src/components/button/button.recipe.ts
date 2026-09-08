@@ -30,11 +30,12 @@ export const buttonRecipe = defineRecipe({
     _pressed: {
       transform: "translateY(1px)",
     },
-    // Disclosure/menu triggers (`aria-expanded`/`data-expanded`) share the
-    // pressed treatment so an open trigger reads the same as a held one.
-    _expanded: {
-      transform: "translateY(1px)",
-    },
+    // Note: disclosure/menu triggers (`aria-expanded`) get the pressed *fill*
+    // per variant below, but NOT this nudge. Press is a transient (~150ms)
+    // tactile cue; "expanded" is a sustained state, and a permanently shifted
+    // trigger would (a) sit 1px out of a React Aria overlay's measured anchor
+    // box and (b) break a segmented `ToggleButtonGroup.Button`'s shared border
+    // while open. The fill alone conveys the open state.
     _disabled: {
       layerStyle: "disabled",
     },
