@@ -11,6 +11,7 @@ import { chatMessageListSlotRecipe } from "@/components/chat-message-list/chat-m
 import { checkboxSlotRecipe } from "@/components/checkbox/checkbox.recipe";
 import { collapsibleMotionSlotRecipe } from "@/components/collapsible-motion/collapsible-motion.recipe";
 import { comboBoxSlotRecipe } from "@/components/combobox/combobox.recipe";
+import { listBoxSlotRecipe } from "@/components/list-box/list-box.recipe";
 import { dataTableSlotRecipe } from "@/components/data-table/data-table.recipe";
 import { dateInputSlotRecipe } from "@/components/date-input/date-input.recipe";
 import { datePickerSlotRecipe } from "@/components/date-picker/date-picker.recipe";
@@ -118,6 +119,7 @@ export const slotRecipes = {
   nimbusRichTextInput: richTextInputRecipe,
   nimbusScopedSearchInput: scopedSearchInputSlotRecipe,
   nimbusSearchInput: searchInputSlotRecipe,
+  nimbusListBox: listBoxSlotRecipe,
   nimbusSelect: selectSlotRecipe,
   nimbusSlider: sliderSlotRecipe,
   nimbusSplitButton: splitButtonSlotRecipe,

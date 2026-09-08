@@ -1,0 +1,297 @@
+---
+title: ListBox
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { ListBox, type ListBoxRootProps } from "@commercetools/nimbus";
+```
+
+`ListBox` is a standalone selection list built on React Aria's ListBox. Use it
+when you need a list of options a user can select one or many of, directly on
+the page — a filter list, a picker, a command palette. For a dropdown field, use
+`Select`; for a search-and-filter field, use `ComboBox`.
+
+### Basic usage
+
+Always give the list an accessible name with `aria-label` (or `aria-labelledby`).
+
+```jsx live-dev
+const App = () => (
+  <ListBox.Root aria-label="Fruit" selectionMode="single">
+    <ListBox.Item id="apple">Apple</ListBox.Item>
+    <ListBox.Item id="banana">Banana</ListBox.Item>
+    <ListBox.Item id="cherry">Cherry</ListBox.Item>
+  </ListBox.Root>
+)
+```
+
+## Selection
+
+Selection uses React Aria's key-based pattern: each `ListBox.Item` needs an `id`,
+and selection is expressed as those keys.
+
+### Single selection
+
+A single-select list shows the selected option with a full-row highlight.
+
+```jsx live-dev
+const App = () => (
+  <ListBox.Root
+    aria-label="Fruit"
+    selectionMode="single"
+    defaultSelectedKeys={["banana"]}
+  >
+    <ListBox.Item id="apple">Apple</ListBox.Item>
+    <ListBox.Item id="banana">Banana</ListBox.Item>
+    <ListBox.Item id="cherry">Cherry</ListBox.Item>
+  </ListBox.Root>
+)
+```
+
+### Multiple selection
+
+A multi-select list renders a checkbox on each option instead of the row
+highlight.
+
+```jsx live-dev
+const App = () => (
+  <ListBox.Root
+    aria-label="Fruit"
+    selectionMode="multiple"
+    defaultSelectedKeys={["apple", "cherry"]}
+  >
+    <ListBox.Item id="apple">Apple</ListBox.Item>
+    <ListBox.Item id="banana">Banana</ListBox.Item>
+    <ListBox.Item id="cherry">Cherry</ListBox.Item>
+  </ListBox.Root>
+)
+```
+
+### Controlled selection
+
+```jsx live-dev
+const App = () => {
+  const [selected, setSelected] = useState(new Set(["apple"]));
+  return (
+    <Stack direction="column" gap="400">
+      <ListBox.Root
+        aria-label="Fruit"
+        selectionMode="single"
+        selectedKeys={selected}
+        onSelectionChange={setSelected}
+      >
+        <ListBox.Item id="apple">Apple</ListBox.Item>
+        <ListBox.Item id="banana">Banana</ListBox.Item>
+        <ListBox.Item id="cherry">Cherry</ListBox.Item>
+      </ListBox.Root>
+      <Text fontSize="sm">Selected: {[...selected].join(", ") || "none"}</Text>
+    </Stack>
+  );
+}
+```
+
+## Item content
+
+### Sections
+
+Group options with `ListBox.Section`. Its `label` becomes an accessible section
+header.
+
+```jsx live-dev
+const App = () => (
+  <ListBox.Root aria-label="Produce" selectionMode="single">
+    <ListBox.Section label="Fruit">
+      <ListBox.Item id="apple">Apple</ListBox.Item>
+      <ListBox.Item id="banana">Banana</ListBox.Item>
+    </ListBox.Section>
+    <ListBox.Section label="Vegetable">
+      <ListBox.Item id="carrot">Carrot</ListBox.Item>
+      <ListBox.Item id="potato">Potato</ListBox.Item>
+    </ListBox.Section>
+  </ListBox.Root>
+)
+```
+
+### Rich items — leading media, description, trailing content
+
+Use the `leading` and `trailing` props for media and metadata, and React Aria's
+`Text` slots (`label` / `description`) for a two-line option. Provide `textValue`
+so type-ahead still works when the content isn't a plain string.
+
+```jsx live-dev
+const App = () => (
+  <ListBox.Root aria-label="People" selectionMode="single" width="20rem">
+    <ListBox.Item
+      id="jane"
+      textValue="Jane Doe"
+      leading={<Icon as={Icons.Person} />}
+      trailing={<Text color="neutral.11">Owner</Text>}
+    >
+      <Text slot="label">Jane Doe</Text>
+      <Text slot="description">jane@example.com</Text>
+    </ListBox.Item>
+    <ListBox.Item
+      id="john"
+      textValue="John Smith"
+      leading={<Icon as={Icons.Person} />}
+    >
+      <Text slot="label">John Smith</Text>
+      <Text slot="description">john@example.com</Text>
+    </ListBox.Item>
+  </ListBox.Root>
+)
+```
+
+### Disabled options
+
+Disable individual options with `disabledKeys`.
+
+```jsx live-dev
+const App = () => (
+  <ListBox.Root
+    aria-label="Fruit"
+    selectionMode="single"
+    disabledKeys={["banana"]}
+  >
+    <ListBox.Item id="apple">Apple</ListBox.Item>
+    <ListBox.Item id="banana">Banana</ListBox.Item>
+    <ListBox.Item id="cherry">Cherry</ListBox.Item>
+  </ListBox.Root>
+)
+```
+
+### Dynamic items
+
+Pass an `items` array plus a render function for data-driven lists.
+
+```jsx live-dev
+const App = () => {
+  const fruits = [
+    { id: "apple", name: "Apple" },
+    { id: "banana", name: "Banana" },
+    { id: "cherry", name: "Cherry" },
+  ];
+  return (
+    <ListBox.Root aria-label="Fruit" selectionMode="single" items={fruits}>
+      {(item) => <ListBox.Item id={item.id}>{item.name}</ListBox.Item>}
+    </ListBox.Root>
+  );
+}
+```
+
+## Appearance
+
+### Sizes
+
+The `sm` and `md` size variants match the shared Nimbus size scale.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="600" alignItems="flex-start">
+    {["sm", "md"].map((size) => (
+      <ListBox.Root key={size} size={size} aria-label={size} selectionMode="single">
+        <ListBox.Item id="apple">Apple</ListBox.Item>
+        <ListBox.Item id="banana">Banana</ListBox.Item>
+      </ListBox.Root>
+    ))}
+  </Stack>
+)
+```
+
+### Container variant — `card` vs `plain`
+
+`card` (default) renders a bordered, elevated, scrollable surface for standalone
+use. `plain` renders a bare list with no surface — use it when the list sits
+inside a container that already provides the card (an overlay/popover).
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="600" alignItems="flex-start">
+    <ListBox.Root variant="card" aria-label="card" selectionMode="single">
+      <ListBox.Item id="apple">Apple</ListBox.Item>
+      <ListBox.Item id="banana">Banana</ListBox.Item>
+    </ListBox.Root>
+    <ListBox.Root variant="plain" aria-label="plain" selectionMode="single">
+      <ListBox.Item id="apple">Apple</ListBox.Item>
+      <ListBox.Item id="banana">Banana</ListBox.Item>
+    </ListBox.Root>
+  </Stack>
+)
+```
+
+### Density
+
+Use `density="compact"` for data-dense lists.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="600" alignItems="flex-start">
+    {["comfortable", "compact"].map((density) => (
+      <ListBox.Root key={density} density={density} aria-label={density} selectionMode="single">
+        <ListBox.Item id="apple">Apple</ListBox.Item>
+        <ListBox.Item id="banana">Banana</ListBox.Item>
+      </ListBox.Root>
+    ))}
+  </Stack>
+)
+```
+
+### Empty state
+
+When the list has no options, a localized default message renders. Override it
+with `renderEmptyState`.
+
+```jsx live-dev
+const App = () => (
+  <ListBox.Root aria-label="Empty" width="16rem">
+    {[]}
+  </ListBox.Root>
+)
+```
+
+## Accessibility
+
+`ListBox` implements the WAI-ARIA listbox pattern via React Aria: the container
+is `role="listbox"`, options are `role="option"`, selected options expose
+`aria-selected`, and multi-select adds `aria-multiselectable`. You **must** give
+the list an accessible name:
+
+```tsx
+// Visible label
+<label id="fruit-label">Fruit</label>
+<ListBox.Root aria-labelledby="fruit-label">…</ListBox.Root>
+
+// Hidden label
+<ListBox.Root aria-label="Fruit">…</ListBox.Root>
+```
+
+### Keyboard navigation
+
+- `Tab` / `Shift+Tab`: move focus to / from the list
+- `Arrow keys`: move between options
+- `Home` / `End`: jump to first / last option
+- `Enter` / `Space`: select the focused option
+- Type to search: jump to a matching option (type-ahead)
+
+## API reference
+
+<PropsTable id="ListBox" />
+
+## Testing your implementation
+
+These examples show how to test a `ListBox` in your own application. The
+component's internal behaviour is already tested by Nimbus — these patterns help
+you verify your integration.
+
+{{docs-tests: list-box.docs.spec.tsx}}
+
+## Resources
+
+- [React Aria ListBox](https://react-spectrum.adobe.com/react-aria/ListBox.html)
+- [ARIA Listbox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/)
