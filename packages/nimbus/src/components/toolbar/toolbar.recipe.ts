@@ -14,17 +14,13 @@ export const toolbarRecipe = defineRecipe({
       alignItems: "center",
       flexDirection: "var(--toolbar-direction)",
       gap: "var(--toolbar-spacing)",
-    },
-    // A group built from `ToggleButtonGroup.Button` children renders segmented
-    // (shared borders), so it must collapse the toolbar gap. This `:has()`
-    // selector (specificity 0,3,0) beats the spaced-gap rule above (0,2,0) only
-    // when the group actually contains segmented buttons — a group of raw
-    // `ToggleButton` children (no `__button` class) keeps the spaced gap. So
-    // "segmented vs spaced in a toolbar" depends on which child component is used.
-    "& .nimbus-toggle-button-group__root:has(> .nimbus-toggle-button-group__button)":
-      {
+      // Segmented groups (`ToggleButtonGroup.Button` children share borders)
+      // collapse the toolbar gap; raw `ToggleButton` children keep it. Nested
+      // so it's one class more specific than the gap above and overrides it.
+      "&:has(> .nimbus-toggle-button-group__button)": {
         gap: "0",
       },
+    },
   },
   variants: {
     size: {
