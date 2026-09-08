@@ -85,7 +85,9 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           right: 0,
           zIndex: 3,
           backgroundColor: "var(--dt-row-bg, inherit)",
-          transition: "background-color 100ms ease",
+          // Match the row's hover/selection fade (row slot `_hover`) so frozen
+          // columns move in lockstep with the rest of the row.
+          transition: "background-color {durations.moderate} ease",
           ...stickyBgOverlap,
           "&::before": { right: 0 },
           "& [data-slot='nimbus-table-cell-pin-button']": {
@@ -99,7 +101,9 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           position: "sticky",
           left: 0,
           backgroundColor: "var(--dt-row-bg, inherit)",
-          transition: "background-color 100ms ease",
+          // Match the row's hover/selection fade (row slot `_hover`) so frozen
+          // columns move in lockstep with the rest of the row.
+          transition: "background-color {durations.moderate} ease",
           ...stickyBgOverlap,
         },
         "& [data-slot='drag']": {
@@ -399,7 +403,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
 
       "&:hover:not([data-nested-row-expanded])": {
         backgroundColor: "{colors.primary.3}",
-        transition: "background-color 200ms ease",
+        transition: "background-color {durations.moderate} ease",
       },
       // Frozen cells mirror the hover highlight through the variable. Skipped for
       // custom-bg rows so their frozen cells keep inheriting the consumer color.
