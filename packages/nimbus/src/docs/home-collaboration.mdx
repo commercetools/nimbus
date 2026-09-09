@@ -264,8 +264,8 @@ If all four answers are yes, it's a feature candidate. Otherwise, it's a recipe,
    tracked in Jira. No additional process needed from the requesting team beyond
    reporting.
 5. **For features:** evaluate against the four ownership criteria. Open a
-   [GitHub Issue](https://github.com/commercetools/nimbus/issues/new?template=FEATURE_REQUEST.yml)
-   using the feature proposal template, or start with a Slack conversation and
+   [GitHub Issue](https://github.com/commercetools/nimbus/issues) using the
+   feature proposal template (below), or start with a Slack conversation and
    formalize later. If the scope warrants a more detailed RFC, the teams decide
    together whether one is needed and who writes it. If nimbus can deliver on the
    product team's timeline, the nimbus team builds it. If not, the product team
@@ -278,14 +278,25 @@ If all four answers are yes, it's a feature candidate. Otherwise, it's a recipe,
    refactors it to meet system standards: API consistency, accessibility,
    cross-browser support, Figma parity, and documentation.
 
+### Feature proposal template
+
+When opening a GitHub Issue for a feature proposal, include:
+
+- **Problem:** What are you trying to accomplish? What's the gap in nimbus
+  today?
+- **Use cases:** Where does this come up? In which products, features, or
+  workflows?
+- **Who benefits:** Which teams or products would use this if it existed?
+- **Proposed behavior:** What should the component or variant do? (Sketches,
+  mockups, or pseudocode are welcome but not required.)
+
 ## Figma governance
 
 The Figma library is part of nimbus, and the same governance workflow applies. A
 few additional notes for designers:
 
-- **Reporting Figma/code mismatches:** File a
-  [design discrepancy](https://github.com/commercetools/nimbus/issues/new?template=DESIGN_DISCREPANCY.yml)
-  via GitHub Issue.
+- **Reporting Figma/code mismatches:** File as a design discrepancy via GitHub
+  Issue. Include which component, what differs, and a screenshot.
 - **Proposing new Figma components:** Same feature flow as code. The nimbus team
   maintains Figma/code parity: a component accepted for code will get a Figma
   counterpart, and vice versa.
