@@ -1,67 +1,67 @@
-name: 🚀 Feature Request
-description: Request a new feature or enhancement for the project.
-title: "[FEATURE] <title>"
+name: 🚀 Feature Proposal
+description: Propose a new component, variant, or capability for Nimbus.
+title: "[Feature]: <title>"
 labels: ["Type: New Feature", "Needs Triage"]
 body:
-- type: checkboxes
-  attributes:
-    label: Is there an existing issue for this?
-    description: Please search to see if an issue already exists for the feature you are requsting.
-    options:
-    - label: I have searched the existing issues.
-      required: true
-- type: textarea
-  attributes:
-    label: Is your feature request related to a problem? Please describe the problem.
-    description: A clear and concise description of what the problem is, with steps to reproduce if applicable.
-  validations:
-    required: false
-- type: textarea
-  attributes:
-    label: Briefly describe the solution you'd like.
-    description: A clear and concise description of what you want to happen.
-  validations:
-    required: true
-- type: textarea
-  attributes:
-    label: Describe alternatives you've considered.
-  validations:
-    required: false
-- type: textarea
-  attributes:
-    label: Additional context
-    description: |
-      Add any other context or screenshots about the feature request here.
+  - type: markdown
+    attributes:
+      value: |
+        Before submitting, please search open/closed issues and discussions — someone may have proposed something similar.
 
-      Tip: You can attach images or log files by clicking this area to highlight it and then dragging files in.
-  validations:
-    required: false
-- type: markdown
-  attributes:
-    value: |
-      For internal requests, please provide us with the following information:
-- type: input
-  attributes:
-    label: Champion
-    description: Who will be the primary contact for this request?
-    placeholder: ex. name/team
-  validations:
-    required: false
-- type: textarea
-  attributes:
-    label: Stakeholders
-    description: List individuals or teams who will be impacted or should be involved in the contribution process.
-  validations:
-    required: false
-- type: textarea
-  attributes:
-    label: Required components
-    description: Describe any dependencies this component or change has on other Nimbus components. Include a description of how these components interact with one another (in code and/or design).
-  validations:
-    required: false
-- type: textarea
-  attributes:
-    label: Best practices
-    description: Provide a description of what best practices for this component or change would look like, in terms of UX guidelines and design.
-  validations:
-    required: false
+        Not sure if this belongs in Nimbus? Start with a conversation in [#ask-nimbus-anything](https://commercetools.slack.com/archives/C0ACFBKAHTM) or a [GitHub discussion](https://github.com/commercetools/nimbus/discussions) first.
+  - type: checkboxes
+    attributes:
+      label: Pre-submission checklist
+      options:
+        - label: I have searched existing issues and discussions.
+          required: true
+  - type: textarea
+    attributes:
+      label: Problem
+      description: What are you trying to accomplish? What's the gap in Nimbus today?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Use cases
+      description: Where does this come up? In which products, features, or workflows?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Who benefits
+      description: Which teams or products would use this if it existed?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Proposed behavior
+      description: |
+        What should the component or variant do? Sketches, mockups, or pseudocode are welcome but not required.
+
+        Tip: You can attach images by clicking this area to highlight it and then dragging files in.
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        **For internal requests**, please also fill in the fields below:
+  - type: input
+    attributes:
+      label: Champion
+      description: Who will be the primary contact for this request?
+      placeholder: e.g. name / team
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Stakeholders
+      description: List individuals or teams who will be impacted or should be involved.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Required components
+      description: Describe any dependencies on other Nimbus components and how they interact (in code and/or design).
+    validations:
+      required: false
