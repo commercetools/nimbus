@@ -68,14 +68,14 @@ catalogs:
       specifier: ^15.0.1
       version: 15.0.1
     remark-flexible-toc:
-      specifier: ^1.2.6
-      version: 1.2.6
+      specifier: ^1.2.7
+      version: 1.2.7
     remark-gfm:
       specifier: ^4.0.1
       version: 4.0.1
     remend:
-      specifier: ^1.3.0
-      version: 1.3.0
+      specifier: ^1.3.1
+      version: 1.3.1
     to-vfile:
       specifier: ^8.0.0
       version: 8.0.0
@@ -586,7 +586,7 @@ importers:
         version: 16.1.1(react@19.2.0)
       remark-flexible-toc:
         specifier: catalog:markdown
-        version: 1.2.6(unified@11.0.5)
+        version: 1.2.7(unified@11.0.5)
       remark-gfm:
         specifier: catalog:markdown
         version: 4.0.1(supports-color@8.1.1)
@@ -817,7 +817,7 @@ importers:
         version: 4.0.1(supports-color@8.1.1)
       remend:
         specifier: catalog:markdown
-        version: 1.3.0
+        version: 1.3.1
       use-debounce:
         specifier: catalog:react
         version: 10.1.1(react@19.2.0)
@@ -962,7 +962,7 @@ importers:
         version: 15.0.1(supports-color@8.1.1)
       remark-flexible-toc:
         specifier: catalog:markdown
-        version: 1.2.6(unified@11.0.5)
+        version: 1.2.7(unified@11.0.5)
       to-vfile:
         specifier: catalog:markdown
         version: 8.0.0
@@ -8220,8 +8220,8 @@ packages:
   rehype-recma@1.0.0:
     resolution: {integrity: sha512-lqA4rGUf1JmacCNWWZx0Wv1dHqMwxzsDWYMTowuplHF3xH0N/MmrZ/G3BDZnzAkRmxDadujCjaKM2hqYdCBOGw==}
 
-  remark-flexible-toc@1.2.6:
-    resolution: {integrity: sha512-DJ9PeUPswJPFoeV+GO15aSXLNRXgkNwYcCojCq+0D/L5N3+2zyrAahEmZuAQ9S73B8Qm1QLO/mRrwo+qFmr2og==}
+  remark-flexible-toc@1.2.7:
+    resolution: {integrity: sha512-ZtFQPR4B0CkVztjnaxlm4JCwrionOxR5Q2ulMiYeBuMTprZ+Zbk3S1omTpE07sZ+yrVHGVPl2HXGjpgm1C7fZg==}
     peerDependencies:
       unified: ^11
 
@@ -8246,8 +8246,8 @@ packages:
   remark@15.0.1:
     resolution: {integrity: sha512-Eht5w30ruCXgFmxVUSlNWQ9iiimq07URKeFS3hNc8cUWy1llX4KDWfyEDZRycMc+znsN9Ux5/tJ/BFdgdOwA3A==}
 
-  remend@1.3.0:
-    resolution: {integrity: sha512-iIhggPkhW3hFImKtB10w0dz4EZbs28mV/dmbcYVonWEJ6UGHHpP+bFZnTh6GNWJONg5m+U56JrL+8IxZRdgWjw==}
+  remend@1.3.1:
+    resolution: {integrity: sha512-N3DiY5qbRPoa5vkxn1oDLMyXOVTeo6Hp+XOj6SIqJAYUgLS0Q587gILPMom/qm86AQ/ZrcOdwEIzCz8V3J0nxQ==}
 
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
@@ -19428,7 +19428,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  remark-flexible-toc@1.2.6(unified@11.0.5):
+  remark-flexible-toc@1.2.7(unified@11.0.5):
     dependencies:
       '@types/mdast': 4.0.4
       github-slugger: 2.0.0
@@ -19488,7 +19488,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  remend@1.3.0: {}
+  remend@1.3.1: {}
 
   require-directory@2.1.1: {}
 
