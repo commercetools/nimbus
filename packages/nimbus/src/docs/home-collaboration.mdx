@@ -1,0 +1,467 @@
+---
+id: Home-Collaboration
+title: Collaboration
+description: How to collaborate with the Nimbus team, understand governance processes, and work effectively with the design system.
+order: 8
+menu:
+  - Home
+  - Getting Started
+  - Collaboration
+tags:
+  - guide
+  - governance
+  - collaboration
+icon: Group
+---
+
+# Nimbus Governance, Collaboration, and Ownership
+
+## Why this document exists
+
+Design systems that do not clearly define governance tend to fail in one of two
+ways, either they calcify because teams cannot get what they need so they stop
+trying, or they fragment when teams build around the system and consistency
+slowly erodes. How do we: engineers, designers, decision makers, all work
+with/in nimbus without falling into these foreseeable traps?
+
+This document's answer is to establish a **lightweight, shared understanding**
+of how we work together on nimbus: How to surface needs, how to decide what
+belongs in the system, who owns what, and how product-level work feeds back into
+the shared library. The goal is to keep nimbus **coherent** while keeping product
+teams **unblocked**.
+
+This is an invitation to collaborate, not a set of rules imposed from above.
+Nimbus exists to serve the products built on it, and the governance process
+exists to make that relationship work well for everyone.
+
+## Foundational principles
+
+Five principles guide how we make decisions together.
+
+### 1. System first
+
+If nimbus provides a component, token, or pattern that solves the problem,
+**use it**. The design system exists to provide tested, accessible, consistent
+solutions. Building a custom alternative when a system solution already exists
+creates fragmentation, increases maintenance burden, and undermines the
+consistency that nimbus is here to provide.
+
+Divergence from the system is an exception that requires justification, not a
+starting position.
+
+### 2. Ask, don't assume
+
+Before building something custom, check what already exists. The
+[documentation site](https://nimbus-documentation.vercel.app/home),
+[Storybook](https://nimbus-storybook.vercel.app), the
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system),
+and the
+[MCP server](https://nimbus-documentation.vercel.app/home/getting-started/mcp-server-overview)
+are all searchable entry points. If you're still unsure after checking, ask in
+the #ask-nimbus-anything
+[Slack channel](https://commercetools.slack.com/archives/C0ACFBKAHTM), or open a
+[GitHub discussion](https://github.com/commercetools/nimbus/discussions).
+**Don't assume the answer is "no" and build around the system**.
+
+Many perceived "gaps" turn out to be discoverability problems that a quick search
+or a single message would resolve. Public questions also help other teams who
+have the same question, and they help the nimbus team understand where
+documentation or discoverability needs improvement.
+
+### 3. Collaborate early
+
+When your team's work touches shared UI patterns or surfaces a potential nimbus
+gap, loop in the nimbus team early. A five-minute conversation at the start of a
+feature is worth more than a thirty-minute review at the end. **Early alignment
+prevents drift; late alignment creates rework**.
+
+The same applies within product teams: designers and engineers should be in
+conversation from the start of any UI work, not just at handoff.
+
+### 4. Slow core, fast surface
+
+**Nimbus moves slower than products, and that's intentional**. Quality,
+accessibility, and cross-product consistency require deliberate engineering. The
+system is infrastructure: it prioritizes durability over speed.
+
+Product teams are the fast layer. They innovate, experiment, and ship on their
+own timelines. They should never be blocked waiting for nimbus. When the system
+can't deliver what a product team needs right now, the product team builds what
+it needs (see principle 5) and the system catches up when the pattern is proven.
+
+Both speeds are correct. The tension between them is productive, not a problem to
+solve.
+
+### 5. Own your recipes
+
+Compositions of nimbus components built for domain-specific use cases belong to
+the product team that built them. These are "recipes": they use nimbus
+ingredients (tokens, primitives, components) but serve a specific product
+context.
+
+**Recipes are not second-class**. They are the correct answer when domain
+requirements diverge from what a general-purpose system should provide. Nimbus
+provides ingredients; products assemble meals.
+
+## Categorizing incoming work
+
+Not every request is the same kind of work. Categorizing what's being asked for
+helps route it to the right people and set the right expectations. These
+categories apply equally to code components and Figma library assets.
+
+### Bugs
+
+A nimbus component (code or Figma) doesn't work as documented.
+
+**Owner:** Nimbus team
+**Priority:** Urgent
+**Examples:** An accordion fails to expand. A color contrast violation in a
+nimbus component. A Figma component is missing an interactive state that the code
+component supports.
+
+Teams won't trust or use a system that's broken. Bug reports are always welcome
+and always prioritized.
+
+### Design discrepancies
+
+A gap between the Figma library and the coded component library.
+
+**Owner:** Nimbus team investigates
+**Priority:** High
+**Examples:** A designer uses a Button variant in a mockup that doesn't exist in
+code. A coded component supports a prop that has no Figma equivalent. A
+designer's mockup uses a pattern that looks like a nimbus component but differs
+in subtle ways.
+
+When a discrepancy is found, the first question is whether the mismatch is a bug
+(one side is out of date) or a signal that the component needs to evolve. The
+nimbus team investigates and resolves.
+
+### Features
+
+A new component, variant, or capability that belongs in nimbus.
+
+**Owner:** Nimbus team, after evaluation
+**Priority:** Roadmap
+**Examples:** A request for a CopyableInput component. A new variant of an
+existing component that would benefit multiple products.
+
+Features go through the governance workflow described below. Not every feature
+request becomes a nimbus component; some are better served as recipes.
+
+### Recipes
+
+A composition of nimbus components built for a specific product domain.
+
+**Owner:** Product team
+**Priority:** Product team's call
+**Examples:** A chat message renderer. A domain-specific form layout. A custom
+stepper for a multi-step wizard embedded in a chat interface.
+
+Recipes live in the product repo, are maintained by the product team, and don't
+require nimbus team involvement (though the nimbus team is available for
+guidance). If a recipe proves valuable across multiple products, it can be
+proposed for promotion into the system.
+
+## Ownership boundaries
+
+Three tiers of UI code, with clear ownership at each level.
+
+### Nimbus core
+
+**Owned by:** Nimbus team
+
+Tokens, primitives, components in
+[`@commercetools/nimbus`](https://github.com/commercetools/nimbus/tree/main/packages/nimbus),
+icons in
+[`@commercetools/nimbus-icons`](https://github.com/commercetools/nimbus/tree/main/packages/nimbus-icons),
+the
+[Figma component library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system),
+and the
+[documentation site](https://nimbus-documentation.vercel.app/).
+
+The nimbus team is responsible for:
+
+- API design
+- Accessibility
+- Cross-browser support
+- Performance
+- Figma/code parity
+- Documentation
+- Release management
+
+Changes to nimbus core follow the nimbus team's development process.
+
+### Shared product libraries
+
+**Owned by:** Product teams, with nimbus consulted
+
+Libraries that compose nimbus components to serve a specific product family. For
+example,
+[`@commercetools-internal/commerce-agents-ui-components`](https://github.com/commercetools/commerce-agents/blob/main/shared/ui/components/package.json)
+provides shared chat infrastructure for the commerce-agents product family.
+[`@commercetools/merchant-center-shared-ui`](https://github.com/commercetools/merchant-center-frontend/blob/main/packages-shared/ui/package.json)
+provides shared patterns for the Merchant Center.
+
+**These libraries are maintained by the product teams that built them**. The
+nimbus team is available for architecture guidance, especially around
+accessibility and token usage, but does not maintain these packages just because
+it maintains nimbus core.
+
+### Application components
+
+**Owned by:** Product teams
+
+Domain-specific UI built from nimbus primitives for a single application. No
+nimbus team involvement is needed unless promoting a component to a higher tier.
+
+### Does this belong in nimbus?
+
+When evaluating whether a component should live in nimbus core or remain a
+recipe, ask four questions:
+
+1. **Is it domain-agnostic?** No business logic, no product-specific data
+   shapes, no assumptions about the consuming application's context.
+2. **Would two or more unrelated products benefit from it?** If only one product
+   needs it, it's a recipe.
+3. **Does it extend a nimbus primitive in a way that's generally useful?** A
+   specialized variant of an existing component that serves a broad need is a
+   stronger candidate than a novel pattern.
+4. **Is the API surface stable enough to commit to?** Nimbus components carry a
+   maintenance and compatibility commitment. If the design is still evolving, it
+   may be too early.
+
+If all four answers are yes, it's a feature candidate. Otherwise, it's a recipe,
+**and that's fine**.
+
+## Governance workflow
+
+<img
+  src="/images/getting-started/governance-workflow.png"
+  alt="Governance workflow diagram showing the decision flow from identifying a need through categorization to resolution"
+  width="100%"
+/>
+
+### Step by step
+
+1. **Start with nimbus.** Check the
+   [documentation site](https://nimbus-documentation.vercel.app/home),
+   [Storybook](https://nimbus-storybook.vercel.app), the
+   [Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system),
+   and the
+   [MCP server](https://nimbus-documentation.vercel.app/home/getting-started/mcp-server-overview)
+   for existing solutions.
+2. **If you're unsure, ask publicly.** Post in the #ask-nimbus-anything
+   [Slack channel](https://commercetools.slack.com/archives/C0ACFBKAHTM) or open
+   a
+   [GitHub discussion](https://github.com/commercetools/nimbus/discussions)
+   before assuming a gap exists. Describe what you're trying to accomplish, not
+   the solution you have in mind.
+3. **Categorize together.** The nimbus team and the requester agree on whether
+   the gap is a bug, design discrepancy, feature, or recipe. This is a
+   conversation, not a form.
+4. **For bugs and design discrepancies:** the nimbus team triages and fixes,
+   tracked in Jira. No additional process needed from the requesting team beyond
+   reporting.
+5. **For features:** evaluate against the four ownership criteria. Open a
+   [GitHub Issue](https://github.com/commercetools/nimbus/issues) using the
+   feature proposal template (below), or start with a Slack conversation and
+   formalize later. If the scope warrants a more detailed RFC, the teams decide
+   together whether one is needed and who writes it. If nimbus can deliver on the
+   product team's timeline, the nimbus team builds it. If not, the product team
+   builds a recipe now, and nimbus absorbs the pattern when it's proven.
+6. **For recipes:** the product team builds it using nimbus tokens and
+   primitives. The nimbus team is available for architecture guidance (especially
+   around accessibility and token usage). The recipe lives in the product repo.
+7. **Promotion path:** if a recipe proves valuable across multiple products, it
+   can be proposed as a feature through the same workflow. The nimbus team
+   refactors it to meet system standards: API consistency, accessibility,
+   cross-browser support, Figma parity, and documentation.
+
+### Feature proposal template
+
+When opening a GitHub Issue for a feature proposal, include:
+
+- **Problem:** What are you trying to accomplish? What's the gap in nimbus
+  today?
+- **Use cases:** Where does this come up? In which products, features, or
+  workflows?
+- **Who benefits:** Which teams or products would use this if it existed?
+- **Proposed behavior:** What should the component or variant do? (Sketches,
+  mockups, or pseudocode are welcome but not required.)
+
+## Figma governance
+
+The Figma library is part of nimbus, and the same governance workflow applies. A
+few additional notes for designers:
+
+- **Reporting Figma/code mismatches:** File as a design discrepancy via GitHub
+  Issue. Include which component, what differs, and a screenshot.
+- **Proposing new Figma components:** Same feature flow as code. The nimbus team
+  maintains Figma/code parity: a component accepted for code will get a Figma
+  counterpart, and vice versa.
+- **Using Figma components not yet in code:** Treat as a design discrepancy. The
+  nimbus team will evaluate whether to add the code implementation or update the
+  Figma library.
+- **Custom Figma compositions:** Designers can build product-specific
+  compositions in their own Figma files using nimbus library components. These
+  are the design equivalent of code recipes: owned by the product team, built
+  from system ingredients.
+
+## Collaboration guidelines
+
+Practical guidance for working with nimbus.
+
+- **Check, then ask, then build.** Before building a custom component, search
+  the [docs](https://nimbus-documentation.vercel.app/home),
+  [Storybook](https://nimbus-storybook.vercel.app), the
+  [Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system),
+  and the
+  [MCP server](https://nimbus-documentation.vercel.app/home/getting-started/mcp-server-overview).
+  If you don't find what you need, ask in the #ask-nimbus-anything
+  [Slack channel](https://commercetools.slack.com/archives/C0ACFBKAHTM). Build
+  custom only after confirming no system solution exists. This applies to both
+  engineers and designers.
+- **Involve both UX and engineering from the start.** Don't design in isolation
+  and hand off, and don't build in isolation and ask for review. Bring designers
+  and engineers together early, especially when the work touches shared patterns
+  or might surface a nimbus gap.
+- **Use nimbus tokens, not hardcoded values.** Even in recipes, use
+  `system.token()` or semantic color values. Hardcoded colors and spacing values
+  create maintenance debt and break when themes change.
+- **Use nimbus primitives as building blocks.** Build recipes from `Box`,
+  `Stack`, `Flex`, `Text`, and other nimbus layout components rather than raw
+  HTML elements. This ensures consistent spacing, responsive behavior, and theme
+  support.
+- **Don't fork nimbus components.** If a nimbus component doesn't work for your
+  use case, that's a conversation to have (bug or feature request), not a reason
+  to rebuild from scratch. Forking creates drift that's expensive to reconcile
+  later.
+- **Architecture reviews for complex recipes.** Before building a large custom
+  component, discuss the approach with the nimbus team. This helps ensure future
+  promotability, avoids accessibility pitfalls, and surfaces opportunities to use
+  existing nimbus capabilities you might not know about.
+- **When you diverge, document why.** If you intentionally deviate from a nimbus
+  pattern, leave a brief note explaining the rationale. This helps future
+  maintainers (and the nimbus team) understand whether the divergence was a
+  deliberate design decision or an oversight.
+
+## What the nimbus team commits to
+
+This process is a partnership. Here's what the nimbus team is responsible for:
+
+- **Responsive communication.** Questions in the #ask-nimbus-anything
+  [Slack channel](https://commercetools.slack.com/archives/C0ACFBKAHTM) get a
+  timely response. If we don't have an immediate answer, we'll acknowledge the
+  question and follow up.
+- **Triage and acknowledgment.** Bug reports and feature proposals filed as
+  [GitHub Issues](https://github.com/commercetools/nimbus/issues) are triaged
+  and acknowledged promptly. You'll know whether your report is being
+  investigated, scheduled, or needs more information.
+- **Transparent roadmap.** Accepted features are tracked in Jira, and requesting
+  teams have visibility into where their request stands.
+- **Proactive outreach.** When nimbus ships new components, variants, or patterns
+  that affect product teams, we communicate the changes through release notes and
+  the Slack channel. Teams shouldn't have to discover new capabilities by
+  accident.
+- **Architecture support.** When product teams are building complex recipes,
+  nimbus is available for guidance on accessibility, token usage, and API design.
+  We want recipes to be good, whether or not they end up in the system.
+- **Figma/code parity.** The nimbus team maintains alignment between the Figma
+  library and the coded component library. Discrepancies reported by product
+  teams are treated as high-priority issues.
+
+## What's next
+
+This document covers component and Figma governance. Token governance (proposing
+new tokens, modifying existing ones) may be added as a follow-up once the core
+process is established.
+
+## Real-world examples
+
+These examples are drawn from actual patterns in commercetools codebases. They
+illustrate how the governance process applies to real decisions.
+
+### Recipe absorbed into the system
+
+**What happened:** The commerce-agents team needed to render LLM-generated
+markdown output in a nimbus-styled UI. They built `AssistantMessageMarkdown`, a
+custom renderer using `react-markdown` that mapped each markdown element to
+individual nimbus primitives (`Box`, `Text`, `Heading`, `Table`, etc.).
+
+**What the governance process would say:** This was the right call at the time.
+The product team needed something now and built a recipe using nimbus ingredients.
+The pattern proved broadly valuable, and nimbus later absorbed it into a
+first-class `Markdown` component in the core library.
+
+**What happens next:** The commerce-agents team migrates from their custom
+renderer to the nimbus `Markdown` component. The recipe served its purpose and
+can be retired.
+
+**Principle illustrated:** Slow core, fast surface. Own your recipes.
+
+### Where a conversation would have helped
+
+**What happened:** The commerce-agents intake team needed an alert component with
+a left-border accent, inline action buttons, and dismissible status chips. The
+nimbus `Alert` component didn't support these patterns, so the team built a
+custom `AlertBanner` from scratch using `Box`, `Flex`, `Stack`, `Text`, and
+`IconButton`.
+
+**What the governance process would say:** Before building from scratch, ask in
+the nimbus Slack channel. The conversation might reveal that Alert can be
+extended to support these patterns (a feature request), or that the specific
+requirements are domain-specific enough to justify a recipe. Either way, the
+nimbus team learns about the gap.
+
+**What the outcome could have been:** If the need is general enough, nimbus
+expands the `Alert` API. If it's domain-specific, the recipe approach is
+confirmed and the team builds it with confidence that they're not duplicating
+existing functionality.
+
+**Principle illustrated:** Ask, don't assume. Collaborate early.
+
+### Discoverability gap
+
+**What happened:** The Merchant Center frontend team built `McpServerUrlInput`,
+a read-only input with a copy-to-clipboard button, using raw clipboard API calls.
+Nimbus already provides a `useCopyToClipboard` hook that handles clipboard
+access, success/error states, and browser compatibility.
+
+**What the governance process would say:** A quick question in the nimbus Slack
+channel ("we need a copy-to-clipboard pattern, anything in nimbus for this?")
+would have surfaced the existing hook. The remaining question is whether a
+composed `CopyableInput` component is worth proposing as a feature
+(domain-agnostic, useful across products) or is better left as a recipe using the
+existing hook.
+
+**Principle illustrated:** Ask, don't assume. System first.
+
+### Valid recipe
+
+**What happened:** The commerce-agents team built a shared `AgentChatPanel`
+compound component for agent chat UIs. Later, the intake agent team found that
+this shared panel didn't fit their interaction model (file uploads,
+drag-and-drop, multi-screen editing, state machine orchestration). They built
+their own custom chat chrome.
+
+**What the governance process would say:** This is exactly right. The shared
+`AgentChatPanel` is itself a recipe within the commerce-agents product family.
+When a sibling team's requirements diverge enough that the recipe doesn't fit,
+building a new recipe is the correct answer. Recipes aren't second-class; they're
+the right tool when domain requirements diverge.
+
+**Principle illustrated:** Own your recipes.
+
+### The happy path
+
+**What happens:** Both the Merchant Center and commerce-agents teams use nimbus
+`DataTable`, `FormField`, `Dialog`, `Button`, and dozens of other components
+extensively and correctly. They import directly from `@commercetools/nimbus`, use
+semantic tokens for styling, and compose compound components as designed.
+
+**What the governance process would say:** This is the default state the process
+exists to protect. The system provides what's needed, teams adopt it, and
+everyone moves forward. No governance overhead required.
+
+**Principle illustrated:** System first.
