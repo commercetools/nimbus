@@ -175,14 +175,14 @@ catalogs:
     "@figma/code-connect": ^1.5.3
     "@fission-ai/openspec": ^1.9.0
     eslint-plugin-react-hooks: ^7.1.1
-    globals: ^17.11.0
+    globals: ^17.12.0
     glob: ^13.0.6
     typescript: ~5.9.3
-    typescript-eslint: ^8.67.0
+    typescript-eslint: ^8.70.0
     tsup: ^8.5.1
-    tsx: ^4.23.12
+    tsx: ^4.23.13
     "@arethetypeswrong/cli": ^0.18.5
-    publint: ^0.3.23
+    publint: ^0.3.24
     "@commercetools-frontend/ui-kit": ^20.6.7
     "@modelcontextprotocol/inspector": ^0.22.0
     "@babel/core": ^7.29.7
@@ -190,23 +190,23 @@ catalogs:
     "@babel/preset-typescript": ^7.29.7
     "@eslint/js": ^10.0.1
     "@react-types/shared": ^3.36.1
-    eslint: ^10.8.1
+    eslint: ^10.10.0
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.6
-    eslint-plugin-react-refresh: ^0.5.4
-    express-rate-limit: ^8.6.2
+    eslint-plugin-react-refresh: ^0.5.6
+    express-rate-limit: ^8.7.0
     prettier: ^3.9.6
-    "@preconstruct/cli": ^2.8.13
+    "@preconstruct/cli": ^2.9.0
     # Never below 2.31.1: earlier versions misread npm 12's array-wrapped `npm info --json` and republish live versions.
     "@changesets/cli": 2.31.1
-    "@vitejs/plugin-react": ^6.0.5
+    "@vitejs/plugin-react": ^6.1.1
     "@vitejs/plugin-react-swc": ^4.3.3
-    vite: ^8.2.1
-    webpack: ^5.109.2
-    webpack-cli: ^7.2.2
+    vite: ^8.2.2
+    webpack: ^5.110.3
+    webpack-cli: ^7.2.3
     vite-bundle-analyzer: ^1.3.9
-    vite-plugin-dts: ^5.0.3
-    rollup: ^4.62.4
+    vite-plugin-dts: ^5.1.0
+    rollup: ^4.63.1
     "@vitest/browser": ^4.1.10
     "@vitest/browser-playwright": ^4.1.10
     "@vitest/coverage-v8": ^4.1.10
@@ -217,13 +217,13 @@ catalogs:
     # back — ^6.9.1 re-resolves straight to 6.10.0. The 6.x line ends here;
     # moving forward means 7.0.0, which is a major and needs its own PR.
     "@testing-library/jest-dom": 6.9.1
-    "@testing-library/user-event": ^14.6.4
-    "@testing-library/react": ^16.3.2
+    "@testing-library/user-event": ^14.6.7
+    "@testing-library/react": ^16.3.3
     playwright: ^1.62.1
-    vitest: ^4.1.10
-    axe-core: ^4.12.1
-    "@typescript-eslint/types": ^8.67.0
-    "@typescript-eslint/typescript-estree": ^8.67.0
+    vitest: ^4.1.11
+    axe-core: ^4.13.0
+    "@typescript-eslint/types": ^8.70.0
+    "@typescript-eslint/typescript-estree": ^8.70.0
     react-docgen-typescript: ^2.4.0
     storybook: ^10.5.10
     eslint-plugin-storybook: ^10.5.10
@@ -232,8 +232,8 @@ catalogs:
     "@storybook/addon-vitest": ^10.5.10
     "@storybook/react-vite": ^10.5.10
     "@vueless/storybook-dark-mode": ^10.0.8
-    "@github-ui/storybook-addon-performance-panel": ^1.1.4
-    chromatic: ^18.2.0
+    "@github-ui/storybook-addon-performance-panel": ^1.2.0
+    chromatic: ^18.7.2
     jsdom: 29.0.1 # pinned: 29.0.2+ breaks Chakra/Emotion CSS in JSDOM (style assertions return padding: 0); reconfirmed against 29.1.0 on 2026-04-29
     "rollup-plugin-visualizer": ^5.14.0
   react:
