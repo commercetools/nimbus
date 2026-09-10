@@ -28,7 +28,7 @@
     "playwright:install": "pnpm exec playwright install chromium",
     "start": "node scripts/start-dev.mjs",
     "start:docs": "pnpm --filter './apps/docs' run dev",
-    "start:storybook": "pnpm --filter @commercetools/nimbus run storybook",
+    "start:storybook": "pnpm --parallel --filter @commercetools/nimbus --filter @commercetools/nimbus-viz run storybook",
     "start:mcp-inspector": "pnpm --filter @commercetools/nimbus-mcp run mcp-inspector",
     "start:mcp-inspector:cli": "pnpm --filter @commercetools/nimbus-mcp run mcp-inspector:cli",
     "test": "pnpm vitest run",
