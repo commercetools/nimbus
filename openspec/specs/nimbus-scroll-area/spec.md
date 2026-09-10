@@ -1,7 +1,10 @@
 # nimbus-scroll-area Specification
 
 ## Purpose
-TBD - created by archiving change add-scroll-area-component. Update Purpose after archive.
+Define the behavior and API contract of the Nimbus `ScrollArea` component:
+custom-styled overlay scrollbars over native scrolling, with a single-element
+API, keyboard accessibility, visual variants (`solid` / `inset` / `hidden` /
+`glass`), and auto-hide / always-visible visibility modes.
 ## Requirements
 ### Requirement: Single-element API hides compound internals
 
@@ -88,29 +91,100 @@ The component SHALL use Nimbus design tokens for scrollbar appearance.
 
 #### Scenario: Scrollbar colors
 
-- **THEN** scrollbar track SHALL use `neutral.4`
-- **AND** thumb SHALL use `neutral.7` at rest
-- **AND** thumb SHALL use `neutral.9` on hover/active
+- **THEN** the thumb SHALL use `neutral.9` at rest, clearing ~3:1 contrast
+  against light surfaces
+- **AND** the thumb SHALL use `neutral.11` on hover/active
+- **AND** the track color SHALL depend on the visual `variant` (see the Visual
+  appearance variants requirement)
 
 #### Scenario: Size variants
 
 - **WHEN** `size="xs"` is set
-- **THEN** scrollbar width SHALL be `sizes.100` (4px)
+- **THEN** the scrollbar thumb thickness SHALL be `sizes.100` (4px)
 - **WHEN** `size="sm"` (default)
-- **THEN** scrollbar width SHALL be `sizes.150` (6px)
+- **THEN** the scrollbar thumb thickness SHALL be `sizes.150` (6px)
 - **WHEN** `size="md"`
-- **THEN** scrollbar width SHALL be `sizes.200` (8px)
+- **THEN** the scrollbar thumb thickness SHALL be `sizes.200` (8px)
 - **WHEN** `size="lg"`
-- **THEN** scrollbar width SHALL be `sizes.300` (12px)
+- **THEN** the scrollbar thumb thickness SHALL be `sizes.300` (12px)
+- **AND** inset visual variants SHALL keep the thumb thickness constant and pad
+  the track around it, so `size` always controls the visible thumb thickness
 
-#### Scenario: Visibility variants
+### Requirement: Visual appearance variants
 
-- **WHEN** `variant="hover"` (default)
-- **THEN** scrollbar SHALL be hidden and appear on hover or during scrolling
-- **WHEN** `variant="always"`
-- **THEN** scrollbar SHALL be permanently visible
+The `variant` prop SHALL select the scrollbar's visual style, independent of
+`size` and of `scrollbarVisibility`.
+
+#### Scenario: Solid (default)
+
+- **WHEN** `variant` is unset or `"solid"`
+- **THEN** the scrollbar track SHALL use `neutral.4`
+- **AND** the thumb SHALL fill the track's width
+
+#### Scenario: Inset
+
+- **WHEN** `variant="inset"`
+- **THEN** the scrollbar track SHALL use `neutral.4`
+- **AND** the thumb SHALL be an inset floating pill, achieved with a transparent
+  border plus `background-clip: content-box` so the thumb's element width (and
+  thus the hit area) is unchanged
+
+#### Scenario: Hidden track
+
+- **WHEN** `variant="hidden"`
+- **THEN** the scrollbar track SHALL be transparent
+- **AND** only the inset thumb SHALL paint
+
+#### Scenario: Glass
+
+- **WHEN** `variant="glass"`
+- **THEN** the scrollbar track SHALL be a translucent surface (`bg/60`) with
+  `backdrop-filter: blur(8px)` so it frosts the content behind it
+- **AND** the thumb SHALL be inset as in `inset`
+
+#### Scenario: Deprecated visual aliases
+
+- **WHEN** `variant="hover"` is set
+- **THEN** the component SHALL treat it as `variant="solid"` (deprecated alias)
+- **WHEN** `variant="always"` is set
+- **THEN** the component SHALL treat it as `variant="solid"` with
+  `scrollbarVisibility="always"` (deprecated alias)
+
+### Requirement: Scrollbar visibility behavior
+
+The `scrollbarVisibility` prop SHALL control when the scrollbar is shown:
+`auto-hide` (default) or `always`. It is independent of the visual `variant`.
+
+#### Scenario: Auto-hide reveals on activity and hides when idle
+
+- **WHEN** `scrollbarVisibility` is unset or `"auto-hide"`
+- **THEN** the scrollbar SHALL be transparent at rest
+- **AND** it SHALL become visible when the pointer enters the area, when the
+  pointer moves within it, or when the content scrolls
+- **AND** it SHALL hide again after a short idle delay once there is no pointer
+  movement and no scrolling
+
+#### Scenario: Idle-while-inside reveals only on scroll
+
+- **WHEN** the scrollbar has hidden after the idle delay and the pointer has NOT
+  yet left the area
+- **THEN** further pointer movement SHALL NOT reveal the scrollbar
+- **AND** only scrolling SHALL reveal it again
+- **AND** leaving the area SHALL re-arm the on-enter reveal for the next visit
+
+#### Scenario: Touch and keyboard
+
+- **WHEN** the area is scrolled by touch or keyboard, with no pointer enter or
+  move
+- **THEN** the scrollbar SHALL still reveal on scroll and hide again when idle
+
+#### Scenario: Always visible
+
+- **WHEN** `scrollbarVisibility="always"`
+- **THEN** the scrollbar SHALL be permanently visible
 - **AND** the viewport SHALL reserve a gutter so the scrollbar does not overlay
   content
+- **AND** it SHALL compose with any visual `variant` (e.g. `inset` + `always`)
 
 ### Requirement: Per-axis scrollbar visibility
 
