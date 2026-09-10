@@ -131,3 +131,61 @@ describe("ListBox - Empty state", () => {
     expect(screen.getByText("No options available")).toBeInTheDocument();
   });
 });
+
+/**
+ * @docs-section async-load-more
+ * @docs-title Async Load-More Tests
+ * @docs-description Paginated list that shows a spinner row while the next page
+ *   is fetched, then appends it — the infinite-scroll integration pattern.
+ * @docs-order 6
+ */
+describe("ListBox - Async load more", () => {
+  const page1 = [
+    { id: "apple", name: "Apple" },
+    { id: "banana", name: "Banana" },
+  ];
+  const page2 = [
+    { id: "cherry", name: "Cherry" },
+    { id: "date", name: "Date" },
+  ];
+
+  const PaginatedFruit = ({
+    fruits,
+    isLoading,
+  }: {
+    fruits: Array<{ id: string; name: string }>;
+    isLoading: boolean;
+  }) => (
+    <NimbusProvider>
+      <ListBox.Root aria-label="Fruit" selectionMode="single">
+        {fruits.map((fruit) => (
+          <ListBox.Item key={fruit.id} id={fruit.id}>
+            {fruit.name}
+          </ListBox.Item>
+        ))}
+        <ListBox.LoadMore isLoading={isLoading} />
+      </ListBox.Root>
+    </NimbusProvider>
+  );
+
+  it("shows a spinner while loading, then appends the next page", () => {
+    const { rerender } = render(
+      <PaginatedFruit fruits={page1} isLoading={true} />
+    );
+
+    // While the next page is being fetched, the spinner row is shown alongside
+    // the already-loaded options.
+    expect(screen.getByRole("progressbar")).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Apple" })).toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: "Cherry" })).toBeNull();
+
+    // The fetch resolves: the consumer appends page 2 and clears the flag.
+    rerender(
+      <PaginatedFruit fruits={[...page1, ...page2]} isLoading={false} />
+    );
+
+    expect(screen.queryByRole("progressbar")).toBeNull();
+    expect(screen.getByRole("option", { name: "Cherry" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Date" })).toBeInTheDocument();
+  });
+});

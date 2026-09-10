@@ -11,7 +11,6 @@ import { chatMessageListSlotRecipe } from "@/components/chat-message-list/chat-m
 import { checkboxSlotRecipe } from "@/components/checkbox/checkbox.recipe";
 import { collapsibleMotionSlotRecipe } from "@/components/collapsible-motion/collapsible-motion.recipe";
 import { comboBoxSlotRecipe } from "@/components/combobox/combobox.recipe";
-import { listBoxSlotRecipe } from "@/components/list-box/list-box.recipe";
 import { dataTableSlotRecipe } from "@/components/data-table/data-table.recipe";
 import { dateInputSlotRecipe } from "@/components/date-input/date-input.recipe";
 import { datePickerSlotRecipe } from "@/components/date-picker/date-picker.recipe";
@@ -24,6 +23,7 @@ import { formFieldRecipe } from "@/components/form-field/form-field.recipe";
 import { itemSlotRecipe } from "@/components/item/item.recipe";
 import { itemGroupSlotRecipe } from "@/components/item-group/item-group.recipe";
 import { listSlotRecipe } from "@/components/list/list.recipe";
+import { listBoxSlotRecipe } from "@/components/list-box/list-box.recipe";
 import { localizedFieldSlotRecipe } from "@/components/localized-field/localized-field.recipe";
 import { menuSlotRecipe } from "@/components/menu/menu.recipe";
 import { modalPageSlotRecipe } from "@/components/modal-page/modal-page.recipe";
@@ -105,6 +105,7 @@ export const slotRecipes = {
   nimbusItem: itemSlotRecipe,
   nimbusItemGroup: itemGroupSlotRecipe,
   nimbusList: listSlotRecipe,
+  nimbusListBox: listBoxSlotRecipe,
   nimbusLocalizedField: localizedFieldSlotRecipe,
   nimbusMenu: menuSlotRecipe,
   nimbusModalPage: modalPageSlotRecipe,
@@ -119,7 +120,6 @@ export const slotRecipes = {
   nimbusRichTextInput: richTextInputRecipe,
   nimbusScopedSearchInput: scopedSearchInputSlotRecipe,
   nimbusSearchInput: searchInputSlotRecipe,
-  nimbusListBox: listBoxSlotRecipe,
   nimbusSelect: selectSlotRecipe,
   nimbusSlider: sliderSlotRecipe,
   nimbusSplitButton: splitButtonSlotRecipe,
