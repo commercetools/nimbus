@@ -17,8 +17,10 @@ import type { OmitInternalProps } from "@/type-utils/omit-props";
 type ScrollAreaRecipeProps = {
   /**
    * Scrollbar visibility variant.
-   * - `hover`: scrollbar appears on hover or during active scrolling (default)
-   * - `always`: scrollbar is permanently visible
+   * - `hover` (default): the bar appears when the pointer enters the area or
+   *   when the content scrolls, then hides after a short idle delay. While the
+   *   pointer stays inside, only scrolling reveals it again.
+   * - `always`: the bar is permanently visible.
    * @default "hover"
    */
   variant?: SlotRecipeProps<"scrollArea">["variant"];
@@ -83,8 +85,10 @@ export type ScrollAreaProps = Omit<
   value?: UseScrollAreaReturn;
   /**
    * Scrollbar visibility variant.
-   * - `hover`: scrollbar appears on hover or during active scrolling (default)
-   * - `always`: scrollbar is permanently visible
+   * - `hover` (default): the bar appears when the pointer enters the area or
+   *   when the content scrolls, then hides after a short idle delay. While the
+   *   pointer stays inside, only scrolling reveals it again.
+   * - `always`: the bar is permanently visible.
    * @default "hover"
    */
   variant?: ScrollAreaRecipeProps["variant"];

@@ -1,8 +1,11 @@
+import { useRef } from "react";
+import { useObjectRef } from "react-aria";
 import {
   ScrollArea as ChakraScrollArea,
   useScrollAreaContext,
 } from "@chakra-ui/react/scroll-area";
-import { extractPaddingProps } from "@/utils";
+import { extractPaddingProps, mergeRefs } from "@/utils";
+import { useScrollbarAutoHide } from "./hooks";
 import type { ScrollAreaProps } from "./scroll-area.types";
 
 type ScrollAreaPartsProps = Pick<
@@ -81,8 +84,13 @@ const ScrollAreaParts = ({
  * # ScrollArea
  *
  * A scrollable container with custom-styled scrollbar overlays.
- * Replaces native scrollbars with themed overlay indicators that appear
- * on hover or during scrolling.
+ * Replaces native scrollbars with themed overlay indicators.
+ *
+ * With the default `hover` variant the bar appears when the pointer enters the
+ * area or when the content scrolls, and hides again after a short idle delay.
+ * While the pointer stays inside, only scrolling reveals it again — so a
+ * resting reader is not distracted by the bar. Use `variant="always"` to keep
+ * the bar permanently visible.
  *
  * Built on Chakra UI's ScrollArea (powered by Ark UI) with Nimbus
  * design tokens and keyboard accessibility.
@@ -105,15 +113,35 @@ export const ScrollArea = (props: ScrollAreaProps) => {
     children,
     orientation = "both",
     value,
+    variant,
     ...restProps
   } = props;
 
   const [paddingProps, rootProps] = extractPaddingProps(restProps);
 
+  // Local object refs so `useScrollbarAutoHide` can watch the real DOM nodes,
+  // while still forwarding any consumer-provided `ref` / `viewportRef`.
+  const rootLocalRef = useRef<HTMLDivElement>(null);
+  const rootRef = useObjectRef(
+    ref ? mergeRefs(rootLocalRef, ref) : rootLocalRef
+  );
+  const viewportLocalRef = useRef<HTMLDivElement>(null);
+  const mergedViewportRef = useObjectRef(
+    viewportRef ? mergeRefs(viewportLocalRef, viewportRef) : viewportLocalRef
+  );
+
+  // The `always` variant paints the bar permanently via CSS, so the idle-hide
+  // behavior only needs to run for the default `hover` variant.
+  useScrollbarAutoHide({
+    enabled: variant !== "always",
+    rootRef,
+    viewportRef: mergedViewportRef,
+  });
+
   const parts = (
     <ScrollAreaParts
       orientation={orientation}
-      viewportRef={viewportRef}
+      viewportRef={mergedViewportRef}
       contentPaddingProps={paddingProps}
     >
       {children}
@@ -122,14 +150,19 @@ export const ScrollArea = (props: ScrollAreaProps) => {
 
   if (value) {
     return (
-      <ChakraScrollArea.RootProvider ref={ref} value={value} {...rootProps}>
+      <ChakraScrollArea.RootProvider
+        ref={rootRef}
+        value={value}
+        variant={variant}
+        {...rootProps}
+      >
         {parts}
       </ChakraScrollArea.RootProvider>
     );
   }
 
   return (
-    <ChakraScrollArea.Root ref={ref} {...rootProps}>
+    <ChakraScrollArea.Root ref={rootRef} variant={variant} {...rootProps}>
       {parts}
     </ChakraScrollArea.Root>
   );

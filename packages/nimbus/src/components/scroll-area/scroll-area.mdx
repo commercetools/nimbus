@@ -20,11 +20,12 @@ tags:
 ## Overview
 
 ScrollArea constrains content within a fixed region and provides themed
-scrollbar overlays that replace native browser scrollbars. The scrollbar
-appears on hover or during scrolling by default, keeping the interface clean
-until the user needs to scroll. The component is keyboard accessible — when
-content overflows, the area becomes focusable via Tab and scrollable with
-arrow keys.
+scrollbar overlays that replace native browser scrollbars. By default the
+scrollbar appears when the pointer enters the area or when the content scrolls,
+then hides again after a short idle delay — while the pointer stays inside,
+only scrolling brings it back, so a resting reader is not distracted. The
+component is keyboard accessible — when content overflows, the area becomes
+focusable via Tab and scrollable with arrow keys.
 
 ### Resources
 
@@ -79,7 +80,9 @@ const App = () => (
 
 ### Visibility
 
-The scrollbar can appear on hover (default) or stay permanently visible.
+The scrollbar can auto-hide when idle (default) or stay permanently visible.
+With the default `hover` variant it appears on pointer entry or scrolling and
+hides after a short idle delay; `variant="always"` keeps it visible.
 
 ```jsx live
 const App = () => (

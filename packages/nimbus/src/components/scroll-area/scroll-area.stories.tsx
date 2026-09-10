@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ScrollArea, Box, Text, useScrollArea } from "@commercetools/nimbus";
-import { expect, userEvent, waitFor } from "storybook/test";
+import { expect, fireEvent, userEvent, waitFor } from "storybook/test";
 
 const meta: Meta<typeof ScrollArea> = {
   title: "Components/ScrollArea",
@@ -94,7 +94,8 @@ export const Default: Story = {
         expect(scrollbar).toHaveAttribute("data-orientation", "vertical");
         const styles = window.getComputedStyle(scrollbar);
         expect(styles.display).not.toBe("none");
-        // Default `hover` variant: painted only on hover or while scrolling.
+        // Default `hover` variant: transparent at rest (no activity yet);
+        // revealed on pointer/scroll activity, hidden again when idle.
         expect(styles.opacity).toBe("0");
       }
     );
@@ -172,7 +173,7 @@ export const DefaultSurfacesBothScrollbars: Story = {
           expect.arrayContaining(["vertical", "horizontal"])
         );
         scrollbars.forEach((sb) => {
-          // Laid out but not painted: `hover` holds both at 0 until hover/scroll.
+          // Laid out but not painted: `hover` holds both at 0 until activity reveals them.
           expect(window.getComputedStyle(sb).display).not.toBe("none");
           expect(window.getComputedStyle(sb).opacity).toBe("0");
         });
@@ -1422,4 +1423,75 @@ export const SmokeTest: Story = {
       ))}
     </Box>
   ),
+};
+
+// ============================================================
+// AutoHideOnIdle: the default `hover` variant reveals the bar on activity
+// (pointer enter, mouse movement, scroll) and hides it after an idle delay.
+// While the pointer stays inside, only scrolling reveals it again — so a
+// resting reader is not distracted. Driven by `useScrollbarAutoHide`, which
+// toggles `data-scrollbar-visible` on the root; the recipe keys opacity off it.
+// ============================================================
+export const AutoHideOnIdle: Story = {
+  render: () => (
+    <ScrollArea
+      maxH="200px"
+      w="400px"
+      ids={{ root: "autohide-root", viewport: "autohide-viewport" }}
+    >
+      <OverflowingContent />
+    </ScrollArea>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+    const root = doc.getElementById("autohide-root") as HTMLElement;
+    const viewport = doc.getElementById("autohide-viewport") as HTMLElement;
+    const scrollbar = canvasElement.querySelector(
+      '[data-part="scrollbar"][data-orientation="vertical"]'
+    ) as HTMLElement;
+
+    await step("Overflows and starts hidden at rest", async () => {
+      await waitFor(() =>
+        expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight)
+      );
+      expect(root).not.toHaveAttribute("data-scrollbar-visible");
+      expect(window.getComputedStyle(scrollbar).opacity).toBe("0");
+    });
+
+    await step("Pointer entering the area reveals the bar", async () => {
+      await userEvent.hover(root);
+      expect(root).toHaveAttribute("data-scrollbar-visible");
+      // Confirms the recipe reveal is wired to the JS attribute end-to-end.
+      await waitFor(() =>
+        expect(window.getComputedStyle(scrollbar).opacity).toBe("1")
+      );
+    });
+
+    await step("Bar hides after the idle delay", async () => {
+      await waitFor(
+        () => expect(root).not.toHaveAttribute("data-scrollbar-visible"),
+        { timeout: 2000 }
+      );
+    });
+
+    await step("Once idle, mouse movement no longer reveals it", async () => {
+      fireEvent.mouseMove(root);
+      expect(root).not.toHaveAttribute("data-scrollbar-visible");
+    });
+
+    await step("Scrolling reveals it again", async () => {
+      fireEvent.scroll(viewport);
+      expect(root).toHaveAttribute("data-scrollbar-visible");
+    });
+
+    await step("Leaving and re-entering re-arms the entry reveal", async () => {
+      await userEvent.unhover(root);
+      await waitFor(
+        () => expect(root).not.toHaveAttribute("data-scrollbar-visible"),
+        { timeout: 2000 }
+      );
+      await userEvent.hover(root);
+      expect(root).toHaveAttribute("data-scrollbar-visible");
+    });
+  },
 };
