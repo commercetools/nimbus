@@ -11,10 +11,8 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Browser-mode story tests, mirroring packages/nimbus/vitest.storybook.config.ts.
-// Every *.stories.tsx runs as a portable story in headless Chromium via
-// Playwright. Unlike nimbus these run against SOURCE (no dist barrel alias) —
-// stories import sibling source directly, so there is nothing to pin to dist.
+// Browser-mode story tests: every *.stories.tsx runs in headless Chromium via
+// Playwright.
 export default defineConfig(async () => {
   const baseConfig = await createBaseConfig({
     command: "build",
@@ -45,7 +43,6 @@ export default defineConfig(async () => {
           headless: true,
           screenshotFailures: false,
           isolate: false,
-          // Distinct from nimbus's 63315 so both can run in one CI invocation.
           api: { port: 63317 },
         },
         coverage: {

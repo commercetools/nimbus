@@ -30,11 +30,8 @@ const config: StorybookConfig = {
     name: getAbsolutePackagePath("@storybook/react-vite"),
     options: {},
   },
-  // Compose the nimbus-viz Storybook (charts) into this one during local dev,
-  // so both design-system components and charts show in one sidebar. Requires
-  // viz's Storybook running on 6007 (`pnpm start:storybook:all` starts both).
-  // Omitted under Vitest and in production builds — viz has no deployed
-  // Storybook yet — and keeps the existing @chakra-ui/react composition disable.
+  // Compose the nimbus-viz Storybook (localhost:6007) into this one in local
+  // dev; omitted under Vitest and in production.
   refs: (_config, { configType }) => ({
     "@chakra-ui/react": { disable: true },
     ...(configType === "DEVELOPMENT" && !process.env.VITEST

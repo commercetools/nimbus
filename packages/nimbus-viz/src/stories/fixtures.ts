@@ -21,7 +21,7 @@ import type {
 } from "..";
 
 /**
- * Per-question demo data for the gallery.
+ * Per-question demo data for the stories.
  *
  * Every catalog preset gets its own plausible, commerce-flavored dataset that
  * fits its question, so a chart type's different questions render as visibly

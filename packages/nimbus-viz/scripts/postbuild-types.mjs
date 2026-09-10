@@ -1,13 +1,7 @@
-// Post-processes the .d.ts tree emitted by vite-plugin-dts so the published
-// type surface matches what tsup produced before the Vite switch. Two steps
-// only — viz is a single-entry package, so it needs none of nimbus's
-// relocate / plugins-stub / theme-typegen steps.
-//
-//   1. Add explicit `.js` extensions to bare relative imports in every emitted
-//      .d.ts. Without this, @arethetypeswrong/cli (run by check:package-shape)
-//      reports InternalResolutionError under moduleResolution: nodenext.
-//   2. Duplicate the top-level index.d.ts to index.d.cts for the CJS `require`
-//      types condition in package.json `exports`.
+// Post-processes the emitted .d.ts tree:
+//   1. Add explicit `.js` extensions to relative imports (attw requires them
+//      under moduleResolution: nodenext).
+//   2. Write index.d.cts for the CJS `require` types condition.
 import { copyFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";

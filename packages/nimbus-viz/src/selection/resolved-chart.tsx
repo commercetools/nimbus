@@ -62,9 +62,9 @@ class ChartErrorBoundary extends Component<BoundaryProps, BoundaryState> {
 
 /**
  * Run the selection engine and render the chosen chart — or the guaranteed
- * DataTable fallback — for a request. This is the demoable surface the gallery
- * uses: hand it an intent + data and it draws the right thing, logging the
- * decision through telemetry and never blanking on bad input.
+ * DataTable fallback — for a request: hand it an intent + data and it draws the
+ * right thing, logging the decision through telemetry and never blanking on bad
+ * input.
  *
  * Must be rendered inside a `<ChartThemeProvider>` (like every chart here).
  */

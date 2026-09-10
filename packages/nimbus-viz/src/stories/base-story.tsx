@@ -16,16 +16,7 @@ function firstEntryFor(base: string): ChartRegistryEntry | undefined {
   return undefined;
 }
 
-/**
- * Renders one representative preset for a registry-backed chart through the
- * selection engine — the same path the retired gallery used.
- *
- * The per-component `*.stories.tsx` files build a *literal* CSF meta (Storybook's
- * static indexer requires the default export to be an object literal) whose
- * `render` delegates here. These "base" stories are smoke tests: one per
- * component, they prove Storybook and the browser-mode Vitest project are wired
- * up for every chart. Focused, hand-authored stories come later.
- */
+/** Renders one representative preset for a registry-backed chart. */
 export function RegistryPreview({ base }: { base: string }) {
   const entry = firstEntryFor(base);
   if (!entry) {

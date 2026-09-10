@@ -2,7 +2,7 @@
  * Test-only color-legibility math for the palette gate (`legibility.spec.ts`).
  *
  * Not exported from the package barrel and imported only by the spec, so it
- * never ships in the tsup bundle. It reuses `oklab.ts` so the gate speaks the
+ * never ships in the published bundle. It reuses `oklab.ts` so the gate speaks the
  * same color math as the runtime ramps, and adds ΔE, a Machado (2009) CVD
  * simulation, and WCAG contrast. It is a *regression guard* calibrated so the
  * validated `nimbus` palette passes with margin — the authoritative check

@@ -30,11 +30,7 @@ const config: StorybookConfig = {
   typescript: {
     reactDocgen: "react-docgen-typescript",
   },
-  // Unlike packages/nimbus, viz needs no source-vs-dist barrel alias: stories
-  // live inside the package and import sibling source directly, so there is no
-  // `@commercetools/nimbus-viz` self-reference to switch. Tests run against
-  // source. We keep only nimbus's rolldown lazy-barrel workaround, which the
-  // `export *` barrel here would otherwise trip in the production build.
+  // The `export *` barrel needs rolldown's lazy-barrel off in the prod build.
   viteFinal: async (viteConfig) =>
     mergeConfig(viteConfig, {
       build: {
