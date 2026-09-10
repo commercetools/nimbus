@@ -103,21 +103,35 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
       margin: "var(--scroll-area-scrollbar-margin)",
       opacity: 0,
       transition: "opacity 150ms 300ms",
-      "&[data-hover]": {
-        transitionDelay: "0ms",
-        opacity: 1,
-      },
     },
   },
   variants: {
     variant: {
       hover: {
+        // Reveal is driven by `useScrollbarAutoHide`, which toggles
+        // `data-scrollbar-visible` on the root from real activity (mouse enter,
+        // mouse movement, scrolling) plus an idle timer — not off Zag's
+        // `data-hover`, which stays set while a resting pointer sits inside.
+        // The hook owns the hide delay, so there is no CSS transition-delay
+        // here (the base slot's 300ms delay is overridden to a plain fade).
         scrollbar: {
           opacity: "0",
-          "&[data-hover], &[data-scrolling]": {
+          transition: "opacity 150ms",
+          "[data-scrollbar-visible] &": {
             opacity: "1",
-            transitionDuration: "faster",
-            transitionDelay: "0ms",
+          },
+          // Keep the bar visible while the thumb is being dragged, regardless
+          // of the idle timer. A drag also fires viewport `scroll`, so this is
+          // a safeguard rather than the primary mechanism.
+          "&[data-dragging]": {
+            opacity: "1",
+          },
+        },
+        corner: {
+          opacity: "0",
+          transition: "opacity 150ms",
+          "[data-scrollbar-visible] &": {
+            opacity: "1",
           },
         },
       },
