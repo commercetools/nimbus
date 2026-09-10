@@ -32,10 +32,10 @@
     "start:mcp-inspector": "pnpm --filter @commercetools/nimbus-mcp run mcp-inspector",
     "start:mcp-inspector:cli": "pnpm --filter @commercetools/nimbus-mcp run mcp-inspector:cli",
     "test": "pnpm vitest run",
-    "test:unit": "pnpm vitest run --project=unit",
-    "test:storybook": "pnpm vitest run --project=storybook",
+    "test:unit": "pnpm vitest run --project='*unit*'",
+    "test:storybook": "pnpm vitest run --project='*storybook*'",
     "test:dev": "pnpm vitest run --config vitest.dev.config.mts",
-    "test:storybook:dev": "pnpm vitest run --config vitest.dev.config.mts --project=storybook-dev",
+    "test:storybook:dev": "pnpm vitest run --config vitest.dev.config.mts --project='*storybook*'",
     "check:bundle-size": "node .github/actions/bundle-size/check-bundle-size.mjs",
     "check:package-shape": "node scripts/check-package-shape.mjs",
     "bundle-sizes:trend": "node scripts/bundle-sizes-trend.mjs"

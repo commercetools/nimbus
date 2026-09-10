@@ -1,7 +1,4 @@
 {
   "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "rootDir": "src"
-  },
-  "include": ["src"]
+  "exclude": ["dist", "storybook-static", "coverage", "node_modules"]
 }

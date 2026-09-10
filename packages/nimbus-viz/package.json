@@ -30,11 +30,12 @@
     "url": "https://github.com/commercetools/nimbus.git"
   },
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "gallery": "vite",
+    "build": "vite build && node scripts/postbuild-types.mjs",
+    "dev": "vite build --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest --run",
+    "storybook": "storybook dev -p 6007",
+    "build-storybook": "storybook build",
+    "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
@@ -65,6 +66,10 @@
   },
   "devDependencies": {
     "@commercetools/nimbus": "workspace:*",
+    "@storybook/addon-a11y": "catalog:tooling",
+    "@storybook/addon-docs": "catalog:tooling",
+    "@storybook/addon-vitest": "catalog:tooling",
+    "@storybook/react-vite": "catalog:tooling",
     "@testing-library/dom": "catalog:tooling",
     "@testing-library/jest-dom": "catalog:tooling",
     "@testing-library/react": "catalog:tooling",
@@ -75,12 +80,17 @@
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react": "catalog:tooling",
+    "@vitest/browser": "catalog:tooling",
+    "@vitest/browser-playwright": "catalog:tooling",
+    "@vueless/storybook-dark-mode": "catalog:tooling",
     "jsdom": "catalog:tooling",
+    "playwright": "catalog:tooling",
     "react": "catalog:react",
     "react-dom": "catalog:react",
-    "tsup": "catalog:tooling",
+    "storybook": "catalog:tooling",
     "typescript": "catalog:tooling",
     "vite": "catalog:tooling",
+    "vite-plugin-dts": "catalog:tooling",
     "vitest": "catalog:tooling"
   }
 }

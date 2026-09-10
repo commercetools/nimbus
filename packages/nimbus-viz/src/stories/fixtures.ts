@@ -11,7 +11,6 @@ import type {
   ParallelDimension,
   ParallelRow,
   RadarSeries,
-  RegionTile,
   RfmCell,
   SampleGroup,
   ScatterPoint,
@@ -19,7 +18,7 @@ import type {
   SlopeRow,
   StackRow,
   TimelineEvent,
-} from "../src";
+} from "..";
 
 /**
  * Per-question demo data for the gallery.
@@ -879,62 +878,6 @@ function buildFlowMatrix(e: ChartRegistryEntry): Fixture {
   return { data };
 }
 
-// ── regions on a hand-laid grid (tile-grid map) ───────────────────────────
-function buildRegionTiles(e: ChartRegistryEntry): Fixture {
-  const r = mulberry32(hashString(e.metadata.name));
-  // A compact US-style tile grid (row, col chosen to echo geography).
-  const cells: Array<[string, number, number]> = [
-    ["WA", 0, 0],
-    ["MT", 0, 1],
-    ["ND", 0, 2],
-    ["MN", 0, 3],
-    ["WI", 0, 4],
-    ["MI", 0, 5],
-    ["NY", 0, 7],
-    ["MA", 0, 8],
-    ["CA", 1, 0],
-    ["ID", 1, 1],
-    ["SD", 1, 2],
-    ["IA", 1, 3],
-    ["IL", 1, 4],
-    ["IN", 1, 5],
-    ["OH", 1, 6],
-    ["PA", 1, 7],
-    ["NJ", 1, 8],
-    ["NV", 2, 1],
-    ["WY", 2, 2],
-    ["NE", 2, 3],
-    ["MO", 2, 4],
-    ["KY", 2, 5],
-    ["WV", 2, 6],
-    ["VA", 2, 7],
-    ["MD", 2, 8],
-    ["AZ", 3, 1],
-    ["UT", 3, 2],
-    ["CO", 3, 3],
-    ["KS", 3, 4],
-    ["TN", 3, 5],
-    ["NC", 3, 6],
-    ["SC", 3, 7],
-    ["NM", 4, 2],
-    ["OK", 4, 3],
-    ["AR", 4, 4],
-    ["MS", 4, 5],
-    ["AL", 4, 6],
-    ["GA", 4, 7],
-    ["TX", 5, 3],
-    ["LA", 5, 4],
-    ["FL", 5, 8],
-  ];
-  const data: RegionTile[] = cells.map(([id, row, col]) => ({
-    id,
-    row,
-    col,
-    value: Math.round(between(r, 10, 100)),
-  }));
-  return { data };
-}
-
 const BUILDERS: Record<string, (e: ChartRegistryEntry) => Fixture> = {
   series: buildSeries,
   category: buildCategory,
@@ -960,7 +903,6 @@ const BUILDERS: Record<string, (e: ChartRegistryEntry) => Fixture> = {
   ohlc: buildOhlc,
   "timeline-events": buildTimelineEvents,
   "flow-matrix": buildFlowMatrix,
-  "region-tiles": buildRegionTiles,
 };
 
 /** Plausible, deterministic demo data fitting a preset's question. */
