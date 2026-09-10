@@ -27,7 +27,6 @@ type Story = StoryObj<typeof ListBox.Root>;
  */
 const sizes = ["sm", "md"] as const;
 const containerVariants = ["card", "plain"] as const;
-const densities = ["comfortable", "compact"] as const;
 
 const fruits = [
   { id: "apple", name: "Apple" },
@@ -69,13 +68,13 @@ const contacts = [
  * rendering, pointer selection (single-select replaces), and keyboard selection.
  */
 export const Base: Story = {
+  args: { onSelectionChange: fn() },
   render: (args) => (
     <ListBox.Root
       {...args}
       aria-label="Fruit"
       selectionMode="single"
       data-testid="list-box"
-      onSelectionChange={args.onSelectionChange ?? fn()}
     >
       {fruits.map((f) => (
         <ListBox.Item key={f.id} id={f.id}>
@@ -84,7 +83,7 @@ export const Base: Story = {
       ))}
     </ListBox.Root>
   ),
-  play: async ({ canvasElement, step }) => {
+  play: async ({ canvasElement, step, args }) => {
     const canvas = within(canvasElement);
 
     await step("Renders a listbox with all options", async () => {
@@ -106,6 +105,15 @@ export const Base: Story = {
       await expect(cherry).toHaveAttribute("aria-selected", "true");
       await expect(banana).toHaveAttribute("aria-selected", "false");
     });
+
+    await step(
+      "onSelectionChange fires when the selection changes",
+      async () => {
+        // RA passes a Selection (a Set subclass), so assert the call rather than
+        // deep-equal a plain Set; the aria-selected checks above cover the payload.
+        await expect(args.onSelectionChange).toHaveBeenCalled();
+      }
+    );
   },
 };
 
@@ -158,23 +166,21 @@ export const MultipleSelectionVisual: Story = {
  * checkbox indicator reflecting selected state.
  */
 export const MultipleSelectionBehavior: Story = {
-  render: () => {
-    const onSelectionChange = fn();
-    return (
-      <ListBox.Root
-        aria-label="Fruit"
-        selectionMode="multiple"
-        onSelectionChange={onSelectionChange}
-      >
-        {fruits.map((f) => (
-          <ListBox.Item key={f.id} id={f.id}>
-            {f.name}
-          </ListBox.Item>
-        ))}
-      </ListBox.Root>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
+  args: { onSelectionChange: fn() },
+  render: (args) => (
+    <ListBox.Root
+      aria-label="Fruit"
+      selectionMode="multiple"
+      onSelectionChange={args.onSelectionChange}
+    >
+      {fruits.map((f) => (
+        <ListBox.Item key={f.id} id={f.id}>
+          {f.name}
+        </ListBox.Item>
+      ))}
+    </ListBox.Root>
+  ),
+  play: async ({ canvasElement, step, args }) => {
     const canvas = within(canvasElement);
     const apple = canvas.getByRole("option", { name: "Apple" });
     const cherry = canvas.getByRole("option", { name: "Cherry" });
@@ -190,6 +196,12 @@ export const MultipleSelectionBehavior: Story = {
       await userEvent.click(apple);
       await expect(apple).toHaveAttribute("aria-selected", "false");
       await expect(cherry).toHaveAttribute("aria-selected", "true");
+    });
+
+    await step("onSelectionChange fires on each toggle", async () => {
+      // RA passes a Selection (a Set subclass); assert the call, not a plain
+      // Set — the aria-selected checks above cover the payload.
+      await expect(args.onSelectionChange).toHaveBeenCalled();
     });
   },
 };
@@ -294,6 +306,82 @@ export const DisabledItems: Story = {
 };
 
 /**
+ * No selection mode + `onAction`: options are not selectable, but activating a
+ * row (pointer or keyboard) still fires `onAction` (spec: "No selection").
+ */
+export const NoSelectionWithAction: Story = {
+  args: { onAction: fn() },
+  render: (args) => (
+    <ListBox.Root aria-label="Commands" onAction={args.onAction}>
+      {fruits.map((f) => (
+        <ListBox.Item key={f.id} id={f.id}>
+          {f.name}
+        </ListBox.Item>
+      ))}
+    </ListBox.Root>
+  ),
+  play: async ({ canvasElement, step, args }) => {
+    const canvas = within(canvasElement);
+    const banana = canvas.getByRole("option", { name: "Banana" });
+
+    await step(
+      "Clicking a row fires onAction but selects nothing",
+      async () => {
+        await userEvent.click(banana);
+        await expect(args.onAction).toHaveBeenCalledWith("banana");
+        await expect(banana).not.toHaveAttribute("aria-selected", "true");
+      }
+    );
+
+    await step("Enter activates the focused row via keyboard", async () => {
+      // Focus is on the clicked row; move to the first option and activate it
+      // (do NOT tab — that would move focus out of the listbox).
+      await userEvent.keyboard("{Home}");
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(args.onAction).toHaveBeenLastCalledWith("apple")
+      );
+    });
+
+    await step("Actionable rows expose the pointer affordance", async () => {
+      await userEvent.hover(banana);
+      await waitFor(() => expect(banana).toHaveAttribute("data-hovered"));
+    });
+  },
+};
+
+/**
+ * Plain display list — no selection and no `onAction`. Rows are inert: React
+ * Aria withholds `data-hovered` (so the recipe keeps `cursor: default`) and a
+ * click selects nothing.
+ */
+export const PlainDisplayList: Story = {
+  render: () => (
+    <ListBox.Root aria-label="Read-only fruit">
+      {fruits.map((f) => (
+        <ListBox.Item key={f.id} id={f.id}>
+          {f.name}
+        </ListBox.Item>
+      ))}
+    </ListBox.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const banana = canvas.getByRole("option", { name: "Banana" });
+
+    await step("Inert rows get no hover affordance", async () => {
+      await userEvent.hover(banana);
+      await expect(banana).not.toHaveAttribute("data-hovered");
+    });
+
+    await step("Clicking an inert row selects nothing", async () => {
+      await userEvent.click(banana);
+      await expect(banana).not.toHaveAttribute("aria-selected", "true");
+    });
+  },
+};
+
+/**
  * Sections group options under an accessible header.
  */
 export const WithSections: Story = {
@@ -323,6 +411,18 @@ export const WithSections: Story = {
     await step("Headers are not selectable options", async () => {
       await expect(canvas.getAllByRole("option")).toHaveLength(6);
     });
+
+    await step(
+      "Sections are groups labelled by their header (AT)",
+      async () => {
+        await expect(
+          canvas.getByRole("group", { name: "Fruit" })
+        ).toBeInTheDocument();
+        await expect(
+          canvas.getByRole("group", { name: "Vegetable" })
+        ).toBeInTheDocument();
+      }
+    );
   },
 };
 
@@ -349,6 +449,16 @@ export const RichContent: Story = {
       ))}
     </ListBox.Root>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step(
+      "The description slot becomes the option's accessible description",
+      async () => {
+        const [jane] = canvas.getAllByRole("option");
+        await expect(jane).toHaveAccessibleDescription("jane@example.com");
+      }
+    );
+  },
 };
 
 /**
@@ -411,36 +521,6 @@ export const Variants: Story = {
 };
 
 /**
- * Row density — `comfortable` (default) vs `compact`.
- */
-export const Density: Story = {
-  tags: ["vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
-  render: () => (
-    <Stack direction="row" gap="600" alignItems="flex-start">
-      {densities.map((density) => (
-        <Box key={density}>
-          <Text fontWeight="600" mb="200">
-            {density}
-          </Text>
-          <ListBox.Root
-            density={density}
-            aria-label={`Fruit ${density}`}
-            selectionMode="single"
-          >
-            {fruits.map((f) => (
-              <ListBox.Item key={f.id} id={f.id}>
-                {f.name}
-              </ListBox.Item>
-            ))}
-          </ListBox.Root>
-        </Box>
-      ))}
-    </Stack>
-  ),
-};
-
-/**
  * Empty state — the localized default message renders when there are no options.
  */
 export const EmptyState: Story = {
@@ -457,6 +537,10 @@ export const EmptyState: Story = {
       await expect(
         canvas.getByText("No options available")
       ).toBeInTheDocument();
+    });
+
+    await step("Root exposes the [data-empty] state", async () => {
+      await expect(canvas.getByRole("listbox")).toHaveAttribute("data-empty");
     });
   },
 };
@@ -552,6 +636,74 @@ export const Loading: Story = {
     await step("Load-more spinner is present while loading", async () => {
       await expect(canvas.getByRole("progressbar")).toBeInTheDocument();
     });
+  },
+};
+
+const PAGE_SIZE = 8;
+const manyFruits = Array.from({ length: 16 }, (_, i) => ({
+  id: `fruit-${i}`,
+  name: `Fruit ${i + 1}`,
+}));
+const asyncLoadMoreSpy = fn();
+
+const AsyncLoadMoreList = () => {
+  const [count, setCount] = useState(PAGE_SIZE);
+  const [isLoading, setIsLoading] = useState(false);
+  const handleLoadMore = () => {
+    asyncLoadMoreSpy();
+    if (count >= manyFruits.length) return;
+    setIsLoading(true);
+    setCount((c) => Math.min(c + PAGE_SIZE, manyFruits.length));
+    setIsLoading(false);
+  };
+  return (
+    <ListBox.Root
+      aria-label="Async fruit"
+      selectionMode="single"
+      maxHeight="8rem"
+      data-testid="async-list"
+    >
+      {manyFruits.slice(0, count).map((f) => (
+        <ListBox.Item key={f.id} id={f.id}>
+          {f.name}
+        </ListBox.Item>
+      ))}
+      <ListBox.LoadMore isLoading={isLoading} onLoadMore={handleLoadMore} />
+    </ListBox.Root>
+  );
+};
+
+/**
+ * Async load-more (behavior): scrolling the `card` list to the bottom fires
+ * `onLoadMore`, which appends the next page. React Aria's load-more sentinel
+ * needs a scroll container — `variant="card"` provides one; a `plain` list
+ * embedded in an overlay must supply its own bounded scroller, or load-more
+ * tracks the page / over-fetches.
+ */
+export const AsyncLoadMore: Story = {
+  render: () => <AsyncLoadMoreList />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const listbox = canvas.getByTestId("async-list");
+
+    await step("Initial page renders", async () => {
+      await expect(canvas.getAllByRole("option")).toHaveLength(PAGE_SIZE);
+    });
+
+    await step(
+      "Scrolling to the bottom fires onLoadMore and appends the next page",
+      async () => {
+        listbox.scrollTop = listbox.scrollHeight;
+        await waitFor(
+          () =>
+            expect(canvas.getAllByRole("option").length).toBeGreaterThan(
+              PAGE_SIZE
+            ),
+          { timeout: 3000 }
+        );
+        await expect(asyncLoadMoreSpy).toHaveBeenCalled();
+      }
+    );
   },
 };
 
@@ -671,8 +823,8 @@ export const DragInProgress: Story = {
 
 /**
  * SmokeTest — the full visual permutation grid.
- * Axes: size (sm, md) × density (comfortable, compact) × selection affordance
- * (single highlight vs. multiple checkbox), on the default `card` container.
+ * Axes: size (sm, md) × selection affordance (single highlight vs. multiple
+ * checkbox), on the default `card` container.
  */
 export const SmokeTest: Story = {
   tags: ["vrt"],
@@ -680,37 +832,31 @@ export const SmokeTest: Story = {
   render: () => (
     <Stack gap="600">
       {sizes.map((size) => (
-        <Stack key={size} direction="row" gap="600" alignItems="flex-start">
-          {densities.map((density) => (
-            <Stack key={density} direction="row" gap="400">
-              <ListBox.Root
-                size={size}
-                density={density}
-                aria-label={`single ${size} ${density}`}
-                selectionMode="single"
-                defaultSelectedKeys={["banana"]}
-              >
-                {fruits.map((f) => (
-                  <ListBox.Item key={f.id} id={f.id}>
-                    {f.name}
-                  </ListBox.Item>
-                ))}
-              </ListBox.Root>
-              <ListBox.Root
-                size={size}
-                density={density}
-                aria-label={`multiple ${size} ${density}`}
-                selectionMode="multiple"
-                defaultSelectedKeys={["apple", "cherry"]}
-              >
-                {fruits.map((f) => (
-                  <ListBox.Item key={f.id} id={f.id}>
-                    {f.name}
-                  </ListBox.Item>
-                ))}
-              </ListBox.Root>
-            </Stack>
-          ))}
+        <Stack key={size} direction="row" gap="400" alignItems="flex-start">
+          <ListBox.Root
+            size={size}
+            aria-label={`single ${size}`}
+            selectionMode="single"
+            defaultSelectedKeys={["banana"]}
+          >
+            {fruits.map((f) => (
+              <ListBox.Item key={f.id} id={f.id}>
+                {f.name}
+              </ListBox.Item>
+            ))}
+          </ListBox.Root>
+          <ListBox.Root
+            size={size}
+            aria-label={`multiple ${size}`}
+            selectionMode="multiple"
+            defaultSelectedKeys={["apple", "cherry"]}
+          >
+            {fruits.map((f) => (
+              <ListBox.Item key={f.id} id={f.id}>
+                {f.name}
+              </ListBox.Item>
+            ))}
+          </ListBox.Root>
         </Stack>
       ))}
     </Stack>

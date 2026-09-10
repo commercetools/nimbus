@@ -225,23 +225,6 @@ const App = () => (
 )
 ```
 
-### Density
-
-Use `density="compact"` for data-dense lists.
-
-```jsx live-dev
-const App = () => (
-  <Stack direction="row" gap="600" alignItems="flex-start">
-    {["comfortable", "compact"].map((density) => (
-      <ListBox.Root key={density} density={density} aria-label={density} selectionMode="single">
-        <ListBox.Item id="apple">Apple</ListBox.Item>
-        <ListBox.Item id="banana">Banana</ListBox.Item>
-      </ListBox.Root>
-    ))}
-  </Stack>
-)
-```
-
 ### Empty state
 
 When the list has no options, a localized default message renders. Override it
@@ -253,6 +236,39 @@ const App = () => (
     {[]}
   </ListBox.Root>
 )
+```
+
+### Loading more (infinite / paginated)
+
+`ListBox.LoadMore` renders a spinner row and drives incremental loading for
+async lists. Pass `isLoading` while a page is in flight and `onLoadMore` to
+fetch the next page; React Aria calls `onLoadMore` as the load-more sentinel
+scrolls into view (tune the trigger distance with `scrollOffset`, default `1`).
+
+Load-more is scoped to the nearest **scroll container**. `variant="card"`
+provides one (`maxHeight: 40svh; overflow-y: auto`); `variant="plain"` does not
+— so when you embed a `plain` list in an overlay, make sure the overlay itself
+is a bounded, scrollable region. Otherwise the sentinel resolves to the page
+scroll and load-more will track the page (and can over-fetch to fill the
+viewport) rather than the list.
+
+```tsx
+const App = () => {
+  const list = useAsyncList({
+    async load({ cursor }) {
+      const res = await fetch(cursor ?? "/api/fruit");
+      const { items, next } = await res.json();
+      return { items, cursor: next };
+    },
+  });
+
+  return (
+    <ListBox.Root aria-label="Fruit" selectionMode="single" items={list.items}>
+      {(item) => <ListBox.Item id={item.id}>{item.name}</ListBox.Item>}
+      <ListBox.LoadMore isLoading={list.isLoading} onLoadMore={list.loadMore} />
+    </ListBox.Root>
+  );
+};
 ```
 
 ## Accessibility

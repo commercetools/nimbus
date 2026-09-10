@@ -16,8 +16,6 @@ tags:
   - list
 ---
 
-# ListBox
-
 A ListBox presents a list of options that a person can select one or many of,
 directly on the page. It is built on React Aria's ListBox, so it is fully
 keyboard-accessible and follows the WAI-ARIA listbox pattern.
@@ -48,8 +46,8 @@ const App = () => (
 ## Anatomy
 
 - `ListBox.Root` — the collection container. Owns selection, sections,
-  drag-and-drop, keyboard behaviour, and the `size` / `variant` / `density`
-  styling context.
+  drag-and-drop, keyboard behaviour, and the `size` / `variant` styling
+  context.
 - `ListBox.Item` — a selectable option. Single-select shows a full-row
   highlight; multi-select shows a leading checkbox.
 - `ListBox.Section` — a labelled group of options.

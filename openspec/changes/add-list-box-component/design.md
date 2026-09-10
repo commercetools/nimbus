@@ -103,7 +103,17 @@ ActionList, MUI List). React Aria's `ListBoxItem` already exposes
 | `size` | shared Nimbus size scale | (scale default) | Essential | Ticket + research |
 | `variant` | `card` \| `plain` | `card` | Essential | Inspection Q2 |
 | selection affordance | mode-driven (highlight \| checkbox) | by `selectionMode` | Essential | Inspection Q1 + research |
-| `density` | `comfortable` \| `compact` | `comfortable` | Nice-to-have | Research (MUI/Primer) |
+| `density` | ~~`comfortable` \| `compact`~~ | — | **Deferred (not in v1)** | Research (MUI/Primer) |
+
+**Density deferred from v1.** The research rated `density` a _nice-to-have_ on
+thin evidence — only MUI + Primer supported it; Spectrum 2, Carbon, Fluent 2,
+Material 3, Base UI and shadcn yielded no confirmed claims (see
+`docs/research/list-box-variants.research.md`). No existing Nimbus component
+combines a `size` and a `density` axis (data-table has density only; Select /
+ComboBox / Menu have size only), so shipping both here would have doubled the
+vertical-rhythm matrix for a low-evidence axis. In v1 `size` owns the row rhythm
+(distinct per-size inline/block padding and height). Revisit `density` as a
+follow-up if a data-dense consumer need materialises.
 
 ## Component / recipe shape
 

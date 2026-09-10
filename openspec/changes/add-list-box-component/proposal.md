@@ -49,7 +49,8 @@ standalone and inside an overlay.
   - Mode-driven **selection affordance**: single-select → full-row highlight;
     multiple-select → leading checkbox — matching the existing
     Select/ComboBox/Menu convention so ListBox can later back them.
-  - `density` — `comfortable` (default) vs `compact` (nice-to-have).
+  - `density` — **deferred to a follow-up** (a nice-to-have on thin evidence;
+    see design.md). In v1 `size` owns the row rhythm.
 - **Register** the new slot recipe as `nimbusListBox` in
   `packages/nimbus/src/theme/slot-recipes/index.ts` and export the component
   from `packages/nimbus/src/index.ts`.
@@ -69,7 +70,7 @@ Impact → Sequencing); this change adds the component and its own surface.
 
 - `nimbus-list-box`: a standalone, accessible selection-list component built on
   React Aria's ListBox — selection, sections, rich item content, keyboard
-  navigation, drag-and-drop, size / container / density variants, and empty /
+  navigation, drag-and-drop, size / container variants, and empty /
   loading / disabled states.
 
 ### Modified Capabilities

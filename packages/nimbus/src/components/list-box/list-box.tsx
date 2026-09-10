@@ -25,15 +25,15 @@ import {
  * </ListBox.Root>
  * ```
  *
- * @see https://nimbus-documentation.vercel.app/components/lists/list-box
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/list-box}
  */
 export const ListBox = {
   /**
    * # ListBox.Root
    *
    * The collection container. Wraps React Aria's `ListBox` and owns selection,
-   * sections, drag-and-drop, keyboard behaviour, and the `variant` / `size` /
-   * `density` styling context. Must wrap all `ListBox.Item` and
+   * sections, drag-and-drop, keyboard behaviour, and the `variant` / `size`
+   * styling context. Must wrap all `ListBox.Item` and
    * `ListBox.Section` parts.
    */
   Root: ListBoxRoot,

@@ -40,7 +40,11 @@ export const listBoxSlotRecipe = defineSlotRecipe({
       flexDirection: "column",
       gap: "100",
       color: "neutral.12",
-      focusRing: "outside",
+      // Keyboard-only focus ring. React Aria exposes focus via the
+      // [data-focus-visible] attribute, which `focusVisibleRing` keys off;
+      // plain `focusRing` keys off :focus/[data-focus] and would also paint on
+      // pointer focus. Same rationale as slider.recipe.ts.
+      focusVisibleRing: "outside",
       scrollbarWidth: "thin",
       scrollbarColor: "var(--scrollbar-color) var(--scrollbar-bg)",
       // Drop target while dragging items in/over the list
@@ -52,10 +56,13 @@ export const listBoxSlotRecipe = defineSlotRecipe({
     },
     // RA <ListBoxItem>
     item: {
-      focusRing: "outside",
-      cursor: "pointer",
+      // Keyboard-only focus ring (see root). Pointer affordances are gated on
+      // [data-hovered], which React Aria sets only on actionable rows
+      // (selectable, or with onAction); so a plain display row stays
+      // cursor: default with no hover highlight.
+      focusVisibleRing: "outside",
+      cursor: "default",
       color: "neutral.12",
-      textStyle: "sm",
       borderRadius: "200",
       display: "flex",
       alignItems: "center",
@@ -68,11 +75,9 @@ export const listBoxSlotRecipe = defineSlotRecipe({
       "&[data-focused]": {
         bg: "primary.2",
       },
-      "&[data-focus-visible]": {
-        focusRing: "outside",
-      },
-      "&:hover:not([data-disabled])": {
+      "&[data-hovered]": {
         bg: "primary.2",
+        cursor: "pointer",
       },
       "&[data-disabled]": {
         layerStyle: "disabled",
@@ -107,6 +112,13 @@ export const listBoxSlotRecipe = defineSlotRecipe({
       flexShrink: 0,
       display: "flex",
       alignItems: "center",
+      // The selector keys on attribute *presence* (`span[data-selected]`), not
+      // `[data-selected='true']`: React renders `data-selected={false}` as the
+      // string "false", so the attribute is always present and the unselected
+      // box keeps its border; the checked fill is keyed on `[data-selected='true']`
+      // inside the copied Checkbox rules. The `size.md` pin mirrors ComboBox and
+      // is compile-checked against checkbox.recipe. (Shared indicator styles are
+      // to be extracted during the Select/ComboBox → ListBox migration.)
       "& span[data-selected]": {
         ...checkboxSlotRecipe.base?.indicator,
         ...checkboxSlotRecipe.variants?.size.md.indicator,
@@ -195,12 +207,16 @@ export const listBoxSlotRecipe = defineSlotRecipe({
       },
     },
 
-    // Size scale — aligned to Select / ComboBox (sm, md)
+    // Size scale — aligned to Select / ComboBox (sm, md). Size owns the row's
+    // inline + block padding and text scale, so option height differs by size
+    // (per spec). There is no separate `density` axis: the row rhythm is driven
+    // by `size` alone.
     size: {
       sm: {
         item: {
           textStyle: "sm",
-          p: "200",
+          px: "200",
+          py: "100",
         },
         itemLeading: {
           "& > svg": {
@@ -211,7 +227,8 @@ export const listBoxSlotRecipe = defineSlotRecipe({
       md: {
         item: {
           textStyle: "md",
-          p: "200",
+          px: "200",
+          py: "200",
         },
         itemLeading: {
           "& > svg": {
@@ -220,25 +237,10 @@ export const listBoxSlotRecipe = defineSlotRecipe({
         },
       },
     },
-
-    // Row density
-    density: {
-      comfortable: {
-        item: {
-          py: "200",
-        },
-      },
-      compact: {
-        item: {
-          py: "100",
-        },
-      },
-    },
   },
 
   defaultVariants: {
     variant: "card",
     size: "md",
-    density: "comfortable",
   },
 });

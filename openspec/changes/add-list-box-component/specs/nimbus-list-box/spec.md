@@ -67,6 +67,11 @@ The component SHALL group options into sections with an optional header.
 - **AND** SHALL associate the group with its header for assistive technology
 - **AND** SHALL NOT make the header selectable or focusable as an option
 
+#### Scenario: Section without header
+- **WHEN** a `ListBox.Section` is rendered without a `label`
+- **THEN** SHALL NOT render a header element for the group
+- **AND** SHALL require an `aria-label` on the section so the group retains an accessible name for assistive technology
+
 ### Requirement: Rich Item Content
 
 An option SHALL support content beyond a plain text label.
@@ -105,15 +110,6 @@ The component SHALL offer a container variant so it can be used standalone or em
 - **WHEN** `variant="plain"`
 - **THEN** SHALL render the list with no surface background, no shadow, and no bounded max-height
 - **AND** SHALL be suitable for embedding inside an already-carded overlay
-
-### Requirement: Density Variant
-
-The component SHALL offer a density variant controlling row spacing.
-
-#### Scenario: Comfortable and compact
-- **WHEN** `density="comfortable"` (default) or `density="compact"` is set
-- **THEN** SHALL apply the corresponding option vertical padding and row height from design tokens
-- **AND** SHALL keep text and affordances aligned at both densities
 
 ### Requirement: Keyboard Navigation
 

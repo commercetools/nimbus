@@ -50,3 +50,34 @@
 - [x] 8.2 `pnpm test:storybook:dev …list-box.stories.tsx` — 17/17 pass
 - [x] 8.3 `pnpm lint` (list-box) — clean
 - [x] 8.4 `pnpm openspec validate add-list-box-component --strict` — valid
+
+## 9. Review revisions (PR #1971)
+
+Changes made in response to the PR review. These supersede the matching items
+above where they conflict.
+
+- [x] 9.1 **Drop the `density` variant from v1** (supersedes 2.5; nice-to-have on
+      thin evidence — see design.md). Removed from the recipe, `types.ts`,
+      `spec.md`, the `Density` story, and the `SmokeTest` grid. `size` now owns
+      the row rhythm with distinct per-size inline/block padding + height (spec:
+      Size Variant). _Follow-up: revisit `density` if a data-dense need appears._
+- [x] 9.2 `size` variant sets `px` + per-size `py` (was a single `p` shorthand
+      that `density` silently overrode); base `item` `textStyle` removed (dead —
+      size owns it).
+- [x] 9.3 Focus + pointer affordances: base `focusVisibleRing` (was `focusRing`,
+      which also fired on pointer focus); cursor/hover gated on `[data-hovered]`
+      so inert display rows stay `cursor: default` (mirrors Tree).
+- [x] 9.4 `ListBox.Section` `label` widened to `label?: ReactNode` with a
+      conditional `Header` + `aria-label` dev-warning for headerless sections
+      (spec: "Section without header").
+- [x] 9.5 `itemIndicator` clarifying comment (presence-selector + `size.md` pin).
+      _Follow-up: extract shared Checkbox-indicator styles during the
+      Select/ComboBox → ListBox migration._
+- [x] 9.6 Tests: `NoSelectionWithAction` + `PlainDisplayList` (spec: No
+      selection / `onAction`), a real `AsyncLoadMore` scroll test, `fn()` spies
+      lifted to `args` + asserted, and assertions added for accessible
+      description, section group association, and `[data-empty]`.
+- [x] 9.7 Docs: dev.mdx load-more section (scroll-container caveat), stale
+      `@see` URL fixed, `# ListBox` H1 dropped.
+- [x] 9.8 `list-box.recipe.tsx` → `list-box.recipe.ts` (no JSX). _Follow-up:
+      batch-rename the other 9 no-JSX `.recipe.tsx` files._

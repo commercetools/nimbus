@@ -136,7 +136,9 @@ describe("ListBox - Empty state", () => {
  * @docs-section async-load-more
  * @docs-title Async Load-More Tests
  * @docs-description Paginated list that shows a spinner row while the next page
- *   is fetched, then appends it — the infinite-scroll integration pattern.
+ *   is fetched, then appends it. This documents the consumer's loading/append
+ *   state shape; the scroll-driven `onLoadMore` integration itself is exercised
+ *   by the `AsyncLoadMore` Storybook play (a browser test).
  * @docs-order 6
  */
 describe("ListBox - Async load more", () => {

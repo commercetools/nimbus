@@ -28,11 +28,6 @@ type ListBoxRecipeProps = {
    * @default "card"
    */
   variant?: SlotRecipeProps<"nimbusListBox">["variant"];
-  /**
-   * Row density. `compact` reduces vertical padding for data-dense lists.
-   * @default "comfortable"
-   */
-  density?: SlotRecipeProps<"nimbusListBox">["density"];
 };
 
 // ============================================================
@@ -111,9 +106,11 @@ export type ListBoxSectionProps<T extends object = object> =
       keyof RaListBoxSectionProps<T>
     > & {
       /**
-       * Header text shown above the group.
+       * Optional header content shown above the group. When omitted, no header
+       * is rendered — provide an `aria-label` so the group still has an
+       * accessible name (React Aria requires a name for a headerless section).
        */
-      label: string;
+      label?: ReactNode;
       /**
        * Ref forwarding to the section element.
        */
