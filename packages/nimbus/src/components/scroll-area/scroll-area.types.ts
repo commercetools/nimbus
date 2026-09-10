@@ -16,12 +16,8 @@ import type { OmitInternalProps } from "@/type-utils/omit-props";
  */
 type ScrollAreaRecipeProps = {
   /**
-   * Scrollbar visibility variant.
-   * - `hover` (default): the bar appears when the pointer enters the area or
-   *   when the content scrolls, then hides after a short idle delay. While the
-   *   pointer stays inside, only scrolling reveals it again.
-   * - `always`: the bar is permanently visible.
-   * @default "hover"
+   * Visual style of the scrollbar (recipe-facing value).
+   * @default "solid"
    */
   variant?: SlotRecipeProps<"scrollArea">["variant"];
   /**
@@ -29,6 +25,11 @@ type ScrollAreaRecipeProps = {
    * @default "sm"
    */
   size?: SlotRecipeProps<"scrollArea">["size"];
+  /**
+   * Whether the scrollbar auto-hides or stays visible (recipe-facing value).
+   * @default "auto-hide"
+   */
+  scrollbarVisibility?: SlotRecipeProps<"scrollArea">["scrollbarVisibility"];
 } & UnstyledProp;
 
 // ============================================================
@@ -84,14 +85,35 @@ export type ScrollAreaProps = Omit<
    */
   value?: UseScrollAreaReturn;
   /**
-   * Scrollbar visibility variant.
-   * - `hover` (default): the bar appears when the pointer enters the area or
-   *   when the content scrolls, then hides after a short idle delay. While the
-   *   pointer stays inside, only scrolling reveals it again.
-   * - `always`: the bar is permanently visible.
-   * @default "hover"
+   * Visual style of the scrollbar.
+   * - `solid` (default): grey track, thumb fills its width (the original look).
+   * - `inset`: grey track with an inset, floating pill thumb.
+   * - `hidden`: no track — only the thumb shows (overlay look).
+   * - `glass`: translucent, frosted track that blurs the content behind it.
+   *
+   * In every visual the bar auto-hides when idle: it appears when the pointer
+   * enters the area or when the content scrolls, then hides after a short idle
+   * delay; while the pointer stays inside, only scrolling reveals it again.
+   *
+   * `hover` and `always` are **deprecated** aliases kept for backward
+   * compatibility: use `variant="solid"` instead of `hover`, and
+   * `scrollbarVisibility="always"` instead of `always`.
+   * @default "solid"
    */
-  variant?: ScrollAreaRecipeProps["variant"];
+  variant?: "solid" | "inset" | "hidden" | "glass" | "hover" | "always";
+  /**
+   * When the scrollbar is shown.
+   * - `auto-hide` (default): the bar appears when the pointer enters the area
+   *   or when the content scrolls, then hides after a short idle delay. While
+   *   the pointer stays inside, only scrolling reveals it again.
+   * - `always`: the bar stays visible, and the viewport reserves a gutter so it
+   *   never overlays content.
+   *
+   * Independent of `variant`, so any visual can be either mode — e.g.
+   * `<ScrollArea variant="inset" scrollbarVisibility="always" />`.
+   * @default "auto-hide"
+   */
+  scrollbarVisibility?: "auto-hide" | "always";
   /**
    * Scrollbar thickness.
    * @default "sm"

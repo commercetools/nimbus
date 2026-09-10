@@ -41,7 +41,7 @@ const App = () => (
   <Stack gap="600">
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">both (default)</Text>
-      <ScrollArea maxH="120px" maxW="300px" variant="always">
+      <ScrollArea maxH="120px" maxW="300px" scrollbarVisibility="always">
         <Box whiteSpace="nowrap">
           {Array.from({ length: 15 }, (_, i) => (
             <Text key={i} fontSize="sm">{"Both axes content ".repeat(15)}</Text>
@@ -51,7 +51,7 @@ const App = () => (
     </Box>
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">vertical</Text>
-      <ScrollArea maxH="120px" w="300px" orientation="vertical" variant="always">
+      <ScrollArea maxH="120px" w="300px" orientation="vertical" scrollbarVisibility="always">
         {Array.from({ length: 15 }, (_, i) => (
           <Text key={i} fontSize="sm">Line {i + 1}</Text>
         ))}
@@ -59,7 +59,7 @@ const App = () => (
     </Box>
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">horizontal</Text>
-      <ScrollArea maxW="300px" orientation="horizontal" variant="always">
+      <ScrollArea maxW="300px" orientation="horizontal" scrollbarVisibility="always">
         <Box whiteSpace="nowrap">
           {Array.from({ length: 5 }, (_, i) => (
             <Text key={i} fontSize="sm">{"Long horizontal content ".repeat(15)}</Text>
@@ -78,7 +78,7 @@ scrollable viewport, so `p`, `px`, `py`, etc. work as expected:
 
 ```jsx live-dev
 const App = () => (
-  <ScrollArea maxH="200px" w="400px" bg="neutral.2" borderRadius="300" variant="always" p="200">
+  <ScrollArea maxH="200px" w="400px" bg="neutral.2" borderRadius="300" scrollbarVisibility="always" p="200">
     {Array.from({ length: 20 }, (_, i) => (
       <Text key={i} fontSize="sm">
         Line {i + 1}: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
