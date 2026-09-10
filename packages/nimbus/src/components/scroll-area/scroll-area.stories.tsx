@@ -653,7 +653,7 @@ export const AlwaysVisible: Story = {
         <Text fontSize="sm" mb="200" fontWeight="bold">
           Vertical
         </Text>
-        <ScrollArea maxH="200px" w="400px" variant="always">
+        <ScrollArea maxH="200px" w="400px" scrollbarVisibility="always">
           <OverflowingContent />
         </ScrollArea>
       </Box>
@@ -661,7 +661,11 @@ export const AlwaysVisible: Story = {
         <Text fontSize="sm" mb="200" fontWeight="bold">
           Horizontal
         </Text>
-        <ScrollArea maxW="400px" orientation="horizontal" variant="always">
+        <ScrollArea
+          maxW="400px"
+          orientation="horizontal"
+          scrollbarVisibility="always"
+        >
           <WideContent />
         </ScrollArea>
       </Box>
@@ -673,7 +677,7 @@ export const AlwaysVisible: Story = {
           maxH="200px"
           maxW="400px"
           orientation="both"
-          variant="always"
+          scrollbarVisibility="always"
         >
           <OverflowingContent />
           <WideContent />
@@ -1493,5 +1497,106 @@ export const AutoHideOnIdle: Story = {
       await userEvent.hover(root);
       expect(root).toHaveAttribute("data-scrollbar-visible");
     });
+  },
+};
+
+// Plain rows separated by dividers: high contrast so the neutral thumb reads
+// clearly on every appearance, with edges for the `blur` variant to soften.
+const AppearanceDemoContent = () => (
+  <Box>
+    {Array.from({ length: 20 }, (_, i) => (
+      <Box
+        key={i}
+        px="300"
+        py="200"
+        borderBottomWidth="1px"
+        borderColor="neutral.4"
+      >
+        <Text fontSize="sm">Line {i + 1}</Text>
+      </Box>
+    ))}
+  </Box>
+);
+
+const APPEARANCES = ["solid", "inset", "hidden", "glass"] as const;
+
+// ============================================================
+// Appearances: the four visual `variant` values side by side. Each bar is
+// forced visible and scrolled to the same position in the play (they all
+// auto-hide), so the frame shows every look at once for comparison and for a
+// deterministic visual-regression snapshot.
+// ============================================================
+export const Appearances: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Box display="flex" gap="800" flexWrap="wrap">
+      {APPEARANCES.map((v) => (
+        <Box key={v}>
+          <Text fontSize="sm" fontWeight="700" mb="200">
+            {v}
+          </Text>
+          <ScrollArea
+            maxH="200px"
+            w="220px"
+            variant={v}
+            ids={{ root: `appearance-${v}`, viewport: `appearance-vp-${v}` }}
+          >
+            <AppearanceDemoContent />
+          </ScrollArea>
+        </Box>
+      ))}
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    const doc = canvasElement.ownerDocument;
+    APPEARANCES.forEach((v) => {
+      // Force the bar visible (each auto-hides on its own) and park the scroll
+      // at the same fraction so all four thumbs sit at the same spot.
+      doc
+        .getElementById(`appearance-${v}`)
+        ?.setAttribute("data-scrollbar-visible", "");
+      const vp = doc.getElementById(`appearance-vp-${v}`);
+      if (vp) vp.scrollTop = (vp.scrollHeight - vp.clientHeight) * 0.35;
+    });
+    // Wait for the reveal fade to finish before the snapshot is taken.
+    const solidRoot = doc.getElementById("appearance-solid") as HTMLElement;
+    await waitFor(() => {
+      const sb = solidRoot.querySelector(
+        '[data-part="scrollbar"][data-orientation="vertical"]'
+      ) as HTMLElement;
+      expect(window.getComputedStyle(sb).opacity).toBe("1");
+    });
+  },
+};
+
+// ============================================================
+// AlwaysVisibleInset: the combination the old API could not express — a
+// non-default visual (`inset`) that is ALSO permanently visible, via the
+// `scrollbarVisibility` prop. The bar is opaque at rest with no hover.
+// ============================================================
+export const AlwaysVisibleInset: Story = {
+  render: () => (
+    <ScrollArea
+      maxH="200px"
+      w="240px"
+      variant="inset"
+      scrollbarVisibility="always"
+    >
+      <OverflowingContent />
+    </ScrollArea>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const scrollbar = canvasElement.querySelector(
+      '[data-part="scrollbar"][data-orientation="vertical"]'
+    ) as HTMLElement;
+    await step(
+      "Inset bar is permanently visible at rest (no hover needed)",
+      async () => {
+        await waitFor(() =>
+          expect(window.getComputedStyle(scrollbar).opacity).toBe("1")
+        );
+      }
+    );
   },
 };

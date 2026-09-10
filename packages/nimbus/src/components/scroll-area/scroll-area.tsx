@@ -114,10 +114,26 @@ export const ScrollArea = (props: ScrollAreaProps) => {
     orientation = "both",
     value,
     variant,
+    scrollbarVisibility,
     ...restProps
   } = props;
 
   const [paddingProps, rootProps] = extractPaddingProps(restProps);
+
+  // Adapter: split the public props into what the recipe styles (`appearance`)
+  // and what drives behavior (`resolvedVisibility` + whether the idle-hide hook
+  // runs). `variant` carries the visual style plus two deprecated aliases:
+  // - `inset` / `hidden` / `glass` → that look; otherwise the `solid` look.
+  // - `hover` (deprecated) → `solid`; `always` (deprecated) → `solid` + always.
+  // The explicit `scrollbarVisibility` prop wins; the deprecated
+  // `variant="always"` only applies when it is not set.
+  const appearance =
+    variant === "inset" || variant === "hidden" || variant === "glass"
+      ? variant
+      : "solid";
+  const resolvedVisibility =
+    scrollbarVisibility ?? (variant === "always" ? "always" : "auto-hide");
+  const isPersistent = resolvedVisibility === "always";
 
   // Local object refs so `useScrollbarAutoHide` can watch the real DOM nodes,
   // while still forwarding any consumer-provided `ref` / `viewportRef`.
@@ -130,10 +146,10 @@ export const ScrollArea = (props: ScrollAreaProps) => {
     viewportRef ? mergeRefs(viewportLocalRef, viewportRef) : viewportLocalRef
   );
 
-  // The `always` variant paints the bar permanently via CSS, so the idle-hide
-  // behavior only needs to run for the default `hover` variant.
+  // A permanently visible bar (`persistence="always"`) has nothing to idle-hide,
+  // so the activity hook only runs otherwise.
   useScrollbarAutoHide({
-    enabled: variant !== "always",
+    enabled: !isPersistent,
     rootRef,
     viewportRef: mergedViewportRef,
   });
@@ -153,7 +169,8 @@ export const ScrollArea = (props: ScrollAreaProps) => {
       <ChakraScrollArea.RootProvider
         ref={rootRef}
         value={value}
-        variant={variant}
+        variant={appearance}
+        scrollbarVisibility={resolvedVisibility}
         {...rootProps}
       >
         {parts}
@@ -162,7 +179,12 @@ export const ScrollArea = (props: ScrollAreaProps) => {
   }
 
   return (
-    <ChakraScrollArea.Root ref={rootRef} variant={variant} {...rootProps}>
+    <ChakraScrollArea.Root
+      ref={rootRef}
+      variant={appearance}
+      scrollbarVisibility={resolvedVisibility}
+      {...rootProps}
+    >
       {parts}
     </ChakraScrollArea.Root>
   );
