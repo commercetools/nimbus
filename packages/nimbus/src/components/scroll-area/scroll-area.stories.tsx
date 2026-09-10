@@ -36,13 +36,6 @@ const WideContent = () => (
   </Box>
 );
 
-// One line, so a maxH box overflows on x only.
-const WideShortContent = () => (
-  <Box whiteSpace="nowrap">
-    <Text fontSize="sm">{"Long horizontal content ".repeat(20)}</Text>
-  </Box>
-);
-
 // ============================================================
 // Default: overflowing, vertical scrollbar, keyboard focusable
 // ============================================================
@@ -1367,62 +1360,41 @@ export const ContentPadding: Story = {
 };
 
 // ============================================================
-// SmokeTest: variant="always" x size x overflowing axis
+// SmokeTest: every visual variant × every size, all forced always-visible so
+// the whole matrix is captured in a single frame (VRT). Rows are variants,
+// columns are sizes.
 // ============================================================
-const overflowCases = [
-  {
-    key: "y",
-    label: "y overflow",
-    props: { maxH: "120px", w: "240px" },
-    content: () => <OverflowingContent />,
-  },
-  {
-    key: "x",
-    label: "x overflow",
-    props: { maxH: "120px", maxW: "240px" },
-    content: () => <WideShortContent />,
-  },
-  {
-    key: "both",
-    label: "both axes",
-    props: { maxH: "120px", maxW: "240px" },
-    content: () => (
-      <>
-        <OverflowingContent />
-        <WideShortContent />
-      </>
-    ),
-  },
-] as const;
-
 export const SmokeTest: Story = {
-  // VRT: `always`, because the default `hover` variant paints every bar at opacity 0.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
-    <Box display="flex" gap="600" alignItems="flex-start">
-      {overflowCases.map(({ key, label, props, content }) => (
-        <Box key={key} display="flex" flexDirection="column" gap="400">
-          <Text fontSize="sm" fontWeight="bold">
-            {label}
+    <Box display="flex" flexDirection="column" gap="600">
+      {(["solid", "inset", "hidden", "glass"] as const).map((variant) => (
+        <Box key={variant}>
+          <Text fontSize="sm" fontWeight="bold" mb="200">
+            {variant}
           </Text>
-          {(["xs", "sm", "md", "lg"] as const).map((size) => (
-            <Box key={size}>
-              <Text fontSize="xs" color="neutral.11" mb="100">
-                size=&quot;{size}&quot;
-              </Text>
-              {/* borderRadius fires the viewport's `borderRadius: inherit`, which paints nothing without one. */}
-              <ScrollArea
-                variant="always"
-                size={size}
-                bg="neutral.2"
-                borderRadius="300"
-                {...props}
-              >
-                {content()}
-              </ScrollArea>
-            </Box>
-          ))}
+          <Box display="flex" gap="500" alignItems="flex-start" flexWrap="wrap">
+            {(["xs", "sm", "md", "lg"] as const).map((size) => (
+              <Box key={size}>
+                <Text fontSize="xs" color="neutral.11" mb="100">
+                  size=&quot;{size}&quot;
+                </Text>
+                {/* borderRadius fires the viewport's `borderRadius: inherit`. */}
+                <ScrollArea
+                  variant={variant}
+                  size={size}
+                  scrollbarVisibility="always"
+                  bg="neutral.2"
+                  borderRadius="300"
+                  maxH="120px"
+                  w="180px"
+                >
+                  <OverflowingContent />
+                </ScrollArea>
+              </Box>
+            ))}
+          </Box>
         </Box>
       ))}
     </Box>
