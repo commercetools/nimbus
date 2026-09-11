@@ -71,6 +71,18 @@ export const listBoxSlotRecipe = defineSlotRecipe({
 
       "&[data-selected]": {
         bg: "primary.3",
+        // A hovered or keyboard-focused selected row must never read lighter
+        // than selected-alone (React Aria moves focus onto the selected row
+        // when the list is focused, so this is the common case). Derive the
+        // combined state by darkening the *same* selected color — structurally
+        // stronger than selected-alone regardless of the token, with no
+        // specificity race against the hover/focus rules below. Scoped away
+        // from multi-select, where the checkbox owns the affordance and the
+        // row highlight is suppressed (see the multi-select block below).
+        '&:is([data-hovered], [data-focused]):not([data-selection-mode="multiple"])':
+          {
+            bg: "color-mix(in oklab, {colors.primary.3} 90%, black 10%)",
+          },
       },
       "&[data-focused]": {
         bg: "primary.2",
@@ -79,19 +91,6 @@ export const listBoxSlotRecipe = defineSlotRecipe({
         bg: "primary.2",
         cursor: "pointer",
       },
-      // A selected row that is also hovered or keyboard-focused must stay at
-      // least as strong as selected-alone, never lighter — the full-row
-      // highlight is the single-select selection affordance, and React Aria
-      // moves focus onto the selected row when the list is focused. Without
-      // this rule the equal-specificity hover/focus rules above (primary.2)
-      // win by source order and the selected row reads as deselected. Scoped
-      // away from multi-select, where the checkbox owns the affordance and the
-      // row highlight is dropped below. primary.4 is one step above selected
-      // (primary.3) — the same token DataTable uses for a selected row.
-      '&[data-selected]:is([data-hovered], [data-focused]):not([data-selection-mode="multiple"])':
-        {
-          bg: "primary.4",
-        },
       "&[data-disabled]": {
         layerStyle: "disabled",
       },
@@ -109,10 +108,14 @@ export const listBoxSlotRecipe = defineSlotRecipe({
         textStyle: "xs",
       },
 
-      // Multi-select: the checkbox owns the affordance, so drop the row highlight
+      // Multi-select: the checkbox owns the selection affordance, so suppress
+      // the row highlight — but only at rest. A selected row that is hovered or
+      // focused keeps the ordinary interaction highlight (primary.2), so it
+      // reads exactly like its unselected neighbours instead of losing hover
+      // feedback entirely.
       '&[data-selection-mode="multiple"]': {
         alignItems: "flex-start",
-        "&[data-selected]": {
+        "&[data-selected]:not([data-hovered]):not([data-focused])": {
           bg: "unset",
         },
       },

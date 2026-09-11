@@ -39,7 +39,23 @@ Select/ComboBox/Menu, we adopt their convention as the default:
 - **single-select** → full-row highlight (`selected` = `primary.3`, `focused` =
   `primary.2`), no icon.
 - **multiple-select** → leading checkbox indicator (reusing the Checkbox
-  recipe), and the row highlight is suppressed (as ComboBox does).
+  recipe), and the resting row highlight is suppressed (as ComboBox does). A
+  selected row still shows the ordinary hover/focus highlight, since the
+  checkbox — not the row background — carries the selection signal.
+- **single-select, selected + hovered/focused** → the selection highlight must
+  never weaken. The combined state darkens the _same_ selected color
+  (`color-mix(in oklab, {primary.3} 90%, black 10%)`) instead of falling back to
+  the lighter hover token, so a hovered/focused selected row stays clearly
+  selected.
+
+**Phase-3 migration heads-up.** `primary.3`/`primary.4` do not mean the same
+thing across the selectable-list family: ListBox uses `primary.3` = selected /
+`primary.2` = hover; DataTable uses `primary.3` = hover / `primary.4` = selected;
+Select/ComboBox currently paint selected+hover at `primary.2` (hover wins). When
+Select/ComboBox are rewired onto ListBox (Phase 3) they will inherit ListBox's
+stronger combined state — an improvement, but a visible change to two shipping
+components that should get designer sign-off on which step means "selected"
+before it lands.
 
 Encoded in the recipe via a `selectionMode` variant reacting to React Aria's
 `[data-selection-mode="single|multiple"]` and `[data-selected]` item state.

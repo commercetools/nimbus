@@ -267,22 +267,27 @@ is a bounded, scrollable region. Otherwise the sentinel resolves to the page
 scroll and load-more will track the page (and can over-fetch to fill the
 viewport) rather than the list.
 
+`ListBox.LoadMore` is data-source agnostic — drive it with your own state, so no
+extra dependency is needed. This example reveals more of an in-memory list with a
+page counter; to paginate a remote source, replace the slice with a `fetch` and
+flip `isLoading` around the `await`.
+
 ```tsx
-import { useAsyncList } from "react-stately";
+const PAGE_SIZE = 20;
 
 const App = () => {
-  const list = useAsyncList({
-    async load({ cursor }) {
-      const res = await fetch(cursor ?? "/api/fruit");
-      const { items, next } = await res.json();
-      return { items, cursor: next };
-    },
-  });
+  const [count, setCount] = useState(PAGE_SIZE);
+  const loadMore = () =>
+    setCount((c) => Math.min(c + PAGE_SIZE, allFruit.length));
 
   return (
-    <ListBox.Root aria-label="Fruit" selectionMode="single" items={list.items}>
-      {(item) => <ListBox.Item id={item.id}>{item.name}</ListBox.Item>}
-      <ListBox.LoadMore isLoading={list.isLoading} onLoadMore={list.loadMore} />
+    <ListBox.Root aria-label="Fruit" selectionMode="single">
+      {allFruit.slice(0, count).map((item) => (
+        <ListBox.Item key={item.id} id={item.id}>
+          {item.name}
+        </ListBox.Item>
+      ))}
+      <ListBox.LoadMore onLoadMore={loadMore} />
     </ListBox.Root>
   );
 };

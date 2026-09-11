@@ -38,8 +38,7 @@ export const ListBoxSection = <T extends object>(
   // an `aria-label` (or `aria-labelledby`) on a section rendered without a
   // `Header`. Dev-only, matching the repo convention (see breadcrumbs.root).
   if (process.env.NODE_ENV !== "production") {
-    const labelProps = props as Record<string, unknown>;
-    if (!label && !labelProps["aria-label"] && !labelProps["aria-labelledby"]) {
+    if (!label && !props["aria-label"] && !props["aria-labelledby"]) {
       console.warn(
         "ListBox.Section: a section without a `label` should be given an `aria-label` (or `aria-labelledby`) so the group has an accessible name."
       );
@@ -49,7 +48,7 @@ export const ListBoxSection = <T extends object>(
   return (
     <ListBoxSectionSlot asChild {...styleProps}>
       <RaListBoxSection ref={ref} {...functionalProps}>
-        {label != null && label !== false && (
+        {label != null && typeof label !== "boolean" && label !== "" && (
           <ListBoxSectionHeaderSlot asChild>
             <RaHeader>{label}</RaHeader>
           </ListBoxSectionHeaderSlot>

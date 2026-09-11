@@ -39,6 +39,7 @@ selection, controlled by React Aria's `selectionMode` and selection value props.
 - **WHEN** `selectionMode="single"`
 - **THEN** selecting an option SHALL replace any previous selection
 - **AND** the selected option SHALL be indicated by a full-row background highlight
+- **AND** the selected option's highlight SHALL remain at least as prominent while the option is hovered or keyboard-focused (never weaker than the resting selected state)
 - **AND** no checkbox or checkmark SHALL be rendered
 
 #### Scenario: Multiple selection

@@ -159,6 +159,15 @@ export const MultipleSelectionVisual: Story = {
       ))}
     </ListBox.Root>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Hover a *selected* row so Chromatic captures that a selected multi-select
+    // row keeps the same hover highlight as its unselected neighbours — the
+    // checkbox owns the selection signal, so hover feedback must not disappear.
+    const apple = canvas.getByRole("option", { name: "Apple" });
+    await userEvent.hover(apple);
+    await waitFor(() => expect(apple).toHaveAttribute("data-hovered"));
+  },
 };
 
 /**
@@ -300,7 +309,9 @@ export const DisabledItems: Story = {
 
     await step("Disabled option cannot be selected", async () => {
       await userEvent.click(banana);
-      await expect(banana).not.toHaveAttribute("aria-selected", "true");
+      // This story sets `selectionMode`, so `aria-selected` is present — assert
+      // it stayed "false" positively rather than "not true".
+      await expect(banana).toHaveAttribute("aria-selected", "false");
     });
   },
 };
@@ -493,17 +504,34 @@ export const SelectedRowHovered: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const banana = canvas.getByRole("option", { name: "Banana" });
+    const apple = canvas.getByRole("option", { name: "Apple" });
 
-    await step("Selected row stays selected while hovered", async () => {
-      await expect(banana).toHaveAttribute("aria-selected", "true");
-      await userEvent.hover(banana);
-      await waitFor(() => expect(banana).toHaveAttribute("data-hovered"));
-      // The combined-state rule keeps the selection highlight: the row is still
-      // both selected and hovered (Chromatic verifies the background stays at
-      // least as strong as selected-alone).
-      await expect(banana).toHaveAttribute("aria-selected", "true");
-      await expect(banana).toHaveAttribute("data-selected");
-    });
+    let unselectedHoveredBg = "";
+    await step(
+      "An unselected row hovers to the plain hover color",
+      async () => {
+        await userEvent.hover(apple);
+        await waitFor(() => expect(apple).toHaveAttribute("data-hovered"));
+        unselectedHoveredBg = getComputedStyle(apple).backgroundColor;
+      }
+    );
+
+    await step(
+      "A selected row stays selected AND distinctly darker while hovered",
+      async () => {
+        await userEvent.hover(banana);
+        await waitFor(() => expect(banana).toHaveAttribute("data-hovered"));
+        await expect(banana).toHaveAttribute("aria-selected", "true");
+        await expect(banana).toHaveAttribute("data-selected");
+        // The combined selected+hover color is derived by darkening the
+        // selected color, so it must differ from the plain hover color of an
+        // unselected row. This asserts the property the recipe rule exists for
+        // (selected+hover is distinguishable from unselected+hover) instead of
+        // leaning on a self-baselined snapshot.
+        const selectedHoveredBg = getComputedStyle(banana).backgroundColor;
+        expect(selectedHoveredBg).not.toBe(unselectedHoveredBg);
+      }
+    );
   },
 };
 
@@ -737,7 +765,7 @@ const AsyncLoadMoreList = () => {
     // A real async gap so `isLoading` is observably true (and the loader row
     // renders) before the next page is appended. A synchronous true→false
     // toggle would be batched by React and never paint the loading state.
-    await new Promise((resolve) => setTimeout(resolve, 80));
+    await new Promise((resolve) => setTimeout(resolve, 300));
     setCount((c) => Math.min(c + PAGE_SIZE, manyFruits.length));
     setIsLoading(false);
   };

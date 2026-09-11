@@ -33,12 +33,12 @@
 - [x] 5.1 Mechanics play functions: single-select replaces; multiple toggles; keyboard Home/ArrowDown/End; type-ahead; Enter selects; disabled not selectable; empty state renders; sections not focusable; controlled sync
 - [x] 5.2 Drag-and-drop play (draggable affordance via `dragAndDropHooks`)
 - [x] 5.3 Visual-permutation stories: Sizes, Variants (`card`/`plain`), SelectedState, MultipleSelectionVisual, RichContent, WithSections, DisabledItems, EmptyState, Focused, and a SmokeTest grid (size × single/multi) — the Density story and the `× density` grid axis were removed with 9.1
-- [x] 5.4 `pnpm test:storybook:dev packages/nimbus/src/components/list-box/list-box.stories.tsx` — 17/17 green
+- [x] 5.4 `pnpm test:storybook:dev packages/nimbus/src/components/list-box/list-box.stories.tsx` — 23/23 green
 
 ## 6. Documentation
 
 - [x] 6.1 `list-box.mdx` (primary) + `list-box.dev.mdx` (developer docs with live examples)
-- [x] 6.2 `list-box.docs.spec.tsx` — copy-ready consumer tests (6/6 green)
+- [x] 6.2 `list-box.docs.spec.tsx` — copy-ready consumer tests (7/7 green)
 - [x] 6.3 `list-box.a11y.mdx` (keyboard map, ARIA) and `list-box.guidelines.mdx` (when to use card vs plain, density, vs Select/ComboBox)
 
 ## 7. Registration & release
@@ -49,7 +49,7 @@
 ## 8. Verification
 
 - [x] 8.1 `pnpm --filter @commercetools/nimbus typecheck:dev` — clean
-- [x] 8.2 `pnpm test:storybook:dev …list-box.stories.tsx` — 17/17 pass
+- [x] 8.2 `pnpm test:storybook:dev …list-box.stories.tsx` — 23/23 pass
 - [x] 8.3 `pnpm lint` (list-box) — clean
 - [x] 8.4 `pnpm openspec validate add-list-box-component --strict` — valid
 
@@ -83,3 +83,34 @@ above where they conflict.
       `@see` URL fixed, `# ListBox` H1 dropped.
 - [x] 9.8 `list-box.recipe.tsx` → `list-box.recipe.ts` (no JSX). _Follow-up:
       batch-rename the other 9 no-JSX `.recipe.tsx` files._
+
+## 10. Re-review revisions (PR #1971, round 2)
+
+Changes in response to the second re-review (which verified `18d13538a`). These
+supersede the matching items above where they conflict.
+
+- [x] 10.1 **Selected + hover/focus stays selected, kept local** — the combined
+      state darkens the selected colour with `color-mix` inside
+      `list-box.recipe.ts` (deliberately _not_ a global `theme/conditions.ts`
+      change), and the multi-select suppression is narrowed to
+      `:not([data-hovered]):not([data-focused])` so a selected row keeps its
+      hover highlight instead of going inert (round-2 #1). _Follow-up: adopt the
+      shared `_hover`/`_selected` conditions once #1950 lands on main._
+- [x] 10.2 **`SelectedRowHovered` verifies the colour** — the play compares the
+      selected+hovered background to an unselected+hovered one rather than
+      relying on a self-baselined snapshot; `MultipleSelectionVisual` now hovers
+      a selected row for Chromatic (round-2 #2).
+- [x] 10.3 **AsyncLoadMore timing** — the async gap widened 80 → 300 ms to remove
+      the CI timing race on the loader assertion (round-2 #3).
+- [x] 10.4 **Load-more docs dependency-free** — the snippet no longer imports
+      `useAsyncList` from `react-stately` (a transitive dep that breaks on pnpm
+      strict); it drives `ListBox.LoadMore` with local `useState`, matching what
+      `AsyncLoadMore` exercises (round-2 #4).
+- [x] 10.5 **Phase-3 migration heads-up recorded** — `design.md` notes that
+      `primary.3`/`primary.4` mean different things across ListBox / DataTable /
+      Select-ComboBox, and that the migration needs designer sign-off (round-2
+      #5).
+- [x] 10.6 **Nits** — header guard skips boolean/`""` (no empty header row); the
+      unnecessary cast dropped in `list-box.section.tsx`; `DisabledItems` asserts
+      `aria-selected="false"` positively; `spec.md` gained a selected+hover
+      prominence clause; stale story/test counts corrected (17/17 → 23, 6/6 → 7).
