@@ -141,7 +141,8 @@ export const SelectedState: Story = {
 
 /**
  * Multiple selection (visual): each option renders a leading checkbox; the
- * row highlight is suppressed in favour of the checkbox.
+ * resting row highlight is suppressed in favour of the checkbox, but a
+ * hovered/focused row still shows the ordinary interaction highlight.
  */
 export const MultipleSelectionVisual: Story = {
   tags: ["vrt"],
@@ -481,9 +482,9 @@ export const HeaderlessSection: Story = {
 
 /**
  * VRT + behavior: a selected row that is also hovered (or keyboard-focused)
- * must stay visibly selected — it must never repaint lighter than
- * selected-alone. The play leaves the selected row hovered so Chromatic
- * snapshots the combined state (`primary.4`).
+ * must stay visibly selected — it must never repaint to the plain hover color.
+ * The combined state is a higher-contrast, mode-aware mix of the selected
+ * color; the play leaves the selected row hovered so Chromatic snapshots it.
  */
 export const SelectedRowHovered: Story = {
   tags: ["vrt"],
@@ -506,6 +507,9 @@ export const SelectedRowHovered: Story = {
     const banana = canvas.getByRole("option", { name: "Banana" });
     const apple = canvas.getByRole("option", { name: "Apple" });
 
+    // Banana is selected via defaultSelectedKeys and nothing is hovered yet.
+    const restingSelectedBg = getComputedStyle(banana).backgroundColor;
+
     let unselectedHoveredBg = "";
     await step(
       "An unselected row hovers to the plain hover color",
@@ -517,18 +521,19 @@ export const SelectedRowHovered: Story = {
     );
 
     await step(
-      "A selected row stays selected AND distinctly darker while hovered",
+      "A selected row stays selected and visually distinct while hovered",
       async () => {
         await userEvent.hover(banana);
         await waitFor(() => expect(banana).toHaveAttribute("data-hovered"));
         await expect(banana).toHaveAttribute("aria-selected", "true");
         await expect(banana).toHaveAttribute("data-selected");
-        // The combined selected+hover color is derived by darkening the
-        // selected color, so it must differ from the plain hover color of an
-        // unselected row. This asserts the property the recipe rule exists for
-        // (selected+hover is distinguishable from unselected+hover) instead of
-        // leaning on a self-baselined snapshot.
         const selectedHoveredBg = getComputedStyle(banana).backgroundColor;
+        // Pin both halves of the invariant instead of a self-baselined
+        // snapshot: the combined state must be distinct from selected-alone AND
+        // from the plain hover color. A dropped/typo'd color-mix that fell back
+        // to the hover token would equal unselectedHoveredBg; a value equal to
+        // restingSelectedBg would mean the hover produced no visible change.
+        expect(selectedHoveredBg).not.toBe(restingSelectedBg);
         expect(selectedHoveredBg).not.toBe(unselectedHoveredBg);
       }
     );

@@ -34,11 +34,17 @@ export const ListBoxSection = <T extends object>(
     );
   }
 
+  // A header renders only for a non-empty, non-boolean label: `label={0}`
+  // renders "0", but null/undefined/""/true/false render no header. The dev
+  // warning and the render below share this one predicate so they can never
+  // disagree about whether the section is named by a visible header.
+  const hasHeader = label != null && typeof label !== "boolean" && label !== "";
+
   // A headerless section still needs an accessible name — React Aria requires
   // an `aria-label` (or `aria-labelledby`) on a section rendered without a
   // `Header`. Dev-only, matching the repo convention (see breadcrumbs.root).
   if (process.env.NODE_ENV !== "production") {
-    if (!label && !props["aria-label"] && !props["aria-labelledby"]) {
+    if (!hasHeader && !props["aria-label"] && !props["aria-labelledby"]) {
       console.warn(
         "ListBox.Section: a section without a `label` should be given an `aria-label` (or `aria-labelledby`) so the group has an accessible name."
       );
@@ -48,7 +54,7 @@ export const ListBoxSection = <T extends object>(
   return (
     <ListBoxSectionSlot asChild {...styleProps}>
       <RaListBoxSection ref={ref} {...functionalProps}>
-        {label != null && typeof label !== "boolean" && label !== "" && (
+        {hasHeader && (
           <ListBoxSectionHeaderSlot asChild>
             <RaHeader>{label}</RaHeader>
           </ListBoxSectionHeaderSlot>

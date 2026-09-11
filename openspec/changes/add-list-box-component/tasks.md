@@ -90,12 +90,17 @@ Changes in response to the second re-review (which verified `18d13538a`). These
 supersede the matching items above where they conflict.
 
 - [x] 10.1 **Selected + hover/focus stays selected, kept local** — the combined
-      state darkens the selected colour with `color-mix` inside
-      `list-box.recipe.ts` (deliberately _not_ a global `theme/conditions.ts`
-      change), and the multi-select suppression is narrowed to
-      `:not([data-hovered]):not([data-focused])` so a selected row keeps its
-      hover highlight instead of going inert (round-2 #1). _Follow-up: adopt the
-      shared `_hover`/`_selected` conditions once #1950 lands on main._
+      state mixes the selected colour toward higher contrast with `color-mix`
+      inside `list-box.recipe.ts` (deliberately _not_ a global
+      `theme/conditions.ts` change), and the multi-select suppression is
+      narrowed to `:not([data-hovered]):not([data-focused])` so a selected row
+      keeps its hover highlight instead of going inert (round-2 #1). The mix is
+      **mode-aware** (black in light, white in dark) so it does not invert in
+      dark mode, where the `primary` ramp runs the other way (round-3 #1).
+      _Follow-up: adopt the shared `_hover`/`_selected` conditions once #1950
+      lands on main, and re-check the dark-mode direction of the combined state
+      then — a `primary.4` token step would be mode-safe by construction and
+      drop the `color-mix` browser floor._
 - [x] 10.2 **`SelectedRowHovered` verifies the colour** — the play compares the
       selected+hovered background to an unselected+hovered one rather than
       relying on a self-baselined snapshot; `MultipleSelectionVisual` now hovers

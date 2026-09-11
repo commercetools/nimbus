@@ -71,17 +71,30 @@ export const listBoxSlotRecipe = defineSlotRecipe({
 
       "&[data-selected]": {
         bg: "primary.3",
-        // A hovered or keyboard-focused selected row must never read lighter
-        // than selected-alone (React Aria moves focus onto the selected row
-        // when the list is focused, so this is the common case). Derive the
-        // combined state by darkening the *same* selected color — structurally
-        // stronger than selected-alone regardless of the token, with no
-        // specificity race against the hover/focus rules below. Scoped away
-        // from multi-select, where the checkbox owns the affordance and the
-        // row highlight is suppressed (see the multi-select block below).
+        // A hovered or keyboard-focused selected row must never read weaker than
+        // selected-alone (React Aria moves focus onto the selected row when the
+        // list is focused, so this is the common case). Derive the combined
+        // state from the *same* selected color, nudged to higher contrast
+        // against the page background. The mix is mode-aware because the primary
+        // ramp flips direction between themes: in light mode higher steps get
+        // darker (bg is white), in dark mode higher steps get lighter (bg is
+        // near-black), so we mix toward black in light and toward white in dark.
+        // A single black mix would invert in dark mode (it would pull the row
+        // toward the background and read as *less* selected). Scoped away from
+        // multi-select, where the checkbox owns the affordance and the row
+        // highlight is suppressed (see the multi-select block below).
+        //
+        // NOTE: `color-mix()` sets a browser floor (Chrome 111 / Safari 16.2 /
+        // Firefox 113) and fails silently — an unsupported value is dropped and
+        // the cascade falls back to the plain hover color. It is the first use
+        // in packages/nimbus/src; revisit alongside #1950's `_hover`/`_selected`
+        // conditions (a token step would be mode-safe without the floor).
         '&:is([data-hovered], [data-focused]):not([data-selection-mode="multiple"])':
           {
-            bg: "color-mix(in oklab, {colors.primary.3} 90%, black 10%)",
+            bg: {
+              _light: "color-mix(in oklab, {colors.primary.3} 90%, black 10%)",
+              _dark: "color-mix(in oklab, {colors.primary.3} 90%, white 10%)",
+            },
           },
       },
       "&[data-focused]": {

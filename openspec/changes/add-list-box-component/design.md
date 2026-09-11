@@ -43,10 +43,15 @@ Select/ComboBox/Menu, we adopt their convention as the default:
   selected row still shows the ordinary hover/focus highlight, since the
   checkbox — not the row background — carries the selection signal.
 - **single-select, selected + hovered/focused** → the selection highlight must
-  never weaken. The combined state darkens the _same_ selected color
-  (`color-mix(in oklab, {primary.3} 90%, black 10%)`) instead of falling back to
-  the lighter hover token, so a hovered/focused selected row stays clearly
-  selected.
+  never weaken. The combined state mixes the _same_ selected color toward higher
+  contrast against the page background, rather than falling back to the lighter
+  hover token, so a hovered/focused selected row stays clearly selected. The mix
+  is **mode-aware** because the `primary` ramp flips direction between themes
+  (light: higher steps darker against a white bg; dark: higher steps lighter
+  against a near-black bg), so it mixes toward `black` in light and `white` in
+  dark — a single-direction mix would invert in one mode. (A token step such as
+  `primary.4` would be directionally safe in both modes by construction and
+  avoids `color-mix`'s browser floor; revisit at the #1950 migration.)
 
 **Phase-3 migration heads-up.** `primary.3`/`primary.4` do not mean the same
 thing across the selectable-list family: ListBox uses `primary.3` = selected /

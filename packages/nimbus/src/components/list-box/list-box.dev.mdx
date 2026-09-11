@@ -268,17 +268,30 @@ scroll and load-more will track the page (and can over-fetch to fill the
 viewport) rather than the list.
 
 `ListBox.LoadMore` is data-source agnostic — drive it with your own state, so no
-extra dependency is needed. This example reveals more of an in-memory list with a
-page counter; to paginate a remote source, replace the slice with a `fetch` and
-flip `isLoading` around the `await`.
+extra dependency is needed. This example paginates an in-memory list and toggles
+`isLoading` around an awaited request (swap the `setTimeout` for your `fetch`);
+`isLoading` is what renders the spinner row while a page is in flight.
 
 ```tsx
+// Your full dataset; here it's an in-memory array.
+const allFruit = [
+  { id: "apple", name: "Apple" },
+  { id: "banana", name: "Banana" },
+  // …
+];
 const PAGE_SIZE = 20;
 
 const App = () => {
   const [count, setCount] = useState(PAGE_SIZE);
-  const loadMore = () =>
+  const [isLoading, setIsLoading] = useState(false);
+
+  const loadMore = async () => {
+    if (count >= allFruit.length) return;
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 300)); // ← your request
     setCount((c) => Math.min(c + PAGE_SIZE, allFruit.length));
+    setIsLoading(false);
+  };
 
   return (
     <ListBox.Root aria-label="Fruit" selectionMode="single">
@@ -287,7 +300,7 @@ const App = () => {
           {item.name}
         </ListBox.Item>
       ))}
-      <ListBox.LoadMore onLoadMore={loadMore} />
+      <ListBox.LoadMore isLoading={isLoading} onLoadMore={loadMore} />
     </ListBox.Root>
   );
 };
