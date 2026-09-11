@@ -338,6 +338,38 @@ describe("ToggleButton - Variants", () => {
     expect(screen.getByRole("button")).toBeInTheDocument();
   });
 
+  it("renders subtle variant", () => {
+    render(
+      <NimbusProvider>
+        <ToggleButton variant="subtle">Subtle</ToggleButton>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByRole("button")).toBeInTheDocument();
+  });
+
+  it("renders both active fill styles when selected", () => {
+    const { rerender } = render(
+      <NimbusProvider>
+        <ToggleButton activeFillStyle="tint" isSelected>
+          Tint
+        </ToggleButton>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByRole("button")).toHaveAttribute("aria-pressed", "true");
+
+    rerender(
+      <NimbusProvider>
+        <ToggleButton activeFillStyle="solid" isSelected>
+          Solid
+        </ToggleButton>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByRole("button")).toHaveAttribute("aria-pressed", "true");
+  });
+
   it("renders with different color palettes", () => {
     const { rerender } = render(
       <NimbusProvider>

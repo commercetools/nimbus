@@ -4,10 +4,8 @@ import type {
   ToggleButtonGroupProps,
   ToggleButtonGroupButtonComponent,
 } from "./toggle-button-group.types";
-import {
-  ToggleButton as RacToggleButton,
-  ToggleButtonGroup as RacToggleButtonGroup,
-} from "react-aria-components";
+import { ToggleButtonGroup as RacToggleButtonGroup } from "react-aria-components";
+import { ToggleButton } from "@/components/toggle-button/toggle-button";
 
 const { withContext, withProvider } = createSlotRecipeContext({
   key: "nimbusToggleButtonGroup",
@@ -19,7 +17,7 @@ export const ToggleButtonGroupRoot = withProvider<
 >(RacToggleButtonGroup, "root");
 
 export const ToggleButtonGroupButton: ToggleButtonGroupButtonComponent =
-  withContext<typeof RacToggleButton, ToggleButtonGroupButtonProps>(
-    RacToggleButton,
+  withContext<HTMLButtonElement, ToggleButtonGroupButtonProps>(
+    ToggleButton,
     "button"
   );

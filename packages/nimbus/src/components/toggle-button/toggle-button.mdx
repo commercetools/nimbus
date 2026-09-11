@@ -65,7 +65,43 @@ const App = () => (
 )
 ```
 
+#### Subtle
+
+A filled neutral chip at rest — useful when the control should read as an
+affordance even before it is selected.
+
+```jsx live
+const App = () => (
+  <ToggleButton variant="subtle">
+    <Icons.PushPin />
+    Product categories
+  </ToggleButton>
+)
+```
+
+### Active fill
+
+The `activeFillStyle` prop sets the weight of the active (selected) fill,
+independent of the resting `variant`. Use `tint` (default) for multi-select sets
+and `solid` when a single choice should stand out.
+
+```jsx live
+const App = () => (
+  <Stack gap="400" align="center" direction="row">
+    <ToggleButton colorPalette="primary" activeFillStyle="tint" isSelected>
+      Tint (default)
+    </ToggleButton>
+    <ToggleButton colorPalette="primary" activeFillStyle="solid" isSelected>
+      Solid
+    </ToggleButton>
+  </Stack>
+);
+```
+
 ### Color palette
+
+The resting toggle button is always neutral; `colorPalette` tints the active
+(selected) state, so each palette below is shown unselected and selected.
 
 #### Primary (default)
 

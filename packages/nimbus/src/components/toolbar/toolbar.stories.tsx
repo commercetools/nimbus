@@ -615,73 +615,72 @@ export const RichTextEditor: Story = {
                 data-testid={`separator-2-${size}`}
               />
 
-              {/* Text Alignment Toggle Group */}
-              <Group data-testid={`alignment-group-${size}`}>
-                <ToggleButtonGroup.Root
-                  selectionMode="single"
-                  defaultSelectedKeys={["left"]}
-                  aria-label="Text alignment"
-                  data-testid={`alignment-toggle-group-${size}`}
+              {/* Text Alignment — segmented single-select group. Alignment is
+                  mutually exclusive, so it reads as one "pick one" control;
+                  `outline` matches the plain (borderless) toolbar without
+                  doubling a treatment (see the segmented-flush behavior the
+                  toolbar recipe protects via :has()). */}
+              <ToggleButtonGroup.Root
+                size={size}
+                variant="outline"
+                colorPalette="primary"
+                selectionMode="single"
+                defaultSelectedKeys={["left"]}
+                aria-label="Text alignment"
+                data-testid={`alignment-toggle-group-${size}`}
+              >
+                <ToggleButtonGroup.Button
+                  id="left"
+                  aria-label="Align Left"
+                  data-testid={`align-left-${size}`}
                 >
-                  <IconToggleButton
-                    id="left"
-                    size={size}
-                    variant="ghost"
-                    aria-label="Align Left"
-                    data-testid={`align-left-${size}`}
-                  >
-                    <FormatAlignLeft />
-                  </IconToggleButton>
-                  <IconToggleButton
-                    id="center"
-                    size={size}
-                    variant="ghost"
-                    aria-label="Align Center"
-                    data-testid={`align-center-${size}`}
-                  >
-                    <FormatAlignCenter />
-                  </IconToggleButton>
-                  <IconToggleButton
-                    id="right"
-                    size={size}
-                    variant="ghost"
-                    aria-label="Align Right"
-                    data-testid={`align-right-${size}`}
-                  >
-                    <FormatAlignRight />
-                  </IconToggleButton>
-                </ToggleButtonGroup.Root>
-              </Group>
+                  <FormatAlignLeft />
+                </ToggleButtonGroup.Button>
+                <ToggleButtonGroup.Button
+                  id="center"
+                  aria-label="Align Center"
+                  data-testid={`align-center-${size}`}
+                >
+                  <FormatAlignCenter />
+                </ToggleButtonGroup.Button>
+                <ToggleButtonGroup.Button
+                  id="right"
+                  aria-label="Align Right"
+                  data-testid={`align-right-${size}`}
+                >
+                  <FormatAlignRight />
+                </ToggleButtonGroup.Button>
+              </ToggleButtonGroup.Root>
               <Separator
                 orientation="vertical"
                 data-testid={`separator-3-${size}`}
               />
 
-              {/* Lists & Indentation */}
+              {/* Lists — segmented single-select group (bulleted vs numbered
+                  are mutually exclusive). */}
               <ToggleButtonGroup.Root
+                size={size}
+                variant="outline"
+                colorPalette="primary"
                 selectionMode="single"
                 defaultSelectedKeys={[]}
                 data-testid={`list-toggle-group-${size}`}
                 aria-label="List formatting"
               >
-                <IconToggleButton
+                <ToggleButtonGroup.Button
                   id="bulleted-list"
-                  size={size}
-                  variant="ghost"
                   aria-label="Bulleted List"
                   data-testid={`bulleted-list-${size}`}
                 >
                   <FormatListBulleted />
-                </IconToggleButton>
-                <IconToggleButton
+                </ToggleButtonGroup.Button>
+                <ToggleButtonGroup.Button
                   id="numbered-list"
-                  size={size}
-                  variant="ghost"
                   aria-label="Numbered List"
                   data-testid={`numbered-list-${size}`}
                 >
                   <FormatListNumbered />
-                </IconToggleButton>
+                </ToggleButtonGroup.Button>
               </ToggleButtonGroup.Root>
               <Separator
                 orientation="vertical"

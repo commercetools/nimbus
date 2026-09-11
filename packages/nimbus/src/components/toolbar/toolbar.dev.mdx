@@ -250,6 +250,34 @@ const App = () => (
 )
 ```
 
+The example above uses `IconToggleButton` children, so each button keeps the
+toolbar's normal spacing. When you use `ToggleButtonGroup.Button` children the
+group is **segmented** (buttons share borders), and the toolbar renders those
+segments flush — no gap between them — while the group as a whole keeps the
+toolbar spacing from its neighbours:
+
+```jsx live-dev
+const App = () => (
+  <Toolbar variant="outline">
+    <ToggleButtonGroup.Root defaultSelectedKeys={["left"]} aria-label="Alignment">
+      <ToggleButtonGroup.Button id="left" aria-label="Align left">
+        <Icons.FormatAlignLeft />
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="center" aria-label="Align center">
+        <Icons.FormatAlignCenter />
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="right" aria-label="Align right">
+        <Icons.FormatAlignRight />
+      </ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+    <Separator orientation="vertical" />
+    <IconButton size="xs" variant="ghost" aria-label="More">
+      <Icons.MoreHoriz />
+    </IconButton>
+  </Toolbar>
+)
+```
+
 ## Component requirements
 
 ## Accessibility
