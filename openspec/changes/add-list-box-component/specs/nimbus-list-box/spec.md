@@ -46,7 +46,7 @@ selection, controlled by React Aria's `selectionMode` and selection value props.
 - **WHEN** `selectionMode="multiple"`
 - **THEN** selecting options SHALL toggle each option independently
 - **AND** each option SHALL render a leading checkbox indicator reflecting its selected state
-- **AND** the full-row highlight SHALL be suppressed in favour of the checkbox
+- **AND** the resting full-row highlight SHALL be suppressed in favour of the checkbox, while a hovered or keyboard-focused option SHALL still show the ordinary interaction highlight
 
 #### Scenario: No selection
 - **WHEN** `selectionMode` is unset or `"none"`

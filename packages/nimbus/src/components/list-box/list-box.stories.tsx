@@ -480,6 +480,63 @@ export const HeaderlessSection: Story = {
   },
 };
 
+const SelectedRowHoveredList = () => (
+  <ListBox.Root
+    aria-label="Fruit"
+    selectionMode="single"
+    defaultSelectedKeys={["banana"]}
+  >
+    {fruits.map((f) => (
+      <ListBox.Item key={f.id} id={f.id}>
+        {f.name}
+      </ListBox.Item>
+    ))}
+  </ListBox.Root>
+);
+
+/**
+ * Shared play: a selected row that is also hovered must stay visibly selected —
+ * distinct from BOTH selected-at-rest and the plain hover color. Runs in light
+ * mode from `SelectedRowHovered` and against the `_dark` mix from
+ * `SelectedRowHoveredDark`.
+ */
+const selectedRowStaysDistinctPlay: Story["play"] = async ({
+  canvasElement,
+  step,
+}) => {
+  const canvas = within(canvasElement);
+  const banana = canvas.getByRole("option", { name: "Banana" });
+  const apple = canvas.getByRole("option", { name: "Apple" });
+
+  // Banana is selected via defaultSelectedKeys and nothing is hovered yet.
+  const restingSelectedBg = getComputedStyle(banana).backgroundColor;
+
+  let unselectedHoveredBg = "";
+  await step("An unselected row hovers to the plain hover color", async () => {
+    await userEvent.hover(apple);
+    await waitFor(() => expect(apple).toHaveAttribute("data-hovered"));
+    unselectedHoveredBg = getComputedStyle(apple).backgroundColor;
+  });
+
+  await step(
+    "A selected row stays selected and visually distinct while hovered",
+    async () => {
+      await userEvent.hover(banana);
+      await waitFor(() => expect(banana).toHaveAttribute("data-hovered"));
+      await expect(banana).toHaveAttribute("aria-selected", "true");
+      await expect(banana).toHaveAttribute("data-selected");
+      const selectedHoveredBg = getComputedStyle(banana).backgroundColor;
+      // Pin both halves of the invariant instead of a self-baselined snapshot:
+      // the combined state must be distinct from selected-alone AND from the
+      // plain hover color. A dropped/typo'd color-mix that fell back to the
+      // hover token would equal unselectedHoveredBg; a value equal to
+      // restingSelectedBg would mean the hover produced no visible change.
+      expect(selectedHoveredBg).not.toBe(restingSelectedBg);
+      expect(selectedHoveredBg).not.toBe(unselectedHoveredBg);
+    }
+  );
+};
+
 /**
  * VRT + behavior: a selected row that is also hovered (or keyboard-focused)
  * must stay visibly selected — it must never repaint to the plain hover color.
@@ -489,55 +546,27 @@ export const HeaderlessSection: Story = {
 export const SelectedRowHovered: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
+  render: () => <SelectedRowHoveredList />,
+  play: selectedRowStaysDistinctPlay,
+};
+
+/**
+ * The same invariant in dark mode — the `_dark` branch nothing else exercises
+ * (Storybook tests and Chromatic both run light). Chakra's colour-mode
+ * conditions match any ancestor, so a scoped `className="dark"` wrapper flips
+ * just this subtree with no global toggle to leak into the next story. Gives
+ * Chromatic a dark baseline for the combined state and runs the same
+ * distinctness assertions against the `_dark` mix.
+ */
+export const SelectedRowHoveredDark: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
-    <ListBox.Root
-      aria-label="Fruit"
-      selectionMode="single"
-      defaultSelectedKeys={["banana"]}
-    >
-      {fruits.map((f) => (
-        <ListBox.Item key={f.id} id={f.id}>
-          {f.name}
-        </ListBox.Item>
-      ))}
-    </ListBox.Root>
+    <Box className="dark" bg="bg" p="400">
+      <SelectedRowHoveredList />
+    </Box>
   ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const banana = canvas.getByRole("option", { name: "Banana" });
-    const apple = canvas.getByRole("option", { name: "Apple" });
-
-    // Banana is selected via defaultSelectedKeys and nothing is hovered yet.
-    const restingSelectedBg = getComputedStyle(banana).backgroundColor;
-
-    let unselectedHoveredBg = "";
-    await step(
-      "An unselected row hovers to the plain hover color",
-      async () => {
-        await userEvent.hover(apple);
-        await waitFor(() => expect(apple).toHaveAttribute("data-hovered"));
-        unselectedHoveredBg = getComputedStyle(apple).backgroundColor;
-      }
-    );
-
-    await step(
-      "A selected row stays selected and visually distinct while hovered",
-      async () => {
-        await userEvent.hover(banana);
-        await waitFor(() => expect(banana).toHaveAttribute("data-hovered"));
-        await expect(banana).toHaveAttribute("aria-selected", "true");
-        await expect(banana).toHaveAttribute("data-selected");
-        const selectedHoveredBg = getComputedStyle(banana).backgroundColor;
-        // Pin both halves of the invariant instead of a self-baselined
-        // snapshot: the combined state must be distinct from selected-alone AND
-        // from the plain hover color. A dropped/typo'd color-mix that fell back
-        // to the hover token would equal unselectedHoveredBg; a value equal to
-        // restingSelectedBg would mean the hover produced no visible change.
-        expect(selectedHoveredBg).not.toBe(restingSelectedBg);
-        expect(selectedHoveredBg).not.toBe(unselectedHoveredBg);
-      }
-    );
-  },
+  play: selectedRowStaysDistinctPlay,
 };
 
 /**

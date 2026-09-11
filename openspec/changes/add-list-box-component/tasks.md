@@ -84,10 +84,11 @@ above where they conflict.
 - [x] 9.8 `list-box.recipe.tsx` → `list-box.recipe.ts` (no JSX). _Follow-up:
       batch-rename the other 9 no-JSX `.recipe.tsx` files._
 
-## 10. Re-review revisions (PR #1971, round 2)
+## 10. Re-review revisions (PR #1971, rounds 2–3)
 
-Changes in response to the second re-review (which verified `18d13538a`). These
-supersede the matching items above where they conflict.
+Changes in response to the round-2 and round-3 re-reviews (which verified
+`18d13538a` and `351d6f871`). These supersede the matching items above where
+they conflict.
 
 - [x] 10.1 **Selected + hover/focus stays selected, kept local** — the combined
       state mixes the selected colour toward higher contrast with `color-mix`
@@ -119,3 +120,26 @@ supersede the matching items above where they conflict.
       unnecessary cast dropped in `list-box.section.tsx`; `DisabledItems` asserts
       `aria-selected="false"` positively; `spec.md` gained a selected+hover
       prominence clause; stale story/test counts corrected (17/17 → 23, 6/6 → 7).
+
+## 11. Re-review revisions (PR #1971, round 4)
+
+Changes in response to the fourth re-review (which verified `eaa96e577`).
+
+- [x] 11.1 **Combined-state rule can no longer vanish** — restructured the
+      mode-aware mix from `{ _light, _dark }` (both conditional) to an
+      unconditional light default with a `_dark` override, matching
+      `skeleton.recipe.ts`. Chakra's colour-mode conditions compile to
+      ancestor-class selectors, so the two-branch form emitted nothing when no
+      `.light`/`.dark` class was on an ancestor (first paint, or rendered
+      outside the colour-mode provider) and fell back to the plain hover color
+      (round-4 #1).
+- [x] 11.2 **Dark branch now covered** — added `SelectedRowHoveredDark`, a
+      scoped `className="dark"` wrapper that runs the same distinctness
+      assertions against the `_dark` mix and gives Chromatic a dark baseline; the
+      shared render + play are extracted so light and dark stay in lockstep
+      (round-4 #2).
+- [x] 11.3 **`spec.md` multi-select scenario** — the suppression clause now reads
+      "suppressed at rest, with the ordinary hover/focus highlight retained",
+      matching the narrowed behaviour (round-4 #3).
+- [x] 11.4 **Nit** — §10 retitled to rounds 2–3 so the round-3 dark-mode edit in
+      10.1 isn't misattributed to round 2 (round-4 nit).

@@ -76,13 +76,21 @@ export const listBoxSlotRecipe = defineSlotRecipe({
         // list is focused, so this is the common case). Derive the combined
         // state from the *same* selected color, nudged to higher contrast
         // against the page background. The mix is mode-aware because the primary
-        // ramp flips direction between themes: in light mode higher steps get
-        // darker (bg is white), in dark mode higher steps get lighter (bg is
-        // near-black), so we mix toward black in light and toward white in dark.
-        // A single black mix would invert in dark mode (it would pull the row
-        // toward the background and read as *less* selected). Scoped away from
-        // multi-select, where the checkbox owns the affordance and the row
-        // highlight is suppressed (see the multi-select block below).
+        // ramp flips direction between themes: light mode's higher steps get
+        // darker (bg is white), dark mode's get lighter (bg is near-black), so
+        // we mix toward black in light and toward white in dark — a single-
+        // direction mix would invert in one theme.
+        //
+        // Light is the UNCONDITIONAL default with `_dark` as an override, not a
+        // pair of `_light`/`_dark` branches: Chakra's colour-mode conditions
+        // compile to ancestor-class selectors, so a two-branch form emits
+        // nothing when neither `.light` nor `.dark` is on an ancestor (before
+        // next-themes applies the class on mount, i.e. first paint, or when
+        // rendered outside the colour-mode provider) — and the row would fall
+        // back to the plain hover color, the exact weakening this rule prevents.
+        // (Same idiom as skeleton.recipe.ts.) Scoped away from multi-select,
+        // where the checkbox owns the affordance and the row highlight is
+        // suppressed (see the multi-select block below).
         //
         // NOTE: `color-mix()` sets a browser floor (Chrome 111 / Safari 16.2 /
         // Firefox 113) and fails silently — an unsupported value is dropped and
@@ -91,9 +99,9 @@ export const listBoxSlotRecipe = defineSlotRecipe({
         // conditions (a token step would be mode-safe without the floor).
         '&:is([data-hovered], [data-focused]):not([data-selection-mode="multiple"])':
           {
-            bg: {
-              _light: "color-mix(in oklab, {colors.primary.3} 90%, black 10%)",
-              _dark: "color-mix(in oklab, {colors.primary.3} 90%, white 10%)",
+            bg: "color-mix(in oklab, {colors.primary.3} 90%, black 10%)",
+            _dark: {
+              bg: "color-mix(in oklab, {colors.primary.3} 90%, white 10%)",
             },
           },
       },
