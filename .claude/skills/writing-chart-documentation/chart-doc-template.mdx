@@ -1,0 +1,176 @@
+---
+id: Charts-{ExportName}
+title: {Human Title}
+exportName: {ExportName}
+description: {one-line question this chart answers}
+lifecycleState: Experimental
+order: {number}
+icon: {NimbusIconName}
+menu:
+  - Charts
+  - {Human Title}
+tags:
+  - chart
+  - {keyword}
+---
+
+{/*
+  Fixed section order — do not reorder, rename, or change heading levels.
+  REQUIRED: 1,2,3,4,5,6,7,8,11. RECOMMENDED: 9,10. OPTIONAL: 12.
+  Emit a Chart-configuration subsection ONLY for a capability the source has.
+  Replace every {placeholder} and resolve every {{TODO}} before finishing.
+*/}
+
+## {Human Title}
+
+<ChartMeta />
+
+{One paragraph: what the chart shows and the question it answers.}
+
+```jsx live
+const data = [
+  {/* inline sample data matching the data prop's type */}
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <{ExportName} width={width} height={height} data={data} />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+## When to use
+
+{{TODO: one or two sentences on the single job this chart does well.}}
+
+| You want to…            | Use instead        |
+| ----------------------- | ------------------ |
+| {adjacent job}          | `{SiblingChart}`   |
+
+## Getting started
+
+### Import
+
+```tsx
+import {
+  {ExportName},
+  ChartThemeProvider,
+  ResponsiveContainer,
+} from "@commercetools/nimbus-viz";
+```
+
+Every chart reads colors from a `ChartThemeProvider` (it calls `useChartTheme()`
+and throws without one) and draws into an explicit pixel size supplied by
+`ResponsiveContainer`. Mount both once, high in your layout.
+
+## Data shape
+
+`{dataProp}` is an array of `{DataType}`:
+
+```ts
+interface {DataType} {
+  {/* the actual fields, from chart/types.ts or the component */}
+}
+```
+
+```tsx
+const {dataProp}: {DataType}[] = [
+  {/* small realistic sample */}
+];
+```
+
+{Contract notes verifiable from source: uniqueness, ordering, sign, nulls.}
+
+## API reference
+
+<PropsTable id="{ExportName}" />
+
+{Optional one-liner for non-prop behavior, e.g. "Renders `null` for empty data
+or a non-positive size."}
+
+## Chart configuration
+
+{/* One ### subsection per capability the source actually has. Delete the rest. */}
+
+### {Orientation / Variant / Layout — if the prop exists}
+
+{{TODO: describe the option; add a `jsx live` demo.}}
+
+### Color & theming
+
+Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
+To follow the app's mode inside a `NimbusProvider`, pass
+`mode={coerceColorMode(useColorMode().colorMode)}`. Colors come from the
+validated `nimbus` chart palette, not CSS.
+
+## Responsiveness & performance
+
+Fixed height:
+
+```tsx
+<ResponsiveContainer height={280}>
+  {(width, height) => <{ExportName} width={width} height={height} {dataProp}={data} />}
+</ResponsiveContainer>
+```
+
+Aspect-ratio height:
+
+```tsx
+<ResponsiveContainer aspectRatio={16 / 9} minHeight={200} maxHeight={420}>
+  {(width, height) => <{ExportName} width={width} height={height} {dataProp}={data} />}
+</ResponsiveContainer>
+```
+
+`ResponsiveContainer` renders nothing until it observes a positive size, and the
+chart returns `null` for a non-positive size — safe inside tabs, drawers, and
+initially-hidden containers.
+
+## Accessibility
+
+{/* Follow references/dataviz-accessibility.md. Document only what this chart wires. */}
+
+Pass an `ariaLabel` that states what the chart shows and its takeaway:
+
+```tsx
+<{ExportName}
+  ariaLabel="{Chart type} of {data}, where {the point}"
+  width={width}
+  height={height}
+  {dataProp}={data}
+/>
+```
+
+What you get automatically: {SVG `role="img"` + label; the visually-hidden
+data-table fallback (WCAG 1.1.1) with columns {…}; CVD-validated palette;
+non-color encoding.} {{TODO: keep only the features this chart actually has.}}
+
+Accessibility checklist:
+
+- [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
+- [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] Meaning does not depend on color alone (length/position/shape/patterns)
+- [ ] Palette meets contrast + CVD checks (built-in theme)
+- [ ] Surrounding copy names series/values rather than colors
+
+## States
+
+{How empty/loading/error are handled — usually `null`; guard upstream.}
+
+## Limitations
+
+- {Capabilities the chart deliberately lacks, from source.}
+
+## Related charts
+
+For the same question in a different form, see
+[{Sibling}](/charts/{sibling-dir}). The `<ChartMeta />` block above links the
+current sibling set.
+
+## Resources
+
+- [WCAG: complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Chartability](https://chartability.fizz.studio/)
