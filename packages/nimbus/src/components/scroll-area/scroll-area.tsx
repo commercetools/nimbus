@@ -89,9 +89,10 @@ const ScrollAreaParts = ({
  * By default the bar auto-hides: it appears when the pointer enters the area or
  * when the content scrolls, then fades out after a short idle delay. While the
  * pointer rests inside, the bar comes back on scroll or when the pointer moves
- * toward it — so a resting reader is not distracted. Use the `variant` prop for
- * the visual style (`solid` | `inset` | `overlay` | `glass`) and
- * `scrollbarVisibility="always"` to keep the bar permanently visible.
+ * toward it, and it stays shown while the pointer rests on it — so a resting
+ * reader is not distracted, yet the thumb never vanishes mid-reach. Use the
+ * `variant` prop for the visual style (`solid` | `inset` | `overlay` | `glass`)
+ * and `scrollbarVisibility="always"` to keep the bar permanently visible.
  *
  * Built on Chakra UI's ScrollArea (powered by Ark UI) with Nimbus
  * design tokens and keyboard accessibility.

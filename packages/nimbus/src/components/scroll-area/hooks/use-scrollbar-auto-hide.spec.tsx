@@ -168,6 +168,52 @@ describe("useScrollbarAutoHide", () => {
     expect(visible(root)).toBe(true);
   });
 
+  it("seeds the pointer from mouseenter, so a bar appearing under a still cursor stays", () => {
+    const { root } = setupWithBar();
+
+    // The area slides under a stationary cursor: `mouseenter` carries the
+    // coordinates but no `mousemove` follows (Firefox after a scroll).
+    act(() => {
+      root.dispatchEvent(
+        new MouseEvent("mouseenter", { clientX: 105, clientY: 100 })
+      );
+    });
+    expect(visible(root)).toBe(true);
+
+    advance(HIDE_DELAY); // no move happened; the guard must still see the pointer on the bar
+    expect(visible(root)).toBe(true);
+  });
+
+  it("ignores a nested area's bar for proximity (scoped to direct children)", () => {
+    const { root } = setup();
+    // A scrollbar that belongs to a NESTED area: a descendant of this root but
+    // not a direct child, so the scoped query must not match it.
+    const innerWrap = document.createElement("div");
+    const nestedBar = document.createElement("div");
+    nestedBar.setAttribute("data-part", "scrollbar");
+    nestedBar.getBoundingClientRect = () =>
+      ({
+        left: 100,
+        right: 110,
+        top: 0,
+        bottom: 200,
+        width: 10,
+        height: 200,
+        x: 100,
+        y: 0,
+        toJSON: () => ({}),
+      }) as DOMRect;
+    innerWrap.appendChild(nestedBar);
+    root.appendChild(innerWrap);
+
+    fire(root, "mouseenter");
+    advance(HIDE_DELAY); // idle → hidden, scroll-only
+    expect(visible(root)).toBe(false);
+
+    move(root, 105, 100); // over the nested bar's rect, but it is not a direct child
+    expect(visible(root)).toBe(false);
+  });
+
   it("re-arms the entry reveal after the mouse leaves and re-enters", () => {
     const { root } = setup();
 

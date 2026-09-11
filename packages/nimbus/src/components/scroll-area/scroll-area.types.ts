@@ -101,7 +101,7 @@ export type ScrollAreaProps = Omit<
    * In every visual the bar auto-hides when idle: it appears when the pointer
    * enters the area or when the content scrolls, then fades out after a short
    * idle delay; while the pointer rests inside, scrolling or moving toward the
-   * bar reveals it again.
+   * bar reveals it again, and resting the pointer on the bar keeps it shown.
    *
    * `hover` and `always` are **deprecated** aliases kept for backward
    * compatibility: use `variant="solid"` instead of `hover`, and
@@ -114,7 +114,7 @@ export type ScrollAreaProps = Omit<
    * - `auto-hide` (default): the bar appears when the pointer enters the area
    *   or when the content scrolls, then fades out after a short idle delay.
    *   While the pointer rests inside, scrolling or moving toward the bar reveals
-   *   it again.
+   *   it again, and resting the pointer on the bar keeps it shown.
    * - `always`: the bar stays visible, and the viewport reserves a gutter so it
    *   never overlays content.
    *
