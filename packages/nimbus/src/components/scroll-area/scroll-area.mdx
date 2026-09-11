@@ -118,13 +118,13 @@ Use `variant` to choose the scrollbar's visual style. It is independent of
 
 - `solid` (default): grey track, thumb fills its width.
 - `inset`: grey track with an inset, floating pill thumb.
-- `hidden`: no track — only the thumb shows.
+- `overlay`: no track — only the thumb shows.
 - `glass`: translucent, frosted track that blurs the content behind it.
 
 ```jsx live
 const App = () => (
   <Stack gap="600" direction="row" flexWrap="wrap">
-    {["solid", "inset", "hidden", "glass"].map((variant) => (
+    {["solid", "inset", "overlay", "glass"].map((variant) => (
       <Box key={variant}>
         <Text fontSize="sm" mb="200" fontWeight="bold">{variant}</Text>
         <ScrollArea

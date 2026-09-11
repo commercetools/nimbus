@@ -5,10 +5,10 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * Overrides Chakra UI's default scrollArea recipe with Nimbus design tokens.
  *
  * Two independent variant groups drive the look and behavior:
- * - `variant` — the visual style (`default` | `inset` | `hidden` | `blur`).
- * - `persistence` — whether the bar auto-hides (`auto`, the default) or stays
- *   permanently visible (`always`). Set by the component, not by consumers
- *   directly; the deprecated `variant="always"` maps onto `persistence="always"`.
+ * - `variant` — the visual style (`solid` | `inset` | `overlay` | `glass`).
+ * - `scrollbarVisibility` — whether the bar auto-hides (`auto-hide`, the
+ *   default) or stays permanently visible (`always`). The deprecated
+ *   `variant="always"` maps onto `scrollbarVisibility="always"`.
  *
  * Thumb thickness stays constant across visual variants: `size` sets the
  * visible thumb thickness (`--scroll-area-thumb-size`) and each inset variant
@@ -65,15 +65,17 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
       userSelect: "none",
       touchAction: "none",
       borderRadius: "full",
-      transition: "opacity 150ms",
+      // Auto-hide reveal/hide is a fade: the `auto-hide` visibility variant
+      // animates opacity between 0 and 1 over this transition.
+      transition: "opacity 200ms ease",
       position: "relative",
       // Paint above viewport content (e.g. sticky headers with z-index)
       zIndex: "1",
       margin: "var(--scroll-area-scrollbar-margin)",
       // Opacity (auto-hide vs. always-visible) is owned entirely by the
-      // `persistence` variant group, so exactly one `opacity` rule applies to
-      // this element. Setting a base `opacity` here as well would put two
-      // equal-specificity rules on the element, where CSS source order — not
+      // `scrollbarVisibility` variant group, so exactly one `opacity` rule
+      // applies to this element. Setting a base `opacity` here as well would put
+      // two equal-specificity rules on the element, where CSS source order — not
       // which variant is active — would decide the winner.
       // Hide each scrollbar when its own axis isn't overflowing. Zag sets
       // `data-overflow-x` / `data-overflow-y` on the scrollbar reflecting the
@@ -121,7 +123,7 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
       // Inset the thumb within the track: a transparent border plus
       // `content-box` clipping makes the painted thumb thinner than its
       // hit-area without shrinking the element (no layout shift). The inset is
-      // `0px` for the `default` variant, so it fills the track edge-to-edge.
+      // `0px` for the `solid` variant, so it fills the track edge-to-edge.
       border: "var(--scroll-area-thumb-inset) solid transparent",
       backgroundClip: "content-box",
       transition: "backgrounds",
@@ -131,8 +133,8 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
     corner: {
       bg: "neutral.3",
       margin: "var(--scroll-area-scrollbar-margin)",
-      transition: "opacity 150ms",
-      // Opacity owned by the `persistence` group (see the scrollbar note).
+      transition: "opacity 200ms ease",
+      // Opacity owned by the `scrollbarVisibility` group (see the scrollbar note).
     },
   },
   variants: {
@@ -154,7 +156,7 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
         },
       },
       // No track — only the floating thumb shows (overlay look).
-      hidden: {
+      overlay: {
         root: {
           "--scroll-area-thumb-inset": "2px",
         },
@@ -186,20 +188,33 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
       "auto-hide": {
         scrollbar: {
           opacity: "0",
-          "[data-scrollbar-visible] &": {
+          // While hidden the bar is invisible, so it must not be hit-testable —
+          // otherwise its widened `_before` hit strip would silently swallow
+          // clicks on the content it overlays (there is no reserved gutter in
+          // this mode). `pointer-events` is restored the moment the bar is
+          // revealed (or dragged), so grabbing the visible thumb still works.
+          pointerEvents: "none",
+          // Direct-child combinator, not descendant: a nested ScrollArea inside
+          // this one's content must not be revealed by this root's attribute.
+          // The scrollbar is a direct child of its own root.
+          "[data-scrollbar-visible] > &": {
             opacity: "1",
+            pointerEvents: "auto",
           },
-          // Keep the bar visible while the thumb is dragged, regardless of the
-          // idle timer (a drag also fires viewport `scroll`, so this is a
-          // safeguard rather than the primary mechanism).
+          // Keep the bar visible and interactive while the thumb is dragged,
+          // regardless of the idle timer (a drag also fires viewport `scroll`,
+          // so this is a safeguard rather than the primary mechanism).
           "&[data-dragging]": {
             opacity: "1",
+            pointerEvents: "auto",
           },
         },
         corner: {
           opacity: "0",
+          pointerEvents: "none",
           "[data-scrollbar-visible] &": {
             opacity: "1",
+            pointerEvents: "auto",
           },
         },
       },

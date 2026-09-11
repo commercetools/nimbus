@@ -40,7 +40,7 @@ const WideContent = () => (
 // Default: overflowing, vertical scrollbar, keyboard focusable
 // ============================================================
 export const Default: Story = {
-  // VRT: the default `hover` variant at rest - no scrollbar painted, no gutter reserved.
+  // VRT: the default auto-hide bar at rest - no scrollbar painted, no gutter reserved.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
@@ -87,7 +87,7 @@ export const Default: Story = {
         expect(scrollbar).toHaveAttribute("data-orientation", "vertical");
         const styles = window.getComputedStyle(scrollbar);
         expect(styles.display).not.toBe("none");
-        // Default `hover` variant: transparent at rest (no activity yet);
+        // Auto-hide (default): transparent at rest (no activity yet);
         // revealed on pointer/scroll activity, hidden again when idle.
         expect(styles.opacity).toBe("0");
       }
@@ -166,7 +166,7 @@ export const DefaultSurfacesBothScrollbars: Story = {
           expect.arrayContaining(["vertical", "horizontal"])
         );
         scrollbars.forEach((sb) => {
-          // Laid out but not painted: `hover` holds both at 0 until activity reveals them.
+          // Laid out but not painted: auto-hide holds both at 0 until activity reveals them.
           expect(window.getComputedStyle(sb).display).not.toBe("none");
           expect(window.getComputedStyle(sb).opacity).toBe("0");
         });
@@ -1208,6 +1208,147 @@ export const StickyContentInPanel: Story = {
 };
 
 // ============================================================
+// DeprecatedVariantAliases: the pre-rename `variant="hover"` / `variant="always"`
+// aliases still map onto the new API — `hover` → the `solid` look + auto-hide,
+// `always` → always-visible with a reserved gutter — and an explicit
+// `scrollbarVisibility` overrides the deprecated `variant="always"`.
+// ============================================================
+export const DeprecatedVariantAliases: Story = {
+  render: () => (
+    <Box display="flex" gap="600" flexWrap="wrap">
+      <ScrollArea
+        maxH="160px"
+        w="200px"
+        variant="always"
+        ids={{ root: "alias-always", viewport: "alias-always-vp" }}
+      >
+        <OverflowingContent />
+      </ScrollArea>
+      <ScrollArea
+        maxH="160px"
+        w="200px"
+        variant="hover"
+        ids={{ root: "alias-hover" }}
+      >
+        <OverflowingContent />
+      </ScrollArea>
+      <ScrollArea
+        maxH="160px"
+        w="200px"
+        variant="always"
+        scrollbarVisibility="auto-hide"
+        ids={{ root: "alias-override" }}
+      >
+        <OverflowingContent />
+      </ScrollArea>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+    const verticalBar = (rootId: string) =>
+      doc
+        .getElementById(rootId)!
+        .querySelector(
+          '[data-part="scrollbar"][data-orientation="vertical"]'
+        ) as HTMLElement;
+
+    await step(
+      '`variant="always"` stays visible and reserves a gutter',
+      async () => {
+        const root = doc.getElementById("alias-always") as HTMLElement;
+        const viewport = doc.getElementById("alias-always-vp") as HTMLElement;
+        await waitFor(() =>
+          expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight)
+        );
+        expect(
+          window.getComputedStyle(verticalBar("alias-always")).opacity
+        ).toBe("1");
+        // Gutter: the always-visible bar shrinks the viewport instead of
+        // overlaying content.
+        expect(viewport.clientWidth).toBeLessThan(root.clientWidth);
+      }
+    );
+
+    await step(
+      '`variant="hover"` maps to the solid look and auto-hides',
+      async () => {
+        const root = doc.getElementById("alias-hover") as HTMLElement;
+        expect(root).not.toHaveAttribute("data-scrollbar-visible");
+        const bar = verticalBar("alias-hover");
+        expect(window.getComputedStyle(bar).opacity).toBe("0");
+        // `solid` paints a grey track — not transparent like `overlay`.
+        expect(window.getComputedStyle(bar).backgroundColor).not.toBe(
+          "rgba(0, 0, 0, 0)"
+        );
+      }
+    );
+
+    await step(
+      'an explicit `scrollbarVisibility` overrides `variant="always"`',
+      async () => {
+        const root = doc.getElementById("alias-override") as HTMLElement;
+        expect(root).not.toHaveAttribute("data-scrollbar-visible");
+        expect(
+          window.getComputedStyle(verticalBar("alias-override")).opacity
+        ).toBe("0");
+      }
+    );
+  },
+};
+
+// ============================================================
+// NestedScrollAreas: an auto-hide ScrollArea inside another's content. The
+// reveal selector is a direct-child combinator, so revealing the OUTER bar must
+// reveal only the outer bar — never the nested INNER one.
+// ============================================================
+export const NestedScrollAreas: Story = {
+  render: () => (
+    <ScrollArea maxH="200px" w="320px" ids={{ root: "outer-root" }}>
+      <Box p="400">
+        <Text fontSize="sm" mb="200" fontWeight="bold">
+          Outer content
+        </Text>
+        <ScrollArea maxH="120px" w="200px" ids={{ root: "inner-root" }}>
+          <OverflowingContent />
+        </ScrollArea>
+        {Array.from({ length: 20 }, (_, i) => (
+          <Text key={i} fontSize="sm">
+            Outer line {i + 1}
+          </Text>
+        ))}
+      </Box>
+    </ScrollArea>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+    const outer = doc.getElementById("outer-root") as HTMLElement;
+    const inner = doc.getElementById("inner-root") as HTMLElement;
+    const outerBar = outer.querySelector(
+      ':scope > [data-part="scrollbar"][data-orientation="vertical"]'
+    ) as HTMLElement;
+    const innerBar = inner.querySelector(
+      '[data-part="scrollbar"][data-orientation="vertical"]'
+    ) as HTMLElement;
+
+    await step(
+      "revealing the outer bar does not leak into the nested inner bar",
+      async () => {
+        // Force the outer bar visible, as its own hook would.
+        outer.setAttribute("data-scrollbar-visible", "");
+        // The outer bar is a direct child of the outer root, so it reveals.
+        await waitFor(() =>
+          expect(window.getComputedStyle(outerBar).opacity).toBe("1")
+        );
+        // The inner bar is a descendant — but not a direct child — of the outer
+        // root, so the direct-child reveal selector must leave it hidden.
+        expect(inner).not.toHaveAttribute("data-scrollbar-visible");
+        expect(window.getComputedStyle(innerBar).opacity).toBe("0");
+      }
+    );
+  },
+};
+
+// ============================================================
 // Content padding: padding props forwarded to inner Content slot
 // ============================================================
 const paddingPropCases = [
@@ -1369,7 +1510,7 @@ export const SmokeTest: Story = {
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Box display="flex" flexDirection="column" gap="600">
-      {(["solid", "inset", "hidden", "glass"] as const).map((variant) => (
+      {(["solid", "inset", "overlay", "glass"] as const).map((variant) => (
         <Box key={variant}>
           <Text fontSize="sm" fontWeight="bold" mb="200">
             {variant}
@@ -1404,11 +1545,12 @@ export const SmokeTest: Story = {
 };
 
 // ============================================================
-// AutoHideOnIdle: the default `hover` variant reveals the bar on activity
+// AutoHideOnIdle: the default auto-hide behavior reveals the bar on activity
 // (pointer enter, mouse movement, scroll) and hides it after an idle delay.
-// While the pointer stays inside, only scrolling reveals it again — so a
-// resting reader is not distracted. Driven by `useScrollbarAutoHide`, which
-// toggles `data-scrollbar-visible` on the root; the recipe keys opacity off it.
+// While the pointer rests inside, scrolling or moving toward the bar reveals it
+// again — so a resting reader is not distracted. Driven by `useScrollbarAutoHide`,
+// which toggles `data-scrollbar-visible` on the root; the recipe keys opacity
+// and pointer-events off it.
 // ============================================================
 export const AutoHideOnIdle: Story = {
   render: () => (
@@ -1433,16 +1575,21 @@ export const AutoHideOnIdle: Story = {
         expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight)
       );
       expect(root).not.toHaveAttribute("data-scrollbar-visible");
-      expect(window.getComputedStyle(scrollbar).opacity).toBe("0");
+      const styles = window.getComputedStyle(scrollbar);
+      expect(styles.opacity).toBe("0");
+      // Hidden bar must not intercept clicks on the content it overlays.
+      expect(styles.pointerEvents).toBe("none");
     });
 
     await step("Pointer entering the area reveals the bar", async () => {
       await userEvent.hover(root);
       expect(root).toHaveAttribute("data-scrollbar-visible");
-      // Confirms the recipe reveal is wired to the JS attribute end-to-end.
+      // Confirms the recipe reveal is wired to the JS attribute end-to-end:
+      // opacity and pointer-events both track the attribute.
       await waitFor(() =>
         expect(window.getComputedStyle(scrollbar).opacity).toBe("1")
       );
+      expect(window.getComputedStyle(scrollbar).pointerEvents).toBe("auto");
     });
 
     await step("Bar hides after the idle delay", async () => {
@@ -1452,12 +1599,41 @@ export const AutoHideOnIdle: Story = {
       );
     });
 
-    await step("Once idle, mouse movement no longer reveals it", async () => {
-      fireEvent.mouseMove(root);
-      expect(root).not.toHaveAttribute("data-scrollbar-visible");
+    await step(
+      "Once idle, moving in the content area does not reveal it",
+      async () => {
+        const bounds = root.getBoundingClientRect();
+        // A move far from any scrollbar (top-left corner) must be ignored, so a
+        // resting reader is not distracted.
+        fireEvent.mouseMove(root, {
+          clientX: bounds.left + 8,
+          clientY: bounds.top + 8,
+        });
+        expect(root).not.toHaveAttribute("data-scrollbar-visible");
+        expect(window.getComputedStyle(scrollbar).pointerEvents).toBe("none");
+      }
+    );
+
+    await step("Moving the pointer toward the bar reveals it", async () => {
+      // Proximity reveal: a move near the (still laid-out) scrollbar brings it
+      // back without scrolling, so the user can reach for the thumb.
+      const bar = scrollbar.getBoundingClientRect();
+      fireEvent.mouseMove(root, {
+        clientX: bar.left + bar.width / 2,
+        clientY: bar.top + bar.height / 2,
+      });
+      expect(root).toHaveAttribute("data-scrollbar-visible");
+      await waitFor(() =>
+        expect(window.getComputedStyle(scrollbar).pointerEvents).toBe("auto")
+      );
     });
 
-    await step("Scrolling reveals it again", async () => {
+    await step("Scrolling reveals it again after it idles", async () => {
+      await userEvent.unhover(root);
+      await waitFor(
+        () => expect(root).not.toHaveAttribute("data-scrollbar-visible"),
+        { timeout: 2000 }
+      );
       fireEvent.scroll(viewport);
       expect(root).toHaveAttribute("data-scrollbar-visible");
     });
@@ -1475,7 +1651,7 @@ export const AutoHideOnIdle: Story = {
 };
 
 // Plain rows separated by dividers: high contrast so the neutral thumb reads
-// clearly on every appearance, with edges for the `blur` variant to soften.
+// clearly on every appearance, with edges for the `glass` variant to soften.
 const AppearanceDemoContent = () => (
   <Box>
     {Array.from({ length: 20 }, (_, i) => (
@@ -1492,7 +1668,7 @@ const AppearanceDemoContent = () => (
   </Box>
 );
 
-const APPEARANCES = ["solid", "inset", "hidden", "glass"] as const;
+const APPEARANCES = ["solid", "inset", "overlay", "glass"] as const;
 
 // ============================================================
 // Appearances: the four visual `variant` values side by side. Each bar is
@@ -1525,8 +1701,11 @@ export const Appearances: Story = {
   play: async ({ canvasElement }) => {
     const doc = canvasElement.ownerDocument;
     APPEARANCES.forEach((v) => {
-      // Force the bar visible (each auto-hides on its own) and park the scroll
-      // at the same fraction so all four thumbs sit at the same spot.
+      // Force the bar visible by poking the attribute the hook owns (each
+      // auto-hides on its own). Deliberately not `scrollbarVisibility="always"`:
+      // that would reserve a gutter and change the very layout this snapshot
+      // compares. Park the scroll at the same fraction so all four thumbs sit at
+      // the same spot.
       doc
         .getElementById(`appearance-${v}`)
         ?.setAttribute("data-scrollbar-visible", "");
