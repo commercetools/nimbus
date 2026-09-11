@@ -219,10 +219,13 @@ and vice versa.
 
 ### Requirement: Content wrapper sizes to viewport by default
 
-For default and `vertical` orientations, the content wrapper SHALL be sized
-to the viewport (both width and height) so siblings with `width: 100%` size
-against the viewport, and so consumers can vertically center a shorter child
-with flex/grid + `height: 100%`.
+For default and `vertical` orientations, the content wrapper SHALL size its
+width to the viewport (so siblings with `width: 100%` size against the viewport)
+and SHALL fill the viewport height when the content is shorter than it (so
+consumers can vertically center a shorter child with flex/grid + `height: 100%`).
+When the content is taller than the viewport, the wrapper SHALL grow with the
+content rather than staying clamped to the viewport height, so that a change in
+content size is observed and the scrollbar re-measures without a scroll first.
 
 Descendant overflow on either axis SHALL still be surfaced as viewport
 scroll via `scrollHeight` / `scrollWidth`, so scrolling is unaffected.
@@ -252,6 +255,14 @@ For `orientation="horizontal"`, the wrapper SHALL instead preserve Zag's
   total width exceeds the viewport
 - **THEN** the content wrapper SHALL grow to fit its widest descendants
 - **AND** the horizontal scrollbar SHALL reflect that overflow
+
+#### Scenario: Content growth is reflected without scrolling
+
+- **WHEN** the content grows after mount — content loading in, or swapping the
+  children while the same `ScrollArea` stays mounted (e.g. tab panels) — and no
+  scroll has occurred
+- **THEN** the scrollbar SHALL reflect the new overflow and thumb size from the
+  content resize alone, without requiring a scroll to trigger a re-measure
 
 ### Requirement: Scrollbar paints above viewport content
 

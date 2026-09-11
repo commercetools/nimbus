@@ -20,6 +20,9 @@ visibility prop.
   `<ScrollArea variant="inset" scrollbarVisibility="always" />`.
 - **Higher-contrast thumb** at rest, so the bar reads clearly (previously it
   looked washed out).
+- **Fixed:** the scrollbar now updates when the content changes — e.g. content
+  loading in, or swapping the children while the same `ScrollArea` stays mounted
+  (tab panels) — without needing a scroll first to trigger it.
 
 Deprecations (still working, no code change required): `variant="hover"` — use
 `variant="solid"`; `variant="always"` — use `scrollbarVisibility="always"`.
