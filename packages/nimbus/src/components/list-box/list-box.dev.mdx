@@ -118,6 +118,21 @@ const App = () => (
 )
 ```
 
+To group options without a visible header, omit `label` and pass an `aria-label`
+instead — React Aria requires a headerless section to carry an accessible name
+of its own, so the group is still announced to assistive technology.
+
+```jsx live-dev
+const App = () => (
+  <ListBox.Root aria-label="Produce" selectionMode="single">
+    <ListBox.Section aria-label="Fruit">
+      <ListBox.Item id="apple">Apple</ListBox.Item>
+      <ListBox.Item id="banana">Banana</ListBox.Item>
+    </ListBox.Section>
+  </ListBox.Root>
+)
+```
+
 ### Rich items — leading media, description, trailing content
 
 Use the `leading` and `trailing` props for media and metadata, and React Aria's
@@ -253,6 +268,8 @@ scroll and load-more will track the page (and can over-fetch to fill the
 viewport) rather than the list.
 
 ```tsx
+import { useAsyncList } from "react-stately";
+
 const App = () => {
   const list = useAsyncList({
     async load({ cursor }) {

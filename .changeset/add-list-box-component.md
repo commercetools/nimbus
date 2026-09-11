@@ -16,8 +16,7 @@ fields and `ComboBox` covers type-to-filter fields.
 - Full keyboard support and the WAI-ARIA listbox pattern (arrow keys, Home/End,
   type-ahead). Name the list with `aria-label` or `aria-labelledby`.
 - `variant` — `card` (default, a standalone elevated surface) or `plain` (a bare
-  list for embedding inside an overlay). Plus `size` (`sm`/`md`) and `density`
-  (`comfortable`/`compact`).
+  list for embedding inside an overlay). Plus a `size` scale (`sm`/`md`).
 - A localized empty state (overridable with `renderEmptyState`) and an in-list
   loading spinner via `ListBox.LoadMore`.
 

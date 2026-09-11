@@ -9,7 +9,9 @@
 - [x] 2.2 Base styles: `root` card surface copied from `select.recipe.tsx`; item highlight `&[data-selected]`, `&[data-focused]`, focus-visible ring, `&[data-disabled] { layerStyle: disabled }`
 - [x] 2.3 Variant `variant`: `card` (surface) vs `plain` (no surface/shadow/maxHeight)
 - [x] 2.4 Variant `size`: aligned to the shared Nimbus size scale (`sm`, `md`)
-- [x] 2.5 Variant `density`: `comfortable` (default) vs `compact`
+- [x] 2.5 Variant `density`: ~~`comfortable` (default) vs `compact`~~ —
+      **superseded by 9.1**: `density` dropped from v1; `size` owns the row
+      rhythm (per-size padding + height)
 - [x] 2.6 Selection affordance: multi-select renders `itemIndicator` checkbox (spread from the Checkbox recipe) and suppresses row highlight via `&[data-selection-mode="multiple"]`; single uses highlight. Targets real slot keys (avoids the `combobox.recipe.ts` no-op gotcha)
 - [x] 2.7 Write `list-box.slots.tsx` via `createSlotRecipeContext({ key: "nimbusListBox" })`, one slot component per recipe slot
 - [x] 2.8 Register `nimbusListBox: listBoxSlotRecipe` in `theme/slot-recipes/index.ts` and run `build-theme-typings`
@@ -30,7 +32,7 @@
 
 - [x] 5.1 Mechanics play functions: single-select replaces; multiple toggles; keyboard Home/ArrowDown/End; type-ahead; Enter selects; disabled not selectable; empty state renders; sections not focusable; controlled sync
 - [x] 5.2 Drag-and-drop play (draggable affordance via `dragAndDropHooks`)
-- [x] 5.3 Visual-permutation stories: Sizes, Variants (`card`/`plain`), Density, SelectedState, MultipleSelectionVisual, RichContent, WithSections, DisabledItems, EmptyState, Focused, and a SmokeTest grid (size × density × single/multi)
+- [x] 5.3 Visual-permutation stories: Sizes, Variants (`card`/`plain`), SelectedState, MultipleSelectionVisual, RichContent, WithSections, DisabledItems, EmptyState, Focused, and a SmokeTest grid (size × single/multi) — the Density story and the `× density` grid axis were removed with 9.1
 - [x] 5.4 `pnpm test:storybook:dev packages/nimbus/src/components/list-box/list-box.stories.tsx` — 17/17 green
 
 ## 6. Documentation

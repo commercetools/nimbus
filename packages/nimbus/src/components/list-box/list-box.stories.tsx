@@ -329,7 +329,9 @@ export const NoSelectionWithAction: Story = {
       async () => {
         await userEvent.click(banana);
         await expect(args.onAction).toHaveBeenCalledWith("banana");
-        await expect(banana).not.toHaveAttribute("aria-selected", "true");
+        // No selectionMode → React Aria omits `aria-selected` entirely, so
+        // assert the attribute is absent (a value check would pass vacuously).
+        await expect(banana).not.toHaveAttribute("aria-selected");
       }
     );
 
@@ -371,12 +373,18 @@ export const PlainDisplayList: Story = {
 
     await step("Inert rows get no hover affordance", async () => {
       await userEvent.hover(banana);
+      // Give React Aria a tick to process the hover; an inert row must still
+      // not receive [data-hovered] (its actionable twin does — see
+      // NoSelectionWithAction). A bare negative assertion with no settle window
+      // can't tell "never set" from "not set yet".
+      await new Promise((resolve) => setTimeout(resolve, 50));
       await expect(banana).not.toHaveAttribute("data-hovered");
     });
 
     await step("Clicking an inert row selects nothing", async () => {
       await userEvent.click(banana);
-      await expect(banana).not.toHaveAttribute("aria-selected", "true");
+      // No selectionMode → `aria-selected` is omitted entirely; assert absence.
+      await expect(banana).not.toHaveAttribute("aria-selected");
     });
   },
 };
@@ -423,6 +431,79 @@ export const WithSections: Story = {
         ).toBeInTheDocument();
       }
     );
+  },
+};
+
+/**
+ * A section without a `label` renders no visible header — pass `aria-label` so
+ * the group still has an accessible name (spec: "Section without header"). This
+ * also proves `aria-label` typechecks on `ListBox.Section`.
+ */
+export const HeaderlessSection: Story = {
+  render: () => (
+    <ListBox.Root aria-label="Produce" selectionMode="single">
+      <ListBox.Section aria-label="Fruit">
+        {grouped[0].children.map((item) => (
+          <ListBox.Item key={item.id} id={`${grouped[0].id}-${item.id}`}>
+            {item.name}
+          </ListBox.Item>
+        ))}
+      </ListBox.Section>
+    </ListBox.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Group is named by its aria-label", async () => {
+      await expect(
+        canvas.getByRole("group", { name: "Fruit" })
+      ).toBeInTheDocument();
+    });
+
+    await step("No visible header is rendered", async () => {
+      // The accessible name comes from aria-label, not a rendered Header, so
+      // there is no visible "Fruit" text node.
+      await expect(canvas.queryByText("Fruit")).not.toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * VRT + behavior: a selected row that is also hovered (or keyboard-focused)
+ * must stay visibly selected — it must never repaint lighter than
+ * selected-alone. The play leaves the selected row hovered so Chromatic
+ * snapshots the combined state (`primary.4`).
+ */
+export const SelectedRowHovered: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <ListBox.Root
+      aria-label="Fruit"
+      selectionMode="single"
+      defaultSelectedKeys={["banana"]}
+    >
+      {fruits.map((f) => (
+        <ListBox.Item key={f.id} id={f.id}>
+          {f.name}
+        </ListBox.Item>
+      ))}
+    </ListBox.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const banana = canvas.getByRole("option", { name: "Banana" });
+
+    await step("Selected row stays selected while hovered", async () => {
+      await expect(banana).toHaveAttribute("aria-selected", "true");
+      await userEvent.hover(banana);
+      await waitFor(() => expect(banana).toHaveAttribute("data-hovered"));
+      // The combined-state rule keeps the selection highlight: the row is still
+      // both selected and hovered (Chromatic verifies the background stays at
+      // least as strong as selected-alone).
+      await expect(banana).toHaveAttribute("aria-selected", "true");
+      await expect(banana).toHaveAttribute("data-selected");
+    });
   },
 };
 
@@ -649,10 +730,14 @@ const asyncLoadMoreSpy = fn();
 const AsyncLoadMoreList = () => {
   const [count, setCount] = useState(PAGE_SIZE);
   const [isLoading, setIsLoading] = useState(false);
-  const handleLoadMore = () => {
+  const handleLoadMore = async () => {
     asyncLoadMoreSpy();
     if (count >= manyFruits.length) return;
     setIsLoading(true);
+    // A real async gap so `isLoading` is observably true (and the loader row
+    // renders) before the next page is appended. A synchronous true→false
+    // toggle would be batched by React and never paint the loading state.
+    await new Promise((resolve) => setTimeout(resolve, 80));
     setCount((c) => Math.min(c + PAGE_SIZE, manyFruits.length));
     setIsLoading(false);
   };
@@ -683,6 +768,9 @@ const AsyncLoadMoreList = () => {
 export const AsyncLoadMore: Story = {
   render: () => <AsyncLoadMoreList />,
   play: async ({ canvasElement, step }) => {
+    // Module-scoped spy — clear it so a prior play in the same module instance
+    // can't satisfy the call assertion below.
+    asyncLoadMoreSpy.mockClear();
     const canvas = within(canvasElement);
     const listbox = canvas.getByTestId("async-list");
 
@@ -691,9 +779,15 @@ export const AsyncLoadMore: Story = {
     });
 
     await step(
-      "Scrolling to the bottom fires onLoadMore and appends the next page",
+      "Scrolling to the bottom fires onLoadMore, shows the loader, and appends the next page",
       async () => {
         listbox.scrollTop = listbox.scrollHeight;
+        await waitFor(() => expect(asyncLoadMoreSpy).toHaveBeenCalled());
+        // The loader row is observable during the async gap, before the next
+        // page replaces it.
+        await waitFor(() =>
+          expect(canvas.getByRole("progressbar")).toBeInTheDocument()
+        );
         await waitFor(
           () =>
             expect(canvas.getAllByRole("option").length).toBeGreaterThan(
@@ -701,7 +795,6 @@ export const AsyncLoadMore: Story = {
             ),
           { timeout: 3000 }
         );
-        await expect(asyncLoadMoreSpy).toHaveBeenCalled();
       }
     );
   },

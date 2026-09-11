@@ -147,6 +147,11 @@ compact density as **nice-to-have**, not essential.
 | **Rich item content**    | leading icon/avatar, label + description, trailing meta/action, section headers | **Essential**                                        | `<Text slot="label">`, `<Text slot="description">`, `<ListBoxSection>` + `<Header>` |
 | **Container / padding**  | `plain` vs `bordered`/`card` (inset vs flush)                                   | **Nice-to-have**                                     | style wrapper, or delegate to Popover                                               |
 
+> **Superseded (v1):** `density` was deferred from v1 — `size` owns the row
+> rhythm (per-size padding + height). See
+> `openspec/changes/add-list-box-component/design.md` (Density deferred from
+> v1). The "Size / density" row above reflects the original research snapshot.
+
 React Aria makes label/description slots, `SelectionIndicator`, sections, and
 every interactive state (`data-selected`, `data-focus-visible`, `data-disabled`,
 …) easy to style with Chakra recipes. The hard parts are purely visual choices,

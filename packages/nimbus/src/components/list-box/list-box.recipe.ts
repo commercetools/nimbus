@@ -79,6 +79,19 @@ export const listBoxSlotRecipe = defineSlotRecipe({
         bg: "primary.2",
         cursor: "pointer",
       },
+      // A selected row that is also hovered or keyboard-focused must stay at
+      // least as strong as selected-alone, never lighter — the full-row
+      // highlight is the single-select selection affordance, and React Aria
+      // moves focus onto the selected row when the list is focused. Without
+      // this rule the equal-specificity hover/focus rules above (primary.2)
+      // win by source order and the selected row reads as deselected. Scoped
+      // away from multi-select, where the checkbox owns the affordance and the
+      // row highlight is dropped below. primary.4 is one step above selected
+      // (primary.3) — the same token DataTable uses for a selected row.
+      '&[data-selected]:is([data-hovered], [data-focused]):not([data-selection-mode="multiple"])':
+        {
+          bg: "primary.4",
+        },
       "&[data-disabled]": {
         layerStyle: "disabled",
       },

@@ -35,18 +35,21 @@ export const ListBoxSection = <T extends object>(
   }
 
   // A headerless section still needs an accessible name — React Aria requires
-  // an `aria-label` on a section rendered without a `Header`.
-  const ariaLabel = (props as { "aria-label"?: string })["aria-label"];
-  if (!label && !ariaLabel) {
-    console.warn(
-      "ListBox.Section: a section without a `label` should be given an `aria-label` so the group has an accessible name."
-    );
+  // an `aria-label` (or `aria-labelledby`) on a section rendered without a
+  // `Header`. Dev-only, matching the repo convention (see breadcrumbs.root).
+  if (process.env.NODE_ENV !== "production") {
+    const labelProps = props as Record<string, unknown>;
+    if (!label && !labelProps["aria-label"] && !labelProps["aria-labelledby"]) {
+      console.warn(
+        "ListBox.Section: a section without a `label` should be given an `aria-label` (or `aria-labelledby`) so the group has an accessible name."
+      );
+    }
   }
 
   return (
     <ListBoxSectionSlot asChild {...styleProps}>
       <RaListBoxSection ref={ref} {...functionalProps}>
-        {label && (
+        {label != null && label !== false && (
           <ListBoxSectionHeaderSlot asChild>
             <RaHeader>{label}</RaHeader>
           </ListBoxSectionHeaderSlot>
