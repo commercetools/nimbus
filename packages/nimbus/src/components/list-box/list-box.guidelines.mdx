@@ -1,0 +1,56 @@
+---
+title: ListBox
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+A ListBox shows a list of options that stay visible on the page and lets people
+select one or many. Use these guidelines to decide when a ListBox is the right
+choice and how to configure it.
+
+### When to use a ListBox
+
+- **Use a ListBox** when the options should remain visible in place — a filter
+  list, a settings list, a list picker, a transfer list, a command palette.
+- **Use a `Select`** when the options should collapse into a compact dropdown
+  field and screen space is limited.
+- **Use a `ComboBox`** when the list is long enough that people should be able to
+  type to filter it.
+- **Use a `Menu`** when the entries are commands or actions rather than a
+  persistent selection.
+
+### Single vs. multiple selection
+
+- **Single selection** shows the selected option with a full-row highlight. Use
+  it when exactly one option applies at a time.
+- **Multiple selection** shows a checkbox on each option. Use it when people can
+  pick several options — the checkbox makes the multi-select affordance obvious
+  and matches the `ComboBox` multi-select style.
+
+### Container variant
+
+- **`card`** (default) — a bordered, elevated, scrolling surface. Use it for a
+  standalone list on the page.
+- **`plain`** — a bare list with no surface. Use it only when the list sits
+  inside a container that already provides the card, such as a popover.
+
+### Content
+
+- Keep option labels short and scannable. Put secondary information in a
+  description line rather than a longer label.
+- Use a leading icon or avatar only when it helps people recognise an option
+  faster; do not add one for decoration alone.
+- Group long lists into sections with clear, short headers.
+
+### Do
+
+- Always give the list an accessible name.
+- Keep the option order stable and predictable.
+- Provide a clear empty state when the list can be empty.
+
+### Don't
+
+- Don't use a ListBox for navigation between pages — use a navigation component.
+- Don't mix actions and selection in the same list.

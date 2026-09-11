@@ -1,0 +1,53 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+ListBox is built on React Aria's ListBox and implements the
+[WAI-ARIA listbox pattern](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/).
+Most accessibility requirements are handled for you, but you must always give the
+list an accessible name.
+
+### Roles and states
+
+- The container is `role="listbox"`; each option is `role="option"`.
+- Selected options expose `aria-selected`.
+- A multiple-selection list exposes `aria-multiselectable="true"`.
+- Disabled options expose `aria-disabled="true"` and are skipped by selection.
+
+### Labelling
+
+Give the list a name with a visible label via `aria-labelledby`, or a hidden
+label via `aria-label`.
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="200">
+    <Text id="fruit-label" fontWeight="600">Fruit</Text>
+    <ListBox.Root aria-labelledby="fruit-label" selectionMode="single">
+      <ListBox.Item id="apple">Apple</ListBox.Item>
+      <ListBox.Item id="banana">Banana</ListBox.Item>
+      <ListBox.Item id="cherry">Cherry</ListBox.Item>
+    </ListBox.Root>
+  </Stack>
+)
+```
+
+### Keyboard interaction
+
+| Key | Action |
+| --- | --- |
+| `Tab` / `Shift+Tab` | Move focus to / from the list |
+| `Arrow Up` / `Arrow Down` | Move focus between options |
+| `Home` / `End` | Move focus to the first / last option |
+| `Enter` / `Space` | Select the focused option |
+| Type a letter | Jump to the next option matching the typed characters (type-ahead) |
+
+### Rich content
+
+When an option's content is not a plain string (icons, a description line), pass
+`textValue` so type-ahead and screen-reader announcements use the right text. Use
+the `Text` `label` and `description` slots so the description becomes part of the
+option's accessible description.

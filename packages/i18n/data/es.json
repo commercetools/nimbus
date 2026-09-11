@@ -391,6 +391,10 @@
     "developer_comment": "default label for the save button in a form dialog",
     "string": "Guardar"
   },
+  "Nimbus.ListBox.emptyState": {
+    "developer_comment": "Default message shown when a ListBox has no options to display",
+    "string": "No options available"
+  },
   "Nimbus.LoadingSpinner.default": {
     "developer_comment": "Default loading message for loading spinners",
     "string": "Cargando datos"
