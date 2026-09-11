@@ -86,11 +86,12 @@ const ScrollAreaParts = ({
  * A scrollable container with custom-styled scrollbar overlays.
  * Replaces native scrollbars with themed overlay indicators.
  *
- * With the default `hover` variant the bar appears when the pointer enters the
- * area or when the content scrolls, and hides again after a short idle delay.
- * While the pointer stays inside, only scrolling reveals it again — so a
- * resting reader is not distracted by the bar. Use `variant="always"` to keep
- * the bar permanently visible.
+ * By default the bar auto-hides: it appears when the pointer enters the area or
+ * when the content scrolls, then fades out after a short idle delay. While the
+ * pointer rests inside, the bar comes back on scroll or when the pointer moves
+ * toward it — so a resting reader is not distracted. Use the `variant` prop for
+ * the visual style (`solid` | `inset` | `overlay` | `glass`) and
+ * `scrollbarVisibility="always"` to keep the bar permanently visible.
  *
  * Built on Chakra UI's ScrollArea (powered by Ark UI) with Nimbus
  * design tokens and keyboard accessibility.
@@ -123,12 +124,12 @@ export const ScrollArea = (props: ScrollAreaProps) => {
   // Adapter: split the public props into what the recipe styles (`appearance`)
   // and what drives behavior (`resolvedVisibility` + whether the idle-hide hook
   // runs). `variant` carries the visual style plus two deprecated aliases:
-  // - `inset` / `hidden` / `glass` → that look; otherwise the `solid` look.
+  // - `inset` / `overlay` / `glass` → that look; otherwise the `solid` look.
   // - `hover` (deprecated) → `solid`; `always` (deprecated) → `solid` + always.
   // The explicit `scrollbarVisibility` prop wins; the deprecated
   // `variant="always"` only applies when it is not set.
   const appearance =
-    variant === "inset" || variant === "hidden" || variant === "glass"
+    variant === "inset" || variant === "overlay" || variant === "glass"
       ? variant
       : "solid";
   const resolvedVisibility =
@@ -146,7 +147,7 @@ export const ScrollArea = (props: ScrollAreaProps) => {
     viewportRef ? mergeRefs(viewportLocalRef, viewportRef) : viewportLocalRef
   );
 
-  // A permanently visible bar (`persistence="always"`) has nothing to idle-hide,
+  // A permanently visible bar (`scrollbarVisibility="always"`) has nothing to idle-hide,
   // so the activity hook only runs otherwise.
   useScrollbarAutoHide({
     enabled: !isPersistent,

@@ -1,38 +1,34 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Auto-hide tuning. Internal on purpose — there is no consumer-facing prop for
- * this. Change these values to switch strategy without touching the machine:
- *
- * - **Pure scroll-only** (the bar shows only while scrolling): set
- *   `revealOnEnter: false`.
- * - **Movement always reveals** (macOS overlay style — any mouse move brings it
- *   back, even after it hid): set `revealOnMoveAlways: true`.
- * - **Tune the wait**: change `hideDelay`.
+ * Idle delay: milliseconds of no activity (no move, no scroll) before the bar
+ * fades out. This is a fixed, universal part of the auto-hide behavior — there
+ * is no consumer-facing prop for it. Exported so the hook's spec asserts timing
+ * against the real value instead of a hand-copied literal.
  */
-const AUTO_HIDE = {
-  /** Milliseconds of no activity (no move, no scroll) before the bar hides. */
-  hideDelay: 600,
-  /** Show the bar briefly when the mouse first enters the area. */
-  revealOnEnter: true,
-  /**
-   * After the entry reveal has ended once (the mouse stopped moving), keep
-   * revealing on any further mouse movement. `false` = for the rest of the
-   * visit only scrolling reveals the bar — the reading-friendly default, so a
-   * resting reader who nudges the mouse does not keep flashing the bar.
-   */
-  revealOnMoveAlways: false,
-} as const;
+export const AUTO_HIDE_DELAY_MS = 1000;
+
+/**
+ * How near (in px) the pointer must come to a scrollbar — after the bar has
+ * already idle-hidden — for movement alone to bring it back. This lets a user
+ * reach for the thumb by moving toward the edge, while a reader whose pointer
+ * rests in the content middle is left undisturbed (movement there never
+ * re-flashes the bar). Measured geometrically against the scrollbar's box on
+ * the root's `mousemove`, because the hidden bar is `pointer-events: none` and
+ * so cannot report its own hover.
+ */
+const REVEAL_PROXIMITY_PX = 24;
 
 /**
  * Attribute written on the ScrollArea root while the bar should be visible. The
- * recipe's `hover` variant keys the scrollbar/corner opacity off it.
+ * recipe's `auto-hide` visibility variant keys the scrollbar/corner opacity (and
+ * `pointer-events`) off it.
  */
 export const SCROLLBAR_VISIBLE_ATTR = "data-scrollbar-visible";
 
 export type UseScrollbarAutoHideOptions = {
   /**
-   * When `false` the hook does nothing. Used for the `always` variant, whose
+   * When `false` the hook does nothing. Used for the `always` visibility, whose
    * bar is permanently visible via CSS regardless of this attribute.
    */
   enabled: boolean;
@@ -48,8 +44,9 @@ export type UseScrollbarAutoHideOptions = {
  * Per visit (from mouse enter to mouse leave):
  * 1. Mouse enters → show the bar, start an idle timer.
  * 2. Mouse keeps moving → stay shown; each move resets the idle timer.
- * 3. Mouse stops for `hideDelay` → hide; movement no longer reveals the bar.
- * 4. Only scrolling reveals it again (then it hides after scrolling stops).
+ * 3. Mouse stops for the idle delay → hide.
+ * 4. After that, movement reveals the bar again only when the pointer is near a
+ *    scrollbar (reaching for the thumb); scrolling always reveals it.
  * 5. Mouse leaves → reset, so the next enter starts again at step 1.
  *
  * Touch and keyboard produce no mouse enter/move, so they get only the
@@ -67,8 +64,9 @@ export const useScrollbarAutoHide = ({
   // Kept in refs so the listeners (registered once) always read the latest
   // value without needing to re-subscribe.
   const visibleRef = useRef(false);
-  // "armed" = mouse movement still reveals the bar (a fresh visit).
-  // "scroll-only" = the entry reveal has ended; only scrolling reveals it now.
+  // "armed" = a fresh visit; any mouse movement reveals the bar.
+  // "scroll-only" = the bar has idle-hidden; now only scrolling, or movement
+  // near a scrollbar, reveals it.
   const phaseRef = useRef<"armed" | "scroll-only">("armed");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -97,7 +95,7 @@ export const useScrollbarAutoHide = ({
     };
 
     // Reveal + (re)arm the idle timer. When it fires, hide and drop into the
-    // scroll-only phase so further movement is ignored until the mouse leaves.
+    // scroll-only phase.
     const bump = () => {
       show();
       clearTimer();
@@ -105,21 +103,44 @@ export const useScrollbarAutoHide = ({
         timerRef.current = null;
         hide();
         phaseRef.current = "scroll-only";
-      }, AUTO_HIDE.hideDelay);
+      }, AUTO_HIDE_DELAY_MS);
+    };
+
+    // True when the pointer is within REVEAL_PROXIMITY_PX of any scrollbar that
+    // is currently laid out. A scrollbar whose axis isn't overflowing is
+    // `display: none` and reports a zero-size box, so it is skipped. Reading the
+    // box geometry (rather than the bar's own hover) is what lets this work
+    // while the hidden bar is `pointer-events: none`, and it stays correct for
+    // horizontal/vertical bars and RTL without any direction logic here.
+    const pointerNearScrollbar = (event: MouseEvent): boolean => {
+      const scrollbars = Array.from(
+        root.querySelectorAll<HTMLElement>('[data-part="scrollbar"]')
+      );
+      for (const bar of scrollbars) {
+        const rect = bar.getBoundingClientRect();
+        if (rect.width === 0 && rect.height === 0) continue;
+        if (
+          event.clientX >= rect.left - REVEAL_PROXIMITY_PX &&
+          event.clientX <= rect.right + REVEAL_PROXIMITY_PX &&
+          event.clientY >= rect.top - REVEAL_PROXIMITY_PX &&
+          event.clientY <= rect.bottom + REVEAL_PROXIMITY_PX
+        ) {
+          return true;
+        }
+      }
+      return false;
     };
 
     const onMouseEnter = () => {
-      if (AUTO_HIDE.revealOnEnter) {
-        phaseRef.current = "armed";
-        bump();
-      } else {
-        // Pure scroll-only: movement must never reveal, so start locked out.
-        phaseRef.current = "scroll-only";
-      }
+      phaseRef.current = "armed";
+      bump();
     };
 
-    const onMouseMove = () => {
-      if (AUTO_HIDE.revealOnMoveAlways || phaseRef.current === "armed") bump();
+    const onMouseMove = (event: MouseEvent) => {
+      // Armed → any movement keeps it up. Scroll-only → only movement toward a
+      // scrollbar reveals it, so a resting reader isn't distracted but reaching
+      // for the thumb still works.
+      if (phaseRef.current === "armed" || pointerNearScrollbar(event)) bump();
     };
 
     const onScroll = () => {

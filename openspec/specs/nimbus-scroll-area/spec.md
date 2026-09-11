@@ -3,7 +3,7 @@
 ## Purpose
 Define the behavior and API contract of the Nimbus `ScrollArea` component:
 custom-styled overlay scrollbars over native scrolling, with a single-element
-API, keyboard accessibility, visual variants (`solid` / `inset` / `hidden` /
+API, keyboard accessibility, visual variants (`solid` / `inset` / `overlay` /
 `glass`), and auto-hide / always-visible visibility modes.
 ## Requirements
 ### Requirement: Single-element API hides compound internals
@@ -129,9 +129,9 @@ The `variant` prop SHALL select the scrollbar's visual style, independent of
   border plus `background-clip: content-box` so the thumb's element width (and
   thus the hit area) is unchanged
 
-#### Scenario: Hidden track
+#### Scenario: Overlay track
 
-- **WHEN** `variant="hidden"`
+- **WHEN** `variant="overlay"`
 - **THEN** the scrollbar track SHALL be transparent
 - **AND** only the inset thumb SHALL paint
 
@@ -164,13 +164,22 @@ The `scrollbarVisibility` prop SHALL control when the scrollbar is shown:
 - **AND** it SHALL hide again after a short idle delay once there is no pointer
   movement and no scrolling
 
-#### Scenario: Idle-while-inside reveals only on scroll
+#### Scenario: Idle-while-inside reveals on scroll or on approaching the bar
 
 - **WHEN** the scrollbar has hidden after the idle delay and the pointer has NOT
   yet left the area
-- **THEN** further pointer movement SHALL NOT reveal the scrollbar
-- **AND** only scrolling SHALL reveal it again
+- **THEN** pointer movement in the content area SHALL NOT reveal the scrollbar
+- **AND** moving the pointer near a scrollbar SHALL reveal it again, so the user
+  can grab the thumb without scrolling first
+- **AND** scrolling SHALL reveal it again
 - **AND** leaving the area SHALL re-arm the on-enter reveal for the next visit
+
+#### Scenario: Hidden bar does not intercept pointer input
+
+- **WHEN** the scrollbar is hidden in `auto-hide` mode
+- **THEN** it SHALL NOT be hit-testable (`pointer-events: none`), so a click over
+  the content it overlays reaches the content rather than the invisible bar
+- **AND** it SHALL become hit-testable again whenever it is revealed or dragged
 
 #### Scenario: Touch and keyboard
 

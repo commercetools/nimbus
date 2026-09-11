@@ -1,15 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, renderHook } from "@testing-library/react";
 import {
+  AUTO_HIDE_DELAY_MS,
   SCROLLBAR_VISIBLE_ATTR,
   useScrollbarAutoHide,
 } from "./use-scrollbar-auto-hide";
 
-/**
- * The idle delay baked into the hook (see `AUTO_HIDE.hideDelay`). Kept in sync
- * here so the timing assertions read clearly.
- */
-const HIDE_DELAY = 600;
+// The real idle delay, imported from the hook so timing assertions can never
+// drift from the value the hook actually uses.
+const HIDE_DELAY = AUTO_HIDE_DELAY_MS;
 
 const visible = (el: HTMLElement) => el.hasAttribute(SCROLLBAR_VISIBLE_ATTR);
 

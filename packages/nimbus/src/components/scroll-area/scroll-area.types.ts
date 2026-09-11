@@ -11,8 +11,11 @@ import type { OmitInternalProps } from "@/type-utils/omit-props";
 // ============================================================
 
 /**
- * Recipe props for the ScrollArea component.
- * Inferred from the slot recipe to enable responsive values.
+ * Recipe-facing props for the ScrollArea component, inferred from the slot
+ * recipe. Only `size` reaches the public API this way, so it accepts responsive
+ * values; the public `ScrollAreaProps` re-declares `variant` and
+ * `scrollbarVisibility` as explicit unions (they pass through a runtime adapter,
+ * so they are deliberately not responsive).
  */
 type ScrollAreaRecipeProps = {
   /**
@@ -53,7 +56,11 @@ type ConflictingProps = "overflow" | "overflowX" | "overflowY";
 /** Props for the `ScrollArea` component. */
 export type ScrollAreaProps = Omit<
   OmitInternalProps<ScrollAreaRootSlotProps>,
-  ConflictingProps
+  // `variant` and `scrollbarVisibility` are stripped here and re-declared below
+  // as explicit unions, so the documented unions (with their deprecated
+  // aliases) are the single source of truth rather than the recipe's
+  // `ConditionalValue`.
+  ConflictingProps | "variant" | "scrollbarVisibility"
 > & {
   /** Content to render inside the scrollable area. */
   children: React.ReactNode;
@@ -88,24 +95,26 @@ export type ScrollAreaProps = Omit<
    * Visual style of the scrollbar.
    * - `solid` (default): grey track, thumb fills its width (the original look).
    * - `inset`: grey track with an inset, floating pill thumb.
-   * - `hidden`: no track — only the thumb shows (overlay look).
+   * - `overlay`: no track — only the thumb shows.
    * - `glass`: translucent, frosted track that blurs the content behind it.
    *
    * In every visual the bar auto-hides when idle: it appears when the pointer
-   * enters the area or when the content scrolls, then hides after a short idle
-   * delay; while the pointer stays inside, only scrolling reveals it again.
+   * enters the area or when the content scrolls, then fades out after a short
+   * idle delay; while the pointer rests inside, scrolling or moving toward the
+   * bar reveals it again.
    *
    * `hover` and `always` are **deprecated** aliases kept for backward
    * compatibility: use `variant="solid"` instead of `hover`, and
    * `scrollbarVisibility="always"` instead of `always`.
    * @default "solid"
    */
-  variant?: "solid" | "inset" | "hidden" | "glass" | "hover" | "always";
+  variant?: "solid" | "inset" | "overlay" | "glass" | "hover" | "always";
   /**
    * When the scrollbar is shown.
    * - `auto-hide` (default): the bar appears when the pointer enters the area
-   *   or when the content scrolls, then hides after a short idle delay. While
-   *   the pointer stays inside, only scrolling reveals it again.
+   *   or when the content scrolls, then fades out after a short idle delay.
+   *   While the pointer rests inside, scrolling or moving toward the bar reveals
+   *   it again.
    * - `always`: the bar stays visible, and the viewport reserves a gutter so it
    *   never overlays content.
    *
@@ -115,7 +124,10 @@ export type ScrollAreaProps = Omit<
    */
   scrollbarVisibility?: "auto-hide" | "always";
   /**
-   * Scrollbar thickness.
+   * Scrollbar thumb thickness. The visible thumb stays this thickness across
+   * every `variant`; the `inset`, `overlay`, and `glass` variants add padding
+   * around it, so their track — and the gutter reserved by
+   * `scrollbarVisibility="always"` — is wider at the same `size`.
    * @default "sm"
    */
   size?: ScrollAreaRecipeProps["size"];

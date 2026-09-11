@@ -71,6 +71,65 @@ const App = () => (
 )
 ```
 
+### Visibility
+
+Use the `scrollbarVisibility` prop to choose when the scrollbar is shown.
+`auto-hide` (the default) reveals the bar on pointer entry or scroll and fades
+it out after a short idle delay; while the pointer rests inside, scrolling or
+moving toward the bar reveals it again. `always` keeps the bar visible and
+reserves a gutter so it never overlays content:
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="600" direction="row">
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">auto-hide (default)</Text>
+      <ScrollArea maxH="120px" w="200px">
+        {Array.from({ length: 15 }, (_, i) => (
+          <Text key={i} fontSize="sm">Line {i + 1}</Text>
+        ))}
+      </ScrollArea>
+    </Box>
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">always</Text>
+      <ScrollArea maxH="120px" w="200px" scrollbarVisibility="always">
+        {Array.from({ length: 15 }, (_, i) => (
+          <Text key={i} fontSize="sm">Line {i + 1}</Text>
+        ))}
+      </ScrollArea>
+    </Box>
+  </Stack>
+)
+```
+
+### Appearance
+
+Use the `variant` prop for the scrollbar's visual style — `solid` (default),
+`inset`, `overlay`, or `glass`. It is independent of `scrollbarVisibility`, so
+any look can also be permanently visible:
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="600" direction="row" flexWrap="wrap">
+    {["solid", "inset", "overlay", "glass"].map((variant) => (
+      <Box key={variant}>
+        <Text fontSize="sm" mb="200" fontWeight="bold">{variant}</Text>
+        <ScrollArea
+          maxH="120px"
+          w="180px"
+          variant={variant}
+          scrollbarVisibility="always"
+        >
+          {Array.from({ length: 15 }, (_, i) => (
+            <Text key={i} fontSize="sm">Line {i + 1}</Text>
+          ))}
+        </ScrollArea>
+      </Box>
+    ))}
+  </Stack>
+)
+```
+
 ### Content padding
 
 Padding props on `ScrollArea` are forwarded to the content area inside the

@@ -33,11 +33,10 @@ const App = () => (
   click.
 - **Decorative scrollbars:** The custom scrollbar overlays are purely visual.
   Actual scrolling is handled by the browser's native scroll mechanism.
-- **Auto-hide is visual only:** With the default `hover` variant the bar hides
-  after a short idle delay, but this never affects scrollability — wheel,
-  touch, and keyboard scrolling keep working while it is hidden, and scrolling
-  reveals it again. Use `scrollbarVisibility="always"` where a permanently
-  visible bar is preferred.
+- **Auto-hide is visual only:** By default the bar hides after a short idle
+  delay, but this never affects scrollability — wheel, touch, and keyboard
+  scrolling keep working while it is hidden, and scrolling reveals it again. Use
+  `scrollbarVisibility="always"` where a permanently visible bar is preferred.
 - **ARIA landmarks:** When the scroll area represents a distinct page section,
   consider adding `role="region"` with `aria-label` or `aria-labelledby` to
   create a named landmark for screen reader navigation.
