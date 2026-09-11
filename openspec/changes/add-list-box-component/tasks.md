@@ -33,7 +33,7 @@
 - [x] 5.1 Mechanics play functions: single-select replaces; multiple toggles; keyboard Home/ArrowDown/End; type-ahead; Enter selects; disabled not selectable; empty state renders; sections not focusable; controlled sync
 - [x] 5.2 Drag-and-drop play (draggable affordance via `dragAndDropHooks`)
 - [x] 5.3 Visual-permutation stories: Sizes, Variants (`card`/`plain`), SelectedState, MultipleSelectionVisual, RichContent, WithSections, DisabledItems, EmptyState, Focused, and a SmokeTest grid (size × single/multi) — the Density story and the `× density` grid axis were removed with 9.1
-- [x] 5.4 `pnpm test:storybook:dev packages/nimbus/src/components/list-box/list-box.stories.tsx` — 23/23 green
+- [x] 5.4 `pnpm test:storybook:dev packages/nimbus/src/components/list-box/list-box.stories.tsx` — all green
 
 ## 6. Documentation
 
@@ -49,7 +49,7 @@
 ## 8. Verification
 
 - [x] 8.1 `pnpm --filter @commercetools/nimbus typecheck:dev` — clean
-- [x] 8.2 `pnpm test:storybook:dev …list-box.stories.tsx` — 23/23 pass
+- [x] 8.2 `pnpm test:storybook:dev …list-box.stories.tsx` — all green
 - [x] 8.3 `pnpm lint` (list-box) — clean
 - [x] 8.4 `pnpm openspec validate add-list-box-component --strict` — valid
 

@@ -49,7 +49,12 @@ Select/ComboBox/Menu, we adopt their convention as the default:
   is **mode-aware** because the `primary` ramp flips direction between themes
   (light: higher steps darker against a white bg; dark: higher steps lighter
   against a near-black bg), so it mixes toward `black` in light and `white` in
-  dark — a single-direction mix would invert in one mode. (A token step such as
+  dark — a single-direction mix would invert in one mode. Light is the
+  _unconditional_ default with `_dark` as an override (not two `_light`/`_dark`
+  branches): Chakra's colour-mode conditions compile to ancestor-class
+  selectors, so a two-branch form emits nothing when no `.light`/`.dark` class
+  is on an ancestor (first paint, or rendered outside the colour-mode provider)
+  and the row would fall back to the plain hover color. (A token step such as
   `primary.4` would be directionally safe in both modes by construction and
   avoids `color-mix`'s browser floor; revisit at the #1950 migration.)
 
