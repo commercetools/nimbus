@@ -168,7 +168,7 @@ overrides:
   "path-to-regexp@>=8.0.0 <8.4.0": ">=8.4.0"
   "happy-dom@<20.8.9": ">=20.8.9"
   jsdom: "catalog:tooling"
-  "adm-zip": ">=0.6.0"
+  "adm-zip": ">=0.6.1"
 
 catalogs:
   tooling:
@@ -310,3 +310,5 @@ catalogs:
 minimumReleaseAgeExclude:
   # Renovate security update: vitest@4.1.11
   - vitest@4.1.11
+  # Renovate security update: adm-zip@0.6.1
+  - adm-zip@0.6.1
