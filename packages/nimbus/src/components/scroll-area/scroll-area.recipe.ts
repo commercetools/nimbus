@@ -212,7 +212,9 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
         corner: {
           opacity: "0",
           pointerEvents: "none",
-          "[data-scrollbar-visible] &": {
+          // Direct-child combinator, like the scrollbar above: a nested
+          // ScrollArea's corner must not be revealed by this root's attribute.
+          "[data-scrollbar-visible] > &": {
             opacity: "1",
             pointerEvents: "auto",
           },
