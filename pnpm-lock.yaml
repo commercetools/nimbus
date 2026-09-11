@@ -364,7 +364,7 @@ overrides:
   path-to-regexp@>=8.0.0 <8.4.0: '>=8.4.0'
   happy-dom@<20.8.9: '>=20.8.9'
   jsdom: 29.0.1
-  adm-zip: '>=0.6.0'
+  adm-zip: '>=0.6.1'
 
 importers:
 
@@ -5157,8 +5157,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  adm-zip@0.6.0:
-    resolution: {integrity: sha512-XleryMhbuksdKtofnWZ9Sk+4CUTbms4Mb/EU32SZwToAyZ5RgVos/ki8n+yr0LWHOGKuakbXTuuYNHLQjhddgg==}
+  adm-zip@0.6.1:
+    resolution: {integrity: sha512-Xwrja8nx9e5o2N1my4DsKCeKpdrnACyr1wtbPxBDgGzKzKyE9kRtBFA8mWldI+RVlD7CBZNWY/wQ2+ydwOR6kQ==}
     engines: {node: '>=14.0'}
 
   ajv-draft-04@1.0.0:
@@ -16038,7 +16038,7 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  adm-zip@0.6.0: {}
+  adm-zip@0.6.1: {}
 
   ajv-draft-04@1.0.0(ajv@8.20.0):
     optionalDependencies:
@@ -18651,7 +18651,7 @@ snapshots:
 
   onnxruntime-node@1.24.3:
     dependencies:
-      adm-zip: 0.6.0
+      adm-zip: 0.6.1
       global-agent: 3.0.0
       onnxruntime-common: 1.24.3
 
