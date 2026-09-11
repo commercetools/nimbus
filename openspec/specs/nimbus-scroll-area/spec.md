@@ -172,6 +172,9 @@ The `scrollbarVisibility` prop SHALL control when the scrollbar is shown:
 - **AND** moving the pointer near a scrollbar SHALL reveal it again, so the user
   can grab the thumb without scrolling first
 - **AND** scrolling SHALL reveal it again
+- **AND** while the pointer rests directly on a bar the idle timer SHALL be
+  suspended, so the bar does not hide out from under a stationary pointer (as on
+  macOS/Radix); it SHALL hide once the pointer moves off the bar
 - **AND** leaving the area SHALL re-arm the on-enter reveal for the next visit
 
 #### Scenario: Hidden bar does not intercept pointer input

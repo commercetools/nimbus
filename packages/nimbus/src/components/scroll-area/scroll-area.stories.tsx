@@ -1544,6 +1544,79 @@ export const SmokeTest: Story = {
   ),
 };
 
+// One line that overflows on x only, for the horizontal / both-axes cases.
+const WideShortContent = () => (
+  <Box whiteSpace="nowrap">
+    <Text fontSize="sm">{"Long horizontal content ".repeat(20)}</Text>
+  </Box>
+);
+
+// Each overflow axis the component must handle: vertical, horizontal, and both.
+const overflowCases = [
+  {
+    key: "y",
+    label: "y overflow",
+    props: { maxH: "120px", w: "240px" },
+    content: () => <OverflowingContent />,
+  },
+  {
+    key: "x",
+    label: "x overflow",
+    props: { maxH: "120px", maxW: "240px" },
+    content: () => <WideShortContent />,
+  },
+  {
+    key: "both",
+    label: "both axes",
+    props: { maxH: "120px", maxW: "240px" },
+    content: () => (
+      <>
+        <OverflowingContent />
+        <WideShortContent />
+      </>
+    ),
+  },
+] as const;
+
+// ============================================================
+// SmokeTestOverflowAxes: every overflow axis (y / x / both) × every size, all
+// pinned always-visible. Restores the overflow-axis coverage that the variant ×
+// size SmokeTest above does not exercise (it uses y-overflow content only), so
+// the horizontal and both-axes layouts stay under a snapshot.
+// ============================================================
+export const SmokeTestOverflowAxes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Box display="flex" gap="600" alignItems="flex-start">
+      {overflowCases.map(({ key, label, props, content }) => (
+        <Box key={key} display="flex" flexDirection="column" gap="400">
+          <Text fontSize="sm" fontWeight="bold">
+            {label}
+          </Text>
+          {(["xs", "sm", "md", "lg"] as const).map((size) => (
+            <Box key={size}>
+              <Text fontSize="xs" color="neutral.11" mb="100">
+                size=&quot;{size}&quot;
+              </Text>
+              {/* borderRadius fires the viewport's `borderRadius: inherit`. */}
+              <ScrollArea
+                size={size}
+                scrollbarVisibility="always"
+                bg="neutral.2"
+                borderRadius="300"
+                {...props}
+              >
+                {content()}
+              </ScrollArea>
+            </Box>
+          ))}
+        </Box>
+      ))}
+    </Box>
+  ),
+};
+
 // ============================================================
 // AutoHideOnIdle: the default auto-hide behavior reveals the bar on activity
 // (pointer enter, mouse movement, scroll) and hides it after an idle delay.
@@ -1628,6 +1701,18 @@ export const AutoHideOnIdle: Story = {
       );
     });
 
+    await step(
+      "Resting on the bar keeps it visible past the idle delay",
+      async () => {
+        // The previous step left the pointer on the bar. Wait out the full idle
+        // delay with no further movement: the bar must not vanish under the
+        // stationary cursor, or a click on it would fall through to the content.
+        await new Promise((resolve) => setTimeout(resolve, 1300));
+        expect(root).toHaveAttribute("data-scrollbar-visible");
+        expect(window.getComputedStyle(scrollbar).pointerEvents).toBe("auto");
+      }
+    );
+
     await step("Scrolling reveals it again after it idles", async () => {
       await userEvent.unhover(root);
       await waitFor(
@@ -1671,10 +1756,11 @@ const AppearanceDemoContent = () => (
 const APPEARANCES = ["solid", "inset", "overlay", "glass"] as const;
 
 // ============================================================
-// Appearances: the four visual `variant` values side by side. Each bar is
-// forced visible and scrolled to the same position in the play (they all
-// auto-hide), so the frame shows every look at once for comparison and for a
-// deterministic visual-regression snapshot.
+// Appearances: the four visual `variant` values side by side, all pinned
+// always-visible via `scrollbarVisibility="always"` so every look is painted in
+// the snapshot without relying on the auto-hide timer or on poking the reveal
+// attribute. The scroll is parked at the same fraction so all four thumbs sit
+// at the same spot.
 // ============================================================
 export const Appearances: Story = {
   tags: ["vrt"],
@@ -1690,6 +1776,7 @@ export const Appearances: Story = {
             maxH="200px"
             w="220px"
             variant={v}
+            scrollbarVisibility="always"
             ids={{ root: `appearance-${v}`, viewport: `appearance-vp-${v}` }}
           >
             <AppearanceDemoContent />
@@ -1701,18 +1788,12 @@ export const Appearances: Story = {
   play: async ({ canvasElement }) => {
     const doc = canvasElement.ownerDocument;
     APPEARANCES.forEach((v) => {
-      // Force the bar visible by poking the attribute the hook owns (each
-      // auto-hides on its own). Deliberately not `scrollbarVisibility="always"`:
-      // that would reserve a gutter and change the very layout this snapshot
-      // compares. Park the scroll at the same fraction so all four thumbs sit at
-      // the same spot.
-      doc
-        .getElementById(`appearance-${v}`)
-        ?.setAttribute("data-scrollbar-visible", "");
+      // Park the scroll at the same fraction so all four thumbs align.
       const vp = doc.getElementById(`appearance-vp-${v}`);
       if (vp) vp.scrollTop = (vp.scrollHeight - vp.clientHeight) * 0.35;
     });
-    // Wait for the reveal fade to finish before the snapshot is taken.
+    // `always` keeps every bar opaque without the auto-hide timer, so the
+    // snapshot is deterministic.
     const solidRoot = doc.getElementById("appearance-solid") as HTMLElement;
     await waitFor(() => {
       const sb = solidRoot.querySelector(

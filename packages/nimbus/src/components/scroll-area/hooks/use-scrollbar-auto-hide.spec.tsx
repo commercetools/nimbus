@@ -17,6 +17,13 @@ const fire = (el: HTMLElement, type: string) =>
     el.dispatchEvent(new Event(type));
   });
 
+const move = (el: HTMLElement, x: number, y: number) =>
+  act(() => {
+    el.dispatchEvent(
+      new MouseEvent("mousemove", { clientX: x, clientY: y, bubbles: true })
+    );
+  });
+
 const advance = (ms: number) =>
   act(() => {
     vi.advanceTimersByTime(ms);
@@ -42,6 +49,31 @@ const setup = (enabled = true) => {
   );
 
   return { root, viewport, view };
+};
+
+/**
+ * A root whose single direct-child scrollbar has a mocked box at
+ * x ∈ [100, 110], y ∈ [0, 200] — JSDOM does no layout, so proximity geometry
+ * must be stubbed. Used to exercise the reveal-near-bar and rest-on-bar paths.
+ */
+const setupWithBar = (enabled = true) => {
+  const result = setup(enabled);
+  const bar = document.createElement("div");
+  bar.setAttribute("data-part", "scrollbar");
+  bar.getBoundingClientRect = () =>
+    ({
+      left: 100,
+      right: 110,
+      top: 0,
+      bottom: 200,
+      width: 10,
+      height: 200,
+      x: 100,
+      y: 0,
+      toJSON: () => ({}),
+    }) as DOMRect;
+  result.root.appendChild(bar);
+  return { ...result, bar };
 };
 
 describe("useScrollbarAutoHide", () => {
@@ -79,17 +111,60 @@ describe("useScrollbarAutoHide", () => {
     expect(visible(root)).toBe(false);
   });
 
-  it("ignores mouse movement once idle; only scroll reveals it again", () => {
+  it("ignores mouse movement away from a bar once idle; scroll reveals it again", () => {
     const { root, viewport } = setup();
 
     fire(root, "mouseenter");
     advance(HIDE_DELAY); // idle → hidden, now in the scroll-only phase
     expect(visible(root)).toBe(false);
 
-    fire(root, "mousemove"); // ignored while scroll-only
+    fire(root, "mousemove"); // no coordinates + no bar → not near one → ignored
     expect(visible(root)).toBe(false);
 
     fire(viewport, "scroll"); // scrolling still reveals it
+    expect(visible(root)).toBe(true);
+  });
+
+  it("reveals again when the pointer moves near a bar after idling (proximity)", () => {
+    const { root } = setupWithBar();
+
+    fire(root, "mouseenter");
+    advance(HIDE_DELAY); // idle → hidden, scroll-only
+    expect(visible(root)).toBe(false);
+
+    move(root, 5, 5); // far from the bar → still ignored
+    expect(visible(root)).toBe(false);
+
+    move(root, 105, 100); // within the bar's proximity → revealed
+    expect(visible(root)).toBe(true);
+  });
+
+  it("keeps the bar visible while the pointer rests on it past the idle delay", () => {
+    const { root } = setupWithBar();
+
+    fire(root, "mouseenter");
+    move(root, 105, 100); // pointer resting directly on the bar
+    advance(HIDE_DELAY); // timer fires, but the pointer is on the bar → stays
+    expect(visible(root)).toBe(true);
+
+    advance(HIDE_DELAY); // still resting on it → still visible
+    expect(visible(root)).toBe(true);
+
+    move(root, 5, 5); // pointer moves off into the content
+    advance(HIDE_DELAY); // now it hides
+    expect(visible(root)).toBe(false);
+  });
+
+  it("does not hide under a pointer resting on the bar when scroll re-arms the timer", () => {
+    const { root, viewport } = setupWithBar();
+
+    fire(root, "mouseenter");
+    advance(HIDE_DELAY); // idle → hidden, scroll-only
+    move(root, 105, 100); // proximity reveal, pointer now on the bar
+    expect(visible(root)).toBe(true);
+
+    fire(viewport, "scroll"); // re-arms the timer with no coordinates of its own
+    advance(HIDE_DELAY); // would hide under the stationary pointer without the guard
     expect(visible(root)).toBe(true);
   });
 

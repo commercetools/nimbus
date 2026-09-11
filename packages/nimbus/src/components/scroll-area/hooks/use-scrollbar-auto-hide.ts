@@ -44,8 +44,10 @@ export type UseScrollbarAutoHideOptions = {
  * Per visit (from mouse enter to mouse leave):
  * 1. Mouse enters → show the bar, start an idle timer.
  * 2. Mouse keeps moving → stay shown; each move resets the idle timer.
- * 3. Mouse stops for the idle delay → hide.
- * 4. After that, movement reveals the bar again only when the pointer is near a
+ * 3. Mouse stops for the idle delay → hide — unless the pointer is resting
+ *    directly on a bar, in which case it stays shown (as on macOS/Radix) so it
+ *    never vanishes mid-reach.
+ * 4. After it hides, movement reveals it again only when the pointer is near a
  *    scrollbar (reaching for the thumb); scrolling always reveals it.
  * 5. Mouse leaves → reset, so the next enter starts again at step 1.
  *
@@ -96,39 +98,60 @@ export const useScrollbarAutoHide = ({
 
     // Reveal + (re)arm the idle timer. When it fires, hide and drop into the
     // scroll-only phase.
-    const bump = () => {
-      show();
+    // Position of the last mouse move within the root. Used to tell whether the
+    // pointer is resting on a bar — including when a reveal is driven by scroll,
+    // which carries no coordinates of its own.
+    let lastPointer: { x: number; y: number } | null = null;
+
+    // Boxes of this root's own scrollbars that are currently laid out. Direct
+    // children only (`:scope >`) so a nested ScrollArea's bars never count — the
+    // mirror of the `> &` reveal selector in the recipe. A bar whose axis isn't
+    // overflowing is `display: none` and reports a zero-size box, so it drops
+    // out. Reading geometry (not the bar's own hover) is what lets this work
+    // while the hidden bar is `pointer-events: none`, and it stays correct for
+    // horizontal/vertical bars and RTL with no direction logic here.
+    const scrollbarRects = (): DOMRect[] =>
+      Array.from(
+        root.querySelectorAll<HTMLElement>(':scope > [data-part="scrollbar"]')
+      )
+        .map((bar) => bar.getBoundingClientRect())
+        .filter((rect) => rect.width !== 0 || rect.height !== 0);
+
+    const withinBar = (x: number, y: number, margin: number): boolean =>
+      scrollbarRects().some(
+        (rect) =>
+          x >= rect.left - margin &&
+          x <= rect.right + margin &&
+          y >= rect.top - margin &&
+          y <= rect.bottom + margin
+      );
+
+    // The pointer is resting directly on a bar (no halo).
+    const pointerOnBar = (): boolean =>
+      lastPointer !== null && withinBar(lastPointer.x, lastPointer.y, 0);
+
+    const scheduleHide = () => {
       clearTimer();
       timerRef.current = setTimeout(() => {
+        // Don't hide out from under a pointer parked on the bar: it would vanish
+        // mid-reach and the next click — which fires no `mousemove` first — would
+        // fall through to the content. macOS/Radix/Windows all suspend the hide
+        // while the pointer is over the bar. Re-checked on the same cadence (and
+        // keyed on the last pointer position, so a scroll-driven arm respects it
+        // too); a move off the bar lets it hide normally.
+        if (pointerOnBar()) {
+          scheduleHide();
+          return;
+        }
         timerRef.current = null;
         hide();
         phaseRef.current = "scroll-only";
       }, AUTO_HIDE_DELAY_MS);
     };
 
-    // True when the pointer is within REVEAL_PROXIMITY_PX of any scrollbar that
-    // is currently laid out. A scrollbar whose axis isn't overflowing is
-    // `display: none` and reports a zero-size box, so it is skipped. Reading the
-    // box geometry (rather than the bar's own hover) is what lets this work
-    // while the hidden bar is `pointer-events: none`, and it stays correct for
-    // horizontal/vertical bars and RTL without any direction logic here.
-    const pointerNearScrollbar = (event: MouseEvent): boolean => {
-      const scrollbars = Array.from(
-        root.querySelectorAll<HTMLElement>('[data-part="scrollbar"]')
-      );
-      for (const bar of scrollbars) {
-        const rect = bar.getBoundingClientRect();
-        if (rect.width === 0 && rect.height === 0) continue;
-        if (
-          event.clientX >= rect.left - REVEAL_PROXIMITY_PX &&
-          event.clientX <= rect.right + REVEAL_PROXIMITY_PX &&
-          event.clientY >= rect.top - REVEAL_PROXIMITY_PX &&
-          event.clientY <= rect.bottom + REVEAL_PROXIMITY_PX
-        ) {
-          return true;
-        }
-      }
-      return false;
+    const bump = () => {
+      show();
+      scheduleHide();
     };
 
     const onMouseEnter = () => {
@@ -137,10 +160,16 @@ export const useScrollbarAutoHide = ({
     };
 
     const onMouseMove = (event: MouseEvent) => {
-      // Armed → any movement keeps it up. Scroll-only → only movement toward a
-      // scrollbar reveals it, so a resting reader isn't distracted but reaching
-      // for the thumb still works.
-      if (phaseRef.current === "armed" || pointerNearScrollbar(event)) bump();
+      lastPointer = { x: event.clientX, y: event.clientY };
+      // Armed → any movement keeps it up. Scroll-only → only movement within the
+      // proximity halo of a bar reveals it, so a resting reader isn't distracted
+      // but reaching for the thumb still works.
+      if (
+        phaseRef.current === "armed" ||
+        withinBar(event.clientX, event.clientY, REVEAL_PROXIMITY_PX)
+      ) {
+        bump();
+      }
     };
 
     const onScroll = () => {
@@ -150,6 +179,7 @@ export const useScrollbarAutoHide = ({
     };
 
     const onMouseLeave = () => {
+      lastPointer = null;
       clearTimer();
       hide();
       // Re-arm so the next enter gets a fresh entry reveal.
