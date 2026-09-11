@@ -1,8 +1,11 @@
+import { useRef } from "react";
+import { useObjectRef } from "react-aria";
 import {
   ScrollArea as ChakraScrollArea,
   useScrollAreaContext,
 } from "@chakra-ui/react/scroll-area";
-import { extractPaddingProps } from "@/utils";
+import { extractPaddingProps, mergeRefs } from "@/utils";
+import { useScrollbarAutoHide } from "./hooks";
 import type { ScrollAreaProps } from "./scroll-area.types";
 
 type ScrollAreaPartsProps = Pick<
@@ -36,10 +39,23 @@ const ScrollAreaParts = ({
   // up as viewport scroll via descendant overflow, which is exactly what the
   // horizontal scrollbar in `both` is for. `horizontal` keeps Zag's
   // fit-content so a row of items can scroll as usual.
+  //
+  // Height: fill the area when the content is short, but let the box GROW with
+  // the content when it is tall — because Zag's content ResizeObserver observes
+  // this element, and if its box stays clamped to the viewport height the
+  // observer never fires when the content changes (async load, tab swap), so
+  // the scrollbar only updates after the first scroll. Two things are needed:
+  // - `minHeight: 100%` fills the area when the content is shorter than it
+  //   (replacing the old `height: 100%`, which clamped the box to the viewport
+  //   height even when an ancestor made that a definite value, e.g. a grid).
+  // - `flexShrink: 0` stops the viewport's flex column from shrinking the box
+  //   back down to the viewport height, which `minHeight` alone does not.
+  // `horizontal` keeps its height locked (it must not scroll vertically) and
+  // re-measures off its fit-content width instead.
   const contentAxisLock =
     orientation === "horizontal"
       ? { minHeight: 0, height: "100%" }
-      : { minWidth: "100%", width: "100%", height: "100%" };
+      : { minWidth: "100%", width: "100%", minHeight: "100%", flexShrink: 0 };
 
   // Belt-and-suspenders: clip the suppressed axis on the viewport so a child
   // with an explicit fixed size larger than the viewport can't escape either.
@@ -81,8 +97,15 @@ const ScrollAreaParts = ({
  * # ScrollArea
  *
  * A scrollable container with custom-styled scrollbar overlays.
- * Replaces native scrollbars with themed overlay indicators that appear
- * on hover or during scrolling.
+ * Replaces native scrollbars with themed overlay indicators.
+ *
+ * By default the bar auto-hides: it appears when the pointer enters the area or
+ * when the content scrolls, then fades out after a short idle delay. While the
+ * pointer rests inside, the bar comes back on scroll or when the pointer moves
+ * toward it, and it stays shown while the pointer rests on it — so a resting
+ * reader is not distracted, yet the thumb never vanishes mid-reach. Use the
+ * `variant` prop for the visual style (`solid` | `inset` | `overlay` | `glass`)
+ * and `scrollbarVisibility="always"` to keep the bar permanently visible.
  *
  * Built on Chakra UI's ScrollArea (powered by Ark UI) with Nimbus
  * design tokens and keyboard accessibility.
@@ -105,15 +128,51 @@ export const ScrollArea = (props: ScrollAreaProps) => {
     children,
     orientation = "both",
     value,
+    variant,
+    scrollbarVisibility,
     ...restProps
   } = props;
 
   const [paddingProps, rootProps] = extractPaddingProps(restProps);
 
+  // Adapter: split the public props into what the recipe styles (`appearance`)
+  // and what drives behavior (`resolvedVisibility` + whether the idle-hide hook
+  // runs). `variant` carries the visual style plus two deprecated aliases:
+  // - `inset` / `overlay` / `glass` → that look; otherwise the `solid` look.
+  // - `hover` (deprecated) → `solid`; `always` (deprecated) → `solid` + always.
+  // The explicit `scrollbarVisibility` prop wins; the deprecated
+  // `variant="always"` only applies when it is not set.
+  const appearance =
+    variant === "inset" || variant === "overlay" || variant === "glass"
+      ? variant
+      : "solid";
+  const resolvedVisibility =
+    scrollbarVisibility ?? (variant === "always" ? "always" : "auto-hide");
+  const isPersistent = resolvedVisibility === "always";
+
+  // Local object refs so `useScrollbarAutoHide` can watch the real DOM nodes,
+  // while still forwarding any consumer-provided `ref` / `viewportRef`.
+  const rootLocalRef = useRef<HTMLDivElement>(null);
+  const rootRef = useObjectRef(
+    ref ? mergeRefs(rootLocalRef, ref) : rootLocalRef
+  );
+  const viewportLocalRef = useRef<HTMLDivElement>(null);
+  const mergedViewportRef = useObjectRef(
+    viewportRef ? mergeRefs(viewportLocalRef, viewportRef) : viewportLocalRef
+  );
+
+  // A permanently visible bar (`scrollbarVisibility="always"`) has nothing to idle-hide,
+  // so the activity hook only runs otherwise.
+  useScrollbarAutoHide({
+    enabled: !isPersistent,
+    rootRef,
+    viewportRef: mergedViewportRef,
+  });
+
   const parts = (
     <ScrollAreaParts
       orientation={orientation}
-      viewportRef={viewportRef}
+      viewportRef={mergedViewportRef}
       contentPaddingProps={paddingProps}
     >
       {children}
@@ -122,14 +181,25 @@ export const ScrollArea = (props: ScrollAreaProps) => {
 
   if (value) {
     return (
-      <ChakraScrollArea.RootProvider ref={ref} value={value} {...rootProps}>
+      <ChakraScrollArea.RootProvider
+        ref={rootRef}
+        value={value}
+        variant={appearance}
+        scrollbarVisibility={resolvedVisibility}
+        {...rootProps}
+      >
         {parts}
       </ChakraScrollArea.RootProvider>
     );
   }
 
   return (
-    <ChakraScrollArea.Root ref={ref} {...rootProps}>
+    <ChakraScrollArea.Root
+      ref={rootRef}
+      variant={appearance}
+      scrollbarVisibility={resolvedVisibility}
+      {...rootProps}
+    >
       {parts}
     </ChakraScrollArea.Root>
   );

@@ -20,11 +20,12 @@ tags:
 ## Overview
 
 ScrollArea constrains content within a fixed region and provides themed
-scrollbar overlays that replace native browser scrollbars. The scrollbar
-appears on hover or during scrolling by default, keeping the interface clean
-until the user needs to scroll. The component is keyboard accessible — when
-content overflows, the area becomes focusable via Tab and scrollable with
-arrow keys.
+scrollbar overlays that replace native browser scrollbars. By default the
+scrollbar appears when the pointer enters the area or when the content scrolls,
+then hides again after a short idle delay — while the pointer stays inside,
+only scrolling brings it back, so a resting reader is not distracted. The
+component is keyboard accessible — when content overflows, the area becomes
+focusable via Tab and scrollable with arrow keys.
 
 ### Resources
 
@@ -47,7 +48,7 @@ const App = () => (
   <Stack gap="600">
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">Both (default)</Text>
-      <ScrollArea maxH="120px" maxW="300px" variant="always">
+      <ScrollArea maxH="120px" maxW="300px" scrollbarVisibility="always">
         <Box whiteSpace="nowrap">
           {Array.from({ length: 15 }, (_, i) => (
             <Text key={i} fontSize="sm">{"Bidirectional content ".repeat(15)}</Text>
@@ -57,7 +58,7 @@ const App = () => (
     </Box>
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">Vertical</Text>
-      <ScrollArea maxH="120px" w="300px" orientation="vertical" variant="always">
+      <ScrollArea maxH="120px" w="300px" orientation="vertical" scrollbarVisibility="always">
         {Array.from({ length: 15 }, (_, i) => (
           <Text key={i} fontSize="sm">Line {i + 1}: Sample content for vertical scrolling.</Text>
         ))}
@@ -65,7 +66,7 @@ const App = () => (
     </Box>
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">Horizontal</Text>
-      <ScrollArea maxW="300px" orientation="horizontal" variant="always">
+      <ScrollArea maxW="300px" orientation="horizontal" scrollbarVisibility="always">
         <Box whiteSpace="nowrap">
           {Array.from({ length: 5 }, (_, i) => (
             <Text key={i} fontSize="sm">{"Horizontal content ".repeat(15)}</Text>
@@ -79,13 +80,19 @@ const App = () => (
 
 ### Visibility
 
-The scrollbar can appear on hover (default) or stay permanently visible.
+Use `scrollbarVisibility` to choose when the scrollbar is shown:
+
+- `auto-hide` (default): the bar appears when the pointer enters the area or
+  when the content scrolls, then hides after a short idle delay. While the
+  pointer stays inside, only scrolling reveals it again.
+- `always`: the bar stays visible and the viewport reserves a gutter so it
+  never overlays content.
 
 ```jsx live
 const App = () => (
   <Stack gap="600" direction="row">
     <Box>
-      <Text fontSize="sm" mb="200" fontWeight="bold">Hover (default)</Text>
+      <Text fontSize="sm" mb="200" fontWeight="bold">Auto-hide (default)</Text>
       <ScrollArea maxH="120px" w="200px">
         {Array.from({ length: 15 }, (_, i) => (
           <Text key={i} fontSize="sm">Line {i + 1}</Text>
@@ -93,13 +100,45 @@ const App = () => (
       </ScrollArea>
     </Box>
     <Box>
-      <Text fontSize="sm" mb="200" fontWeight="bold">Always visible</Text>
-      <ScrollArea maxH="120px" w="200px" variant="always">
+      <Text fontSize="sm" mb="200" fontWeight="bold">Always</Text>
+      <ScrollArea maxH="120px" w="200px" scrollbarVisibility="always">
         {Array.from({ length: 15 }, (_, i) => (
           <Text key={i} fontSize="sm">Line {i + 1}</Text>
         ))}
       </ScrollArea>
     </Box>
+  </Stack>
+);
+```
+
+### Appearance
+
+Use `variant` to choose the scrollbar's visual style. It is independent of
+`scrollbarVisibility`, so any look can also be `always` visible.
+
+- `solid` (default): grey track, thumb fills its width.
+- `inset`: grey track with an inset, floating pill thumb.
+- `overlay`: no track — only the thumb shows.
+- `glass`: translucent, frosted track that blurs the content behind it.
+
+```jsx live
+const App = () => (
+  <Stack gap="600" direction="row" flexWrap="wrap">
+    {["solid", "inset", "overlay", "glass"].map((variant) => (
+      <Box key={variant}>
+        <Text fontSize="sm" mb="200" fontWeight="bold">{variant}</Text>
+        <ScrollArea
+          maxH="120px"
+          w="180px"
+          variant={variant}
+          scrollbarVisibility="always"
+        >
+          {Array.from({ length: 15 }, (_, i) => (
+            <Text key={i} fontSize="sm">Line {i + 1}</Text>
+          ))}
+        </ScrollArea>
+      </Box>
+    ))}
   </Stack>
 );
 ```
@@ -114,7 +153,7 @@ const App = () => (
     {["xs", "sm", "md", "lg"].map((size) => (
       <Box key={size}>
         <Text fontSize="sm" mb="200" fontWeight="bold">{size}</Text>
-        <ScrollArea maxH="120px" w="180px" size={size} variant="always">
+        <ScrollArea maxH="120px" w="180px" size={size} scrollbarVisibility="always">
           {Array.from({ length: 15 }, (_, i) => (
             <Text key={i} fontSize="sm">Line {i + 1}</Text>
           ))}

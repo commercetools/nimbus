@@ -1,7 +1,10 @@
 # nimbus-scroll-area Specification
 
 ## Purpose
-TBD - created by archiving change add-scroll-area-component. Update Purpose after archive.
+Define the behavior and API contract of the Nimbus `ScrollArea` component:
+custom-styled overlay scrollbars over native scrolling, with a single-element
+API, keyboard accessibility, visual variants (`solid` / `inset` / `overlay` /
+`glass`), and auto-hide / always-visible visibility modes.
 ## Requirements
 ### Requirement: Single-element API hides compound internals
 
@@ -88,29 +91,112 @@ The component SHALL use Nimbus design tokens for scrollbar appearance.
 
 #### Scenario: Scrollbar colors
 
-- **THEN** scrollbar track SHALL use `neutral.4`
-- **AND** thumb SHALL use `neutral.7` at rest
-- **AND** thumb SHALL use `neutral.9` on hover/active
+- **THEN** the thumb SHALL use `neutral.9` at rest, clearing ~3:1 contrast
+  against light surfaces
+- **AND** the thumb SHALL use `neutral.11` on hover/active
+- **AND** the track color SHALL depend on the visual `variant` (see the Visual
+  appearance variants requirement)
 
 #### Scenario: Size variants
 
 - **WHEN** `size="xs"` is set
-- **THEN** scrollbar width SHALL be `sizes.100` (4px)
+- **THEN** the scrollbar thumb thickness SHALL be `sizes.100` (4px)
 - **WHEN** `size="sm"` (default)
-- **THEN** scrollbar width SHALL be `sizes.150` (6px)
+- **THEN** the scrollbar thumb thickness SHALL be `sizes.150` (6px)
 - **WHEN** `size="md"`
-- **THEN** scrollbar width SHALL be `sizes.200` (8px)
+- **THEN** the scrollbar thumb thickness SHALL be `sizes.200` (8px)
 - **WHEN** `size="lg"`
-- **THEN** scrollbar width SHALL be `sizes.300` (12px)
+- **THEN** the scrollbar thumb thickness SHALL be `sizes.300` (12px)
+- **AND** inset visual variants SHALL keep the thumb thickness constant and pad
+  the track around it, so `size` always controls the visible thumb thickness
 
-#### Scenario: Visibility variants
+### Requirement: Visual appearance variants
 
-- **WHEN** `variant="hover"` (default)
-- **THEN** scrollbar SHALL be hidden and appear on hover or during scrolling
-- **WHEN** `variant="always"`
-- **THEN** scrollbar SHALL be permanently visible
+The `variant` prop SHALL select the scrollbar's visual style, independent of
+`size` and of `scrollbarVisibility`.
+
+#### Scenario: Solid (default)
+
+- **WHEN** `variant` is unset or `"solid"`
+- **THEN** the scrollbar track SHALL use `neutral.4`
+- **AND** the thumb SHALL fill the track's width
+
+#### Scenario: Inset
+
+- **WHEN** `variant="inset"`
+- **THEN** the scrollbar track SHALL use `neutral.4`
+- **AND** the thumb SHALL be an inset floating pill, achieved with a transparent
+  border plus `background-clip: content-box` so the thumb's element width (and
+  thus the hit area) is unchanged
+
+#### Scenario: Overlay track
+
+- **WHEN** `variant="overlay"`
+- **THEN** the scrollbar track SHALL be transparent
+- **AND** only the inset thumb SHALL paint
+
+#### Scenario: Glass
+
+- **WHEN** `variant="glass"`
+- **THEN** the scrollbar track SHALL be a translucent surface (`bg/60`) with
+  `backdrop-filter: blur(8px)` so it frosts the content behind it
+- **AND** the thumb SHALL be inset as in `inset`
+
+#### Scenario: Deprecated visual aliases
+
+- **WHEN** `variant="hover"` is set
+- **THEN** the component SHALL treat it as `variant="solid"` (deprecated alias)
+- **WHEN** `variant="always"` is set
+- **THEN** the component SHALL treat it as `variant="solid"` with
+  `scrollbarVisibility="always"` (deprecated alias)
+
+### Requirement: Scrollbar visibility behavior
+
+The `scrollbarVisibility` prop SHALL control when the scrollbar is shown:
+`auto-hide` (default) or `always`. It is independent of the visual `variant`.
+
+#### Scenario: Auto-hide reveals on activity and hides when idle
+
+- **WHEN** `scrollbarVisibility` is unset or `"auto-hide"`
+- **THEN** the scrollbar SHALL be transparent at rest
+- **AND** it SHALL become visible when the pointer enters the area, when the
+  pointer moves within it, or when the content scrolls
+- **AND** it SHALL hide again after a short idle delay once there is no pointer
+  movement and no scrolling
+
+#### Scenario: Idle-while-inside reveals on scroll or on approaching the bar
+
+- **WHEN** the scrollbar has hidden after the idle delay and the pointer has NOT
+  yet left the area
+- **THEN** pointer movement in the content area SHALL NOT reveal the scrollbar
+- **AND** moving the pointer near a scrollbar SHALL reveal it again, so the user
+  can grab the thumb without scrolling first
+- **AND** scrolling SHALL reveal it again
+- **AND** while the pointer rests directly on a bar the idle timer SHALL be
+  suspended, so the bar does not hide out from under a stationary pointer (as on
+  macOS/Radix); it SHALL hide once the pointer moves off the bar
+- **AND** leaving the area SHALL re-arm the on-enter reveal for the next visit
+
+#### Scenario: Hidden bar does not intercept pointer input
+
+- **WHEN** the scrollbar is hidden in `auto-hide` mode
+- **THEN** it SHALL NOT be hit-testable (`pointer-events: none`), so a click over
+  the content it overlays reaches the content rather than the invisible bar
+- **AND** it SHALL become hit-testable again whenever it is revealed or dragged
+
+#### Scenario: Touch and keyboard
+
+- **WHEN** the area is scrolled by touch or keyboard, with no pointer enter or
+  move
+- **THEN** the scrollbar SHALL still reveal on scroll and hide again when idle
+
+#### Scenario: Always visible
+
+- **WHEN** `scrollbarVisibility="always"`
+- **THEN** the scrollbar SHALL be permanently visible
 - **AND** the viewport SHALL reserve a gutter so the scrollbar does not overlay
   content
+- **AND** it SHALL compose with any visual `variant` (e.g. `inset` + `always`)
 
 ### Requirement: Per-axis scrollbar visibility
 
@@ -133,10 +219,13 @@ and vice versa.
 
 ### Requirement: Content wrapper sizes to viewport by default
 
-For default and `vertical` orientations, the content wrapper SHALL be sized
-to the viewport (both width and height) so siblings with `width: 100%` size
-against the viewport, and so consumers can vertically center a shorter child
-with flex/grid + `height: 100%`.
+For default and `vertical` orientations, the content wrapper SHALL size its
+width to the viewport (so siblings with `width: 100%` size against the viewport)
+and SHALL fill the viewport height when the content is shorter than it (so
+consumers can vertically center a shorter child with flex/grid + `height: 100%`).
+When the content is taller than the viewport, the wrapper SHALL grow with the
+content rather than staying clamped to the viewport height, so that a change in
+content size is observed and the scrollbar re-measures without a scroll first.
 
 Descendant overflow on either axis SHALL still be surfaced as viewport
 scroll via `scrollHeight` / `scrollWidth`, so scrolling is unaffected.
@@ -166,6 +255,14 @@ For `orientation="horizontal"`, the wrapper SHALL instead preserve Zag's
   total width exceeds the viewport
 - **THEN** the content wrapper SHALL grow to fit its widest descendants
 - **AND** the horizontal scrollbar SHALL reflect that overflow
+
+#### Scenario: Content growth is reflected without scrolling
+
+- **WHEN** the content grows after mount — content loading in, or swapping the
+  children while the same `ScrollArea` stays mounted (e.g. tab panels) — and no
+  scroll has occurred
+- **THEN** the scrollbar SHALL reflect the new overflow and thumb size from the
+  content resize alone, without requiring a scroll to trigger a re-measure
 
 ### Requirement: Scrollbar paints above viewport content
 
