@@ -39,10 +39,23 @@ const ScrollAreaParts = ({
   // up as viewport scroll via descendant overflow, which is exactly what the
   // horizontal scrollbar in `both` is for. `horizontal` keeps Zag's
   // fit-content so a row of items can scroll as usual.
+  //
+  // Height: fill the area when the content is short, but let the box GROW with
+  // the content when it is tall — because Zag's content ResizeObserver observes
+  // this element, and if its box stays clamped to the viewport height the
+  // observer never fires when the content changes (async load, tab swap), so
+  // the scrollbar only updates after the first scroll. Two things are needed:
+  // - `minHeight: 100%` fills the area when the content is shorter than it
+  //   (replacing the old `height: 100%`, which clamped the box to the viewport
+  //   height even when an ancestor made that a definite value, e.g. a grid).
+  // - `flexShrink: 0` stops the viewport's flex column from shrinking the box
+  //   back down to the viewport height, which `minHeight` alone does not.
+  // `horizontal` keeps its height locked (it must not scroll vertically) and
+  // re-measures off its fit-content width instead.
   const contentAxisLock =
     orientation === "horizontal"
       ? { minHeight: 0, height: "100%" }
-      : { minWidth: "100%", width: "100%", height: "100%" };
+      : { minWidth: "100%", width: "100%", minHeight: "100%", flexShrink: 0 };
 
   // Belt-and-suspenders: clip the suppressed axis on the viewport so a child
   // with an explicit fixed size larger than the viewport can't escape either.

@@ -1373,6 +1373,93 @@ export const NestedScrollAreas: Story = {
 };
 
 // ============================================================
+// ContentResizeRemeasures: growing the content after mount (an async load, or a
+// tab swap that keeps the same ScrollArea) must update the scrollbar without a
+// scroll first. Regression for the content wrapper being sized so the
+// underlying ResizeObserver can actually observe content changes.
+// ============================================================
+const GrowableContent = () => {
+  const [expanded, setExpanded] = React.useState(false);
+  return (
+    <>
+      <button
+        type="button"
+        data-testid="grow"
+        onClick={() => setExpanded(true)}
+      >
+        grow
+      </button>
+      {/* Definite height (like the docs app's grid cell), so the viewport /
+          content `height: 100%` actually resolves — the condition under which
+          the content box would otherwise be locked to the viewport height. */}
+      <Box h="160px" w="360px">
+        <ScrollArea ids={{ root: "grow-root", viewport: "grow-vp" }}>
+          {expanded ? (
+            <OverflowingContent />
+          ) : (
+            <Text fontSize="sm">Short content that does not overflow.</Text>
+          )}
+        </ScrollArea>
+      </Box>
+    </>
+  );
+};
+
+export const ContentResizeRemeasures: Story = {
+  render: () => <GrowableContent />,
+  play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+    const root = doc.getElementById("grow-root") as HTMLElement;
+    const viewport = doc.getElementById("grow-vp") as HTMLElement;
+    const verticalBar = () =>
+      root.querySelector(
+        ':scope > [data-part="scrollbar"][data-orientation="vertical"]'
+      ) as HTMLElement;
+
+    await step("short content does not overflow", async () => {
+      await waitFor(() =>
+        expect(viewport.scrollHeight).toBeLessThanOrEqual(viewport.clientHeight)
+      );
+    });
+
+    await step(
+      "growing the content updates the scrollbar without scrolling first",
+      async () => {
+        const contentEl = root.querySelector(
+          '[data-part="content"]'
+        ) as HTMLElement;
+        await userEvent.click(
+          canvasElement.querySelector('[data-testid="grow"]') as HTMLElement
+        );
+        // The content wrapper must grow with its content instead of staying
+        // clamped to the viewport height — that is the invariant that lets the
+        // underlying ResizeObserver see the change and re-measure. If the
+        // wrapper is clamped, this box stays == clientHeight and the bar never
+        // updates until a scroll.
+        await waitFor(() =>
+          expect(contentEl.getBoundingClientRect().height).toBeGreaterThan(
+            viewport.clientHeight
+          )
+        );
+        // So overflow is detected and the bar is laid out from the resize
+        // alone — no scroll happened.
+        await waitFor(() => {
+          expect(viewport).toHaveAttribute("data-overflow-y");
+          expect(window.getComputedStyle(verticalBar()).display).not.toBe(
+            "none"
+          );
+        });
+        // And it can be discovered by hovering — without a scroll first.
+        await userEvent.hover(root);
+        await waitFor(() =>
+          expect(window.getComputedStyle(verticalBar()).opacity).toBe("1")
+        );
+      }
+    );
+  },
+};
+
+// ============================================================
 // Content padding: padding props forwarded to inner Content slot
 // ============================================================
 const paddingPropCases = [
