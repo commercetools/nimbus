@@ -76,8 +76,9 @@ const App = () => (
 Use the `scrollbarVisibility` prop to choose when the scrollbar is shown.
 `auto-hide` (the default) reveals the bar on pointer entry or scroll and fades
 it out after a short idle delay; while the pointer rests inside, scrolling or
-moving toward the bar reveals it again. `always` keeps the bar visible and
-reserves a gutter so it never overlays content:
+moving toward the bar reveals it again, and resting the pointer on the bar keeps
+it shown. `always` keeps the bar visible and reserves a gutter so it never
+overlays content:
 
 ```jsx live-dev
 const App = () => (

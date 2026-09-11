@@ -20,6 +20,17 @@ export const AUTO_HIDE_DELAY_MS = 1000;
 const REVEAL_PROXIMITY_PX = 24;
 
 /**
+ * How far outside a bar's painted box its clickable region still reaches: the
+ * `_before` pseudo-element widens the hit area by the scrollbar margin
+ * (`--scroll-area-scrollbar-margin` = `sizes.50` = 2px) on each side. The
+ * "resting on the bar" check uses this so the hide stays suspended across the
+ * whole clickable band, not just the painted box — otherwise a click in that
+ * 2px strip would fall through. Kept in sync with the token by hand (a fixed
+ * 2px; reading the custom property per event isn't worth it).
+ */
+const SCROLLBAR_HIT_MARGIN_PX = 2;
+
+/**
  * Attribute written on the ScrollArea root while the bar should be visible. The
  * recipe's `auto-hide` visibility variant keys the scrollbar/corner opacity (and
  * `pointer-events`) off it.
@@ -126,9 +137,11 @@ export const useScrollbarAutoHide = ({
           y <= rect.bottom + margin
       );
 
-    // The pointer is resting directly on a bar (no halo).
+    // The pointer is resting on a bar — within its clickable hit band, so this
+    // matches where a click would actually land on the bar.
     const pointerOnBar = (): boolean =>
-      lastPointer !== null && withinBar(lastPointer.x, lastPointer.y, 0);
+      lastPointer !== null &&
+      withinBar(lastPointer.x, lastPointer.y, SCROLLBAR_HIT_MARGIN_PX);
 
     const scheduleHide = () => {
       clearTimer();
@@ -154,7 +167,12 @@ export const useScrollbarAutoHide = ({
       scheduleHide();
     };
 
-    const onMouseEnter = () => {
+    const onMouseEnter = (event: MouseEvent) => {
+      // Seed the pointer position from the enter event: when the area slides
+      // under a stationary cursor (page/ancestor scroll) some browsers fire
+      // `mouseenter` with no following `mousemove`, and the rest-on-bar guard
+      // would otherwise be blind for the whole first visit.
+      lastPointer = { x: event.clientX, y: event.clientY };
       phaseRef.current = "armed";
       bump();
     };

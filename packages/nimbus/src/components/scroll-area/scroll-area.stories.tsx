@@ -2,6 +2,7 @@ import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ScrollArea, Box, Text, useScrollArea } from "@commercetools/nimbus";
 import { expect, fireEvent, userEvent, waitFor } from "storybook/test";
+import { AUTO_HIDE_DELAY_MS } from "./hooks/use-scrollbar-auto-hide";
 
 const meta: Meta<typeof ScrollArea> = {
   title: "Components/ScrollArea",
@@ -1308,8 +1309,14 @@ export const NestedScrollAreas: Story = {
         <Text fontSize="sm" mb="200" fontWeight="bold">
           Outer content
         </Text>
-        <ScrollArea maxH="120px" w="200px" ids={{ root: "inner-root" }}>
-          <OverflowingContent />
+        {/* Inner area overflows on BOTH axes, so its corner slot is in play and
+            the corner reveal selector is actually exercised. */}
+        <ScrollArea maxH="120px" maxW="200px" ids={{ root: "inner-root" }}>
+          {Array.from({ length: 20 }, (_, i) => (
+            <Text key={i} fontSize="sm" whiteSpace="nowrap">
+              Inner line {i + 1} — long enough to overflow horizontally as well
+            </Text>
+          ))}
         </ScrollArea>
         {Array.from({ length: 20 }, (_, i) => (
           <Text key={i} fontSize="sm">
@@ -1327,22 +1334,39 @@ export const NestedScrollAreas: Story = {
       ':scope > [data-part="scrollbar"][data-orientation="vertical"]'
     ) as HTMLElement;
     const innerBar = inner.querySelector(
-      '[data-part="scrollbar"][data-orientation="vertical"]'
+      ':scope > [data-part="scrollbar"][data-orientation="vertical"]'
+    ) as HTMLElement;
+    const outerCorner = outer.querySelector(
+      ':scope > [data-part="corner"]'
+    ) as HTMLElement;
+    const innerCorner = inner.querySelector(
+      ':scope > [data-part="corner"]'
     ) as HTMLElement;
 
     await step(
-      "revealing the outer bar does not leak into the nested inner bar",
+      "revealing the outer bar does not leak into the nested inner area",
       async () => {
+        // The inner area must actually overflow both axes so its corner exists.
+        await waitFor(() => {
+          expect(inner).toHaveAttribute("data-overflow-x");
+          expect(inner).toHaveAttribute("data-overflow-y");
+        });
+
         // Force the outer bar visible, as its own hook would.
         outer.setAttribute("data-scrollbar-visible", "");
-        // The outer bar is a direct child of the outer root, so it reveals.
+
+        // Direct children of the outer root — its own bar and corner — reveal.
         await waitFor(() =>
           expect(window.getComputedStyle(outerBar).opacity).toBe("1")
         );
-        // The inner bar is a descendant — but not a direct child — of the outer
-        // root, so the direct-child reveal selector must leave it hidden.
+        expect(window.getComputedStyle(outerCorner).opacity).toBe("1");
+
+        // The inner bar and corner are descendants — but not direct children —
+        // of the outer root, so the direct-child reveal selectors leave them
+        // hidden (both the scrollbar `> &` and the corner `> &`).
         expect(inner).not.toHaveAttribute("data-scrollbar-visible");
         expect(window.getComputedStyle(innerBar).opacity).toBe("0");
+        expect(window.getComputedStyle(innerCorner).opacity).toBe("0");
       }
     );
   },
@@ -1705,9 +1729,11 @@ export const AutoHideOnIdle: Story = {
       "Resting on the bar keeps it visible past the idle delay",
       async () => {
         // The previous step left the pointer on the bar. Wait out the full idle
-        // delay with no further movement: the bar must not vanish under the
-        // stationary cursor, or a click on it would fall through to the content.
-        await new Promise((resolve) => setTimeout(resolve, 1300));
+        // delay (plus margin) with no further movement: the bar must not vanish
+        // under the stationary cursor, or a click on it would fall through.
+        await new Promise((resolve) =>
+          setTimeout(resolve, AUTO_HIDE_DELAY_MS + 300)
+        );
         expect(root).toHaveAttribute("data-scrollbar-visible");
         expect(window.getComputedStyle(scrollbar).pointerEvents).toBe("auto");
       }
