@@ -3,7 +3,7 @@ id: Charts-FunnelChart
 title: Funnel Chart
 exportName: FunnelChart
 description: Stage-by-stage drop-off through a single process.
-lifecycleState: Experimental
+lifecycleState: Alpha
 order: 306
 icon: PieChart
 menu:
@@ -134,7 +134,25 @@ number).
 
 Hovering a stage dims the others to 0.5 opacity and shows a tooltip with the
 stage name, its compact value, its `% of first`, and — for every stage after the
-first — its `% of previous`, which is the step-to-step conversion rate.
+first — its `% of previous`, which is the step-to-step conversion rate. This
+dimming and the tooltip are not configurable — but the same hover state also
+drives `onDatumHover`, below.
+
+### Interaction callbacks
+
+`onDatumClick` and `onDatumHover` fire with a `{ datum, index }` payload —
+`datum` is the whole `FunnelStage` (`{ stage, value }`) at that position. Use
+them for drill-down or to drive an external readout; the built-in dimming and
+tooltip above keep working whether or not you pass them.
+
+```tsx
+<FunnelChart
+  width={width}
+  height={height}
+  data={data}
+  onDatumClick={({ datum }) => navigate(`/funnels/${datum.stage}`)}
+/>
+```
 
 ### Color & theming
 
@@ -225,12 +243,15 @@ render your own placeholder when there is no data yet.
 - **A single linear path only.** Stages must be strictly nested subsets; there
   is no branching or merging — for that use
   [`SankeyDiagram`](/charts/sankey-diagram).
-- **Assumes non-increasing values.** A later stage larger than the first draws a
-  bar wider than the top; the chart does not clamp or warn.
+- **Assumes non-increasing values.** A later stage larger than the first
+  computes a bar wider than the plot itself; the chart does not clamp or warn.
+  The SVG has no explicit `overflow`, so the browser's own default for an
+  embedded `<svg>` (`overflow: hidden`) clips the overrun at the chart's edge
+  rather than visibly drawing a bar past it — a small violation is invisible
+  (the bar just looks like it reached 100%), and a large one shows as a hard,
+  flat-clipped edge rather than an obviously-too-wide bar.
 - **No value formatting prop.** Values are compact-formatted and rates are
   percentages; neither is configurable.
-- **No interaction callbacks.** Hover is internal; there is no `onDatumClick` /
-  `onDatumHover`.
 - **No title, subtitle, caption, loading, or error passthrough** — `FunnelChart`
   forwards only `ariaLabel` and the data table to `ChartContainer`.
 

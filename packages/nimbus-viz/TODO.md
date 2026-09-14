@@ -55,7 +55,7 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       `chart/format-locale.tsx` and thread it the same way.
 - [ ] **A3-tail — datum callbacks.** Extend `onDatumClick`/`onDatumHover` to the
       charts not yet wired (done: line, bar, scatter, grouped-bar, stacked-bar,
-      bubble, waterfall, pareto, stacked-area, bullet). Pattern in
+      bubble, waterfall, pareto, stacked-area, bullet, funnel). Pattern in
       `src/chart/interaction.ts`; fire from existing hover handlers with the raw
       input datum. Note `stacked-area`'s and `bullet`'s callbacks report the
       whole row (`StackDatum`/`BulletDatum`, no `seriesId`), matching
@@ -108,10 +108,14 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       label-collision polish + a full story/spec matrix on the core-6 (line,
       stacked-area, bar, stacked-bar, stat-card + bullet, funnel,
       cohort-triangle/heatmap). Story/spec matrix done: bar, line, stacked-area,
-      stacked-bar, stat-card, bullet. Interaction convergence done:
-      stacked-area, bullet (see A3-tail; stacked-bar already had it going in).
-      Also found and fixed for `bullet`: negative measure/target silently
-      rendered wrong (same class of bug as bar/line's signed-value fixes).
+      stacked-bar, stat-card, bullet, funnel. Interaction convergence done:
+      stacked-area, bullet, funnel (see A3-tail; stacked-bar already had it
+      going in). Also found and fixed a docs-accuracy bug for `funnel`: its
+      Limitations claimed a too-large stage "draws a bar wider than the top",
+      but the SVG's default overflow:hidden actually clips the overrun rather
+      than visibly drawing it — wording corrected. Also found and fixed for
+      `bullet`: negative measure/target silently rendered wrong (same class of
+      bug as bar/line's signed-value fixes).
 - [x] **E6 — fix `isolate: false` story accumulation blocking real play-function
       coverage.** ~~Root cause isn't fully pinned down... points at
       `vitest.storybook.config.ts`'s `isolate: false`~~ — **that theory was
@@ -139,9 +143,9 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       rediscovering this per chart.
 
       Verified: `bar-chart.stories.tsx` alone (3 repeat runs) and the full
-                                          `nimbus-viz-storybook` project (all 46 stories files, 53 tests) both
-                                          pass clean with `isolate: false` unchanged. No config change was
-                                          needed or made.
+                                                  `nimbus-viz-storybook` project (all 46 stories files, 53 tests) both
+                                                  pass clean with `isolate: false` unchanged. No config change was
+                                                  needed or made.
 
 ### Wire the dormant primitives (built + unit-tested, but no chart consumes them)
 

@@ -6,6 +6,10 @@ import { useChartTheme } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
 import type { FunnelStage } from "../../chart/types";
 import { emText } from "../../chart/typography";
+import type {
+  DatumClickHandler,
+  DatumHoverHandler,
+} from "../../chart/interaction";
 
 export interface FunnelChartProps {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -17,6 +21,10 @@ export interface FunnelChartProps {
   data: FunnelStage[];
   /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
+  /** Fired when a stage is clicked (drill-down). */
+  onDatumClick?: DatumClickHandler<FunnelStage>;
+  /** Fired when the hovered stage changes; null when the pointer leaves. */
+  onDatumHover?: DatumHoverHandler<FunnelStage>;
 }
 
 /**
@@ -29,6 +37,8 @@ export function FunnelChart({
   height,
   data,
   ariaLabel,
+  onDatumClick,
+  onDatumHover,
 }: FunnelChartProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
@@ -65,10 +75,17 @@ export function FunnelChart({
               const valueFits = valueLabel.length * 8.4 <= w - 8;
               return (
                 <g
-                  key={stage.stage}
+                  key={`${stage.stage}-${i}`}
                   opacity={active ? 1 : 0.5}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: stage, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: stage, index: i })}
                 >
                   <text
                     x={innerWidth / 2}
