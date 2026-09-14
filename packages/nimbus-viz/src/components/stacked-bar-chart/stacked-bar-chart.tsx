@@ -28,6 +28,7 @@ export interface StackedBarChartProps {
   /** One `StackRow` per category (`{ category, segments: { key, value }[] }`);
    *  every row should carry the same segment keys, in the same order. */
   data: StackRow[];
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
   /** Format a value-axis number (tick labels + tooltip values). Overrides the
    *  locale/currency formatter from any surrounding ChartLocaleProvider. */

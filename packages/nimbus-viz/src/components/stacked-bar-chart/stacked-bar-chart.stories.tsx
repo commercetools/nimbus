@@ -1,6 +1,12 @@
 import type { Meta } from "@storybook/react-vite";
+import { userEvent, within, expect, waitFor, fn } from "storybook/test";
+import { StackedBarChart } from "./stacked-bar-chart";
+import { ResponsiveContainer, type StackRow } from "../..";
 import { RegistryPreview, type BaseStory } from "../../stories/base-story";
 
+// .storybook/preview.tsx already wraps every story in ChartThemeProvider
+// (following the dark-mode toggle) and enables addon-a11y in `test: "error"`
+// mode, so neither is repeated per story here.
 const meta: Meta = {
   title: "Charts/StackedBarChart",
   render: () => <RegistryPreview base="StackedBarChart" />,
@@ -8,4 +14,193 @@ const meta: Meta = {
 };
 export default meta;
 
+const fixture: StackRow[] = [
+  {
+    category: "Q1",
+    segments: [
+      { key: "New", value: 120 },
+      { key: "Returning", value: 80 },
+      { key: "Wholesale", value: 40 },
+    ],
+  },
+  {
+    category: "Q2",
+    segments: [
+      { key: "New", value: 140 },
+      { key: "Returning", value: 96 },
+      { key: "Wholesale", value: 52 },
+    ],
+  },
+];
+
 export const Base: BaseStory = {};
+
+/**
+ * Proves the two accessibility features `stacked-bar-chart.mdx` claims:
+ * `role="img"` + a real `aria-label`, and the keyboard-reachable data-table
+ * fallback (WCAG 1.1.1) that `ChartContainer` renders whenever `table` is
+ * wired (always, for `StackedBarChart`).
+ */
+export const Accessibility: BaseStory = {
+  render: () => (
+    <StackedBarChart
+      width={480}
+      height={280}
+      data={fixture}
+      ariaLabel="Stacked bar chart of orders by quarter, split into New, Returning, and Wholesale"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("SVG carries an accessible label", async () => {
+      const svg = canvasElement.querySelector("svg");
+      expect(svg).toHaveAttribute("role", "img");
+      expect(svg).toHaveAttribute("aria-label");
+      expect(svg?.getAttribute("aria-label")).not.toBe("");
+    });
+
+    await step("Data table is reachable by keyboard", async () => {
+      await userEvent.tab();
+      const toggle = canvas.getByRole("button", {
+        name: /view data as table/i,
+      });
+      expect(toggle).toHaveFocus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() => {
+        expect(
+          canvas.getByRole("region", { name: /data table/i })
+        ).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * `onDatumClick`/`onDatumHover` are wired on each row's own `<g>` (a
+ * discrete hit target, unlike `LineChart`/`StackedAreaChart`'s continuous
+ * overlay `<rect>`) — same direct-mark-wiring pattern as `BarChart`. Both
+ * report the **whole row** (`StackRow`), not one segment — the doc's own
+ * "Row-level interaction" Limitation.
+ */
+const handleDatumClick = fn();
+const handleDatumHover = fn();
+
+export const Interaction: BaseStory = {
+  render: () => (
+    <StackedBarChart
+      width={480}
+      height={280}
+      data={fixture}
+      onDatumClick={handleDatumClick}
+      onDatumHover={handleDatumHover}
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    // The first row's non-topmost segments render as plain <rect>; hovering
+    // any mark inside a row's <g> fires that row's handlers.
+    const firstSegment = () =>
+      canvasElement.querySelector<SVGRectElement>("rect");
+
+    await step(
+      "Hovering the first row reports its whole StackRow",
+      async () => {
+        await userEvent.hover(firstSegment()!);
+        await waitFor(() => expect(handleDatumHover).toHaveBeenCalled());
+        const call = handleDatumHover.mock.calls.at(-1)![0];
+        expect(call?.datum).toEqual(fixture[0]);
+        expect(call?.index).toBe(0);
+      }
+    );
+
+    await step(
+      "Clicking the first row fires onDatumClick with the same row",
+      async () => {
+        await userEvent.click(firstSegment()!);
+        await waitFor(() => expect(handleDatumClick).toHaveBeenCalled());
+        const call = handleDatumClick.mock.calls.at(-1)![0];
+        expect(call?.datum).toEqual(fixture[0]);
+        expect(call?.index).toBe(0);
+      }
+    );
+  },
+};
+
+/** `stacked-bar-chart.mdx` "API reference": renders `null` for empty `data`. */
+export const EdgeCaseEmpty: BaseStory = {
+  render: () => <StackedBarChart width={200} height={200} data={[]} />,
+  play: async ({ canvasElement }) => {
+    expect(canvasElement.querySelector("svg")).not.toBeInTheDocument();
+  },
+};
+
+/**
+ * A row with a single segment: `lastIdx` (`segments.length - 1`) is `0`, so
+ * that one segment is both the first and the last — it takes the
+ * `BarRounded`/`top` path unconditionally rather than the plain `<rect>`
+ * path most segments use. Asserts the actual rendered shape (a finite,
+ * non-`NaN` path), not just "doesn't throw".
+ */
+export const EdgeCaseSingleSegment: BaseStory = {
+  render: () => (
+    <StackedBarChart
+      width={200}
+      height={200}
+      data={[{ category: "Q1", segments: [{ key: "Total", value: 100 }] }]}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const path = canvasElement.querySelector<SVGPathElement>("path");
+    expect(path).toBeInTheDocument();
+    expect(path!.getAttribute("d")).not.toMatch(/NaN/);
+  },
+};
+
+/**
+ * Found while introspecting this chart: the topmost segment always renders
+ * as `BarRounded` (`stacked-bar-chart.tsx`'s `h = Math.max(0, y0 - y1 - 2)`),
+ * and a zero-value topmost segment collapses `h` to exactly `0`. Traced
+ * through `@visx/shape`'s `BarRounded` source: its radius clamp is
+ * `Math.max(1, Math.min(radius, Math.min(width, height) / 2))`, which floors
+ * to `1` even when `height` is `0` — the generated path's height terms don't
+ * agree, producing a degenerate (self-overlapping) path rather than a clean
+ * empty rect. Visually near-imperceptible (sub-2px), but this asserts the
+ * actual failure mode (a still-finite, non-`NaN` path) rather than only "no
+ * crash" — proving the degenerate case doesn't escalate into something
+ * worse (an invalid/`NaN` path) even though the geometry itself is a known,
+ * accepted rough edge.
+ */
+export const EdgeCaseZeroTopmostSegment: BaseStory = {
+  render: () => (
+    <StackedBarChart
+      width={240}
+      height={200}
+      data={[
+        {
+          category: "Q1",
+          segments: [
+            { key: "Base", value: 100 },
+            { key: "Extra", value: 0 },
+          ],
+        },
+      ]}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const path = canvasElement.querySelector<SVGPathElement>("path");
+    expect(path).toBeInTheDocument();
+    expect(path!.getAttribute("d")).not.toMatch(/NaN/);
+  },
+};
+
+export const Responsive: BaseStory = {
+  render: () => (
+    <div style={{ maxWidth: 480 }}>
+      <ResponsiveContainer height={240}>
+        {(width, height) => (
+          <StackedBarChart width={width} height={height} data={fixture} />
+        )}
+      </ResponsiveContainer>
+    </div>
+  ),
+};
