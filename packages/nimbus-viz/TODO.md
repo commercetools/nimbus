@@ -108,8 +108,8 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       label-collision polish + a full story/spec matrix on the core-6 (line,
       stacked-area, bar, stacked-bar, stat-card + bullet, funnel,
       cohort-triangle/heatmap). Story/spec matrix done: bar, line, stacked-area,
-      stacked-bar. Interaction convergence done: stacked-area (see A3-tail;
-      stacked-bar already had it going in).
+      stacked-bar, stat-card. Interaction convergence done: stacked-area (see
+      A3-tail; stacked-bar already had it going in).
 - [x] **E6 — fix `isolate: false` story accumulation blocking real play-function
       coverage.** ~~Root cause isn't fully pinned down... points at
       `vitest.storybook.config.ts`'s `isolate: false`~~ — **that theory was
@@ -137,9 +137,9 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       rediscovering this per chart.
 
       Verified: `bar-chart.stories.tsx` alone (3 repeat runs) and the full
-                              `nimbus-viz-storybook` project (all 46 stories files, 53 tests) both
-                              pass clean with `isolate: false` unchanged. No config change was
-                              needed or made.
+                                  `nimbus-viz-storybook` project (all 46 stories files, 53 tests) both
+                                  pass clean with `isolate: false` unchanged. No config change was
+                                  needed or made.
 
 ### Wire the dormant primitives (built + unit-tested, but no chart consumes them)
 

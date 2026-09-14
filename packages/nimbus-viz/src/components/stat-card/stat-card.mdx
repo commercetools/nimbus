@@ -3,7 +3,7 @@ id: Charts-StatCard
 title: Stat Card
 exportName: StatCard
 description: A headline number with an optional delta vs. a prior value.
-lifecycleState: Experimental
+lifecycleState: Alpha
 order: 1300
 icon: Numbers
 menu:
@@ -80,10 +80,15 @@ Contract notes, verifiable from source:
 - The delta appears **only** when `previous` is non-null **and not `0`**
   (percent change is undefined against a zero baseline, so a `previous` of `0`
   shows no delta).
-- The delta is computed as `(value − previous) / previous` and rendered as a
-  signed percentage; the arrow (`▲`/`▼`) follows the true direction of change.
-- `value` and `previous` are plain numbers in the same unit; format them with
-  `format` (below).
+- The delta is computed as `(value − previous) / |previous|` and rendered as a
+  signed percentage; the arrow (`▲`/`▼`) follows the true direction of change,
+  and the percentage's sign always agrees with the arrow — dividing by the
+  magnitude (not the signed value) keeps that true even when `previous` is
+  itself negative (e.g. a loss turning into a profit still reads as a clean
+  positive percentage, not one that contradicts its own arrow and color).
+- `value` and `previous` are plain numbers in the same unit — including negative
+  ones (a loss, a decline below zero) — and can be formatted with `format`
+  (below).
 
 ## API reference
 

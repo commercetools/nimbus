@@ -40,7 +40,11 @@ export function StatCard({
   const theme = useChartTheme();
   const hasDelta = previous != null && previous !== 0;
   const delta = hasDelta ? value - previous : 0;
-  const pct = hasDelta ? delta / previous : 0;
+  // Divide by the magnitude, not the signed value: a negative `previous`
+  // (e.g. a loss turning into a profit) would otherwise flip the percent's
+  // sign independently of `delta`, contradicting the arrow/color it's shown
+  // next to (a "▲" in positive/green color next to a negative percentage).
+  const pct = hasDelta ? delta / Math.abs(previous) : 0;
   const up = delta >= 0;
   // Arrow follows the true direction; color valence can be inverted for
   // "lower is better" metrics so an improvement always reads positive.
