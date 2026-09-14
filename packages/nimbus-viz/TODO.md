@@ -95,6 +95,27 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       label-collision polish + a full story/spec matrix on the core-6 (line,
       stacked-area, bar, stacked-bar, stat-card + bullet, funnel,
       cohort-triangle/heatmap).
+- [ ] **E6 — fix `isolate: false` story accumulation blocking real play-function
+      coverage.** Found while piloting `/chart:introspect` on `bar-chart`:
+      giving one chart file more than ~2 real (non-`RegistryPreview`) chart
+      instances across its stories makes `addon-a11y`'s `test: "error"` gate
+      fail intermittently with `landmark-unique` and
+      `scrollable-region-focusable` — axe violations that don't reproduce on any
+      single story in isolation. Root cause isn't fully pinned down, but the
+      evidence (which stories fail changes between runs; failures grow with
+      story count in the file) points at `vitest.storybook.config.ts`'s
+      `isolate: false` not fully separating each story's DOM within one file, so
+      later stories' a11y scans see earlier stories' still-mounted chart
+      instances. One partial, real fix already landed as part of that same pass:
+      `chart-container.tsx`'s data- table region had a literal, non-unique
+      `aria-label="Data table"` on every chart — now
+      `` `Data table for ${ariaLabel}` `` when `ariaLabel` is set (nearly
+      always, since every chart generates a sensible default) — but that alone
+      did not clear the gate. This blocks `writing-chart-     stories`' fixed
+      5-7-story set from passing CI on any chart until resolved (try
+      `isolate: true` for this project, or an explicit teardown between stories,
+      or capping real-chart-instance count per file) — do this before running
+      `/chart:introspect`/`auto-optimize-viz` across the rest of the library.
 
 ### Wire the dormant primitives (built + unit-tested, but no chart consumes them)
 
@@ -133,12 +154,13 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       vice-versa) — a deliberate behavior change (shifts bins/limits/widths),
       best done with visual regression in place.
 - [ ] **A1b — orientation-aware overlay contract.** `dumbbell` + `beeswarm`
-      (value on **x**, categories on a band **y**) and `gantt` (time-x,
-      categorical rows) can't take the current `ChartScales` contract (which
-      assumes vertical value-y). Give them overlays by making the contract
+      (value on **x**, categories on a band **y**), `gantt` (time-x, categorical
+      rows), and `bar-chart`'s ranked/horizontal orientation (value axis is x,
+      not y) can't take the current `ChartScales` contract (which assumes
+      vertical value-y). Give them overlays by making the contract
       orientation-aware (value/position scales + an `orientation`), touching
       `scale-context.tsx`, the ~10 overlay components, and the 18 providers.
-      Only then can these 3 charts host `ReferenceLine`/`NowLine`/etc.
+      Only then can these 4 charts host `ReferenceLine`/`NowLine`/etc.
 
 ## Dropped (per product decision, 2026)
 

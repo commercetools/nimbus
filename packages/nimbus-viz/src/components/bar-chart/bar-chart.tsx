@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from "react";
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
-import { max } from "d3-array";
+import { max, min } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import {
@@ -37,6 +37,7 @@ export interface BarChartProps<T = CategoryDatum> {
   value?: (d: T) => number;
   /** "horizontal" = ranked bars (sorted desc, direct value labels). */
   orientation?: "vertical" | "horizontal";
+  /** Accessible label for the SVG; state the takeaway, not every value. */
   ariaLabel?: string;
   /** Format a value-axis number (tick labels + tooltip values). Overrides the
    *  locale/currency formatter from any surrounding ChartLocaleProvider. */
@@ -60,6 +61,13 @@ export interface BarChartProps<T = CategoryDatum> {
  * Generic over the row type `T`: pass `category`/`value` accessors to feed your
  * own domain rows directly; both default to the built-in `CategoryDatum` shape.
  */
+export function BarChart(
+  props: BarChartProps<CategoryDatum>
+): ReactElement | null;
+export function BarChart<T>(
+  props: BarChartProps<T> &
+    Required<Pick<BarChartProps<T>, "category" | "value">>
+): ReactElement | null;
 export function BarChart<T = CategoryDatum>({
   width,
   height,
@@ -98,6 +106,11 @@ export function BarChart<T = CategoryDatum>({
     () => max(rows, (d) => getVal(d)) ?? 0,
     [rows, getVal]
   );
+  const valueMin = useMemo(
+    () => min(rows, (d) => getVal(d)) ?? 0,
+    [rows, getVal]
+  );
+  const hasNegative = rows.some((d) => getVal(d) < 0);
 
   if (width <= 0 || height <= 0 || rows.length === 0) return null;
 
@@ -123,16 +136,20 @@ export function BarChart<T = CategoryDatum>({
             padding: 0.25,
           });
           const xScale = scaleLinear({
-            domain: [0, valueMax],
+            domain: [Math.min(0, valueMin), Math.max(0, valueMax)],
             range: [0, innerWidth],
             nice: true,
           });
           const bh = yScale.bandwidth();
+          const zeroX = xScale(0);
           return (
             <>
               {rows.map((d, i) => {
                 const y = yScale(getCat(d)) ?? 0;
-                const w = Math.max(0, xScale(getVal(d)));
+                const xVal = xScale(getVal(d));
+                const barLeft = Math.min(zeroX, xVal);
+                const barW = Math.max(1, Math.abs(zeroX - xVal));
+                const positive = getVal(d) >= 0;
                 const active = hover == null || hover === i;
                 return (
                   <g
@@ -148,13 +165,20 @@ export function BarChart<T = CategoryDatum>({
                     onClick={() => onDatumClick?.({ datum: d, index: i })}
                   >
                     <BarRounded
-                      x={0}
+                      x={barLeft}
                       y={y}
-                      width={w}
+                      width={barW}
                       height={bh}
                       radius={4}
-                      right
-                      fill={theme.accent}
+                      right={!hasNegative || positive}
+                      left={hasNegative && !positive}
+                      fill={
+                        hasNegative
+                          ? positive
+                            ? theme.positive
+                            : theme.negative
+                          : theme.accent
+                      }
                       opacity={active ? 1 : 0.4}
                     />
                     <text
@@ -168,9 +192,10 @@ export function BarChart<T = CategoryDatum>({
                       {getCat(d)}
                     </text>
                     <text
-                      x={w + 6}
+                      x={positive ? barLeft + barW + 6 : barLeft - 6}
                       y={y + bh / 2}
                       dy="0.32em"
+                      textAnchor={positive ? "start" : "end"}
                       style={emText(11)}
                       fill={theme.ink}
                     >
@@ -201,11 +226,12 @@ export function BarChart<T = CategoryDatum>({
           padding: 0.2,
         });
         const yScale = scaleLinear({
-          domain: [0, valueMax],
+          domain: [Math.min(0, valueMin), Math.max(0, valueMax)],
           range: [innerHeight, 0],
           nice: true,
         });
         const bw = xScale.bandwidth();
+        const zeroY = yScale(0);
         return (
           <ChartScaleProvider
             value={{
@@ -242,18 +268,28 @@ export function BarChart<T = CategoryDatum>({
             />
             {rows.map((d, i) => {
               const x = xScale(getCat(d)) ?? 0;
-              const barH = Math.max(0, innerHeight - yScale(getVal(d)));
+              const yVal = yScale(getVal(d));
+              const barTop = Math.min(zeroY, yVal);
+              const barH = Math.max(1, Math.abs(zeroY - yVal));
+              const positive = getVal(d) >= 0;
               const active = hover == null || hover === i;
               return (
                 <BarRounded
                   key={getCat(d)}
                   x={x}
-                  y={yScale(getVal(d))}
+                  y={barTop}
                   width={bw}
                   height={barH}
                   radius={4}
-                  top
-                  fill={theme.accent}
+                  top={!hasNegative || positive}
+                  bottom={hasNegative && !positive}
+                  fill={
+                    hasNegative
+                      ? positive
+                        ? theme.positive
+                        : theme.negative
+                      : theme.accent
+                  }
                   opacity={active ? 1 : 0.4}
                   onMouseEnter={() => {
                     setHover(i);

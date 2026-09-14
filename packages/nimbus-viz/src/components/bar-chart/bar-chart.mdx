@@ -55,14 +55,14 @@ comparison to be exact — length on a common baseline is the most accurately re
 of all the visual encodings. Keep it to a single measure per category; for
 anything richer, move to a sibling below.
 
-| You want to…                                     | Use instead         |
-| ------------------------------------------------ | ------------------- |
-| Compare several series within each category      | `GroupedBarChart`   |
-| Show each bar's internal composition             | `StackedBarChart`   |
-| Rank many categories with less ink               | `LollipopChart`     |
-| Highlight which few categories drive the total   | `ParetoChart`       |
-| Show the distribution of one continuous variable | `Histogram`         |
-| Show values that sit above and below zero        | `DivergingBarChart` |
+| You want to…                                                               | Use instead         |
+| -------------------------------------------------------------------------- | ------------------- |
+| Compare several series within each category                                | `GroupedBarChart`   |
+| Show each bar's internal composition                                       | `StackedBarChart`   |
+| Rank many categories with less ink                                         | `LollipopChart`     |
+| Highlight which few categories drive the total                             | `ParetoChart`       |
+| Show the distribution of one continuous variable                           | `Histogram`         |
+| Deviation from baseline **is** the story — sorted by it, symmetric framing | `DivergingBarChart` |
 
 ## Getting started
 
@@ -103,9 +103,12 @@ Contract notes, verifiable from source:
 
 - `category` should be **unique** per row — it is the band-scale domain and the
   React key.
-- `value` is a plain number. The value axis is anchored at **0** and scaled to
-  the maximum, so values are assumed **non-negative**; for signed data use
-  [`DivergingBarChart`](/charts/diverging-bar-chart).
+- `value` is a plain number and **may be negative**. The value axis always
+  includes **0** as its baseline, extended to cover the actual min/max of the
+  data — a negative row draws as a bar on the other side of that baseline (below
+  it in the vertical orientation, to its left in the horizontal one), not as a
+  bar extending upward from zero. See "Color & theming" below for what changes
+  visually once a row is negative.
 - Row **order** is preserved in the vertical orientation; the horizontal
   (ranked) orientation sorts descending internally.
 - To plot your own domain rows instead of `CategoryDatum`, keep the array and
@@ -214,11 +217,12 @@ const App = () => (
 
 Not configurable — the chart always draws them. The category axis is a band
 scale (labels are fit to the available band width and truncated when tight); the
-value axis is a linear scale from 0 to the "nice" maximum with horizontal
-gridlines. Hovering a bar dims the others to 0.4 opacity and shows a small
-tooltip with the category and formatted value. There is no legend — a single
-accent hue carries all bars, because the category axis, not color, distinguishes
-them.
+value axis is a linear scale that always includes 0 — from 0 to the "nice"
+maximum when every row is non-negative, extended below 0 to the "nice" minimum
+too when any row is negative — with horizontal gridlines. Hovering a bar dims
+the others to 0.4 opacity and shows a small tooltip with the category and
+formatted value. There is no legend; see "Color & theming" for how bars are
+colored, with or without a legend.
 
 ### Overlays (`children`)
 
@@ -245,8 +249,19 @@ regardless.
 
 Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
 To follow the app's mode inside a `NimbusProvider`, pass
-`mode={coerceColorMode(useColorMode().colorMode)}`. Bars use the validated
-`nimbus` chart accent, not a CSS color.
+`mode={coerceColorMode(useColorMode().colorMode)}`.
+
+Bar color is automatic, not a prop, and depends on the data:
+
+- **Every row non-negative** (the common case): all bars use the single,
+  validated chart accent hue. Color carries no meaning here — the category axis
+  distinguishes bars, not color — matching every other pure-magnitude chart in
+  the "Categorical magnitude" family.
+- **Any row negative**: every bar switches to the theme's `positive`/ `negative`
+  valence colors, per row, by sign. This is automatic for the whole chart, not
+  per-bar-configurable, and not a mix of the two schemes — one negative row
+  recolors every bar in the chart, so a reader can't mistake a plain-accent bar
+  for "definitely positive."
 
 ## Responsiveness & performance
 
@@ -299,8 +314,11 @@ What you get automatically:
   as text, not just the one-line label.
 - **CVD-safe palette.** The accent comes from the validated chart theme
   (contrast + color-vision-deficiency checks), not an ad-hoc color.
-- **Non-color encoding.** Meaning is carried by bar length and axis position;
-  color is a single hue and is not load-bearing.
+- **Non-color encoding.** Direction from the zero baseline (up/right vs.
+  down/left) always carries sign, independent of color; a negative row's
+  automatic recolor to the theme's `negative` role reinforces that, it doesn't
+  carry it alone. With no negative rows, color is a single hue and isn't
+  load-bearing at all.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the categories/values rather
@@ -328,8 +346,6 @@ render your own placeholder when there is no data yet.
 - **One measure per category.** No grouped or stacked series — use
   [`GroupedBarChart`](/charts/grouped-bar-chart) or
   [`StackedBarChart`](/charts/stacked-bar-chart).
-- **Non-negative values.** The baseline is fixed at 0; for signed data use
-  [`DivergingBarChart`](/charts/diverging-bar-chart).
 - **No legend, title, caption, loading, or error passthrough** — `BarChart`
   forwards only `ariaLabel` and the data table to `ChartContainer`.
 - **Overlays are vertical-only** (the ranked orientation transposes the value
