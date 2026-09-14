@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { scaleBand, scaleLinear } from "@visx/scale";
+import { scaleLinear } from "@visx/scale";
 import { BarRounded, LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { sum } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
+import { bandByIndex } from "../../chart/scales";
 import {
   GridRows,
   bottomTickLabel,
@@ -117,11 +118,13 @@ export function ParetoChart({
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
-        const xScale = scaleBand({
-          domain: rows.map((d) => d.category),
-          range: [0, innerWidth],
-          padding: 0.2,
-        });
+        const band = bandByIndex(
+          rows.map((d) => d.category),
+          {
+            range: [0, innerWidth],
+            padding: 0.2,
+          }
+        );
         // SINGLE absolute-unit value axis: its top is the grand total, so both
         // the bars (per-category magnitude) AND the cumulative running total
         // read off the same scale. Pareto's classic dual-axis — bars on the
@@ -134,17 +137,17 @@ export function ParetoChart({
           range: [innerHeight, 0],
           nice: true,
         });
-        const bw = xScale.bandwidth();
-        const cx = (d: ParetoRow) => (xScale(d.category) ?? 0) + bw / 2;
+        const bw = band.bandwidth;
         const eightyY = yScale(0.8 * grandTotal);
         const last = rows[rows.length - 1];
+        const lastIndex = rows.length - 1;
 
         return (
           <ChartScaleProvider
             value={{
               yScale,
-              xScale: (v) => xScale(String(v)) ?? 0,
-              xBandwidth: xScale.bandwidth(),
+              xScale: (v) => band.center(Math.round(Number(v))),
+              xBandwidth: bw,
               innerWidth,
               innerHeight,
             }}
@@ -163,21 +166,23 @@ export function ParetoChart({
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
-              scale={xScale}
+              scale={band.scale}
               top={innerHeight}
               stroke={theme.axis}
               hideTicks
-              tickFormat={(v) => fitBandLabel(xScale.step())(String(v))}
+              tickFormat={(v) =>
+                fitBandLabel(band.step)(band.tickFormat(String(v)))
+              }
               tickLabelProps={bottomTickLabel(theme)}
             />
 
             {rows.map((d, i) => {
-              const x = xScale(d.category) ?? 0;
+              const x = band.pos(i);
               const barH = Math.max(0, innerHeight - yScale(d.value));
               const active = hover == null || hover === i;
               return (
                 <BarRounded
-                  key={d.category}
+                  key={`${d.category}-${i}`}
                   x={x}
                   y={yScale(d.value)}
                   width={bw}
@@ -230,15 +235,15 @@ export function ParetoChart({
                 bars. */}
             <LinePath<ParetoRow>
               data={rows}
-              x={cx}
+              x={(_, i) => band.center(i)}
               y={(d) => yScale(d.cumulative)}
               stroke={theme.categorical[1]}
               strokeWidth={2}
             />
-            {rows.map((d) => (
+            {rows.map((d, i) => (
               <circle
-                key={d.category}
-                cx={cx(d)}
+                key={`${d.category}-${i}`}
+                cx={band.center(i)}
                 cy={yScale(d.cumulative)}
                 r={3}
                 fill={theme.categorical[1]}
@@ -250,7 +255,7 @@ export function ParetoChart({
             {/* Text-only annotation of the cumulative line's right end (the full
                 100% of the grand total), in mutedInk — never a second axis. */}
             <text
-              x={cx(last)}
+              x={band.center(lastIndex)}
               y={yScale(grandTotal) - 8}
               textAnchor="end"
               style={emText(10)}
@@ -261,7 +266,7 @@ export function ParetoChart({
 
             {hover != null && rows[hover] && (
               <SvgTooltip
-                x={cx(rows[hover])}
+                x={band.center(hover)}
                 innerWidth={innerWidth}
                 lines={[
                   rows[hover].category,

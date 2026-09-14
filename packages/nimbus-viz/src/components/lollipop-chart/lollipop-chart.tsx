@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
-import { scaleBand, scaleLinear } from "@visx/scale";
+import { scaleLinear } from "@visx/scale";
 import { max } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { bandByIndex } from "../../chart/scales";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { CategoryDatum } from "../../chart/types";
@@ -60,27 +61,29 @@ export function LollipopChart({
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
-        const yScale = scaleBand({
-          domain: rows.map((d) => d.category),
-          range: [0, innerHeight],
-          padding: 0.3,
-        });
+        const band = bandByIndex(
+          rows.map((d) => d.category),
+          {
+            range: [0, innerHeight],
+            padding: 0.3,
+          }
+        );
         const xScale = scaleLinear({
           domain: [0, valueMax],
           range: [0, innerWidth],
           nice: true,
         });
-        const bh = yScale.bandwidth();
+        const bh = band.bandwidth;
         const r = Math.min(6, Math.max(3, bh / 3));
         return (
           <>
             {rows.map((d, i) => {
-              const y = (yScale(d.category) ?? 0) + bh / 2;
+              const y = band.center(i);
               const cx = Math.max(0, xScale(d.value));
               const active = hover == null || hover === i;
               return (
                 <g
-                  key={d.category}
+                  key={`${d.category}-${i}`}
                   opacity={active ? 1 : 0.4}
                   onMouseEnter={() => setHover(i)}
                   onMouseLeave={() => setHover(null)}

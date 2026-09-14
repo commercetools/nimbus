@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { scaleBand, scaleLinear } from "@visx/scale";
+import { scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
+import { bandByIndex } from "../../chart/scales";
+import { stackKeys } from "../../chart/stack";
 import {
   GridRows,
   bottomTickLabel,
@@ -59,9 +61,9 @@ export function StackedBarChart({
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
-  const [hover, setHover] = useState<string | null>(null);
+  const [hover, setHover] = useState<number | null>(null);
 
-  const keys = useMemo(() => data[0]?.segments.map((s) => s.key) ?? [], [data]);
+  const keys = useMemo(() => stackKeys(data), [data]);
   const colorForKey = useEntityColors(keys);
   const maxTotal = useMemo(
     () =>
@@ -92,19 +94,20 @@ export function StackedBarChart({
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
-        const xScale = scaleBand({
-          domain: data.map((d) => d.category),
-          range: [0, innerWidth],
-          padding: 0.25,
-        });
+        const xScale = bandByIndex(
+          data.map((d) => d.category),
+          {
+            range: [0, innerWidth],
+            padding: 0.25,
+          }
+        );
         const yScale = scaleLinear({
           domain: [0, maxTotal],
           range: [innerHeight, 0],
           nice: true,
         });
-        const bw = xScale.bandwidth();
-        const hr =
-          hover != null ? data.find((d) => d.category === hover) : null;
+        const bw = xScale.bandwidth;
+        const hr = hover != null ? data[hover] : null;
         const hrTotal = hr
           ? hr.segments.reduce((s, seg) => s + seg.value, 0)
           : 0;
@@ -112,7 +115,7 @@ export function StackedBarChart({
           <ChartScaleProvider
             value={{
               yScale,
-              xScale: (v) => xScale(String(v)) ?? 0,
+              xScale: (v) => xScale.pos(Number(v)),
               xBandwidth: bw,
               innerWidth,
               innerHeight,
@@ -132,24 +135,26 @@ export function StackedBarChart({
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
-              scale={xScale}
+              scale={xScale.scale}
               top={innerHeight}
               stroke={theme.axis}
               hideTicks
-              tickFormat={(v) => fitBandLabel(xScale.step())(String(v))}
+              tickFormat={(v) =>
+                fitBandLabel(xScale.step)(xScale.tickFormat(String(v)))
+              }
               tickLabelProps={bottomTickLabel(theme)}
             />
             {data.map((row, i) => {
-              const x = xScale(row.category) ?? 0;
-              const dimmed = hover != null && hover !== row.category;
+              const x = xScale.pos(i);
+              const dimmed = hover != null && hover !== i;
               const lastIdx = row.segments.length - 1;
               let cumulative = 0;
               return (
                 <g
-                  key={row.category}
+                  key={i}
                   opacity={dimmed ? 0.5 : 1}
                   onMouseEnter={() => {
-                    setHover(row.category);
+                    setHover(i);
                     onDatumHover?.({ datum: row, index: i });
                   }}
                   onMouseLeave={() => {
@@ -189,9 +194,9 @@ export function StackedBarChart({
                 </g>
               );
             })}
-            {hr && (
+            {hr && hover != null && (
               <SvgTooltip
-                x={(xScale(hr.category) ?? 0) + bw / 2}
+                x={xScale.pos(hover) + bw / 2}
                 innerWidth={innerWidth}
                 top={Math.max(0, yScale(hrTotal) - 4)}
                 lines={[

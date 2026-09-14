@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import { Group } from "@visx/group";
-import { scaleBand, scaleLinear } from "@visx/scale";
+import { scaleLinear } from "@visx/scale";
 import { max } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { bandByIndex } from "../../chart/scales";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
@@ -83,22 +84,24 @@ export function RadialBarChart({
         // Reserve a rim for category labels.
         const outer = Math.max(0, Math.min(innerWidth, innerHeight) / 2 - 18);
         const inner = outer * 0.3;
-        const angle = scaleBand({
-          domain: data.map((d) => d.category),
-          range: [0, Math.PI * 2],
-          padding: 0.25,
-        });
+        const angle = bandByIndex(
+          data.map((d) => d.category),
+          {
+            range: [0, Math.PI * 2],
+            padding: 0.25,
+          }
+        );
         const radius = scaleLinear({
           domain: [0, valueMax],
           range: [inner, outer],
         });
-        const bw = angle.bandwidth();
+        const bw = angle.bandwidth;
         const hovered = hover != null ? data[hover] : null;
         return (
           <>
             <Group top={cy} left={cx}>
               {data.map((d, i) => {
-                const a0 = (angle(d.category) ?? 0) + bw * 0.05;
+                const a0 = angle.pos(i) + bw * 0.05;
                 const a1 = a0 + bw * 0.9;
                 const aMid = (a0 + a1) / 2;
                 const r1 = Math.max(inner, radius(d.value));
@@ -107,7 +110,7 @@ export function RadialBarChart({
                 const flip = aMid > Math.PI;
                 return (
                   <g
-                    key={d.category}
+                    key={`${d.category}-${i}`}
                     onMouseEnter={() => setHover(i)}
                     onMouseLeave={() => setHover(null)}
                   >

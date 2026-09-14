@@ -101,8 +101,8 @@ const data: CategoryDatum[] = [
 
 Contract notes, verifiable from source:
 
-- `category` should be **unique** per row — it is the band-scale domain and the
-  React key.
+- `category` is display text and **need not be unique** — position along the
+  band axis comes from row order, not from the label.
 - Rows are **sorted by value descending internally**, so input order does not
   matter.
 - The running cumulative total, the grand total, and the 80% cutoff are all

@@ -6,6 +6,7 @@ import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
 import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
+import { stackKeys } from "../../chart/stack";
 
 export interface MarimekkoChartProps {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -42,7 +43,7 @@ export function MarimekkoChart({
   const theme = useChartTheme();
   const [hover, setHover] = useState<{ c: number; s: number } | null>(null);
 
-  const keys = useMemo(() => data[0]?.segments.map((s) => s.key) ?? [], [data]);
+  const keys = useMemo(() => stackKeys(data), [data]);
   const color = useEntityColors(keys);
   const totals = useMemo(
     () =>

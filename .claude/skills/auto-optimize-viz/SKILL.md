@@ -51,12 +51,14 @@ Step 1.
 
 ### Step 1 — Find the next chart
 
-"Untested" below means the chart's `{chart}.stories.tsx` has no `play:`
-function — it has not been through `/chart:introspect` yet.
+"Untested" below means the chart's `{chart}.stories.tsx` has no
+`Accessibility` story — the story every `/chart:introspect` pass writes. A
+`/chart:sweep` may add a single `EdgeCase*` play function to a stub, so "has a
+play function" is not the marker; "has the full set" is.
 
 ```bash
 cd packages/nimbus-viz/src/components
-untested() { for d in */; do n=${d%/}; f="$n/$n.stories.tsx"; [ -f "$f" ] && ! grep -q "play:" "$f" && echo "$n"; done; }
+untested() { for d in */; do n=${d%/}; f="$n/$n.stories.tsx"; [ -f "$f" ] && ! grep -q "export const Accessibility" "$f" && echo "$n"; done; }
 pascal() { perl -pe 's/(^|-)([a-z])/\u$2/g'; }
 ```
 

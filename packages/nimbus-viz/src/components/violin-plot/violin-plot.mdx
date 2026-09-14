@@ -110,8 +110,9 @@ Contract notes, verifiable from source:
 - **You supply raw samples; the chart estimates the density.** Each group runs
   through a Gaussian kernel-density estimate (Silverman's bandwidth), evaluated
   at 40 points across the shared value range.
-- `label` should be **unique** per group — it is the band-scale domain and the
-  React key.
+- `label` is display text shown on the axis, in the tooltip, and in the data
+  table — it need not be unique. Position comes from row order, not from the
+  label.
 - The value axis spans the `extent` of all samples across all groups, made
   "nice", so every violin shares one vertical scale.
 - The **median** shown inside each violin is computed from that group's samples;

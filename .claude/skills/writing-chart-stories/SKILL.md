@@ -18,7 +18,9 @@ stories are **the only place** component behavior is tested — charts have no
 components don't). Most chart story files started as an 11-line stub (one
 `Base` story rendering a `RegistryPreview`, no `play`); count the ones still in
 that state with
-`grep -L "play:" packages/nimbus-viz/src/components/*/*.stories.tsx`. This
+`grep -L "export const Accessibility" packages/nimbus-viz/src/components/*/*.stories.tsx`
+(a `/chart:sweep` may add a single `EdgeCase*` play function to a stub without
+a full pass; the `Accessibility` story is the marker of a complete set). This
 skill's job is to close that, one chart at a time, without inventing test
 claims the component doesn't actually support.
 

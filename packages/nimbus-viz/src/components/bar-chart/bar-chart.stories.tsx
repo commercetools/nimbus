@@ -3,6 +3,7 @@ import { userEvent, within, expect, waitFor, fn } from "storybook/test";
 import { BarChart } from "./bar-chart";
 import { ResponsiveContainer, type CategoryDatum } from "../..";
 import { RegistryPreview, type BaseStory } from "../../stories/base-story";
+import { duplicateLabels } from "../../stories/adversarial";
 
 // .storybook/preview.tsx already wraps every story in ChartThemeProvider
 // (following the dark-mode toggle) and enables addon-a11y in `test: "error"`
@@ -225,6 +226,39 @@ export const EdgeCaseNegativeValue: BaseStory = {
     expect(negativeBar.getAttribute("fill")).not.toBe(
       positiveBar.getAttribute("fill")
     );
+  },
+};
+
+/**
+ * BC-1 (`docs/bug-classes.md`): a band scale keyed by category TEXT collapses
+ * rows that share a label onto one band, drawing their bars on top of each
+ * other with no error. `BarChart` keys its category band by row INDEX
+ * instead (even though `getCat` still supplies the label text), so four
+ * same-labeled rows still render four distinct bars. Bars render as `<path>`
+ * via `BarRounded` (x/y are baked into `d`, not exposed as attributes — see
+ * "Interaction" above), so distinctness is asserted on `d` rather than `x`.
+ */
+const duplicateLabelFixture: CategoryDatum[] = duplicateLabels([
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+  { category: "Partner", value: 1800 },
+]);
+
+export const EdgeCaseDuplicateLabels: BaseStory = {
+  render: () => (
+    <BarChart
+      width={320}
+      height={240}
+      data={duplicateLabelFixture}
+      ariaLabel="Bar chart of 4 categories sharing one label"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const bars = canvasElement.querySelectorAll<SVGPathElement>("path");
+    expect(bars).toHaveLength(duplicateLabelFixture.length);
+    const shapes = Array.from(bars).map((b) => b.getAttribute("d"));
+    expect(new Set(shapes).size).toBe(duplicateLabelFixture.length);
   },
 };
 

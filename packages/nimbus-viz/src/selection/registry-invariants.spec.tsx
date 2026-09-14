@@ -63,21 +63,8 @@ const INVALID = /NaN|Infinity|undefined|null/;
  * flips red otherwise.
  */
 const KNOWN_GAPS: Record<string, string> = {
-  // BC-1 — band scale keyed by label/category text (relabeling moves marks)
-  "BarChart:duplicate-labels": "BC-1",
-  "BoxPlot:duplicate-labels": "BC-1",
-  "DivergingBarChart:duplicate-labels": "BC-1",
-  "DivergingStackedBar:duplicate-labels": "BC-1",
-  "DumbbellChart:duplicate-labels": "BC-1",
-  "GanttChart:duplicate-labels": "BC-1",
-  "GroupedBarChart:duplicate-labels": "BC-1",
-  "LollipopChart:duplicate-labels": "BC-1",
-  "ParetoChart:duplicate-labels": "BC-1",
-  "PopulationPyramid:duplicate-labels": "BC-1",
-  "RadialBarChart:duplicate-labels": "BC-1",
-  "StackedBarChart:duplicate-labels": "BC-1",
-  "ViolinPlot:duplicate-labels": "BC-1",
-  "WaterfallChart:duplicate-labels": "BC-1",
+  // BC-1 (band scale keyed by label text): fixed across all 14 charts by the
+  // /chart:sweep BC-1 commit; no entries remain. INV-3 is the guard.
   // BC-2 — negative magnitude extrapolates past zero (negative <circle r>)
   "BubbleChart:negative-values": "BC-2 negative size -> negative r",
   // BC-3 — degenerate totals: every link 0 makes the sankey layout NaN

@@ -150,8 +150,8 @@ const data: StackRow[] = [
 
 Contract notes, verifiable from source:
 
-- `category` should be **unique** per row — it is the band-scale domain and the
-  React key. Row order is preserved left-to-right.
+- `category` is display text and need not be unique — position is by row
+  order, not the label. Row order is preserved left-to-right.
 - Every row should carry the **same segment keys, in the same order**. The
   **first row** defines the legend keys, their order, and their colors; a key
   missing from a later row is treated as `0` in the data table and simply not

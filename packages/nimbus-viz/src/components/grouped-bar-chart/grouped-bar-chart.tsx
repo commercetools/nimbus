@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { scaleBand, scaleLinear } from "@visx/scale";
+import { scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
+import { bandByIndex } from "../../chart/scales";
+import { stackKeys } from "../../chart/stack";
 import {
   GridRows,
   bottomTickLabel,
@@ -56,8 +58,8 @@ export function GroupedBarChart({
   children,
 }: GroupedBarChartProps) {
   const theme = useChartTheme();
-  const [hover, setHover] = useState<{ cat: string; key: string } | null>(null);
-  const keys = useMemo(() => data[0]?.segments.map((s) => s.key) ?? [], [data]);
+  const [hover, setHover] = useState<{ i: number; key: string } | null>(null);
+  const keys = useMemo(() => stackKeys(data), [data]);
   const colorForKey = useEntityColors(keys);
   const valueMax = useMemo(
     () => Math.max(0, ...data.flatMap((r) => r.segments.map((s) => s.value))),
@@ -84,14 +86,15 @@ export function GroupedBarChart({
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
-        const x0 = scaleBand({
-          domain: data.map((d) => d.category),
-          range: [0, innerWidth],
-          padding: 0.2,
-        });
-        const x1 = scaleBand({
-          domain: keys,
-          range: [0, x0.bandwidth()],
+        const x0 = bandByIndex(
+          data.map((d) => d.category),
+          {
+            range: [0, innerWidth],
+            padding: 0.2,
+          }
+        );
+        const x1 = bandByIndex(keys, {
+          range: [0, x0.bandwidth],
           padding: 0.15,
         });
         const y = scaleLinear({
@@ -99,18 +102,16 @@ export function GroupedBarChart({
           range: [innerHeight, 0],
           nice: true,
         });
-        const bw = x1.bandwidth();
+        const bw = x1.bandwidth;
         const hb = hover
-          ? data
-              .find((d) => d.category === hover.cat)
-              ?.segments.find((s) => s.key === hover.key)
+          ? data[hover.i]?.segments.find((s) => s.key === hover.key)
           : null;
         return (
           <ChartScaleProvider
             value={{
               yScale: y,
-              xScale: (v) => x0(String(v)) ?? 0,
-              xBandwidth: x0.bandwidth(),
+              xScale: (v) => x0.pos(Number(v)),
+              xBandwidth: x0.bandwidth,
               innerWidth,
               innerHeight,
             }}
@@ -125,19 +126,21 @@ export function GroupedBarChart({
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
-              scale={x0}
+              scale={x0.scale}
               top={innerHeight}
               stroke={theme.axis}
               hideTicks
-              tickFormat={(v) => fitBandLabel(x0.step())(String(v))}
+              tickFormat={(v) =>
+                fitBandLabel(x0.step)(x0.tickFormat(String(v)))
+              }
               tickLabelProps={bottomTickLabel(theme)}
             />
             {data.map((row, i) => {
-              const gx = x0(row.category) ?? 0;
+              const gx = x0.pos(i);
               return (
-                <g key={row.category}>
+                <g key={i}>
                   {row.segments.map((seg) => {
-                    const bx = gx + (x1(seg.key) ?? 0);
+                    const bx = gx + x1.pos(keys.indexOf(seg.key));
                     const bh = Math.max(0, innerHeight - y(seg.value));
                     const active = hover == null || hover.key === seg.key;
                     return (
@@ -152,7 +155,7 @@ export function GroupedBarChart({
                         fill={colorForKey(seg.key)}
                         opacity={active ? 1 : 0.35}
                         onMouseEnter={() => {
-                          setHover({ cat: row.category, key: seg.key });
+                          setHover({ i, key: seg.key });
                           // index = the category index; datum = the raw segment.
                           onDatumHover?.({
                             datum: seg,
@@ -179,10 +182,13 @@ export function GroupedBarChart({
             })}
             {hover && hb && (
               <SvgTooltip
-                x={(x0(hover.cat) ?? 0) + (x1(hover.key) ?? 0) + bw / 2}
+                x={x0.pos(hover.i) + x1.pos(keys.indexOf(hover.key)) + bw / 2}
                 innerWidth={innerWidth}
                 top={Math.max(0, y(hb.value) - 4)}
-                lines={[hover.cat, `${hb.key}: ${formatCompact(hb.value)}`]}
+                lines={[
+                  data[hover.i]?.category ?? "",
+                  `${hb.key}: ${formatCompact(hb.value)}`,
+                ]}
               />
             )}
             {children}

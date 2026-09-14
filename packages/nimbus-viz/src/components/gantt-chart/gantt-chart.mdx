@@ -141,8 +141,9 @@ Contract notes, verifiable from source:
   `start`, not a bar.
 - Row **order is preserved** — events stack top-to-bottom in the order given;
   the component does not sort by date.
-- `label` is the row label, the tooltip title, and the React key — keep it
-  **unique**.
+- `label` is the row label and the tooltip title — display text that need not
+  be unique. Row position and identity come from array order, not from the
+  label.
 - `category` is optional; when present it colors the bar and, with two or more
   distinct categories, drives a legend.
 

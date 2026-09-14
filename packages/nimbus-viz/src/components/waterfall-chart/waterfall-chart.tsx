@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { scaleBand, scaleLinear } from "@visx/scale";
+import { scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { ChartContainer } from "../../chart/chart-container";
+import { bandByIndex } from "../../chart/scales";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import {
   GridRows,
@@ -110,24 +111,26 @@ export function WaterfallChart({
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
-        const xScale = scaleBand({
-          domain: bars.map((b) => b.step.label),
-          range: [0, innerWidth],
-          padding: 0.3,
-        });
+        const band = bandByIndex(
+          bars.map((b) => b.step.label),
+          {
+            range: [0, innerWidth],
+            padding: 0.3,
+          }
+        );
         const yScale = scaleLinear({
           domain: [yMin, yMax],
           range: [innerHeight, 0],
           nice: true,
         });
-        const bw = xScale.bandwidth();
+        const bw = band.bandwidth;
         const hb = hover != null ? bars[hover] : null;
 
         return (
           <ChartScaleProvider
             value={{
               yScale,
-              xScale: (v) => xScale(String(v)) ?? 0,
+              xScale: (v) => band.scale(String(v)) ?? 0,
               xBandwidth: bw,
               innerWidth,
               innerHeight,
@@ -147,15 +150,15 @@ export function WaterfallChart({
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
-              scale={xScale}
+              scale={band.scale}
               top={innerHeight}
               stroke={theme.axis}
               hideTicks
-              tickFormat={(v) => fitBandLabel(xScale.step())(String(v))}
+              tickFormat={(v) => fitBandLabel(band.step)(band.tickFormat(v))}
               tickLabelProps={bottomTickLabel(theme)}
             />
             {bars.map((bar, i) => {
-              const x = xScale(bar.step.label) ?? 0;
+              const x = band.pos(i);
               const yFrom = yScale(bar.from);
               const yTo = yScale(bar.to);
               const barTop = Math.min(yFrom, yTo);
@@ -172,10 +175,10 @@ export function WaterfallChart({
                   ? `+${formatCompact(bar.step.value)}`
                   : formatCompact(bar.step.value);
               const next = bars[i + 1];
-              const nextX = next ? (xScale(next.step.label) ?? 0) : 0;
+              const nextX = next ? band.pos(i + 1) : 0;
               return (
                 <g
-                  key={bar.step.label}
+                  key={i}
                   onMouseEnter={() => {
                     setHover(i);
                     // datum is the raw input step, not the internal Bar.
@@ -221,7 +224,7 @@ export function WaterfallChart({
             })}
             {hb && (
               <SvgTooltip
-                x={(xScale(hb.step.label) ?? 0) + bw / 2}
+                x={band.center(hover ?? 0)}
                 innerWidth={innerWidth}
                 top={Math.max(0, Math.min(yScale(hb.from), yScale(hb.to)) - 4)}
                 lines={

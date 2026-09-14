@@ -101,8 +101,9 @@ const data: CategoryDatum[] = [
 
 Contract notes, verifiable from source:
 
-- `category` should be **unique** per row — it is the band-scale domain and the
-  React key.
+- `category` is display text shown on the axis and in the data table — it need
+  not be unique. Position comes from row order (after the internal sort by
+  value), not from the category text.
 - `value` is a **signed** number: positive bars grow right, negative bars grow
   left. The value axis is symmetric — the domain is `[-absMax, absMax]` from the
   largest absolute value, "niced" — so zero always sits at the center.

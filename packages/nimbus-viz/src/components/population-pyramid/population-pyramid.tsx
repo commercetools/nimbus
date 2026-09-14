@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { scaleBand, scaleLinear } from "@visx/scale";
+import { scaleLinear } from "@visx/scale";
 import { max } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
@@ -7,6 +7,8 @@ import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
+import { bandByIndex } from "../../chart/scales";
+import { stackKeys } from "../../chart/stack";
 
 export interface PopulationPyramidProps {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -44,12 +46,12 @@ export function PopulationPyramid({
   const theme = useChartTheme();
   const [hover, setHover] = useState<{ r: number; side: 0 | 1 } | null>(null);
 
+  // Segment keys are read as the union across all rows (not just row 0), so a
+  // key missing from the first row still resolves to its real name (BC-5).
+  const allKeys = useMemo(() => stackKeys(data), [data]);
   const keys = useMemo(
-    () => [
-      data[0]?.segments[0]?.key ?? "Left",
-      data[0]?.segments[1]?.key ?? "Right",
-    ],
-    [data]
+    () => [allKeys[0] ?? "Left", allKeys[1] ?? "Right"],
+    [allKeys]
   );
   const color = useEntityColors(keys);
   const valueMax = useMemo(
@@ -85,25 +87,26 @@ export function PopulationPyramid({
         const half = Math.max(0, (innerWidth - GUTTER) / 2);
         const centerLeft = half;
         const centerRight = half + GUTTER;
-        const yScale = scaleBand({
-          domain: data.map((d) => d.category),
-          range: [0, innerHeight],
-          padding: 0.2,
-        });
+        const yScale = bandByIndex(
+          data.map((d) => d.category),
+          {
+            range: [0, innerHeight],
+            padding: 0.2,
+          }
+        );
         const wScale = scaleLinear({
           domain: [0, valueMax || 1],
           range: [0, half],
           nice: true,
         });
-        const bh = yScale.bandwidth();
+        const bh = yScale.bandwidth;
         const hovered =
           hover != null ? data[hover.r]?.segments[hover.side] : null;
-        const hoveredY =
-          hover != null ? (yScale(data[hover.r].category) ?? 0) : 0;
+        const hoveredY = hover != null ? yScale.pos(hover.r) : 0;
         return (
           <>
             {data.map((row, r) => {
-              const y = yScale(row.category) ?? 0;
+              const y = yScale.pos(r);
               const lv = row.segments[0]?.value ?? 0;
               const rv = row.segments[1]?.value ?? 0;
               const lw = wScale(lv);
@@ -113,7 +116,7 @@ export function PopulationPyramid({
               const rActive =
                 hover == null || (hover.r === r && hover.side === 1);
               return (
-                <g key={row.category}>
+                <g key={r}>
                   <rect
                     x={centerLeft - lw}
                     y={y}

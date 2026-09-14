@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
-import { scaleBand, scaleLinear } from "@visx/scale";
+import { scaleLinear } from "@visx/scale";
 import { AxisBottom } from "@visx/axis";
 import { extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { bandByIndex } from "../../chart/scales";
 import { bottomTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
@@ -91,12 +92,13 @@ export function DumbbellChart({
           domain: [lo - pad, hi + pad],
           range: [0, innerWidth],
         });
-        const yScale = scaleBand({
-          domain: data.map((d) => d.category),
-          range: [0, innerHeight],
-          padding: 0.4,
-        });
-        const bw = yScale.bandwidth();
+        const band = bandByIndex(
+          data.map((d) => d.category),
+          {
+            range: [0, innerHeight],
+            padding: 0.4,
+          }
+        );
         const hr = hover != null ? data[hover] : null;
 
         return (
@@ -122,7 +124,7 @@ export function DumbbellChart({
               tickLabelProps={bottomTickLabel(theme)}
             />
             {data.map((row, i) => {
-              const cy = (yScale(row.category) ?? 0) + bw / 2;
+              const cy = band.center(i);
               const xs = xScale(row.start);
               const xe = xScale(row.end);
               const active = hover == null || hover === i;
@@ -133,7 +135,7 @@ export function DumbbellChart({
               const endLabelX = startLeft ? xe + 8 : xe - 8;
               return (
                 <g
-                  key={row.category}
+                  key={i}
                   opacity={active ? 1 : 0.35}
                   onMouseEnter={() => setHover(i)}
                   onMouseLeave={() => setHover(null)}
@@ -200,7 +202,7 @@ export function DumbbellChart({
               <SvgTooltip
                 x={(xScale(hr.start) + xScale(hr.end)) / 2}
                 innerWidth={innerWidth}
-                top={Math.max(0, (yScale(hr.category) ?? 0) + bw / 2 - 30)}
+                top={Math.max(0, band.center(hover ?? 0) - 30)}
                 lines={[
                   hr.category,
                   `${startLabel}: ${formatCompact(hr.start)}`,

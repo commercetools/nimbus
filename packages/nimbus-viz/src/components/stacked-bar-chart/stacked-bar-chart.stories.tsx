@@ -3,6 +3,7 @@ import { userEvent, within, expect, waitFor, fn } from "storybook/test";
 import { StackedBarChart } from "./stacked-bar-chart";
 import { ResponsiveContainer, type StackRow } from "../..";
 import { RegistryPreview, type BaseStory } from "../../stories/base-story";
+import { duplicateLabels } from "../../stories/adversarial";
 
 // .storybook/preview.tsx already wraps every story in ChartThemeProvider
 // (following the dark-mode toggle) and enables addon-a11y in `test: "error"`
@@ -190,6 +191,59 @@ export const EdgeCaseZeroTopmostSegment: BaseStory = {
     const path = canvasElement.querySelector<SVGPathElement>("path");
     expect(path).toBeInTheDocument();
     expect(path!.getAttribute("d")).not.toMatch(/NaN/);
+  },
+};
+
+/**
+ * BC-1 regression: `bandByIndex` positions each row's band by row order, not
+ * by the category label, so three rows sharing one label ("Q1" below, after
+ * `duplicateLabels`) still render at three distinct x positions instead of
+ * collapsing onto a single band.
+ */
+const dupFixture: StackRow[] = duplicateLabels([
+  {
+    category: "Q1",
+    segments: [
+      { key: "New", value: 120 },
+      { key: "Returning", value: 80 },
+    ],
+  },
+  {
+    category: "Q2",
+    segments: [
+      { key: "New", value: 140 },
+      { key: "Returning", value: 96 },
+    ],
+  },
+  {
+    category: "Q3",
+    segments: [
+      { key: "New", value: 90 },
+      { key: "Returning", value: 60 },
+    ],
+  },
+]);
+
+export const EdgeCaseDuplicateLabels: BaseStory = {
+  render: () => (
+    <StackedBarChart
+      width={360}
+      height={240}
+      data={dupFixture}
+      ariaLabel="Stacked bar chart with duplicate category labels"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    // Every row's non-topmost segment renders as a plain <rect>; the
+    // topmost renders as BarRounded (a <path>).
+    const rects = canvasElement.querySelectorAll("rect");
+    const paths = canvasElement.querySelectorAll("path");
+    expect(rects.length + paths.length).toBe(
+      dupFixture.length * dupFixture[0].segments.length
+    );
+    expect(
+      new Set(Array.from(rects).map((r) => r.getAttribute("x"))).size
+    ).toBe(dupFixture.length);
   },
 };
 

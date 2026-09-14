@@ -147,8 +147,9 @@ Contract notes, verifiable from source:
   quartiles, median, and extremes already reduced. To go from raw samples, use
   [`ViolinPlot`](/charts/violin-plot) (which estimates density itself) or
   compute the summary upstream.
-- `label` should be **unique** per group — it is the band-scale domain and the
-  React key.
+- `label` is display text shown on the axis, in the tooltip, and in the data
+  table — it need not be unique. Position comes from row order, not from the
+  label.
 - The value axis spans the `extent` of every group's `min`, `max`, and
   `outliers`, made "nice", so outliers push the axis out to include them.
 - `outliers` is optional; each entry is drawn as an individual dot beyond the

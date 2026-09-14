@@ -1,11 +1,12 @@
 import { useCallback, useMemo, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
-import { scaleBand, scaleLinear } from "@visx/scale";
+import { scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { max, min } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
+import { bandByIndex } from "../../chart/scales";
 import {
   GridRows,
   bottomTickLabel,
@@ -130,22 +131,24 @@ export function BarChart<T = CategoryDatum>({
         table={table}
       >
         {({ innerWidth, innerHeight }) => {
-          const yScale = scaleBand({
-            domain: rows.map((d) => getCat(d)),
-            range: [0, innerHeight],
-            padding: 0.25,
-          });
+          const band = bandByIndex(
+            rows.map((d) => getCat(d)),
+            {
+              range: [0, innerHeight],
+              padding: 0.25,
+            }
+          );
           const xScale = scaleLinear({
             domain: [Math.min(0, valueMin), Math.max(0, valueMax)],
             range: [0, innerWidth],
             nice: true,
           });
-          const bh = yScale.bandwidth();
+          const bh = band.bandwidth;
           const zeroX = xScale(0);
           return (
             <>
               {rows.map((d, i) => {
-                const y = yScale(getCat(d)) ?? 0;
+                const y = band.pos(i);
                 const xVal = xScale(getVal(d));
                 const barLeft = Math.min(zeroX, xVal);
                 const barW = Math.max(1, Math.abs(zeroX - xVal));
@@ -153,7 +156,7 @@ export function BarChart<T = CategoryDatum>({
                 const active = hover == null || hover === i;
                 return (
                   <g
-                    key={getCat(d)}
+                    key={`${getCat(d)}-${i}`}
                     onMouseEnter={() => {
                       setHover(i);
                       onDatumHover?.({ datum: d, index: i });
@@ -220,25 +223,27 @@ export function BarChart<T = CategoryDatum>({
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
-        const xScale = scaleBand({
-          domain: rows.map((d) => getCat(d)),
-          range: [0, innerWidth],
-          padding: 0.2,
-        });
+        const band = bandByIndex(
+          rows.map((d) => getCat(d)),
+          {
+            range: [0, innerWidth],
+            padding: 0.2,
+          }
+        );
         const yScale = scaleLinear({
           domain: [Math.min(0, valueMin), Math.max(0, valueMax)],
           range: [innerHeight, 0],
           nice: true,
         });
-        const bw = xScale.bandwidth();
+        const bw = band.bandwidth;
         const zeroY = yScale(0);
         return (
           <ChartScaleProvider
             value={{
               yScale: (v) => yScale(v),
               xScale: (v) => {
-                const r = rows[Math.round(Number(v))];
-                return r != null ? (xScale(getCat(r)) ?? 0) + bw / 2 : 0;
+                const idx = Math.round(Number(v));
+                return rows[idx] != null ? band.center(idx) : 0;
               },
               xBandwidth: bw,
               innerWidth,
@@ -259,15 +264,17 @@ export function BarChart<T = CategoryDatum>({
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
-              scale={xScale}
+              scale={band.scale}
               top={innerHeight}
               stroke={theme.axis}
               hideTicks
-              tickFormat={(v) => fitBandLabel(xScale.step())(String(v))}
+              tickFormat={(v) =>
+                fitBandLabel(band.step)(band.tickFormat(String(v)))
+              }
               tickLabelProps={bottomTickLabel(theme)}
             />
             {rows.map((d, i) => {
-              const x = xScale(getCat(d)) ?? 0;
+              const x = band.pos(i);
               const yVal = yScale(getVal(d));
               const barTop = Math.min(zeroY, yVal);
               const barH = Math.max(1, Math.abs(zeroY - yVal));
@@ -275,7 +282,7 @@ export function BarChart<T = CategoryDatum>({
               const active = hover == null || hover === i;
               return (
                 <BarRounded
-                  key={getCat(d)}
+                  key={`${getCat(d)}-${i}`}
                   x={x}
                   y={barTop}
                   width={bw}
@@ -306,7 +313,7 @@ export function BarChart<T = CategoryDatum>({
             {children}
             {hover != null && rows[hover] && (
               <SvgTooltip
-                x={(xScale(getCat(rows[hover])) ?? 0) + bw / 2}
+                x={band.center(hover)}
                 innerWidth={innerWidth}
                 top={Math.max(0, yScale(getVal(rows[hover])) - 4)}
                 lines={[getCat(rows[hover]), valueFmt(getVal(rows[hover]))]}

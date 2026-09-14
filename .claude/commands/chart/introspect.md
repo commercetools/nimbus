@@ -13,8 +13,10 @@ Audits one `packages/nimbus-viz` chart against its actual capability surface,
 the accessibility contract, and real dogfooding evidence — then closes the gaps
 it finds: fixes the component, refreshes its docs, writes real Storybook stories
 (check how many charts still have none:
-`grep -L "play:" packages/nimbus-viz/src/components/*/*.stories.tsx | wc -l`),
-and verifies before committing.
+`grep -L "export const Accessibility" packages/nimbus-viz/src/components/*/*.stories.tsx | wc -l`
+— the `Accessibility` story is the one this command always writes, so its
+absence means no full pass yet even if a `/chart:sweep` added an `EdgeCase*`
+story), and verifies before committing.
 
 This is the nimbus-viz counterpart to the general "does this component meet the
 bar" question `/review` answers for `packages/nimbus` — but charts have no

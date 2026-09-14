@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
-import { scaleBand, scaleLinear } from "@visx/scale";
+import { scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { max } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { bandByIndex } from "../../chart/scales";
 import { useChartTheme } from "../../theme";
 import { formatSignedCompact } from "../../chart/format";
 import type { CategoryDatum } from "../../chart/types";
@@ -65,18 +66,20 @@ export function DivergingBarChart({
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
-        const yScale = scaleBand({
-          domain: rows.map((d) => d.category),
-          range: [0, innerHeight],
-          padding: 0.25,
-        });
+        const band = bandByIndex(
+          rows.map((d) => d.category),
+          {
+            range: [0, innerHeight],
+            padding: 0.25,
+          }
+        );
         const xScale = scaleLinear({
           domain: [-absMax, absMax],
           range: [0, innerWidth],
           nice: true,
         });
         const zero = xScale(0);
-        const bh = yScale.bandwidth();
+        const bh = band.bandwidth;
         return (
           <>
             <line
@@ -87,7 +90,7 @@ export function DivergingBarChart({
               stroke={theme.axis}
             />
             {rows.map((d, i) => {
-              const y = yScale(d.category) ?? 0;
+              const y = band.pos(i);
               const positive = d.value >= 0;
               const end = xScale(d.value);
               const x = Math.min(zero, end);
@@ -95,7 +98,7 @@ export function DivergingBarChart({
               const active = hover == null || hover === i;
               return (
                 <g
-                  key={d.category}
+                  key={i}
                   opacity={active ? 1 : 0.4}
                   onMouseEnter={() => setHover(i)}
                   onMouseLeave={() => setHover(null)}

@@ -103,8 +103,8 @@ const data: CategoryDatum[] = [
 
 Contract notes, verifiable from source:
 
-- `category` should be **unique** per row — it is the angular band-scale domain
-  and the React key.
+- `category` is display text and **need not be unique** — angular position
+  comes from row order, not from the label.
 - Rows are **not** sorted: input order sets the slot order, laid out clockwise
   from 12 o'clock.
 - `value` is a plain number. The radius scale runs from **0** at the inner ring

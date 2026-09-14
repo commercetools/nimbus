@@ -105,8 +105,9 @@ const data: DumbbellRow[] = [
 
 Contract notes, verifiable from source:
 
-- `category` should be **unique** per row — it is the band-scale domain and the
-  React key.
+- `category` is display text shown on the axis, in the tooltip, and in the data
+  table — it need not be unique. Position comes from row order, not from the
+  category text.
 - `start` and `end` are plain numbers, and either may be the larger. The value
   axis spans the **combined extent** of all `start`/`end` values (padded ~10% on
   each side), so there is **no fixed zero baseline** — negative values are fine.

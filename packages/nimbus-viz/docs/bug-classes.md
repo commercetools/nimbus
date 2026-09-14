@@ -35,11 +35,17 @@ chart it hits. The generic invariant test
 
 ## Status
 
-- **BC-1** fixed: cohort-triangle, heatmap (`388652041`, `eb30febb0`);
-  candlestick-chart and rfm-grid were index-keyed from the start. Open: every
-  file the `detect` prints (14 charts as of 2026-09-14, `bar-chart` included —
-  its domain runs through the configurable `getCat` accessor, which is still
-  label text).
+- **BC-1** fixed everywhere. cohort-triangle and heatmap by hand (`388652041`,
+  `eb30febb0`); candlestick-chart and rfm-grid were index-keyed from the start;
+  the remaining 14 (bar-chart, box-plot, diverging-bar-chart,
+  diverging-stacked-bar, dumbbell-chart, gantt-chart, grouped-bar-chart,
+  lollipop-chart, pareto-chart, population-pyramid, radial-bar-chart,
+  stacked-bar-chart, violin-plot, waterfall-chart) by `/chart:sweep BC-1`, each
+  with an `EdgeCaseDuplicateLabels` story. The `detect` prints nothing; the
+  registry invariant spec (INV-3) guards every base component. Side finding from
+  the sweep: pareto-chart's `ChartScaleProvider` `xScale` fed a numeric rank
+  into the text-keyed scale (overlays landed at 0); fixed with
+  `band.center(index)`.
 - **BC-2** fixed: bar-chart, line-chart, bullet-chart; diverging-bar-chart and
   diverging-stacked-bar use symmetric domains. Legitimate hits to leave alone:
   `violin-plot` (density axis, `[0, densityMax || 1]`), `bubble-chart` (guarded
@@ -55,9 +61,11 @@ chart it hits. The generic invariant test
   BC-2 extrapolation — a negative value drawn at a valid but wrong coordinate —
   so BC-2 stays grep-guarded plus a per-chart `EdgeCase*` story.
 - **BC-4** fixed: stat-card.
-- **BC-5** open: grouped-bar-chart, stacked-bar-chart, diverging-stacked-bar,
+- **BC-5** fixed: grouped-bar-chart, stacked-bar-chart, diverging-stacked-bar,
   marimekko-chart, population-pyramid (the last two were found by the `detect`
-  itself, not by an audit — the grep is doing its job).
+  itself, not by an audit) — all via `stackKeys(rows)` in the
+  `/chart:sweep BC-1` commit. population-pyramid keeps its documented "first two
+  segments" rule on top of the union. The `detect` prints nothing.
 - **BC-6** fixed: funnel-chart docs.
 - **BC-7** fixed: bar-chart stories; the rule is row 6 of
   `writing-chart-stories` "Common mistakes".

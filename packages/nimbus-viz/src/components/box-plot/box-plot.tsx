@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { scaleBand, scaleLinear } from "@visx/scale";
+import { scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { BoxPlot as VisxBoxPlot } from "@visx/stats";
 import { extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { bandByIndex } from "../../chart/scales";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
@@ -85,23 +86,25 @@ export function BoxPlot({
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
-        const xScale = scaleBand({
-          domain: groups.map((g) => g.label),
-          range: [0, innerWidth],
-          padding: 0.3,
-        });
+        const band = bandByIndex(
+          groups.map((g) => g.label),
+          {
+            range: [0, innerWidth],
+            padding: 0.3,
+          }
+        );
         const yScale = scaleLinear({
           domain: yDomain,
           range: [innerHeight, 0],
           nice: true,
         });
-        const boxWidth = xScale.bandwidth() * 0.6;
+        const boxWidth = band.bandwidth * 0.6;
         return (
           <ChartScaleProvider
             value={{
               yScale,
-              xScale: (v) => xScale(String(v)) ?? 0,
-              xBandwidth: xScale.bandwidth(),
+              xScale: (v) => band.scale(String(v)) ?? 0,
+              xBandwidth: band.bandwidth,
               innerWidth,
               innerHeight,
             }}
@@ -120,19 +123,20 @@ export function BoxPlot({
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
-              scale={xScale}
+              scale={band.scale}
               top={innerHeight}
               stroke={theme.axis}
               hideTicks
+              tickFormat={band.tickFormat}
               tickLabelProps={bottomTickLabel(theme)}
             />
             {groups.map((g, i) => {
-              const bandStart = xScale(g.label) ?? 0;
-              const left = bandStart + (xScale.bandwidth() - boxWidth) / 2;
+              const bandStart = band.pos(i);
+              const left = bandStart + (band.bandwidth - boxWidth) / 2;
               const active = hover == null || hover === i;
               return (
                 <VisxBoxPlot
-                  key={g.label}
+                  key={i}
                   left={left}
                   boxWidth={boxWidth}
                   valueScale={yScale}
@@ -167,7 +171,7 @@ export function BoxPlot({
             })}
             {hoverGroup && (
               <SvgTooltip
-                x={(xScale(hoverGroup.label) ?? 0) + xScale.bandwidth() / 2}
+                x={band.center(hover ?? 0)}
                 innerWidth={innerWidth}
                 lines={[
                   hoverGroup.label,

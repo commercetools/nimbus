@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { scaleBand, scaleLinear } from "@visx/scale";
+import { scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { bandByIndex } from "../../chart/scales";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
@@ -135,17 +136,19 @@ export function ViolinPlot({
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
-        const xScale = scaleBand({
-          domain: groups.map((g) => g.label),
-          range: [0, innerWidth],
-          padding: 0.3,
-        });
+        const band = bandByIndex(
+          groups.map((g) => g.label),
+          {
+            range: [0, innerWidth],
+            padding: 0.3,
+          }
+        );
         const yScale = scaleLinear({
           domain: yDomain,
           range: [innerHeight, 0],
           nice: true,
         });
-        const halfBand = xScale.bandwidth() / 2;
+        const halfBand = band.bandwidth / 2;
         const wScale = scaleLinear({
           domain: [0, densityMax],
           range: [0, halfBand * 0.95],
@@ -154,8 +157,8 @@ export function ViolinPlot({
           <ChartScaleProvider
             value={{
               yScale,
-              xScale: (v) => xScale(String(v)) ?? 0,
-              xBandwidth: xScale.bandwidth(),
+              xScale: (v) => band.scale(String(v)) ?? 0,
+              xBandwidth: band.bandwidth,
               innerWidth,
               innerHeight,
             }}
@@ -174,14 +177,15 @@ export function ViolinPlot({
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
-              scale={xScale}
+              scale={band.scale}
               top={innerHeight}
               stroke={theme.axis}
               hideTicks
+              tickFormat={band.tickFormat}
               tickLabelProps={bottomTickLabel(theme)}
             />
-            {groups.map((g, i) => {
-              const cx = (xScale(g.label) ?? 0) + halfBand;
+            {groups.map((_, i) => {
+              const cx = band.center(i);
               const s = stats[i];
               const active = hover == null || hover === i;
               const right = s.density.map(
@@ -199,7 +203,7 @@ export function ViolinPlot({
               ].join(" ");
               return (
                 <g
-                  key={g.label}
+                  key={i}
                   onMouseEnter={() => setHover(i)}
                   onMouseLeave={() => setHover(null)}
                 >
@@ -223,7 +227,7 @@ export function ViolinPlot({
             })}
             {hover != null && groups[hover] && (
               <SvgTooltip
-                x={(xScale(groups[hover].label) ?? 0) + halfBand}
+                x={band.center(hover)}
                 innerWidth={innerWidth}
                 lines={[
                   groups[hover].label,

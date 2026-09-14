@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
-import { scaleBand, scaleTime } from "@visx/scale";
+import { scaleTime } from "@visx/scale";
 import { AxisBottom } from "@visx/axis";
 import { max, min } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
+import { bandByIndex } from "../../chart/scales";
 import { bottomTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
@@ -96,12 +97,14 @@ export function GanttChart({
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleTime({ domain, range: [0, innerWidth] });
-        const yScale = scaleBand({
-          domain: data.map((d) => d.label),
-          range: [0, innerHeight],
-          padding: 0.3,
-        });
-        const bh = yScale.bandwidth();
+        const band = bandByIndex(
+          data.map((d) => d.label),
+          {
+            range: [0, innerHeight],
+            padding: 0.3,
+          }
+        );
+        const bh = band.bandwidth;
         const hovered = hover != null ? data[hover] : null;
         return (
           <>
@@ -115,13 +118,13 @@ export function GanttChart({
               tickLabelProps={bottomTickLabel(theme)}
             />
             {data.map((d, i) => {
-              const y = yScale(d.label) ?? 0;
+              const y = band.pos(i);
               const x0 = xScale(d.start);
               const active = hover == null || hover === i;
               const isMilestone = d.end == null;
               return (
                 <g
-                  key={d.label}
+                  key={i}
                   opacity={active ? 1 : 0.4}
                   onMouseEnter={() => setHover(i)}
                   onMouseLeave={() => setHover(null)}
@@ -162,7 +165,7 @@ export function GanttChart({
               <SvgTooltip
                 x={xScale(hovered.start)}
                 innerWidth={innerWidth}
-                top={Math.max(0, (yScale(hovered.label) ?? 0) - 4)}
+                top={Math.max(0, band.pos(hover ?? 0) - 4)}
                 lines={[
                   hovered.label,
                   hovered.end

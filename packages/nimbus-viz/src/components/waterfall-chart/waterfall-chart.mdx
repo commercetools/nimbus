@@ -107,8 +107,9 @@ const data: WaterfallStep[] = [
 
 Contract notes, verifiable from source:
 
-- Steps render in **array order**; `label` is the x-axis category (and should be
-  unique — it is the band-scale domain and the React key).
+- Steps render in **array order**; `label` is the x-axis category text shown on
+  the axis and in the tooltip — it need not be unique, since position comes
+  from array order, not from the label.
 - For a normal step, `value` is a **signed contribution** added to the running
   cumulative (positive floats up, negative floats down).
 - When `isTotal` is `true`, `value` is the **absolute** level (not an addend):

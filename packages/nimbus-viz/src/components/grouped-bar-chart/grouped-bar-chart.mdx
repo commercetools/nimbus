@@ -147,8 +147,8 @@ const data: StackRow[] = [
 
 Contract notes, verifiable from source:
 
-- `category` should be **unique** per row — it is the band-scale domain and the
-  React key. Row order is preserved along the category axis.
+- `category` is display text and need not be unique — position is by row
+  order, not the label. Row order is preserved along the category axis.
 - The **first row defines the series.** The set and left-to-right order of the
   grouped bars come from `data[0].segments`; every row should carry the same
   segment `key`s in the same order. A key missing from a later row reads as

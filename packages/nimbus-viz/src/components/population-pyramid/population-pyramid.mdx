@@ -143,8 +143,8 @@ const data: StackRow[] = [
 
 Contract notes, verifiable from source:
 
-- `category` is the **band label** (age bracket, cohort). It should be unique —
-  it is the band-scale domain and the React key.
+- `category` is the **band label** (age bracket, cohort). It is display text
+  and need not be unique — position is by row order, not the label.
 - **Only the first two segments are used.** Segment 0 is the left side and
   segment 1 the right; any further segments are ignored.
 - The two side labels come from the **first row's** two segment keys (defaulting

@@ -1,11 +1,13 @@
 import { useMemo, useState } from "react";
-import { scaleBand, scaleLinear } from "@visx/scale";
+import { scaleLinear } from "@visx/scale";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { divergingColor, useChartTheme } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
 import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
+import { bandByIndex } from "../../chart/scales";
+import { stackKeys } from "../../chart/stack";
 
 export interface DivergingStackedBarProps {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -42,7 +44,7 @@ export function DivergingStackedBar({
   const theme = useChartTheme();
   const [hover, setHover] = useState<{ r: number; s: number } | null>(null);
 
-  const keys = useMemo(() => data[0]?.segments.map((s) => s.key) ?? [], [data]);
+  const keys = useMemo(() => stackKeys(data), [data]);
   const n = keys.length;
   const mid = Math.floor(n / 2);
   const odd = n % 2 === 1;
@@ -93,18 +95,20 @@ export function DivergingStackedBar({
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
-        const yScale = scaleBand({
-          domain: data.map((d) => d.category),
-          range: [0, innerHeight],
-          padding: 0.25,
-        });
+        const yScale = bandByIndex(
+          data.map((d) => d.category),
+          {
+            range: [0, innerHeight],
+            padding: 0.25,
+          }
+        );
         const xScale = scaleLinear({
           domain: [-(maxLeft || 1), maxRight || 1],
           range: [0, innerWidth],
           nice: true,
         });
         const zero = xScale(0);
-        const bh = yScale.bandwidth();
+        const bh = yScale.bandwidth;
         const hovered = hover != null ? data[hover.r]?.segments[hover.s] : null;
         const hoveredRow = hover != null ? data[hover.r] : null;
         const rowTotal =
@@ -119,7 +123,7 @@ export function DivergingStackedBar({
               stroke={theme.axis}
             />
             {data.map((row, r) => {
-              const y = yScale(row.category) ?? 0;
+              const y = yScale.pos(r);
               let off = 0;
               row.segments.forEach((seg, i) => {
                 if (i < mid) off += seg.value;
@@ -127,7 +131,7 @@ export function DivergingStackedBar({
               });
               let acc = -off;
               return (
-                <g key={row.category}>
+                <g key={r}>
                   {row.segments.map((seg, s) => {
                     const x0 = xScale(acc);
                     acc += seg.value;
@@ -165,7 +169,7 @@ export function DivergingStackedBar({
               <SvgTooltip
                 x={zero}
                 innerWidth={innerWidth}
-                top={Math.max(0, (yScale(hoveredRow.category) ?? 0) - 4)}
+                top={Math.max(0, yScale.pos(hover!.r) - 4)}
                 lines={[
                   `${hoveredRow.category} · ${hovered.key}`,
                   formatCompact(hovered.value),
