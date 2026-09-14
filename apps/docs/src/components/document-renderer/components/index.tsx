@@ -7,6 +7,8 @@ import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
 import { TextStylesDemo } from "./token-demos/text-styles-demo";
 import * as icons from "@commercetools/nimbus-icons";
 import { CategoryOverview } from "./category-overview/category-overview";
+import { ChartsHomePage } from "./charts-home/charts-home";
+import { ChartMeta } from "./chart-meta/chart-meta";
 import { MDXComponents } from "mdx/types";
 import {
   EasingTokenDemo,
@@ -94,5 +96,7 @@ export const components: MDXComponents = {
   Icons: icons,
   Frontpage,
   CategoryOverview,
+  ChartsHomePage,
+  ChartMeta,
   NimbusExportsList,
 };

@@ -12,6 +12,7 @@ import { BreadcrumbProvider } from "./contexts/breadcrumb-context";
 import { ErrorBoundary } from "./components/error-boundary";
 import { NimbusProvider, Box } from "@commercetools/nimbus";
 import DynamicRoute from "./routes/dynamic-route";
+import { ChatWidget } from "./components/chat-widget";
 
 function App() {
   const navigate = useNavigate();
@@ -47,6 +48,11 @@ function App() {
           </Routes>
         </BreadcrumbProvider>
       </ManifestProvider>
+      {/* Mounted as a sibling of the route tree (not inside <Routes>) so it
+          survives navigation instead of remounting per route. Dev-only mock
+          of a future chat-agent feature — structurally absent from the
+          production build, not just inert. */}
+      {import.meta.env.DEV ? <ChatWidget /> : null}
     </NimbusProvider>
   );
 }

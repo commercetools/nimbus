@@ -75,6 +75,9 @@ const PACKAGES = {
     dist: join(ROOT, "packages/tokens/dist"),
     policy: { kind: "absolute", maxBytes: 512000 },
   },
+  "@commercetools/nimbus-viz": {
+    dist: join(ROOT, "packages/nimbus-viz/dist"),
+  },
 };
 
 // ---------------------------------------------------------------------------

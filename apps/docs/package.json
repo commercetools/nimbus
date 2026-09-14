@@ -16,6 +16,7 @@
     "@commercetools/nimbus": "workspace:^",
     "@commercetools/nimbus-docs-build": "workspace:^",
     "@commercetools/nimbus-icons": "workspace:^",
+    "@commercetools/nimbus-viz": "workspace:^",
     "@emotion/react": "catalog:react",
     "@huggingface/transformers": "catalog:apps",
     "@internationalized/date": "catalog:react",
@@ -48,6 +49,7 @@
     "zod": "catalog:utils"
   },
   "devDependencies": {
+    "@anthropic-ai/sdk": "catalog:apps",
     "@commercetools/nimbus-design-token-ts-plugin": "workspace:^",
     "@eslint/js": "catalog:tooling",
     "@types/lodash": "catalog:utils",

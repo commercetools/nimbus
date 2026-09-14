@@ -30,11 +30,19 @@ const config: StorybookConfig = {
     name: getAbsolutePackagePath("@storybook/react-vite"),
     options: {},
   },
-  refs: {
-    "@chakra-ui/react": {
-      disable: true,
-    },
-  },
+  // Compose the nimbus-viz Storybook (localhost:6007) into this one in local
+  // dev; omitted under Vitest and in production.
+  refs: (_config, { configType }) => ({
+    "@chakra-ui/react": { disable: true },
+    ...(configType === "DEVELOPMENT" && !process.env.VITEST
+      ? {
+          "nimbus-viz": {
+            title: "Nimbus Viz (charts)",
+            url: "http://localhost:6007",
+          },
+        }
+      : {}),
+  }),
   core: {
     disableTelemetry: true,
   },

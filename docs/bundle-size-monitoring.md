@@ -52,13 +52,14 @@ PR discoverable as a baseline source — it is not the approval label.
 
 ## What Gets Tracked
 
-Three published packages are tracked:
+Four published packages are tracked:
 
 | Package                        | Policy            | Details                       |
 | ------------------------------ | ----------------- | ----------------------------- |
 | `@commercetools/nimbus`        | Relative (5%)     | Core component library        |
 | `@commercetools/nimbus-icons`  | Relative (5%)     | SVG icons as React components |
 | `@commercetools/nimbus-tokens` | Absolute (512 KB) | Design tokens                 |
+| `@commercetools/nimbus-viz`    | Relative (5%)     | Data visualization library    |
 
 ### Per-Package Policies
 

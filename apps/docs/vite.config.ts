@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 
 import { mdxHmrPlugin } from "./vite-plugins/vite-plugin-mdx-hmr";
+import { chatApiPlugin } from "./vite-plugins/chat/vite-plugin-chat-api";
 import viteCompression from "vite-plugin-compression";
 import path from "path";
 
@@ -21,6 +22,7 @@ export default defineConfig({
       plugins: [],
     }),
     mdxHmrPlugin(),
+    chatApiPlugin(),
     // Gzip and Brotli compression
     viteCompression({
       algorithm: "gzip",

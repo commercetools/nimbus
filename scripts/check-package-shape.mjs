@@ -59,6 +59,10 @@ const PACKAGES = [
     dir: join(ROOT, "packages/design-token-ts-plugin"),
   },
   { name: "@commercetools/nimbus-mcp", dir: join(ROOT, "packages/nimbus-mcp") },
+  {
+    name: "@commercetools/nimbus-viz",
+    dir: join(ROOT, "packages/nimbus-viz"),
+  },
 ];
 
 const DIM = "\x1b[2m";

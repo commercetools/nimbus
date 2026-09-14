@@ -5,6 +5,7 @@ import path from "path";
 import debounce from "lodash/debounce";
 import {
   parseMdxFile,
+  parseTypes,
   parseTypesToFiles,
   generateRouteManifest,
   generateSearchIndex,
@@ -21,6 +22,44 @@ const MANIFEST_PATH = path.resolve("./src/data/route-manifest.json");
 const SEARCH_INDEX_PATH = path.resolve("./src/data/search-index.json");
 const TYPES_DIR = path.resolve("./src/data/types");
 const COMPONENT_INDEX_PATH = path.resolve("../../packages/nimbus/src/index.ts");
+// Chart components live in a second package not reachable from the nimbus
+// barrel; their prop types are merged into the same manifest (mirrors
+// apps/docs/scripts/build.ts → mergeVizComponentTypes).
+const VIZ_COMPONENT_INDEX_PATH = path.resolve(
+  "../../packages/nimbus-viz/src/index.ts"
+);
+
+/**
+ * Merge @commercetools/nimbus-viz component prop types into the types manifest
+ * that `parseTypesToFiles(COMPONENT_INDEX_PATH, …)` just (re)wrote. Add-only on
+ * name collisions so a core component is never shadowed; non-components
+ * (constants, hooks, types) are skipped. Without this, chart `<PropsTable>`
+ * renders "component not found" in the dev server.
+ */
+async function mergeVizComponentTypes(): Promise<number> {
+  const vizDocs = await parseTypes({
+    sources: { packagesDir: "", componentIndexPath: VIZ_COMPONENT_INDEX_PATH },
+  });
+  const manifestPath = path.join(TYPES_DIR, "manifest.json");
+  const manifest: Record<string, string> = JSON.parse(
+    await fs.readFile(manifestPath, "utf8")
+  );
+  let added = 0;
+  for (const doc of vizDocs) {
+    const name = doc.displayName;
+    if (!name || !/^[A-Z]/.test(name)) continue;
+    if (!doc.props || Object.keys(doc.props).length === 0) continue;
+    if (manifest[name]) continue;
+    await fs.writeFile(
+      path.join(TYPES_DIR, `${name}.json`),
+      JSON.stringify(doc, null, 2)
+    );
+    manifest[name] = name;
+    added += 1;
+  }
+  await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2));
+  return added;
+}
 
 // In-memory storage for generating manifest and search index
 const documentation: Map<string, MdxDocument> = new Map();
@@ -291,7 +330,8 @@ async function handleMdxDelete(filePath: string): Promise<void> {
 const handleTypeChange = debounce(async () => {
   try {
     await parseTypesToFiles(COMPONENT_INDEX_PATH, TYPES_DIR);
-    flog("[TSX] Updated component types");
+    const vizCount = await mergeVizComponentTypes();
+    flog(`[TSX] Updated component types (+${vizCount} nimbus-viz)`);
   } catch (error) {
     console.error("Error parsing TypeScript types:", error);
   }
@@ -382,7 +422,8 @@ watcher
     await withSilencedLogs(async () => {
       await regenerateManifestAndSearch();
       const manifest = await parseTypesToFiles(COMPONENT_INDEX_PATH, TYPES_DIR);
-      typeCount = Object.keys(manifest).length;
+      const vizCount = await mergeVizComponentTypes();
+      typeCount = Object.keys(manifest).length + vizCount;
     });
 
     printStartupSummary(documentation.size, typeCount);
