@@ -22,8 +22,18 @@ export {
   MARGINS,
 } from "./chart/marks";
 export type { MarginPreset } from "./chart/marks";
-export { makeValueScale } from "./chart/scales";
-export type { ValueScaleKind, ValueScaleConfig } from "./chart/scales";
+export { makeValueScale, valueDomain, bandByIndex } from "./chart/scales";
+export type {
+  ValueScaleKind,
+  ValueScaleConfig,
+  ValueScale,
+  ValueDomainOptions,
+  BandScale,
+  BandLayoutOptions,
+  BandLayout,
+} from "./chart/scales";
+export { stackKeys } from "./chart/stack";
+export { devWarn, resetDevWarnings } from "./chart/dev-warn";
 export { useReducedMotion, MOTION } from "./chart/use-reduced-motion";
 export { useForcedColors } from "./chart/use-forced-colors";
 export {

@@ -45,8 +45,15 @@ chart it hits. The generic invariant test
   `violin-plot` (density axis, `[0, densityMax || 1]`), `bubble-chart` (guarded
   `scaleSqrt`). Open: the other files the `detect` prints (9 charts as of
   2026-09-14).
-- **BC-3** fixed: bubble-chart; population-pyramid and radar-chart guard with
-  `|| 1` until they adopt `valueDomain()`.
+- **BC-3** fixed: bubble-chart (all-zero sizes); population-pyramid and
+  radar-chart guard with `|| 1` until they adopt `valueDomain()`. Open:
+  sankey-diagram — every link at 0 makes the d3-sankey layout NaN (found by the
+  registry invariant spec, `SankeyDiagram:all-zero`).
+- **Guard coverage.** `src/selection/registry-invariants.spec.tsx` catches BC-1
+  for every chart (relabeling must not move marks) and any NaN / negative size
+  (BC-3, and the bubble-chart negative-size half of BC-2). It cannot see a plain
+  BC-2 extrapolation — a negative value drawn at a valid but wrong coordinate —
+  so BC-2 stays grep-guarded plus a per-chart `EdgeCase*` story.
 - **BC-4** fixed: stat-card.
 - **BC-5** open: grouped-bar-chart, stacked-bar-chart, diverging-stacked-bar,
   marimekko-chart, population-pyramid (the last two were found by the `detect`
