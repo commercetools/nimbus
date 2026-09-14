@@ -3,7 +3,7 @@ id: Charts-Heatmap
 title: Heatmap
 exportName: Heatmap
 description: A value grid shaded on a single sequential ramp.
-lifecycleState: Experimental
+lifecycleState: Alpha
 order: 900
 icon: GridView
 menu:
@@ -105,8 +105,11 @@ const rows: HeatRow[] = [
 
 Contract notes, verifiable from source:
 
-- `label` is the row's y-axis band label and its React key, so it should be
-  **unique** per row.
+- `label` is the row's y-axis band label, shown next to the row and in the
+  tooltip. Rows are positioned by array index, not by `label`, so two rows
+  sharing a label render at distinct positions rather than colliding — but a
+  `label` that reads as **unique** per row still makes the chart and its tooltip
+  easier to read.
 - The grid's **column count** is the longest row's length; shorter rows are
   **ragged** and a `null` cell is simply left empty (no mark drawn). Use `null`,
   not `0`, for "no data" — `0` is a real value on the ramp.
@@ -189,7 +192,27 @@ cells drop the label and rely on shade alone. The printed value's color is
 chosen automatically for contrast against its cell fill. Hovering a cell
 outlines it and shows a small tooltip with the row label, the column label, and
 the value. There is no configurable axis or scale: the ramp is anchored at 0 and
-scaled to the grid maximum.
+scaled to the grid maximum. This outline and tooltip are not configurable — but
+the same hover state also drives `onDatumHover`, below.
+
+### Interaction callbacks
+
+`onDatumClick` and `onDatumHover` fire with a `{ datum, index }` payload —
+`datum` is `{ label, column, value }` for the hovered/clicked cell, and `index`
+is the row's position. Use them for drill-down or to drive an external readout;
+the built-in outline and tooltip above keep working whether or not you pass
+them.
+
+```tsx
+<Heatmap
+  width={width}
+  height={height}
+  rows={rows}
+  onDatumClick={({ datum }) =>
+    navigate(`/cells/${datum.label}/${datum.column}`)
+  }
+/>
+```
 
 ### Color & theming
 
@@ -290,8 +313,6 @@ states upstream and render your own placeholder when there is no data yet.
   it is not a diverging scale for signed data.
 - **No title, caption, loading, or error passthrough** — `Heatmap` forwards only
   `ariaLabel` and the data table to `ChartContainer`.
-- **No click or hover callbacks.** Hover highlight and the tooltip are internal;
-  there is no prop to observe cell interaction for drill-down.
 
 ## Related charts
 

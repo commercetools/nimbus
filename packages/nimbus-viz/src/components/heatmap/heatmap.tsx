@@ -7,6 +7,10 @@ import { sequentialColor, useChartTheme, readableTextColor } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { HeatRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
+import type {
+  DatumClickHandler,
+  DatumHoverHandler,
+} from "../../chart/interaction";
 
 export interface HeatmapProps {
   /** Chart width in pixels (supplied by `ResponsiveContainer`). */
@@ -21,6 +25,17 @@ export interface HeatmapProps {
   columnLabels?: string[];
   /** Accessible label for the SVG frame (Cesal alt-text). Defaults to a generated summary. */
   ariaLabel?: string;
+  /** Fired when a cell is clicked (drill-down). */
+  onDatumClick?: DatumClickHandler<HeatmapCell>;
+  /** Fired when the hovered cell changes; null when the pointer leaves. */
+  onDatumHover?: DatumHoverHandler<HeatmapCell>;
+}
+
+/** A single matrix cell's public interaction payload. */
+interface HeatmapCell {
+  label: string;
+  column: number;
+  value: number;
 }
 
 /**
@@ -35,6 +50,8 @@ export function Heatmap({
   hue = "blue",
   columnLabels,
   ariaLabel,
+  onDatumClick,
+  onDatumHover,
 }: HeatmapProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<{ r: number; c: number } | null>(null);
@@ -84,7 +101,7 @@ export function Heatmap({
           padding: 0.08,
         });
         const yScale = scaleBand({
-          domain: rows.map((r) => r.label),
+          domain: rows.map((_, i) => String(i)),
           range: [0, innerHeight],
           padding: 0.08,
         });
@@ -105,9 +122,9 @@ export function Heatmap({
               </text>
             ))}
             {rows.map((row, ri) => {
-              const y = yScale(row.label) ?? 0;
+              const y = yScale(String(ri)) ?? 0;
               return (
-                <Group key={row.label}>
+                <Group key={`${row.label}-${ri}`}>
                   <text
                     x={-8}
                     y={y + ch / 2}
@@ -126,8 +143,23 @@ export function Heatmap({
                     return (
                       <g
                         key={c}
-                        onMouseEnter={() => setHover({ r: ri, c })}
-                        onMouseLeave={() => setHover(null)}
+                        onMouseEnter={() => {
+                          setHover({ r: ri, c });
+                          onDatumHover?.({
+                            datum: { label: row.label, column: c, value: v },
+                            index: ri,
+                          });
+                        }}
+                        onMouseLeave={() => {
+                          setHover(null);
+                          onDatumHover?.(null);
+                        }}
+                        onClick={() =>
+                          onDatumClick?.({
+                            datum: { label: row.label, column: c, value: v },
+                            index: ri,
+                          })
+                        }
                       >
                         <rect
                           x={x}
@@ -170,7 +202,7 @@ export function Heatmap({
                   <SvgTooltip
                     x={(xScale(String(hover.c)) ?? 0) + cw / 2}
                     innerWidth={innerWidth}
-                    top={Math.max(0, (yScale(row.label) ?? 0) - 4)}
+                    top={Math.max(0, (yScale(String(hover.r)) ?? 0) - 4)}
                     lines={[
                       row.label,
                       `${columnLabels?.[hover.c] ?? hover.c}: ${formatCompact(
