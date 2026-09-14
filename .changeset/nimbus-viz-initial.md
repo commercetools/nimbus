@@ -13,10 +13,10 @@ pyramid), compare/delta (dumbbell, slope, waterfall, bullet), rank (bump),
 relationship (scatter, bubble, connected scatter, radar, parallel coordinates),
 distribution (box plot, violin, beeswarm, cumulative curve), matrix/retention
 (heatmap, calendar heatmap, cohort triangle, RFM grid), flow (sankey, chord),
-timeline (gantt), spatial (tile-grid map), single value (stat card, gauge), and
-a data-table fallback. Each is themed from Nimbus design tokens with light and
-dark palettes, ships a hover tooltip on every plot with inspectable marks, has
-`role="img"` accessibility, and sizes via `ResponsiveContainer` (fluid or
-aspect-ratio). Composable overlays (reference line, target marker, trend line,
+timeline (gantt), single value (stat card, gauge), and a data-table fallback.
+Each is themed from Nimbus design tokens with light and dark palettes, ships a
+hover tooltip on every plot with inspectable marks, has `role="img"`
+accessibility, and sizes via `ResponsiveContainer` (fluid or aspect-ratio).
+Composable overlays (reference line, target marker, trend line,
 threshold/confidence bands, error bars, benchmark series) layer annotations over
 the axis-based charts.
