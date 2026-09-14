@@ -22,10 +22,12 @@ tags:
 ScrollArea constrains content within a fixed region and provides themed
 scrollbar overlays that replace native browser scrollbars. By default the
 scrollbar appears when the pointer enters the area or when the content scrolls,
-then hides again after a short idle delay — while the pointer stays inside,
-only scrolling brings it back, so a resting reader is not distracted. The
-component is keyboard accessible — when content overflows, the area becomes
-focusable via Tab and scrollable with arrow keys.
+then hides again after a short idle delay. While the pointer rests inside, the
+bar returns on scroll or when the pointer moves toward it, and it stays shown
+while the pointer rests on it — so a resting reader is not distracted, yet the
+scrollbar is there the moment it is needed. The component is keyboard accessible
+— when content overflows, the area becomes focusable via Tab and scrollable with
+arrow keys.
 
 ### Resources
 
@@ -84,7 +86,8 @@ Use `scrollbarVisibility` to choose when the scrollbar is shown:
 
 - `auto-hide` (default): the bar appears when the pointer enters the area or
   when the content scrolls, then hides after a short idle delay. While the
-  pointer stays inside, only scrolling reveals it again.
+  pointer rests inside, scrolling or moving toward the bar reveals it again, and
+  resting the pointer on the bar keeps it shown.
 - `always`: the bar stays visible and the viewport reserves a gutter so it
   never overlays content.
 
