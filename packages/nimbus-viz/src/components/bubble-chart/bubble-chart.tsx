@@ -128,10 +128,17 @@ export function BubbleChart({
           range: [innerHeight, 0],
           nice: true,
         });
-        const sizeScale = scaleSqrt({
-          domain: [0, maxSize],
-          range: [R_MIN, R_MAX],
-        });
+        // A degenerate [0, 0] domain (every point's size is 0 — a valid,
+        // in-contract input, not a violation of "non-negative") maps every
+        // input to the *range midpoint* under scaleSqrt's extrapolation, not
+        // R_MIN — every bubble would render at a fixed mid-size with no
+        // legend (refSizes already collapses to [] for this case), looking
+        // like real, varying magnitude data when there is none. Guard it to
+        // match refSizes' own "nothing to show" behavior.
+        const sizeScale =
+          maxSize > 0
+            ? scaleSqrt({ domain: [0, maxSize], range: [R_MIN, R_MAX] })
+            : () => R_MIN;
         const hp = hover != null ? points[hover] : null;
 
         const legendBaseX = innerWidth - R_MAX - 4;
@@ -172,7 +179,7 @@ export function BubbleChart({
 
             {ordered.map(({ p, i }) => (
               <circle
-                key={p.label ?? i}
+                key={i}
                 cx={xScale(p.x)}
                 cy={yScale(p.y)}
                 r={sizeScale(p.size)}
