@@ -239,7 +239,9 @@ export function ChartContainer({
           <div
             id={tableId}
             role="region"
-            aria-label="Data table"
+            aria-label={
+              ariaLabel ? `Data table for ${ariaLabel}` : "Data table"
+            }
             style={
               tableOpen
                 ? {
