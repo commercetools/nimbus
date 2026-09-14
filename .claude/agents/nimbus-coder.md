@@ -82,6 +82,16 @@ is to orchestrate these skills, not replace them.
 | `*.dev.mdx` + `*.docs.spec.tsx` | **writing-developer-documentation** | ALL developer documentation                                |
 | `*.mdx` (designer)              | **writing-designer-documentation**  | ALL designer documentation                                 |
 
+**`packages/nimbus-viz` charts are different.** A chart is one `{chart}.tsx`
+plus `{chart}.mdx`, `{chart}.stories.tsx`, and `index.ts` — no recipe, slots,
+types file, i18n, or `.dev.mdx`. Under that path invoke
+**writing-chart-documentation** for the `.mdx` and **writing-chart-stories** for
+the stories; do not add `tags: ["vrt"]` (Chromatic is dropped for that package).
+Before changing a chart's scales, domains, or keys, read
+`packages/nimbus-viz/docs/bug-classes.md` and use the shared helpers it names
+(`valueDomain`, `bandByIndex`, `stackKeys`, `devWarn` in
+`packages/nimbus-viz/src/chart/`) instead of inline visx scale construction.
+
 ### Test Categories
 
 - **Story Tests** (`.stories.tsx`): Internal component behavior testing

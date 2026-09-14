@@ -46,6 +46,23 @@ compliance checks.
 | `*.dev.mdx` + `*.docs.spec.tsx` | **writing-developer-documentation** | `writing-developer-documentation validate ComponentName` |
 | `*.mdx` (designer)              | **writing-designer-documentation**  | `writing-designer-documentation validate ComponentName`  |
 
+**`packages/nimbus-viz` charts use a different mapping.** A chart is one
+`{chart}.tsx` plus one `{chart}.mdx`, one `{chart}.stories.tsx`, and an
+`index.ts` — no `.recipe`/`.slots`/`.types.ts` split, no `.dev.mdx`, no
+`.docs.spec.tsx`. When the path starts with `packages/nimbus-viz/`:
+
+| File Type                                    | Skill to Invoke                 | Command                                          |
+| -------------------------------------------- | ------------------------------- | ------------------------------------------------ |
+| `packages/nimbus-viz/**/{chart}.mdx`         | **writing-chart-documentation** | `writing-chart-documentation validate ChartName` |
+| `packages/nimbus-viz/**/{chart}.stories.tsx` | **writing-chart-stories**       | `writing-chart-stories validate ChartName`       |
+| `packages/nimbus-viz/**/{chart}.tsx`         | review directly                 | check `packages/nimbus-viz/docs/bug-classes.md`  |
+
+The "Chromatic (VRT) Coverage Review" section below does **not** apply under
+`packages/nimbus-viz`: Chromatic was dropped for that package by product
+decision (`packages/nimbus-viz/TODO.md`, "Dropped"), and Storybook with
+`addon-a11y` in error mode is the agreed bar. Do not report a missing `vrt` tag
+as a violation there.
+
 ### Review Process (UPDATED)
 
 **Step 1: File Discovery** - not everything lives under `components/`. Patterns
@@ -109,6 +126,9 @@ See
 [Testing Strategy Guide](../../docs/file-type-guidelines/testing-strategy.md).
 
 ### Chromatic (VRT) Coverage Review
+
+_Skip this section for files under `packages/nimbus-viz/` — see the chart
+mapping note above._
 
 Visual coverage is **opt-in**, so its failure mode is silence: a story file with
 no `tags: ["vrt"]` story reads as finished while having zero visual coverage.

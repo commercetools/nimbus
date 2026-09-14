@@ -11,16 +11,16 @@ each chart component in `packages/nimbus-viz/src/components/{chart}/`.
 
 ## The core principle
 
-**Every chart's story file is, today, an 11-line stub: one `Base` story
-rendering a `RegistryPreview`, zero `play` functions.** This is universal
-across all ~46 charts, verified by `grep -rln "play:" packages/nimbus-viz/src/components/*/*.stories.tsx`
-returning nothing. `docs/file-type-guidelines/testing-strategy.md` is
-unambiguous that Storybook stories are **the only place** component behavior
-is tested — charts have no `.spec.tsx` companions (`chart/` and `selection/`
-do; individual chart components don't) — so a chart with no play function has
-**zero test coverage**, full stop. This skill's job is to close that, one
-chart at a time, without inventing test claims the component doesn't actually
-support.
+**A chart whose story file has no `play` function has zero test coverage.**
+`docs/file-type-guidelines/testing-strategy.md` is unambiguous that Storybook
+stories are **the only place** component behavior is tested — charts have no
+`.spec.tsx` companions (`chart/` and `selection/` do; individual chart
+components don't). Most chart story files started as an 11-line stub (one
+`Base` story rendering a `RegistryPreview`, no `play`); count the ones still in
+that state with
+`grep -L "play:" packages/nimbus-viz/src/components/*/*.stories.tsx`. This
+skill's job is to close that, one chart at a time, without inventing test
+claims the component doesn't actually support.
 
 Charts are not core Nimbus components: no `.recipe`/`.slots`/`.types.ts`
 split, and the sibling `docs/file-type-guidelines/stories.md` was written for
@@ -138,6 +138,27 @@ convention has them.
   `stories.md`: don't call a step "shows tooltip on hover" if the assertion
   only checks the tooltip element exists in the DOM regardless of hover.
 
+## Running one story file
+
+From the repo root, against the browser project only:
+
+```bash
+pnpm vitest run --project nimbus-viz-storybook packages/nimbus-viz/src/components/{chart}/{chart}.stories.tsx
+```
+
+Run this after every edit to the file; it is the fast signal. The whole-package
+`pnpm --filter @commercetools/nimbus-viz test` is the gate `/chart:introspect`
+runs before committing.
+
+## Adversarial inputs
+
+`EdgeCase*` stories should not hand-roll their bad input. Import the shared
+mutators from `src/stories/adversarial.ts` — `duplicateLabels`,
+`negateEveryOther`, `allZero`, `singleDatum` — and apply them to the story's
+own inline fixture. The same functions drive the generic invariant spec
+(`src/selection/registry-invariants.spec.tsx`), so a story and the spec assert
+the same case the same way.
+
 ## Snippets
 
 ```tsx
@@ -209,6 +230,10 @@ Report PASS/FAIL per item; fix nothing in validate mode.
 - [ ] No `tags: ["vrt"]` anywhere.
 - [ ] `Meta`/`StoryObj` are not parameterized with `typeof meta`.
 - [ ] Every `step()` name is backed by its assertions.
+- [ ] Any story that renders 2+ instances of the chart passes a distinct
+      `ariaLabel` to each (axe `landmark-unique`; bug class `BC-7`).
+- [ ] `EdgeCase*` stories that need bad input import it from
+      `src/stories/adversarial.ts` rather than hand-rolling it.
 
 ## Common mistakes
 
@@ -220,3 +245,8 @@ Report PASS/FAIL per item; fix nothing in validate mode.
 | Asserting reduced-motion by trying to fake `matchMedia` in the browser runner                                          | Assert the compiled rule/behavior instead, per the same rule core stories already follow                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | One `EdgeCases` story that only checks "no error thrown"                                                               | Assert the actual documented empty-state behavior (usually a `null` render) — "didn't crash" is not the same claim as "renders nothing"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | Two chart instances in one story (e.g. an `Orientation` comparison) sharing the same data with no explicit `ariaLabel` | Every chart auto-generates a default `ariaLabel` from its data shape (e.g. `` `Bar chart of ${rows.length} categories` `` on `bar-chart.tsx`), so two instances of the same data collide on an identical label — each renders its own visually-hidden data-table region with `role="region"` + that label, and axe's `landmark-unique` fails on the duplicate. Pass a distinct, descriptive `ariaLabel` to each instance whenever a story puts 2+ of the same chart on one page (found on `bar-chart.stories.tsx`'s `Orientation` story; not an `isolate: false` accumulation issue — reproduces from that one story alone) |
+| Asserting that an invalid or negative `r`/`width`/`height` removes the mark from the DOM                               | It does not. SVG keeps the element and simply does not paint it. Assert the attribute value (`Number(el.getAttribute("r"))` is negative / zero), not `querySelectorAll(...).length` (found on `bubble-chart.stories.tsx`)                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Counting `<circle>` elements to count bubbles or points                                                                | Size legends render reference `<circle>`s with `fill="none"`. Filter them out (`.filter((c) => c.getAttribute("fill") !== "none")`) before counting or indexing marks                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Assuming DOM order equals data order                                                                                   | Several charts sort marks before drawing (bubbles largest-first so small ones stay hoverable). Locate a mark by its datum (attribute values, or `toContainEqual(call.datum)` on the callback payload), not by its index in `points`                                                                                                                                                                                                                                                                                                                                                                                         |
+| Asserting a too-large mark "draws wider than the plot"                                                                 | An embedded `<svg>` has browser-default `overflow: hidden`; overrun is clipped, not drawn. Assert the attribute (e.g. `width` greater than `innerWidth`) and document clipping, not overdraw (bug class `BC-6`, found on `funnel-chart`)                                                                                                                                                                                                                                                                                                                                                                                    |
+| `userEvent.hover` on a wrapping `<g>` or the `<svg>` to trigger a mark's hover                                         | Target the mark element itself (`rect`/`circle`/`path`); the handlers live there. Hovering a parent that has no handler fires nothing                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |

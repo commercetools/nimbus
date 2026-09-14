@@ -69,6 +69,10 @@ Accessibility checklist:
 
 - [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
+- [ ] The data-table disclosure is reachable by keyboard (Tab to the button,
+      Enter reveals the region)
+- [ ] Each chart instance on a page has a unique accessible label (two instances
+      with the same default label collide as duplicate landmarks)
 - [ ] Meaning does not depend on color alone (length/position/shape/patterns)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)

@@ -34,9 +34,10 @@ You will:
 
 - Use `mcp__context7__resolve-library-id` to search for specific library
   documentation
-- Prefer `mcp__react-aria-docs__list_pages`,
-  `mcp__react-aria-docs__get_page_info`, and `mcp__react-aria-docs__get_page`
-  when searching for react-aria library documentation
+- Prefer `mcp__react-aria-docs__list_react_aria_pages`,
+  `mcp__react-aria-docs__get_react_aria_page_info`, and
+  `mcp__react-aria-docs__get_react_aria_page` when searching for react-aria
+  library documentation
 - Focus on official documentation for React Aria, Chakra UI, React, TypeScript,
   and related libraries
 - Look for code examples, API references, and implementation patterns

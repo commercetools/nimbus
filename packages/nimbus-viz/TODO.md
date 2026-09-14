@@ -5,6 +5,11 @@ roadmap (the full plan is a 31-item, multi-phase program — "multi-quarter, not
 one sitting"). This file tracks **what is left**; the contained tier already
 landed on the `nimbus-viz-components` branch.
 
+Two companion files hold what this checklist does not: recurring bug patterns
+with a grep to detect each one live in `docs/bug-classes.md` (read by
+`/chart:introspect` and fixed across charts by `/chart:sweep`), and the exit
+criteria for each `lifecycleState` live in `docs/lifecycle.md`.
+
 ## Verify every increment
 
 Run from `packages/nimbus-viz` (or
@@ -149,12 +154,10 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       **story-authoring hazard, not a library bug** — documented as a pitfall in
       `writing-chart-stories/SKILL.md` so future multi-instance stories (any
       chart, not just `bar-chart`) set distinct `ariaLabel`s up front instead of
-      rediscovering this per chart.
-
-      Verified: `bar-chart.stories.tsx` alone (3 repeat runs) and the full
-              `nimbus-viz-storybook` project (all 46 stories files, 53 tests) both pass
-              clean with `isolate: false` unchanged. No config change was needed or
-              made.
+      rediscovering this per chart. Verified: `bar-chart.stories.tsx` alone (3
+      repeat runs) and the full `nimbus-viz-storybook` project (all 46 stories
+      files, 53 tests) both pass clean with `isolate: false` unchanged. No
+      config change was needed or made.
 
 ### Wire the dormant primitives (built + unit-tested, but no chart consumes them)
 
