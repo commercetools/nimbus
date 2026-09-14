@@ -95,27 +95,36 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       label-collision polish + a full story/spec matrix on the core-6 (line,
       stacked-area, bar, stacked-bar, stat-card + bullet, funnel,
       cohort-triangle/heatmap).
-- [ ] **E6 — fix `isolate: false` story accumulation blocking real play-function
-      coverage.** Found while piloting `/chart:introspect` on `bar-chart`:
-      giving one chart file more than ~2 real (non-`RegistryPreview`) chart
-      instances across its stories makes `addon-a11y`'s `test: "error"` gate
-      fail intermittently with `landmark-unique` and
-      `scrollable-region-focusable` — axe violations that don't reproduce on any
-      single story in isolation. Root cause isn't fully pinned down, but the
-      evidence (which stories fail changes between runs; failures grow with
-      story count in the file) points at `vitest.storybook.config.ts`'s
-      `isolate: false` not fully separating each story's DOM within one file, so
-      later stories' a11y scans see earlier stories' still-mounted chart
-      instances. One partial, real fix already landed as part of that same pass:
-      `chart-container.tsx`'s data- table region had a literal, non-unique
-      `aria-label="Data table"` on every chart — now
-      `` `Data table for ${ariaLabel}` `` when `ariaLabel` is set (nearly
-      always, since every chart generates a sensible default) — but that alone
-      did not clear the gate. This blocks `writing-chart-     stories`' fixed
-      5-7-story set from passing CI on any chart until resolved (try
-      `isolate: true` for this project, or an explicit teardown between stories,
-      or capping real-chart-instance count per file) — do this before running
-      `/chart:introspect`/`auto-optimize-viz` across the rest of the library.
+- [x] **E6 — fix `isolate: false` story accumulation blocking real play-function
+      coverage.** ~~Root cause isn't fully pinned down... points at
+      `vitest.storybook.config.ts`'s `isolate: false`~~ — **that theory was
+      wrong.** Re-investigated by running `bar-chart.stories.tsx` (8 real
+      instances) repeatedly and with `vitest run -t "<story name>"` to isolate
+      single stories; both failing checks reproduced **deterministically, from a
+      single story alone**, with `isolate: false` untouched — accumulation
+      across stories/files was never the mechanism. Two concrete, unrelated
+      bugs, both now fixed: - `scrollable-region-focusable` — `data-table.tsx`'s
+      `overflowX: "auto"` wrapper had no way to reach it by keyboard once its
+      content actually overflowed (any chart's table with enough columns/rows,
+      `EdgeCase*` stories included). Fixed with `tabIndex={0}` on that div — a
+      real WCAG 2.1.1 gap, not a test artifact. - `landmark-unique` —
+      `chart-container.tsx`'s data-table region label
+      (`` `Data table for ${ariaLabel}` ``, from the earlier partial fix)
+      collides whenever **two chart instances share the same auto-generated
+      default `ariaLabel`** on one page — `bar-chart`'s `Orientation` story
+      renders the same `data={fixture}` twice with no explicit `ariaLabel`, so
+      both get the identical default
+      (`` `Bar       chart of ${rows.length} categories` ``). Fixed by giving
+      each instance a distinct, descriptive `ariaLabel` in that story. This is a
+      **story-authoring hazard, not a library bug** — documented as a pitfall in
+      `writing-chart-stories/SKILL.md` so future multi-instance stories (any
+      chart, not just `bar-chart`) set distinct `ariaLabel`s up front instead of
+      rediscovering this per chart.
+
+      Verified: `bar-chart.stories.tsx` alone (3 repeat runs) and the full
+          `nimbus-viz-storybook` project (all 46 stories files, 53 tests) both
+          pass clean with `isolate: false` unchanged. No config change was
+          needed or made.
 
 ### Wire the dormant primitives (built + unit-tested, but no chart consumes them)
 

@@ -39,6 +39,10 @@ export function DataTable({ columns, rows, reason, caption }: DataTableProps) {
 
   return (
     <div
+      // Horizontally scrollable once columns overflow — WCAG 2.1.1 / axe's
+      // scrollable-region-focusable requires a scrollable region to be
+      // reachable via keyboard even when it has no other focusable content.
+      tabIndex={0}
       style={{
         fontFamily: "system-ui, sans-serif",
         color: theme.ink,

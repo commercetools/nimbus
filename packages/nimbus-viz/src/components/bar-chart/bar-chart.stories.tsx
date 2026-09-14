@@ -82,7 +82,12 @@ export const Orientation: BaseStory = {
   render: () => (
     <div style={{ display: "flex", gap: 24 }}>
       <div style={{ flex: 1 }}>
-        <BarChart width={320} height={240} data={fixture} />
+        <BarChart
+          width={320}
+          height={240}
+          data={fixture}
+          ariaLabel="Bar chart of 5 categories, vertical orientation"
+        />
       </div>
       <div style={{ flex: 1 }}>
         <BarChart
@@ -90,6 +95,7 @@ export const Orientation: BaseStory = {
           height={240}
           data={fixture}
           orientation="horizontal"
+          ariaLabel="Bar chart of 5 categories, horizontal orientation"
         />
       </div>
     </div>
