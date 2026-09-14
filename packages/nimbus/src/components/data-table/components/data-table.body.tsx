@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { TableBody as RaTableBody } from "react-aria-components";
 import { Box } from "@/components";
 import { extractStyleProps } from "@/utils";
@@ -15,6 +15,11 @@ import {
 } from "./data-table.context";
 import { DataTableRow } from "./data-table.row";
 import { dataTableMessagesStrings } from "../data-table.messages";
+
+type RowCollectionItem<T extends DataTableRowItem> = {
+  id: string;
+  row: DataTableRowItem<T>;
+};
 
 const DefaultEmptyStateMessage = () => (
   <Box w="100%" p="200">
@@ -52,8 +57,18 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   const pinnedRowIdsRef = useRef(pinnedRowIds);
   pinnedRowIdsRef.current = pinnedRowIds;
 
+  // React Aria keys collection items by `item.key ?? item.id`. Domain rows
+  // frequently carry a business `key` field (customer groups, categories,
+  // product types, ...), which would leak into selection keys and can even
+  // collide with column ids ("Cell count must match column count"). Hand
+  // React Aria a thin wrapper keyed strictly by the row id instead.
+  const rowItems = useMemo<RowCollectionItem<T>[]>(
+    () => sortedRows.map((row) => ({ id: row.id, row })),
+    [sortedRows]
+  );
+
   const renderRow = useCallback(
-    (row: DataTableRowItem<T>) => {
+    ({ row }: RowCollectionItem<T>) => {
       const currentPinnedRows = pinnedRowsRef.current;
       const currentPinnedRowIds = pinnedRowIdsRef.current;
       const isPinned = currentPinnedRows.has(row.id);
@@ -81,7 +96,7 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
       <RaTableBody
         ref={ref}
         aria-label={ariaLabel}
-        items={sortedRows}
+        items={rowItems}
         renderEmptyState={renderEmptyState ?? DefaultEmptyStateMessage}
         {...restProps}
         dependencies={[
