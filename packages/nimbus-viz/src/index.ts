@@ -149,7 +149,10 @@ export type { BoxPlotProps, BoxPlotGroupStats } from "./components/box-plot";
 export { Treemap } from "./components/treemap";
 export type { TreemapProps, TreemapNode } from "./components/treemap";
 export { StackedAreaChart } from "./components/stacked-area-chart";
-export type { StackedAreaChartProps } from "./components/stacked-area-chart";
+export type {
+  StackedAreaChartProps,
+  StackDatum,
+} from "./components/stacked-area-chart";
 export { Streamgraph } from "./components/streamgraph";
 export type { StreamgraphProps } from "./components/streamgraph";
 export { SlopeChart } from "./components/slope-chart";

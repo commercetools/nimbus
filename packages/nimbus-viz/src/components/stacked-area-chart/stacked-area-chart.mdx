@@ -3,7 +3,7 @@ id: Charts-StackedAreaChart
 title: Stacked Area Chart
 exportName: StackedAreaChart
 description: Show how a total and its composition move over time.
-lifecycleState: Experimental
+lifecycleState: Alpha
 order: 101
 icon: ShowChart
 menu:
@@ -227,6 +227,24 @@ Annotations (e.g. `ReferenceLine`, `TrendLine`, `Annotation`) passed as
 `children` are drawn in the plot's coordinate space, on top of the stacked bands
 — use them to mark a target total, a campaign window, or a threshold.
 
+### Interaction callbacks
+
+`onDatumClick` and `onDatumHover` fire with a `{ datum, index }` payload —
+`datum` is the whole stacked row at the hovered/clicked x (every series' value
+at that point, keyed by series `id`, typed `StackDatum`), not one series' point,
+since a stack has no single "the" series to report. Use them for drill-down or
+to drive an external readout. Internal hover state (the crosshair, tooltip) is
+managed regardless of whether you pass them.
+
+```tsx
+<StackedAreaChart
+  width={width}
+  height={height}
+  series={series}
+  onDatumClick={({ datum }) => navigate(`/day/${datum.x}`)}
+/>
+```
+
 ### Legend (automatic)
 
 Not configurable — a legend appears automatically for **two or more** series
@@ -335,8 +353,6 @@ states upstream and render your own placeholder when there is no data yet.
   [`LineChart`](/charts/line-chart) when each series' level is the point.
 - **Non-negative values.** The stack is anchored at 0; negative parts are not
   meaningful.
-- **No interaction callbacks.** There is no `onDatumClick`/`onDatumHover` —
-  hover drives the internal tooltip only.
 - **No legend, title, caption, loading, or error passthrough** — it forwards
   only `ariaLabel`, the auto legend, and the data table to `ChartContainer`.
 - **No downsampling** — every point of every series is drawn.

@@ -14,6 +14,10 @@ import { useChartTheme, useEntityColors } from "../../theme";
 import { formatDayMonth } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { Series } from "../../chart/types";
+import type {
+  DatumClickHandler,
+  DatumHoverHandler,
+} from "../../chart/interaction";
 
 export interface StackedAreaChartProps {
   /** Plot width in pixels — supply from `ResponsiveContainer`. */
@@ -27,12 +31,16 @@ export interface StackedAreaChartProps {
   /** Format a value-axis number (tick labels + tooltip values). Overrides the
    *  locale/currency formatter from any surrounding ChartLocaleProvider. */
   valueFormat?: (n: number) => string;
+  /** Fired when a datum (the full stacked row at that x) is clicked (drill-down). */
+  onDatumClick?: DatumClickHandler<StackDatum>;
+  /** Fired when the hovered datum changes; null when the pointer leaves. */
+  onDatumHover?: DatumHoverHandler<StackDatum>;
   /** Overlays (ReferenceLine, TrendLine, Annotation, …) rendered in plot space. */
   children?: ReactNode;
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
-interface StackDatum {
+export interface StackDatum {
   x: number;
   [seriesId: string]: number;
 }
@@ -52,6 +60,8 @@ export function StackedAreaChart({
   series,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
   children,
 }: StackedAreaChartProps) {
   const theme = useChartTheme();
@@ -191,9 +201,26 @@ export function StackedAreaChart({
                   rows,
                   (r) => new Date(r.x)
                 );
-                if (idx >= 0) setHoverIndex(idx);
+                if (idx >= 0) {
+                  setHoverIndex(idx);
+                  onDatumHover?.({ datum: rows[idx], index: idx });
+                }
               }}
-              onMouseLeave={() => setHoverIndex(null)}
+              onMouseLeave={() => {
+                setHoverIndex(null);
+                onDatumHover?.(null);
+              }}
+              onClick={(e) => {
+                const box = e.currentTarget.getBoundingClientRect();
+                const mx = e.clientX - box.left;
+                const idx = nearestIndexByX(
+                  mx,
+                  xScale,
+                  rows,
+                  (r) => new Date(r.x)
+                );
+                if (idx >= 0) onDatumClick?.({ datum: rows[idx], index: idx });
+              }}
             />
 
             {hoverIndex != null && hoveredX != null && (
