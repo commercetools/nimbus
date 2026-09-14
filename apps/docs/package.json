@@ -49,6 +49,7 @@
     "zod": "catalog:utils"
   },
   "devDependencies": {
+    "@anthropic-ai/sdk": "catalog:apps",
     "@commercetools/nimbus-design-token-ts-plugin": "workspace:^",
     "@eslint/js": "catalog:tooling",
     "@types/lodash": "catalog:utils",
