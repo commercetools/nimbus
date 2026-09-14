@@ -107,12 +107,18 @@ export const FormFieldRoot = function FormFieldRoot({
             </label>
             {context.info && (
               <DialogTrigger>
+                {/* A `1ch` placeholder that keeps the label row at the label's
+                    own line height: the icon-button is taller than the text, so
+                    it gets absolutely centered inside this box and overflows it
+                    instead of growing the row. The label slot is a flex row, so
+                    this box is centered against the label text. */}
                 <Box
                   as="span"
-                  display="inline-block"
+                  display="block"
                   position="relative"
                   width="1ch"
                   height="1ch"
+                  flexShrink="0"
                   ml="200"
                 >
                   <Box

@@ -212,7 +212,10 @@ export const LocalizedField = ({
       name={name}
     >
       {label && (
-        <Stack direction="row" gap="0">
+        // `alignItems="center"` keeps the info-button centered against the
+        // label text; the default `stretch` leaves the label text at the top of
+        // the row the taller icon-button creates.
+        <Stack direction="row" gap="0" alignItems="center">
           <LocalizedFieldLabelSlot {...labelProps}>
             {label}
             {isRequired && <sup aria-hidden="true">*</sup>}

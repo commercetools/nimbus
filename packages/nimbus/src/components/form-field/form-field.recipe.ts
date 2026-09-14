@@ -30,6 +30,16 @@ export const formFieldRecipe = defineSlotRecipe({
     },
     label: {
       gridArea: "label",
+      // a flex row over the label text and the info-button, so the two are
+      // centered against each other. Without it the info-button wrapper sits on
+      // the text baseline and its offset depends on the font's `ch` advance
+      // width rather than on the label's own line height.
+      display: "flex",
+      alignItems: "center",
+      // `direction="row"` spans this slot across the input/description/error
+      // rows, so it has to stay at its own content height - stretched, the
+      // `alignItems` above would center the label over the whole field.
+      alignSelf: "start",
       fontWeight: "500",
       color: "neutral.11",
       fontSize: "var(--form-field-font-size)",
