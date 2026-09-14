@@ -211,8 +211,16 @@ export const LocalizedField = ({
       size={size}
       name={name}
     >
+      {/**
+       * The label row uses `alignItems="center"` rather than the default
+       * `stretch`: the 2xs icon-button is 24px tall while the label's line box
+       * is 20px, so under `stretch` the label box grows to 24px and its text
+       * stays at the top of it, leaving the icon reading ~2px low. Centering
+       * both costs no extra height - the row is 24px either way - so nothing
+       * below this moves.
+       */}
       {label && (
-        <Stack direction="row" gap="0">
+        <Stack direction="row" gap="0" alignItems="center">
           <LocalizedFieldLabelSlot {...labelProps}>
             {label}
             {isRequired && <sup aria-hidden="true">*</sup>}

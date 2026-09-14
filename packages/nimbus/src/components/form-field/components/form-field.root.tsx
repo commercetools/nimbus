@@ -105,11 +105,29 @@ export const FormFieldRoot = function FormFieldRoot({
               {context.label}
               {isRequired && <sup aria-hidden="true">*</sup>}
             </label>
+            {/**
+             * The info affordance is a `1ch` square placeholder on the label's
+             * line box, with the 24px icon-button absolutely centered inside it
+             * so it cannot grow the label row.
+             *
+             * `verticalAlign="middle"` anchors that placeholder's midpoint to
+             * the label text's optical center (baseline + half the x-height).
+             * Without it the placeholder sits at the default `baseline`, which
+             * puts the icon's center half a `ch` above the baseline - close to
+             * the right spot for the current font, but only by coincidence,
+             * since `ch` is the advance width of "0" and has nothing to do with
+             * the text's x-height. The icon would drift with any font change.
+             *
+             * This stays inline-level on purpose: the label slot is a plain
+             * block, so the label text keeps wrapping around the icon and the
+             * label's grid track keeps sizing exactly as it does today.
+             */}
             {context.info && (
               <DialogTrigger>
                 <Box
                   as="span"
                   display="inline-block"
+                  verticalAlign="middle"
                   position="relative"
                   width="1ch"
                   height="1ch"
