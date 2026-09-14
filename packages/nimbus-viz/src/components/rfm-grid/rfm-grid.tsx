@@ -4,7 +4,13 @@ import { max } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { GRADIENT_LEGEND_HEIGHT } from "../../chart/marks";
 import { SvgTooltip } from "../../chart/svg-tooltip";
-import { sequentialColor, useChartTheme, readableTextColor } from "../../theme";
+import {
+  sequentialColor,
+  resolveSequentialDomain,
+  normalizeToDomain,
+  useChartTheme,
+  readableTextColor,
+} from "../../theme";
 import { formatCompact, formatInteger } from "../../chart/format";
 import { emText, CHART_FONT_STACK, LABEL_PX } from "../../chart/typography";
 
@@ -23,6 +29,15 @@ export interface RfmGridProps {
   height: number;
   /** One cell per occupied recency×frequency bucket; missing buckets render empty. */
   data: RfmCell[];
+  /**
+   * Fixed `[min, max]` bounds for the color ramp. Defaults to the actual
+   * range of segment `count` values (lightest shade = lowest count,
+   * fullest shade = highest), so close counts stay visually distinct. Pass
+   * this to pin the scale instead — e.g. `[0, max]` to anchor at zero for
+   * absolute-magnitude comparisons across separately-rendered grids, or to
+   * clip outliers.
+   */
+  domain?: [number, number];
   /** Accessible label for the SVG frame (Cesal alt-text). Defaults to a generated summary. */
   ariaLabel?: string;
 }
@@ -36,7 +51,13 @@ export interface RfmGridProps {
  *
  * @experimental Prototype-stage; API may change before it is marked stable.
  */
-export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
+export function RfmGrid({
+  width,
+  height,
+  data,
+  domain,
+  ariaLabel,
+}: RfmGridProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<string | null>(null);
 
@@ -45,7 +66,14 @@ export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
     () => max(data, (d) => d.frequency) ?? 0,
     [data]
   );
-  const maxCount = useMemo(() => max(data, (d) => d.count) ?? 0, [data]);
+  const colorDomain = useMemo(
+    () =>
+      resolveSequentialDomain(
+        data.map((d) => d.count),
+        domain
+      ),
+    [data, domain]
+  );
 
   const byCell = useMemo(() => {
     const m = new Map<string, RfmCell>();
@@ -135,7 +163,7 @@ export function RfmGrid({ width, height, data, ariaLabel }: RfmGridProps) {
                     />
                   );
                 }
-                const t = maxCount > 0 ? cellData.count / maxCount : 0;
+                const t = normalizeToDomain(cellData.count, colorDomain);
                 return (
                   <g key={key}>
                     <rect

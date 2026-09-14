@@ -113,8 +113,11 @@ Contract notes, verifiable from source:
 - The grid's **column count** is the longest row's length; shorter rows are
   **ragged** and a `null` cell is simply left empty (no mark drawn). Use `null`,
   not `0`, for "no data" — `0` is a real value on the ramp.
-- Values are assumed **non-negative**: the ramp runs from 0 to the maximum
-  across all cells, so a cell's shade is `value / max`.
+- The ramp's bounds default to the actual range of the cell values (lightest
+  shade = lowest value, fullest shade = highest), so close values stay visually
+  distinct regardless of scale. Pass `domain={[min, max]}` to pin fixed bounds
+  instead — e.g. `[0, max]` to anchor at zero for comparisons across
+  separately-rendered heatmaps, or to clip outliers.
 - Row **order** is preserved top-to-bottom; columns are positional (index `0`
   first), and `columnLabels` label them by index.
 
@@ -147,6 +150,32 @@ const App = () => (
     <ResponsiveContainer height={280}>
       {(width, height) => (
         <Heatmap width={width} height={height} rows={rows} hue="teal" />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Domain
+
+`domain` pins the color ramp to fixed `[min, max]` bounds instead of the default
+— the actual range of the cell values. Omit it (the default) to keep close
+values visually distinct regardless of scale; pass it to anchor comparisons
+across separately-rendered heatmaps, or to clip outliers. The example below pins
+the same narrow-range data back to a `[0, 50]` scale — compare it to the default
+rendering above, where the same values spread across the full ramp.
+
+```jsx live
+const rows = [
+  { label: "2024", values: [38.6, 39.3, 40.1, 40.6, 40.4, 39.8] },
+  { label: "2025", values: [38.4, 39, 39.8, 40.3, 40.1, 39.6] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={200}>
+      {(width, height) => (
+        <Heatmap width={width} height={height} rows={rows} domain={[0, 50]} />
       )}
     </ResponsiveContainer>
   </ChartThemeProvider>
@@ -191,9 +220,10 @@ Not configurable — the chart always draws them. Each cell prints its value
 cells drop the label and rely on shade alone. The printed value's color is
 chosen automatically for contrast against its cell fill. Hovering a cell
 outlines it and shows a small tooltip with the row label, the column label, and
-the value. There is no configurable axis or scale: the ramp is anchored at 0 and
-scaled to the grid maximum. This outline and tooltip are not configurable — but
-the same hover state also drives `onDatumHover`, below.
+the value. There is no configurable axis, but the color ramp's `[min, max]`
+bounds default to the grid's actual value range and can be pinned via the
+`domain` prop (see Contract notes, above). This outline and tooltip are not
+configurable — but the same hover state also drives `onDatumHover`, below.
 
 ### Interaction callbacks
 
@@ -309,8 +339,8 @@ states upstream and render your own placeholder when there is no data yet.
 - **No legend.** Unlike its calendar, cohort, and RFM siblings, `Heatmap` draws
   no low→high gradient legend — lean on the printed cell values and the data
   table for the scale.
-- **Non-negative values.** The ramp is anchored at 0 and scaled to the maximum;
-  it is not a diverging scale for signed data.
+- **Not a diverging scale.** The ramp is single-hue and monotonic; it does not
+  distinguish sign for data that crosses zero the way a diverging scale would.
 - **No title, caption, loading, or error passthrough** — `Heatmap` forwards only
   `ariaLabel` and the data table to `ChartContainer`.
 

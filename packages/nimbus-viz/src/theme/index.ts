@@ -11,7 +11,12 @@ export {
   coerceColorMode,
   THEMES,
 } from "./roles";
-export { sequentialColor, divergingColor } from "./sequential";
+export {
+  sequentialColor,
+  divergingColor,
+  resolveSequentialDomain,
+  normalizeToDomain,
+} from "./sequential";
 export {
   createColorScale,
   ColorScaleProvider,

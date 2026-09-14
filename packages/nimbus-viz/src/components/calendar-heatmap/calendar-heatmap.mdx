@@ -106,8 +106,11 @@ Contract notes, verifiable from source:
   value, not a dense range.
 - One entry per day: if two entries fall on the same calendar day, the **last**
   one wins.
-- Values are assumed **non-negative**: the ramp runs from 0 to the maximum
-  value, so a day's shade is `value / max`.
+- The ramp's bounds default to the actual range of day values (lightest shade =
+  lowest value, fullest shade = highest), so close values stay visually distinct
+  regardless of scale. Pass `domain={[min, max]}` to pin fixed bounds instead —
+  e.g. `[0, max]` to anchor at zero for comparisons across separately-rendered
+  calendars, or to clip outliers.
 
 ## API reference
 
@@ -138,6 +141,37 @@ const App = () => (
           height={height}
           data={days}
           hue="green"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Domain
+
+`domain` pins the color ramp to fixed `[min, max]` bounds instead of the default
+— the actual range of day values. Omit it (the default) to keep close values
+visually distinct regardless of scale; pass it to anchor comparisons across
+separately-rendered calendars, or to clip outliers. The example below pins a
+narrow-range dataset back to a `[0, 60]` scale — compare it to the default
+rendering above, where the same values spread across the full ramp.
+
+```jsx live
+const days = Array.from({ length: 60 }, (_, i) => ({
+  date: new Date(2026, 0, i + 1),
+  value: Math.round(38 + 5 * Math.sin(i / 6)),
+}));
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={200}>
+      {(width, height) => (
+        <CalendarHeatmap
+          width={width}
+          height={height}
+          data={days}
+          domain={[0, 60]}
         />
       )}
     </ResponsiveContainer>
@@ -252,8 +286,8 @@ no-data-yet state upstream and render your own placeholder.
 - **Daily granularity only.** The grid is day-by-week; it does not roll up to
   weeks/months or drill down to hours (use [`Heatmap`](/charts/heatmap) for an
   arbitrary two-axis matrix such as weekday × hour).
-- **Non-negative values.** The ramp is anchored at 0 and scaled to the maximum;
-  it is not a diverging scale for signed data.
+- **Not a diverging scale.** The ramp is single-hue and monotonic; it does not
+  distinguish sign for data that crosses zero the way a diverging scale would.
 - **No title, caption, loading, or error passthrough** — `CalendarHeatmap`
   forwards only `ariaLabel`, the gradient legend, and the data table to
   `ChartContainer`.

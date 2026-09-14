@@ -1,9 +1,13 @@
 import { useMemo, useState } from "react";
-import { max } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { GRADIENT_LEGEND_HEIGHT } from "../../chart/marks";
 import { SvgTooltip } from "../../chart/svg-tooltip";
-import { sequentialColor, useChartTheme } from "../../theme";
+import {
+  sequentialColor,
+  resolveSequentialDomain,
+  normalizeToDomain,
+  useChartTheme,
+} from "../../theme";
 import { formatDayMonth, formatInteger } from "../../chart/format";
 import { emText, CHART_FONT_STACK, LABEL_PX } from "../../chart/typography";
 
@@ -22,6 +26,15 @@ export interface CalendarHeatmapProps {
   data: CalendarDatum[];
   /** Nimbus hue for the sequential ramp. */
   hue?: string;
+  /**
+   * Fixed `[min, max]` bounds for the color ramp. Defaults to the actual
+   * range of day values (lightest shade = lowest value, fullest shade =
+   * highest), so close values stay visually distinct. Pass this to pin the
+   * scale instead — e.g. `[0, max]` to anchor at zero for
+   * absolute-magnitude comparisons across separately-rendered calendars, or
+   * to clip outliers.
+   */
+  domain?: [number, number];
   /** Accessible label for the SVG frame (Cesal alt-text). Defaults to a generated summary. */
   ariaLabel?: string;
 }
@@ -78,6 +91,7 @@ export function CalendarHeatmap({
   height,
   data,
   hue = "blue",
+  domain,
   ariaLabel,
 }: CalendarHeatmapProps) {
   const theme = useChartTheme();
@@ -98,7 +112,14 @@ export function CalendarHeatmap({
     return m;
   }, [entries]);
 
-  const maxVal = useMemo(() => max(entries, (e) => e.value) ?? 0, [entries]);
+  const colorDomain = useMemo(
+    () =>
+      resolveSequentialDomain(
+        entries.map((e) => e.value),
+        domain
+      ),
+    [entries, domain]
+  );
 
   const layout = useMemo(() => {
     if (entries.length === 0) return null;
@@ -222,7 +243,7 @@ export function CalendarHeatmap({
                     />
                   );
                 }
-                const t = maxVal > 0 ? entry.value / maxVal : 0;
+                const t = normalizeToDomain(entry.value, colorDomain);
                 return (
                   <rect
                     key={`${col}-${row}`}

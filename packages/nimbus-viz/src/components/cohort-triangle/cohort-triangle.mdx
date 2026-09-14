@@ -122,8 +122,11 @@ Contract notes, verifiable from source:
   cell.
 - `periodLabels` are indexed by **column** (calendar period), where cohort 0's
   acquisition is column 0; a missing label falls back to the column index.
-- Values are assumed **non-negative**: the ramp runs from 0 to the maximum
-  across all cells.
+- The ramp's bounds default to the actual range of the cell values (lightest
+  shade = lowest value, fullest shade = highest), so close values stay visually
+  distinct regardless of scale. Pass `domain={[min, max]}` to pin fixed bounds
+  instead — e.g. `[0, max]` to anchor at zero for comparisons across
+  separately-rendered triangles, or to clip outliers.
 
 ## API reference
 
@@ -158,6 +161,38 @@ const App = () => (
           height={height}
           rows={rows}
           hue="purple"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Domain
+
+`domain` pins the color ramp to fixed `[min, max]` bounds instead of the default
+— the actual range of the cell values. Omit it (the default) to keep close
+values visually distinct regardless of scale; pass it to anchor comparisons
+across separately-rendered triangles, or to clip outliers.
+
+```jsx live
+const rows = [
+  { label: "Jan", values: [100, 68, 52, 44, 39] },
+  { label: "Feb", values: [100, 72, 58, 47] },
+  { label: "Mar", values: [100, 65, 50] },
+  { label: "Apr", values: [100, 70] },
+  { label: "May", values: [100] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <CohortTriangle
+          width={width}
+          height={height}
+          rows={rows}
+          domain={[0, 100]}
         />
       )}
     </ResponsiveContainer>
@@ -300,8 +335,8 @@ those states upstream and render your own placeholder when there is no data yet.
 - **Contiguous, age-0-first rows.** Each row's `values` are assumed to start at
   acquisition (M0) and run without internal gaps except explicit `null`s; the
   right-shift alignment relies on this.
-- **Non-negative values.** The ramp is anchored at 0 and scaled to the maximum;
-  it is not a diverging scale for signed data.
+- **Not a diverging scale.** The ramp is single-hue and monotonic; it does not
+  distinguish sign for data that crosses zero the way a diverging scale would.
 - **No title, caption, loading, or error passthrough** — `CohortTriangle`
   forwards only `ariaLabel`, the gradient legend, and the data table to
   `ChartContainer`.

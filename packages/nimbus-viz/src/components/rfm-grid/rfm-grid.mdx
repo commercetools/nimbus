@@ -110,7 +110,10 @@ Contract notes, verifiable from source:
   sized to the largest index seen on each axis (`max recency` wide ×
   `max frequency` tall).
 - `count` is the number of customers in the segment — it drives both the cell's
-  shade (`count / maxCount`) and the number printed in the cell.
+  shade and the number printed in the cell. The ramp's bounds default to the
+  actual range of `count` values across the grid (lightest shade = lowest count,
+  fullest shade = highest), so close counts stay visually distinct; pass
+  `domain={[min, max]}` to pin fixed bounds instead.
 - `value` is optional (e.g. revenue); it appears **in the hover tooltip only**
   and is not encoded in color or position.
 - Provide only the **occupied** segments — any bucket combination you omit is
@@ -142,6 +145,35 @@ low→high gradient legend ("Fewer" → "More") in the reserved strip. Each occu
 cell prints its count (compact-formatted, bold) when it is large enough, using
 an automatically contrast-matched text color. Empty segments render as a faint
 outlined cell rather than blank space.
+
+### Domain
+
+`domain` pins the color ramp to fixed `[min, max]` bounds instead of the default
+— the actual range of `count` values. Omit it (the default) to keep close counts
+visually distinct regardless of scale; pass it to anchor comparisons across
+separately-rendered grids, or to clip outliers.
+
+```jsx live
+const data = [
+  { recency: 1, frequency: 1, count: 40, value: 8000 },
+  { recency: 1, frequency: 3, count: 45, value: 52000 },
+  { recency: 2, frequency: 4, count: 48, value: 61000 },
+  { recency: 3, frequency: 2, count: 42, value: 22000 },
+  { recency: 4, frequency: 5, count: 50, value: 98000 },
+  { recency: 5, frequency: 1, count: 38, value: 5000 },
+  { recency: 5, frequency: 5, count: 52, value: 210000 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={300}>
+      {(width, height) => (
+        <RfmGrid width={width} height={height} data={data} domain={[0, 150]} />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
 
 ### Tooltip (automatic)
 

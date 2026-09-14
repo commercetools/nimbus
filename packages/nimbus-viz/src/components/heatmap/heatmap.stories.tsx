@@ -153,6 +153,55 @@ export const EdgeCaseDuplicateLabels: BaseStory = {
   },
 };
 
+/**
+ * By default the ramp spans the actual data range, not `[0, max]` — so a
+ * narrow-range dataset (values clustered close together, as reported in a
+ * real chart where every cell looked nearly the same shade) still spreads
+ * across the full ramp. `domain` overrides that: pinning the same data to a
+ * wider fixed range washes it back out, proving the prop actually changes
+ * the color mapping (not just accepted and ignored).
+ */
+const narrowRangeRows: HeatRow[] = [
+  { label: "2024", values: [38.6, 40.1, 44] },
+  { label: "2025", values: [38.4, 39.8, 45.5] },
+];
+
+export const CustomDomain: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 16 }}>
+      <Heatmap
+        width={220}
+        height={160}
+        rows={narrowRangeRows}
+        ariaLabel="Heatmap with default (auto) domain"
+      />
+      <Heatmap
+        width={220}
+        height={160}
+        rows={narrowRangeRows}
+        domain={[0, 50]}
+        ariaLabel="Heatmap with fixed [0, 50] domain"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const svgs = canvasElement.querySelectorAll<SVGSVGElement>("svg");
+    expect(svgs.length).toBe(2);
+    // Skip empty-cell placeholder rects (if any) and grab the first real
+    // data cell's fill.
+    const dataCellFill = (svg: SVGSVGElement) =>
+      Array.from(svg.querySelectorAll<SVGRectElement>("rect"))
+        .find((r) => !r.hasAttribute("fill-opacity"))
+        ?.getAttribute("fill");
+
+    const autoFill = dataCellFill(svgs[0]);
+    const pinnedFill = dataCellFill(svgs[1]);
+    expect(autoFill).toBeTruthy();
+    expect(pinnedFill).toBeTruthy();
+    expect(autoFill).not.toBe(pinnedFill);
+  },
+};
+
 export const Responsive: BaseStory = {
   render: () => (
     <div style={{ maxWidth: 480 }}>

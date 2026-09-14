@@ -3,7 +3,13 @@ import { scaleBand } from "@visx/scale";
 import { Group } from "@visx/group";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
-import { sequentialColor, useChartTheme, readableTextColor } from "../../theme";
+import {
+  sequentialColor,
+  resolveSequentialDomain,
+  normalizeToDomain,
+  useChartTheme,
+  readableTextColor,
+} from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { HeatRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
@@ -23,6 +29,15 @@ export interface HeatmapProps {
   hue?: string;
   /** Column headers along the top; falls back to the 0-based column index. */
   columnLabels?: string[];
+  /**
+   * Fixed `[min, max]` bounds for the color ramp. Defaults to the actual
+   * range of the cell values (lightest shade = lowest value, fullest shade
+   * = highest), so close values stay visually distinct. Pass this to pin
+   * the scale instead — e.g. `[0, max]` to anchor at zero for
+   * absolute-magnitude comparisons across separately-rendered heatmaps, or
+   * to clip outliers.
+   */
+  domain?: [number, number];
   /** Accessible label for the SVG frame (Cesal alt-text). Defaults to a generated summary. */
   ariaLabel?: string;
   /** Fired when a cell is clicked (drill-down). */
@@ -49,6 +64,7 @@ export function Heatmap({
   rows,
   hue = "blue",
   columnLabels,
+  domain,
   ariaLabel,
   onDatumClick,
   onDatumHover,
@@ -59,13 +75,13 @@ export function Heatmap({
     () => Math.max(0, ...rows.map((r) => r.values.length)),
     [rows]
   );
-  const maxVal = useMemo(
+  const colorDomain = useMemo(
     () =>
-      Math.max(
-        0,
-        ...rows.flatMap((r) => r.values.filter((v): v is number => v != null))
+      resolveSequentialDomain(
+        rows.flatMap((r) => r.values.filter((v): v is number => v != null)),
+        domain
       ),
-    [rows]
+    [rows, domain]
   );
 
   if (width <= 0 || height <= 0 || rows.length === 0 || numCols === 0) {
@@ -138,7 +154,7 @@ export function Heatmap({
                   {row.values.map((v, c) => {
                     if (v == null) return null;
                     const x = xScale(String(c)) ?? 0;
-                    const t = maxVal > 0 ? v / maxVal : 0;
+                    const t = normalizeToDomain(v, colorDomain);
                     const isHover = hover?.r === ri && hover?.c === c;
                     return (
                       <g
