@@ -5,6 +5,10 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { sequentialColor, useChartTheme } from "../../theme";
 import { formatCompact, formatSignedCompact } from "../../chart/format";
 import { emText } from "../../chart/typography";
+import type {
+  DatumClickHandler,
+  DatumHoverHandler,
+} from "../../chart/interaction";
 
 /** One measure-vs-target row in a bullet chart. */
 export interface BulletDatum {
@@ -29,7 +33,12 @@ export interface BulletChartProps {
   height: number;
   /** One `BulletDatum` (`{ label, measure, target, ranges? }`) per row. */
   data: BulletDatum[];
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
+  /** Fired when a datum is clicked (drill-down). */
+  onDatumClick?: DatumClickHandler<BulletDatum>;
+  /** Fired when the hovered datum changes; null when the pointer leaves. */
+  onDatumHover?: DatumHoverHandler<BulletDatum>;
 }
 
 /**
@@ -45,6 +54,8 @@ export function BulletChart({
   height,
   data,
   ariaLabel,
+  onDatumClick,
+  onDatumHover,
 }: BulletChartProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
@@ -58,9 +69,20 @@ export function BulletChart({
       ),
     [data]
   );
+  const domainMin = useMemo(
+    () =>
+      Math.min(
+        0,
+        ...data.flatMap((d) => [d.measure, d.target, ...(d.ranges ?? [])])
+      ),
+    [data]
+  );
 
   if (width <= 0 || height <= 0 || data.length === 0) return null;
 
+  // Full-precision values here (not formatCompact) are deliberate: the table
+  // is the assistive-tech fallback, where exact numbers read better than the
+  // compact labels/tooltip used in the visual canvas.
   const table = {
     columns: ["Measure", "Value", "Target", "Δ vs target"],
     rows: data.map((d) => [
@@ -81,7 +103,7 @@ export function BulletChart({
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleLinear({
-          domain: [0, domainMax],
+          domain: [domainMin, domainMax],
           range: [0, innerWidth],
           nice: true,
         });
@@ -98,10 +120,17 @@ export function BulletChart({
               let prev = 0;
               return (
                 <g
-                  key={d.label}
+                  key={`${d.label}-${i}`}
                   opacity={hover == null || hover === i ? 1 : 0.5}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: d, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: d, index: i })}
                 >
                   <text
                     x={-8}
@@ -125,7 +154,7 @@ export function BulletChart({
                     const t = (bi / Math.max(1, bands.length - 1)) * 0.2;
                     return (
                       <rect
-                        key={b}
+                        key={`${b}-${bi}`}
                         x={x0}
                         y={cy - rowH * 0.36}
                         width={Math.max(0, x1 - x0)}
@@ -135,9 +164,9 @@ export function BulletChart({
                     );
                   })}
                   <rect
-                    x={0}
+                    x={Math.min(xScale(0), xScale(d.measure))}
                     y={cy - barH / 2}
-                    width={Math.max(0, xScale(d.measure))}
+                    width={Math.abs(xScale(d.measure) - xScale(0))}
                     height={barH}
                     fill={theme.accent}
                   />
@@ -150,9 +179,10 @@ export function BulletChart({
                     strokeWidth={2}
                   />
                   <text
-                    x={xScale(d.measure) + 6}
+                    x={xScale(d.measure) + (d.measure < 0 ? -6 : 6)}
                     y={cy}
                     dy="0.32em"
+                    textAnchor={d.measure < 0 ? "end" : "start"}
                     style={emText(10)}
                     fill={theme.ink}
                   >

@@ -3,7 +3,7 @@ id: Charts-BulletChart
 title: Bullet Chart
 exportName: BulletChart
 description: A measure against its target and qualitative ranges.
-lifecycleState: Experimental
+lifecycleState: Alpha
 order: 503
 icon: CompareArrows
 menu:
@@ -104,16 +104,21 @@ const data: BulletDatum[] = [
 
 Contract notes, verifiable from source:
 
-- `label` should be **unique** per row — it is the React key and the left-hand
-  row label.
-- `measure` draws as the accent bar (from zero) and `target` as the tick mark,
-  in the same units.
-- `ranges` are **ascending** qualitative breakpoints in those same units; each
-  successive band fills from the previous breakpoint to the next. Omit it and
-  the row gets a single band spanning the domain.
-- All rows share one linear x-scale from **0** to the `nice`-rounded maximum of
-  every `measure`, `target`, and range across the data (floored at 1), so bars
-  and ticks are comparable row to row.
+- `label` should be **unique** per row — used in the React key alongside the
+  row's index, and shown as the left-hand row label.
+- `measure` and `target` are plain numbers and **may be negative** — the accent
+  bar draws from the shared zero baseline out to `measure` (in whichever
+  direction that is), and `target` is a tick mark, both in the same units.
+- `ranges` are **ascending, non-negative** qualitative breakpoints in those same
+  units; each successive band fills from the previous breakpoint to the next.
+  Omit it and the row gets a single band spanning the non-negative domain. Bands
+  only cover the non-negative side — a negative `measure` draws correctly (see
+  above) but without qualitative-band context behind it, since ranges aren't a
+  signed concept for this chart.
+- All rows share one linear x-scale spanning the `nice`-rounded extent of every
+  `measure`, `target`, and range across the data — from **0** (or lower,
+  extended down to the most negative value present) up to the maximum (floored
+  at 1) — so bars and ticks are comparable row to row.
 
 ## API reference
 
@@ -165,8 +170,26 @@ is no category or value axis — the row labels and the shared scale do the work
 ### Hover & tooltip (automatic)
 
 Hovering a row dims the others to `0.5` opacity and shows a tooltip with the
-label, the measure, the target, and the signed difference versus target. Hover
-is internal — there are no interaction callbacks to wire.
+label, the measure, the target, and the signed difference versus target. This
+dimming and the tooltip are not configurable — but the same hover state also
+drives `onDatumHover`, below.
+
+### Interaction callbacks
+
+`onDatumClick` and `onDatumHover` fire with a `{ datum, index }` payload —
+`datum` is the whole `BulletDatum` row (label, measure, target, and ranges), not
+a single field, matching `StackedBarChart`'s "whole row" convention. Use them
+for drill-down or to drive an external readout; the built-in dimming and tooltip
+above keep working whether or not you pass them.
+
+```tsx
+<BulletChart
+  width={width}
+  height={height}
+  data={data}
+  onDatumClick={({ datum }) => navigate(`/departments/${datum.label}`)}
+/>
+```
 
 ### Color & theming
 
@@ -263,10 +286,13 @@ render your own placeholder when there is no data yet.
   as horizontal rows.
 - **No overlays.** `BulletChart` takes no `children`, so reference lines and
   annotations can't be layered in.
-- **No interaction callbacks.** Hover is internal only — there is no
-  `onDatumClick`/`onDatumHover`.
 - **Fixed compact formatting.** Values render with the compact formatter; there
   is no `valueFormat` override.
+- **Qualitative ranges don't extend below zero.** `measure`/`target` may be
+  negative, but `ranges` breakpoints are assumed non-negative — a negative
+  `measure` draws correctly (see "Data shape") but without qualitative-band
+  context behind it, since bands only ever cover the non-negative side of the
+  scale.
 - **No legend, title, caption, loading, or error passthrough** — `BulletChart`
   forwards only `ariaLabel` and the data table to `ChartContainer`.
 
