@@ -44,6 +44,15 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       swap value-axis `formatCompact` calls → `valueFmt`; leave date/category
       formatting alone. Default output is byte-identical (no provider) — see
       `src/chart/format-locale.tsx`.
+- [ ] **A2-date — locale-thread the time axis.** Found introspecting
+      `LineChart`: its date-axis tick labels use `formatDayMonth`
+      (`chart/format.ts`), a hardcoded `timeFormat("%b %d")` (English month
+      abbreviations) — unlike the value axis, which is already locale-threaded
+      per `A2-tail` above. `A2-tail` deliberately scoped this out ("leave
+      date/category formatting alone"), so it needs its own item rather than
+      silently expanding that one. Applies to every time-axis chart, not just
+      `LineChart` — add a date-formatter equivalent of `useChartFormatters()` to
+      `chart/format-locale.tsx` and thread it the same way.
 - [ ] **A3-tail — datum callbacks.** Extend `onDatumClick`/`onDatumHover` to the
       charts not yet wired (done: line, bar, scatter, grouped-bar, stacked-bar,
       bubble, waterfall, pareto). Pattern in `src/chart/interaction.ts`; fire
@@ -94,7 +103,7 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
 - [ ] **E5 — core-6 depth.** Converge states / interaction / dense-data +
       label-collision polish + a full story/spec matrix on the core-6 (line,
       stacked-area, bar, stacked-bar, stat-card + bullet, funnel,
-      cohort-triangle/heatmap).
+      cohort-triangle/heatmap). Story/spec matrix done: bar, line.
 - [x] **E6 — fix `isolate: false` story accumulation blocking real play-function
       coverage.** ~~Root cause isn't fully pinned down... points at
       `vitest.storybook.config.ts`'s `isolate: false`~~ — **that theory was
@@ -122,9 +131,9 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       rediscovering this per chart.
 
       Verified: `bar-chart.stories.tsx` alone (3 repeat runs) and the full
-          `nimbus-viz-storybook` project (all 46 stories files, 53 tests) both
-          pass clean with `isolate: false` unchanged. No config change was
-          needed or made.
+                  `nimbus-viz-storybook` project (all 46 stories files, 53 tests) both
+                  pass clean with `isolate: false` unchanged. No config change was
+                  needed or made.
 
 ### Wire the dormant primitives (built + unit-tested, but no chart consumes them)
 

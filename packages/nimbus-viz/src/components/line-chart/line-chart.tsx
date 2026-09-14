@@ -4,7 +4,7 @@ import { scaleLinear, scaleTime } from "@visx/scale";
 import { AreaClosed, LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveMonotoneX } from "@visx/curve";
-import { extent, max } from "d3-array";
+import { extent, max, min } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
@@ -72,6 +72,7 @@ export function LineChart({
     [points]
   );
   const yMax = useMemo(() => max(points, (p) => p.y ?? 0) ?? 0, [points]);
+  const yMin = useMemo(() => min(points, (p) => p.y ?? 0) ?? 0, [points]);
   const color = useEntityColors(
     useMemo(() => series.map((s) => s.id), [series])
   );
@@ -108,7 +109,7 @@ export function LineChart({
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleTime({ domain: xDomain, range: [0, innerWidth] });
         const yScale = scaleLinear({
-          domain: [0, yMax],
+          domain: [Math.min(0, yMin), Math.max(0, yMax)],
           range: [innerHeight, 0],
           nice: true,
         });
@@ -154,6 +155,7 @@ export function LineChart({
                   data={s.data}
                   x={(p) => xScale(toDate(p.x))}
                   y={(p) => yScale(p.y ?? 0)}
+                  y0={() => yScale(0)}
                   yScale={yScale}
                   curve={curveMonotoneX}
                   defined={(p) => p.y != null}

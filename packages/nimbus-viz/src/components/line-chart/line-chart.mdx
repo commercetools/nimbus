@@ -3,7 +3,7 @@ id: Charts-LineChart
 title: Line Chart
 exportName: LineChart
 description: Track one or more series over a continuous time axis.
-lifecycleState: Experimental
+lifecycleState: Alpha
 order: 100
 icon: ShowChart
 menu:
@@ -140,8 +140,10 @@ Contract notes, verifiable from source:
   `Date` and placed on a time scale.
 - `y` may be `null` to mark a **gap** — the line/area is `defined` only where
   `y` is non-null, so it breaks rather than interpolating through the hole.
-- The value axis runs from **0** to a "nice" maximum, so values are assumed
-  **non-negative**; negative `y` would fall below the baseline.
+- `y` is a plain number (or `null`) and **may be negative**. The value axis
+  always includes **0** as its baseline, extended to cover the actual min/max
+  across all series — a negative point draws below that baseline (for
+  `variant="area"`, the fill closes at the zero line too), not off-scale.
 - The hover model, tooltip, and data table are indexed off the **first** series'
   points, so all series should share the same x samples (align them by index).
 
@@ -265,7 +267,8 @@ color is not load-bearing. There is no `legend` prop to toggle it.
 
 ### Axes, scales & tooltip (automatic)
 
-Also always drawn: a **single** value axis (linear, from 0 to a nice maximum,
+Also always drawn: a **single** value axis (linear, spanning zero to the nice
+extent of the data — extended below zero when a series has negative values —
 with horizontal gridlines) and a time axis whose tick count adapts to the
 available width. Both series curves use a monotone spline. Hovering resolves the
 nearest x-index, draws a dashed crosshair with a point marker per series, and
@@ -362,8 +365,6 @@ render your own placeholder when there is no data yet.
 
 - **One shared value axis.** All series share a single linear y-scale — there is
   no secondary axis for a second unit.
-- **Non-negative values.** The axis is anchored at 0; series that dip below zero
-  fall under the baseline.
 - **No legend, title, caption, loading, or error passthrough** — `LineChart`
   forwards only `ariaLabel`, the auto legend, and the data table to
   `ChartContainer`.
