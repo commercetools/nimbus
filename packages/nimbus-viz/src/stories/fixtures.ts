@@ -29,10 +29,11 @@ import type {
  * refund-rate-trend → a declining rate, …). Data is deterministic per preset
  * name, so a card looks the same on every render.
  *
- * Hard rule: the selection engine (`deriveFacts`/`detectKind`) classifies data
- * purely by STRUCTURE. Every builder here mirrors the exact shape used in
- * `datasets.ts` for its kind — only values/labels/counts vary — so each preset
- * still resolves to its intended chart rather than the DataTable fallback.
+ * Hard rule: the selection engine (`deriveFacts`/`detectKind`, in
+ * `src/selection/derive-facts.ts`) classifies data purely by STRUCTURE. Every
+ * builder here mirrors the exact shape that classifier expects for its kind —
+ * only values/labels/counts vary — so each preset still resolves to its
+ * intended chart rather than the DataTable fallback.
  */
 export interface Fixture {
   data: unknown;

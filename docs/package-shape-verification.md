@@ -42,14 +42,17 @@ known issues to triage separately.
 
 ## What Gets Tracked
 
-The check mirrors the `fixed` group in `.changeset/config.json` — every package
-the changeset bot ships in a release. Four of the five are linted:
+The check covers every publishable package — the `fixed` group in
+`.changeset/config.json` that the changeset bot ships in a release, plus
+`@commercetools/nimbus-viz`, which is versioned separately and still in the
+changeset `ignore` list until its first release. Five packages are linted:
 
 - **`@commercetools/nimbus`** — Core component library.
 - **`@commercetools/nimbus-icons`** — SVG icons as React components.
 - **`@commercetools/nimbus-design-token-ts-plugin`** — TypeScript language
   service plugin.
 - **`@commercetools/nimbus-mcp`** — MCP server.
+- **`@commercetools/nimbus-viz`** — Data visualization library.
 
 **Excluded (temporarily):** `@commercetools/nimbus-tokens` is currently excluded
 because the published tarball has pre-existing shape issues (preconstruct emits

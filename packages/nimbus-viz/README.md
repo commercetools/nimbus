@@ -158,16 +158,31 @@ This package lives in the Nimbus monorepo.
 # Type-check
 pnpm --filter @commercetools/nimbus-viz typecheck
 
-# Unit + render tests (Vitest, jsdom) — classifier, resolver routing, and a
-# render-smoke that resolves and mounts every registered chart
+# Tests: the jsdom unit project (classifier, resolver routing, a render-smoke
+# over every registered chart) plus the Storybook project (every chart's
+# stories run headlessly in Chromium with addon-a11y in error mode)
 pnpm --filter @commercetools/nimbus-viz test
 
-# Build (tsup → dist ESM + CJS + d.ts)
+# Build (Vite library mode → dist ESM + CJS, then d.ts via postbuild-types.mjs)
 pnpm --filter @commercetools/nimbus-viz build
 
-# Run the interactive gallery (Vite) — browse every chart by type and intent
-pnpm --filter @commercetools/nimbus-viz gallery
+# Storybook — browse every chart's stories, light/dark toggle in the toolbar
+pnpm --filter @commercetools/nimbus-viz storybook
 ```
 
-The gallery under `gallery/` is a development tool for reviewing chart quality,
-catalog coverage, and per-intent presets with realistic sample data.
+Two more places to look at a chart while developing it:
+
+- `apps/viz-dashboard` — the internal demo dashboard that renders charts with
+  realistic data across seven pages. Run it with `pnpm start:viz-dashboard` from
+  the repo root. It is the monkey-test surface for the library, and a chart is
+  not considered ready until it appears on at least one page there.
+- `.storybook/` in this package — the Storybook harness. Every story renders
+  inside a `ChartThemeProvider` that follows the dark-mode toolbar toggle.
+
+Roadmap and hardening notes live next to the source:
+
+- `TODO.md` — the remaining roadmap, by phase.
+- `docs/bug-classes.md` — recurring bug patterns found while hardening charts,
+  each with a grep to detect it and the fix pattern to apply.
+- `docs/lifecycle.md` — what a chart must have to move from `Experimental` to
+  `Alpha`, `Beta`, and `Stable`.

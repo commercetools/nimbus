@@ -33,8 +33,10 @@ const ROOT = join(__dirname, "..");
 
 const REPORT_ONLY = false;
 
-// Mirror of the `fixed` group in .changeset/config.json — every publishable
-// package the changeset bot ships should be linted here.
+// Every publishable package should be linted here: the `fixed` group in
+// .changeset/config.json that the changeset bot ships together, plus
+// `@commercetools/nimbus-viz`, which is versioned separately (and sits in the
+// changeset `ignore` list until its first release).
 //
 // `@commercetools/nimbus-tokens` is intentionally excluded: it ships with a
 // pre-existing shape issue tracked in

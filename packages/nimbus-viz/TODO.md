@@ -94,13 +94,16 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
 
 ### Phase E — ship-readiness
 
-- [ ] **E2 — Storybook harness + stories (no Chromatic).** No `.storybook/`
-      exists yet. Set up `main` + `preview` (wrap in `ChartThemeProvider`,
-      light/dark toolbar, reuse `gallery/fixtures.ts`), a
-      `vitest.storybook.config.ts` mirroring `packages/nimbus`, register it in
-      the root `vitest.config.mts` projects, and add stories (core-6 first, then
-      per chart). Needs a Storybook deps install. **Chromatic is intentionally
-      dropped** — Storybook alone is the agreed bar.
+- [x] **E2 — Storybook harness + stories (no Chromatic).** Harness done:
+      `.storybook/main.ts` + `preview.tsx` (global `ChartThemeProvider`
+      following the dark-mode toolbar, `addon-a11y` in `test: "error"` mode),
+      `vitest.storybook.config.ts` registered in the root `vitest.config.mts` as
+      `nimbus-viz-storybook`. Fixtures live in `src/stories/fixtures.ts`
+      (`fixtureFor(entry)`, 24 builders keyed by `DataKind`) and
+      `src/stories/base-story.tsx` (`RegistryPreview`). Stories themselves are
+      tracked per chart by `/chart:introspect` (see `E5` and
+      `docs/lifecycle.md`). **Chromatic is intentionally dropped** — Storybook
+      alone is the agreed bar.
 - [ ] **E3 — recipe kit.** `src/recipes/` has `dashboard-kit.tsx` (1 of 3). Add
       revenue-overview, conversion-funnel, cohort-retention starters pre-wired
       to `ColorScaleProvider` + `ChartThemeProvider`.
@@ -141,17 +144,17 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       default `ariaLabel`** on one page — `bar-chart`'s `Orientation` story
       renders the same `data={fixture}` twice with no explicit `ariaLabel`, so
       both get the identical default
-      (`` `Bar       chart of ${rows.length} categories` ``). Fixed by giving
-      each instance a distinct, descriptive `ariaLabel` in that story. This is a
+      (`` `Bar chart of ${rows.length} categories` ``). Fixed by giving each
+      instance a distinct, descriptive `ariaLabel` in that story. This is a
       **story-authoring hazard, not a library bug** — documented as a pitfall in
       `writing-chart-stories/SKILL.md` so future multi-instance stories (any
       chart, not just `bar-chart`) set distinct `ariaLabel`s up front instead of
       rediscovering this per chart.
 
       Verified: `bar-chart.stories.tsx` alone (3 repeat runs) and the full
-                                                                  `nimbus-viz-storybook` project (all 46 stories files, 53 tests) both
-                                                                  pass clean with `isolate: false` unchanged. No config change was
-                                                                  needed or made.
+              `nimbus-viz-storybook` project (all 46 stories files, 53 tests) both pass
+              clean with `isolate: false` unchanged. No config change was needed or
+              made.
 
 ### Wire the dormant primitives (built + unit-tested, but no chart consumes them)
 
