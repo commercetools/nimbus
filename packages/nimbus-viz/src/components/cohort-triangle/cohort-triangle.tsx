@@ -8,6 +8,10 @@ import { sequentialColor, useChartTheme, readableTextColor } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { HeatRow } from "../../chart/types";
 import { emText, LABEL_PX } from "../../chart/typography";
+import type {
+  DatumClickHandler,
+  DatumHoverHandler,
+} from "../../chart/interaction";
 
 export interface CohortTriangleProps {
   /** Chart width in pixels (supplied by `ResponsiveContainer`). */
@@ -22,6 +26,17 @@ export interface CohortTriangleProps {
   hue?: string;
   /** Accessible label for the SVG frame (Cesal alt-text). Defaults to a generated summary. */
   ariaLabel?: string;
+  /** Fired when a cell is clicked (drill-down). */
+  onDatumClick?: DatumClickHandler<CohortCell>;
+  /** Fired when the hovered cell changes; null when the pointer leaves. */
+  onDatumHover?: DatumHoverHandler<CohortCell>;
+}
+
+/** A single cohort/age cell's public interaction payload. */
+interface CohortCell {
+  cohort: string;
+  age: number;
+  value: number;
 }
 
 interface Hover {
@@ -29,6 +44,7 @@ interface Hover {
   age: number;
   col: number;
   value: number;
+  rowIndex: number;
 }
 
 /**
@@ -45,6 +61,8 @@ export function CohortTriangle({
   periodLabels,
   hue = "teal",
   ariaLabel,
+  onDatumClick,
+  onDatumHover,
 }: CohortTriangleProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<Hover | null>(null);
@@ -118,7 +136,7 @@ export function CohortTriangle({
           padding: 0.08,
         });
         const yScale = scaleBand({
-          domain: rows.map((r) => r.label),
+          domain: rows.map((_, i) => String(i)),
           range: [0, innerHeight],
           padding: 0.08,
         });
@@ -139,9 +157,9 @@ export function CohortTriangle({
               </text>
             ))}
             {rows.map((row, i) => {
-              const y = yScale(row.label) ?? 0;
+              const y = yScale(String(i)) ?? 0;
               return (
-                <Group key={row.label}>
+                <Group key={`${row.label}-${i}`}>
                   <text
                     x={-8}
                     y={y + ch / 2}
@@ -161,10 +179,29 @@ export function CohortTriangle({
                     return (
                       <g
                         key={age}
-                        onMouseEnter={() =>
-                          setHover({ cohort: row.label, age, col, value: v })
+                        onMouseEnter={() => {
+                          setHover({
+                            cohort: row.label,
+                            age,
+                            col,
+                            value: v,
+                            rowIndex: i,
+                          });
+                          onDatumHover?.({
+                            datum: { cohort: row.label, age, value: v },
+                            index: i,
+                          });
+                        }}
+                        onMouseLeave={() => {
+                          setHover(null);
+                          onDatumHover?.(null);
+                        }}
+                        onClick={() =>
+                          onDatumClick?.({
+                            datum: { cohort: row.label, age, value: v },
+                            index: i,
+                          })
                         }
-                        onMouseLeave={() => setHover(null)}
                       >
                         <rect
                           x={x}
@@ -202,7 +239,7 @@ export function CohortTriangle({
               <SvgTooltip
                 x={(xScale(String(hover.col)) ?? 0) + cw / 2}
                 innerWidth={innerWidth}
-                top={(yScale(hover.cohort) ?? 0) - 4}
+                top={(yScale(String(hover.rowIndex)) ?? 0) - 4}
                 lines={[
                   `${hover.cohort} cohort`,
                   `Age: M${hover.age}${hover.age === 0 ? " (acquired)" : ""}`,

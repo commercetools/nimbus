@@ -3,7 +3,7 @@ id: Charts-CohortTriangle
 title: Cohort Triangle
 exportName: CohortTriangle
 description: Retention by cohort, aligned to periods since signup.
-lifecycleState: Experimental
+lifecycleState: Alpha
 order: 902
 icon: GridView
 menu:
@@ -108,9 +108,12 @@ const rows: HeatRow[] = [
 
 Contract notes, verifiable from source:
 
-- `label` is the cohort's row label and its React key, so it should be
-  **unique** per row. Rows are drawn top-to-bottom in the order given (typically
-  oldest cohort first).
+- `label` is the cohort's row label, shown next to the row and in the tooltip.
+  Rows are positioned by array index, not by `label`, so two rows sharing a
+  label render at distinct positions rather than colliding — but a `label` that
+  reads as **unique** per row still makes the chart and its tooltip easier to
+  read. Rows are drawn top-to-bottom in the order given (typically oldest cohort
+  first).
 - `values[0]` is the **acquisition** period (age M0); `values[1]` is one period
   later, and so on. The M0 cell sits on the diagonal and is outlined.
 - Rows are naturally **ragged** — younger cohorts have fewer observed periods.
@@ -176,7 +179,28 @@ each cohort is outlined** in the theme accent and forms the diagonal; the legend
 strip below explains the outline alongside a low→high gradient ("Less" →
 "More"). Each cell prints its value (compact-formatted) when large enough, with
 an automatically contrast-matched text color. Hovering a cell shows a tooltip
-with the cohort, the age (`M0` … marked "acquired" at M0), and the value.
+with the cohort, the age (`M0` … marked "acquired" at M0), and the value. This
+highlight and tooltip are not configurable — but the same hover state also
+drives `onDatumHover`, below.
+
+### Interaction callbacks
+
+`onDatumClick` and `onDatumHover` fire with a `{ datum, index }` payload —
+`datum` is `{ cohort, age, value }` for the hovered/clicked cell, and `index` is
+the row's position (not the calendar-aligned column). Use them for drill-down or
+to drive an external readout; the built-in highlight and tooltip above keep
+working whether or not you pass them.
+
+```tsx
+<CohortTriangle
+  width={width}
+  height={height}
+  rows={rows}
+  onDatumClick={({ datum }) =>
+    navigate(`/cohorts/${datum.cohort}/${datum.age}`)
+  }
+/>
+```
 
 ### Color & theming
 
@@ -281,8 +305,6 @@ those states upstream and render your own placeholder when there is no data yet.
 - **No title, caption, loading, or error passthrough** — `CohortTriangle`
   forwards only `ariaLabel`, the gradient legend, and the data table to
   `ChartContainer`.
-- **No click or hover callbacks.** Hover highlight and the tooltip are internal;
-  there is no prop to observe cell interaction for drill-down.
 
 ## Related charts
 
