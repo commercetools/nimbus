@@ -30,6 +30,7 @@ export interface DumbbellChartProps {
   startLabel?: string;
   /** Legend label for the end dots (default "End"). */
   endLabel?: string;
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
 }
 

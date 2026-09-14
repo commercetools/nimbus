@@ -31,6 +31,7 @@ export interface ParallelCoordinatesProps {
   dimensions: ParallelDimension[];
   /** One polyline per row; `values` is keyed by each dimension's `key`. */
   data: ParallelRow[];
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
 }
 

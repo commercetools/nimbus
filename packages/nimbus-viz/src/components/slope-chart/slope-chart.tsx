@@ -34,6 +34,7 @@ export interface SlopeChartProps {
   leftLabel?: string;
   /** Header for the right column (e.g. "Q2"). */
   rightLabel?: string;
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
 }
 

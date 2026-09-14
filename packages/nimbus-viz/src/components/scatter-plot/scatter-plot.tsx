@@ -31,6 +31,7 @@ export interface ScatterPlotProps<T = ScatterPoint> {
   group?: (d: T) => string | undefined;
   /** Optional point-label accessor (tooltip title). Defaults to `d.label`. */
   label?: (d: T) => string | undefined;
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
   /** Fired when a datum is clicked (drill-down). */
   onDatumClick?: DatumClickHandler<T>;

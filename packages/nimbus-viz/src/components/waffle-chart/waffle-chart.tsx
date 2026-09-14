@@ -15,6 +15,7 @@ export interface WaffleChartProps {
   data: CategoryDatum[];
   /** Grid side length in cells (default 10 → 100 cells = whole). */
   cells?: number;
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
 }
 

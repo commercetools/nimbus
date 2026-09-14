@@ -16,6 +16,7 @@ export interface MarimekkoChartProps {
    *  each segment's height its share within the column. Rows should share the
    *  same segment keys, in the same order. */
   data: StackRow[];
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
 }
 

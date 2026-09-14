@@ -25,6 +25,7 @@ export interface RadarChartProps {
   axes: string[];
   /** One closed polygon per series; each series' `values[i]` maps to `axes[i]`. */
   data: RadarSeries[];
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
 }
 

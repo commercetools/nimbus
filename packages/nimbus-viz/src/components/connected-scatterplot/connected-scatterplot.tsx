@@ -20,6 +20,7 @@ export interface ConnectedScatterplotProps {
   height: number;
   /** Points in sequence — connected in the given order (often chronological). */
   points: ScatterPoint[];
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;

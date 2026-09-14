@@ -32,6 +32,7 @@ export interface BubbleChartProps {
   /** Points to plot; each is a `BubblePoint` (`{ x, y, size, group?, label? }`),
    *  with `size` mapped to bubble area (not radius). */
   points: BubblePoint[];
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
   /** Fired when a datum is clicked (drill-down). */
   onDatumClick?: DatumClickHandler<BubblePoint>;

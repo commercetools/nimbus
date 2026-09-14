@@ -22,6 +22,7 @@ export interface TreemapProps {
   height: number;
   /** Root of the hierarchy to lay out; leaves carry `value`, parents sum theirs. */
   data: TreemapNode;
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
 }
 

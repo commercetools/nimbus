@@ -15,6 +15,7 @@ export interface FunnelChartProps {
   /** Ordered `FunnelStage` rows (`{ stage, value }`), given top-to-bottom; the
    *  first stage's value is the 100% reference for every bar's width. */
   data: FunnelStage[];
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
 }
 

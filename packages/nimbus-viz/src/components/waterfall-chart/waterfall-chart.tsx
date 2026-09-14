@@ -37,6 +37,7 @@ export interface WaterfallChartProps {
   height: number;
   /** Ordered `WaterfallStep` rows (`{ label, value, isTotal? }`). */
   data: WaterfallStep[];
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
   /** Fired when a datum is clicked (drill-down). */
   onDatumClick?: DatumClickHandler<WaterfallStep>;

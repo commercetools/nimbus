@@ -15,6 +15,7 @@ export interface DonutChartProps {
   /** One `CategoryDatum` (`{ category, value }`) per slice; slice order follows
    *  the array. */
   data: CategoryDatum[];
+  /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
 }
 
