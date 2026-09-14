@@ -10,24 +10,47 @@ import type { ChatWidgetMessage, ResolvedChatChart } from "./types";
 let nextId = 0;
 const newId = () => `chat-widget-msg-${(nextId += 1)}`;
 
-/** Turns a series point's ISO date string into a Date, the one transform
- * needed between the wire contract and nimbus-viz's own Series type
- * (packages/nimbus-viz/src/chart/types.ts — SeriesPoint.x: number | Date). */
+/** Revives the ISO date strings that only 3 of the 24 wire shapes carry —
+ * `series` (SeriesPoint.x), `ohlc` (OhlcBar.date), and `timeline-events`
+ * (TimelineEvent.start/end) — into real Dates, which is what nimbus-viz's own
+ * components require (GanttChart calls `.getTime()` directly; CandlestickChart
+ * formats via d3's timeFormat). `calendar`'s CalendarDatum.date is `Date |
+ * string` and normalized internally by CalendarHeatmap, so it's deliberately
+ * left as a wire string — not an oversight. Every other kind passes through
+ * unchanged. */
 function reviveChartDates(
   chart: ChatApiResponse["chart"]
 ): ResolvedChatChart | null {
   if (!chart) return null;
-  if (chart.kind !== "series") return chart;
-  return {
-    ...chart,
-    data: chart.data.map((series) => ({
-      ...series,
-      data: series.data.map((point) => ({
-        ...point,
-        x: new Date(point.x),
-      })),
-    })),
-  };
+  switch (chart.kind) {
+    case "series":
+      return {
+        ...chart,
+        data: chart.data.map((series) => ({
+          ...series,
+          data: series.data.map((point) => ({
+            ...point,
+            x: new Date(point.x),
+          })),
+        })),
+      };
+    case "ohlc":
+      return {
+        ...chart,
+        data: chart.data.map((bar) => ({ ...bar, date: new Date(bar.date) })),
+      };
+    case "timeline-events":
+      return {
+        ...chart,
+        data: chart.data.map((event) => ({
+          ...event,
+          start: new Date(event.start),
+          end: event.end ? new Date(event.end) : undefined,
+        })),
+      };
+    default:
+      return chart;
+  }
 }
 
 /** Conversation state + the call to the dev-only /api/chat endpoint. No

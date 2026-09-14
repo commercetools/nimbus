@@ -1,145 +1,31 @@
 /**
- * The JSON Schema handed to Anthropic's structured-outputs feature
- * (`output_config.format`), via `jsonSchemaOutputFormat()`. This is the real
- * enforcement mechanism behind the curated-DataKind design in contract.ts:
- * nimbus-viz's classifier (`deriveFacts`/`detectKind`,
- * packages/nimbus-viz/src/selection/derive-facts.ts) sniffs `data`'s shape
- * order-sensitively, so `additionalProperties: false` on every variant below
- * is what stops the model from emitting a stray field (e.g. `segments` on a
- * `category` row) that could tip the classifier into the wrong branch — the
- * system prompt's prose (system-prompt.ts) is secondary reinforcement, not
- * the enforcement itself.
+ * The JSON Schema for CALL 1 (`output_config.format` on the first of the two
+ * `client.messages.parse()` calls in handle-chat-request.ts). See that file's
+ * header comment for why chart generation is split into two model calls; this
+ * schema only ever produces `{reply, chart: {kind, intent, topic} | null}` —
+ * a small, flat, non-discriminated object. It never describes `data` at all;
+ * chart-data-schema.ts's per-kind schema does that in call 2, once `kind` is
+ * already fixed.
  *
- * Array-size bounds (e.g. "5-30 points") are NOT expressible here — Anthropic's
- * structured outputs don't support `minItems`/`maxItems` — so those ranges are
- * asked for in the system prompt instead, not enforced by this schema.
+ * This flat shape is deliberate and empirically load-bearing: a 24-branch
+ * discriminated union (`anyOf` keyed on `kind`), tried first for exactly this
+ * `{kind, intent, topic}` payload, was rejected outright by Anthropic's API —
+ * "The compiled grammar is too large ... Simplify your tool schemas or reduce
+ * the number of strict tools." A flat object with plain enum fields has no
+ * such problem. `additionalProperties: false` is pure hygiene here (stops the
+ * model wasting tokens inventing fields we'd ignore), not a
+ * misclassification guard — `intent` isn't narrowed per `kind` at the schema
+ * level (also tried, also hit the same grammar-size wall), so
+ * `chart-kinds.ts`'s `KIND_INTENTS` is prose-only guidance in
+ * system-prompt.ts, and handle-chat-request.ts defensively clamps an invalid
+ * (kind, intent) pair before making call 2.
+ *
+ * Every `const`/`enum` field still needs an explicit `type` too (an Anthropic
+ * SDK requirement hit and fixed once already this session).
  */
 import { jsonSchemaOutputFormat } from "@anthropic-ai/sdk/helpers/json-schema";
-
-const scalarChart = {
-  type: "object",
-  properties: {
-    kind: { type: "string", const: "scalar" },
-    intent: { type: "string", const: "VALUE" },
-    data: { type: "number" },
-    options: {
-      type: "object",
-      properties: { target: { type: "number" } },
-      required: [],
-      additionalProperties: false,
-    },
-  },
-  required: ["kind", "intent", "data"],
-  additionalProperties: false,
-} as const;
-
-const seriesChart = {
-  type: "object",
-  properties: {
-    kind: { type: "string", const: "series" },
-    intent: { type: "string", enum: ["TREND", "COMP-TIME"] },
-    data: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          id: { type: "string" },
-          label: { type: "string" },
-          data: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                x: { type: "string", format: "date" },
-                y: { anyOf: [{ type: "number" }, { type: "null" }] },
-              },
-              required: ["x", "y"],
-              additionalProperties: false,
-            },
-          },
-        },
-        required: ["id", "label", "data"],
-        additionalProperties: false,
-      },
-    },
-  },
-  required: ["kind", "intent", "data"],
-  additionalProperties: false,
-} as const;
-
-const categoryChart = {
-  type: "object",
-  properties: {
-    kind: { type: "string", const: "category" },
-    intent: { type: "string", enum: ["RANK", "COMPARE", "PART-WHOLE", "DIST"] },
-    data: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          category: { type: "string" },
-          value: { type: "number" },
-        },
-        required: ["category", "value"],
-        additionalProperties: false,
-      },
-    },
-    options: {
-      type: "object",
-      properties: { target: { type: "number" } },
-      required: [],
-      additionalProperties: false,
-    },
-  },
-  required: ["kind", "intent", "data"],
-  additionalProperties: false,
-} as const;
-
-const funnelChart = {
-  type: "object",
-  properties: {
-    kind: { type: "string", const: "funnel" },
-    intent: { type: "string", const: "FLOW" },
-    data: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          stage: { type: "string" },
-          value: { type: "number" },
-        },
-        required: ["stage", "value"],
-        additionalProperties: false,
-      },
-    },
-  },
-  required: ["kind", "intent", "data"],
-  additionalProperties: false,
-} as const;
-
-const scatterChart = {
-  type: "object",
-  properties: {
-    kind: { type: "string", const: "scatter" },
-    intent: { type: "string", const: "REL" },
-    data: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          x: { type: "number" },
-          y: { type: "number" },
-          label: { type: "string" },
-          group: { type: "string" },
-        },
-        required: ["x", "y"],
-        additionalProperties: false,
-      },
-    },
-  },
-  required: ["kind", "intent", "data"],
-  additionalProperties: false,
-} as const;
+import { INTENTS } from "@commercetools/nimbus-viz";
+import { CHAT_CHART_KINDS } from "./chart-kinds";
 
 const CHAT_RESPONSE_SCHEMA = {
   type: "object",
@@ -148,11 +34,16 @@ const CHAT_RESPONSE_SCHEMA = {
     chart: {
       anyOf: [
         { type: "null" },
-        scalarChart,
-        seriesChart,
-        categoryChart,
-        funnelChart,
-        scatterChart,
+        {
+          type: "object",
+          properties: {
+            kind: { type: "string", enum: CHAT_CHART_KINDS },
+            intent: { type: "string", enum: INTENTS },
+            topic: { type: "string" },
+          },
+          required: ["kind", "intent", "topic"],
+          additionalProperties: false,
+        },
       ],
     },
   },
