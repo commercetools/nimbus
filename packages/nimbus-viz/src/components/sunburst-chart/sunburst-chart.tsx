@@ -13,6 +13,7 @@ import type { TreemapNode } from "../treemap";
 import { emText } from "../../chart/typography";
 import type { DatumInteractionProps } from "../../chart/interaction";
 import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { ValueLabel } from "../../chart/value-labels";
 
 export interface SunburstChartProps extends DatumInteractionProps<TreemapNode> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -35,12 +36,36 @@ export interface SunburstChartProps extends DatumInteractionProps<TreemapNode> {
    * `useForcedColors`.
    */
   texture?: boolean;
+  /**
+   * Draw each leaf's formatted value just outside the plot's outer edge, at
+   * its midpoint angle (`chart/value-labels.tsx`'s `ValueLabel`, the same
+   * outer-rim `polar()`-style placement `DonutChart`/`RadialBarChart` use).
+   * Only the OUTERMOST ring (`node.depth === root.height`) is ever
+   * labeled -- an inner ring's arcs sit directly beneath deeper rings drawn
+   * on top of them, so a label there would float disconnected from its own
+   * arc and clutter across levels; this is the same restraint `Treemap`
+   * applies via its own minimum-cell-size gate, just keyed on depth instead
+   * of pixels. An outermost arc also still needs `MIN_LABEL_ARC_WIDTH` px of
+   * width at its mid-radius and `MIN_LABEL_THICKNESS` px of ring thickness
+   * (this chart's own `Heatmap`-style size gate) before it gets a label.
+   * Default `false` (no change from today's unlabeled arcs).
+   */
+  showValues?: boolean;
 }
 
 /** Point on a circle for an angle measured clockwise from 12 o'clock. */
 function polar(r: number, angle: number): [number, number] {
   return [r * Math.sin(angle), -r * Math.cos(angle)];
 }
+
+/**
+ * Minimum arc size (px) before the outermost ring's value label is drawn --
+ * same thresholds `Heatmap`/`RadialBarChart` use for their own in-mark
+ * labels, applied here to an arc's width at its mid-radius and its ring's
+ * radial thickness.
+ */
+const MIN_LABEL_ARC_WIDTH = 26;
+const MIN_LABEL_THICKNESS = 16;
 
 /** SVG path for an annular sector centered on the origin. */
 function arcPath(r0: number, r1: number, a0: number, a1: number): string {
@@ -87,6 +112,7 @@ export function SunburstChart({
   onDatumClick,
   onDatumHover,
   texture,
+  showValues,
 }: SunburstChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -140,7 +166,14 @@ export function SunburstChart({
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
-        const radius = Math.max(0, Math.min(innerWidth, innerHeight) / 2);
+        // Reserve a rim for the outermost ring's value labels when shown
+        // (mirrors DonutChart's rim reservation for its own outer-radius
+        // labels) -- untouched when `showValues` is unset, so the default
+        // sunburst is unaffected.
+        const radius = Math.max(
+          0,
+          Math.min(innerWidth, innerHeight) / 2 - (showValues ? 14 : 0)
+        );
         const cx = innerWidth / 2;
         const cy = innerHeight / 2;
         return (
@@ -168,29 +201,54 @@ export function SunburstChart({
                       // fade below is unrelated to hover and stays as-is.
                       const isHovered =
                         hover != null && hover.name === node.data.name;
+                      // Only the outermost ring can plausibly carry a
+                      // label without floating disconnected beneath a
+                      // deeper ring drawn on top of it -- see the
+                      // `showValues` TSDoc.
+                      const isOutermost = node.depth === root.height;
+                      const mid = (node.x0 + node.x1) / 2;
+                      const midR = (node.y0 + node.y1) / 2;
+                      const arcWidth = midR * (node.x1 - node.x0);
+                      const canLabel =
+                        isOutermost &&
+                        arcWidth >= MIN_LABEL_ARC_WIDTH &&
+                        node.y1 - node.y0 >= MIN_LABEL_THICKNESS;
+                      const [lx, ly] = polar(radius + 12, mid);
                       return (
-                        <path
-                          key={`${node.data.name}-${i}`}
-                          d={arcPath(node.y0, node.y1, node.x0, node.x1)}
-                          fill={fill}
-                          stroke={isHovered ? theme.ink : theme.surface}
-                          strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 1}
-                          opacity={Math.max(0.55, 1 - (node.depth - 1) * 0.15)}
-                          onMouseEnter={() => {
-                            setHover({
-                              name: node.data.name,
-                              value: node.value ?? 0,
-                            });
-                            onDatumHover?.({ datum: node.data, index: i });
-                          }}
-                          onMouseLeave={() => {
-                            setHover(null);
-                            onDatumHover?.(null);
-                          }}
-                          onClick={() =>
-                            onDatumClick?.({ datum: node.data, index: i })
-                          }
-                        />
+                        <g key={`${node.data.name}-${i}`}>
+                          <path
+                            d={arcPath(node.y0, node.y1, node.x0, node.x1)}
+                            fill={fill}
+                            stroke={isHovered ? theme.ink : theme.surface}
+                            strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 1}
+                            opacity={Math.max(
+                              0.55,
+                              1 - (node.depth - 1) * 0.15
+                            )}
+                            onMouseEnter={() => {
+                              setHover({
+                                name: node.data.name,
+                                value: node.value ?? 0,
+                              });
+                              onDatumHover?.({ datum: node.data, index: i });
+                            }}
+                            onMouseLeave={() => {
+                              setHover(null);
+                              onDatumHover?.(null);
+                            }}
+                            onClick={() =>
+                              onDatumClick?.({ datum: node.data, index: i })
+                            }
+                          />
+                          {showValues && canLabel && (
+                            <ValueLabel
+                              x={lx}
+                              y={ly}
+                              text={valueFmt(node.value ?? 0)}
+                              anchor={mid > Math.PI ? "end" : "start"}
+                            />
+                          )}
+                        </g>
                       );
                     })}
                   <text

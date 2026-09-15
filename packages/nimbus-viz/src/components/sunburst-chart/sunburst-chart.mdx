@@ -172,6 +172,61 @@ Hovering an arc outlines it (its siblings are never dimmed) and shows a
 tooltip with the node's name, its compact value, and its share of the total.
 Hover is internal; there is no click or hover callback.
 
+### Value labels
+
+Pass `showValues` to draw a value label just outside the plot's outer edge,
+at the midpoint angle of each **outermost-ring** arc only. An inner ring's
+arcs stay unlabeled — they sit directly beneath deeper rings, so a label
+there would float disconnected from its own arc and clutter across levels.
+An outermost arc also needs enough width and ring thickness to hold the
+label legibly; a hierarchy with uneven branch depths only labels the arcs
+that actually reach the outer edge. Default `false`.
+
+```jsx live
+const data = {
+  name: "Revenue",
+  children: [
+    {
+      name: "Web",
+      children: [
+        { name: "New", value: 260 },
+        { name: "Returning", value: 180 },
+      ],
+    },
+    {
+      name: "Mobile",
+      children: [
+        { name: "iOS", value: 150 },
+        { name: "Android", value: 120 },
+      ],
+    },
+    {
+      name: "Retail",
+      children: [
+        { name: "Flagship", value: 90 },
+        { name: "Outlet", value: 60 },
+      ],
+    },
+  ],
+};
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <SunburstChart
+          width={width}
+          height={height}
+          data={data}
+          showValues
+          ariaLabel="Sunburst of revenue by channel and sub-channel, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Color & theming
 
 Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
@@ -287,8 +342,9 @@ What you get automatically:
   `ChartContainer`, which renders a visually-hidden `DataTable` (columns
   **Segment**, **Value**, **Share**, one row per leaf) into the accessibility
   tree, plus a keyboard "View data as table" toggle that reveals it in place —
-  so the values are available as text. This matters here: the arcs carry no
-  visible labels at all.
+  so the values are available as text. This matters here: by default the arcs
+  carry no visible labels at all (pass `showValues` to label the outermost
+  ring only — see "Value labels" above).
 - **CVD-safe palette.** Branch colors come from the validated chart palette
   (contrast + color-vision-deficiency checks), not ad-hoc colors.
 - **Non-color encoding.** Ring position (depth) and arc sweep (share) carry the
@@ -299,9 +355,10 @@ What you get automatically:
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the branches rather than "the
-outer ring". There is **no legend** and the arcs are unlabeled, so the data
-table is the primary text equivalent. There is no animation, so reduced-motion
-handling is N/A.
+outer ring". There is **no legend** and, by default, the arcs are unlabeled
+(`showValues` labels the outermost ring only), so the data table remains the
+primary text equivalent. There is no animation, so reduced-motion handling is
+N/A.
 
 Accessibility checklist:
 
@@ -323,8 +380,10 @@ states upstream and render your own placeholder when there is no data yet.
 
 ## Limitations
 
-- **No labels on the arcs.** Unlike the treemap, nodes are not labeled in place;
-  identities live in the tooltip and the data table.
+- **No labels by default.** Nodes are not labeled in place unless you pass
+  `showValues`, which labels only the outermost ring's arcs (and only those
+  wide/thick enough to hold the label); identities otherwise live in the
+  tooltip and the data table.
 - **No legend passthrough.** The branch/color mapping is not shown as a legend.
 - **No value formatting prop.** The center total is compact-formatted and shares
   are percentages; neither is configurable.

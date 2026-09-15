@@ -74,6 +74,48 @@ export const Texture: BaseStory = {
 };
 
 /**
+ * `showValues` draws a value label just outside the plot's outer edge, at
+ * each OUTERMOST-ring leaf's midpoint angle only -- the top-level branches
+ * (an inner ring) never get one, since a label there would float
+ * disconnected beneath the deeper ring drawn on top of it. Every leaf in
+ * this fixture clears both minimum-size gates, so the labeled chart gains
+ * exactly one `<text>` per leaf (6, `root.leaves().length`) over the
+ * unlabeled control.
+ */
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <SunburstChart
+        width={360}
+        height={360}
+        data={fixture}
+        ariaLabel="Sunburst without value labels"
+      />
+      <SunburstChart
+        width={360}
+        height={360}
+        data={fixture}
+        showValues
+        ariaLabel="Sunburst with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (SunburstChart uses the
+    // library default role="img"; there is no nested <svg> anywhere in this
+    // chart -- no axes, no visx tick-label positioning trick).
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    const leafCount = fixture.children!.reduce(
+      (s, c) => s + c.children!.length,
+      0
+    );
+    expect(textCount(svgs[1])).toBe(textCount(svgs[0]) + leafCount);
+  },
+};
+
+/**
  * Hover/tooltip UX convergence: hovering an arc outlines that ONE arc
  * (`stroke`/`strokeWidth`) and never dims its siblings — replacing the "dim
  * everyone else to 0.4 opacity, multiplied into the same expression as the
