@@ -143,6 +143,40 @@ vertex enlarges it and reads out that series/axis value. When two or more series
 are present, a legend below the plot maps each color to its `label`. Fill is
 kept translucent so overlapping profiles stay legible.
 
+### Value labels
+
+Pass `showValues` to draw every series' formatted value next to each of its
+vertices, colored to match that series. Unlike a hover-only reveal, every
+vertex of every series is labeled at once — reasonable at this chart's
+documented scale (a handful of axes, 2-4 series; see "Limitations" below). A
+denser radar chart than that will get crowded regardless of this prop — lean
+on the tooltip and your own accompanying data table instead. Default `false`.
+
+```jsx live
+const axes = ["Speed", "Reliability", "Comfort", "Efficiency", "Safety"];
+const data = [
+  { id: "model-a", label: "Model A", values: [8, 6, 7, 9, 8] },
+  { id: "model-b", label: "Model B", values: [6, 9, 8, 5, 7] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={320}>
+      {(width, height) => (
+        <RadarChart
+          width={width}
+          height={height}
+          axes={axes}
+          data={data}
+          showValues
+          ariaLabel="Radar chart comparing Model A and Model B, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Color & theming
 
 Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).

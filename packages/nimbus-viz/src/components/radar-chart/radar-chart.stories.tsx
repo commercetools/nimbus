@@ -108,3 +108,44 @@ export const Texture: BaseStory = {
     expect(polygons[1].getAttribute("stroke-dasharray")).not.toBe("");
   },
 };
+
+/**
+ * `showValues` draws every series' value next to each of its vertices,
+ * unconditionally (not gated on hover) -- reasonable at this fixture's scale
+ * (5 axes, 2 series = 10 vertices; see the prop's own TSDoc for why this
+ * doesn't scope to hover like a denser chart might need). Each labeled
+ * vertex gains exactly one `<text>` over the unlabeled control, so the
+ * labeled chart's total is `axes.length * data.length` higher.
+ */
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <RadarChart
+        width={320}
+        height={320}
+        axes={axes}
+        data={data}
+        ariaLabel="Radar chart without value labels"
+      />
+      <RadarChart
+        width={320}
+        height={320}
+        axes={axes}
+        data={data}
+        showValues
+        ariaLabel="Radar chart with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // RadarChart draws its own root <svg role="img"> directly (it doesn't
+    // route through ChartContainer/ChartFrame); there are no axes here, so
+    // no nested <svg> from a visx tick-label positioning trick either.
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    expect(textCount(svgs[1])).toBe(
+      textCount(svgs[0]) + axes.length * data.length
+    );
+  },
+};

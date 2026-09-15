@@ -11,6 +11,7 @@ import { useForcedColors } from "../../chart/use-forced-colors";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { chartRootStyle, emText } from "../../chart/typography";
+import { ValueLabel } from "../../chart/value-labels";
 
 /** One multivariate profile: `values` aligns index-for-index to `axes`. */
 export interface RadarSeries {
@@ -45,12 +46,36 @@ export interface RadarChartProps {
    * `useForcedColors`.
    */
   texture?: boolean;
+  /**
+   * Draw each series' formatted value next to every one of its vertices
+   * (`chart/value-labels.tsx`'s `ValueLabel`), colored to match that
+   * series so an overlapping label can still be told apart. Unlike
+   * `BarChart`, this labels every vertex of every series unconditionally
+   * rather than gating on hover — reasonable at this chart's documented
+   * scale (a handful of axes, 2-4 series; see "Limitations" in the docs),
+   * where the vertex count stays small. Each label sits a few px beyond its
+   * own vertex along that vertex's own spoke direction, but anchored back
+   * toward the vertex (the opposite of the axis-name labels' outward
+   * anchor) so it hugs the mark instead of reaching for the axis-name ring
+   * just beyond the plotted radius. Default `false` (no change from
+   * today's unlabeled vertices).
+   */
+  showValues?: boolean;
 }
 
 interface Vertex {
   x: number;
   y: number;
 }
+
+/**
+ * Px a value label sits beyond its own vertex, along that vertex's own
+ * spoke direction -- a modest offset, since (unlike the axis-name labels'
+ * outward anchor) the value label is anchored back toward its vertex, so it
+ * hugs the mark rather than reaching for the axis-name ring just beyond the
+ * plotted radius.
+ */
+const VALUE_LABEL_OFFSET = 10;
 
 /**
  * Multivariate profile COMPARE on a polar grid: N equally-spaced spokes (one
@@ -70,6 +95,7 @@ export function RadarChart({
   ariaLabel,
   valueFormat,
   texture,
+  showValues,
 }: RadarChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -232,6 +258,28 @@ export function RadarChart({
                     onMouseLeave={() => setHover(null)}
                   />
                 ))}
+                {showValues &&
+                  pts.map((p, i) => {
+                    const a = angleFor(i);
+                    const ux = Math.cos(a);
+                    const uy = Math.sin(a);
+                    // Anchored back toward the vertex (the opposite of the
+                    // axis-name labels' outward anchor above) so the value
+                    // hugs its own mark instead of reaching for the
+                    // axis-name ring just beyond the plotted radius.
+                    const anchor =
+                      Math.abs(ux) < 0.15 ? "middle" : ux > 0 ? "end" : "start";
+                    return (
+                      <ValueLabel
+                        key={`${axes[i]}-value`}
+                        x={p.x + ux * VALUE_LABEL_OFFSET}
+                        y={p.y + uy * VALUE_LABEL_OFFSET}
+                        text={valueFmt(Math.max(0, s.values[i] ?? 0))}
+                        anchor={anchor}
+                        color={c}
+                      />
+                    );
+                  })}
               </g>
             );
           })}
