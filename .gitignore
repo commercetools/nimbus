@@ -201,3 +201,6 @@ packages/nimbus/src/components/**/*.messages.ts
 
 # Superpowers Claude Plugin
 .superpowers
+
+# Git worktrees
+.worktrees/
