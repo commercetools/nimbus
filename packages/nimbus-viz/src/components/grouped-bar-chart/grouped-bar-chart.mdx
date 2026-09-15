@@ -147,16 +147,16 @@ const data: StackRow[] = [
 
 Contract notes, verifiable from source:
 
-- `category` is display text and need not be unique — position is by row
-  order, not the label. Row order is preserved along the category axis.
+- `category` is display text and need not be unique — position is by row order,
+  not the label. Row order is preserved along the category axis.
 - The **first row defines the series.** The set and left-to-right order of the
   grouped bars come from `data[0].segments`; every row should carry the same
   segment `key`s in the same order. A key missing from a later row reads as
   **0** (that is what the data-table fallback shows for it).
 - `value` is a plain number and **may be negative** — the value axis always
   includes **0** as its baseline, extended to cover the actual min/max across
-  every segment, and a negative segment draws below that shared baseline
-  instead of collapsing to it or extrapolating past the plot.
+  every segment, and a negative segment draws below that shared baseline instead
+  of collapsing to it or extrapolating past the plot.
 - Series color is keyed by segment `key`, so the same series keeps its color
   here, in the stacked bar chart, and in a line chart of the same entities.
 
@@ -207,6 +207,27 @@ is managed internally regardless.
   onDatumClick={({ datum, seriesId }) =>
     navigate(`/segment/${seriesId}/${datum.value}`)
   }
+/>
+```
+
+### Custom tooltip & legend
+
+`renderTooltip` replaces the default two-line hover readout with fully custom
+SVG content — called with the hovered segment and its row index; size the
+tooltip box with `renderTooltipSize` (default `{ width: 160, height: 40 }`).
+`renderLegendItem` replaces each legend row's default swatch + label with a
+custom render (a different marker, a value beside the label, a click-to-toggle
+affordance). Both are additive — omit either to keep the default.
+
+```tsx
+<GroupedBarChart
+  width={width}
+  height={height}
+  data={data}
+  renderTooltip={(segment) => (
+    <text>{`${segment.key}: $${segment.value.toLocaleString()}`}</text>
+  )}
+  renderLegendItem={(item) => <strong>{item.label}</strong>}
 />
 ```
 

@@ -17,6 +17,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { StackRow, StackSegment } from "../../chart/types";
+import type { LegendItem } from "../../chart/legend";
 import type {
   DatumClickHandler,
   DatumHoverHandler,
@@ -46,6 +47,23 @@ export interface GroupedBarChartProps<T = StackRow> {
   children?: ReactNode;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /**
+   * Escape hatch for a fully custom hover tooltip (rich formatting, an extra
+   * metric, a "view orders" affordance) instead of the default two-line
+   * `lines` readout. Called with the hovered bar's segment and its row
+   * index; return the SVG content to draw inside the tooltip box. See
+   * `renderTooltipSize` to size the box for your content.
+   */
+  renderTooltip?: (datum: StackSegment, index: number) => ReactNode;
+  /** Box size reserved for `renderTooltip`'s content. Default `{ width: 160, height: 40 }`. */
+  renderTooltipSize?: { width: number; height: number };
+  /**
+   * Escape hatch for a custom render of each legend item (a different marker
+   * shape, a value beside the label, a click-to-toggle affordance) — see
+   * `Legend`'s own `renderItem`. The default swatch + series key is used
+   * when omitted.
+   */
+  renderLegendItem?: (item: LegendItem, index: number) => ReactNode;
 }
 
 /**
@@ -79,6 +97,9 @@ export function GroupedBarChart<T = StackRow>({
   onDatumHover,
   children,
   valueFormat,
+  renderTooltip,
+  renderTooltipSize = { width: 160, height: 40 },
+  renderLegendItem,
 }: GroupedBarChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -121,6 +142,7 @@ export function GroupedBarChart<T = StackRow>({
       margin={{ top: 12, right: 12, bottom: 28, left: 44 }}
       ariaLabel={ariaLabel ?? `Grouped bar chart, ${keys.length} series`}
       legend={keys.map((k) => ({ label: k, color: colorForKey(k) }))}
+      legendRenderItem={renderLegendItem}
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
@@ -230,10 +252,18 @@ export function GroupedBarChart<T = StackRow>({
                 x={x0.pos(hover.i) + x1.pos(keys.indexOf(hover.key)) + bw / 2}
                 innerWidth={innerWidth}
                 top={Math.max(0, y(hb.value) - 4)}
-                lines={[
-                  hoverRow != null ? getCat(hoverRow) : "",
-                  `${hb.key}: ${valueFmt(hb.value)}`,
-                ]}
+                {...(renderTooltip
+                  ? {
+                      content: renderTooltip(hb, hover.i),
+                      contentWidth: renderTooltipSize.width,
+                      contentHeight: renderTooltipSize.height,
+                    }
+                  : {
+                      lines: [
+                        hoverRow != null ? getCat(hoverRow) : "",
+                        `${hb.key}: ${valueFmt(hb.value)}`,
+                      ],
+                    })}
               />
             )}
             {children}

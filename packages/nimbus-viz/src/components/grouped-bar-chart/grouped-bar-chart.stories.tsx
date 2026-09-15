@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/react-vite";
-import { expect } from "storybook/test";
+import { userEvent, waitFor, expect } from "storybook/test";
 import { GroupedBarChart } from "./grouped-bar-chart";
 import type { StackRow } from "../..";
 import { RegistryPreview, type BaseStory } from "../../stories/base-story";
@@ -132,5 +132,58 @@ export const EdgeCaseNegativeValues: BaseStory = {
       // past it, so its top edge sits at or below the positive bars' bottom.
       expect(rect.top).toBeGreaterThanOrEqual(baseline - 1);
     }
+  },
+};
+
+/**
+ * C2: `renderTooltip` and `renderLegendItem` are the escape hatches for a
+ * fully custom hover readout / legend item, replacing (not augmenting) the
+ * default two-line tooltip and swatch+label legend row.
+ */
+const customFixture: StackRow[] = [
+  {
+    category: "Q1",
+    segments: [
+      { key: "New", value: 10 },
+      { key: "Returning", value: 5 },
+    ],
+  },
+  {
+    category: "Q2",
+    segments: [
+      { key: "New", value: 14 },
+      { key: "Returning", value: 9 },
+    ],
+  },
+];
+
+export const CustomTooltipAndLegend: BaseStory = {
+  render: () => (
+    <GroupedBarChart
+      width={360}
+      height={240}
+      data={customFixture}
+      ariaLabel="Grouped bar chart with a custom tooltip and legend"
+      renderTooltip={(seg) => (
+        <text data-testid="custom-tooltip">{`${seg.key} = ${seg.value} units`}</text>
+      )}
+      renderLegendItem={(item) => <em>{`Series: ${item.label}`}</em>}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    // The custom legend render replaces the default swatch + bare label.
+    expect(canvasElement.textContent).toContain("Series: New");
+    expect(canvasElement.textContent).toContain("Series: Returning");
+
+    // Hovering the first bar shows the custom tooltip content, not the
+    // default "Q1 / New: 10" two-line readout.
+    const firstBar = canvasElement.querySelector<SVGPathElement>("path");
+    await userEvent.hover(firstBar!);
+    await waitFor(() => {
+      expect(
+        canvasElement.querySelector('[data-testid="custom-tooltip"]')
+      ).toBeTruthy();
+    });
+    expect(canvasElement.textContent).toContain("New = 10 units");
   },
 };

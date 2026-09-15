@@ -59,6 +59,41 @@ describe("ChartContainer", () => {
     expect(getByText("US")).toBeTruthy();
   });
 
+  it("legendRenderItem overrides each item's render, still inside Legend's layout", () => {
+    const { getByText, queryByText } = renderInTheme(
+      <ChartContainer
+        width={400}
+        height={300}
+        legend={[
+          { label: "EU", color: "#111111" },
+          { label: "US", color: "#222222" },
+        ]}
+        legendRenderItem={(item, i) => <em>{`${i}) ${item.label}`}</em>}
+      >
+        {plot}
+      </ChartContainer>
+    );
+    expect(getByText("0) EU")).toBeTruthy();
+    expect(getByText("1) US")).toBeTruthy();
+    expect(queryByText("EU")).toBeNull();
+  });
+
+  it("legendRenderItem is ignored when legendSlot replaces the legend outright", () => {
+    const { getByText, queryByText } = renderInTheme(
+      <ChartContainer
+        width={400}
+        height={300}
+        legend={[{ label: "EU", color: "#111111" }]}
+        legendRenderItem={() => <em>should not render</em>}
+        legendSlot={<div>Custom legend</div>}
+      >
+        {plot}
+      </ChartContainer>
+    );
+    expect(getByText("Custom legend")).toBeTruthy();
+    expect(queryByText("should not render")).toBeNull();
+  });
+
   it("shows the empty state instead of the plot", () => {
     const { container, getByText } = renderInTheme(
       <ChartContainer

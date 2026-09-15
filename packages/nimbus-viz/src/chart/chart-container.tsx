@@ -38,6 +38,14 @@ export interface ChartContainerProps {
   caption?: ReactNode;
   /** Categorical legend items — renders the shared `Legend` in a reserved strip. */
   legend?: LegendItem[];
+  /**
+   * Per-item render override for the shared `Legend` (a different marker
+   * shape, a value beside the label, a click-to-toggle affordance…) — the
+   * lighter-weight escape hatch when only an item's look needs to change,
+   * not the legend's overall layout. Ignored when `legendSlot` is given
+   * (that replaces the legend outright). See `Legend`'s own `renderItem`.
+   */
+  legendRenderItem?: (item: LegendItem, index: number) => ReactNode;
   /** A custom legend node (e.g. a low→high gradient ramp) instead of `legend`. */
   legendSlot?: ReactNode;
   /** Override the reserved legend strip height (e.g. gradient legends use 24). */
@@ -80,6 +88,7 @@ export function ChartContainer({
   subtitle,
   caption,
   legend,
+  legendRenderItem,
   legendSlot,
   legendHeight,
   isEmpty = false,
@@ -184,7 +193,10 @@ export function ChartContainer({
         <div
           style={{ height: legendH, paddingTop: 6, boxSizing: "border-box" }}
         >
-          {legendSlot ?? (legend ? <Legend items={legend} /> : null)}
+          {legendSlot ??
+            (legend ? (
+              <Legend items={legend} renderItem={legendRenderItem} />
+            ) : null)}
         </div>
       )}
 

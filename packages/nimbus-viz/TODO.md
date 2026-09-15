@@ -138,17 +138,17 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       type argument.
 
       Deliberately excluded, each for a real reason: `gauge` / `stat-card`
-                          (a single value has no discrete second "mark" to report a click on --
-                          the whole chart already is the one datum, which is what `value`/`label`
-                          already are); `sparkline` (explicitly minimal by design -- "no axes, no
-                          gridlines, no tick labels", a decorative inline glyph, not an
-                          interactive chart); `data-table` (the guaranteed no-throw HTML fallback
-                          shell used internally by `ChartContainer`, not a chart with visual
-                          marks -- its own doc comment already flags it as a temporary stand-in
-                          pending a real `@commercetools/nimbus` `DataTable`).
+                              (a single value has no discrete second "mark" to report a click on --
+                              the whole chart already is the one datum, which is what `value`/`label`
+                              already are); `sparkline` (explicitly minimal by design -- "no axes, no
+                              gridlines, no tick labels", a decorative inline glyph, not an
+                              interactive chart); `data-table` (the guaranteed no-throw HTML fallback
+                              shell used internally by `ChartContainer`, not a chart with visual
+                              marks -- its own doc comment already flags it as a temporary stand-in
+                              pending a real `@commercetools/nimbus` `DataTable`).
 
-                          Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
-                          all green; eslint clean on every touched file (28 chart `.tsx` files).
+                              Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
+                              all green; eslint clean on every touched file (28 chart `.tsx` files).
 
 - [ ] **A3 — controlled selection + interactive legend.** Lift internal hover to
       controlled/uncontrolled (`selection`/`onSelectionChange`,
@@ -182,9 +182,29 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       passing) / `pnpm build` (the DTS gate for generics) all green on every one
       of the 5 charts, each also re-run through its own `.stories.tsx` in
       isolation; eslint clean on every touched file.
-- [ ] **C2 — render-prop tooltip / legend.** `renderTooltip(datum)` /
-      `renderLegend(items)` escape hatches on `SvgTooltip` / `Legend` /
-      `ChartContainer`; keep the string-lines path as default.
+- [x] **C2 — render-prop tooltip / legend.** Done, with a real scope finding:
+      `SvgTooltip` (`content`/`contentWidth`/`contentHeight`) and
+      `ChartContainer` (`legendSlot`) already had a node-level escape hatch
+      before this item — a chart AUTHOR could already render fully custom
+      tooltip/legend content. What was actually missing, and what this adds: a
+      per-item legend override (`Legend` had none at all) and a chart-level PROP
+      a CONSUMER can pass without forking the chart. `Legend` gains
+      `renderItem?: (item, index) => ReactNode` (replaces, not merges with, the
+      default swatch + label); `ChartContainer` gains `legendRenderItem`
+      threading it to `Legend` (ignored when `legendSlot` is also given, since
+      that replaces the legend outright). Threaded
+      `renderTooltip?: (datum: StackSegment, index) => ReactNode` +
+      `renderTooltipSize` and `renderLegendItem` through `GroupedBarChart` as
+      the reference implementation (chosen over `BarChart` because it already
+      has both a legend and an `SvgTooltip` call — `BarChart` has neither),
+      proven end-to-end with a story that hovers a bar and asserts the custom
+      tooltip content renders instead of the default two-line readout, and the
+      legend rows show the custom render instead of the default swatch. Rolling
+      `renderTooltip`/`renderLegendItem` out to every other chart with a
+      tooltip/legend is a mechanical follow-up (same shape as
+      `A2-tail`/`A3-tail`'s sweeps) explicitly left undone — not attempted here.
+      Verified: `pnpm typecheck` / `pnpm test` (791 passing) / `pnpm build` all
+      green; eslint clean on every touched file.
 - [x] **C3 — diverging stack offset for negative segments.** Done directly (no
       `/opsx:propose`, by explicit decision — specs are deferred until the
       library is past prototyping). `stacked-area-chart` uses `@visx/shape`'s
