@@ -120,15 +120,22 @@ export function BeeswarmPlot({
             />
             {dots.map((d, i) => {
               const y = cy + Math.max(-maxOffset, Math.min(maxOffset, d.y));
-              const active = hover == null || hover === i;
+              // Grow the ACTUALLY-hovered dot only; never dim its siblings.
+              // These are small point marks (r is a few px), so a radius
+              // bump reads better than an outline -- the same mechanism
+              // `radar-chart.tsx`'s vertex dots use (`r={active ? 5 : 3}`),
+              // replacing the old "dim everyone else to 0.3 opacity"
+              // pattern. Resting opacity (0.85, never fully opaque -- lets
+              // overlapping dots stay distinguishable) is now constant.
+              const isHovered = hover === i;
               return (
                 <circle
                   key={i}
                   cx={d.x}
                   cy={y}
-                  r={r}
+                  r={isHovered ? r + 2 : r}
                   fill={theme.accent}
-                  opacity={active ? 0.85 : 0.3}
+                  opacity={0.85}
                   onMouseEnter={() => {
                     setHover(i);
                     onDatumHover?.({ datum: d.v, index: i });
