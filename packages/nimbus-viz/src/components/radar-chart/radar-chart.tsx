@@ -6,6 +6,8 @@ import { Legend } from "../../chart/legend";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { valueDomain } from "../../chart/scales";
 import { devWarn } from "../../chart/dev-warn";
+import { strokeDasharrayFor } from "../../chart/stroke-styles";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { chartRootStyle, emText } from "../../chart/typography";
@@ -30,6 +32,19 @@ export interface RadarChartProps {
   ariaLabel?: string;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /**
+   * Distinguish series by `strokeDasharray` rhythm (`chart/stroke-styles.ts`),
+   * in addition to color, so series stay distinguishable without color
+   * alone — monochrome print, a photocopy, or `forced-colors` mode. A fill
+   * `patternFill` is not used here: each series' polygon fill is a light
+   * 12%-opacity wash (`fillOpacity`), the same reasoning `LineChart`'s
+   * `"area"` variant documents for why a texture wouldn't read — the
+   * outline stroke is the real identity carrier. Default `false` (color
+   * only, unchanged). Turned on automatically (regardless of this prop)
+   * when the OS is already in a forced-colors context — see
+   * `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 interface Vertex {
@@ -54,14 +69,21 @@ export function RadarChart({
   data,
   ariaLabel,
   valueFormat,
+  texture,
 }: RadarChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ s: number; a: number } | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
 
   const ids = useMemo(() => data.map((s) => s.id), [data]);
   const color = useEntityColors(ids);
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every series, with the per-series
+  // dash rhythm (below) as the only identity carrier.
+  const colorFor = (i: number) => (forcedColors ? "CanvasText" : color(ids[i]));
 
   // The radial scale is a magnitude (distance-from-center) encoding: it has no
   // honest way to place a negative value. Clamp at the point values enter the
@@ -182,7 +204,7 @@ export function RadarChart({
             );
             // Close the ring by repeating the first vertex.
             const closed = pts.length > 0 ? [...pts, pts[0]] : pts;
-            const c = color(s.id);
+            const c = colorFor(si);
             return (
               <g key={s.id}>
                 <LinePath<Vertex>
@@ -193,6 +215,9 @@ export function RadarChart({
                   fillOpacity={0.12}
                   stroke={c}
                   strokeWidth={2}
+                  strokeDasharray={
+                    effectiveTexture ? strokeDasharrayFor(si) : undefined
+                  }
                 />
                 {pts.map((p, i) => (
                   <circle
@@ -228,7 +253,7 @@ export function RadarChart({
       {showLegend && (
         <div style={{ paddingTop: 6 }}>
           <Legend
-            items={data.map((s) => ({ label: s.label, color: color(s.id) }))}
+            items={data.map((s, i) => ({ label: s.label, color: colorFor(i) }))}
           />
         </div>
       )}

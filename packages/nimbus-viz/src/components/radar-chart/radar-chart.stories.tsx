@@ -78,3 +78,33 @@ export const EdgeCaseNegativeValues: BaseStory = {
     });
   },
 };
+
+/**
+ * `D2/D3-rest`: `texture` distinguishes series by `strokeDasharray` rhythm
+ * (in addition to color) — a fill `patternFill` isn't used because each
+ * series' polygon fill is a 12%-opacity wash, too faint for a pattern to
+ * read; the outline stroke is the real identity carrier. Proven directly:
+ * the first series stays a solid stroke, the second gets a real dash
+ * pattern.
+ */
+export const Texture: BaseStory = {
+  render: () => (
+    <RadarChart
+      width={360}
+      height={360}
+      axes={axes}
+      data={data}
+      texture
+      ariaLabel="Radar chart with per-series dash rhythm"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const polygons = Array.from(
+      canvasElement.querySelectorAll<SVGPathElement>("path.visx-linepath")
+    );
+    expect(polygons).toHaveLength(data.length);
+    expect(polygons[0]).not.toHaveAttribute("stroke-dasharray"); // first series: unchanged solid stroke
+    expect(polygons[1]).toHaveAttribute("stroke-dasharray"); // second series: dash-encoded
+    expect(polygons[1].getAttribute("stroke-dasharray")).not.toBe("");
+  },
+};

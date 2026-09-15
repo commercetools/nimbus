@@ -151,6 +151,42 @@ To follow the app's mode inside a `NimbusProvider`, pass
 `nimbus` categorical hues; the rings and spokes use the theme grid color, not a
 CSS color.
 
+### Texture (non-color series identity)
+
+Pass `texture` to distinguish series by `strokeDasharray` rhythm, in addition to
+color, so series stay distinguishable without color alone — monochrome print, a
+photocopy, or `forced-colors` mode. A fill `patternFill` is not used here: each
+series' polygon fill is a light 12%-opacity wash, too faint for a texture to
+read — the outline stroke is the real identity carrier, so its dash rhythm is
+the non-color channel. The first series keeps a solid stroke; later series cycle
+through dashed/dotted/dash-dot/long-dash. It turns on automatically, regardless
+of this prop, when the OS is already in a `forced-colors` context.
+
+```jsx live
+const axes = ["Speed", "Reliability", "Comfort", "Efficiency", "Safety"];
+const data = [
+  { id: "model-a", label: "Model A", values: [8, 6, 7, 9, 8] },
+  { id: "model-b", label: "Model B", values: [6, 9, 8, 5, 7] },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={320}>
+      {(width, height) => (
+        <RadarChart
+          width={width}
+          height={height}
+          axes={axes}
+          data={data}
+          texture
+          ariaLabel="Radar chart with per-series dash rhythm"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ## Responsiveness & performance
 
 Fixed height:
@@ -228,7 +264,7 @@ Accessibility checklist:
 - [ ] Underlying values are available as text — **you must add this**; radar has
       no built-in data-table fallback
 - [ ] Meaning does not depend on color alone (polygon shape carries the profile;
-      the legend maps color to series)
+      the legend maps color to series; `texture` adds a per-series dash rhythm)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)
 - [ ] Surrounding copy names series/attributes rather than colors
