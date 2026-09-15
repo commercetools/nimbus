@@ -2,6 +2,7 @@ import {
   coverageConfigDefaults,
   defineConfig,
   mergeConfig,
+  type ViteUserConfig,
 } from "vitest/config";
 import createBaseConfig from "./vite.config.ts";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
@@ -19,73 +20,81 @@ export default defineConfig(async () => {
     mode: "production",
   });
 
-  return mergeConfig(
-    baseConfig,
-    defineConfig({
-      // cache directory for better performance
-      cacheDir: ".vitest-cache",
-      // Fix for CI dependency optimization issues
-      optimizeDeps: {
-        include: [
-          "@chakra-ui/react",
-          "@chakra-ui/react/kbd",
-          "@storybook/react-vite",
-          "storybook/test",
+  // Typed explicitly (instead of wrapping in `defineConfig(...)`) so
+  // `mergeConfig`'s overload resolution isn't fed the ambiguous
+  // union/function-inclusive return type `defineConfig()` produces here —
+  // see https://github.com/vuejs/create-vue/issues/328 for the same
+  // TS2345 "not assignable to parameter of type 'never'" pattern.
+  const overrides: ViteUserConfig = {
+    // cache directory for better performance
+    cacheDir: ".vitest-cache",
+    // Fix for CI dependency optimization issues
+    optimizeDeps: {
+      include: [
+        "@chakra-ui/react",
+        "@chakra-ui/react/kbd",
+        "@storybook/react-vite",
+        "storybook/test",
+      ],
+    },
+    plugins: [
+      storybookTest({
+        // The location of your Storybook config, main.js|ts
+        configDir: path.join(__dirname, ".storybook"),
+        // This should match your package.json script to run Storybook
+        // The --ci flag will skip prompts and not open a browser
+        storybookScript: "pnpm storybook --ci",
+      }),
+    ],
+    test: {
+      name: "storybook",
+      setupFiles: ["./.storybook/vitest.setup.ts"],
+      // make vitest fn's available globally (no need to import them)
+      globals: true,
+      // Increase timeouts for browser stability and complex stories in CI
+      testTimeout: 60000, // 60 seconds for slow stories (LocalizedField, DateRangePicker)
+      hookTimeout: 60000,
+      // Retry once for flaky browser tests (e.g. Slate/Tiptap init races)
+      retry: 1,
+      // This 'helps with resource usage' according to claude
+      // (moved out of `browser` for Vitest 5: `BrowserConfigOptions` no
+      // longer has its own `isolate` — it's the top-level test option)
+      isolate: false,
+      // Port from failing test error output
+      // https://github.com/commercetools/nimbus/actions/runs/15910355075/job/44875855480#step:8:92
+      // (moved out of `browser` for Vitest 5: the browser server now shares
+      // the top-level `api` option instead of its own nested one)
+      api: {
+        port: 63315,
+      },
+      // config for running tests in one or multiple *real* browsers
+      browser: {
+        enabled: true,
+        // ... use playwright to run tests with locale set via contextOptions
+        provider: playwright({
+          contextOptions: {
+            locale: "en-US",
+          },
+        }),
+        // ... only in chromium
+        instances: [{ browser: "chromium" }],
+        // ... do not open the browser-ui
+        headless: true,
+        // ... do not capture screenshots on failure
+        screenshotFailures: false,
+      },
+      coverage: {
+        exclude: [
+          ...coverageConfigDefaults.exclude,
+          "**/.storybook/**",
+          // 👇 This pattern must align with the `stories` property of your `.storybook/main.ts` config
+          "./src/**/*.stories.*",
+          // 👇 This pattern must align with the output directory of `storybook build`
+          "**/storybook-static/**",
         ],
       },
-      plugins: [
-        storybookTest({
-          // The location of your Storybook config, main.js|ts
-          configDir: path.join(__dirname, ".storybook"),
-          // This should match your package.json script to run Storybook
-          // The --ci flag will skip prompts and not open a browser
-          storybookScript: "pnpm storybook --ci",
-        }),
-      ],
-      test: {
-        name: "storybook",
-        setupFiles: ["./.storybook/vitest.setup.ts"],
-        // make vitest fn's available globally (no need to import them)
-        globals: true,
-        // Increase timeouts for browser stability and complex stories in CI
-        testTimeout: 60000, // 60 seconds for slow stories (LocalizedField, DateRangePicker)
-        hookTimeout: 60000,
-        // Retry once for flaky browser tests (e.g. Slate/Tiptap init races)
-        retry: 1,
-        // config for running tests in one or multiple *real* browsers
-        browser: {
-          enabled: true,
-          // ... use playwright to run tests with locale set via contextOptions
-          provider: playwright({
-            contextOptions: {
-              locale: "en-US",
-            },
-          }),
-          // ... only in chromium
-          instances: [{ browser: "chromium" }],
-          // ... do not open the browser-ui
-          headless: true,
-          // ... do not capture screenshots on failure
-          screenshotFailures: false,
-          // This 'helps with resource usage' according to claude
-          isolate: false,
-          api: {
-            // Port from failing test error output
-            // https://github.com/commercetools/nimbus/actions/runs/15910355075/job/44875855480#step:8:92
-            port: 63315,
-          },
-        },
-        coverage: {
-          exclude: [
-            ...coverageConfigDefaults.exclude,
-            "**/.storybook/**",
-            // 👇 This pattern must align with the `stories` property of your `.storybook/main.ts` config
-            "./src/**/*.stories.*",
-            // 👇 This pattern must align with the output directory of `storybook build`
-            "**/storybook-static/**",
-          ],
-        },
-      },
-    })
-  );
+    },
+  };
+
+  return mergeConfig(baseConfig, overrides);
 });
