@@ -201,6 +201,49 @@ const App = () => (
 );
 ```
 
+### Texture (non-color encoding)
+
+`texture` fills each categorized event's bar or milestone with a per-category
+SVG pattern (`chart/patterns.tsx`) in addition to its color, so categories stay
+distinguishable by shape alone — monochrome print, a photocopy, or
+`forced-colors` mode, where the OS flattens hue. Events without a `category`
+keep a plain accent fill — there is nothing to texture. Default `false` (color
+only).
+
+```jsx live
+const data = [
+  {
+    label: "Spec",
+    start: new Date(2026, 0, 1),
+    end: new Date(2026, 0, 20),
+    category: "Design",
+  },
+  {
+    label: "API",
+    start: new Date(2026, 0, 15),
+    end: new Date(2026, 1, 20),
+    category: "Engineering",
+  },
+  { label: "Freeze", start: new Date(2026, 2, 10), category: "Release" },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={240}>
+      {(width, height) => (
+        <GanttChart
+          width={width}
+          height={height}
+          data={data}
+          texture
+          ariaLabel="Timeline with per-category textures"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Milestones (automatic)
 
 Any event you supply without an `end` renders as a diamond at its `start`
@@ -269,7 +312,12 @@ What you get automatically:
   - color-vision-deficiency checks), not ad-hoc colors.
 - **Non-color encoding.** Meaning is carried by bar position and length on the
   time axis, each row is labeled directly, and category (when present) also
-  appears in the legend and the data table — color is never the only cue.
+  appears in the legend and the data table — color is never the only cue. The
+  opt-in `texture` prop adds a per-category SVG pattern for when color itself
+  isn't available.
+- **Forced-colors mode.** In a `forced-colors: active` context, the chart
+  automatically switches every category to one system foreground color and
+  turns on the `texture` patterns — see "Texture (non-color encoding)" above.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the events and dates rather
@@ -280,8 +328,8 @@ Accessibility checklist:
 - [ ] `ariaLabel` states what the timeline shows and its takeaway (Cesal
       formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
-- [ ] Meaning does not depend on color alone (row position, bar length, and
-      direct labels carry it here)
+- [ ] Meaning does not depend on color alone (row position, bar length, direct
+      labels, and the opt-in `texture` pattern carry it here)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)
 - [ ] Surrounding copy names events/dates rather than colors

@@ -9,6 +9,8 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
+import { ChartPatternDefs, patternFill } from "../../chart/patterns";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** A scheduled event: a span [start, end], or a milestone if `end` is absent. */
@@ -33,6 +35,16 @@ export interface GanttChartProps extends DatumInteractionProps<TimelineEvent> {
   ariaLabel?: string;
   /** Formats date displays (axis ticks, tooltip dates). Defaults to a locale-aware short month+day formatter (e.g. `Aug 28`); overrides any surrounding `ChartLocaleProvider`. */
   dateFormat?: (d: Date) => string;
+  /**
+   * Fill each categorized event's bar/milestone with a per-category SVG
+   * texture (`chart/patterns.tsx`) in addition to its color, so categories
+   * stay distinguishable by shape alone — monochrome print, a photocopy, or
+   * `forced-colors` mode. Events without a `category` keep a plain accent
+   * fill — there is nothing to texture. Default `false` (color only,
+   * unchanged). Turned on automatically (regardless of this prop) when the
+   * OS is already in a forced-colors context — see `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 /**
@@ -51,11 +63,14 @@ export function GanttChart({
   dateFormat,
   onDatumClick,
   onDatumHover,
+  texture,
 }: GanttChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hover, setHover] = useState<number | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
 
   const domain = useMemo(() => {
     const lo = min(data, (d) => d.start.getTime()) ?? 0;
@@ -73,13 +88,21 @@ export function GanttChart({
     [data]
   );
   const color = useEntityColors(categories);
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every category, with the per-category
+  // pattern kind (below) as the only identity carrier.
+  const colorForCategory = (c: string) =>
+    forcedColors ? "CanvasText" : color(c);
 
   if (width <= 0 || height <= 0 || data.length === 0) return null;
 
   const label = ariaLabel ?? `Timeline of ${data.length} events`;
   const hasLegend = categories.length >= 2;
-  const fillFor = (d: TimelineEvent) =>
-    d.category ? color(d.category) : theme.accent;
+  const fillFor = (d: TimelineEvent) => {
+    if (!d.category) return forcedColors ? "CanvasText" : theme.accent;
+    const i = categories.indexOf(d.category);
+    return effectiveTexture ? patternFill(i) : colorForCategory(d.category);
+  };
   const table = {
     columns: ["Event", "Start", "End", "Category"],
     rows: data.map((d) => [
@@ -98,7 +121,7 @@ export function GanttChart({
       ariaLabel={label}
       legend={
         hasLegend
-          ? categories.map((c) => ({ label: c, color: color(c) }))
+          ? categories.map((c) => ({ label: c, color: colorForCategory(c) }))
           : undefined
       }
       table={table}
@@ -116,6 +139,11 @@ export function GanttChart({
         const hovered = hover != null ? data[hover] : null;
         return (
           <>
+            {categories.length > 0 && effectiveTexture && (
+              <ChartPatternDefs
+                colors={categories.map((c) => colorForCategory(c))}
+              />
+            )}
             <AxisBottom
               scale={xScale}
               top={innerHeight}
