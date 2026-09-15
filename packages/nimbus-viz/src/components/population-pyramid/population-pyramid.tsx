@@ -9,6 +9,8 @@ import { emText } from "../../chart/typography";
 import { bandByIndex, valueDomain } from "../../chart/scales";
 import { stackKeys } from "../../chart/stack";
 import { devWarn } from "../../chart/dev-warn";
+import { ChartPatternDefs, patternFill } from "../../chart/patterns";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import type { DatumInteractionProps } from "../../chart/interaction";
 
 export interface PopulationPyramidProps extends DatumInteractionProps<StackRow> {
@@ -27,6 +29,15 @@ export interface PopulationPyramidProps extends DatumInteractionProps<StackRow> 
   ariaLabel?: string;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /**
+   * Fill each side with a per-key SVG texture (`chart/patterns.tsx`) in
+   * addition to its color, so the two sides stay distinguishable by shape
+   * alone — monochrome print, a photocopy, or `forced-colors` mode. Default
+   * `false` (color only, unchanged). Turned on automatically (regardless
+   * of this prop) when the OS is already in a forced-colors context — see
+   * `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 /** Width of the central gutter reserved for band labels, in px. */
@@ -48,11 +59,14 @@ export function PopulationPyramid({
   valueFormat,
   onDatumClick,
   onDatumHover,
+  texture,
 }: PopulationPyramidProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ r: number; side: 0 | 1 } | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
 
   // Segment keys are read as the union across all rows (not just row 0), so a
   // key missing from the first row still resolves to its real name (BC-5).
@@ -62,6 +76,10 @@ export function PopulationPyramid({
     [allKeys]
   );
   const color = useEntityColors(keys);
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every key, with the per-key pattern
+  // kind (below) as the only identity carrier.
+  const colorForKey = (k: string) => (forcedColors ? "CanvasText" : color(k));
   // A side's length can't encode a negative magnitude: clamp before it
   // enters the width/domain math (BC-2). `data` (raw) is still what the
   // tooltip and data table read below, so a negative input stays visible
@@ -116,7 +134,7 @@ export function PopulationPyramid({
       height={height}
       margin={{ top: 8, right: 16, bottom: 12, left: 16 }}
       ariaLabel={label}
-      legend={keys.map((key) => ({ label: key, color: color(key) }))}
+      legend={keys.map((key) => ({ label: key, color: colorForKey(key) }))}
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
@@ -141,6 +159,9 @@ export function PopulationPyramid({
         const hoveredY = hover != null ? yScale.pos(hover.r) : 0;
         return (
           <>
+            {effectiveTexture && (
+              <ChartPatternDefs colors={keys.map((k) => colorForKey(k))} />
+            )}
             {clampedData.map((row, r) => {
               const y = yScale.pos(r);
               const lv = row.segments[0]?.value ?? 0;
@@ -158,7 +179,9 @@ export function PopulationPyramid({
                     y={y}
                     width={Math.max(0, lw)}
                     height={bh}
-                    fill={color(keys[0])}
+                    fill={
+                      effectiveTexture ? patternFill(0) : colorForKey(keys[0])
+                    }
                     opacity={lActive ? 1 : 0.4}
                     onMouseEnter={() => {
                       setHover({ r, side: 0 });
@@ -185,7 +208,9 @@ export function PopulationPyramid({
                     y={y}
                     width={Math.max(0, rw)}
                     height={bh}
-                    fill={color(keys[1])}
+                    fill={
+                      effectiveTexture ? patternFill(1) : colorForKey(keys[1])
+                    }
                     opacity={rActive ? 1 : 0.4}
                     onMouseEnter={() => {
                       setHover({ r, side: 1 });

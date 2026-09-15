@@ -14,6 +14,23 @@ export default meta;
 
 export const Base: BaseStory = {};
 
+const fixture: StackRow[] = [
+  {
+    category: "0–17",
+    segments: [
+      { key: "Male", value: 62 },
+      { key: "Female", value: 58 },
+    ],
+  },
+  {
+    category: "18–34",
+    segments: [
+      { key: "Male", value: 88 },
+      { key: "Female", value: 92 },
+    ],
+  },
+];
+
 /**
  * BC-1 regression: `bandByIndex` positions each row's `y` band by row order,
  * not by the category label, so three bands sharing one label ("0-9" below,
@@ -118,5 +135,31 @@ export const EdgeCaseNegativeValues: BaseStory = {
     for (const r of rects) {
       expect(r.getAttribute("width")).not.toMatch(/NaN/);
     }
+  },
+};
+
+/**
+ * `D2`: `texture` fills each side with a per-key SVG pattern (in addition to
+ * color) so the two sides stay distinguishable without color. Proven
+ * directly: every side's `fill` is a `url(#...)` pattern reference, and
+ * `<defs>` has one `<pattern>` per side (always 2 here).
+ */
+export const Texture: BaseStory = {
+  render: () => (
+    <PopulationPyramid
+      width={360}
+      height={240}
+      data={fixture}
+      texture
+      ariaLabel="Population pyramid with per-side textures"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const patterns = canvasElement.querySelectorAll("defs > pattern");
+    expect(patterns).toHaveLength(2);
+    const marks = Array.from(
+      canvasElement.querySelectorAll<SVGRectElement>("rect")
+    ).filter((el) => el.getAttribute("fill")?.startsWith("url(#"));
+    expect(marks.length).toBe(fixture.length * 2);
   },
 };
