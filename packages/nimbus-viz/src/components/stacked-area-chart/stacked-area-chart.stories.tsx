@@ -188,6 +188,49 @@ export const Interaction: BaseStory = {
 };
 
 /**
+ * `offset="expand"` (Phase E): normalizes every row to its own total (a
+ * 100%-stacked chart) via `AreaStack`'s own `offset="expand"` -- a direct
+ * alternative to the default `"diverging"`, so no manual per-row math is
+ * needed the way `StackedBarChart`'s hand-rolled accumulator requires.
+ * Proven directly: the value axis ticks are formatted as percentages, and
+ * hovering the middle date's tooltip still shows North's REAL raw value
+ * (30, not a normalized fraction) -- the legend/tooltip/table stay
+ * un-normalized by design.
+ */
+export const PercentStacked: BaseStory = {
+  render: () => (
+    <StackedAreaChart
+      width={480}
+      height={280}
+      series={fixture}
+      offset="expand"
+      ariaLabel="Stacked area chart normalized to 100% per date"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const tickText = Array.from(canvasElement.querySelectorAll("text")).map(
+      (t) => t.textContent
+    );
+    expect(tickText.some((t) => t?.includes("%"))).toBe(true);
+
+    const overlay = canvasElement.querySelector<SVGRectElement>("rect")!;
+    const rect = overlay.getBoundingClientRect();
+    fireEvent.mouseMove(overlay, {
+      clientX: rect.left + rect.width / 2,
+      clientY: rect.top + rect.height / 2,
+    });
+    await waitFor(() => {
+      const tooltipLines = Array.from(
+        canvasElement.querySelectorAll<SVGTextElement>(
+          'g[pointer-events="none"] text'
+        )
+      ).map((t) => t.textContent);
+      expect(tooltipLines.some((t) => t === "North: 30")).toBe(true);
+    });
+  },
+};
+
+/**
  * `showValues`: labels each band with its own value, once, at the chart's
  * right edge -- the composition equivalent of what `BarChart`'s `showValues`
  * draws at each bar's end. Default `false`; omitting the prop renders exactly

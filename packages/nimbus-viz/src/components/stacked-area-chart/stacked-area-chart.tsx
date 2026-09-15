@@ -86,6 +86,21 @@ export interface StackedAreaChartProps<T = SeriesPoint> {
    * renders exactly as before this existed.
    */
   showValues?: boolean;
+  /**
+   * `"expand"` normalizes every row to its own total (a 100%-stacked /
+   * percent chart) instead of the shared value axis every row draws
+   * against today — `@visx/shape`'s `AreaStack` accepts `"expand"` as a
+   * direct alternative to `"diverging"` (both are named d3-shape stack
+   * offsets), so the layer geometry needs no manual per-row math the way
+   * `StackedBarChart`'s hand-rolled accumulator does. The value axis
+   * becomes a fixed `[0, 1]` domain (or `[-1, 1]` if any row has a
+   * negative series value), formatted as a percentage, rather than a
+   * domain derived from the data's magnitudes. The legend, tooltip,
+   * table, and `showValues` labels still show real, un-normalized
+   * values — only the layer geometry and axis change. Default `"none"`
+   * (today's rendering, unchanged).
+   */
+  offset?: "none" | "expand";
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
@@ -130,6 +145,7 @@ export function StackedAreaChart<T = SeriesPoint>({
   texture,
   decimateThreshold,
   showValues,
+  offset = "none",
 }: StackedAreaChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -181,22 +197,32 @@ export function StackedAreaChart<T = SeriesPoint>({
   // positive and negative extent, not just its net total (which can be
   // smaller in magnitude than either side); valueDomain() also widens a
   // degenerate all-zero/all-equal domain (BC-3).
-  const totalDomain = useMemo(
-    () =>
-      valueDomain(
-        rows.flatMap((r) => {
-          let pos = 0;
-          let neg = 0;
-          for (const k of keys) {
-            const v = r[k];
-            if (v >= 0) pos += v;
-            else neg += v;
-          }
-          return [pos, neg];
-        })
-      ),
+  const isExpand = offset === "expand";
+  // "expand" mode (below) normalizes every row to its own total via
+  // AreaStack's own offset="expand" -- so, like StackedBarChart's percent
+  // mode, the value axis bypasses valueDomain()'s data-derived computation
+  // for a fixed [0, 1] / [-1, 1] shape; only its polarity (does any row
+  // have a negative series value) is a real one-bit inspection of the
+  // data, not a magnitude.
+  const hasNegativeAnywhere = useMemo(
+    () => rows.some((r) => keys.some((k) => r[k] < 0)),
     [rows, keys]
   );
+  const totalDomain = useMemo((): [number, number] => {
+    if (isExpand) return hasNegativeAnywhere ? [-1, 1] : [0, 1];
+    return valueDomain(
+      rows.flatMap((r) => {
+        let pos = 0;
+        let neg = 0;
+        for (const k of keys) {
+          const v = r[k];
+          if (v >= 0) pos += v;
+          else neg += v;
+        }
+        return [pos, neg];
+      })
+    );
+  }, [rows, keys, isExpand, hasNegativeAnywhere]);
   const rawColor = useEntityColors(keys);
   // In a forced-colors context, real hues aren't preserved by the OS anyway
   // -- one system foreground color for every series, with the per-series
@@ -260,7 +286,11 @@ export function StackedAreaChart<T = SeriesPoint>({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => valueFmt(v as number)}
+              tickFormat={(v) =>
+                isExpand
+                  ? formatters.percent(v as number)
+                  : valueFmt(v as number)
+              }
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -276,7 +306,7 @@ export function StackedAreaChart<T = SeriesPoint>({
             <AreaStack<StackDatum, string>
               data={drawRows}
               keys={keys}
-              offset="diverging"
+              offset={isExpand ? "expand" : "diverging"}
               value={(d, key) => d[key]}
               x={(d) => xScale(new Date(d.data.x))}
               y0={(d) => yScale(d[0])}
