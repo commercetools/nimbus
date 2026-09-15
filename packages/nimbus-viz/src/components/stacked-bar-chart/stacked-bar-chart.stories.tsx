@@ -1,5 +1,12 @@
 import type { Meta } from "@storybook/react-vite";
-import { userEvent, within, expect, waitFor, fn } from "storybook/test";
+import {
+  userEvent,
+  fireEvent,
+  within,
+  expect,
+  waitFor,
+  fn,
+} from "storybook/test";
 import { StackedBarChart } from "./stacked-bar-chart";
 import { ResponsiveContainer, type StackRow } from "../..";
 import { RegistryPreview, type BaseStory } from "../../stories/base-story";
@@ -35,6 +42,74 @@ const fixture: StackRow[] = [
 ];
 
 export const Base: BaseStory = {};
+
+/**
+ * Hover/tooltip UX convergence: hovering a stack outlines every segment in
+ * that ONE stack (`stroke`/`strokeWidth`) and never dims the other stacks --
+ * replacing the "dim everyone else to a fixed opacity" pattern this chart
+ * (and 30 others) used to hand-roll independently. The tooltip's vertical
+ * position tracks the live pointer while it stays inside the hovered stack.
+ */
+export const HoverEmphasis: BaseStory = {
+  render: () => <StackedBarChart width={480} height={280} data={fixture} />,
+  play: async ({ canvasElement }) => {
+    // Every row's non-topmost segment renders as a plain <rect>; the
+    // topmost as BarRounded (a <path class="visx-bar-rounded">) -- in DOM
+    // order, per row: New (rect), Returning (rect), Wholesale (path).
+    const marks = () =>
+      Array.from(
+        canvasElement.querySelectorAll<SVGGraphicsElement>(
+          "rect, path.visx-bar-rounded"
+        )
+      );
+    const tooltipGroup = () =>
+      canvasElement.querySelector<SVGGElement>('g[pointer-events="none"]');
+    const tooltipTop = () => {
+      const g = tooltipGroup();
+      const match = g?.getAttribute("transform")?.match(/,\s*([\d.-]+)\)/);
+      return match ? Number(match[1]) : null;
+    };
+
+    const [q1New, q1Returning, q1Wholesale, q2New, q2Returning, q2Wholesale] =
+      marks();
+    await userEvent.hover(q1New);
+    await waitFor(() => expect(tooltipGroup()).not.toBeNull());
+
+    // No dimming: every segment keeps a full, unmodified fill -- none
+    // carries an `opacity` attribute at all (the old mechanism this
+    // replaces).
+    for (const mark of marks()) {
+      expect(mark).not.toHaveAttribute("opacity");
+    }
+    // Emphasis instead: every segment of the hovered stack (Q1) gets a real
+    // outline; the other stack (Q2) does not.
+    expect(q1New).toHaveAttribute("stroke-width", "1.5");
+    expect(q1Returning).toHaveAttribute("stroke-width", "1.5");
+    expect(q1Wholesale).toHaveAttribute("stroke-width", "1.5");
+    expect(q2New).toHaveAttribute("stroke-width", "0");
+    expect(q2Returning).toHaveAttribute("stroke-width", "0");
+    expect(q2Wholesale).toHaveAttribute("stroke-width", "0");
+
+    // Tooltip follows the pointer: two mousemoves at different heights
+    // within the SAME stack move the tooltip to two different positions.
+    const rect = q1New.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    fireEvent.mouseMove(q1New, {
+      clientX: cx,
+      clientY: rect.top + rect.height * 0.25,
+    });
+    const topNearTop = await waitFor(() => {
+      const t = tooltipTop();
+      expect(t).not.toBeNull();
+      return t;
+    });
+    fireEvent.mouseMove(q1New, {
+      clientX: cx,
+      clientY: rect.top + rect.height * 0.75,
+    });
+    await waitFor(() => expect(tooltipTop()).not.toBe(topNearTop));
+  },
+};
 
 /**
  * Proves the two accessibility features `stacked-bar-chart.mdx` claims:

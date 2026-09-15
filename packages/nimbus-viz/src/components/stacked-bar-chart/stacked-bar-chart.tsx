@@ -23,6 +23,8 @@ import type {
   DatumClickHandler,
   DatumHoverHandler,
 } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { clamp, plotPointerPosition } from "../../chart/pointer";
 
 export interface StackedBarChartProps<T = StackRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -92,6 +94,11 @@ export function StackedBarChart<T = StackRow>({
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
+  // Live pointer y (plot-local), while a stack is being hovered by the
+  // mouse -- null once the pointer leaves, so the tooltip falls back to
+  // the hovered stack's own value-derived position rather than a stale
+  // coordinate from a previous hover.
+  const [pointerY, setPointerY] = useState<number | null>(null);
   const forcedColors = useForcedColors();
   const effectiveTexture = texture || forcedColors;
 
@@ -144,11 +151,16 @@ export function StackedBarChart<T = StackRow>({
     ]),
   };
 
+  // Named so the pointer math below (which needs the same left/top offset
+  // xScale/yScale are drawn relative to) can never drift from what's
+  // actually passed to ChartContainer.
+  const MARGIN = { top: 12, right: 12, bottom: 28, left: 44 };
+
   return (
     <ChartContainer
       width={width}
       height={height}
-      margin={{ top: 12, right: 12, bottom: 28, left: 44 }}
+      margin={MARGIN}
       ariaLabel={ariaLabel ?? `Stacked bar chart of ${data.length} categories`}
       legend={keys.map((k) => ({ label: k, color: colorForKey(k) }))}
       table={table}
@@ -213,7 +225,11 @@ export function StackedBarChart<T = StackRow>({
             />
             {data.map((row, i) => {
               const x = xScale.pos(i);
-              const dimmed = hover != null && hover !== i;
+              // Outline every segment of the hovered stack; never dim the
+              // other stacks (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` --
+              // the one shared convention, replacing a per-chart "dim
+              // everyone else" opacity ternary).
+              const isHovered = hover === i;
               const segs = getSeg(row);
               // Diverging stack offset: positive segments accumulate upward
               // from 0, negative segments accumulate downward from 0, each in
@@ -245,13 +261,19 @@ export function StackedBarChart<T = StackRow>({
               return (
                 <g
                   key={i}
-                  opacity={dimmed ? 0.5 : 1}
-                  onMouseEnter={() => {
+                  onMouseEnter={(e) => {
                     setHover(i);
+                    const p = plotPointerPosition(e, MARGIN);
+                    if (p) setPointerY(p.y);
                     onDatumHover?.({ datum: row, index: i });
+                  }}
+                  onMouseMove={(e) => {
+                    const p = plotPointerPosition(e, MARGIN);
+                    if (p) setPointerY(p.y);
                   }}
                   onMouseLeave={() => {
                     setHover(null);
+                    setPointerY(null);
                     onDatumHover?.(null);
                   }}
                   onClick={() => onDatumClick?.({ datum: row, index: i })}
@@ -282,6 +304,8 @@ export function StackedBarChart<T = StackRow>({
                         top={si === topIdx}
                         bottom={si === bottomIdx}
                         fill={fillColor}
+                        stroke={isHovered ? theme.ink : "none"}
+                        strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
                       />
                     ) : (
                       <rect
@@ -291,6 +315,8 @@ export function StackedBarChart<T = StackRow>({
                         width={bw}
                         height={h}
                         fill={fillColor}
+                        stroke={isHovered ? theme.ink : "none"}
+                        strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
                       />
                     );
                   })}
@@ -301,7 +327,14 @@ export function StackedBarChart<T = StackRow>({
               <SvgTooltip
                 x={xScale.pos(hover) + bw / 2}
                 innerWidth={innerWidth}
-                top={Math.max(0, yScale(posTotal(hr)) - 4)}
+                top={
+                  // Live pointer y while the mouse is the hover source;
+                  // falls back to the stack's own top-of-bar position
+                  // otherwise.
+                  pointerY != null
+                    ? clamp(pointerY, innerHeight)
+                    : Math.max(0, yScale(posTotal(hr)) - 4)
+                }
                 lines={[
                   getCat(hr),
                   `Total: ${valueFmt(hrTotal)}`,

@@ -242,9 +242,11 @@ Not configurable — the chart always draws them. Each distinct segment key gets
 categorical color from the shared entity→color scale, and those key/color pairs
 are shown as a **legend** strip. The category axis is a band scale (labels fit
 to the band width and truncate when tight); the value axis is a linear scale
-from **0** to a "nice" maximum with horizontal gridlines. Hovering a bar dims
-the other bars to 0.5 opacity and shows a tooltip with the category, its total,
-and every segment value.
+from **0** to a "nice" maximum with horizontal gridlines. Hovering a bar
+outlines every segment in that stack (the other bars are never dimmed) and
+shows a tooltip with the category, its total, and every segment value; the
+tooltip's vertical position tracks the pointer while it stays inside the
+hovered stack.
 
 ### Texture (non-color encoding)
 
