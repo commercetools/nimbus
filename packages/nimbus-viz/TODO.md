@@ -138,17 +138,17 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       type argument.
 
       Deliberately excluded, each for a real reason: `gauge` / `stat-card`
-                              (a single value has no discrete second "mark" to report a click on --
-                              the whole chart already is the one datum, which is what `value`/`label`
-                              already are); `sparkline` (explicitly minimal by design -- "no axes, no
-                              gridlines, no tick labels", a decorative inline glyph, not an
-                              interactive chart); `data-table` (the guaranteed no-throw HTML fallback
-                              shell used internally by `ChartContainer`, not a chart with visual
-                              marks -- its own doc comment already flags it as a temporary stand-in
-                              pending a real `@commercetools/nimbus` `DataTable`).
+                                  (a single value has no discrete second "mark" to report a click on --
+                                  the whole chart already is the one datum, which is what `value`/`label`
+                                  already are); `sparkline` (explicitly minimal by design -- "no axes, no
+                                  gridlines, no tick labels", a decorative inline glyph, not an
+                                  interactive chart); `data-table` (the guaranteed no-throw HTML fallback
+                                  shell used internally by `ChartContainer`, not a chart with visual
+                                  marks -- its own doc comment already flags it as a temporary stand-in
+                                  pending a real `@commercetools/nimbus` `DataTable`).
 
-                              Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
-                              all green; eslint clean on every touched file (28 chart `.tsx` files).
+                                  Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
+                                  all green; eslint clean on every touched file (28 chart `.tsx` files).
 
 - [ ] **A3 — controlled selection + interactive legend.** Lift internal hover to
       controlled/uncontrolled (`selection`/`onSelectionChange`,
@@ -311,12 +311,37 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
 - [ ] **`#16` scales.** Swap inline `scaleLinear` value axes for
       `src/chart/scales.ts` `makeValueScale("linear"|"log"|"symlog", …)`; expose
       a `yScale` prop (default `symlog`; guard `log` for strictly-positive).
-- [ ] **`#17`-rest stats "compute from raw".** `box-plot` raw-sample entry via
-      `stats.fiveNumberSummary` (today it only takes precomputed
-      `BoxPlotGroupStats`); `ErrorBars` raw-samples (mean ± CI). Keep the
-      precomputed paths too. `violin-plot` already takes raw samples and (per
-      B-dedup above) now computes its density via `stats.gaussianKde` directly,
-      so it's no longer part of this item's remaining scope.
+- [x] **`#17`-rest stats "compute from raw".** Done: `box-plot`'s `groups` prop
+      now takes `BoxPlotGroup[]` = `BoxPlotGroupStats | BoxPlotGroupSamples` per
+      entry (mixing both shapes in one chart is fine); a `BoxPlotGroupSamples`
+      (`{ label, samples }`) is reduced via `stats.fiveNumberSummary` (Tukey,
+      1.5·IQR fences). `ErrorBars`' `points` prop takes `ErrorBarInput[]` =
+      `ErrorBarPoint | ErrorBarSamplesPoint`; an `ErrorBarSamplesPoint`
+      (`{ x, samples, confidence? }`) derives mean ± CI, where the half-width is
+      `zForConfidence(confidence) · SE` (SE = sample stddev / √n) — a new shared
+      `stats.zForConfidence` helper (0.90→1.645, 0.95→1.96, 0.99→2.576),
+      factored out of `regressionBand`'s own inline copy of the same three
+      constants so the two call sites can't drift. Both keep the precomputed
+      path as the default (a plain `BoxPlotGroupStats`/`ErrorBarPoint` computes
+      nothing extra) and reuse the shared "report the raw input datum"
+      convention: `BoxPlot`'s interaction payload is the original `BoxPlotGroup`
+      (whichever shape was passed), not the derived summary. `violin-plot`
+      already takes raw samples and (per B-dedup above) now computes its density
+      via `stats.gaussianKde` directly, so it was never part of this item's
+      remaining scope. Golden-value tests: `box-plot.stories.tsx`'s
+      `RawSampleEntry` checks the derived five-number summary for samples
+      `1..10` against the data-table view's exact rendered cells (min 1, Q1
+      3.25, median 5.5, Q3 7.75, max 10 — hand-verified against d3-array's R-7
+      quantile method); `error-bars.spec.tsx` (new) checks the derived mean ± CI
+      for samples `[10,12,14,16,18]` against a hand-computed half-width, plus a
+      custom confidence level, an n=1 collapse-to-mean case, and mixed
+      precomputed/raw points in one overlay — using the same identity-yScale
+      synthetic harness `annotation.spec.tsx` already established, so every
+      assertion is an exact pixel-value check, not an approximation.
+      `error-bars.stories.tsx` (new, following `#21`'s pattern) composes it as a
+      real `children` overlay on a `LineChart`. Verified: `pnpm typecheck` /
+      `pnpm test` (800 passing) / `pnpm build` all green; eslint clean on every
+      touched file.
 - [x] **`#18` FacetGrid.** Done: `facet-grid.stories.tsx` added with two
       stories, a 4-region "revenue by quarter" small-multiples grid in both.
       `SharedDomain` computes one `[0, max]` domain across every facet outside

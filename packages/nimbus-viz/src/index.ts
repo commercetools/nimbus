@@ -157,7 +157,12 @@ export type { GaugeProps } from "./components/gauge";
 export { Histogram } from "./components/histogram";
 export type { HistogramProps } from "./components/histogram";
 export { BoxPlot } from "./components/box-plot";
-export type { BoxPlotProps, BoxPlotGroupStats } from "./components/box-plot";
+export type {
+  BoxPlotProps,
+  BoxPlotGroupStats,
+  BoxPlotGroupSamples,
+  BoxPlotGroup,
+} from "./components/box-plot";
 export { Treemap } from "./components/treemap";
 export type { TreemapProps, TreemapNode } from "./components/treemap";
 export { StackedAreaChart } from "./components/stacked-area-chart";

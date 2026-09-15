@@ -8,6 +8,7 @@ import {
   linearRegression,
   regressionBand,
   silvermanBandwidth,
+  zForConfidence,
 } from "./index";
 
 describe("linearRegression", () => {
@@ -71,6 +72,19 @@ describe("regressionBand", () => {
         { x: 3, y: 3 },
       ])
     ).toEqual([]);
+  });
+});
+
+describe("zForConfidence", () => {
+  it("maps the three common confidence levels to their z-approximation", () => {
+    expect(zForConfidence(0.9)).toBeCloseTo(1.645, 10);
+    expect(zForConfidence(0.95)).toBeCloseTo(1.96, 10);
+    expect(zForConfidence(0.99)).toBeCloseTo(2.576, 10);
+  });
+
+  it("defaults to 0.95 and rounds up to the next known level", () => {
+    expect(zForConfidence()).toBeCloseTo(1.96, 10);
+    expect(zForConfidence(0.97)).toBeCloseTo(1.96, 10); // between .95 and .99
   });
 });
 

@@ -12,6 +12,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { fiveNumberSummary } from "../../stats";
 
 /** Precomputed five-number summary for one group's distribution. */
 export interface BoxPlotGroupStats {
@@ -25,13 +26,49 @@ export interface BoxPlotGroupStats {
   outliers?: number[];
 }
 
-export interface BoxPlotProps extends DatumInteractionProps<BoxPlotGroupStats> {
+/**
+ * One group's raw samples — the alternative to `BoxPlotGroupStats` for a
+ * caller that hasn't precomputed quartiles. `fiveNumberSummary` (Tukey,
+ * 1.5·IQR outlier fences) derives min/quartiles/median/max/outliers from
+ * `samples` internally.
+ */
+export interface BoxPlotGroupSamples {
+  label: string;
+  samples: number[];
+}
+
+export type BoxPlotGroup = BoxPlotGroupStats | BoxPlotGroupSamples;
+
+function isSamples(g: BoxPlotGroup): g is BoxPlotGroupSamples {
+  return "samples" in g;
+}
+
+/** Resolves either group shape to a five-number summary, computing nothing
+ *  extra for a group that's already precomputed. */
+function summaryOf(g: BoxPlotGroup): BoxPlotGroupStats {
+  if (!isSamples(g)) return g;
+  const s = fiveNumberSummary(g.samples);
+  return {
+    label: g.label,
+    min: s.min,
+    firstQuartile: s.q1,
+    median: s.median,
+    thirdQuartile: s.q3,
+    max: s.max,
+    outliers: s.outliers,
+  };
+}
+
+export interface BoxPlotProps extends DatumInteractionProps<BoxPlotGroup> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
-  /** One five-number summary per category. Nothing is computed here. */
-  groups: BoxPlotGroupStats[];
+  /** One entry per category — either a precomputed `BoxPlotGroupStats`
+   *  five-number summary, or raw `BoxPlotGroupSamples` (`{ label, samples }`),
+   *  which `fiveNumberSummary` (Tukey, 1.5·IQR fences) reduces to one. Mixing
+   *  both shapes across groups in one chart is fine. */
+  groups: BoxPlotGroup[];
   /** Accessible label for the SVG; defaults to a generated summary. */
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
@@ -44,8 +81,8 @@ export interface BoxPlotProps extends DatumInteractionProps<BoxPlotGroupStats> {
  * Grouped box-and-whisker across categories. The x axis already carries
  * category identity, so — like the categorical bar chart — every box uses one
  * accent fill; ink is reserved for the box stroke, whiskers, and median line.
- * Summary stats are accepted as-is (min/quartiles/median/max/outliers); this
- * component computes nothing from raw samples.
+ * Accepts either precomputed summary stats or raw samples per group (see
+ * `BoxPlotGroup`).
  *
  * @experimental Prototype-stage; API may change before it is marked stable.
  */
@@ -64,18 +101,23 @@ export function BoxPlot({
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
+  const summaries = useMemo(() => groups.map(summaryOf), [groups]);
   const yDomain = useMemo(() => {
-    const values = groups.flatMap((g) => [g.min, g.max, ...(g.outliers ?? [])]);
+    const values = summaries.flatMap((g) => [
+      g.min,
+      g.max,
+      ...(g.outliers ?? []),
+    ]);
     return extent(values) as [number, number];
-  }, [groups]);
+  }, [summaries]);
 
   if (width <= 0 || height <= 0 || groups.length === 0) return null;
 
   const label = ariaLabel ?? `Box plot of ${groups.length} groups`;
-  const hoverGroup = hover != null ? groups[hover] : null;
+  const hoverGroup = hover != null ? summaries[hover] : null;
   const table = {
     columns: ["Group", "Min", "Q1", "Median", "Q3", "Max"],
-    rows: groups.map((g) => [
+    rows: summaries.map((g) => [
       g.label,
       g.min,
       g.firstQuartile,
@@ -139,6 +181,7 @@ export function BoxPlot({
               tickLabelProps={bottomTickLabel(theme)}
             />
             {groups.map((g, i) => {
+              const s = summaries[i];
               const bandStart = band.pos(i);
               const left = bandStart + (band.bandwidth - boxWidth) / 2;
               const active = hover == null || hover === i;
@@ -148,12 +191,12 @@ export function BoxPlot({
                   left={left}
                   boxWidth={boxWidth}
                   valueScale={yScale}
-                  min={g.min}
-                  firstQuartile={g.firstQuartile}
-                  median={g.median}
-                  thirdQuartile={g.thirdQuartile}
-                  max={g.max}
-                  outliers={g.outliers}
+                  min={s.min}
+                  firstQuartile={s.firstQuartile}
+                  median={s.median}
+                  thirdQuartile={s.thirdQuartile}
+                  max={s.max}
+                  outliers={s.outliers}
                   rx={4}
                   ry={4}
                   fill={theme.accent}

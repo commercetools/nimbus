@@ -41,6 +41,17 @@ export function linearRegression(points: readonly Point[]): LinearFit {
   return { slope, intercept };
 }
 
+/**
+ * z-approximation multiplier for a confidence level (0.90→1.645, 0.95→1.96,
+ * 0.99→2.576) — adequate for a visual confidence interval/band and exact as
+ * sample size grows. Shared by `regressionBand` and any other CI half-width
+ * (mean ± CI, a regression band, …) so the same three constants aren't
+ * re-picked at each call site.
+ */
+export function zForConfidence(confidence = 0.95): number {
+  return confidence >= 0.99 ? 2.576 : confidence >= 0.95 ? 1.96 : 1.645;
+}
+
 export interface RegressionBandPoint {
   x: number;
   /** Fitted mean response ŷ = slope·x + intercept. */
@@ -80,7 +91,7 @@ export function regressionBand(
   }
   if (sxx === 0) return []; // vertical / single-x — no band
   const se = Math.sqrt(sse / (n - 2));
-  const mult = confidence >= 0.99 ? 2.576 : confidence >= 0.95 ? 1.96 : 1.645;
+  const mult = zForConfidence(confidence);
   const step = (xMax - xMin) / Math.max(1, resolution - 1);
   const out: RegressionBandPoint[] = [];
   for (let i = 0; i < resolution; i++) {

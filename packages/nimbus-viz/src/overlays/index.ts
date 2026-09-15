@@ -12,7 +12,12 @@ export type { TargetMarkerProps } from "./target-marker";
 export { TrendLine } from "./trend-line";
 export type { TrendLineProps, TrendLinePoint } from "./trend-line";
 export { ErrorBars } from "./error-bars";
-export type { ErrorBarsProps, ErrorBarPoint } from "./error-bars";
+export type {
+  ErrorBarsProps,
+  ErrorBarPoint,
+  ErrorBarSamplesPoint,
+  ErrorBarInput,
+} from "./error-bars";
 export { ConfidenceBand } from "./confidence-band";
 export type {
   ConfidenceBandProps,
