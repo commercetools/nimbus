@@ -7,6 +7,8 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatPercent } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
+import { ChartPatternDefs, patternFill } from "../../chart/patterns";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import { emText } from "../../chart/typography";
 import type { DatumInteractionProps } from "../../chart/interaction";
 
@@ -28,6 +30,16 @@ export interface TreemapProps extends DatumInteractionProps<TreemapNode> {
   ariaLabel?: string;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /**
+   * Fill each leaf with a per-branch SVG texture (`chart/patterns.tsx`) in
+   * addition to its color, so branches stay distinguishable by shape alone
+   * — monochrome print, a photocopy, or `forced-colors` mode, where the OS
+   * flattens hue and the color-only encoding stops working. Default `false`
+   * (color only, unchanged). Turned on automatically (regardless of this
+   * prop) when the OS is already in a forced-colors context — see
+   * `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 /** Minimum cell size (px) before a label is drawn inside it. */
@@ -64,11 +76,14 @@ export function Treemap({
   valueFormat,
   onDatumClick,
   onDatumHover,
+  texture,
 }: TreemapProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
 
   const root = useMemo(() => {
     const built = hierarchy<TreemapNode>(data, (d) => d.children).sum(
@@ -83,6 +98,11 @@ export function Treemap({
     [root]
   );
   const color = useEntityColors(topLevelNames);
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every branch, with the per-branch
+  // pattern kind (below) as the only identity carrier.
+  const colorForKey = (name: string) =>
+    forcedColors ? "CanvasText" : color(name);
 
   if (width <= 0 || height <= 0 || (root.value ?? 0) <= 0) return null;
 
@@ -110,10 +130,18 @@ export function Treemap({
         <VisxTreemap<TreemapNode> root={root} size={[innerWidth, innerHeight]}>
           {(laidOut) => (
             <Group>
+              {effectiveTexture && (
+                <ChartPatternDefs
+                  colors={topLevelNames.map((name) => colorForKey(name))}
+                />
+              )}
               {laidOut.leaves().map((leaf, i) => {
                 const nodeWidth = Math.max(0, leaf.x1 - leaf.x0);
                 const nodeHeight = Math.max(0, leaf.y1 - leaf.y0);
-                const fill = color(topLevelAncestor(leaf).data.name);
+                const topName = topLevelAncestor(leaf).data.name;
+                const fill = effectiveTexture
+                  ? patternFill(topLevelNames.indexOf(topName))
+                  : colorForKey(topName);
                 const showLabel =
                   nodeWidth > MIN_LABEL_WIDTH && nodeHeight > MIN_LABEL_HEIGHT;
                 return (
