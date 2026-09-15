@@ -24,6 +24,8 @@ import type {
   DatumHoverHandler,
 } from "../../chart/interaction";
 import { emText } from "../../chart/typography";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { clamp, plotPointerPosition } from "../../chart/pointer";
 
 export interface BarChartProps<T = CategoryDatum> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -69,8 +71,10 @@ export interface BarChartProps<T = CategoryDatum> {
 
 /**
  * Categorical magnitudes. One hue (accent) — color carries no meaning here, the
- * category axis does; hovering dims the others. Horizontal is the ranked form:
- * sorted descending, with direct value labels at each bar end.
+ * category axis does; hovering/focusing outlines that one bar (its siblings are
+ * never dimmed) and, on the vertical form, tracks the pointer's position for the
+ * tooltip. Horizontal is the ranked form: sorted descending, with direct value
+ * labels at each bar end.
  *
  * Generic over the row type `T`: pass `category`/`value` accessors to feed your
  * own domain rows directly; both default to the built-in `CategoryDatum` shape.
@@ -100,6 +104,11 @@ export function BarChart<T = CategoryDatum>({
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
+  // Live pointer y (plot-local), while a bar is being hovered by the mouse --
+  // null on keyboard focus (no pointer involved) or once the pointer leaves,
+  // so the tooltip falls back to the bar's own value-derived position rather
+  // than a stale coordinate from a previous hover.
+  const [pointerY, setPointerY] = useState<number | null>(null);
   // D1-rest: roving tabindex bookkeeping (see the handlers built below, once
   // `rows` exists) -- which bar is the current Tab stop, and the live DOM
   // refs `moveFocus` calls `.focus()` on.
@@ -241,7 +250,11 @@ export function BarChart<T = CategoryDatum>({
                 const barLeft = Math.min(zeroX, xVal);
                 const barW = Math.max(1, Math.abs(zeroX - xVal));
                 const positive = getVal(d) >= 0;
-                const active = hover == null || hover === i;
+                // Outline the hovered/focused bar; never dim its siblings
+                // (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the one
+                // shared convention, replacing a per-chart "dim everyone
+                // else" opacity ternary).
+                const isHovered = hover === i;
                 return (
                   <g
                     key={`${getCat(d)}-${i}`}
@@ -270,7 +283,8 @@ export function BarChart<T = CategoryDatum>({
                             : theme.negative
                           : theme.accent
                       }
-                      opacity={active ? 1 : 0.4}
+                      stroke={isHovered ? theme.ink : "none"}
+                      strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
                       innerRef={(el) => {
                         barRefs.current[i] = el;
                       }}
@@ -319,11 +333,16 @@ export function BarChart<T = CategoryDatum>({
     );
   }
 
+  // Named so the pointer math below (which needs the same left/top offset
+  // xScale/yScale are drawn relative to) can never drift from what's
+  // actually passed to ChartContainer.
+  const MARGIN = { top: 12, right: 12, bottom: 28, left: 40 };
+
   return (
     <ChartContainer
       width={width}
       height={height}
-      margin={{ top: 12, right: 12, bottom: 28, left: 40 }}
+      margin={MARGIN}
       ariaLabel={label}
       svgRole="graphics-document"
       table={table}
@@ -389,7 +408,11 @@ export function BarChart<T = CategoryDatum>({
               const barTop = Math.min(zeroY, yVal);
               const barH = Math.max(1, Math.abs(zeroY - yVal));
               const positive = getVal(d) >= 0;
-              const active = hover == null || hover === i;
+              // Outline the hovered/focused bar; never dim its siblings
+              // (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the one shared
+              // convention, replacing a per-chart "dim everyone else"
+              // opacity ternary).
+              const isHovered = hover === i;
               return (
                 <BarRounded
                   key={`${getCat(d)}-${i}`}
@@ -407,19 +430,27 @@ export function BarChart<T = CategoryDatum>({
                         : theme.negative
                       : theme.accent
                   }
-                  opacity={active ? 1 : 0.4}
+                  stroke={isHovered ? theme.ink : "none"}
+                  strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
                   innerRef={(el) => {
                     barRefs.current[i] = el;
                   }}
                   tabIndex={rovingIndex === i ? 0 : -1}
                   role="button"
                   aria-label={`${getCat(d)}: ${valueFmt(getVal(d))}`}
-                  onMouseEnter={() => {
+                  onMouseEnter={(e) => {
                     setHover(i);
+                    const p = plotPointerPosition(e, MARGIN);
+                    if (p) setPointerY(p.y);
                     onDatumHover?.({ datum: d, index: i });
+                  }}
+                  onMouseMove={(e) => {
+                    const p = plotPointerPosition(e, MARGIN);
+                    if (p) setPointerY(p.y);
                   }}
                   onMouseLeave={() => {
                     setHover(null);
+                    setPointerY(null);
                     onDatumHover?.(null);
                   }}
                   onFocus={() => {
@@ -429,6 +460,7 @@ export function BarChart<T = CategoryDatum>({
                   }}
                   onBlur={() => {
                     setHover(null);
+                    setPointerY(null);
                     onDatumHover?.(null);
                   }}
                   onKeyDown={handleBarKeyDown(i)}
@@ -441,7 +473,14 @@ export function BarChart<T = CategoryDatum>({
               <SvgTooltip
                 x={band.center(hover)}
                 innerWidth={innerWidth}
-                top={Math.max(0, yScale(getVal(rows[hover])) - 4)}
+                top={
+                  // Live pointer y while the mouse is the hover source;
+                  // falls back to the bar's own value-derived position on
+                  // keyboard focus, where there is no pointer at all.
+                  pointerY != null
+                    ? clamp(pointerY, innerHeight)
+                    : Math.max(0, yScale(getVal(rows[hover])) - 4)
+                }
                 lines={[getCat(rows[hover]), valueFmt(getVal(rows[hover]))]}
               />
             )}

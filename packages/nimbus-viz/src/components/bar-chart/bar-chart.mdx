@@ -219,10 +219,11 @@ Not configurable — the chart always draws them. The category axis is a band
 scale (labels are fit to the available band width and truncated when tight); the
 value-axis domain always includes 0 — from 0 to the "nice" maximum when every
 row is non-negative, extended below 0 to the "nice" minimum too when any row is
-negative — with horizontal gridlines. Hovering a bar dims the others to 0.4
-opacity and shows a small tooltip with the category and formatted value. There
-is no legend; see "Color & theming" for how bars are colored, with or without a
-legend.
+negative — with horizontal gridlines. Hovering or focusing a bar outlines that
+one bar (its siblings are never dimmed) and shows a small tooltip with the
+category and formatted value; on the vertical orientation, the tooltip's
+position tracks the pointer while it stays inside that bar. There is no legend;
+see "Color & theming" for how bars are colored, with or without a legend.
 
 ### Value-axis scale
 
