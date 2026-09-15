@@ -243,10 +243,11 @@ categorical color from the shared entity→color scale, and those key/color pair
 are shown as a **legend** strip. The category axis is a band scale (labels fit
 to the band width and truncate when tight); the value axis is a linear scale
 from **0** to a "nice" maximum with horizontal gridlines. Hovering a bar
-outlines every segment in that stack (the other bars are never dimmed) and
-shows a tooltip with the category, its total, and every segment value; the
-tooltip's vertical position tracks the pointer while it stays inside the
-hovered stack.
+outlines every segment in that stack (the other bars are never dimmed) and shows
+a tooltip with the category, its total, and every segment value — each segment's
+row carries a small dot matching that segment's own color, so a row ties back to
+its mark without cross-checking the legend. The tooltip's vertical position
+tracks the pointer while it stays inside the hovered stack.
 
 ### Texture (non-color encoding)
 

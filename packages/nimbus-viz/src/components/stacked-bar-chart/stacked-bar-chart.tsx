@@ -338,9 +338,14 @@ export function StackedBarChart<T = StackRow>({
                 lines={[
                   getCat(hr),
                   `Total: ${valueFmt(hrTotal)}`,
-                  ...getSeg(hr).map(
-                    (seg) => `${seg.key}: ${valueFmt(seg.value)}`
-                  ),
+                  // Each segment's row carries a dot matching its own key's
+                  // color -- ties the tooltip row back to the segment
+                  // without cross-referencing the legend (`chart/svg-tooltip.tsx`'s
+                  // `SvgTooltipLine`).
+                  ...getSeg(hr).map((seg) => ({
+                    text: `${seg.key}: ${valueFmt(seg.value)}`,
+                    color: colorForKey(seg.key),
+                  })),
                 ]}
               />
             )}

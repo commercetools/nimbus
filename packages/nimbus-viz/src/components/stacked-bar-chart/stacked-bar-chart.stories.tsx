@@ -112,6 +112,42 @@ export const HoverEmphasis: BaseStory = {
 };
 
 /**
+ * `chart/svg-tooltip.tsx`'s new colored-line feature (Phase G): each
+ * per-segment tooltip row carries a dot swatch matching that segment's own
+ * fill color, so a row can be tied back to its mark without cross-checking
+ * the legend -- mirroring shadcn's `ChartTooltipContent` `indicator="dot"`.
+ * The header and "Total" line stay plain (no swatch), unchanged.
+ */
+export const TooltipColorIndicators: BaseStory = {
+  render: () => <StackedBarChart width={480} height={280} data={fixture} />,
+  play: async ({ canvasElement }) => {
+    const marks = () =>
+      Array.from(
+        canvasElement.querySelectorAll<SVGGraphicsElement>(
+          "rect, path.visx-bar-rounded"
+        )
+      );
+    const [q1New, q1Returning, q1Wholesale] = marks();
+    const tooltipGroup = () =>
+      canvasElement.querySelector<SVGGElement>('g[pointer-events="none"]');
+
+    await userEvent.hover(q1New);
+    await waitFor(() => expect(tooltipGroup()).not.toBeNull());
+
+    const dots = () =>
+      Array.from(tooltipGroup()!.querySelectorAll<SVGCircleElement>("circle"));
+    await waitFor(() => expect(dots()).toHaveLength(3)); // one per segment key
+
+    // Each dot's color matches its own segment's mark fill exactly --
+    // proving the swatch is really tied to that row's series, not a
+    // decorative default.
+    expect(dots()[0]).toHaveAttribute("fill", q1New.getAttribute("fill"));
+    expect(dots()[1]).toHaveAttribute("fill", q1Returning.getAttribute("fill"));
+    expect(dots()[2]).toHaveAttribute("fill", q1Wholesale.getAttribute("fill"));
+  },
+};
+
+/**
  * Proves the two accessibility features `stacked-bar-chart.mdx` claims:
  * `role="img"` + a real `aria-label`, and the keyboard-reachable data-table
  * fallback (WCAG 1.1.1) that `ChartContainer` renders whenever `table` is
