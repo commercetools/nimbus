@@ -528,6 +528,38 @@ export const Decimated: BaseStory = {
 };
 
 /**
+ * `gradient` (Phase F): fades the `"area"` variant's fill toward the
+ * baseline via an SVG `<linearGradient>` (`@visx/gradient`'s
+ * `LinearGradient`, already a dependency with zero prior consumers)
+ * instead of a flat `fillOpacity` -- mirroring shadcn's
+ * `chart-area-gradient` variant. Proven directly: one `<linearGradient>`
+ * per series, and each area's `fill` is a `url(#...)` reference to it.
+ */
+export const Gradient: BaseStory = {
+  render: () => (
+    <LineChart
+      width={420}
+      height={240}
+      series={fixture}
+      variant="area"
+      gradient
+      ariaLabel="Line chart (area variant) with gradient fill"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const gradients = canvasElement.querySelectorAll("linearGradient");
+    expect(gradients).toHaveLength(fixture.length);
+    const areas = canvasElement.querySelectorAll<SVGPathElement>(
+      "path.visx-area-closed"
+    );
+    expect(areas).toHaveLength(fixture.length);
+    for (const area of Array.from(areas)) {
+      expect(area.getAttribute("fill")).toMatch(/^url\(#/);
+    }
+  },
+};
+
+/**
  * `D2/D3-rest`: `texture` distinguishes series by `strokeDasharray` rhythm
  * (in addition to color), the stroked-mark reference for this rollout — a
  * fill `patternFill` doesn't apply to a `"line"` series (no fill area), and

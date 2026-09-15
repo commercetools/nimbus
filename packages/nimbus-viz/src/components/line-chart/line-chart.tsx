@@ -5,6 +5,7 @@ import { AreaClosed, LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveMonotoneX } from "@visx/curve";
 import { extent, max, min } from "d3-array";
+import { LinearGradient } from "@visx/gradient";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
@@ -91,6 +92,14 @@ export interface LineChartProps<T = SeriesPoint> extends InteractionProps<T> {
    * surface-haloed circle on hover, independent of this prop).
    */
   showDots?: boolean;
+  /**
+   * `"area"` variant only: fade the fill toward the baseline via an SVG
+   * `<linearGradient>` (`@visx/gradient`'s `LinearGradient`) instead of a
+   * flat `fillOpacity`, mirroring shadcn's `chart-area-gradient` variant.
+   * No effect on the `"line"` variant, which has no fill to gradient.
+   * Default `false` (today's flat 16%-opacity wash, unchanged).
+   */
+  gradient?: boolean;
 }
 
 const toDate = (x: number | Date): Date =>
@@ -135,6 +144,7 @@ export function LineChart<T = SeriesPoint>({
   texture,
   showValues,
   showDots,
+  gradient,
 }: LineChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -331,8 +341,18 @@ export function LineChart<T = SeriesPoint>({
               const dash = effectiveTexture ? strokeDasharrayFor(i) : undefined;
               const lastPoint = s.data[s.data.length - 1];
               const lastY = lastPoint != null ? getY(lastPoint) : undefined;
+              const gradientId = `line-chart-grad-${s.id}`;
               return (
                 <g key={s.id}>
+                  {variant === "area" && gradient && (
+                    <LinearGradient
+                      id={gradientId}
+                      from={color}
+                      to={color}
+                      fromOpacity={0.32}
+                      toOpacity={0.02}
+                    />
+                  )}
                   {variant === "area" ? (
                     <AreaClosed<T>
                       data={drawData[i]}
@@ -342,8 +362,8 @@ export function LineChart<T = SeriesPoint>({
                       yScale={yScale}
                       curve={curveMonotoneX}
                       defined={(p) => getY(p) != null}
-                      fill={color}
-                      fillOpacity={0.16}
+                      fill={gradient ? `url(#${gradientId})` : color}
+                      fillOpacity={gradient ? 1 : 0.16}
                       stroke={color}
                       strokeWidth={2}
                       strokeDasharray={dash}

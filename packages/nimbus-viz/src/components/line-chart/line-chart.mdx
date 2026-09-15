@@ -197,6 +197,47 @@ const App = () => (
 );
 ```
 
+### Gradient fill
+
+`"area"` variant only. Pass `gradient` to fade the fill toward the baseline via
+an SVG gradient instead of the default flat 16%-opacity wash — mirroring
+shadcn's `chart-area-gradient` example. No effect on the `"line"` variant, which
+has no fill to gradient. Default `false`.
+
+```jsx live
+const series = [
+  {
+    id: "revenue",
+    label: "Revenue",
+    data: [
+      { x: new Date("2026-01-01"), y: 120 },
+      { x: new Date("2026-02-01"), y: 150 },
+      { x: new Date("2026-03-01"), y: 138 },
+      { x: new Date("2026-04-01"), y: 176 },
+      { x: new Date("2026-05-01"), y: 168 },
+      { x: new Date("2026-06-01"), y: 205 },
+    ],
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <LineChart
+          width={width}
+          height={height}
+          series={series}
+          variant="area"
+          gradient
+          ariaLabel="Area chart of monthly revenue, with a gradient fill"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Value labels
 
 Pass `showValues` to draw each series' formatted value directly past the end of
