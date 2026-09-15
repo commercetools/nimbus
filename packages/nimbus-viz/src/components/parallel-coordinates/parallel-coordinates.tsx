@@ -5,6 +5,8 @@ import { Group } from "@visx/group";
 import { extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
+import { strokeDasharrayFor } from "../../chart/stroke-styles";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
@@ -36,6 +38,19 @@ export interface ParallelCoordinatesProps extends DatumInteractionProps<Parallel
   ariaLabel?: string;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /**
+   * Distinguish groups by a `strokeDasharray` rhythm (`chart/stroke-styles.ts`),
+   * in addition to color, so groups stay distinguishable without color alone —
+   * monochrome print, a photocopy, or `forced-colors` mode. A fill
+   * `patternFill` (`chart/patterns.tsx`) is not used here: a polyline has no
+   * fill area at all, so the stroke's dash rhythm is the one non-color
+   * channel. Dash only carries meaning when color does too (2+ groups) -- an
+   * ungrouped row, or the only group present, keeps a solid stroke. Default
+   * `false` (color only, unchanged). Turned on automatically (regardless of
+   * this prop) when the OS is already in a forced-colors context — see
+   * `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 interface Vertex {
@@ -64,11 +79,14 @@ export function ParallelCoordinates({
   valueFormat,
   onDatumClick,
   onDatumHover,
+  texture,
 }: ParallelCoordinatesProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
 
   const groups = useMemo(
     () =>
@@ -83,8 +101,21 @@ export function ParallelCoordinates({
     return null;
 
   const showLegend = groups.length >= 2;
-  const colorFor = (r: ParallelRow) =>
-    r.group ? groupColor(r.group) : theme.accent;
+  // In forced-colors context, real hues aren't preserved by the OS anyway --
+  // one system foreground color for every row, with the per-group dash
+  // rhythm (below) as the only identity carrier.
+  const colorFor = (r: ParallelRow) => {
+    if (forcedColors) return "CanvasText";
+    return r.group ? groupColor(r.group) : theme.accent;
+  };
+  // Dash only carries meaning when color does too (2+ groups) -- an
+  // ungrouped row, or the only group present, has nothing to encode. Keyed
+  // by GROUP index (like `groupColor`), not row index: several rows commonly
+  // share one group and must keep the same dash they share a color with.
+  const dashFor = (r: ParallelRow) =>
+    effectiveTexture && r.group && showLegend
+      ? strokeDasharrayFor(groups.indexOf(r.group))
+      : undefined;
   const table = {
     columns: ["Row", ...dimensions.map((d) => d.label), "Group"],
     rows: data.map((r) => [
@@ -155,6 +186,7 @@ export function ParallelCoordinates({
                   fill="none"
                   stroke={c}
                   strokeWidth={hover === i ? 2.5 : 1.5}
+                  strokeDasharray={dashFor(r)}
                   strokeOpacity={active ? (hover === i ? 1 : 0.5) : 0.12}
                   onMouseEnter={() => {
                     setHover(i);

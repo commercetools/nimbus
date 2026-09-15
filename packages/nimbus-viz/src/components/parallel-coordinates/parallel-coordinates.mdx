@@ -198,6 +198,60 @@ const App = () => (
 );
 ```
 
+### Texture (non-color group identity)
+
+Pass `texture` to distinguish groups by `strokeDasharray` rhythm, in addition
+to color, so groups stay distinguishable without color alone — monochrome
+print, a photocopy, or `forced-colors` mode. This is the stroked-mark
+reference for the same rollout as
+[`StackedBarChart`](/charts/stacked-bar-chart)'s fill-pattern `texture`: a
+polyline has no fill area to texture, so the stroke's dash rhythm is the one
+non-color channel. The dash is keyed to the **group**, the same way color is
+— every row in a group gets the exact same dash pattern, not an arbitrary
+per-row cycle, so the two channels stay in lockstep. The first group keeps a
+solid stroke; later groups cycle through dashed/dotted/dash-dot/long-dash. It
+turns on automatically, regardless of this prop, when the OS is already in a
+`forced-colors` context.
+
+```jsx live
+const dimensions = [
+  { key: "price", label: "Price" },
+  { key: "margin", label: "Margin" },
+  { key: "rating", label: "Rating" },
+];
+const data = [
+  {
+    id: "r1",
+    group: "Domestic",
+    values: { price: 40, margin: 32, rating: 4.2 },
+  },
+  {
+    id: "r2",
+    group: "Domestic",
+    values: { price: 30, margin: 26, rating: 4.0 },
+  },
+  { id: "r3", group: "Import", values: { price: 88, margin: 18, rating: 3.6 } },
+  { id: "r4", group: "Import", values: { price: 62, margin: 44, rating: 4.8 } },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={300}>
+      {(width, height) => (
+        <ParallelCoordinates
+          width={width}
+          height={height}
+          dimensions={dimensions}
+          data={data}
+          texture
+          ariaLabel="Parallel coordinates with per-group dash rhythm"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Hover & tooltip (automatic)
 
 Not configurable — hovering a polyline raises it to full opacity, fades the rest
@@ -283,8 +337,10 @@ What you get automatically:
   chart theme (contrast + color-vision-deficiency checks), not ad-hoc colors.
 - **Non-color encoding.** The relationships are carried by each line's vertical
   positions across the axes; when you group, group identity is carried by color
-  and decoded by the legend — lines are not also varied by dash or width, so
-  lean on the legend and the data table for that distinction.
+  and decoded by the legend and the data table; pass `texture` to also vary
+  stroke dash rhythm per group (or rely on it turning on automatically in a
+  `forced-colors` context) for a non-color path on the chart itself, not just
+  in the legend/table.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the dimensions/records rather
@@ -295,7 +351,8 @@ Accessibility checklist:
 - [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
 - [ ] Meaning does not depend on color alone (axis positions carry the
-      relations; groups are decoded by the legend and the data table)
+      relations; groups are decoded by the legend and the data table, or by
+      dash rhythm with `texture`)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)
 - [ ] Surrounding copy names dimensions/records rather than colors
@@ -316,8 +373,10 @@ data yet.
   `dimensions` deliberately.
 - **Overplotting.** With no downsampling, large sets bundle into an unreadable
   mass — filter or color by `group` first.
-- **Groups distinguished by color, not line style** — the legend and data table
-  are the non-color paths to group identity.
+- **Dash encoding is opt-in.** Stroke dash only varies when `texture` is
+  passed (or `forced-colors` is active) — by default groups are distinguished
+  by color alone on the lines, with the legend and data table as the
+  always-on non-color paths.
 - **No interaction callbacks, overlays, or custom accessors.** Hover is
   internal-only; there are no `onDatumClick` / `onDatumHover` and no `children`.
 - **Fixed number formatting.** Axis ticks and the tooltip use a built-in compact
