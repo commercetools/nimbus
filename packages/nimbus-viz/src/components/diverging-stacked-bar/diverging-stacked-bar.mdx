@@ -223,10 +223,11 @@ point on the scale, in scale order.
 
 ### Tooltips (automatic)
 
-Hovering a segment dims the others to 0.4 opacity and shows a small tooltip with
-the category and scale point, the segment's value, and its share of that row's
-total ("X% of responses"). Hover state is internal; there are no interaction
-callbacks.
+Hovering a segment outlines that one segment (its siblings are never dimmed)
+and shows a small tooltip with the category and scale point, the segment's
+value, and its share of that row's total ("X% of responses"); the tooltip's
+horizontal position tracks the pointer while it stays inside the hovered
+segment. Hover state is internal; there are no interaction callbacks.
 
 ### Color & theming
 

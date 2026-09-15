@@ -10,6 +10,8 @@ import { emText } from "../../chart/typography";
 import { bandByIndex } from "../../chart/scales";
 import { stackKeys } from "../../chart/stack";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { clamp, plotPointerPosition } from "../../chart/pointer";
 
 export interface DivergingStackedBarProps extends DatumInteractionProps<StackRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -52,6 +54,13 @@ export function DivergingStackedBar({
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ r: number; s: number } | null>(null);
+  // Live pointer x (plot-local), while a segment is being hovered by the
+  // mouse -- this chart's value axis runs along x (horizontal layout), so
+  // the tooltip tracks the pointer here rather than on y (the category
+  // axis, which stays snapped to the hovered row's band position). Null
+  // once the pointer leaves, so the tooltip falls back to the zero
+  // baseline rather than a stale coordinate from a previous hover.
+  const [pointerX, setPointerX] = useState<number | null>(null);
 
   const keys = useMemo(() => stackKeys(data), [data]);
   const n = keys.length;
@@ -94,11 +103,16 @@ export function DivergingStackedBar({
     ]),
   };
 
+  // Named so the pointer math below (which needs the same left/top offset
+  // xScale/yScale are drawn relative to) can never drift from what's
+  // actually passed to ChartContainer.
+  const MARGIN = { top: 8, right: 16, bottom: 12, left: 100 };
+
   return (
     <ChartContainer
       width={width}
       height={height}
-      margin={{ top: 8, right: 16, bottom: 12, left: 100 }}
+      margin={MARGIN}
       ariaLabel={label}
       legend={keys.map((key, i) => ({ label: key, color: colorFor(i) }))}
       table={table}
@@ -145,8 +159,12 @@ export function DivergingStackedBar({
                     const x0 = xScale(acc);
                     acc += seg.value;
                     const x1 = xScale(acc);
-                    const active =
-                      hover == null || (hover.r === r && hover.s === s);
+                    // Outline the hovered/focused segment; never dim its
+                    // siblings (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` --
+                    // the one shared convention, replacing a per-chart
+                    // "dim everyone else" opacity ternary).
+                    const isHovered =
+                      hover != null && hover.r === r && hover.s === s;
                     return (
                       <rect
                         key={seg.key}
@@ -155,13 +173,21 @@ export function DivergingStackedBar({
                         width={Math.max(0, Math.abs(x1 - x0) - 1)}
                         height={bh}
                         fill={colorFor(s)}
-                        opacity={active ? 1 : 0.4}
-                        onMouseEnter={() => {
+                        stroke={isHovered ? theme.ink : "none"}
+                        strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
+                        onMouseEnter={(e) => {
                           setHover({ r, s });
+                          const p = plotPointerPosition(e, MARGIN);
+                          if (p) setPointerX(p.x);
                           onDatumHover?.({ datum: row, index: r });
+                        }}
+                        onMouseMove={(e) => {
+                          const p = plotPointerPosition(e, MARGIN);
+                          if (p) setPointerX(p.x);
                         }}
                         onMouseLeave={() => {
                           setHover(null);
+                          setPointerX(null);
                           onDatumHover?.(null);
                         }}
                         onClick={() => onDatumClick?.({ datum: row, index: r })}
@@ -183,7 +209,14 @@ export function DivergingStackedBar({
             })}
             {hovered && hoveredRow && (
               <SvgTooltip
-                x={zero}
+                x={
+                  // Live pointer x while the mouse is the hover source
+                  // (this chart's value axis runs along x); falls back to
+                  // the zero baseline otherwise. `top` stays snapped to the
+                  // hovered row's own band position -- the category axis,
+                  // which is not where the pointer moves.
+                  pointerX != null ? clamp(pointerX, innerWidth) : zero
+                }
                 innerWidth={innerWidth}
                 top={Math.max(0, yScale.pos(hover!.r) - 4)}
                 lines={[

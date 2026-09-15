@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/react-vite";
-import { expect } from "storybook/test";
+import { userEvent, fireEvent, expect, waitFor } from "storybook/test";
 import { DivergingStackedBar } from "./diverging-stacked-bar";
 import type { StackRow } from "../..";
 import { RegistryPreview, type BaseStory } from "../../stories/base-story";
@@ -13,6 +13,86 @@ const meta: Meta = {
 export default meta;
 
 export const Base: BaseStory = {};
+
+const hoverFixture: StackRow[] = [
+  {
+    category: "Item A",
+    segments: [
+      { key: "Disagree", value: 40 },
+      { key: "Neutral", value: 10 },
+      { key: "Agree", value: 50 },
+    ],
+  },
+  {
+    category: "Item B",
+    segments: [
+      { key: "Disagree", value: 35 },
+      { key: "Neutral", value: 8 },
+      { key: "Agree", value: 45 },
+    ],
+  },
+];
+
+/**
+ * Hover/tooltip UX convergence: hovering a segment outlines that ONE segment
+ * (`stroke`/`strokeWidth`) and never dims its siblings -- replacing the "dim
+ * everyone else to a fixed opacity" pattern this chart (and 30 others) used
+ * to hand-roll independently. This chart's value axis runs along x
+ * (horizontal layout), so the tooltip's HORIZONTAL position tracks the live
+ * pointer while it stays inside the hovered segment -- the category axis
+ * (`top`, on y) stays snapped to the hovered row's own band position.
+ */
+export const HoverEmphasis: BaseStory = {
+  render: () => (
+    <DivergingStackedBar width={480} height={280} data={hoverFixture} />
+  ),
+  play: async ({ canvasElement }) => {
+    const rects = () =>
+      Array.from(canvasElement.querySelectorAll<SVGRectElement>("rect"));
+    const tooltipGroup = () =>
+      canvasElement.querySelector<SVGGElement>('g[pointer-events="none"]');
+    const tooltipLeft = () => {
+      const g = tooltipGroup();
+      const match = g?.getAttribute("transform")?.match(/\(([\d.-]+),/);
+      return match ? Number(match[1]) : null;
+    };
+
+    // DOM order: Item A's Disagree, Neutral, Agree, then Item B's.
+    const [itemADisagree, itemANeutral] = rects();
+    await userEvent.hover(itemADisagree);
+    await waitFor(() => expect(tooltipGroup()).not.toBeNull());
+
+    // No dimming: every segment keeps a full, unmodified fill -- none
+    // carries an `opacity` attribute at all (the old mechanism this
+    // replaces).
+    for (const rect of rects()) {
+      expect(rect).not.toHaveAttribute("opacity");
+    }
+    // Emphasis instead: only the hovered segment gets a real outline.
+    expect(itemADisagree).toHaveAttribute("stroke-width", "1.5");
+    expect(itemANeutral).toHaveAttribute("stroke-width", "0");
+
+    // Tooltip follows the pointer horizontally: two mousemoves at different
+    // widths within the SAME segment move the tooltip to two different
+    // horizontal positions.
+    const rect = itemADisagree.getBoundingClientRect();
+    const cy = rect.top + rect.height / 2;
+    fireEvent.mouseMove(itemADisagree, {
+      clientX: rect.left + rect.width * 0.25,
+      clientY: cy,
+    });
+    const leftNearStart = await waitFor(() => {
+      const l = tooltipLeft();
+      expect(l).not.toBeNull();
+      return l;
+    });
+    fireEvent.mouseMove(itemADisagree, {
+      clientX: rect.left + rect.width * 0.75,
+      clientY: cy,
+    });
+    await waitFor(() => expect(tooltipLeft()).not.toBe(leftNearStart));
+  },
+};
 
 /**
  * BC-1 regression: `bandByIndex` positions each row's `y` band by row order,
