@@ -138,17 +138,17 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       type argument.
 
       Deliberately excluded, each for a real reason: `gauge` / `stat-card`
-                  (a single value has no discrete second "mark" to report a click on --
-                  the whole chart already is the one datum, which is what `value`/`label`
-                  already are); `sparkline` (explicitly minimal by design -- "no axes, no
-                  gridlines, no tick labels", a decorative inline glyph, not an
-                  interactive chart); `data-table` (the guaranteed no-throw HTML fallback
-                  shell used internally by `ChartContainer`, not a chart with visual
-                  marks -- its own doc comment already flags it as a temporary stand-in
-                  pending a real `@commercetools/nimbus` `DataTable`).
+                      (a single value has no discrete second "mark" to report a click on --
+                      the whole chart already is the one datum, which is what `value`/`label`
+                      already are); `sparkline` (explicitly minimal by design -- "no axes, no
+                      gridlines, no tick labels", a decorative inline glyph, not an
+                      interactive chart); `data-table` (the guaranteed no-throw HTML fallback
+                      shell used internally by `ChartContainer`, not a chart with visual
+                      marks -- its own doc comment already flags it as a temporary stand-in
+                      pending a real `@commercetools/nimbus` `DataTable`).
 
-                  Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
-                  all green; eslint clean on every touched file (28 chart `.tsx` files).
+                      Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
+                      all green; eslint clean on every touched file (28 chart `.tsx` files).
 
 - [ ] **A3 — controlled selection + interactive legend.** Lift internal hover to
       controlled/uncontrolled (`selection`/`onSelectionChange`,
@@ -304,9 +304,20 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
 - [ ] **`#20` brush / linked views.** Wire `src/chart/brush.tsx` + a
       `SelectionProvider` (broadcast a brushed domain / highlighted entity-set
       on `ENTITY_ID_ACCESSOR`); needs `@visx/zoom` for zoom.
-- [ ] **`#21` annotations demos.**
-      `src/overlays/{annotation,event-markers,now-line}.tsx` exist and compose
-      as overlay children; add stories/examples once E2 lands.
+- [x] **`#21` annotations demos.** Done: `annotation.stories.tsx`,
+      `event-markers.stories.tsx`, `now-line.stories.tsx` added beside their
+      components under a new "Overlays/" Storybook category (no chart story had
+      composed ANY overlay before this, despite `#11`'s surface landing earlier
+      — a real gap, not just these three). Each composes the overlay as a real
+      `children` of a `LineChart` (not the synthetic mock scale context
+      `annotation.spec.tsx` already unit-tests) and asserts the actual rendered
+      geometry: `Annotation`'s ringed (`fill="none"`) marker at the scaled
+      anchor with a non-degenerate leader line to the label; `EventMarkers`' one
+      dashed full-height rule per event, each at a distinct x, with only the
+      labeled ones showing text; `NowLine`'s one solid full-height rule, plus a
+      second story proving a custom `label` actually replaces the default "Now"
+      text rather than appending to it. Verified: `pnpm typecheck` / `pnpm test`
+      (784 passing) / `pnpm build` all green; eslint clean.
 
 ---
 
