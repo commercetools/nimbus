@@ -24,6 +24,37 @@ const fixture: FunnelStage[] = [
 export const Base: BaseStory = {};
 
 /**
+ * Hover emphasis: hovering a stage outlines that ONE bar (`stroke`/
+ * `strokeWidth`) and never dims its siblings — replacing the "dim
+ * everyone else to a fixed opacity" pattern this chart used to hand-roll
+ * on the wrapping `<g>`. This chart's floating `SvgTooltip` has no
+ * pointer-follow behavior to prove: its `x` is a fixed horizontal center
+ * (value is encoded as bar WIDTH here, not a scaled pixel position) and
+ * its `top` is already correctly snapped to the hovered stage's own row.
+ */
+export const HoverEmphasis: BaseStory = {
+  render: () => <FunnelChart width={400} height={280} data={fixture} />,
+  play: async ({ canvasElement }) => {
+    const bars = () =>
+      Array.from(canvasElement.querySelectorAll<SVGPathElement>("path"));
+
+    const firstBar = bars()[0];
+    await userEvent.hover(firstBar);
+    await waitFor(() =>
+      expect(firstBar).toHaveAttribute("stroke-width", "1.5")
+    );
+
+    // No dimming: every bar keeps a full, unmodified fill -- none carries
+    // an `opacity` attribute at all (the old mechanism this replaces).
+    for (const bar of bars()) {
+      expect(bar).not.toHaveAttribute("opacity");
+    }
+    // Emphasis instead: only the hovered bar gets a real outline.
+    expect(bars()[1]).toHaveAttribute("stroke-width", "0");
+  },
+};
+
+/**
  * Proves the two accessibility features `funnel-chart.mdx` claims:
  * `role="img"` + a real `aria-label`, and the keyboard-reachable data-table
  * fallback (WCAG 1.1.1) that `ChartContainer` renders whenever `table` is

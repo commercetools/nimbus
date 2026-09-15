@@ -132,17 +132,17 @@ number).
 
 ### Tooltip (automatic)
 
-Hovering a stage dims the others to 0.5 opacity and shows a tooltip with the
-stage name, its compact value, its `% of first`, and — for every stage after the
-first — its `% of previous`, which is the step-to-step conversion rate. This
-dimming and the tooltip are not configurable — but the same hover state also
-drives `onDatumHover`, below.
+Hovering a stage outlines its bar (its siblings are never dimmed) and shows a
+tooltip with the stage name, its compact value, its `% of first`, and — for
+every stage after the first — its `% of previous`, which is the step-to-step
+conversion rate. This outline and the tooltip are not configurable — but the
+same hover state also drives `onDatumHover`, below.
 
 ### Interaction callbacks
 
 `onDatumClick` and `onDatumHover` fire with a `{ datum, index }` payload —
 `datum` is the whole `FunnelStage` (`{ stage, value }`) at that position. Use
-them for drill-down or to drive an external readout; the built-in dimming and
+them for drill-down or to drive an external readout; the built-in outline and
 tooltip above keep working whether or not you pass them.
 
 ```tsx

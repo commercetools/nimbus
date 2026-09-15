@@ -12,6 +12,7 @@ import type {
   DatumClickHandler,
   DatumHoverHandler,
 } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 
 export interface FunnelChartProps {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -34,7 +35,8 @@ export interface FunnelChartProps {
 /**
  * A FLOW specialist: ordered stages of a single process, each bar's width the
  * share of the first stage. One hue (accent) — this is magnitude through one
- * funnel, so color carries no extra meaning.
+ * funnel, so color carries no extra meaning. Hovering a stage outlines its
+ * bar (its siblings are never dimmed).
  */
 export function FunnelChart({
   width,
@@ -92,7 +94,11 @@ export function FunnelChart({
               const w = Math.max(2, (value / top) * innerWidth);
               const x = (innerWidth - w) / 2;
               const y = i * bandH + (bandH - barH) / 2;
-              const active = hover == null || hover === i;
+              // Outline the hovered stage's bar; never dim its siblings
+              // (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the one shared
+              // convention, replacing a per-chart "dim everyone else"
+              // opacity ternary).
+              const isHovered = hover === i;
               const valueLabel = valueFmt(stage.value);
               // ~14px bold ≈ 8.4px/char. Only draw the value inside the bar when
               // it fits; otherwise the stage % above and the hover tooltip carry
@@ -101,7 +107,6 @@ export function FunnelChart({
               return (
                 <g
                   key={`${stage.stage}-${i}`}
-                  opacity={active ? 1 : 0.5}
                   onMouseEnter={() => {
                     setHover(i);
                     onDatumHover?.({ datum: stage, index: i });
@@ -130,6 +135,8 @@ export function FunnelChart({
                     radius={4}
                     all
                     fill={theme.accent}
+                    stroke={isHovered ? theme.ink : "none"}
+                    strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
                   />
                   {valueFits && (
                     <text
