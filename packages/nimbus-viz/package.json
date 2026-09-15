@@ -41,6 +41,7 @@
   "dependencies": {
     "@visx/axis": "catalog:viz",
     "@visx/curve": "catalog:viz",
+    "@visx/event": "catalog:viz",
     "@visx/glyph": "catalog:viz",
     "@visx/gradient": "catalog:viz",
     "@visx/grid": "catalog:viz",

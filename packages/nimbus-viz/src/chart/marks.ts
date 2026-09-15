@@ -31,3 +31,23 @@ export const MARGINS = {
 } as const;
 
 export type MarginPreset = keyof typeof MARGINS;
+
+/**
+ * Hover/active-mark emphasis: outline the ACTIVE mark; never dim its
+ * siblings. This is the convention `treemap.tsx`, `heatmap.tsx`, and
+ * `sankey-diagram.tsx` already used (each with its own copy of the same
+ * `1.5`, before this constant existed) — every other chart independently
+ * reinvented a "dim everyone else to some opacity" pattern instead, each
+ * with a different, unrelated number (0.1-0.85, `docs/bug-classes.md`-style
+ * drift). This constant is the one considered replacement for all of them.
+ * Pair with the theme's `ink` role for the stroke color (a theme role, not
+ * a fixed hex, so it adapts to light/dark) — e.g.
+ * `stroke={active ? theme.ink : "none"}`, `strokeWidth={active ?
+ * ACTIVE_STROKE_WIDTH : 0}`. For a mark shape where an outline doesn't read
+ * well (a thin line, a small point), a size bump is the equivalent —
+ * `radar-chart.tsx`'s vertex dots (`r={active ? 5 : 3}`) and
+ * `bump-chart.tsx`'s active line (`strokeWidth={active ? 3 :
+ * SERIES_STROKE}`) already do this; pick whichever mechanism fits the mark,
+ * not one forced convention.
+ */
+export const ACTIVE_STROKE_WIDTH = 1.5;

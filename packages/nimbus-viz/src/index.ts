@@ -20,6 +20,7 @@ export {
   LEGEND_HEIGHT,
   GRADIENT_LEGEND_HEIGHT,
   MARGINS,
+  ACTIVE_STROKE_WIDTH,
 } from "./chart/marks";
 export type { MarginPreset } from "./chart/marks";
 export { makeValueScale, valueDomain, bandByIndex } from "./chart/scales";
@@ -78,6 +79,8 @@ export type {
 } from "./chart/interaction";
 export { nearestIndexByX } from "./chart/nearest-x";
 export type { InvertibleScale } from "./chart/nearest-x";
+export { plotPointerPosition, clamp } from "./chart/pointer";
+export type { PlotPoint } from "./chart/pointer";
 
 // Statistical helpers (regression, control limits, KDE, five-number summary).
 export * as stats from "./stats";
