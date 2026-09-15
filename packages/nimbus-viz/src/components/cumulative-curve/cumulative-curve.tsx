@@ -140,15 +140,20 @@ export function CumulativeCurve({
             />
             {showDots &&
               points.map((d, i) => {
-                const active = hover == null || hover === i;
+                // Grow the ACTUALLY-hovered dot only; never dim its
+                // siblings. These are small point marks (r is a few px), so
+                // a radius bump reads better than an outline -- the same
+                // mechanism `radar-chart.tsx`'s vertex dots use
+                // (`r={active ? 5 : 3}`), replacing the old "dim everyone
+                // else to 0.4 opacity" pattern.
+                const isHovered = hover === i;
                 return (
                   <circle
                     key={i}
                     cx={xScale(d.v)}
                     cy={yScale(d.f)}
-                    r={r}
+                    r={isHovered ? r + 2 : r}
                     fill={theme.accent}
-                    opacity={active ? 1 : 0.4}
                     onMouseEnter={() => {
                       setHover(i);
                       onDatumHover?.({ datum: d, index: i });
