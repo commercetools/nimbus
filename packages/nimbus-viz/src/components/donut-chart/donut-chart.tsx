@@ -11,6 +11,7 @@ import { emText } from "../../chart/typography";
 import type { DatumInteractionProps } from "../../chart/interaction";
 import { ChartPatternDefs, patternFill } from "../../chart/patterns";
 import { useForcedColors } from "../../chart/use-forced-colors";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 
 export interface DonutChartProps<
   T = CategoryDatum,
@@ -145,13 +146,18 @@ export function DonutChart<T = CategoryDatum>({
                 pie.arcs.map((arc) => {
                   const i = data.indexOf(arc.data);
                   const cat = getCat(arc.data);
-                  const dimmed = hover != null && hover !== cat;
+                  // Outline the hovered slice only; never dim its siblings
+                  // (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the shared
+                  // convention, replacing a per-chart "dim everyone else"
+                  // opacity ternary).
+                  const isHovered = hover === cat;
                   return (
                     <path
                       key={cat}
                       d={pie.path(arc) ?? ""}
                       fill={effectiveTexture ? patternFill(i) : colorFor(i)}
-                      opacity={dimmed ? 0.4 : 1}
+                      stroke={isHovered ? theme.ink : "none"}
+                      strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
                       onMouseEnter={() => {
                         setHover(cat);
                         onDatumHover?.({ datum: arc.data, index: i });
