@@ -101,6 +101,85 @@ export const HoverEmphasis: BaseStory = {
 };
 
 /**
+ * `startAngle`/`endAngle` (Phase D): lays the categories out across a
+ * partial sweep instead of the default full circle -- the same
+ * clockwise-from-12-o'clock convention `gauge.tsx`'s `START_ANGLE`/
+ * `END_ANGLE` already use, so the same upper-semicircle `Gauge` draws
+ * (`-Math.PI/2`..`Math.PI/2`) is a direct option here too. A muted track
+ * sector spans the sweep behind the value sectors -- but only once the
+ * sweep is genuinely partial; the default full circle renders with no
+ * track at all, unchanged. Proven directly: the partial-sweep instance
+ * has exactly one more `<path>` than the full-circle control (the track).
+ */
+export const PartialSweep: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <RadialBarChart
+        width={280}
+        height={280}
+        data={hoverFixture}
+        ariaLabel="Radial bar chart, full circle"
+      />
+      <RadialBarChart
+        width={280}
+        height={280}
+        data={hoverFixture}
+        startAngle={-Math.PI / 2}
+        endAngle={Math.PI / 2}
+        ariaLabel="Radial bar chart, upper semicircle"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const pathCount = (svg: Element) => svg.querySelectorAll("path").length;
+    expect(pathCount(svgs[1])).toBe(pathCount(svgs[0]) + 1);
+  },
+};
+
+/**
+ * `showTotal` (Phase D): centers the data's grand total (or, while a
+ * sector is hovered, that sector's own value and category) -- the same
+ * two-line "big number, small caption" convention `donut-chart.tsx`
+ * already uses, reused here. Unlike `DonutChart`'s hover state (a SHARE
+ * of the total), this always shows a plain magnitude: `RadialBarChart`'s
+ * bars aren't guaranteed to sum to a meaningful whole. Proven directly:
+ * turning the prop on adds exactly 2 new `<text>` elements (the value +
+ * the "Total" caption).
+ */
+export const ShowTotal: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <RadialBarChart
+        width={280}
+        height={280}
+        data={hoverFixture}
+        ariaLabel="Radial bar chart without a center total"
+      />
+      <RadialBarChart
+        width={280}
+        height={280}
+        data={hoverFixture}
+        showTotal
+        ariaLabel="Radial bar chart with a center total"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    expect(textCount(svgs[1])).toBe(textCount(svgs[0]) + 2);
+
+    const captions = Array.from(svgs[1].querySelectorAll("text")).map(
+      (t) => t.textContent
+    );
+    expect(captions).toContain("Total");
+  },
+};
+
+/**
  * BC-1 (`docs/bug-classes.md`): a band scale keyed by category TEXT collapses
  * rows that share a label onto one angular slot, drawing their sectors on top
  * of each other with no error. `RadialBarChart` keys its angular band by row

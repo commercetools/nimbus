@@ -41,6 +41,33 @@ export interface RadialBarChartProps extends DatumInteractionProps<CategoryDatum
    * (no change from today's unlabeled bars).
    */
   showValues?: boolean;
+  /**
+   * Angular sweep the categories are laid out across, in radians, using
+   * the same clockwise-from-12-o'clock convention `polar()` (below) and
+   * `gauge.tsx`'s own `START_ANGLE`/`END_ANGLE` already use — so a partial
+   * sweep (e.g. `startAngle={-Math.PI / 2}`, `endAngle={Math.PI / 2}` for
+   * the same upper-semicircle `Gauge` uses) is a direct, gauge-style
+   * option instead of always the full circle. A muted track sector spans
+   * `startAngle`..`endAngle` at the same radii as the value sectors,
+   * drawn once behind them — the same "track then value arc(s)" shape
+   * `Gauge` uses, generalized from one arc to N per-category ones.
+   * Defaults to the full circle (today's rendering, unchanged).
+   */
+  startAngle?: number;
+  endAngle?: number;
+  /**
+   * Show the data's total (or, while a sector is hovered/focused, that
+   * sector's own value and category) centered in the chart — the same
+   * two-line "big number, small caption" convention `donut-chart.tsx`
+   * already uses for its center label, reused here rather than
+   * reinvented. Unlike `DonutChart`'s hover state (a *share* of the
+   * total, since a donut is inherently part-to-whole), this always shows
+   * a plain magnitude — `RadialBarChart`'s bars are not guaranteed to sum
+   * to a meaningful whole, so a percentage here would imply a
+   * part-to-whole relationship the chart doesn't actually promise.
+   * Default `false` (no change from today's rendering).
+   */
+  showTotal?: boolean;
 }
 
 /** Point on a circle for an angle measured clockwise from 12 o'clock. */
@@ -77,7 +104,9 @@ function sectorPath(r0: number, r1: number, a0: number, a1: number): string {
  * angular slot per category. Length still lives on a common baseline (the inner
  * ring), so it reads as magnitude; the circular layout is the trade for a
  * compact, distinctive form. One accent hue (identity is the angular position),
- * hover highlights a bar and shows its value.
+ * hover highlights a bar and shows its value. `startAngle`/`endAngle` swap the
+ * default full circle for a partial (gauge-style) sweep; `showTotal` centers
+ * the data's grand total.
  *
  * @experimental Prototype-stage; API may change before it is marked stable.
  */
@@ -90,6 +119,9 @@ export function RadialBarChart({
   onDatumClick,
   onDatumHover,
   showValues,
+  startAngle = 0,
+  endAngle = Math.PI * 2,
+  showTotal,
 }: RadialBarChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -138,7 +170,7 @@ export function RadialBarChart({
         const angle = bandByIndex(
           data.map((d) => d.category),
           {
-            range: [0, Math.PI * 2],
+            range: [startAngle, endAngle],
             padding: 0.25,
           }
         );
@@ -155,9 +187,27 @@ export function RadialBarChart({
           theme.ink,
           theme.surface
         );
+        // Grand total across every category -- the plain magnitude
+        // `showTotal`'s center label shows when nothing is hovered.
+        const total = data.reduce((s, d) => s + Math.max(0, d.value), 0);
+        // The track ring only earns its keep once the sweep is genuinely
+        // partial -- a full circle has no "where does this stop" boundary
+        // to mark, so drawing it unconditionally would be a visual change
+        // at the *default* sweep too, not just an opt-in one.
+        const isPartialSweep = startAngle !== 0 || endAngle !== Math.PI * 2;
         return (
           <>
             <Group top={cy} left={cx}>
+              {isPartialSweep && (
+                // Muted track: the full startAngle..endAngle sweep at the
+                // same radii the value sectors use, drawn once behind them
+                // -- the same "track then value arc" shape `gauge.tsx` uses
+                // for its one arc, generalized to N per-category ones.
+                <path
+                  d={sectorPath(inner, outer, startAngle, endAngle)}
+                  fill={theme.grid}
+                />
+              )}
               {data.map((d, i) => {
                 const a0 = angle.pos(i) + bw * 0.05;
                 const a1 = a0 + bw * 0.9;
@@ -218,6 +268,27 @@ export function RadialBarChart({
                   </g>
                 );
               })}
+              {showTotal && (
+                <>
+                  <text
+                    textAnchor="middle"
+                    dy={-2}
+                    style={emText(20)}
+                    fontWeight={700}
+                    fill={theme.ink}
+                  >
+                    {hovered ? valueFmt(hovered.value) : valueFmt(total)}
+                  </text>
+                  <text
+                    textAnchor="middle"
+                    dy={16}
+                    style={emText(11)}
+                    fill={theme.mutedInk}
+                  >
+                    {hovered ? hovered.category : "Total"}
+                  </text>
+                </>
+              )}
             </Group>
             {hovered && (
               <SvgTooltip

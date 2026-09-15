@@ -103,8 +103,8 @@ const data: CategoryDatum[] = [
 
 Contract notes, verifiable from source:
 
-- `category` is display text and **need not be unique** — angular position
-  comes from row order, not from the label.
+- `category` is display text and **need not be unique** — angular position comes
+  from row order, not from the label.
 - Rows are **not** sorted: input order sets the slot order, laid out clockwise
   from 12 o'clock.
 - `value` is a plain number. The radius scale runs from **0** at the inner ring
@@ -124,25 +124,57 @@ Renders `null` for empty `data` or a non-positive `width`/`height`.
 ### Layout & labels (automatic)
 
 Not configurable — the chart derives them. Categories are placed as equal
-angular slots (a band scale over the full circle) in input order, clockwise from
-the top; each bar is an annular sector growing from a fixed inner ring (30% of
-the outer radius) outward. Category labels sit around the rim and flip alignment
-on the left half so they read outward. There are no drawn axes, ticks, or radial
-gridlines.
+angular slots (a band scale, by default over the full circle — see "Angular
+sweep" below) in input order, clockwise from the top; each bar is an annular
+sector growing from a fixed inner ring (30% of the outer radius) outward.
+Category labels sit around the rim and flip alignment on the left half so they
+read outward. There are no drawn axes, ticks, or radial gridlines.
+
+### Angular sweep
+
+Pass `startAngle`/`endAngle` (radians, clockwise from 12 o'clock — the same
+convention [`Gauge`](/charts/gauge)'s own dial angles use) to lay the categories
+out across a partial sweep instead of the default full circle. A muted track
+sector spans the sweep behind the value sectors, but only once it's genuinely
+partial — the default full circle draws no track at all. Defaults to the full
+circle (`0` to `2π`).
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <RadialBarChart
+          width={width}
+          height={height}
+          data={[
+            { category: "Web", value: 4200 },
+            { category: "Mobile", value: 3100 },
+            { category: "Retail", value: 2400 },
+          ]}
+          startAngle={-Math.PI / 2}
+          endAngle={Math.PI / 2}
+          ariaLabel="Radial bar chart of revenue by channel, upper semicircle"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
 
 ### Hover & tooltip (automatic)
 
 Hovering a bar outlines it (its siblings are never dimmed) and shows a small
-tooltip at the top of the plot with the category and its formatted value.
-Hover state is managed internally.
+tooltip at the top of the plot with the category and its formatted value. Hover
+state is managed internally.
 
 ### Value labels
 
 Pass `showValues` to draw each bar's formatted value centered inside its own
-sector, in a color chosen for WCAG contrast against the bar's fill — not at
-the rim, since the rim just outside the bars is already claimed by the
-always-on category label. A sector too thin or too narrow to hold the label
-legibly skips it. Default `false`.
+sector, in a color chosen for WCAG contrast against the bar's fill — not at the
+rim, since the rim just outside the bars is already claimed by the always-on
+category label. A sector too thin or too narrow to hold the label legibly skips
+it. Default `false`.
 
 ```jsx live
 const App = () => (
@@ -159,6 +191,40 @@ const App = () => (
           ]}
           showValues
           ariaLabel="Radial bar chart of revenue by channel, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Center total
+
+Pass `showTotal` to center the data's grand total in the chart — or, while a
+sector is hovered/focused, that sector's own value and category — the same
+two-line "big number, small caption" convention
+[`DonutChart`](/charts/donut-chart) already uses for its center label. Unlike
+`DonutChart`'s hover state, which shows a _share_ of the total (a donut is
+inherently part-to-whole), this always shows a plain magnitude:
+`RadialBarChart`'s bars aren't guaranteed to sum to a meaningful whole, so a
+percentage here would imply a relationship the chart doesn't actually promise.
+Default `false`.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <RadialBarChart
+          width={width}
+          height={height}
+          data={[
+            { category: "Web", value: 4200 },
+            { category: "Mobile", value: 3100 },
+            { category: "Retail", value: 2400 },
+          ]}
+          showTotal
+          ariaLabel="Radial bar chart of revenue by channel, with a center total"
         />
       )}
     </ResponsiveContainer>
