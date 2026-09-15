@@ -15,6 +15,8 @@ import { useChartFormatters } from "../../chart/format-locale";
 import { histogramBins } from "../../stats";
 import type { Bin } from "d3-array";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { clamp, plotPointerPosition } from "../../chart/pointer";
 
 export interface HistogramProps extends DatumInteractionProps<
   Bin<number, number>
@@ -61,6 +63,11 @@ export function Histogram({
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
+  // Live pointer y (plot-local), while a bin is being hovered by mouse --
+  // null once the pointer leaves, so the tooltip falls back to the bin's
+  // own value-derived position rather than a stale coordinate from a
+  // previous hover.
+  const [pointerY, setPointerY] = useState<number | null>(null);
 
   const domain = useMemo(() => extent(values) as [number, number], [values]);
   const bins = useMemo(() => {
@@ -88,11 +95,16 @@ export function Histogram({
     ]),
   };
 
+  // Named so the pointer math below (which needs the same left/top offset
+  // xScale/yScale are drawn relative to) can never drift from what's
+  // actually passed to ChartContainer.
+  const MARGIN = { top: 12, right: 16, bottom: 28, left: 40 };
+
   return (
     <ChartContainer
       width={width}
       height={height}
-      margin={{ top: 12, right: 16, bottom: 28, left: 40 }}
+      margin={MARGIN}
       ariaLabel={label}
       table={table}
     >
@@ -145,7 +157,11 @@ export function Histogram({
               const x1 = xScale(b.x1 ?? domain[1]);
               const barWidth = Math.max(0, x1 - x0 - BAR_GAP);
               const barHeight = Math.max(0, innerHeight - yScale(b.length));
-              const active = hover == null || hover === i;
+              // Outline the hovered bin; never dim its siblings
+              // (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the one shared
+              // convention, replacing a per-chart "dim everyone else"
+              // opacity ternary).
+              const isHovered = hover === i;
               return (
                 <BarRounded
                   key={`${b.x0}-${b.x1}`}
@@ -156,13 +172,21 @@ export function Histogram({
                   radius={3}
                   top
                   fill={theme.accent}
-                  opacity={active ? 1 : 0.4}
-                  onMouseEnter={() => {
+                  stroke={isHovered ? theme.ink : "none"}
+                  strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
+                  onMouseEnter={(e) => {
                     setHover(i);
+                    const p = plotPointerPosition(e, MARGIN);
+                    if (p) setPointerY(p.y);
                     onDatumHover?.({ datum: b, index: i });
+                  }}
+                  onMouseMove={(e) => {
+                    const p = plotPointerPosition(e, MARGIN);
+                    if (p) setPointerY(p.y);
                   }}
                   onMouseLeave={() => {
                     setHover(null);
+                    setPointerY(null);
                     onDatumHover?.(null);
                   }}
                   onClick={() => onDatumClick?.({ datum: b, index: i })}
@@ -175,7 +199,14 @@ export function Histogram({
                   (xScale(hb.x0 ?? domain[0]) + xScale(hb.x1 ?? domain[1])) / 2
                 }
                 innerWidth={innerWidth}
-                top={Math.max(0, yScale(hb.length) - 4)}
+                top={
+                  // Live pointer y while the mouse is the hover source;
+                  // falls back to the bin's own value-derived position
+                  // otherwise (there is no keyboard focus path here).
+                  pointerY != null
+                    ? clamp(pointerY, innerHeight)
+                    : Math.max(0, yScale(hb.length) - 4)
+                }
                 lines={[
                   `${valueFmt(hb.x0 ?? domain[0])} – ${valueFmt(
                     hb.x1 ?? domain[1]

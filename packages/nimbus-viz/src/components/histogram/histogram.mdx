@@ -144,8 +144,10 @@ const App = () => (
 
 The x-axis is a linear value scale over the sample extent (about six ticks,
 compact-formatted); the y-axis is a linear count scale (four ticks, integer
-labels) with horizontal gridlines. Hovering a bin dims the others to 0.4 opacity
-and shows a tooltip with the bin's value range and its count.
+labels) with horizontal gridlines. Hovering a bin outlines that one bin (its
+siblings are never dimmed) and shows a tooltip with the bin's value range and
+its count; the tooltip's position tracks the pointer while it stays inside
+that bin.
 
 ### Overlays (`children`)
 
