@@ -14,11 +14,10 @@ import { lttb } from "../../chart/decimate";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { Series, SeriesPoint } from "../../chart/types";
-import type { DatumInteractionProps } from "../../chart/interaction";
+import { useControlledSelection } from "../../chart/interaction";
+import type { InteractionProps } from "../../chart/interaction";
 
-export interface LineChartProps<
-  T = SeriesPoint,
-> extends DatumInteractionProps<T> {
+export interface LineChartProps<T = SeriesPoint> extends InteractionProps<T> {
   /** Plot width in pixels — supply from `ResponsiveContainer`. */
   width: number;
   /** Plot height in pixels — supply from `ResponsiveContainer`. */
@@ -82,6 +81,8 @@ export function LineChart<T = SeriesPoint>({
   valueFormat,
   onDatumClick,
   onDatumHover,
+  selection,
+  onSelectionChange,
   children,
   decimateThreshold,
 }: LineChartProps<T>) {
@@ -90,6 +91,21 @@ export function LineChart<T = SeriesPoint>({
   const valueFmt = valueFormat ?? formatters.compact;
   const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  // Crossfilter-style semantics, matching `SelectionProps`'s own "linked
+  // views / crossfilter" contract: an EMPTY selection means no filter --
+  // every series shown (today's unchanged default). Clicking a legend item
+  // toggles that series' id in/out of the selection; once non-empty, only
+  // the series IN the selection are shown (so the first click filters down
+  // to just that one; a second click on another item adds it; clicking a
+  // selected item again removes it, shrinking back toward "empty = all").
+  // Shift-click isolates -- jumps straight to a single-series selection
+  // regardless of what was already selected. This is on by default (no prop
+  // required); `selection`/`onSelectionChange` only make the set controlled.
+  const [activeSelection, toggleSeries, isolateSeries] = useControlledSelection(
+    selection,
+    onSelectionChange
+  );
+  const isFiltering = activeSelection.size > 0;
 
   const getX = useCallback(
     (d: T): number | Date => (x ? x(d) : (d as SeriesPoint).x),
@@ -160,6 +176,55 @@ export function LineChart<T = SeriesPoint>({
           ? series.map((s, i) => ({ label: s.label, color: colorFor(i) }))
           : undefined
       }
+      legendRenderItem={
+        showLegend
+          ? (item, i) => {
+              const id = series[i].id;
+              const visible = !isFiltering || activeSelection.has(id);
+              return (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    if (e.shiftKey) isolateSeries(id);
+                    else toggleSeries(id);
+                  }}
+                  aria-pressed={activeSelection.has(id)}
+                  title="Click to show/hide -- shift-click to isolate"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: 0,
+                    margin: 0,
+                    border: "none",
+                    background: "none",
+                    font: "inherit",
+                    color: "inherit",
+                    cursor: "pointer",
+                    // Dimming the whole button (text included) via `opacity`
+                    // drops the label below WCAG contrast -- dim only the
+                    // decorative swatch (below) and strike the label text
+                    // instead, so "hidden" stays a real ≥4.5:1 contrast.
+                    textDecoration: visible ? "none" : "line-through",
+                  }}
+                >
+                  <span
+                    aria-hidden
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: 2,
+                      background: item.color,
+                      display: "inline-block",
+                      opacity: visible ? 1 : 0.35,
+                    }}
+                  />
+                  {item.label}
+                </button>
+              );
+            }
+          : undefined
+      }
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
@@ -205,6 +270,7 @@ export function LineChart<T = SeriesPoint>({
 
             {series.map((s, i) => {
               const color = colorFor(i);
+              const visible = !isFiltering || activeSelection.has(s.id);
               return variant === "area" ? (
                 <AreaClosed<T>
                   key={s.id}
@@ -219,6 +285,7 @@ export function LineChart<T = SeriesPoint>({
                   fillOpacity={0.16}
                   stroke={color}
                   strokeWidth={2}
+                  opacity={visible ? 1 : 0}
                 />
               ) : (
                 <LinePath<T>
@@ -226,6 +293,7 @@ export function LineChart<T = SeriesPoint>({
                   data={drawData[i]}
                   x={(p) => xScale(toDate(getX(p)))}
                   y={(p) => yScale(getY(p) ?? 0)}
+                  opacity={visible ? 1 : 0}
                   curve={curveMonotoneX}
                   defined={(p) => getY(p) != null}
                   stroke={color}
@@ -250,6 +318,7 @@ export function LineChart<T = SeriesPoint>({
                   const p = s.data[hoverIndex];
                   const py = p != null ? getY(p) : undefined;
                   if (!p || py == null) return null;
+                  if (isFiltering && !activeSelection.has(s.id)) return null;
                   return (
                     <circle
                       key={s.id}

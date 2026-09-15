@@ -259,11 +259,36 @@ readout. Internal hover state is managed regardless of whether you pass them.
 />
 ```
 
-### Legend (automatic)
+### Legend & selection (interactive)
 
-Not configurable — a legend appears automatically for **two or more** series
-(labels mapped to their series color) and is omitted for a single series, where
-color is not load-bearing. There is no `legend` prop to toggle it.
+A legend appears automatically for **two or more** series (labels mapped to
+their series color) and is omitted for a single series, where color is not
+load-bearing. There is no `legend` prop to toggle its presence, but every legend
+item is clickable: a plain click toggles that series' id in or out of an
+internal selection, and once the selection is non-empty **only the series in it
+are drawn** — clicking a second item adds it, clicking a selected item again
+removes it (shrinking back toward "empty = every series shown", the default).
+Shift-click **isolates** — jumps straight to a single-series selection
+regardless of what was already selected.
+
+`selection`/`onSelectionChange` lift this to controlled state (the crossfilter /
+linked-views contract shared by every chart that adopts `SelectionProps`) so a
+click here can drive another chart, or a click elsewhere can filter this one:
+
+```tsx
+const [selection, setSelection] = useState<ReadonlySet<string>>(new Set());
+
+<LineChart
+  width={width}
+  height={height}
+  series={series}
+  selection={selection}
+  onSelectionChange={setSelection}
+/>;
+```
+
+Omit both props for the default, uncontrolled behavior above — the internal
+selection starts empty (every series shown) either way.
 
 ### Axes, scales & tooltip (automatic)
 
@@ -306,9 +331,12 @@ Aspect-ratio height:
 
 `ResponsiveContainer` renders nothing until it observes a positive size, and the
 chart returns `null` for a non-positive size — safe inside tabs, drawers, and
-initially-hidden containers. There is no built-in downsampling: every point is
-drawn, so for very long series (thousands of points) decimate or aggregate
-upstream before passing them in.
+initially-hidden containers. For very long series, `decimateThreshold`
+downsamples the **drawn** path via LTTB (`chart/decimate.ts`) once a series
+passes that many points, keeping the visually significant ones (peaks, troughs,
+inflections) so the shape doesn't visibly change — the axis domain, hover
+readout, and data table still read every point regardless. Omit it for no
+decimation (today's default: every point drawn).
 
 ## Accessibility
 
@@ -339,6 +367,10 @@ What you get automatically:
   (contrast + color-vision-deficiency checks), not ad-hoc colors.
 - **Non-color encoding.** Trend is carried by line position and slope; color
   only distinguishes series and is restated by the legend and tooltip labels.
+- **Keyboard-operable legend.** Each legend entry is a real `<button>` (`Tab` to
+  reach it, `Enter`/`Space` to activate) with `aria-pressed` reflecting its
+  selection state — the click-to-toggle / shift-isolate filtering above ("Legend
+  & selection") works the same from the keyboard.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the series rather than "the
@@ -370,7 +402,10 @@ render your own placeholder when there is no data yet.
   `ChartContainer`.
 - **Single-index hover.** Click/hover callbacks report the first series' point
   at the resolved x-index, not a per-series datum.
-- **No downsampling** — very long series are drawn point-for-point.
+- **Tooltip and data table are unfiltered.** Toggling series off via the
+  legend/`selection` hides their drawn line and hover marker, but the tooltip's
+  per-series lines and the full data table still list every series regardless of
+  the current selection.
 
 ## Related charts
 

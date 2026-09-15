@@ -138,22 +138,74 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       type argument.
 
       Deliberately excluded, each for a real reason: `gauge` / `stat-card`
-                                                  (a single value has no discrete second "mark" to report a click on --
-                                                  the whole chart already is the one datum, which is what `value`/`label`
-                                                  already are); `sparkline` (explicitly minimal by design -- "no axes, no
-                                                  gridlines, no tick labels", a decorative inline glyph, not an
-                                                  interactive chart); `data-table` (the guaranteed no-throw HTML fallback
-                                                  shell used internally by `ChartContainer`, not a chart with visual
-                                                  marks -- its own doc comment already flags it as a temporary stand-in
-                                                  pending a real `@commercetools/nimbus` `DataTable`).
+                                                      (a single value has no discrete second "mark" to report a click on --
+                                                      the whole chart already is the one datum, which is what `value`/`label`
+                                                      already are); `sparkline` (explicitly minimal by design -- "no axes, no
+                                                      gridlines, no tick labels", a decorative inline glyph, not an
+                                                      interactive chart); `data-table` (the guaranteed no-throw HTML fallback
+                                                      shell used internally by `ChartContainer`, not a chart with visual
+                                                      marks -- its own doc comment already flags it as a temporary stand-in
+                                                      pending a real `@commercetools/nimbus` `DataTable`).
 
-                                                  Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
-                                                  all green; eslint clean on every touched file (28 chart `.tsx` files).
+                                                      Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
+                                                      all green; eslint clean on every touched file (28 chart `.tsx` files).
 
-- [ ] **A3 — controlled selection + interactive legend.** Lift internal hover to
-      controlled/uncontrolled (`selection`/`onSelectionChange`,
-      `useControlledSelection` exists); legend click-to-toggle / shift-isolate
-      series visibility. Bigger; per-chart selected-state rendering.
+- [x] **A3 — controlled selection + interactive legend.** Done, on the
+      `LineChart` reference chart (chosen: it already has both a multi-series
+      legend and a hover model to compose against).
+
+      `chart/interaction.ts`'s `useControlledSelection` extended from a
+          2-tuple `[selected, toggle]` to a 3-tuple `[selected, toggle, isolate]`
+          -- `isolate(id)` replaces the whole selection with `new Set([id])`,
+          respecting the same controlled/uncontrolled duality as `toggle` (only
+          writes local state when uncontrolled; always calls `onChange`).
+          Backward-compatible: the existing spec only indexed `[0]`/`[1]`, so no
+          existing test needed touching; two new tests cover `isolate` in both
+          modes.
+
+          `LineChart` now `extends InteractionProps<T>` (the full contract --
+          datum callbacks + selection -- rather than just
+          `DatumInteractionProps<T>`) and wires
+          `useControlledSelection(selection, onSelectionChange)`. Semantics are
+          crossfilter-style, matching `SelectionProps`'s own "linked views /
+          crossfilter" doc comment: an empty selection is "no filter" (every
+          series shown -- today's unchanged default); once non-empty, only series
+          IN the selection are drawn. A legend click toggles that series' id in/out
+          of the selection (so the FIRST click on an item filters down to just
+          it, not "hide only this one"; a second item adds to the filter;
+          clicking a selected item again removes it, shrinking back toward
+          empty). Shift-click isolates via the new `isolate()`. This is on by
+          default, unconditionally -- no new opt-in prop gates it, since it's an
+          interaction affordance, not a rendering default; the byte-identical
+          guarantee that matters here is the REST state (empty selection -> every
+          series at full opacity, identical output to before this item) as
+          `LineChart`'s own new `InteractiveLegend` story asserts explicitly.
+          Legend items became real `<button>`s (`aria-pressed`, keyboard
+          Tab/Enter/Shift+Enter all work as the native activation contract
+          provides) instead of plain `<li>` text -- dimming a hidden series in
+          the legend uses `text-decoration: line-through` on the label plus a
+          lower `opacity` on the *decorative* swatch only, not on the button as a
+          whole, because dimming the whole button (label included) dropped
+          contrast below WCAG 4.5:1 and tripped `addon-a11y`'s `test: "error"`
+          gate -- caught by the story's own run, not by inspection. Hidden series'
+          drawn `LinePath`/`AreaClosed` get `opacity={0}` (kept in the DOM, not
+          removed) and their hover-crosshair circle is skipped; the tooltip and
+          data table are deliberately left unfiltered (documented in
+          `line-chart.mdx` Limitations) -- they always list every series,
+          selection or not.
+
+          Not attempted: rolling `selection`/`onSelectionChange` /
+          `InteractionProps<T>` out to any other chart, or an actual cross-chart
+          linked-selection demo (e.g. two charts sharing one lifted `useState`) --
+          both are real, mechanical follow-ups for whichever chart needs them
+          next, following this same pattern.
+
+          Verified: `pnpm --filter @commercetools/nimbus-viz typecheck` /
+          `test` (816 passing, +3) / `build` all green; `eslint` clean on every
+          touched file; the storybook project's own `Accessibility` story needed
+          a fix (the new legend buttons add focusable stops ahead of the
+          existing "view data as table" toggle, so a fixed-count `Tab` assumption
+          broke -- replaced with a bounded tab-until-focused loop).
 
 ### Phase C — type surface
 
@@ -443,39 +495,39 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       without breaking the stack's alignment — left out, not attempted.
 
       `ScatterPlot` gains `quadtreeHitRadius?: number` — when set, swaps each
-                      point's own `onMouseEnter`/`onClick` listener for one plot-wide
-                      `d3-quadtree` nearest-point lookup on a single transparent overlay
-                      (one DOM listener regardless of point count, and the nearest point
-                      wins even where dots overlap, unlike native per-element hit-testing
-                      where whichever is on top of the DOM stack always wins). Chosen as the
-                      reference chart over `BubbleChart` because it already has its own
-                      tested `Interaction` story (real regression risk to rework); omitting
-                      the prop keeps today's per-circle listeners byte-identical. New real
-                      dependency: `d3-quadtree` (+ `@types/d3-quadtree`), added to the `viz`
-                      pnpm catalog alongside the other `d3-*` deps (not the workspace
-                      default catalog `pnpm add` reaches for by default — moved by hand to
-                      keep the convention).
+                          point's own `onMouseEnter`/`onClick` listener for one plot-wide
+                          `d3-quadtree` nearest-point lookup on a single transparent overlay
+                          (one DOM listener regardless of point count, and the nearest point
+                          wins even where dots overlap, unlike native per-element hit-testing
+                          where whichever is on top of the DOM stack always wins). Chosen as the
+                          reference chart over `BubbleChart` because it already has its own
+                          tested `Interaction` story (real regression risk to rework); omitting
+                          the prop keeps today's per-circle listeners byte-identical. New real
+                          dependency: `d3-quadtree` (+ `@types/d3-quadtree`), added to the `viz`
+                          pnpm catalog alongside the other `d3-*` deps (not the workspace
+                          default catalog `pnpm add` reaches for by default — moved by hand to
+                          keep the convention).
 
-                      Found and fixed along the way: `apps/viz-dashboard/src/shell/ui.tsx`'s
-                      `KpiTile` still forwarded its own `format` prop to `StatCard` as
-                      `format={format}` — broken since `A2-tail` renamed that prop to
-                      `valueFormat`, caught by running `viz-dashboard`'s own typecheck (not
-                      part of the per-batch `nimbus-viz`-only gates used everywhere else this
-                      session) after this batch. Fixed the one forwarding site; every
-                      `KpiTile` call site elsewhere keeps its own `format` prop name
-                      unchanged (that's `KpiTile`'s own API, not `StatCard`'s).
+                          Found and fixed along the way: `apps/viz-dashboard/src/shell/ui.tsx`'s
+                          `KpiTile` still forwarded its own `format` prop to `StatCard` as
+                          `format={format}` — broken since `A2-tail` renamed that prop to
+                          `valueFormat`, caught by running `viz-dashboard`'s own typecheck (not
+                          part of the per-batch `nimbus-viz`-only gates used everywhere else this
+                          session) after this batch. Fixed the one forwarding site; every
+                          `KpiTile` call site elsewhere keeps its own `format` prop name
+                          unchanged (that's `KpiTile`'s own API, not `StatCard`'s).
 
-                      Stories: `line-chart.stories.tsx`'s `Decimated` (500 points, threshold
-                      60) counts the drawn path's command letters directly, proving the
-                      point count actually drops and the shape survives (not collapsed
-                      flat); `scatter-plot.stories.tsx`'s `QuadtreeHitTest` fires a
-                      `mousemove` at one point's exact rendered position and asserts
-                      `onDatumHover` reports that point's real datum and index through the
-                      one overlay listener.
-                      Verified: `pnpm typecheck` / `pnpm test` (802 passing) / `pnpm build`
-                      / `pnpm check:package-shape` / `pnpm check:bundle-size` all green;
-                      `viz-dashboard`'s own `typecheck` and `build` also green; eslint clean
-                      on every touched file.
+                          Stories: `line-chart.stories.tsx`'s `Decimated` (500 points, threshold
+                          60) counts the drawn path's command letters directly, proving the
+                          point count actually drops and the shape survives (not collapsed
+                          flat); `scatter-plot.stories.tsx`'s `QuadtreeHitTest` fires a
+                          `mousemove` at one point's exact rendered position and asserts
+                          `onDatumHover` reports that point's real datum and index through the
+                          one overlay listener.
+                          Verified: `pnpm typecheck` / `pnpm test` (802 passing) / `pnpm build`
+                          / `pnpm check:package-shape` / `pnpm check:bundle-size` all green;
+                          `viz-dashboard`'s own `typecheck` and `build` also green; eslint clean
+                          on every touched file.
 
 - [ ] **`#20` brush / linked views.** Wire `src/chart/brush.tsx` + a
       `SelectionProvider` (broadcast a brushed domain / highlighted entity-set

@@ -54,11 +54,16 @@ export interface InteractionProps<T = unknown>
  * component is controlled (the hook never mutates local state); otherwise it
  * manages its own. `onChange` always fires with the next set so a parent can
  * link views regardless of which mode it's in.
+ *
+ * Returns `[selected, toggle, isolate]`: `toggle(id)` adds/removes one id
+ * (a plain legend click); `isolate(id)` replaces the whole selection with
+ * just `id` (a shift-click "show only this one" — `LineChart`'s legend uses
+ * both for its click-to-toggle / shift-isolate visibility).
  */
 export function useControlledSelection(
   controlled?: ReadonlySet<string>,
   onChange?: SelectionChangeHandler
-): [ReadonlySet<string>, (id: string) => void] {
+): [ReadonlySet<string>, (id: string) => void, (id: string) => void] {
   const [internal, setInternal] = useState<ReadonlySet<string>>(
     () => new Set()
   );
@@ -75,5 +80,14 @@ export function useControlledSelection(
     [selected, controlled, onChange]
   );
 
-  return [selected, toggle];
+  const isolate = useCallback(
+    (id: string) => {
+      const next = new Set([id]);
+      if (controlled === undefined) setInternal(next);
+      onChange?.(next);
+    },
+    [controlled, onChange]
+  );
+
+  return [selected, toggle, isolate];
 }

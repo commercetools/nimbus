@@ -72,10 +72,15 @@ export const Accessibility: BaseStory = {
     });
 
     await step("Data table is reachable by keyboard", async () => {
-      await userEvent.tab();
       const toggle = canvas.getByRole("button", {
         name: /view data as table/i,
       });
+      // `A3`'s interactive legend adds its own focusable buttons (EU, US)
+      // ahead of the toggle in DOM order, so reaching it now takes more than
+      // one Tab -- loop rather than assume a fixed count.
+      for (let i = 0; i < 10 && document.activeElement !== toggle; i++) {
+        await userEvent.tab();
+      }
       expect(toggle).toHaveFocus();
       await userEvent.keyboard("{Enter}");
       await waitFor(() => {
@@ -300,6 +305,94 @@ export const EdgeCaseNegativeArea: BaseStory = {
     const path = canvasElement.querySelector<SVGPathElement>("path")!;
     const bbox = path.getBBox();
     expect(bbox.y).toBeLessThan(3); // ≈ yScale(0), not the line's own ≈40 top
+  },
+};
+
+/**
+ * `A3`: the legend is click-to-toggle / shift-click-to-isolate by default --
+ * no props required. Uncontrolled here (`selection`/`onSelectionChange` both
+ * omitted): `useControlledSelection` manages its own set internally.
+ *
+ * Crossfilter semantics (matching `SelectionProps`'s "linked views /
+ * crossfilter" contract): an empty selection is "no filter" -- every series
+ * shown, today's unchanged default. A plain click toggles that series' id
+ * in/out of the selection; once non-empty, only series IN the selection are
+ * shown -- so the FIRST click on an item filters down to just that one (not
+ * "hide only this one"); clicking a second item adds it to the filter;
+ * clicking a selected item again removes it, shrinking back toward "empty =
+ * show all". Shift-click isolates -- jumps straight to a single-series
+ * selection regardless of what was already selected.
+ */
+export const InteractiveLegend: BaseStory = {
+  render: () => (
+    <LineChart
+      width={480}
+      height={280}
+      series={fixture}
+      ariaLabel="Line chart of sessions by region, with a clickable legend"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const paths = () =>
+      Array.from(canvasElement.querySelectorAll<SVGPathElement>("path"));
+    // `opacity` is set as a plain SVG presentation attribute (visx spreads
+    // it onto the <path>, not via inline `style`), so read it with
+    // `getAttribute`, not `el.style.opacity`.
+    const opacityOf = (el: SVGPathElement) => {
+      const a = el.getAttribute("opacity");
+      return a == null ? 1 : Number(a);
+    };
+
+    await step("At rest, every series is fully visible", async () => {
+      const [euPath, usPath] = paths();
+      expect(opacityOf(euPath)).toBe(1);
+      expect(opacityOf(usPath)).toBe(1);
+    });
+
+    await step("Clicking one legend item filters down to just it", async () => {
+      const usItem = canvas.getByRole("button", { name: /US/i });
+      await userEvent.click(usItem);
+      const [euPath, usPath] = paths();
+      expect(opacityOf(euPath)).toBe(0);
+      expect(opacityOf(usPath)).toBe(1);
+      expect(usItem).toHaveAttribute("aria-pressed", "true");
+    });
+
+    await step(
+      "Clicking the same item again clears the filter (back to all shown)",
+      async () => {
+        const usItem = canvas.getByRole("button", { name: /US/i });
+        await userEvent.click(usItem);
+        const [euPath, usPath] = paths();
+        expect(opacityOf(euPath)).toBe(1);
+        expect(opacityOf(usPath)).toBe(1);
+        expect(usItem).toHaveAttribute("aria-pressed", "false");
+      }
+    );
+
+    await step(
+      "Shift-clicking isolates that item regardless of the prior selection",
+      async () => {
+        // Select both first (US, then EU) so the selection has >1 member,
+        // proving isolate REPLACES it rather than adding to it.
+        await userEvent.click(canvas.getByRole("button", { name: /US/i }));
+        await userEvent.click(canvas.getByRole("button", { name: /EU/i }));
+        expect(opacityOf(paths()[0])).toBe(1); // EU
+        expect(opacityOf(paths()[1])).toBe(1); // US
+
+        // `userEvent.keyboard("{Shift>}")` held across a separate
+        // `userEvent.click()` doesn't reliably carry `shiftKey` onto the
+        // dispatched click in this runner -- `fireEvent` lets the modifier
+        // be set directly on the one event, matching the component's own
+        // `e.shiftKey` check.
+        const euItem = canvas.getByRole("button", { name: /EU/i });
+        fireEvent.click(euItem, { shiftKey: true });
+        const [euPath, usPath] = paths();
+        expect(opacityOf(euPath)).toBe(1);
+        expect(opacityOf(usPath)).toBe(0);
+      }
+    );
   },
 };
 
