@@ -257,9 +257,36 @@ const App = () => (
 
 ### Overlays (`children`)
 
-In the vertical orientation you can layer Layer-2 annotations (e.g.
-`ReferenceLine`, `TargetMarker`) over the value axis by passing them as
-`children`. Overlays are not wired for the horizontal (ranked) orientation.
+Layer-2 annotations (e.g. `ReferenceLine`, `TargetMarker`) can be layered over
+the value axis by passing them as `children`, in **either** orientation.
+Overlays that know the difference between the value axis and the position axis
+(`ReferenceLine`, `ThresholdBand`) draw correctly in both without any prop
+change on the overlay itself — the horizontal (ranked) orientation publishes
+`ChartScales.orientation: "horizontal"` (value on x instead of y), which those
+overlays read to flip which screen direction they draw in.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <BarChart
+          width={width}
+          height={height}
+          data={[
+            { category: "Web", value: 4200 },
+            { category: "Mobile", value: 3100 },
+            { category: "Retail", value: 2400 },
+          ]}
+          orientation="horizontal"
+        >
+          <ReferenceLine value={3500} label="Target" variant="accent" />
+        </BarChart>
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
 
 ### Interaction callbacks
 
@@ -391,8 +418,12 @@ render your own placeholder when there is no data yet.
   [`StackedBarChart`](/charts/stacked-bar-chart).
 - **No legend, title, caption, loading, or error passthrough** — `BarChart`
   forwards only `ariaLabel` and the data table to `ChartContainer`.
-- **Overlays are vertical-only** (the ranked orientation transposes the value
-  axis).
+- **Not every overlay is orientation-aware yet.** `ReferenceLine` and
+  `ThresholdBand` draw correctly in both orientations; the rest of `overlays/`
+  (`NowLine`, `TargetMarker`, `TrendLine`, `ConfidenceBand`, `BenchmarkSeries`,
+  `Annotation`, `EventMarkers`, `ErrorBars`) still assume the value axis is y —
+  composing one of those on the horizontal orientation draws it as if the chart
+  were still vertical.
 
 ## Related charts
 

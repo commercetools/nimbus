@@ -24,6 +24,20 @@ export interface ChartScales {
   xBandwidth: number;
   innerWidth: number;
   innerHeight: number;
+  /**
+   * Which screen axis carries the chart's VALUE (magnitude) dimension.
+   * Default `"vertical"` (value on `yScale`, position on `xScale`) — every
+   * provider that omits this field (all of them, before `A1b`) is
+   * unaffected. A chart whose value axis runs along x instead — `BarChart`'s
+   * `orientation="horizontal"`, and (not yet wired) `dumbbell`, `beeswarm`,
+   * `gantt` — publishes `"horizontal"`, so an orientation-aware overlay (see
+   * `ReferenceLine`, `ThresholdBand`) knows which of `xScale`/`yScale` is
+   * actually the value axis instead of assuming it's always `yScale`. This
+   * does not change what `xScale`/`yScale` themselves compute — a chart
+   * still hands its OWN real value/position scale to whichever field is
+   * correct for it; `orientation` only tells overlays which field that was.
+   */
+  orientation?: "vertical" | "horizontal";
 }
 
 const ChartScaleContext = createContext<ChartScales | null>(null);

@@ -60,9 +60,10 @@ export interface BarChartProps<T = CategoryDatum> {
   /** Fired when the hovered datum changes; null when the pointer leaves. */
   onDatumHover?: DatumHoverHandler<T>;
   /** Layer-2 overlays (ReferenceLine, TargetMarker…) on the value axis. Wired
-   *  for the vertical orientation, where the value axis is y; the ranked
-   *  (horizontal) orientation transposes the value axis and is not yet a
-   *  supported overlay surface (see docs/09). */
+   *  in both orientations (`A1b`) -- the horizontal (ranked) orientation
+   *  publishes `ChartScales.orientation: "horizontal"` (value on x), so an
+   *  orientation-aware overlay (`ReferenceLine`, `ThresholdBand`) draws
+   *  correctly there too, without the caller having to compensate. */
   children?: ReactNode;
 }
 
@@ -213,7 +214,27 @@ export function BarChart<T = CategoryDatum>({
           const bh = band.bandwidth;
           const zeroX = xScale(0);
           return (
-            <>
+            <ChartScaleProvider
+              value={{
+                // `xScale` is the real value scale here (horizontal
+                // orientation: value runs along x) -- an orientation-aware
+                // overlay (`ReferenceLine`, `ThresholdBand`) reads it as the
+                // value axis via `orientation: "horizontal"` below, the same
+                // way it reads `yScale` on the default vertical orientation.
+                xScale: (v) => xScale(Number(v)),
+                // `yScale` here maps a ROW INDEX to its band's pixel center
+                // -- the position axis -- mirroring how the vertical
+                // orientation's own `xScale` maps an index to `band.center`.
+                yScale: (v) => {
+                  const idx = Math.round(v);
+                  return rows[idx] != null ? band.center(idx) : 0;
+                },
+                xBandwidth: bh,
+                innerWidth,
+                innerHeight,
+                orientation: "horizontal",
+              }}
+            >
               {rows.map((d, i) => {
                 const y = band.pos(i);
                 const xVal = xScale(getVal(d));
@@ -290,7 +311,8 @@ export function BarChart<T = CategoryDatum>({
                   </g>
                 );
               })}
-            </>
+              {children}
+            </ChartScaleProvider>
           );
         }}
       </ChartContainer>

@@ -9,8 +9,16 @@ export interface ThresholdBandProps {
   from: number | Date;
   /** The other edge of the band, in data units. */
   to: number | Date;
-  /** "horizontal" = a value-axis band (a healthy range); "vertical" = a
-   *  position-axis band (a highlighted time window). */
+  /**
+   * "horizontal" (default) = a band across the VALUE axis (a healthy
+   * range); "vertical" = a band on the POSITION axis (a highlighted time
+   * window). These names describe the axis being spanned, not the drawn
+   * band's screen direction — see `ReferenceLine`'s doc comment for the
+   * same orientation-aware contract; a chart whose value axis runs along x
+   * instead of y (`ChartScales.orientation === "horizontal"`) flips which
+   * screen direction each prop value produces, keeping the prop's meaning
+   * ("value" vs. "position") stable across chart orientations.
+   */
   orientation?: "horizontal" | "vertical";
   variant?: OverlayVariant;
   label?: string;
@@ -30,11 +38,22 @@ export function ThresholdBand({
   variant = "neutral",
   label,
 }: ThresholdBandProps) {
-  const { yScale, xScale, innerWidth, innerHeight } = useChartScales();
+  const {
+    yScale,
+    xScale,
+    innerWidth,
+    innerHeight,
+    orientation: chartOrientation = "vertical",
+  } = useChartScales();
   const theme = useChartTheme();
   const color = overlayColor(theme, variant);
 
-  if (orientation === "vertical") {
+  // See `ReferenceLine` for the derivation of this truth table.
+  const isValueAxis = orientation === "horizontal";
+  const chartValueIsX = chartOrientation === "horizontal";
+  const drawVertical = isValueAxis === chartValueIsX;
+
+  if (drawVertical) {
     const x1 = xScale(from instanceof Date ? from : Number(from));
     const x2 = xScale(to instanceof Date ? to : Number(to));
     const left = Math.min(x1, x2);

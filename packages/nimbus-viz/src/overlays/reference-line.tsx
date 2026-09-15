@@ -8,8 +8,16 @@ export interface ReferenceLineProps {
   /** Data value on the referenced axis (a number on the value axis; a number
    *  or Date on the position axis when `orientation="vertical"`). */
   value: number | Date;
-  /** "horizontal" = a level across the value axis; "vertical" = a marker on
-   *  the position axis (e.g. a launch date). */
+  /**
+   * "horizontal" (default) = a level across the VALUE axis (a target,
+   * threshold, SLA); "vertical" = a marker on the POSITION axis (e.g. a
+   * launch date). These names describe the axis being marked, not the
+   * drawn line's screen direction — on a chart whose value axis runs along
+   * x instead of y (`ChartScales.orientation === "horizontal"`, e.g.
+   * `BarChart`'s ranked orientation), the SAME prop value keeps meaning
+   * "value" / "position" and only the rendered line's screen direction
+   * flips to match.
+   */
   orientation?: "horizontal" | "vertical";
   variant?: OverlayVariant;
   dashed?: boolean;
@@ -28,12 +36,29 @@ export function ReferenceLine({
   dashed = true,
   label,
 }: ReferenceLineProps) {
-  const { yScale, xScale, innerWidth, innerHeight } = useChartScales();
+  const {
+    yScale,
+    xScale,
+    innerWidth,
+    innerHeight,
+    orientation: chartOrientation = "vertical",
+  } = useChartScales();
   const theme = useChartTheme();
   const color = overlayColor(theme, variant);
   const dash = dashed ? "4 3" : undefined;
 
-  if (orientation === "vertical") {
+  // `orientation` names the AXIS being marked ("horizontal" = value,
+  // "vertical" = position); which of xScale/yScale is the value axis
+  // depends on the chart's own orientation. A screen-vertical line is drawn
+  // exactly when "is this the value axis?" and "is the chart's value axis
+  // x?" agree (both true: value axis is x, draw vertical; both false: chart
+  // is the default vertical-value shape and this is a position marker on
+  // x, today's original behavior).
+  const isValueAxis = orientation === "horizontal";
+  const chartValueIsX = chartOrientation === "horizontal";
+  const drawVertical = isValueAxis === chartValueIsX;
+
+  if (drawVertical) {
     const x = xScale(value instanceof Date ? value : Number(value));
     return (
       <g style={{ pointerEvents: "none" }}>

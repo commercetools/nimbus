@@ -1,7 +1,7 @@
 import type { Meta } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor, fn } from "storybook/test";
 import { BarChart } from "./bar-chart";
-import { ResponsiveContainer, type CategoryDatum } from "../..";
+import { ResponsiveContainer, ReferenceLine, type CategoryDatum } from "../..";
 import { RegistryPreview, type BaseStory } from "../../stories/base-story";
 import { duplicateLabels } from "../../stories/adversarial";
 
@@ -83,9 +83,10 @@ export const Accessibility: BaseStory = {
 
 /**
  * `orientation` isn't a single visual swap — the horizontal (ranked) form
- * also sorts descending and swaps to direct end-labels instead of an axis,
- * and (per `bar-chart.mdx` "Limitations") drops overlay support. Both forms
- * side by side, so a regression in either is visible without diffing props.
+ * also sorts descending and swaps to direct end-labels instead of an axis.
+ * Both forms host overlays as of `A1b` (see `OrientationAwareOverlay`
+ * below) — both are shown side by side here, so a regression in either is
+ * visible without diffing props.
  */
 export const Orientation: BaseStory = {
   render: () => (
@@ -109,6 +110,61 @@ export const Orientation: BaseStory = {
       </div>
     </div>
   ),
+};
+
+/**
+ * `A1b`: a `ReferenceLine` composed as `children` draws correctly in BOTH
+ * orientations with the exact same `value`/default `orientation="horizontal"`
+ * (= "mark the value axis") -- no prop needs to change between them. On the
+ * vertical chart (value on y) it's a level spanning the width; on the
+ * horizontal chart (value on x, `ChartScales.orientation: "horizontal"`) the
+ * SAME props draw a line spanning the height instead, because `ReferenceLine`
+ * reads the chart's own orientation rather than assuming value is always y.
+ */
+export const OrientationAwareOverlay: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <div style={{ flex: 1 }}>
+        <BarChart
+          width={320}
+          height={240}
+          data={fixture}
+          ariaLabel="Bar chart, vertical, with a value threshold line"
+        >
+          <ReferenceLine value={2500} label="Target" variant="accent" />
+        </BarChart>
+      </div>
+      <div style={{ flex: 1 }}>
+        <BarChart
+          width={320}
+          height={240}
+          data={fixture}
+          orientation="horizontal"
+          ariaLabel="Bar chart, horizontal, with the same value threshold line"
+        >
+          <ReferenceLine value={2500} label="Target" variant="accent" />
+        </BarChart>
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // `ReferenceLine`'s dashed line is the only `<line>` with a
+    // `stroke-dasharray` -- axis tick/gridlines have none -- so this
+    // isolates the two overlay lines from the axes' own `<line>`s.
+    const lines = canvasElement.querySelectorAll("line[stroke-dasharray]");
+    expect(lines).toHaveLength(2);
+    const [verticalLine, horizontalChartsLine] = Array.from(lines);
+    // Vertical chart: the value line is screen-HORIZONTAL (y1 === y2).
+    expect(verticalLine.getAttribute("y1")).toBe(
+      verticalLine.getAttribute("y2")
+    );
+    // Horizontal chart: the SAME value line is now screen-VERTICAL
+    // (x1 === x2) -- this is the actual A1b fix, proven end to end against
+    // the real BarChart component, not just the overlay's own unit spec.
+    expect(horizontalChartsLine.getAttribute("x1")).toBe(
+      horizontalChartsLine.getAttribute("x2")
+    );
+  },
 };
 
 /**
