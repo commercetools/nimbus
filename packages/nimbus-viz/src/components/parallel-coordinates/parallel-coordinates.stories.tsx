@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/react-vite";
-import { expect } from "storybook/test";
+import { expect, userEvent, waitFor } from "storybook/test";
 import { ParallelCoordinates, ResponsiveContainer } from "../../";
 import type { BaseStory } from "../../stories/base-story";
 
@@ -36,6 +36,47 @@ const meta: Meta = {
 export default meta;
 
 export const Base: BaseStory = {};
+
+/**
+ * Hover/tooltip UX convergence with `bar-chart.tsx`: hovering a row's
+ * polyline bolds it (thicker stroke, full opacity -- the chart's existing
+ * bump mechanism) and never crushes the other rows' `stroke-opacity` below
+ * their own resting `0.5` baseline (the old mechanism this replaces, which
+ * used to drop siblings to `0.12`). No tooltip-follows-pointer part here --
+ * a thin polyline has no wide mark to move a pointer within.
+ */
+export const HoverEmphasis: BaseStory = {
+  render: () => (
+    <ParallelCoordinates
+      width={480}
+      height={320}
+      dimensions={dimensions}
+      data={data}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const chart = canvasElement.querySelector<SVGElement>('svg[role="img"]');
+    const lines = () =>
+      Array.from(chart!.querySelectorAll<SVGPathElement>("path.visx-linepath"));
+
+    const firstLine = lines()[0];
+    await userEvent.hover(firstLine);
+    await waitFor(() =>
+      expect(lines()[0]).toHaveAttribute("stroke-width", "2.5")
+    );
+
+    // No crushed dimming: every sibling line keeps its normal resting
+    // stroke-opacity (0.5, this chart's permanent density baseline for many
+    // overlapping lines) -- none drops to the old crushed value (0.12)
+    // because another line is hovered.
+    for (const line of lines().slice(1)) {
+      expect(line).toHaveAttribute("stroke-opacity", "0.5");
+    }
+    // Emphasis instead: only the hovered line brightens and thickens.
+    expect(lines()[0]).toHaveAttribute("stroke-opacity", "1");
+    expect(lines()[1]).toHaveAttribute("stroke-width", "1.5");
+  },
+};
 
 /**
  * `D2/D3-rest`: `texture` distinguishes groups by `strokeDasharray` rhythm

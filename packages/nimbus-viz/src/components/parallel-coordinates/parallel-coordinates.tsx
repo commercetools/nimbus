@@ -175,7 +175,6 @@ export function ParallelCoordinates({
           <>
             {/* Row polylines */}
             {data.map((r, i) => {
-              const active = hover === null || hover === i;
               const c = colorFor(r);
               return (
                 <LinePath<Vertex>
@@ -185,9 +184,16 @@ export function ParallelCoordinates({
                   y={(p) => p.y}
                   fill="none"
                   stroke={c}
+                  // Bold the hovered row's line (strokeWidth + a brightened
+                  // strokeOpacity); never dim the other rows below their own
+                  // resting `0.5` baseline (a permanent density choice for
+                  // many overlapping lines, independent of hover) --
+                  // `chart/marks.ts`'s "outline/bump the active mark, don't
+                  // dim its siblings" convention, replacing the previous
+                  // `strokeOpacity={active ? ... : 0.12}` crush.
                   strokeWidth={hover === i ? 2.5 : 1.5}
                   strokeDasharray={dashFor(r)}
-                  strokeOpacity={active ? (hover === i ? 1 : 0.5) : 0.12}
+                  strokeOpacity={hover === i ? 1 : 0.5}
                   onMouseEnter={() => {
                     setHover(i);
                     onDatumHover?.({ datum: r, index: i, seriesId: r.group });

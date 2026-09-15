@@ -254,10 +254,12 @@ const App = () => (
 
 ### Hover & tooltip (automatic)
 
-Not configurable — hovering a polyline raises it to full opacity, fades the rest
-to the background, and shows a tooltip listing that row's `id` (and `group`,
-when set) followed by its value on every dimension. This is how a single record
-is isolated from the bundle.
+Not configurable — hovering a polyline raises it to full opacity and a bolder
+stroke (its siblings are never dimmed below their normal, semi-transparent
+resting opacity — used at rest so many overlapping lines stay legible) and
+shows a tooltip listing that row's `id` (and `group`, when set) followed by its
+value on every dimension. This is how a single record stands out from the
+bundle.
 
 ### Color & theming
 
