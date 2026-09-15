@@ -180,6 +180,60 @@ To follow the app's mode inside a `NimbusProvider`, pass
 validated `nimbus` categorical palette (contrast + color-vision-deficiency
 checks), not ad-hoc CSS colors.
 
+### Texture (non-color branch identity)
+
+Pass `texture` to fill each arc with a per-branch SVG pattern, in addition to
+color, so branches stay distinguishable without color alone — monochrome
+print, a photocopy, or `forced-colors` mode. Every arc takes its **top-level
+ancestor's** pattern, the same rule color already follows, so a branch reads
+as one texture at every depth. It turns on automatically, regardless of this
+prop, when the OS is already in a `forced-colors` context.
+
+```jsx live
+const data = {
+  name: "Revenue",
+  children: [
+    {
+      name: "Web",
+      children: [
+        { name: "New", value: 260 },
+        { name: "Returning", value: 180 },
+      ],
+    },
+    {
+      name: "Mobile",
+      children: [
+        { name: "iOS", value: 150 },
+        { name: "Android", value: 120 },
+      ],
+    },
+    {
+      name: "Retail",
+      children: [
+        { name: "Flagship", value: 90 },
+        { name: "Outlet", value: 60 },
+      ],
+    },
+  ],
+};
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <SunburstChart
+          width={width}
+          height={height}
+          data={data}
+          texture
+          ariaLabel="Sunburst with per-branch textures"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ## Responsiveness & performance
 
 Fixed height:
@@ -239,6 +293,9 @@ What you get automatically:
   (contrast + color-vision-deficiency checks), not ad-hoc colors.
 - **Non-color encoding.** Ring position (depth) and arc sweep (share) carry the
   structure and proportions; the data table carries the identities and values.
+  Pass `texture` to also vary arc fill **pattern** per top-level branch (or rely
+  on it turning on automatically in a `forced-colors` context) for a non-color
+  path on the chart itself.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the branches rather than "the
@@ -250,7 +307,8 @@ Accessibility checklist:
 
 - [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
-- [ ] Meaning does not depend on color alone (ring/arc + table carry it)
+- [ ] Meaning does not depend on color alone (ring/arc + table carry it; `texture`
+      adds a per-branch pattern)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)
 - [ ] Surrounding copy names branches/leaves rather than colors

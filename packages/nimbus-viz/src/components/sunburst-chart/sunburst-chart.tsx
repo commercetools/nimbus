@@ -7,6 +7,8 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatPercent } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
+import { ChartPatternDefs, patternFill } from "../../chart/patterns";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import type { TreemapNode } from "../treemap";
 import { emText } from "../../chart/typography";
 import type { DatumInteractionProps } from "../../chart/interaction";
@@ -22,6 +24,16 @@ export interface SunburstChartProps extends DatumInteractionProps<TreemapNode> {
   ariaLabel?: string;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /**
+   * Fill each arc with a per-branch SVG texture (`chart/patterns.tsx`) in
+   * addition to its color, so branches stay distinguishable by shape alone
+   * — monochrome print, a photocopy, or `forced-colors` mode, where the OS
+   * flattens hue and the color-only encoding stops working. Default `false`
+   * (color only, unchanged). Turned on automatically (regardless of this
+   * prop) when the OS is already in a forced-colors context — see
+   * `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 /** Point on a circle for an angle measured clockwise from 12 o'clock. */
@@ -73,6 +85,7 @@ export function SunburstChart({
   valueFormat,
   onDatumClick,
   onDatumHover,
+  texture,
 }: SunburstChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -80,6 +93,8 @@ export function SunburstChart({
   const [hover, setHover] = useState<{ name: string; value: number } | null>(
     null
   );
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
 
   const root = useMemo(() => {
     const built = hierarchy<TreemapNode>(data, (d) => d.children).sum(
@@ -94,6 +109,11 @@ export function SunburstChart({
     [root]
   );
   const color = useEntityColors(topLevelNames);
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every branch, with the per-branch
+  // pattern kind (below) as the only identity carrier.
+  const colorForKey = (name: string) =>
+    forcedColors ? "CanvasText" : color(name);
   const total = root.value ?? 0;
 
   if (width <= 0 || height <= 0 || total <= 0) return null;
@@ -127,11 +147,19 @@ export function SunburstChart({
             <Partition<TreemapNode> root={root} size={[Math.PI * 2, radius]}>
               {(part) => (
                 <Group top={cy} left={cx}>
+                  {effectiveTexture && (
+                    <ChartPatternDefs
+                      colors={topLevelNames.map((name) => colorForKey(name))}
+                    />
+                  )}
                   {part
                     .descendants()
                     .filter((node) => node.depth > 0)
                     .map((node, i) => {
-                      const fill = color(topLevelAncestor(node).data.name);
+                      const topName = topLevelAncestor(node).data.name;
+                      const fill = effectiveTexture
+                        ? patternFill(topLevelNames.indexOf(topName))
+                        : colorForKey(topName);
                       const dimmed =
                         hover != null && hover.name !== node.data.name;
                       return (
