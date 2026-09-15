@@ -10,6 +10,7 @@ import { useChartFormatters } from "../../chart/format-locale";
 import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 
 export interface RadialBarChartProps extends DatumInteractionProps<CategoryDatum> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -131,7 +132,11 @@ export function RadialBarChart({
                 // Clamp at the render call too: a negative value must draw
                 // at the inner ring (0 length), not extrapolate past it.
                 const r1 = Math.max(inner, radius(Math.max(0, d.value)));
-                const active = hover == null || hover === i;
+                // Outline the hovered sector only; never dim its siblings
+                // (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the shared
+                // convention, replacing a per-chart "dim everyone else"
+                // opacity ternary).
+                const isHovered = hover === i;
                 const [lx, ly] = polar(outer + 10, aMid);
                 const flip = aMid > Math.PI;
                 return (
@@ -150,7 +155,8 @@ export function RadialBarChart({
                     <path
                       d={sectorPath(inner, r1, a0, a1)}
                       fill={theme.accent}
-                      opacity={active ? 1 : 0.35}
+                      stroke={isHovered ? theme.ink : "none"}
+                      strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
                     />
                     <text
                       x={lx}

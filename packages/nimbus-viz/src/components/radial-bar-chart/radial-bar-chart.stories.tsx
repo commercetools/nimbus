@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/react-vite";
-import { expect } from "storybook/test";
+import { expect, userEvent, waitFor } from "storybook/test";
 import { RadialBarChart } from "./radial-bar-chart";
 import type { CategoryDatum } from "../..";
 import { RegistryPreview, type BaseStory } from "../../stories/base-story";
@@ -13,6 +13,49 @@ const meta: Meta = {
 export default meta;
 
 export const Base: BaseStory = {};
+
+/**
+ * Hover/tooltip UX convergence: hovering a sector outlines that ONE sector
+ * (`stroke`/`strokeWidth`) and never dims its siblings — replacing the "dim
+ * everyone else to 0.35 opacity" pattern this chart used to hand-roll.
+ *
+ * Pointer-follow is intentionally skipped here (unlike `BarChart`): a radial
+ * sector's "along the bar" direction is the distance from the polar center,
+ * which does not map cleanly onto `SvgTooltip`'s cartesian `x`/`top` anchor
+ * for every angle — moving the pointer outward on a sector near 3 o'clock
+ * barely changes its y at all, so tying the tooltip's position to radial
+ * distance would move it in a direction unrelated to the pointer's actual
+ * motion for most sectors. The tooltip stays pinned to the top of the plot;
+ * dimming removal is the fix that applies here.
+ */
+const hoverFixture: CategoryDatum[] = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+];
+
+export const HoverEmphasis: BaseStory = {
+  render: () => <RadialBarChart width={320} height={320} data={hoverFixture} />,
+  play: async ({ canvasElement }) => {
+    const sectors = () =>
+      Array.from(canvasElement.querySelectorAll<SVGPathElement>("path"));
+
+    const firstSector = sectors()[0];
+    await userEvent.hover(firstSector);
+    await waitFor(() =>
+      expect(firstSector).toHaveAttribute("stroke-width", "1.5")
+    );
+
+    // No dimming: no sector carries an `opacity` attribute at all -- the old
+    // mechanism this replaces.
+    for (const sector of sectors()) {
+      expect(sector).not.toHaveAttribute("opacity");
+    }
+    // Emphasis instead: only the hovered sector gets a real outline.
+    expect(firstSector).toHaveAttribute("stroke-width", "1.5");
+    expect(sectors()[1]).toHaveAttribute("stroke-width", "0");
+  },
+};
 
 /**
  * BC-1 (`docs/bug-classes.md`): a band scale keyed by category TEXT collapses
