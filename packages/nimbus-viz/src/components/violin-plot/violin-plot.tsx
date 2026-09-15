@@ -11,6 +11,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { gaussianKde, median } from "../../stats";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** One group's raw samples; the density is estimated here, not supplied. */
@@ -152,7 +153,13 @@ export function ViolinPlot({
             {groups.map((g, i) => {
               const cx = band.center(i);
               const s = stats[i];
-              const active = hover == null || hover === i;
+              // Outline the hovered/focused group's violin path more
+              // prominently; never dim its siblings (`chart/marks.ts`'s
+              // `ACTIVE_STROKE_WIDTH` -- the shared convention, replacing a
+              // per-chart "dim everyone else" opacity ternary). The violin
+              // `<path>` is the real "mark" a viewer's eye lands on; the
+              // median line stays as-is.
+              const isHovered = hover === i;
               const right = s.density.map(
                 (p) => `L${cx + wScale(p.density)},${yScale(p.x)}`
               );
@@ -182,9 +189,11 @@ export function ViolinPlot({
                   <path
                     d={d}
                     fill={theme.accent}
-                    fillOpacity={active ? 0.28 : 0.12}
+                    fillOpacity={0.28}
                     stroke={theme.ink}
-                    strokeWidth={1.25}
+                    strokeWidth={
+                      isHovered ? ACTIVE_STROKE_WIDTH * 2 : ACTIVE_STROKE_WIDTH
+                    }
                   />
                   <line
                     x1={cx - halfBand * 0.4}
