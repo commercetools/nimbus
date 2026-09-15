@@ -138,74 +138,74 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       type argument.
 
       Deliberately excluded, each for a real reason: `gauge` / `stat-card`
-                                                                          (a single value has no discrete second "mark" to report a click on --
-                                                                          the whole chart already is the one datum, which is what `value`/`label`
-                                                                          already are); `sparkline` (explicitly minimal by design -- "no axes, no
-                                                                          gridlines, no tick labels", a decorative inline glyph, not an
-                                                                          interactive chart); `data-table` (the guaranteed no-throw HTML fallback
-                                                                          shell used internally by `ChartContainer`, not a chart with visual
-                                                                          marks -- its own doc comment already flags it as a temporary stand-in
-                                                                          pending a real `@commercetools/nimbus` `DataTable`).
+                                                                              (a single value has no discrete second "mark" to report a click on --
+                                                                              the whole chart already is the one datum, which is what `value`/`label`
+                                                                              already are); `sparkline` (explicitly minimal by design -- "no axes, no
+                                                                              gridlines, no tick labels", a decorative inline glyph, not an
+                                                                              interactive chart); `data-table` (the guaranteed no-throw HTML fallback
+                                                                              shell used internally by `ChartContainer`, not a chart with visual
+                                                                              marks -- its own doc comment already flags it as a temporary stand-in
+                                                                              pending a real `@commercetools/nimbus` `DataTable`).
 
-                                                                          Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
-                                                                          all green; eslint clean on every touched file (28 chart `.tsx` files).
+                                                                              Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
+                                                                              all green; eslint clean on every touched file (28 chart `.tsx` files).
 
 - [x] **A3 — controlled selection + interactive legend.** Done, on the
       `LineChart` reference chart (chosen: it already has both a multi-series
       legend and a hover model to compose against).
 
       `chart/interaction.ts`'s `useControlledSelection` extended from a
-                              2-tuple `[selected, toggle]` to a 3-tuple `[selected, toggle, isolate]`
-                              -- `isolate(id)` replaces the whole selection with `new Set([id])`,
-                              respecting the same controlled/uncontrolled duality as `toggle` (only
-                              writes local state when uncontrolled; always calls `onChange`).
-                              Backward-compatible: the existing spec only indexed `[0]`/`[1]`, so no
-                              existing test needed touching; two new tests cover `isolate` in both
-                              modes.
+                                  2-tuple `[selected, toggle]` to a 3-tuple `[selected, toggle, isolate]`
+                                  -- `isolate(id)` replaces the whole selection with `new Set([id])`,
+                                  respecting the same controlled/uncontrolled duality as `toggle` (only
+                                  writes local state when uncontrolled; always calls `onChange`).
+                                  Backward-compatible: the existing spec only indexed `[0]`/`[1]`, so no
+                                  existing test needed touching; two new tests cover `isolate` in both
+                                  modes.
 
-                              `LineChart` now `extends InteractionProps<T>` (the full contract --
-                              datum callbacks + selection -- rather than just
-                              `DatumInteractionProps<T>`) and wires
-                              `useControlledSelection(selection, onSelectionChange)`. Semantics are
-                              crossfilter-style, matching `SelectionProps`'s own "linked views /
-                              crossfilter" doc comment: an empty selection is "no filter" (every
-                              series shown -- today's unchanged default); once non-empty, only series
-                              IN the selection are drawn. A legend click toggles that series' id in/out
-                              of the selection (so the FIRST click on an item filters down to just
-                              it, not "hide only this one"; a second item adds to the filter;
-                              clicking a selected item again removes it, shrinking back toward
-                              empty). Shift-click isolates via the new `isolate()`. This is on by
-                              default, unconditionally -- no new opt-in prop gates it, since it's an
-                              interaction affordance, not a rendering default; the byte-identical
-                              guarantee that matters here is the REST state (empty selection -> every
-                              series at full opacity, identical output to before this item) as
-                              `LineChart`'s own new `InteractiveLegend` story asserts explicitly.
-                              Legend items became real `<button>`s (`aria-pressed`, keyboard
-                              Tab/Enter/Shift+Enter all work as the native activation contract
-                              provides) instead of plain `<li>` text -- dimming a hidden series in
-                              the legend uses `text-decoration: line-through` on the label plus a
-                              lower `opacity` on the *decorative* swatch only, not on the button as a
-                              whole, because dimming the whole button (label included) dropped
-                              contrast below WCAG 4.5:1 and tripped `addon-a11y`'s `test: "error"`
-                              gate -- caught by the story's own run, not by inspection. Hidden series'
-                              drawn `LinePath`/`AreaClosed` get `opacity={0}` (kept in the DOM, not
-                              removed) and their hover-crosshair circle is skipped; the tooltip and
-                              data table are deliberately left unfiltered (documented in
-                              `line-chart.mdx` Limitations) -- they always list every series,
-                              selection or not.
+                                  `LineChart` now `extends InteractionProps<T>` (the full contract --
+                                  datum callbacks + selection -- rather than just
+                                  `DatumInteractionProps<T>`) and wires
+                                  `useControlledSelection(selection, onSelectionChange)`. Semantics are
+                                  crossfilter-style, matching `SelectionProps`'s own "linked views /
+                                  crossfilter" doc comment: an empty selection is "no filter" (every
+                                  series shown -- today's unchanged default); once non-empty, only series
+                                  IN the selection are drawn. A legend click toggles that series' id in/out
+                                  of the selection (so the FIRST click on an item filters down to just
+                                  it, not "hide only this one"; a second item adds to the filter;
+                                  clicking a selected item again removes it, shrinking back toward
+                                  empty). Shift-click isolates via the new `isolate()`. This is on by
+                                  default, unconditionally -- no new opt-in prop gates it, since it's an
+                                  interaction affordance, not a rendering default; the byte-identical
+                                  guarantee that matters here is the REST state (empty selection -> every
+                                  series at full opacity, identical output to before this item) as
+                                  `LineChart`'s own new `InteractiveLegend` story asserts explicitly.
+                                  Legend items became real `<button>`s (`aria-pressed`, keyboard
+                                  Tab/Enter/Shift+Enter all work as the native activation contract
+                                  provides) instead of plain `<li>` text -- dimming a hidden series in
+                                  the legend uses `text-decoration: line-through` on the label plus a
+                                  lower `opacity` on the *decorative* swatch only, not on the button as a
+                                  whole, because dimming the whole button (label included) dropped
+                                  contrast below WCAG 4.5:1 and tripped `addon-a11y`'s `test: "error"`
+                                  gate -- caught by the story's own run, not by inspection. Hidden series'
+                                  drawn `LinePath`/`AreaClosed` get `opacity={0}` (kept in the DOM, not
+                                  removed) and their hover-crosshair circle is skipped; the tooltip and
+                                  data table are deliberately left unfiltered (documented in
+                                  `line-chart.mdx` Limitations) -- they always list every series,
+                                  selection or not.
 
-                              Not attempted: rolling `selection`/`onSelectionChange` /
-                              `InteractionProps<T>` out to any other chart, or an actual cross-chart
-                              linked-selection demo (e.g. two charts sharing one lifted `useState`) --
-                              both are real, mechanical follow-ups for whichever chart needs them
-                              next, following this same pattern.
+                                  Not attempted: rolling `selection`/`onSelectionChange` /
+                                  `InteractionProps<T>` out to any other chart, or an actual cross-chart
+                                  linked-selection demo (e.g. two charts sharing one lifted `useState`) --
+                                  both are real, mechanical follow-ups for whichever chart needs them
+                                  next, following this same pattern.
 
-                              Verified: `pnpm --filter @commercetools/nimbus-viz typecheck` /
-                              `test` (816 passing, +3) / `build` all green; `eslint` clean on every
-                              touched file; the storybook project's own `Accessibility` story needed
-                              a fix (the new legend buttons add focusable stops ahead of the
-                              existing "view data as table" toggle, so a fixed-count `Tab` assumption
-                              broke -- replaced with a bounded tab-until-focused loop).
+                                  Verified: `pnpm --filter @commercetools/nimbus-viz typecheck` /
+                                  `test` (816 passing, +3) / `build` all green; `eslint` clean on every
+                                  touched file; the storybook project's own `Accessibility` story needed
+                                  a fix (the new legend buttons add focusable stops ahead of the
+                                  existing "view data as table" toggle, so a fixed-count `Tab` assumption
+                                  broke -- replaced with a bounded tab-until-focused loop).
 
 ### Phase C — type surface
 
@@ -326,68 +326,68 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       of `#8` is done in `ChartContainer`.)
 
       Roving tabindex (WAI-ARIA APG pattern): exactly one bar has
-                          `tabIndex={0}` at a time (state `rovingIndex`, defaults to `0`), every
-                          other bar `-1` -- so Tab never has to step through every bar to leave
-                          the chart. `@visx/shape`'s `BarRounded` forwards `innerRef` to its
-                          underlying `<path>` (confirmed from its source -- it isn't
-                          `forwardRef`-wrapped, just an explicit `innerRef` prop), used to build
-                          a `barRefs` array for imperative `.focus()` calls.
-                          ArrowRight/ArrowLeft (vertical) or ArrowDown/ArrowUp (horizontal) move
-                          the roving index and real DOM focus; focusing a bar sets `hover` (the
-                          same state mouse `onMouseEnter` already used) so it drives the
-                          existing `SvgTooltip` for free -- "show tooltip on focus" is really
-                          just "focus feeds the same state hover does"; Enter/Space call
-                          `onDatumClick` directly (a `<path role="button">` isn't a real HTML
-                          button, so nothing activates it for free -- WAI-ARIA requires a custom
-                          `role="button"` to handle both keys itself); Escape blurs
-                          (`e.currentTarget.blur()`), which dismisses the tooltip via the
-                          existing `onBlur`->`setHover(null)` path without moving the roving
-                          index. Each bar also gained `aria-label="{category}: {formatted
-                          value}"`, since a focusable-but-unlabeled mark would be a worse
-                          regression than no focus at all.
+                              `tabIndex={0}` at a time (state `rovingIndex`, defaults to `0`), every
+                              other bar `-1` -- so Tab never has to step through every bar to leave
+                              the chart. `@visx/shape`'s `BarRounded` forwards `innerRef` to its
+                              underlying `<path>` (confirmed from its source -- it isn't
+                              `forwardRef`-wrapped, just an explicit `innerRef` prop), used to build
+                              a `barRefs` array for imperative `.focus()` calls.
+                              ArrowRight/ArrowLeft (vertical) or ArrowDown/ArrowUp (horizontal) move
+                              the roving index and real DOM focus; focusing a bar sets `hover` (the
+                              same state mouse `onMouseEnter` already used) so it drives the
+                              existing `SvgTooltip` for free -- "show tooltip on focus" is really
+                              just "focus feeds the same state hover does"; Enter/Space call
+                              `onDatumClick` directly (a `<path role="button">` isn't a real HTML
+                              button, so nothing activates it for free -- WAI-ARIA requires a custom
+                              `role="button"` to handle both keys itself); Escape blurs
+                              (`e.currentTarget.blur()`), which dismisses the tooltip via the
+                              existing `onBlur`->`setHover(null)` path without moving the roving
+                              index. Each bar also gained `aria-label="{category}: {formatted
+                              value}"`, since a focusable-but-unlabeled mark would be a worse
+                              regression than no focus at all.
 
-                          Real, non-obvious blocker found and fixed: giving marks `role="button"`
-                          `tabIndex` inside the chart's existing `role="img"` root SVG is an axe
-                          `nested-interactive` violation (serious, `wcag412`) -- by ARIA
-                          definition, `role="img"`'s subtree is a single opaque leaf with NO
-                          exposed descendants, so ANY focusable descendant inside it is a real
-                          conflict, not a false positive (confirmed by reading axe-core's own
-                          rule source: it matches any ancestor role with `childrenPresentational:
-                          true`, which `img` has and the WAI-ARIA Graphics Module's
-                          `graphics-document` role does not). Fixed by threading a new optional
-                          `role`/`svgRole` prop through `ChartFrame` -> `ChartContainer` (default
-                          unchanged: `"img"`, so all other 45 charts are byte-identical) and
-                          having `BarChart` pass `svgRole="graphics-document"` unconditionally
-                          (on by default, like `A3`'s legend -- this is an interaction
-                          affordance, not a rendering default, and there's no meaningful "off"
-                          state for keyboard operability). `graphics-document`'s ARIA definition
-                          has no `childrenPresentational` flag, so it does allow focusable
-                          children, and (unlike `img`) still requires `accessibleNameRequired`,
-                          which the existing `ariaLabel` already satisfies.
+                              Real, non-obvious blocker found and fixed: giving marks `role="button"`
+                              `tabIndex` inside the chart's existing `role="img"` root SVG is an axe
+                              `nested-interactive` violation (serious, `wcag412`) -- by ARIA
+                              definition, `role="img"`'s subtree is a single opaque leaf with NO
+                              exposed descendants, so ANY focusable descendant inside it is a real
+                              conflict, not a false positive (confirmed by reading axe-core's own
+                              rule source: it matches any ancestor role with `childrenPresentational:
+                              true`, which `img` has and the WAI-ARIA Graphics Module's
+                              `graphics-document` role does not). Fixed by threading a new optional
+                              `role`/`svgRole` prop through `ChartFrame` -> `ChartContainer` (default
+                              unchanged: `"img"`, so all other 45 charts are byte-identical) and
+                              having `BarChart` pass `svgRole="graphics-document"` unconditionally
+                              (on by default, like `A3`'s legend -- this is an interaction
+                              affordance, not a rendering default, and there's no meaningful "off"
+                              state for keyboard operability). `graphics-document`'s ARIA definition
+                              has no `childrenPresentational` flag, so it does allow focusable
+                              children, and (unlike `img`) still requires `accessibleNameRequired`,
+                              which the existing `ariaLabel` already satisfies.
 
-                          Updated `bar-chart.stories.tsx`'s existing `Accessibility` story (the
-                          `role` assertion, the two `svg[role="img"]` selectors, and a `Tab`
-                          count that broke once bars became focusable stops ahead of the "view
-                          as table" toggle -- same fix pattern as `A3`'s bounded tab-until-focused
-                          loop) and added a new `KeyboardNav` story covering Tab-enters-on-bar-0,
-                          Arrow-moves-the-roving-stop-and-fires-`onDatumHover`, Enter-fires-
-                          `onDatumClick`, and Escape-blurs-and-clears-hover. `bar-chart.mdx`
-                          Accessibility section documents the new role and keyboard contract.
+                              Updated `bar-chart.stories.tsx`'s existing `Accessibility` story (the
+                              `role` assertion, the two `svg[role="img"]` selectors, and a `Tab`
+                              count that broke once bars became focusable stops ahead of the "view
+                              as table" toggle -- same fix pattern as `A3`'s bounded tab-until-focused
+                              loop) and added a new `KeyboardNav` story covering Tab-enters-on-bar-0,
+                              Arrow-moves-the-roving-stop-and-fires-`onDatumHover`, Enter-fires-
+                              `onDatumClick`, and Escape-blurs-and-clears-hover. `bar-chart.mdx`
+                              Accessibility section documents the new role and keyboard contract.
 
-                          Not attempted: rolling roving-tabindex out to any other chart (all 45
-                          still have `role="img"` + non-focusable marks, unchanged) -- this is a
-                          real, mechanical follow-up per chart (thread `svgRole`, add
-                          `innerRef`/`tabIndex`/`role`/`aria-label`/focus handlers to that
-                          chart's own mark element, reuse its existing hover state), but each
-                          chart's marks differ enough (different visx shape components, some
-                          without an `innerRef` escape hatch, some without a discrete per-datum
-                          SVG element at all -- e.g. `LineChart`'s single `<path>` per series)
-                          that doing it "properly" per chart is genuinely per-chart, design-heavy
-                          work, exactly as this item's original text said.
+                              Not attempted: rolling roving-tabindex out to any other chart (all 45
+                              still have `role="img"` + non-focusable marks, unchanged) -- this is a
+                              real, mechanical follow-up per chart (thread `svgRole`, add
+                              `innerRef`/`tabIndex`/`role`/`aria-label`/focus handlers to that
+                              chart's own mark element, reuse its existing hover state), but each
+                              chart's marks differ enough (different visx shape components, some
+                              without an `innerRef` escape hatch, some without a discrete per-datum
+                              SVG element at all -- e.g. `LineChart`'s single `<path>` per series)
+                              that doing it "properly" per chart is genuinely per-chart, design-heavy
+                              work, exactly as this item's original text said.
 
-                          Verified: `pnpm --filter @commercetools/nimbus-viz typecheck` / `test`
-                          (817 passing, +1) / `build` all green; `eslint` clean on every touched
-                          file.
+                              Verified: `pnpm --filter @commercetools/nimbus-viz typecheck` / `test`
+                              (817 passing, +1) / `build` all green; `eslint` clean on every touched
+                              file.
 
 ### Phase E — ship-readiness
 
@@ -421,61 +421,61 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       cohort-triangle/heatmap):
 
       **Story/spec matrix** — done: bar, line, stacked-area, stacked-bar,
-              stat-card, bullet, funnel, cohort-triangle, heatmap — **all core-6
-              done.**
+                  stat-card, bullet, funnel, cohort-triangle, heatmap — **all core-6
+                  done.**
 
-              **Interaction convergence** — done: stacked-area, bullet, funnel,
-              cohort-triangle, heatmap (see `A3-tail`; stacked-bar already had it
-              going in).
+                  **Interaction convergence** — done: stacked-area, bullet, funnel,
+                  cohort-triangle, heatmap (see `A3-tail`; stacked-bar already had it
+                  going in).
 
-              **Label-collision polish** — done for `cohort-triangle` and `heatmap`
-              (same root cause, same fix, found on `cohort-triangle` first): rows
-              were positioned via `yScale(row.label)` — a `scaleBand` domain keyed by
-              the label value, so two rows sharing a label silently collapsed onto
-              the same y-position (not just a React-key warning). Fixed by keying
-              the domain and every lookup by row index instead. Verified this pass
-              that the other 7 core-6 members never had this bug class to begin
-              with, rather than assuming: `bar`/`stacked-bar` already use
-              index-keyed `bandByIndex` (confirmed by grep, predates this item);
-              `line`/`stacked-area` have no band scale at all (continuous time-x);
-              `stat-card`/`bullet` have no categorical axis; `funnel` positions
-              stages by `i * bandHeight` (pure index arithmetic), never a
-              label-keyed scale. Also found and fixed a docs-accuracy bug for
-              `funnel`: its Limitations claimed a too-large stage "draws a bar wider
-              than the top", but the SVG's default `overflow:hidden` actually clips
-              the overrun rather than visibly drawing it — wording corrected. Also
-              found and fixed for `bullet`: negative measure/target silently
-              rendered wrong (same class of bug as bar/line's signed-value fixes).
+                  **Label-collision polish** — done for `cohort-triangle` and `heatmap`
+                  (same root cause, same fix, found on `cohort-triangle` first): rows
+                  were positioned via `yScale(row.label)` — a `scaleBand` domain keyed by
+                  the label value, so two rows sharing a label silently collapsed onto
+                  the same y-position (not just a React-key warning). Fixed by keying
+                  the domain and every lookup by row index instead. Verified this pass
+                  that the other 7 core-6 members never had this bug class to begin
+                  with, rather than assuming: `bar`/`stacked-bar` already use
+                  index-keyed `bandByIndex` (confirmed by grep, predates this item);
+                  `line`/`stacked-area` have no band scale at all (continuous time-x);
+                  `stat-card`/`bullet` have no categorical axis; `funnel` positions
+                  stages by `i * bandHeight` (pure index arithmetic), never a
+                  label-keyed scale. Also found and fixed a docs-accuracy bug for
+                  `funnel`: its Limitations claimed a too-large stage "draws a bar wider
+                  than the top", but the SVG's default `overflow:hidden` actually clips
+                  the overrun rather than visibly drawing it — wording corrected. Also
+                  found and fixed for `bullet`: negative measure/target silently
+                  rendered wrong (same class of bug as bar/line's signed-value fixes).
 
-              **States convergence** — verified already converged, nothing to fix:
-              grepped every chart in the library (not just the core-6) for
-              `loading={`/`isEmpty={`/`error={` passed to `ChartContainer` — zero
-              hits anywhere. Every affected chart's own `.mdx` already declares "No
-              title, subtitle, caption, loading, or error passthrough" as a
-              deliberate, existing limitation. There is no inconsistency across the
-              core-6 to converge (all nine are uniformly "not wired," which is
-              already the documented, intentional state) — closing this gap for
-              real (wiring the three `ChartContainer` states into any chart) is a
-              separate, much larger capability addition, not a "convergence."
+                  **States convergence** — verified already converged, nothing to fix:
+                  grepped every chart in the library (not just the core-6) for
+                  `loading={`/`isEmpty={`/`error={` passed to `ChartContainer` — zero
+                  hits anywhere. Every affected chart's own `.mdx` already declares "No
+                  title, subtitle, caption, loading, or error passthrough" as a
+                  deliberate, existing limitation. There is no inconsistency across the
+                  core-6 to converge (all nine are uniformly "not wired," which is
+                  already the documented, intentional state) — closing this gap for
+                  real (wiring the three `ChartContainer` states into any chart) is a
+                  separate, much larger capability addition, not a "convergence."
 
-              **Dense-data polish** — `line` already had `decimateThreshold` (`#19`);
-              this pass added the same capability to `stacked-area` (LTTB run against
-              each row's stacked TOTAL — the visually dominant top-of-stack curve —
-              via the same `chart/decimate.ts` helper, decimating only `AreaStack`'s
-              own `data`, never the domain/hover/table, exactly mirroring
-              `line-chart`'s existing contract), proven by a new `Decimated` story
-              (500 rows -> ~40, path command count bounded well below the
-              undecimated case, spike still in the visible y-range). `bar`/
-              `stacked-bar`/`cohort-triangle`/`heatmap` don't have a decimation
-              story to tell — their docs already assign "cap or aggregate categories
-              upstream" to the consumer, a different (and, for a categorical axis,
-              more correct) answer than downsampling a continuous series; `stat-card`/
-              `bullet`/`funnel` are small, fixed-cardinality by design and were never
-              a "dense data" concern.
+                  **Dense-data polish** — `line` already had `decimateThreshold` (`#19`);
+                  this pass added the same capability to `stacked-area` (LTTB run against
+                  each row's stacked TOTAL — the visually dominant top-of-stack curve —
+                  via the same `chart/decimate.ts` helper, decimating only `AreaStack`'s
+                  own `data`, never the domain/hover/table, exactly mirroring
+                  `line-chart`'s existing contract), proven by a new `Decimated` story
+                  (500 rows -> ~40, path command count bounded well below the
+                  undecimated case, spike still in the visible y-range). `bar`/
+                  `stacked-bar`/`cohort-triangle`/`heatmap` don't have a decimation
+                  story to tell — their docs already assign "cap or aggregate categories
+                  upstream" to the consumer, a different (and, for a categorical axis,
+                  more correct) answer than downsampling a continuous series; `stat-card`/
+                  `bullet`/`funnel` are small, fixed-cardinality by design and were never
+                  a "dense data" concern.
 
-              Verified: `pnpm --filter @commercetools/nimbus-viz typecheck` / `test`
-              (831 passing, +1) / `build` all green; `eslint` clean on every touched
-              file.
+                  Verified: `pnpm --filter @commercetools/nimbus-viz typecheck` / `test`
+                  (831 passing, +1) / `build` all green; `eslint` clean on every touched
+                  file.
 
 - [x] **E6 — fix `isolate: false` story accumulation blocking real play-function
       coverage.** ~~Root cause isn't fully pinned down... points at
@@ -601,39 +601,39 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       without breaking the stack's alignment — left out, not attempted.
 
       `ScatterPlot` gains `quadtreeHitRadius?: number` — when set, swaps each
-                                              point's own `onMouseEnter`/`onClick` listener for one plot-wide
-                                              `d3-quadtree` nearest-point lookup on a single transparent overlay
-                                              (one DOM listener regardless of point count, and the nearest point
-                                              wins even where dots overlap, unlike native per-element hit-testing
-                                              where whichever is on top of the DOM stack always wins). Chosen as the
-                                              reference chart over `BubbleChart` because it already has its own
-                                              tested `Interaction` story (real regression risk to rework); omitting
-                                              the prop keeps today's per-circle listeners byte-identical. New real
-                                              dependency: `d3-quadtree` (+ `@types/d3-quadtree`), added to the `viz`
-                                              pnpm catalog alongside the other `d3-*` deps (not the workspace
-                                              default catalog `pnpm add` reaches for by default — moved by hand to
-                                              keep the convention).
+                                                  point's own `onMouseEnter`/`onClick` listener for one plot-wide
+                                                  `d3-quadtree` nearest-point lookup on a single transparent overlay
+                                                  (one DOM listener regardless of point count, and the nearest point
+                                                  wins even where dots overlap, unlike native per-element hit-testing
+                                                  where whichever is on top of the DOM stack always wins). Chosen as the
+                                                  reference chart over `BubbleChart` because it already has its own
+                                                  tested `Interaction` story (real regression risk to rework); omitting
+                                                  the prop keeps today's per-circle listeners byte-identical. New real
+                                                  dependency: `d3-quadtree` (+ `@types/d3-quadtree`), added to the `viz`
+                                                  pnpm catalog alongside the other `d3-*` deps (not the workspace
+                                                  default catalog `pnpm add` reaches for by default — moved by hand to
+                                                  keep the convention).
 
-                                              Found and fixed along the way: `apps/viz-dashboard/src/shell/ui.tsx`'s
-                                              `KpiTile` still forwarded its own `format` prop to `StatCard` as
-                                              `format={format}` — broken since `A2-tail` renamed that prop to
-                                              `valueFormat`, caught by running `viz-dashboard`'s own typecheck (not
-                                              part of the per-batch `nimbus-viz`-only gates used everywhere else this
-                                              session) after this batch. Fixed the one forwarding site; every
-                                              `KpiTile` call site elsewhere keeps its own `format` prop name
-                                              unchanged (that's `KpiTile`'s own API, not `StatCard`'s).
+                                                  Found and fixed along the way: `apps/viz-dashboard/src/shell/ui.tsx`'s
+                                                  `KpiTile` still forwarded its own `format` prop to `StatCard` as
+                                                  `format={format}` — broken since `A2-tail` renamed that prop to
+                                                  `valueFormat`, caught by running `viz-dashboard`'s own typecheck (not
+                                                  part of the per-batch `nimbus-viz`-only gates used everywhere else this
+                                                  session) after this batch. Fixed the one forwarding site; every
+                                                  `KpiTile` call site elsewhere keeps its own `format` prop name
+                                                  unchanged (that's `KpiTile`'s own API, not `StatCard`'s).
 
-                                              Stories: `line-chart.stories.tsx`'s `Decimated` (500 points, threshold
-                                              60) counts the drawn path's command letters directly, proving the
-                                              point count actually drops and the shape survives (not collapsed
-                                              flat); `scatter-plot.stories.tsx`'s `QuadtreeHitTest` fires a
-                                              `mousemove` at one point's exact rendered position and asserts
-                                              `onDatumHover` reports that point's real datum and index through the
-                                              one overlay listener.
-                                              Verified: `pnpm typecheck` / `pnpm test` (802 passing) / `pnpm build`
-                                              / `pnpm check:package-shape` / `pnpm check:bundle-size` all green;
-                                              `viz-dashboard`'s own `typecheck` and `build` also green; eslint clean
-                                              on every touched file.
+                                                  Stories: `line-chart.stories.tsx`'s `Decimated` (500 points, threshold
+                                                  60) counts the drawn path's command letters directly, proving the
+                                                  point count actually drops and the shape survives (not collapsed
+                                                  flat); `scatter-plot.stories.tsx`'s `QuadtreeHitTest` fires a
+                                                  `mousemove` at one point's exact rendered position and asserts
+                                                  `onDatumHover` reports that point's real datum and index through the
+                                                  one overlay listener.
+                                                  Verified: `pnpm typecheck` / `pnpm test` (802 passing) / `pnpm build`
+                                                  / `pnpm check:package-shape` / `pnpm check:bundle-size` all green;
+                                                  `viz-dashboard`'s own `typecheck` and `build` also green; eslint clean
+                                                  on every touched file.
 
 - [x] **`#20` brush / linked views.** Done: new
       `src/chart/selection-provider.tsx` (`SelectionProvider` +
@@ -644,68 +644,68 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       rendered-without-throwing check.
 
       `SelectionProvider` is deliberately thin: one context holding
-                      `{selected, setSelected, brushedDomain, setBrushedDomain}` (plain
-                      `useState`, no controlled/uncontrolled duality -- it IS the single
-                      source of truth for whatever it wraps, unlike `useControlledSelection`
-                      which serves one chart that may or may not be externally controlled).
-                      `useLinkedSelection()` throws outside a provider, matching
-                      `useChartTheme`'s "throw without a provider" convention. `selected` ids
-                      follow the existing `ENTITY_ID_ACCESSOR` convention
-                      (`selection/derive-facts.ts`) -- e.g. `series.id` -- so charts of
-                      different data shapes stay linked as long as they share an id space.
-                      `brushedDomain` is a generic `[number, number]` (epoch-ms), not
-                      `[Date, Date]`, so the module stays chart-shape-agnostic.
+                          `{selected, setSelected, brushedDomain, setBrushedDomain}` (plain
+                          `useState`, no controlled/uncontrolled duality -- it IS the single
+                          source of truth for whatever it wraps, unlike `useControlledSelection`
+                          which serves one chart that may or may not be externally controlled).
+                          `useLinkedSelection()` throws outside a provider, matching
+                          `useChartTheme`'s "throw without a provider" convention. `selected` ids
+                          follow the existing `ENTITY_ID_ACCESSOR` convention
+                          (`selection/derive-facts.ts`) -- e.g. `series.id` -- so charts of
+                          different data shapes stay linked as long as they share an id space.
+                          `brushedDomain` is a generic `[number, number]` (epoch-ms), not
+                          `[Date, Date]`, so the module stays chart-shape-agnostic.
 
-                      **Entity-linking half (`LinkedLegendSelection` story): a REAL chart.**
-                      Two `LineChart`s (different metrics, same series ids `"eu"`/`"us"`)
-                      mounted under one `SelectionProvider`, each given
-                      `selection={selected} onSelectionChange={setSelected}` -- `A3`'s
-                      existing controlled-selection props ARE the linking mechanism; no new
-                      per-chart wiring was needed. Toggling "US" in either chart's legend
-                      filters BOTH charts, proven by the story's own play function (not just
-                      "renders").
+                          **Entity-linking half (`LinkedLegendSelection` story): a REAL chart.**
+                          Two `LineChart`s (different metrics, same series ids `"eu"`/`"us"`)
+                          mounted under one `SelectionProvider`, each given
+                          `selection={selected} onSelectionChange={setSelected}` -- `A3`'s
+                          existing controlled-selection props ARE the linking mechanism; no new
+                          per-chart wiring was needed. Toggling "US" in either chart's legend
+                          filters BOTH charts, proven by the story's own play function (not just
+                          "renders").
 
-                      **Brush-linking half (`BrushToZoom` story): hand-rolled, and here's
-                      why.** `Brush`'s own existing doc comment already says it emits
-                      *pixel* ranges only and the consumer must invert them with "your own
-                      scale" -- but the shared `ChartScaleProvider` context every chart
-                      publishes to `children` (`scale-context.tsx`) is forward-only
-                      (`(value) => pixel`, no `.invert`), and no chart component accepts an
-                      external domain override (the same gap `#18`'s `FacetGrid` stories
-                      already hit and documented, for a different reason). So, like those
-                      stories, `BrushToZoom` draws its own overview/detail panes directly
-                      with `@visx/scale`'s raw `scaleTime`/`scaleLinear` (this module already
-                      depends on it) rather than pretending a real chart supports domain
-                      injection it doesn't: the overview keeps its own scale in scope to call
-                      `.invert()` itself inside `onBrushEnd`, publishes the resulting domain
-                      via `setBrushedDomain`, and the detail pane reads `brushedDomain` to
-                      narrow its own domain (full range when `null`). Verified end-to-end by
-                      the story's play function: a real drag (`fireEvent.mouseDown`/
-                      `mouseMove`/`mouseUp` with explicit coordinates on the overview's
-                      capture `<rect>`, same technique as `line-chart.stories.tsx`'s
-                      `Interaction` story) narrows a `data-testid` domain readout in the
-                      detail pane from the full 40-day range to the dragged sub-range.
+                          **Brush-linking half (`BrushToZoom` story): hand-rolled, and here's
+                          why.** `Brush`'s own existing doc comment already says it emits
+                          *pixel* ranges only and the consumer must invert them with "your own
+                          scale" -- but the shared `ChartScaleProvider` context every chart
+                          publishes to `children` (`scale-context.tsx`) is forward-only
+                          (`(value) => pixel`, no `.invert`), and no chart component accepts an
+                          external domain override (the same gap `#18`'s `FacetGrid` stories
+                          already hit and documented, for a different reason). So, like those
+                          stories, `BrushToZoom` draws its own overview/detail panes directly
+                          with `@visx/scale`'s raw `scaleTime`/`scaleLinear` (this module already
+                          depends on it) rather than pretending a real chart supports domain
+                          injection it doesn't: the overview keeps its own scale in scope to call
+                          `.invert()` itself inside `onBrushEnd`, publishes the resulting domain
+                          via `setBrushedDomain`, and the detail pane reads `brushedDomain` to
+                          narrow its own domain (full range when `null`). Verified end-to-end by
+                          the story's play function: a real drag (`fireEvent.mouseDown`/
+                          `mouseMove`/`mouseUp` with explicit coordinates on the overview's
+                          capture `<rect>`, same technique as `line-chart.stories.tsx`'s
+                          `Interaction` story) narrows a `data-testid` domain readout in the
+                          detail pane from the full 40-day range to the dragged sub-range.
 
-                      Deliberately not attempted, matching the item's own text: an actual
-                      zoom *gesture* (pinch/scroll-wheel) on the detail pane -- that needs
-                      `@visx/zoom`, a new dependency and a genuinely separate capability from
-                      "a drag selects a range," which is what's implemented here. Also not
-                      attempted: giving any real chart component an invertible scale via
-                      context or an external domain-override prop, which would let a REAL
-                      chart (not hand-rolled panes) serve as the brush's detail view -- a
-                      real, mechanical follow-up, same shape as `#18`'s and `A3`'s "roll out
-                      to more charts" notes.
+                          Deliberately not attempted, matching the item's own text: an actual
+                          zoom *gesture* (pinch/scroll-wheel) on the detail pane -- that needs
+                          `@visx/zoom`, a new dependency and a genuinely separate capability from
+                          "a drag selects a range," which is what's implemented here. Also not
+                          attempted: giving any real chart component an invertible scale via
+                          context or an external domain-override prop, which would let a REAL
+                          chart (not hand-rolled panes) serve as the brush's detail view -- a
+                          real, mechanical follow-up, same shape as `#18`'s and `A3`'s "roll out
+                          to more charts" notes.
 
-                      A timezone bug was caught and fixed by the story's own play function
-                      before commit: the detail-domain readout used `Date#toISOString`
-                      (UTC), which shifted the displayed day whenever the test runner's zone
-                      wasn't UTC, against fixture dates built with the local-time `Date(y,
-                      m, d)` constructor -- fixed with a local-time `YYYY-MM-DD` formatter.
+                          A timezone bug was caught and fixed by the story's own play function
+                          before commit: the detail-domain readout used `Date#toISOString`
+                          (UTC), which shifted the displayed day whenever the test runner's zone
+                          wasn't UTC, against fixture dates built with the local-time `Date(y,
+                          m, d)` constructor -- fixed with a local-time `YYYY-MM-DD` formatter.
 
-                      Verified: `pnpm --filter @commercetools/nimbus-viz typecheck` / `test`
-                      (823 passing, +6) / `build` all green; `pnpm check:bundle-size` /
-                      `pnpm check:package-shape` (new export surface) also green; `eslint`
-                      clean on every touched file.
+                          Verified: `pnpm --filter @commercetools/nimbus-viz typecheck` / `test`
+                          (823 passing, +6) / `build` all green; `pnpm check:bundle-size` /
+                          `pnpm check:package-shape` (new export surface) also green; `eslint`
+                          clean on every touched file.
 
 - [x] **`#21` annotations demos.** Done: `annotation.stories.tsx`,
       `event-markers.stories.tsx`, `now-line.stories.tsx` added beside their
@@ -724,45 +724,58 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
 
 ### Phase D tail (mechanical breadth; pattern proven 3x)
 
-- [ ] **D2/D3-rest — texture + forced-colors rollout.** `texture?: boolean` +
-      `useForcedColors()` are wired on 3 charts (`donut-chart`,
-      `stacked-bar-chart`, `stacked-area-chart` — D2/D3). 16 more charts call
-      `useEntityColors` with a real multi-category key (so color IS an identity
-      channel, not just an accent) and don't have either yet: `bubble-chart`,
-      `bump-chart`, `chord-diagram`, `gantt-chart`, `grouped-bar-chart`,
-      `line-chart`, `marimekko-chart`, `parallel-coordinates`,
-      `population-pyramid`, `radar-chart`, `sankey-diagram`, `scatter-plot`,
-      `streamgraph`, `sunburst-chart`, `treemap`, `waffle-chart` (confirmed by
-      grep, 2026-09-15 — every one calls
-      `useEntityColors(keys/groups/categories/labels/ids/…)` with more than one
-      element).
+- [x] **D2/D3-rest — texture + forced-colors rollout.** Done: all 16 charts
+      named when this item was seeded now have `texture?: boolean` + automatic
+      `useForcedColors()` wiring, joining the 3 already done (`donut-chart`,
+      `stacked-bar-chart`, `stacked-area-chart` — D2/D3), for 19/19 total. The
+      rollout split into three non-interchangeable mechanisms instead of one
+      uniform copy-paste, sized correctly by this item's own analysis:
 
-      Not a uniform copy-paste: `chart/patterns.tsx`'s `patternFill` fills a
-          **shape's area** with a `<pattern>` — that's a direct fit for the
-          FILLED-region charts here (`marimekko-chart`, `waffle-chart`,
-          `treemap`, `sunburst-chart`, `gantt-chart`, `grouped-bar-chart`,
-          `population-pyramid`, `sankey-diagram`'s nodes, `chord-diagram`'s
-          arcs), a plausible-but-untested fit for filled POINTS/circles
-          (`bubble-chart`, `scatter-plot`'s grouped mode — pattern fills read
-          poorly at small radii, verify legibility before shipping), and likely
-          the WRONG primitive for STROKED marks with no fill area at all
-          (`line-chart`, `radar-chart`, `bump-chart`'s connecting lines,
-          `parallel-coordinates`' lines, `streamgraph`'s layers ARE filled
-          though — check case by case) — those need a different non-color
-          channel (dash pattern, marker shape at vertices) or an honest "texture
-          doesn't apply here, forced-colors still switches to `CanvasText`"
-          writeup, not a forced patternFill call that doesn't render sensibly.
+      - **Fill pattern** (`chart/patterns.tsx`'s `patternFill`, unchanged from
+            D2/D3) for genuinely filled-region marks: `chord-diagram` (ribbons +
+            arcs), `gantt-chart` (bars + milestone diamonds; an uncategorized
+            event keeps a plain accent fill — nothing to texture),
+            `grouped-bar-chart`, `marimekko-chart`, `population-pyramid` (2 fixed
+            slots, no `.indexOf` needed), `sankey-diagram`'s nodes,
+            `streamgraph`, `sunburst-chart` and `treemap` (both index by
+            top-level ANCESTOR, not loop position — a leaf/deep node shares its
+            branch's texture), `waffle-chart` (its own `owner` var is already the
+            right categorical index).
+          - **Marker shape** (new `chart/point-shapes.tsx`: `pointShapeFor` +
+            `<PointMark>`, cycling circle/square/triangle/diamond/star) for
+            filled POINTS: `bubble-chart` and `scatter-plot`. Sizing this item
+            flagged patternFill as untested at small radii; building the
+            reference confirmed it — `bubble-chart`'s `R_MIN` (4px) is under
+            `patterns.tsx`'s 6px tile, so a fill pattern would read as noise, not
+            a shape. Shape has no size floor, so it's the real fix, not a
+            fallback.
+          - **Stroke dash rhythm** (new `chart/stroke-styles.ts`:
+            `strokeDasharrayFor`, cycling solid/dashed/dotted/dash-dot/long-dash)
+            for STROKED marks with no fill area: `line-chart` (both `"line"` and
+            `"area"` variants — `"area"`'s fill is a 16%-opacity wash, too faint
+            for a pattern to read, so dash is the one channel for both),
+            `bump-chart` (its rank-point circles stay plain, untextured),
+            `parallel-coordinates` (kept by GROUP index, not row index, since
+            several rows share one group/color — a row-indexed dash would have
+            decoupled the redundant encoding from the color it reinforces),
+            `sankey-diagram`'s links (`fill="none"` paths using width as
+            `strokeWidth`, keyed by each link's SOURCE node), and `radar-chart`
+            (its polygon `fill` is a 12%-opacity wash, the same "too faint"
+            reasoning as `line-chart`'s area variant — the 2px stroke is the
+            real identity carrier despite the chart nominally having a `fill`).
 
-          Suggested approach, same discipline as this pass's other rollouts:
-          pick ONE more reference chart per shape family (a filled-area one
-          already 3x proven; one filled-point chart to test pattern legibility
-          at small sizes; one stroked chart to design the non-`patternFill`
-          alternative), implement + story + spec each fully, then sweep the
-          rest of that family mechanically. Document per chart which of
-          `texture`/`useForcedColors` landed, which didn't and why, and update
-          each chart's own `.mdx` "Chart configuration" + "Accessibility"
-          sections (existing precedent: `donut-chart.mdx`, `stacked-bar-
-          chart.mdx`, `stacked-area-chart.mdx`).
+          Every chart keeps byte-identical rendering when `texture` is omitted
+          and the OS isn't in forced-colors mode. Every chart got a `Texture`
+          story proving the real mechanism (pattern/defs count, shape swap, or
+          dash presence — never a generic "renders without throwing"), and a new
+          `.mdx` "Chart configuration" subsection + updated Accessibility
+          bullets; `scatter-plot.mdx` and `parallel-coordinates.mdx` also had a
+          now-stale "distinguished by color, not shape/line style" Limitations
+          bullet corrected. Verified: `pnpm --filter @commercetools/nimbus-viz
+          typecheck` / `test` (856 passing, +12 from the 844 after the 4
+          hand-built reference/judgment charts) / `build` all green; eslint
+          clean on every touched file, across 18 commits (2 shared primitives +
+          16 charts).
 
           `use-reduced-motion.ts` stays exported with zero real chart consumers
           (confirmed by grep, 2026-09-15 — no chart component, as opposed to a
@@ -808,55 +821,55 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       of the ~10 overlays (`ReferenceLine`, `ThresholdBand`).
 
       `chart/scale-context.tsx`'s `ChartScales` gained one optional field:
-                  `orientation?: "vertical" | "horizontal"`, defaulting to `"vertical"`
-                  when omitted — every existing provider (all 18, before this) omits it
-                  and is untouched. It says which of `xScale`/`yScale` is actually the
-                  VALUE axis; it does not change what either scale computes.
+                      `orientation?: "vertical" | "horizontal"`, defaulting to `"vertical"`
+                      when omitted — every existing provider (all 18, before this) omits it
+                      and is untouched. It says which of `xScale`/`yScale` is actually the
+                      VALUE axis; it does not change what either scale computes.
 
-                  `ReferenceLine` and `ThresholdBand` read it and derive a
-                  `drawVertical` flag from an XNOR of "is this prop asking for the value
-                  axis?" and "is the chart's value axis x?" — reusing exactly the same
-                  pixel-computation code each branch already had (a screen-vertical line
-                  always used `xScale`; a screen-horizontal one always used `yScale`);
-                  only the CONDITION deciding which branch runs changed. This is fully
-                  backward-compatible: for every chart that omits `orientation` (still
-                  all of them except `bar-chart`'s horizontal branch), the derived flag
-                  reduces to today's original `orientation === "vertical"` check bit for
-                  bit. The result: `<ReferenceLine value={x} />` (the default
-                  `orientation="horizontal"` = "mark the value axis") now draws correctly
-                  on EITHER chart shape with no prop change — proven end to end by
-                  `bar-chart.stories.tsx`'s new `OrientationAwareOverlay` story (the same
-                  `ReferenceLine` composed into both a vertical and a horizontal
-                  `BarChart`, asserting the rendered `<line>`'s axis flips) and by new
-                  dedicated `reference-line.spec.tsx` / `threshold-band.spec.tsx` unit
-                  specs (mocked `ChartScales` with and without `orientation:
-                  "horizontal"`).
+                      `ReferenceLine` and `ThresholdBand` read it and derive a
+                      `drawVertical` flag from an XNOR of "is this prop asking for the value
+                      axis?" and "is the chart's value axis x?" — reusing exactly the same
+                      pixel-computation code each branch already had (a screen-vertical line
+                      always used `xScale`; a screen-horizontal one always used `yScale`);
+                      only the CONDITION deciding which branch runs changed. This is fully
+                      backward-compatible: for every chart that omits `orientation` (still
+                      all of them except `bar-chart`'s horizontal branch), the derived flag
+                      reduces to today's original `orientation === "vertical"` check bit for
+                      bit. The result: `<ReferenceLine value={x} />` (the default
+                      `orientation="horizontal"` = "mark the value axis") now draws correctly
+                      on EITHER chart shape with no prop change — proven end to end by
+                      `bar-chart.stories.tsx`'s new `OrientationAwareOverlay` story (the same
+                      `ReferenceLine` composed into both a vertical and a horizontal
+                      `BarChart`, asserting the rendered `<line>`'s axis flips) and by new
+                      dedicated `reference-line.spec.tsx` / `threshold-band.spec.tsx` unit
+                      specs (mocked `ChartScales` with and without `orientation:
+                      "horizontal"`).
 
-                  `bar-chart.tsx`'s horizontal branch previously published NEITHER a
-                  `ChartScaleProvider` NOR `{children}` at all — a bigger gap than "the
-                  contract assumes vertical," it simply couldn't host ANY overlay. Fixed
-                  by wrapping its render in `<ChartScaleProvider value={{ xScale:
-                  <the real value scale>, yScale: <row index → band center, mirroring
-                  how the vertical branch's own xScale already maps an index to
-                  band.center>, orientation: "horizontal", … }}>` and rendering
-                  `{children}` inside, matching the vertical branch's existing shape.
+                      `bar-chart.tsx`'s horizontal branch previously published NEITHER a
+                      `ChartScaleProvider` NOR `{children}` at all — a bigger gap than "the
+                      contract assumes vertical," it simply couldn't host ANY overlay. Fixed
+                      by wrapping its render in `<ChartScaleProvider value={{ xScale:
+                      <the real value scale>, yScale: <row index → band center, mirroring
+                      how the vertical branch's own xScale already maps an index to
+                      band.center>, orientation: "horizontal", … }}>` and rendering
+                      `{children}` inside, matching the vertical branch's existing shape.
 
-                  Not attempted, and explicitly documented in `bar-chart.mdx`
-                  Limitations rather than left silently: the other 8 overlays (`NowLine`,
-                  `TargetMarker`, `TrendLine`, `ConfidenceBand`, `BenchmarkSeries`,
-                  `Annotation`, `EventMarkers`, `ErrorBars`) still hardcode value=y (most
-                  are position-axis-only markers like `NowLine`, which would need a
-                  genuinely different fix — flipping which axis they treat as fixed, not
-                  just which branch of an existing if/else runs — so "mechanical" doesn't
-                  apply evenly across all 10); and wiring the SAME `ChartScaleProvider`+
-                  `orientation` pattern into `dumbbell`, `beeswarm`, and `gantt` (none of
-                  which publish the contract at all today, unlike `bar-chart` which
-                  already had a vertical branch to mirror). Both are real, scoped
-                  follow-ups, not silently dropped scope.
+                      Not attempted, and explicitly documented in `bar-chart.mdx`
+                      Limitations rather than left silently: the other 8 overlays (`NowLine`,
+                      `TargetMarker`, `TrendLine`, `ConfidenceBand`, `BenchmarkSeries`,
+                      `Annotation`, `EventMarkers`, `ErrorBars`) still hardcode value=y (most
+                      are position-axis-only markers like `NowLine`, which would need a
+                      genuinely different fix — flipping which axis they treat as fixed, not
+                      just which branch of an existing if/else runs — so "mechanical" doesn't
+                      apply evenly across all 10); and wiring the SAME `ChartScaleProvider`+
+                      `orientation` pattern into `dumbbell`, `beeswarm`, and `gantt` (none of
+                      which publish the contract at all today, unlike `bar-chart` which
+                      already had a vertical branch to mirror). Both are real, scoped
+                      follow-ups, not silently dropped scope.
 
-                  Verified: `pnpm --filter @commercetools/nimbus-viz typecheck` / `test`
-                  (830 passing, +7) / `build` all green; `eslint` clean on every touched
-                  file.
+                      Verified: `pnpm --filter @commercetools/nimbus-viz typecheck` / `test`
+                      (830 passing, +7) / `build` all green; `eslint` clean on every touched
+                      file.
 
 ## Dropped (per product decision, 2026)
 
