@@ -12,6 +12,8 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
+import { ChartPatternDefs, patternFill } from "../../chart/patterns";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import type { Series } from "../../chart/types";
 import type { DatumInteractionProps } from "../../chart/interaction";
 
@@ -30,6 +32,15 @@ export interface StreamgraphProps extends DatumInteractionProps<StackDatum> {
   valueFormat?: (n: number) => string;
   /** Formats date displays (axis ticks, tooltip dates). Defaults to a locale-aware short month+day formatter (e.g. `Aug 28`); overrides any surrounding `ChartLocaleProvider`. */
   dateFormat?: (d: Date) => string;
+  /**
+   * Fill each band with a per-key SVG texture (`chart/patterns.tsx`) in
+   * addition to its color, so bands stay distinguishable by shape alone
+   * — monochrome print, a photocopy, or `forced-colors` mode. Default
+   * `false` (color only, unchanged). Turned on automatically (regardless
+   * of this prop) when the OS is already in a forced-colors context — see
+   * `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
@@ -60,12 +71,15 @@ export function Streamgraph({
   dateFormat,
   onDatumClick,
   onDatumHover,
+  texture,
 }: StreamgraphProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
 
   const keys = useMemo(() => series.map((s) => s.id), [series]);
   const rows = useMemo<StackDatum[]>(() => {
@@ -81,6 +95,10 @@ export function Streamgraph({
     [rows]
   );
   const color = useEntityColors(keys);
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every key, with the per-key pattern
+  // kind (below) as the only identity carrier.
+  const colorForKey = (k: string) => (forcedColors ? "CanvasText" : color(k));
 
   if (width <= 0 || height <= 0 || series.length === 0 || rows.length === 0)
     return null;
@@ -102,7 +120,7 @@ export function Streamgraph({
       }
       legend={
         showLegend
-          ? series.map((s) => ({ label: s.label, color: color(s.id) }))
+          ? series.map((s) => ({ label: s.label, color: colorForKey(s.id) }))
           : undefined
       }
       table={table}
@@ -135,6 +153,9 @@ export function Streamgraph({
           <ChartScaleProvider
             value={{ yScale, xScale, xBandwidth: 0, innerWidth, innerHeight }}
           >
+            {effectiveTexture && (
+              <ChartPatternDefs colors={keys.map((k) => colorForKey(k))} />
+            )}
             <AxisBottom
               scale={xScale}
               top={innerHeight}
@@ -162,7 +183,11 @@ export function Streamgraph({
                       y0={(d) => yScale(d[0])}
                       y1={(d) => yScale(d[1])}
                       curve={curveBasis}
-                      fill={color(layer.key)}
+                      fill={
+                        effectiveTexture
+                          ? patternFill(keys.indexOf(layer.key))
+                          : colorForKey(layer.key)
+                      }
                       fillOpacity={0.85}
                       stroke={theme.surface}
                       strokeWidth={1}

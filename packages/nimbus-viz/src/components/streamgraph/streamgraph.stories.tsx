@@ -1,4 +1,5 @@
 import type { Meta } from "@storybook/react-vite";
+import { expect } from "storybook/test";
 import { ResponsiveContainer, Streamgraph } from "../../";
 import type { BaseStory } from "../../stories/base-story";
 
@@ -55,3 +56,30 @@ const meta: Meta = {
 export default meta;
 
 export const Base: BaseStory = {};
+
+/**
+ * `D2`: `texture` fills each band with a per-key SVG pattern (in addition to
+ * color) so bands stay distinguishable without color. Proven directly:
+ * every band's `fill` is a `url(#...)` pattern reference, and `<defs>` has
+ * one `<pattern>` per series.
+ */
+export const Texture: BaseStory = {
+  render: () => (
+    <Streamgraph
+      width={480}
+      height={280}
+      series={series}
+      texture
+      ariaLabel="Streamgraph with per-band textures"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const keyCount = series.length;
+    const patterns = canvasElement.querySelectorAll("defs > pattern");
+    expect(patterns).toHaveLength(keyCount);
+    const marks = Array.from(canvasElement.querySelectorAll("path")).filter(
+      (el) => el.getAttribute("fill")?.startsWith("url(#")
+    );
+    expect(marks.length).toBe(keyCount);
+  },
+};
