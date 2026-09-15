@@ -163,9 +163,9 @@ Contract notes, verifiable from source:
   zero there), not as a gap — unlike `LineChart`, the fill does not break.
 - Values may be **signed**. Positive series values stack upward from 0 and
   negative values (a return, a write-off) stack downward from 0, each in the
-  order given — a diverging stack offset, not a clamp. The value axis spans
-  each row's full positive and negative extent, so a row with both is taller
-  than its net total alone would suggest.
+  order given — a diverging stack offset, not a clamp. The value axis spans each
+  row's full positive and negative extent, so a row with both is taller than its
+  net total alone would suggest.
 - Stacking order is the array order, bottom to top; fills are assigned in fixed
   categorical order.
 
@@ -262,6 +262,47 @@ width. Bands use a monotone spline and are separated by a 1px surface stroke at
 0.85 fill opacity so adjacent layers stay legible. Hovering resolves the nearest
 x-index, draws a dashed crosshair, and shows a tooltip listing the date and each
 series' value. None of this is configurable.
+
+### Texture (non-color encoding)
+
+`texture` fills each series' band with a per-series SVG pattern
+(`chart/patterns.tsx`) in addition to its color, so bands stay distinguishable
+by shape alone — monochrome print, a photocopy, or `forced-colors` mode, where
+the OS flattens hue. Default `false` (color only).
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider>
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <StackedAreaChart
+          width={width}
+          height={height}
+          series={[
+            {
+              id: "north",
+              label: "North",
+              data: [
+                { x: new Date("2026-01-01"), y: 20 },
+                { x: new Date("2026-02-01"), y: 30 },
+              ],
+            },
+            {
+              id: "south",
+              label: "South",
+              data: [
+                { x: new Date("2026-01-01"), y: 15 },
+                { x: new Date("2026-02-01"), y: 22 },
+              ],
+            },
+          ]}
+          texture
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
 
 ### Color & theming
 

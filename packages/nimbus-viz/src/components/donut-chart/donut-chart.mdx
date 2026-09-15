@@ -132,6 +132,34 @@ as a legend strip beneath the plot. Color is **identity** here — one hue per
 category — which is legitimate for a part-to-whole chart, and the legend maps
 every color back to its label.
 
+### Texture (non-color encoding)
+
+`texture` fills each slice with a per-category SVG pattern
+(`chart/patterns.tsx`) in addition to its color, so slices stay distinguishable
+by shape alone — monochrome print, a photocopy, or `forced-colors` mode, where
+the OS flattens hue. Default `false` (color only).
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider>
+    <ResponsiveContainer height={260}>
+      {(width, height) => (
+        <DonutChart
+          width={width}
+          height={height}
+          data={[
+            { category: "New", value: 40 },
+            { category: "Returning", value: 35 },
+            { category: "Referral", value: 25 },
+          ]}
+          texture
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Color & theming
 
 Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).

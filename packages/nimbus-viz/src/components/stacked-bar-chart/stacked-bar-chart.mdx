@@ -150,8 +150,8 @@ const data: StackRow[] = [
 
 Contract notes, verifiable from source:
 
-- `category` is display text and need not be unique — position is by row
-  order, not the label. Row order is preserved left-to-right.
+- `category` is display text and need not be unique — position is by row order,
+  not the label. Row order is preserved left-to-right.
 - Every row should carry the **same segment keys, in the same order**. The
   **first row** defines the legend keys, their order, and their colors; a key
   missing from a later row is treated as `0` in the data table and simply not
@@ -160,9 +160,9 @@ Contract notes, verifiable from source:
   the baseline and the last gets the rounded top.
 - Segment values may be **signed**. Positive segments stack upward from 0 and
   negative segments (a return, a write-off) stack downward from 0, each in the
-  order given — a diverging stack offset, not a clamp. The value axis spans
-  each row's full positive and negative extent, so a row with both is taller
-  than its net total alone would suggest.
+  order given — a diverging stack offset, not a clamp. The value axis spans each
+  row's full positive and negative extent, so a row with both is taller than its
+  net total alone would suggest.
 
 ## API reference
 
@@ -245,6 +245,45 @@ to the band width and truncate when tight); the value axis is a linear scale
 from **0** to a "nice" maximum with horizontal gridlines. Hovering a bar dims
 the other bars to 0.5 opacity and shows a tooltip with the category, its total,
 and every segment value.
+
+### Texture (non-color encoding)
+
+`texture` fills each segment with a per-key SVG pattern (`chart/patterns.tsx`)
+in addition to its color, so segments stay distinguishable by shape alone —
+monochrome print, a photocopy, or `forced-colors` mode, where the OS flattens
+hue. Default `false` (color only).
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider>
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <StackedBarChart
+          width={width}
+          height={height}
+          data={[
+            {
+              category: "Q1",
+              segments: [
+                { key: "New", value: 120 },
+                { key: "Returning", value: 80 },
+              ],
+            },
+            {
+              category: "Q2",
+              segments: [
+                { key: "New", value: 140 },
+                { key: "Returning", value: 96 },
+              ],
+            },
+          ]}
+          texture
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
 
 ### Color & theming
 

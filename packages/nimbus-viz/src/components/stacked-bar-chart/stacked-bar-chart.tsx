@@ -16,6 +16,7 @@ import {
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
+import { ChartPatternDefs, patternFill } from "../../chart/patterns";
 import type { StackRow, StackSegment } from "../../chart/types";
 import type {
   DatumClickHandler,
@@ -46,6 +47,13 @@ export interface StackedBarChartProps<T = StackRow> {
   onDatumHover?: DatumHoverHandler<T>;
   /** Overlays (ReferenceLine, ThresholdBand, TargetMarker, …) in plot space. */
   children?: ReactNode;
+  /**
+   * Fill each segment with a per-key SVG texture (`chart/patterns.tsx`) in
+   * addition to its color, so segments stay distinguishable by shape alone
+   * — monochrome print, a photocopy, or `forced-colors` mode. Default
+   * `false` (color only, unchanged).
+   */
+  texture?: boolean;
 }
 
 /**
@@ -75,6 +83,7 @@ export function StackedBarChart<T = StackRow>({
   onDatumClick,
   onDatumHover,
   children,
+  texture,
 }: StackedBarChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -167,6 +176,9 @@ export function StackedBarChart<T = StackRow>({
               innerHeight,
             }}
           >
+            {texture && (
+              <ChartPatternDefs colors={keys.map((k) => colorForKey(k))} />
+            )}
             <GridRows
               ticks={yScale.ticks(4)}
               y={(t) => yScale(t)}
@@ -246,7 +258,9 @@ export function StackedBarChart<T = StackRow>({
                     // TOP edge (y1, which sits at or just past zero), so the
                     // rect starts 2px lower instead of shrinking from y1.
                     const barY = positive ? y1 : y1 + 2;
-                    const color = colorForKey(seg.key);
+                    const color = texture
+                      ? patternFill(keys.indexOf(seg.key))
+                      : colorForKey(seg.key);
                     const rounded = si === topIdx || si === bottomIdx;
                     return rounded ? (
                       <BarRounded

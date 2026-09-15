@@ -13,6 +13,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
+import { ChartPatternDefs, patternFill } from "../../chart/patterns";
 import type { Series, SeriesPoint } from "../../chart/types";
 import type {
   DatumClickHandler,
@@ -45,6 +46,13 @@ export interface StackedAreaChartProps<T = SeriesPoint> {
   children?: ReactNode;
   /** Formats date displays (axis ticks, tooltip dates). Defaults to a locale-aware short month+day formatter (e.g. `Aug 28`); overrides any surrounding `ChartLocaleProvider`. */
   dateFormat?: (d: Date) => string;
+  /**
+   * Fill each series' area with a per-series SVG texture (`chart/patterns.tsx`)
+   * in addition to its color, so layers stay distinguishable by shape alone
+   * — monochrome print, a photocopy, or `forced-colors` mode. Default
+   * `false` (color only, unchanged).
+   */
+  texture?: boolean;
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
@@ -86,6 +94,7 @@ export function StackedAreaChart<T = SeriesPoint>({
   onDatumClick,
   onDatumHover,
   children,
+  texture,
 }: StackedAreaChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -178,6 +187,7 @@ export function StackedAreaChart<T = SeriesPoint>({
           <ChartScaleProvider
             value={{ yScale, xScale, xBandwidth: 0, innerWidth, innerHeight }}
           >
+            {texture && <ChartPatternDefs colors={keys.map((k) => color(k))} />}
             <GridRows
               ticks={yScale.ticks(4)}
               y={(t) => yScale(t)}
@@ -216,7 +226,11 @@ export function StackedAreaChart<T = SeriesPoint>({
                   <path
                     key={stack.key}
                     d={path(stack) || ""}
-                    fill={color(stack.key)}
+                    fill={
+                      texture
+                        ? patternFill(keys.indexOf(stack.key))
+                        : color(stack.key)
+                    }
                     fillOpacity={0.85}
                     stroke={theme.surface}
                     strokeWidth={1}

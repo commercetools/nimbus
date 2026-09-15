@@ -312,3 +312,30 @@ export const Responsive: BaseStory = {
     </div>
   ),
 };
+
+/**
+ * `D2`: `texture` fills each segment with a per-key SVG pattern (in addition
+ * to color) so segments stay distinguishable without color. Proven
+ * directly: every segment's `fill` is a `url(#...)` pattern reference, and
+ * `<defs>` has one `<pattern>` per segment key.
+ */
+export const Texture: BaseStory = {
+  render: () => (
+    <StackedBarChart
+      width={360}
+      height={240}
+      data={fixture}
+      texture
+      ariaLabel="Stacked bar chart with per-segment textures"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const keyCount = fixture[0].segments.length;
+    const patterns = canvasElement.querySelectorAll("defs > pattern");
+    expect(patterns).toHaveLength(keyCount);
+    const marks = Array.from(
+      canvasElement.querySelectorAll("rect, path.visx-bar-rounded")
+    ).filter((el) => el.getAttribute("fill")?.startsWith("url(#"));
+    expect(marks.length).toBe(fixture.length * keyCount);
+  },
+};

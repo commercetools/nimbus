@@ -9,6 +9,7 @@ import { useChartFormatters } from "../../chart/format-locale";
 import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { ChartPatternDefs, patternFill } from "../../chart/patterns";
 
 export interface DonutChartProps<
   T = CategoryDatum,
@@ -30,6 +31,14 @@ export interface DonutChartProps<
   ariaLabel?: string;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /**
+   * Fill each slice with a per-category SVG texture (`chart/patterns.tsx`)
+   * in addition to its color, so slices stay distinguishable by shape alone
+   * — monochrome print, a photocopy, or `forced-colors` mode, where the OS
+   * flattens hue and the color-only encoding stops working. Default `false`
+   * (color only, unchanged).
+   */
+  texture?: boolean;
 }
 
 /**
@@ -60,6 +69,7 @@ export function DonutChart<T = CategoryDatum>({
   valueFormat,
   onDatumClick,
   onDatumHover,
+  texture,
 }: DonutChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -110,6 +120,9 @@ export function DonutChart<T = CategoryDatum>({
         const inner = radius * 0.62;
         return (
           <Group top={innerHeight / 2} left={innerWidth / 2}>
+            {texture && (
+              <ChartPatternDefs colors={data.map((_, i) => colorFor(i))} />
+            )}
             <Pie<T>
               data={data}
               pieValue={(d) => getVal(d)}
@@ -127,7 +140,7 @@ export function DonutChart<T = CategoryDatum>({
                     <path
                       key={cat}
                       d={pie.path(arc) ?? ""}
-                      fill={colorFor(i)}
+                      fill={texture ? patternFill(i) : colorFor(i)}
                       opacity={dimmed ? 0.4 : 1}
                       onMouseEnter={() => {
                         setHover(cat);

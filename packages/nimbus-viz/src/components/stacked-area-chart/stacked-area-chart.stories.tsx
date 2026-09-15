@@ -289,3 +289,29 @@ export const Responsive: BaseStory = {
     </div>
   ),
 };
+
+/**
+ * `D2`: `texture` fills each series' area with a per-series SVG pattern (in
+ * addition to color) so layers stay distinguishable without color. Proven
+ * directly: every layer's `fill` is a `url(#...)` pattern reference, and
+ * `<defs>` has one `<pattern>` per series.
+ */
+export const Texture: BaseStory = {
+  render: () => (
+    <StackedAreaChart
+      width={480}
+      height={280}
+      series={fixture}
+      texture
+      ariaLabel="Stacked area chart with per-series textures"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const patterns = canvasElement.querySelectorAll("defs > pattern");
+    expect(patterns).toHaveLength(fixture.length);
+    const layers = Array.from(canvasElement.querySelectorAll("path")).filter(
+      (p) => p.getAttribute("fill")?.startsWith("url(#")
+    );
+    expect(layers.length).toBe(fixture.length);
+  },
+};
