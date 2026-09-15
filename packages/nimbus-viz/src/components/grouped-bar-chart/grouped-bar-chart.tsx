@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import type { ReactNode } from "react";
+import { useCallback, useMemo, useState } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
@@ -22,14 +22,20 @@ import type {
   DatumHoverHandler,
 } from "../../chart/interaction";
 
-export interface GroupedBarChartProps {
+export interface GroupedBarChartProps<T = StackRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
   /** Same shape as the stacked bar — a category with keyed segments. All rows
-   *  must share the same segment `key` set (the first row defines the series). */
-  data: StackRow[];
+   *  must share the same segment `key` set (the first row defines the
+   *  series). Each row is a `StackRow` (`{ category, segments }`) unless you
+   *  pass `category`/`segments` accessors for a custom row type. */
+  data: T[];
+  /** Category-label accessor. Defaults to `d.category` (the StackRow shape). Required for a custom row type. */
+  category?: (d: T) => string;
+  /** Segments accessor. Defaults to `d.segments`. Required for a custom row type. */
+  segments?: (d: T) => StackSegment[];
   /** Accessible label for the SVG; state the takeaway, not every value. */
   ariaLabel?: string;
   /** Fired when a datum is clicked (drill-down). */
@@ -48,27 +54,52 @@ export interface GroupedBarChartProps {
  * so a series keeps its color here, in the stacked bar, and in a line chart.
  * Hovering a series highlights it across every category.
  *
+ * Generic over the row type `T`: pass `category`/`segments` accessors to feed
+ * your own domain rows directly; both default to the built-in `StackRow`
+ * shape. The interaction payload (`StackSegment`, the individual bar) is
+ * unaffected by `T`.
+ *
  * @experimental Prototype-stage; API may change before it is marked stable.
  */
-export function GroupedBarChart({
+export function GroupedBarChart(
+  props: GroupedBarChartProps<StackRow>
+): ReactElement | null;
+export function GroupedBarChart<T>(
+  props: GroupedBarChartProps<T> &
+    Required<Pick<GroupedBarChartProps<T>, "category" | "segments">>
+): ReactElement | null;
+export function GroupedBarChart<T = StackRow>({
   width,
   height,
   data,
+  category,
+  segments,
   ariaLabel,
   onDatumClick,
   onDatumHover,
   children,
   valueFormat,
-}: GroupedBarChartProps) {
+}: GroupedBarChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ i: number; key: string } | null>(null);
-  const keys = useMemo(() => stackKeys(data), [data]);
+
+  const getCat = useCallback(
+    (d: T): string => (category ? category(d) : (d as StackRow).category),
+    [category]
+  );
+  const getSeg = useCallback(
+    (d: T): StackSegment[] =>
+      segments ? segments(d) : (d as StackRow).segments,
+    [segments]
+  );
+
+  const keys = useMemo(() => stackKeys(data, getSeg), [data, getSeg]);
   const colorForKey = useEntityColors(keys);
   const values = useMemo(
-    () => data.flatMap((r) => r.segments.map((s) => s.value)),
-    [data]
+    () => data.flatMap((r) => getSeg(r).map((s) => s.value)),
+    [data, getSeg]
   );
   const valueRange = useMemo(() => valueDomain(values), [values]);
   const hasNegative = useMemo(() => values.some((v) => v < 0), [values]);
@@ -78,8 +109,8 @@ export function GroupedBarChart({
   const table = {
     columns: ["Category", ...keys],
     rows: data.map((r) => [
-      r.category,
-      ...keys.map((k) => r.segments.find((s) => s.key === k)?.value ?? 0),
+      getCat(r),
+      ...keys.map((k) => getSeg(r).find((s) => s.key === k)?.value ?? 0),
     ]),
   };
 
@@ -94,7 +125,7 @@ export function GroupedBarChart({
     >
       {({ innerWidth, innerHeight }) => {
         const x0 = bandByIndex(
-          data.map((d) => d.category),
+          data.map((d) => getCat(d)),
           {
             range: [0, innerWidth],
             padding: 0.2,
@@ -111,9 +142,11 @@ export function GroupedBarChart({
         });
         const bw = x1.bandwidth;
         const zeroY = y(0);
-        const hb = hover
-          ? data[hover.i]?.segments.find((s) => s.key === hover.key)
-          : null;
+        const hoverRow = hover != null ? data[hover.i] : undefined;
+        const hb =
+          hover != null && hoverRow != null
+            ? getSeg(hoverRow).find((s) => s.key === hover.key)
+            : null;
         return (
           <ChartScaleProvider
             value={{
@@ -147,7 +180,7 @@ export function GroupedBarChart({
               const gx = x0.pos(i);
               return (
                 <g key={i}>
-                  {row.segments.map((seg) => {
+                  {getSeg(row).map((seg) => {
                     const bx = gx + x1.pos(keys.indexOf(seg.key));
                     const yVal = y(seg.value);
                     const barTop = Math.min(zeroY, yVal);
@@ -198,7 +231,7 @@ export function GroupedBarChart({
                 innerWidth={innerWidth}
                 top={Math.max(0, y(hb.value) - 4)}
                 lines={[
-                  data[hover.i]?.category ?? "",
+                  hoverRow != null ? getCat(hoverRow) : "",
                   `${hb.key}: ${valueFmt(hb.value)}`,
                 ]}
               />

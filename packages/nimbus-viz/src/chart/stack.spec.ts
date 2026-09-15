@@ -31,4 +31,20 @@ describe("stackKeys", () => {
   it("returns an empty list for no rows", () => {
     expect(stackKeys([])).toEqual([]);
   });
+
+  // C1: a chart generic over a custom row type T has no literal `.segments`
+  // field, so it passes its own accessor instead of relying on the default.
+  it("accepts a custom row type via an explicit segments accessor", () => {
+    interface CustomRow {
+      quarter: string;
+      bars: { name: string }[];
+    }
+    const rows: CustomRow[] = [
+      { quarter: "Q1", bars: [{ name: "New" }] },
+      { quarter: "Q2", bars: [{ name: "New" }, { name: "Referral" }] },
+    ];
+    expect(
+      stackKeys(rows, (r) => r.bars.map((b) => ({ key: b.name })))
+    ).toEqual(["New", "Referral"]);
+  });
 });

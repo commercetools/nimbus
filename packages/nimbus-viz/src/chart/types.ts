@@ -4,13 +4,19 @@ export interface SeriesPoint {
   y: number | null;
 }
 
-/** A named series of points (a line, an area, one set of bars). */
-export interface Series {
+/**
+ * A named series of points (a line, an area, one set of bars).
+ *
+ * Generic over the point type `T` (default `SeriesPoint`) so a chart that
+ * accepts custom point rows (via `x`/`y` accessors) can type `series` against
+ * its own row shape instead of forcing a conversion to `SeriesPoint` first.
+ */
+export interface Series<T = SeriesPoint> {
   /** Unique per chart — used to key series, colors, and interaction payloads. */
   id: string;
   /** Display text; need not be unique. */
   label: string;
-  data: SeriesPoint[];
+  data: T[];
 }
 
 /**

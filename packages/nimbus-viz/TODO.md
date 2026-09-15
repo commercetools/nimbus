@@ -138,17 +138,17 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       type argument.
 
       Deliberately excluded, each for a real reason: `gauge` / `stat-card`
-          (a single value has no discrete second "mark" to report a click on --
-          the whole chart already is the one datum, which is what `value`/`label`
-          already are); `sparkline` (explicitly minimal by design -- "no axes, no
-          gridlines, no tick labels", a decorative inline glyph, not an
-          interactive chart); `data-table` (the guaranteed no-throw HTML fallback
-          shell used internally by `ChartContainer`, not a chart with visual
-          marks -- its own doc comment already flags it as a temporary stand-in
-          pending a real `@commercetools/nimbus` `DataTable`).
+              (a single value has no discrete second "mark" to report a click on --
+              the whole chart already is the one datum, which is what `value`/`label`
+              already are); `sparkline` (explicitly minimal by design -- "no axes, no
+              gridlines, no tick labels", a decorative inline glyph, not an
+              interactive chart); `data-table` (the guaranteed no-throw HTML fallback
+              shell used internally by `ChartContainer`, not a chart with visual
+              marks -- its own doc comment already flags it as a temporary stand-in
+              pending a real `@commercetools/nimbus` `DataTable`).
 
-          Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
-          all green; eslint clean on every touched file (28 chart `.tsx` files).
+              Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
+              all green; eslint clean on every touched file (28 chart `.tsx` files).
 
 - [ ] **A3 — controlled selection + interactive legend.** Lift internal hover to
       controlled/uncontrolled (`selection`/`onSelectionChange`,
@@ -157,11 +157,31 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
 
 ### Phase C — type surface
 
-- [ ] **C1 — generics on the series/stack charts.** `line-chart`,
+- [x] **C1 — generics on the series/stack charts.** Done: `line-chart`,
       `stacked-area-chart`, `stacked-bar-chart`, `grouped-bar-chart`,
-      `donut-chart`. Fiddlier than bar/scatter (nested point accessors on
-      `Series`/`StackRow`). Follow the `BarChart<T = CategoryDatum>` reference
-      (memoized accessors, defaults preserve today's keys, verify DTS builds).
+      `donut-chart` are now generic over their row type `T`, following the
+      `BarChart<T = CategoryDatum>` reference exactly (two overloads — a
+      concrete-shape signature plus a generic one requiring the accessors,
+      memoized `getX`/`getY`/`getCat`/`getSeg` accessors, defaults preserve
+      today's keys). `donut-chart` mirrors `BarChart` directly
+      (`category`/`value` accessors, default `CategoryDatum`). `line-chart`
+      needed `chart/types.ts`'s `Series` made generic
+      (`Series<T = SeriesPoint>`, additive — every existing bare `Series` usage
+      still resolves to `Series<SeriesPoint>`) plus `x`/`y` accessors;
+      `stacked-area-chart` needed the same `x`/`y` accessors but its interaction
+      payload stays the internally-derived `StackDatum` regardless of `T`
+      (unaffected, since it's not the raw input row).
+      `stacked-bar-chart`/`grouped-bar-chart` are generic over the ROW (not the
+      segment) with `category`/`segments` accessors, defaulting to `StackRow`;
+      `chart/stack.ts`'s `stackKeys()` gained an optional second `segmentsOf`
+      accessor param (defaults to reading `.segments` directly, byte-identical
+      for every existing caller) so a generic row without a literal `segments`
+      field can still derive the key union. `grouped-bar-chart`'s interaction
+      payload stays `StackSegment` (unaffected by `T`, same reasoning as
+      `stacked-area-chart`). Verified: `pnpm typecheck` / `pnpm test` (773
+      passing) / `pnpm build` (the DTS gate for generics) all green on every one
+      of the 5 charts, each also re-run through its own `.stories.tsx` in
+      isolation; eslint clean on every touched file.
 - [ ] **C2 — render-prop tooltip / legend.** `renderTooltip(datum)` /
       `renderLegend(items)` escape hatches on `SvgTooltip` / `Legend` /
       `ChartContainer`; keep the string-lines path as default.

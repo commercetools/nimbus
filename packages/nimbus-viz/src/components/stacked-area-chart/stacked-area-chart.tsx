@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import type { ReactNode } from "react";
+import { useCallback, useMemo, useState } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { scaleLinear, scaleTime } from "@visx/scale";
 import { AreaStack } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
@@ -13,19 +13,25 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
-import type { Series } from "../../chart/types";
+import type { Series, SeriesPoint } from "../../chart/types";
 import type {
   DatumClickHandler,
   DatumHoverHandler,
 } from "../../chart/interaction";
 
-export interface StackedAreaChartProps {
+export interface StackedAreaChartProps<T = SeriesPoint> {
   /** Plot width in pixels — supply from `ResponsiveContainer`. */
   width: number;
   /** Plot height in pixels — supply from `ResponsiveContainer`. */
   height: number;
-  /** Series stacked bottom-to-top, aligned by index and sharing x positions. */
-  series: Series[];
+  /** Series stacked bottom-to-top, aligned by index and sharing x positions.
+   *  Each point is a `SeriesPoint` (`{ x, y }`) unless you pass `x`/`y`
+   *  accessors for a custom point row type. */
+  series: Series<T>[];
+  /** x accessor. Defaults to `d.x` (the SeriesPoint shape). Required for a custom point row type. */
+  x?: (d: T) => number | Date;
+  /** y accessor. Defaults to `d.y`. Required for a custom point row type. */
+  y?: (d: T) => number | null | undefined;
   /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
   /** Format a value-axis number (tick labels + tooltip values). Overrides the
@@ -55,33 +61,56 @@ const toDate = (x: number | Date): Date =>
  * value axis. Fixed-order categorical fills at 0.85 opacity, each banded by a
  * 1px surface stroke so adjacent layers stay legible. Legend for ≥2 series;
  * a vertical crosshair with a per-series value readout on hover.
+ *
+ * Generic over the point row type `T`: pass `x`/`y` accessors to feed your own
+ * domain rows directly; both default to the built-in `SeriesPoint` shape. The
+ * interaction payload (`StackDatum`, the whole stacked row) is unaffected by
+ * `T` — it's derived internally, not the raw input row.
  */
-export function StackedAreaChart({
+export function StackedAreaChart(
+  props: StackedAreaChartProps<SeriesPoint>
+): ReactElement | null;
+export function StackedAreaChart<T>(
+  props: StackedAreaChartProps<T> &
+    Required<Pick<StackedAreaChartProps<T>, "x" | "y">>
+): ReactElement | null;
+export function StackedAreaChart<T = SeriesPoint>({
   width,
   height,
   series,
+  x,
+  y,
   ariaLabel,
   dateFormat,
   valueFormat,
   onDatumClick,
   onDatumHover,
   children,
-}: StackedAreaChartProps) {
+}: StackedAreaChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
+  const getX = useCallback(
+    (d: T): number | Date => (x ? x(d) : (d as SeriesPoint).x),
+    [x]
+  );
+  const getY = useCallback(
+    (d: T): number | null | undefined => (y ? y(d) : (d as SeriesPoint).y),
+    [y]
+  );
+
   const keys = useMemo(() => series.map((s) => s.id), [series]);
   const rows = useMemo<StackDatum[]>(() => {
     const base = series[0]?.data ?? [];
     return base.map((pt, i) => {
-      const row: StackDatum = { x: +toDate(pt.x) };
-      for (const s of series) row[s.id] = s.data[i]?.y ?? 0;
+      const row: StackDatum = { x: +toDate(getX(pt)) };
+      for (const s of series) row[s.id] = getY(s.data[i]) ?? 0;
       return row;
     });
-  }, [series]);
+  }, [series, getX, getY]);
   const xDomain = useMemo(
     () => extent(rows, (r) => new Date(r.x)) as [Date, Date],
     [rows]
@@ -252,9 +281,8 @@ export function StackedAreaChart({
                   dateFmt(new Date(hoveredX)),
                   ...series.map((s) => {
                     const p = s.data[hoverIndex];
-                    return `${s.label}: ${
-                      p && p.y != null ? valueFmt(p.y) : "—"
-                    }`;
+                    const py = p != null ? getY(p) : undefined;
+                    return `${s.label}: ${py != null ? valueFmt(py) : "—"}`;
                   }),
                 ]}
               />

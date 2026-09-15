@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import type { ReactNode } from "react";
+import { useCallback, useMemo, useState } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { scaleLinear, scaleTime } from "@visx/scale";
 import { AreaClosed, LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
@@ -13,29 +13,29 @@ import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { Series, SeriesPoint } from "../../chart/types";
-import type {
-  DatumClickHandler,
-  DatumHoverHandler,
-} from "../../chart/interaction";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface LineChartProps {
+export interface LineChartProps<
+  T = SeriesPoint,
+> extends DatumInteractionProps<T> {
   /** Plot width in pixels — supply from `ResponsiveContainer`. */
   width: number;
   /** Plot height in pixels — supply from `ResponsiveContainer`. */
   height: number;
-  /** One or more labelled series drawn on a single shared value axis. */
-  series: Series[];
+  /** One or more labelled series drawn on a single shared value axis. Each
+   *  point is a `SeriesPoint` (`{ x, y }`) unless you pass `x`/`y` accessors
+   *  for a custom point row type. */
+  series: Series<T>[];
+  /** x accessor. Defaults to `d.x` (the SeriesPoint shape). Required for a custom point row type. */
+  x?: (d: T) => number | Date;
+  /** y accessor. Defaults to `d.y`. Required for a custom point row type. */
+  y?: (d: T) => number | null | undefined;
   /** Draw each series as a stroked line (default) or a filled area. */
   variant?: "line" | "area";
   /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
-  /** Format a value-axis number (tick labels + tooltip values). Overrides the
-   *  locale/currency formatter from any surrounding ChartLocaleProvider. */
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
-  /** Fired when a datum is clicked (drill-down). */
-  onDatumClick?: DatumClickHandler<SeriesPoint>;
-  /** Fired when the hovered datum changes; null when the pointer leaves. */
-  onDatumHover?: DatumHoverHandler<SeriesPoint>;
   /** Layer-2 overlays (ReferenceLine, ThresholdBand, BenchmarkSeries…) drawn
    *  in the plot's coordinate space, on top of the series. */
   children?: ReactNode;
@@ -50,11 +50,22 @@ const toDate = (x: number | Date): Date =>
  * Time-series line (or filled area) for one or more series. Single y-axis
  * always. Legend present for ≥2 series. Crosshair + point markers + a value
  * readout on hover.
+ *
+ * Generic over the point row type `T`: pass `x`/`y` accessors to feed your own
+ * domain rows directly; both default to the built-in `SeriesPoint` shape.
  */
-export function LineChart({
+export function LineChart(
+  props: LineChartProps<SeriesPoint>
+): ReactElement | null;
+export function LineChart<T>(
+  props: LineChartProps<T> & Required<Pick<LineChartProps<T>, "x" | "y">>
+): ReactElement | null;
+export function LineChart<T = SeriesPoint>({
   width,
   height,
   series,
+  x,
+  y,
   variant = "line",
   ariaLabel,
   dateFormat,
@@ -62,20 +73,35 @@ export function LineChart({
   onDatumClick,
   onDatumHover,
   children,
-}: LineChartProps) {
+}: LineChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
+  const getX = useCallback(
+    (d: T): number | Date => (x ? x(d) : (d as SeriesPoint).x),
+    [x]
+  );
+  const getY = useCallback(
+    (d: T): number | null | undefined => (y ? y(d) : (d as SeriesPoint).y),
+    [y]
+  );
+
   const points = useMemo(() => series.flatMap((s) => s.data), [series]);
   const xDomain = useMemo(
-    () => extent(points, (p) => toDate(p.x)) as [Date, Date],
-    [points]
+    () => extent(points, (p) => toDate(getX(p))) as [Date, Date],
+    [points, getX]
   );
-  const yMax = useMemo(() => max(points, (p) => p.y ?? 0) ?? 0, [points]);
-  const yMin = useMemo(() => min(points, (p) => p.y ?? 0) ?? 0, [points]);
+  const yMax = useMemo(
+    () => max(points, (p) => getY(p) ?? 0) ?? 0,
+    [points, getY]
+  );
+  const yMin = useMemo(
+    () => min(points, (p) => getY(p) ?? 0) ?? 0,
+    [points, getY]
+  );
   const color = useEntityColors(
     useMemo(() => series.map((s) => s.id), [series])
   );
@@ -87,13 +113,15 @@ export function LineChart({
   const table = {
     columns: ["Date", ...series.map((s) => s.label)],
     rows: series[0].data.map((pt, i) => [
-      dateFmt(toDate(pt.x)),
-      ...series.map((s) => s.data[i]?.y ?? ""),
+      dateFmt(toDate(getX(pt))),
+      ...series.map((s) => {
+        const v = s.data[i] != null ? getY(s.data[i]) : undefined;
+        return v ?? "";
+      }),
     ]),
     summary: `Line chart, ${series.length} series over ${series[0].data.length} points.`,
   };
-  const hoveredX =
-    hoverIndex != null ? series[0].data[hoverIndex]?.x : undefined;
+  const hoveredX = hoverIndex != null ? series[0].data[hoverIndex] : undefined;
 
   return (
     <ChartContainer
@@ -153,28 +181,28 @@ export function LineChart({
             {series.map((s, i) => {
               const color = colorFor(i);
               return variant === "area" ? (
-                <AreaClosed<SeriesPoint>
+                <AreaClosed<T>
                   key={s.id}
                   data={s.data}
-                  x={(p) => xScale(toDate(p.x))}
-                  y={(p) => yScale(p.y ?? 0)}
+                  x={(p) => xScale(toDate(getX(p)))}
+                  y={(p) => yScale(getY(p) ?? 0)}
                   y0={() => yScale(0)}
                   yScale={yScale}
                   curve={curveMonotoneX}
-                  defined={(p) => p.y != null}
+                  defined={(p) => getY(p) != null}
                   fill={color}
                   fillOpacity={0.16}
                   stroke={color}
                   strokeWidth={2}
                 />
               ) : (
-                <LinePath<SeriesPoint>
+                <LinePath<T>
                   key={s.id}
                   data={s.data}
-                  x={(p) => xScale(toDate(p.x))}
-                  y={(p) => yScale(p.y ?? 0)}
+                  x={(p) => xScale(toDate(getX(p)))}
+                  y={(p) => yScale(getY(p) ?? 0)}
                   curve={curveMonotoneX}
-                  defined={(p) => p.y != null}
+                  defined={(p) => getY(p) != null}
                   stroke={color}
                   strokeWidth={2}
                 />
@@ -186,8 +214,8 @@ export function LineChart({
             {hoverIndex != null && hoveredX != null && (
               <>
                 <line
-                  x1={xScale(toDate(hoveredX))}
-                  x2={xScale(toDate(hoveredX))}
+                  x1={xScale(toDate(getX(hoveredX)))}
+                  x2={xScale(toDate(getX(hoveredX)))}
                   y1={0}
                   y2={innerHeight}
                   stroke={theme.axis}
@@ -195,12 +223,13 @@ export function LineChart({
                 />
                 {series.map((s, i) => {
                   const p = s.data[hoverIndex];
-                  if (!p || p.y == null) return null;
+                  const py = p != null ? getY(p) : undefined;
+                  if (!p || py == null) return null;
                   return (
                     <circle
                       key={s.id}
-                      cx={xScale(toDate(p.x))}
-                      cy={yScale(p.y)}
+                      cx={xScale(toDate(getX(p)))}
+                      cy={yScale(py)}
                       r={4}
                       fill={colorFor(i)}
                       stroke={theme.surface}
@@ -221,7 +250,7 @@ export function LineChart({
                 const rect = e.currentTarget.getBoundingClientRect();
                 const mx = e.clientX - rect.left;
                 const idx = nearestIndexByX(mx, xScale, series[0].data, (p) =>
-                  toDate(p.x)
+                  toDate(getX(p))
                 );
                 if (idx >= 0) {
                   setHoverIndex(idx);
@@ -243,7 +272,7 @@ export function LineChart({
                 const rect = e.currentTarget.getBoundingClientRect();
                 const mx = e.clientX - rect.left;
                 const idx = nearestIndexByX(mx, xScale, series[0].data, (p) =>
-                  toDate(p.x)
+                  toDate(getX(p))
                 );
                 // Click mirrors hover: report the FIRST series's point at the
                 // resolved x-index.
@@ -258,15 +287,14 @@ export function LineChart({
 
             {hoverIndex != null && hoveredX != null && (
               <SvgTooltip
-                x={xScale(toDate(hoveredX))}
+                x={xScale(toDate(getX(hoveredX)))}
                 innerWidth={innerWidth}
                 lines={[
-                  dateFmt(toDate(hoveredX)),
+                  dateFmt(toDate(getX(hoveredX))),
                   ...series.map((s) => {
                     const p = s.data[hoverIndex];
-                    return `${s.label}: ${
-                      p && p.y != null ? valueFmt(p.y) : "—"
-                    }`;
+                    const py = p != null ? getY(p) : undefined;
+                    return `${s.label}: ${py != null ? valueFmt(py) : "—"}`;
                   }),
                 ]}
               />

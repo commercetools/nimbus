@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import type { ReactNode } from "react";
+import { useCallback, useMemo, useState } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
@@ -16,29 +16,34 @@ import {
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
-import type { StackRow } from "../../chart/types";
+import type { StackRow, StackSegment } from "../../chart/types";
 import type {
   DatumClickHandler,
   DatumHoverHandler,
 } from "../../chart/interaction";
 
-export interface StackedBarChartProps {
+export interface StackedBarChartProps<T = StackRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
   height: number;
-  /** One `StackRow` per category (`{ category, segments: { key, value }[] }`);
-   *  every row should carry the same segment keys, in the same order. */
-  data: StackRow[];
+  /** One row per category; every row should carry the same segment keys, in
+   *  the same order. Each row is a `StackRow` (`{ category, segments: {
+   *  key, value }[] }`) unless you pass `category`/`segments` accessors for
+   *  a custom row type. */
+  data: T[];
+  /** Category-label accessor. Defaults to `d.category` (the StackRow shape). Required for a custom row type. */
+  category?: (d: T) => string;
+  /** Segments accessor. Defaults to `d.segments`. Required for a custom row type. */
+  segments?: (d: T) => StackSegment[];
   /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
-  /** Format a value-axis number (tick labels + tooltip values). Overrides the
-   *  locale/currency formatter from any surrounding ChartLocaleProvider. */
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
   /** Fired when a datum is clicked (drill-down). */
-  onDatumClick?: DatumClickHandler<StackRow>;
+  onDatumClick?: DatumClickHandler<T>;
   /** Fired when the hovered datum changes; null when the pointer leaves. */
-  onDatumHover?: DatumHoverHandler<StackRow>;
+  onDatumHover?: DatumHoverHandler<T>;
   /** Overlays (ReferenceLine, ThresholdBand, TargetMarker, …) in plot space. */
   children?: ReactNode;
 }
@@ -47,23 +52,46 @@ export interface StackedBarChartProps {
  * Part-to-whole (or composition-over-time). Segments stack per category, each
  * key a categorical color in fixed order, with a 2px surface gap between fills
  * and a rounded top on the topmost segment.
+ *
+ * Generic over the row type `T`: pass `category`/`segments` accessors to feed
+ * your own domain rows directly; both default to the built-in `StackRow`
+ * shape.
  */
-export function StackedBarChart({
+export function StackedBarChart(
+  props: StackedBarChartProps<StackRow>
+): ReactElement | null;
+export function StackedBarChart<T>(
+  props: StackedBarChartProps<T> &
+    Required<Pick<StackedBarChartProps<T>, "category" | "segments">>
+): ReactElement | null;
+export function StackedBarChart<T = StackRow>({
   width,
   height,
   data,
+  category,
+  segments,
   ariaLabel,
   valueFormat,
   onDatumClick,
   onDatumHover,
   children,
-}: StackedBarChartProps) {
+}: StackedBarChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
-  const keys = useMemo(() => stackKeys(data), [data]);
+  const getCat = useCallback(
+    (d: T): string => (category ? category(d) : (d as StackRow).category),
+    [category]
+  );
+  const getSeg = useCallback(
+    (d: T): StackSegment[] =>
+      segments ? segments(d) : (d as StackRow).segments,
+    [segments]
+  );
+
+  const keys = useMemo(() => stackKeys(data, getSeg), [data, getSeg]);
   const colorForKey = useEntityColors(keys);
   // Diverging stack offset: positive segments accumulate upward from 0,
   // negative segments accumulate downward from 0, each in the order given —
@@ -78,14 +106,14 @@ export function StackedBarChart({
         data.flatMap((r) => {
           let pos = 0;
           let neg = 0;
-          for (const seg of r.segments) {
+          for (const seg of getSeg(r)) {
             if (seg.value >= 0) pos += seg.value;
             else neg += seg.value;
           }
           return [pos, neg];
         })
       ),
-    [data]
+    [data, getSeg]
   );
 
   if (width <= 0 || height <= 0 || data.length === 0) return null;
@@ -93,8 +121,8 @@ export function StackedBarChart({
   const table = {
     columns: ["Category", ...keys],
     rows: data.map((r) => [
-      r.category,
-      ...keys.map((k) => r.segments.find((s) => s.key === k)?.value ?? 0),
+      getCat(r),
+      ...keys.map((k) => getSeg(r).find((s) => s.key === k)?.value ?? 0),
     ]),
   };
 
@@ -109,7 +137,7 @@ export function StackedBarChart({
     >
       {({ innerWidth, innerHeight }) => {
         const xScale = bandByIndex(
-          data.map((d) => d.category),
+          data.map((d) => getCat(d)),
           {
             range: [0, innerWidth],
             padding: 0.25,
@@ -123,12 +151,12 @@ export function StackedBarChart({
         const bw = xScale.bandwidth;
         const hr = hover != null ? data[hover] : null;
         const hrTotal = hr
-          ? hr.segments.reduce((s, seg) => s + seg.value, 0)
+          ? getSeg(hr).reduce((s, seg) => s + seg.value, 0)
           : 0;
         // Positive segments' running sum -- the top of the visual bar, which
         // for a mixed-sign row is not the same point as the net total.
-        const posTotal = (row: StackRow) =>
-          row.segments.reduce((s, seg) => s + Math.max(0, seg.value), 0);
+        const posTotal = (row: T) =>
+          getSeg(row).reduce((s, seg) => s + Math.max(0, seg.value), 0);
         return (
           <ChartScaleProvider
             value={{
@@ -165,7 +193,7 @@ export function StackedBarChart({
             {data.map((row, i) => {
               const x = xScale.pos(i);
               const dimmed = hover != null && hover !== i;
-              const segments = row.segments;
+              const segs = getSeg(row);
               // Diverging stack offset: positive segments accumulate upward
               // from 0, negative segments accumulate downward from 0, each in
               // the order given -- a negative segment (a return, a
@@ -176,7 +204,7 @@ export function StackedBarChart({
               let negAcc = 0;
               let topIdx = -1;
               let bottomIdx = -1;
-              const bars = segments.map((seg, si) => {
+              const bars = segs.map((seg, si) => {
                 let lo: number;
                 let hi: number;
                 const positive = seg.value >= 0;
@@ -252,9 +280,9 @@ export function StackedBarChart({
                 innerWidth={innerWidth}
                 top={Math.max(0, yScale(posTotal(hr)) - 4)}
                 lines={[
-                  hr.category,
+                  getCat(hr),
                   `Total: ${valueFmt(hrTotal)}`,
-                  ...hr.segments.map(
+                  ...getSeg(hr).map(
                     (seg) => `${seg.key}: ${valueFmt(seg.value)}`
                   ),
                 ]}
