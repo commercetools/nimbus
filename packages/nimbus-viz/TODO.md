@@ -138,17 +138,17 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       type argument.
 
       Deliberately excluded, each for a real reason: `gauge` / `stat-card`
-                      (a single value has no discrete second "mark" to report a click on --
-                      the whole chart already is the one datum, which is what `value`/`label`
-                      already are); `sparkline` (explicitly minimal by design -- "no axes, no
-                      gridlines, no tick labels", a decorative inline glyph, not an
-                      interactive chart); `data-table` (the guaranteed no-throw HTML fallback
-                      shell used internally by `ChartContainer`, not a chart with visual
-                      marks -- its own doc comment already flags it as a temporary stand-in
-                      pending a real `@commercetools/nimbus` `DataTable`).
+                          (a single value has no discrete second "mark" to report a click on --
+                          the whole chart already is the one datum, which is what `value`/`label`
+                          already are); `sparkline` (explicitly minimal by design -- "no axes, no
+                          gridlines, no tick labels", a decorative inline glyph, not an
+                          interactive chart); `data-table` (the guaranteed no-throw HTML fallback
+                          shell used internally by `ChartContainer`, not a chart with visual
+                          marks -- its own doc comment already flags it as a temporary stand-in
+                          pending a real `@commercetools/nimbus` `DataTable`).
 
-                      Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
-                      all green; eslint clean on every touched file (28 chart `.tsx` files).
+                          Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
+                          all green; eslint clean on every touched file (28 chart `.tsx` files).
 
 - [ ] **A3 — controlled selection + interactive legend.** Lift internal hover to
       controlled/uncontrolled (`selection`/`onSelectionChange`,
@@ -297,8 +297,25 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       precomputed paths too. `violin-plot` already takes raw samples and (per
       B-dedup above) now computes its density via `stats.gaussianKde` directly,
       so it's no longer part of this item's remaining scope.
-- [ ] **`#18` FacetGrid.** `src/chart/facet-grid.tsx` needs usage + stories
-      (small multiples: shared-or-free domains, one shared legend).
+- [x] **`#18` FacetGrid.** Done: `facet-grid.stories.tsx` added with two
+      stories, a 4-region "revenue by quarter" small-multiples grid in both.
+      `SharedDomain` computes one `[0, max]` domain across every facet outside
+      the grid and passes it into each cell (per the primitive's own doc comment
+      — `FacetGrid` never touches domains itself, only layout + one shared
+      legend below); `FreeDomain` lets each cell fit its own max. Since no chart
+      component takes an external domain override, each cell is a small
+      hand-drawn `scaleBand`/`scaleLinear` bar mini-chart rather than a full
+      chart component — the realistic shape of how a caller actually wires a
+      shared scale across cells today. Assertions check the geometry, not just
+      "renders": in `SharedDomain`, NA's bars (the dataset's overall max) reach
+      the cell top while EMEA's (a smaller region) don't, proving the scale is
+      genuinely shared, not independently fit; in `FreeDomain`, every cell's own
+      max reaches ITS OWN top. "Usage" scoped to this story-level composition
+      rather than a new `apps/viz-dashboard` page/route — a real composition
+      with a legend and two domain strategies, at a fraction of the cost of new
+      routing/nav for a primitive with no existing per-facet time-series fixture
+      data to reuse. Verified: `pnpm typecheck` / `pnpm test` (786 passing) /
+      `pnpm build` all green; eslint clean.
 - [ ] **`#19` large-N.** Wire `src/chart/decimate.ts` (LTTB) into line/area past
       a threshold; add a quadtree hit-test for scatter/bubble.
 - [ ] **`#20` brush / linked views.** Wire `src/chart/brush.tsx` + a
