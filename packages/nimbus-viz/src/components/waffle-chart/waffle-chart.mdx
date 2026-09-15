@@ -151,8 +151,9 @@ const App = () => (
 Not configurable — each category gets a categorical color from the shared
 entity→color scale, shown as a legend strip. Color is **identity** here (one hue
 per category), which is legitimate for a part-to-whole chart. Hovering a cell
-dims the other categories to 0.3 opacity and shows a tooltip with that
-category's name and its share.
+outlines every cell of that category (the other categories are never dimmed)
+and shows a tooltip with that category's name and its share, tracking the
+pointer while it stays inside the grid.
 
 ### Color & theming
 

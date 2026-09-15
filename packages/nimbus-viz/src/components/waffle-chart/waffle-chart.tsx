@@ -1,12 +1,14 @@
 import { useMemo, useState } from "react";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
-import { useEntityColors } from "../../theme";
+import { useChartTheme, useEntityColors } from "../../theme";
 import { formatPercent } from "../../chart/format";
 import { ChartPatternDefs, patternFill } from "../../chart/patterns";
 import { useForcedColors } from "../../chart/use-forced-colors";
 import type { CategoryDatum } from "../../chart/types";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { clamp, plotPointerPosition } from "../../chart/pointer";
 
 export interface WaffleChartProps extends DatumInteractionProps<CategoryDatum> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -52,12 +54,18 @@ function allocateCells(values: number[], total: number): number[] {
   return floors;
 }
 
+// Named so the pointer math below (which needs the same left/top offset
+// xScale/yScale are drawn relative to) can never drift from what's
+// actually passed to ChartContainer.
+const MARGIN = { top: 8, right: 8, bottom: 8, left: 8 };
+
 /**
  * Part-to-whole as a grid of squares (a "gridplot"/waffle). Each category fills
  * a proportional number of cells; color is identity (one hue per category, fixed
  * order), so a legend is always present. Reads shares more accurately than a pie
- * for a handful of categories. Hovering a cell dims the other categories and
- * shows that category's share.
+ * for a handful of categories. Hovering a cell outlines every cell of that
+ * category (its siblings are never dimmed) and shows that category's share,
+ * the tooltip tracking the live pointer while it stays inside the grid.
  *
  * @experimental Prototype-stage; API may change before it is marked stable.
  */
@@ -71,7 +79,16 @@ export function WaffleChart({
   onDatumHover,
   texture,
 }: WaffleChartProps) {
+  const theme = useChartTheme();
   const [hover, setHover] = useState<string | null>(null);
+  // Live pointer position (plot-local), while a cell is being hovered by
+  // mouse -- null on keyboard focus (not applicable here, there is none) or
+  // once the pointer leaves, so the tooltip falls back to a fixed position
+  // rather than a stale coordinate from a previous hover.
+  const [pointerPos, setPointerPos] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const forcedColors = useForcedColors();
   const effectiveTexture = texture || forcedColors;
   const total = useMemo(
@@ -119,7 +136,7 @@ export function WaffleChart({
     <ChartContainer
       width={width}
       height={height}
-      margin={{ top: 8, right: 8, bottom: 8, left: 8 }}
+      margin={MARGIN}
       ariaLabel={ariaLabel ?? `Waffle chart of ${data.length} categories`}
       legend={data.map((d, i) => ({
         label: d.category,
@@ -145,7 +162,14 @@ export function WaffleChart({
               const cellIndex = (cells - 1 - rowFromTop) * cells + col;
               const owner = cellOwners[cellIndex];
               const cat = owner != null ? data[owner]?.category : undefined;
-              const dimmed = hover != null && cat != null && hover !== cat;
+              // Outline every cell of the hovered category; never dim the
+              // other categories' cells (`chart/marks.ts`'s
+              // `ACTIVE_STROKE_WIDTH` -- the shared convention, replacing a
+              // per-chart "dim everyone else" opacity ternary). `hover` is
+              // keyed by category (not by cell), so the whole category's
+              // block of cells is the "active mark" here, not just the one
+              // cell under the pointer.
+              const isHovered = hover != null && cat != null && hover === cat;
               return (
                 <rect
                   key={idx}
@@ -161,14 +185,24 @@ export function WaffleChart({
                         ? patternFill(owner)
                         : colorFor(owner)
                   }
-                  fillOpacity={cat == null ? 0 : dimmed ? 0.3 : 1}
-                  onMouseEnter={() => {
+                  fillOpacity={cat == null ? 0 : 1}
+                  stroke={isHovered ? theme.ink : "none"}
+                  strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
+                  onMouseEnter={(e) => {
                     if (cat == null || owner == null) return;
                     setHover(cat);
+                    const p = plotPointerPosition(e, MARGIN);
+                    if (p) setPointerPos(p);
                     onDatumHover?.({ datum: data[owner], index: owner });
+                  }}
+                  onMouseMove={(e) => {
+                    if (cat == null) return;
+                    const p = plotPointerPosition(e, MARGIN);
+                    if (p) setPointerPos(p);
                   }}
                   onMouseLeave={() => {
                     setHover(null);
+                    setPointerPos(null);
                     onDatumHover?.(null);
                   }}
                   onClick={() => {
@@ -180,9 +214,13 @@ export function WaffleChart({
             })}
             {hover != null && activeShare != null && (
               <SvgTooltip
-                x={innerWidth / 2}
+                x={
+                  pointerPos != null
+                    ? clamp(pointerPos.x, innerWidth)
+                    : innerWidth / 2
+                }
                 innerWidth={innerWidth}
-                top={4}
+                top={pointerPos != null ? clamp(pointerPos.y, innerHeight) : 4}
                 lines={[hover, formatPercent(activeShare)]}
               />
             )}
