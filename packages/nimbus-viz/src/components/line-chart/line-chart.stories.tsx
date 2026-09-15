@@ -314,3 +314,47 @@ export const Responsive: BaseStory = {
     </div>
   ),
 };
+
+// `#19`: a 500-point series, well past a 60-point decimateThreshold.
+const denseData = Array.from({ length: 500 }, (_, i) => ({
+  x: new Date(2026, 0, 1 + i),
+  y: 50 + 40 * Math.sin(i / 12) + (i === 250 ? 60 : 0), // one sharp spike
+}));
+const denseFixture: Series[] = [{ id: "s1", label: "S1", data: denseData }];
+
+/**
+ * `decimateThreshold` downsamples the DRAWN path via LTTB, well past its
+ * threshold here (500 points -> ~60) -- proving the path's point count
+ * actually drops while the y-axis domain still reflects the full series
+ * (the spike at i=250 stays in range), not the decimated subset's own.
+ */
+export const Decimated: BaseStory = {
+  render: () => (
+    <LineChart
+      width={480}
+      height={280}
+      series={denseFixture}
+      decimateThreshold={60}
+      ariaLabel="Dense series drawn with LTTB decimation"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const path = canvasElement.querySelector<SVGPathElement>("path")!;
+    const d = path.getAttribute("d") ?? "";
+    // curveMonotoneX emits one "M" (the first point) then one "C" (cubic
+    // bezier) per subsequent point -- so the command count IS the point
+    // count, regardless of the smoothing curve (no straight "L" segments).
+    const commands = d.match(/[MC]/g) ?? [];
+    expect(commands.length).toBeLessThan(100); // ~60, well under 500
+    expect(commands.length).toBeGreaterThan(10); // still a real line, not 1-2 pts
+    expect(d).not.toMatch(/NaN/);
+    // A real shape survived decimation -- not collapsed to a flat line. The
+    // last coordinate pair on each command is the through-point (a C's two
+    // control points come first); a bare-bones extraction of every number
+    // pair is good enough to bound the y-range without parsing the curve.
+    const ys = Array.from(d.matchAll(/([\d.-]+),([\d.-]+)/g)).map((m) =>
+      Number(m[2])
+    );
+    expect(Math.max(...ys) - Math.min(...ys)).toBeGreaterThan(20);
+  },
+};

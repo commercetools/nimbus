@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { extent } from "d3-array";
+import { quadtree } from "d3-quadtree";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
@@ -41,6 +42,16 @@ export interface ScatterPlotProps<T = ScatterPoint> {
   children?: ReactNode;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /**
+   * When set, hover/click are resolved via a `d3-quadtree` nearest-point
+   * lookup on one plot-wide overlay instead of each point's own listener —
+   * one DOM listener regardless of point count, and the nearest point wins
+   * even where dots overlap (whichever is on top of the DOM stack would
+   * otherwise always win). The value is the search radius in pixels; a
+   * pointer farther than this from every point reports no hover. Omit for
+   * today's default: each point keeps its own `onMouseEnter`/`onClick`.
+   */
+  quadtreeHitRadius?: number;
 }
 
 /**
@@ -66,6 +77,7 @@ export function ScatterPlot<T = ScatterPoint>({
   onDatumHover,
   children,
   valueFormat,
+  quadtreeHitRadius,
 }: ScatterPlotProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -150,6 +162,24 @@ export function ScatterPlot<T = ScatterPoint>({
           nice: true,
         });
         const hp = hover != null ? points[hover] : null;
+        // Built in pixel space so `find(mx, my, radius)` compares directly
+        // against pointer coordinates -- only when quadtreeHitRadius opts in
+        // (see the prop doc); otherwise each circle keeps its own listener.
+        const qt =
+          quadtreeHitRadius != null
+            ? quadtree<{ i: number; x: number; y: number }>()
+                .x((n) => n.x)
+                .y((n) => n.y)
+                .addAll(
+                  points.map((p, i) => ({
+                    i,
+                    x: xScale(getX(p)),
+                    y: yScale(getY(p)),
+                  }))
+                )
+            : null;
+        const resolveNearest = (mx: number, my: number) =>
+          qt?.find(mx, my, quadtreeHitRadius)?.i;
         return (
           <ChartScaleProvider
             value={{
@@ -192,19 +222,75 @@ export function ScatterPlot<T = ScatterPoint>({
                 fillOpacity={hover == null || hover === i ? 0.85 : 0.35}
                 stroke={theme.surface}
                 strokeWidth={1}
-                onMouseEnter={() => {
-                  setHover(i);
-                  onDatumHover?.({ datum: p, index: i, seriesId: getGroup(p) });
+                {...(qt
+                  ? {}
+                  : {
+                      onMouseEnter: () => {
+                        setHover(i);
+                        onDatumHover?.({
+                          datum: p,
+                          index: i,
+                          seriesId: getGroup(p),
+                        });
+                      },
+                      onMouseLeave: () => {
+                        setHover(null);
+                        onDatumHover?.(null);
+                      },
+                      onClick: () =>
+                        onDatumClick?.({
+                          datum: p,
+                          index: i,
+                          seriesId: getGroup(p),
+                        }),
+                    })}
+              />
+            ))}
+            {qt && (
+              <rect
+                x={0}
+                y={0}
+                width={innerWidth}
+                height={innerHeight}
+                fill="transparent"
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const i = resolveNearest(
+                    e.clientX - rect.left,
+                    e.clientY - rect.top
+                  );
+                  if (i != null) {
+                    setHover(i);
+                    onDatumHover?.({
+                      datum: points[i],
+                      index: i,
+                      seriesId: getGroup(points[i]),
+                    });
+                  } else {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }
                 }}
                 onMouseLeave={() => {
                   setHover(null);
                   onDatumHover?.(null);
                 }}
-                onClick={() =>
-                  onDatumClick?.({ datum: p, index: i, seriesId: getGroup(p) })
-                }
+                onClick={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const i = resolveNearest(
+                    e.clientX - rect.left,
+                    e.clientY - rect.top
+                  );
+                  if (i != null) {
+                    onDatumClick?.({
+                      datum: points[i],
+                      index: i,
+                      seriesId: getGroup(points[i]),
+                    });
+                  }
+                }}
               />
-            ))}
+            )}
             {children}
             {hp && (
               <SvgTooltip

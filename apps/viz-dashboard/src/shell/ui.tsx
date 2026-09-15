@@ -172,7 +172,7 @@ export function KpiTile({
         label=""
         value={value}
         previous={previous}
-        format={format}
+        valueFormat={format}
         invertDelta={invertDelta}
         ariaLabel={`${label}: ${format ? format(value) : value}`}
       />

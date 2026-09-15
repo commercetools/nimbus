@@ -58,6 +58,7 @@
     "@visx/tooltip": "catalog:viz",
     "d3-array": "catalog:viz",
     "d3-format": "catalog:viz",
+    "d3-quadtree": "catalog:viz",
     "d3-time-format": "catalog:viz"
   },
   "peerDependencies": {
@@ -75,6 +76,7 @@
     "@testing-library/react": "catalog:tooling",
     "@types/d3-array": "catalog:viz",
     "@types/d3-format": "catalog:viz",
+    "@types/d3-quadtree": "catalog:viz",
     "@types/d3-time-format": "catalog:viz",
     "@types/node": "catalog:utils",
     "@types/react": "catalog:react",

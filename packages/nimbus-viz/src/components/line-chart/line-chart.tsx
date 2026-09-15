@@ -10,6 +10,7 @@ import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
+import { lttb } from "../../chart/decimate";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { Series, SeriesPoint } from "../../chart/types";
@@ -41,6 +42,15 @@ export interface LineChartProps<
   children?: ReactNode;
   /** Formats date displays (axis ticks, tooltip dates). Defaults to a locale-aware short month+day formatter (e.g. `Aug 28`); overrides any surrounding `ChartLocaleProvider`. */
   dateFormat?: (d: Date) => string;
+  /**
+   * When a series has more points than this, the DRAWN line/area (only —
+   * axes, hover, tooltip, and the data table still read every point) is
+   * downsampled via LTTB (`chart/decimate.ts`) to about this many points,
+   * keeping the visually significant ones (peaks, troughs, inflections) so
+   * the shape doesn't visibly change. Omit for no decimation — every point
+   * is drawn (today's default, unchanged).
+   */
+  decimateThreshold?: number;
 }
 
 const toDate = (x: number | Date): Date =>
@@ -73,6 +83,7 @@ export function LineChart<T = SeriesPoint>({
   onDatumClick,
   onDatumHover,
   children,
+  decimateThreshold,
 }: LineChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -105,6 +116,20 @@ export function LineChart<T = SeriesPoint>({
   const color = useEntityColors(
     useMemo(() => series.map((s) => s.id), [series])
   );
+  // Decimation only trims the DRAWN path -- the domain above, the hover
+  // overlay, and the table below all still read every point of `series`.
+  const drawData = useMemo(() => {
+    if (decimateThreshold == null) return series.map((s) => s.data);
+    return series.map((s) => {
+      if (s.data.length <= decimateThreshold) return s.data;
+      const wrapped = s.data.map((p) => ({
+        x: +toDate(getX(p)),
+        y: getY(p) ?? 0,
+        original: p,
+      }));
+      return lttb(wrapped, decimateThreshold).map((w) => w.original);
+    });
+  }, [series, decimateThreshold, getX, getY]);
 
   if (width <= 0 || height <= 0 || series.length === 0) return null;
 
@@ -183,7 +208,7 @@ export function LineChart<T = SeriesPoint>({
               return variant === "area" ? (
                 <AreaClosed<T>
                   key={s.id}
-                  data={s.data}
+                  data={drawData[i]}
                   x={(p) => xScale(toDate(getX(p)))}
                   y={(p) => yScale(getY(p) ?? 0)}
                   y0={() => yScale(0)}
@@ -198,7 +223,7 @@ export function LineChart<T = SeriesPoint>({
               ) : (
                 <LinePath<T>
                   key={s.id}
-                  data={s.data}
+                  data={drawData[i]}
                   x={(p) => xScale(toDate(getX(p)))}
                   y={(p) => yScale(getY(p) ?? 0)}
                   curve={curveMonotoneX}
