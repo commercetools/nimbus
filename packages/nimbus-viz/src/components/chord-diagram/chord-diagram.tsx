@@ -8,6 +8,7 @@ import { emText } from "../../chart/typography";
 import { ChartPatternDefs, patternFill } from "../../chart/patterns";
 import { useForcedColors } from "../../chart/use-forced-colors";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 
 /** A square matrix of flows between a shared set of entities. */
 export interface FlowMatrix {
@@ -188,11 +189,17 @@ export function ChordDiagram({
         const outer = Math.max(0, Math.min(innerWidth, innerHeight) / 2 - 24);
         const ring = Math.max(6, outer * 0.06);
         const inner = outer - ring;
-        const ribbonOpacity = (rb: Ribbon, idx: number): number => {
-          if (hoverRibbon != null) return hoverRibbon === idx ? 0.85 : 0.1;
-          if (hoverArc != null)
-            return rb.i === hoverArc || rb.j === hoverArc ? 0.75 : 0.1;
-          return 0.45;
+        // Every ribbon keeps this same real baseline opacity regardless of
+        // hover -- no more crushing non-active ribbons down to 0.1.
+        const RIBBON_OPACITY = 0.45;
+        // The truly active ribbon(s): the hovered ribbon itself, or every
+        // ribbon touching a hovered arc. Outlined via `stroke`/
+        // `strokeWidth` (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH`) instead
+        // of the old opacity spread.
+        const isRibbonActive = (rb: Ribbon, idx: number): boolean => {
+          if (hoverRibbon != null) return hoverRibbon === idx;
+          if (hoverArc != null) return rb.i === hoverArc || rb.j === hoverArc;
+          return false;
         };
         const tip = (() => {
           if (hoverRibbon != null) {
@@ -218,7 +225,11 @@ export function ChordDiagram({
                   key={`r-${rb.i}-${rb.j}`}
                   d={ribbonPath(rb.s, rb.t, inner)}
                   fill={effectiveTexture ? patternFill(rb.i) : colorFor(rb.i)}
-                  opacity={ribbonOpacity(rb, idx)}
+                  opacity={RIBBON_OPACITY}
+                  stroke={isRibbonActive(rb, idx) ? theme.ink : "none"}
+                  strokeWidth={
+                    isRibbonActive(rb, idx) ? ACTIVE_STROKE_WIDTH : 0
+                  }
                   onMouseEnter={() => {
                     setHoverRibbon(idx);
                     onDatumHover?.({
