@@ -4,7 +4,7 @@ import { scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { ChartContainer } from "../../chart/chart-container";
-import { bandByIndex } from "../../chart/scales";
+import { bandByIndex, valueDomain } from "../../chart/scales";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import {
   GridRows,
@@ -16,10 +16,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import { emText } from "../../chart/typography";
-import type {
-  DatumClickHandler,
-  DatumHoverHandler,
-} from "../../chart/interaction";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** One ordered step in a waterfall: a signed contribution, or an explicit total. */
 export interface WaterfallStep {
@@ -31,7 +28,7 @@ export interface WaterfallStep {
   isTotal?: boolean;
 }
 
-export interface WaterfallChartProps {
+export interface WaterfallChartProps extends DatumInteractionProps<WaterfallStep> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -40,10 +37,6 @@ export interface WaterfallChartProps {
   data: WaterfallStep[];
   /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
-  /** Fired when a datum is clicked (drill-down). */
-  onDatumClick?: DatumClickHandler<WaterfallStep>;
-  /** Fired when the hovered datum changes; null when the pointer leaves. */
-  onDatumHover?: DatumHoverHandler<WaterfallStep>;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
 }
@@ -89,10 +82,13 @@ export function WaterfallChart({
     });
   }, [data]);
 
-  const [yMin, yMax] = useMemo(() => {
-    const values = bars.flatMap((b) => [b.from, b.to]);
-    return [Math.min(0, ...values), Math.max(0, ...values)];
-  }, [bars]);
+  // valueDomain() includes zero (same as the hand-rolled min/max(0, ...) this
+  // replaces) and additionally widens a degenerate domain -- every bar at 0,
+  // e.g. a period with no change at all -- instead of collapsing to [0, 0].
+  const yRange = useMemo(
+    () => valueDomain(bars.flatMap((b) => [b.from, b.to])),
+    [bars]
+  );
 
   if (width <= 0 || height <= 0 || data.length === 0) return null;
 
@@ -119,7 +115,7 @@ export function WaterfallChart({
           }
         );
         const yScale = scaleLinear({
-          domain: [yMin, yMax],
+          domain: yRange,
           range: [innerHeight, 0],
           nice: true,
         });
