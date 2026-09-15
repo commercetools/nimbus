@@ -26,6 +26,7 @@ import type {
 } from "../../chart/interaction";
 import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 import { clamp, plotPointerPosition } from "../../chart/pointer";
+import { ValueLabel } from "../../chart/value-labels";
 
 export interface GroupedBarChartProps<T = StackRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -77,6 +78,13 @@ export interface GroupedBarChartProps<T = StackRow> {
    * `useForcedColors`.
    */
   texture?: boolean;
+  /**
+   * Draw each bar's formatted value directly above (or below, negative
+   * bar) its outer end — `chart/value-labels.tsx`'s `ValueLabel`, same
+   * convention `bar-chart.tsx` uses. Default `false` (no change from
+   * today's rendering).
+   */
+  showValues?: boolean;
 }
 
 /**
@@ -114,6 +122,7 @@ export function GroupedBarChart<T = StackRow>({
   renderTooltipSize = { width: 160, height: 40 },
   renderLegendItem,
   texture,
+  showValues,
 }: GroupedBarChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -250,50 +259,58 @@ export function GroupedBarChart<T = StackRow>({
                     // ternary).
                     const isHovered = hover != null && hover.key === seg.key;
                     return (
-                      <BarRounded
-                        key={seg.key}
-                        x={bx}
-                        y={barTop}
-                        width={bw}
-                        height={bh}
-                        radius={3}
-                        top={!hasNegative || positive}
-                        bottom={hasNegative && !positive}
-                        fill={
-                          effectiveTexture
-                            ? patternFill(keys.indexOf(seg.key))
-                            : colorForKey(seg.key)
-                        }
-                        stroke={isHovered ? theme.ink : "none"}
-                        strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
-                        onMouseEnter={(e) => {
-                          setHover({ i, key: seg.key });
-                          const p = plotPointerPosition(e, MARGIN);
-                          if (p) setPointerY(p.y);
-                          // index = the category index; datum = the raw segment.
-                          onDatumHover?.({
-                            datum: seg,
-                            index: i,
-                            seriesId: seg.key,
-                          });
-                        }}
-                        onMouseMove={(e) => {
-                          const p = plotPointerPosition(e, MARGIN);
-                          if (p) setPointerY(p.y);
-                        }}
-                        onMouseLeave={() => {
-                          setHover(null);
-                          setPointerY(null);
-                          onDatumHover?.(null);
-                        }}
-                        onClick={() =>
-                          onDatumClick?.({
-                            datum: seg,
-                            index: i,
-                            seriesId: seg.key,
-                          })
-                        }
-                      />
+                      <g key={seg.key}>
+                        <BarRounded
+                          x={bx}
+                          y={barTop}
+                          width={bw}
+                          height={bh}
+                          radius={3}
+                          top={!hasNegative || positive}
+                          bottom={hasNegative && !positive}
+                          fill={
+                            effectiveTexture
+                              ? patternFill(keys.indexOf(seg.key))
+                              : colorForKey(seg.key)
+                          }
+                          stroke={isHovered ? theme.ink : "none"}
+                          strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
+                          onMouseEnter={(e) => {
+                            setHover({ i, key: seg.key });
+                            const p = plotPointerPosition(e, MARGIN);
+                            if (p) setPointerY(p.y);
+                            // index = the category index; datum = the raw segment.
+                            onDatumHover?.({
+                              datum: seg,
+                              index: i,
+                              seriesId: seg.key,
+                            });
+                          }}
+                          onMouseMove={(e) => {
+                            const p = plotPointerPosition(e, MARGIN);
+                            if (p) setPointerY(p.y);
+                          }}
+                          onMouseLeave={() => {
+                            setHover(null);
+                            setPointerY(null);
+                            onDatumHover?.(null);
+                          }}
+                          onClick={() =>
+                            onDatumClick?.({
+                              datum: seg,
+                              index: i,
+                              seriesId: seg.key,
+                            })
+                          }
+                        />
+                        {showValues && (
+                          <ValueLabel
+                            x={bx + bw / 2}
+                            y={positive ? barTop - 6 : barTop + bh + 6}
+                            text={valueFmt(seg.value)}
+                          />
+                        )}
+                      </g>
                     );
                   })}
                 </g>

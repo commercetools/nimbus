@@ -15,6 +15,63 @@ export default meta;
 export const Base: BaseStory = {};
 
 /**
+ * `showValues` draws each series bar's own formatted value directly above
+ * (or below, negative segment) its outer end -- mirroring `bar-chart.tsx`'s
+ * opt-in label. Proven the same way: the with-labels chart carries exactly
+ * one extra `<text>` per bar segment over the without-labels chart.
+ */
+const showValuesFixture: StackRow[] = [
+  {
+    category: "Q1",
+    segments: [
+      { key: "New", value: 120 },
+      { key: "Returning", value: 80 },
+    ],
+  },
+  {
+    category: "Q2",
+    segments: [
+      { key: "New", value: 140 },
+      { key: "Returning", value: 96 },
+    ],
+  },
+];
+
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <GroupedBarChart
+        width={280}
+        height={280}
+        data={showValuesFixture}
+        ariaLabel="Grouped bar chart without value labels"
+      />
+      <GroupedBarChart
+        width={280}
+        height={280}
+        data={showValuesFixture}
+        showValues
+        ariaLabel="Grouped bar chart with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (GroupedBarChart uses the
+    // library default role="img" -- it has no keyboard-focusable marks).
+    // Axis tick labels render their own nested <svg> (visx's positioning
+    // trick), which would otherwise inflate this count too.
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    const segmentCount = showValuesFixture.reduce(
+      (sum, row) => sum + row.segments.length,
+      0
+    );
+    expect(textCount(svgs[1])).toBe(textCount(svgs[0]) + segmentCount);
+  },
+};
+
+/**
  * Hover/tooltip UX convergence: hovering a bar outlines every bar sharing
  * its series key across every category -- this chart's existing "highlight
  * that series" behavior (see the doc comment on the component) -- instead of

@@ -271,6 +271,45 @@ const App = () => (
 );
 ```
 
+### Value labels
+
+Pass `showValues` to draw each series bar's formatted value directly above it
+(or below, for a negative segment) — the opt-in equivalent of `bar-chart.tsx`'s
+same convention. Default `false`.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <GroupedBarChart
+          width={width}
+          height={height}
+          data={[
+            {
+              category: "Q1",
+              segments: [
+                { key: "New", value: 120 },
+                { key: "Returning", value: 80 },
+              ],
+            },
+            {
+              category: "Q2",
+              segments: [
+                { key: "New", value: 140 },
+                { key: "Returning", value: 96 },
+              ],
+            },
+          ]}
+          showValues
+          ariaLabel="Grouped bar chart of customers by quarter, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Color & theming
 
 Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
