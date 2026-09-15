@@ -109,7 +109,8 @@ Contract notes, verifiable from source:
   from 12 o'clock.
 - `value` is a plain number. The radius scale runs from **0** at the inner ring
   to the maximum at the outer ring, so values are assumed **non-negative**; a
-  negative value collapses its bar to the inner ring.
+  negative value collapses its bar to the inner ring and logs a development
+  warning instead of extrapolating past either ring.
 - Each category's label is drawn on the rim just outside its bar.
 
 ## API reference
@@ -232,7 +233,8 @@ render your own placeholder when there is no data yet.
   [`LollipopChart`](/charts/lollipop-chart) when precision matters.
 - **One measure per category.** No series or stacking.
 - **Non-negative values.** The inner ring is the baseline; negatives collapse to
-  it.
+  it and log a development warning rather than producing a plausible-looking
+  wrong length.
 - **Draw order is input order.** There is no built-in sort.
 - **No tooltip config, callbacks, overlays, or legend.** There are no
   `onDatumClick`/`onDatumHover` props, no `children`, and no legend.

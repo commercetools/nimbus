@@ -162,7 +162,9 @@ Contract notes, verifiable from source:
 - A missing or `null` `y` is treated as **0** in the stack (a band pinches to
   zero there), not as a gap — unlike `LineChart`, the fill does not break.
 - Values are **non-negative**: the value axis runs from 0 to the maximum stacked
-  total, and negative parts are not meaningful in a stack.
+  total, and negative parts are not meaningful in a stack. A negative value is
+  drawn as 0 and logs a development warning rather than extending the area
+  below the baseline.
 - Stacking order is the array order, bottom to top; fills are assigned in fixed
   categorical order.
 
@@ -352,7 +354,8 @@ states upstream and render your own placeholder when there is no data yet.
   reading an individual series' level is imprecise — use
   [`LineChart`](/charts/line-chart) when each series' level is the point.
 - **Non-negative values.** The stack is anchored at 0; negative parts are not
-  meaningful.
+  meaningful and are clamped to 0 with a development warning rather than
+  drawn.
 - **No legend, title, caption, loading, or error passthrough** — it forwards
   only `ariaLabel`, the auto legend, and the data table to `ChartContainer`.
 - **No downsampling** — every point of every series is drawn.

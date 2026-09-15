@@ -4,6 +4,7 @@ import type { SankeyNode } from "@visx/sankey";
 import { Group } from "@visx/group";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
+import { devWarn } from "../../chart/dev-warn";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { FlowGraph, FlowLink, FlowNode } from "../../chart/types";
@@ -49,6 +50,31 @@ export function SankeyDiagram({
 
   if (width <= 0 || height <= 0 || graph.nodes.length === 0) return null;
 
+  // BC-3 (docs/bug-classes.md): d3-sankey scales node/link geometry
+  // proportional to `value / totalFlow`. When every link is 0 (or there are
+  // none), `totalFlow` is 0 and that division yields NaN throughout the
+  // laid-out graph -- render the same "nothing to show" as an empty graph
+  // instead. A negative link value is clamped before layout for the same
+  // reason a flow can't be negative.
+  const hasNegativeLink = graph.links.some((l) => l.value < 0);
+  if (hasNegativeLink) {
+    devWarn(
+      "sankey-diagram:negative",
+      "SankeyDiagram: a negative link value is drawn as 0 (a flow cannot be negative)."
+    );
+  }
+  const totalFlow = graph.links.reduce(
+    (sum, l) => sum + Math.max(0, l.value),
+    0
+  );
+  if (totalFlow <= 0) {
+    devWarn(
+      "sankey-diagram:zero-flow",
+      "SankeyDiagram: every link is 0; nothing to lay out."
+    );
+    return null;
+  }
+
   const nodeName = (idx: number) => graph.nodes[idx]?.name ?? String(idx);
   const table = {
     columns: ["From", "To", "Value"],
@@ -72,7 +98,10 @@ export function SankeyDiagram({
           // Clone: d3-sankey mutates its input with layout fields.
           root={{
             nodes: graph.nodes.map((n) => ({ ...n })),
-            links: graph.links.map((l) => ({ ...l })),
+            links: graph.links.map((l) => ({
+              ...l,
+              value: Math.max(0, l.value),
+            })),
           }}
           size={[innerWidth, innerHeight]}
           nodeWidth={12}

@@ -115,8 +115,9 @@ export const EdgeCaseEmpty: BaseStory = {
 };
 
 /**
- * `top = data[0].value || 1`: if the first stage is `0` and a later stage
- * is non-zero, every bar's width is computed against that `1` fallback
+ * `top = Math.max(0, data[0].value) || 1`: if the first stage is `0` and a
+ * later stage is non-zero, every bar's width is computed against that `1`
+ * fallback
  * instead of a real reference — the same "assumes non-increasing values,
  * does not clamp or warn" contract as a later-stage-exceeds-first case,
  * just triggered by a zero reference instead of a shrinking one. Asserts
@@ -178,6 +179,44 @@ export const EdgeCaseLaterStageExceedsFirst: BaseStory = {
     // ~268px inner width (300 - the 16px left/right margins), confirming
     // no clamp exists.
     expect(secondBarBox.width).toBeGreaterThan(268 * 3);
+  },
+};
+
+/**
+ * BC-2 (`docs/bug-classes.md`): a stage is a count, so a negative value
+ * (e.g. a returns/refund adjustment applied to a stage) cannot be encoded by
+ * width. It is now clamped to 0 wherever a ratio is computed (`Math.max(0,
+ * stage.value)`), same treatment as a real 0. `BarRounded`'s own radius
+ * clamp (`Math.max(1, Math.min(radius, Math.min(width, height) / 2))`)
+ * forces even a 0-width bar to a ~2px sliver rather than a literal 0, so
+ * this asserts the bar collapses to that same 2px floor -- not a
+ * plausible-looking, ratio-scaled width -- while the first (real, positive)
+ * stage stays wide, and no attribute anywhere is `NaN`.
+ */
+export const EdgeCaseNegativeStage: BaseStory = {
+  render: () => (
+    <FunnelChart
+      width={300}
+      height={160}
+      data={[
+        { stage: "Baseline", value: 100 },
+        { stage: "Refunded", value: -50 },
+        { stage: "Remaining", value: 40 },
+      ]}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const bars = canvasElement.querySelectorAll<SVGPathElement>("path");
+    expect(bars.length).toBe(3);
+    const [firstBox, negativeBox] = [bars[0].getBBox(), bars[1].getBBox()];
+    expect(firstBox.width).toBeGreaterThan(200); // real, non-zero reference bar
+    expect(negativeBox.width).toBeLessThanOrEqual(2); // clamped to the 0-width floor
+
+    for (const el of Array.from(canvasElement.querySelectorAll("*"))) {
+      for (const attr of Array.from(el.attributes)) {
+        expect(attr.value).not.toContain("NaN");
+      }
+    }
   },
 };
 

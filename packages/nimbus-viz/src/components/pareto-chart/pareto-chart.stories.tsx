@@ -60,3 +60,65 @@ export const EdgeCaseDuplicateLabels: BaseStory = {
     expect(new Set(positions).size).toBe(duplicateLabelFixture.length);
   },
 };
+
+/**
+ * BC-2 (`docs/bug-classes.md`): a rank/cumulative-share chart can't encode a
+ * negative magnitude — summing it into the running total would distort every
+ * later cumulative share. A negative value is now clamped to 0 before
+ * ranking and summing (the tooltip and data table still show the raw value).
+ * Proven by comparing against an identical control chart whose last category
+ * is a literal 0: sort order depends only on the ORIGINAL value (-9 and 0
+ * both sort last here), so the two charts' clamped rows — and therefore every
+ * bar, the cumulative line, and its markers — must render byte-identical.
+ */
+const negRows: CategoryDatum[] = [
+  { category: "Shipping delay", value: 42 },
+  { category: "Wrong item", value: 28 },
+  { category: "Damaged", value: 18 },
+  { category: "Billing", value: -9 },
+];
+const zeroControlRows: CategoryDatum[] = [
+  { category: "Shipping delay", value: 42 },
+  { category: "Wrong item", value: 28 },
+  { category: "Damaged", value: 18 },
+  { category: "Billing", value: 0 },
+];
+
+export const EdgeCaseNegativeValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 16 }}>
+      <ParetoChart
+        width={360}
+        height={260}
+        data={negRows}
+        ariaLabel="Pareto chart with a negative category value"
+      />
+      <ParetoChart
+        width={360}
+        height={260}
+        data={zeroControlRows}
+        ariaLabel="Pareto chart with a literal zero category value (control)"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Each `@visx/axis` tick label sits in its own nested <svg> (a local
+    // coordinate system for the offset text) — querySelectorAll("svg") picks
+    // those up too. role="img" is unique to the two chart-root <svg>s.
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const negBars = Array.from(
+      svgs[0].querySelectorAll("path.visx-bar-rounded")
+    );
+    const zeroBars = Array.from(
+      svgs[1].querySelectorAll("path.visx-bar-rounded")
+    );
+    expect(negBars).toHaveLength(zeroControlRows.length);
+    expect(negBars.map((b) => b.getAttribute("d"))).toEqual(
+      zeroBars.map((b) => b.getAttribute("d"))
+    );
+    for (const b of [...negBars, ...zeroBars]) {
+      expect(b.getAttribute("d")).not.toMatch(/NaN/);
+    }
+  },
+};

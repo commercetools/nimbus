@@ -5,8 +5,9 @@ import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
-import { bandByIndex } from "../../chart/scales";
+import { bandByIndex, valueDomain } from "../../chart/scales";
 import { stackKeys } from "../../chart/stack";
+import { devWarn } from "../../chart/dev-warn";
 import {
   GridRows,
   bottomTickLabel,
@@ -65,13 +66,36 @@ export function StackedBarChart({
 
   const keys = useMemo(() => stackKeys(data), [data]);
   const colorForKey = useEntityColors(keys);
-  const maxTotal = useMemo(
+  // A stack cannot encode a negative part: clamp every segment to 0 before it
+  // enters the height/domain math (BC-2). Tooltip and data table below keep
+  // reading the raw `data`, so a negative input is still visible there.
+  const clampedData = useMemo(
     () =>
-      Math.max(
-        0,
-        ...data.map((r) => r.segments.reduce((s, seg) => s + seg.value, 0))
-      ),
+      data.map((r) => ({
+        ...r,
+        segments: r.segments.map((s) => ({
+          ...s,
+          value: Math.max(0, s.value),
+        })),
+      })),
     [data]
+  );
+  const hasNegative = data.some((r) => r.segments.some((s) => s.value < 0));
+  if (hasNegative) {
+    devWarn(
+      "stacked-bar-chart:negative",
+      "StackedBarChart: negative segment values are drawn as 0 (a stack cannot encode a negative part)."
+    );
+  }
+  // The axis shows row TOTALS after clamping; valueDomain also widens a
+  // degenerate all-zero/all-equal domain (BC-3) instead of collapsing to a
+  // single point.
+  const totalDomain = useMemo(
+    () =>
+      valueDomain(
+        clampedData.map((r) => r.segments.reduce((s, seg) => s + seg.value, 0))
+      ),
+    [clampedData]
   );
 
   if (width <= 0 || height <= 0 || data.length === 0) return null;
@@ -102,7 +126,7 @@ export function StackedBarChart({
           }
         );
         const yScale = scaleLinear({
-          domain: [0, maxTotal],
+          domain: totalDomain,
           range: [innerHeight, 0],
           nice: true,
         });
@@ -147,7 +171,8 @@ export function StackedBarChart({
             {data.map((row, i) => {
               const x = xScale.pos(i);
               const dimmed = hover != null && hover !== i;
-              const lastIdx = row.segments.length - 1;
+              const segments = clampedData[i].segments;
+              const lastIdx = segments.length - 1;
               let cumulative = 0;
               return (
                 <g
@@ -163,7 +188,7 @@ export function StackedBarChart({
                   }}
                   onClick={() => onDatumClick?.({ datum: row, index: i })}
                 >
-                  {row.segments.map((seg, si) => {
+                  {segments.map((seg, si) => {
                     const y0 = yScale(cumulative);
                     cumulative += seg.value;
                     const y1 = yScale(cumulative);

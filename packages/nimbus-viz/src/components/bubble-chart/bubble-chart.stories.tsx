@@ -159,14 +159,15 @@ export const EdgeCaseAllZeroSize: BaseStory = {
 };
 
 /**
- * Negative `size` is outside the documented, non-negative contract (a
- * magnitude, like `FunnelChart`'s counts, isn't naturally signed) — but the
- * actual failure mode has two regimes, not one. A small-magnitude negative
- * value still extrapolates to a small *positive* radius (a quiet,
- * plausible-looking mis-render); only a large enough negative value crosses
- * zero into an invisible (r<0) bubble. Both are asserted here rather than
- * just the loud case, since the quiet one is the one a story could
- * otherwise miss entirely.
+ * BC-2 (`docs/bug-classes.md`): negative `size` is outside the documented,
+ * non-negative contract (a magnitude, like `FunnelChart`'s counts, isn't
+ * naturally signed), and extrapolating it through `scaleSqrt` used to have
+ * two silent-wrong regimes -- a small-magnitude negative value landed at a
+ * small *positive* radius (a quiet, plausible-looking mis-render), while a
+ * large enough one crossed zero into an invisible (`r < 0`) bubble. Both are
+ * now clamped at the point the radius is computed (`sizeScale(Math.max(0,
+ * p.size))`), so every negative size -- regardless of magnitude -- draws at
+ * `R_MIN` instead of either extrapolation.
  */
 export const EdgeCaseNegativeSize: BaseStory = {
   render: () => (
@@ -175,29 +176,22 @@ export const EdgeCaseNegativeSize: BaseStory = {
       height={240}
       points={[
         { x: 10, y: 10, size: 900 }, // sets maxSize; a real, large bubble
-        { x: 20, y: 30, size: -1 }, // small-magnitude: quiet mis-render
-        { x: 30, y: 15, size: -100 }, // large-magnitude: loud (invisible)
+        { x: 20, y: 30, size: -1 }, // small-magnitude negative
+        { x: 30, y: 15, size: -100 }, // large-magnitude negative
       ]}
     />
   ),
   play: async ({ canvasElement }) => {
-    // All 3 points still get a <circle> in the DOM -- an invalid (negative)
-    // `r` doesn't remove the element, it just leaves it unpainted. The size
-    // legend also renders reference <circle>s (fill="none"); bubbles have a
-    // real fill, so filter those out. Bubbles draw largest-first (so
-    // smaller ones stay hoverable on top), and descending-by-value sorts -1
-    // above -100, giving DOM order [900, -1, -100].
+    // All 3 points get a <circle> in the DOM. The size legend also renders
+    // reference <circle>s (fill="none"); bubbles have a real fill, so filter
+    // those out.
     const circles = Array.from(
       canvasElement.querySelectorAll<SVGCircleElement>("circle")
     ).filter((c) => c.getAttribute("fill") !== "none");
     expect(circles.length).toBe(3);
-    const [large, smallNegative, largeNegative] = circles.map((c) =>
-      Number(c.getAttribute("r"))
-    );
-    expect(large).toBe(28); // R_MAX -- the real, largest bubble
-    expect(smallNegative).toBeGreaterThan(0); // quiet: still a real, visible radius
-    expect(smallNegative).toBeLessThan(28);
-    expect(largeNegative).toBeLessThan(0); // loud: crosses zero, unpaintable
+    const radii = circles.map((c) => Number(c.getAttribute("r")));
+    expect(radii.filter((r) => r === 28)).toHaveLength(1); // R_MAX -- the real, largest bubble
+    expect(radii.filter((r) => r === 4)).toHaveLength(2); // R_MIN -- both negatives, same magnitude or not
   },
 };
 

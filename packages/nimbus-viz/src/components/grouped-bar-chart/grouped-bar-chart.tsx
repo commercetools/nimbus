@@ -5,7 +5,7 @@ import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
-import { bandByIndex } from "../../chart/scales";
+import { bandByIndex, valueDomain } from "../../chart/scales";
 import { stackKeys } from "../../chart/stack";
 import {
   GridRows,
@@ -61,10 +61,12 @@ export function GroupedBarChart({
   const [hover, setHover] = useState<{ i: number; key: string } | null>(null);
   const keys = useMemo(() => stackKeys(data), [data]);
   const colorForKey = useEntityColors(keys);
-  const valueMax = useMemo(
-    () => Math.max(0, ...data.flatMap((r) => r.segments.map((s) => s.value))),
+  const values = useMemo(
+    () => data.flatMap((r) => r.segments.map((s) => s.value)),
     [data]
   );
+  const valueRange = useMemo(() => valueDomain(values), [values]);
+  const hasNegative = useMemo(() => values.some((v) => v < 0), [values]);
 
   if (width <= 0 || height <= 0 || data.length === 0) return null;
 
@@ -98,11 +100,12 @@ export function GroupedBarChart({
           padding: 0.15,
         });
         const y = scaleLinear({
-          domain: [0, valueMax],
+          domain: valueRange,
           range: [innerHeight, 0],
           nice: true,
         });
         const bw = x1.bandwidth;
+        const zeroY = y(0);
         const hb = hover
           ? data[hover.i]?.segments.find((s) => s.key === hover.key)
           : null;
@@ -141,17 +144,21 @@ export function GroupedBarChart({
                 <g key={i}>
                   {row.segments.map((seg) => {
                     const bx = gx + x1.pos(keys.indexOf(seg.key));
-                    const bh = Math.max(0, innerHeight - y(seg.value));
+                    const yVal = y(seg.value);
+                    const barTop = Math.min(zeroY, yVal);
+                    const bh = Math.max(1, Math.abs(zeroY - yVal));
+                    const positive = seg.value >= 0;
                     const active = hover == null || hover.key === seg.key;
                     return (
                       <BarRounded
                         key={seg.key}
                         x={bx}
-                        y={y(seg.value)}
+                        y={barTop}
                         width={bw}
                         height={bh}
                         radius={3}
-                        top
+                        top={!hasNegative || positive}
+                        bottom={hasNegative && !positive}
                         fill={colorForKey(seg.key)}
                         opacity={active ? 1 : 0.35}
                         onMouseEnter={() => {

@@ -46,20 +46,33 @@ chart it hits. The generic invariant test
   the sweep: pareto-chart's `ChartScaleProvider` `xScale` fed a numeric rank
   into the text-keyed scale (overlays landed at 0); fixed with
   `band.center(index)`.
-- **BC-2** fixed: bar-chart, line-chart, bullet-chart; diverging-bar-chart and
-  diverging-stacked-bar use symmetric domains. Legitimate hits to leave alone:
-  `violin-plot` (density axis, `[0, densityMax || 1]`), `bubble-chart` (guarded
-  `scaleSqrt`). Open: the other files the `detect` prints (9 charts as of
-  2026-09-14).
-- **BC-3** fixed: bubble-chart (all-zero sizes); population-pyramid and
-  radar-chart guard with `|| 1` until they adopt `valueDomain()`. Open:
-  sankey-diagram — every link at 0 makes the d3-sankey layout NaN (found by the
-  registry invariant spec, `SankeyDiagram:all-zero`).
+- **BC-2** fixed everywhere. bar-chart, line-chart, bullet-chart from the
+  original passes; diverging-bar-chart and diverging-stacked-bar use symmetric
+  domains. `/chart:sweep BC-2` closed the rest: grouped-bar-chart,
+  lollipop-chart (signed — drawn below/left of the zero baseline via
+  `valueDomain()`), stacked-bar-chart, stacked-area-chart, pareto-chart,
+  population-pyramid, funnel-chart (magnitude-only — clamped to 0 with a
+  `devWarn`, the raw value stays in the tooltip/table), bubble-chart (negative
+  `size` drawn at `R_MIN`), radial-bar-chart (drawn at the inner ring). Each
+  gained an `EdgeCaseNegativeValues` (or
+  `EdgeCaseNegativeSize`/`EdgeCaseNegativeStage`) story. Legitimate exceptions,
+  left as they are: `violin-plot` (density axis, `[0, densityMax || 1]`),
+  `histogram` (counts are never negative — see BC-3).
+- **BC-3** fixed everywhere. bubble-chart (all-zero sizes); population-pyramid
+  and radar-chart now use `valueDomain()` instead of the `|| 1` guard;
+  histogram, stacked-bar-chart, stacked-area-chart, pareto-chart all adopted
+  `valueDomain()` for their degenerate case as part of the BC-2 fix above;
+  sankey-diagram now returns its empty-graph render (and warns) when every link
+  is 0, closing the NaN-layout gap the registry invariant spec found.
 - **Guard coverage.** `src/selection/registry-invariants.spec.tsx` catches BC-1
   for every chart (relabeling must not move marks) and any NaN / negative size
   (BC-3, and the bubble-chart negative-size half of BC-2). It cannot see a plain
   BC-2 extrapolation — a negative value drawn at a valid but wrong coordinate —
-  so BC-2 stays grep-guarded plus a per-chart `EdgeCase*` story.
+  so BC-2 stayed grep-guarded plus a per-chart `EdgeCase*` story. The `detect`
+  now prints three files, none of them bugs: the `violin-plot` and
+  `bubble-chart` exceptions above, and a doc comment in
+  `radial-bar-chart.stories.tsx` describing the fix (matches the grep's text
+  pattern, isn't code).
 - **BC-4** fixed: stat-card.
 - **BC-5** fixed: grouped-bar-chart, stacked-bar-chart, diverging-stacked-bar,
   marimekko-chart, population-pyramid (the last two were found by the `detect`

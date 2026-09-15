@@ -1,14 +1,14 @@
 import { useMemo, useState } from "react";
 import { scaleLinear } from "@visx/scale";
-import { max } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
-import { bandByIndex } from "../../chart/scales";
+import { bandByIndex, valueDomain } from "../../chart/scales";
 import { stackKeys } from "../../chart/stack";
+import { devWarn } from "../../chart/dev-warn";
 
 export interface PopulationPyramidProps {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -54,12 +54,40 @@ export function PopulationPyramid({
     [allKeys]
   );
   const color = useEntityColors(keys);
-  const valueMax = useMemo(
+  // A side's length can't encode a negative magnitude: clamp before it
+  // enters the width/domain math (BC-2). `data` (raw) is still what the
+  // tooltip and data table read below, so a negative input stays visible
+  // there.
+  const hasNegative = data.some(
+    (d) => (d.segments[0]?.value ?? 0) < 0 || (d.segments[1]?.value ?? 0) < 0
+  );
+  if (hasNegative) {
+    devWarn(
+      "population-pyramid:negative",
+      "PopulationPyramid: negative segment values are drawn as 0 (a side length cannot encode a negative magnitude)."
+    );
+  }
+  const clampedData = useMemo(
     () =>
-      max(data, (d) =>
-        Math.max(d.segments[0]?.value ?? 0, d.segments[1]?.value ?? 0)
-      ) ?? 0,
+      data.map((d) => ({
+        ...d,
+        segments: d.segments.map((s) => ({
+          ...s,
+          value: Math.max(0, s.value),
+        })),
+      })),
     [data]
+  );
+  // Both sides share this domain; valueDomain also widens a degenerate
+  // all-zero/all-equal domain (BC-3) instead of collapsing to a single point.
+  const wDomain = useMemo(
+    () =>
+      valueDomain(
+        clampedData.map((d) =>
+          Math.max(d.segments[0]?.value ?? 0, d.segments[1]?.value ?? 0)
+        )
+      ),
+    [clampedData]
   );
 
   if (width <= 0 || height <= 0 || data.length === 0) return null;
@@ -95,7 +123,7 @@ export function PopulationPyramid({
           }
         );
         const wScale = scaleLinear({
-          domain: [0, valueMax || 1],
+          domain: wDomain,
           range: [0, half],
           nice: true,
         });
@@ -105,7 +133,7 @@ export function PopulationPyramid({
         const hoveredY = hover != null ? yScale.pos(hover.r) : 0;
         return (
           <>
-            {data.map((row, r) => {
+            {clampedData.map((row, r) => {
               const y = yScale.pos(r);
               const lv = row.segments[0]?.value ?? 0;
               const rv = row.segments[1]?.value ?? 0;

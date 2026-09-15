@@ -2,9 +2,10 @@ import { useMemo, useState } from "react";
 import { scaleLinear } from "@visx/scale";
 import { LinePath } from "@visx/shape";
 import { Group } from "@visx/group";
-import { max } from "d3-array";
 import { Legend } from "../../chart/legend";
 import { SvgTooltip } from "../../chart/svg-tooltip";
+import { valueDomain } from "../../chart/scales";
+import { devWarn } from "../../chart/dev-warn";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import { chartRootStyle, emText } from "../../chart/typography";
@@ -57,10 +58,27 @@ export function RadarChart({
   const ids = useMemo(() => data.map((s) => s.id), [data]);
   const color = useEntityColors(ids);
 
-  const maxValue = useMemo(
-    () => max(data.flatMap((s) => s.values)) ?? 0,
+  // The radial scale is a magnitude (distance-from-center) encoding: it has no
+  // honest way to place a negative value. Clamp at the point values enter the
+  // scale/mark math (below) and warn once in development rather than drawing
+  // a value that extrapolates past the center or off in some arbitrary
+  // direction.
+  const hasNegative = useMemo(
+    () => data.some((s) => s.values.some((v) => v < 0)),
     [data]
   );
+  if (hasNegative) {
+    devWarn(
+      "radar-chart:negative",
+      "RadarChart: negative values have no honest encoding on a magnitude-only radial scale; they are drawn as 0."
+    );
+  }
+
+  const values = useMemo(
+    () => data.flatMap((s) => s.values.map((v) => Math.max(0, v))),
+    [data]
+  );
+  const radialDomain = useMemo(() => valueDomain(values), [values]);
 
   if (width <= 0 || height <= 0 || data.length === 0 || axes.length === 0)
     return null;
@@ -76,7 +94,7 @@ export function RadarChart({
   const radius = Math.max(0, Math.min(width, svgHeight) / 2 - 48);
 
   const radial = scaleLinear({
-    domain: [0, maxValue || 1],
+    domain: radialDomain,
     range: [0, radius],
     nice: true,
   });
@@ -91,7 +109,9 @@ export function RadarChart({
 
   const hovered = hover ? data[hover.s] : null;
   const hoverVertex =
-    hover && hovered ? vertex(hover.a, radial(hovered.values[hover.a])) : null;
+    hover && hovered
+      ? vertex(hover.a, radial(Math.max(0, hovered.values[hover.a])))
+      : null;
 
   return (
     <div style={{ width, height }}>
@@ -152,7 +172,9 @@ export function RadarChart({
 
           {/* One closed polygon per series */}
           {data.map((s, si) => {
-            const pts = axes.map((_, i) => vertex(i, radial(s.values[i])));
+            const pts = axes.map((_, i) =>
+              vertex(i, radial(Math.max(0, s.values[i] ?? 0)))
+            );
             // Close the ring by repeating the first vertex.
             const closed = pts.length > 0 ? [...pts, pts[0]] : pts;
             const c = color(s.id);

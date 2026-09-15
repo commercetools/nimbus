@@ -108,7 +108,9 @@ Contract notes, verifiable from source:
 - The running cumulative total, the grand total, and the 80% cutoff are all
   **computed** — there is no cumulative field to supply.
 - `value` is a plain number and is assumed **non-negative**: values are summed
-  into a running total, and the value axis top is the grand total.
+  into a running total, and the value axis top is the grand total. A negative
+  value is clamped to 0 before ranking and summing, and logs a development
+  warning — the tooltip and data table still show the original value.
 
 ## API reference
 
@@ -262,7 +264,8 @@ render your own placeholder when there is no data yet.
   tooltip only. If you specifically need the textbook two-axis Pareto, this is
   not it.
 - **Non-negative values.** Values are summed into a running total; signed data
-  is not supported.
+  is not supported — a negative value is drawn as a zero-height bar and logs a
+  development warning rather than distorting the cumulative share.
 - **One measure per category.** No series — use
   [`GroupedBarChart`](/charts/grouped-bar-chart) or
   [`StackedBarChart`](/charts/stacked-bar-chart).

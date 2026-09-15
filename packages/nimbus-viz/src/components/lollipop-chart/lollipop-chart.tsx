@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 import { scaleLinear } from "@visx/scale";
-import { max } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
-import { bandByIndex } from "../../chart/scales";
+import { bandByIndex, valueDomain } from "../../chart/scales";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { CategoryDatum } from "../../chart/types";
@@ -42,7 +41,10 @@ export function LollipopChart({
     () => [...data].sort((a, b) => b.value - a.value),
     [data]
   );
-  const valueMax = useMemo(() => max(rows, (d) => d.value) ?? 0, [rows]);
+  const valueRange = useMemo(
+    () => valueDomain(rows.map((d) => d.value)),
+    [rows]
+  );
 
   if (width <= 0 || height <= 0 || rows.length === 0) return null;
 
@@ -69,17 +71,18 @@ export function LollipopChart({
           }
         );
         const xScale = scaleLinear({
-          domain: [0, valueMax],
+          domain: valueRange,
           range: [0, innerWidth],
           nice: true,
         });
         const bh = band.bandwidth;
         const r = Math.min(6, Math.max(3, bh / 3));
+        const zeroX = xScale(0);
         return (
           <>
             {rows.map((d, i) => {
               const y = band.center(i);
-              const cx = Math.max(0, xScale(d.value));
+              const cx = xScale(d.value);
               const active = hover == null || hover === i;
               return (
                 <g
@@ -89,7 +92,7 @@ export function LollipopChart({
                   onMouseLeave={() => setHover(null)}
                 >
                   <line
-                    x1={0}
+                    x1={zeroX}
                     x2={cx}
                     y1={y}
                     y2={y}

@@ -260,6 +260,10 @@ and render your own placeholder when there is no data yet.
 - **No overlays or interaction callbacks.** Hover is internal only; there is no
   `children` slot and no `onDatumClick`/`onDatumHover`.
 - **Fixed node geometry.** Node width and padding are not configurable.
+- **Zero or negative flow.** A negative link `value` is clamped to 0 before
+  layout, and a graph whose links total to 0 renders nothing (`null`) rather
+  than the `NaN` geometry d3-sankey's layout would otherwise produce — both
+  log a development warning.
 
 ## Related charts
 

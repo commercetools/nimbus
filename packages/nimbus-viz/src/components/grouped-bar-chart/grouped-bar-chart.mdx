@@ -153,8 +153,10 @@ Contract notes, verifiable from source:
   grouped bars come from `data[0].segments`; every row should carry the same
   segment `key`s in the same order. A key missing from a later row reads as
   **0** (that is what the data-table fallback shows for it).
-- `value` is a plain number. The value axis is anchored at **0** and scaled to
-  the largest single segment value, so values are assumed **non-negative**.
+- `value` is a plain number and **may be negative** — the value axis always
+  includes **0** as its baseline, extended to cover the actual min/max across
+  every segment, and a negative segment draws below that shared baseline
+  instead of collapsing to it or extrapolating past the plot.
 - Series color is keyed by segment `key`, so the same series keeps its color
   here, in the stacked bar chart, and in a line chart of the same entities.
 

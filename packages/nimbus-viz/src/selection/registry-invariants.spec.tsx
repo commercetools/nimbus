@@ -62,14 +62,12 @@ const INVALID = /NaN|Infinity|undefined|null/;
  * Remove an entry when `/chart:sweep` fixes the chart; its `it.fails` test
  * flips red otherwise.
  */
-const KNOWN_GAPS: Record<string, string> = {
-  // BC-1 (band scale keyed by label text): fixed across all 14 charts by the
-  // /chart:sweep BC-1 commit; no entries remain. INV-3 is the guard.
-  // BC-2 — negative magnitude extrapolates past zero (negative <circle r>)
-  "BubbleChart:negative-values": "BC-2 negative size -> negative r",
-  // BC-3 — degenerate totals: every link 0 makes the sankey layout NaN
-  "SankeyDiagram:all-zero": "BC-3 all-zero links -> NaN layout",
-};
+// No open gaps: BC-1 was fixed across all 14 charts it hit; BC-2/BC-3 were
+// fixed across every chart the registry-wide sweep and the detect found,
+// including BubbleChart's negative size and SankeyDiagram's all-zero-links
+// layout. Entries here are `"<BaseComponent>:<mutation>": "<BC-id> reason"`;
+// add one only when a fix does not land in the same pass that finds a gap.
+const KNOWN_GAPS: Record<string, string> = {};
 
 function firstEntryPerBase(
   registry: Map<string, ChartRegistryEntry>

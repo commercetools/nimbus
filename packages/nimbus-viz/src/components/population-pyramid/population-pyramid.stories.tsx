@@ -64,3 +64,59 @@ export const EdgeCaseDuplicateLabels: BaseStory = {
     expect(new Set(leftYs).size).toBe(dupFixture.length);
   },
 };
+
+/**
+ * Bug class BC-2 (`docs/bug-classes.md`): a side's length can't encode a
+ * negative magnitude. A negative segment value is drawn as a zero-width bar
+ * (and logs a development warning) instead of extending past the gutter.
+ */
+const negFixture: StackRow[] = [
+  {
+    category: "0-9",
+    segments: [
+      { key: "Male", value: 50 },
+      { key: "Female", value: 48 },
+    ],
+  },
+  {
+    category: "10-19",
+    segments: [
+      { key: "Male", value: -20 },
+      { key: "Female", value: 58 },
+    ],
+  },
+  {
+    category: "20-29",
+    segments: [
+      { key: "Male", value: 55 },
+      { key: "Female", value: 53 },
+    ],
+  },
+];
+
+export const EdgeCaseNegativeValues: BaseStory = {
+  render: () => (
+    <PopulationPyramid
+      width={360}
+      height={240}
+      data={negFixture}
+      ariaLabel="Population pyramid with a negative left-side value"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const rects = Array.from(
+      canvasElement.querySelectorAll<SVGRectElement>("rect")
+    );
+    expect(rects.length).toBe(negFixture.length * 2);
+    // Left rects are the even-indexed ones (drawn first per band).
+    const leftWidths = rects
+      .filter((_, i) => i % 2 === 0)
+      .map((r) => Number(r.getAttribute("width")));
+    expect(leftWidths[1]).toBe(0); // the negative row's left bar
+    expect(leftWidths[0]).toBeGreaterThan(0);
+    expect(leftWidths[2]).toBeGreaterThan(0);
+    for (const r of rects) {
+      expect(r.getAttribute("width")).not.toMatch(/NaN/);
+    }
+  },
+};

@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import { Group } from "@visx/group";
 import { scaleLinear } from "@visx/scale";
-import { max } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
-import { bandByIndex } from "../../chart/scales";
+import { bandByIndex, valueDomain } from "../../chart/scales";
 import { SvgTooltip } from "../../chart/svg-tooltip";
+import { devWarn } from "../../chart/dev-warn";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import type { CategoryDatum } from "../../chart/types";
@@ -60,9 +60,25 @@ export function RadialBarChart({
 }: RadialBarChartProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
-  const valueMax = useMemo(() => max(data, (d) => d.value) ?? 0, [data]);
+  // BC-2/BC-3 (docs/bug-classes.md): an un-guarded `[0, max]` domain both
+  // extrapolates a negative value past the outer ring when `max` is also
+  // negative (BC-2) and, when every value is <= 0, degenerates to `[0, 0]`,
+  // which `scaleLinear` maps to the *range midpoint* for any input rather
+  // than the inner ring (BC-3). `valueDomain` over clamped values avoids
+  // both.
+  const radiusDomain = useMemo(
+    () => valueDomain(data.map((d) => Math.max(0, d.value))),
+    [data]
+  );
 
   if (width <= 0 || height <= 0 || data.length === 0) return null;
+
+  if (data.some((d) => d.value < 0)) {
+    devWarn(
+      "radial-bar-chart:negative",
+      "RadialBarChart: negative values are drawn as 0 (an arc length cannot encode a negative magnitude)."
+    );
+  }
 
   const label = ariaLabel ?? `Radial bar chart of ${data.length} categories`;
   const table = {
@@ -92,7 +108,7 @@ export function RadialBarChart({
           }
         );
         const radius = scaleLinear({
-          domain: [0, valueMax],
+          domain: radiusDomain,
           range: [inner, outer],
         });
         const bw = angle.bandwidth;
@@ -104,7 +120,9 @@ export function RadialBarChart({
                 const a0 = angle.pos(i) + bw * 0.05;
                 const a1 = a0 + bw * 0.9;
                 const aMid = (a0 + a1) / 2;
-                const r1 = Math.max(inner, radius(d.value));
+                // Clamp at the render call too: a negative value must draw
+                // at the inner ring (0 length), not extrapolate past it.
+                const r1 = Math.max(inner, radius(Math.max(0, d.value)));
                 const active = hover == null || hover === i;
                 const [lx, ly] = polar(outer + 10, aMid);
                 const flip = aMid > Math.PI;

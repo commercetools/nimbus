@@ -247,6 +247,55 @@ export const EdgeCaseDuplicateLabels: BaseStory = {
   },
 };
 
+/**
+ * BC-2 (`docs/bug-classes.md`): a stack can't encode a negative part. A
+ * negative segment value is now clamped to 0 before it enters the stack
+ * layout (and logs a development warning) instead of extending the bar past
+ * the baseline with no error.
+ */
+const negFixture: StackRow[] = [
+  {
+    category: "Q1",
+    segments: [
+      { key: "New", value: -30 },
+      { key: "Returning", value: 80 },
+    ],
+  },
+  {
+    category: "Q2",
+    segments: [
+      { key: "New", value: 140 },
+      { key: "Returning", value: 96 },
+    ],
+  },
+];
+
+export const EdgeCaseNegativeValues: BaseStory = {
+  render: () => (
+    <StackedBarChart
+      width={360}
+      height={240}
+      data={negFixture}
+      ariaLabel="Stacked bar chart with a negative segment value"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    // The bottom segment ("New") renders as a plain <rect>; the topmost
+    // ("Returning") as BarRounded (a <path>) -- see EdgeCaseZeroTopmostSegment
+    // above. Q1's "New" is negative, so it must clamp to a zero-height rect.
+    const rects = Array.from(
+      canvasElement.querySelectorAll<SVGRectElement>("rect")
+    );
+    expect(rects.length).toBe(negFixture.length);
+    const [q1Rect, q2Rect] = rects;
+    expect(Number(q1Rect.getAttribute("height"))).toBe(0);
+    expect(Number(q2Rect.getAttribute("height"))).toBeGreaterThan(0);
+    for (const r of rects) {
+      expect(r.getAttribute("height")).not.toMatch(/NaN/);
+    }
+  },
+};
+
 export const Responsive: BaseStory = {
   render: () => (
     <div style={{ maxWidth: 480 }}>

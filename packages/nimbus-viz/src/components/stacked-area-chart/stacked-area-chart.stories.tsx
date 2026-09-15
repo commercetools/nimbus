@@ -238,41 +238,81 @@ export const EdgeCaseSingleDatum: BaseStory = {
  * collapses well below its true magnitude) rather than only "doesn't
  * throw" — proving the documented exclusion is real, not just asserted.
  */
+/**
+ * Found hardening this chart (bug class BC-2, `docs/bug-classes.md`): a
+ * stack cannot encode a negative part. A negative series value is now
+ * clamped to 0 before entering the `stack()` math (and logs a development
+ * warning) instead of drawing the area below the baseline with no error.
+ * Proven by comparing the negative-input chart against an identical control
+ * where the same point is a literal 0 — the "Adjustment" series' path must
+ * be pixel-for-pixel the same in both, not merely NaN-free.
+ */
 export const EdgeCaseNegativeValue: BaseStory = {
-  render: () => (
-    <StackedAreaChart
-      width={240}
-      height={200}
-      series={[
-        {
-          id: "base",
-          label: "Base",
-          data: [
-            { x: new Date("2026-01-01"), y: 20 },
-            { x: new Date("2026-01-02"), y: 20 },
-          ],
-        },
-        {
-          id: "adj",
-          label: "Adjustment",
-          data: [
-            { x: new Date("2026-01-01"), y: 20 },
-            { x: new Date("2026-01-02"), y: -20 },
-          ],
-        },
-      ]}
-    />
-  ),
-  play: async ({ canvasElement }) => {
-    const paths = Array.from(
-      canvasElement.querySelectorAll<SVGPathElement>("path")
+  render: () => {
+    const base = {
+      id: "base",
+      label: "Base",
+      data: [
+        { x: new Date("2026-01-01"), y: 20 },
+        { x: new Date("2026-01-02"), y: 20 },
+      ],
+    };
+    return (
+      <div style={{ display: "flex", gap: 16 }}>
+        <StackedAreaChart
+          width={240}
+          height={200}
+          ariaLabel="Stacked area with a negative adjustment value"
+          series={[
+            base,
+            {
+              id: "adj",
+              label: "Adjustment",
+              data: [
+                { x: new Date("2026-01-01"), y: 20 },
+                { x: new Date("2026-01-02"), y: -20 },
+              ],
+            },
+          ]}
+        />
+        <StackedAreaChart
+          width={240}
+          height={200}
+          ariaLabel="Stacked area with a literal zero adjustment value (control)"
+          series={[
+            base,
+            {
+              id: "adj",
+              label: "Adjustment",
+              data: [
+                { x: new Date("2026-01-01"), y: 20 },
+                { x: new Date("2026-01-02"), y: 0 },
+              ],
+            },
+          ]}
+        />
+      </div>
     );
-    expect(paths.length).toBe(2);
-    // Every path is at least present with finite coordinates (a rendered,
-    // wrong shape — not a crash or a dropped mark).
-    for (const p of paths) {
+  },
+  play: async ({ canvasElement }) => {
+    // Each `@visx/axis` tick label sits in its own nested <svg> (a local
+    // coordinate system for the offset text) — querySelectorAll("svg") picks
+    // those up too. role="img" is unique to the two chart-root <svg>s.
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs.length).toBe(2);
+    const negPaths = Array.from(
+      svgs[0].querySelectorAll<SVGPathElement>("path")
+    );
+    const zeroPaths = Array.from(
+      svgs[1].querySelectorAll<SVGPathElement>("path")
+    );
+    expect(negPaths.length).toBe(2);
+    expect(zeroPaths.length).toBe(2);
+    for (const p of [...negPaths, ...zeroPaths]) {
       expect(p.getAttribute("d")).not.toMatch(/NaN/);
     }
+    // Draw order follows `keys` = series order: "base" then "adj".
+    expect(negPaths[1].getAttribute("d")).toBe(zeroPaths[1].getAttribute("d"));
   },
 };
 

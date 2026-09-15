@@ -147,11 +147,14 @@ Contract notes, verifiable from source:
   and need not be unique — position is by row order, not the label.
 - **Only the first two segments are used.** Segment 0 is the left side and
   segment 1 the right; any further segments are ignored.
-- The two side labels come from the **first row's** two segment keys (defaulting
-  to "Left"/"Right" if absent), so every row should use the same two keys.
+- The two side labels come from the first two distinct segment keys seen across
+  all rows (defaulting to "Left"/"Right" if absent), so every row should use
+  the same two keys.
 - Bands are drawn **top to bottom in the given order** — they are not sorted.
 - `value`s are non-negative. Both sides share one linear scale from 0 to the
   largest value across either side, so bar lengths are comparable everywhere.
+  A negative value is drawn as a zero-length bar and logs a development
+  warning.
 - A missing first or second segment in a row reads as `0`.
 
 ## API reference

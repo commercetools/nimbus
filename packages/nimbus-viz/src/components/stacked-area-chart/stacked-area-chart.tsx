@@ -7,6 +7,8 @@ import { curveMonotoneX } from "@visx/curve";
 import { extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
+import { valueDomain } from "../../chart/scales";
+import { devWarn } from "../../chart/dev-warn";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
@@ -82,10 +84,35 @@ export function StackedAreaChart({
     () => extent(rows, (r) => new Date(r.x)) as [Date, Date],
     [rows]
   );
-  const maxTotal = useMemo(
+  // A stack cannot encode a negative part: clamp every series value to 0
+  // before it enters the d3 `stack()` math (BC-2). `rows` (raw) is still what
+  // the data table and tooltip read below, so a negative input stays visible
+  // there.
+  const hasNegative = rows.some((r) => keys.some((k) => r[k] < 0));
+  if (hasNegative) {
+    devWarn(
+      "stacked-area-chart:negative",
+      "StackedAreaChart: negative segment values are drawn as 0 (a stack cannot encode a negative part)."
+    );
+  }
+  const clampedRows = useMemo<StackDatum[]>(
     () =>
-      Math.max(0, ...rows.map((r) => keys.reduce((sum, k) => sum + r[k], 0))),
+      rows.map((r) => {
+        const clamped: StackDatum = { x: r.x };
+        for (const k of keys) clamped[k] = Math.max(0, r[k]);
+        return clamped;
+      }),
     [rows, keys]
+  );
+  // The axis shows row TOTALS after clamping; valueDomain also widens a
+  // degenerate all-zero/all-equal domain (BC-3) instead of collapsing to a
+  // single point.
+  const totalDomain = useMemo(
+    () =>
+      valueDomain(
+        clampedRows.map((r) => keys.reduce((sum, k) => sum + r[k], 0))
+      ),
+    [clampedRows, keys]
   );
   const color = useEntityColors(keys);
 
@@ -120,7 +147,7 @@ export function StackedAreaChart({
       {({ innerWidth, innerHeight }) => {
         const xScale = scaleTime({ domain: xDomain, range: [0, innerWidth] });
         const yScale = scaleLinear({
-          domain: [0, maxTotal],
+          domain: totalDomain,
           range: [innerHeight, 0],
           nice: true,
         });
@@ -153,7 +180,7 @@ export function StackedAreaChart({
             />
 
             <AreaStack<StackDatum, string>
-              data={rows}
+              data={clampedRows}
               keys={keys}
               value={(d, key) => d[key]}
               x={(d) => xScale(new Date(d.data.x))}

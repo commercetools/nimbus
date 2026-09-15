@@ -159,7 +159,9 @@ Contract notes, verifiable from source:
 - `segments` stack **bottom-to-top in array order** — the first segment sits on
   the baseline and the last gets the rounded top.
 - Values are assumed **non-negative**: the value axis is anchored at **0** and
-  scaled to the largest total. For signed/diverging composition use
+  scaled to the largest total. A negative segment value is drawn as 0 (a stack
+  cannot encode a negative part) and logs a development warning. For
+  signed/diverging composition use
   [`DivergingStackedBar`](/charts/diverging-stacked-bar).
 
 ## API reference
@@ -335,7 +337,8 @@ render your own placeholder when there is no data yet.
 ## Limitations
 
 - **Non-negative values only.** The baseline is fixed at 0 and segments always
-  stack upward; for signed / diverging composition use
+  stack upward; a negative value is clamped to 0 and logged as a development
+  warning rather than drawn. For signed / diverging composition use
   [`DivergingStackedBar`](/charts/diverging-stacked-bar).
 - **Vertical only.** There is no horizontal orientation.
 - **Row-level interaction.** `onDatumClick` / `onDatumHover` report the whole

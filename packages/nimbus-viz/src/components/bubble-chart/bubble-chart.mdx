@@ -109,7 +109,8 @@ Contract notes, verifiable from source:
 - `size` maps to bubble **area** through a square-root scale over `[0, max]`, so
   a bubble with twice the `size` has twice the area (not twice the radius).
   `size` is assumed **non-negative**; the largest value sets the top of the size
-  legend.
+  legend. A negative `size` is drawn at the minimum radius and a warning is
+  logged in development.
 - `label` is optional; it titles the point's hover tooltip and appears in the
   data-table fallback.
 - `group` is optional; when two or more distinct groups are present the bubbles
@@ -291,7 +292,9 @@ render your own placeholder when there is no data yet.
 ## Limitations
 
 - **Positive magnitude only.** `size` maps to area from 0; there is no support
-  for signed or diverging size, and no `sizeFormat` for the size legend.
+  for signed or diverging size, and no `sizeFormat` for the size legend. A
+  negative value is drawn at the minimum radius and logs a development
+  warning rather than producing a plausible-looking wrong-sized bubble.
 - **No `x`/`y` accessors.** Unlike [`ScatterPlot`](/charts/scatter-plot),
   `BubbleChart` is not generic — reshape rows into `{ x, y, size }` first.
 - **Area is read approximately.** Good for "which are big"; for exact magnitude

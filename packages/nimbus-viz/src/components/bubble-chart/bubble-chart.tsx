@@ -7,6 +7,7 @@ import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
+import { devWarn } from "../../chart/dev-warn";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatCompact } from "../../chart/format";
 import { emText } from "../../chart/typography";
@@ -80,7 +81,12 @@ export function BubbleChart({
     () => extent(points, (p) => p.y) as [number, number],
     [points]
   );
-  const maxSize = useMemo(() => max(points, (p) => p.size) ?? 0, [points]);
+  // Clamped: a negative `size` cannot encode a magnitude, so it must not set
+  // (or widen) the domain the honest values are scaled against.
+  const maxSize = useMemo(
+    () => max(points, (p) => Math.max(0, p.size)) ?? 0,
+    [points]
+  );
   // Largest first so smaller bubbles stay hoverable on top.
   const ordered = useMemo(
     () => points.map((p, i) => ({ p, i })).sort((a, b) => b.p.size - a.p.size),
@@ -89,6 +95,16 @@ export function BubbleChart({
   const groupColor = useEntityColors(groups);
 
   if (width <= 0 || height <= 0 || points.length === 0) return null;
+
+  // BC-2 (docs/bug-classes.md): a negative `size` extrapolates through
+  // `scaleSqrt` to either a small positive radius (plausible-looking) or an
+  // invisible `r < 0` — neither is an honest picture of "cannot be negative".
+  if (points.some((p) => p.size < 0)) {
+    devWarn(
+      "bubble-chart:negative-size",
+      "BubbleChart: negative size values are drawn at the minimum radius (area cannot encode a negative magnitude)."
+    );
+  }
 
   const showLegend = groups.length >= 2;
   const colorFor = (p: BubblePoint) =>
@@ -177,29 +193,36 @@ export function BubbleChart({
               tickLabelProps={bottomTickLabel(theme)}
             />
 
-            {ordered.map(({ p, i }) => (
-              <circle
-                key={i}
-                cx={xScale(p.x)}
-                cy={yScale(p.y)}
-                r={sizeScale(p.size)}
-                fill={colorFor(p)}
-                fillOpacity={hover == null || hover === i ? 0.6 : 0.25}
-                stroke={theme.surface}
-                strokeWidth={1}
-                onMouseEnter={() => {
-                  setHover(i);
-                  onDatumHover?.({ datum: p, index: i, seriesId: p.group });
-                }}
-                onMouseLeave={() => {
-                  setHover(null);
-                  onDatumHover?.(null);
-                }}
-                onClick={() =>
-                  onDatumClick?.({ datum: p, index: i, seriesId: p.group })
-                }
-              />
-            ))}
+            {ordered.map(({ p, i }) => {
+              // A negative size can't be encoded by area: clamp at the point
+              // the radius is computed so it draws at R_MIN instead of
+              // extrapolating to a small positive (plausible-wrong) or
+              // negative (invisible) radius.
+              const r = sizeScale(Math.max(0, p.size));
+              return (
+                <circle
+                  key={i}
+                  cx={xScale(p.x)}
+                  cy={yScale(p.y)}
+                  r={r}
+                  fill={colorFor(p)}
+                  fillOpacity={hover == null || hover === i ? 0.6 : 0.25}
+                  stroke={theme.surface}
+                  strokeWidth={1}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: p, index: i, seriesId: p.group });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() =>
+                    onDatumClick?.({ datum: p, index: i, seriesId: p.group })
+                  }
+                />
+              );
+            })}
 
             {/* Size legend: reference circles sharing a bottom baseline. */}
             {refSizes.map((ref) => {

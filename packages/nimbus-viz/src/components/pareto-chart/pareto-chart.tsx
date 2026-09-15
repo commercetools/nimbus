@@ -6,7 +6,8 @@ import { AxisBottom, AxisLeft } from "@visx/axis";
 import { sum } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
-import { bandByIndex } from "../../chart/scales";
+import { bandByIndex, valueDomain } from "../../chart/scales";
+import { devWarn } from "../../chart/dev-warn";
 import {
   GridRows,
   bottomTickLabel,
@@ -43,7 +44,12 @@ export interface ParetoChartProps {
 
 interface ParetoRow {
   category: string;
+  /** Clamped to non-negative — this is what the bar height and the cumulative
+   *  running total are computed from (a rank/share chart can't encode a
+   *  negative magnitude). */
   value: number;
+  /** The original, unclamped input value — shown in the tooltip and table. */
+  rawValue: number;
   /** Running cumulative total, in the same absolute units as `value`. */
   cumulative: number;
   /** Cumulative as a fraction of the grand total (for the tooltip / annotation
@@ -72,15 +78,29 @@ export function ParetoChart({
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
 
+  // A rank/cumulative-share chart can't encode a negative magnitude: clamp
+  // before it enters the sort/cumulative math (BC-2), same floor as the other
+  // magnitude-only charts. The raw value stays visible in the tooltip/table.
+  const hasNegative = data.some((d) => d.value < 0);
+  if (hasNegative) {
+    devWarn(
+      "pareto-chart:negative",
+      "ParetoChart: negative values are drawn as 0 (a rank/cumulative-share chart can't encode a negative magnitude)."
+    );
+  }
+
   const rows = useMemo<ParetoRow[]>(() => {
     const sorted = [...data].sort((a, b) => b.value - a.value);
-    const total = sum(sorted, (d) => d.value);
+    const clamped = sorted.map((d) => Math.max(0, d.value));
+    const total = sum(clamped);
     let running = 0;
-    return sorted.map((d) => {
-      running += d.value;
+    return sorted.map((d, i) => {
+      const value = clamped[i];
+      running += value;
       return {
         category: d.category,
-        value: d.value,
+        value,
+        rawValue: d.value,
         cumulative: running,
         cumulativeFraction: total > 0 ? running / total : 0,
         datum: d,
@@ -92,6 +112,10 @@ export function ParetoChart({
     () => (rows.length > 0 ? rows[rows.length - 1].cumulative : 0),
     [rows]
   );
+  // valueDomain also widens the degenerate [0, 0] domain (BC-3) — every row
+  // clamped to 0 — to a real span, instead of collapsing every bar to the
+  // range midpoint.
+  const valueRange = useMemo(() => valueDomain([grandTotal]), [grandTotal]);
 
   if (width <= 0 || height <= 0 || rows.length === 0) return null;
 
@@ -100,7 +124,7 @@ export function ParetoChart({
     columns: ["Category", "Value", "Cumulative %"],
     rows: rows.map((d) => [
       d.category,
-      d.value,
+      d.rawValue,
       formatPercent(d.cumulativeFraction),
     ]),
   };
@@ -133,7 +157,7 @@ export function ParetoChart({
         // with the 80% "vital few" cutoff drawn as a reference line rather than
         // a second (percentage) axis.
         const yScale = scaleLinear({
-          domain: [0, grandTotal],
+          domain: valueRange,
           range: [innerHeight, 0],
           nice: true,
         });
@@ -270,7 +294,7 @@ export function ParetoChart({
                 innerWidth={innerWidth}
                 lines={[
                   rows[hover].category,
-                  formatCompact(rows[hover].value),
+                  formatCompact(rows[hover].rawValue),
                   `Cumulative: ${formatPercent(rows[hover].cumulativeFraction)}`,
                 ]}
               />

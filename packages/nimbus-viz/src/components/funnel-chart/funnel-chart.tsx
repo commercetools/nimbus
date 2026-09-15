@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BarRounded } from "@visx/shape";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
+import { devWarn } from "../../chart/dev-warn";
 import { useChartTheme } from "../../theme";
 import { formatCompact, formatPercent } from "../../chart/format";
 import type { FunnelStage } from "../../chart/types";
@@ -44,10 +45,24 @@ export function FunnelChart({
   const [hover, setHover] = useState<number | null>(null);
   if (width <= 0 || height <= 0 || data.length === 0) return null;
 
-  const top = data[0].value || 1;
+  // BC-2 (docs/bug-classes.md): a stage is a count, so a negative value
+  // cannot be encoded by width -- clamp before it feeds any ratio. `top`
+  // itself is clamped too, so a negative first stage can't flip the sign of
+  // every other stage's share.
+  const top = Math.max(0, data[0].value) || 1;
+  if (data.some((s) => s.value < 0)) {
+    devWarn(
+      "funnel-chart:negative",
+      "FunnelChart: a negative stage value is drawn as 0 (a funnel stage is a count)."
+    );
+  }
   const table = {
     columns: ["Stage", "Value", "% of first"],
-    rows: data.map((s) => [s.stage, s.value, formatPercent(s.value / top)]),
+    rows: data.map((s) => [
+      s.stage,
+      s.value,
+      formatPercent(Math.max(0, s.value) / top),
+    ]),
   };
 
   return (
@@ -64,7 +79,11 @@ export function FunnelChart({
         return (
           <>
             {data.map((stage, i) => {
-              const w = Math.max(2, (stage.value / top) * innerWidth);
+              // A negative stage value can't be encoded by width; clamp it
+              // to 0 before it feeds the ratio, same as a real, valid 0
+              // (which keeps the 2px floor so the stage stays visible).
+              const value = Math.max(0, stage.value);
+              const w = Math.max(2, (value / top) * innerWidth);
               const x = (innerWidth - w) / 2;
               const y = i * bandH + (bandH - barH) / 2;
               const active = hover == null || hover === i;
@@ -95,7 +114,7 @@ export function FunnelChart({
                     fill={theme.mutedInk}
                   >
                     {stage.stage}
-                    {i > 0 ? ` · ${formatPercent(stage.value / top)}` : ""}
+                    {i > 0 ? ` · ${formatPercent(value / top)}` : ""}
                   </text>
                   <BarRounded
                     x={x}
@@ -128,15 +147,14 @@ export function FunnelChart({
                 const stage = data[hover];
                 const y = hover * bandH + (bandH - barH) / 2;
                 const prev = hover > 0 ? data[hover - 1].value : null;
+                const value = Math.max(0, stage.value);
                 const lines = [
                   stage.stage,
                   `Value: ${formatCompact(stage.value)}`,
-                  `${formatPercent(stage.value / top)} of first`,
+                  `${formatPercent(value / top)} of first`,
                 ];
                 if (prev != null && prev > 0) {
-                  lines.push(
-                    `${formatPercent(stage.value / prev)} of previous`
-                  );
+                  lines.push(`${formatPercent(value / prev)} of previous`);
                 }
                 return (
                   <SvgTooltip

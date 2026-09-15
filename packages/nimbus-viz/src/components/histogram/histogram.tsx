@@ -3,9 +3,10 @@ import type { ReactNode } from "react";
 import { scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
-import { bin, extent, max } from "d3-array";
+import { bin, extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
+import { valueDomain } from "../../chart/scales";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
@@ -53,7 +54,13 @@ export function Histogram({
     if (values.length === 0 || domain[0] === undefined) return [];
     return bin().domain(domain).thresholds(thresholds)(values);
   }, [values, domain, thresholds]);
-  const countMax = useMemo(() => max(bins, (b) => b.length) ?? 0, [bins]);
+  // Counts are never negative, but an all-equal count (e.g. every bin holding
+  // the same number of samples) still degenerates a bare `[0, max]` domain
+  // when max is 0; valueDomain() widens that to a real span.
+  const countDomain = useMemo(
+    () => valueDomain(bins.map((b) => b.length)),
+    [bins]
+  );
 
   if (width <= 0 || height <= 0 || bins.length === 0) return null;
 
@@ -83,7 +90,7 @@ export function Histogram({
           nice: true,
         });
         const yScale = scaleLinear({
-          domain: [0, countMax],
+          domain: countDomain,
           range: [innerHeight, 0],
           nice: true,
         });

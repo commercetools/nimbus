@@ -66,3 +66,71 @@ export const EdgeCaseDuplicateLabels: BaseStory = {
     expect(new Set(firstBarXs).size).toBe(dupFixture.length);
   },
 };
+
+/**
+ * BC-2 (`docs/bug-classes.md`): a `[0, max]` value domain draws a negative
+ * segment beyond the plot instead of on the other side of the zero
+ * baseline. Segments are per-series deltas (a cohort can churn negative), so
+ * `GroupedBarChart` must draw them from a shared zero baseline like the bar
+ * chart does. `negateEveryOther` only negates a flat `value` field and can't
+ * reach the nested `segments` array here, so this fixture is hand-built:
+ * Q2's segments are negative, flanked by all-positive Q1 and Q3.
+ */
+const negativeFixture: StackRow[] = [
+  {
+    category: "Q1",
+    segments: [
+      { key: "New", value: 10 },
+      { key: "Returning", value: 5 },
+    ],
+  },
+  {
+    category: "Q2",
+    segments: [
+      { key: "New", value: -8 },
+      { key: "Returning", value: -4 },
+    ],
+  },
+  {
+    category: "Q3",
+    segments: [
+      { key: "New", value: 12 },
+      { key: "Returning", value: 6 },
+    ],
+  },
+];
+
+export const EdgeCaseNegativeValues: BaseStory = {
+  render: () => (
+    <GroupedBarChart
+      width={360}
+      height={240}
+      data={negativeFixture}
+      ariaLabel="Grouped bar chart of orders by quarter with a churned Q2"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const segmentsPerRow = negativeFixture[0].segments.length;
+    const bars = Array.from(
+      canvasElement.querySelectorAll<SVGPathElement>("path")
+    );
+    expect(bars).toHaveLength(negativeFixture.length * segmentsPerRow);
+
+    // Row order follows `data` order: Q1 (positive) bars 0-1, Q2 (negative)
+    // bars 2-3, Q3 (positive) bars 4-5. Every positive bar grows up from the
+    // same zero baseline, so its bottom edge is that baseline.
+    const positiveBars = [bars[0], bars[1], bars[4], bars[5]];
+    const negativeBars = [bars[2], bars[3]];
+    const baseline = Math.min(
+      ...positiveBars.map((b) => b.getBoundingClientRect().bottom)
+    );
+
+    for (const bar of negativeBars) {
+      const rect = bar.getBoundingClientRect();
+      expect(rect.height).toBeGreaterThan(1);
+      // A negative bar hangs down from the baseline instead of extrapolating
+      // past it, so its top edge sits at or below the positive bars' bottom.
+      expect(rect.top).toBeGreaterThanOrEqual(baseline - 1);
+    }
+  },
+};

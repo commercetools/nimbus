@@ -249,7 +249,9 @@ render your own placeholder when there is no data yet.
   embedded `<svg>` (`overflow: hidden`) clips the overrun at the chart's edge
   rather than visibly drawing a bar past it — a small violation is invisible
   (the bar just looks like it reached 100%), and a large one shows as a hard,
-  flat-clipped edge rather than an obviously-too-wide bar.
+  flat-clipped edge rather than an obviously-too-wide bar. A negative stage
+  value, unlike an oversized one, IS guarded: it is drawn as 0 width and logs
+  a development warning instead of producing a bar in the wrong direction.
 - **No value formatting prop.** Values are compact-formatted and rates are
   percentages; neither is configurable.
 - **No title, subtitle, caption, loading, or error passthrough** — `FunnelChart`
