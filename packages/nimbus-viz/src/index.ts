@@ -60,6 +60,8 @@ export type {
   DatumClickHandler,
   DatumHoverHandler,
   SelectionChangeHandler,
+  DatumInteractionProps,
+  SelectionProps,
   InteractionProps,
 } from "./chart/interaction";
 export { nearestIndexByX } from "./chart/nearest-x";

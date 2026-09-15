@@ -96,6 +96,11 @@ tags:
 ---
 ```
 
+`lifecycleState` is not a judgment call: the criteria for each state are the
+checklists in `packages/nimbus-viz/docs/lifecycle.md`. In `create`/`update`
+mode leave the current value alone; `/chart:introspect` Step 9 moves it one
+notch when the next state's criteria are met, and `Stable` is set by a human.
+
 Do NOT add the research-style keys `chartType`, `dataShape`, `since`,
 `category`, or `related` — chart type and related charts already come from
 `<ChartMeta />` + the catalog; data shape is a body section.

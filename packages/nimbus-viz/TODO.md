@@ -81,6 +81,14 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
 - [ ] **C2 — render-prop tooltip / legend.** `renderTooltip(datum)` /
       `renderLegend(items)` escape hatches on `SvgTooltip` / `Legend` /
       `ChartContainer`; keep the string-lines path as default.
+- [ ] **C3 — diverging stack offset for negative segments.** Found by the `BC-2`
+      sweep: `stacked-bar-chart` and `stacked-area-chart` draw a negative
+      segment as 0 and warn in development, because d3's default
+      `stackOffsetNone` cannot place negative parts. The real fix is
+      `stackOffsetDiverging` (positives stack up from 0, negatives down) plus a
+      baseline and a legend note. That changes what the two charts accept as
+      valid input, so it needs an OpenSpec proposal (`/opsx:propose`) before
+      implementation — not a sweep.
 
 ### Phase D — accessibility completeness
 

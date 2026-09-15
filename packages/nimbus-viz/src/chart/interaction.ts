@@ -15,18 +15,39 @@ export type DatumHoverHandler<T = unknown> = (
 export type SelectionChangeHandler = (selected: ReadonlySet<string>) => void;
 
 /**
- * The one interaction contract charts opt into, so drill-down and linked
- * (crossfilter) dashboards are expressible: click/hover a datum, and a
- * controlled-or-uncontrolled entity selection that a parent can share across
- * charts.
+ * Datum-level callbacks — the half of the interaction contract every chart
+ * with hoverable marks can adopt today. A chart declares
+ * `interface XProps extends DatumInteractionProps<Payload>` instead of
+ * re-typing the two props, so consumers see one shape across the library.
+ *
+ * Conventions for `Payload`: a chart with one natural series reports the
+ * point plus `seriesId` (`LineChart`); a chart with row/stack semantics reports
+ * the whole row and no `seriesId` (`StackedBarChart`, `Heatmap`).
  */
-export interface InteractionProps<T = unknown> {
+export interface DatumInteractionProps<T = unknown> {
+  /** Fired when a mark is clicked (drill-down). */
   onDatumClick?: DatumClickHandler<T>;
+  /** Fired when the hovered mark changes; `null` when the pointer leaves. */
   onDatumHover?: DatumHoverHandler<T>;
+}
+
+/**
+ * Controlled-or-uncontrolled entity selection a parent can share across charts
+ * (linked views / crossfilter). Kept separate from `DatumInteractionProps` so a
+ * chart that has not implemented selection does not advertise the props.
+ */
+export interface SelectionProps {
   onSelectionChange?: SelectionChangeHandler;
   /** Controlled selected entity ids. Omit for uncontrolled (internal) state. */
   selection?: ReadonlySet<string>;
 }
+
+/**
+ * The full interaction contract: datum callbacks plus selection. A chart
+ * extends this only once it implements both halves.
+ */
+export interface InteractionProps<T = unknown>
+  extends DatumInteractionProps<T>, SelectionProps {}
 
 /**
  * Controlled/uncontrolled selection state. When `controlled` is provided the
