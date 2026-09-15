@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
 import { scaleLinear, scaleTime } from "@visx/scale";
 import { AreaStack } from "@visx/shape";
+import { LinearGradient } from "@visx/gradient";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveMonotoneX } from "@visx/curve";
 import { extent } from "d3-array";
@@ -101,6 +102,15 @@ export interface StackedAreaChartProps<T = SeriesPoint> {
    * (today's rendering, unchanged).
    */
   offset?: "none" | "expand";
+  /**
+   * Fade each layer's fill toward its own bottom edge via an SVG
+   * `<linearGradient>` (`@visx/gradient`'s `LinearGradient`) instead of
+   * the flat `fillOpacity`, mirroring shadcn's `chart-area-gradient`
+   * variant. Yields to `texture` when both are set (texture is the
+   * forced-colors-safety feature). Default `false` (today's flat
+   * 85%-opacity fill, unchanged).
+   */
+  gradient?: boolean;
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
@@ -146,6 +156,7 @@ export function StackedAreaChart<T = SeriesPoint>({
   decimateThreshold,
   showValues,
   offset = "none",
+  gradient,
 }: StackedAreaChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -315,6 +326,18 @@ export function StackedAreaChart<T = SeriesPoint>({
             >
               {({ stacks, path }) => (
                 <>
+                  {gradient &&
+                    !effectiveTexture &&
+                    stacks.map((stack) => (
+                      <LinearGradient
+                        key={`grad-${stack.key}`}
+                        id={`stacked-area-grad-${stack.key}`}
+                        from={color(stack.key)}
+                        to={color(stack.key)}
+                        fromOpacity={0.9}
+                        toOpacity={0.5}
+                      />
+                    ))}
                   {stacks.map((stack) => (
                     <path
                       key={stack.key}
@@ -322,9 +345,11 @@ export function StackedAreaChart<T = SeriesPoint>({
                       fill={
                         effectiveTexture
                           ? patternFill(keys.indexOf(stack.key))
-                          : color(stack.key)
+                          : gradient
+                            ? `url(#stacked-area-grad-${stack.key})`
+                            : color(stack.key)
                       }
-                      fillOpacity={0.85}
+                      fillOpacity={gradient && !effectiveTexture ? 1 : 0.85}
                       stroke={theme.surface}
                       strokeWidth={1}
                     />

@@ -373,6 +373,35 @@ export const Responsive: BaseStory = {
 };
 
 /**
+ * `gradient` (Phase F): fades each layer's fill toward its own bottom edge
+ * via an SVG `<linearGradient>` instead of the flat 85%-opacity fill --
+ * mirroring shadcn's `chart-area-gradient` variant, adapted to a stacked
+ * context. Proven directly: one `<linearGradient>` per series, and each
+ * layer's `fill` is a real `url(#...)` reference to it.
+ */
+export const Gradient: BaseStory = {
+  render: () => (
+    <StackedAreaChart
+      width={480}
+      height={280}
+      series={fixture}
+      gradient
+      ariaLabel="Stacked area chart with gradient fills"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const gradients = canvasElement.querySelectorAll("linearGradient");
+    expect(gradients).toHaveLength(fixture.length);
+    const gradientFilledLayers = Array.from(
+      canvasElement.querySelectorAll<SVGPathElement>("path")
+    ).filter((p) =>
+      p.getAttribute("fill")?.startsWith("url(#stacked-area-grad-")
+    );
+    expect(gradientFilledLayers).toHaveLength(fixture.length);
+  },
+};
+
+/**
  * `D2`: `texture` fills each series' area with a per-series SVG pattern (in
  * addition to color) so layers stay distinguishable without color. Proven
  * directly: every layer's `fill` is a `url(#...)` pattern reference, and

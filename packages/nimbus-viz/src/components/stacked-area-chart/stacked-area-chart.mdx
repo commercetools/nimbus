@@ -359,6 +359,52 @@ width. Bands use a monotone spline and are separated by a 1px surface stroke at
 x-index, draws a dashed crosshair, and shows a tooltip listing the date and each
 series' value. None of this is configurable.
 
+### Gradient fill
+
+Pass `gradient` to fade each layer's fill toward its own bottom edge via an SVG
+gradient, instead of the flat 85%-opacity fill — mirroring shadcn's
+`chart-area-gradient` variant. Yields to `texture` when both are set (texture is
+the forced-colors-safety feature). Default `false`.
+
+```jsx live
+const series = [
+  {
+    id: "north",
+    label: "North",
+    data: [
+      { x: new Date("2026-01-01"), y: 20 },
+      { x: new Date("2026-02-01"), y: 25 },
+      { x: new Date("2026-03-01"), y: 30 },
+    ],
+  },
+  {
+    id: "south",
+    label: "South",
+    data: [
+      { x: new Date("2026-01-01"), y: 15 },
+      { x: new Date("2026-02-01"), y: 18 },
+      { x: new Date("2026-03-01"), y: 20 },
+    ],
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <StackedAreaChart
+          width={width}
+          height={height}
+          series={series}
+          gradient
+          ariaLabel="Stacked area chart with gradient fills"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Texture (non-color encoding)
 
 `texture` fills each series' band with a per-series SVG pattern
