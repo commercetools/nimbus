@@ -185,6 +185,47 @@ scale, shown as a **legend** strip. Hovering a cell dims the others to 0.4
 opacity and shows a tooltip with the column and key, the cell's compact value,
 and its share of that column.
 
+### Texture (non-color segment identity)
+
+`texture` fills each segment with a per-key SVG pattern (`chart/patterns.tsx`)
+in addition to its color, so segments stay distinguishable by shape alone —
+monochrome print, a photocopy, or `forced-colors` mode, where the OS flattens
+hue. Default `false` (color only).
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider>
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <MarimekkoChart
+          width={width}
+          height={height}
+          data={[
+            {
+              category: "Q1",
+              segments: [
+                { key: "New", value: 120 },
+                { key: "Returning", value: 80 },
+                { key: "Wholesale", value: 40 },
+              ],
+            },
+            {
+              category: "Q2",
+              segments: [
+                { key: "New", value: 140 },
+                { key: "Returning", value: 96 },
+                { key: "Wholesale", value: 52 },
+              ],
+            },
+          ]}
+          texture
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Color & theming
 
 Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
@@ -250,7 +291,10 @@ What you get automatically:
 - **CVD-safe palette + legend.** Segment colors come from the validated chart
   palette, and the always-present legend maps each color back to its key.
 - **Non-color encoding.** Column width and segment height carry the two
-  magnitudes; the legend and data table disambiguate the segments.
+  magnitudes; the legend and data table disambiguate the segments. Pass
+  `texture` to also vary each segment's fill **pattern** (or rely on it
+  turning on automatically in a `forced-colors` context) for a non-color path
+  on the chart itself, not just in the legend/table.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the columns and segments
@@ -260,7 +304,8 @@ Accessibility checklist:
 
 - [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
-- [ ] Meaning does not depend on color alone (width/height + legend + table)
+- [ ] Meaning does not depend on color alone (width/height + legend + table,
+      or segment pattern with `texture`)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)
 - [ ] Surrounding copy names columns/segments rather than colors

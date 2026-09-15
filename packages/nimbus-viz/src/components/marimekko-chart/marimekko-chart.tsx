@@ -5,6 +5,8 @@ import { fitBandLabel } from "../../chart/axes";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { formatPercent } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
+import { ChartPatternDefs, patternFill } from "../../chart/patterns";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import { stackKeys } from "../../chart/stack";
@@ -23,6 +25,15 @@ export interface MarimekkoChartProps extends DatumInteractionProps<StackRow> {
   ariaLabel?: string;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /**
+   * Fill each segment with a per-key SVG texture (`chart/patterns.tsx`) in
+   * addition to its color, so segments stay distinguishable by shape alone
+   * — monochrome print, a photocopy, or `forced-colors` mode. Default
+   * `false` (color only, unchanged). Turned on automatically (regardless
+   * of this prop) when the OS is already in a forced-colors context — see
+   * `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 /** Pixel gap between columns and between stacked segments. */
@@ -46,14 +57,21 @@ export function MarimekkoChart({
   valueFormat,
   onDatumClick,
   onDatumHover,
+  texture,
 }: MarimekkoChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ c: number; s: number } | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
 
   const keys = useMemo(() => stackKeys(data), [data]);
   const color = useEntityColors(keys);
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every key, with the per-key pattern
+  // kind (below) as the only identity carrier.
+  const colorForKey = (k: string) => (forcedColors ? "CanvasText" : color(k));
   const totals = useMemo(
     () =>
       data.map((d) =>
@@ -80,7 +98,7 @@ export function MarimekkoChart({
       height={height}
       margin={{ top: 8, right: 8, bottom: 24, left: 8 }}
       ariaLabel={label}
-      legend={keys.map((k) => ({ label: k, color: color(k) }))}
+      legend={keys.map((k) => ({ label: k, color: colorForKey(k) }))}
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
@@ -97,6 +115,9 @@ export function MarimekkoChart({
         const hovered = hover != null ? data[hover.c]?.segments[hover.s] : null;
         return (
           <>
+            {effectiveTexture && (
+              <ChartPatternDefs colors={keys.map((k) => colorForKey(k))} />
+            )}
             {columns.map(({ row, c, x0, colWidth }) => {
               let y = 0;
               return (
@@ -115,7 +136,11 @@ export function MarimekkoChart({
                         y={rectY}
                         width={Math.max(0, colWidth)}
                         height={Math.max(0, h - GAP)}
-                        fill={color(seg.key)}
+                        fill={
+                          effectiveTexture
+                            ? patternFill(keys.indexOf(seg.key))
+                            : colorForKey(seg.key)
+                        }
                         opacity={active ? 1 : 0.4}
                         onMouseEnter={() => {
                           setHover({ c, s });
