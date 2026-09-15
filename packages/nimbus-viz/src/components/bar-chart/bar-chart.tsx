@@ -1,12 +1,14 @@
 import { useCallback, useMemo, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
-import { scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
+import type { AxisScale } from "@visx/axis";
 import { max, min } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
-import { bandByIndex } from "../../chart/scales";
+import { bandByIndex, makeValueScale } from "../../chart/scales";
+import type { ValueScaleKind } from "../../chart/scales";
+import { devWarn } from "../../chart/dev-warn";
 import {
   GridRows,
   bottomTickLabel,
@@ -43,6 +45,16 @@ export interface BarChartProps<T = CategoryDatum> {
   /** Format a value-axis number (tick labels + tooltip values). Overrides the
    *  locale/currency formatter from any surrounding ChartLocaleProvider. */
   valueFormat?: (n: number) => string;
+  /**
+   * Value-axis scale. Omit for today's default (`"linear"`, unchanged).
+   * `"symlog"` tolerates zero/negative values and compresses a long tail
+   * (revenue, SKU counts) so a few outliers don't flatten the rest of the
+   * bars. `"log"` needs a strictly positive domain; this chart's domain
+   * always spans down to (at least) 0 (`Math.min(0, …)`), so `"log"` falls
+   * back to `"linear"` with a dev warning rather than a degenerate axis —
+   * `"symlog"` is the one that actually works over `[0, max]` data.
+   */
+  yScale?: ValueScaleKind;
   /** Fired when a datum is clicked (drill-down). */
   onDatumClick?: DatumClickHandler<T>;
   /** Fired when the hovered datum changes; null when the pointer leaves. */
@@ -78,6 +90,7 @@ export function BarChart<T = CategoryDatum>({
   orientation = "vertical",
   ariaLabel,
   valueFormat,
+  yScale: yScaleKind,
   onDatumClick,
   onDatumHover,
   children,
@@ -86,6 +99,20 @@ export function BarChart<T = CategoryDatum>({
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
+
+  /** `"log"` requires a strictly positive domain; this chart's domain always
+   *  spans down to 0, so fall back to linear rather than a degenerate axis. */
+  const resolveValueScaleKind = (domain: [number, number]): ValueScaleKind => {
+    const kind = yScaleKind ?? "linear";
+    if (kind === "log" && domain[0] <= 0) {
+      devWarn(
+        "bar-chart:log-scale-non-positive-domain",
+        'BarChart: yScale="log" needs a strictly positive domain; this chart\'s domain always includes 0, so falling back to "linear". Use "symlog" for a zero-tolerant toggle.'
+      );
+      return "linear";
+    }
+    return kind;
+  };
 
   const getCat = useCallback(
     (d: T): string => (category ? category(d) : (d as CategoryDatum).category),
@@ -138,8 +165,12 @@ export function BarChart<T = CategoryDatum>({
               padding: 0.25,
             }
           );
-          const xScale = scaleLinear({
-            domain: [Math.min(0, valueMin), Math.max(0, valueMax)],
+          const hDomain: [number, number] = [
+            Math.min(0, valueMin),
+            Math.max(0, valueMax),
+          ];
+          const xScale = makeValueScale(resolveValueScaleKind(hDomain), {
+            domain: hDomain,
             range: [0, innerWidth],
             nice: true,
           });
@@ -230,8 +261,12 @@ export function BarChart<T = CategoryDatum>({
             padding: 0.2,
           }
         );
-        const yScale = scaleLinear({
-          domain: [Math.min(0, valueMin), Math.max(0, valueMax)],
+        const vDomain: [number, number] = [
+          Math.min(0, valueMin),
+          Math.max(0, valueMax),
+        ];
+        const yScale = makeValueScale(resolveValueScaleKind(vDomain), {
+          domain: vDomain,
           range: [innerHeight, 0],
           nice: true,
         });
@@ -256,7 +291,7 @@ export function BarChart<T = CategoryDatum>({
               width={innerWidth}
             />
             <AxisLeft
-              scale={yScale}
+              scale={yScale as unknown as AxisScale}
               numTicks={4}
               hideAxisLine
               hideTicks

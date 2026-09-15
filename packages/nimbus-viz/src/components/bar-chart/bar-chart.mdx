@@ -217,12 +217,43 @@ const App = () => (
 
 Not configurable — the chart always draws them. The category axis is a band
 scale (labels are fit to the available band width and truncated when tight); the
-value axis is a linear scale that always includes 0 — from 0 to the "nice"
-maximum when every row is non-negative, extended below 0 to the "nice" minimum
-too when any row is negative — with horizontal gridlines. Hovering a bar dims
-the others to 0.4 opacity and shows a small tooltip with the category and
-formatted value. There is no legend; see "Color & theming" for how bars are
-colored, with or without a legend.
+value-axis domain always includes 0 — from 0 to the "nice" maximum when every
+row is non-negative, extended below 0 to the "nice" minimum too when any row is
+negative — with horizontal gridlines. Hovering a bar dims the others to 0.4
+opacity and shows a small tooltip with the category and formatted value. There
+is no legend; see "Color & theming" for how bars are colored, with or without a
+legend.
+
+### Value-axis scale
+
+`yScale` picks the value-axis scale kind: `"linear"` (default, unchanged),
+`"symlog"`, or `"log"`. `"symlog"` tolerates zero/negative values and compresses
+a long tail (revenue, SKU counts) so a few outliers don't flatten the rest of
+the bars — the safe toggle over this chart's always-crosses-zero domain. `"log"`
+needs a strictly positive domain, which this chart's domain never is (it always
+spans down to at least 0), so `yScale="log"` falls back to `"linear"` with a
+one-time console warning rather than a degenerate axis; use `"symlog"` instead.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider>
+    <ResponsiveContainer height={220}>
+      {(width, height) => (
+        <BarChart
+          width={width}
+          height={height}
+          data={[
+            { category: "A", value: 5 },
+            { category: "B", value: 50 },
+            { category: "C", value: 5000 },
+          ]}
+          yScale="symlog"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
 
 ### Overlays (`children`)
 

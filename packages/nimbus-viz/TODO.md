@@ -138,17 +138,17 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       type argument.
 
       Deliberately excluded, each for a real reason: `gauge` / `stat-card`
-                                      (a single value has no discrete second "mark" to report a click on --
-                                      the whole chart already is the one datum, which is what `value`/`label`
-                                      already are); `sparkline` (explicitly minimal by design -- "no axes, no
-                                      gridlines, no tick labels", a decorative inline glyph, not an
-                                      interactive chart); `data-table` (the guaranteed no-throw HTML fallback
-                                      shell used internally by `ChartContainer`, not a chart with visual
-                                      marks -- its own doc comment already flags it as a temporary stand-in
-                                      pending a real `@commercetools/nimbus` `DataTable`).
+                                          (a single value has no discrete second "mark" to report a click on --
+                                          the whole chart already is the one datum, which is what `value`/`label`
+                                          already are); `sparkline` (explicitly minimal by design -- "no axes, no
+                                          gridlines, no tick labels", a decorative inline glyph, not an
+                                          interactive chart); `data-table` (the guaranteed no-throw HTML fallback
+                                          shell used internally by `ChartContainer`, not a chart with visual
+                                          marks -- its own doc comment already flags it as a temporary stand-in
+                                          pending a real `@commercetools/nimbus` `DataTable`).
 
-                                      Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
-                                      all green; eslint clean on every touched file (28 chart `.tsx` files).
+                                          Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
+                                          all green; eslint clean on every touched file (28 chart `.tsx` files).
 
 - [ ] **A3 — controlled selection + interactive legend.** Lift internal hover to
       controlled/uncontrolled (`selection`/`onSelectionChange`,
@@ -308,9 +308,37 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
 
 ### Wire the dormant primitives (built + unit-tested, but no chart consumes them)
 
-- [ ] **`#16` scales.** Swap inline `scaleLinear` value axes for
-      `src/chart/scales.ts` `makeValueScale("linear"|"log"|"symlog", …)`; expose
-      a `yScale` prop (default `symlog`; guard `log` for strictly-positive).
+- [x] **`#16` scales.** Done on `bar-chart` as the reference chart (both
+      orientations' value-axis `scaleLinear` calls) — swapped for
+      `src/chart/scales.ts`'s `makeValueScale("linear"|"log"|"symlog", …)`
+      behind a new `yScale?: ValueScaleKind` prop. Deliberately **not**
+      defaulted to `"symlog"` as this item's text suggested: `symlog` compresses
+      large values relative to `linear` (it is not pixel-identical to it, even
+      over ordinary `[0, max]` data), so defaulting to it would have been a
+      real, silent visual change to every existing consumer and to this
+      session's own already-committed pixel-exact story assertions — the
+      opposite of the "additive, byte-identical default" rule every other item
+      this session followed. `yScale` defaults to `undefined` → `"linear"`,
+      unchanged output; `symlog`/`log` are opt-in. `"log"` requires a strictly
+      positive domain, which `BarChart`'s domain structurally never is
+      (`[Math.min(0, valueMin), Math.max(0, valueMax)]` always includes 0) —
+      `yScale="log"` detects this and falls back to `"linear"` with a one-time
+      `devWarn`, verified to render pixel-identical to the default rather than a
+      degenerate/NaN axis. `ValueScale`'s return type doesn't satisfy
+      `@visx/axis`'s `AxisScale` structurally (by design — its own doc comment:
+      declared narrow so the emitted `.d.ts` never has to name
+      `@types/d3-scale`); cast at the one
+      `<AxisLeft scale={... as unknown as AxisScale} />` call site (a
+      function-body-local cast, confirmed not to leak into the built `.d.ts` —
+      `AxisScale` doesn't appear there). Rolling `yScale` out to the other
+      value-axis charts is a mechanical follow-up left undone, same as `C2`'s
+      note. Stories: `ValueScaleSymlog` compares the same wide-dynamic-range
+      data rendered once per scale and asserts the smallest-to-tallest bar
+      height ratio is markedly larger under symlog (real compression, not just
+      "it rendered"); `ValueScaleLogFallsBackToLinear` asserts the `"log"`
+      render is pixel-identical, bar for bar, to the default render. Verified:
+      `pnpm typecheck` / `pnpm test` (804 passing) / `pnpm build` all green;
+      eslint clean on every touched file.
 - [x] **`#17`-rest stats "compute from raw".** Done: `box-plot`'s `groups` prop
       now takes `BoxPlotGroup[]` = `BoxPlotGroupStats | BoxPlotGroupSamples` per
       entry (mixing both shapes in one chart is fine); a `BoxPlotGroupSamples`
@@ -373,39 +401,39 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       without breaking the stack's alignment — left out, not attempted.
 
       `ScatterPlot` gains `quadtreeHitRadius?: number` — when set, swaps each
-          point's own `onMouseEnter`/`onClick` listener for one plot-wide
-          `d3-quadtree` nearest-point lookup on a single transparent overlay
-          (one DOM listener regardless of point count, and the nearest point
-          wins even where dots overlap, unlike native per-element hit-testing
-          where whichever is on top of the DOM stack always wins). Chosen as the
-          reference chart over `BubbleChart` because it already has its own
-          tested `Interaction` story (real regression risk to rework); omitting
-          the prop keeps today's per-circle listeners byte-identical. New real
-          dependency: `d3-quadtree` (+ `@types/d3-quadtree`), added to the `viz`
-          pnpm catalog alongside the other `d3-*` deps (not the workspace
-          default catalog `pnpm add` reaches for by default — moved by hand to
-          keep the convention).
+              point's own `onMouseEnter`/`onClick` listener for one plot-wide
+              `d3-quadtree` nearest-point lookup on a single transparent overlay
+              (one DOM listener regardless of point count, and the nearest point
+              wins even where dots overlap, unlike native per-element hit-testing
+              where whichever is on top of the DOM stack always wins). Chosen as the
+              reference chart over `BubbleChart` because it already has its own
+              tested `Interaction` story (real regression risk to rework); omitting
+              the prop keeps today's per-circle listeners byte-identical. New real
+              dependency: `d3-quadtree` (+ `@types/d3-quadtree`), added to the `viz`
+              pnpm catalog alongside the other `d3-*` deps (not the workspace
+              default catalog `pnpm add` reaches for by default — moved by hand to
+              keep the convention).
 
-          Found and fixed along the way: `apps/viz-dashboard/src/shell/ui.tsx`'s
-          `KpiTile` still forwarded its own `format` prop to `StatCard` as
-          `format={format}` — broken since `A2-tail` renamed that prop to
-          `valueFormat`, caught by running `viz-dashboard`'s own typecheck (not
-          part of the per-batch `nimbus-viz`-only gates used everywhere else this
-          session) after this batch. Fixed the one forwarding site; every
-          `KpiTile` call site elsewhere keeps its own `format` prop name
-          unchanged (that's `KpiTile`'s own API, not `StatCard`'s).
+              Found and fixed along the way: `apps/viz-dashboard/src/shell/ui.tsx`'s
+              `KpiTile` still forwarded its own `format` prop to `StatCard` as
+              `format={format}` — broken since `A2-tail` renamed that prop to
+              `valueFormat`, caught by running `viz-dashboard`'s own typecheck (not
+              part of the per-batch `nimbus-viz`-only gates used everywhere else this
+              session) after this batch. Fixed the one forwarding site; every
+              `KpiTile` call site elsewhere keeps its own `format` prop name
+              unchanged (that's `KpiTile`'s own API, not `StatCard`'s).
 
-          Stories: `line-chart.stories.tsx`'s `Decimated` (500 points, threshold
-          60) counts the drawn path's command letters directly, proving the
-          point count actually drops and the shape survives (not collapsed
-          flat); `scatter-plot.stories.tsx`'s `QuadtreeHitTest` fires a
-          `mousemove` at one point's exact rendered position and asserts
-          `onDatumHover` reports that point's real datum and index through the
-          one overlay listener.
-          Verified: `pnpm typecheck` / `pnpm test` (802 passing) / `pnpm build`
-          / `pnpm check:package-shape` / `pnpm check:bundle-size` all green;
-          `viz-dashboard`'s own `typecheck` and `build` also green; eslint clean
-          on every touched file.
+              Stories: `line-chart.stories.tsx`'s `Decimated` (500 points, threshold
+              60) counts the drawn path's command letters directly, proving the
+              point count actually drops and the shape survives (not collapsed
+              flat); `scatter-plot.stories.tsx`'s `QuadtreeHitTest` fires a
+              `mousemove` at one point's exact rendered position and asserts
+              `onDatumHover` reports that point's real datum and index through the
+              one overlay listener.
+              Verified: `pnpm typecheck` / `pnpm test` (802 passing) / `pnpm build`
+              / `pnpm check:package-shape` / `pnpm check:bundle-size` all green;
+              `viz-dashboard`'s own `typecheck` and `build` also green; eslint clean
+              on every touched file.
 
 - [ ] **`#20` brush / linked views.** Wire `src/chart/brush.tsx` + a
       `SelectionProvider` (broadcast a brushed domain / highlighted entity-set

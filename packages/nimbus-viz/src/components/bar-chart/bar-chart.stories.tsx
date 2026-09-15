@@ -283,3 +283,100 @@ export const Responsive: BaseStory = {
 // useReducedMotion nor useForcedColors (bar-chart.mdx "Accessibility" —
 // "There is no animation, so reduced-motion handling is N/A"), and adding
 // one would assert a capability the component doesn't have.
+
+/**
+ * `#16`: `yScale="symlog"` compresses a long tail so a few outliers don't
+ * flatten the rest of the bars, unlike the default linear axis. Proven by
+ * comparing the SAME wide-dynamic-range data rendered once with each scale:
+ * the smallest bar is a much larger fraction of the tallest bar's height
+ * under symlog than under (default) linear.
+ */
+const wideRangeFixture: CategoryDatum[] = [
+  { category: "A", value: 5 },
+  { category: "B", value: 50 },
+  { category: "C", value: 5000 },
+];
+
+export const ValueScaleSymlog: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 16 }}>
+      <div style={{ width: 240, height: 220 }}>
+        <BarChart
+          width={240}
+          height={220}
+          data={wideRangeFixture}
+          ariaLabel="Bar chart of a wide value range on a linear axis"
+        />
+      </div>
+      <div style={{ width: 240, height: 220 }}>
+        <BarChart
+          width={240}
+          height={220}
+          data={wideRangeFixture}
+          yScale="symlog"
+          ariaLabel="Bar chart of a wide value range on a symlog axis"
+        />
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const [linearSvg, symlogSvg] = Array.from(
+      canvasElement.querySelectorAll('svg[role="img"]')
+    );
+    const barHeight = (svg: Element, i: number) =>
+      Array.from(
+        svg.querySelectorAll<SVGGraphicsElement>("path.visx-bar-rounded")
+      )[i]!.getBBox().height;
+    // Ratio of the smallest bar (A, value 5) to the tallest (C, value 5000):
+    // symlog compresses the tail, so that ratio is much larger there.
+    const linearRatio = barHeight(linearSvg, 0) / barHeight(linearSvg, 2);
+    const symlogRatio = barHeight(symlogSvg, 0) / barHeight(symlogSvg, 2);
+    expect(symlogRatio).toBeGreaterThan(linearRatio * 3);
+  },
+};
+
+/**
+ * `#16`: `yScale="log"` needs a strictly positive domain; `BarChart`'s
+ * domain always spans down to (at least) 0, so it can never satisfy that —
+ * proven by asserting the "log" render is pixel-identical to the (default)
+ * "linear" render, i.e. the guarded fallback actually happened, rather than
+ * a degenerate/NaN axis silently shipping.
+ */
+export const ValueScaleLogFallsBackToLinear: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 16 }}>
+      <div style={{ width: 240, height: 220 }}>
+        <BarChart
+          width={240}
+          height={220}
+          data={fixture}
+          ariaLabel="Bar chart with the default linear value scale"
+        />
+      </div>
+      <div style={{ width: 240, height: 220 }}>
+        <BarChart
+          width={240}
+          height={220}
+          data={fixture}
+          yScale="log"
+          ariaLabel="Bar chart requesting a log value scale"
+        />
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const [linearSvg, logSvg] = Array.from(
+      canvasElement.querySelectorAll('svg[role="img"]')
+    );
+    const heights = (svg: Element) =>
+      Array.from(
+        svg.querySelectorAll<SVGGraphicsElement>("path.visx-bar-rounded")
+      ).map((p) => p.getBBox().height);
+    const linearHeights = heights(linearSvg);
+    const logHeights = heights(logSvg);
+    expect(logHeights.length).toBe(linearHeights.length);
+    for (let i = 0; i < linearHeights.length; i++) {
+      expect(logHeights[i]).toBeCloseTo(linearHeights[i], 1);
+    }
+  },
+};
