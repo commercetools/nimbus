@@ -18,6 +18,7 @@ import { useChartFormatters } from "../../chart/format-locale";
 import type { Series, SeriesPoint } from "../../chart/types";
 import { useControlledSelection } from "../../chart/interaction";
 import type { InteractionProps } from "../../chart/interaction";
+import { ValueLabel } from "../../chart/value-labels";
 
 export interface LineChartProps<T = SeriesPoint> extends InteractionProps<T> {
   /** Plot width in pixels — supply from `ResponsiveContainer`. */
@@ -65,10 +66,30 @@ export interface LineChartProps<T = SeriesPoint> extends InteractionProps<T> {
    * already in a forced-colors context — see `useForcedColors`.
    */
   texture?: boolean;
+  /**
+   * Draw each series' formatted value directly past the end of its line --
+   * `chart/value-labels.tsx`'s `ValueLabel`. Only the LAST point of each
+   * series is labeled, not every point -- a label at every point of every
+   * series would clutter badly for a chart whose whole point is a dense
+   * trend line, so this follows `bump-chart.tsx`'s existing
+   * end-of-series-label convention (there it labels series identity; here
+   * it labels the series' latest value instead). A series is skipped when
+   * its last point's `y` is `null` (a trailing gap) or when it's hidden by
+   * the legend/`selection` filter. Turning this on also widens the chart's
+   * right margin to leave room for the label text. Default `false` (no
+   * change from today's rendering).
+   */
+  showValues?: boolean;
 }
 
 const toDate = (x: number | Date): Date =>
   x instanceof Date ? x : new Date(x);
+
+// Same shape as `chart-frame.tsx`'s own `DEFAULT_MARGIN`, just with `right`
+// widened to leave room for each series' end-of-line value label -- applied
+// only when `showValues` is on, so the default (omitted) render keeps using
+// `ChartFrame`'s own default margin untouched.
+const SHOW_VALUES_MARGIN = { top: 12, right: 48, bottom: 28, left: 44 };
 
 /**
  * Time-series line (or filled area) for one or more series. Single y-axis
@@ -101,6 +122,7 @@ export function LineChart<T = SeriesPoint>({
   children,
   decimateThreshold,
   texture,
+  showValues,
 }: LineChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -190,6 +212,7 @@ export function LineChart<T = SeriesPoint>({
     <ChartContainer
       width={width}
       height={height}
+      margin={showValues ? SHOW_VALUES_MARGIN : undefined}
       ariaLabel={
         ariaLabel ?? `Line chart of ${series.map((s) => s.label).join(", ")}`
       }
@@ -294,36 +317,51 @@ export function LineChart<T = SeriesPoint>({
               const color = colorFor(i);
               const visible = !isFiltering || activeSelection.has(s.id);
               const dash = effectiveTexture ? strokeDasharrayFor(i) : undefined;
-              return variant === "area" ? (
-                <AreaClosed<T>
-                  key={s.id}
-                  data={drawData[i]}
-                  x={(p) => xScale(toDate(getX(p)))}
-                  y={(p) => yScale(getY(p) ?? 0)}
-                  y0={() => yScale(0)}
-                  yScale={yScale}
-                  curve={curveMonotoneX}
-                  defined={(p) => getY(p) != null}
-                  fill={color}
-                  fillOpacity={0.16}
-                  stroke={color}
-                  strokeWidth={2}
-                  strokeDasharray={dash}
-                  opacity={visible ? 1 : 0}
-                />
-              ) : (
-                <LinePath<T>
-                  key={s.id}
-                  data={drawData[i]}
-                  x={(p) => xScale(toDate(getX(p)))}
-                  y={(p) => yScale(getY(p) ?? 0)}
-                  opacity={visible ? 1 : 0}
-                  curve={curveMonotoneX}
-                  defined={(p) => getY(p) != null}
-                  stroke={color}
-                  strokeWidth={2}
-                  strokeDasharray={dash}
-                />
+              const lastPoint = s.data[s.data.length - 1];
+              const lastY = lastPoint != null ? getY(lastPoint) : undefined;
+              return (
+                <g key={s.id}>
+                  {variant === "area" ? (
+                    <AreaClosed<T>
+                      data={drawData[i]}
+                      x={(p) => xScale(toDate(getX(p)))}
+                      y={(p) => yScale(getY(p) ?? 0)}
+                      y0={() => yScale(0)}
+                      yScale={yScale}
+                      curve={curveMonotoneX}
+                      defined={(p) => getY(p) != null}
+                      fill={color}
+                      fillOpacity={0.16}
+                      stroke={color}
+                      strokeWidth={2}
+                      strokeDasharray={dash}
+                      opacity={visible ? 1 : 0}
+                    />
+                  ) : (
+                    <LinePath<T>
+                      data={drawData[i]}
+                      x={(p) => xScale(toDate(getX(p)))}
+                      y={(p) => yScale(getY(p) ?? 0)}
+                      opacity={visible ? 1 : 0}
+                      curve={curveMonotoneX}
+                      defined={(p) => getY(p) != null}
+                      stroke={color}
+                      strokeWidth={2}
+                      strokeDasharray={dash}
+                    />
+                  )}
+                  {showValues &&
+                    visible &&
+                    lastPoint != null &&
+                    lastY != null && (
+                      <ValueLabel
+                        x={xScale(toDate(getX(lastPoint))) + 8}
+                        y={yScale(lastY)}
+                        text={valueFmt(lastY)}
+                        anchor="start"
+                      />
+                    )}
+                </g>
               );
             })}
 

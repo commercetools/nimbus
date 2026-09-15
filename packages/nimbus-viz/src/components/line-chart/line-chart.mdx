@@ -197,6 +197,59 @@ const App = () => (
 );
 ```
 
+### Value labels
+
+Pass `showValues` to draw each series' formatted value directly past the end
+of its line. Only the LAST point of each series is labeled, not every point —
+a label at every point of a dense trend line would clutter badly, so this
+labels each series' latest value the same way
+[`BumpChart`](/charts/bump-chart) already labels series identity at the same
+position. A series with a trailing gap (`y: null` at its last point) or
+hidden by the legend/`selection` filter draws no label. Turning this on also
+widens the chart's right margin to leave room for the label text. Default
+`false`.
+
+```jsx live
+const series = [
+  {
+    id: "eu",
+    label: "EU",
+    data: [
+      { x: new Date("2026-01-01"), y: 120 },
+      { x: new Date("2026-02-01"), y: 148 },
+      { x: new Date("2026-03-01"), y: 136 },
+      { x: new Date("2026-04-01"), y: 172 },
+    ],
+  },
+  {
+    id: "us",
+    label: "US",
+    data: [
+      { x: new Date("2026-01-01"), y: 90 },
+      { x: new Date("2026-02-01"), y: 104 },
+      { x: new Date("2026-03-01"), y: 128 },
+      { x: new Date("2026-04-01"), y: 119 },
+    ],
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <LineChart
+          width={width}
+          height={height}
+          series={series}
+          showValues
+          ariaLabel="Line chart of sessions by region, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Value formatting
 
 `valueFormat` formats both the value-axis tick labels and the tooltip values. It

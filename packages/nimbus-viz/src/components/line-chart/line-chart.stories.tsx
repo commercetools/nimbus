@@ -124,6 +124,47 @@ export const Variant: BaseStory = {
 };
 
 /**
+ * `showValues` (Phase B): draws each series' formatted value directly past
+ * the end of its line -- `chart/value-labels.tsx`'s `ValueLabel`. Only the
+ * LAST point of each series is labeled (not every point), following
+ * `bump-chart.tsx`'s existing end-of-series-label convention -- a label at
+ * every point of a dense trend line would clutter badly. Both series in
+ * `fixture` end on a non-null `y`, so turning the prop on adds exactly one
+ * label per series. Two instances side by side (each its own distinct
+ * `ariaLabel`, per this file's established convention) prove the causal
+ * link directly, not a guessed formatted string.
+ */
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <LineChart
+        width={280}
+        height={240}
+        series={fixture}
+        ariaLabel="Line chart without value labels"
+      />
+      <LineChart
+        width={280}
+        height={240}
+        series={fixture}
+        showValues
+        ariaLabel="Line chart with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (LineChart uses role="img").
+    // Axis tick labels render their own nested <svg> (visx's positioning
+    // trick), which don't carry this role attribute, so they're excluded
+    // from this NodeList on their own.
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    expect(textCount(svgs[1])).toBe(textCount(svgs[0]) + fixture.length);
+  },
+};
+
+/**
  * `onDatumClick`/`onDatumHover` are wired on a transparent overlay `<rect>`
  * spanning the plot (not on individual marks — `LinePath`/`AreaClosed`
  * strokes/fills carry no accessible role or their own handlers), resolving
