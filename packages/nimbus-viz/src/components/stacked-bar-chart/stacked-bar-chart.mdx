@@ -290,9 +290,9 @@ const App = () => (
 
 ### Value labels
 
-Pass `showValues` to draw each stack's net total directly above the top of
-the whole bar — one label per stack, not per segment, so a multi-series
-stack doesn't get cluttered. Default `false`.
+Pass `showValues` to draw each stack's net total directly above the top of the
+whole bar — one label per stack, not per segment, so a multi-series stack
+doesn't get cluttered. Default `false`.
 
 ```jsx live
 const App = () => (
@@ -320,6 +320,55 @@ const App = () => (
           ]}
           showValues
           ariaLabel="Stacked bar chart of customers by quarter, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
+### Percent stacking
+
+Pass `offset="expand"` to normalize every row to its own total — a 100%-stacked
+chart — instead of the shared value axis every row draws against by default.
+Each row's segments are divided by that row's own total absolute magnitude
+before the same diverging stack offset runs, so every row's bar reaches the same
+full height (or, with a negative segment present, the same `[-100%, 100%]` span)
+regardless of how the rows' raw totals differ. The value axis switches to a
+percentage format. The legend, tooltip, table, and `showValues` labels are
+unaffected — they still show real, un-normalized values; only the bar geometry
+and axis change. Default `"none"` (today's rendering, unchanged).
+
+```jsx live
+const data = [
+  {
+    category: "Q1",
+    segments: [
+      { key: "New", value: 120 },
+      { key: "Returning", value: 80 },
+      { key: "Wholesale", value: 40 },
+    ],
+  },
+  {
+    category: "Q2",
+    segments: [
+      { key: "New", value: 140 },
+      { key: "Returning", value: 96 },
+      { key: "Wholesale", value: 52 },
+    ],
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <StackedBarChart
+          width={width}
+          height={height}
+          data={data}
+          offset="expand"
+          ariaLabel="Stacked bar chart normalized to 100% per category"
         />
       )}
     </ResponsiveContainer>

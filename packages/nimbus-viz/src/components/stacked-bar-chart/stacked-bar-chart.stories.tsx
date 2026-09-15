@@ -462,6 +462,43 @@ export const Responsive: BaseStory = {
 };
 
 /**
+ * `offset="expand"` (Phase E): normalizes every row to its own total (a
+ * 100%-stacked chart) instead of the shared value axis every row draws
+ * against by default. `fixture`'s two rows have different raw totals (Q1:
+ * 240, Q2: 288) -- proven directly: in "expand" mode both rows' topmost
+ * segment reaches the same pixel y (both hit "100%"), and the value axis
+ * ticks are formatted as percentages.
+ */
+export const PercentStacked: BaseStory = {
+  render: () => (
+    <StackedBarChart
+      width={360}
+      height={240}
+      data={fixture}
+      offset="expand"
+      ariaLabel="Stacked bar chart normalized to 100% per category"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const marks = Array.from(
+      canvasElement.querySelectorAll<SVGGraphicsElement>(
+        "rect, path.visx-bar-rounded"
+      )
+    );
+    // 3 segments per row; the 3rd (last, topmost) mark of each row is the
+    // Wholesale segment, which reaches the very top of that row's bar.
+    const topY = (rowIndex: number) =>
+      Number(marks[rowIndex * 3 + 2].getAttribute("y"));
+    expect(Math.abs(topY(0) - topY(1))).toBeLessThan(1);
+
+    const tickText = Array.from(canvasElement.querySelectorAll("text")).map(
+      (t) => t.textContent
+    );
+    expect(tickText.some((t) => t?.includes("%"))).toBe(true);
+  },
+};
+
+/**
  * `D2`: `texture` fills each segment with a per-key SVG pattern (in addition
  * to color) so segments stay distinguishable without color. Proven
  * directly: every segment's `fill` is a `url(#...)` pattern reference, and

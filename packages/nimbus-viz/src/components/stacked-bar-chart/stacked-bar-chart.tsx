@@ -68,6 +68,21 @@ export interface StackedBarChartProps<T = StackRow> {
    * end. Default `false` (no change from today's rendering).
    */
   showValues?: boolean;
+  /**
+   * `"expand"` normalizes every row to its own total (a 100%-stacked /
+   * percent chart) instead of the shared value axis every row draws
+   * against today — each row's segments are divided by that row's own
+   * total absolute magnitude before the diverging stack offset runs, so
+   * the same "positive segments up from 0, negative segments down from 0"
+   * geometry still applies, just on fractions instead of raw values. The
+   * value axis becomes a fixed `[0, 1]` domain (or `[-1, 1]` if any row
+   * has a negative segment), formatted as a percentage, rather than a
+   * domain derived from the data's magnitudes. The legend, tooltip, table,
+   * and `showValues` labels still show real, un-normalized values — only
+   * the bar geometry and axis change. Default `"none"` (today's rendering,
+   * unchanged).
+   */
+  offset?: "none" | "expand";
 }
 
 /**
@@ -99,6 +114,7 @@ export function StackedBarChart<T = StackRow>({
   children,
   texture,
   showValues,
+  offset = "none",
 }: StackedBarChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -128,6 +144,16 @@ export function StackedBarChart<T = StackRow>({
   // -- one system foreground color for every key, with the per-key pattern
   // kind (below) as the only identity carrier.
   const colorForKey = (k: string) => (forcedColors ? "CanvasText" : color(k));
+  const isExpand = offset === "expand";
+  // Each row's own total absolute magnitude -- the "100%" a percent-stacked
+  // row normalizes against. `|| 1` guards an all-zero row from dividing by
+  // zero (matches `posTotal`/the accumulator below, which would otherwise
+  // draw NaN geometry for that one row). Always `1` outside "expand" mode,
+  // so every call site below is a no-op division when `offset` is omitted.
+  const rowMagnitude = (row: T): number => {
+    if (!isExpand) return 1;
+    return getSeg(row).reduce((s, seg) => s + Math.abs(seg.value), 0) || 1;
+  };
   // Diverging stack offset: positive segments accumulate upward from 0,
   // negative segments accumulate downward from 0, each in the order given —
   // so a negative segment (a return, a write-off) is drawn on the correct
@@ -135,21 +161,31 @@ export function StackedBarChart<T = StackRow>({
   // span each row's full positive and negative extent, not just its net
   // total (which can be smaller in magnitude than either side); valueDomain()
   // also widens a degenerate all-zero/all-equal domain (BC-3).
-  const totalDomain = useMemo(
-    () =>
-      valueDomain(
-        data.flatMap((r) => {
-          let pos = 0;
-          let neg = 0;
-          for (const seg of getSeg(r)) {
-            if (seg.value >= 0) pos += seg.value;
-            else neg += seg.value;
-          }
-          return [pos, neg];
-        })
-      ),
+  //
+  // "expand" mode normalizes each row by its own magnitude BEFORE this same
+  // accumulation, so every row's positive/negative extent always lands
+  // inside a fixed [0, 1] / [-1, 1] shape -- bypass valueDomain() (which
+  // derives a domain FROM the data's magnitudes) for that fixed shape
+  // instead; only its polarity (does any row have a negative segment) is a
+  // real one-bit inspection of the data, not a magnitude.
+  const hasNegativeAnywhere = useMemo(
+    () => data.some((r) => getSeg(r).some((seg) => seg.value < 0)),
     [data, getSeg]
   );
+  const totalDomain = useMemo((): [number, number] => {
+    if (isExpand) return hasNegativeAnywhere ? [-1, 1] : [0, 1];
+    return valueDomain(
+      data.flatMap((r) => {
+        let pos = 0;
+        let neg = 0;
+        for (const seg of getSeg(r)) {
+          if (seg.value >= 0) pos += seg.value;
+          else neg += seg.value;
+        }
+        return [pos, neg];
+      })
+    );
+  }, [data, getSeg, isExpand, hasNegativeAnywhere]);
 
   if (width <= 0 || height <= 0 || data.length === 0) return null;
 
@@ -194,9 +230,12 @@ export function StackedBarChart<T = StackRow>({
           ? getSeg(hr).reduce((s, seg) => s + seg.value, 0)
           : 0;
         // Positive segments' running sum -- the top of the visual bar, which
-        // for a mixed-sign row is not the same point as the net total.
+        // for a mixed-sign row is not the same point as the net total. In
+        // "expand" mode this is the top of the NORMALIZED bar (a fraction),
+        // matching what's actually drawn, not the row's raw positive sum.
         const posTotal = (row: T) =>
-          getSeg(row).reduce((s, seg) => s + Math.max(0, seg.value), 0);
+          getSeg(row).reduce((s, seg) => s + Math.max(0, seg.value), 0) /
+          rowMagnitude(row);
         return (
           <ChartScaleProvider
             value={{
@@ -220,7 +259,11 @@ export function StackedBarChart<T = StackRow>({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => valueFmt(v as number)}
+              tickFormat={(v) =>
+                isExpand
+                  ? formatters.percent(v as number)
+                  : valueFmt(v as number)
+              }
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -241,6 +284,10 @@ export function StackedBarChart<T = StackRow>({
               // everyone else" opacity ternary).
               const isHovered = hover === i;
               const segs = getSeg(row);
+              // "expand" mode normalizes every segment by this row's own
+              // magnitude before the same diverging accumulation below runs
+              // -- a no-op division (mag === 1) outside that mode.
+              const mag = rowMagnitude(row);
               // Diverging stack offset: positive segments accumulate upward
               // from 0, negative segments accumulate downward from 0, each in
               // the order given -- a negative segment (a return, a
@@ -254,15 +301,16 @@ export function StackedBarChart<T = StackRow>({
               const bars = segs.map((seg, si) => {
                 let lo: number;
                 let hi: number;
+                const v = seg.value / mag;
                 const positive = seg.value >= 0;
                 if (positive) {
                   lo = posAcc;
-                  posAcc += seg.value;
+                  posAcc += v;
                   hi = posAcc;
                   topIdx = si;
                 } else {
                   hi = negAcc;
-                  negAcc += seg.value;
+                  negAcc += v;
                   lo = negAcc;
                   bottomIdx = si;
                 }
