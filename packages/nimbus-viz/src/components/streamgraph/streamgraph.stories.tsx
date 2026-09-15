@@ -58,6 +58,34 @@ export default meta;
 export const Base: BaseStory = {};
 
 /**
+ * `gradient` (Phase F): fades each band's fill toward its own bottom edge
+ * via an SVG `<linearGradient>` instead of the flat 85%-opacity fill --
+ * mirroring shadcn's `chart-area-gradient` variant. Proven directly: one
+ * `<linearGradient>` per series, and each band's `fill` is a real
+ * `url(#...)` reference to it.
+ */
+export const Gradient: BaseStory = {
+  render: () => (
+    <Streamgraph
+      width={480}
+      height={280}
+      series={series}
+      gradient
+      ariaLabel="Streamgraph with gradient fills"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const keyCount = series.length;
+    const gradients = canvasElement.querySelectorAll("linearGradient");
+    expect(gradients).toHaveLength(keyCount);
+    const marks = Array.from(canvasElement.querySelectorAll("path")).filter(
+      (el) => el.getAttribute("fill")?.startsWith("url(#streamgraph-grad-")
+    );
+    expect(marks.length).toBe(keyCount);
+  },
+};
+
+/**
  * `D2`: `texture` fills each band with a per-key SVG pattern (in addition to
  * color) so bands stay distinguishable without color. Proven directly:
  * every band's `fill` is a `url(#...)` pattern reference, and `<defs>` has

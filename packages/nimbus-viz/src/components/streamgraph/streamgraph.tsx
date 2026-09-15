@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { scaleLinear, scaleTime } from "@visx/scale";
 import { AreaStack, Area, stack } from "@visx/shape";
+import { LinearGradient } from "@visx/gradient";
 import { AxisBottom } from "@visx/axis";
 import { curveBasis } from "@visx/curve";
 import { extent } from "d3-array";
@@ -61,6 +62,15 @@ export interface StreamgraphProps extends DatumInteractionProps<StackDatum> {
    * exactly as before this existed.
    */
   showValues?: boolean;
+  /**
+   * Fade each band's fill toward its own bottom edge via an SVG
+   * `<linearGradient>` (`@visx/gradient`'s `LinearGradient`) instead of
+   * the flat `fillOpacity`, mirroring shadcn's `chart-area-gradient`
+   * variant. Yields to `texture` when both are set (texture is the
+   * forced-colors-safety feature). Default `false` (today's flat
+   * 85%-opacity fill, unchanged).
+   */
+  gradient?: boolean;
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
@@ -93,6 +103,7 @@ export function Streamgraph({
   onDatumHover,
   texture,
   showValues,
+  gradient,
 }: StreamgraphProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -196,6 +207,18 @@ export function Streamgraph({
             >
               {({ stacks }) => (
                 <>
+                  {gradient &&
+                    !effectiveTexture &&
+                    stacks.map((layer) => (
+                      <LinearGradient
+                        key={`grad-${layer.key}`}
+                        id={`streamgraph-grad-${layer.key}`}
+                        from={colorForKey(layer.key)}
+                        to={colorForKey(layer.key)}
+                        fromOpacity={0.9}
+                        toOpacity={0.5}
+                      />
+                    ))}
                   {stacks.map((layer) => (
                     <Area
                       key={layer.key}
@@ -207,9 +230,11 @@ export function Streamgraph({
                       fill={
                         effectiveTexture
                           ? patternFill(keys.indexOf(layer.key))
-                          : colorForKey(layer.key)
+                          : gradient
+                            ? `url(#streamgraph-grad-${layer.key})`
+                            : colorForKey(layer.key)
                       }
-                      fillOpacity={0.85}
+                      fillOpacity={gradient && !effectiveTexture ? 1 : 0.85}
                       stroke={theme.surface}
                       strokeWidth={1}
                     />

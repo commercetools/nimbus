@@ -187,12 +187,12 @@ line up with the bands — there is still no visible value axis.
 
 Pass `showValues` to label each band with its own value, once, at that band's
 own point of **maximum thickness** — not a fixed x shared by every band. The
-wiggle offset above only ever moves the baseline, never a band's own
-thickness, so a band can be a near-zero sliver at any single shared x
-(including the right edge `StackedAreaChart`'s equivalent labels); its point
-of maximum thickness is the one x that's never near-zero unless the whole
-series is. Uses the same built-in compact formatter as the tooltip — there is
-no `valueFormat` prop to override it here either. Default `false`.
+wiggle offset above only ever moves the baseline, never a band's own thickness,
+so a band can be a near-zero sliver at any single shared x (including the right
+edge `StackedAreaChart`'s equivalent labels); its point of maximum thickness is
+the one x that's never near-zero unless the whole series is. Uses the same
+built-in compact formatter as the tooltip — there is no `valueFormat` prop to
+override it here either. Default `false`.
 
 ```jsx live
 const series = [
@@ -255,12 +255,58 @@ listing the date and each series' compact-formatted value. None of this is
 configurable — there is deliberately **no** value axis and **no** value-format
 prop, because the streamgraph is a shape-first view.
 
+### Gradient fill
+
+Pass `gradient` to fade each band's fill toward its own bottom edge via an SVG
+gradient, instead of the flat 85%-opacity fill — mirroring shadcn's
+`chart-area-gradient` variant. Yields to `texture` when both are set (texture is
+the forced-colors-safety feature). Default `false`.
+
+```jsx live
+const series = [
+  {
+    id: "north",
+    label: "North",
+    data: [
+      { x: new Date("2026-01-01"), y: 20 },
+      { x: new Date("2026-02-01"), y: 25 },
+      { x: new Date("2026-03-01"), y: 18 },
+    ],
+  },
+  {
+    id: "south",
+    label: "South",
+    data: [
+      { x: new Date("2026-01-01"), y: 15 },
+      { x: new Date("2026-02-01"), y: 20 },
+      { x: new Date("2026-03-01"), y: 24 },
+    ],
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <Streamgraph
+          width={width}
+          height={height}
+          series={series}
+          gradient
+          ariaLabel="Streamgraph with gradient fills"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Texture (non-color band identity)
 
 `texture` fills each band with a per-key SVG pattern (`chart/patterns.tsx`) in
-addition to its color, so bands stay distinguishable by shape alone —
-monochrome print, a photocopy, or `forced-colors` mode, where the OS flattens
-hue. Default `false` (color only).
+addition to its color, so bands stay distinguishable by shape alone — monochrome
+print, a photocopy, or `forced-colors` mode, where the OS flattens hue. Default
+`false` (color only).
 
 ```jsx live
 const series = [
@@ -384,9 +430,9 @@ What you get automatically:
   (contrast + color-vision-deficiency checks), not ad-hoc colors.
 - **Non-color encoding.** Band thickness carries the values; color only
   distinguishes bands and is restated by the legend and tooltip labels. Pass
-  `texture` to also vary each band's fill **pattern** (or rely on it turning
-  on automatically in a `forced-colors` context) for a non-color path on the
-  chart itself, not just in the legend/tooltip.
+  `texture` to also vary each band's fill **pattern** (or rely on it turning on
+  automatically in a `forced-colors` context) for a non-color path on the chart
+  itself, not just in the legend/tooltip.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and because the visual is imprecise, make sure the numbers
@@ -397,8 +443,8 @@ Accessibility checklist:
 
 - [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
-- [ ] Meaning does not depend on color alone (band thickness carries it, or
-      band pattern with `texture`)
+- [ ] Meaning does not depend on color alone (band thickness carries it, or band
+      pattern with `texture`)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)
 - [ ] Surrounding copy names series/values rather than colors
@@ -424,9 +470,9 @@ states upstream and render your own placeholder when there is no data yet.
 - **No title, caption, loading, or error passthrough** — it forwards only
   `ariaLabel`, the auto legend, and the data table to `ChartContainer`.
 - **`showValues` doesn't avoid cross-band collisions.** Each band is labeled at
-  its own most-reliable point (its maximum thickness), but if two bands peak
-  at close x positions their labels can still end up close together — there is
-  no collision-avoidance pass across bands.
+  its own most-reliable point (its maximum thickness), but if two bands peak at
+  close x positions their labels can still end up close together — there is no
+  collision-avoidance pass across bands.
 
 ## Related charts
 
