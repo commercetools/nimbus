@@ -10,6 +10,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** One period's open/high/low/close. */
@@ -132,11 +133,15 @@ export function CandlestickChart({
               const color = up ? theme.positive : theme.negative;
               const bodyTop = yScale(Math.max(d.open, d.close));
               const bodyBottom = yScale(Math.min(d.open, d.close));
-              const active = hover == null || hover === i;
+              // Outline the hovered/focused candle's BODY only; never dim
+              // its siblings (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` --
+              // the shared convention, replacing a per-chart "dim everyone
+              // else" opacity ternary). The body (open→close) is the real
+              // "mark" a viewer's eye lands on; the thin wick stays as-is.
+              const isHovered = hover === i;
               return (
                 <g
                   key={i}
-                  opacity={active ? 1 : 0.4}
                   onMouseEnter={() => {
                     setHover(i);
                     onDatumHover?.({ datum: d, index: i });
@@ -162,6 +167,8 @@ export function CandlestickChart({
                     height={Math.max(1, bodyBottom - bodyTop)}
                     rx={1}
                     fill={color}
+                    stroke={isHovered ? theme.ink : "none"}
+                    strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
                   />
                   {i % labelEvery === 0 && (
                     <text

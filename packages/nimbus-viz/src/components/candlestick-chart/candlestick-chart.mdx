@@ -146,9 +146,10 @@ Not configurable — the chart always draws each period as a wick (low→high) p
 a body (open→close), an up period in the theme's `positive` hue and a down
 period in `negative`. A value axis (linear, fitted to the low/high range, with
 horizontal gridlines) runs down the left; date labels appear under roughly every
-sixth candle so they don't collide. Hovering a candle dims the others to 0.4
-opacity and shows a tooltip with the date and the period's O / H / L / C. There
-is no `valueFormat` prop — values use the built-in compact formatter.
+sixth candle so they don't collide. Hovering a candle outlines that one candle's
+body (its siblings are never dimmed) and shows a tooltip with the date and the
+period's O / H / L / C. There is no `valueFormat` prop — values use the
+built-in compact formatter.
 
 ### Color & theming
 
