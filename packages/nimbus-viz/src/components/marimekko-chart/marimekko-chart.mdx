@@ -227,6 +227,46 @@ const App = () => (
 );
 ```
 
+### Value labels
+
+Pass `showValues` to draw each cell's own formatted value centered in it,
+when the cell is large enough to hold the text (the same minimum-size gate
+`treemap.tsx` uses) — a narrow or short cell stays unlabeled rather than
+overflowing its neighbors. Default `false`.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <MarimekkoChart
+          width={width}
+          height={height}
+          data={[
+            {
+              category: "Q1",
+              segments: [
+                { key: "New", value: 200 },
+                { key: "Returning", value: 100 },
+              ],
+            },
+            {
+              category: "Q2",
+              segments: [
+                { key: "New", value: 220 },
+                { key: "Returning", value: 140 },
+              ],
+            },
+          ]}
+          showValues
+          ariaLabel="Marimekko chart of customers by quarter, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Color & theming
 
 Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).

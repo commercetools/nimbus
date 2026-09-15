@@ -13,6 +13,65 @@ export default meta;
 
 export const Base: BaseStory = {};
 
+/**
+ * `showValues` draws each cell's own formatted value centered in it, when
+ * the cell is large enough to hold the text (the same minimum-size gate
+ * `treemap.tsx` uses for its own labels) -- small cells stay unlabeled
+ * rather than overflowing their neighbors. This fixture's cells are all
+ * comfortably above that threshold, so every segment gets a label. Proven
+ * the same way as `bar-chart.tsx`'s reference: the with-labels chart
+ * carries exactly one extra `<text>` per segment over the without-labels
+ * chart.
+ */
+const showValuesFixture: StackRow[] = [
+  {
+    category: "Q1",
+    segments: [
+      { key: "New", value: 200 },
+      { key: "Returning", value: 100 },
+    ],
+  },
+  {
+    category: "Q2",
+    segments: [
+      { key: "New", value: 220 },
+      { key: "Returning", value: 140 },
+    ],
+  },
+];
+
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <MarimekkoChart
+        width={320}
+        height={280}
+        data={showValuesFixture}
+        ariaLabel="Marimekko chart without value labels"
+      />
+      <MarimekkoChart
+        width={320}
+        height={280}
+        data={showValuesFixture}
+        showValues
+        ariaLabel="Marimekko chart with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (MarimekkoChart uses the
+    // library default role="img" -- it has no keyboard-focusable marks).
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    const segmentCount = showValuesFixture.reduce(
+      (sum, row) => sum + row.segments.length,
+      0
+    );
+    expect(textCount(svgs[1])).toBe(textCount(svgs[0]) + segmentCount);
+  },
+};
+
 const fixture: StackRow[] = [
   {
     category: "Q1",

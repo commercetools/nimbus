@@ -13,6 +13,7 @@ import { stackKeys } from "../../chart/stack";
 import type { DatumInteractionProps } from "../../chart/interaction";
 import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 import { clamp, plotPointerPosition } from "../../chart/pointer";
+import { ValueLabel } from "../../chart/value-labels";
 
 export interface MarimekkoChartProps extends DatumInteractionProps<StackRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -36,10 +37,23 @@ export interface MarimekkoChartProps extends DatumInteractionProps<StackRow> {
    * `useForcedColors`.
    */
   texture?: boolean;
+  /**
+   * Draw each cell's own formatted value centered in it, when the cell is
+   * large enough to hold the text (same minimum-size gate `treemap.tsx`
+   * uses for its own labels) — `chart/value-labels.tsx`'s `ValueLabel`.
+   * Default `false` (no change from today's rendering).
+   */
+  showValues?: boolean;
 }
 
 /** Pixel gap between columns and between stacked segments. */
 const GAP = 2;
+
+/** Minimum cell size (px) to draw a `showValues` label — matches
+ *  `treemap.tsx`'s own label-visibility gate; a smaller cell can't hold
+ *  `emText(11)` text without overflowing its neighbors. */
+const MIN_LABEL_WIDTH = 44;
+const MIN_LABEL_HEIGHT = 20;
 
 // Named so the pointer math below (which needs the same left/top offset
 // xScale/yScale are drawn relative to) can never drift from what's
@@ -66,6 +80,7 @@ export function MarimekkoChart({
   onDatumClick,
   onDatumHover,
   texture,
+  showValues,
 }: MarimekkoChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -145,47 +160,60 @@ export function MarimekkoChart({
                     // everyone else" opacity ternary).
                     const isHovered =
                       hover != null && hover.c === c && hover.s === s;
+                    const cellHeight = Math.max(0, h - GAP);
+                    const showLabel =
+                      showValues &&
+                      colWidth > MIN_LABEL_WIDTH &&
+                      cellHeight > MIN_LABEL_HEIGHT;
                     return (
-                      <rect
-                        key={seg.key}
-                        x={x0}
-                        y={rectY}
-                        width={Math.max(0, colWidth)}
-                        height={Math.max(0, h - GAP)}
-                        fill={
-                          effectiveTexture
-                            ? patternFill(keys.indexOf(seg.key))
-                            : colorForKey(seg.key)
-                        }
-                        stroke={isHovered ? theme.ink : "none"}
-                        strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
-                        onMouseEnter={(e) => {
-                          setHover({ c, s });
-                          const p = plotPointerPosition(e, MARGIN);
-                          if (p) setPointerY(p.y);
-                          onDatumHover?.({
-                            datum: row,
-                            index: c,
-                            seriesId: seg.key,
-                          });
-                        }}
-                        onMouseMove={(e) => {
-                          const p = plotPointerPosition(e, MARGIN);
-                          if (p) setPointerY(p.y);
-                        }}
-                        onMouseLeave={() => {
-                          setHover(null);
-                          setPointerY(null);
-                          onDatumHover?.(null);
-                        }}
-                        onClick={() =>
-                          onDatumClick?.({
-                            datum: row,
-                            index: c,
-                            seriesId: seg.key,
-                          })
-                        }
-                      />
+                      <g key={seg.key}>
+                        <rect
+                          x={x0}
+                          y={rectY}
+                          width={Math.max(0, colWidth)}
+                          height={cellHeight}
+                          fill={
+                            effectiveTexture
+                              ? patternFill(keys.indexOf(seg.key))
+                              : colorForKey(seg.key)
+                          }
+                          stroke={isHovered ? theme.ink : "none"}
+                          strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
+                          onMouseEnter={(e) => {
+                            setHover({ c, s });
+                            const p = plotPointerPosition(e, MARGIN);
+                            if (p) setPointerY(p.y);
+                            onDatumHover?.({
+                              datum: row,
+                              index: c,
+                              seriesId: seg.key,
+                            });
+                          }}
+                          onMouseMove={(e) => {
+                            const p = plotPointerPosition(e, MARGIN);
+                            if (p) setPointerY(p.y);
+                          }}
+                          onMouseLeave={() => {
+                            setHover(null);
+                            setPointerY(null);
+                            onDatumHover?.(null);
+                          }}
+                          onClick={() =>
+                            onDatumClick?.({
+                              datum: row,
+                              index: c,
+                              seriesId: seg.key,
+                            })
+                          }
+                        />
+                        {showLabel && (
+                          <ValueLabel
+                            x={x0 + colWidth / 2}
+                            y={rectY + cellHeight / 2}
+                            text={valueFmt(seg.value)}
+                          />
+                        )}
+                      </g>
                     );
                   })}
                   <text
