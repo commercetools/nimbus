@@ -27,7 +27,8 @@ export interface LollipopChartProps extends DatumInteractionProps<CategoryDatum>
  * question ("where does each item rank?"). A thin stem carries the eye to a dot
  * that marks the value against a common baseline; rows are sorted descending
  * with direct value labels. One accent hue: color carries no meaning here, the
- * category axis does — so hovering an item just dims the rest.
+ * category axis does — so hovering an item enlarges its dot (its siblings are
+ * never dimmed).
  *
  * @experimental Prototype-stage; API may change before it is marked stable.
  */
@@ -91,11 +92,16 @@ export function LollipopChart({
             {rows.map((d, i) => {
               const y = band.center(i);
               const cx = xScale(d.value);
-              const active = hover == null || hover === i;
+              // Enlarge the hovered dot; never dim its siblings (the mark
+              // here is a stem + a small circle head, not a filled region,
+              // so a radius bump reads better than an outline --
+              // `chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` doc comment notes
+              // this is the equivalent mechanism for a small-point mark,
+              // same as `radar-chart.tsx`'s vertex dots).
+              const isHovered = hover === i;
               return (
                 <g
                   key={`${d.category}-${i}`}
-                  opacity={active ? 1 : 0.4}
                   onMouseEnter={() => {
                     setHover(i);
                     onDatumHover?.({ datum: d, index: i });
@@ -114,7 +120,12 @@ export function LollipopChart({
                     stroke={theme.accent}
                     strokeWidth={2}
                   />
-                  <circle cx={cx} cy={y} r={r} fill={theme.accent} />
+                  <circle
+                    cx={cx}
+                    cy={y}
+                    r={isHovered ? r + 2 : r}
+                    fill={theme.accent}
+                  />
                   <text
                     x={-8}
                     y={y}

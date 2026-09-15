@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/react-vite";
-import { expect } from "storybook/test";
+import { expect, userEvent, waitFor } from "storybook/test";
 import { LollipopChart } from "./lollipop-chart";
 import type { CategoryDatum } from "../..";
 import { RegistryPreview, type BaseStory } from "../../stories/base-story";
@@ -13,6 +13,49 @@ const meta: Meta = {
 export default meta;
 
 export const Base: BaseStory = {};
+
+const hoverFixture: CategoryDatum[] = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+  { category: "Partner", value: 1800 },
+];
+
+/**
+ * Hover emphasis: hovering a row enlarges that ONE dot's radius and never
+ * dims its siblings — replacing the "dim everyone else to a fixed opacity"
+ * pattern this chart used to hand-roll on the wrapping `<g>`. Unlike
+ * `bar-chart.tsx`'s filled bars, this chart's mark is a stem + a small
+ * circle head, so a radius bump (not an outline) is the emphasis mechanism
+ * — and there is no `SvgTooltip` on this chart at all (values are always
+ * shown as direct on-mark text), so there is no pointer-follow behavior to
+ * prove here.
+ */
+export const HoverEmphasis: BaseStory = {
+  render: () => <LollipopChart width={480} height={280} data={hoverFixture} />,
+  play: async ({ canvasElement }) => {
+    const dots = () =>
+      Array.from(canvasElement.querySelectorAll<SVGCircleElement>("circle"));
+
+    const restingRadii = dots().map((c) => Number(c.getAttribute("r")));
+    const firstDot = dots()[0];
+    await userEvent.hover(firstDot);
+    await waitFor(() =>
+      expect(Number(dots()[0].getAttribute("r"))).toBeGreaterThan(
+        restingRadii[0]
+      )
+    );
+
+    // No dimming: every mark keeps a full, unmodified fill -- none carries
+    // an `opacity` attribute at all (the old mechanism this replaces).
+    for (const dot of dots()) {
+      expect(dot).not.toHaveAttribute("opacity");
+    }
+    // Emphasis instead: only the hovered dot's radius grows; an unhovered
+    // sibling keeps its original (smaller) radius.
+    expect(Number(dots()[1].getAttribute("r"))).toBe(restingRadii[1]);
+  },
+};
 
 /**
  * BC-1 (`docs/bug-classes.md`): a band scale keyed by category TEXT collapses
