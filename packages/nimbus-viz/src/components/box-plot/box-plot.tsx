@@ -13,6 +13,7 @@ import { useChartTheme } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { DatumInteractionProps } from "../../chart/interaction";
 import { fiveNumberSummary } from "../../stats";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 
 /** Precomputed five-number summary for one group's distribution. */
 export interface BoxPlotGroupStats {
@@ -184,7 +185,17 @@ export function BoxPlot({
               const s = summaries[i];
               const bandStart = band.pos(i);
               const left = bandStart + (band.bandwidth - boxWidth) / 2;
-              const active = hover == null || hover === i;
+              // Outline the hovered/focused group's whole box+whisker+median
+              // compound mark more prominently; never dim its siblings
+              // (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the shared
+              // convention, replacing a per-chart "dim everyone else"
+              // opacity ternary). `VisxBoxPlot`'s top-level `strokeWidth`
+              // draws the box, whiskers, AND median line together -- the
+              // real compound "mark" a viewer's eye lands on for one
+              // group's distribution -- so thickening it on hover
+              // emphasizes the whole shape at once, the same way an outline
+              // would on a single-path mark.
+              const isHovered = hover === i;
               return (
                 <VisxBoxPlot
                   key={i}
@@ -200,16 +211,18 @@ export function BoxPlot({
                   rx={4}
                   ry={4}
                   fill={theme.accent}
-                  fillOpacity={active ? 0.25 : 0.1}
+                  fillOpacity={0.25}
                   stroke={theme.ink}
-                  strokeWidth={1.5}
+                  strokeWidth={
+                    isHovered ? ACTIVE_STROKE_WIDTH * 2 : ACTIVE_STROKE_WIDTH
+                  }
                   medianProps={{ stroke: theme.ink, strokeWidth: 2 }}
                   minProps={{ stroke: theme.ink }}
                   maxProps={{ stroke: theme.ink }}
                   outlierProps={{
                     fill: theme.accent,
                     stroke: theme.ink,
-                    fillOpacity: active ? 0.7 : 0.25,
+                    fillOpacity: 0.7,
                   }}
                   container
                   containerProps={{

@@ -17,6 +17,77 @@ export default meta;
 
 export const Base: BaseStory = {};
 
+const hoverFixtureGroups: BoxPlotGroupStats[] = [
+  {
+    label: "Alpha",
+    min: 10,
+    firstQuartile: 20,
+    median: 30,
+    thirdQuartile: 40,
+    max: 50,
+  },
+  {
+    label: "Beta",
+    min: 15,
+    firstQuartile: 25,
+    median: 35,
+    thirdQuartile: 45,
+    max: 55,
+  },
+  {
+    label: "Gamma",
+    min: 5,
+    firstQuartile: 18,
+    median: 28,
+    thirdQuartile: 38,
+    max: 48,
+  },
+];
+
+/**
+ * Hover/tooltip UX convergence: hovering a group thickens that ONE group's
+ * box+whisker+median outline (`strokeWidth`) and never dims its siblings —
+ * replacing the "dim everyone else to a lower fixed opacity" pattern this
+ * chart used to hand-roll on both the box's fill and the outlier dots' fill.
+ * A box-and-whisker group is a small, fixed-extent shape with no useful
+ * interior to track a pointer within, so this chart has no pointer-follow
+ * behavior to test, and none was added.
+ */
+export const HoverEmphasis: BaseStory = {
+  render: () => (
+    <BoxPlot width={480} height={320} groups={hoverFixtureGroups} />
+  ),
+  play: async ({ canvasElement }) => {
+    // Hover is wired on each group's fully-transparent hit-target rect
+    // (`container`/`containerProps`), not on the visible box itself.
+    const hitTargets = () =>
+      Array.from(
+        canvasElement.querySelectorAll<SVGRectElement>('rect[fill-opacity="0"]')
+      );
+    const boxes = () =>
+      Array.from(
+        canvasElement.querySelectorAll<SVGRectElement>("rect.visx-boxplot-box")
+      );
+    const tooltipGroup = () =>
+      canvasElement.querySelector<SVGGElement>('g[pointer-events="none"]');
+
+    await userEvent.hover(hitTargets()[0]);
+    await waitFor(() => expect(tooltipGroup()).not.toBeNull());
+
+    // No dimming: every box keeps the exact same fill opacity regardless of
+    // which one is hovered, and none carries an `opacity` attribute at all
+    // (the old mechanism this replaces).
+    for (const box of boxes()) {
+      expect(box).not.toHaveAttribute("opacity");
+      expect(box).toHaveAttribute("fill-opacity", "0.25");
+    }
+    // Emphasis instead: only the hovered group's box+whisker+median outline
+    // thickens.
+    expect(boxes()[0]).toHaveAttribute("stroke-width", "3");
+    expect(boxes()[1]).toHaveAttribute("stroke-width", "1.5");
+  },
+};
+
 const duplicateLabelGroups: BoxPlotGroupStats[] = duplicateLabels([
   {
     label: "Alpha",
