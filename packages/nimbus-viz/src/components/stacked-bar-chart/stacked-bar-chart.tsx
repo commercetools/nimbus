@@ -25,6 +25,7 @@ import type {
 } from "../../chart/interaction";
 import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 import { clamp, plotPointerPosition } from "../../chart/pointer";
+import { ValueLabel } from "../../chart/value-labels";
 
 export interface StackedBarChartProps<T = StackRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -59,6 +60,14 @@ export interface StackedBarChartProps<T = StackRow> {
    * `useForcedColors`.
    */
   texture?: boolean;
+  /**
+   * Draw each stack's net total directly above the top of the whole
+   * bar (above its topmost segment, not per-segment — a label on every
+   * segment of a tall stack would clutter it) — `chart/value-labels.tsx`'s
+   * `ValueLabel`, same convention `bar-chart.tsx` uses at a single bar's
+   * end. Default `false` (no change from today's rendering).
+   */
+  showValues?: boolean;
 }
 
 /**
@@ -89,6 +98,7 @@ export function StackedBarChart<T = StackRow>({
   onDatumHover,
   children,
   texture,
+  showValues,
 }: StackedBarChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -320,6 +330,13 @@ export function StackedBarChart<T = StackRow>({
                       />
                     );
                   })}
+                  {showValues && (
+                    <ValueLabel
+                      x={x + bw / 2}
+                      y={yScale(posTotal(row)) - 6}
+                      text={valueFmt(segs.reduce((s, seg) => s + seg.value, 0))}
+                    />
+                  )}
                 </g>
               );
             })}

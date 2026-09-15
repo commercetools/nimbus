@@ -44,6 +44,43 @@ const fixture: StackRow[] = [
 export const Base: BaseStory = {};
 
 /**
+ * `showValues` draws each stack's net total above the top of the whole bar
+ * (above its topmost segment) rather than one label per segment -- a label
+ * on every segment of a multi-series stack would clutter it. Proven the
+ * same way as `bar-chart.tsx`'s reference: the with-labels chart carries
+ * exactly one extra `<text>` per row (stack) over the without-labels chart.
+ */
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <StackedBarChart
+        width={280}
+        height={280}
+        data={fixture}
+        ariaLabel="Stacked bar chart without value labels"
+      />
+      <StackedBarChart
+        width={280}
+        height={280}
+        data={fixture}
+        showValues
+        ariaLabel="Stacked bar chart with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (StackedBarChart uses the
+    // library default role="img" -- it has no keyboard-focusable marks).
+    // Axis tick labels render their own nested <svg> (visx's positioning
+    // trick), which would otherwise inflate this count too.
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    expect(textCount(svgs[1])).toBe(textCount(svgs[0]) + fixture.length);
+  },
+};
+
+/**
  * Hover/tooltip UX convergence: hovering a stack outlines every segment in
  * that ONE stack (`stroke`/`strokeWidth`) and never dims the other stacks --
  * replacing the "dim everyone else to a fixed opacity" pattern this chart

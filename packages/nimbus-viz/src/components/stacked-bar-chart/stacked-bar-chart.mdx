@@ -288,6 +288,45 @@ const App = () => (
 );
 ```
 
+### Value labels
+
+Pass `showValues` to draw each stack's net total directly above the top of
+the whole bar — one label per stack, not per segment, so a multi-series
+stack doesn't get cluttered. Default `false`.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <StackedBarChart
+          width={width}
+          height={height}
+          data={[
+            {
+              category: "Q1",
+              segments: [
+                { key: "New", value: 120 },
+                { key: "Returning", value: 80 },
+              ],
+            },
+            {
+              category: "Q2",
+              segments: [
+                { key: "New", value: 140 },
+                { key: "Returning", value: 96 },
+              ],
+            },
+          ]}
+          showValues
+          ariaLabel="Stacked bar chart of customers by quarter, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Color & theming
 
 Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
