@@ -16,6 +16,8 @@ import {
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
+import { ChartPatternDefs, patternFill } from "../../chart/patterns";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import type { StackRow, StackSegment } from "../../chart/types";
 import type { LegendItem } from "../../chart/legend";
 import type {
@@ -64,6 +66,15 @@ export interface GroupedBarChartProps<T = StackRow> {
    * when omitted.
    */
   renderLegendItem?: (item: LegendItem, index: number) => ReactNode;
+  /**
+   * Fill each series' bar with a per-key SVG texture (`chart/patterns.tsx`)
+   * in addition to its color, so series stay distinguishable by shape alone
+   * — monochrome print, a photocopy, or `forced-colors` mode. Default
+   * `false` (color only, unchanged). Turned on automatically (regardless of
+   * this prop) when the OS is already in a forced-colors context — see
+   * `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 /**
@@ -100,11 +111,14 @@ export function GroupedBarChart<T = StackRow>({
   renderTooltip,
   renderTooltipSize = { width: 160, height: 40 },
   renderLegendItem,
+  texture,
 }: GroupedBarChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ i: number; key: string } | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
 
   const getCat = useCallback(
     (d: T): string => (category ? category(d) : (d as StackRow).category),
@@ -117,7 +131,11 @@ export function GroupedBarChart<T = StackRow>({
   );
 
   const keys = useMemo(() => stackKeys(data, getSeg), [data, getSeg]);
-  const colorForKey = useEntityColors(keys);
+  const color = useEntityColors(keys);
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every key, with the per-key pattern
+  // kind (below) as the only identity carrier.
+  const colorForKey = (k: string) => (forcedColors ? "CanvasText" : color(k));
   const values = useMemo(
     () => data.flatMap((r) => getSeg(r).map((s) => s.value)),
     [data, getSeg]
@@ -179,6 +197,9 @@ export function GroupedBarChart<T = StackRow>({
               innerHeight,
             }}
           >
+            {effectiveTexture && (
+              <ChartPatternDefs colors={keys.map((k) => colorForKey(k))} />
+            )}
             <GridRows ticks={y.ticks(4)} y={(t) => y(t)} width={innerWidth} />
             <AxisLeft
               scale={y}
@@ -219,7 +240,11 @@ export function GroupedBarChart<T = StackRow>({
                         radius={3}
                         top={!hasNegative || positive}
                         bottom={hasNegative && !positive}
-                        fill={colorForKey(seg.key)}
+                        fill={
+                          effectiveTexture
+                            ? patternFill(keys.indexOf(seg.key))
+                            : colorForKey(seg.key)
+                        }
                         opacity={active ? 1 : 0.35}
                         onMouseEnter={() => {
                           setHover({ i, key: seg.key });

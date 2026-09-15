@@ -231,6 +231,45 @@ affordance). Both are additive — omit either to keep the default.
 />
 ```
 
+### Texture (non-color encoding)
+
+`texture` fills each series' bar with a per-key SVG pattern
+(`chart/patterns.tsx`) in addition to its color, so series stay
+distinguishable by shape alone — monochrome print, a photocopy, or
+`forced-colors` mode, where the OS flattens hue. Default `false` (color only).
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider>
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <GroupedBarChart
+          width={width}
+          height={height}
+          data={[
+            {
+              category: "Q1",
+              segments: [
+                { key: "New", value: 120 },
+                { key: "Returning", value: 80 },
+              ],
+            },
+            {
+              category: "Q2",
+              segments: [
+                { key: "New", value: 140 },
+                { key: "Returning", value: 96 },
+              ],
+            },
+          ]}
+          texture
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Color & theming
 
 Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).
@@ -295,19 +334,23 @@ What you get automatically:
   text, not color alone.
 - **CVD-safe palette.** Series colors come from the validated categorical
   palette (contrast + color-vision-deficiency checks), not ad-hoc colors.
+- **Forced-colors mode.** In a `forced-colors: active` context, the chart
+  automatically switches every series to one system foreground color and
+  turns on the `texture` patterns — see "Texture (non-color encoding)" above.
 
 Because color is what distinguishes the series here, lean on the redundant
 encodings: the legend labels and the data-table fallback both carry series
-identity as text. In surrounding copy, name the series ("returning customers")
-rather than "the second bar in each group". There is no animation, so
-reduced-motion handling is N/A.
+identity as text, and the opt-in `texture` prop adds a per-series pattern for
+when color itself isn't available. In surrounding copy, name the series
+("returning customers") rather than "the second bar in each group". There is
+no animation, so reduced-motion handling is N/A.
 
 Accessibility checklist:
 
 - [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
-- [ ] Meaning does not depend on color alone (the legend and data table carry
-      series identity as text)
+- [ ] Meaning does not depend on color alone (the legend, data table, and
+      opt-in `texture` pattern carry series identity)
 - [ ] Palette meets contrast + CVD checks (built-in categorical palette; don't
       override to un-validated colors)
 - [ ] Surrounding copy names series/values rather than colors
