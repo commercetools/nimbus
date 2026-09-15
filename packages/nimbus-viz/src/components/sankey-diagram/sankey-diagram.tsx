@@ -5,6 +5,9 @@ import { Group } from "@visx/group";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { devWarn } from "../../chart/dev-warn";
+import { ChartPatternDefs, patternFill } from "../../chart/patterns";
+import { strokeDasharrayFor } from "../../chart/stroke-styles";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { FlowGraph, FlowLink, FlowNode } from "../../chart/types";
@@ -24,6 +27,19 @@ export interface SankeyDiagramProps extends DatumInteractionProps<FlowNode> {
   ariaLabel?: string;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /**
+   * Distinguish nodes by a non-color channel, in addition to color, so
+   * node/link identity stays legible without color alone — monochrome
+   * print, a photocopy, or `forced-colors` mode. Nodes are real filled
+   * `<rect>`s, so they get a fill `patternFill` (`chart/patterns.tsx`);
+   * links are drawn as `fill="none"` paths with the ribbon width as
+   * `strokeWidth` (there is no fill area to texture), so they get their
+   * source node's `strokeDasharray` rhythm (`chart/stroke-styles.ts`)
+   * instead. Default `false` (color only, unchanged). Turned on
+   * automatically (regardless of this prop) when the OS is already in a
+   * forced-colors context — see `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 type LaidNode = SankeyNode<FlowNode, FlowLink>;
@@ -44,6 +60,7 @@ export function SankeyDiagram({
   valueFormat,
   onDatumClick,
   onDatumHover,
+  texture,
 }: SankeyDiagramProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -52,8 +69,19 @@ export function SankeyDiagram({
     kind: "node" | "link";
     i: number;
   } | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
   const nodeColor = useEntityColors(
     useMemo(() => graph.nodes.map((n) => n.name), [graph])
+  );
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every node, with the per-node
+  // pattern fill / dash rhythm (below) as the only identity carrier.
+  const colorForNode = (name: string) =>
+    forcedColors ? "CanvasText" : nodeColor(name);
+  const nodeIndex = useMemo(
+    () => new Map(graph.nodes.map((n, i) => [n.name, i])),
+    [graph]
   );
 
   if (width <= 0 || height <= 0 || graph.nodes.length === 0) return null;
@@ -117,6 +145,11 @@ export function SankeyDiagram({
         >
           {({ graph: laid, createPath }) => (
             <Group>
+              {effectiveTexture && (
+                <ChartPatternDefs
+                  colors={graph.nodes.map((n) => colorForNode(n.name))}
+                />
+              )}
               {laid.links.map((link, i) => {
                 const source = link.source as LaidNode;
                 const isHover = hover?.kind === "link" && hover.i === i;
@@ -125,9 +158,14 @@ export function SankeyDiagram({
                     key={`link-${i}`}
                     d={createPath(link) || ""}
                     fill="none"
-                    stroke={nodeColor(source.name)}
+                    stroke={colorForNode(source.name)}
                     strokeOpacity={isHover ? 0.6 : 0.35}
                     strokeWidth={Math.max(1, link.width ?? 1)}
+                    strokeDasharray={
+                      effectiveTexture
+                        ? strokeDasharrayFor(nodeIndex.get(source.name) ?? 0)
+                        : undefined
+                    }
                     onMouseEnter={() => {
                       setHover({ kind: "link", i });
                       onDatumHover?.({
@@ -165,7 +203,11 @@ export function SankeyDiagram({
                       width={Math.max(0, x1 - x0)}
                       height={Math.max(0, y1 - y0)}
                       rx={2}
-                      fill={nodeColor(node.name)}
+                      fill={
+                        effectiveTexture
+                          ? patternFill(nodeIndex.get(node.name) ?? i)
+                          : colorForNode(node.name)
+                      }
                       stroke={isHover ? theme.ink : "none"}
                       strokeWidth={isHover ? 1.5 : 0}
                       onMouseEnter={() => {

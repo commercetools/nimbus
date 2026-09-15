@@ -159,6 +159,44 @@ the app's mode inside a `NimbusProvider`, pass
 `mode={coerceColorMode(useColorMode().colorMode)}`. Colors come from the
 validated `nimbus` chart palette, not CSS.
 
+### Texture (non-color node/link identity)
+
+Pass `texture` to distinguish nodes and links by a non-color channel, in
+addition to color, so identity stays legible without color alone — monochrome
+print, a photocopy, or `forced-colors` mode. The channel matches how each mark
+actually paints: nodes are real filled rectangles, so they get a fill
+**pattern**; links are `fill="none"` paths (the ribbon width is a `strokeWidth`,
+not a fill area), so each link gets its **source node's** dash rhythm instead —
+the same non-color cue that already carries the node's color down the flow. It
+turns on automatically, regardless of this prop, when the OS is already in a
+`forced-colors` context.
+
+```jsx live
+const graph = {
+  nodes: [{ name: "Visits" }, { name: "Signups" }, { name: "Purchases" }],
+  links: [
+    { source: 0, target: 1, value: 400 },
+    { source: 1, target: 2, value: 180 },
+  ],
+};
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <SankeyDiagram
+          width={width}
+          height={height}
+          graph={graph}
+          texture
+          ariaLabel="Sankey diagram with per-node pattern fills and dashed links"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Tooltips & hover (automatic)
 
 Built in and not configurable. Hovering a **node** brightens its ribbons and
@@ -235,7 +273,8 @@ Accessibility checklist:
 - [ ] `ariaLabel` states what the diagram shows and its takeaway (Cesal formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
 - [ ] Meaning does not depend on color alone (ribbon width, node position, and
-      direct labels carry it here)
+      direct labels carry it here; `texture` adds node fill patterns + link dash
+      rhythm)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)
 - [ ] Surrounding copy names nodes/flows rather than colors
@@ -262,8 +301,8 @@ and render your own placeholder when there is no data yet.
 - **Fixed node geometry.** Node width and padding are not configurable.
 - **Zero or negative flow.** A negative link `value` is clamped to 0 before
   layout, and a graph whose links total to 0 renders nothing (`null`) rather
-  than the `NaN` geometry d3-sankey's layout would otherwise produce — both
-  log a development warning.
+  than the `NaN` geometry d3-sankey's layout would otherwise produce — both log
+  a development warning.
 
 ## Related charts
 
