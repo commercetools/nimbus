@@ -234,15 +234,6 @@ catalogs:
     "@vueless/storybook-dark-mode": ^10.0.8
     "@github-ui/storybook-addon-performance-panel": ^1.2.0
     chromatic: ^18.7.2
-    # Chakra/Emotion CSS shorthand properties (e.g. `padding`) don't reliably
-    # serialize under JSDOM — `getComputedStyle().padding` can read back `0`
-    # even when the longhands are set correctly. First seen on 29.0.2,
-    # reconfirmed on 29.1.0 (2026-04-29), and still present on 30.0.1
-    # (2026-09-15) — no longer worked around by holding the version back.
-    # `.docs.spec.tsx` tests avoid asserting shorthand CSS values via
-    # `toHaveStyle` instead (see stack.docs.spec.tsx's border-radius test for
-    # the established "check presence, not exact CSS vars" pattern); real
-    # visual verification lives in Storybook/Chromatic, not JSDOM.
     jsdom: 30.0.1
     "rollup-plugin-visualizer": ^7.0.0
   react:
