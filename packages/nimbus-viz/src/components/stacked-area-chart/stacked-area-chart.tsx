@@ -21,6 +21,7 @@ import type {
   DatumClickHandler,
   DatumHoverHandler,
 } from "../../chart/interaction";
+import { ValueLabel } from "../../chart/value-labels";
 
 export interface StackedAreaChartProps<T = SeriesPoint> {
   /** Plot width in pixels — supply from `ResponsiveContainer`. */
@@ -67,6 +68,24 @@ export interface StackedAreaChartProps<T = SeriesPoint> {
    * thinned. Omit for no decimation (today's default: every row drawn).
    */
   decimateThreshold?: number;
+  /**
+   * Label each band with its OWN value (not the stacked position) at the
+   * chart's right edge — one `chart/value-labels.tsx` `ValueLabel` per
+   * series, centered on that series' own band at the LAST x position, with
+   * the text growing rightward past the plot (widens the right margin to
+   * fit it). A continuous stacked curve has no obvious label point along its
+   * length the way a bar's end or a point's marker does, but the right edge
+   * — the most recent x — is the one place every band's vertical extent is
+   * deterministic and non-overlapping: `offset="diverging"` (see `series`
+   * above) keeps series in the SAME fixed stacking order at every x, so nothing
+   * here reorders layers the way `Streamgraph`'s wiggle/insideout stacking
+   * does. The one residual edge case is the same one every other `showValues`
+   * chart already has and doesn't guard against either: a series whose raw
+   * value is exactly (or near) 0 at that last x collapses to a sliver, and its
+   * label sits on the seam with its neighbor. Default `false` — omitting it
+   * renders exactly as before this existed.
+   */
+  showValues?: boolean;
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
@@ -110,6 +129,7 @@ export function StackedAreaChart<T = SeriesPoint>({
   children,
   texture,
   decimateThreshold,
+  showValues,
 }: StackedAreaChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -193,10 +213,17 @@ export function StackedAreaChart<T = SeriesPoint>({
     rows: rows.map((r) => [dateFmt(new Date(r.x)), ...keys.map((k) => r[k])]),
   };
 
+  // Unchanged (16px, ChartFrame's own DEFAULT_MARGIN) unless `showValues`
+  // needs room for the end labels growing past the right edge — same
+  // reservation `dumbbell-chart.tsx`/`lollipop-chart.tsx` make for the same
+  // "one value label past a mark's end" shape.
+  const MARGIN = { top: 12, right: showValues ? 48 : 16, bottom: 28, left: 44 };
+
   return (
     <ChartContainer
       width={width}
       height={height}
+      margin={MARGIN}
       ariaLabel={
         ariaLabel ??
         `Stacked area chart of ${series.map((s) => s.label).join(", ")}`
@@ -256,22 +283,42 @@ export function StackedAreaChart<T = SeriesPoint>({
               y1={(d) => yScale(d[1])}
               curve={curveMonotoneX}
             >
-              {({ stacks, path }) =>
-                stacks.map((stack) => (
-                  <path
-                    key={stack.key}
-                    d={path(stack) || ""}
-                    fill={
-                      effectiveTexture
-                        ? patternFill(keys.indexOf(stack.key))
-                        : color(stack.key)
-                    }
-                    fillOpacity={0.85}
-                    stroke={theme.surface}
-                    strokeWidth={1}
-                  />
-                ))
-              }
+              {({ stacks, path }) => (
+                <>
+                  {stacks.map((stack) => (
+                    <path
+                      key={stack.key}
+                      d={path(stack) || ""}
+                      fill={
+                        effectiveTexture
+                          ? patternFill(keys.indexOf(stack.key))
+                          : color(stack.key)
+                      }
+                      fillOpacity={0.85}
+                      stroke={theme.surface}
+                      strokeWidth={1}
+                    />
+                  ))}
+                  {showValues &&
+                    stacks.map((stack) => {
+                      // Last point of THIS stack (drawRows' last row) --
+                      // `lttb` always preserves the first/last raw points,
+                      // so this is the same right edge the path itself ends
+                      // at, decimated or not.
+                      const last = stack[stack.length - 1];
+                      if (!last) return null;
+                      return (
+                        <ValueLabel
+                          key={`value-${stack.key}`}
+                          x={xScale(new Date(last.data.x)) + 6}
+                          y={(yScale(last[0]) + yScale(last[1])) / 2}
+                          text={valueFmt(last.data[stack.key])}
+                          anchor="start"
+                        />
+                      );
+                    })}
+                </>
+              )}
             </AreaStack>
 
             {hoverIndex != null && hoveredX != null && (

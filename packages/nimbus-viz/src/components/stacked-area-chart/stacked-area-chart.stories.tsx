@@ -187,6 +187,45 @@ export const Interaction: BaseStory = {
   },
 };
 
+/**
+ * `showValues`: labels each band with its own value, once, at the chart's
+ * right edge -- the composition equivalent of what `BarChart`'s `showValues`
+ * draws at each bar's end. Default `false`; omitting the prop renders exactly
+ * as before this existed. Two instances side by side (each its own distinct
+ * `ariaLabel`, this file's own established multi-instance convention) prove
+ * the causal link directly: turning the prop on adds exactly one new `<text>`
+ * per series, not a guessed formatted string.
+ */
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <StackedAreaChart
+        width={280}
+        height={280}
+        series={fixture}
+        ariaLabel="Stacked area chart without value labels"
+      />
+      <StackedAreaChart
+        width={280}
+        height={280}
+        series={fixture}
+        showValues
+        ariaLabel="Stacked area chart with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (StackedAreaChart uses the
+    // library's default role="img" -- unlike BarChart's roving-tabindex
+    // "graphics-document" -- so this is the role that actually identifies
+    // each chart's own outer SVG here).
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    expect(textCount(svgs[1])).toBe(textCount(svgs[0]) + fixture.length);
+  },
+};
+
 /** `stacked-area-chart.mdx` "API reference": renders `null` for an empty `series`. */
 export const EdgeCaseEmpty: BaseStory = {
   render: () => <StackedAreaChart width={200} height={200} series={[]} />,
