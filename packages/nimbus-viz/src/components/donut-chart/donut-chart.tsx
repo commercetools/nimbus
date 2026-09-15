@@ -12,6 +12,7 @@ import type { DatumInteractionProps } from "../../chart/interaction";
 import { ChartPatternDefs, patternFill } from "../../chart/patterns";
 import { useForcedColors } from "../../chart/use-forced-colors";
 import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { ValueLabel } from "../../chart/value-labels";
 
 export interface DonutChartProps<
   T = CategoryDatum,
@@ -43,7 +44,29 @@ export interface DonutChartProps<
    * `useForcedColors`.
    */
   texture?: boolean;
+  /**
+   * Draw each slice's formatted value just outside its outer edge, at its
+   * midpoint angle — `chart/value-labels.tsx`'s `ValueLabel`, positioned with
+   * the same `polar()`-style math `RadialBarChart` and `SunburstChart` use
+   * for their own per-arc placement. Slices narrower than `MIN_LABEL_ANGLE`
+   * (20°, about a 5.5% share) are skipped — below that width a label sits
+   * too close to its neighbors' to read. Default `false` (no change from
+   * today's unlabeled slices).
+   */
+  showValues?: boolean;
 }
+
+/** Point on a circle for an angle measured clockwise from 12 o'clock. */
+function polar(r: number, angle: number): [number, number] {
+  return [r * Math.sin(angle), -r * Math.cos(angle)];
+}
+
+/**
+ * Minimum angular sweep (radians) before a slice gets a value label — ~20°,
+ * about a 5.5% share. Narrower than this and the label collides with its
+ * neighbors' before it can be read.
+ */
+const MIN_LABEL_ANGLE = Math.PI / 9;
 
 /**
  * Part-to-whole as a donut. Color is identity here (one hue per slice, fixed
@@ -74,6 +97,7 @@ export function DonutChart<T = CategoryDatum>({
   onDatumClick,
   onDatumHover,
   texture,
+  showValues,
 }: DonutChartProps<T>) {
   const theme = useChartTheme();
   const forcedColors = useForcedColors();
@@ -127,7 +151,14 @@ export function DonutChart<T = CategoryDatum>({
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
-        const radius = Math.max(0, Math.min(innerWidth, innerHeight) / 2);
+        // Reserve a rim for the value-label ring when shown (mirrors
+        // RadialBarChart's rim reservation for its own rim labels) --
+        // untouched when `showValues` is unset, so the default donut is
+        // unaffected.
+        const radius = Math.max(
+          0,
+          Math.min(innerWidth, innerHeight) / 2 - (showValues ? 14 : 0)
+        );
         const inner = radius * 0.62;
         return (
           <Group top={innerHeight / 2} left={innerWidth / 2}>
@@ -151,25 +182,37 @@ export function DonutChart<T = CategoryDatum>({
                   // convention, replacing a per-chart "dim everyone else"
                   // opacity ternary).
                   const isHovered = hover === cat;
+                  const mid = (arc.startAngle + arc.endAngle) / 2;
+                  const sweep = arc.endAngle - arc.startAngle;
+                  const [lx, ly] = polar(radius + 12, mid);
                   return (
-                    <path
-                      key={cat}
-                      d={pie.path(arc) ?? ""}
-                      fill={effectiveTexture ? patternFill(i) : colorFor(i)}
-                      stroke={isHovered ? theme.ink : "none"}
-                      strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
-                      onMouseEnter={() => {
-                        setHover(cat);
-                        onDatumHover?.({ datum: arc.data, index: i });
-                      }}
-                      onMouseLeave={() => {
-                        setHover(null);
-                        onDatumHover?.(null);
-                      }}
-                      onClick={() =>
-                        onDatumClick?.({ datum: arc.data, index: i })
-                      }
-                    />
+                    <g key={cat}>
+                      <path
+                        d={pie.path(arc) ?? ""}
+                        fill={effectiveTexture ? patternFill(i) : colorFor(i)}
+                        stroke={isHovered ? theme.ink : "none"}
+                        strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
+                        onMouseEnter={() => {
+                          setHover(cat);
+                          onDatumHover?.({ datum: arc.data, index: i });
+                        }}
+                        onMouseLeave={() => {
+                          setHover(null);
+                          onDatumHover?.(null);
+                        }}
+                        onClick={() =>
+                          onDatumClick?.({ datum: arc.data, index: i })
+                        }
+                      />
+                      {showValues && sweep >= MIN_LABEL_ANGLE && (
+                        <ValueLabel
+                          x={lx}
+                          y={ly}
+                          text={valueFmt(getVal(arc.data))}
+                          anchor={mid > Math.PI ? "end" : "start"}
+                        />
+                      )}
+                    </g>
                   );
                 })
               }

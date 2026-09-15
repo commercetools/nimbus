@@ -132,6 +132,35 @@ as a legend strip beneath the plot. Color is **identity** here — one hue per
 category — which is legitimate for a part-to-whole chart, and the legend maps
 every color back to its label.
 
+### Value labels
+
+Pass `showValues` to draw each slice's formatted value just outside its outer
+edge, at its midpoint angle. Slices narrower than about 20° (roughly a 5.5%
+share) are skipped — a label that thin would collide with its neighbors'.
+Default `false`.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <DonutChart
+          width={width}
+          height={height}
+          data={[
+            { category: "Web", value: 4200 },
+            { category: "Mobile", value: 3100 },
+            { category: "Retail", value: 2400 },
+          ]}
+          showValues
+          ariaLabel="Donut chart of revenue share by channel, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Texture (non-color encoding)
 
 `texture` fills each slice with a per-category SVG pattern

@@ -85,3 +85,44 @@ export const HoverEmphasis: BaseStory = {
     expect(slices()[1]).toHaveAttribute("stroke-width", "0");
   },
 };
+
+/**
+ * `showValues` draws each slice's formatted value just outside its outer
+ * edge, at its midpoint angle. Every slice here clears `MIN_LABEL_ANGLE`
+ * (each share is well above the ~5.5% threshold), so the labeled chart
+ * gains exactly one `<text>` per slice over the unlabeled control.
+ */
+const valuesFixture: CategoryDatum[] = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+];
+
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <DonutChart
+        width={280}
+        height={280}
+        data={valuesFixture}
+        ariaLabel="Donut chart without value labels"
+      />
+      <DonutChart
+        width={280}
+        height={280}
+        data={valuesFixture}
+        showValues
+        ariaLabel="Donut chart with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (DonutChart uses the library
+    // default role="img"; there is no nested <svg> anywhere in this chart --
+    // no axes, no visx tick-label positioning trick).
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    expect(textCount(svgs[1])).toBe(textCount(svgs[0]) + valuesFixture.length);
+  },
+};
