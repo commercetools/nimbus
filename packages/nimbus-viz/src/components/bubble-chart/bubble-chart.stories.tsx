@@ -206,3 +206,36 @@ export const Responsive: BaseStory = {
     </div>
   ),
 };
+
+/**
+ * `D2/D3-rest`: `texture` distinguishes groups by marker SHAPE (in addition
+ * to color) so groups stay distinguishable without color alone. Not a fill
+ * *pattern* like `StackedBarChart`'s `Texture` story — a bubble's radius can
+ * be as small as `R_MIN` (4px), under one texture tile, where a fill
+ * pattern would read as noise rather than a shape. Proven directly: the
+ * first group (`Sedan`) stays a `<circle>`, the second (`SUV`) becomes a
+ * `<polygon>` (a square) — a shape swap, not just a color change.
+ */
+export const Texture: BaseStory = {
+  render: () => (
+    <BubbleChart
+      width={360}
+      height={280}
+      points={points}
+      texture
+      ariaLabel="Bubble chart with per-group marker shapes"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const sedanCount = points.filter((p) => p.group === "Sedan").length;
+    const suvCount = points.filter((p) => p.group === "SUV").length;
+    // The size legend also renders reference <circle>s (fill="none"); real
+    // bubble marks always have a real fill, so filter those out.
+    const markCircles = Array.from(
+      canvasElement.querySelectorAll<SVGCircleElement>("circle")
+    ).filter((c) => c.getAttribute("fill") !== "none");
+    const polygons = canvasElement.querySelectorAll("polygon");
+    expect(markCircles.length).toBe(sedanCount); // first group: unchanged circle
+    expect(polygons.length).toBe(suvCount); // second group: shape-encoded
+  },
+};

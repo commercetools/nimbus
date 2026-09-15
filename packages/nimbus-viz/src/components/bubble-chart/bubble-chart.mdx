@@ -166,6 +166,44 @@ const App = () => (
 );
 ```
 
+### Texture (non-color group identity)
+
+Pass `texture` to distinguish groups by marker **shape**, in addition to color,
+so groups stay distinguishable without color alone — monochrome print, a
+photocopy, or `forced-colors` mode. Unlike
+[`StackedBarChart`](/charts/stacked-bar-chart)'s `texture` (a fill pattern),
+bubbles use shape because a bubble's radius can be as small as 4px — under one
+fill-pattern tile, where a pattern would read as noise rather than a shape. The
+first group keeps its plain circle; later groups become a square, triangle,
+diamond, or star, cycling in the same fixed order as their color. It turns on
+automatically, regardless of this prop, when the OS is already in a
+`forced-colors` context.
+
+```jsx live
+const points = [
+  { x: 22, y: 38, size: 320, label: "Acme", group: "SMB" },
+  { x: 35, y: 74, size: 460, label: "Hooli", group: "SMB" },
+  { x: 44, y: 52, size: 680, label: "Globex", group: "Enterprise" },
+  { x: 73, y: 66, size: 900, label: "Umbrella", group: "Enterprise" },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={300}>
+      {(width, height) => (
+        <BubbleChart
+          width={width}
+          height={height}
+          points={points}
+          texture
+          ariaLabel="Bubble chart with per-group marker shapes"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Overlays (`children`)
 
 Layer-2 annotations (e.g. `ReferenceLine`, `ThresholdBand`, `TrendLine`) can be
@@ -264,8 +302,10 @@ What you get automatically:
   chart theme (contrast + color-vision-deficiency checks), not ad-hoc colors.
 - **Non-color encoding.** The relationship is carried by position and the third
   measure by area — neither depends on color. When you group, group identity is
-  carried by color and decoded by the legend; bubbles are not also varied by
-  shape, so lean on the legend and the data table for that distinction.
+  carried by color and decoded by the legend and the data table; pass `texture`
+  to also vary marker **shape** per group (or rely on it turning on
+  automatically in a `forced-colors` context) for a non-color path on the chart
+  itself, not just in the legend/table.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the groups/values rather than
@@ -276,7 +316,8 @@ Accessibility checklist:
 - [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
 - [ ] Meaning does not depend on color alone (position + area carry it; groups
-      are decoded by the legend and the data table)
+      are decoded by the legend and the data table, or by marker shape with
+      `texture`)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)
 - [ ] Surrounding copy names groups/values rather than colors
@@ -293,14 +334,16 @@ render your own placeholder when there is no data yet.
 
 - **Positive magnitude only.** `size` maps to area from 0; there is no support
   for signed or diverging size, and no `sizeFormat` for the size legend. A
-  negative value is drawn at the minimum radius and logs a development
-  warning rather than producing a plausible-looking wrong-sized bubble.
+  negative value is drawn at the minimum radius and logs a development warning
+  rather than producing a plausible-looking wrong-sized bubble.
 - **No `x`/`y` accessors.** Unlike [`ScatterPlot`](/charts/scatter-plot),
   `BubbleChart` is not generic — reshape rows into `{ x, y, size }` first.
 - **Area is read approximately.** Good for "which are big"; for exact magnitude
   comparison use a [`BarChart`](/charts/bar-chart).
-- **Groups distinguished by color, not shape** — the color legend and data table
-  are the non-color paths to group identity.
+- **Shape encoding is opt-in.** Marker shape only varies when `texture` is
+  passed (or `forced-colors` is active) — by default groups are distinguished by
+  color alone on the marks, with the legend and data table as the always-on
+  non-color paths.
 - **No title, caption, legend override, loading, or error passthrough** —
   `BubbleChart` forwards only `ariaLabel`, the auto legend, and the data table
   to `ChartContainer`.

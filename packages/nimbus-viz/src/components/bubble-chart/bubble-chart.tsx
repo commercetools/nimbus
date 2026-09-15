@@ -8,6 +8,8 @@ import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { devWarn } from "../../chart/dev-warn";
+import { PointMark, pointShapeFor } from "../../chart/point-shapes";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
@@ -43,6 +45,18 @@ export interface BubbleChartProps {
   children?: ReactNode;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /**
+   * Distinguish groups by marker SHAPE (`chart/point-shapes.tsx`) in
+   * addition to color, so groups stay distinguishable without color alone
+   * — monochrome print, a photocopy, or `forced-colors` mode. A fill
+   * *texture* (`chart/patterns.tsx`) is not used here: a bubble's radius
+   * can be as small as `R_MIN`, under one texture tile, where a pattern
+   * reads as noise rather than a shape — shape has no such floor. Default
+   * `false` (color only, unchanged). Turned on automatically (regardless
+   * of this prop) when the OS is already in a forced-colors context — see
+   * `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 const R_MIN = 4;
@@ -65,11 +79,14 @@ export function BubbleChart({
   onDatumHover,
   children,
   valueFormat,
+  texture,
 }: BubbleChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
 
   const groups = useMemo(
     () =>
@@ -112,8 +129,17 @@ export function BubbleChart({
   }
 
   const showLegend = groups.length >= 2;
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every point, with per-group marker
+  // shape (below) as the only identity carrier.
   const colorFor = (p: BubblePoint) =>
-    p.group ? groupColor(p.group) : theme.accent;
+    forcedColors ? "CanvasText" : p.group ? groupColor(p.group) : theme.accent;
+  // Shape only carries meaning when color does too (2+ groups) -- an
+  // ungrouped bubble, or the only group present, has nothing to encode.
+  const shapeFor = (p: BubblePoint) =>
+    effectiveTexture && p.group && showLegend
+      ? pointShapeFor(groups.indexOf(p.group))
+      : "circle";
   const table = {
     columns: ["Label", "x", "y", "Size", "Group"],
     rows: points.map((p) => [p.label ?? "", p.x, p.y, p.size, p.group ?? ""]),
@@ -205,8 +231,9 @@ export function BubbleChart({
               // negative (invisible) radius.
               const r = sizeScale(Math.max(0, p.size));
               return (
-                <circle
+                <PointMark
                   key={i}
+                  shape={shapeFor(p)}
                   cx={xScale(p.x)}
                   cy={yScale(p.y)}
                   r={r}
