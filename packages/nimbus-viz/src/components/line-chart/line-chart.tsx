@@ -19,6 +19,7 @@ import type { Series, SeriesPoint } from "../../chart/types";
 import { useControlledSelection } from "../../chart/interaction";
 import type { InteractionProps } from "../../chart/interaction";
 import { ValueLabel } from "../../chart/value-labels";
+import { PointMark } from "../../chart/point-shapes";
 
 export interface LineChartProps<T = SeriesPoint> extends InteractionProps<T> {
   /** Plot width in pixels — supply from `ResponsiveContainer`. */
@@ -80,6 +81,16 @@ export interface LineChartProps<T = SeriesPoint> extends InteractionProps<T> {
    * change from today's rendering).
    */
   showValues?: boolean;
+  /**
+   * Draw a small dot (`chart/point-shapes.tsx`'s `PointMark`, `shape="circle"`)
+   * at every drawn point of every series, not just the hover-highlighted
+   * one — mirroring shadcn's `chart-line-dots` variant. Follows the same
+   * (possibly decimated) points the line itself draws, so a dot always
+   * sits exactly on a real vertex of the rendered path. Default `false`
+   * (no change from today's rendering — a point still gets its larger,
+   * surface-haloed circle on hover, independent of this prop).
+   */
+  showDots?: boolean;
 }
 
 const toDate = (x: number | Date): Date =>
@@ -123,6 +134,7 @@ export function LineChart<T = SeriesPoint>({
   decimateThreshold,
   texture,
   showValues,
+  showDots,
 }: LineChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -361,6 +373,22 @@ export function LineChart<T = SeriesPoint>({
                         anchor="start"
                       />
                     )}
+                  {showDots &&
+                    drawData[i].map((p, pi) => {
+                      const py = getY(p);
+                      if (py == null) return null;
+                      return (
+                        <PointMark
+                          key={pi}
+                          shape="circle"
+                          cx={xScale(toDate(getX(p)))}
+                          cy={yScale(py)}
+                          r={3}
+                          fill={color}
+                          fillOpacity={visible ? 1 : 0}
+                        />
+                      );
+                    })}
                 </g>
               );
             })}

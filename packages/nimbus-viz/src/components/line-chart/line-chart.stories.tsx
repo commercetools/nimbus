@@ -165,6 +165,40 @@ export const ShowValues: BaseStory = {
 };
 
 /**
+ * `showDots` (Phase C): draws a small dot at every point of every series,
+ * not just the hover-highlighted one -- `chart/point-shapes.tsx`'s
+ * `PointMark`, mirroring shadcn's `chart-line-dots` variant. `fixture` has
+ * 4 points per series across 2 series, so turning the prop on adds exactly
+ * 8 new `<circle>`s.
+ */
+export const ShowDots: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <LineChart
+        width={280}
+        height={240}
+        series={fixture}
+        ariaLabel="Line chart without dots"
+      />
+      <LineChart
+        width={280}
+        height={240}
+        series={fixture}
+        showDots
+        ariaLabel="Line chart with dots"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const circleCount = (svg: Element) => svg.querySelectorAll("circle").length;
+    const totalPoints = fixture.reduce((n, s) => n + s.data.length, 0);
+    expect(circleCount(svgs[1])).toBe(circleCount(svgs[0]) + totalPoints);
+  },
+};
+
+/**
  * `onDatumClick`/`onDatumHover` are wired on a transparent overlay `<rect>`
  * spanning the plot (not on individual marks — `LinePath`/`AreaClosed`
  * strokes/fills carry no accessible role or their own handlers), resolving
