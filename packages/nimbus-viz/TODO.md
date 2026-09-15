@@ -82,15 +82,33 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       scale. `gauge.mdx` already had one and was updated in place for the new
       "overrides `ChartLocaleProvider`" behavior;
       `stat-card.mdx`/`stat-card.stories.tsx` were updated for the prop rename.
-- [ ] **A2-date — locale-thread the time axis.** Found introspecting
-      `LineChart`: its date-axis tick labels use `formatDayMonth`
-      (`chart/format.ts`), a hardcoded `timeFormat("%b %d")` (English month
-      abbreviations) — unlike the value axis, which is already locale-threaded
-      per `A2-tail` above. `A2-tail` deliberately scoped this out ("leave
-      date/category formatting alone"), so it needs its own item rather than
-      silently expanding that one. Applies to every time-axis chart, not just
-      `LineChart` — add a date-formatter equivalent of `useChartFormatters()` to
-      `chart/format-locale.tsx` and thread it the same way.
+- [x] **A2-date — locale-thread the time axis.** Done: `ChartFormatters`
+      (`chart/format-locale.tsx`) gained `dayMonth`/`month`, `Intl`-backed
+      (`DateTimeFormat(locale, { month: "short", day: "numeric" })` /
+      `{ month: "short" }`); the no-provider default is byte-identical to the
+      raw d3 helpers (`formatDayMonth`/`formatMonth` from `chart/format.ts`),
+      golden-checked in `format-locale.spec.tsx`. Threaded a
+      `dateFormat?: (d:     Date) => string` prop
+      (`const dateFmt = dateFormat ?? formatters.dayMonth`) through every chart
+      that had a hardcoded `formatDayMonth` call: bump-chart, candlestick-chart,
+      control-chart, line-chart, stacked-area-chart, streamgraph (already had
+      `valueFormat`/`formatters` from `A2-tail`, so this was additive), plus
+      gantt-chart and calendar-heatmap (freshly wired — they'd had no locale
+      hook at all). `bump-chart`'s x-axis formatter (`fmtX`, mixed
+      date-or-index) had to move from module scope into the component body since
+      it now needs `dateFmt`/`valueFmt`, both props — its numeric-index branch,
+      previously stuck on a hardcoded `formatCompact` regardless of
+      `valueFormat`, now honors it too as a side effect. `calendar-heatmap`'s
+      month-header row was a genuinely hardcoded English `MONTHS` array (not
+      even routed through `formatDayMonth`) — replaced with `formatters.month`,
+      but fed a locally-reconstructed date (`new Date(2000, m, 1)`) rather than
+      the UTC-midnight `monday` value the grid math produces:
+      `Intl.DateTimeFormat` reads a `Date`'s _local_ month, so handing it a UTC
+      instant directly could show the adjacent month in a negative-UTC-offset
+      locale at a month boundary — the reconstruction sidesteps that without
+      touching the grid's own UTC-safe day-index math. Verified:
+      `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build` all green;
+      eslint clean on every touched file.
 - [ ] **A3-tail — datum callbacks.** Extend `onDatumClick`/`onDatumHover` to the
       charts not yet wired (done: line, bar, scatter, grouped-bar, stacked-bar,
       bubble, waterfall, pareto, stacked-area, bullet, funnel, cohort-triangle,

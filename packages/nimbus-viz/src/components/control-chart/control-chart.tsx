@@ -11,7 +11,6 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme } from "../../theme";
-import { formatDayMonth } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { Series, SeriesPoint } from "../../chart/types";
 import { emText } from "../../chart/typography";
@@ -36,6 +35,8 @@ export interface ControlChartProps {
   children?: ReactNode;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /** Formats date displays (axis ticks, tooltip dates). Defaults to a locale-aware short month+day formatter (e.g. `Aug 28`); overrides any surrounding `ChartLocaleProvider`. */
+  dateFormat?: (d: Date) => string;
 }
 
 const toDate = (x: number | Date): Date =>
@@ -60,11 +61,13 @@ export function ControlChart({
   lcl,
   ariaLabel,
   children,
+  dateFormat,
   valueFormat,
 }: ControlChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
+  const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   const points = useMemo<SeriesPoint[]>(() => series[0]?.data ?? [], [series]);
@@ -101,7 +104,7 @@ export function ControlChart({
   const table = {
     columns: ["Date", "Value", "Status"],
     rows: points.map((p) => [
-      formatDayMonth(toDate(p.x)),
+      dateFmt(toDate(p.x)),
       p.y ?? "",
       p.y != null && (p.y > limits.upper || p.y < limits.lower)
         ? "out of control"
@@ -150,7 +153,7 @@ export function ControlChart({
               numTicks={Math.max(2, Math.min(6, Math.floor(innerWidth / 90)))}
               stroke={theme.axis}
               hideTicks
-              tickFormat={(v) => formatDayMonth(v as Date)}
+              tickFormat={(v) => dateFmt(v as Date)}
               tickLabelProps={bottomTickLabel(theme)}
             />
 
@@ -263,7 +266,7 @@ export function ControlChart({
                 x={xScale(toDate(hovered.x))}
                 innerWidth={innerWidth}
                 lines={[
-                  formatDayMonth(toDate(hovered.x)),
+                  dateFmt(toDate(hovered.x)),
                   `${series[0].label}: ${valueFmt(hovered.y)}`,
                   ...(isOut(hovered.y) ? ["Out of control"] : []),
                 ]}

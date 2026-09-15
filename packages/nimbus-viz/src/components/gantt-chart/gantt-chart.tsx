@@ -7,7 +7,7 @@ import { bandByIndex } from "../../chart/scales";
 import { bottomTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatDayMonth } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
 
 /** A scheduled event: a span [start, end], or a milestone if `end` is absent. */
@@ -30,6 +30,8 @@ export interface GanttChartProps {
   /** Accessible label for the SVG frame; states what the timeline shows and its
    *  takeaway. Defaults to `"Timeline of N events"`. */
   ariaLabel?: string;
+  /** Formats date displays (axis ticks, tooltip dates). Defaults to a locale-aware short month+day formatter (e.g. `Aug 28`); overrides any surrounding `ChartLocaleProvider`. */
+  dateFormat?: (d: Date) => string;
 }
 
 /**
@@ -45,8 +47,11 @@ export function GanttChart({
   height,
   data,
   ariaLabel,
+  dateFormat,
 }: GanttChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hover, setHover] = useState<number | null>(null);
 
   const domain = useMemo(() => {
@@ -76,8 +81,8 @@ export function GanttChart({
     columns: ["Event", "Start", "End", "Category"],
     rows: data.map((d) => [
       d.label,
-      formatDayMonth(d.start),
-      d.end ? formatDayMonth(d.end) : "—",
+      dateFmt(d.start),
+      d.end ? dateFmt(d.end) : "—",
       d.category ?? "",
     ]),
   };
@@ -114,7 +119,7 @@ export function GanttChart({
               stroke={theme.axis}
               hideTicks
               numTicks={5}
-              tickFormat={(v) => formatDayMonth(v as Date)}
+              tickFormat={(v) => dateFmt(v as Date)}
               tickLabelProps={bottomTickLabel(theme)}
             />
             {data.map((d, i) => {
@@ -169,8 +174,8 @@ export function GanttChart({
                 lines={[
                   hovered.label,
                   hovered.end
-                    ? `${formatDayMonth(hovered.start)} – ${formatDayMonth(hovered.end)}`
-                    : formatDayMonth(hovered.start),
+                    ? `${dateFmt(hovered.start)} – ${dateFmt(hovered.end)}`
+                    : dateFmt(hovered.start),
                   hovered.end
                     ? `${Math.round(
                         (hovered.end.getTime() - hovered.start.getTime()) /

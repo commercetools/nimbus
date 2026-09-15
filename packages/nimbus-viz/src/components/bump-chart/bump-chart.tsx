@@ -9,7 +9,6 @@ import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact, formatDayMonth } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { Series } from "../../chart/types";
 import { emText } from "../../chart/typography";
@@ -30,6 +29,8 @@ export interface BumpChartProps {
   children?: ReactNode;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /** Formats date displays (axis ticks, tooltip dates). Defaults to a locale-aware short month+day formatter (e.g. `Aug 28`); overrides any surrounding `ChartLocaleProvider`. */
+  dateFormat?: (d: Date) => string;
 }
 
 /** One series' rank at a single x-index (rank 1 = highest y). */
@@ -37,11 +38,6 @@ interface RankPoint {
   i: number;
   rank: number;
 }
-
-// x-axis tick label -- not the value axis, so this stays on the fixed
-// formatter regardless of `valueFormat` (module-level: no access to props).
-const fmtX = (x: number | Date): string =>
-  x instanceof Date ? formatDayMonth(x) : formatCompact(x);
 
 /**
  * Rank-over-time. At each x the series are ranked by their y value (1 = best);
@@ -58,11 +54,17 @@ export function BumpChart({
   series,
   ariaLabel,
   children,
+  dateFormat,
   valueFormat,
 }: BumpChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
+  const dateFmt = dateFormat ?? formatters.dayMonth;
+  // x can be a date or a plain numeric index (a rank-over-categories bump
+  // chart); only the date half is locale-threaded, per `dateFormat` above.
+  const fmtX = (x: number | Date): string =>
+    x instanceof Date ? dateFmt(x) : valueFmt(x);
   const [hover, setHover] = useState<{ si: number; i: number } | null>(null);
   const color = useEntityColors(
     useMemo(() => series.map((s) => s.id), [series])

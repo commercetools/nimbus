@@ -12,7 +12,6 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatDayMonth } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { Series } from "../../chart/types";
 import type {
@@ -38,6 +37,8 @@ export interface StackedAreaChartProps {
   onDatumHover?: DatumHoverHandler<StackDatum>;
   /** Overlays (ReferenceLine, TrendLine, Annotation, …) rendered in plot space. */
   children?: ReactNode;
+  /** Formats date displays (axis ticks, tooltip dates). Defaults to a locale-aware short month+day formatter (e.g. `Aug 28`); overrides any surrounding `ChartLocaleProvider`. */
+  dateFormat?: (d: Date) => string;
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
@@ -60,6 +61,7 @@ export function StackedAreaChart({
   height,
   series,
   ariaLabel,
+  dateFormat,
   valueFormat,
   onDatumClick,
   onDatumHover,
@@ -68,6 +70,7 @@ export function StackedAreaChart({
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
+  const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   const keys = useMemo(() => series.map((s) => s.id), [series]);
@@ -116,10 +119,7 @@ export function StackedAreaChart({
   const hoveredX = hoverIndex != null ? rows[hoverIndex]?.x : undefined;
   const table = {
     columns: ["Date", ...series.map((s) => s.label)],
-    rows: rows.map((r) => [
-      formatDayMonth(new Date(r.x)),
-      ...keys.map((k) => r[k]),
-    ]),
+    rows: rows.map((r) => [dateFmt(new Date(r.x)), ...keys.map((k) => r[k])]),
   };
 
   return (
@@ -168,7 +168,7 @@ export function StackedAreaChart({
               numTicks={Math.max(2, Math.min(6, Math.floor(innerWidth / 90)))}
               stroke={theme.axis}
               hideTicks
-              tickFormat={(v) => formatDayMonth(v as Date)}
+              tickFormat={(v) => dateFmt(v as Date)}
               tickLabelProps={bottomTickLabel(theme)}
             />
 
@@ -249,7 +249,7 @@ export function StackedAreaChart({
                 x={xScale(new Date(hoveredX))}
                 innerWidth={innerWidth}
                 lines={[
-                  formatDayMonth(new Date(hoveredX)),
+                  dateFmt(new Date(hoveredX)),
                   ...series.map((s) => {
                     const p = s.data[hoverIndex];
                     return `${s.label}: ${

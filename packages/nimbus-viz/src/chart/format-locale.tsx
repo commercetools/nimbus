@@ -1,6 +1,12 @@
 import { createContext, useContext, useMemo } from "react";
 import type { ReactNode } from "react";
-import { formatCompact, formatInteger, formatPercent } from "./format";
+import {
+  formatCompact,
+  formatDayMonth,
+  formatInteger,
+  formatMonth,
+  formatPercent,
+} from "./format";
 
 /**
  * Locale- and currency-aware chart formatting. The base `format.ts` d3
@@ -25,6 +31,10 @@ export interface ChartFormatters {
   currency: (n: number) => string;
   /** Percent of a 0–1 ratio, e.g. 25%. */
   percent: (n: number) => string;
+  /** Short month + day, e.g. Aug 28 / 28. Aug. */
+  dayMonth: (d: Date) => string;
+  /** Short month, e.g. Aug / Aug. */
+  month: (d: Date) => string;
 }
 
 export function createFormatters(
@@ -46,11 +56,18 @@ export function createFormatters(
     style: "percent",
     maximumFractionDigits: 0,
   });
+  const dayMonthFmt = new Intl.DateTimeFormat(locale, {
+    month: "short",
+    day: "numeric",
+  });
+  const monthFmt = new Intl.DateTimeFormat(locale, { month: "short" });
   return {
     number: (n) => num.format(n),
     compact: (n) => comp.format(n),
     currency: (n) => cur.format(n),
     percent: (n) => pct.format(n),
+    dayMonth: (d) => dayMonthFmt.format(d),
+    month: (d) => monthFmt.format(d),
   };
 }
 
@@ -66,6 +83,8 @@ const DEFAULT_FORMATTERS: ChartFormatters = {
   compact: (n) => formatCompact(n),
   percent: (n) => formatPercent(n),
   currency: createFormatters().currency,
+  dayMonth: (d) => formatDayMonth(d),
+  month: (d) => formatMonth(d),
 };
 
 const FormatContext = createContext<ChartFormatters | null>(null);

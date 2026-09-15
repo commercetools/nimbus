@@ -8,7 +8,8 @@ import {
   normalizeToDomain,
   useChartTheme,
 } from "../../theme";
-import { formatDayMonth, formatInteger } from "../../chart/format";
+import { formatInteger } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { emText, CHART_FONT_STACK, LABEL_PX } from "../../chart/typography";
 
 /** One day's magnitude on a calendar activity grid. */
@@ -37,23 +38,11 @@ export interface CalendarHeatmapProps {
   domain?: [number, number];
   /** Accessible label for the SVG frame (Cesal alt-text). Defaults to a generated summary. */
   ariaLabel?: string;
+  /** Formats date displays (the table's date column, the tooltip date). Defaults to a locale-aware short month+day formatter (e.g. `Aug 28`); overrides any surrounding `ChartLocaleProvider`. The top month labels follow the surrounding `ChartLocaleProvider`'s locale too, but are month-only and always use that locale's short month name — they don't take this override, since a custom `dateFormat` (e.g. `"MM/DD/YYYY"`) wouldn't make sense as a bare month header. */
+  dateFormat?: (d: Date) => string;
 }
 
 const DAY_MS = 86_400_000;
-const MONTHS = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
 // Weekday label rows, Monday-first (Mon=0 … Sun=6).
 const WEEKDAY_LABELS: Array<[number, string]> = [
   [0, "M"],
@@ -93,8 +82,11 @@ export function CalendarHeatmap({
   hue = "blue",
   domain,
   ariaLabel,
+  dateFormat,
 }: CalendarHeatmapProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hover, setHover] = useState<number | null>(null);
 
   const entries = useMemo<DayEntry[]>(
@@ -139,7 +131,7 @@ export function CalendarHeatmap({
   const color = sequentialColor(theme.ramps[hue] ?? theme.ramps.blue);
   const table = {
     columns: ["Date", "Value"],
-    rows: entries.map((e) => [formatDayMonth(e.date), e.value]),
+    rows: entries.map((e) => [dateFmt(e.date), e.value]),
   };
 
   return (
@@ -188,6 +180,14 @@ export function CalendarHeatmap({
           const next = monthCandidates[i + 1];
           return !next || (next.col - c.col) * step >= MONTH_LABEL_MIN_GAP;
         });
+        // `m` is a UTC month index (0-11) from `monday.getUTCMonth()` above --
+        // deliberately tz-agnostic, matching `dayIndexOf`'s own convention.
+        // `formatters.month` reads a Date's LOCAL month (Intl, same as
+        // d3-time-format), so build a local-time Date whose local month is
+        // exactly `m` (year/day don't affect a month-only format) rather than
+        // handing it a UTC-midnight instant, which a negative UTC-offset
+        // locale could read as the previous month.
+        const monthOf = (m: number) => formatters.month(new Date(2000, m, 1));
         const hovered = hover != null ? byDay.get(hover) : null;
         const hoveredCol =
           hover != null ? Math.floor((hover - firstMonday) / 7) : 0;
@@ -203,7 +203,7 @@ export function CalendarHeatmap({
                 style={emText(10)}
                 fill={theme.mutedInk}
               >
-                {MONTHS[m]}
+                {monthOf(m)}
               </text>
             ))}
             {/* Weekday labels (M / W / F) at left */}
@@ -267,7 +267,7 @@ export function CalendarHeatmap({
                 top={Math.max(0, hoveredRow * step + yOffset)}
                 innerWidth={innerWidth}
                 lines={[
-                  formatDayMonth(hovered.date),
+                  dateFmt(hovered.date),
                   `Value: ${formatInteger(hovered.value)}`,
                 ]}
               />

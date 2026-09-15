@@ -8,7 +8,6 @@ import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import { formatDayMonth } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
 
@@ -34,6 +33,8 @@ export interface CandlestickChartProps {
   children?: ReactNode;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /** Formats date displays (axis ticks, tooltip dates). Defaults to a locale-aware short month+day formatter (e.g. `Aug 28`); overrides any surrounding `ChartLocaleProvider`. */
+  dateFormat?: (d: Date) => string;
 }
 
 /**
@@ -51,11 +52,13 @@ export function CandlestickChart({
   data,
   ariaLabel,
   children,
+  dateFormat,
   valueFormat,
 }: CandlestickChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
+  const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hover, setHover] = useState<number | null>(null);
 
   const yDomain = useMemo(
@@ -73,13 +76,7 @@ export function CandlestickChart({
   const labelEvery = Math.max(1, Math.ceil(data.length / 6));
   const table = {
     columns: ["Date", "Open", "High", "Low", "Close"],
-    rows: data.map((d) => [
-      formatDayMonth(d.date),
-      d.open,
-      d.high,
-      d.low,
-      d.close,
-    ]),
+    rows: data.map((d) => [dateFmt(d.date), d.open, d.high, d.low, d.close]),
   };
 
   return (
@@ -164,7 +161,7 @@ export function CandlestickChart({
                       style={emText(10)}
                       fill={theme.mutedInk}
                     >
-                      {formatDayMonth(d.date)}
+                      {dateFmt(d.date)}
                     </text>
                   )}
                 </g>
@@ -176,7 +173,7 @@ export function CandlestickChart({
                 innerWidth={innerWidth}
                 top={Math.max(0, yScale(hovered.high) - 4)}
                 lines={[
-                  formatDayMonth(hovered.date),
+                  dateFmt(hovered.date),
                   `O ${valueFmt(hovered.open)}  H ${valueFmt(hovered.high)}`,
                   `L ${valueFmt(hovered.low)}  C ${valueFmt(hovered.close)}`,
                 ]}

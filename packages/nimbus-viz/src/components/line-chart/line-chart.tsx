@@ -11,7 +11,6 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatDayMonth } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { Series, SeriesPoint } from "../../chart/types";
 import type {
@@ -40,6 +39,8 @@ export interface LineChartProps {
   /** Layer-2 overlays (ReferenceLine, ThresholdBand, BenchmarkSeries…) drawn
    *  in the plot's coordinate space, on top of the series. */
   children?: ReactNode;
+  /** Formats date displays (axis ticks, tooltip dates). Defaults to a locale-aware short month+day formatter (e.g. `Aug 28`); overrides any surrounding `ChartLocaleProvider`. */
+  dateFormat?: (d: Date) => string;
 }
 
 const toDate = (x: number | Date): Date =>
@@ -56,6 +57,7 @@ export function LineChart({
   series,
   variant = "line",
   ariaLabel,
+  dateFormat,
   valueFormat,
   onDatumClick,
   onDatumHover,
@@ -64,6 +66,7 @@ export function LineChart({
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
+  const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   const points = useMemo(() => series.flatMap((s) => s.data), [series]);
@@ -84,7 +87,7 @@ export function LineChart({
   const table = {
     columns: ["Date", ...series.map((s) => s.label)],
     rows: series[0].data.map((pt, i) => [
-      formatDayMonth(toDate(pt.x)),
+      dateFmt(toDate(pt.x)),
       ...series.map((s) => s.data[i]?.y ?? ""),
     ]),
     summary: `Line chart, ${series.length} series over ${series[0].data.length} points.`,
@@ -143,7 +146,7 @@ export function LineChart({
               numTicks={Math.max(2, Math.min(6, Math.floor(innerWidth / 90)))}
               stroke={theme.axis}
               hideTicks
-              tickFormat={(v) => formatDayMonth(v as Date)}
+              tickFormat={(v) => dateFmt(v as Date)}
               tickLabelProps={bottomTickLabel(theme)}
             />
 
@@ -258,7 +261,7 @@ export function LineChart({
                 x={xScale(toDate(hoveredX))}
                 innerWidth={innerWidth}
                 lines={[
-                  formatDayMonth(toDate(hoveredX)),
+                  dateFmt(toDate(hoveredX)),
                   ...series.map((s) => {
                     const p = s.data[hoverIndex];
                     return `${s.label}: ${

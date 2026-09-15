@@ -11,7 +11,6 @@ import { bottomTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatDayMonth } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { Series } from "../../chart/types";
 
@@ -28,6 +27,8 @@ export interface StreamgraphProps {
   children?: ReactNode;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /** Formats date displays (axis ticks, tooltip dates). Defaults to a locale-aware short month+day formatter (e.g. `Aug 28`); overrides any surrounding `ChartLocaleProvider`. */
+  dateFormat?: (d: Date) => string;
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
@@ -55,10 +56,12 @@ export function Streamgraph({
   ariaLabel,
   children,
   valueFormat,
+  dateFormat,
 }: StreamgraphProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
+  const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   const keys = useMemo(() => series.map((s) => s.id), [series]);
@@ -83,10 +86,7 @@ export function Streamgraph({
   const hoveredX = hoverIndex != null ? rows[hoverIndex]?.x : undefined;
   const table = {
     columns: ["Date", ...series.map((s) => s.label)],
-    rows: rows.map((r) => [
-      formatDayMonth(new Date(r.x)),
-      ...keys.map((k) => r[k]),
-    ]),
+    rows: rows.map((r) => [dateFmt(new Date(r.x)), ...keys.map((k) => r[k])]),
   };
 
   return (
@@ -138,7 +138,7 @@ export function Streamgraph({
               numTicks={Math.max(2, Math.min(6, Math.floor(innerWidth / 90)))}
               stroke={theme.axis}
               hideTicks
-              tickFormat={(v) => formatDayMonth(v as Date)}
+              tickFormat={(v) => dateFmt(v as Date)}
               tickLabelProps={bottomTickLabel(theme)}
             />
 
@@ -205,7 +205,7 @@ export function Streamgraph({
                 x={xScale(new Date(hoveredX))}
                 innerWidth={innerWidth}
                 lines={[
-                  formatDayMonth(new Date(hoveredX)),
+                  dateFmt(new Date(hoveredX)),
                   ...series.map((s) => {
                     const p = s.data[hoverIndex];
                     return `${s.label}: ${
