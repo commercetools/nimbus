@@ -169,6 +169,38 @@ to drive external readouts. Hover state is managed internally regardless.
 />
 ```
 
+### Value labels
+
+Pass `showValues` to draw each bar's own (clamped) value directly above it.
+Only the bars get a label — the cumulative line already has its own
+hover-driven tooltip readout. Default `false`.
+
+```jsx live
+const data = [
+  { category: "Shipping delay", value: 42 },
+  { category: "Wrong item", value: 28 },
+  { category: "Damaged", value: 18 },
+  { category: "Billing", value: 9 },
+  { category: "Other", value: 5 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <ParetoChart
+          width={width}
+          height={height}
+          data={data}
+          showValues
+          ariaLabel="Pareto chart of support tickets by cause, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Color & theming
 
 Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).

@@ -25,6 +25,7 @@ import type {
 } from "../../chart/interaction";
 import { emText } from "../../chart/typography";
 import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { ValueLabel } from "../../chart/value-labels";
 
 export interface ParetoChartProps {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -44,6 +45,14 @@ export interface ParetoChartProps {
   children?: ReactNode;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /**
+   * Draw each bar's formatted (clamped) value directly above it — the bars
+   * only, not the cumulative line, which already has its own hover-driven
+   * tooltip readout — `chart/value-labels.tsx`'s `ValueLabel`, the same
+   * convention `bar-chart.tsx` uses. Default `false` (no change from
+   * today's rendering).
+   */
+  showValues?: boolean;
 }
 
 interface ParetoRow {
@@ -80,6 +89,7 @@ export function ParetoChart({
   onDatumHover,
   children,
   valueFormat,
+  showValues,
 }: ParetoChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -217,30 +227,38 @@ export function ParetoChart({
               // opacity ternary).
               const isHovered = hover === i;
               return (
-                <BarRounded
-                  key={`${d.category}-${i}`}
-                  x={x}
-                  y={yScale(d.value)}
-                  width={bw}
-                  height={barH}
-                  radius={4}
-                  top
-                  fill={theme.accent}
-                  stroke={isHovered ? theme.ink : "none"}
-                  strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
-                  onMouseEnter={() => {
-                    setHover(i);
-                    // datum is the raw input element; index is its rank in the
-                    // sorted (ranked) display order — the same convention as the
-                    // horizontal (ranked) bar chart.
-                    onDatumHover?.({ datum: d.datum, index: i });
-                  }}
-                  onMouseLeave={() => {
-                    setHover(null);
-                    onDatumHover?.(null);
-                  }}
-                  onClick={() => onDatumClick?.({ datum: d.datum, index: i })}
-                />
+                <g key={`${d.category}-${i}`}>
+                  <BarRounded
+                    x={x}
+                    y={yScale(d.value)}
+                    width={bw}
+                    height={barH}
+                    radius={4}
+                    top
+                    fill={theme.accent}
+                    stroke={isHovered ? theme.ink : "none"}
+                    strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
+                    onMouseEnter={() => {
+                      setHover(i);
+                      // datum is the raw input element; index is its rank in the
+                      // sorted (ranked) display order — the same convention as the
+                      // horizontal (ranked) bar chart.
+                      onDatumHover?.({ datum: d.datum, index: i });
+                    }}
+                    onMouseLeave={() => {
+                      setHover(null);
+                      onDatumHover?.(null);
+                    }}
+                    onClick={() => onDatumClick?.({ datum: d.datum, index: i })}
+                  />
+                  {showValues && (
+                    <ValueLabel
+                      x={x + bw / 2}
+                      y={yScale(d.value) - 6}
+                      text={valueFmt(d.value)}
+                    />
+                  )}
+                </g>
               );
             })}
 

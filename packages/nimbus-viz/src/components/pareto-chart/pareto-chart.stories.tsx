@@ -29,6 +29,44 @@ export default meta;
 export const Base: BaseStory = {};
 
 /**
+ * `showValues` draws each bar's own (clamped) value directly above it -- the
+ * bars only, not the cumulative line, which already has its own hover-driven
+ * tooltip readout. Proven the same way as `bar-chart.tsx`'s reference: the
+ * with-labels chart carries exactly one extra `<text>` per bar over the
+ * without-labels chart.
+ */
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <ParetoChart
+        width={280}
+        height={280}
+        data={data}
+        ariaLabel="Pareto chart without value labels"
+      />
+      <ParetoChart
+        width={280}
+        height={280}
+        data={data}
+        showValues
+        ariaLabel="Pareto chart with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (ParetoChart uses the library
+    // default role="img" -- it has no keyboard-focusable marks). Each
+    // `@visx/axis` tick label sits in its own nested <svg> (a local
+    // coordinate system for the offset text), which would otherwise inflate
+    // this count too if a bare `svg` selector were used.
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    expect(textCount(svgs[1])).toBe(textCount(svgs[0]) + data.length);
+  },
+};
+
+/**
  * Hover emphasis: hovering a bar outlines that ONE bar (`stroke`/
  * `strokeWidth`) and never dims its siblings — replacing the "dim everyone
  * else to a fixed opacity" pattern this chart used to hand-roll. Unlike
