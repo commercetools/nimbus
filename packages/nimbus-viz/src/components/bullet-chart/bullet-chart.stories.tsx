@@ -1,5 +1,12 @@
 import type { Meta } from "@storybook/react-vite";
-import { userEvent, within, expect, waitFor, fn } from "storybook/test";
+import {
+  userEvent,
+  within,
+  expect,
+  waitFor,
+  fn,
+  fireEvent,
+} from "storybook/test";
 import { BulletChart, type BulletDatum } from "./bullet-chart";
 import { ResponsiveContainer } from "../..";
 import { RegistryPreview, type BaseStory } from "../../stories/base-story";
@@ -25,6 +32,80 @@ const fixture: BulletDatum[] = [
 ];
 
 export const Base: BaseStory = {};
+
+// No `ranges` on either row here (unlike the shared `fixture` above), so
+// each row renders exactly one band rect then one measure-bar rect, in
+// that order -- same convention `EdgeCaseNegativeValues` below already
+// relies on -- making the bar indices deterministic for this story.
+const hoverFixture: BulletDatum[] = [
+  { label: "Engineering", measure: 172_000, target: 180_000 },
+  { label: "Marketing", measure: 131_000, target: 120_000 },
+];
+
+/**
+ * Hover/tooltip UX convergence: hovering a row outlines that row's measure
+ * bar (`stroke`/`strokeWidth`) and never dims its siblings — replacing the
+ * "dim everyone else to a fixed opacity" pattern this chart used to
+ * hand-roll. This chart is horizontal-layout (value axis is x), so the
+ * tooltip's HORIZONTAL position tracks the live pointer while it stays
+ * inside the same row's bar, rather than being pinned once to the bar's
+ * own value-derived x position; the row axis (its vertical `top`) stays
+ * snapped to the hovered row, unchanged.
+ */
+export const HoverEmphasis: BaseStory = {
+  render: () => <BulletChart width={480} height={160} data={hoverFixture} />,
+  play: async ({ canvasElement }) => {
+    const rects = () =>
+      Array.from(canvasElement.querySelectorAll<SVGRectElement>("rect"));
+    const tooltipGroup = () =>
+      canvasElement.querySelector<SVGGElement>('g[pointer-events="none"]');
+    const tooltipLeft = () => {
+      const g = tooltipGroup();
+      const match = g
+        ?.getAttribute("transform")
+        ?.match(/translate\(\s*([\d.-]+)/);
+      return match ? Number(match[1]) : null;
+    };
+
+    // Each row (no `ranges`) renders one band rect then one measure-bar
+    // rect: [row0 band, row0 bar, row1 band, row1 bar].
+    const firstBar = rects()[1];
+    const secondBar = rects()[3];
+
+    await userEvent.hover(firstBar);
+    await waitFor(() => expect(tooltipGroup()).not.toBeNull());
+
+    // No dimming: every rect keeps a full, unmodified fill -- none carries
+    // an `opacity` attribute at all (the old mechanism this replaces).
+    for (const rect of rects()) {
+      expect(rect).not.toHaveAttribute("opacity");
+    }
+    // Emphasis instead: only the hovered row's measure bar gets a real
+    // outline; the other row's measure bar does not.
+    expect(firstBar).toHaveAttribute("stroke-width", "1.5");
+    expect(secondBar).toHaveAttribute("stroke-width", "0");
+
+    // Tooltip follows the pointer: two mousemoves at different x positions
+    // within the SAME bar move the tooltip to two different horizontal
+    // positions.
+    const rect = firstBar.getBoundingClientRect();
+    const cy = rect.top + rect.height / 2;
+    fireEvent.mouseMove(firstBar, {
+      clientX: rect.left + rect.width * 0.25,
+      clientY: cy,
+    });
+    const leftNearStart = await waitFor(() => {
+      const l = tooltipLeft();
+      expect(l).not.toBeNull();
+      return l;
+    });
+    fireEvent.mouseMove(firstBar, {
+      clientX: rect.left + rect.width * 0.75,
+      clientY: cy,
+    });
+    await waitFor(() => expect(tooltipLeft()).not.toBe(leftNearStart));
+  },
+};
 
 /**
  * Proves the two accessibility features `bullet-chart.mdx` claims:

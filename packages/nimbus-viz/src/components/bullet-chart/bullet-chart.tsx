@@ -10,6 +10,8 @@ import type {
   DatumClickHandler,
   DatumHoverHandler,
 } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { clamp, plotPointerPosition } from "../../chart/pointer";
 
 /** One measure-vs-target row in a bullet chart. */
 export interface BulletDatum {
@@ -50,7 +52,9 @@ export interface BulletChartProps {
  * use a muted single-hue gray ramp — they carry magnitude context, not entity
  * identity, so a categorical hue would be wrong here. A single accent bar is
  * the measure; the target is always a tick mark, never implied by color
- * alone.
+ * alone. Hovering a row outlines its measure bar (its siblings are never
+ * dimmed) and the tooltip's horizontal position tracks the pointer while it
+ * stays inside that row.
  */
 export function BulletChart({
   width,
@@ -65,6 +69,11 @@ export function BulletChart({
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
+  // Live pointer x (plot-local), while a row is being hovered by mouse --
+  // null once the pointer leaves, so the tooltip falls back to the row's
+  // own value-derived position rather than a stale coordinate from a
+  // previous hover.
+  const [pointerX, setPointerX] = useState<number | null>(null);
   const grayRamp = sequentialColor(theme.ramps.gray);
 
   const domainMax = useMemo(
@@ -99,11 +108,16 @@ export function BulletChart({
     ]),
   };
 
+  // Named so the pointer math below (which needs the same left/top offset
+  // xScale is drawn relative to) can never drift from what's actually
+  // passed to ChartContainer.
+  const MARGIN = { top: 8, right: 44, bottom: 8, left: 100 };
+
   return (
     <ChartContainer
       width={width}
       height={height}
-      margin={{ top: 8, right: 44, bottom: 8, left: 100 }}
+      margin={MARGIN}
       ariaLabel={ariaLabel ?? `Bullet chart of ${data.length} measures`}
       table={table}
     >
@@ -124,16 +138,27 @@ export function BulletChart({
               const bands =
                 d.ranges && d.ranges.length > 0 ? d.ranges : [domainMax];
               let prev = 0;
+              // Outline the hovered row's measure bar; never dim its
+              // siblings (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the
+              // one shared convention, replacing a per-chart "dim everyone
+              // else" opacity ternary).
+              const isHovered = hover === i;
               return (
                 <g
                   key={`${d.label}-${i}`}
-                  opacity={hover == null || hover === i ? 1 : 0.5}
-                  onMouseEnter={() => {
+                  onMouseEnter={(e) => {
                     setHover(i);
+                    const p = plotPointerPosition(e, MARGIN);
+                    if (p) setPointerX(p.x);
                     onDatumHover?.({ datum: d, index: i });
+                  }}
+                  onMouseMove={(e) => {
+                    const p = plotPointerPosition(e, MARGIN);
+                    if (p) setPointerX(p.x);
                   }}
                   onMouseLeave={() => {
                     setHover(null);
+                    setPointerX(null);
                     onDatumHover?.(null);
                   }}
                   onClick={() => onDatumClick?.({ datum: d, index: i })}
@@ -175,6 +200,8 @@ export function BulletChart({
                     width={Math.abs(xScale(d.measure) - xScale(0))}
                     height={barH}
                     fill={theme.accent}
+                    stroke={isHovered ? theme.ink : "none"}
+                    strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
                   />
                   <line
                     x1={xScale(d.target)}
@@ -204,7 +231,14 @@ export function BulletChart({
                 const cy = hover * rowH + rowH / 2;
                 return (
                   <SvgTooltip
-                    x={xScale(d.measure)}
+                    x={
+                      // Live pointer x while the mouse is the hover source;
+                      // falls back to the row's own value-derived position
+                      // otherwise (there is no keyboard focus path here).
+                      pointerX != null
+                        ? clamp(pointerX, innerWidth)
+                        : xScale(d.measure)
+                    }
                     innerWidth={innerWidth}
                     top={Math.max(0, cy - rowH * 0.36 - 4)}
                     lines={[

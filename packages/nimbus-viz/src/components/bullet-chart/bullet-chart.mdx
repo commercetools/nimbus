@@ -169,10 +169,11 @@ is no category or value axis — the row labels and the shared scale do the work
 
 ### Hover & tooltip (automatic)
 
-Hovering a row dims the others to `0.5` opacity and shows a tooltip with the
-label, the measure, the target, and the signed difference versus target. This
-dimming and the tooltip are not configurable — but the same hover state also
-drives `onDatumHover`, below.
+Hovering a row outlines its measure bar (its siblings are never dimmed) and
+shows a tooltip with the label, the measure, the target, and the signed
+difference versus target; the tooltip's horizontal position tracks the
+pointer while it stays inside that row. This outline and the tooltip are not
+configurable — but the same hover state also drives `onDatumHover`, below.
 
 ### Interaction callbacks
 
