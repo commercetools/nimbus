@@ -132,17 +132,23 @@ export function ConnectedScatterplot({
             />
             {points.map((p, i) => {
               const endpoint = i === 0 || i === lastIndex;
-              const active = hover == null || hover === i;
+              // Outline/grow the ACTUALLY-hovered point only; never dim its
+              // siblings. These are small point marks (r is a few px), so a
+              // radius bump reads better than an outline -- the same
+              // mechanism `radar-chart.tsx`'s vertex dots use
+              // (`r={active ? 5 : 3}`), replacing the old "dim everyone else
+              // to 0.4 opacity" pattern.
+              const isHovered = hover === i;
+              const baseR = endpoint ? r + 1 : r;
               return (
                 <circle
                   key={i}
                   cx={xScale(p.x)}
                   cy={yScale(p.y)}
-                  r={endpoint ? r + 1 : r}
+                  r={isHovered ? baseR + 2 : baseR}
                   fill={endpoint ? theme.accent : theme.surface}
                   stroke={theme.accent}
                   strokeWidth={1.5}
-                  opacity={active ? 1 : 0.4}
                   onMouseEnter={() => {
                     setHover(i);
                     onDatumHover?.({ datum: p, index: i });
