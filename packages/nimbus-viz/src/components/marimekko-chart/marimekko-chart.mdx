@@ -181,9 +181,10 @@ width.
 ### Legend & tooltip (automatic)
 
 Each distinct segment key gets a categorical color from the shared entity→color
-scale, shown as a **legend** strip. Hovering a cell dims the others to 0.4
-opacity and shows a tooltip with the column and key, the cell's compact value,
-and its share of that column.
+scale, shown as a **legend** strip. Hovering a cell outlines it (its siblings
+are never dimmed) and shows a tooltip with the column and key, the cell's
+compact value, and its share of that column — the tooltip's position tracking
+the pointer while it stays inside that cell.
 
 ### Texture (non-color segment identity)
 

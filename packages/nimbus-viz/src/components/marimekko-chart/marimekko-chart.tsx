@@ -11,6 +11,8 @@ import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import { stackKeys } from "../../chart/stack";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { clamp, plotPointerPosition } from "../../chart/pointer";
 
 export interface MarimekkoChartProps extends DatumInteractionProps<StackRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -39,13 +41,19 @@ export interface MarimekkoChartProps extends DatumInteractionProps<StackRow> {
 /** Pixel gap between columns and between stacked segments. */
 const GAP = 2;
 
+// Named so the pointer math below (which needs the same left/top offset
+// xScale/yScale are drawn relative to) can never drift from what's
+// actually passed to ChartContainer.
+const MARGIN = { top: 8, right: 8, bottom: 24, left: 8 };
+
 /**
  * Marimekko (mekko) — a 100%-stacked column chart whose column WIDTHS encode
  * each category's total. So it reads two magnitudes at once: column width =
  * share of the grand total, segment height = share within the column. Every
  * cell's area is proportional to its value. Color is segment identity (fixed
- * order, shared scale), so a legend is always present; hovering a cell shows its
- * value and its share of the column.
+ * order, shared scale), so a legend is always present; hovering a cell outlines
+ * it (its siblings are never dimmed) and shows its value and its share of the
+ * column, the tooltip tracking the pointer's position within the cell.
  *
  * @experimental Prototype-stage; API may change before it is marked stable.
  */
@@ -63,6 +71,10 @@ export function MarimekkoChart({
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ c: number; s: number } | null>(null);
+  // Live pointer y (plot-local), while a cell is being hovered by mouse --
+  // null once the pointer leaves, so the tooltip falls back to a fixed
+  // position rather than a stale coordinate from a previous hover.
+  const [pointerY, setPointerY] = useState<number | null>(null);
   const forcedColors = useForcedColors();
   const effectiveTexture = texture || forcedColors;
 
@@ -96,7 +108,7 @@ export function MarimekkoChart({
     <ChartContainer
       width={width}
       height={height}
-      margin={{ top: 8, right: 8, bottom: 24, left: 8 }}
+      margin={MARGIN}
       ariaLabel={label}
       legend={keys.map((k) => ({ label: k, color: colorForKey(k) }))}
       table={table}
@@ -127,8 +139,12 @@ export function MarimekkoChart({
                     const h = frac * innerHeight;
                     const rectY = y;
                     y += h;
-                    const active =
-                      hover == null || (hover.c === c && hover.s === s);
+                    // Outline the hovered cell only; never dim its siblings
+                    // (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the
+                    // shared convention, replacing a per-chart "dim
+                    // everyone else" opacity ternary).
+                    const isHovered =
+                      hover != null && hover.c === c && hover.s === s;
                     return (
                       <rect
                         key={seg.key}
@@ -141,17 +157,25 @@ export function MarimekkoChart({
                             ? patternFill(keys.indexOf(seg.key))
                             : colorForKey(seg.key)
                         }
-                        opacity={active ? 1 : 0.4}
-                        onMouseEnter={() => {
+                        stroke={isHovered ? theme.ink : "none"}
+                        strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
+                        onMouseEnter={(e) => {
                           setHover({ c, s });
+                          const p = plotPointerPosition(e, MARGIN);
+                          if (p) setPointerY(p.y);
                           onDatumHover?.({
                             datum: row,
                             index: c,
                             seriesId: seg.key,
                           });
                         }}
+                        onMouseMove={(e) => {
+                          const p = plotPointerPosition(e, MARGIN);
+                          if (p) setPointerY(p.y);
+                        }}
                         onMouseLeave={() => {
                           setHover(null);
+                          setPointerY(null);
                           onDatumHover?.(null);
                         }}
                         onClick={() =>
@@ -180,7 +204,12 @@ export function MarimekkoChart({
               <SvgTooltip
                 x={columns[hover.c].x0 + columns[hover.c].colWidth / 2}
                 innerWidth={innerWidth}
-                top={4}
+                top={
+                  // Live pointer y while the mouse is the hover source;
+                  // falls back to the plot's top edge, the previous
+                  // constant position, when there is no pointer at all.
+                  pointerY != null ? clamp(pointerY, innerHeight) : 4
+                }
                 lines={[
                   `${data[hover.c].category} · ${hovered.key}`,
                   valueFmt(hovered.value),
