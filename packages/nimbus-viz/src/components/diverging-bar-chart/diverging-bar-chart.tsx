@@ -9,6 +9,7 @@ import { formatSignedCompact } from "../../chart/format";
 import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 
 export interface DivergingBarChartProps extends DatumInteractionProps<CategoryDatum> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -98,11 +99,14 @@ export function DivergingBarChart({
               const end = xScale(d.value);
               const x = Math.min(zero, end);
               const w = Math.abs(end - zero);
-              const active = hover == null || hover === i;
+              // Outline the hovered/focused bar; never dim its siblings
+              // (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the one
+              // shared convention, replacing a per-chart "dim everyone
+              // else" opacity ternary).
+              const isHovered = hover === i;
               return (
                 <g
                   key={i}
-                  opacity={active ? 1 : 0.4}
                   onMouseEnter={() => {
                     setHover(i);
                     onDatumHover?.({ datum: d, index: i });
@@ -122,6 +126,8 @@ export function DivergingBarChart({
                     right={positive}
                     left={!positive}
                     fill={positive ? theme.positive : theme.negative}
+                    stroke={isHovered ? theme.ink : "none"}
+                    strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
                   />
                   <text
                     x={-8}

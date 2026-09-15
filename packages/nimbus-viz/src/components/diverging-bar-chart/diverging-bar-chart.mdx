@@ -142,10 +142,11 @@ a redundant valence cue on top of side and label.
 
 ### Hover highlighting (automatic)
 
-Hovering a bar dims the others to 0.4 opacity to isolate the row you are
-reading. There is no tooltip and no legend — the value label and category label
-are drawn directly on the plot, so every number is already on screen. Hover
-state is internal; there are no `onDatumClick` / `onDatumHover` callbacks.
+Hovering a bar outlines that one bar (its siblings are never dimmed) to
+highlight the row you are reading. There is no tooltip and no legend — the
+value label and category label are drawn directly on the plot, so every
+number is already on screen. Hover state is internal; there are no
+`onDatumClick` / `onDatumHover` callbacks.
 
 ### Color & theming
 

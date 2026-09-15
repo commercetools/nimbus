@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/react-vite";
-import { expect } from "storybook/test";
+import { userEvent, expect, waitFor } from "storybook/test";
 import { DivergingBarChart, type CategoryDatum } from "../../";
 import { duplicateLabels } from "../../stories/adversarial";
 import { RegistryPreview, type BaseStory } from "../../stories/base-story";
@@ -12,6 +12,44 @@ const meta: Meta = {
 export default meta;
 
 export const Base: BaseStory = {};
+
+const fixture: CategoryDatum[] = [
+  { category: "Grocery", value: 32 },
+  { category: "Electronics", value: -18 },
+  { category: "Apparel", value: 9 },
+];
+
+/**
+ * Hover/tooltip UX convergence: hovering a bar outlines that ONE bar
+ * (`stroke`/`strokeWidth`) and never dims its siblings -- replacing the
+ * "dim everyone else to a fixed opacity" pattern this chart (and 30 others)
+ * used to hand-roll independently. There is no floating tooltip here (values
+ * are drawn directly on the plot as always-visible labels), so there is no
+ * pointer-follow behavior to prove.
+ */
+export const HoverEmphasis: BaseStory = {
+  render: () => <DivergingBarChart width={480} height={280} data={fixture} />,
+  play: async ({ canvasElement }) => {
+    const bars = () =>
+      Array.from(
+        canvasElement.querySelectorAll<SVGPathElement>("path.visx-bar-rounded")
+      );
+
+    const firstBar = bars()[0];
+    await userEvent.hover(firstBar);
+    await waitFor(() =>
+      expect(firstBar).toHaveAttribute("stroke-width", "1.5")
+    );
+
+    // No dimming: every bar keeps a full, unmodified fill -- none carries
+    // an `opacity` attribute at all (the old mechanism this replaces).
+    for (const bar of bars()) {
+      expect(bar).not.toHaveAttribute("opacity");
+    }
+    // Emphasis instead: only the hovered bar gets a real outline.
+    expect(bars()[1]).toHaveAttribute("stroke-width", "0");
+  },
+};
 
 const duplicateLabelRows: CategoryDatum[] = duplicateLabels([
   { category: "Grocery", value: 32 },
