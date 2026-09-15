@@ -162,6 +162,39 @@ const App = () => (
 );
 ```
 
+### Value labels
+
+Pass `showValues` to draw each point's `label` directly above it. A scatter
+point has no single numeric "value" the way a bar or lollipop does — `x` and
+`y` are two independent, already position-encoded measures — so this labels
+point **identity** instead: points that set `label` get a small text
+annotation above them; points without one draw nothing extra. Default
+`false`.
+
+```jsx live
+const points = [
+  { x: 12, y: 22, label: "Acme" },
+  { x: 34, y: 44, label: "Globex" },
+  { x: 63, y: 66, label: "Initech" },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={260}>
+      {(width, height) => (
+        <ScatterPlot
+          width={width}
+          height={height}
+          points={points}
+          showValues
+          ariaLabel="Scatter plot of three accounts, with identity labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Grouping & color
 
 Give points a `group` and the chart colors them in a fixed categorical order

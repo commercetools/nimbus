@@ -117,6 +117,58 @@ const groupedFixture = [
   { x: 48, y: 58, group: "SUV" },
 ];
 
+/**
+ * `showValues` (Phase B): draws each point's `label` directly above it --
+ * `chart/value-labels.tsx`'s `ValueLabel`. A scatter point has no single
+ * numeric "value" the way a bar or lollipop does -- `x` and `y` are two
+ * independent, already position-encoded measures, so this labels point
+ * IDENTITY (`label`) instead; a point with no `label` draws nothing extra.
+ * Default `false`; omitting the prop renders exactly as before this
+ * existed. Every point in `showValuesFixture` sets a `label`, so two
+ * instances side by side (each its own distinct `ariaLabel`, per this
+ * file's established convention) prove the causal link directly: turning
+ * the prop on adds exactly one new `<text>` per point, not a guessed
+ * string.
+ */
+const showValuesFixture = [
+  { x: 12, y: 22, label: "Acme" },
+  { x: 34, y: 44, label: "Globex" },
+  { x: 63, y: 66, label: "Initech" },
+];
+
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <ScatterPlot
+        width={240}
+        height={240}
+        points={showValuesFixture}
+        ariaLabel="Scatter plot without value labels"
+      />
+      <ScatterPlot
+        width={240}
+        height={240}
+        points={showValuesFixture}
+        showValues
+        ariaLabel="Scatter plot with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (ScatterPlot uses role="img",
+    // not "graphics-document" -- unlike BarChart it has no keyboard-
+    // focusable marks). Axis tick labels render their own nested <svg>
+    // (visx's positioning trick), which don't carry this role attribute, so
+    // they're excluded from this NodeList on their own.
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    expect(textCount(svgs[1])).toBe(
+      textCount(svgs[0]) + showValuesFixture.length
+    );
+  },
+};
+
 export const Texture: BaseStory = {
   render: () => (
     <ScatterPlot

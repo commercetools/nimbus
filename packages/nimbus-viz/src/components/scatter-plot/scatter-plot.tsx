@@ -17,6 +17,7 @@ import type {
   DatumClickHandler,
   DatumHoverHandler,
 } from "../../chart/interaction";
+import { ValueLabel } from "../../chart/value-labels";
 
 export interface ScatterPlotProps<T = ScatterPoint> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -65,6 +66,17 @@ export interface ScatterPlotProps<T = ScatterPoint> {
    * forced-colors context — see `useForcedColors`.
    */
   texture?: boolean;
+  /**
+   * Draw each point's `label` directly above it — `chart/value-labels.tsx`'s
+   * `ValueLabel`. A scatter point has no single numeric "value" the way a
+   * bar or lollipop does: `x` and `y` are two independent, already
+   * position-encoded measures, and picking one to show alone would
+   * misrepresent the point as one-dimensional. So this labels point
+   * IDENTITY instead, drawing the same `label` the tooltip already titles
+   * itself with — points that don't set `label` draw nothing extra. Default
+   * `false` (no change from today's rendering).
+   */
+  showValues?: boolean;
 }
 
 /**
@@ -92,6 +104,7 @@ export function ScatterPlot<T = ScatterPoint>({
   valueFormat,
   quadtreeHitRadius,
   texture,
+  showValues,
 }: ScatterPlotProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -240,45 +253,62 @@ export function ScatterPlot<T = ScatterPoint>({
               tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={bottomTickLabel(theme)}
             />
-            {points.map((p, i) => (
-              <PointMark
-                key={getLabel(p) ?? i}
-                shape={shapeFor(p)}
-                cx={xScale(getX(p))}
-                cy={yScale(getY(p))}
-                // Bold the hovered point by growing it (5px -> 6px); never
-                // dim its siblings -- the existing bump mechanism this chart
-                // already used, unchanged. A stroke outline would be
-                // redundant here on top of the size bump.
-                r={hover === i ? 6 : 5}
-                fill={colorFor(p)}
-                fillOpacity={0.85}
-                stroke={theme.surface}
-                strokeWidth={1}
-                {...(qt
-                  ? {}
-                  : {
-                      onMouseEnter: () => {
-                        setHover(i);
-                        onDatumHover?.({
-                          datum: p,
-                          index: i,
-                          seriesId: getGroup(p),
-                        });
-                      },
-                      onMouseLeave: () => {
-                        setHover(null);
-                        onDatumHover?.(null);
-                      },
-                      onClick: () =>
-                        onDatumClick?.({
-                          datum: p,
-                          index: i,
-                          seriesId: getGroup(p),
-                        }),
-                    })}
-              />
-            ))}
+            {points.map((p, i) => {
+              const cx = xScale(getX(p));
+              const cy = yScale(getY(p));
+              const pointLabel = getLabel(p);
+              return (
+                <g key={pointLabel ?? i}>
+                  <PointMark
+                    shape={shapeFor(p)}
+                    cx={cx}
+                    cy={cy}
+                    // Bold the hovered point by growing it (5px -> 6px);
+                    // never dim its siblings -- the existing bump mechanism
+                    // this chart already used, unchanged. A stroke outline
+                    // would be redundant here on top of the size bump.
+                    r={hover === i ? 6 : 5}
+                    fill={colorFor(p)}
+                    fillOpacity={0.85}
+                    stroke={theme.surface}
+                    strokeWidth={1}
+                    {...(qt
+                      ? {}
+                      : {
+                          onMouseEnter: () => {
+                            setHover(i);
+                            onDatumHover?.({
+                              datum: p,
+                              index: i,
+                              seriesId: getGroup(p),
+                            });
+                          },
+                          onMouseLeave: () => {
+                            setHover(null);
+                            onDatumHover?.(null);
+                          },
+                          onClick: () =>
+                            onDatumClick?.({
+                              datum: p,
+                              index: i,
+                              seriesId: getGroup(p),
+                            }),
+                        })}
+                  />
+                  {showValues && pointLabel && (
+                    <ValueLabel
+                      x={cx}
+                      // 5px matches the point's own base (non-hover) radius
+                      // above; 6px is the same on-mark label gap
+                      // `bar-chart.tsx`'s vertical `showValues` uses.
+                      y={cy - 5 - 6}
+                      text={pointLabel}
+                      anchor="middle"
+                    />
+                  )}
+                </g>
+              );
+            })}
             {qt && (
               <rect
                 x={0}
