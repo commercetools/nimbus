@@ -200,6 +200,60 @@ To follow the app's mode inside a `NimbusProvider`, pass
 `mode={coerceColorMode(useColorMode().colorMode)}`. Colors come from the
 validated `nimbus` chart palette, not CSS.
 
+### Texture (non-color series identity)
+
+Pass `texture` to distinguish series by `strokeDasharray` rhythm, in addition
+to color, so series stay distinguishable without color alone — monochrome
+print, a photocopy, or `forced-colors` mode. This is the stroked-mark
+reference for the same rollout as
+[`StackedBarChart`](/charts/stacked-bar-chart)'s fill-pattern `texture`: the
+rank line has no fill area to texture, so the stroke's dash rhythm is the one
+non-color channel. Only the line carries the dash — the per-rank point
+markers stay plain solid-filled circles either way, since direct end labels
+already carry identity there. The first series keeps a solid stroke; later
+series cycle through dashed/dotted/dash-dot/long-dash. It turns on
+automatically, regardless of this prop, when the OS is already in a
+`forced-colors` context.
+
+```jsx live
+const series = [
+  {
+    id: "a",
+    label: "Running",
+    data: [
+      { x: new Date("2026-01-01"), y: 120 },
+      { x: new Date("2026-02-01"), y: 160 },
+      { x: new Date("2026-03-01"), y: 140 },
+    ],
+  },
+  {
+    id: "b",
+    label: "Trail",
+    data: [
+      { x: new Date("2026-01-01"), y: 150 },
+      { x: new Date("2026-02-01"), y: 140 },
+      { x: new Date("2026-03-01"), y: 170 },
+    ],
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <BumpChart
+          width={width}
+          height={height}
+          series={series}
+          texture
+          ariaLabel="Bump chart with per-series dash rhythm"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ## Responsiveness & performance
 
 Fixed height:
@@ -257,7 +311,8 @@ What you get automatically:
   (contrast + color-vision-deficiency checks), not ad-hoc colors.
 - **Non-color encoding.** Meaning is carried by vertical position (rank), and
   every line is labeled directly at its end, so identity does not depend on
-  color.
+  color; pass `texture` to also vary stroke dash rhythm per series on the
+  line itself.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the series and their ranks
@@ -269,7 +324,7 @@ Accessibility checklist:
 - [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
 - [ ] Meaning does not depend on color alone (rank position and direct end
-      labels carry it here)
+      labels carry it here; `texture` adds a per-series dash rhythm)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)
 - [ ] Surrounding copy names series/ranks rather than colors

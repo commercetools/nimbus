@@ -8,6 +8,8 @@ import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
+import { strokeDasharrayFor } from "../../chart/stroke-styles";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { Series, SeriesPoint } from "../../chart/types";
@@ -32,6 +34,19 @@ export interface BumpChartProps extends DatumInteractionProps<SeriesPoint> {
   valueFormat?: (n: number) => string;
   /** Formats date displays (axis ticks, tooltip dates). Defaults to a locale-aware short month+day formatter (e.g. `Aug 28`); overrides any surrounding `ChartLocaleProvider`. */
   dateFormat?: (d: Date) => string;
+  /**
+   * Distinguish series by a `strokeDasharray` rhythm
+   * (`chart/stroke-styles.ts`), in addition to color, so series stay
+   * distinguishable without color alone — monochrome print, a photocopy, or
+   * `forced-colors` mode. A fill `patternFill` (`chart/patterns.tsx`) is not
+   * used here: the rank line has no fill area at all, so the stroke's dash
+   * rhythm is the one non-color channel. Only the line itself carries the
+   * dash — the per-rank point markers stay plain solid-filled circles either
+   * way. Default `false` (color only, unchanged). Turned on automatically
+   * (regardless of this prop) when the OS is already in a forced-colors
+   * context — see `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 /** One series' rank at a single x-index (rank 1 = highest y). */
@@ -59,6 +74,7 @@ export function BumpChart({
   valueFormat,
   onDatumClick,
   onDatumHover,
+  texture,
 }: BumpChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -69,9 +85,15 @@ export function BumpChart({
   const fmtX = (x: number | Date): string =>
     x instanceof Date ? dateFmt(x) : valueFmt(x);
   const [hover, setHover] = useState<{ si: number; i: number } | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
   const color = useEntityColors(
     useMemo(() => series.map((s) => s.id), [series])
   );
+  // In forced-colors context, real hues aren't preserved by the OS anyway --
+  // one system foreground color for every series, with the line's dash
+  // rhythm (below) as the only identity carrier.
+  const colorFor = (id: string) => (forcedColors ? "CanvasText" : color(id));
 
   const n = useMemo(
     () => series.reduce((m, s) => Math.max(m, s.data.length), 0),
@@ -169,7 +191,10 @@ export function BumpChart({
             />
 
             {ranked.map((s, si) => {
-              const stroke = color(s.id);
+              const stroke = colorFor(s.id);
+              const dash = effectiveTexture
+                ? strokeDasharrayFor(si)
+                : undefined;
               const last = s.points[s.points.length - 1];
               const dimmed = hover != null && hover.si !== si;
               return (
@@ -181,6 +206,7 @@ export function BumpChart({
                     curve={curveMonotoneX}
                     stroke={stroke}
                     strokeWidth={hover?.si === si ? 3 : 2}
+                    strokeDasharray={dash}
                     fill="none"
                   />
                   {s.points.map((d) => (

@@ -1,4 +1,5 @@
 import type { Meta } from "@storybook/react-vite";
+import { expect } from "storybook/test";
 import { BumpChart, ResponsiveContainer } from "../../";
 import type { BaseStory } from "../../stories/base-story";
 
@@ -52,3 +53,44 @@ const meta: Meta = {
 export default meta;
 
 export const Base: BaseStory = {};
+
+/**
+ * `D2/D3-rest`: `texture` distinguishes series by `strokeDasharray` rhythm
+ * (in addition to color) -- the stroked-mark reference for this rollout,
+ * same as `LineChart`'s own `Texture` story: the rank line has no fill area
+ * to texture, so the dash rhythm on the stroke is the one non-color channel.
+ * Only the line carries the dash -- the per-rank point markers stay plain
+ * solid-filled circles either way. Proven directly: the first series
+ * (`Alpha`) keeps a solid stroke (no `stroke-dasharray` attribute at all),
+ * later series get a real dash pattern.
+ */
+export const Texture: BaseStory = {
+  render: () => (
+    <BumpChart
+      width={420}
+      height={280}
+      series={series}
+      texture
+      ariaLabel="Bump chart with per-series dash rhythm"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the chart's own <svg role="img">: AxisLeft/AxisBottom render
+    // their own nested <svg> for tick-label positioning (visx's positioning
+    // trick), which would otherwise match too and carry no marks of their
+    // own.
+    const chart = canvasElement.querySelector<SVGElement>('svg[role="img"]');
+    expect(chart).toBeTruthy();
+    const lines = Array.from(
+      chart!.querySelectorAll<SVGPathElement>("path.visx-linepath")
+    );
+    expect(lines).toHaveLength(series.length);
+    expect(lines[0]).not.toHaveAttribute("stroke-dasharray"); // first series: unchanged solid stroke
+    expect(lines[1]).toHaveAttribute("stroke-dasharray"); // second series: dash-encoded
+    expect(lines[1].getAttribute("stroke-dasharray")).not.toBe("");
+    // Per-rank point markers stay plain circles -- dash doesn't apply to them.
+    const circles = chart!.querySelectorAll("circle");
+    const totalPoints = series.reduce((n, s) => n + s.data.length, 0);
+    expect(circles).toHaveLength(totalPoints);
+  },
+};
