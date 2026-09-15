@@ -48,6 +48,10 @@ export type {
 } from "./chart/format-locale";
 export { ChartPatternDefs, patternFill } from "./chart/patterns";
 export type { ChartPatternDefsProps, PatternKind } from "./chart/patterns";
+export { dashKindFor, strokeDasharrayFor } from "./chart/stroke-styles";
+export type { DashKind } from "./chart/stroke-styles";
+export { PointMark, pointShapeFor } from "./chart/point-shapes";
+export type { PointMarkProps, PointShapeKind } from "./chart/point-shapes";
 export { FacetGrid } from "./chart/facet-grid";
 export type { FacetGridProps, Facet } from "./chart/facet-grid";
 export { lttb } from "./chart/decimate";
