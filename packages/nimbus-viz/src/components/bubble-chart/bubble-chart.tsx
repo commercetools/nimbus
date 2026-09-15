@@ -19,6 +19,7 @@ import type {
   DatumClickHandler,
   DatumHoverHandler,
 } from "../../chart/interaction";
+import { ValueLabel } from "../../chart/value-labels";
 
 /** A point with a third magnitude encoded as bubble area. */
 export type BubblePoint = {
@@ -59,10 +60,24 @@ export interface BubbleChartProps {
    * `useForcedColors`.
    */
   texture?: boolean;
+  /**
+   * Draw each bubble's `size` value directly above its own top edge --
+   * `chart/value-labels.tsx`'s `ValueLabel`. Skipped for any bubble whose
+   * radius is under `MIN_LABEL_RADIUS` (8px, 2x `R_MIN`) -- below that
+   * threshold the label would sit closer to the bubble than the bubble's
+   * own diameter, reading as clutter rather than an annotation (the same
+   * kind of minimum-size guard `BC-2`'s negative-size clamp already applies
+   * to a bubble's radius, applied here to the label instead -- a
+   * negative-size bubble is drawn at `R_MIN`, well under the gate, so it
+   * never gets a misleading label either). Default `false` (no change from
+   * today's rendering).
+   */
+  showValues?: boolean;
 }
 
 const R_MIN = 4;
 const R_MAX = 28;
+const MIN_LABEL_RADIUS = 8;
 
 /**
  * Two-variable relationship with a third magnitude on bubble AREA (a sqrt
@@ -82,6 +97,7 @@ export function BubbleChart({
   children,
   valueFormat,
   texture,
+  showValues,
 }: BubbleChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -285,6 +301,13 @@ export function BubbleChart({
                       onDatumClick?.({ datum: p, index: i, seriesId: p.group })
                     }
                   />
+                  {showValues && r >= MIN_LABEL_RADIUS && (
+                    <ValueLabel
+                      x={xScale(p.x)}
+                      y={yScale(p.y) - r - 6}
+                      text={valueFmt(p.size)}
+                    />
+                  )}
                 </g>
               );
             })}

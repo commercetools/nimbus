@@ -135,6 +135,39 @@ magnitude. Bubbles are drawn largest-first so smaller ones stay hoverable on
 top, and a **size legend** of reference circles (at the max and roughly a third
 of it) is always rendered in the corner to decode the area channel.
 
+### Value labels
+
+Pass `showValues` to draw each bubble's `size` value directly above its own
+top edge. Bubbles under 8px in radius (2x the minimum bubble radius) skip the
+label — below that the annotation would sit closer to the bubble than the
+bubble's own diameter, reading as clutter rather than a value. Default
+`false`.
+
+```jsx live
+const points = [
+  { x: 22, y: 38, size: 320, label: "Acme" },
+  { x: 44, y: 52, size: 680, label: "Globex" },
+  { x: 61, y: 30, size: 210, label: "Initech" },
+  { x: 73, y: 66, size: 900, label: "Umbrella" },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <BubbleChart
+          width={width}
+          height={height}
+          points={points}
+          showValues
+          ariaLabel="Bubble chart of margin vs. growth sized by revenue, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Grouping & color
 
 Give bubbles a `group` and the chart colors them in a fixed categorical order

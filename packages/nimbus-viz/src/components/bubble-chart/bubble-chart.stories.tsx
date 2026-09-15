@@ -185,6 +185,46 @@ export const HoverEmphasis: BaseStory = {
   },
 };
 
+/**
+ * `showValues` (Phase B): draws each bubble's `size` value above its own
+ * top edge -- `chart/value-labels.tsx`'s `ValueLabel`. Every bubble in the
+ * meta-level `points` fixture clears `MIN_LABEL_RADIUS` (the smallest,
+ * "Epsilon" at size 20, gets radius ~16px against this fixture's maxSize of
+ * 80 -- well above the 8px gate), so turning the prop on adds exactly one
+ * label per point. Two instances side by side (each its own distinct
+ * `ariaLabel`, per this file's established convention) prove the causal
+ * link directly, not a guessed formatted string.
+ */
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <BubbleChart
+        width={280}
+        height={280}
+        points={points}
+        ariaLabel="Bubble chart without value labels"
+      />
+      <BubbleChart
+        width={280}
+        height={280}
+        points={points}
+        showValues
+        ariaLabel="Bubble chart with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (BubbleChart uses role="img").
+    // Axis tick labels render their own nested <svg> (visx's positioning
+    // trick), which don't carry this role attribute, so they're excluded
+    // from this NodeList on their own.
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    expect(textCount(svgs[1])).toBe(textCount(svgs[0]) + points.length);
+  },
+};
+
 /** `bubble-chart.mdx` "API reference": renders `null` for empty `points`. */
 export const EdgeCaseEmpty: BaseStory = {
   render: () => <BubbleChart width={200} height={200} points={[]} />,
