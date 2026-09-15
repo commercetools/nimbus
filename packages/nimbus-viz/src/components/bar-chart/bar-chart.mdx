@@ -336,13 +336,23 @@ Don't list individual values in the label; the data-table fallback carries them.
 
 What you get automatically:
 
-- **Labeled graphic.** The SVG is `role="img"` with your `ariaLabel` (a default
+- **Labeled graphic.** The SVG's `role` is `"graphics-document"` (the WAI-ARIA
+  Graphics Module container role — not the library's usual `"img"`, which by
+  definition disallows focusable descendants) with your `ariaLabel` (a default
   of `"Bar chart of N categories"` is generated if you omit it).
+- **Keyboard-operable bars.** Each bar is a real Tab stop: one bar carries
+  `role="button"`, an `aria-label` of `"{category}: {formatted value}"`, and
+  `tabIndex={0}` at a time (roving tabindex — the rest are `-1`, so Tab never
+  has to step through every bar to leave the chart). ArrowRight/ArrowLeft
+  (vertical) or ArrowDown/ArrowUp (horizontal) move the focused bar; focusing
+  one reports it through `onDatumHover`, driving the same tooltip a mouse hover
+  would; Enter/Space activate `onDatumClick`; Escape blurs, dismissing the
+  tooltip without losing the roving position.
 - **Data-table fallback (WCAG 1.1.1).** `BarChart` passes a `table` to
   `ChartContainer`, which renders a visually-hidden `DataTable` (columns
   **Category**, **Value**) into the accessibility tree, plus a keyboard "View
   data as table" toggle that reveals it in place — so the numbers are available
-  as text, not just the one-line label.
+  as text, not just the one-line label. It sits in Tab order after every bar.
 - **CVD-safe palette.** The accent comes from the validated chart theme
   (contrast + color-vision-deficiency checks), not an ad-hoc color.
 - **Non-color encoding.** Direction from the zero baseline (up/right vs.
@@ -364,6 +374,8 @@ Accessibility checklist:
       un-validated colors)
 - [ ] Surrounding copy names categories/values rather than colors
 - [ ] Motion respected where present — N/A, this chart does not animate
+- [ ] Marks are keyboard-operable — Tab, arrow keys, Enter/Space, Escape (built
+      in, no configuration needed)
 
 ## States
 

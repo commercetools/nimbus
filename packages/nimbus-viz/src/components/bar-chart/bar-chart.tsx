@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState } from "react";
-import type { ReactElement, ReactNode } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import type { KeyboardEvent, ReactElement, ReactNode } from "react";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import type { AxisScale } from "@visx/axis";
@@ -99,6 +99,11 @@ export function BarChart<T = CategoryDatum>({
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
+  // D1-rest: roving tabindex bookkeeping (see the handlers built below, once
+  // `rows` exists) -- which bar is the current Tab stop, and the live DOM
+  // refs `moveFocus` calls `.focus()` on.
+  const [rovingIndex, setRovingIndex] = useState(0);
+  const barRefs = useRef<(SVGPathElement | null)[]>([]);
 
   /** `"log"` requires a strictly positive domain; this chart's domain always
    *  spans down to 0, so fall back to linear rather than a degenerate axis. */
@@ -140,6 +145,36 @@ export function BarChart<T = CategoryDatum>({
   );
   const hasNegative = rows.some((d) => getVal(d) < 0);
 
+  // Roving tabindex (WAI-ARIA APG pattern for a group of many same-purpose
+  // controls): exactly one bar is a Tab stop at a time; Left/Right
+  // (vertical) or Up/Down (horizontal) move it and move real DOM focus onto
+  // that bar. Focusing a bar shows its tooltip -- the keyboard equivalent of
+  // hover; Escape blurs (dismisses the tooltip) without losing the roving
+  // position; Enter/Space activate `onDatumClick`, since `role="button"`
+  // (below) promises that per WAI-ARIA.
+  const moveFocus = (nextIndex: number) => {
+    const clamped = Math.max(0, Math.min(rows.length - 1, nextIndex));
+    setRovingIndex(clamped);
+    barRefs.current[clamped]?.focus();
+  };
+  const handleBarKeyDown =
+    (i: number) => (e: KeyboardEvent<SVGPathElement>) => {
+      const nextKey = orientation === "horizontal" ? "ArrowDown" : "ArrowRight";
+      const prevKey = orientation === "horizontal" ? "ArrowUp" : "ArrowLeft";
+      if (e.key === nextKey) {
+        e.preventDefault();
+        moveFocus(i + 1);
+      } else if (e.key === prevKey) {
+        e.preventDefault();
+        moveFocus(i - 1);
+      } else if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onDatumClick?.({ datum: rows[i], index: i });
+      } else if (e.key === "Escape") {
+        e.currentTarget.blur();
+      }
+    };
+
   if (width <= 0 || height <= 0 || rows.length === 0) return null;
 
   const label = ariaLabel ?? `Bar chart of ${rows.length} categories`;
@@ -155,6 +190,7 @@ export function BarChart<T = CategoryDatum>({
         height={height}
         margin={{ top: 8, right: 48, bottom: 12, left: 100 }}
         ariaLabel={label}
+        svgRole="graphics-document"
         table={table}
       >
         {({ innerWidth, innerHeight }) => {
@@ -214,6 +250,22 @@ export function BarChart<T = CategoryDatum>({
                           : theme.accent
                       }
                       opacity={active ? 1 : 0.4}
+                      innerRef={(el) => {
+                        barRefs.current[i] = el;
+                      }}
+                      tabIndex={rovingIndex === i ? 0 : -1}
+                      role="button"
+                      aria-label={`${getCat(d)}: ${valueFmt(getVal(d))}`}
+                      onFocus={() => {
+                        setRovingIndex(i);
+                        setHover(i);
+                        onDatumHover?.({ datum: d, index: i });
+                      }}
+                      onBlur={() => {
+                        setHover(null);
+                        onDatumHover?.(null);
+                      }}
+                      onKeyDown={handleBarKeyDown(i)}
                     />
                     <text
                       x={-8}
@@ -251,6 +303,7 @@ export function BarChart<T = CategoryDatum>({
       height={height}
       margin={{ top: 12, right: 12, bottom: 28, left: 40 }}
       ariaLabel={label}
+      svgRole="graphics-document"
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
@@ -333,6 +386,12 @@ export function BarChart<T = CategoryDatum>({
                       : theme.accent
                   }
                   opacity={active ? 1 : 0.4}
+                  innerRef={(el) => {
+                    barRefs.current[i] = el;
+                  }}
+                  tabIndex={rovingIndex === i ? 0 : -1}
+                  role="button"
+                  aria-label={`${getCat(d)}: ${valueFmt(getVal(d))}`}
                   onMouseEnter={() => {
                     setHover(i);
                     onDatumHover?.({ datum: d, index: i });
@@ -341,6 +400,16 @@ export function BarChart<T = CategoryDatum>({
                     setHover(null);
                     onDatumHover?.(null);
                   }}
+                  onFocus={() => {
+                    setRovingIndex(i);
+                    setHover(i);
+                    onDatumHover?.({ datum: d, index: i });
+                  }}
+                  onBlur={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onKeyDown={handleBarKeyDown(i)}
                   onClick={() => onDatumClick?.({ datum: d, index: i })}
                 />
               );

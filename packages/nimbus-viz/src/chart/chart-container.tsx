@@ -55,6 +55,10 @@ export interface ChartContainerProps {
   emptyMessage?: string;
   /** Accessible label for the SVG frame. */
   ariaLabel?: string;
+  /** Forwarded to `ChartFrame`'s `role` -- see its own doc comment. Default
+   * `"img"`; override to `"graphics-document"` only when this chart wires
+   * real keyboard-focusable marks (roving tabindex). */
+  svgRole?: "img" | "graphics-document";
   background?: boolean;
   margin?: Margin;
   /**
@@ -96,6 +100,7 @@ export function ChartContainer({
   loading = false,
   error,
   ariaLabel,
+  svgRole,
   background,
   margin,
   table,
@@ -184,6 +189,7 @@ export function ChartContainer({
           margin={margin}
           background={background}
           ariaLabel={ariaLabel}
+          role={svgRole}
         >
           {children}
         </ChartFrame>

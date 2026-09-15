@@ -26,10 +26,13 @@ const fixture: CategoryDatum[] = [
 export const Base: BaseStory = {};
 
 /**
- * Proves the two accessibility features `bar-chart.mdx` claims:
- * `role="img"` + a real `aria-label`, and the keyboard-reachable data-table
- * fallback (WCAG 1.1.1) that `ChartContainer` renders whenever `table` is
- * passed — which `BarChart` does, in both orientations.
+ * Proves the accessibility features `bar-chart.mdx` claims: `role`
+ * (`"graphics-document"`, not the library default `"img"` — `D1-rest`'s
+ * roving-tabindex marks need a container role that allows focusable
+ * descendants, which `"img"` deliberately does not) + a real `aria-label`,
+ * and the keyboard-reachable data-table fallback (WCAG 1.1.1) that
+ * `ChartContainer` renders whenever `table` is passed — which `BarChart`
+ * does, in both orientations.
  */
 export const Accessibility: BaseStory = {
   render: () => (
@@ -45,7 +48,7 @@ export const Accessibility: BaseStory = {
 
     await step("SVG carries the accessible label", async () => {
       const svg = canvasElement.querySelector("svg");
-      expect(svg).toHaveAttribute("role", "img");
+      expect(svg).toHaveAttribute("role", "graphics-document");
       expect(svg).toHaveAttribute(
         "aria-label",
         "Bar chart of revenue by channel, where Web leads"
@@ -55,10 +58,15 @@ export const Accessibility: BaseStory = {
     await step(
       "Data table is reachable by keyboard, not just by mouse",
       async () => {
-        await userEvent.tab();
         const toggle = canvas.getByRole("button", {
           name: /view data as table/i,
         });
+        // `D1-rest`'s focusable bars are earlier Tab stops than the toggle
+        // (5 bars ahead of it in DOM order) -- tab until it's reached
+        // rather than assuming a fixed count.
+        for (let i = 0; i < 10 && document.activeElement !== toggle; i++) {
+          await userEvent.tab();
+        }
         expect(toggle).toHaveFocus();
 
         await userEvent.keyboard("{Enter}");
@@ -105,10 +113,10 @@ export const Orientation: BaseStory = {
 
 /**
  * `onDatumClick`/`onDatumHover` (`bar-chart.mdx` "Interaction callbacks").
- * Bars render as `<path>` via `@visx/shape`'s `BarRounded`, with no
- * accessible role of their own (`TODO.md` `D1-rest` — individual mark
- * labeling isn't done anywhere in the library yet), so a real mark is only
- * reachable via a raw DOM query here, not `getByRole`.
+ * Bars render as `<path>` via `@visx/shape`'s `BarRounded`. Since `D1-rest`
+ * they DO carry `role="button"` + a real `aria-label` (see `KeyboardNav`
+ * below), but this story predates that and a plain DOM query still works
+ * fine for a mouse-driven hover/click check, so it's left as-is.
  */
 const handleDatumClick = fn();
 const handleDatumHover = fn();
@@ -144,6 +152,74 @@ export const Interaction: BaseStory = {
         expect(call?.index).toBe(0);
       }
     );
+  },
+};
+
+/**
+ * `D1-rest`: roving-tabindex keyboard traversal of individual bars. Tab
+ * enters the chart on the first bar (its own `tabIndex` starts at 0, every
+ * other bar at -1); ArrowRight/ArrowLeft move both the roving tab stop and
+ * real DOM focus; focusing a bar reports it through `onDatumHover` -- the
+ * keyboard equivalent of hover, which is what shows its tooltip; Enter/Space
+ * activate `onDatumClick`, since each bar's `role="button"` promises that
+ * per WAI-ARIA; Escape blurs (dismissing the tooltip) without losing the
+ * roving position.
+ */
+const handleKeyNavClick = fn();
+const handleKeyNavHover = fn();
+
+export const KeyboardNav: BaseStory = {
+  render: () => (
+    <BarChart
+      width={480}
+      height={280}
+      data={fixture}
+      onDatumClick={handleKeyNavClick}
+      onDatumHover={handleKeyNavHover}
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const bars = () =>
+      Array.from(
+        canvasElement.querySelectorAll<SVGPathElement>('path[role="button"]')
+      );
+
+    await step("Tab enters the chart on the first bar", async () => {
+      await userEvent.tab();
+      expect(document.activeElement).toBe(bars()[0]);
+      expect(bars()[0]).toHaveAttribute("tabindex", "0");
+      expect(bars()[1]).toHaveAttribute("tabindex", "-1");
+      await waitFor(() => expect(handleKeyNavHover).toHaveBeenCalled());
+      expect(handleKeyNavHover.mock.calls.at(-1)![0]?.index).toBe(0);
+    });
+
+    await step("ArrowRight moves the roving tab stop and focus", async () => {
+      await userEvent.keyboard("{ArrowRight}");
+      expect(document.activeElement).toBe(bars()[1]);
+      expect(bars()[0]).toHaveAttribute("tabindex", "-1");
+      expect(bars()[1]).toHaveAttribute("tabindex", "0");
+      expect(handleKeyNavHover.mock.calls.at(-1)![0]?.index).toBe(1);
+    });
+
+    await step("ArrowLeft moves back", async () => {
+      await userEvent.keyboard("{ArrowLeft}");
+      expect(document.activeElement).toBe(bars()[0]);
+      expect(handleKeyNavHover.mock.calls.at(-1)![0]?.index).toBe(0);
+    });
+
+    await step("Enter activates onDatumClick for the focused bar", async () => {
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() => expect(handleKeyNavClick).toHaveBeenCalled());
+      const call = handleKeyNavClick.mock.calls.at(-1)![0];
+      expect(call?.datum).toEqual(fixture[0]);
+      expect(call?.index).toBe(0);
+    });
+
+    await step("Escape blurs, dismissing the tooltip", async () => {
+      await userEvent.keyboard("{Escape}");
+      expect(document.activeElement).not.toBe(bars()[0]);
+      expect(handleKeyNavHover).toHaveBeenLastCalledWith(null);
+    });
   },
 };
 
@@ -321,7 +397,7 @@ export const ValueScaleSymlog: BaseStory = {
   ),
   play: async ({ canvasElement }) => {
     const [linearSvg, symlogSvg] = Array.from(
-      canvasElement.querySelectorAll('svg[role="img"]')
+      canvasElement.querySelectorAll('svg[role="graphics-document"]')
     );
     const barHeight = (svg: Element, i: number) =>
       Array.from(
@@ -366,7 +442,7 @@ export const ValueScaleLogFallsBackToLinear: BaseStory = {
   ),
   play: async ({ canvasElement }) => {
     const [linearSvg, logSvg] = Array.from(
-      canvasElement.querySelectorAll('svg[role="img"]')
+      canvasElement.querySelectorAll('svg[role="graphics-document"]')
     );
     const heights = (svg: Element) =>
       Array.from(

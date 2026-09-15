@@ -18,6 +18,18 @@ export interface ChartFrameProps {
   background?: boolean;
   /** Accessible label; the frame renders as role="img". */
   ariaLabel?: string;
+  /**
+   * Override the SVG's ARIA role. Default `"img"` -- correct for every
+   * chart with no focusable descendants (all of them, today, except where
+   * noted below). `"img"`'s ARIA definition treats its whole subtree as one
+   * opaque graphic with no exposed children, so a chart that wires real
+   * keyboard-focusable marks (roving tabindex -- see `bar-chart.tsx`) MUST
+   * override this to `"graphics-document"`, the WAI-ARIA Graphics Module's
+   * container role, which (unlike `"img"`) allows focusable descendants.
+   * Leaving `"img"` while a mark is focusable is an axe `nested-interactive`
+   * violation, caught by `addon-a11y`'s `test: "error"` mode.
+   */
+  role?: "img" | "graphics-document";
   /** Render-prop receiving the inner (margin-inset) plot dimensions. */
   children: (dims: InnerDims) => ReactNode;
 }
@@ -37,6 +49,7 @@ export function ChartFrame({
   margin = DEFAULT_MARGIN,
   background = false,
   ariaLabel,
+  role = "img",
   children,
 }: ChartFrameProps) {
   const theme = useChartTheme();
@@ -46,7 +59,7 @@ export function ChartFrame({
     <svg
       width={width}
       height={height}
-      role="img"
+      role={role}
       aria-label={ariaLabel}
       style={chartRootStyle()}
     >
