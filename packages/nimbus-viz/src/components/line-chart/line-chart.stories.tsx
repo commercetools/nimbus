@@ -451,3 +451,54 @@ export const Decimated: BaseStory = {
     expect(Math.max(...ys) - Math.min(...ys)).toBeGreaterThan(20);
   },
 };
+
+/**
+ * `D2/D3-rest`: `texture` distinguishes series by `strokeDasharray` rhythm
+ * (in addition to color), the stroked-mark reference for this rollout — a
+ * fill `patternFill` doesn't apply to a `"line"` series (no fill area), and
+ * `"area"`'s fill is too light (16% opacity) for a pattern to read, so the
+ * dash rhythm on the stroke is the one non-color channel for both variants.
+ * Proven directly on both: the first series stays a solid stroke (no
+ * `strokeDasharray` attribute at all), the second gets a real dash pattern.
+ */
+export const Texture: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <LineChart
+        width={420}
+        height={200}
+        series={fixture}
+        texture
+        ariaLabel="Line chart (line variant) with per-series dash rhythm"
+      />
+      <LineChart
+        width={420}
+        height={200}
+        series={fixture}
+        variant="area"
+        texture
+        ariaLabel="Line chart (area variant) with per-series dash rhythm"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the chart's own <svg role="img">: axis tick labels render
+    // their own nested <svg> (visx's positioning trick), which would
+    // otherwise match too and carry no marks of their own.
+    const charts = Array.from(
+      canvasElement.querySelectorAll<SVGElement>('svg[role="img"]')
+    );
+    expect(charts).toHaveLength(2); // line variant + area variant
+    for (const el of charts) {
+      const marks = Array.from(
+        el.querySelectorAll<SVGPathElement>(
+          "path.visx-linepath, path.visx-area-closed"
+        )
+      );
+      expect(marks).toHaveLength(2); // one path per series
+      expect(marks[0]).not.toHaveAttribute("stroke-dasharray"); // first series: unchanged solid stroke
+      expect(marks[1]).toHaveAttribute("stroke-dasharray"); // second series: dash-encoded
+      expect(marks[1].getAttribute("stroke-dasharray")).not.toBe("");
+    }
+  },
+};

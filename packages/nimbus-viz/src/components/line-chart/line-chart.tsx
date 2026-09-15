@@ -11,6 +11,8 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
 import { lttb } from "../../chart/decimate";
+import { strokeDasharrayFor } from "../../chart/stroke-styles";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { Series, SeriesPoint } from "../../chart/types";
@@ -50,6 +52,19 @@ export interface LineChartProps<T = SeriesPoint> extends InteractionProps<T> {
    * is drawn (today's default, unchanged).
    */
   decimateThreshold?: number;
+  /**
+   * Distinguish series by a `strokeDasharray` rhythm
+   * (`chart/stroke-styles.ts`), in addition to color, so series stay
+   * distinguishable without color alone — monochrome print, a photocopy,
+   * or `forced-colors` mode. A fill `patternFill` (`chart/patterns.tsx`)
+   * is not used here: `"line"` has no fill area at all, and `"area"`'s
+   * fill is a light 16%-opacity wash under the stroke — too faint for a
+   * texture to read — so the stroke's dash rhythm is the one non-color
+   * channel for both variants. Default `false` (color only, unchanged).
+   * Turned on automatically (regardless of this prop) when the OS is
+   * already in a forced-colors context — see `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 const toDate = (x: number | Date): Date =>
@@ -85,12 +100,15 @@ export function LineChart<T = SeriesPoint>({
   onSelectionChange,
   children,
   decimateThreshold,
+  texture,
 }: LineChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
   // Crossfilter-style semantics, matching `SelectionProps`'s own "linked
   // views / crossfilter" contract: an EMPTY selection means no filter --
   // every series shown (today's unchanged default). Clicking a legend item
@@ -149,7 +167,11 @@ export function LineChart<T = SeriesPoint>({
 
   if (width <= 0 || height <= 0 || series.length === 0) return null;
 
-  const colorFor = (i: number) => color(series[i].id);
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every series, with the per-series
+  // dash rhythm / pattern fill (below) as the only identity carrier.
+  const colorFor = (i: number) =>
+    forcedColors ? "CanvasText" : color(series[i].id);
   const showLegend = series.length >= 2;
   const table = {
     columns: ["Date", ...series.map((s) => s.label)],
@@ -271,6 +293,7 @@ export function LineChart<T = SeriesPoint>({
             {series.map((s, i) => {
               const color = colorFor(i);
               const visible = !isFiltering || activeSelection.has(s.id);
+              const dash = effectiveTexture ? strokeDasharrayFor(i) : undefined;
               return variant === "area" ? (
                 <AreaClosed<T>
                   key={s.id}
@@ -285,6 +308,7 @@ export function LineChart<T = SeriesPoint>({
                   fillOpacity={0.16}
                   stroke={color}
                   strokeWidth={2}
+                  strokeDasharray={dash}
                   opacity={visible ? 1 : 0}
                 />
               ) : (
@@ -298,6 +322,7 @@ export function LineChart<T = SeriesPoint>({
                   defined={(p) => getY(p) != null}
                   stroke={color}
                   strokeWidth={2}
+                  strokeDasharray={dash}
                 />
               );
             })}
