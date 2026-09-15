@@ -3,6 +3,8 @@ import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useEntityColors } from "../../theme";
 import { formatPercent } from "../../chart/format";
+import { ChartPatternDefs, patternFill } from "../../chart/patterns";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import type { CategoryDatum } from "../../chart/types";
 import type { DatumInteractionProps } from "../../chart/interaction";
 
@@ -18,6 +20,16 @@ export interface WaffleChartProps extends DatumInteractionProps<CategoryDatum> {
   cells?: number;
   /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
+  /**
+   * Fill each owned cell with a per-category SVG texture
+   * (`chart/patterns.tsx`) in addition to its color, so categories stay
+   * distinguishable by shape alone — monochrome print, a photocopy, or
+   * `forced-colors` mode, where the OS flattens hue and the color-only
+   * encoding stops working. Default `false` (color only, unchanged). Turned
+   * on automatically (regardless of this prop) when the OS is already in a
+   * forced-colors context — see `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 /**
@@ -57,8 +69,11 @@ export function WaffleChart({
   ariaLabel,
   onDatumClick,
   onDatumHover,
+  texture,
 }: WaffleChartProps) {
   const [hover, setHover] = useState<string | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
   const total = useMemo(
     () => data.reduce((s, d) => s + Math.max(0, d.value), 0),
     [data]
@@ -66,6 +81,11 @@ export function WaffleChart({
   const color = useEntityColors(
     useMemo(() => data.map((d) => d.category), [data])
   );
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every category, with the per-category
+  // pattern kind (below) as the only identity carrier.
+  const colorFor = (i: number) =>
+    forcedColors ? "CanvasText" : color(data[i].category);
 
   // One category index per grid cell, filled category-by-category.
   const cellOwners = useMemo(() => {
@@ -101,9 +121,9 @@ export function WaffleChart({
       height={height}
       margin={{ top: 8, right: 8, bottom: 8, left: 8 }}
       ariaLabel={ariaLabel ?? `Waffle chart of ${data.length} categories`}
-      legend={data.map((d) => ({
+      legend={data.map((d, i) => ({
         label: d.category,
-        color: color(d.category),
+        color: colorFor(i),
       }))}
       table={table}
     >
@@ -115,6 +135,9 @@ export function WaffleChart({
         const offsetY = (innerHeight - gridSize) / 2;
         return (
           <>
+            {effectiveTexture && (
+              <ChartPatternDefs colors={data.map((_, i) => colorFor(i))} />
+            )}
             {Array.from({ length: cells * cells }, (_, idx) => {
               // Fill bottom-to-top so the grid "grows" upward.
               const rowFromTop = Math.floor(idx / cells);
@@ -131,7 +154,13 @@ export function WaffleChart({
                   width={Math.max(0, side - gap)}
                   height={Math.max(0, side - gap)}
                   rx={2}
-                  fill={cat != null ? color(cat) : undefined}
+                  fill={
+                    cat == null
+                      ? undefined
+                      : effectiveTexture
+                        ? patternFill(owner)
+                        : colorFor(owner)
+                  }
                   fillOpacity={cat == null ? 0 : dimmed ? 0.3 : 1}
                   onMouseEnter={() => {
                     if (cat == null || owner == null) return;

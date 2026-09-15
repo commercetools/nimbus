@@ -162,6 +162,41 @@ To follow the app's mode inside a `NimbusProvider`, pass
 validated `nimbus` categorical palette (contrast + color-vision-deficiency
 checks), not ad-hoc CSS colors.
 
+### Texture (non-color category identity)
+
+Pass `texture` to fill each owned cell with a per-category SVG pattern, in
+addition to color, so categories stay distinguishable without color alone —
+monochrome print, a photocopy, or `forced-colors` mode. It turns on
+automatically, regardless of this prop, when the OS is already in a
+`forced-colors` context. The legend swatches stay plain colors — only the
+grid cells get the pattern.
+
+```jsx live
+const data = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+  { category: "Partner", value: 1800 },
+  { category: "Email", value: 1200 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <WaffleChart
+          width={width}
+          height={height}
+          data={data}
+          texture
+          ariaLabel="Waffle chart with per-category textures"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ## Responsiveness & performance
 
 Fixed height:
@@ -215,7 +250,10 @@ What you get automatically:
   palette, and the always-present legend maps each color back to its category,
   so color identity is not left to the eye alone.
 - **Non-color encoding.** Cell count carries the share; the legend and data
-  table carry the identities and exact numbers.
+  table carry the identities and exact numbers. Pass `texture` to also vary
+  each cell's fill **pattern** per category (or rely on it turning on
+  automatically in a `forced-colors` context) for a non-color path on the
+  chart itself, not just in the legend/table.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the categories rather than
@@ -225,7 +263,8 @@ Accessibility checklist:
 
 - [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
-- [ ] Meaning does not depend on color alone (cell count + legend + table)
+- [ ] Meaning does not depend on color alone (cell count + legend + table, or
+      cell pattern with `texture`)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)
 - [ ] Surrounding copy names categories/values rather than colors
