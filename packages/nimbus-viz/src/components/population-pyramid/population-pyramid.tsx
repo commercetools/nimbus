@@ -12,6 +12,8 @@ import { devWarn } from "../../chart/dev-warn";
 import { ChartPatternDefs, patternFill } from "../../chart/patterns";
 import { useForcedColors } from "../../chart/use-forced-colors";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { clamp, plotPointerPosition } from "../../chart/pointer";
 
 export interface PopulationPyramidProps extends DatumInteractionProps<StackRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -65,6 +67,13 @@ export function PopulationPyramid({
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ r: number; side: 0 | 1 } | null>(null);
+  // Live pointer x (plot-local), while a bar is being hovered by the mouse
+  // -- this chart's value axis runs along x, so the tooltip tracks the
+  // pointer here rather than on y (the category axis, which stays snapped
+  // to the hovered row's own band position). Null once the pointer leaves,
+  // so the tooltip falls back to the central gutter rather than a stale
+  // coordinate from a previous hover.
+  const [pointerX, setPointerX] = useState<number | null>(null);
   const forcedColors = useForcedColors();
   const effectiveTexture = texture || forcedColors;
 
@@ -128,11 +137,16 @@ export function PopulationPyramid({
     ]),
   };
 
+  // Named so the pointer math below (which needs the same left/top offset
+  // xScale/yScale are drawn relative to) can never drift from what's
+  // actually passed to ChartContainer.
+  const MARGIN = { top: 8, right: 16, bottom: 12, left: 16 };
+
   return (
     <ChartContainer
       width={width}
       height={height}
-      margin={{ top: 8, right: 16, bottom: 12, left: 16 }}
+      margin={MARGIN}
       ariaLabel={label}
       legend={keys.map((key) => ({ label: key, color: colorForKey(key) }))}
       table={table}
@@ -168,10 +182,14 @@ export function PopulationPyramid({
               const rv = row.segments[1]?.value ?? 0;
               const lw = wScale(lv);
               const rw = wScale(rv);
-              const lActive =
-                hover == null || (hover.r === r && hover.side === 0);
-              const rActive =
-                hover == null || (hover.r === r && hover.side === 1);
+              // Outline the hovered/focused bar; never dim its siblings
+              // (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the one
+              // shared convention, replacing a per-chart "dim everyone
+              // else" opacity ternary).
+              const lHovered =
+                hover != null && hover.r === r && hover.side === 0;
+              const rHovered =
+                hover != null && hover.r === r && hover.side === 1;
               return (
                 <g key={r}>
                   <rect
@@ -182,17 +200,25 @@ export function PopulationPyramid({
                     fill={
                       effectiveTexture ? patternFill(0) : colorForKey(keys[0])
                     }
-                    opacity={lActive ? 1 : 0.4}
-                    onMouseEnter={() => {
+                    stroke={lHovered ? theme.ink : "none"}
+                    strokeWidth={lHovered ? ACTIVE_STROKE_WIDTH : 0}
+                    onMouseEnter={(e) => {
                       setHover({ r, side: 0 });
+                      const p = plotPointerPosition(e, MARGIN);
+                      if (p) setPointerX(p.x);
                       onDatumHover?.({
                         datum: data[r],
                         index: r,
                         seriesId: keys[0],
                       });
                     }}
+                    onMouseMove={(e) => {
+                      const p = plotPointerPosition(e, MARGIN);
+                      if (p) setPointerX(p.x);
+                    }}
                     onMouseLeave={() => {
                       setHover(null);
+                      setPointerX(null);
                       onDatumHover?.(null);
                     }}
                     onClick={() =>
@@ -211,17 +237,25 @@ export function PopulationPyramid({
                     fill={
                       effectiveTexture ? patternFill(1) : colorForKey(keys[1])
                     }
-                    opacity={rActive ? 1 : 0.4}
-                    onMouseEnter={() => {
+                    stroke={rHovered ? theme.ink : "none"}
+                    strokeWidth={rHovered ? ACTIVE_STROKE_WIDTH : 0}
+                    onMouseEnter={(e) => {
                       setHover({ r, side: 1 });
+                      const p = plotPointerPosition(e, MARGIN);
+                      if (p) setPointerX(p.x);
                       onDatumHover?.({
                         datum: data[r],
                         index: r,
                         seriesId: keys[1],
                       });
                     }}
+                    onMouseMove={(e) => {
+                      const p = plotPointerPosition(e, MARGIN);
+                      if (p) setPointerX(p.x);
+                    }}
                     onMouseLeave={() => {
                       setHover(null);
+                      setPointerX(null);
                       onDatumHover?.(null);
                     }}
                     onClick={() =>
@@ -247,7 +281,16 @@ export function PopulationPyramid({
             })}
             {hovered && (
               <SvgTooltip
-                x={centerLeft + GUTTER / 2}
+                x={
+                  // Live pointer x while the mouse is the hover source
+                  // (this chart's value axis runs along x); falls back to
+                  // the central gutter otherwise. `top` stays snapped to
+                  // the hovered row's own band position -- the category
+                  // axis, which is not where the pointer moves.
+                  pointerX != null
+                    ? clamp(pointerX, innerWidth)
+                    : centerLeft + GUTTER / 2
+                }
                 innerWidth={innerWidth}
                 top={Math.max(0, hoveredY - 4)}
                 lines={[

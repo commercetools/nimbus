@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/react-vite";
-import { expect } from "storybook/test";
+import { userEvent, fireEvent, expect, waitFor } from "storybook/test";
 import { PopulationPyramid } from "./population-pyramid";
 import type { StackRow } from "../..";
 import { RegistryPreview, type BaseStory } from "../../stories/base-story";
@@ -30,6 +30,66 @@ const fixture: StackRow[] = [
     ],
   },
 ];
+
+/**
+ * Hover/tooltip UX convergence: hovering a bar outlines that ONE bar
+ * (`stroke`/`strokeWidth`) and never dims its siblings -- including the
+ * opposite side of the same band -- replacing the "dim everyone else to a
+ * fixed opacity" pattern this chart (and 30 others) used to hand-roll
+ * independently. This chart's value axis runs along x, so the tooltip's
+ * HORIZONTAL position tracks the live pointer while it stays inside the
+ * hovered bar -- the category axis (`top`, on y) stays snapped to the
+ * hovered band's own row position.
+ */
+export const HoverEmphasis: BaseStory = {
+  render: () => <PopulationPyramid width={480} height={280} data={fixture} />,
+  play: async ({ canvasElement }) => {
+    const rects = () =>
+      Array.from(canvasElement.querySelectorAll<SVGRectElement>("rect"));
+    const tooltipGroup = () =>
+      canvasElement.querySelector<SVGGElement>('g[pointer-events="none"]');
+    const tooltipLeft = () => {
+      const g = tooltipGroup();
+      const match = g?.getAttribute("transform")?.match(/\(([\d.-]+),/);
+      return match ? Number(match[1]) : null;
+    };
+
+    // DOM order per band: left rect (Male), right rect (Female).
+    const [row0Left, row0Right] = rects();
+    await userEvent.hover(row0Left);
+    await waitFor(() => expect(tooltipGroup()).not.toBeNull());
+
+    // No dimming: every bar keeps a full, unmodified fill -- none carries
+    // an `opacity` attribute at all (the old mechanism this replaces).
+    for (const rect of rects()) {
+      expect(rect).not.toHaveAttribute("opacity");
+    }
+    // Emphasis instead: only the hovered bar gets a real outline; the
+    // opposite side of the same band stays un-outlined.
+    expect(row0Left).toHaveAttribute("stroke-width", "1.5");
+    expect(row0Right).toHaveAttribute("stroke-width", "0");
+
+    // Tooltip follows the pointer horizontally: two mousemoves at different
+    // widths within the SAME bar move the tooltip to two different
+    // horizontal positions.
+    const rect = row0Left.getBoundingClientRect();
+    const cy = rect.top + rect.height / 2;
+    fireEvent.mouseMove(row0Left, {
+      clientX: rect.left + rect.width * 0.25,
+      clientY: cy,
+    });
+    const leftNearStart = await waitFor(() => {
+      const l = tooltipLeft();
+      expect(l).not.toBeNull();
+      return l;
+    });
+    fireEvent.mouseMove(row0Left, {
+      clientX: rect.left + rect.width * 0.75,
+      clientY: cy,
+    });
+    await waitFor(() => expect(tooltipLeft()).not.toBe(leftNearStart));
+  },
+};
 
 /**
  * BC-1 regression: `bandByIndex` positions each row's `y` band by row order,
