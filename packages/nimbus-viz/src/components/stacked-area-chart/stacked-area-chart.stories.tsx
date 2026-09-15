@@ -226,93 +226,55 @@ export const EdgeCaseSingleDatum: BaseStory = {
 };
 
 /**
- * Negative values are excluded by design (`stacked-area-chart.mdx`
- * Limitations: "non-negative values ... negative parts are not
- * meaningful") — a stacked composition has no coherent meaning for a
- * negative part. `AreaStack` here uses d3-shape's default `stackOffsetNone`
- * (no `offset` prop), so a negative middle-series value inverts that
- * series' own `y0`/`y1` band, folding it backwards under the series below
- * instead of drawing above it — a **Loud**, visibly-wrong shape (per
- * `/chart:introspect`'s Lens E2), not a silent one. This asserts that actual
- * failure mode precisely (the negative series' rendered band height
- * collapses well below its true magnitude) rather than only "doesn't
- * throw" — proving the documented exclusion is real, not just asserted.
- */
-/**
- * Found hardening this chart (bug class BC-2, `docs/bug-classes.md`): a
- * stack cannot encode a negative part. A negative series value is now
- * clamped to 0 before entering the `stack()` math (and logs a development
- * warning) instead of drawing the area below the baseline with no error.
- * Proven by comparing the negative-input chart against an identical control
- * where the same point is a literal 0 — the "Adjustment" series' path must
- * be pixel-for-pixel the same in both, not merely NaN-free.
+ * A stack can encode a signed composition via a diverging offset
+ * (`AreaStack`'s `offset="diverging"`, wrapping d3-shape's
+ * `stackOffsetDiverging`): positive series values stack upward from 0,
+ * negative values (a return, a write-off) stack downward from 0. "Base" stays
+ * positive throughout ([0, 20] in value space, never below the baseline);
+ * "Adjustment" goes from +20 (stacked above Base) to -20 (stacked below the
+ * baseline) at the second point. Proven on the rendered path's bounding
+ * box: Adjustment's bottom edge must sit meaningfully below Base's bottom
+ * edge, which never leaves the positive side.
  */
 export const EdgeCaseNegativeValue: BaseStory = {
-  render: () => {
-    const base = {
-      id: "base",
-      label: "Base",
-      data: [
-        { x: new Date("2026-01-01"), y: 20 },
-        { x: new Date("2026-01-02"), y: 20 },
-      ],
-    };
-    return (
-      <div style={{ display: "flex", gap: 16 }}>
-        <StackedAreaChart
-          width={240}
-          height={200}
-          ariaLabel="Stacked area with a negative adjustment value"
-          series={[
-            base,
-            {
-              id: "adj",
-              label: "Adjustment",
-              data: [
-                { x: new Date("2026-01-01"), y: 20 },
-                { x: new Date("2026-01-02"), y: -20 },
-              ],
-            },
-          ]}
-        />
-        <StackedAreaChart
-          width={240}
-          height={200}
-          ariaLabel="Stacked area with a literal zero adjustment value (control)"
-          series={[
-            base,
-            {
-              id: "adj",
-              label: "Adjustment",
-              data: [
-                { x: new Date("2026-01-01"), y: 20 },
-                { x: new Date("2026-01-02"), y: 0 },
-              ],
-            },
-          ]}
-        />
-      </div>
-    );
-  },
+  render: () => (
+    <StackedAreaChart
+      width={280}
+      height={220}
+      ariaLabel="Stacked area with a negative adjustment value"
+      series={[
+        {
+          id: "base",
+          label: "Base",
+          data: [
+            { x: new Date("2026-01-01"), y: 20 },
+            { x: new Date("2026-01-02"), y: 20 },
+          ],
+        },
+        {
+          id: "adj",
+          label: "Adjustment",
+          data: [
+            { x: new Date("2026-01-01"), y: 20 },
+            { x: new Date("2026-01-02"), y: -20 },
+          ],
+        },
+      ]}
+    />
+  ),
   play: async ({ canvasElement }) => {
-    // Each `@visx/axis` tick label sits in its own nested <svg> (a local
-    // coordinate system for the offset text) — querySelectorAll("svg") picks
-    // those up too. role="img" is unique to the two chart-root <svg>s.
-    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
-    expect(svgs.length).toBe(2);
-    const negPaths = Array.from(
-      svgs[0].querySelectorAll<SVGPathElement>("path")
+    const paths = Array.from(
+      canvasElement.querySelectorAll<SVGPathElement>("path")
     );
-    const zeroPaths = Array.from(
-      svgs[1].querySelectorAll<SVGPathElement>("path")
-    );
-    expect(negPaths.length).toBe(2);
-    expect(zeroPaths.length).toBe(2);
-    for (const p of [...negPaths, ...zeroPaths]) {
+    expect(paths.length).toBe(2);
+    for (const p of paths) {
       expect(p.getAttribute("d")).not.toMatch(/NaN/);
     }
     // Draw order follows `keys` = series order: "base" then "adj".
-    expect(negPaths[1].getAttribute("d")).toBe(zeroPaths[1].getAttribute("d"));
+    const [baseBox, adjBox] = paths.map((p) => p.getBBox());
+    const baseBottom = baseBox.y + baseBox.height;
+    const adjBottom = adjBox.y + adjBox.height;
+    expect(adjBottom).toBeGreaterThan(baseBottom + 5);
   },
 };
 

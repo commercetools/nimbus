@@ -48,16 +48,22 @@ chart it hits. The generic invariant test
   `band.center(index)`.
 - **BC-2** fixed everywhere. bar-chart, line-chart, bullet-chart from the
   original passes; diverging-bar-chart and diverging-stacked-bar use symmetric
-  domains. `/chart:sweep BC-2` closed the rest: grouped-bar-chart,
-  lollipop-chart (signed — drawn below/left of the zero baseline via
-  `valueDomain()`), stacked-bar-chart, stacked-area-chart, pareto-chart,
-  population-pyramid, funnel-chart (magnitude-only — clamped to 0 with a
-  `devWarn`, the raw value stays in the tooltip/table), bubble-chart (negative
-  `size` drawn at `R_MIN`), radial-bar-chart (drawn at the inner ring). Each
-  gained an `EdgeCaseNegativeValues` (or
-  `EdgeCaseNegativeSize`/`EdgeCaseNegativeStage`) story. Legitimate exceptions,
-  left as they are: `violin-plot` (density axis, `[0, densityMax || 1]`),
-  `histogram` (counts are never negative — see BC-3).
+  domains. `/chart:sweep BC-2` closed most of the rest by clamping to 0 with a
+  `devWarn`, raw value kept in the tooltip/table: grouped-bar-chart,
+  pareto-chart, population-pyramid, funnel-chart (magnitude-only encodings, no
+  honest signed picture), bubble-chart (negative `size` drawn at `R_MIN`),
+  radial-bar-chart (drawn at the inner ring). lollipop-chart is signed —
+  negatives drawn below/left of the zero baseline via `valueDomain()`.
+  **stacked-bar-chart and stacked-area-chart draw negatives for real**, not
+  clamped: a diverging stack offset (positives stack up from 0, negatives stack
+  down from 0 — `@visx/shape`'s `offset="diverging"`, or the equivalent
+  hand-rolled accumulator for `stacked-bar-chart`'s plain `<rect>`/`<path>`
+  marks) — this was `TODO.md` `C3`, done directly rather than through
+  `/opsx:propose` per an explicit decision to defer specs until past
+  prototyping. Each gained an `EdgeCaseNegativeValues` (or
+  `EdgeCaseNegativeSize`/`EdgeCaseNegativeStage`/`EdgeCaseNegativeValue`) story.
+  Legitimate exceptions, left as they are: `violin-plot` (density axis,
+  `[0, densityMax || 1]`), `histogram` (counts are never negative — see BC-3).
 - **BC-3** fixed everywhere. bubble-chart (all-zero sizes); population-pyramid
   and radar-chart now use `valueDomain()` instead of the `|| 1` guard;
   histogram, stacked-bar-chart, stacked-area-chart, pareto-chart all adopted

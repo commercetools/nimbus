@@ -81,14 +81,17 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
 - [ ] **C2 — render-prop tooltip / legend.** `renderTooltip(datum)` /
       `renderLegend(items)` escape hatches on `SvgTooltip` / `Legend` /
       `ChartContainer`; keep the string-lines path as default.
-- [ ] **C3 — diverging stack offset for negative segments.** Found by the `BC-2`
-      sweep: `stacked-bar-chart` and `stacked-area-chart` draw a negative
-      segment as 0 and warn in development, because d3's default
-      `stackOffsetNone` cannot place negative parts. The real fix is
-      `stackOffsetDiverging` (positives stack up from 0, negatives down) plus a
-      baseline and a legend note. That changes what the two charts accept as
-      valid input, so it needs an OpenSpec proposal (`/opsx:propose`) before
-      implementation — not a sweep.
+- [x] **C3 — diverging stack offset for negative segments.** Done directly (no
+      `/opsx:propose`, by explicit decision — specs are deferred until the
+      library is past prototyping). `stacked-area-chart` uses `@visx/shape`'s
+      `AreaStack offset="diverging"` (wraps d3's `stackOffsetDiverging`
+      directly); `stacked-bar-chart` hand-rolls the same accumulator (positive
+      segments stack up from 0, negative stack down from 0, each in the order
+      given) since its marks are plain `<rect>`/`BarRounded`, not a d3-shape
+      stack. Both charts' value domain now spans each row's full positive and
+      negative extent (not just the net total). No legend note was needed —
+      neither chart encodes polarity by color; the segment's own key/color is
+      unchanged by its sign, same as before.
 
 ### Phase D — accessibility completeness
 

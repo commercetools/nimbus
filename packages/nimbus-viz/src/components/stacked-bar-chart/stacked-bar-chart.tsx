@@ -7,7 +7,6 @@ import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import { bandByIndex, valueDomain } from "../../chart/scales";
 import { stackKeys } from "../../chart/stack";
-import { devWarn } from "../../chart/dev-warn";
 import {
   GridRows,
   bottomTickLabel,
@@ -66,36 +65,27 @@ export function StackedBarChart({
 
   const keys = useMemo(() => stackKeys(data), [data]);
   const colorForKey = useEntityColors(keys);
-  // A stack cannot encode a negative part: clamp every segment to 0 before it
-  // enters the height/domain math (BC-2). Tooltip and data table below keep
-  // reading the raw `data`, so a negative input is still visible there.
-  const clampedData = useMemo(
-    () =>
-      data.map((r) => ({
-        ...r,
-        segments: r.segments.map((s) => ({
-          ...s,
-          value: Math.max(0, s.value),
-        })),
-      })),
-    [data]
-  );
-  const hasNegative = data.some((r) => r.segments.some((s) => s.value < 0));
-  if (hasNegative) {
-    devWarn(
-      "stacked-bar-chart:negative",
-      "StackedBarChart: negative segment values are drawn as 0 (a stack cannot encode a negative part)."
-    );
-  }
-  // The axis shows row TOTALS after clamping; valueDomain also widens a
-  // degenerate all-zero/all-equal domain (BC-3) instead of collapsing to a
-  // single point.
+  // Diverging stack offset: positive segments accumulate upward from 0,
+  // negative segments accumulate downward from 0, each in the order given —
+  // so a negative segment (a return, a write-off) is drawn on the correct
+  // side of the baseline instead of being clamped to 0. The value axis has to
+  // span each row's full positive and negative extent, not just its net
+  // total (which can be smaller in magnitude than either side); valueDomain()
+  // also widens a degenerate all-zero/all-equal domain (BC-3).
   const totalDomain = useMemo(
     () =>
       valueDomain(
-        clampedData.map((r) => r.segments.reduce((s, seg) => s + seg.value, 0))
+        data.flatMap((r) => {
+          let pos = 0;
+          let neg = 0;
+          for (const seg of r.segments) {
+            if (seg.value >= 0) pos += seg.value;
+            else neg += seg.value;
+          }
+          return [pos, neg];
+        })
       ),
-    [clampedData]
+    [data]
   );
 
   if (width <= 0 || height <= 0 || data.length === 0) return null;
@@ -135,6 +125,10 @@ export function StackedBarChart({
         const hrTotal = hr
           ? hr.segments.reduce((s, seg) => s + seg.value, 0)
           : 0;
+        // Positive segments' running sum -- the top of the visual bar, which
+        // for a mixed-sign row is not the same point as the net total.
+        const posTotal = (row: StackRow) =>
+          row.segments.reduce((s, seg) => s + Math.max(0, seg.value), 0);
         return (
           <ChartScaleProvider
             value={{
@@ -171,9 +165,34 @@ export function StackedBarChart({
             {data.map((row, i) => {
               const x = xScale.pos(i);
               const dimmed = hover != null && hover !== i;
-              const segments = clampedData[i].segments;
-              const lastIdx = segments.length - 1;
-              let cumulative = 0;
+              const segments = row.segments;
+              // Diverging stack offset: positive segments accumulate upward
+              // from 0, negative segments accumulate downward from 0, each in
+              // the order given -- a negative segment (a return, a
+              // write-off) lands on the correct side of the baseline instead
+              // of being clamped to 0. Track which segment ends up at each
+              // visual extreme so only that one gets a rounded corner.
+              let posAcc = 0;
+              let negAcc = 0;
+              let topIdx = -1;
+              let bottomIdx = -1;
+              const bars = segments.map((seg, si) => {
+                let lo: number;
+                let hi: number;
+                const positive = seg.value >= 0;
+                if (positive) {
+                  lo = posAcc;
+                  posAcc += seg.value;
+                  hi = posAcc;
+                  topIdx = si;
+                } else {
+                  hi = negAcc;
+                  negAcc += seg.value;
+                  lo = negAcc;
+                  bottomIdx = si;
+                }
+                return { seg, lo, hi, positive };
+              });
               return (
                 <g
                   key={i}
@@ -188,28 +207,36 @@ export function StackedBarChart({
                   }}
                   onClick={() => onDatumClick?.({ datum: row, index: i })}
                 >
-                  {segments.map((seg, si) => {
-                    const y0 = yScale(cumulative);
-                    cumulative += seg.value;
-                    const y1 = yScale(cumulative);
+                  {bars.map(({ seg, lo, hi, positive }, si) => {
+                    const y0 = yScale(lo);
+                    const y1 = yScale(hi);
                     const h = Math.max(0, y0 - y1 - 2);
+                    // The 2px cosmetic gap always sits at the edge nearest
+                    // zero (the previous segment, or the baseline itself):
+                    // for a positive segment that is the bottom edge, so the
+                    // rect is unchanged; for a negative segment it is the
+                    // TOP edge (y1, which sits at or just past zero), so the
+                    // rect starts 2px lower instead of shrinking from y1.
+                    const barY = positive ? y1 : y1 + 2;
                     const color = colorForKey(seg.key);
-                    return si === lastIdx ? (
+                    const rounded = si === topIdx || si === bottomIdx;
+                    return rounded ? (
                       <BarRounded
                         key={seg.key}
                         x={x}
-                        y={y1}
+                        y={barY}
                         width={bw}
                         height={h}
                         radius={4}
-                        top
+                        top={si === topIdx}
+                        bottom={si === bottomIdx}
                         fill={color}
                       />
                     ) : (
                       <rect
                         key={seg.key}
                         x={x}
-                        y={y1}
+                        y={barY}
                         width={bw}
                         height={h}
                         fill={color}
@@ -223,7 +250,7 @@ export function StackedBarChart({
               <SvgTooltip
                 x={xScale.pos(hover) + bw / 2}
                 innerWidth={innerWidth}
-                top={Math.max(0, yScale(hrTotal) - 4)}
+                top={Math.max(0, yScale(posTotal(hr)) - 4)}
                 lines={[
                   hr.category,
                   `Total: ${valueFmt(hrTotal)}`,

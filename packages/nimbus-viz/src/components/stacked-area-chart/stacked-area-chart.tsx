@@ -8,7 +8,6 @@ import { extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import { valueDomain } from "../../chart/scales";
-import { devWarn } from "../../chart/dev-warn";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
@@ -84,35 +83,29 @@ export function StackedAreaChart({
     () => extent(rows, (r) => new Date(r.x)) as [Date, Date],
     [rows]
   );
-  // A stack cannot encode a negative part: clamp every series value to 0
-  // before it enters the d3 `stack()` math (BC-2). `rows` (raw) is still what
-  // the data table and tooltip read below, so a negative input stays visible
-  // there.
-  const hasNegative = rows.some((r) => keys.some((k) => r[k] < 0));
-  if (hasNegative) {
-    devWarn(
-      "stacked-area-chart:negative",
-      "StackedAreaChart: negative segment values are drawn as 0 (a stack cannot encode a negative part)."
-    );
-  }
-  const clampedRows = useMemo<StackDatum[]>(
-    () =>
-      rows.map((r) => {
-        const clamped: StackDatum = { x: r.x };
-        for (const k of keys) clamped[k] = Math.max(0, r[k]);
-        return clamped;
-      }),
-    [rows, keys]
-  );
-  // The axis shows row TOTALS after clamping; valueDomain also widens a
-  // degenerate all-zero/all-equal domain (BC-3) instead of collapsing to a
-  // single point.
+  // Diverging stack offset (@visx/shape's offset="diverging", wrapping d3's
+  // stackOffsetDiverging): positive series values accumulate upward from 0,
+  // negative values accumulate downward from 0 -- so a negative series value
+  // (a return, a write-off) is drawn on the correct side of the baseline
+  // instead of being clamped to 0. The value axis has to span each row's full
+  // positive and negative extent, not just its net total (which can be
+  // smaller in magnitude than either side); valueDomain() also widens a
+  // degenerate all-zero/all-equal domain (BC-3).
   const totalDomain = useMemo(
     () =>
       valueDomain(
-        clampedRows.map((r) => keys.reduce((sum, k) => sum + r[k], 0))
+        rows.flatMap((r) => {
+          let pos = 0;
+          let neg = 0;
+          for (const k of keys) {
+            const v = r[k];
+            if (v >= 0) pos += v;
+            else neg += v;
+          }
+          return [pos, neg];
+        })
       ),
-    [clampedRows, keys]
+    [rows, keys]
   );
   const color = useEntityColors(keys);
 
@@ -180,8 +173,9 @@ export function StackedAreaChart({
             />
 
             <AreaStack<StackDatum, string>
-              data={clampedRows}
+              data={rows}
               keys={keys}
+              offset="diverging"
               value={(d, key) => d[key]}
               x={(d) => xScale(new Date(d.data.x))}
               y0={(d) => yScale(d[0])}
