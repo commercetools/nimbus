@@ -196,9 +196,11 @@ export function BumpChart({
                 ? strokeDasharrayFor(si)
                 : undefined;
               const last = s.points[s.points.length - 1];
-              const dimmed = hover != null && hover.si !== si;
               return (
-                <g key={s.id} opacity={dimmed ? 0.3 : 1}>
+                // Bold the hovered series' line (strokeWidth) and its
+                // hovered point (r); never dim the other series -- the
+                // existing bump mechanisms below, unchanged.
+                <g key={s.id}>
                   <LinePath<RankPoint>
                     data={s.points}
                     x={(d) => px(d.i)}
