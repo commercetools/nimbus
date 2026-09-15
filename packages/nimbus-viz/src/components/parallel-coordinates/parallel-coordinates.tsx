@@ -7,6 +7,7 @@ import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { strokeDasharrayFor } from "../../chart/stroke-styles";
 import { useForcedColors } from "../../chart/use-forced-colors";
+import { PointMark } from "../../chart/point-shapes";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
@@ -51,6 +52,13 @@ export interface ParallelCoordinatesProps extends DatumInteractionProps<Parallel
    * `useForcedColors`.
    */
   texture?: boolean;
+  /**
+   * Draw a small dot (`chart/point-shapes.tsx`'s `PointMark`,
+   * `shape="circle"`) at every dimension crossing of every row — this
+   * chart has no point markers at all today. Default `false`
+   * (no change from today's rendering).
+   */
+  showDots?: boolean;
 }
 
 interface Vertex {
@@ -80,6 +88,7 @@ export function ParallelCoordinates({
   onDatumClick,
   onDatumHover,
   texture,
+  showDots,
 }: ParallelCoordinatesProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -176,36 +185,58 @@ export function ParallelCoordinates({
             {/* Row polylines */}
             {data.map((r, i) => {
               const c = colorFor(r);
+              const pts = pointsFor(r);
               return (
-                <LinePath<Vertex>
-                  key={r.id}
-                  data={pointsFor(r)}
-                  x={(p) => p.x}
-                  y={(p) => p.y}
-                  fill="none"
-                  stroke={c}
-                  // Bold the hovered row's line (strokeWidth + a brightened
-                  // strokeOpacity); never dim the other rows below their own
-                  // resting `0.5` baseline (a permanent density choice for
-                  // many overlapping lines, independent of hover) --
-                  // `chart/marks.ts`'s "outline/bump the active mark, don't
-                  // dim its siblings" convention, replacing the previous
-                  // `strokeOpacity={active ? ... : 0.12}` crush.
-                  strokeWidth={hover === i ? 2.5 : 1.5}
-                  strokeDasharray={dashFor(r)}
-                  strokeOpacity={hover === i ? 1 : 0.5}
-                  onMouseEnter={() => {
-                    setHover(i);
-                    onDatumHover?.({ datum: r, index: i, seriesId: r.group });
-                  }}
-                  onMouseLeave={() => {
-                    setHover(null);
-                    onDatumHover?.(null);
-                  }}
-                  onClick={() =>
-                    onDatumClick?.({ datum: r, index: i, seriesId: r.group })
-                  }
-                />
+                <g key={r.id}>
+                  <LinePath<Vertex>
+                    data={pts}
+                    x={(p) => p.x}
+                    y={(p) => p.y}
+                    fill="none"
+                    stroke={c}
+                    // Bold the hovered row's line (strokeWidth + a brightened
+                    // strokeOpacity); never dim the other rows below their own
+                    // resting `0.5` baseline (a permanent density choice for
+                    // many overlapping lines, independent of hover) --
+                    // `chart/marks.ts`'s "outline/bump the active mark, don't
+                    // dim its siblings" convention, replacing the previous
+                    // `strokeOpacity={active ? ... : 0.12}` crush.
+                    strokeWidth={hover === i ? 2.5 : 1.5}
+                    strokeDasharray={dashFor(r)}
+                    strokeOpacity={hover === i ? 1 : 0.5}
+                    onMouseEnter={() => {
+                      setHover(i);
+                      onDatumHover?.({
+                        datum: r,
+                        index: i,
+                        seriesId: r.group,
+                      });
+                    }}
+                    onMouseLeave={() => {
+                      setHover(null);
+                      onDatumHover?.(null);
+                    }}
+                    onClick={() =>
+                      onDatumClick?.({
+                        datum: r,
+                        index: i,
+                        seriesId: r.group,
+                      })
+                    }
+                  />
+                  {showDots &&
+                    pts.map((p, pi) => (
+                      <PointMark
+                        key={pi}
+                        shape="circle"
+                        cx={p.x}
+                        cy={p.y}
+                        r={3}
+                        fill={c}
+                        fillOpacity={hover === i ? 1 : 0.5}
+                      />
+                    ))}
+                </g>
               );
             })}
 

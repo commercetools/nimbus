@@ -200,18 +200,17 @@ const App = () => (
 
 ### Texture (non-color group identity)
 
-Pass `texture` to distinguish groups by `strokeDasharray` rhythm, in addition
-to color, so groups stay distinguishable without color alone — monochrome
-print, a photocopy, or `forced-colors` mode. This is the stroked-mark
-reference for the same rollout as
-[`StackedBarChart`](/charts/stacked-bar-chart)'s fill-pattern `texture`: a
-polyline has no fill area to texture, so the stroke's dash rhythm is the one
-non-color channel. The dash is keyed to the **group**, the same way color is
-— every row in a group gets the exact same dash pattern, not an arbitrary
-per-row cycle, so the two channels stay in lockstep. The first group keeps a
-solid stroke; later groups cycle through dashed/dotted/dash-dot/long-dash. It
-turns on automatically, regardless of this prop, when the OS is already in a
-`forced-colors` context.
+Pass `texture` to distinguish groups by `strokeDasharray` rhythm, in addition to
+color, so groups stay distinguishable without color alone — monochrome print, a
+photocopy, or `forced-colors` mode. This is the stroked-mark reference for the
+same rollout as [`StackedBarChart`](/charts/stacked-bar-chart)'s fill-pattern
+`texture`: a polyline has no fill area to texture, so the stroke's dash rhythm
+is the one non-color channel. The dash is keyed to the **group**, the same way
+color is — every row in a group gets the exact same dash pattern, not an
+arbitrary per-row cycle, so the two channels stay in lockstep. The first group
+keeps a solid stroke; later groups cycle through
+dashed/dotted/dash-dot/long-dash. It turns on automatically, regardless of this
+prop, when the OS is already in a `forced-colors` context.
 
 ```jsx live
 const dimensions = [
@@ -252,14 +251,49 @@ const App = () => (
 );
 ```
 
+### Point markers
+
+Pass `showDots` to draw a small dot at every dimension crossing of every row —
+`chart/point-shapes.tsx`'s `PointMark`. This chart has no point markers at all
+by default. Default `false`.
+
+```jsx live
+const dimensions = [
+  { key: "speed", label: "Speed" },
+  { key: "range", label: "Range" },
+  { key: "price", label: "Price" },
+];
+const data = [
+  { id: "car-1", group: "Sedan", speed: 0.6, range: 0.7, price: 0.4 },
+  { id: "car-2", group: "SUV", speed: 0.4, range: 0.9, price: 0.7 },
+  { id: "car-3", group: "Truck", speed: 0.3, range: 0.5, price: 0.9 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <ParallelCoordinates
+          width={width}
+          height={height}
+          dimensions={dimensions}
+          data={data}
+          showDots
+          ariaLabel="Parallel coordinates with point markers"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Hover & tooltip (automatic)
 
 Not configurable — hovering a polyline raises it to full opacity and a bolder
 stroke (its siblings are never dimmed below their normal, semi-transparent
-resting opacity — used at rest so many overlapping lines stay legible) and
-shows a tooltip listing that row's `id` (and `group`, when set) followed by its
-value on every dimension. This is how a single record stands out from the
-bundle.
+resting opacity — used at rest so many overlapping lines stay legible) and shows
+a tooltip listing that row's `id` (and `group`, when set) followed by its value
+on every dimension. This is how a single record stands out from the bundle.
 
 ### Color & theming
 
@@ -341,8 +375,8 @@ What you get automatically:
   positions across the axes; when you group, group identity is carried by color
   and decoded by the legend and the data table; pass `texture` to also vary
   stroke dash rhythm per group (or rely on it turning on automatically in a
-  `forced-colors` context) for a non-color path on the chart itself, not just
-  in the legend/table.
+  `forced-colors` context) for a non-color path on the chart itself, not just in
+  the legend/table.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the dimensions/records rather
@@ -353,8 +387,8 @@ Accessibility checklist:
 - [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
 - [ ] Meaning does not depend on color alone (axis positions carry the
-      relations; groups are decoded by the legend and the data table, or by
-      dash rhythm with `texture`)
+      relations; groups are decoded by the legend and the data table, or by dash
+      rhythm with `texture`)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)
 - [ ] Surrounding copy names dimensions/records rather than colors
@@ -375,10 +409,10 @@ data yet.
   `dimensions` deliberately.
 - **Overplotting.** With no downsampling, large sets bundle into an unreadable
   mass — filter or color by `group` first.
-- **Dash encoding is opt-in.** Stroke dash only varies when `texture` is
-  passed (or `forced-colors` is active) — by default groups are distinguished
-  by color alone on the lines, with the legend and data table as the
-  always-on non-color paths.
+- **Dash encoding is opt-in.** Stroke dash only varies when `texture` is passed
+  (or `forced-colors` is active) — by default groups are distinguished by color
+  alone on the lines, with the legend and data table as the always-on non-color
+  paths.
 - **No interaction callbacks, overlays, or custom accessors.** Hover is
   internal-only; there are no `onDatumClick` / `onDatumHover` and no `children`.
 - **Fixed number formatting.** Axis ticks and the tooltip use a built-in compact

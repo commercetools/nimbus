@@ -130,3 +130,39 @@ export const Texture: BaseStory = {
     );
   },
 };
+
+/**
+ * `showDots` (Phase C): draws a small dot (`chart/point-shapes.tsx`'s
+ * `PointMark`) at every dimension crossing of every row -- this chart has
+ * no point markers at all today. `data` has 5 rows across 3 dimensions, so
+ * turning the prop on adds exactly 15 new `<circle>`s.
+ */
+export const ShowDots: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <ParallelCoordinates
+        width={280}
+        height={280}
+        dimensions={dimensions}
+        data={data}
+        ariaLabel="Parallel coordinates without dots"
+      />
+      <ParallelCoordinates
+        width={280}
+        height={280}
+        dimensions={dimensions}
+        data={data}
+        showDots
+        ariaLabel="Parallel coordinates with dots"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const circleCount = (svg: Element) => svg.querySelectorAll("circle").length;
+    expect(circleCount(svgs[1])).toBe(
+      circleCount(svgs[0]) + data.length * dimensions.length
+    );
+  },
+};
