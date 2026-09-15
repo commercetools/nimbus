@@ -24,6 +24,8 @@ import type {
   DatumClickHandler,
   DatumHoverHandler,
 } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { clamp, plotPointerPosition } from "../../chart/pointer";
 
 export interface GroupedBarChartProps<T = StackRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -117,6 +119,10 @@ export function GroupedBarChart<T = StackRow>({
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ i: number; key: string } | null>(null);
+  // Live pointer y (plot-local), while a bar is being hovered by the mouse --
+  // null once the pointer leaves, so the tooltip falls back to the hovered
+  // segment's own value-derived position rather than a stale coordinate.
+  const [pointerY, setPointerY] = useState<number | null>(null);
   const forcedColors = useForcedColors();
   const effectiveTexture = texture || forcedColors;
 
@@ -153,11 +159,16 @@ export function GroupedBarChart<T = StackRow>({
     ]),
   };
 
+  // Named so the pointer math below (which needs the same left/top offset
+  // xScale/yScale are drawn relative to) can never drift from what's
+  // actually passed to ChartContainer.
+  const MARGIN = { top: 12, right: 12, bottom: 28, left: 44 };
+
   return (
     <ChartContainer
       width={width}
       height={height}
-      margin={{ top: 12, right: 12, bottom: 28, left: 44 }}
+      margin={MARGIN}
       ariaLabel={ariaLabel ?? `Grouped bar chart, ${keys.length} series`}
       legend={keys.map((k) => ({ label: k, color: colorForKey(k) }))}
       legendRenderItem={renderLegendItem}
@@ -229,7 +240,15 @@ export function GroupedBarChart<T = StackRow>({
                     const barTop = Math.min(zeroY, yVal);
                     const bh = Math.max(1, Math.abs(zeroY - yVal));
                     const positive = seg.value >= 0;
-                    const active = hover == null || hover.key === seg.key;
+                    // Outline every bar sharing the hovered series' key
+                    // (this chart's hover highlights the whole series
+                    // across categories, not just the one bar under the
+                    // pointer -- see the doc comment above); never dim the
+                    // other series' bars (`chart/marks.ts`'s
+                    // `ACTIVE_STROKE_WIDTH` -- the one shared convention,
+                    // replacing a per-chart "dim everyone else" opacity
+                    // ternary).
+                    const isHovered = hover != null && hover.key === seg.key;
                     return (
                       <BarRounded
                         key={seg.key}
@@ -245,9 +264,12 @@ export function GroupedBarChart<T = StackRow>({
                             ? patternFill(keys.indexOf(seg.key))
                             : colorForKey(seg.key)
                         }
-                        opacity={active ? 1 : 0.35}
-                        onMouseEnter={() => {
+                        stroke={isHovered ? theme.ink : "none"}
+                        strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
+                        onMouseEnter={(e) => {
                           setHover({ i, key: seg.key });
+                          const p = plotPointerPosition(e, MARGIN);
+                          if (p) setPointerY(p.y);
                           // index = the category index; datum = the raw segment.
                           onDatumHover?.({
                             datum: seg,
@@ -255,8 +277,13 @@ export function GroupedBarChart<T = StackRow>({
                             seriesId: seg.key,
                           });
                         }}
+                        onMouseMove={(e) => {
+                          const p = plotPointerPosition(e, MARGIN);
+                          if (p) setPointerY(p.y);
+                        }}
                         onMouseLeave={() => {
                           setHover(null);
+                          setPointerY(null);
                           onDatumHover?.(null);
                         }}
                         onClick={() =>
@@ -276,7 +303,14 @@ export function GroupedBarChart<T = StackRow>({
               <SvgTooltip
                 x={x0.pos(hover.i) + x1.pos(keys.indexOf(hover.key)) + bw / 2}
                 innerWidth={innerWidth}
-                top={Math.max(0, y(hb.value) - 4)}
+                top={
+                  // Live pointer y while the mouse is the hover source;
+                  // falls back to the hovered segment's own value-derived
+                  // position otherwise.
+                  pointerY != null
+                    ? clamp(pointerY, innerHeight)
+                    : Math.max(0, y(hb.value) - 4)
+                }
                 {...(renderTooltip
                   ? {
                       content: renderTooltip(hb, hover.i),

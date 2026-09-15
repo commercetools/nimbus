@@ -182,9 +182,10 @@ The category axis is an outer band scale; within each category band a second
 (nested) band scale lays the series bars side by side. The value axis is a
 linear scale from 0 to the "nice" maximum, with horizontal gridlines. Category
 labels are fit to the band width and truncated when tight. Hovering any bar
-**highlights that series across every category** (the other series dim to 0.35
-opacity) and shows a small tooltip with the category and the hovered series'
-`key: value`.
+**outlines that series across every category** (the other series are never
+dimmed) and shows a small tooltip with the category and the hovered series'
+`key: value`; the tooltip's vertical position tracks the pointer while it
+stays inside the hovered bar.
 
 ### Overlays (`children`)
 
