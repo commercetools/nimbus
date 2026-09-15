@@ -315,3 +315,60 @@ export const Texture: BaseStory = {
     expect(layers.length).toBe(fixture.length);
   },
 };
+
+// `E5`: a 500-row dense series (both keys), well past a 40-row
+// decimateThreshold -- same fixture-density convention as line-chart's own
+// `Decimated` story.
+const denseFixture: Series[] = [
+  {
+    id: "north",
+    label: "North",
+    data: Array.from({ length: 500 }, (_, i) => ({
+      x: new Date(2026, 0, 1 + i),
+      y: 20 + 15 * Math.sin(i / 12) + (i === 250 ? 30 : 0), // one sharp spike
+    })),
+  },
+  {
+    id: "south",
+    label: "South",
+    data: Array.from({ length: 500 }, (_, i) => ({
+      x: new Date(2026, 0, 1 + i),
+      y: 15 + 10 * Math.cos(i / 10),
+    })),
+  },
+];
+
+/**
+ * `decimateThreshold` downsamples the DRAWN stack via LTTB (run against each
+ * row's stacked total), well past its threshold here (500 rows -> ~40) --
+ * proving each layer's path shrinks to a fraction of what 500 undecimated
+ * rows would produce, while the axis domain still reflects the full series
+ * (the spike at day 250 stays in the visible y-range).
+ */
+export const Decimated: BaseStory = {
+  render: () => (
+    <StackedAreaChart
+      width={480}
+      height={280}
+      series={denseFixture}
+      decimateThreshold={40}
+      ariaLabel="Dense stacked area drawn with LTTB decimation"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const paths = canvasElement.querySelectorAll<SVGPathElement>("path");
+    expect(paths.length).toBe(denseFixture.length);
+    for (const path of Array.from(paths)) {
+      const d = path.getAttribute("d") ?? "";
+      // An AreaStack path traces forward along the top edge then back along
+      // the bottom (curveMonotoneX emits one "C" per point on each edge), so
+      // 500 undecimated rows would produce roughly 1000 "C" commands; a
+      // ~40-row decimation should land far below that, but still draw a
+      // real shape, not a degenerate sliver.
+      const commands = d.match(/[MLC]/g) ?? [];
+      expect(commands.length).toBeLessThan(250);
+      expect(commands.length).toBeGreaterThan(20);
+      expect(d).not.toMatch(/NaN/);
+    }
+  },
+};

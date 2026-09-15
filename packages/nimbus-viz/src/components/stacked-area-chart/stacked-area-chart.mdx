@@ -335,9 +335,14 @@ Aspect-ratio height:
 
 `ResponsiveContainer` renders nothing until it observes a positive size, and the
 chart returns `null` for a non-positive size — safe inside tabs, drawers, and
-initially-hidden containers. There is no built-in downsampling: every point is
-drawn, and stacked areas stay readable only for a few bands, so cap the number
-of series and aggregate long time ranges upstream.
+initially-hidden containers. For very long time ranges, `decimateThreshold`
+downsamples the **drawn** stack via LTTB (`chart/decimate.ts`, run against each
+row's stacked total) once the row count passes that many, keeping the visually
+significant rows (peaks, troughs, inflections) so the shape doesn't visibly
+change — the axis domain, hover readout, and data table still read every row
+regardless. Omit it for no decimation (today's default: every row drawn).
+Stacked areas stay readable only for a few bands regardless of decimation, so
+cap the number of series upstream.
 
 ## Accessibility
 
@@ -400,7 +405,9 @@ states upstream and render your own placeholder when there is no data yet.
   [`LineChart`](/charts/line-chart) when each series' level is the point.
 - **No legend, title, caption, loading, or error passthrough** — it forwards
   only `ariaLabel`, the auto legend, and the data table to `ChartContainer`.
-- **No downsampling** — every point of every series is drawn.
+- **Tooltip and data table are unfiltered by decimation.** `decimateThreshold`
+  thins the drawn stack, but the hover readout and the data table still list
+  every row regardless.
 
 ## Related charts
 

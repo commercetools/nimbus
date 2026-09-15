@@ -15,6 +15,7 @@ import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { ChartPatternDefs, patternFill } from "../../chart/patterns";
 import { useForcedColors } from "../../chart/use-forced-colors";
+import { lttb } from "../../chart/decimate";
 import type { Series, SeriesPoint } from "../../chart/types";
 import type {
   DatumClickHandler,
@@ -56,6 +57,16 @@ export interface StackedAreaChartProps<T = SeriesPoint> {
    * `useForcedColors`.
    */
   texture?: boolean;
+  /**
+   * Downsample the DRAWN stack once it exceeds this many rows, via LTTB
+   * (`chart/decimate.ts`) run against each row's stacked total (the
+   * visually dominant curve — the top of the stack). Keeps the visually
+   * significant rows (peaks, troughs, inflections) so the shape doesn't
+   * visibly change. The axis domain, hover readout, and data table still
+   * read every row regardless — only the `AreaStack`'s own `data` is
+   * thinned. Omit for no decimation (today's default: every row drawn).
+   */
+  decimateThreshold?: number;
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
@@ -98,6 +109,7 @@ export function StackedAreaChart<T = SeriesPoint>({
   onDatumHover,
   children,
   texture,
+  decimateThreshold,
 }: StackedAreaChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -125,6 +137,18 @@ export function StackedAreaChart<T = SeriesPoint>({
       return row;
     });
   }, [series, getX, getY]);
+  // Downsample only the drawn path (LTTB against each row's stacked total --
+  // the top of the stack, the visually dominant curve); the domain, hover,
+  // and table above/below all keep reading the full `rows`.
+  const drawRows = useMemo(() => {
+    if (!decimateThreshold || rows.length <= decimateThreshold) return rows;
+    const wrapped = rows.map((r) => ({
+      x: r.x,
+      y: keys.reduce((sum, k) => sum + r[k], 0),
+      original: r,
+    }));
+    return lttb(wrapped, decimateThreshold).map((w) => w.original);
+  }, [rows, keys, decimateThreshold]);
   const xDomain = useMemo(
     () => extent(rows, (r) => new Date(r.x)) as [Date, Date],
     [rows]
@@ -223,7 +247,7 @@ export function StackedAreaChart<T = SeriesPoint>({
             />
 
             <AreaStack<StackDatum, string>
-              data={rows}
+              data={drawRows}
               keys={keys}
               offset="diverging"
               value={(d, key) => d[key]}
