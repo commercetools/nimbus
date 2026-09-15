@@ -195,6 +195,46 @@ const App = () => (
 );
 ```
 
+### Texture (non-color group identity)
+
+Pass `texture` to distinguish groups by marker **shape**, in addition to color,
+so groups stay distinguishable without color alone — monochrome print, a
+photocopy, or `forced-colors` mode. Unlike
+[`StackedBarChart`](/charts/stacked-bar-chart)'s `texture` (a fill pattern),
+scatter points use shape because a point's radius is fixed at 5px — under one
+fill-pattern tile, where a pattern would read as noise, not a shape. The
+first group keeps its plain circle; later groups become square, triangle,
+diamond, star, cycling in the same fixed order as color. It turns on
+automatically, regardless of this prop, when the OS is already in a
+`forced-colors` context.
+
+```jsx live
+const points = [
+  { x: 12, y: 22, group: "SMB" },
+  { x: 20, y: 26, group: "SMB" },
+  { x: 30, y: 31, group: "SMB" },
+  { x: 48, y: 58, group: "Enterprise" },
+  { x: 63, y: 66, group: "Enterprise" },
+  { x: 80, y: 71, group: "Enterprise" },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <ScatterPlot
+          width={width}
+          height={height}
+          points={points}
+          texture
+          ariaLabel="Scatter plot with per-group marker shapes"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Overlays (`children`)
 
 Layer-2 annotations (e.g. `TrendLine`, `ReferenceLine`) can be drawn over the
@@ -293,9 +333,10 @@ What you get automatically:
   chart theme (contrast + color-vision-deficiency checks), not ad-hoc colors.
 - **Non-color encoding.** The relationship itself is carried by position (each
   point's `x` / `y`), which no color choice affects. When you group, group
-  identity is carried by color and decoded by the legend — points are not also
-  varied by shape or marker, so lean on the legend and the data table for that
-  distinction.
+  identity is carried by color and decoded by the legend and the data table;
+  pass `texture` to also vary marker **shape** per group (or rely on it
+  turning on automatically in a `forced-colors` context) for a non-color path
+  on the chart itself, not just in the legend/table.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the groups/values rather than
@@ -306,7 +347,8 @@ Accessibility checklist:
 - [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
 - [ ] Meaning does not depend on color alone (position carries the relationship;
-      groups are decoded by the legend and the data table)
+      groups are decoded by the legend and the data table, or by marker shape
+      with `texture`)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)
 - [ ] Surrounding copy names groups/values rather than colors
@@ -324,8 +366,10 @@ render your own placeholder when there is no data yet.
 - **Two axes only.** For a third magnitude use
   [`BubbleChart`](/charts/bubble-chart); for the trajectory of a pair over a
   sequence use [`ConnectedScatterplot`](/charts/connected-scatterplot).
-- **Groups distinguished by color, not shape.** There is no per-group marker or
-  pattern — the legend and data table are the non-color paths to group identity.
+- **Shape encoding is opt-in.** Marker shape only varies when `texture` is
+  passed (or `forced-colors` is active) — by default groups are distinguished
+  by color alone on the marks, with the legend and data table as the
+  always-on non-color paths.
 - **Fixed number formatting.** Axis ticks and the tooltip use a built-in compact
   formatter; there is no `valueFormat` prop.
 - **No title, caption, legend override, loading, or error passthrough** —

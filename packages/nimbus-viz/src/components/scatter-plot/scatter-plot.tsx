@@ -8,6 +8,8 @@ import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
+import { PointMark, pointShapeFor } from "../../chart/point-shapes";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { ScatterPoint } from "../../chart/types";
@@ -52,6 +54,17 @@ export interface ScatterPlotProps<T = ScatterPoint> {
    * today's default: each point keeps its own `onMouseEnter`/`onClick`.
    */
   quadtreeHitRadius?: number;
+  /**
+   * Distinguish groups by marker SHAPE, in addition to color, so groups stay
+   * distinguishable without color alone — monochrome print, a photocopy, or
+   * `forced-colors` mode. A fill *texture* (`chart/patterns.tsx`) is not used
+   * here: a scatter point's radius is fixed at 5px (6px on hover), under one
+   * texture tile, where a fill pattern would read as noise, not a shape —
+   * shape has no such floor. Default `false` (color only, unchanged). Turned
+   * on automatically (regardless of this prop) when the OS is already in a
+   * forced-colors context — see `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 /**
@@ -78,11 +91,14 @@ export function ScatterPlot<T = ScatterPoint>({
   children,
   valueFormat,
   quadtreeHitRadius,
+  texture,
 }: ScatterPlotProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
 
   const getX = useCallback(
     (d: T): number => (x ? x(d) : (d as ScatterPoint).x),
@@ -123,9 +139,21 @@ export function ScatterPlot<T = ScatterPoint>({
   if (width <= 0 || height <= 0 || points.length === 0) return null;
 
   const showLegend = groups.length >= 2;
+  // In forced-colors context, real hues aren't preserved by the OS anyway --
+  // one system foreground color for every point, with the per-group marker
+  // shape (below) as the only identity carrier.
   const colorFor = (p: T) => {
+    if (forcedColors) return "CanvasText";
     const g = getGroup(p);
     return g ? groupColor(g) : theme.accent;
+  };
+  // Shape only carries meaning when color does too (2+ groups) -- an
+  // ungrouped point, or the only group present, has nothing to encode.
+  const shapeFor = (p: T) => {
+    const g = getGroup(p);
+    return effectiveTexture && g && showLegend
+      ? pointShapeFor(groups.indexOf(g))
+      : "circle";
   };
   const table = {
     columns: ["Label", "x", "y", "Group"],
@@ -213,8 +241,9 @@ export function ScatterPlot<T = ScatterPoint>({
               tickLabelProps={bottomTickLabel(theme)}
             />
             {points.map((p, i) => (
-              <circle
+              <PointMark
                 key={getLabel(p) ?? i}
+                shape={shapeFor(p)}
                 cx={xScale(getX(p))}
                 cy={yScale(getY(p))}
                 r={hover === i ? 6 : 5}

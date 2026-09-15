@@ -62,3 +62,40 @@ export const QuadtreeHitTest: BaseStory = {
     expect(call?.index).toBe(1);
   },
 };
+
+/**
+ * `D2/D3-rest`: `texture` distinguishes groups by marker SHAPE (in addition
+ * to color) so groups stay distinguishable without color alone. Not a fill
+ * *pattern* like `StackedBarChart`'s `Texture` story — a scatter point's
+ * radius is fixed at 5px (6px on hover), under one texture tile, where a
+ * fill pattern would read as noise rather than a shape. Proven directly: the
+ * first group (`Sedan`) stays a `<circle>`, the second (`SUV`) becomes a
+ * `<polygon>` (a square) — a shape swap, not just a color change.
+ */
+const groupedFixture = [
+  { x: 12, y: 22, group: "Sedan" },
+  { x: 20, y: 30, group: "Sedan" },
+  { x: 26, y: 24, group: "Sedan" },
+  { x: 34, y: 44, group: "SUV" },
+  { x: 48, y: 58, group: "SUV" },
+];
+
+export const Texture: BaseStory = {
+  render: () => (
+    <ScatterPlot
+      width={360}
+      height={280}
+      points={groupedFixture}
+      texture
+      ariaLabel="Scatter plot with per-group marker shapes"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const sedanCount = groupedFixture.filter((p) => p.group === "Sedan").length;
+    const suvCount = groupedFixture.filter((p) => p.group === "SUV").length;
+    const circles = canvasElement.querySelectorAll("circle");
+    const polygons = canvasElement.querySelectorAll("polygon");
+    expect(circles.length).toBe(sedanCount); // first group: unchanged circle
+    expect(polygons.length).toBe(suvCount); // second group: shape-encoded
+  },
+};
