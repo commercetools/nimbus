@@ -138,17 +138,17 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       type argument.
 
       Deliberately excluded, each for a real reason: `gauge` / `stat-card`
-                                              (a single value has no discrete second "mark" to report a click on --
-                                              the whole chart already is the one datum, which is what `value`/`label`
-                                              already are); `sparkline` (explicitly minimal by design -- "no axes, no
-                                              gridlines, no tick labels", a decorative inline glyph, not an
-                                              interactive chart); `data-table` (the guaranteed no-throw HTML fallback
-                                              shell used internally by `ChartContainer`, not a chart with visual
-                                              marks -- its own doc comment already flags it as a temporary stand-in
-                                              pending a real `@commercetools/nimbus` `DataTable`).
+                                                  (a single value has no discrete second "mark" to report a click on --
+                                                  the whole chart already is the one datum, which is what `value`/`label`
+                                                  already are); `sparkline` (explicitly minimal by design -- "no axes, no
+                                                  gridlines, no tick labels", a decorative inline glyph, not an
+                                                  interactive chart); `data-table` (the guaranteed no-throw HTML fallback
+                                                  shell used internally by `ChartContainer`, not a chart with visual
+                                                  marks -- its own doc comment already flags it as a temporary stand-in
+                                                  pending a real `@commercetools/nimbus` `DataTable`).
 
-                                              Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
-                                              all green; eslint clean on every touched file (28 chart `.tsx` files).
+                                                  Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
+                                                  all green; eslint clean on every touched file (28 chart `.tsx` files).
 
 - [ ] **A3 — controlled selection + interactive legend.** Lift internal hover to
       controlled/uncontrolled (`selection`/`onSelectionChange`,
@@ -235,10 +235,40 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       each chart's `.mdx` "Chart configuration". Verified: `pnpm typecheck` /
       `pnpm test` (807 passing) / `pnpm build` all green; eslint clean on every
       touched file.
-- [ ] **D3 — forced-colors / high-contrast.** Apply
-      `src/chart/use-forced-colors.ts` (built, unused) + a
-      `@media (forced-colors: active)` layer; SVG needs `forced-color-adjust`;
-      lean on D2 patterns so shape carries identity.
+- [x] **D3 — forced-colors / high-contrast.** Done, on the same three D2 charts:
+      `chart/typography.ts`'s `chartRootStyle()` (every chart's root `<svg>` —
+      `chart-frame.tsx`, plus `radar-chart`/`sparkline`'s own bare `<svg>`, per
+      its only 3 call sites) gains `forcedColorAdjust: "none"` globally — the
+      "SVG needs `forced-color-adjust`" half, applied to all 46 charts at once,
+      since chart paint is inline `fill`/`stroke` set from JS, which the
+      browser's automatic forced-colors override does not reliably reach anyway
+      (the same reason the hook exists at all), so turning it off doesn't take
+      away a working safety net that wasn't actually there.
+      `DonutChart`/`StackedBarChart`/`StackedAreaChart` each call
+      `useForcedColors()` and derive
+      `effectiveTexture = texture ||     forcedColors` (textures turn on
+      automatically, no prop needed) plus a
+      `forcedColors ? "CanvasText" : <theme color>` swap for every mark AND the
+      two `DonutChart` center-label `<text>` fills — real hues aren't preserved
+      by the OS in a forced-colors context anyway, so one system foreground
+      color plus the per-index pattern kind is the correct response, not a
+      compromise. Known, explicitly-not-attempted remaining gap: axis tick
+      labels, gridlines, and the `SvgTooltip` box on all three charts still use
+      their normal theme ink colors under forced-colors (not switched to
+      `CanvasText`) — narrower in scope than the mark-identity problem this item
+      is centrally about, and left for a follow-up (same shape as `C2`'s and
+      `#16`'s "rest of the charts" notes) rather than expanding this pass into a
+      full text/gridline color audit. Tests: `chart-frame.spec.tsx` (new)
+      asserts the root svg's `forced-color-adjust` style directly;
+      `forced-colors-integration.spec.tsx` (new, under `chart/` since chart
+      components conventionally get a `.stories.tsx` not a `.spec.tsx` — same
+      precedent as `registry-invariants.spec.tsx`) stubs `matchMedia`
+      (`storybook/test` doesn't re-export `vi`, so this couldn't be a Storybook
+      story) and renders all three charts with NO `texture` prop, asserting
+      patterns and `url(#...)` fills appear anyway, plus a control case proving
+      the same charts draw flat colors with no `<defs>` when forced-colors is
+      off. Verified: `pnpm typecheck` / `pnpm test` (813 passing) / `pnpm build`
+      all green; eslint clean on every touched file.
 - [ ] **D1-rest — keyboard traversal of marks.** Roving-tabindex focus on
       marks + show-tooltip-on-focus + Escape-dismiss. (The "view as table"
       disclosure half of `#8` is done in `ChartContainer`.) Per-chart,
@@ -413,39 +443,39 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       without breaking the stack's alignment — left out, not attempted.
 
       `ScatterPlot` gains `quadtreeHitRadius?: number` — when set, swaps each
-                  point's own `onMouseEnter`/`onClick` listener for one plot-wide
-                  `d3-quadtree` nearest-point lookup on a single transparent overlay
-                  (one DOM listener regardless of point count, and the nearest point
-                  wins even where dots overlap, unlike native per-element hit-testing
-                  where whichever is on top of the DOM stack always wins). Chosen as the
-                  reference chart over `BubbleChart` because it already has its own
-                  tested `Interaction` story (real regression risk to rework); omitting
-                  the prop keeps today's per-circle listeners byte-identical. New real
-                  dependency: `d3-quadtree` (+ `@types/d3-quadtree`), added to the `viz`
-                  pnpm catalog alongside the other `d3-*` deps (not the workspace
-                  default catalog `pnpm add` reaches for by default — moved by hand to
-                  keep the convention).
+                      point's own `onMouseEnter`/`onClick` listener for one plot-wide
+                      `d3-quadtree` nearest-point lookup on a single transparent overlay
+                      (one DOM listener regardless of point count, and the nearest point
+                      wins even where dots overlap, unlike native per-element hit-testing
+                      where whichever is on top of the DOM stack always wins). Chosen as the
+                      reference chart over `BubbleChart` because it already has its own
+                      tested `Interaction` story (real regression risk to rework); omitting
+                      the prop keeps today's per-circle listeners byte-identical. New real
+                      dependency: `d3-quadtree` (+ `@types/d3-quadtree`), added to the `viz`
+                      pnpm catalog alongside the other `d3-*` deps (not the workspace
+                      default catalog `pnpm add` reaches for by default — moved by hand to
+                      keep the convention).
 
-                  Found and fixed along the way: `apps/viz-dashboard/src/shell/ui.tsx`'s
-                  `KpiTile` still forwarded its own `format` prop to `StatCard` as
-                  `format={format}` — broken since `A2-tail` renamed that prop to
-                  `valueFormat`, caught by running `viz-dashboard`'s own typecheck (not
-                  part of the per-batch `nimbus-viz`-only gates used everywhere else this
-                  session) after this batch. Fixed the one forwarding site; every
-                  `KpiTile` call site elsewhere keeps its own `format` prop name
-                  unchanged (that's `KpiTile`'s own API, not `StatCard`'s).
+                      Found and fixed along the way: `apps/viz-dashboard/src/shell/ui.tsx`'s
+                      `KpiTile` still forwarded its own `format` prop to `StatCard` as
+                      `format={format}` — broken since `A2-tail` renamed that prop to
+                      `valueFormat`, caught by running `viz-dashboard`'s own typecheck (not
+                      part of the per-batch `nimbus-viz`-only gates used everywhere else this
+                      session) after this batch. Fixed the one forwarding site; every
+                      `KpiTile` call site elsewhere keeps its own `format` prop name
+                      unchanged (that's `KpiTile`'s own API, not `StatCard`'s).
 
-                  Stories: `line-chart.stories.tsx`'s `Decimated` (500 points, threshold
-                  60) counts the drawn path's command letters directly, proving the
-                  point count actually drops and the shape survives (not collapsed
-                  flat); `scatter-plot.stories.tsx`'s `QuadtreeHitTest` fires a
-                  `mousemove` at one point's exact rendered position and asserts
-                  `onDatumHover` reports that point's real datum and index through the
-                  one overlay listener.
-                  Verified: `pnpm typecheck` / `pnpm test` (802 passing) / `pnpm build`
-                  / `pnpm check:package-shape` / `pnpm check:bundle-size` all green;
-                  `viz-dashboard`'s own `typecheck` and `build` also green; eslint clean
-                  on every touched file.
+                      Stories: `line-chart.stories.tsx`'s `Decimated` (500 points, threshold
+                      60) counts the drawn path's command letters directly, proving the
+                      point count actually drops and the shape survives (not collapsed
+                      flat); `scatter-plot.stories.tsx`'s `QuadtreeHitTest` fires a
+                      `mousemove` at one point's exact rendered position and asserts
+                      `onDatumHover` reports that point's real datum and index through the
+                      one overlay listener.
+                      Verified: `pnpm typecheck` / `pnpm test` (802 passing) / `pnpm build`
+                      / `pnpm check:package-shape` / `pnpm check:bundle-size` all green;
+                      `viz-dashboard`'s own `typecheck` and `build` also green; eslint clean
+                      on every touched file.
 
 - [ ] **`#20` brush / linked views.** Wire `src/chart/brush.tsx` + a
       `SelectionProvider` (broadcast a brushed domain / highlighted entity-set

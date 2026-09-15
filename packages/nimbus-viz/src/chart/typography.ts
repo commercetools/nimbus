@@ -74,6 +74,13 @@ export function chartRootStyle(): CSSProperties {
     fontStyle: "normal",
     letterSpacing: "normal",
     lineHeight: 1,
+    // Chart paint is inline SVG fill/stroke set from JS, which a
+    // forced-colors context (Windows High Contrast) does not override the
+    // way it does CSS backgrounds/text — so the browser's own UA-level
+    // forced-colors override must be turned off here, or it fights with
+    // (or masks) whatever a chart already does in response to
+    // `useForcedColors()` (system colors + `ChartPatternDefs` textures).
+    forcedColorAdjust: "none",
   };
 }
 

@@ -10,6 +10,7 @@ import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import type { DatumInteractionProps } from "../../chart/interaction";
 import { ChartPatternDefs, patternFill } from "../../chart/patterns";
+import { useForcedColors } from "../../chart/use-forced-colors";
 
 export interface DonutChartProps<
   T = CategoryDatum,
@@ -36,7 +37,9 @@ export interface DonutChartProps<
    * in addition to its color, so slices stay distinguishable by shape alone
    * — monochrome print, a photocopy, or `forced-colors` mode, where the OS
    * flattens hue and the color-only encoding stops working. Default `false`
-   * (color only, unchanged).
+   * (color only, unchanged). Turned on automatically (regardless of this
+   * prop) when the OS is already in a forced-colors context — see
+   * `useForcedColors`.
    */
   texture?: boolean;
 }
@@ -72,6 +75,8 @@ export function DonutChart<T = CategoryDatum>({
   texture,
 }: DonutChartProps<T>) {
   const theme = useChartTheme();
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<string | null>(null);
@@ -95,7 +100,12 @@ export function DonutChart<T = CategoryDatum>({
 
   if (width <= 0 || height <= 0 || data.length === 0) return null;
 
-  const colorFor = (i: number) => color(getCat(data[i]));
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // (it flattens to a tiny fixed system palette) -- one system foreground
+  // color for every slice, with the per-slice pattern kind (below) as the
+  // only identity carrier.
+  const colorFor = (i: number) =>
+    forcedColors ? "CanvasText" : color(getCat(data[i]));
   const active = hover ? data.find((d) => getCat(d) === hover) : null;
   const table = {
     columns: ["Category", "Value", "Share"],
@@ -120,7 +130,7 @@ export function DonutChart<T = CategoryDatum>({
         const inner = radius * 0.62;
         return (
           <Group top={innerHeight / 2} left={innerWidth / 2}>
-            {texture && (
+            {effectiveTexture && (
               <ChartPatternDefs colors={data.map((_, i) => colorFor(i))} />
             )}
             <Pie<T>
@@ -140,7 +150,7 @@ export function DonutChart<T = CategoryDatum>({
                     <path
                       key={cat}
                       d={pie.path(arc) ?? ""}
-                      fill={texture ? patternFill(i) : colorFor(i)}
+                      fill={effectiveTexture ? patternFill(i) : colorFor(i)}
                       opacity={dimmed ? 0.4 : 1}
                       onMouseEnter={() => {
                         setHover(cat);
@@ -163,7 +173,7 @@ export function DonutChart<T = CategoryDatum>({
               dy={-2}
               style={emText(20)}
               fontWeight={700}
-              fill={theme.ink}
+              fill={forcedColors ? "CanvasText" : theme.ink}
             >
               {active ? formatPercent(getVal(active) / total) : valueFmt(total)}
             </text>
@@ -171,7 +181,7 @@ export function DonutChart<T = CategoryDatum>({
               textAnchor="middle"
               dy={16}
               style={emText(11)}
-              fill={theme.mutedInk}
+              fill={forcedColors ? "CanvasText" : theme.mutedInk}
             >
               {active ? getCat(active) : "Total"}
             </text>

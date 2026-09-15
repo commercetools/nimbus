@@ -17,6 +17,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { ChartPatternDefs, patternFill } from "../../chart/patterns";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import type { StackRow, StackSegment } from "../../chart/types";
 import type {
   DatumClickHandler,
@@ -51,7 +52,9 @@ export interface StackedBarChartProps<T = StackRow> {
    * Fill each segment with a per-key SVG texture (`chart/patterns.tsx`) in
    * addition to its color, so segments stay distinguishable by shape alone
    * — monochrome print, a photocopy, or `forced-colors` mode. Default
-   * `false` (color only, unchanged).
+   * `false` (color only, unchanged). Turned on automatically (regardless
+   * of this prop) when the OS is already in a forced-colors context — see
+   * `useForcedColors`.
    */
   texture?: boolean;
 }
@@ -89,6 +92,8 @@ export function StackedBarChart<T = StackRow>({
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
 
   const getCat = useCallback(
     (d: T): string => (category ? category(d) : (d as StackRow).category),
@@ -101,7 +106,11 @@ export function StackedBarChart<T = StackRow>({
   );
 
   const keys = useMemo(() => stackKeys(data, getSeg), [data, getSeg]);
-  const colorForKey = useEntityColors(keys);
+  const color = useEntityColors(keys);
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every key, with the per-key pattern
+  // kind (below) as the only identity carrier.
+  const colorForKey = (k: string) => (forcedColors ? "CanvasText" : color(k));
   // Diverging stack offset: positive segments accumulate upward from 0,
   // negative segments accumulate downward from 0, each in the order given —
   // so a negative segment (a return, a write-off) is drawn on the correct
@@ -176,7 +185,7 @@ export function StackedBarChart<T = StackRow>({
               innerHeight,
             }}
           >
-            {texture && (
+            {effectiveTexture && (
               <ChartPatternDefs colors={keys.map((k) => colorForKey(k))} />
             )}
             <GridRows
@@ -258,7 +267,7 @@ export function StackedBarChart<T = StackRow>({
                     // TOP edge (y1, which sits at or just past zero), so the
                     // rect starts 2px lower instead of shrinking from y1.
                     const barY = positive ? y1 : y1 + 2;
-                    const color = texture
+                    const fillColor = effectiveTexture
                       ? patternFill(keys.indexOf(seg.key))
                       : colorForKey(seg.key);
                     const rounded = si === topIdx || si === bottomIdx;
@@ -272,7 +281,7 @@ export function StackedBarChart<T = StackRow>({
                         radius={4}
                         top={si === topIdx}
                         bottom={si === bottomIdx}
-                        fill={color}
+                        fill={fillColor}
                       />
                     ) : (
                       <rect
@@ -281,7 +290,7 @@ export function StackedBarChart<T = StackRow>({
                         y={barY}
                         width={bw}
                         height={h}
-                        fill={color}
+                        fill={fillColor}
                       />
                     );
                   })}

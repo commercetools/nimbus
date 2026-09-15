@@ -351,6 +351,9 @@ What you get automatically:
   color is not the only channel identifying a segment.
 - **Non-color encoding.** Bar length and baseline position carry the totals and
   the bottom segment; the legend and data table disambiguate the rest.
+- **Forced-colors mode.** In a `forced-colors: active` context, the chart
+  automatically switches every segment to one system foreground color and turns
+  on the `texture` patterns — see "Texture (non-color encoding)" above.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the segments rather than "the

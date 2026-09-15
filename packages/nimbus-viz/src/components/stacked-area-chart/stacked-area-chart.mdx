@@ -368,6 +368,9 @@ What you get automatically:
   (contrast + color-vision-deficiency checks), not ad-hoc colors.
 - **Non-color encoding.** Position and band thickness carry the values; color
   only distinguishes bands and is restated by the legend and tooltip labels.
+- **Forced-colors mode.** In a `forced-colors: active` context, the chart
+  automatically switches every series to one system foreground color and turns
+  on the `texture` patterns — see "Texture (non-color encoding)" above.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the parts rather than "the

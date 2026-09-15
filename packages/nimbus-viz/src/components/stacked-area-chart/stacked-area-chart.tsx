@@ -14,6 +14,7 @@ import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { ChartPatternDefs, patternFill } from "../../chart/patterns";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import type { Series, SeriesPoint } from "../../chart/types";
 import type {
   DatumClickHandler,
@@ -50,7 +51,9 @@ export interface StackedAreaChartProps<T = SeriesPoint> {
    * Fill each series' area with a per-series SVG texture (`chart/patterns.tsx`)
    * in addition to its color, so layers stay distinguishable by shape alone
    * — monochrome print, a photocopy, or `forced-colors` mode. Default
-   * `false` (color only, unchanged).
+   * `false` (color only, unchanged). Turned on automatically (regardless
+   * of this prop) when the OS is already in a forced-colors context — see
+   * `useForcedColors`.
    */
   texture?: boolean;
 }
@@ -101,6 +104,8 @@ export function StackedAreaChart<T = SeriesPoint>({
   const valueFmt = valueFormat ?? formatters.compact;
   const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
 
   const getX = useCallback(
     (d: T): number | Date => (x ? x(d) : (d as SeriesPoint).x),
@@ -148,7 +153,11 @@ export function StackedAreaChart<T = SeriesPoint>({
       ),
     [rows, keys]
   );
-  const color = useEntityColors(keys);
+  const rawColor = useEntityColors(keys);
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every series, with the per-series
+  // pattern kind (below) as the only identity carrier.
+  const color = (k: string) => (forcedColors ? "CanvasText" : rawColor(k));
 
   if (width <= 0 || height <= 0 || series.length === 0 || rows.length === 0)
     return null;
@@ -187,7 +196,9 @@ export function StackedAreaChart<T = SeriesPoint>({
           <ChartScaleProvider
             value={{ yScale, xScale, xBandwidth: 0, innerWidth, innerHeight }}
           >
-            {texture && <ChartPatternDefs colors={keys.map((k) => color(k))} />}
+            {effectiveTexture && (
+              <ChartPatternDefs colors={keys.map((k) => color(k))} />
+            )}
             <GridRows
               ticks={yScale.ticks(4)}
               y={(t) => yScale(t)}
@@ -227,7 +238,7 @@ export function StackedAreaChart<T = SeriesPoint>({
                     key={stack.key}
                     d={path(stack) || ""}
                     fill={
-                      texture
+                      effectiveTexture
                         ? patternFill(keys.indexOf(stack.key))
                         : color(stack.key)
                     }

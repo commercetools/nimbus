@@ -221,6 +221,11 @@ What you get automatically:
 - **CVD-safe palette + legend.** Slice colors come from the validated chart
   palette, and the always-present legend maps each color back to its category,
   so color identity is not left to the eye alone.
+- **Forced-colors mode.** In a `forced-colors: active` context (Windows High
+  Contrast), the chart automatically switches every slice to one system
+  foreground color and turns on the `texture` patterns — see "Texture (non-color
+  encoding)" above — so identity survives on shape, since the OS does not
+  reliably override inline SVG `fill`/`stroke` the way it does CSS.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the categories rather than
@@ -230,7 +235,8 @@ Accessibility checklist:
 
 - [ ] `ariaLabel` states what the chart shows and its takeaway (Cesal formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
-- [ ] Meaning does not depend on color alone (share + legend + table carry it)
+- [ ] Meaning does not depend on color alone (share + legend + table carry it;
+      forced-colors mode falls back to shape via `texture`, automatically)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)
 - [ ] Surrounding copy names categories/values rather than colors
