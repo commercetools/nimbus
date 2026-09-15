@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/react-vite";
-import { fireEvent, waitFor, fn, expect } from "storybook/test";
+import { fireEvent, waitFor, fn, expect, userEvent } from "storybook/test";
 import { ScatterPlot } from "./scatter-plot";
 import { RegistryPreview, type BaseStory } from "../../stories/base-story";
 
@@ -60,6 +60,43 @@ export const QuadtreeHitTest: BaseStory = {
     const call = handleHover.mock.calls.at(-1)![0];
     expect(call?.datum).toEqual(quadtreeFixture[1]);
     expect(call?.index).toBe(1);
+  },
+};
+
+/**
+ * Hover/tooltip UX convergence with `bar-chart.tsx`: hovering a point bolds
+ * it via the chart's existing bump mechanism (radius 5px -> 6px) and never
+ * dims its siblings' `fill-opacity` (the old mechanism this replaces). No
+ * tooltip-follows-pointer here -- a scatter point's radius is fixed and
+ * small (5-6px, `scatter-plot.mdx` "Axes, scales & tooltip"), leaving no
+ * real room to track pointer position within the mark; see `BubbleChart`
+ * (variable, up to 56px-diameter bubbles) for where that DOES apply.
+ */
+const hoverFixture = [
+  { x: 10, y: 20, label: "A" },
+  { x: 50, y: 60, label: "B" },
+  { x: 90, y: 30, label: "C" },
+];
+
+export const HoverEmphasis: BaseStory = {
+  render: () => <ScatterPlot width={320} height={240} points={hoverFixture} />,
+  play: async ({ canvasElement }) => {
+    const circles = () =>
+      Array.from(canvasElement.querySelectorAll<SVGCircleElement>("circle"));
+
+    const first = circles()[0];
+    await userEvent.hover(first);
+    await waitFor(() => expect(circles()[0]).toHaveAttribute("r", "6"));
+
+    // No dimming: every point keeps the same base fill-opacity -- none is
+    // reduced because a sibling is hovered (the old mechanism this
+    // replaces).
+    for (const c of circles()) {
+      expect(c).toHaveAttribute("fill-opacity", "0.85");
+    }
+    // Emphasis instead: only the hovered point's radius grows.
+    expect(circles()[1]).toHaveAttribute("r", "5");
+    expect(circles()[2]).toHaveAttribute("r", "5");
   },
 };
 

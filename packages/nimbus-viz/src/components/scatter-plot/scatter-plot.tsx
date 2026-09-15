@@ -246,9 +246,13 @@ export function ScatterPlot<T = ScatterPoint>({
                 shape={shapeFor(p)}
                 cx={xScale(getX(p))}
                 cy={yScale(getY(p))}
+                // Bold the hovered point by growing it (5px -> 6px); never
+                // dim its siblings -- the existing bump mechanism this chart
+                // already used, unchanged. A stroke outline would be
+                // redundant here on top of the size bump.
                 r={hover === i ? 6 : 5}
                 fill={colorFor(p)}
-                fillOpacity={hover == null || hover === i ? 0.85 : 0.35}
+                fillOpacity={0.85}
                 stroke={theme.surface}
                 strokeWidth={1}
                 {...(qt

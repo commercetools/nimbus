@@ -246,8 +246,8 @@ scales.
 
 `onDatumClick` and `onDatumHover` report the datum, its index, and its group
 (`seriesId`); use them for drill-down or to drive an external readout. Hover
-state (dimming the other points and showing the tooltip) is managed internally
-regardless of whether you pass a callback.
+state (enlarging the hovered point and showing the tooltip) is managed
+internally regardless of whether you pass a callback.
 
 ```tsx
 <ScatterPlot
@@ -262,10 +262,10 @@ regardless of whether you pass a callback.
 
 Not configurable — the chart always draws them. Both axes are linear scales fit
 to the data extent (`nice`-rounded) with horizontal gridlines behind the points;
-tick labels use a compact number format. Hovering a point enlarges it, dims the
-rest to 0.35 opacity, and shows a small tooltip with the point's label and its
-`x` / `y` values. A legend appears automatically when two or more groups are
-present.
+tick labels use a compact number format. Hovering a point enlarges it (its
+siblings are never dimmed) and shows a small tooltip with the point's label and
+its `x` / `y` values. A legend appears automatically when two or more groups
+are present.
 
 ### Color & theming
 
