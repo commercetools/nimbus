@@ -154,6 +154,37 @@ const App = () => (
 );
 ```
 
+### Value labels
+
+Pass `showValues` to draw each bar's formatted value directly above it (or
+below, for a negative bar) — the vertical orientation's opt-in equivalent of
+what the horizontal (ranked) orientation always shows at each bar's end. Default
+`false`.
+
+```jsx live
+const data = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <BarChart
+          width={width}
+          height={height}
+          data={data}
+          showValues
+          ariaLabel="Bar chart of revenue by channel, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Custom row types
 
 `BarChart` is generic over its row type. Pass `category` / `value` accessors to

@@ -26,6 +26,7 @@ import type {
 import { emText } from "../../chart/typography";
 import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 import { clamp, plotPointerPosition } from "../../chart/pointer";
+import { ValueLabel } from "../../chart/value-labels";
 
 export interface BarChartProps<T = CategoryDatum> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -67,6 +68,14 @@ export interface BarChartProps<T = CategoryDatum> {
    *  orientation-aware overlay (`ReferenceLine`, `ThresholdBand`) draws
    *  correctly there too, without the caller having to compensate. */
   children?: ReactNode;
+  /**
+   * Draw each bar's formatted value directly above (or below, for a
+   * negative bar) its outer end — `chart/value-labels.tsx`'s `ValueLabel`,
+   * the same convention the horizontal orientation already always uses at
+   * each bar's end (unconditionally, unaffected by this prop). Default
+   * `false` (no change from today's vertical rendering).
+   */
+  showValues?: boolean;
 }
 
 /**
@@ -99,6 +108,7 @@ export function BarChart<T = CategoryDatum>({
   onDatumClick,
   onDatumHover,
   children,
+  showValues,
 }: BarChartProps<T>) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -312,16 +322,12 @@ export function BarChart<T = CategoryDatum>({
                     >
                       {getCat(d)}
                     </text>
-                    <text
+                    <ValueLabel
                       x={positive ? barLeft + barW + 6 : barLeft - 6}
                       y={y + bh / 2}
-                      dy="0.32em"
-                      textAnchor={positive ? "start" : "end"}
-                      style={emText(11)}
-                      fill={theme.ink}
-                    >
-                      {valueFmt(getVal(d))}
-                    </text>
+                      text={valueFmt(getVal(d))}
+                      anchor={positive ? "start" : "end"}
+                    />
                   </g>
                 );
               })}
@@ -414,58 +420,66 @@ export function BarChart<T = CategoryDatum>({
               // opacity ternary).
               const isHovered = hover === i;
               return (
-                <BarRounded
-                  key={`${getCat(d)}-${i}`}
-                  x={x}
-                  y={barTop}
-                  width={bw}
-                  height={barH}
-                  radius={4}
-                  top={!hasNegative || positive}
-                  bottom={hasNegative && !positive}
-                  fill={
-                    hasNegative
-                      ? positive
-                        ? theme.positive
-                        : theme.negative
-                      : theme.accent
-                  }
-                  stroke={isHovered ? theme.ink : "none"}
-                  strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
-                  innerRef={(el) => {
-                    barRefs.current[i] = el;
-                  }}
-                  tabIndex={rovingIndex === i ? 0 : -1}
-                  role="button"
-                  aria-label={`${getCat(d)}: ${valueFmt(getVal(d))}`}
-                  onMouseEnter={(e) => {
-                    setHover(i);
-                    const p = plotPointerPosition(e, MARGIN);
-                    if (p) setPointerY(p.y);
-                    onDatumHover?.({ datum: d, index: i });
-                  }}
-                  onMouseMove={(e) => {
-                    const p = plotPointerPosition(e, MARGIN);
-                    if (p) setPointerY(p.y);
-                  }}
-                  onMouseLeave={() => {
-                    setHover(null);
-                    setPointerY(null);
-                    onDatumHover?.(null);
-                  }}
-                  onFocus={() => {
-                    setRovingIndex(i);
-                    setHover(i);
-                    onDatumHover?.({ datum: d, index: i });
-                  }}
-                  onBlur={() => {
-                    setHover(null);
-                    setPointerY(null);
-                    onDatumHover?.(null);
-                  }}
-                  onKeyDown={handleBarKeyDown(i)}
-                  onClick={() => onDatumClick?.({ datum: d, index: i })}
-                />
+                <g key={`${getCat(d)}-${i}`}>
+                  <BarRounded
+                    x={x}
+                    y={barTop}
+                    width={bw}
+                    height={barH}
+                    radius={4}
+                    top={!hasNegative || positive}
+                    bottom={hasNegative && !positive}
+                    fill={
+                      hasNegative
+                        ? positive
+                          ? theme.positive
+                          : theme.negative
+                        : theme.accent
+                    }
+                    stroke={isHovered ? theme.ink : "none"}
+                    strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
+                    innerRef={(el) => {
+                      barRefs.current[i] = el;
+                    }}
+                    tabIndex={rovingIndex === i ? 0 : -1}
+                    role="button"
+                    aria-label={`${getCat(d)}: ${valueFmt(getVal(d))}`}
+                    onMouseEnter={(e) => {
+                      setHover(i);
+                      const p = plotPointerPosition(e, MARGIN);
+                      if (p) setPointerY(p.y);
+                      onDatumHover?.({ datum: d, index: i });
+                    }}
+                    onMouseMove={(e) => {
+                      const p = plotPointerPosition(e, MARGIN);
+                      if (p) setPointerY(p.y);
+                    }}
+                    onMouseLeave={() => {
+                      setHover(null);
+                      setPointerY(null);
+                      onDatumHover?.(null);
+                    }}
+                    onFocus={() => {
+                      setRovingIndex(i);
+                      setHover(i);
+                      onDatumHover?.({ datum: d, index: i });
+                    }}
+                    onBlur={() => {
+                      setHover(null);
+                      setPointerY(null);
+                      onDatumHover?.(null);
+                    }}
+                    onKeyDown={handleBarKeyDown(i)}
+                    onClick={() => onDatumClick?.({ datum: d, index: i })}
+                  />
+                  {showValues && (
+                    <ValueLabel
+                      x={x + bw / 2}
+                      y={positive ? barTop - 6 : barTop + barH + 6}
+                      text={valueFmt(getVal(d))}
+                    />
+                  )}
+                </g>
               );
             })}
             {children}

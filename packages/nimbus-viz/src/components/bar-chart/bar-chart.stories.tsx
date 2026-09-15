@@ -274,6 +274,49 @@ export const HoverEmphasis: BaseStory = {
 };
 
 /**
+ * `showValues` (Phase B): draws each bar's formatted value directly above
+ * (or, for a negative bar, below) its outer end -- the vertical
+ * orientation's new opt-in equivalent of the horizontal orientation's
+ * always-on value labels. Default `false`; omitting the prop renders
+ * exactly as before this existed. Two instances side by side (each its own
+ * distinct `ariaLabel`, per this file's own established multi-instance
+ * convention) prove the causal link directly: turning the prop on adds
+ * exactly one new `<text>` per bar, not a guessed formatted string.
+ */
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <BarChart
+        width={240}
+        height={280}
+        data={fixture}
+        ariaLabel="Bar chart without value labels"
+      />
+      <BarChart
+        width={240}
+        height={280}
+        data={fixture}
+        showValues
+        ariaLabel="Bar chart with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (BarChart uses
+    // role="graphics-document", not "img" -- it has keyboard-focusable
+    // marks, and "img" disallows focusable descendants). Axis tick labels
+    // render their own nested <svg> (visx's positioning trick), which
+    // would otherwise inflate this count too.
+    const svgs = canvasElement.querySelectorAll(
+      'svg[role="graphics-document"]'
+    );
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    expect(textCount(svgs[1])).toBe(textCount(svgs[0]) + fixture.length);
+  },
+};
+
+/**
  * `D1-rest`: roving-tabindex keyboard traversal of individual bars. Tab
  * enters the chart on the first bar (its own `tabIndex` starts at 0, every
  * other bar at -1); ArrowRight/ArrowLeft move both the roving tab stop and
