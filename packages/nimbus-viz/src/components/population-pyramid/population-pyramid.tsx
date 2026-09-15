@@ -9,8 +9,9 @@ import { emText } from "../../chart/typography";
 import { bandByIndex, valueDomain } from "../../chart/scales";
 import { stackKeys } from "../../chart/stack";
 import { devWarn } from "../../chart/dev-warn";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface PopulationPyramidProps {
+export interface PopulationPyramidProps extends DatumInteractionProps<StackRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -45,6 +46,8 @@ export function PopulationPyramid({
   data,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: PopulationPyramidProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -157,8 +160,25 @@ export function PopulationPyramid({
                     height={bh}
                     fill={color(keys[0])}
                     opacity={lActive ? 1 : 0.4}
-                    onMouseEnter={() => setHover({ r, side: 0 })}
-                    onMouseLeave={() => setHover(null)}
+                    onMouseEnter={() => {
+                      setHover({ r, side: 0 });
+                      onDatumHover?.({
+                        datum: data[r],
+                        index: r,
+                        seriesId: keys[0],
+                      });
+                    }}
+                    onMouseLeave={() => {
+                      setHover(null);
+                      onDatumHover?.(null);
+                    }}
+                    onClick={() =>
+                      onDatumClick?.({
+                        datum: data[r],
+                        index: r,
+                        seriesId: keys[0],
+                      })
+                    }
                   />
                   <rect
                     x={centerRight}
@@ -167,8 +187,25 @@ export function PopulationPyramid({
                     height={bh}
                     fill={color(keys[1])}
                     opacity={rActive ? 1 : 0.4}
-                    onMouseEnter={() => setHover({ r, side: 1 })}
-                    onMouseLeave={() => setHover(null)}
+                    onMouseEnter={() => {
+                      setHover({ r, side: 1 });
+                      onDatumHover?.({
+                        datum: data[r],
+                        index: r,
+                        seriesId: keys[1],
+                      });
+                    }}
+                    onMouseLeave={() => {
+                      setHover(null);
+                      onDatumHover?.(null);
+                    }}
+                    onClick={() =>
+                      onDatumClick?.({
+                        datum: data[r],
+                        index: r,
+                        seriesId: keys[1],
+                      })
+                    }
                   />
                   <text
                     x={centerLeft + GUTTER / 2}

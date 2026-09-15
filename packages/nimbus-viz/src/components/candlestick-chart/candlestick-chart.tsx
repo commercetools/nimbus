@@ -10,6 +10,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** One period's open/high/low/close. */
 export interface OhlcBar {
@@ -20,7 +21,7 @@ export interface OhlcBar {
   close: number;
 }
 
-export interface CandlestickChartProps {
+export interface CandlestickChartProps extends DatumInteractionProps<OhlcBar> {
   /** Plot width in pixels — supply from `ResponsiveContainer`. */
   width: number;
   /** Plot height in pixels — supply from `ResponsiveContainer`. */
@@ -54,6 +55,8 @@ export function CandlestickChart({
   children,
   dateFormat,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: CandlestickChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -134,8 +137,15 @@ export function CandlestickChart({
                 <g
                   key={i}
                   opacity={active ? 1 : 0.4}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: d, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: d, index: i })}
                 >
                   <line
                     x1={cx}

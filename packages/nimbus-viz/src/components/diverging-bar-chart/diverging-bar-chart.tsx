@@ -8,8 +8,9 @@ import { useChartTheme } from "../../theme";
 import { formatSignedCompact } from "../../chart/format";
 import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface DivergingBarChartProps {
+export interface DivergingBarChartProps extends DatumInteractionProps<CategoryDatum> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -36,6 +37,8 @@ export function DivergingBarChart({
   height,
   data,
   ariaLabel,
+  onDatumClick,
+  onDatumHover,
 }: DivergingBarChartProps) {
   const theme = useChartTheme();
   const [hover, setHover] = useState<number | null>(null);
@@ -100,8 +103,15 @@ export function DivergingBarChart({
                 <g
                   key={i}
                   opacity={active ? 1 : 0.4}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: d, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: d, index: i })}
                 >
                   <BarRounded
                     x={x}

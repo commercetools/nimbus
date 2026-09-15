@@ -5,6 +5,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** A square matrix of flows between a shared set of entities. */
 export interface FlowMatrix {
@@ -13,7 +14,19 @@ export interface FlowMatrix {
   matrix: number[][];
 }
 
-export interface ChordDiagramProps {
+/**
+ * The datum reported by `onDatumClick`/`onDatumHover`: one entity (an arc).
+ * For a ribbon (a flow between two entities), `datum` is the FROM entity and
+ * `seriesId` is the TO entity's label — a ribbon has no single-entity shape
+ * to report as `datum` alone.
+ */
+export interface ChordEntity {
+  label: string;
+  /** This entity's total outbound flow (sum of its matrix row, clamped to ≥0). */
+  total: number;
+}
+
+export interface ChordDiagramProps extends DatumInteractionProps<ChordEntity> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -81,6 +94,8 @@ export function ChordDiagram({
   data,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: ChordDiagramProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -182,8 +197,31 @@ export function ChordDiagram({
                   d={ribbonPath(rb.s, rb.t, inner)}
                   fill={color(labels[rb.i])}
                   opacity={ribbonOpacity(rb, idx)}
-                  onMouseEnter={() => setHoverRibbon(idx)}
-                  onMouseLeave={() => setHoverRibbon(null)}
+                  onMouseEnter={() => {
+                    setHoverRibbon(idx);
+                    onDatumHover?.({
+                      datum: {
+                        label: labels[rb.i],
+                        total: layout.rowSum[rb.i],
+                      },
+                      index: idx,
+                      seriesId: labels[rb.j],
+                    });
+                  }}
+                  onMouseLeave={() => {
+                    setHoverRibbon(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() =>
+                    onDatumClick?.({
+                      datum: {
+                        label: labels[rb.i],
+                        total: layout.rowSum[rb.i],
+                      },
+                      index: idx,
+                      seriesId: labels[rb.j],
+                    })
+                  }
                 />
               ))}
               {layout.groups.map((g, i) => {
@@ -194,8 +232,23 @@ export function ChordDiagram({
                     <path
                       d={arcPath(inner, outer, g.a0, g.a1)}
                       fill={color(labels[i])}
-                      onMouseEnter={() => setHoverArc(i)}
-                      onMouseLeave={() => setHoverArc(null)}
+                      onMouseEnter={() => {
+                        setHoverArc(i);
+                        onDatumHover?.({
+                          datum: { label: labels[i], total: layout.rowSum[i] },
+                          index: i,
+                        });
+                      }}
+                      onMouseLeave={() => {
+                        setHoverArc(null);
+                        onDatumHover?.(null);
+                      }}
+                      onClick={() =>
+                        onDatumClick?.({
+                          datum: { label: labels[i], total: layout.rowSum[i] },
+                          index: i,
+                        })
+                      }
                     />
                     <text
                       x={lx}

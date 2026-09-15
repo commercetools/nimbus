@@ -8,8 +8,9 @@ import { useChartFormatters } from "../../chart/format-locale";
 import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import { stackKeys } from "../../chart/stack";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface MarimekkoChartProps {
+export interface MarimekkoChartProps extends DatumInteractionProps<StackRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -43,6 +44,8 @@ export function MarimekkoChart({
   data,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: MarimekkoChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -114,8 +117,25 @@ export function MarimekkoChart({
                         height={Math.max(0, h - GAP)}
                         fill={color(seg.key)}
                         opacity={active ? 1 : 0.4}
-                        onMouseEnter={() => setHover({ c, s })}
-                        onMouseLeave={() => setHover(null)}
+                        onMouseEnter={() => {
+                          setHover({ c, s });
+                          onDatumHover?.({
+                            datum: row,
+                            index: c,
+                            seriesId: seg.key,
+                          });
+                        }}
+                        onMouseLeave={() => {
+                          setHover(null);
+                          onDatumHover?.(null);
+                        }}
+                        onClick={() =>
+                          onDatumClick?.({
+                            datum: row,
+                            index: c,
+                            seriesId: seg.key,
+                          })
+                        }
                       />
                     );
                   })}

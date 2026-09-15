@@ -8,6 +8,7 @@ import { useChartTheme, useEntityColors } from "../../theme";
 import { formatPercent } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** A node in a nested part-to-whole hierarchy. Leaves carry `value`. */
 export interface TreemapNode {
@@ -16,7 +17,7 @@ export interface TreemapNode {
   children?: TreemapNode[];
 }
 
-export interface TreemapProps {
+export interface TreemapProps extends DatumInteractionProps<TreemapNode> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -61,6 +62,8 @@ export function Treemap({
   data,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: TreemapProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -118,8 +121,17 @@ export function Treemap({
                     key={`${leaf.data.name}-${i}`}
                     left={leaf.x0}
                     top={leaf.y0}
-                    onMouseEnter={() => setHover(i)}
-                    onMouseLeave={() => setHover(null)}
+                    onMouseEnter={() => {
+                      setHover(i);
+                      onDatumHover?.({ datum: leaf.data, index: i });
+                    }}
+                    onMouseLeave={() => {
+                      setHover(null);
+                      onDatumHover?.(null);
+                    }}
+                    onClick={() =>
+                      onDatumClick?.({ datum: leaf.data, index: i })
+                    }
                   >
                     <rect
                       width={nodeWidth}

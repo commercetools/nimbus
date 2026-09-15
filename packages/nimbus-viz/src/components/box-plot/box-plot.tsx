@@ -11,6 +11,7 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** Precomputed five-number summary for one group's distribution. */
 export interface BoxPlotGroupStats {
@@ -24,7 +25,7 @@ export interface BoxPlotGroupStats {
   outliers?: number[];
 }
 
-export interface BoxPlotProps {
+export interface BoxPlotProps extends DatumInteractionProps<BoxPlotGroupStats> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -55,6 +56,8 @@ export function BoxPlot({
   ariaLabel,
   children,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: BoxPlotProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -168,8 +171,15 @@ export function BoxPlot({
                   container
                   containerProps={{
                     fillOpacity: 0,
-                    onMouseEnter: () => setHover(i),
-                    onMouseLeave: () => setHover(null),
+                    onMouseEnter: () => {
+                      setHover(i);
+                      onDatumHover?.({ datum: g, index: i });
+                    },
+                    onMouseLeave: () => {
+                      setHover(null);
+                      onDatumHover?.(null);
+                    },
+                    onClick: () => onDatumClick?.({ datum: g, index: i }),
                   }}
                 />
               );

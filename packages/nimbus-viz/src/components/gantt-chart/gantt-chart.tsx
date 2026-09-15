@@ -9,6 +9,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** A scheduled event: a span [start, end], or a milestone if `end` is absent. */
 export interface TimelineEvent {
@@ -19,7 +20,7 @@ export interface TimelineEvent {
   category?: string;
 }
 
-export interface GanttChartProps {
+export interface GanttChartProps extends DatumInteractionProps<TimelineEvent> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -48,6 +49,8 @@ export function GanttChart({
   data,
   ariaLabel,
   dateFormat,
+  onDatumClick,
+  onDatumHover,
 }: GanttChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -131,8 +134,15 @@ export function GanttChart({
                 <g
                   key={i}
                   opacity={active ? 1 : 0.4}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: d, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: d, index: i })}
                 >
                   {isMilestone ? (
                     <rect

@@ -7,8 +7,9 @@ import { formatPercent } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface DonutChartProps {
+export interface DonutChartProps extends DatumInteractionProps<CategoryDatum> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -35,6 +36,8 @@ export function DonutChart({
   data,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: DonutChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -90,8 +93,17 @@ export function DonutChart({
                       d={pie.path(arc) ?? ""}
                       fill={colorFor(i)}
                       opacity={dimmed ? 0.4 : 1}
-                      onMouseEnter={() => setHover(arc.data.category)}
-                      onMouseLeave={() => setHover(null)}
+                      onMouseEnter={() => {
+                        setHover(arc.data.category);
+                        onDatumHover?.({ datum: arc.data, index: i });
+                      }}
+                      onMouseLeave={() => {
+                        setHover(null);
+                        onDatumHover?.(null);
+                      }}
+                      onClick={() =>
+                        onDatumClick?.({ datum: arc.data, index: i })
+                      }
                     />
                   );
                 })

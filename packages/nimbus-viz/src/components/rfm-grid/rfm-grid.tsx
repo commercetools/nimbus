@@ -14,6 +14,7 @@ import {
 import { formatInteger } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText, CHART_FONT_STACK, LABEL_PX } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** One segment of an RFM matrix. `recency` & `frequency` are 1..N bucket indices. */
 export interface RfmCell {
@@ -23,7 +24,7 @@ export interface RfmCell {
   value?: number;
 }
 
-export interface RfmGridProps {
+export interface RfmGridProps extends DatumInteractionProps<RfmCell> {
   /** Chart width in pixels (supplied by `ResponsiveContainer`). */
   width: number;
   /** Chart height in pixels (supplied by `ResponsiveContainer`). */
@@ -61,6 +62,8 @@ export function RfmGrid({
   domain,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: RfmGridProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -181,8 +184,23 @@ export function RfmGrid({
                       fill={color(t)}
                       stroke={theme.surface}
                       strokeWidth={1}
-                      onMouseEnter={() => setHover(key)}
-                      onMouseLeave={() => setHover(null)}
+                      onMouseEnter={() => {
+                        setHover(key);
+                        onDatumHover?.({
+                          datum: cellData,
+                          index: data.indexOf(cellData),
+                        });
+                      }}
+                      onMouseLeave={() => {
+                        setHover(null);
+                        onDatumHover?.(null);
+                      }}
+                      onClick={() =>
+                        onDatumClick?.({
+                          datum: cellData,
+                          index: data.indexOf(cellData),
+                        })
+                      }
                     />
                     {bw > 24 && bh > 16 && (
                       <text

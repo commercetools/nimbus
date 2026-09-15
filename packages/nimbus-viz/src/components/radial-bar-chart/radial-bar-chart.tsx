@@ -9,8 +9,9 @@ import { useChartTheme } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface RadialBarChartProps {
+export interface RadialBarChartProps extends DatumInteractionProps<CategoryDatum> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -60,6 +61,8 @@ export function RadialBarChart({
   data,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: RadialBarChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -134,8 +137,15 @@ export function RadialBarChart({
                 return (
                   <g
                     key={`${d.category}-${i}`}
-                    onMouseEnter={() => setHover(i)}
-                    onMouseLeave={() => setHover(null)}
+                    onMouseEnter={() => {
+                      setHover(i);
+                      onDatumHover?.({ datum: d, index: i });
+                    }}
+                    onMouseLeave={() => {
+                      setHover(null);
+                      onDatumHover?.(null);
+                    }}
+                    onClick={() => onDatumClick?.({ datum: d, index: i })}
                   >
                     <path
                       d={sectorPath(inner, r1, a0, a1)}

@@ -13,8 +13,9 @@ import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { Series } from "../../chart/types";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface StreamgraphProps {
+export interface StreamgraphProps extends DatumInteractionProps<StackDatum> {
   /** Plot width in pixels — supply from `ResponsiveContainer`. */
   width: number;
   /** Plot height in pixels — supply from `ResponsiveContainer`. */
@@ -32,7 +33,7 @@ export interface StreamgraphProps {
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
-interface StackDatum {
+export interface StackDatum {
   x: number;
   [seriesId: string]: number;
 }
@@ -57,6 +58,8 @@ export function Streamgraph({
   children,
   valueFormat,
   dateFormat,
+  onDatumClick,
+  onDatumHover,
 }: StreamgraphProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -195,9 +198,26 @@ export function Streamgraph({
                   rows,
                   (r) => new Date(r.x)
                 );
-                if (idx >= 0) setHoverIndex(idx);
+                if (idx >= 0) {
+                  setHoverIndex(idx);
+                  onDatumHover?.({ datum: rows[idx], index: idx });
+                }
               }}
-              onMouseLeave={() => setHoverIndex(null)}
+              onMouseLeave={() => {
+                setHoverIndex(null);
+                onDatumHover?.(null);
+              }}
+              onClick={(e) => {
+                const box = e.currentTarget.getBoundingClientRect();
+                const mx = e.clientX - box.left;
+                const idx = nearestIndexByX(
+                  mx,
+                  xScale,
+                  rows,
+                  (r) => new Date(r.x)
+                );
+                if (idx >= 0) onDatumClick?.({ datum: rows[idx], index: idx });
+              }}
             />
 
             {hoverIndex != null && hoveredX != null && (

@@ -8,8 +8,9 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { chartScale, emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface BeeswarmPlotProps {
+export interface BeeswarmPlotProps extends DatumInteractionProps<number> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -71,6 +72,8 @@ export function BeeswarmPlot({
   values,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: BeeswarmPlotProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -126,8 +129,15 @@ export function BeeswarmPlot({
                   r={r}
                   fill={theme.accent}
                   opacity={active ? 0.85 : 0.3}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: d.v, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: d.v, index: i })}
                 />
               );
             })}

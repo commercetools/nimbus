@@ -13,8 +13,12 @@ import { useChartTheme } from "../../theme";
 import { formatInteger } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import { histogramBins } from "../../stats";
+import type { Bin } from "d3-array";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface HistogramProps {
+export interface HistogramProps extends DatumInteractionProps<
+  Bin<number, number>
+> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -50,6 +54,8 @@ export function Histogram({
   ariaLabel,
   children,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: HistogramProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -151,8 +157,15 @@ export function Histogram({
                   top
                   fill={theme.accent}
                   opacity={active ? 1 : 0.4}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: b, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: b, index: i })}
                 />
               );
             })}

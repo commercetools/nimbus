@@ -10,6 +10,7 @@ import { useChartTheme } from "../../theme";
 import { formatSignedCompact } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** One category compared at two points — a start and an end value. */
 export interface DumbbellRow {
@@ -21,7 +22,7 @@ export interface DumbbellRow {
   end: number;
 }
 
-export interface DumbbellChartProps {
+export interface DumbbellChartProps extends DatumInteractionProps<DumbbellRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -56,6 +57,8 @@ export function DumbbellChart({
   endLabel = "End",
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: DumbbellChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -143,8 +146,15 @@ export function DumbbellChart({
                 <g
                   key={i}
                   opacity={active ? 1 : 0.35}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: row, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: row, index: i })}
                 >
                   <text
                     x={-8}

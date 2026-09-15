@@ -15,8 +15,9 @@ import { useChartFormatters } from "../../chart/format-locale";
 import type { Series, SeriesPoint } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import { controlLimits } from "../../stats";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface ControlChartProps {
+export interface ControlChartProps extends DatumInteractionProps<SeriesPoint> {
   /** Plot width in pixels — supply from `ResponsiveContainer`. */
   width: number;
   /** Plot height in pixels — supply from `ResponsiveContainer`. */
@@ -63,6 +64,8 @@ export function ControlChart({
   children,
   dateFormat,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: ControlChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -256,9 +259,24 @@ export function ControlChart({
                 const idx = nearestIndexByX(mx, xScale, points, (p) =>
                   toDate(p.x)
                 );
-                if (idx >= 0) setHoverIndex(idx);
+                if (idx >= 0) {
+                  setHoverIndex(idx);
+                  onDatumHover?.({ datum: points[idx], index: idx });
+                }
               }}
-              onMouseLeave={() => setHoverIndex(null)}
+              onMouseLeave={() => {
+                setHoverIndex(null);
+                onDatumHover?.(null);
+              }}
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const mx = e.clientX - rect.left;
+                const idx = nearestIndexByX(mx, xScale, points, (p) =>
+                  toDate(p.x)
+                );
+                if (idx >= 0)
+                  onDatumClick?.({ datum: points[idx], index: idx });
+              }}
             />
 
             {hovered != null && hovered.y != null && (

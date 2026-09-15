@@ -4,8 +4,9 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useEntityColors } from "../../theme";
 import { formatPercent } from "../../chart/format";
 import type { CategoryDatum } from "../../chart/types";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface WaffleChartProps {
+export interface WaffleChartProps extends DatumInteractionProps<CategoryDatum> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -54,6 +55,8 @@ export function WaffleChart({
   data,
   cells = 10,
   ariaLabel,
+  onDatumClick,
+  onDatumHover,
 }: WaffleChartProps) {
   const [hover, setHover] = useState<string | null>(null);
   const total = useMemo(
@@ -130,8 +133,19 @@ export function WaffleChart({
                   rx={2}
                   fill={cat != null ? color(cat) : undefined}
                   fillOpacity={cat == null ? 0 : dimmed ? 0.3 : 1}
-                  onMouseEnter={() => cat != null && setHover(cat)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    if (cat == null || owner == null) return;
+                    setHover(cat);
+                    onDatumHover?.({ datum: data[owner], index: owner });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => {
+                    if (owner == null) return;
+                    onDatumClick?.({ datum: data[owner], index: owner });
+                  }}
                 />
               );
             })}

@@ -8,6 +8,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** One vertical axis: `key` selects the field on each row's `values`. */
 export interface ParallelDimension {
@@ -22,7 +23,7 @@ export interface ParallelRow {
   values: Record<string, number>;
 }
 
-export interface ParallelCoordinatesProps {
+export interface ParallelCoordinatesProps extends DatumInteractionProps<ParallelRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -61,6 +62,8 @@ export function ParallelCoordinates({
   data,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: ParallelCoordinatesProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -153,8 +156,17 @@ export function ParallelCoordinates({
                   stroke={c}
                   strokeWidth={hover === i ? 2.5 : 1.5}
                   strokeOpacity={active ? (hover === i ? 1 : 0.5) : 0.12}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: r, index: i, seriesId: r.group });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() =>
+                    onDatumClick?.({ datum: r, index: i, seriesId: r.group })
+                  }
                 />
               );
             })}

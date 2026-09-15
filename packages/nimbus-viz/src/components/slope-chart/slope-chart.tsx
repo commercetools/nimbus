@@ -7,6 +7,7 @@ import { useChartTheme } from "../../theme";
 import { formatSignedCompact, formatSignedPercent } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** One row of a slopegraph: a single entity measured at two moments. */
 export interface SlopeRow {
@@ -20,7 +21,7 @@ export interface SlopeRow {
   right: number;
 }
 
-export interface SlopeChartProps {
+export interface SlopeChartProps extends DatumInteractionProps<SlopeRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -79,6 +80,8 @@ export function SlopeChart({
   rightLabel,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: SlopeChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -168,8 +171,15 @@ export function SlopeChart({
                 <g
                   key={row.id}
                   opacity={active ? 1 : 0.3}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: row, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: row, index: i })}
                 >
                   <line
                     x1={0}

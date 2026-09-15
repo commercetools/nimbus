@@ -9,8 +9,9 @@ import { formatPercent } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { TreemapNode } from "../treemap";
 import { emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface SunburstChartProps {
+export interface SunburstChartProps extends DatumInteractionProps<TreemapNode> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -70,6 +71,8 @@ export function SunburstChart({
   data,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: SunburstChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -142,13 +145,20 @@ export function SunburstChart({
                             (dimmed ? 0.4 : 1) *
                             Math.max(0.55, 1 - (node.depth - 1) * 0.15)
                           }
-                          onMouseEnter={() =>
+                          onMouseEnter={() => {
                             setHover({
                               name: node.data.name,
                               value: node.value ?? 0,
-                            })
+                            });
+                            onDatumHover?.({ datum: node.data, index: i });
+                          }}
+                          onMouseLeave={() => {
+                            setHover(null);
+                            onDatumHover?.(null);
+                          }}
+                          onClick={() =>
+                            onDatumClick?.({ datum: node.data, index: i })
                           }
-                          onMouseLeave={() => setHover(null)}
                         />
                       );
                     })}

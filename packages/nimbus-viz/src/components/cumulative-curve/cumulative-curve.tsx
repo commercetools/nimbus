@@ -13,8 +13,9 @@ import { useChartTheme } from "../../theme";
 import { formatPercent } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import { chartScale } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface CumulativeCurveProps {
+export interface CumulativeCurveProps extends DatumInteractionProps<CdfPoint> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -29,7 +30,7 @@ export interface CumulativeCurveProps {
   valueFormat?: (n: number) => string;
 }
 
-interface CdfPoint {
+export interface CdfPoint {
   v: number;
   f: number;
 }
@@ -50,6 +51,8 @@ export function CumulativeCurve({
   ariaLabel,
   children,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: CumulativeCurveProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -146,8 +149,15 @@ export function CumulativeCurve({
                     r={r}
                     fill={theme.accent}
                     opacity={active ? 1 : 0.4}
-                    onMouseEnter={() => setHover(i)}
-                    onMouseLeave={() => setHover(null)}
+                    onMouseEnter={() => {
+                      setHover(i);
+                      onDatumHover?.({ datum: d, index: i });
+                    }}
+                    onMouseLeave={() => {
+                      setHover(null);
+                      onDatumHover?.(null);
+                    }}
+                    onClick={() => onDatumClick?.({ datum: d, index: i })}
                   />
                 );
               })}

@@ -6,8 +6,9 @@ import { useChartTheme } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface LollipopChartProps {
+export interface LollipopChartProps extends DatumInteractionProps<CategoryDatum> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -36,6 +37,8 @@ export function LollipopChart({
   data,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: LollipopChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -93,8 +96,15 @@ export function LollipopChart({
                 <g
                   key={`${d.category}-${i}`}
                   opacity={active ? 1 : 0.4}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: d, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: d, index: i })}
                 >
                   <line
                     x1={zeroX}

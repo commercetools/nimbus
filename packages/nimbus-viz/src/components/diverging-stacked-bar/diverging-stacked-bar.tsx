@@ -9,8 +9,9 @@ import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import { bandByIndex } from "../../chart/scales";
 import { stackKeys } from "../../chart/stack";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface DivergingStackedBarProps {
+export interface DivergingStackedBarProps extends DatumInteractionProps<StackRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -44,6 +45,8 @@ export function DivergingStackedBar({
   data,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: DivergingStackedBarProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -153,8 +156,15 @@ export function DivergingStackedBar({
                         height={bh}
                         fill={colorFor(s)}
                         opacity={active ? 1 : 0.4}
-                        onMouseEnter={() => setHover({ r, s })}
-                        onMouseLeave={() => setHover(null)}
+                        onMouseEnter={() => {
+                          setHover({ r, s });
+                          onDatumHover?.({ datum: row, index: r });
+                        }}
+                        onMouseLeave={() => {
+                          setHover(null);
+                          onDatumHover?.(null);
+                        }}
+                        onClick={() => onDatumClick?.({ datum: row, index: r })}
                       />
                     );
                   })}

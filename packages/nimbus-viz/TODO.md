@@ -109,14 +109,47 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       touching the grid's own UTC-safe day-index math. Verified:
       `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build` all green;
       eslint clean on every touched file.
-- [ ] **A3-tail — datum callbacks.** Extend `onDatumClick`/`onDatumHover` to the
-      charts not yet wired (done: line, bar, scatter, grouped-bar, stacked-bar,
-      bubble, waterfall, pareto, stacked-area, bullet, funnel, cohort-triangle,
-      heatmap). Pattern in `src/chart/interaction.ts`; fire from existing hover
-      handlers with the raw input datum. Note `stacked-area`'s and `bullet`'s
-      callbacks report the whole row (`StackDatum`/`BulletDatum`, no
-      `seriesId`), matching `stacked-bar`'s convention — not `line`'s "report
-      series[0] only" — since neither has a single "the" series to report.
+- [x] **A3-tail — datum callbacks.** Done: `onDatumClick`/`onDatumHover` wired
+      on 28 more charts via `extends DatumInteractionProps<Payload>` (the
+      shared-interface form, matching `waterfall-chart`'s precedent rather than
+      the older inline-props style some of the original 13 used) --
+      beeswarm-plot, box-plot, bump-chart, calendar-heatmap, candlestick-chart,
+      chord-diagram, connected-scatterplot, control-chart, cumulative-curve,
+      diverging-bar-chart, diverging-stacked-bar, donut-chart, dumbbell-chart,
+      gantt-chart, histogram, lollipop-chart, marimekko-chart,
+      parallel-coordinates, population-pyramid, radial-bar-chart, rfm-grid,
+      sankey-diagram, slope-chart, streamgraph, sunburst-chart, treemap,
+      violin-plot, waffle-chart. Payload convention held throughout: report the
+      chart's own raw input row/point type (never a clamped or
+      internally-computed value); a chart with row/stack semantics reports the
+      whole row with no `seriesId` (population-pyramid, marimekko-chart --
+      extended with `seriesId` as the touched side/segment's key anyway, since
+      it's free extra fixed to report and doesn't contradict "the datum is the
+      row"); a chart with two distinct mark kinds (an entity vs. a relationship
+      between two entities) reports the single-entity shape as `datum` and the
+      other entity as `seriesId` (chord-diagram's arc-vs-ribbon,
+      sankey-diagram's node-vs-link -- new exported `ChordEntity` type for
+      chord-diagram since no single-entity row existed in `FlowMatrix`). Two
+      structural fixups needed along the way: `bump-chart`'s mixed date-or-index
+      x-axis formatter (`fmtX`) had to move from module scope into the component
+      body in `A2-date` already, so it already had access to props here;
+      `cumulative-curve`'s local `CdfPoint` and `streamgraph`'s local
+      `StackDatum` had to be exported to use as the `DatumInteractionProps<T>`
+      type argument.
+
+      Deliberately excluded, each for a real reason: `gauge` / `stat-card`
+          (a single value has no discrete second "mark" to report a click on --
+          the whole chart already is the one datum, which is what `value`/`label`
+          already are); `sparkline` (explicitly minimal by design -- "no axes, no
+          gridlines, no tick labels", a decorative inline glyph, not an
+          interactive chart); `data-table` (the guaranteed no-throw HTML fallback
+          shell used internally by `ChartContainer`, not a chart with visual
+          marks -- its own doc comment already flags it as a temporary stand-in
+          pending a real `@commercetools/nimbus` `DataTable`).
+
+          Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
+          all green; eslint clean on every touched file (28 chart `.tsx` files).
+
 - [ ] **A3 — controlled selection + interactive legend.** Lift internal hover to
       controlled/uncontrolled (`selection`/`onSelectionChange`,
       `useControlledSelection` exists); legend click-to-toggle / shift-isolate

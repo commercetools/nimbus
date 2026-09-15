@@ -11,6 +11,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { gaussianKde, median } from "../../stats";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** One group's raw samples; the density is estimated here, not supplied. */
 export interface SampleGroup {
@@ -18,7 +19,7 @@ export interface SampleGroup {
   samples: number[];
 }
 
-export interface ViolinPlotProps {
+export interface ViolinPlotProps extends DatumInteractionProps<SampleGroup> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -52,6 +53,8 @@ export function ViolinPlot({
   ariaLabel,
   children,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: ViolinPlotProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -146,7 +149,7 @@ export function ViolinPlot({
               tickFormat={band.tickFormat}
               tickLabelProps={bottomTickLabel(theme)}
             />
-            {groups.map((_, i) => {
+            {groups.map((g, i) => {
               const cx = band.center(i);
               const s = stats[i];
               const active = hover == null || hover === i;
@@ -166,8 +169,15 @@ export function ViolinPlot({
               return (
                 <g
                   key={i}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: g, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: g, index: i })}
                 >
                   <path
                     d={d}

@@ -10,10 +10,11 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
-import type { Series } from "../../chart/types";
+import type { Series, SeriesPoint } from "../../chart/types";
 import { emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface BumpChartProps {
+export interface BumpChartProps extends DatumInteractionProps<SeriesPoint> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -56,6 +57,8 @@ export function BumpChart({
   children,
   dateFormat,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: BumpChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -189,8 +192,25 @@ export function BumpChart({
                       fill={stroke}
                       stroke={theme.surface}
                       strokeWidth={1.5}
-                      onMouseEnter={() => setHover({ si, i: d.i })}
-                      onMouseLeave={() => setHover(null)}
+                      onMouseEnter={() => {
+                        setHover({ si, i: d.i });
+                        onDatumHover?.({
+                          datum: series[si].data[d.i],
+                          index: d.i,
+                          seriesId: s.id,
+                        });
+                      }}
+                      onMouseLeave={() => {
+                        setHover(null);
+                        onDatumHover?.(null);
+                      }}
+                      onClick={() =>
+                        onDatumClick?.({
+                          datum: series[si].data[d.i],
+                          index: d.i,
+                          seriesId: s.id,
+                        })
+                      }
                     />
                   ))}
                   {last && (

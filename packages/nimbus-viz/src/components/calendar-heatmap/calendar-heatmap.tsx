@@ -11,6 +11,7 @@ import {
 import { formatInteger } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText, CHART_FONT_STACK, LABEL_PX } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** One day's magnitude on a calendar activity grid. */
 export interface CalendarDatum {
@@ -18,7 +19,7 @@ export interface CalendarDatum {
   value: number;
 }
 
-export interface CalendarHeatmapProps {
+export interface CalendarHeatmapProps extends DatumInteractionProps<CalendarDatum> {
   /** Chart width in pixels (supplied by `ResponsiveContainer`). */
   width: number;
   /** Chart height in pixels (supplied by `ResponsiveContainer`). */
@@ -83,6 +84,8 @@ export function CalendarHeatmap({
   domain,
   ariaLabel,
   dateFormat,
+  onDatumClick,
+  onDatumHover,
 }: CalendarHeatmapProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -255,8 +258,23 @@ export function CalendarHeatmap({
                     fill={color(t)}
                     stroke={theme.surface}
                     strokeWidth={1}
-                    onMouseEnter={() => setHover(day)}
-                    onMouseLeave={() => setHover(null)}
+                    onMouseEnter={() => {
+                      setHover(day);
+                      onDatumHover?.({
+                        datum: entry,
+                        index: entries.indexOf(entry),
+                      });
+                    }}
+                    onMouseLeave={() => {
+                      setHover(null);
+                      onDatumHover?.(null);
+                    }}
+                    onClick={() =>
+                      onDatumClick?.({
+                        datum: entry,
+                        index: entries.indexOf(entry),
+                      })
+                    }
                   />
                 );
               })

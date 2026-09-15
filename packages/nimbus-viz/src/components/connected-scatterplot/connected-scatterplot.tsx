@@ -12,8 +12,9 @@ import { useChartTheme } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { ScatterPoint } from "../../chart/types";
 import { chartScale, emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface ConnectedScatterplotProps {
+export interface ConnectedScatterplotProps extends DatumInteractionProps<ScatterPoint> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -43,6 +44,8 @@ export function ConnectedScatterplot({
   ariaLabel,
   children,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: ConnectedScatterplotProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -140,8 +143,15 @@ export function ConnectedScatterplot({
                   stroke={theme.accent}
                   strokeWidth={1.5}
                   opacity={active ? 1 : 0.4}
-                  onMouseEnter={() => setHover(i)}
-                  onMouseLeave={() => setHover(null)}
+                  onMouseEnter={() => {
+                    setHover(i);
+                    onDatumHover?.({ datum: p, index: i });
+                  }}
+                  onMouseLeave={() => {
+                    setHover(null);
+                    onDatumHover?.(null);
+                  }}
+                  onClick={() => onDatumClick?.({ datum: p, index: i })}
                 />
               );
             })}

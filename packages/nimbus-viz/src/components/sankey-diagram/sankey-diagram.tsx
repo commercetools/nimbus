@@ -9,8 +9,9 @@ import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { FlowGraph, FlowLink, FlowNode } from "../../chart/types";
 import { emText } from "../../chart/typography";
+import type { DatumInteractionProps } from "../../chart/interaction";
 
-export interface SankeyDiagramProps {
+export interface SankeyDiagramProps extends DatumInteractionProps<FlowNode> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
   width: number;
   /** Rendered height in pixels — normally supplied by `ResponsiveContainer`. */
@@ -41,6 +42,8 @@ export function SankeyDiagram({
   graph,
   ariaLabel,
   valueFormat,
+  onDatumClick,
+  onDatumHover,
 }: SankeyDiagramProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -125,8 +128,25 @@ export function SankeyDiagram({
                     stroke={nodeColor(source.name)}
                     strokeOpacity={isHover ? 0.6 : 0.35}
                     strokeWidth={Math.max(1, link.width ?? 1)}
-                    onMouseEnter={() => setHover({ kind: "link", i })}
-                    onMouseLeave={() => setHover(null)}
+                    onMouseEnter={() => {
+                      setHover({ kind: "link", i });
+                      onDatumHover?.({
+                        datum: graph.nodes[graph.links[i].source],
+                        index: i,
+                        seriesId: graph.nodes[graph.links[i].target].name,
+                      });
+                    }}
+                    onMouseLeave={() => {
+                      setHover(null);
+                      onDatumHover?.(null);
+                    }}
+                    onClick={() =>
+                      onDatumClick?.({
+                        datum: graph.nodes[graph.links[i].source],
+                        index: i,
+                        seriesId: graph.nodes[graph.links[i].target].name,
+                      })
+                    }
                   />
                 );
               })}
@@ -148,8 +168,17 @@ export function SankeyDiagram({
                       fill={nodeColor(node.name)}
                       stroke={isHover ? theme.ink : "none"}
                       strokeWidth={isHover ? 1.5 : 0}
-                      onMouseEnter={() => setHover({ kind: "node", i })}
-                      onMouseLeave={() => setHover(null)}
+                      onMouseEnter={() => {
+                        setHover({ kind: "node", i });
+                        onDatumHover?.({ datum: graph.nodes[i], index: i });
+                      }}
+                      onMouseLeave={() => {
+                        setHover(null);
+                        onDatumHover?.(null);
+                      }}
+                      onClick={() =>
+                        onDatumClick?.({ datum: graph.nodes[i], index: i })
+                      }
                     />
                     <text
                       x={leftHalf ? x1 + 6 : x0 - 6}
