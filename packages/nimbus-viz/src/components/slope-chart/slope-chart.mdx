@@ -175,10 +175,9 @@ overflows), preserving input order. Values use a compact formatter (e.g.
 
 ### Hover & tooltip (automatic)
 
-Hovering a line dims the others to `0.3` opacity, thickens the hovered line, and
-shows a tooltip with the label, the `left → right` values, and the signed change
-(with a percent when `left` is non-zero). Hover is internal — there are no
-interaction callbacks to wire.
+Hovering a line thickens it (its siblings are never dimmed) and shows a
+tooltip with the label, the `left → right` values, and the signed change (with
+a percent when `left` is non-zero).
 
 ### Color & theming
 

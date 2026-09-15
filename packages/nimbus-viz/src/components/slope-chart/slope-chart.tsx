@@ -166,11 +166,12 @@ export function SlopeChart({
                   : delta < 0
                     ? theme.negative
                     : theme.mutedInk;
-              const active = hover == null || hover === i;
               return (
+                // Bold the hovered row's line (strokeWidth); never dim the
+                // other rows -- the existing bump mechanism below,
+                // unchanged.
                 <g
                   key={row.id}
-                  opacity={active ? 1 : 0.3}
                   onMouseEnter={() => {
                     setHover(i);
                     onDatumHover?.({ datum: row, index: i });
