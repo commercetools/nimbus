@@ -81,6 +81,8 @@ export { nearestIndexByX } from "./chart/nearest-x";
 export type { InvertibleScale } from "./chart/nearest-x";
 export { plotPointerPosition, clamp } from "./chart/pointer";
 export type { PlotPoint } from "./chart/pointer";
+export { ValueLabel } from "./chart/value-labels";
+export type { ValueLabelProps } from "./chart/value-labels";
 
 // Statistical helpers (regression, control limits, KDE, five-number summary).
 export * as stats from "./stats";
