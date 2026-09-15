@@ -6,5 +6,5 @@ import { atomWithStorage } from "jotai/utils";
  */
 export const defaultLiveDevViewAtom = atomWithStorage<"preview" | "editor">(
   "nimbus-docs-default-live-dev-view",
-  "editor"
+  "preview"
 );
