@@ -42,13 +42,46 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
 
 ### Phase A tails (mechanical breadth; patterns already established)
 
-- [ ] **A2-tail — format threading.** Thread `valueFormat` +
-      `useChartFormatters()` through the ~35 remaining value-formatting charts
-      (core-4 done: line, bar, stacked-bar, stacked-area). Pattern: add hook at
-      component top, `const     valueFmt = valueFormat ?? formatters.compact`,
-      swap value-axis `formatCompact` calls → `valueFmt`; leave date/category
-      formatting alone. Default output is byte-identical (no provider) — see
-      `src/chart/format-locale.tsx`.
+- [x] **A2-tail — format threading.** Done: `valueFormat` +
+      `useChartFormatters()` threaded through 34 more charts (core-4 already had
+      it: line, bar, stacked-bar, stacked-area) — beeswarm-plot, box-plot,
+      bubble-chart, bullet-chart, bump-chart, candlestick-chart, chord-diagram,
+      cohort-triangle, connected-scatterplot, control-chart, cumulative-curve,
+      diverging-stacked-bar, donut-chart, dumbbell-chart, funnel-chart,
+      grouped-bar-chart, heatmap, histogram, lollipop-chart, marimekko-chart,
+      parallel-coordinates, pareto-chart, population-pyramid, radar-chart,
+      radial-bar-chart, rfm-grid, sankey-diagram, scatter-plot, slope-chart,
+      streamgraph, sunburst-chart, treemap, violin-plot, waterfall-chart. Same
+      pattern throughout: `const valueFmt = valueFormat ?? formatters.compact`,
+      swap value-axis/value-display `formatCompact` calls → `valueFmt`; leave
+      date/category/count formatting alone (histogram's count axis stays
+      `formatInteger`; bump-chart's x-axis stays a fixed formatter — it's a
+      module-level helper with no access to the prop). `gauge` and `stat-card`
+      already exposed a value-format prop with a hardcoded default
+      (`formatCompact`, and `format` for stat-card) — upgraded both to read from
+      `useChartFormatters()` too, renaming stat-card's `format` → `valueFormat`
+      for consistency (no consumers depend on the old name; updated its own
+      stories/mdx). Default output is byte-identical everywhere (no provider) —
+      see `src/chart/format-locale.tsx`. Deliberately excluded, each for a real
+      reason: `diverging-bar-chart` / `diverging-stacked-bar`'s signed-delta and
+      percent-of-total displays (`formatSignedCompact`/`formatPercent` — no
+      locale-aware signed or percent formatter exists yet, and defaulting
+      through `formatters.compact` would silently change their output);
+      `waffle-chart` (percent-only, same reason); `calendar-heatmap` (its
+      tooltip value is `formatInteger`, not `formatCompact` — defaulting it
+      through `formatters.compact` would change the default output, e.g. `128` →
+      `128` is fine but `128.4` → `128` vs `"128.4"` is not); `gantt-chart`
+      (dates only, no value to format); `sparkline` / `data-table` (no value
+      formatting at all). Documentation scope: the new/changed `valueFormat`
+      prop's TSDoc (which `<PropsTable>` surfaces automatically) was
+      added/updated on every touched chart; a hand-authored `.mdx` "Value
+      formatting" subsection with its own `jsx live` demo (bar-chart's
+      precedent) was **not** added to all 34 — that's 34 more per-chart demos
+      for a mechanically-identical capability already fully described by the
+      auto-generated props table, so it was judged not worth the time at this
+      scale. `gauge.mdx` already had one and was updated in place for the new
+      "overrides `ChartLocaleProvider`" behavior;
+      `stat-card.mdx`/`stat-card.stories.tsx` were updated for the prop rename.
 - [ ] **A2-date — locale-thread the time axis.** Found introspecting
       `LineChart`: its date-axis tick labels use `formatDayMonth`
       (`chart/format.ts`), a hardcoded `timeFormat("%b %d")` (English month

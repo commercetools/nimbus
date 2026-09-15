@@ -10,7 +10,8 @@ import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import { formatCompact, formatPercent } from "../../chart/format";
+import { formatPercent } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { chartScale } from "../../chart/typography";
 
 export interface CumulativeCurveProps {
@@ -24,6 +25,8 @@ export interface CumulativeCurveProps {
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 interface CdfPoint {
@@ -46,8 +49,11 @@ export function CumulativeCurve({
   values,
   ariaLabel,
   children,
+  valueFormat,
 }: CumulativeCurveProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const points = useMemo<CdfPoint[]>(() => {
@@ -110,7 +116,7 @@ export function CumulativeCurve({
               stroke={theme.axis}
               hideTicks
               numTicks={5}
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={bottomTickLabel(theme)}
             />
             <line
@@ -151,7 +157,7 @@ export function CumulativeCurve({
                 innerWidth={innerWidth}
                 top={Math.max(0, yScale(points[hover].f) - 4)}
                 lines={[
-                  formatCompact(points[hover].v),
+                  valueFmt(points[hover].v),
                   `${formatPercent(points[hover].f)} ≤ this`,
                 ]}
               />

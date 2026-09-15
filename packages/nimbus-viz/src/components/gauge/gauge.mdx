@@ -179,8 +179,10 @@ const App = () => (
 
 ### Value & label formatting
 
-`valueFormat` formats the centered value label (default: a compact formatter);
-`label` adds a caption line beneath it for a unit or metric name.
+`valueFormat` formats the centered value label and the default `ariaLabel`
+(default: a compact formatter). It takes precedence over any surrounding
+`ChartLocaleProvider`; `label` adds a caption line beneath it for a unit or
+metric name.
 
 ```jsx live
 const App = () => (

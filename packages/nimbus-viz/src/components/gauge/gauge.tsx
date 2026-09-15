@@ -3,7 +3,7 @@ import { Arc } from "@visx/shape";
 import { Group } from "@visx/group";
 import { ChartContainer } from "../../chart/chart-container";
 import { useChartTheme } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
 
 export interface GaugeProps {
@@ -19,7 +19,7 @@ export interface GaugeProps {
   max?: number;
   /** Optional target/threshold value, rendered as a tick mark on the arc. */
   threshold?: number;
-  /** Formats the centered value label. Defaults to `formatCompact`. */
+  /** Formats the centered value label (and the default `ariaLabel`). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (value: number) => string;
   /** Caption below the value label (e.g. a unit or metric name). */
   label?: string;
@@ -48,11 +48,13 @@ export function Gauge({
   min = 0,
   max = 100,
   threshold,
-  valueFormat = formatCompact,
+  valueFormat,
   label,
   ariaLabel,
 }: GaugeProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
 
   const fraction = useMemo(() => {
     const span = max - min;
@@ -79,9 +81,7 @@ export function Gauge({
       width={width}
       height={height}
       margin={{ top: 8, right: 8, bottom: 8, left: 8 }}
-      ariaLabel={
-        ariaLabel ?? `Gauge: ${valueFormat(value)} of ${valueFormat(max)}`
-      }
+      ariaLabel={ariaLabel ?? `Gauge: ${valueFmt(value)} of ${valueFmt(max)}`}
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
@@ -122,7 +122,7 @@ export function Gauge({
               fontWeight={700}
               fill={theme.ink}
             >
-              {valueFormat(value)}
+              {valueFmt(value)}
             </text>
             {label && (
               <text

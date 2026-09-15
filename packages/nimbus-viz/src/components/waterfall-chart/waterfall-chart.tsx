@@ -14,7 +14,7 @@ import {
 } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
 import type { DatumInteractionProps } from "../../chart/interaction";
 
@@ -39,6 +39,8 @@ export interface WaterfallChartProps extends DatumInteractionProps<WaterfallStep
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 interface Bar {
@@ -65,8 +67,11 @@ export function WaterfallChart({
   onDatumClick,
   onDatumHover,
   children,
+  valueFormat,
 }: WaterfallChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const bars = useMemo<Bar[]>(() => {
@@ -142,7 +147,7 @@ export function WaterfallChart({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -166,10 +171,10 @@ export function WaterfallChart({
                   ? theme.positive
                   : theme.negative;
               const valueLabel = bar.step.isTotal
-                ? formatCompact(bar.step.value)
+                ? valueFmt(bar.step.value)
                 : bar.step.value >= 0
-                  ? `+${formatCompact(bar.step.value)}`
-                  : formatCompact(bar.step.value);
+                  ? `+${valueFmt(bar.step.value)}`
+                  : valueFmt(bar.step.value);
               const next = bars[i + 1];
               const nextX = next ? band.pos(i + 1) : 0;
               return (
@@ -225,13 +230,13 @@ export function WaterfallChart({
                 top={Math.max(0, Math.min(yScale(hb.from), yScale(hb.to)) - 4)}
                 lines={
                   hb.step.isTotal
-                    ? [hb.step.label, `Total: ${formatCompact(hb.step.value)}`]
+                    ? [hb.step.label, `Total: ${valueFmt(hb.step.value)}`]
                     : [
                         hb.step.label,
                         `Change: ${
                           hb.step.value >= 0 ? "+" : ""
-                        }${formatCompact(hb.step.value)}`,
-                        `Running total: ${formatCompact(hb.to)}`,
+                        }${valueFmt(hb.step.value)}`,
+                        `Running total: ${valueFmt(hb.to)}`,
                       ]
                 }
               />

@@ -11,7 +11,7 @@ import {
   useChartTheme,
   readableTextColor,
 } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { HeatRow } from "../../chart/types";
 import { emText, LABEL_PX } from "../../chart/typography";
 import type {
@@ -45,6 +45,8 @@ export interface CohortTriangleProps {
   onDatumClick?: DatumClickHandler<CohortCell>;
   /** Fired when the hovered cell changes; null when the pointer leaves. */
   onDatumHover?: DatumHoverHandler<CohortCell>;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /** A single cohort/age cell's public interaction payload. */
@@ -79,8 +81,11 @@ export function CohortTriangle({
   ariaLabel,
   onDatumClick,
   onDatumHover,
+  valueFormat,
 }: CohortTriangleProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<Hover | null>(null);
 
   // Calendar columns: cohort i's oldest age lands at column i + values.length - 1.
@@ -242,7 +247,7 @@ export function CohortTriangle({
                               theme.surface
                             )}
                           >
-                            {formatCompact(v)}
+                            {valueFmt(v)}
                           </text>
                         )}
                       </g>
@@ -259,7 +264,7 @@ export function CohortTriangle({
                 lines={[
                   `${hover.cohort} cohort`,
                   `Age: M${hover.age}${hover.age === 0 ? " (acquired)" : ""}`,
-                  `Value: ${formatCompact(hover.value)}`,
+                  `Value: ${valueFmt(hover.value)}`,
                 ]}
               />
             )}

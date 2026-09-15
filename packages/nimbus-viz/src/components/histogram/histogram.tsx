@@ -10,7 +10,8 @@ import { valueDomain } from "../../chart/scales";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import { formatCompact, formatInteger } from "../../chart/format";
+import { formatInteger } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { histogramBins } from "../../stats";
 
 export interface HistogramProps {
@@ -26,6 +27,8 @@ export interface HistogramProps {
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /** Visual gap between adjacent bars, in px. */
@@ -46,8 +49,11 @@ export function Histogram({
   thresholds = 12,
   ariaLabel,
   children,
+  valueFormat,
 }: HistogramProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const domain = useMemo(() => extent(values) as [number, number], [values]);
@@ -71,7 +77,7 @@ export function Histogram({
   const table = {
     columns: ["Bin", "Count"],
     rows: bins.map((b) => [
-      `${formatCompact(b.x0 ?? domain[0])}–${formatCompact(b.x1 ?? domain[1])}`,
+      `${valueFmt(b.x0 ?? domain[0])}–${valueFmt(b.x1 ?? domain[1])}`,
       b.length,
     ]),
   };
@@ -125,7 +131,7 @@ export function Histogram({
               numTicks={6}
               stroke={theme.axis}
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={bottomTickLabel(theme)}
             />
             {bins.map((b, i) => {
@@ -158,7 +164,7 @@ export function Histogram({
                 innerWidth={innerWidth}
                 top={Math.max(0, yScale(hb.length) - 4)}
                 lines={[
-                  `${formatCompact(hb.x0 ?? domain[0])} – ${formatCompact(
+                  `${valueFmt(hb.x0 ?? domain[0])} – ${valueFmt(
                     hb.x1 ?? domain[1]
                   )}`,
                   `Count: ${formatInteger(hb.length)}`,

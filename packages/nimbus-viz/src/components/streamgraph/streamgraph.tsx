@@ -11,7 +11,8 @@ import { bottomTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact, formatDayMonth } from "../../chart/format";
+import { formatDayMonth } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { Series } from "../../chart/types";
 
 export interface StreamgraphProps {
@@ -25,6 +26,8 @@ export interface StreamgraphProps {
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
@@ -51,8 +54,11 @@ export function Streamgraph({
   series,
   ariaLabel,
   children,
+  valueFormat,
 }: StreamgraphProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   const keys = useMemo(() => series.map((s) => s.id), [series]);
@@ -203,7 +209,7 @@ export function Streamgraph({
                   ...series.map((s) => {
                     const p = s.data[hoverIndex];
                     return `${s.label}: ${
-                      p && p.y != null ? formatCompact(p.y) : "—"
+                      p && p.y != null ? valueFmt(p.y) : "—"
                     }`;
                   }),
                 ]}

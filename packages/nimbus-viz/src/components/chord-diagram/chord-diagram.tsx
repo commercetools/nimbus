@@ -3,7 +3,7 @@ import { Group } from "@visx/group";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
 
 /** A square matrix of flows between a shared set of entities. */
@@ -24,6 +24,8 @@ export interface ChordDiagramProps {
   /** Accessible label for the SVG frame; states what the flows show and their
    *  takeaway. Defaults to `"Chord diagram of N entities"`. */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 interface Arc {
@@ -78,8 +80,11 @@ export function ChordDiagram({
   height,
   data,
   ariaLabel,
+  valueFormat,
 }: ChordDiagramProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hoverRibbon, setHoverRibbon] = useState<number | null>(null);
   const [hoverArc, setHoverArc] = useState<number | null>(null);
   const { labels, matrix } = data;
@@ -158,15 +163,12 @@ export function ChordDiagram({
         const tip = (() => {
           if (hoverRibbon != null) {
             const rb = layout.ribbons[hoverRibbon];
-            return [
-              `${labels[rb.i]} ↔ ${labels[rb.j]}`,
-              formatCompact(rb.value),
-            ];
+            return [`${labels[rb.i]} ↔ ${labels[rb.j]}`, valueFmt(rb.value)];
           }
           if (hoverArc != null) {
             return [
               labels[hoverArc],
-              `total ${formatCompact(layout.rowSum[hoverArc])}`,
+              `total ${valueFmt(layout.rowSum[hoverArc])}`,
             ];
           }
           return null;

@@ -16,7 +16,8 @@ import {
 } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import { formatCompact, formatPercent } from "../../chart/format";
+import { formatPercent } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { CategoryDatum } from "../../chart/types";
 import type {
   DatumClickHandler,
@@ -40,6 +41,8 @@ export interface ParetoChartProps {
   onDatumHover?: DatumHoverHandler<CategoryDatum>;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 interface ParetoRow {
@@ -74,8 +77,11 @@ export function ParetoChart({
   onDatumClick,
   onDatumHover,
   children,
+  valueFormat,
 }: ParetoChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   // A rank/cumulative-share chart can't encode a negative magnitude: clamp
@@ -186,7 +192,7 @@ export function ParetoChart({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -294,7 +300,7 @@ export function ParetoChart({
                 innerWidth={innerWidth}
                 lines={[
                   rows[hover].category,
-                  formatCompact(rows[hover].rawValue),
+                  valueFmt(rows[hover].rawValue),
                   `Cumulative: ${formatPercent(rows[hover].cumulativeFraction)}`,
                 ]}
               />

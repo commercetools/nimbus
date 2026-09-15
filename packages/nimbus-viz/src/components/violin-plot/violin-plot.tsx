@@ -9,7 +9,7 @@ import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { gaussianKde, median } from "../../stats";
 
 /** One group's raw samples; the density is estimated here, not supplied. */
@@ -29,6 +29,8 @@ export interface ViolinPlotProps {
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /** Number of points at which each group's density is evaluated. */
@@ -49,8 +51,11 @@ export function ViolinPlot({
   groups,
   ariaLabel,
   children,
+  valueFormat,
 }: ViolinPlotProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const yDomain = useMemo(
@@ -80,7 +85,7 @@ export function ViolinPlot({
     rows: groups.map((g, i) => [
       g.label,
       stats[i].n,
-      formatCompact(stats[i].median),
+      valueFmt(stats[i].median),
     ]),
   };
 
@@ -130,7 +135,7 @@ export function ViolinPlot({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -188,7 +193,7 @@ export function ViolinPlot({
                 innerWidth={innerWidth}
                 lines={[
                   groups[hover].label,
-                  `median: ${formatCompact(stats[hover].median)}`,
+                  `median: ${valueFmt(stats[hover].median)}`,
                   `n = ${stats[hover].n}`,
                 ]}
               />

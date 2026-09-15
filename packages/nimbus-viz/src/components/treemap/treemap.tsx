@@ -5,7 +5,8 @@ import { Group } from "@visx/group";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact, formatPercent } from "../../chart/format";
+import { formatPercent } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
 
 /** A node in a nested part-to-whole hierarchy. Leaves carry `value`. */
@@ -24,6 +25,8 @@ export interface TreemapProps {
   data: TreemapNode;
   /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /** Minimum cell size (px) before a label is drawn inside it. */
@@ -52,8 +55,16 @@ function topLevelAncestor<Datum>(
  *
  * @experimental Prototype-stage; API may change before it is marked stable.
  */
-export function Treemap({ width, height, data, ariaLabel }: TreemapProps) {
+export function Treemap({
+  width,
+  height,
+  data,
+  ariaLabel,
+  valueFormat,
+}: TreemapProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const root = useMemo(() => {
@@ -136,7 +147,7 @@ export function Treemap({ width, height, data, ariaLabel }: TreemapProps) {
                             fill={theme.surface}
                             opacity={0.85}
                           >
-                            {formatCompact(leaf.value ?? 0)}
+                            {valueFmt(leaf.value ?? 0)}
                           </text>
                         )}
                       </>
@@ -157,7 +168,7 @@ export function Treemap({ width, height, data, ariaLabel }: TreemapProps) {
                       top={Math.max(0, leaf.y0 - 4)}
                       lines={[
                         leaf.data.name,
-                        `Value: ${formatCompact(leaf.value ?? 0)}`,
+                        `Value: ${valueFmt(leaf.value ?? 0)}`,
                         `Share: ${formatPercent(share)}`,
                       ]}
                     />

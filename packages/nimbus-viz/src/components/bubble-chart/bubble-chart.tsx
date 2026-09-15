@@ -9,7 +9,7 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { devWarn } from "../../chart/dev-warn";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
 import type {
   DatumClickHandler,
@@ -41,6 +41,8 @@ export interface BubbleChartProps {
   onDatumHover?: DatumHoverHandler<BubblePoint>;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 const R_MIN = 4;
@@ -62,8 +64,11 @@ export function BubbleChart({
   onDatumClick,
   onDatumHover,
   children,
+  valueFormat,
 }: BubbleChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const groups = useMemo(
@@ -180,7 +185,7 @@ export function BubbleChart({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -189,7 +194,7 @@ export function BubbleChart({
               numTicks={5}
               stroke={theme.axis}
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={bottomTickLabel(theme)}
             />
 
@@ -245,7 +250,7 @@ export function BubbleChart({
                     textAnchor="end"
                     fill={theme.mutedInk}
                   >
-                    {formatCompact(ref)}
+                    {valueFmt(ref)}
                   </text>
                 </g>
               );
@@ -257,9 +262,9 @@ export function BubbleChart({
                 innerWidth={innerWidth}
                 lines={[
                   hp.label ?? "Bubble",
-                  `x: ${formatCompact(hp.x)}`,
-                  `y: ${formatCompact(hp.y)}`,
-                  `size: ${formatCompact(hp.size)}`,
+                  `x: ${valueFmt(hp.x)}`,
+                  `y: ${valueFmt(hp.y)}`,
+                  `size: ${valueFmt(hp.size)}`,
                 ]}
               />
             )}

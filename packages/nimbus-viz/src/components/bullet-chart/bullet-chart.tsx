@@ -3,7 +3,8 @@ import { scaleLinear } from "@visx/scale";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { sequentialColor, useChartTheme } from "../../theme";
-import { formatCompact, formatSignedCompact } from "../../chart/format";
+import { formatSignedCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
 import type {
   DatumClickHandler,
@@ -39,6 +40,8 @@ export interface BulletChartProps {
   onDatumClick?: DatumClickHandler<BulletDatum>;
   /** Fired when the hovered datum changes; null when the pointer leaves. */
   onDatumHover?: DatumHoverHandler<BulletDatum>;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /**
@@ -56,8 +59,11 @@ export function BulletChart({
   ariaLabel,
   onDatumClick,
   onDatumHover,
+  valueFormat,
 }: BulletChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
   const grayRamp = sequentialColor(theme.ramps.gray);
 
@@ -186,7 +192,7 @@ export function BulletChart({
                     style={emText(10)}
                     fill={theme.ink}
                   >
-                    {formatCompact(d.measure)}
+                    {valueFmt(d.measure)}
                   </text>
                 </g>
               );
@@ -203,8 +209,8 @@ export function BulletChart({
                     top={Math.max(0, cy - rowH * 0.36 - 4)}
                     lines={[
                       d.label,
-                      `Measure: ${formatCompact(d.measure)}`,
-                      `Target: ${formatCompact(d.target)}`,
+                      `Measure: ${valueFmt(d.measure)}`,
+                      `Target: ${valueFmt(d.target)}`,
                       `vs target: ${formatSignedCompact(d.measure - d.target)}`,
                     ]}
                   />

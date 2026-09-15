@@ -3,7 +3,7 @@ import { scaleLinear } from "@visx/scale";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import { bandByIndex, valueDomain } from "../../chart/scales";
@@ -24,6 +24,8 @@ export interface PopulationPyramidProps {
   /** Accessible label for the graphic. Defaults to
    *  "Population pyramid of N bands". */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /** Width of the central gutter reserved for band labels, in px. */
@@ -42,8 +44,11 @@ export function PopulationPyramid({
   height,
   data,
   ariaLabel,
+  valueFormat,
 }: PopulationPyramidProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ r: number; side: 0 | 1 } | null>(null);
 
   // Segment keys are read as the union across all rows (not just row 0), so a
@@ -185,7 +190,7 @@ export function PopulationPyramid({
                 top={Math.max(0, hoveredY - 4)}
                 lines={[
                   `${data[hover!.r].category} · ${keys[hover!.side]}`,
-                  formatCompact(hovered.value),
+                  valueFmt(hovered.value),
                 ]}
               />
             )}

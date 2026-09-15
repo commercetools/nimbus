@@ -9,7 +9,7 @@ import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { ScatterPoint } from "../../chart/types";
 import { chartScale, emText } from "../../chart/typography";
 
@@ -24,6 +24,8 @@ export interface ConnectedScatterplotProps {
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /**
@@ -40,8 +42,11 @@ export function ConnectedScatterplot({
   points,
   ariaLabel,
   children,
+  valueFormat,
 }: ConnectedScatterplotProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const xDomain = useMemo(
@@ -102,7 +107,7 @@ export function ConnectedScatterplot({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -111,7 +116,7 @@ export function ConnectedScatterplot({
               stroke={theme.axis}
               hideTicks
               numTicks={5}
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={bottomTickLabel(theme)}
             />
             <LinePath<ScatterPoint>
@@ -168,8 +173,8 @@ export function ConnectedScatterplot({
                 top={Math.max(0, yScale(points[hover].y) - 4)}
                 lines={[
                   points[hover].label ?? `Point ${hover + 1}`,
-                  `x: ${formatCompact(points[hover].x)}`,
-                  `y: ${formatCompact(points[hover].y)}`,
+                  `x: ${valueFmt(points[hover].x)}`,
+                  `y: ${valueFmt(points[hover].y)}`,
                 ]}
               />
             )}

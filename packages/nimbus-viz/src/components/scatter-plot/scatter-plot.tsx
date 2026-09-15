@@ -8,7 +8,7 @@ import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { ScatterPoint } from "../../chart/types";
 import type {
   DatumClickHandler,
@@ -39,6 +39,8 @@ export interface ScatterPlotProps<T = ScatterPoint> {
   onDatumHover?: DatumHoverHandler<T>;
   /** Layer-2 overlays (TrendLine, ReferenceLine…) drawn on top of the points. */
   children?: ReactNode;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /**
@@ -63,8 +65,11 @@ export function ScatterPlot<T = ScatterPoint>({
   onDatumClick,
   onDatumHover,
   children,
+  valueFormat,
 }: ScatterPlotProps<T>) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const getX = useCallback(
@@ -165,7 +170,7 @@ export function ScatterPlot<T = ScatterPoint>({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -174,7 +179,7 @@ export function ScatterPlot<T = ScatterPoint>({
               numTicks={5}
               stroke={theme.axis}
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={bottomTickLabel(theme)}
             />
             {points.map((p, i) => (
@@ -207,8 +212,8 @@ export function ScatterPlot<T = ScatterPoint>({
                 innerWidth={innerWidth}
                 lines={[
                   getLabel(hp) ?? "Point",
-                  `x: ${formatCompact(getX(hp))}`,
-                  `y: ${formatCompact(getY(hp))}`,
+                  `x: ${valueFmt(getX(hp))}`,
+                  `y: ${valueFmt(getY(hp))}`,
                 ]}
               />
             )}

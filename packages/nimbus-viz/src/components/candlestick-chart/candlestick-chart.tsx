@@ -8,7 +8,8 @@ import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import { formatCompact, formatDayMonth } from "../../chart/format";
+import { formatDayMonth } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
 
 /** One period's open/high/low/close. */
@@ -31,6 +32,8 @@ export interface CandlestickChartProps {
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /**
@@ -48,8 +51,11 @@ export function CandlestickChart({
   data,
   ariaLabel,
   children,
+  valueFormat,
 }: CandlestickChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const yDomain = useMemo(
@@ -117,7 +123,7 @@ export function CandlestickChart({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={leftTickLabel(theme)}
             />
             {data.map((d, i) => {
@@ -171,8 +177,8 @@ export function CandlestickChart({
                 top={Math.max(0, yScale(hovered.high) - 4)}
                 lines={[
                   formatDayMonth(hovered.date),
-                  `O ${formatCompact(hovered.open)}  H ${formatCompact(hovered.high)}`,
-                  `L ${formatCompact(hovered.low)}  C ${formatCompact(hovered.close)}`,
+                  `O ${valueFmt(hovered.open)}  H ${valueFmt(hovered.high)}`,
+                  `L ${valueFmt(hovered.low)}  C ${valueFmt(hovered.close)}`,
                 ]}
               />
             )}

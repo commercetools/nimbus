@@ -4,7 +4,8 @@ import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { devWarn } from "../../chart/dev-warn";
 import { useChartTheme } from "../../theme";
-import { formatCompact, formatPercent } from "../../chart/format";
+import { formatPercent } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { FunnelStage } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import type {
@@ -26,6 +27,8 @@ export interface FunnelChartProps {
   onDatumClick?: DatumClickHandler<FunnelStage>;
   /** Fired when the hovered stage changes; null when the pointer leaves. */
   onDatumHover?: DatumHoverHandler<FunnelStage>;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /**
@@ -40,8 +43,11 @@ export function FunnelChart({
   ariaLabel,
   onDatumClick,
   onDatumHover,
+  valueFormat,
 }: FunnelChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
   if (width <= 0 || height <= 0 || data.length === 0) return null;
 
@@ -87,7 +93,7 @@ export function FunnelChart({
               const x = (innerWidth - w) / 2;
               const y = i * bandH + (bandH - barH) / 2;
               const active = hover == null || hover === i;
-              const valueLabel = formatCompact(stage.value);
+              const valueLabel = valueFmt(stage.value);
               // ~14px bold ≈ 8.4px/char. Only draw the value inside the bar when
               // it fits; otherwise the stage % above and the hover tooltip carry
               // it, rather than showing a clipped number.
@@ -150,7 +156,7 @@ export function FunnelChart({
                 const value = Math.max(0, stage.value);
                 const lines = [
                   stage.stage,
-                  `Value: ${formatCompact(stage.value)}`,
+                  `Value: ${valueFmt(stage.value)}`,
                   `${formatPercent(value / top)} of first`,
                 ];
                 if (prev != null && prev > 0) {

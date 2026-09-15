@@ -11,7 +11,8 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { nearestIndexByX } from "../../chart/nearest-x";
 import { useChartTheme } from "../../theme";
-import { formatCompact, formatDayMonth } from "../../chart/format";
+import { formatDayMonth } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { Series, SeriesPoint } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import { controlLimits } from "../../stats";
@@ -33,6 +34,8 @@ export interface ControlChartProps {
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 const toDate = (x: number | Date): Date =>
@@ -57,8 +60,11 @@ export function ControlChart({
   lcl,
   ariaLabel,
   children,
+  valueFormat,
 }: ControlChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   const points = useMemo<SeriesPoint[]>(() => series[0]?.data ?? [], [series]);
@@ -135,7 +141,7 @@ export function ControlChart({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -258,7 +264,7 @@ export function ControlChart({
                 innerWidth={innerWidth}
                 lines={[
                   formatDayMonth(toDate(hovered.x)),
-                  `${series[0].label}: ${formatCompact(hovered.y)}`,
+                  `${series[0].label}: ${valueFmt(hovered.y)}`,
                   ...(isOut(hovered.y) ? ["Out of control"] : []),
                 ]}
               />

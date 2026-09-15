@@ -3,7 +3,8 @@ import { Pie } from "@visx/shape";
 import { Group } from "@visx/group";
 import { ChartContainer } from "../../chart/chart-container";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact, formatPercent } from "../../chart/format";
+import { formatPercent } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
@@ -17,6 +18,8 @@ export interface DonutChartProps {
   data: CategoryDatum[];
   /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /**
@@ -31,8 +34,11 @@ export function DonutChart({
   height,
   data,
   ariaLabel,
+  valueFormat,
 }: DonutChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<string | null>(null);
   const total = useMemo(() => data.reduce((s, d) => s + d.value, 0), [data]);
   const color = useEntityColors(
@@ -98,9 +104,7 @@ export function DonutChart({
               fontWeight={700}
               fill={theme.ink}
             >
-              {active
-                ? formatPercent(active.value / total)
-                : formatCompact(total)}
+              {active ? formatPercent(active.value / total) : valueFmt(total)}
             </text>
             <text
               textAnchor="middle"

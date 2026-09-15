@@ -7,7 +7,7 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { valueDomain } from "../../chart/scales";
 import { devWarn } from "../../chart/dev-warn";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { chartRootStyle, emText } from "../../chart/typography";
 
 /** One multivariate profile: `values` aligns index-for-index to `axes`. */
@@ -28,6 +28,8 @@ export interface RadarChartProps {
   data: RadarSeries[];
   /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 interface Vertex {
@@ -51,8 +53,11 @@ export function RadarChart({
   axes,
   data,
   ariaLabel,
+  valueFormat,
 }: RadarChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ s: number; a: number } | null>(null);
 
   const ids = useMemo(() => data.map((s) => s.id), [data]);
@@ -214,7 +219,7 @@ export function RadarChart({
             top={cy + hoverVertex.y + 8}
             lines={[
               hovered.label,
-              `${axes[hover.a]}: ${formatCompact(hovered.values[hover.a])}`,
+              `${axes[hover.a]}: ${valueFmt(hovered.values[hover.a])}`,
             ]}
           />
         )}

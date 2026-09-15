@@ -67,7 +67,7 @@ export const InvertDelta: BaseStory = {
         label="Refund rate"
         value={2.1}
         previous={2.8}
-        format={(n) => `${n}%`}
+        valueFormat={(n) => `${n}%`}
         invertDelta
       />
     </div>

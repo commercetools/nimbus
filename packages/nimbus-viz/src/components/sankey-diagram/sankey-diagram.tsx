@@ -6,7 +6,7 @@ import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { devWarn } from "../../chart/dev-warn";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { FlowGraph, FlowLink, FlowNode } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
@@ -21,6 +21,8 @@ export interface SankeyDiagramProps {
   /** Accessible label for the SVG frame; states what the flow shows and its
    *  takeaway. Defaults to `"Sankey flow diagram"`. */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 type LaidNode = SankeyNode<FlowNode, FlowLink>;
@@ -38,8 +40,11 @@ export function SankeyDiagram({
   height,
   graph,
   ariaLabel,
+  valueFormat,
 }: SankeyDiagramProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{
     kind: "node" | "link";
     i: number;
@@ -171,7 +176,7 @@ export function SankeyDiagram({
                         top={Math.max(0, (node.y0 ?? 0) - 4)}
                         lines={[
                           node.name,
-                          `Total: ${formatCompact(node.value ?? 0)}`,
+                          `Total: ${valueFmt(node.value ?? 0)}`,
                         ]}
                       />
                     );
@@ -190,7 +195,7 @@ export function SankeyDiagram({
                       )}
                       lines={[
                         `${source.name} → ${target.name}`,
-                        formatCompact(link.value ?? 0),
+                        valueFmt(link.value ?? 0),
                       ]}
                     />
                   );

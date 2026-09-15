@@ -7,7 +7,8 @@ import { bandByIndex } from "../../chart/scales";
 import { bottomTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import { formatCompact, formatSignedCompact } from "../../chart/format";
+import { formatSignedCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
 
 /** One category compared at two points — a start and an end value. */
@@ -33,6 +34,8 @@ export interface DumbbellChartProps {
   endLabel?: string;
   /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /**
@@ -52,8 +55,11 @@ export function DumbbellChart({
   startLabel = "Start",
   endLabel = "End",
   ariaLabel,
+  valueFormat,
 }: DumbbellChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const xDomain = useMemo(
@@ -120,7 +126,7 @@ export function DumbbellChart({
               numTicks={5}
               stroke={theme.axis}
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={bottomTickLabel(theme)}
             />
             {data.map((row, i) => {
@@ -183,7 +189,7 @@ export function DumbbellChart({
                     style={emText(10)}
                     fill={theme.ink}
                   >
-                    {formatCompact(row.start)}
+                    {valueFmt(row.start)}
                   </text>
                   <text
                     x={endLabelX}
@@ -193,7 +199,7 @@ export function DumbbellChart({
                     style={emText(10)}
                     fill={theme.ink}
                   >
-                    {formatCompact(row.end)}
+                    {valueFmt(row.end)}
                   </text>
                 </g>
               );
@@ -205,8 +211,8 @@ export function DumbbellChart({
                 top={Math.max(0, band.center(hover ?? 0) - 30)}
                 lines={[
                   hr.category,
-                  `${startLabel}: ${formatCompact(hr.start)}`,
-                  `${endLabel}: ${formatCompact(hr.end)}`,
+                  `${startLabel}: ${valueFmt(hr.start)}`,
+                  `${endLabel}: ${valueFmt(hr.end)}`,
                   `Change: ${formatSignedCompact(hr.end - hr.start)}`,
                 ]}
               />

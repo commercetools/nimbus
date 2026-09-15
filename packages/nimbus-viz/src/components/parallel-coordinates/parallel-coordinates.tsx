@@ -6,7 +6,7 @@ import { extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
 
 /** One vertical axis: `key` selects the field on each row's `values`. */
@@ -33,6 +33,8 @@ export interface ParallelCoordinatesProps {
   data: ParallelRow[];
   /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 interface Vertex {
@@ -58,8 +60,11 @@ export function ParallelCoordinates({
   dimensions,
   data,
   ariaLabel,
+  valueFormat,
 }: ParallelCoordinatesProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const groups = useMemo(
@@ -184,7 +189,7 @@ export function ParallelCoordinates({
                     style={emText(10)}
                     fill={theme.mutedInk}
                   >
-                    {formatCompact(hi)}
+                    {valueFmt(hi)}
                   </text>
                   <text
                     x={-6}
@@ -193,7 +198,7 @@ export function ParallelCoordinates({
                     style={emText(10)}
                     fill={theme.mutedInk}
                   >
-                    {formatCompact(lo)}
+                    {valueFmt(lo)}
                   </text>
                 </Group>
               );
@@ -208,8 +213,7 @@ export function ParallelCoordinates({
                     ? `${hoveredRow.id} · ${hoveredRow.group}`
                     : hoveredRow.id,
                   ...dimensions.map(
-                    (d) =>
-                      `${d.label}: ${formatCompact(hoveredRow.values[d.key])}`
+                    (d) => `${d.label}: ${valueFmt(hoveredRow.values[d.key])}`
                   ),
                 ]}
               />

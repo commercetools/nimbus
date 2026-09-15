@@ -3,7 +3,7 @@ import { scaleLinear } from "@visx/scale";
 import { ChartContainer } from "../../chart/chart-container";
 import { bandByIndex, valueDomain } from "../../chart/scales";
 import { useChartTheme } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
@@ -17,6 +17,8 @@ export interface LollipopChartProps {
   data: CategoryDatum[];
   /** Accessible label for the SVG; state the takeaway, not every value. */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /**
@@ -33,8 +35,11 @@ export function LollipopChart({
   height,
   data,
   ariaLabel,
+  valueFormat,
 }: LollipopChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const rows = useMemo(
@@ -117,7 +122,7 @@ export function LollipopChart({
                     style={emText(11)}
                     fill={theme.ink}
                   >
-                    {formatCompact(d.value)}
+                    {valueFmt(d.value)}
                   </text>
                 </g>
               );

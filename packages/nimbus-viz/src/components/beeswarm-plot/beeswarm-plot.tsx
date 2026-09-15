@@ -6,7 +6,7 @@ import { ChartContainer } from "../../chart/chart-container";
 import { bottomTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { chartScale, emText } from "../../chart/typography";
 
 export interface BeeswarmPlotProps {
@@ -18,6 +18,8 @@ export interface BeeswarmPlotProps {
   values: number[];
   /** Accessible label for the SVG; defaults to a generated summary. */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 interface Placed {
@@ -68,8 +70,11 @@ export function BeeswarmPlot({
   height,
   values,
   ariaLabel,
+  valueFormat,
 }: BeeswarmPlotProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
   const domain = useMemo(() => extent(values) as [number, number], [values]);
 
@@ -107,7 +112,7 @@ export function BeeswarmPlot({
               stroke={theme.axis}
               hideTicks
               numTicks={5}
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={bottomTickLabel(theme)}
             />
             {dots.map((d, i) => {
@@ -131,7 +136,7 @@ export function BeeswarmPlot({
                 x={dots[hover].x}
                 innerWidth={innerWidth}
                 top={4}
-                lines={[formatCompact(dots[hover].v)]}
+                lines={[valueFmt(dots[hover].v)]}
               />
             )}
             <text x={0} y={-2} style={emText(10)} fill={theme.mutedInk}>

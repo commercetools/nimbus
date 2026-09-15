@@ -5,7 +5,8 @@ import { Group } from "@visx/group";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact, formatPercent } from "../../chart/format";
+import { formatPercent } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { TreemapNode } from "../treemap";
 import { emText } from "../../chart/typography";
 
@@ -18,6 +19,8 @@ export interface SunburstChartProps {
   data: TreemapNode;
   /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /** Point on a circle for an angle measured clockwise from 12 o'clock. */
@@ -66,8 +69,11 @@ export function SunburstChart({
   height,
   data,
   ariaLabel,
+  valueFormat,
 }: SunburstChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ name: string; value: number } | null>(
     null
   );
@@ -155,7 +161,7 @@ export function SunburstChart({
                   >
                     {hover
                       ? formatPercent(hover.value / total)
-                      : formatCompact(total)}
+                      : valueFmt(total)}
                   </text>
                   <text
                     textAnchor="middle"
@@ -175,7 +181,7 @@ export function SunburstChart({
                 top={4}
                 lines={[
                   hover.name,
-                  `Value: ${formatCompact(hover.value)}`,
+                  `Value: ${valueFmt(hover.value)}`,
                   `Share: ${formatPercent(hover.value / total)}`,
                 ]}
               />

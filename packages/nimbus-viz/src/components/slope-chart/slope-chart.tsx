@@ -4,11 +4,8 @@ import { extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import {
-  formatCompact,
-  formatSignedCompact,
-  formatSignedPercent,
-} from "../../chart/format";
+import { formatSignedCompact, formatSignedPercent } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
 
 /** One row of a slopegraph: a single entity measured at two moments. */
@@ -36,6 +33,8 @@ export interface SlopeChartProps {
   rightLabel?: string;
   /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /**
@@ -79,8 +78,11 @@ export function SlopeChart({
   leftLabel,
   rightLabel,
   ariaLabel,
+  valueFormat,
 }: SlopeChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const domain = useMemo(
@@ -201,7 +203,7 @@ export function SlopeChart({
                     style={emText(11)}
                     fill={theme.ink}
                   >
-                    {`${row.label}  ${formatCompact(row.left)}`}
+                    {`${row.label}  ${valueFmt(row.left)}`}
                   </text>
                   <text
                     x={innerWidth + 8}
@@ -211,7 +213,7 @@ export function SlopeChart({
                     style={emText(11)}
                     fill={theme.ink}
                   >
-                    {`${formatCompact(row.right)}  ${row.label}`}
+                    {`${valueFmt(row.right)}  ${row.label}`}
                   </text>
                 </g>
               );
@@ -231,7 +233,7 @@ export function SlopeChart({
                     )}
                     lines={[
                       row.label,
-                      `${formatCompact(row.left)} → ${formatCompact(row.right)}`,
+                      `${valueFmt(row.left)} → ${valueFmt(row.right)}`,
                       `Change: ${formatSignedCompact(delta)}${
                         row.left !== 0
                           ? ` (${formatSignedPercent(delta / row.left)})`

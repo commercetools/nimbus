@@ -3,7 +3,8 @@ import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { fitBandLabel } from "../../chart/axes";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact, formatPercent } from "../../chart/format";
+import { formatPercent } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import { stackKeys } from "../../chart/stack";
@@ -19,6 +20,8 @@ export interface MarimekkoChartProps {
   data: StackRow[];
   /** Accessible label for the chart (its SVG is exposed as `role="img"`). */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /** Pixel gap between columns and between stacked segments. */
@@ -39,8 +42,11 @@ export function MarimekkoChart({
   height,
   data,
   ariaLabel,
+  valueFormat,
 }: MarimekkoChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ c: number; s: number } | null>(null);
 
   const keys = useMemo(() => stackKeys(data), [data]);
@@ -132,7 +138,7 @@ export function MarimekkoChart({
                 top={4}
                 lines={[
                   `${data[hover.c].category} · ${hovered.key}`,
-                  formatCompact(hovered.value),
+                  valueFmt(hovered.value),
                   `${formatPercent(totals[hover.c] > 0 ? hovered.value / totals[hover.c] : 0)} of column`,
                 ]}
               />

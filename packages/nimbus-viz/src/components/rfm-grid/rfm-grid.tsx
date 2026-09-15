@@ -11,7 +11,8 @@ import {
   useChartTheme,
   readableTextColor,
 } from "../../theme";
-import { formatCompact, formatInteger } from "../../chart/format";
+import { formatInteger } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import { emText, CHART_FONT_STACK, LABEL_PX } from "../../chart/typography";
 
 /** One segment of an RFM matrix. `recency` & `frequency` are 1..N bucket indices. */
@@ -40,6 +41,8 @@ export interface RfmGridProps {
   domain?: [number, number];
   /** Accessible label for the SVG frame (Cesal alt-text). Defaults to a generated summary. */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /**
@@ -57,8 +60,11 @@ export function RfmGrid({
   data,
   domain,
   ariaLabel,
+  valueFormat,
 }: RfmGridProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<string | null>(null);
 
   const numRecency = useMemo(() => max(data, (d) => d.recency) ?? 0, [data]);
@@ -193,7 +199,7 @@ export function RfmGrid({
                         )}
                         pointerEvents="none"
                       >
-                        {formatCompact(cellData.count)}
+                        {valueFmt(cellData.count)}
                       </text>
                     )}
                   </g>
@@ -262,7 +268,7 @@ export function RfmGrid({
                   `R${hovered.recency} · F${hovered.frequency}`,
                   `Customers: ${formatInteger(hovered.count)}`,
                   ...(hovered.value != null
-                    ? [`Value: ${formatCompact(hovered.value)}`]
+                    ? [`Value: ${valueFmt(hovered.value)}`]
                     : []),
                 ]}
               />

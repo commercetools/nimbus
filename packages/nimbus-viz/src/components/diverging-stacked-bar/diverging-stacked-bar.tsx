@@ -3,7 +3,8 @@ import { scaleLinear } from "@visx/scale";
 import { ChartContainer } from "../../chart/chart-container";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { divergingColor, useChartTheme } from "../../theme";
-import { formatCompact, formatPercent } from "../../chart/format";
+import { formatPercent } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { StackRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import { bandByIndex } from "../../chart/scales";
@@ -23,6 +24,8 @@ export interface DivergingStackedBarProps {
   /** Accessible label for the graphic. Defaults to
    *  "Diverging stacked bar of N categories". */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /**
@@ -40,8 +43,11 @@ export function DivergingStackedBar({
   height,
   data,
   ariaLabel,
+  valueFormat,
 }: DivergingStackedBarProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ r: number; s: number } | null>(null);
 
   const keys = useMemo(() => stackKeys(data), [data]);
@@ -172,7 +178,7 @@ export function DivergingStackedBar({
                 top={Math.max(0, yScale.pos(hover!.r) - 4)}
                 lines={[
                   `${hoveredRow.category} · ${hovered.key}`,
-                  formatCompact(hovered.value),
+                  valueFmt(hovered.value),
                   `${formatPercent(rowTotal > 0 ? hovered.value / rowTotal : 0)} of responses`,
                 ]}
               />

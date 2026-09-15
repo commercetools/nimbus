@@ -10,7 +10,7 @@ import {
   useChartTheme,
   readableTextColor,
 } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { HeatRow } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import type {
@@ -44,6 +44,8 @@ export interface HeatmapProps {
   onDatumClick?: DatumClickHandler<HeatmapCell>;
   /** Fired when the hovered cell changes; null when the pointer leaves. */
   onDatumHover?: DatumHoverHandler<HeatmapCell>;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /** A single matrix cell's public interaction payload. */
@@ -68,8 +70,11 @@ export function Heatmap({
   ariaLabel,
   onDatumClick,
   onDatumHover,
+  valueFormat,
 }: HeatmapProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ r: number; c: number } | null>(null);
   const numCols = useMemo(
     () => Math.max(0, ...rows.map((r) => r.values.length)),
@@ -200,7 +205,7 @@ export function Heatmap({
                               theme.surface
                             )}
                           >
-                            {formatCompact(v)}
+                            {valueFmt(v)}
                           </text>
                         )}
                       </g>
@@ -221,7 +226,7 @@ export function Heatmap({
                     top={Math.max(0, (yScale(String(hover.r)) ?? 0) - 4)}
                     lines={[
                       row.label,
-                      `${columnLabels?.[hover.c] ?? hover.c}: ${formatCompact(
+                      `${columnLabels?.[hover.c] ?? hover.c}: ${valueFmt(
                         value
                       )}`,
                     ]}

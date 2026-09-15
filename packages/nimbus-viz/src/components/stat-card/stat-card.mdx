@@ -87,7 +87,7 @@ Contract notes, verifiable from source:
   itself negative (e.g. a loss turning into a profit still reads as a clean
   positive percentage, not one that contradicts its own arrow and color).
 - `value` and `previous` are plain numbers in the same unit — including negative
-  ones (a loss, a decline below zero) — and can be formatted with `format`
+  ones (a loss, a decline below zero) — and can be formatted with `valueFormat`
   (below).
 
 ## API reference
@@ -130,14 +130,14 @@ const App = () => (
         label="Refund rate"
         value={2.1}
         previous={2.8}
-        format={(n) => `${n}%`}
+        valueFormat={(n) => `${n}%`}
         invertDelta
       />
       <StatCard
         label="Avg. response time"
         value={4.6}
         previous={5.9}
-        format={(n) => `${n}h`}
+        valueFormat={(n) => `${n}h`}
         invertDelta
       />
     </Box>
@@ -147,9 +147,10 @@ const App = () => (
 
 ### Value formatting
 
-`format` formats the headline value; it defaults to a compact formatter
-(`128.4k`). Override it for currency, percentages, or units. It applies to the
-value only — the delta is always shown as a signed percentage.
+`valueFormat` formats the headline value; it defaults to a compact formatter
+(`128.4k`). Override it for currency, percentages, or units. It takes precedence
+over any surrounding `ChartLocaleProvider`, and applies to the value only — the
+delta is always shown as a signed percentage.
 
 ```jsx live
 const App = () => (
@@ -158,7 +159,7 @@ const App = () => (
       label="Gross merchandise value"
       value={1284000}
       previous={1129000}
-      format={(n) => `$${n.toLocaleString()}`}
+      valueFormat={(n) => `$${n.toLocaleString()}`}
     />
   </ChartThemeProvider>
 );

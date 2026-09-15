@@ -6,7 +6,7 @@ import { bandByIndex, valueDomain } from "../../chart/scales";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { devWarn } from "../../chart/dev-warn";
 import { useChartTheme } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
 
@@ -20,6 +20,8 @@ export interface RadialBarChartProps {
   data: CategoryDatum[];
   /** Accessible label for the SVG; state the takeaway, not every value. */
   ariaLabel?: string;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /** Point on a circle for an angle measured clockwise from 12 o'clock. */
@@ -57,8 +59,11 @@ export function RadialBarChart({
   height,
   data,
   ariaLabel,
+  valueFormat,
 }: RadialBarChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
   // BC-2/BC-3 (docs/bug-classes.md): an un-guarded `[0, max]` domain both
   // extrapolates a negative value past the outer ring when `max` is also
@@ -156,7 +161,7 @@ export function RadialBarChart({
                 x={cx}
                 innerWidth={innerWidth}
                 top={4}
-                lines={[hovered.category, formatCompact(hovered.value)]}
+                lines={[hovered.category, valueFmt(hovered.value)]}
               />
             )}
           </>

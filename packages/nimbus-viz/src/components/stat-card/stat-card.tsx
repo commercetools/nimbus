@@ -1,5 +1,6 @@
 import { useChartTheme } from "../../theme";
-import { formatCompact, formatSignedPercent } from "../../chart/format";
+import { formatSignedPercent } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import {
   CHART_FONT_STACK,
   EMPHASIS_PX,
@@ -13,8 +14,8 @@ export interface StatCardProps {
   value: number;
   /** Prior value; when present, a signed delta vs. it is shown. */
   previous?: number;
-  /** Formats the headline value. Defaults to `formatCompact` (e.g. `128.4k`). */
-  format?: (n: number) => string;
+  /** Formats the headline value. Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
   /**
    * For "lower is better" metrics (refund rate, processing time, churn…). When
    * true, a DECREASE is colored as positive and an increase as negative. The
@@ -33,11 +34,13 @@ export function StatCard({
   label,
   value,
   previous,
-  format = formatCompact,
+  valueFormat,
   invertDelta = false,
   ariaLabel,
 }: StatCardProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const format = valueFormat ?? formatters.compact;
   const hasDelta = previous != null && previous !== 0;
   const delta = hasDelta ? value - previous : 0;
   // Divide by the magnitude, not the signed value: a negative `previous`

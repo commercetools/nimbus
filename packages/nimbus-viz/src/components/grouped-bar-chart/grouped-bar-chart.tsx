@@ -15,7 +15,7 @@ import {
 } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 import type { StackRow, StackSegment } from "../../chart/types";
 import type {
   DatumClickHandler,
@@ -38,6 +38,8 @@ export interface GroupedBarChartProps {
   onDatumHover?: DatumHoverHandler<StackSegment>;
   /** Overlays (ReferenceLine, ThresholdBand, TargetMarker, …) in plot space. */
   children?: ReactNode;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /**
@@ -56,8 +58,11 @@ export function GroupedBarChart({
   onDatumClick,
   onDatumHover,
   children,
+  valueFormat,
 }: GroupedBarChartProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<{ i: number; key: string } | null>(null);
   const keys = useMemo(() => stackKeys(data), [data]);
   const colorForKey = useEntityColors(keys);
@@ -125,7 +130,7 @@ export function GroupedBarChart({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -194,7 +199,7 @@ export function GroupedBarChart({
                 top={Math.max(0, y(hb.value) - 4)}
                 lines={[
                   data[hover.i]?.category ?? "",
-                  `${hb.key}: ${formatCompact(hb.value)}`,
+                  `${hb.key}: ${valueFmt(hb.value)}`,
                 ]}
               />
             )}

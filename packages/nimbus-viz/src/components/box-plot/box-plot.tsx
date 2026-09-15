@@ -10,7 +10,7 @@ import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
-import { formatCompact } from "../../chart/format";
+import { useChartFormatters } from "../../chart/format-locale";
 
 /** Precomputed five-number summary for one group's distribution. */
 export interface BoxPlotGroupStats {
@@ -35,6 +35,8 @@ export interface BoxPlotProps {
   ariaLabel?: string;
   /** Overlays (ReferenceLine, ThresholdBand, TrendLine, …) in plot space. */
   children?: ReactNode;
+  /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
+  valueFormat?: (n: number) => string;
 }
 
 /**
@@ -52,8 +54,11 @@ export function BoxPlot({
   groups,
   ariaLabel,
   children,
+  valueFormat,
 }: BoxPlotProps) {
   const theme = useChartTheme();
+  const formatters = useChartFormatters();
+  const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
 
   const yDomain = useMemo(() => {
@@ -119,7 +124,7 @@ export function BoxPlot({
               numTicks={4}
               hideAxisLine
               hideTicks
-              tickFormat={(v) => formatCompact(v as number)}
+              tickFormat={(v) => valueFmt(v as number)}
               tickLabelProps={leftTickLabel(theme)}
             />
             <AxisBottom
@@ -175,11 +180,11 @@ export function BoxPlot({
                 innerWidth={innerWidth}
                 lines={[
                   hoverGroup.label,
-                  `max: ${formatCompact(hoverGroup.max)}`,
-                  `Q3: ${formatCompact(hoverGroup.thirdQuartile)}`,
-                  `median: ${formatCompact(hoverGroup.median)}`,
-                  `Q1: ${formatCompact(hoverGroup.firstQuartile)}`,
-                  `min: ${formatCompact(hoverGroup.min)}`,
+                  `max: ${valueFmt(hoverGroup.max)}`,
+                  `Q3: ${valueFmt(hoverGroup.thirdQuartile)}`,
+                  `median: ${valueFmt(hoverGroup.median)}`,
+                  `Q1: ${valueFmt(hoverGroup.firstQuartile)}`,
+                  `min: ${valueFmt(hoverGroup.min)}`,
                 ]}
               />
             )}
