@@ -13,6 +13,55 @@ export default meta;
 export const Base: BaseStory = {};
 
 /**
+ * `showValues`: labels each NODE with its total flow value, stacked below
+ * the node's own (always-on) name label, flipped to whichever side already
+ * hosts the name -- see the prop's TSDoc for why links are left out. Default
+ * `false`; omitting the prop renders exactly as before this existed. Two
+ * instances side by side (each its own distinct `ariaLabel`, this file's own
+ * established multi-instance convention) prove the causal link directly:
+ * turning the prop on adds exactly one new `<text>` per node, not a guessed
+ * formatted string.
+ */
+const showValuesGraph = {
+  nodes: [{ name: "A" }, { name: "B" }, { name: "C" }],
+  links: [
+    { source: 0, target: 1, value: 10 },
+    { source: 1, target: 2, value: 6 },
+  ],
+};
+
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <SankeyDiagram
+        width={280}
+        height={240}
+        graph={showValuesGraph}
+        ariaLabel="Sankey diagram without value labels"
+      />
+      <SankeyDiagram
+        width={280}
+        height={240}
+        graph={showValuesGraph}
+        showValues
+        ariaLabel="Sankey diagram with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (SankeyDiagram uses the
+    // library's default role="img" -- it has no focusable marks, unlike
+    // BarChart's roving-tabindex "graphics-document").
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    expect(textCount(svgs[1])).toBe(
+      textCount(svgs[0]) + showValuesGraph.nodes.length
+    );
+  },
+};
+
+/**
  * BC-3 (`docs/bug-classes.md`): d3-sankey scales node/link geometry
  * proportional to `value / totalFlow`. When every link's value is 0,
  * `totalFlow` is 0 and that division produces `NaN` throughout the laid-out

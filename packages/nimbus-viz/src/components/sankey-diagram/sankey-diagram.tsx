@@ -13,6 +13,7 @@ import { useChartFormatters } from "../../chart/format-locale";
 import type { FlowGraph, FlowLink, FlowNode } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { ValueLabel } from "../../chart/value-labels";
 
 export interface SankeyDiagramProps extends DatumInteractionProps<FlowNode> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -40,6 +41,21 @@ export interface SankeyDiagramProps extends DatumInteractionProps<FlowNode> {
    * forced-colors context — see `useForcedColors`.
    */
   texture?: boolean;
+  /**
+   * Draw each NODE's total flow value directly outside its rect —
+   * `chart/value-labels.tsx`'s `ValueLabel`, stacked below the node's
+   * existing name label, flipped to whichever side keeps the text off the
+   * ribbons: right of the node for the left half of the diagram, left of it
+   * for the right half — the same anchor-flip logic `dumbbell-chart.tsx`
+   * uses for its own paired end labels. Links are NOT labeled: a ribbon is a
+   * diagonal, variable-width path, and (unlike a dumbbell's straight
+   * horizontal connector) its midpoint can land on top of another node or a
+   * crossing ribbon in a diagram with more than a couple of layers, so there
+   * is no obviously clean single position for it the way there is for a
+   * node's own rect. Default `false` — omitting it renders exactly as before
+   * this existed.
+   */
+  showValues?: boolean;
 }
 
 type LaidNode = SankeyNode<FlowNode, FlowLink>;
@@ -61,6 +77,7 @@ export function SankeyDiagram({
   onDatumClick,
   onDatumHover,
   texture,
+  showValues,
 }: SankeyDiagramProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -232,6 +249,14 @@ export function SankeyDiagram({
                     >
                       {node.name}
                     </text>
+                    {showValues && (
+                      <ValueLabel
+                        x={leftHalf ? x1 + 6 : x0 - 6}
+                        y={(y0 + y1) / 2 + 12}
+                        text={valueFmt(node.value ?? 0)}
+                        anchor={leftHalf ? "start" : "end"}
+                      />
+                    )}
                   </Group>
                 );
               })}

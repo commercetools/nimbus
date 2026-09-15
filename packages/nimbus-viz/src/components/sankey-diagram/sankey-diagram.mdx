@@ -149,6 +149,49 @@ placed in left-to-right layers; each node's name sits just outside it (to the
 right for left-half nodes, to the left for right-half nodes). Ribbon vertical
 positions and widths are solved to minimize crossings.
 
+### Value labels
+
+Pass `showValues` to also draw each **node's** total flow value, stacked below
+its name label on the same side. Links are not labeled — a ribbon is a
+diagonal, variable-width path with no single obviously clean label position
+the way a node's own rect has. Default `false`.
+
+```jsx live
+const graph = {
+  nodes: [
+    { name: "Search" },
+    { name: "Direct" },
+    { name: "Home" },
+    { name: "Product" },
+    { name: "Cart" },
+    { name: "Purchase" },
+  ],
+  links: [
+    { source: 0, target: 2, value: 480 },
+    { source: 1, target: 2, value: 220 },
+    { source: 2, target: 3, value: 520 },
+    { source: 3, target: 4, value: 300 },
+    { source: 4, target: 5, value: 160 },
+  ],
+};
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <SankeyDiagram
+          width={width}
+          height={height}
+          graph={graph}
+          showValues
+          ariaLabel="Sankey diagram of session flow, with node value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Color & theming
 
 Node color comes from the shared **entity → color** scale (`useEntityColors`),
@@ -303,6 +346,10 @@ and render your own placeholder when there is no data yet.
   layout, and a graph whose links total to 0 renders nothing (`null`) rather
   than the `NaN` geometry d3-sankey's layout would otherwise produce — both log
   a development warning.
+- **`showValues` labels nodes only.** A link's ribbon is a diagonal,
+  variable-width path with no single obviously clean label position (its own
+  midpoint can land on another node or a crossing ribbon), so `showValues`
+  does not attempt to label links.
 
 ## Related charts
 
