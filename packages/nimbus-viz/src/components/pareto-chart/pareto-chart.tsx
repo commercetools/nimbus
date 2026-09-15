@@ -24,6 +24,7 @@ import type {
   DatumHoverHandler,
 } from "../../chart/interaction";
 import { emText } from "../../chart/typography";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 
 export interface ParetoChartProps {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -65,7 +66,8 @@ interface ParetoRow {
 /**
  * A Pareto chart: categories ranked by magnitude, with a running cumulative
  * total, used to surface the "vital few" categories that drive most of the
- * whole. Per-bar hover dims the rest and reads out the cumulative share.
+ * whole. Hovering a bar outlines that one bar (its siblings are never
+ * dimmed) and reads out the cumulative share.
  *
  * @experimental Prototype-stage; API may change before it is marked stable.
  */
@@ -209,7 +211,11 @@ export function ParetoChart({
             {rows.map((d, i) => {
               const x = band.pos(i);
               const barH = Math.max(0, innerHeight - yScale(d.value));
-              const active = hover == null || hover === i;
+              // Outline the hovered bar; never dim its siblings
+              // (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the one shared
+              // convention, replacing a per-chart "dim everyone else"
+              // opacity ternary).
+              const isHovered = hover === i;
               return (
                 <BarRounded
                   key={`${d.category}-${i}`}
@@ -220,7 +226,8 @@ export function ParetoChart({
                   radius={4}
                   top
                   fill={theme.accent}
-                  opacity={active ? 1 : 0.4}
+                  stroke={isHovered ? theme.ink : "none"}
+                  strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
                   onMouseEnter={() => {
                     setHover(i);
                     // datum is the raw input element; index is its rank in the

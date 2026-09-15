@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/react-vite";
-import { expect } from "storybook/test";
+import { expect, userEvent, waitFor } from "storybook/test";
 import { ParetoChart, ResponsiveContainer } from "../../";
 import type { CategoryDatum } from "../../";
 import type { BaseStory } from "../../stories/base-story";
@@ -27,6 +27,39 @@ const meta: Meta = {
 export default meta;
 
 export const Base: BaseStory = {};
+
+/**
+ * Hover emphasis: hovering a bar outlines that ONE bar (`stroke`/
+ * `strokeWidth`) and never dims its siblings — replacing the "dim everyone
+ * else to a fixed opacity" pattern this chart used to hand-roll. Unlike
+ * `bar-chart.tsx`, this chart's tooltip was never positioned from the
+ * hovered bar's value-axis position to begin with (it always defaulted to a
+ * fixed `top`), so there is no pointer-follow behavior to prove here — only
+ * the outline-instead-of-dim change.
+ */
+export const HoverEmphasis: BaseStory = {
+  render: () => <ParetoChart width={480} height={280} data={data} />,
+  play: async ({ canvasElement }) => {
+    const bars = () =>
+      Array.from(
+        canvasElement.querySelectorAll<SVGPathElement>("path.visx-bar-rounded")
+      );
+
+    const firstBar = bars()[0];
+    await userEvent.hover(firstBar);
+    await waitFor(() =>
+      expect(firstBar).toHaveAttribute("stroke-width", "1.5")
+    );
+
+    // No dimming: every bar keeps a full, unmodified fill -- none carries
+    // an `opacity` attribute at all (the old mechanism this replaces).
+    for (const bar of bars()) {
+      expect(bar).not.toHaveAttribute("opacity");
+    }
+    // Emphasis instead: only the hovered bar gets a real outline.
+    expect(bars()[1]).toHaveAttribute("stroke-width", "0");
+  },
+};
 
 /**
  * BC-1 (`docs/bug-classes.md`): a band scale keyed by category TEXT collapses
