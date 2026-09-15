@@ -116,6 +116,17 @@ EOF
 git show --stat HEAD
 ```
 
+If the file list is long enough that spelling it out twice is tempting to avoid
+by storing it in a shell variable first: this repo's shell is zsh, where an
+unquoted `$var` does **not** word-split on newlines/spaces the way bash does
+(only a direct, inline `$(command)` substitution splits). A
+`files=$(git status --porcelain | awk '{print $2}')` followed by
+`git add -- $files` passes the whole multi-line list as one bad pathspec and
+fails with "did not match any files." Either spell the paths out literally at
+each call site, or re-run the direct substitution —
+`git add -- $(git status --porcelain -- packages/nimbus-viz | awk '{print $2}')`
+— at every git invocation instead of reusing a variable.
+
 ### 7. Report
 
 Hits, fixed, left open (with reasons), and the commit hash.
