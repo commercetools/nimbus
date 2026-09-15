@@ -14,6 +14,7 @@ import { useForcedColors } from "../../chart/use-forced-colors";
 import type { DatumInteractionProps } from "../../chart/interaction";
 import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 import { clamp, plotPointerPosition } from "../../chart/pointer";
+import { ValueLabel } from "../../chart/value-labels";
 
 export interface PopulationPyramidProps extends DatumInteractionProps<StackRow> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -40,6 +41,13 @@ export interface PopulationPyramidProps extends DatumInteractionProps<StackRow> 
    * `useForcedColors`.
    */
   texture?: boolean;
+  /**
+   * Draw each side's formatted value directly at its own outer end (the
+   * anchor flips by side, same idea as `bar-chart.tsx`'s horizontal
+   * branch) — `chart/value-labels.tsx`'s `ValueLabel`. Default `false`
+   * (no change from today's rendering).
+   */
+  showValues?: boolean;
 }
 
 /** Width of the central gutter reserved for band labels, in px. */
@@ -62,6 +70,7 @@ export function PopulationPyramid({
   onDatumClick,
   onDatumHover,
   texture,
+  showValues,
 }: PopulationPyramidProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -266,6 +275,22 @@ export function PopulationPyramid({
                       })
                     }
                   />
+                  {showValues && (
+                    <ValueLabel
+                      x={centerLeft - lw - 6}
+                      y={y + bh / 2}
+                      text={valueFmt(lv)}
+                      anchor="end"
+                    />
+                  )}
+                  {showValues && (
+                    <ValueLabel
+                      x={centerRight + rw + 6}
+                      y={y + bh / 2}
+                      text={valueFmt(rv)}
+                      anchor="start"
+                    />
+                  )}
                   <text
                     x={centerLeft + GUTTER / 2}
                     y={y + bh / 2}

@@ -305,6 +305,47 @@ const App = () => (
 );
 ```
 
+### Value labels
+
+Pass `showValues` to draw each side's formatted value directly at its own
+outer end — the anchor flips by side, so the left series' labels grow
+leftward and the right series' labels grow rightward. Default `false`.
+
+```jsx live
+const data = [
+  {
+    category: "0–17",
+    segments: [
+      { key: "Male", value: 62 },
+      { key: "Female", value: 58 },
+    ],
+  },
+  {
+    category: "18–34",
+    segments: [
+      { key: "Male", value: 88 },
+      { key: "Female", value: 92 },
+    ],
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <PopulationPyramid
+          width={width}
+          height={height}
+          data={data}
+          showValues
+          ariaLabel="Population pyramid by age band, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ## Responsiveness & performance
 
 Fixed height:

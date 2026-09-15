@@ -32,6 +32,44 @@ const fixture: StackRow[] = [
 ];
 
 /**
+ * `showValues` draws each side's formatted value directly at its own outer
+ * end -- the anchor flips by side, the same idea as `bar-chart.tsx`'s
+ * horizontal branch. Proven the same way: the with-labels chart carries
+ * exactly one extra `<text>` per bar (two sides per band) over the
+ * without-labels chart.
+ */
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <PopulationPyramid
+        width={320}
+        height={280}
+        data={fixture}
+        ariaLabel="Population pyramid without value labels"
+      />
+      <PopulationPyramid
+        width={320}
+        height={280}
+        data={fixture}
+        showValues
+        ariaLabel="Population pyramid with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (PopulationPyramid uses the
+    // library default role="img" -- it has no keyboard-focusable marks).
+    // Axis tick labels render their own nested <svg> (visx's positioning
+    // trick), which would otherwise inflate this count too.
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    const sideCount = fixture.length * 2;
+    expect(textCount(svgs[1])).toBe(textCount(svgs[0]) + sideCount);
+  },
+};
+
+/**
  * Hover/tooltip UX convergence: hovering a bar outlines that ONE bar
  * (`stroke`/`strokeWidth`) and never dims its siblings -- including the
  * opposite side of the same band -- replacing the "dim everyone else to a
