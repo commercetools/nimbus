@@ -54,6 +54,14 @@ export { lttb } from "./chart/decimate";
 export type { XYPoint } from "./chart/decimate";
 export { Brush, orderRange } from "./chart/brush";
 export type { BrushProps } from "./chart/brush";
+export {
+  SelectionProvider,
+  useLinkedSelection,
+} from "./chart/selection-provider";
+export type {
+  LinkedSelectionState,
+  SelectionProviderProps,
+} from "./chart/selection-provider";
 export { useControlledSelection } from "./chart/interaction";
 export type {
   DatumEvent,
