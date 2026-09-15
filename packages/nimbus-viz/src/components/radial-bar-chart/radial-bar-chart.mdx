@@ -136,6 +136,36 @@ Hovering a bar outlines it (its siblings are never dimmed) and shows a small
 tooltip at the top of the plot with the category and its formatted value.
 Hover state is managed internally.
 
+### Value labels
+
+Pass `showValues` to draw each bar's formatted value centered inside its own
+sector, in a color chosen for WCAG contrast against the bar's fill — not at
+the rim, since the rim just outside the bars is already claimed by the
+always-on category label. A sector too thin or too narrow to hold the label
+legibly skips it. Default `false`.
+
+```jsx live
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <RadialBarChart
+          width={width}
+          height={height}
+          data={[
+            { category: "Web", value: 4200 },
+            { category: "Mobile", value: 3100 },
+            { category: "Retail", value: 2400 },
+          ]}
+          showValues
+          ariaLabel="Radial bar chart of revenue by channel, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Color & theming
 
 Set the color mode on the provider (`mode="light"` default, or `mode="dark"`).

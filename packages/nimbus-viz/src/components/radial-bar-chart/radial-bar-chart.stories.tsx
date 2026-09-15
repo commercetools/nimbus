@@ -34,6 +34,49 @@ const hoverFixture: CategoryDatum[] = [
   { category: "Retail", value: 2400 },
 ];
 
+/**
+ * `showValues` draws each bar's formatted value centered inside its own
+ * sector, in a WCAG-contrast-aware color -- not at the rim (the rim is
+ * already claimed by the always-on category label). Every sector here
+ * clears both minimum-size gates (`MIN_LABEL_THICKNESS`/`MIN_LABEL_ARC_WIDTH`),
+ * so the labeled chart gains exactly one `<text>` per bar over the
+ * unlabeled control.
+ */
+const valuesFixture: CategoryDatum[] = [
+  { category: "Web", value: 4200 },
+  { category: "Mobile", value: 3100 },
+  { category: "Retail", value: 2400 },
+];
+
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <RadialBarChart
+        width={280}
+        height={280}
+        data={valuesFixture}
+        ariaLabel="Radial bar chart without value labels"
+      />
+      <RadialBarChart
+        width={280}
+        height={280}
+        data={valuesFixture}
+        showValues
+        ariaLabel="Radial bar chart with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (RadialBarChart uses the
+    // library default role="img"; there is no nested <svg> anywhere in this
+    // chart -- no axes, no visx tick-label positioning trick).
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    expect(textCount(svgs[1])).toBe(textCount(svgs[0]) + valuesFixture.length);
+  },
+};
+
 export const HoverEmphasis: BaseStory = {
   render: () => <RadialBarChart width={320} height={320} data={hoverFixture} />,
   play: async ({ canvasElement }) => {

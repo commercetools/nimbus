@@ -5,12 +5,13 @@ import { ChartContainer } from "../../chart/chart-container";
 import { bandByIndex, valueDomain } from "../../chart/scales";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { devWarn } from "../../chart/dev-warn";
-import { useChartTheme } from "../../theme";
+import { useChartTheme, readableTextColor } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import type { CategoryDatum } from "../../chart/types";
 import { emText } from "../../chart/typography";
 import type { DatumInteractionProps } from "../../chart/interaction";
 import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { ValueLabel } from "../../chart/value-labels";
 
 export interface RadialBarChartProps extends DatumInteractionProps<CategoryDatum> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -24,12 +25,36 @@ export interface RadialBarChartProps extends DatumInteractionProps<CategoryDatum
   ariaLabel?: string;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /**
+   * Draw each bar's formatted value centered inside its own sector, at its
+   * mid-radius and mid-angle (`chart/value-labels.tsx`'s `ValueLabel`), with
+   * a WCAG-contrast-aware ink/surface pick (`readableTextColor` -- the same
+   * "on-mark" convention `Heatmap`/`RFMGrid`/`CohortTriangle`/`Treemap`
+   * already use for their own cell labels). This chart's rim just outside
+   * `outer` is already claimed by the always-on category label, so unlike
+   * `DonutChart`/`SunburstChart`'s outer-radius placement, the value sits
+   * *inside* the bar instead -- reaching for the rim here would either
+   * collide with the category label or grow onto the bar's own fill with
+   * no contrast-aware color. A sector thinner than `MIN_LABEL_THICKNESS` or
+   * narrower than `MIN_LABEL_ARC_WIDTH` at its mid-radius skips its label --
+   * the same minimum-cell-size gating idea `Heatmap` uses. Default `false`
+   * (no change from today's unlabeled bars).
+   */
+  showValues?: boolean;
 }
 
 /** Point on a circle for an angle measured clockwise from 12 o'clock. */
 function polar(r: number, angle: number): [number, number] {
   return [r * Math.sin(angle), -r * Math.cos(angle)];
 }
+
+/**
+ * Minimum sector size (px) before a value label is drawn inside it -- same
+ * thresholds `Heatmap` uses for its own in-cell labels (`cw > 26 && ch >
+ * 16`), applied here to a sector's arc width and radial thickness.
+ */
+const MIN_LABEL_ARC_WIDTH = 26;
+const MIN_LABEL_THICKNESS = 16;
 
 /** SVG path for an annular sector (a radial bar) centered on the origin. */
 function sectorPath(r0: number, r1: number, a0: number, a1: number): string {
@@ -64,6 +89,7 @@ export function RadialBarChart({
   valueFormat,
   onDatumClick,
   onDatumHover,
+  showValues,
 }: RadialBarChartProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -122,6 +148,13 @@ export function RadialBarChart({
         });
         const bw = angle.bandwidth;
         const hovered = hover != null ? data[hover] : null;
+        // Every bar shares the same fill, so the contrast-aware pick is the
+        // same for all of them -- compute it once rather than per sector.
+        const valueLabelColor = readableTextColor(
+          theme.accent,
+          theme.ink,
+          theme.surface
+        );
         return (
           <>
             <Group top={cy} left={cx}>
@@ -139,6 +172,12 @@ export function RadialBarChart({
                 const isHovered = hover === i;
                 const [lx, ly] = polar(outer + 10, aMid);
                 const flip = aMid > Math.PI;
+                const midR = (inner + r1) / 2;
+                const arcWidth = midR * (a1 - a0);
+                const canLabel =
+                  r1 - inner >= MIN_LABEL_THICKNESS &&
+                  arcWidth >= MIN_LABEL_ARC_WIDTH;
+                const [vx, vy] = polar(midR, aMid);
                 return (
                   <g
                     key={`${d.category}-${i}`}
@@ -168,6 +207,14 @@ export function RadialBarChart({
                     >
                       {d.category}
                     </text>
+                    {showValues && canLabel && (
+                      <ValueLabel
+                        x={vx}
+                        y={vy}
+                        text={valueFmt(d.value)}
+                        color={valueLabelColor}
+                      />
+                    )}
                   </g>
                 );
               })}
