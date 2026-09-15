@@ -215,7 +215,10 @@ including zero with horizontal gridlines. Every bar is direct-labeled with its
 value — **always with an explicit sign** for deltas (`+180`, `-70`) so the
 direction never rides on color alone. Thin dashed connectors bridge each bar's
 ending level to the next bar's start. Values use a compact formatter (e.g.
-`4.2k`); there is no format-override prop.
+`4.2k`); there is no format-override prop. Hovering a bar outlines that one
+bar (its siblings are never dimmed) and shows a small tooltip with the step,
+its change, and the running total; the tooltip's vertical position tracks the
+pointer while it stays inside that bar.
 
 ### Color & theming
 

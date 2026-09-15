@@ -17,6 +17,8 @@ import { useChartTheme } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { clamp, plotPointerPosition } from "../../chart/pointer";
 
 /** One ordered step in a waterfall: a signed contribution, or an explicit total. */
 export interface WaterfallStep {
@@ -73,6 +75,11 @@ export function WaterfallChart({
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
+  // Live pointer y (plot-local), while a bar is being hovered by the mouse
+  // -- null once the pointer leaves, so the tooltip falls back to the
+  // hovered bar's own value-derived position rather than a stale
+  // coordinate from a previous hover.
+  const [pointerY, setPointerY] = useState<number | null>(null);
 
   const bars = useMemo<Bar[]>(() => {
     let running = 0;
@@ -103,11 +110,16 @@ export function WaterfallChart({
     rows: bars.map((b) => [b.step.label, b.step.value, b.to]),
   };
 
+  // Named so the pointer math below (which needs the same left/top offset
+  // xScale/yScale are drawn relative to) can never drift from what's
+  // actually passed to ChartContainer.
+  const MARGIN = { top: 20, right: 12, bottom: 28, left: 44 };
+
   return (
     <ChartContainer
       width={width}
       height={height}
-      margin={{ top: 20, right: 12, bottom: 28, left: 44 }}
+      margin={MARGIN}
       ariaLabel={label}
       table={table}
     >
@@ -164,7 +176,11 @@ export function WaterfallChart({
               const yTo = yScale(bar.to);
               const barTop = Math.min(yFrom, yTo);
               const barH = Math.max(1, Math.abs(yFrom - yTo));
-              const active = hover == null || hover === i;
+              // Outline the hovered/focused bar; never dim its siblings
+              // (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the one
+              // shared convention, replacing a per-chart "dim everyone
+              // else" opacity ternary).
+              const isHovered = hover === i;
               const color = bar.step.isTotal
                 ? theme.accent
                 : bar.step.value >= 0
@@ -180,13 +196,20 @@ export function WaterfallChart({
               return (
                 <g
                   key={i}
-                  onMouseEnter={() => {
+                  onMouseEnter={(e) => {
                     setHover(i);
+                    const p = plotPointerPosition(e, MARGIN);
+                    if (p) setPointerY(p.y);
                     // datum is the raw input step, not the internal Bar.
                     onDatumHover?.({ datum: bar.step, index: i });
                   }}
+                  onMouseMove={(e) => {
+                    const p = plotPointerPosition(e, MARGIN);
+                    if (p) setPointerY(p.y);
+                  }}
                   onMouseLeave={() => {
                     setHover(null);
+                    setPointerY(null);
                     onDatumHover?.(null);
                   }}
                   onClick={() => onDatumClick?.({ datum: bar.step, index: i })}
@@ -209,7 +232,8 @@ export function WaterfallChart({
                     radius={3}
                     all
                     fill={color}
-                    opacity={active ? 1 : 0.4}
+                    stroke={isHovered ? theme.ink : "none"}
+                    strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
                   />
                   <text
                     x={x + bw / 2}
@@ -227,7 +251,14 @@ export function WaterfallChart({
               <SvgTooltip
                 x={band.center(hover ?? 0)}
                 innerWidth={innerWidth}
-                top={Math.max(0, Math.min(yScale(hb.from), yScale(hb.to)) - 4)}
+                top={
+                  // Live pointer y while the mouse is the hover source;
+                  // falls back to the bar's own value-derived position
+                  // otherwise.
+                  pointerY != null
+                    ? clamp(pointerY, innerHeight)
+                    : Math.max(0, Math.min(yScale(hb.from), yScale(hb.to)) - 4)
+                }
                 lines={
                   hb.step.isTotal
                     ? [hb.step.label, `Total: ${valueFmt(hb.step.value)}`]
