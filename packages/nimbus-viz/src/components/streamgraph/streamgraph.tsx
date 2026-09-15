@@ -16,6 +16,7 @@ import { ChartPatternDefs, patternFill } from "../../chart/patterns";
 import { useForcedColors } from "../../chart/use-forced-colors";
 import type { Series } from "../../chart/types";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { ValueLabel } from "../../chart/value-labels";
 
 export interface StreamgraphProps extends DatumInteractionProps<StackDatum> {
   /** Plot width in pixels — supply from `ResponsiveContainer`. */
@@ -41,6 +42,25 @@ export interface StreamgraphProps extends DatumInteractionProps<StackDatum> {
    * `useForcedColors`.
    */
   texture?: boolean;
+  /**
+   * Label each band with its own value — `chart/value-labels.tsx`'s
+   * `ValueLabel`, one per series — at that band's own point of MAXIMUM
+   * thickness, not a fixed x shared by every band. `StackedAreaChart`'s
+   * equivalent labels the right edge, but that doesn't transfer here:
+   * `offset="wiggle"` only ever shifts the BASELINE to keep the silhouette
+   * calm, never a band's own thickness, so a band's thickness at any single
+   * x — the right edge included — is still just that series' own raw value
+   * there, and this chart's whole point is a shape where that routinely
+   * dips to near zero at various x's (see `series` above: "read shape, not
+   * level"). A band's point of maximum thickness is the one x that, by
+   * construction, is never near-zero unless the whole series is, so it is
+   * the one reliably labelable point along an otherwise-continuous curve.
+   * The residual case this does NOT solve: two bands whose peaks fall at
+   * close x's can still end up with close labels, since nothing here does
+   * cross-label collision avoidance. Default `false` — omitting it renders
+   * exactly as before this existed.
+   */
+  showValues?: boolean;
 }
 
 /** A stack row: an x position (epoch ms) plus one numeric value per series id. */
@@ -72,6 +92,7 @@ export function Streamgraph({
   onDatumClick,
   onDatumHover,
   texture,
+  showValues,
 }: StreamgraphProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -196,6 +217,32 @@ export function Streamgraph({
                 </>
               )}
             </AreaStack>
+
+            {showValues &&
+              wiggleStacks.map((layer) => {
+                // This band's own point of maximum thickness -- reliably
+                // never near-zero (unless the whole series is), unlike a
+                // fixed x shared by every band (see `showValues`'s TSDoc).
+                let maxI = 0;
+                let maxThickness = -Infinity;
+                for (let i = 0; i < layer.length; i++) {
+                  const thickness = layer[i][1] - layer[i][0];
+                  if (thickness > maxThickness) {
+                    maxThickness = thickness;
+                    maxI = i;
+                  }
+                }
+                const point = layer[maxI];
+                if (!point) return null;
+                return (
+                  <ValueLabel
+                    key={`value-${layer.key}`}
+                    x={xScale(new Date(point.data.x))}
+                    y={(yScale(point[0]) + yScale(point[1])) / 2}
+                    text={valueFmt(point.data[layer.key])}
+                  />
+                );
+              })}
 
             {hoverIndex != null && hoveredX != null && (
               <line

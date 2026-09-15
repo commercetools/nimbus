@@ -183,6 +183,62 @@ Annotations (e.g. `ReferenceLine`, `ThresholdBand`, `TrendLine`) passed as
 y-scale from the wiggle stacks (its domain straddles zero) purely so overlays
 line up with the bands — there is still no visible value axis.
 
+### Value labels
+
+Pass `showValues` to label each band with its own value, once, at that band's
+own point of **maximum thickness** — not a fixed x shared by every band. The
+wiggle offset above only ever moves the baseline, never a band's own
+thickness, so a band can be a near-zero sliver at any single shared x
+(including the right edge `StackedAreaChart`'s equivalent labels); its point
+of maximum thickness is the one x that's never near-zero unless the whole
+series is. Uses the same built-in compact formatter as the tooltip — there is
+no `valueFormat` prop to override it here either. Default `false`.
+
+```jsx live
+const series = [
+  {
+    id: "organic",
+    label: "Organic",
+    data: [
+      { x: new Date("2026-01-01"), y: 120 },
+      { x: new Date("2026-02-01"), y: 150 },
+      { x: new Date("2026-03-01"), y: 170 },
+      { x: new Date("2026-04-01"), y: 210 },
+      { x: new Date("2026-05-01"), y: 240 },
+      { x: new Date("2026-06-01"), y: 300 },
+    ],
+  },
+  {
+    id: "paid",
+    label: "Paid",
+    data: [
+      { x: new Date("2026-01-01"), y: 80 },
+      { x: new Date("2026-02-01"), y: 96 },
+      { x: new Date("2026-03-01"), y: 110 },
+      { x: new Date("2026-04-01"), y: 104 },
+      { x: new Date("2026-05-01"), y: 130 },
+      { x: new Date("2026-06-01"), y: 150 },
+    ],
+  },
+];
+
+const App = () => (
+  <ChartThemeProvider mode="light">
+    <ResponsiveContainer height={280}>
+      {(width, height) => (
+        <Streamgraph
+          width={width}
+          height={height}
+          series={series}
+          showValues
+          ariaLabel="Streamgraph of sessions by channel, with value labels"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Legend (automatic)
 
 Not configurable — a legend appears automatically for **two or more** series
@@ -367,6 +423,10 @@ states upstream and render your own placeholder when there is no data yet.
   no `onDatumClick`/`onDatumHover`.
 - **No title, caption, loading, or error passthrough** — it forwards only
   `ariaLabel`, the auto legend, and the data table to `ChartContainer`.
+- **`showValues` doesn't avoid cross-band collisions.** Each band is labeled at
+  its own most-reliable point (its maximum thickness), but if two bands peak
+  at close x positions their labels can still end up close together — there is
+  no collision-avoidance pass across bands.
 
 ## Related charts
 

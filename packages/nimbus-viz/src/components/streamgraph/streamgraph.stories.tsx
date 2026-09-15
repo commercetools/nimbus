@@ -83,3 +83,43 @@ export const Texture: BaseStory = {
     expect(marks.length).toBe(keyCount);
   },
 };
+
+/**
+ * `showValues`: labels each band with its own value, once, at that band's
+ * OWN point of maximum thickness (not a shared x) -- see the prop's TSDoc
+ * for why a fixed position (e.g. the right edge `StackedAreaChart` uses)
+ * doesn't transfer to a wiggle-offset stream. Default `false`; omitting the
+ * prop renders exactly as before this existed. Two instances side by side
+ * (each its own distinct `ariaLabel`, this file's own established
+ * multi-instance convention) prove the causal link directly: turning the
+ * prop on adds exactly one new `<text>` per series, not a guessed formatted
+ * string.
+ */
+export const ShowValues: BaseStory = {
+  render: () => (
+    <div style={{ display: "flex", gap: 24 }}>
+      <Streamgraph
+        width={280}
+        height={280}
+        series={series}
+        ariaLabel="Streamgraph without value labels"
+      />
+      <Streamgraph
+        width={280}
+        height={280}
+        series={series}
+        showValues
+        ariaLabel="Streamgraph with value labels"
+      />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    // Scope to the two charts' own root <svg> (Streamgraph uses the
+    // library's default role="img" -- it has no focusable marks, unlike
+    // BarChart's roving-tabindex "graphics-document").
+    const svgs = canvasElement.querySelectorAll('svg[role="img"]');
+    expect(svgs).toHaveLength(2);
+    const textCount = (svg: Element) => svg.querySelectorAll("text").length;
+    expect(textCount(svgs[1])).toBe(textCount(svgs[0]) + series.length);
+  },
+};
