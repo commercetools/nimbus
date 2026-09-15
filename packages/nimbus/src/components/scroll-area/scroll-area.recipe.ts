@@ -1,8 +1,15 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
 /**
- * Recipe configuration for the ScrollArea component.
- * Overrides Chakra UI's default scrollArea recipe with Nimbus design tokens.
+ * Recipe for the ScrollArea component — overrides Chakra's default scrollArea
+ * recipe with Nimbus design tokens.
+ *
+ * Two independent variant groups: `variant` is the visual style
+ * (`solid` | `inset` | `overlay` | `glass`); `scrollbarVisibility` is auto-hide
+ * vs. always-visible (the deprecated `variant="always"` maps onto it).
+ *
+ * `size` sets the visible thumb thickness; each inset variant only pads around
+ * it, so the track/hit-area grows by the padding rather than the thumb shrinking.
  */
 export const scrollAreaSlotRecipe = defineSlotRecipe({
   className: "nimbus-scroll-area",
@@ -16,6 +23,10 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
       position: "relative",
       overflow: "hidden",
       "--scroll-area-scrollbar-margin": "{sizes.50}",
+      // Track/hit-area = visible thumb size + inset padding on both sides.
+      "--scroll-area-thumb-inset": "0px",
+      "--scroll-area-scrollbar-size":
+        "calc(var(--scroll-area-thumb-size) + var(--scroll-area-thumb-inset) * 2)",
       "--scroll-area-scrollbar-click-area":
         "calc(var(--scroll-area-scrollbar-size) + calc(var(--scroll-area-scrollbar-margin) * 2))",
       _focusWithin: {
@@ -48,25 +59,26 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
       userSelect: "none",
       touchAction: "none",
       borderRadius: "full",
-      transition: "opacity 150ms 300ms",
+      transition: "opacity 200ms ease",
       position: "relative",
-      // Paint above viewport content (e.g. sticky headers with z-index)
+      // Paint above viewport content (e.g. sticky headers).
       zIndex: "1",
       margin: "var(--scroll-area-scrollbar-margin)",
-      // Hide each scrollbar when its own axis isn't overflowing. Zag sets
-      // `data-overflow-x` / `data-overflow-y` on the scrollbar reflecting the
-      // current viewport state, so a vertical scrollbar with no Y overflow
-      // (and vice versa) should not paint even if the other axis overflows.
+      // Opacity is owned solely by the `scrollbarVisibility` group; a base
+      // `opacity` here would tie on specificity and let source order decide.
+      // Hide a scrollbar when its own axis isn't overflowing (Zag sets
+      // `data-overflow-x`/`-y` on it per the current viewport state).
       "&[data-orientation=vertical]:not([data-overflow-y])": {
         display: "none",
       },
       "&[data-orientation=horizontal]:not([data-overflow-x])": {
         display: "none",
       },
-      bg: "neutral.4",
-      "--scroll-area-thumb-bg": "{colors.neutral.7}",
+      // neutral.9 clears ~3:1 on light surfaces (neutral.7 was ~1.3:1 and read
+      // washed-out); darkens on hover/active. Both steps are theme-aware.
+      "--scroll-area-thumb-bg": "{colors.neutral.9}",
       "&:is(:hover, :active)": {
-        "--scroll-area-thumb-bg": "{colors.neutral.9}",
+        "--scroll-area-thumb-bg": "{colors.neutral.11}",
       },
       _before: {
         content: '""',
@@ -94,6 +106,10 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
     thumb: {
       borderRadius: "inherit",
       bg: "var(--scroll-area-thumb-bg)",
+      // Transparent border + `content-box` clip make the painted thumb thinner
+      // than its hit-area with no layout shift (`0px` inset = fills the track).
+      border: "var(--scroll-area-thumb-inset) solid transparent",
+      backgroundClip: "content-box",
       transition: "backgrounds",
       _vertical: { width: "full" },
       _horizontal: { height: "full" },
@@ -101,36 +117,83 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
     corner: {
       bg: "neutral.3",
       margin: "var(--scroll-area-scrollbar-margin)",
-      opacity: 0,
-      transition: "opacity 150ms 300ms",
-      "&[data-hover]": {
-        transitionDelay: "0ms",
-        opacity: 1,
-      },
+      transition: "opacity 200ms ease",
+      // Opacity owned by the `scrollbarVisibility` group (see the scrollbar note).
     },
   },
   variants: {
     variant: {
-      hover: {
+      solid: {
+        scrollbar: {
+          bg: "neutral.4",
+        },
+      },
+      inset: {
+        root: {
+          "--scroll-area-thumb-inset": "2px",
+        },
+        scrollbar: {
+          bg: "neutral.4",
+        },
+      },
+      overlay: {
+        root: {
+          "--scroll-area-thumb-inset": "2px",
+        },
+        scrollbar: {
+          bg: "transparent",
+        },
+      },
+      glass: {
+        root: {
+          "--scroll-area-thumb-inset": "2px",
+        },
+        scrollbar: {
+          bg: "bg/60",
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
+        },
+      },
+    },
+    scrollbarVisibility: {
+      // Bar starts transparent; `useScrollbarAutoHide` toggles
+      // `data-scrollbar-visible` on the root (the hook owns the idle delay). The
+      // reveal selector outranks the base `opacity: 0` by specificity.
+      "auto-hide": {
         scrollbar: {
           opacity: "0",
-          "&[data-hover], &[data-scrolling]": {
+          // Not hit-testable while hidden, or its widened `_before` strip would
+          // swallow clicks on overlaid content (no gutter here). Restored on reveal.
+          pointerEvents: "none",
+          // Direct-child (`>`), not descendant: a nested ScrollArea must not be
+          // revealed by this root's attribute.
+          "[data-scrollbar-visible] > &": {
             opacity: "1",
-            transitionDuration: "faster",
-            transitionDelay: "0ms",
+            pointerEvents: "auto",
+          },
+          // Keep visible/interactive while dragging, regardless of the idle
+          // timer (a drag also fires viewport `scroll`, so this is a safeguard).
+          "&[data-dragging]": {
+            opacity: "1",
+            pointerEvents: "auto",
+          },
+        },
+        corner: {
+          opacity: "0",
+          pointerEvents: "none",
+          // Direct-child combinator, like the scrollbar above.
+          "[data-scrollbar-visible] > &": {
+            opacity: "1",
+            pointerEvents: "auto",
           },
         },
       },
       always: {
         viewport: {
-          // Create gutter so the permanently visible scrollbar
-          // doesn't overlay content.
-          // - Vertical scrollbar (Y overflow): use width calc — works
-          //   because width always resolves against a definite parent.
-          // - Horizontal scrollbar (X overflow): use flex + margin —
-          //   height calc doesn't work because the root's height
-          //   comes from maxHeight, and CSS % heights require an
-          //   explicit parent height property.
+          // Reserve a gutter so the always-visible bar doesn't overlay content.
+          // Vertical: width calc (width resolves against a definite parent).
+          // Horizontal: flex + margin, because a % height needs an explicit
+          // parent height and the root's height comes from maxHeight.
           flex: "1",
           minHeight: "0",
           "&[data-overflow-y]": {
@@ -153,28 +216,29 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
     size: {
       xs: {
         root: {
-          "--scroll-area-scrollbar-size": "{sizes.100}",
+          "--scroll-area-thumb-size": "{sizes.100}",
         },
       },
       sm: {
         root: {
-          "--scroll-area-scrollbar-size": "{sizes.150}",
+          "--scroll-area-thumb-size": "{sizes.150}",
         },
       },
       md: {
         root: {
-          "--scroll-area-scrollbar-size": "{sizes.200}",
+          "--scroll-area-thumb-size": "{sizes.200}",
         },
       },
       lg: {
         root: {
-          "--scroll-area-scrollbar-size": "{sizes.300}",
+          "--scroll-area-thumb-size": "{sizes.300}",
         },
       },
     },
   },
   defaultVariants: {
     size: "sm",
-    variant: "hover",
+    variant: "solid",
+    scrollbarVisibility: "auto-hide",
   },
 });

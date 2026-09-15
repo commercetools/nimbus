@@ -14,8 +14,9 @@ import { ScrollArea, type ScrollAreaProps } from '@commercetools/nimbus';
 
 ### Basic usage
 
-Wrap content in a `ScrollArea` with a size constraint. The scrollbar appears on
-hover or during scrolling:
+Wrap content in a `ScrollArea` with a size constraint. The scrollbar appears
+when the pointer enters the area or when the content scrolls, then hides again
+after a short idle delay:
 
 ```jsx live-dev
 const App = () => (
@@ -40,7 +41,7 @@ const App = () => (
   <Stack gap="600">
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">both (default)</Text>
-      <ScrollArea maxH="120px" maxW="300px" variant="always">
+      <ScrollArea maxH="120px" maxW="300px" scrollbarVisibility="always">
         <Box whiteSpace="nowrap">
           {Array.from({ length: 15 }, (_, i) => (
             <Text key={i} fontSize="sm">{"Both axes content ".repeat(15)}</Text>
@@ -50,7 +51,7 @@ const App = () => (
     </Box>
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">vertical</Text>
-      <ScrollArea maxH="120px" w="300px" orientation="vertical" variant="always">
+      <ScrollArea maxH="120px" w="300px" orientation="vertical" scrollbarVisibility="always">
         {Array.from({ length: 15 }, (_, i) => (
           <Text key={i} fontSize="sm">Line {i + 1}</Text>
         ))}
@@ -58,7 +59,7 @@ const App = () => (
     </Box>
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">horizontal</Text>
-      <ScrollArea maxW="300px" orientation="horizontal" variant="always">
+      <ScrollArea maxW="300px" orientation="horizontal" scrollbarVisibility="always">
         <Box whiteSpace="nowrap">
           {Array.from({ length: 5 }, (_, i) => (
             <Text key={i} fontSize="sm">{"Long horizontal content ".repeat(15)}</Text>
@@ -70,6 +71,66 @@ const App = () => (
 )
 ```
 
+### Visibility
+
+Use the `scrollbarVisibility` prop to choose when the scrollbar is shown.
+`auto-hide` (the default) reveals the bar on pointer entry or scroll and fades
+it out after a short idle delay; while the pointer rests inside, scrolling or
+moving toward the bar reveals it again, and resting the pointer on the bar keeps
+it shown. `always` keeps the bar visible and reserves a gutter so it never
+overlays content:
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="600" direction="row">
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">auto-hide (default)</Text>
+      <ScrollArea maxH="120px" w="200px">
+        {Array.from({ length: 15 }, (_, i) => (
+          <Text key={i} fontSize="sm">Line {i + 1}</Text>
+        ))}
+      </ScrollArea>
+    </Box>
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">always</Text>
+      <ScrollArea maxH="120px" w="200px" scrollbarVisibility="always">
+        {Array.from({ length: 15 }, (_, i) => (
+          <Text key={i} fontSize="sm">Line {i + 1}</Text>
+        ))}
+      </ScrollArea>
+    </Box>
+  </Stack>
+)
+```
+
+### Appearance
+
+Use the `variant` prop for the scrollbar's visual style — `solid` (default),
+`inset`, `overlay`, or `glass`. It is independent of `scrollbarVisibility`, so
+any look can also be permanently visible:
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="600" direction="row" flexWrap="wrap">
+    {["solid", "inset", "overlay", "glass"].map((variant) => (
+      <Box key={variant}>
+        <Text fontSize="sm" mb="200" fontWeight="bold">{variant}</Text>
+        <ScrollArea
+          maxH="120px"
+          w="180px"
+          variant={variant}
+          scrollbarVisibility="always"
+        >
+          {Array.from({ length: 15 }, (_, i) => (
+            <Text key={i} fontSize="sm">Line {i + 1}</Text>
+          ))}
+        </ScrollArea>
+      </Box>
+    ))}
+  </Stack>
+)
+```
+
 ### Content padding
 
 Padding props on `ScrollArea` are forwarded to the content area inside the
@@ -77,7 +138,7 @@ scrollable viewport, so `p`, `px`, `py`, etc. work as expected:
 
 ```jsx live-dev
 const App = () => (
-  <ScrollArea maxH="200px" w="400px" bg="neutral.2" borderRadius="300" variant="always" p="200">
+  <ScrollArea maxH="200px" w="400px" bg="neutral.2" borderRadius="300" scrollbarVisibility="always" p="200">
     {Array.from({ length: 20 }, (_, i) => (
       <Text key={i} fontSize="sm">
         Line {i + 1}: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
