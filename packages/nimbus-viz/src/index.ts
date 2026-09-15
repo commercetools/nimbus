@@ -94,7 +94,11 @@ export {
   fitBandLabel,
 } from "./chart/axes";
 export { SvgTooltip } from "./chart/svg-tooltip";
-export type { SvgTooltipProps } from "./chart/svg-tooltip";
+export type {
+  SvgTooltipProps,
+  SvgTooltipLine,
+  SvgTooltipIndicator,
+} from "./chart/svg-tooltip";
 export { ChartScaleProvider, useChartScales } from "./chart/scale-context";
 export type {
   ChartScales,

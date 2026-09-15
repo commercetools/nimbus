@@ -3,13 +3,34 @@ import type { ReactNode } from "react";
 import { useChartTheme } from "../theme";
 import { EMPHASIS_PX, LABEL_PX } from "./typography";
 
+/** Swatch shape for a colored tooltip line, matching shadcn's `ChartTooltipContent`
+ *  `indicator` prop. Defaults to `"dot"`. */
+export type SvgTooltipIndicator = "dot" | "line" | "dashed";
+
+export interface SvgTooltipLine {
+  text: string;
+  /** Swatch color tying this row back to its mark/series — a chart's own
+   *  entity color, not a fixed value. Omit for a plain, uncolored row (a
+   *  header, a computed total with no single series behind it). */
+  color?: string;
+  /** Swatch shape. Only meaningful when `color` is set. Default `"dot"`. */
+  indicator?: SvgTooltipIndicator;
+}
+
 export interface SvgTooltipProps {
   /** Anchor x in inner (plot) coordinates. */
   x: number;
   /** Plot width, used to flip the box so it never overflows the right edge. */
   innerWidth: number;
-  /** First line is the bold header (ink); the rest are muted detail lines. */
-  lines?: string[];
+  /**
+   * First entry is the bold header (ink); the rest are muted detail lines.
+   * A plain `string` renders exactly as before (no swatch). Pass an
+   * `SvgTooltipLine` instead for a row that should carry a small colored
+   * swatch tying it back to its series/mark — the two forms can mix freely
+   * in one array (e.g. a plain header followed by one colored line per
+   * series).
+   */
+  lines?: (string | SvgTooltipLine)[];
   top?: number;
   /**
    * Custom SVG content rendered inside the box instead of `lines` — the escape
@@ -30,9 +51,20 @@ const FIRST_BASELINE = 19;
 const LINE_H = 19;
 /** Space below the last line's baseline. */
 const BOTTOM_PAD = 11;
+/** Colored swatch diameter/length (dot radius doubled, or a line's length). */
+const INDICATOR_SIZE = 8;
+/** Gap between a colored line's swatch and its text. */
+const INDICATOR_GAP = 6;
 
 /** The title (first line) is a 14px bold header; detail lines are 12px. */
 const sizeFor = (i: number) => (i === 0 ? EMPHASIS_PX : LABEL_PX);
+
+/** A colored line reserves room for its swatch + a gap before the text
+ *  starts; a plain line reserves none, so it renders exactly where it did
+ *  before this existed. A pure, top-level function (not a closure over
+ *  component state) so it needs no place in a hook's dependency array. */
+const lineOffsetFor = (line: SvgTooltipLine | undefined): number =>
+  line?.color ? INDICATOR_SIZE + INDICATOR_GAP : 0;
 
 /**
  * A small SVG readout box, drawn inside the plot's coordinate system. Shared by
@@ -58,22 +90,34 @@ export function SvgTooltip({
   const refs = useRef<(SVGTextElement | null)[]>([]);
   refs.current.length = lines.length;
 
+  const normalized = useMemo<SvgTooltipLine[]>(
+    () => lines.map((l) => (typeof l === "string" ? { text: l } : l)),
+    [lines]
+  );
+
   // Proportional width estimate for the first paint / non-DOM environments.
   const estimate = useMemo(
-    () => Math.max(0, ...lines.map((l, i) => l.length * sizeFor(i) * 0.6)),
-    [lines]
+    () =>
+      Math.max(
+        0,
+        ...normalized.map(
+          (l, i) => l.text.length * sizeFor(i) * 0.6 + lineOffsetFor(l)
+        )
+      ),
+    [normalized]
   );
   const [textW, setTextW] = useState(estimate);
 
   useLayoutEffect(() => {
     let max = 0;
-    for (const t of refs.current) {
+    normalized.forEach((line, i) => {
+      const t = refs.current[i];
       if (t && typeof t.getComputedTextLength === "function") {
-        max = Math.max(max, t.getComputedTextLength());
+        max = Math.max(max, t.getComputedTextLength() + lineOffsetFor(line));
       }
-    }
+    });
     setTextW(max || estimate);
-  }, [lines, estimate]);
+  }, [normalized, estimate]);
 
   const contentMode = content != null;
   const boxW = contentMode
@@ -99,22 +143,57 @@ export function SvgTooltip({
       {contentMode ? (
         <g transform={`translate(${PAD_X}, ${PAD_X})`}>{content}</g>
       ) : (
-        lines.map((line, i) => (
-          <text
-            key={i}
-            ref={(el) => {
-              refs.current[i] = el;
-            }}
-            x={PAD_X}
-            y={FIRST_BASELINE + LINE_H * i}
-            // Sizes must be inline styles, not attributes: the host reset
-            // (`* { font-size: inherit }`) beats SVG presentation attributes.
-            style={{ fontSize: sizeFor(i), fontWeight: i === 0 ? 700 : 400 }}
-            fill={i === 0 ? theme.ink : theme.mutedInk}
-          >
-            {line}
-          </text>
-        ))
+        normalized.map((line, i) => {
+          const baseline = FIRST_BASELINE + LINE_H * i;
+          // Vertically center a swatch on the text, matching the
+          // `dy="0.32em"` convention used elsewhere in this codebase to
+          // center text at a point.
+          const swatchY = baseline - sizeFor(i) * 0.32;
+          const indicator = line.indicator ?? "dot";
+          return (
+            <g key={i}>
+              {line.color &&
+                (indicator === "dot" ? (
+                  <circle
+                    cx={PAD_X + INDICATOR_SIZE / 2}
+                    cy={swatchY}
+                    r={INDICATOR_SIZE / 2}
+                    fill={line.color}
+                  />
+                ) : (
+                  <line
+                    x1={PAD_X}
+                    x2={PAD_X + INDICATOR_SIZE}
+                    y1={swatchY}
+                    y2={swatchY}
+                    stroke={line.color}
+                    strokeWidth={2.5}
+                    strokeLinecap="round"
+                    strokeDasharray={
+                      indicator === "dashed" ? "2,1.5" : undefined
+                    }
+                  />
+                ))}
+              <text
+                ref={(el) => {
+                  refs.current[i] = el;
+                }}
+                x={PAD_X + lineOffsetFor(line)}
+                y={baseline}
+                // Sizes must be inline styles, not attributes: the host
+                // reset (`* { font-size: inherit }`) beats SVG
+                // presentation attributes.
+                style={{
+                  fontSize: sizeFor(i),
+                  fontWeight: i === 0 ? 700 : 400,
+                }}
+                fill={i === 0 ? theme.ink : theme.mutedInk}
+              >
+                {line.text}
+              </text>
+            </g>
+          );
+        })
       )}
     </g>
   );
