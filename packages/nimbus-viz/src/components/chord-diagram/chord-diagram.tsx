@@ -5,6 +5,8 @@ import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
+import { ChartPatternDefs, patternFill } from "../../chart/patterns";
+import { useForcedColors } from "../../chart/use-forced-colors";
 import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** A square matrix of flows between a shared set of entities. */
@@ -39,6 +41,15 @@ export interface ChordDiagramProps extends DatumInteractionProps<ChordEntity> {
   ariaLabel?: string;
   /** Formats value displays (axis ticks, tooltip values). Defaults to a compact formatter (e.g. `4.2k`); overrides any surrounding `ChartLocaleProvider`. */
   valueFormat?: (n: number) => string;
+  /**
+   * Fill each ribbon and arc with a per-entity SVG texture
+   * (`chart/patterns.tsx`) in addition to its color, so entities stay
+   * distinguishable by shape alone — monochrome print, a photocopy, or
+   * `forced-colors` mode. Default `false` (color only, unchanged). Turned on
+   * automatically (regardless of this prop) when the OS is already in a
+   * forced-colors context — see `useForcedColors`.
+   */
+  texture?: boolean;
 }
 
 interface Arc {
@@ -96,6 +107,7 @@ export function ChordDiagram({
   valueFormat,
   onDatumClick,
   onDatumHover,
+  texture,
 }: ChordDiagramProps) {
   const theme = useChartTheme();
   const formatters = useChartFormatters();
@@ -104,6 +116,13 @@ export function ChordDiagram({
   const [hoverArc, setHoverArc] = useState<number | null>(null);
   const { labels, matrix } = data;
   const color = useEntityColors(labels);
+  const forcedColors = useForcedColors();
+  const effectiveTexture = texture || forcedColors;
+  // In a forced-colors context, real hues aren't preserved by the OS anyway
+  // -- one system foreground color for every entity, with the per-entity
+  // pattern kind (below) as the only identity carrier.
+  const colorFor = (i: number) =>
+    forcedColors ? "CanvasText" : color(labels[i]);
 
   const layout = useMemo(() => {
     const n = labels.length;
@@ -160,7 +179,7 @@ export function ChordDiagram({
       height={height}
       margin={{ top: 8, right: 8, bottom: 8, left: 8 }}
       ariaLabel={label}
-      legend={labels.map((l) => ({ label: l, color: color(l) }))}
+      legend={labels.map((l, i) => ({ label: l, color: colorFor(i) }))}
       table={table}
     >
       {({ innerWidth, innerHeight }) => {
@@ -191,11 +210,14 @@ export function ChordDiagram({
         return (
           <>
             <Group top={cy} left={cx}>
+              {effectiveTexture && (
+                <ChartPatternDefs colors={labels.map((_, i) => colorFor(i))} />
+              )}
               {layout.ribbons.map((rb, idx) => (
                 <path
                   key={`r-${rb.i}-${rb.j}`}
                   d={ribbonPath(rb.s, rb.t, inner)}
-                  fill={color(labels[rb.i])}
+                  fill={effectiveTexture ? patternFill(rb.i) : colorFor(rb.i)}
                   opacity={ribbonOpacity(rb, idx)}
                   onMouseEnter={() => {
                     setHoverRibbon(idx);
@@ -231,7 +253,7 @@ export function ChordDiagram({
                   <g key={`g-${i}`}>
                     <path
                       d={arcPath(inner, outer, g.a0, g.a1)}
-                      fill={color(labels[i])}
+                      fill={effectiveTexture ? patternFill(i) : colorFor(i)}
                       onMouseEnter={() => {
                         setHoverArc(i);
                         onDatumHover?.({

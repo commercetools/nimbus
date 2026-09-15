@@ -146,6 +146,40 @@ and every arc gets a direct text label just outside the ring.
 entity, in the fixed color order — so the ring's colors are named even before a
 reader hovers. It is not a configurable prop.
 
+### Texture (non-color encoding)
+
+`texture` fills every ribbon and arc with a per-entity SVG pattern
+(`chart/patterns.tsx`) in addition to its color, so entities stay
+distinguishable by shape alone — monochrome print, a photocopy, or
+`forced-colors` mode, where the OS flattens hue. Default `false` (color only).
+
+```jsx live
+const data = {
+  labels: ["Search", "Social", "Email"],
+  matrix: [
+    [0, 18, 9],
+    [14, 0, 12],
+    [7, 15, 0],
+  ],
+};
+
+const App = () => (
+  <ChartThemeProvider>
+    <ResponsiveContainer height={320}>
+      {(width, height) => (
+        <ChordDiagram
+          width={width}
+          height={height}
+          data={data}
+          texture
+          ariaLabel="Chord diagram with per-entity textures"
+        />
+      )}
+    </ResponsiveContainer>
+  </ChartThemeProvider>
+);
+```
+
 ### Color & theming
 
 Entity color comes from the shared **entity → color** scale (`useEntityColors`),
@@ -222,7 +256,12 @@ What you get automatically:
 - **CVD-safe palette.** Colors come from the validated chart theme (contrast +
   color-vision-deficiency checks), not ad-hoc colors.
 - **Non-color encoding.** Meaning is carried by arc length and ribbon width, and
-  every arc is labeled directly; color only groups the entities.
+  every arc is labeled directly; color only groups the entities. The opt-in
+  `texture` prop adds a per-entity SVG pattern for when color itself isn't
+  available.
+- **Forced-colors mode.** In a `forced-colors: active` context, the chart
+  automatically switches every entity to one system foreground color and turns
+  on the `texture` patterns — see "Texture (non-color encoding)" above.
 
 Your job: pass a meaningful `ariaLabel`, keep the chart in a
 `ChartThemeProvider`, and in surrounding copy name the entities and pairs rather
@@ -234,7 +273,7 @@ Accessibility checklist:
 - [ ] `ariaLabel` states what the diagram shows and its takeaway (Cesal formula)
 - [ ] Underlying values are available as text (the built-in data-table fallback)
 - [ ] Meaning does not depend on color alone (arc length, ribbon width, direct
-      labels, and a named legend carry it here)
+      labels, a named legend, and the opt-in `texture` pattern carry it here)
 - [ ] Palette meets contrast + CVD checks (built-in theme; don't override to
       un-validated colors)
 - [ ] Surrounding copy names entities/pairs rather than colors
