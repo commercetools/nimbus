@@ -10,6 +10,7 @@ import { useChartTheme } from "../../theme";
 import { formatSignedCompact } from "../../chart/format";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 import type { DatumInteractionProps } from "../../chart/interaction";
 
 /** One category compared at two points — a start and an end value. */
@@ -136,7 +137,7 @@ export function DumbbellChart({
               const cy = band.center(i);
               const xs = xScale(row.start);
               const xe = xScale(row.end);
-              const active = hover == null || hover === i;
+              const isHovered = hover === i;
               const startLeft = row.start <= row.end;
               const startAnchor: "start" | "end" = startLeft ? "end" : "start";
               const endAnchor: "start" | "end" = startLeft ? "start" : "end";
@@ -145,7 +146,6 @@ export function DumbbellChart({
               return (
                 <g
                   key={i}
-                  opacity={active ? 1 : 0.35}
                   onMouseEnter={() => {
                     setHover(i);
                     onDatumHover?.({ datum: row, index: i });
@@ -175,21 +175,25 @@ export function DumbbellChart({
                     strokeWidth={3}
                     strokeLinecap="round"
                   />
+                  {/* Outline both endpoints of the hovered row; never dim
+                      its siblings (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH`
+                      -- the one shared convention, replacing this chart's
+                      previous "dim everyone else" opacity ternary). */}
                   <circle
                     cx={xs}
                     cy={cy}
                     r={5}
                     fill={theme.mutedInk}
-                    stroke={theme.surface}
-                    strokeWidth={1}
+                    stroke={isHovered ? theme.ink : theme.surface}
+                    strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 1}
                   />
                   <circle
                     cx={xe}
                     cy={cy}
                     r={5}
                     fill={theme.accent}
-                    stroke={theme.surface}
-                    strokeWidth={1}
+                    stroke={isHovered ? theme.ink : theme.surface}
+                    strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 1}
                   />
                   <text
                     x={startLabelX}
