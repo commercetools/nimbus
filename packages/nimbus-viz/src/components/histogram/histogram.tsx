@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { scaleLinear } from "@visx/scale";
 import { BarRounded } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
-import { bin, extent } from "d3-array";
+import { extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import { valueDomain } from "../../chart/scales";
@@ -11,6 +11,7 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact, formatInteger } from "../../chart/format";
+import { histogramBins } from "../../stats";
 
 export interface HistogramProps {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -52,7 +53,7 @@ export function Histogram({
   const domain = useMemo(() => extent(values) as [number, number], [values]);
   const bins = useMemo(() => {
     if (values.length === 0 || domain[0] === undefined) return [];
-    return bin().domain(domain).thresholds(thresholds)(values);
+    return histogramBins(values, { thresholds, domain });
   }, [values, domain, thresholds]);
   // Counts are never negative, but an all-equal count (e.g. every bin holding
   // the same number of samples) still degenerates a bare `[0, max]` domain

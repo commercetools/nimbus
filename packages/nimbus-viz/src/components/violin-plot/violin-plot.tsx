@@ -10,6 +10,7 @@ import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
 import { SvgTooltip } from "../../chart/svg-tooltip";
 import { useChartTheme } from "../../theme";
 import { formatCompact } from "../../chart/format";
+import { gaussianKde, median } from "../../stats";
 
 /** One group's raw samples; the density is estimated here, not supplied. */
 export interface SampleGroup {
@@ -32,48 +33,6 @@ export interface ViolinPlotProps {
 
 /** Number of points at which each group's density is evaluated. */
 const RESOLUTION = 40;
-
-function mean(xs: number[]): number {
-  return xs.reduce((s, v) => s + v, 0) / xs.length;
-}
-
-function stddev(xs: number[], mu: number): number {
-  if (xs.length < 2) return 0;
-  const variance =
-    xs.reduce((s, v) => s + (v - mu) * (v - mu), 0) / (xs.length - 1);
-  return Math.sqrt(variance);
-}
-
-function median(sorted: number[]): number {
-  const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 1
-    ? sorted[mid]
-    : (sorted[mid - 1] + sorted[mid]) / 2;
-}
-
-/** Gaussian KDE evaluated across `RESOLUTION` points spanning [lo, hi]. */
-function density(
-  samples: number[],
-  lo: number,
-  hi: number
-): Array<{ v: number; d: number }> {
-  const n = samples.length;
-  const mu = mean(samples);
-  const sd = stddev(samples, mu);
-  // Silverman's rule of thumb; guard degenerate (all-equal) samples.
-  const h = (sd > 0 ? 0.9 * sd * Math.pow(n, -0.2) : (hi - lo) / 12) || 1;
-  const out: Array<{ v: number; d: number }> = [];
-  for (let i = 0; i < RESOLUTION; i += 1) {
-    const v = lo + ((hi - lo) * i) / (RESOLUTION - 1);
-    let sum = 0;
-    for (const x of samples) {
-      const u = (v - x) / h;
-      sum += Math.exp(-0.5 * u * u);
-    }
-    out.push({ v, d: sum / (n * h * Math.sqrt(2 * Math.PI)) });
-  }
-  return out;
-}
 
 /**
  * Violin plot — a grouped distribution that shows each group's full shape
@@ -100,18 +59,16 @@ export function ViolinPlot({
   );
   const stats = useMemo(
     () =>
-      groups.map((g) => {
-        const sorted = [...g.samples].sort((a, b) => a - b);
-        return {
-          density: density(g.samples, yDomain[0], yDomain[1]),
-          median: sorted.length ? median(sorted) : 0,
-          n: g.samples.length,
-        };
-      }),
+      groups.map((g) => ({
+        density: gaussianKde(g.samples, yDomain, RESOLUTION),
+        median: median(g.samples) ?? 0,
+        n: g.samples.length,
+      })),
     [groups, yDomain]
   );
   const densityMax = useMemo(
-    () => Math.max(1e-9, ...stats.flatMap((s) => s.density.map((p) => p.d))),
+    () =>
+      Math.max(1e-9, ...stats.flatMap((s) => s.density.map((p) => p.density))),
     [stats]
   );
 
@@ -189,14 +146,14 @@ export function ViolinPlot({
               const s = stats[i];
               const active = hover == null || hover === i;
               const right = s.density.map(
-                (p) => `L${cx + wScale(p.d)},${yScale(p.v)}`
+                (p) => `L${cx + wScale(p.density)},${yScale(p.x)}`
               );
               const leftBack = [...s.density]
                 .reverse()
-                .map((p) => `L${cx - wScale(p.d)},${yScale(p.v)}`);
+                .map((p) => `L${cx - wScale(p.density)},${yScale(p.x)}`);
               const first = s.density[0];
               const d = [
-                `M${cx + wScale(first.d)},${yScale(first.v)}`,
+                `M${cx + wScale(first.density)},${yScale(first.x)}`,
                 ...right.slice(1),
                 ...leftBack,
                 "Z",

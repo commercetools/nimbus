@@ -175,10 +175,12 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
 - [ ] **`#16` scales.** Swap inline `scaleLinear` value axes for
       `src/chart/scales.ts` `makeValueScale("linear"|"log"|"symlog", …)`; expose
       a `yScale` prop (default `symlog`; guard `log` for strictly-positive).
-- [ ] **`#17`-rest stats "compute from raw".** `box-plot` / `violin-plot`
-      raw-sample entry via `stats.fiveNumberSummary` / `gaussianKde`;
-      `ErrorBars` raw-samples (mean ± CI); keep precomputed paths. _(See the
-      B-dedup note below first — the inline math diverges from the module.)_
+- [ ] **`#17`-rest stats "compute from raw".** `box-plot` raw-sample entry via
+      `stats.fiveNumberSummary` (today it only takes precomputed
+      `BoxPlotGroupStats`); `ErrorBars` raw-samples (mean ± CI). Keep the
+      precomputed paths too. `violin-plot` already takes raw samples and (per
+      B-dedup above) now computes its density via `stats.gaussianKde` directly,
+      so it's no longer part of this item's remaining scope.
 - [ ] **`#18` FacetGrid.** `src/chart/facet-grid.tsx` needs usage + stories
       (small multiples: shared-or-free domains, one shared legend).
 - [ ] **`#19` large-N.** Wire `src/chart/decimate.ts` (LTTB) into line/area past
@@ -194,18 +196,33 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
 
 ## Deferred — with reason (decide before doing)
 
-- [ ] **B-dedup reconciliation.** `control-chart`, `histogram`, `violin-plot`
-      still run inline math that the `stats` module was extracted from — but the
-      module **diverged** during extraction and is **not** output-identical: -
-      control-chart rebuilds UCL/LCL around a caller-supplied `center`; a single
-      `controlLimits(values)` call can't reproduce that. - histogram passes an
-      explicit `.domain(extent())`, which suppresses d3's `nice()`;
-      `histogramBins` omits `.domain()` so d3 nice()s the edges → different
-      bins. - violin's degenerate-sample bandwidth is `(hi−lo)/12` vs the
-      module's Silverman fallback → different widths. The charts are **correct
-      today**; deduping requires aligning the module to the charts (or
-      vice-versa) — a deliberate behavior change (shifts bins/limits/widths),
-      best done with visual regression in place.
+- [x] **B-dedup reconciliation.** Done: aligned `stats/index.ts` to the three
+      charts' inline math (not the other way around) rather than deferring
+      further, since prototyping-stage means no OpenSpec is needed for a
+      behavior-preserving refactor and there was nothing left to actually
+      decide. `controlLimits` gained `center`/`upper`/`lower` overrides (unset
+      ones still derive from the data) so it reproduces control-chart's
+      caller-supplied UCL/LCL exactly; `histogramBins` gained a `domain` option
+      (passing it suppresses d3's `nice()`, matching histogram's explicit
+      `.domain(extent())`); `silvermanBandwidth` gained a `domain` option whose
+      fallback for a degenerate sample is `(hi−lo)/12` (was a flat `1`),
+      matching violin-plot's inline fallback — and `gaussianKde` now threads its
+      own `domain` argument into that fallback automatically.
+      `stats/index.spec.ts` gained golden-value tests that freeze each chart's
+      old inline formula (as a local reference function or a direct d3-array
+      call) and assert the aligned module matches it exactly, before the charts
+      were switched over — proving the switch is output-identical rather than a
+      silent behavior change. `control-chart.tsx`, `histogram.tsx`,
+      `violin-plot.tsx` now call
+      `controlLimits`/`histogramBins`/`gaussianKde`+`median` from `../../stats`
+      instead of their own hand-rolled math (violin-plot's local `mean`,
+      `stddev`, `median`, `density` helpers are gone; `median` is d3-array's,
+      re-exported from `stats`, confirmed to match the old sorted-array formula
+      bit-for-bit — d3-array's `quantile`/`median` don't require pre-sorted
+      input). Verified: `pnpm typecheck` / `pnpm test` (771 passing, both
+      projects) / `pnpm build` all green; no chart's rendered output changed
+      (that's the point of the golden-value spec) — a full story/spec matrix for
+      these three charts is still a separate, later `/chart:introspect` pass.
 - [ ] **A1b — orientation-aware overlay contract.** `dumbbell` + `beeswarm`
       (value on **x**, categories on a band **y**), `gantt` (time-x, categorical
       rows), and `bar-chart`'s ranked/horizontal orientation (value axis is x,

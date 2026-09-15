@@ -4,7 +4,7 @@ import { scaleLinear, scaleTime } from "@visx/scale";
 import { LinePath } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { curveMonotoneX } from "@visx/curve";
-import { deviation, extent, mean } from "d3-array";
+import { extent } from "d3-array";
 import { ChartContainer } from "../../chart/chart-container";
 import { ChartScaleProvider } from "../../chart/scale-context";
 import { GridRows, bottomTickLabel, leftTickLabel } from "../../chart/axes";
@@ -14,6 +14,7 @@ import { useChartTheme } from "../../theme";
 import { formatCompact, formatDayMonth } from "../../chart/format";
 import type { Series, SeriesPoint } from "../../chart/types";
 import { emText } from "../../chart/typography";
+import { controlLimits } from "../../stats";
 
 export interface ControlChartProps {
   /** Plot width in pixels — supply from `ResponsiveContainer`. */
@@ -67,13 +68,16 @@ export function ControlChart({
   );
 
   const limits = useMemo(() => {
-    const centerLine = center ?? mean(values) ?? 0;
-    const sd = deviation(values) ?? 0;
-    return {
-      centerLine,
-      upper: ucl ?? centerLine + 3 * sd,
-      lower: lcl ?? centerLine - 3 * sd,
-    };
+    const {
+      center: centerLine,
+      upper,
+      lower,
+    } = controlLimits(values, {
+      center,
+      upper: ucl,
+      lower: lcl,
+    });
+    return { centerLine, upper, lower };
   }, [values, center, ucl, lcl]);
 
   const xDomain = useMemo(

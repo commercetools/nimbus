@@ -105,13 +105,32 @@ export interface ControlLimits {
  * deviation; `"movingRange"` uses the average moving range / 1.128 (the d2
  * constant for n=2), which is the correct estimator when the process may drift
  * — the global SD over-widens the band in that case.
+ *
+ * `center`/`upper`/`lower` let a caller override any of the three
+ * independently — an unset one still derives from the data (`center` from
+ * the mean, `upper`/`lower` from the, possibly overridden, `center` ±
+ * `sigma`·σ). This matches `control-chart.tsx`'s own `center`/`ucl`/`lcl`
+ * props, which is what makes this function a drop-in for that chart's
+ * previously inline formula.
  */
 export function controlLimits(
   values: readonly number[],
-  opts: { sigma?: number; method?: ControlLimitMethod } = {}
+  opts: {
+    sigma?: number;
+    method?: ControlLimitMethod;
+    center?: number;
+    upper?: number;
+    lower?: number;
+  } = {}
 ): ControlLimits {
-  const { sigma = 3, method = "sd" } = opts;
-  const center = mean(values) ?? 0;
+  const {
+    sigma = 3,
+    method = "sd",
+    center: centerOverride,
+    upper: upperOverride,
+    lower: lowerOverride,
+  } = opts;
+  const center = centerOverride ?? mean(values) ?? 0;
   let sd: number;
   if (method === "movingRange") {
     const mrs: number[] = [];
@@ -122,22 +141,59 @@ export function controlLimits(
   } else {
     sd = deviation(values) ?? 0;
   }
-  return { center, upper: center + sigma * sd, lower: center - sigma * sd };
+  return {
+    center,
+    upper: upperOverride ?? center + sigma * sd,
+    lower: lowerOverride ?? center - sigma * sd,
+  };
 }
 
-/** d3-array binning as a thin, named wrapper. `thresholds` is a bin count. */
-export function histogramBins(values: readonly number[], thresholds?: number) {
+export interface HistogramBinsOptions {
+  /** Approximate bin count; d3 may adjust for nice boundaries. */
+  thresholds?: number;
+  /**
+   * Explicit bin domain. Passing this suppresses d3-array's own nice()-ing of
+   * the edges — pass the sample's own `extent()` to reproduce
+   * `histogram.tsx`'s bins exactly; omit it to let d3 pick nice edges
+   * instead (a different, wider result — see `stats/index.spec.ts`).
+   */
+  domain?: [number, number];
+}
+
+/** d3-array binning as a thin, named wrapper. */
+export function histogramBins(
+  values: readonly number[],
+  opts: HistogramBinsOptions = {}
+) {
   const b = bin<number, number>();
-  if (thresholds != null) b.thresholds(thresholds);
+  if (opts.thresholds != null) b.thresholds(opts.thresholds);
+  if (opts.domain != null) b.domain(opts.domain);
   return b(values as number[]);
 }
 
+export interface SilvermanBandwidthOptions {
+  /**
+   * Fallback bandwidth source for a degenerate sample (n < 2, or every
+   * sample equal so the deviation is 0). `(domain span)/12` (falling back to
+   * 1 if that's also 0) matches `violin-plot.tsx`'s inline fallback, which
+   * sizes a degenerate group's density relative to the shared value axis
+   * instead of an arbitrary constant. Omit it to get the flat `1` fallback.
+   */
+  domain?: [number, number];
+}
+
 /** Silverman's rule-of-thumb KDE bandwidth. */
-export function silvermanBandwidth(samples: readonly number[]): number {
+export function silvermanBandwidth(
+  samples: readonly number[],
+  opts: SilvermanBandwidthOptions = {}
+): number {
+  const fallback = opts.domain
+    ? (opts.domain[1] - opts.domain[0]) / 12 || 1
+    : 1;
   const n = samples.length;
-  if (n < 2) return 1;
+  if (n < 2) return fallback;
   const sd = deviation(samples) ?? 0;
-  return 0.9 * (sd || 1) * Math.pow(n, -0.2);
+  return sd > 0 ? 0.9 * sd * Math.pow(n, -0.2) : fallback;
 }
 
 export interface KdePoint {
@@ -153,7 +209,7 @@ export function gaussianKde(
   bandwidth?: number
 ): KdePoint[] {
   if (samples.length === 0) return [];
-  const h = bandwidth ?? silvermanBandwidth(samples);
+  const h = bandwidth ?? silvermanBandwidth(samples, { domain });
   const [lo, hi] = domain;
   const step = (hi - lo) / Math.max(1, resolution - 1);
   const norm = 1 / (samples.length * h * Math.sqrt(2 * Math.PI));
