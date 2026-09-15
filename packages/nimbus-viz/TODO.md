@@ -138,17 +138,17 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       type argument.
 
       Deliberately excluded, each for a real reason: `gauge` / `stat-card`
-              (a single value has no discrete second "mark" to report a click on --
-              the whole chart already is the one datum, which is what `value`/`label`
-              already are); `sparkline` (explicitly minimal by design -- "no axes, no
-              gridlines, no tick labels", a decorative inline glyph, not an
-              interactive chart); `data-table` (the guaranteed no-throw HTML fallback
-              shell used internally by `ChartContainer`, not a chart with visual
-              marks -- its own doc comment already flags it as a temporary stand-in
-              pending a real `@commercetools/nimbus` `DataTable`).
+                  (a single value has no discrete second "mark" to report a click on --
+                  the whole chart already is the one datum, which is what `value`/`label`
+                  already are); `sparkline` (explicitly minimal by design -- "no axes, no
+                  gridlines, no tick labels", a decorative inline glyph, not an
+                  interactive chart); `data-table` (the guaranteed no-throw HTML fallback
+                  shell used internally by `ChartContainer`, not a chart with visual
+                  marks -- its own doc comment already flags it as a temporary stand-in
+                  pending a real `@commercetools/nimbus` `DataTable`).
 
-              Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
-              all green; eslint clean on every touched file (28 chart `.tsx` files).
+                  Verified: `pnpm typecheck` / `pnpm test` (773 passing) / `pnpm build`
+                  all green; eslint clean on every touched file (28 chart `.tsx` files).
 
 - [ ] **A3 — controlled selection + interactive legend.** Lift internal hover to
       controlled/uncontrolled (`selection`/`onSelectionChange`,
@@ -224,9 +224,21 @@ bases) · `#9` locale/currency `valueFormat` on the 4 core Cartesian charts ·
       tracked per chart by `/chart:introspect` (see `E5` and
       `docs/lifecycle.md`). **Chromatic is intentionally dropped** — Storybook
       alone is the agreed bar.
-- [ ] **E3 — recipe kit.** `src/recipes/` has `dashboard-kit.tsx` (1 of 3). Add
-      revenue-overview, conversion-funnel, cohort-retention starters pre-wired
-      to `ColorScaleProvider` + `ChartThemeProvider`.
+- [x] **E3 — recipe kit.** Done: `RevenueOverviewKit`, `ConversionFunnelKit`,
+      `CohortRetentionKit` added alongside `DashboardKit`, same shape
+      (slot-based, not hard-coded to specific charts; `ChartThemeProvider`
+      always, `ColorScaleProvider` only when `colorDomain` is given). Each has a
+      layout suited to its named use case rather than reusing `DashboardKit`'s
+      generic one verbatim: `RevenueOverviewKit` leads with a `headline` stat
+      beside a `comparison` KPI row, then `trend`/`breakdown`; deliberately
+      `ConversionFunnelKit` puts `metrics` beside `funnel` (reads as annotations
+      on it) with `breakdown` as a full-width second row; `CohortRetentionKit`
+      puts `grid`/`curve` side by side with `summary` as a KPI row underneath.
+      Each has its own spec test (mirroring `dashboard-kit.spec.tsx`'s two
+      cases: slots render inside the theme provider with `colorDomain`, and
+      render fine without one). Exported from `src/recipes/index.ts` →
+      `src/index.ts`. Verified: `pnpm typecheck` / `pnpm test` (780 passing) /
+      `pnpm build` all green; eslint clean.
 - [ ] **E5 — core-6 depth.** Converge states / interaction / dense-data +
       label-collision polish + a full story/spec matrix on the core-6 (line,
       stacked-area, bar, stacked-bar, stat-card + bullet, funnel,
