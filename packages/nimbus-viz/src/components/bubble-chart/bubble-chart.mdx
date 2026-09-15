@@ -215,8 +215,8 @@ axes put it.
 
 `onDatumClick` and `onDatumHover` report the datum, its index, and its group
 (`seriesId`); use them for drill-down or to drive an external readout. Hover
-state (dimming the other bubbles and showing the tooltip) is managed internally
-regardless of whether you pass a callback.
+state (outlining the hovered bubble and showing the tooltip) is managed
+internally regardless of whether you pass a callback.
 
 ```tsx
 <BubbleChart
@@ -231,9 +231,10 @@ regardless of whether you pass a callback.
 
 Not configurable — the chart always draws them. Both axes are linear scales fit
 to the data extent (`nice`-rounded) with horizontal gridlines behind the
-bubbles; tick labels use a compact number format. Hovering a bubble dims the
-others and shows a small tooltip with the label and its `x`, `y`, and `size`
-values.
+bubbles; tick labels use a compact number format. Hovering a bubble outlines
+that one bubble (its siblings are never dimmed) and shows a small tooltip with
+the label and its `x`, `y`, and `size` values, tracking the pointer's position
+while it stays inside that bubble.
 
 ### Color & theming
 

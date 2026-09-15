@@ -13,6 +13,8 @@ import { useForcedColors } from "../../chart/use-forced-colors";
 import { useChartTheme, useEntityColors } from "../../theme";
 import { useChartFormatters } from "../../chart/format-locale";
 import { emText } from "../../chart/typography";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { clamp, plotPointerPosition } from "../../chart/pointer";
 import type {
   DatumClickHandler,
   DatumHoverHandler,
@@ -85,6 +87,14 @@ export function BubbleChart({
   const formatters = useChartFormatters();
   const valueFmt = valueFormat ?? formatters.compact;
   const [hover, setHover] = useState<number | null>(null);
+  // Live pointer position (plot-local), while a bubble is being hovered --
+  // lets the tooltip track the pointer within a large bubble instead of
+  // being pinned once to the bubble's own (x, y). Null once the pointer
+  // leaves, so the tooltip falls back to the bubble's own position rather
+  // than a stale coordinate from a previous hover.
+  const [pointerPos, setPointerPos] = useState<{ x: number; y: number } | null>(
+    null
+  );
   const forcedColors = useForcedColors();
   const effectiveTexture = texture || forcedColors;
 
@@ -151,11 +161,16 @@ export function BubbleChart({
     )
   ).sort((a, b) => b - a);
 
+  // Named so the pointer math below (which needs the same left/top offset
+  // xScale/yScale are drawn relative to) can never drift from what's
+  // actually passed to ChartContainer.
+  const MARGIN = { top: 12, right: 16, bottom: 28, left: 44 };
+
   return (
     <ChartContainer
       width={width}
       height={height}
-      margin={{ top: 12, right: 16, bottom: 28, left: 44 }}
+      margin={MARGIN}
       ariaLabel={ariaLabel ?? `Bubble chart of ${points.length} points`}
       legend={
         showLegend
@@ -230,29 +245,47 @@ export function BubbleChart({
               // extrapolating to a small positive (plausible-wrong) or
               // negative (invisible) radius.
               const r = sizeScale(Math.max(0, p.size));
+              // Outline the hovered bubble; never dim its siblings
+              // (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the one shared
+              // convention, replacing a per-chart "dim everyone else"
+              // opacity ternary). `PointMark` (chart/point-shapes.tsx) has no
+              // `onMouseMove` prop, so the pointer-tracking listener lives on
+              // a wrapping `<g>` instead -- real DOM mousemove bubbles up to
+              // it from the mark underneath.
+              const isHovered = hover === i;
               return (
-                <PointMark
+                <g
                   key={i}
-                  shape={shapeFor(p)}
-                  cx={xScale(p.x)}
-                  cy={yScale(p.y)}
-                  r={r}
-                  fill={colorFor(p)}
-                  fillOpacity={hover == null || hover === i ? 0.6 : 0.25}
-                  stroke={theme.surface}
-                  strokeWidth={1}
-                  onMouseEnter={() => {
-                    setHover(i);
-                    onDatumHover?.({ datum: p, index: i, seriesId: p.group });
+                  onMouseMove={(e) => {
+                    const pt = plotPointerPosition(e, MARGIN);
+                    if (pt) setPointerPos(pt);
                   }}
-                  onMouseLeave={() => {
-                    setHover(null);
-                    onDatumHover?.(null);
-                  }}
-                  onClick={() =>
-                    onDatumClick?.({ datum: p, index: i, seriesId: p.group })
-                  }
-                />
+                >
+                  <PointMark
+                    shape={shapeFor(p)}
+                    cx={xScale(p.x)}
+                    cy={yScale(p.y)}
+                    r={r}
+                    fill={colorFor(p)}
+                    fillOpacity={0.6}
+                    stroke={isHovered ? theme.ink : theme.surface}
+                    strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 1}
+                    onMouseEnter={(e) => {
+                      setHover(i);
+                      const pt = plotPointerPosition(e, MARGIN);
+                      if (pt) setPointerPos(pt);
+                      onDatumHover?.({ datum: p, index: i, seriesId: p.group });
+                    }}
+                    onMouseLeave={() => {
+                      setHover(null);
+                      setPointerPos(null);
+                      onDatumHover?.(null);
+                    }}
+                    onClick={() =>
+                      onDatumClick?.({ datum: p, index: i, seriesId: p.group })
+                    }
+                  />
+                </g>
               );
             })}
 
@@ -285,7 +318,21 @@ export function BubbleChart({
 
             {hp && (
               <SvgTooltip
-                x={xScale(hp.x)}
+                x={
+                  // Live pointer x while hovering -- large bubbles have real
+                  // room to move within, so the tooltip follows rather than
+                  // sitting pinned to the bubble's own (x, y). Falls back to
+                  // the bubble's own position on the rare frame before the
+                  // first move/enter coordinate has resolved.
+                  pointerPos != null
+                    ? clamp(pointerPos.x, innerWidth)
+                    : xScale(hp.x)
+                }
+                top={
+                  pointerPos != null
+                    ? clamp(pointerPos.y, innerHeight)
+                    : Math.max(0, yScale(hp.y) - 4)
+                }
                 innerWidth={innerWidth}
                 lines={[
                   hp.label ?? "Bubble",

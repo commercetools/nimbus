@@ -1,5 +1,12 @@
 import type { Meta } from "@storybook/react-vite";
-import { userEvent, within, expect, waitFor, fn } from "storybook/test";
+import {
+  userEvent,
+  fireEvent,
+  within,
+  expect,
+  waitFor,
+  fn,
+} from "storybook/test";
 import { BubbleChart, ResponsiveContainer } from "../../";
 import type { BubblePoint } from "./bubble-chart";
 import type { BaseStory } from "../../stories/base-story";
@@ -117,6 +124,64 @@ export const Interaction: BaseStory = {
         expect(points).toContainEqual(call?.datum);
       }
     );
+  },
+};
+
+/**
+ * Hover/tooltip UX convergence with `bar-chart.tsx`: hovering a bubble
+ * outlines that ONE bubble (real `stroke`/`stroke-width`) rather than
+ * dimming every other bubble's `fill-opacity` (the old mechanism). Unlike a
+ * fixed-radius scatter point, bubbles vary in size — the largest bubble here
+ * ("Delta", size 80, radius `R_MAX`) has real room to move the pointer
+ * within it, so the tooltip tracks that live position instead of sitting
+ * pinned to the bubble's own `(x, y)`.
+ */
+export const HoverEmphasis: BaseStory = {
+  render: () => <BubbleChart width={480} height={320} points={points} />,
+  play: async ({ canvasElement }) => {
+    // The size legend also renders reference <circle>s (fill="none"); real
+    // bubble marks always have a real fill, so filter those out. Bubbles
+    // draw largest-first, so markCircles()[0] is "Delta" (size 80, R_MAX).
+    const markCircles = () =>
+      Array.from(
+        canvasElement.querySelectorAll<SVGCircleElement>("circle")
+      ).filter((c) => c.getAttribute("fill") !== "none");
+    const tooltipGroup = () =>
+      canvasElement.querySelector<SVGGElement>('g[pointer-events="none"]');
+    const tooltipTransform = () => tooltipGroup()?.getAttribute("transform");
+
+    const largest = markCircles()[0];
+    await userEvent.hover(largest);
+    await waitFor(() => expect(tooltipGroup()).not.toBeNull());
+
+    // No dimming: every bubble keeps its base fill-opacity -- none is
+    // reduced because a sibling is hovered (the old mechanism this
+    // replaces).
+    for (const c of markCircles()) {
+      expect(c).toHaveAttribute("fill-opacity", "0.6");
+    }
+    // Emphasis instead: only the hovered bubble gets a real outline.
+    expect(largest).toHaveAttribute("stroke-width", "1.5");
+    expect(markCircles()[1]).toHaveAttribute("stroke-width", "1");
+
+    // Tooltip follows the pointer: two mousemoves at different positions
+    // within the SAME (large) bubble move the tooltip to two different
+    // positions.
+    const rect = largest.getBoundingClientRect();
+    fireEvent.mouseMove(largest, {
+      clientX: rect.left + rect.width * 0.25,
+      clientY: rect.top + rect.height * 0.25,
+    });
+    const firstTransform = await waitFor(() => {
+      const t = tooltipTransform();
+      expect(t).not.toBeNull();
+      return t;
+    });
+    fireEvent.mouseMove(largest, {
+      clientX: rect.left + rect.width * 0.75,
+      clientY: rect.top + rect.height * 0.75,
+    });
+    await waitFor(() => expect(tooltipTransform()).not.toBe(firstTransform));
   },
 };
 
