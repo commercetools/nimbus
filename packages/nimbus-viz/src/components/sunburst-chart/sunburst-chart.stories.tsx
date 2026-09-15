@@ -1,5 +1,5 @@
 import type { Meta } from "@storybook/react-vite";
-import { expect } from "storybook/test";
+import { expect, userEvent, waitFor } from "storybook/test";
 import { RegistryPreview, type BaseStory } from "../../stories/base-story";
 import { SunburstChart } from "./sunburst-chart";
 import type { TreemapNode } from "../treemap";
@@ -70,5 +70,63 @@ export const Texture: BaseStory = {
       (el) => el.getAttribute("fill")?.startsWith("url(#")
     );
     expect(marks.length).toBe(arcCount);
+  },
+};
+
+/**
+ * Hover/tooltip UX convergence: hovering an arc outlines that ONE arc
+ * (`stroke`/`strokeWidth`) and never dims its siblings — replacing the "dim
+ * everyone else to 0.4 opacity, multiplied into the same expression as the
+ * depth fade" pattern this chart used to hand-roll. The depth-based fade
+ * (`Math.max(0.55, 1 - (depth - 1) * 0.15)`) is unrelated to hover and is
+ * kept exactly as-is — proven by asserting a sibling's opacity is
+ * unchanged, not by asserting a bare "no opacity attribute" (every arc
+ * always carries one, for the fade).
+ *
+ * Every arc also carries a baseline 1px `theme.surface` separator stroke,
+ * unrelated to hover, that was always there (unlike `BarChart`'s
+ * hover-only outline) — an untouched sibling keeps that baseline
+ * `stroke-width` of `1`, not `0`; only the truly hovered arc gets the
+ * emphasized `ACTIVE_STROKE_WIDTH` (`1.5`) outline.
+ *
+ * Pointer-follow tooltip is skipped, same reasoning as `RadialBarChart`:
+ * the tooltip is pinned to a fixed `x`/`top` (top of the plot) regardless
+ * of which arc or angle is hovered, and a polar "distance from center"
+ * doesn't map cleanly onto that cartesian anchor for every angle.
+ */
+export const HoverEmphasis: BaseStory = {
+  render: () => <SunburstChart width={360} height={360} data={fixture} />,
+  play: async ({ canvasElement }) => {
+    const arcs = () =>
+      Array.from(canvasElement.querySelectorAll<SVGPathElement>("path"));
+
+    // The first two arcs in DOM order are both top-level branches (same
+    // depth => same depth-fade opacity) -- one becomes the hovered mark,
+    // the other an untouched sibling.
+    const baseOpacity = arcs()[0].getAttribute("opacity");
+    const sameDepth = arcs().filter(
+      (p) => p.getAttribute("opacity") === baseOpacity
+    );
+    const [hoveredArc, siblingArc] = sameDepth;
+    const siblingOpacityBefore = siblingArc.getAttribute("opacity");
+    const siblingStrokeWidthBefore = siblingArc.getAttribute("stroke-width");
+
+    await userEvent.hover(hoveredArc);
+    await waitFor(() =>
+      expect(hoveredArc).toHaveAttribute("stroke-width", "1.5")
+    );
+
+    // Depth-fade opacity is unrelated to hover and stays exactly as it
+    // was -- proving the dimming factor (the old mechanism) is gone, not
+    // just that this particular sibling's value happens to read 1.
+    expect(siblingArc.getAttribute("opacity")).toBe(siblingOpacityBefore);
+    expect(siblingArc.getAttribute("stroke-width")).toBe(
+      siblingStrokeWidthBefore
+    );
+
+    // Emphasis instead: only the hovered arc gets the active outline; the
+    // untouched sibling keeps its baseline separator stroke (1, not 0).
+    expect(hoveredArc).toHaveAttribute("stroke-width", "1.5");
+    expect(siblingArc).toHaveAttribute("stroke-width", "1");
   },
 };

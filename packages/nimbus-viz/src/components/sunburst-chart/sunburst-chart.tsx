@@ -12,6 +12,7 @@ import { useForcedColors } from "../../chart/use-forced-colors";
 import type { TreemapNode } from "../treemap";
 import { emText } from "../../chart/typography";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
 
 export interface SunburstChartProps extends DatumInteractionProps<TreemapNode> {
   /** Rendered width in pixels — normally supplied by `ResponsiveContainer`. */
@@ -160,19 +161,21 @@ export function SunburstChart({
                       const fill = effectiveTexture
                         ? patternFill(topLevelNames.indexOf(topName))
                         : colorForKey(topName);
-                      const dimmed =
-                        hover != null && hover.name !== node.data.name;
+                      // Outline the hovered node only; never dim its
+                      // siblings (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` --
+                      // the shared convention, replacing a per-chart "dim
+                      // everyone else" opacity ternary). The depth-based
+                      // fade below is unrelated to hover and stays as-is.
+                      const isHovered =
+                        hover != null && hover.name === node.data.name;
                       return (
                         <path
                           key={`${node.data.name}-${i}`}
                           d={arcPath(node.y0, node.y1, node.x0, node.x1)}
                           fill={fill}
-                          stroke={theme.surface}
-                          strokeWidth={1}
-                          opacity={
-                            (dimmed ? 0.4 : 1) *
-                            Math.max(0.55, 1 - (node.depth - 1) * 0.15)
-                          }
+                          stroke={isHovered ? theme.ink : theme.surface}
+                          strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 1}
+                          opacity={Math.max(0.55, 1 - (node.depth - 1) * 0.15)}
                           onMouseEnter={() => {
                             setHover({
                               name: node.data.name,
