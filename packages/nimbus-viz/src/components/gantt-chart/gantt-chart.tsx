@@ -12,6 +12,8 @@ import { emText } from "../../chart/typography";
 import { ChartPatternDefs, patternFill } from "../../chart/patterns";
 import { useForcedColors } from "../../chart/use-forced-colors";
 import type { DatumInteractionProps } from "../../chart/interaction";
+import { ACTIVE_STROKE_WIDTH } from "../../chart/marks";
+import { clamp, plotPointerPosition } from "../../chart/pointer";
 
 /** A scheduled event: a span [start, end], or a milestone if `end` is absent. */
 export interface TimelineEvent {
@@ -51,7 +53,9 @@ export interface GanttChartProps extends DatumInteractionProps<TimelineEvent> {
  * Timeline / Gantt (Priestley timeline) — events on a shared time axis, one row
  * each: a rounded bar spans start→end, and an event with no end is a milestone
  * diamond. Optional categories color the bars (with a legend); otherwise one
- * accent hue. Hovering shows the dates and duration.
+ * accent hue. Hovering outlines that one event (its siblings are never
+ * dimmed) and shows the dates and duration; the tooltip's horizontal
+ * position tracks the pointer while it stays inside that event.
  *
  * @experimental Prototype-stage; API may change before it is marked stable.
  */
@@ -69,6 +73,11 @@ export function GanttChart({
   const formatters = useChartFormatters();
   const dateFmt = dateFormat ?? formatters.dayMonth;
   const [hover, setHover] = useState<number | null>(null);
+  // Live pointer x (plot-local), while a row is being hovered by mouse --
+  // null once the pointer leaves, so the tooltip falls back to the row's
+  // own start-date-derived position rather than a stale coordinate from a
+  // previous hover.
+  const [pointerX, setPointerX] = useState<number | null>(null);
   const forcedColors = useForcedColors();
   const effectiveTexture = texture || forcedColors;
 
@@ -113,11 +122,16 @@ export function GanttChart({
     ]),
   };
 
+  // Named so the pointer math below (which needs the same left/top offset
+  // xScale is drawn relative to) can never drift from what's actually
+  // passed to ChartContainer.
+  const MARGIN = { top: 8, right: 20, bottom: 28, left: 120 };
+
   return (
     <ChartContainer
       width={width}
       height={height}
-      margin={{ top: 8, right: 20, bottom: 28, left: 120 }}
+      margin={MARGIN}
       ariaLabel={label}
       legend={
         hasLegend
@@ -156,18 +170,28 @@ export function GanttChart({
             {data.map((d, i) => {
               const y = band.pos(i);
               const x0 = xScale(d.start);
-              const active = hover == null || hover === i;
               const isMilestone = d.end == null;
+              // Outline the hovered event's bar/milestone; never dim its
+              // siblings (`chart/marks.ts`'s `ACTIVE_STROKE_WIDTH` -- the
+              // one shared convention, replacing a per-chart "dim everyone
+              // else" opacity ternary).
+              const isHovered = hover === i;
               return (
                 <g
                   key={i}
-                  opacity={active ? 1 : 0.4}
-                  onMouseEnter={() => {
+                  onMouseEnter={(e) => {
                     setHover(i);
+                    const p = plotPointerPosition(e, MARGIN);
+                    if (p) setPointerX(p.x);
                     onDatumHover?.({ datum: d, index: i });
+                  }}
+                  onMouseMove={(e) => {
+                    const p = plotPointerPosition(e, MARGIN);
+                    if (p) setPointerX(p.x);
                   }}
                   onMouseLeave={() => {
                     setHover(null);
+                    setPointerX(null);
                     onDatumHover?.(null);
                   }}
                   onClick={() => onDatumClick?.({ datum: d, index: i })}
@@ -180,6 +204,8 @@ export function GanttChart({
                       height={bh / 2}
                       transform={`rotate(45 ${x0} ${y + bh / 2})`}
                       fill={fillFor(d)}
+                      stroke={isHovered ? theme.ink : "none"}
+                      strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
                     />
                   ) : (
                     <rect
@@ -189,6 +215,8 @@ export function GanttChart({
                       height={bh}
                       rx={4}
                       fill={fillFor(d)}
+                      stroke={isHovered ? theme.ink : "none"}
+                      strokeWidth={isHovered ? ACTIVE_STROKE_WIDTH : 0}
                     />
                   )}
                   <text
@@ -206,7 +234,15 @@ export function GanttChart({
             })}
             {hovered && (
               <SvgTooltip
-                x={xScale(hovered.start)}
+                x={
+                  // Live pointer x while the mouse is the hover source;
+                  // falls back to the event's own start-date-derived
+                  // position otherwise (there is no keyboard focus path
+                  // here).
+                  pointerX != null
+                    ? clamp(pointerX, innerWidth)
+                    : xScale(hovered.start)
+                }
                 innerWidth={innerWidth}
                 top={Math.max(0, band.pos(hover ?? 0) - 4)}
                 lines={[

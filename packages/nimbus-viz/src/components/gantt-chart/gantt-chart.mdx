@@ -254,8 +254,10 @@ instead of a bar — no prop needed. Mix milestones and spans freely in the same
 
 Not configurable — the chart always draws them. The bottom axis is a time scale
 (about five ticks, day-and-month labels) fit to the data's date range. Hovering
-a row dims the others to 0.4 opacity and shows a tooltip with the label, the
-date range (or the single date for a milestone), and the duration in whole days.
+a row outlines its bar or milestone (its siblings are never dimmed) and shows a
+tooltip with the label, the date range (or the single date for a milestone),
+and the duration in whole days; the tooltip's horizontal position tracks the
+pointer while it stays inside that row.
 
 ## Responsiveness & performance
 
