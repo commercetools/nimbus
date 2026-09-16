@@ -20,8 +20,11 @@ if (typeof HTMLElement !== "undefined") {
   });
 }
 
-// Import jest-dom matchers
-import "@testing-library/jest-dom";
+// Import jest-dom matchers. Vitest 5 dropped the `jest.Matchers` compatibility
+// bridge that used to let the bare `@testing-library/jest-dom` import (which
+// only augments the global Jest namespace) apply to vitest's `expect()` too.
+// The `/vitest` subpath augments vitest's `Assertion` interface directly.
+import "@testing-library/jest-dom/vitest";
 
 // Import cleanup utility
 import { cleanup } from "@testing-library/react";

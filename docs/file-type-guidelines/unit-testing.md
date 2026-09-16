@@ -76,7 +76,7 @@ export default defineConfig({
 ```typescript
 // src/test/unit-test-setup.ts
 import "./setup-jsdom-polyfills"; // JSDOM polyfills for Chakra UI
-import "@testing-library/jest-dom"; // Custom matchers (toBeInTheDocument, etc.)
+import "@testing-library/jest-dom/vitest"; // Custom matchers (toBeInTheDocument, etc.)
 import { cleanup } from "@testing-library/react";
 import { afterEach } from "vitest";
 

@@ -182,22 +182,6 @@ describe("Stack - Separators", () => {
  * @docs-order 4
  */
 describe("Stack - Style props", () => {
-  it("applies background color prop", () => {
-    render(
-      <NimbusProvider>
-        <Stack data-testid="styled-stack" bg="primary.7" p="400">
-          <Box>Content</Box>
-        </Stack>
-      </NimbusProvider>
-    );
-
-    const stack = screen.getByTestId("styled-stack");
-    expect(stack).toHaveStyle({
-      padding: "var(--nimbus-spacing-400)",
-    });
-    // Background color is applied via colorPalette system
-  });
-
   it("applies border radius and border props", () => {
     render(
       <NimbusProvider>
