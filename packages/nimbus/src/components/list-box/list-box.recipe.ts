@@ -189,6 +189,14 @@ export const listBoxSlotRecipe = defineSlotRecipe({
       display: "flex",
       flexDirection: "column",
       gap: "100",
+      // Extra breathing room *between* sections, on top of the root's row
+      // gap — but not before the first section, which already sits against
+      // the root's own edge/padding. Lives here (not as `mt` on the header)
+      // so it applies once per section rather than stacking with the row gap
+      // that already separates the header from its own first item below.
+      "&:not(:first-of-type)": {
+        mt: "100",
+      },
     },
     // RA <Header> inside a section
     sectionHeader: {
@@ -201,7 +209,10 @@ export const listBoxSlotRecipe = defineSlotRecipe({
       p: "200",
       borderBottom: "solid-25",
       borderColor: "neutral.3",
-      mb: "100",
+      // No margin-bottom here: the section's own `gap` already spaces the
+      // header from its first item. Adding one on top made the header sit
+      // twice as far from its own content as from the previous section's
+      // last item — i.e. visually grouped with the wrong section.
     },
     // renderEmptyState content
     emptyState: {
