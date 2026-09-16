@@ -9,6 +9,7 @@ import {
   coverageConfigDefaults,
   defineConfig,
   mergeConfig,
+  type ViteUserConfig,
 } from "vitest/config";
 import createBaseConfig from "./vite.config.ts";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
@@ -54,58 +55,69 @@ export default defineConfig(async () => {
     mode: "production",
   });
 
-  return mergeConfig(
-    baseConfig,
-    defineConfig({
-      cacheDir: ".vitest-cache-dev",
-      optimizeDeps: {
-        include: [
-          "@chakra-ui/react",
-          "@chakra-ui/react/kbd",
-          "@storybook/react-vite",
-          "storybook/test",
+  // Typed explicitly (instead of wrapping in `defineConfig(...)`) so
+  // `mergeConfig`'s overload resolution isn't fed the ambiguous
+  // union/function-inclusive return type `defineConfig()` produces here —
+  // see https://github.com/vuejs/create-vue/issues/328 for the same
+  // TS2345 "not assignable to parameter of type 'never'" pattern.
+  const overrides: ViteUserConfig = {
+    cacheDir: ".vitest-cache-dev",
+    optimizeDeps: {
+      include: [
+        "@chakra-ui/react",
+        "@chakra-ui/react/kbd",
+        "@storybook/react-vite",
+        "storybook/test",
+      ],
+    },
+    plugins: [
+      storybookTest({
+        configDir: path.join(__dirname, ".storybook"),
+        storybookScript: "pnpm storybook --ci",
+      }),
+      // Must come after storybookTest so the alias wins
+      sourceAliasPlugin(),
+    ],
+    test: {
+      name: "storybook-dev",
+      setupFiles: ["./.storybook/vitest.setup.ts"],
+      globals: true,
+      testTimeout: 60000,
+      hookTimeout: 60000,
+      // Retry once for flaky browser tests (e.g. Slate/Tiptap init races)
+      retry: 1,
+      // (moved out of `browser` for Vitest 5: `BrowserConfigOptions` no
+      // longer has its own `isolate` — it's the top-level test option)
+      isolate: false,
+      // (moved out of `browser` for Vitest 5: the browser server now
+      // shares the top-level `api` option instead of its own nested one)
+      api: {
+        port: 63316,
+      },
+      browser: {
+        enabled: true,
+        provider: playwright({
+          contextOptions: {
+            locale: "en-US",
+          },
+        }),
+        instances: [{ browser: "chromium" }],
+        headless: true,
+        screenshotFailures: false,
+        // Keep in sync with vitest.storybook.config.ts — see the comment
+        // there for why an explicit desktop viewport is required.
+        viewport: { width: 1280, height: 720 },
+      },
+      coverage: {
+        exclude: [
+          ...coverageConfigDefaults.exclude,
+          "**/.storybook/**",
+          "./src/**/*.stories.*",
+          "**/storybook-static/**",
         ],
       },
-      plugins: [
-        storybookTest({
-          configDir: path.join(__dirname, ".storybook"),
-          storybookScript: "pnpm storybook --ci",
-        }),
-        // Must come after storybookTest so the alias wins
-        sourceAliasPlugin(),
-      ],
-      test: {
-        name: "storybook-dev",
-        setupFiles: ["./.storybook/vitest.setup.ts"],
-        globals: true,
-        testTimeout: 60000,
-        hookTimeout: 60000,
-        // Retry once for flaky browser tests (e.g. Slate/Tiptap init races)
-        retry: 1,
-        browser: {
-          enabled: true,
-          provider: playwright({
-            contextOptions: {
-              locale: "en-US",
-            },
-          }),
-          instances: [{ browser: "chromium" }],
-          headless: true,
-          screenshotFailures: false,
-          isolate: false,
-          api: {
-            port: 63316,
-          },
-        },
-        coverage: {
-          exclude: [
-            ...coverageConfigDefaults.exclude,
-            "**/.storybook/**",
-            "./src/**/*.stories.*",
-            "**/storybook-static/**",
-          ],
-        },
-      },
-    })
-  );
+    },
+  };
+
+  return mergeConfig(baseConfig, overrides);
 });

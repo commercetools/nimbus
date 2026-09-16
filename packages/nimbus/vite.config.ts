@@ -250,6 +250,7 @@ export default defineConfig(async () => {
           "src/**/*.test-*.*",
           "src/test/unit-test-setup.ts",
           "src/test/utils.tsx",
+          "src/test/jest-dom-vitest-shim.d.ts",
         ],
       })
     );
