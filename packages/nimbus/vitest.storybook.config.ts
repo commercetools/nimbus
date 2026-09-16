@@ -82,6 +82,20 @@ export default defineConfig(async () => {
         headless: true,
         // ... do not capture screenshots on failure
         screenshotFailures: false,
+        // Pin an explicit desktop viewport. Left unset, Vitest falls back to
+        // its own default of a mobile 414x896 (see `resolved.browser.viewport`
+        // in vitest's config resolution) — confirmed by a controlled
+        // before/after comparison that under the pre-bump stack
+        // (vitest@4.1.11 / @vitest/browser@4.1.10) these `isolate:false`
+        // browser-mode tests actually ran at ~1200x900, while the identical
+        // config under vitest@5 measures window.innerWidth === 414. 414px is
+        // below Nimbus's `md` (768px) breakpoint, which collapses
+        // PageContent's 2-column grid to 1 column (breaking StickySidebar's
+        // layout assertions) and leaves less width than RichTextInput's
+        // toolbar needs (breaking LocalizedField CustomWidth's "full width is
+        // wider" comparison). 1200x900 restores the desktop viewport these
+        // stories were always exercised at.
+        viewport: { width: 1200, height: 900 },
       },
       coverage: {
         exclude: [

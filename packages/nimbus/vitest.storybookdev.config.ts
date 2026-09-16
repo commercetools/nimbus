@@ -104,6 +104,9 @@ export default defineConfig(async () => {
         instances: [{ browser: "chromium" }],
         headless: true,
         screenshotFailures: false,
+        // Keep in sync with vitest.storybook.config.ts — see the comment
+        // there for why an explicit desktop viewport is required.
+        viewport: { width: 1200, height: 900 },
       },
       coverage: {
         exclude: [
