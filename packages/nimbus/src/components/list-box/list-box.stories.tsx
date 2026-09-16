@@ -64,6 +64,21 @@ const contacts = [
 ];
 
 /**
+ * React Aria builds the ListBox collection asynchronously after mount. In the
+ * production Storybook bundle (Chromatic) this settles noticeably slower than
+ * the dev-transform test environment, so a play function that queries options
+ * (or option-derived elements, like a section's `group` or a focused/hovered
+ * option) synchronously at the start races the build and intermittently
+ * fails. Awaiting the options first guarantees the collection is built before
+ * any synchronous query or interaction. Generous timeout because the built
+ * bundle can settle past testing-library's 1s `findBy` default. Skip this for
+ * a story whose list is intentionally empty (`EmptyState`) or whose play never
+ * touches item-level DOM (`DropTarget`).
+ */
+const waitForListBoxOptions = (canvas: ReturnType<typeof within>) =>
+  canvas.findAllByRole("option", undefined, { timeout: 15000 });
+
+/**
  * Base — an uncontrolled single-select list. Exercises the core mechanics:
  * rendering, pointer selection (single-select replaces), and keyboard selection.
  */
@@ -85,6 +100,7 @@ export const Base: Story = {
   ),
   play: async ({ canvasElement, step, args }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
 
     await step("Renders a listbox with all options", async () => {
       const listbox = canvas.getByRole("listbox");
@@ -162,6 +178,7 @@ export const MultipleSelectionVisual: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
     // Hover a *selected* row so Chromatic captures that a selected multi-select
     // row keeps the same hover highlight as its unselected neighbours — the
     // checkbox owns the selection signal, so hover feedback must not disappear.
@@ -192,6 +209,7 @@ export const MultipleSelectionBehavior: Story = {
   ),
   play: async ({ canvasElement, step, args }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
     const apple = canvas.getByRole("option", { name: "Apple" });
     const cherry = canvas.getByRole("option", { name: "Cherry" });
 
@@ -231,6 +249,7 @@ export const KeyboardNavigation: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
 
     await step(
       "Tab enters the listbox; Home focuses the first option",
@@ -302,6 +321,7 @@ export const DisabledItems: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
     const banana = canvas.getByRole("option", { name: "Banana" });
 
     await step("Disabled option is marked disabled", async () => {
@@ -334,6 +354,7 @@ export const NoSelectionWithAction: Story = {
   ),
   play: async ({ canvasElement, step, args }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
     const banana = canvas.getByRole("option", { name: "Banana" });
 
     await step(
@@ -381,6 +402,7 @@ export const PlainDisplayList: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
     const banana = canvas.getByRole("option", { name: "Banana" });
 
     await step("Inert rows get no hover affordance", async () => {
@@ -422,6 +444,7 @@ export const WithSections: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
 
     await step("Section headers render", async () => {
       await expect(canvas.getByText("Fruit")).toBeInTheDocument();
@@ -465,6 +488,7 @@ export const HeaderlessSection: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
 
     await step("Group is named by its aria-label", async () => {
       await expect(
@@ -505,6 +529,7 @@ const selectedRowStaysDistinctPlay: Story["play"] = async ({
   step,
 }) => {
   const canvas = within(canvasElement);
+  await waitForListBoxOptions(canvas);
   const banana = canvas.getByRole("option", { name: "Banana" });
   const apple = canvas.getByRole("option", { name: "Apple" });
 
@@ -594,6 +619,7 @@ export const RichContent: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
     await step(
       "The description slot becomes the option's accessible description",
       async () => {
@@ -705,6 +731,7 @@ export const Focused: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
     await userEvent.tab();
     await userEvent.keyboard("{Home}");
     await waitFor(() =>
@@ -745,6 +772,7 @@ export const Controlled: Story = {
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
     const value = canvas.getByTestId("value");
 
     await step("Reflects the initial controlled value", async () => {
@@ -776,6 +804,7 @@ export const Loading: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
     await step("Load-more spinner is present while loading", async () => {
       await expect(canvas.getByRole("progressbar")).toBeInTheDocument();
     });
@@ -834,6 +863,7 @@ export const AsyncLoadMore: Story = {
     // can't satisfy the call assertion below.
     asyncLoadMoreSpy.mockClear();
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
     const listbox = canvas.getByTestId("async-list");
 
     await step("Initial page renders", async () => {
@@ -902,6 +932,7 @@ export const DragAndDrop: Story = {
   render: () => <ReorderableFruit />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
     await step("Options are draggable", async () => {
       const apple = canvas.getByRole("option", { name: "Apple" });
       await expect(apple).toHaveAttribute("data-allows-dragging", "true");
@@ -949,6 +980,7 @@ export const DragInProgress: Story = {
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForListBoxOptions(canvas);
     const apple = canvas.getByRole("option", { name: "Apple" });
 
     await step("Pick up an option to start a keyboard drag", async () => {
