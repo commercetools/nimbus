@@ -211,12 +211,7 @@ catalogs:
     "@vitest/browser-playwright": ^5.0.0
     "@vitest/coverage-v8": ^5.0.0
     "@testing-library/dom": 10.4.1
-    # Pinned exact at 6.9.1: 6.10.0 is deprecated upstream as an "incorrect
-    # minor release with breaking changes" (raises the floor to Node >=22 and
-    # makes @testing-library/dom a required peer). A caret range can't hold it
-    # back — ^6.9.1 re-resolves straight to 6.10.0. The 6.x line ends here;
-    # moving forward means 7.0.0, which is a major and needs its own PR.
-    "@testing-library/jest-dom": 7.0.1
+    "@testing-library/jest-dom": ^7.0.1
     "@testing-library/user-event": ^14.6.7
     "@testing-library/react": ^16.3.3
     playwright: ^1.62.1
@@ -234,7 +229,7 @@ catalogs:
     "@vueless/storybook-dark-mode": ^10.0.8
     "@github-ui/storybook-addon-performance-panel": ^1.2.0
     chromatic: ^18.7.2
-    jsdom: 30.0.1
+    jsdom: ^30.0.1
     "rollup-plugin-visualizer": ^7.0.0
   react:
     "@types/react": ^19.2.18

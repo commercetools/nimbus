@@ -87,15 +87,17 @@ export default defineConfig(async () => {
         // in vitest's config resolution) — confirmed by a controlled
         // before/after comparison that under the pre-bump stack
         // (vitest@4.1.11 / @vitest/browser@4.1.10) these `isolate:false`
-        // browser-mode tests actually ran at ~1200x900, while the identical
-        // config under vitest@5 measures window.innerWidth === 414. 414px is
-        // below Nimbus's `md` (768px) breakpoint, which collapses
-        // PageContent's 2-column grid to 1 column (breaking StickySidebar's
-        // layout assertions) and leaves less width than RichTextInput's
-        // toolbar needs (breaking LocalizedField CustomWidth's "full width is
-        // wider" comparison). 1200x900 restores the desktop viewport these
-        // stories were always exercised at.
-        viewport: { width: 1200, height: 900 },
+        // browser-mode tests actually ran at an undocumented ~1200x900,
+        // while the identical config under vitest@5 measures
+        // window.innerWidth === 414. 414px is below Nimbus's `md` (768px)
+        // breakpoint, which collapses PageContent's 2-column grid to 1
+        // column (breaking StickySidebar's layout assertions) and leaves
+        // less width than RichTextInput's toolbar needs (breaking
+        // LocalizedField CustomWidth's "full width is wider" comparison).
+        // 1280x720 (Playwright's own default context viewport) restores a
+        // desktop-sized surface for these stories, standard rather than
+        // replicating the old accidental 1200x900.
+        viewport: { width: 1280, height: 720 },
       },
       coverage: {
         exclude: [

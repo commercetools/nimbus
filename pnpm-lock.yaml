@@ -178,7 +178,7 @@ catalogs:
       specifier: ^10.5.10
       version: 10.5.10
     '@testing-library/jest-dom':
-      specifier: 7.0.1
+      specifier: ^7.0.1
       version: 7.0.1
     '@testing-library/react':
       specifier: ^16.3.3
@@ -363,7 +363,7 @@ overrides:
   yaml@2: '>=2.8.3'
   path-to-regexp@>=8.0.0 <8.4.0: '>=8.4.0'
   happy-dom@<20.8.9: '>=20.8.9'
-  jsdom: 30.0.1
+  jsdom: ^30.0.1
   adm-zip: '>=0.6.1'
 
 importers:
@@ -907,7 +907,7 @@ importers:
         specifier: catalog:tooling
         version: 13.0.6
       jsdom:
-        specifier: 30.0.1
+        specifier: ^30.0.1
         version: 30.0.1
       playwright:
         specifier: catalog:tooling
@@ -2243,15 +2243,6 @@ packages:
   '@eslint/plugin-kit@0.7.3':
     resolution: {integrity: sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
-
-  '@exodus/bytes@1.15.0':
-    resolution: {integrity: sha512-UY0nlA+feH81UGSHv92sLEPLCeZFjXOuHhrIo0HQydScuQc8s0A7kL/UdgwgDq8g8ilksmuoF35YVTNphV2aBQ==}
-    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
-    peerDependencies:
-      '@noble/hashes': ^1.8.0 || ^2.0.0
-    peerDependenciesMeta:
-      '@noble/hashes':
-        optional: true
 
   '@exodus/bytes@1.15.1':
     resolution: {integrity: sha512-S6mL0yNB/Abt9Ei4tq8gDhcczc4S3+vQ4ra7vxnAf+YHC02srtqxKKZghx2Dq6p0e66THKwR6r8N6P95wEty7Q==}
@@ -8951,7 +8942,7 @@ packages:
       '@vitest/coverage-v8': 5.0.0
       '@vitest/ui': 5.0.0
       happy-dom: '>=20.8.9'
-      jsdom: 30.0.1
+      jsdom: ^30.0.1
       vite: ^6.4.0 || ^7.0.0 || ^8.0.0
     peerDependenciesMeta:
       '@edge-runtime/vm':
@@ -12129,8 +12120,6 @@ snapshots:
     dependencies:
       '@eslint/core': 1.2.1
       levn: 0.4.1
-
-  '@exodus/bytes@1.15.0': {}
 
   '@exodus/bytes@1.15.1': {}
 
@@ -16560,7 +16549,7 @@ snapshots:
 
   html-encoding-sniffer@6.0.0:
     dependencies:
-      '@exodus/bytes': 1.15.0
+      '@exodus/bytes': 1.15.1
     transitivePeerDependencies:
       - '@noble/hashes'
 
@@ -17928,7 +17917,7 @@ snapshots:
 
   path-scurry@2.0.2:
     dependencies:
-      lru-cache: 11.2.7
+      lru-cache: 11.5.2
       minipass: 7.1.3
 
   path-to-regexp@1.9.0:
@@ -19779,7 +19768,7 @@ snapshots:
 
   whatwg-url@16.0.1:
     dependencies:
-      '@exodus/bytes': 1.15.0
+      '@exodus/bytes': 1.15.1
       tr46: 6.0.0
       webidl-conversions: 8.0.1
     transitivePeerDependencies:
