@@ -6,7 +6,14 @@ import React, {
   useEffect,
 } from "react";
 import { type Selection } from "react-aria-components";
-import { within, expect, waitFor, userEvent } from "storybook/test";
+import {
+  within,
+  expect,
+  waitFor,
+  userEvent,
+  fireEvent,
+  fn,
+} from "storybook/test";
 import {
   Box,
   Button,
@@ -1777,6 +1784,71 @@ export const ClickableRows: Story = {
         });
       }
     });
+  },
+};
+
+/**
+ * Regression test for a browser event-retargeting bug: when an element the
+ * user pressed down on (e.g. a popover option) is removed from the DOM
+ * before `mouseup`/`click` fire for that same gesture, the browser
+ * retargets those trailing events to whatever is now underneath the
+ * pointer - which can be a DataTable row rendered below the popover.
+ * `DataTable.Row` guards against this by requiring its own `pointerdown`
+ * capture listener to have fired before honoring a `mouseup`. This story
+ * exercises that guard directly, without needing a real popover: it fires
+ * a `mouseup` with no preceding `pointerdown` on the row (simulating the
+ * retargeted event) and confirms `onRowClick` is not called, then performs
+ * a normal click to confirm the row still responds to real presses.
+ */
+const retargetedMouseupGuardRowClick = fn();
+export const RowClickIgnoresRetargetedMouseup: Story = {
+  render: () => (
+    <DataTable.Root
+      columns={columns}
+      rows={rows}
+      selectionMode="none"
+      onRowClick={retargetedMouseupGuardRowClick}
+    >
+      <DataTable.Table aria-label="Retargeted mouseup guard table">
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+    </DataTable.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "A mouseup with no matching pointerdown on the row is ignored",
+      async () => {
+        const dataRow = canvas.getAllByRole("row")[1];
+        const cell = dataRow.querySelector('[data-column-id="name"]');
+        if (!cell) throw new Error("name cell not found");
+
+        // No pointerdown is dispatched first - this is what a retargeted
+        // mouseup looks like from the row's perspective.
+        fireEvent.mouseUp(cell);
+
+        // handleRowClick debounces by 300ms before calling onRowClick.
+        await new Promise((resolve) => setTimeout(resolve, 400));
+        await expect(retargetedMouseupGuardRowClick).not.toHaveBeenCalled();
+      }
+    );
+
+    await step(
+      "A normal click (pointerdown and mouseup on the row) still fires onRowClick",
+      async () => {
+        const dataRow = canvas.getAllByRole("row")[2];
+        const cell = dataRow.querySelector('[data-column-id="name"]');
+        if (!cell) throw new Error("name cell not found");
+
+        await userEvent.click(cell);
+
+        await waitFor(() => {
+          expect(retargetedMouseupGuardRowClick).toHaveBeenCalled();
+        });
+      }
+    );
   },
 };
 
