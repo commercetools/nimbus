@@ -1248,6 +1248,14 @@ The `DataTable.Manager` component provides a settings drawer for managing table
 configuration. It enables users to control column visibility, reorder columns,
 and adjust layout settings through an intuitive interface.
 
+`DataTable.Manager` loads on demand. Its dependencies (Drawer, Tabs,
+DraggableList) are fetched the first time you render it, instead of being part
+of the main DataTable download. The component brings its own loading boundary,
+so you do not need to add one. Two things follow from this: the settings button
+appears one frame after the table, and tests must query it with an asynchronous
+query such as `await screen.findByRole("button", { name: /settings/i })` rather
+than `getByRole`.
+
 ### Manager overview
 
 DataTable.Manager must be used within a DataTable.Root to access table state and
