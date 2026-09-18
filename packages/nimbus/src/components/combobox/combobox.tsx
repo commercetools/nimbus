@@ -19,7 +19,7 @@ import {
   createRankedFilter,
   createMultiTermFilter,
   createSectionAwareFilter,
-} from "./utils/filters";
+} from "./utils";
 
 /**
  * # ComboBox

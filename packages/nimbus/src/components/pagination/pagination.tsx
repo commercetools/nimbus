@@ -8,7 +8,7 @@ import {
   Stack,
   Text,
 } from "@/components";
-import { usePagination } from "./hooks/use-pagination";
+import { usePagination } from "./hooks";
 import type { PaginationProps } from "./pagination.types";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { paginationMessagesStrings } from "./pagination.messages";

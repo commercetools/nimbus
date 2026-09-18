@@ -47,11 +47,9 @@ import {
   defaultGetKey,
   defaultGetTextValue,
   defaultGetNewOptionData,
-} from "../utils/collection";
-import {
   normalizeSelectedKeys,
   denormalizeSelectedKeys,
-} from "../utils/selection";
+} from "../utils";
 import {
   ComboBoxRootContext,
   useComboBoxRootContext,

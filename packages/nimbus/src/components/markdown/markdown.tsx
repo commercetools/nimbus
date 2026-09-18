@@ -12,7 +12,7 @@ import {
   remarkGithubAlerts,
   ALERT_TYPES,
 } from "./utils";
-import { useHeadingSkipWarning } from "./hooks/use-heading-skip-warning";
+import { useHeadingSkipWarning } from "./hooks";
 import { markdownMessagesStrings } from "./markdown.messages";
 import type { MarkdownProps } from "./markdown.types";
 import type { ReactMarkdownRenderOptions } from "./markdown.internal-types";
