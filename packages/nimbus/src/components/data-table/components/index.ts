@@ -11,3 +11,4 @@ export {
   useDataTableContext,
   useCustomSettingsContext,
 } from "./data-table.context";
+export { DataTableManager } from "./data-table.manager";
