@@ -5,18 +5,39 @@
 
 ## Purpose
 
-There are two types of MDX documentation files for components:
+A component's documentation page is assembled from **four** MDX files, one per
+tab. The base file supplies the page and its route; the other three are "views"
+attached to it.
 
-1. **Designer documentation** (`{component-name}.mdx`) - For designers on the
-   documentation site, explaining the component's design purpose, visual usage,
-   and best practices
-2. **Engineering documentation** (`{component-name}.dev.mdx`) - For developers,
-   with technical implementation details and internal API documentation
+| File                         | Tab            | `tab-order` | Audience           | Owning guide                                     |
+| ---------------------------- | -------------- | ----------- | ------------------ | ------------------------------------------------ |
+| `{component}.mdx`            | Overview       | 0           | Designers          | This guide                                       |
+| `{component}.guidelines.mdx` | Guidelines     | 2           | Designers, product | [Design Guidelines](./design-guidelines-docs.md) |
+| `{component}.dev.mdx`        | Implementation | 3           | Developers         | This guide                                       |
+| `{component}.a11y.mdx`       | Accessibility  | 4           | Developers, QA     | [Accessibility Docs](./accessibility-docs.md)    |
+
+Only `{component}.mdx` is a document in its own right. Any filename with two
+dots before `.mdx` is never treated as a standalone page — it is discovered by
+its base name and folded in as a tab.
+
+This guide covers the two files it owns:
+
+1. **Designer documentation** (`{component-name}.mdx`) - the Overview tab:
+   design purpose, visual usage, and the component's variables
+2. **Engineering documentation** (`{component-name}.dev.mdx`) - the
+   Implementation tab: technical details, `PropsTable`, and injected
+   `.docs.spec.tsx` examples
+
+Guidelines and accessibility content each have their own guide and their own
+file. Some older components still carry `## Guidelines` or `## Accessibility`
+sections inline in the base `.mdx`; that is a migration gap, not the intended
+shape. When you touch such a component, split those sections out.
 
 ## When to Use
 
-**Always required** - Every public-facing component in the Nimbus design system
-must have both MDX documentation files.
+**Always required** - every public-facing component needs `{component}.mdx` and
+`{component}.dev.mdx`. The Guidelines and Accessibility tabs are required
+wherever they apply; see their guides for the cases that legitimately have none.
 
 ### Designer Documentation (`{component-name}.mdx`)
 

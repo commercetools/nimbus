@@ -36,18 +36,25 @@ component development.
 docs/
 ├── readme.md                    # This file
 ├── component-guidelines.md      # Main navigation hub
+├── naming-conventions.md        # AUTHORITATIVE for file names & extensions
 ├── file-type-guidelines/       # Detailed file-specific guides
 │   ├── index.md
 │   ├── architecture-decisions.md
 │   ├── barrel-exports.md
+│   ├── component-vs-pattern.md
 │   ├── main-component.md
 │   ├── types.md
 │   ├── stories.md
+│   ├── testing-strategy.md
+│   ├── unit-testing.md
 │   ├── documentation.md
+│   ├── design-guidelines-docs.md
+│   ├── accessibility-docs.md
 │   ├── i18n.md
 │   ├── recipes.md
 │   ├── slots.md
 │   ├── compound-components.md
+│   ├── derivatives.md
 │   ├── hooks.md
 │   ├── utils-and-constants.md
 │   └── context-files.md
@@ -78,16 +85,12 @@ docs/
 
 ## 🧪 Testing Strategy
 
-Nimbus uses 3 distinct test categories:
+Nimbus uses 3 distinct test categories — story tests, internal unit tests, and
+consumer implementation tests.
 
-| Category                          | File Pattern      | Purpose                                  |
-| --------------------------------- | ----------------- | ---------------------------------------- |
-| **Story Tests**                   | `*.stories.tsx`   | Internal component behavior testing      |
-| **Internal Unit Tests**           | `*.spec.tsx`      | Internal utility and hook testing        |
-| **Consumer Implementation Tests** | `*.docs.spec.tsx` | Documentation examples for consumer apps |
-
-See [Testing Strategy Guide](./file-type-guidelines/testing-strategy.md) for
-details.
+See [Testing Strategy Guide](./file-type-guidelines/testing-strategy.md) for what
+each one is for, and [Naming Conventions](./naming-conventions.md) for the file
+extensions.
 
 ## 🛠 Development Workflow
 

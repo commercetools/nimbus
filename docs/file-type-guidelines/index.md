@@ -6,6 +6,12 @@ and examples.
 
 [← Back to Component Guidelines](../component-guidelines.md)
 
+> **Precedence:** [Naming Conventions](../naming-conventions.md) is
+> authoritative for file names and extensions. The guides below are
+> authoritative for a file type's *content* — what belongs in it and how it is
+> structured. Where a guide shows a filename, it is illustrating its own topic;
+> if the two ever disagree, the naming document wins.
+
 ## Available Guidelines
 
 ### Core Component Files
@@ -36,9 +42,20 @@ and examples.
 - **[utils-and-constants.md](./utils-and-constants.md)** - Utilities and
   constants
 
+### Documentation Files
+
+- **[documentation.md](./documentation.md)** - Designer (`.mdx`) and developer
+  (`.dev.mdx`) documentation, and how the four tabs fit together
+- **[design-guidelines-docs.md](./design-guidelines-docs.md)** -
+  `.guidelines.mdx`, the Guidelines tab
+- **[accessibility-docs.md](./accessibility-docs.md)** - `.a11y.mdx`, the
+  Accessibility tab
+
 ### Advanced Patterns
 
 - **[context-files.md](./context-files.md)** - React context patterns
+- **[derivatives.md](./derivatives.md)** - Components built as presets of
+  another component, under `derivatives/`
 - **[architecture-decisions.md](./architecture-decisions.md)** - Component
   architecture matrix
 
