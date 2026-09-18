@@ -1,5 +1,9 @@
 # @commercetools/nimbus-tokens
 
+## 3.6.0
+
+No changes in this release.
+
 ## 3.5.1
 
 ## 3.5.0
