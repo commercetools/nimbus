@@ -42,7 +42,7 @@ describe("ScrollArea - Basic usage", () => {
   it("renders with always-visible scrollbars", () => {
     const { container } = render(
       <NimbusProvider>
-        <ScrollArea maxH="200px" variant="always">
+        <ScrollArea maxH="200px" scrollbarVisibility="always">
           <OverflowingContent />
         </ScrollArea>
       </NimbusProvider>
