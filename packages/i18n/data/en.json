@@ -143,6 +143,10 @@
     "developer_comment": "message when there is no hidden columns in the data table manager",
     "string": "No Hidden columns"
   },
+  "Nimbus.DataTable.pinRow": {
+    "developer_comment": "aria-label and title for the pin toggle button on a row that is not pinned",
+    "string": "Pin row"
+  },
   "Nimbus.DataTable.pinRows": {
     "developer_comment": "aria-label for the pin rows column header",
     "string": "Pin rows"
@@ -194,6 +198,10 @@
   "Nimbus.DataTable.textVisibilityAriaLabel": {
     "developer_comment": "aria-label for the text visibility section in the data table manager layout",
     "string": "Text visibility section"
+  },
+  "Nimbus.DataTable.unpinRow": {
+    "developer_comment": "aria-label and title for the pin toggle button on a row that is pinned",
+    "string": "Unpin row"
   },
   "Nimbus.DataTable.visibleColumns": {
     "developer_comment": "title for the visible columns section in the data table manager",

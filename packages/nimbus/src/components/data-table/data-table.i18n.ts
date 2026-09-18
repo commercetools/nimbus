@@ -44,6 +44,18 @@ export const messages = {
     description: "aria-label for the pin rows column header",
     defaultMessage: "Pin rows",
   },
+  pinRow: {
+    id: "Nimbus.DataTable.pinRow",
+    description:
+      "aria-label and title for the pin toggle button on a row that is not pinned",
+    defaultMessage: "Pin row",
+  },
+  unpinRow: {
+    id: "Nimbus.DataTable.unpinRow",
+    description:
+      "aria-label and title for the pin toggle button on a row that is pinned",
+    defaultMessage: "Unpin row",
+  },
   nestedContentRow: {
     id: "Nimbus.DataTable.nestedContentRow",
     description:

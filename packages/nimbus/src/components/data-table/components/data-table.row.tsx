@@ -424,6 +424,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
 
   const { selectionBehavior, allowsDragging } = useTableOptions();
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
+  const pinRowLabel = msg.format(isPinned ? "unpinRow" : "pinRow");
 
   const nestedContentRowRef = useCallback(
     (node: HTMLElement | null) => {
@@ -604,13 +605,13 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                     ? "nimbus-table-cell-pin-button-pinned"
                     : "nimbus-table-cell-pin-button"
                 }
-                title={isPinned ? "Unpin row" : "Pin row"}
+                title={pinRowLabel}
               >
                 <IconToggleButton
                   key="pin-btn"
                   size="2xs"
                   variant="ghost"
-                  aria-label={isPinned ? "Unpin row" : "Pin row"}
+                  aria-label={pinRowLabel}
                   colorPalette="primary"
                   isSelected={isPinned}
                   onChange={() => togglePin(row.id)}

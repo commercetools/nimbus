@@ -4554,6 +4554,22 @@ export const RowPinningEdgeCases: Story = {
       // Check ARIA attributes
       expect(pinButton).toHaveAttribute("aria-label", "Pin row");
       expect(pinButton.tagName).toBe("BUTTON");
+      // title and aria-label come from the same message key.
+      expect(pinButton.closest("[title]")).toHaveAttribute("title", "Pin row");
+    });
+
+    await step("A pinned row's button is labelled for unpinning", async () => {
+      const rows = canvas.getAllByRole("row");
+      const pinnedRow = rows[1]; // Pre-pinned above
+
+      await userEvent.hover(pinnedRow);
+      const unpinButton = within(pinnedRow).getByLabelText(/unpin row/i);
+
+      expect(unpinButton).toHaveAttribute("aria-label", "Unpin row");
+      expect(unpinButton.closest("[title]")).toHaveAttribute(
+        "title",
+        "Unpin row"
+      );
     });
 
     // TODO: Add keyboard navigation tests
