@@ -1,0 +1,54 @@
+---
+id: Components-ListBox
+title: ListBox
+exportName: ListBox
+description: A selection list that lets people choose one or many options directly on the page.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Inputs
+  - List box
+tags:
+  - component
+  - listbox
+  - selection
+  - list
+---
+
+A ListBox presents a list of options that a person can select one or many of,
+directly on the page. It is built on React Aria's ListBox, so it is fully
+keyboard-accessible and follows the WAI-ARIA listbox pattern.
+
+## Overview
+
+Reach for a ListBox when the options should be visible in place — a filter list,
+a settings list, a picker, a transfer list, a command palette. It is also the
+building block behind overlay selection surfaces (Select, ComboBox).
+
+```jsx live
+const App = () => (
+  <ListBox.Root aria-label="Fruit" selectionMode="single">
+    <ListBox.Item id="apple">Apple</ListBox.Item>
+    <ListBox.Item id="banana">Banana</ListBox.Item>
+    <ListBox.Item id="cherry">Cherry</ListBox.Item>
+  </ListBox.Root>
+)
+```
+
+## When to use
+
+- **ListBox** — the options should stay visible on the page.
+- **Select** — the options should collapse into a dropdown field.
+- **ComboBox** — the person should be able to type to filter the options.
+- **Menu** — the items are commands/actions, not a persistent selection.
+
+## Anatomy
+
+- `ListBox.Root` — the collection container. Owns selection, sections,
+  drag-and-drop, keyboard behaviour, and the `size` / `variant` styling
+  context.
+- `ListBox.Item` — a selectable option. Single-select shows a full-row
+  highlight; multi-select shows a leading checkbox.
+- `ListBox.Section` — a labelled group of options.
+- `ListBox.LoadMore` — an async load-more spinner row.
