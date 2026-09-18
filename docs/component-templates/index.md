@@ -123,7 +123,7 @@ menu/
 │   └── menu.item.tsx
 ├── menu.types.ts
 ├── menu.i18n.ts           # Translations (if needed)
-├── menu.recipe.tsx
+├── menu.recipe.ts
 ├── menu.slots.tsx
 ├── menu.stories.tsx
 ├── menu.mdx
@@ -149,7 +149,7 @@ date-picker/
 │   └── formatters.ts
 ├── constants/
 │   └── calendar-config.ts
-└── date-picker-context.tsx
+└── date-picker.context.tsx
 ```
 
 ## Customization Guide
@@ -231,7 +231,9 @@ If composing existing styled components:
 
 For state sharing between parts:
 
-1. Copy `component-context.template.tsx`
+1. Create `{component}.context.tsx` following
+   [Context Files](../file-type-guidelines/context-files.md) - there is no
+   template file for this yet
 2. Define context value interface
 3. Wrap root component with provider
 

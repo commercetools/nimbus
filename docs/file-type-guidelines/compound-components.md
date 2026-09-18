@@ -129,7 +129,7 @@ best fits your requirements.
 menu/
 ├── menu.tsx                    # Exports only
 ├── menu.types.ts              # All type definitions
-├── menu.recipe.tsx            # Slot recipe
+├── menu.recipe.ts             # Slot recipe
 ├── menu.slots.tsx             # Slot components
 ├── components/                # Implementation files
 │   ├── menu.root.tsx          # Root implementation
@@ -430,7 +430,7 @@ validation logic. See the actual `select.root.tsx` for a production example.
 ### Custom Context for State Sharing
 
 ```typescript
-// menu-context.tsx
+// menu.context.tsx
 const MenuContext = createContext<MenuContextValue>();
 
 export const useMenuContext = () => {

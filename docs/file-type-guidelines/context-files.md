@@ -6,7 +6,7 @@
 
 ## Purpose
 
-Context files (`{component-name}-context.tsx` or
+Context files (`{component-name}.context.tsx` or
 `{component-name}.custom-context.tsx`) provide React Context for sharing state
 and functionality between component parts, especially in compound components and
 complex compositions.
@@ -205,7 +205,7 @@ export const DatePickerCustomContext = ({
 ### Basic State Sharing
 
 ```typescript
-// menu-context.tsx
+// menu.context.tsx
 import { createContext, useContext } from "react";
 import type { MenuRootProps } from "./menu.types";
 import type { MenuTriggerProps as RaMenuTriggerProps } from "react-aria-components";
@@ -233,7 +233,7 @@ export const useMenuContext = () => {
 ### Controlled/Uncontrolled Pattern
 
 ```typescript
-// tabs-context.tsx
+// tabs.context.tsx
 import { createContext, useState, type ReactNode } from "react";
 
 type TabsContextValue = {
@@ -291,7 +291,7 @@ For components with complex state, keep context simple and move business logic
 to the component implementation:
 
 ```typescript
-// data-table-context.tsx
+// data-table.context.tsx
 import { createContext, useContext } from "react";
 import type { DataTableContextValue } from "../data-table.types";
 
@@ -410,7 +410,7 @@ Illustrative example of how a root component might integrate a context provider:
 
 ```typescript
 // components/accordion.root.tsx (illustrative example)
-import { AccordionProvider } from '../accordion-context';
+import { AccordionProvider } from '../accordion.context';
 import { AccordionRootSlot } from '../accordion.slots';
 import type { AccordionRootProps } from '../accordion.types';
 
@@ -441,7 +441,7 @@ Illustrative example of how a child component might consume context:
 
 ```typescript
 // components/accordion.item.tsx (illustrative example)
-import { useAccordionContext } from '../accordion-context';
+import { useAccordionContext } from '../accordion.context';
 import { AccordionItemSlot } from '../accordion.slots';
 import type { AccordionItemProps } from '../accordion.types';
 
@@ -464,9 +464,21 @@ export const AccordionItem = (props: AccordionItemProps) => {
 ### Standard Context
 
 ```
-component-name-context.tsx     // Most common
-component-name.context.tsx      // Alternative
+component-name.context.tsx     // Canonical
 ```
+
+"Context" is treated as another compound part, so the file follows the same
+`{component}.{part}.tsx` shape as `menu.trigger.tsx` or `dialog.title.tsx`.
+
+When a compound component needs more than one context, scope the extra ones to
+the part that owns them:
+
+```
+component-name.{part}-context.tsx   // e.g. menu.section-context.tsx
+```
+
+The bare hyphen spelling (`component-name-context.tsx`) is not used.
+[Naming Conventions](../naming-conventions.md) is authoritative.
 
 ### Custom React Aria Context
 
@@ -522,8 +534,8 @@ export function Provider({
 
 ## Validation Checklist
 
-- [ ] Context file with appropriate naming pattern (`{component}-context.tsx` or
-      `{component}.custom-context.tsx`)
+- [ ] Context file named `{component}.context.tsx`, or
+      `{component}.custom-context.tsx` for a React Aria wrapper
 - [ ] Provider component exported
 - [ ] Hook for accessing context
 - [ ] Error handling in hook (optional - throw if context must be present,

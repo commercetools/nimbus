@@ -162,7 +162,7 @@ export const Menu = {
 | **Main component**  | Root (exports only)              | Compound component     |
 | **Implementations** | `components/`                    | Compound components    |
 | **Hooks**           | `hooks/`                         | ALWAYS (never in root) |
-| **Context**         | Root (`{component}-context.tsx`) | State sharing needed   |
+| **Context**         | Root (`{component}.context.tsx`) | State sharing needed   |
 | **Utils**           | `utils/`                         | Pure functions         |
 | **Constants**       | `constants/`                     | Static values          |
 
@@ -235,7 +235,7 @@ menu/
 ├── menu.types.ts
 ├── menu.recipe.ts
 ├── menu.slots.tsx
-├── menu-context.tsx
+├── menu.context.tsx
 ├── components/
 │   ├── menu.root.tsx
 │   ├── menu.trigger.tsx
@@ -262,7 +262,7 @@ date-picker/
 ├── date-picker.types.ts
 ├── date-picker.recipe.ts
 ├── date-picker.slots.tsx
-├── date-picker-context.tsx
+├── date-picker.context.tsx
 ├── components/
 │   ├── date-picker.root.tsx
 │   ├── date-picker.input.tsx
