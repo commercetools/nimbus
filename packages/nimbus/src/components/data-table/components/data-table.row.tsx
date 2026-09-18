@@ -136,6 +136,12 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
    */
   const clickTimeoutRef = useRef<number | null>(null);
 
+  // Set by the pointerdown capture listener below when it fires on this
+  // row's own DOM node. Read (and reset) by handleRowClick's mouseup
+  // listener to reject a retargeted mouseup that never had a matching
+  // pointerdown on this row.
+  const pressStartedOnRowRef = useRef(false);
+
   /**
    * Handles row click events with sophisticated filtering to ensure proper UX behavior.
    *
@@ -162,6 +168,17 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
 
   const handleRowClick = useCallback(
     (e: Event) => {
+      // Reject a mouseup that has no matching pointerdown on this row.
+      // A pointerdown that starts on an element that unmounts mid-gesture
+      // (e.g. a popover option closing on selection) makes the browser
+      // retarget the trailing pointerup/mouseup/click to whatever is now
+      // underneath the pointer - which can be this row. Requiring both
+      // halves of the press to have touched the row rejects that spurious
+      // mouseup without affecting any real click, drag, or checkbox press.
+      const pressStartedHere = pressStartedOnRowRef.current;
+      pressStartedOnRowRef.current = false;
+      if (!pressStartedHere) return;
+
       if (!isClickable) return;
       const isInteractiveElement = getIsTableRowChildElementInteractive(e);
       if (!isInteractiveElement) {
@@ -299,7 +316,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   // listeners on the row element handle this:
   //
   //   pointerdown (capture) — stops propagation for non-interactive targets,
-  //     preventing React Aria from triggering selection on empty row areas.
+  //     preventing React Aria from triggering selection on empty row areas,
+  //     and records that a press started on this row (see
+  //     pressStartedOnRowRef) so a later retargeted mouseup can be rejected.
   //
   //   mouseup (capture) — fires handleRowClick with a 300ms delay so that a
   //     subsequent dblclick can cancel it before it triggers navigation.
@@ -325,6 +344,10 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     (e: Event) => handleRowDoubleClickRef.current(e),
     []
   );
+  const stablePointerDownCapture = useCallback((e: Event) => {
+    pressStartedOnRowRef.current = true;
+    stopPropagationForNonInteractiveElements(e);
+  }, []);
 
   const rowNodeRef = useRef<HTMLElement | null>(null);
 
@@ -335,11 +358,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     if (prev === node) return;
 
     if (prev) {
-      prev.removeEventListener(
-        "pointerdown",
-        stopPropagationForNonInteractiveElements,
-        { capture: true }
-      );
+      prev.removeEventListener("pointerdown", stablePointerDownCapture, {
+        capture: true,
+      });
       prev.removeEventListener("mouseup", stableRowClick, { capture: true });
       prev.removeEventListener("dblclick", stableRowDblClick, {
         capture: true,
@@ -349,11 +370,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     rowNodeRef.current = node;
 
     if (node) {
-      node.addEventListener(
-        "pointerdown",
-        stopPropagationForNonInteractiveElements,
-        { capture: true }
-      );
+      node.addEventListener("pointerdown", stablePointerDownCapture, {
+        capture: true,
+      });
       node.addEventListener("mouseup", stableRowClick, { capture: true });
       node.addEventListener("dblclick", stableRowDblClick, { capture: true });
     }
@@ -371,11 +390,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       }
       const node = rowNodeRef.current;
       if (node) {
-        node.removeEventListener(
-          "pointerdown",
-          stopPropagationForNonInteractiveElements,
-          { capture: true }
-        );
+        node.removeEventListener("pointerdown", stablePointerDownCapture, {
+          capture: true,
+        });
         node.removeEventListener("mouseup", stableRowClick, {
           capture: true,
         });
