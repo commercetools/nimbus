@@ -16,7 +16,7 @@ import type {
   ScopedSearchInputOption,
   ScopedSearchInputOptionGroup,
 } from "./scoped-search-input.types";
-import { isEmpty } from "./utils/helpers";
+import { isEmpty } from "./utils";
 import { scopedSearchInputMessagesStrings } from "./scoped-search-input.messages";
 
 /**
