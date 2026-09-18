@@ -6626,3 +6626,183 @@ export const CompoundCustomColumns: Story = {
     });
   },
 };
+
+/**
+ * Domain rows frequently carry a business `key` field — customer groups,
+ * categories, product types, channels and stores all do. React Aria derives
+ * the collection key from `rendered.props.id ?? item.key ?? item.id`, so the
+ * rendered row has to carry its `id` explicitly. Without that, the business
+ * key wins: selection callbacks report it instead of the row id, and a row
+ * whose `key` equals a column id collides in the collection and throws
+ * "Cell count must match column count".
+ */
+const businessKeyColumns: DataTableColumnItem[] = [
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row: Record<string, unknown>) => row.name as ReactNode,
+  },
+  {
+    id: "key",
+    header: "Key",
+    accessor: (row: Record<string, unknown>) => row.key as ReactNode,
+  },
+];
+
+const businessKeyRows: DataTableRowItem[] = [
+  { id: "a1", key: "vip", name: "VIP" },
+  { id: "b2", key: "key", name: "Key group" },
+];
+
+export const BusinessKeyRowKeyCollision: Story = {
+  render: () => (
+    <DataTable
+      columns={businessKeyColumns}
+      rows={businessKeyRows}
+      aria-label="Rows carrying a business key field"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Table renders when a row's key equals a column id",
+      async () => {
+        expect(await canvas.findByText("Key group")).toBeInTheDocument();
+        expect(canvas.getByText("VIP")).toBeInTheDocument();
+      }
+    );
+
+    await step("Both columns render for every row", async () => {
+      expect(
+        canvas.getByRole("columnheader", { name: /name/i })
+      ).toBeInTheDocument();
+      expect(
+        canvas.getByRole("columnheader", { name: /^key$/i })
+      ).toBeInTheDocument();
+
+      const dataRows = canvas.getAllByRole("row").slice(1);
+      expect(dataRows.length).toBe(2);
+      // The collision used to throw "Cell count must match column count", so
+      // assert both of each row's values actually made it into the row.
+      expect(within(dataRows[0]).getByText("VIP")).toBeInTheDocument();
+      expect(within(dataRows[0]).getByText("vip")).toBeInTheDocument();
+      expect(within(dataRows[1]).getByText("Key group")).toBeInTheDocument();
+      expect(within(dataRows[1]).getByText("key")).toBeInTheDocument();
+    });
+  },
+};
+
+export const BusinessKeySelectionReportsRowIds: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+
+    return (
+      <Stack>
+        <DataTable
+          columns={businessKeyColumns}
+          rows={businessKeyRows}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          aria-label="Selection keys for rows carrying a business key field"
+        />
+        <Text data-testid="selected-keys">
+          {selectedKeys === "all"
+            ? "all"
+            : Array.from(selectedKeys).join(",") || "none"}
+        </Text>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Selecting a row reports its id, not its key", async () => {
+      await canvas.findByText("Key group");
+      const dataRows = canvas.getAllByRole("row").slice(1);
+      const secondRowCheckbox = within(dataRows[1]).getByRole("checkbox");
+
+      await userEvent.click(secondRowCheckbox);
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("selected-keys")).toHaveTextContent("b2");
+      });
+    });
+
+    await step("Every selected row reports an id, never a key", async () => {
+      const dataRows = canvas.getAllByRole("row").slice(1);
+      const firstRowCheckbox = within(dataRows[0]).getByRole("checkbox");
+
+      await userEvent.click(firstRowCheckbox);
+
+      await waitFor(() => {
+        const reported = canvas
+          .getByTestId("selected-keys")
+          .textContent?.split(",")
+          .sort();
+        expect(reported).toEqual(["a1", "b2"]);
+      });
+      // "vip" / "key" are the rows' business keys — they must never appear.
+      expect(canvas.getByTestId("selected-keys")).not.toHaveTextContent("vip");
+      expect(canvas.getByTestId("selected-keys")).not.toHaveTextContent("key");
+    });
+  },
+};
+
+export const BusinessKeyCustomRowRenderer: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+
+    return (
+      <Stack>
+        <DataTable.Root
+          columns={businessKeyColumns}
+          rows={businessKeyRows}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+        >
+          <DataTable.Table aria-label="Custom rows carrying a business key field">
+            <DataTable.Header />
+            <DataTable.Body>
+              {(row, rowRenderProps) => (
+                <DataTable.Row
+                  row={row}
+                  {...rowRenderProps}
+                  data-testid={`business-key-row-${row.id}`}
+                />
+              )}
+            </DataTable.Body>
+          </DataTable.Table>
+        </DataTable.Root>
+        <Text data-testid="custom-selected-keys">
+          {selectedKeys === "all"
+            ? "all"
+            : Array.from(selectedKeys).join(",") || "none"}
+        </Text>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("A custom row renderer is keyed by id too", async () => {
+      expect(
+        await canvas.findByTestId("business-key-row-b2")
+      ).toBeInTheDocument();
+
+      const checkbox = within(
+        canvas.getByTestId("business-key-row-b2")
+      ).getByRole("checkbox");
+
+      await userEvent.click(checkbox);
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("custom-selected-keys")).toHaveTextContent(
+          "b2"
+        );
+      });
+    });
+  },
+};
