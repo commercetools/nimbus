@@ -62,14 +62,8 @@ jobs:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
-      # v2 of this action is required by @changesets/cli v3. v1 detected which
-      # packages were published by scraping "New tag: <pkg>@<version>" lines out
-      # of the publish output; v3 no longer prints them, so v1 saw zero packages
-      # and silently skipped pushing tags and creating releases. v2 reads the
-      # structured file named by CHANGESETS_OUTPUT, which it passes down to the
-      # scripts below. Inputs were also renamed to kebab-case in v2, and a
-      # custom token must now arrive through the `github-token` input -- the
-      # GITHUB_TOKEN environment variable is no longer a substitute.
+      # Keep this action's major version in step with @changesets/cli's: v1
+      # cannot read v3's publish output and silently skips tags and releases.
       - name: Creating release pull request or publishing release to npm registry
         id: changesets
         uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
@@ -83,13 +77,8 @@ jobs:
         env:
           SKIP_POSTINSTALL_DEV_SETUP: true
 
-      # 3.6.0 shipped to npm with no git tags and no GitHub releases, and this
-      # job still reported the publish step as successful, because the action
-      # could not read the CLI's output and concluded nothing had been
-      # published. Assert the invariant directly rather than trusting the
-      # action's own report: whatever version is on npm must have a git tag.
-      # Skipping when the version is absent from npm keeps ordinary pushes and
-      # the version-PR run quiet -- it only fires on a real inconsistency.
+      # Derived independently of the step above, which has reported success
+      # while creating no tags at all.
       - name: Verify the published version is tagged
         if: github.ref == 'refs/heads/main'
         run: |
@@ -129,9 +118,7 @@ jobs:
           git reset --hard origin/main
           git clean -fd
           # @changesets/cli v3 exits 1 when there are no unreleased changesets
-          # (changesets/changesets#1860); v2 exited 0 silently. Right after a
-          # release the directory is empty, so check here instead of letting the
-          # CLI fail the job.
+          # (changesets/changesets#1860), the normal state right after a release.
           if [ -z "$(find .changeset -maxdepth 1 -name '*.md' ! -name 'README.md' -print -quit)" ]; then
             echo "No pending changesets - nothing to publish as a canary."
             exit 0
@@ -211,8 +198,7 @@ jobs:
         run: |
           set -euo pipefail
           SNAPSHOT_TAG="canary-${{ steps.pr.outputs.tag }}"
-          # See the note on the main canary step: v3 exits 1 with no changesets.
-          # Fail with an actionable message rather than the CLI's bare error.
+          # v3 exits 1 with no changesets; say why rather than leaking that.
           if [ -z "$(find .changeset -maxdepth 1 -name '*.md' ! -name 'README.md' -print -quit)" ]; then
             echo "::error::This PR has no changeset, so there is nothing to publish as a canary. Add one with 'pnpm changeset'."
             exit 1
