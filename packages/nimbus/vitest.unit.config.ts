@@ -25,7 +25,7 @@ export default defineConfig(async () => {
         "src/**/*.stories.{ts,tsx}",
         // Files using vi.mock() must run isolated to avoid polluting
         // the shared module cache (see vitest.unit-isolated.config.ts)
-        "src/components/toast/toast.spec.tsx",
+        "src/components/toast/toast.spec.ts",
         "src/plugins/*.spec.ts",
         "node_modules",
         "dist",
