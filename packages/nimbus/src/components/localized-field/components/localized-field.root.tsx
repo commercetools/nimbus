@@ -40,7 +40,7 @@ import {
   getLocaleFieldAttribute,
   sortCurrencies,
   sortLocalesByDefaultLocaleLanguage,
-} from "../utils/localized-field.utils";
+} from "../utils";
 import { LocalizedFieldLocaleField } from "./localized-field.locale-field";
 
 /**

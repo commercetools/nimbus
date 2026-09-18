@@ -1,17 +1,16 @@
-import { LocalizedFieldRoot } from "./components";
+import { LocalizedFieldRoot, RequiredValueErrorMessage } from "./components";
 import {
   getLocaleFieldAttribute,
   createLocalizedString,
   isEmpty,
   omitEmptyTranslations,
   isTouched,
-  RequiredValueErrorMessage,
   toFieldErrors,
   convertToMoneyValues,
   parseMoneyValues,
   getHighPrecisionCurrencies,
   getEmptyCurrencies,
-} from "./utils/localized-field.utils";
+} from "./utils";
 
 /**
  * LocalizedField component with utility methods for managing localized input fields.
