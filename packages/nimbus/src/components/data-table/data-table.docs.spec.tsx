@@ -765,7 +765,7 @@ describe("DataTable - Accessibility", () => {
  * @docs-order 11
  */
 describe("DataTable.Manager - Basic rendering", () => {
-  it("renders the settings button", () => {
+  it("renders the settings button", async () => {
     const managerColumns: DataTableColumnItem[] = [
       {
         id: "name",
@@ -799,8 +799,9 @@ describe("DataTable.Manager - Basic rendering", () => {
       </NimbusProvider>
     );
 
+    // Manager is lazy-loaded, so wait for it to resolve
     expect(
-      screen.getByRole("button", { name: /settings/i })
+      await screen.findByRole("button", { name: /settings/i })
     ).toBeInTheDocument();
   });
 
@@ -839,7 +840,10 @@ describe("DataTable.Manager - Basic rendering", () => {
       </NimbusProvider>
     );
 
-    const settingsButton = screen.getByRole("button", { name: /settings/i });
+    // Manager is lazy-loaded, so wait for it to resolve
+    const settingsButton = await screen.findByRole("button", {
+      name: /settings/i,
+    });
 
     // Verify button can be clicked
     await user.click(settingsButton);
@@ -896,7 +900,10 @@ describe("DataTable.Manager - Column management", () => {
       </NimbusProvider>
     );
 
-    const settingsButton = screen.getByRole("button", { name: /settings/i });
+    // Manager is lazy-loaded, so wait for it to resolve
+    const settingsButton = await screen.findByRole("button", {
+      name: /settings/i,
+    });
     await user.click(settingsButton);
 
     await waitFor(() => {
@@ -946,7 +953,10 @@ describe("DataTable.Manager - Column management", () => {
       </NimbusProvider>
     );
 
-    const settingsButton = screen.getByRole("button", { name: /settings/i });
+    // Manager is lazy-loaded, so wait for it to resolve
+    const settingsButton = await screen.findByRole("button", {
+      name: /settings/i,
+    });
     await user.click(settingsButton);
 
     // Note: Full drag-and-drop testing would require more complex setup
@@ -997,7 +1007,10 @@ describe("DataTable.Manager - Layout settings", () => {
       </NimbusProvider>
     );
 
-    const settingsButton = screen.getByRole("button", { name: /settings/i });
+    // Manager is lazy-loaded, so wait for it to resolve
+    const settingsButton = await screen.findByRole("button", {
+      name: /settings/i,
+    });
     await user.click(settingsButton);
 
     await waitFor(() => {
@@ -1042,7 +1055,10 @@ describe("DataTable.Manager - Layout settings", () => {
       </NimbusProvider>
     );
 
-    const settingsButton = screen.getByRole("button", { name: /settings/i });
+    // Manager is lazy-loaded, so wait for it to resolve
+    const settingsButton = await screen.findByRole("button", {
+      name: /settings/i,
+    });
     await user.click(settingsButton);
 
     // Note: Actual toggle interaction testing would require finding specific buttons
@@ -1099,7 +1115,10 @@ describe("DataTable.Manager - Custom settings", () => {
       </NimbusProvider>
     );
 
-    const settingsButton = screen.getByRole("button", { name: /settings/i });
+    // Manager is lazy-loaded, so wait for it to resolve
+    const settingsButton = await screen.findByRole("button", {
+      name: /settings/i,
+    });
     await user.click(settingsButton);
 
     await waitFor(() => {
@@ -1148,7 +1167,10 @@ describe("DataTable.Manager - Custom settings", () => {
       </NimbusProvider>
     );
 
-    const settingsButton = screen.getByRole("button", { name: /settings/i });
+    // Manager is lazy-loaded, so wait for it to resolve
+    const settingsButton = await screen.findByRole("button", {
+      name: /settings/i,
+    });
     await user.click(settingsButton);
 
     await waitFor(() => {

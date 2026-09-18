@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { SlotRecipeProps } from "@chakra-ui/react/styled-system";
 import { Stack, ToggleButtonGroup } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { SentimentSatisfied as DemoIcon } from "@commercetools/nimbus-icons";
@@ -26,15 +27,36 @@ const defaultChildren = (
   </>
 );
 
-type ToggleButtonGroupSize = "md" | "xs"; // Replace with actual derived type if possible
-type ToggleButtonGroupColorPalette = "primary" | "critical" | "neutral"; // Replace with actual derived type
+// Derived from the recipe so a size-scale change is a compile error here rather
+// than silent drift. `Extract<…, string>` strips the responsive `ConditionalValue`
+// object/array forms, leaving the plain union (needed for `key` / template use).
+type ToggleButtonGroupSize = Extract<
+  NonNullable<SlotRecipeProps<"nimbusToggleButtonGroup">["size"]>,
+  string
+>;
+// `variant` and `activeFillStyle` are recipe variants, so derive them the same
+// way as `size` above — a value change in the recipe becomes a compile error here.
+type ToggleButtonGroupVariant = Extract<
+  NonNullable<SlotRecipeProps<"nimbusToggleButtonGroup">["variant"]>,
+  string
+>;
+type ToggleButtonGroupActiveFillStyle = Extract<
+  NonNullable<SlotRecipeProps<"nimbusToggleButtonGroup">["activeFillStyle"]>,
+  string
+>;
+// `colorPalette` is NOT a recipe variant (it's a style prop applying any semantic
+// palette to the selected state), so it can't derive from the recipe like the
+// others — this is a curated demo subset of the full `SemanticPalettesOnly` set.
+type ToggleButtonGroupColorPalette = "primary" | "critical" | "neutral";
 
-const sizes: ToggleButtonGroupSize[] = ["md", "xs"];
+const sizes: ToggleButtonGroupSize[] = ["2xs", "xs", "sm", "md", "xl"];
 const colorPalettes: ToggleButtonGroupColorPalette[] = [
   "primary",
   "critical",
   "neutral",
 ];
+const variants: ToggleButtonGroupVariant[] = ["outline", "subtle"];
+const activeFillStyles: ToggleButtonGroupActiveFillStyle[] = ["tint", "solid"];
 
 /**
  * Base story
@@ -347,6 +369,99 @@ export const ColorPalettes: Story = {
         within(groups[2]).getAllByRole("radio").length
       ).toBeGreaterThan(0);
     });
+  },
+};
+
+/**
+ * `variant` sets the resting chrome shared by the whole group; the group stays
+ * segmented in either variant.
+ */
+export const Variants: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="400" direction="column">
+      {variants.map((variant) => (
+        <ToggleButtonGroup.Root
+          key={variant}
+          variant={variant}
+          colorPalette="primary"
+          defaultSelectedKeys={["center"]}
+          aria-label={`${variant} variant group`}
+        >
+          {defaultChildren}
+        </ToggleButtonGroup.Root>
+      ))}
+    </Stack>
+  ),
+};
+
+/**
+ * `activeFillStyle` weights the selected segments. The default follows the
+ * selection mode (single → solid, multiple → tint); both fills are shown here
+ * explicitly.
+ */
+export const ActiveFillStyles: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="400" direction="column">
+      {activeFillStyles.map((activeFillStyle) => (
+        <ToggleButtonGroup.Root
+          key={activeFillStyle}
+          activeFillStyle={activeFillStyle}
+          colorPalette="primary"
+          defaultSelectedKeys={["center"]}
+          aria-label={`${activeFillStyle} fill group`}
+        >
+          {defaultChildren}
+        </ToggleButtonGroup.Root>
+      ))}
+    </Stack>
+  ),
+};
+
+/**
+ * Every `ToggleButtonGroup.Button` is a full `ToggleButton`, so a prop set on a
+ * single button overrides the value inherited from the group. Here a **middle**
+ * button overrides the group `colorPalette` and is selected — its seams (both
+ * the left border and the right box-shadow) are drawn from its own palette, so
+ * a non-last override is not hidden behind a neighbour's chrome. (One edge case
+ * the seam can't own: where two *adjacent* selected segments meet in
+ * `selectionMode="multiple"`, the later one's border-left paints over the
+ * earlier one's shadow — see the recipe's seam comment.)
+ */
+export const PerButtonOverride: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    colorPalette: "primary",
+    defaultSelectedKeys: ["archive"],
+    "aria-label": "Per button override group",
+  },
+  render: (args) => (
+    <ToggleButtonGroup.Root {...args}>
+      <ToggleButtonGroup.Button id="keep">Keep</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="archive" colorPalette="critical">
+        Archive
+      </ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="delete">Delete</ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const group = canvas.getByRole("radiogroup", {
+      name: /Per button override group/i,
+    });
+    const buttons = within(group).getAllByRole("radio");
+
+    await step(
+      "Renders three buttons with the middle one selected",
+      async () => {
+        await expect(buttons).toHaveLength(3);
+        await expect(buttons[1]).toHaveAttribute("aria-checked", "true");
+      }
+    );
   },
 };
 
