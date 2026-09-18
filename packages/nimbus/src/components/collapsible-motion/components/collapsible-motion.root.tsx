@@ -1,7 +1,7 @@
 import { useRef, forwardRef } from "react";
 import { useDisclosure } from "react-aria";
 import { useDisclosureState } from "react-stately";
-import { CollapsibleMotionContext } from "./collapsible-motion-context";
+import { CollapsibleMotionContext } from "./collapsible-motion.context";
 import { CollapsibleMotionRootSlot } from "../collapsible-motion.slots";
 import type { CollapsibleMotionRootProps } from "../collapsible-motion.types";
 

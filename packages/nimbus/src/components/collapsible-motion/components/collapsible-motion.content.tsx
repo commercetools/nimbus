@@ -2,7 +2,7 @@ import { forwardRef, useRef } from "react";
 import { useObjectRef } from "react-aria";
 import { Presence } from "@chakra-ui/react/presence";
 import { mergeRefs } from "@/utils";
-import { useCollapsibleMotionContext } from "./collapsible-motion-context";
+import { useCollapsibleMotionContext } from "./collapsible-motion.context";
 import { CollapsibleMotionContentSlot } from "../collapsible-motion.slots";
 import type { CollapsibleMotionContentProps } from "../collapsible-motion.types";
 

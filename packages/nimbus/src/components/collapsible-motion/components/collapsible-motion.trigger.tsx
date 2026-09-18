@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { mergeProps } from "react-aria";
-import { useCollapsibleMotionContext } from "./collapsible-motion-context";
+import { useCollapsibleMotionContext } from "./collapsible-motion.context";
 import { CollapsibleMotionTriggerSlot } from "../collapsible-motion.slots";
 import type { CollapsibleMotionTriggerProps } from "../collapsible-motion.types";
 import { Button as RaButton, ButtonContext } from "react-aria-components";
