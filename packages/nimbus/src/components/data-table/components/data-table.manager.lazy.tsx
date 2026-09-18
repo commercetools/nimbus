@@ -12,11 +12,13 @@ import type { DataTableColumnItem } from "../data-table.types";
 import { dataTableMessagesStrings } from "../data-table.messages";
 
 /**
- * DataTable.Manager - Manager component for the data table
+ * Implementation of DataTable.Manager, code-split into its own chunk.
  *
- * @supportsStyleProps
+ * Rendered through the Suspense wrapper in `data-table.tsx`, which is what
+ * consumers reach as `DataTable.Manager`. Keeping the implementation here keeps
+ * Drawer, Tabs, DraggableList and SearchInput out of the core DataTable chunk.
  */
-export const DataTableManager = () => {
+export default function DataTableManagerImpl() {
   const [isOpen, setIsOpen] = useState(false);
   const context = useDataTableContext();
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
@@ -244,6 +246,4 @@ export const DataTableManager = () => {
       </Drawer.Root>
     </>
   );
-};
-
-DataTableManager.displayName = "DataTable.Manager";
+}

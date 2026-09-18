@@ -70,6 +70,58 @@ const App = () => (
 );
 ```
 
+### Variant
+
+The `variant` prop sets the resting chrome shared by the whole group. The group
+is always segmented; the variant only changes the resting fill.
+
+#### Outline (default)
+
+```jsx live
+const App = () => (
+  <ToggleButtonGroup.Root variant="outline" selectedKeys={["outline-center"]} colorPalette="primary" aria-label="Outline variant example">
+    <ToggleButtonGroup.Button id="outline-left">Left</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="outline-center">Center</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="outline-right">Right</ToggleButtonGroup.Button>
+  </ToggleButtonGroup.Root>
+);
+```
+
+#### Subtle
+
+```jsx live
+const App = () => (
+  <ToggleButtonGroup.Root variant="subtle" selectedKeys={["subtle-center"]} colorPalette="primary" aria-label="Subtle variant example">
+    <ToggleButtonGroup.Button id="subtle-left">Left</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="subtle-center">Center</ToggleButtonGroup.Button>
+    <ToggleButtonGroup.Button id="subtle-right">Right</ToggleButtonGroup.Button>
+  </ToggleButtonGroup.Root>
+);
+```
+
+### Active fill
+
+The `activeFillStyle` prop sets the weight of the selected segments. Its default
+follows the selection mode: single selection defaults to `solid`, multiple to
+`tint`.
+
+```jsx live
+const App = () => (
+  <Stack gap="400" direction="column">
+    <ToggleButtonGroup.Root activeFillStyle="solid" selectedKeys={["solid-center"]} colorPalette="primary" aria-label="Solid fill example">
+      <ToggleButtonGroup.Button id="solid-left">Left</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="solid-center">Center</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="solid-right">Right</ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+    <ToggleButtonGroup.Root selectionMode="multiple" activeFillStyle="tint" selectedKeys={["tint-left", "tint-right"]} colorPalette="primary" aria-label="Tint fill example">
+      <ToggleButtonGroup.Button id="tint-left">Left</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="tint-center">Center</ToggleButtonGroup.Button>
+      <ToggleButtonGroup.Button id="tint-right">Right</ToggleButtonGroup.Button>
+    </ToggleButtonGroup.Root>
+  </Stack>
+);
+```
+
 ### Visual options
 
 Toggle Button Groups can be configured with labels, icons, or both.

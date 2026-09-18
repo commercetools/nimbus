@@ -12,8 +12,14 @@ export const toolbarRecipe = defineRecipe({
 
     "& .nimbus-group, & .nimbus-toggle-button-group__root": {
       alignItems: "center",
-      gap: "var(--toolbar-spacing)",
       flexDirection: "var(--toolbar-direction)",
+      gap: "var(--toolbar-spacing)",
+      // Segmented groups (`ToggleButtonGroup.Button` children share borders)
+      // collapse the toolbar gap; raw `ToggleButton` children keep it. Nested
+      // so it's one class more specific than the gap above and overrides it.
+      "&:has(> .nimbus-toggle-button-group__button)": {
+        gap: "0",
+      },
     },
   },
   variants: {

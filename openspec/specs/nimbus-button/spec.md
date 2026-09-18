@@ -276,7 +276,7 @@ The component SHALL accept Chakra style props.
 
 ### Requirement: Pressed State
 
-The component SHALL expose press state as a data attribute.
+The component SHALL expose press state as a data attribute and provide tactile press feedback.
 
 #### Scenario: Data-pressed attribute
 
@@ -285,6 +285,24 @@ The component SHALL expose press state as a data attribute.
 - **AND** SHALL remove `data-pressed` when the press ends
 - **AND** press state SHALL be derived from `useButton`'s `isPressed`
 - **AND** SHALL be available for CSS-based styling via `[data-pressed]` selector
+
+#### Scenario: Tactile press feedback
+
+- **WHEN** the button is pressed
+- **THEN** SHALL nudge the button down by `translateY(1px)` (translate only, no scaling, so text and icons stay crisp and layout does not reflow)
+- **AND** the `subtle`, `outline`, and `ghost` variants SHALL deepen their fill to `colorPalette.5` and text to `colorPalette.12` while pressed
+- **AND** the pressed feedback SHALL fire for pointer, keyboard, and touch alike
+
+### Requirement: Expanded (disclosure) State
+
+A button acting as a disclosure or menu trigger SHALL paint a distinct open-state background so an open trigger reads consistently with a held (pressed) one.
+
+#### Scenario: Expanded fill
+
+- **WHEN** the button carries `aria-expanded="true"` (e.g. an open `Menu.Trigger` or a disclosure toggle)
+- **THEN** SHALL apply an open-state fill matching the pressed fill for its variant: `solid` SHALL darken step 10 (`color-mix` with 5% black); `subtle`, `outline`, and `ghost` SHALL use `colorPalette.5` with `colorPalette.12` text
+- **AND** the open state SHALL apply the fill only — it SHALL NOT apply the `translateY(1px)` press nudge, because the expanded state is sustained while the overlay is open and a persistent transform would offset a React Aria overlay from its measured anchor and break a segmented group's shared border
+- **AND** SHALL be available for CSS-based styling via the `_expanded` condition (`[aria-expanded]` / `[data-expanded]`)
 
 ### Requirement: Deprecated Native HTML Props
 
