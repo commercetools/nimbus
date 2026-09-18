@@ -7,18 +7,28 @@ protocol:
 
 Determine the file type by extension and location:
 
-- `*.mdx` → Documentation file
+- `{component-name}.mdx` → Designer documentation (Overview tab)
+- `*.guidelines.mdx` → Design guidelines (Guidelines tab)
+- `*.dev.mdx` → Developer documentation (Implementation tab)
+- `*.a11y.mdx` → Accessibility documentation (Accessibility tab)
 - `*.stories.tsx` → Storybook stories
-- `*.spec.tsx` or `*.spec.ts` → Unit tests
+- `*.spec.ts` or `*.spec.tsx` → Internal unit tests
+- `*.docs.spec.tsx` → Consumer implementation tests
 - `*.recipe.ts` → Chakra UI recipe
 - `*.slots.tsx` → Slot components
 - `*.types.ts` → Type definitions
 - `*.i18n.ts` → Internationalization messages
 - `{component-name}.tsx` → Main component file
 - `index.ts` → Barrel exports (public API)
+- `*.context.tsx` or `*.custom-context.tsx` → React context
+- `*.figma.tsx` → Figma Code Connect mapping
+- `*.lazy.tsx` → Code-split implementation module
 - `*/utils/*.ts` → Utility functions
 - `*/hooks/*.ts` → React hooks
 - `*/constants/*.ts` → Constants and configuration
+- `*/derivatives/*/` → Derivative component
+
+`docs/naming-conventions.md` is authoritative for these patterns.
 
 ## Step 2: Load Corresponding Guidelines
 

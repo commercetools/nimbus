@@ -237,22 +237,9 @@ component-name/
 
 ### Naming Conventions
 
-| File Type           | Pattern                               | Example                     |
-| ------------------- | ------------------------------------- | --------------------------- |
-| Component           | `{component-name}.tsx`                | `button.tsx`                |
-| Types               | `{component-name}.types.ts`           | `button.types.ts`           |
-| Recipe              | `{component-name}.recipe.ts`          | `button.recipe.ts`          |
-| Slots               | `{ComponentName}Slot`                 | `ButtonSlot`                |
-| Props               | `{ComponentName}Props`                | `ButtonProps`               |
-| Hooks               | `use{Functionality}`                  | `useButton`                 |
-| i18n                | `{component-name}.i18n.ts`            | `button.i18n.ts`            |
-| Stories             | `{component-name}.stories.tsx`        | `button.stories.tsx`        |
-| Documentation       | `{component-name}.mdx`                | `button.mdx`                |
-| Engineering Docs    | `{component-name}.dev.mdx`            | `button.dev.mdx`            |
-| Documentation Tests | `{component-name}.docs.spec.tsx`      | `button.docs.spec.tsx`      |
-| Test Data           | `{component-name}.test-data.ts`       | `button.test-data.ts`       |
-| Test Utilities      | `{component-name}.test-utils.ts`      | `button.test-utils.ts`      |
-| Test Components     | `{component-name}.test-component.tsx` | `button.test-component.tsx` |
+[Naming Conventions](./naming-conventions.md) is the authoritative source for
+file names, extensions, type names, and variable names. It is not summarised
+here, so that there is only one table to keep correct.
 
 ### Import Conventions
 

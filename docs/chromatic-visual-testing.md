@@ -59,8 +59,7 @@ carries `ReadOnlyState`; MultilineTextInput, NumberInput and TextInput have no
 
 **Primitives with no painted surface get no VRT at all.** The test isn't "has a
 recipe file" - it's **does it paint, and is there a state space to enumerate?**
-(Glob `*.recipe.*` when checking: some recipes are `.recipe.tsx`, so a
-`.ts`-only look concludes they have none.) Each such component gets zero
+(Recipes are always `{component}.recipe.ts`.) Each such component gets zero
 snapshots plus a one-line `meta` note -
 `// No VRT: <reason> (see chromatic-visual-testing.md).` - so the omission reads
 as deliberate rather than forgotten. The shapes:

@@ -129,9 +129,9 @@ The merged file is named for the **shared token, agent-noun form, pluralized**:
   `parsers.ts`, `validate` → `validators.ts`, `format` → `formatters.ts`
 - noun-token → keep singular: `color` → `color.ts`, `currency` → `currency.ts`
 
-**Banned filenames**: `helpers.ts`, `utils.ts`, `misc.ts`, or naming a merged
-file after a single function (`get-initials.ts` does NOT become the home for
-`getFullName`).
+**Banned filenames**: `helpers.ts`, `utils.ts`, `misc.ts`,
+`{component}.utils.ts`, or naming a merged file after a single function
+(`get-initials.ts` does NOT become the home for `getFullName`).
 
 ### Coupling Rule
 
@@ -249,6 +249,27 @@ Use `as const` assertions to ensure immutable, type-safe constant definitions.
 Provide explicit TypeScript types for all utility functions with proper
 parameter and return type definitions.
 
+## Test Infrastructure Files
+
+Three file types live inside `utils/` but are **test infrastructure**, not
+production helpers, and are exempt from the "pure functions, no JSX" rule and
+from needing a sibling spec of their own:
+
+| File                                 | Purpose                                                     |
+| ------------------------------------ | ----------------------------------------------------------- |
+| `{component}.test-data.ts` / `.tsx`  | Fixtures and sample data for tests                          |
+| `{component}.test-utils.ts` / `.tsx` | Render helpers and assertions shared between tests          |
+| `{component}.test-component.tsx`     | A component defined purely to exercise behaviour under test |
+
+These follow
+[Rule 2](../naming-conventions.md#rule-2-extension-follows-contents): the
+extension tracks contents, so `combobox.test-utils.tsx` is `.tsx` because it
+renders JSX, while `draggable-list.test-utils.ts` is not.
+
+A `.test-component.tsx` file exporting a component is correct. A _production_
+util file exporting a component is not — move it out of `utils/` into its own
+module.
+
 ## Related Guidelines
 
 - [Hooks](./hooks.md) - React-specific logic
@@ -265,9 +286,10 @@ parameter and return type definitions.
       family file per the [File Organization](#file-organization) rule. Banned
       filenames: `helpers.ts`, `utils.ts`, `misc.ts`. Promotable and
       component-coupled helpers do not belong in the same file.
-- [ ] **Sibling `{name}.spec.ts`** for every util file
+- [ ] **Sibling `{name}.spec.ts`** for every util file (`.spec.tsx` only if that
+      spec contains JSX - see [Naming Conventions](../naming-conventions.md))
 - [ ] Pure functions (no React features in utils, no JSX, no side effects at
-      module scope)
+      module scope) - **test infrastructure is exempt**, see below
 - [ ] Immutable constants with `as const`
 - [ ] JSDoc documentation for all exports
 - [ ] Type-safe function signatures
