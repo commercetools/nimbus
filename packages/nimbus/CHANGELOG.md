@@ -1,5 +1,190 @@
 # @commercetools/nimbus
 
+## 3.6.0
+
+### Minor Changes
+
+- [#1941](https://github.com/commercetools/nimbus/pull/1941)
+  [`7ac47da`](https://github.com/commercetools/nimbus/commit/7ac47dae713ff1fa1402981fe4d5674b33526dcb)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! -
+  `@commercetools/nimbus-icons` and `@commercetools/nimbus-tokens` are no longer
+  required peer dependencies. Nimbus now bundles the icons and tokens it uses
+  internally, so consumers only need to install `@chakra-ui/react` and `react`
+  as peers.
+
+  - Consumers who import icons directly from `@commercetools/nimbus-icons` for
+    their own UI should keep it as a regular dependency — it continues to work
+    independently and now tree-shakes correctly.
+  - Consumers who only had `nimbus-icons` and `nimbus-tokens` installed because
+    nimbus required them can remove both packages.
+
+  `@commercetools/nimbus-icons`: fixed tree-shaking — bundlers now correctly
+  eliminate unused icons instead of including all 2,000+.
+
+- [#1936](https://github.com/commercetools/nimbus/pull/1936)
+  [`3ccc421`](https://github.com/commercetools/nimbus/commit/3ccc421cf32fe2ab2dac5efb6bdf194f8422f278)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Popover`: new compound
+  component for interactive content anchored to a trigger — `Popover.Root`,
+  `Popover.Trigger` and `Popover.Content`. Reach for it for filter panels, short
+  edit forms and context-sensitive actions; `Tooltip` still covers plain hints,
+  and `Dialog` covers flows that should block the page.
+
+  Name `Popover.Content` with `aria-label` or `aria-labelledby` — a visible
+  heading inside the popover does not name it.
+
+  Beta. See the
+  [Popover docs](https://nimbus-documentation.vercel.app/components/feedback/popover)
+  for the full prop reference.
+
+- [#1947](https://github.com/commercetools/nimbus/pull/1947)
+  [`0aea8c7`](https://github.com/commercetools/nimbus/commit/0aea8c7ad2e7b61ce544636b27e52952685edd9c)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `ComboBox`, `Select` and
+  `SearchInput` gain a `trailingElement` prop for placing an icon, button or
+  filter control at the trailing edge of the field, beside the existing clear
+  and toggle controls.
+
+  ### `Select`
+  - The trailing element sits beside the trigger rather than inside it, so
+    interactive content keeps its own behaviour: pressing a trailing button runs
+    your handler without opening the listbox.
+  - The focus ring now follows focus anywhere in the field, so focusing the
+    clear button or trailing content outlines the whole field rather than just
+    that control. This matches how `ComboBox` and `SearchInput` already behave.
+  - **Fixed:** a field with `isClearable={false}` no longer reserves space for
+    the clear button it never renders, so it is around 24px narrower with no gap
+    before the chevron. `MoneyInput`, `ScopedSearchInput` and `Pagination` each
+    embed such a field and change appearance accordingly.
+
+  ### `SearchInput`
+  - New `leadingElement` prop. It defaults to the search icon, so existing usage
+    is unaffected; pass an element to replace the icon, or `null` to remove it.
+    Interactive leading content now receives clicks.
+
+- [#1943](https://github.com/commercetools/nimbus/pull/1943)
+  [`dfc5aa3`](https://github.com/commercetools/nimbus/commit/dfc5aa37f2e450c0b16cc9fc1022a92159e8299e)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Components now declare
+  which style props they support via a `@supportsStyleProps` JSDoc tag. This
+  metadata is surfaced by the MCP tools (`get_component`, `get_docs_page`,
+  `migrate_from_uikit`) so AI-assisted migrations can apply layout and spacing
+  props directly to components instead of wrapping them in a `Box`.
+
+- [#1950](https://github.com/commercetools/nimbus/pull/1950)
+  [`afaa921`](https://github.com/commercetools/nimbus/commit/afaa9212582d144c27f55fa0798338cd8076bb76)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `ToggleButtonGroup` and
+  `ToggleButton` gain an `activeFillStyle` prop and a shared neutral-at-rest
+  visual model, and `Button` gains pressed-state feedback.
+
+  ### `ToggleButtonGroup`
+  - New `variant` prop (`outline` | `subtle`, default `outline`) sets the
+    resting chrome of the buttons. Resting chrome is neutral; `colorPalette`
+    applies to the selected (active) state.
+  - New `activeFillStyle` prop (`tint` | `solid`) sets the weight of the
+    selected fill. It defaults from `selectionMode` — `single` uses `solid`,
+    `multiple` uses `tint` — and can be overridden per group or per button.
+  - Fixed: `colorPalette` now applies for every semantic palette on the group.
+    Values other than `primary` / `critical` / `neutral` were previously
+    ignored.
+  - `ToggleButtonGroup.Button` is the standard `ToggleButton`: it inherits the
+    group's `variant`, `activeFillStyle`, `size` and `colorPalette` (each
+    overridable per button) and accepts the same style props and `css` as other
+    Nimbus components.
+
+  ### `ToggleButton`
+  - New `activeFillStyle` prop (`tint` | `solid`, default `tint`) sets the
+    weight of the selected fill.
+  - New `subtle` variant.
+  - Resting chrome is neutral and `colorPalette` applies to the selected state,
+    so the accent shows when the button is selected.
+
+  ### `Button`
+  - New pressed-state feedback — a 1px downward nudge plus a darker fill — on
+    top of the existing hover feedback.
+  - Hover and pressed text now use `colorPalette.12` for contrast on those
+    fills.
+  - The `outline` variant's hover background deepened (`colorPalette.3` → `.4`).
+  - The open-state background for disclosure/menu triggers (`aria-expanded`,
+    e.g. `Menu.Trigger`) was realigned to the new pressed fill so an open
+    trigger reads like a held one: `solid` → a slightly darkened step 10;
+    `subtle` / `outline` / `ghost` → step 5 with step-12 text. The open state
+    keeps the fill only — no press nudge, which would otherwise persist for as
+    long as the overlay is open.
+
+  ### Visual changes to review after upgrading
+  - **`selectionMode="multiple"` groups now default to `tint`** instead of the
+    previous solid fill. Pass `activeFillStyle="solid"` to keep the old look.
+  - The selected `tint` fill deepened (`colorPalette.3` → `.5`) and selected
+    text moved to `colorPalette.12`, so **every already-selected `ToggleButton`
+    and `IconToggleButton` changes appearance**. `IconToggleButton` wraps
+    `ToggleButton`, so it inherits `activeFillStyle`, the group context
+    inheritance, and this new selected fill.
+  - **Disclosure/menu-trigger `Button`s** paint a deeper open-state
+    (`aria-expanded`) background than before — the `_expanded` fills were
+    realigned to the new pressed fills (per variant above). The state itself is
+    unchanged; only the shade shifts.
+  - **`outline` `Button`s** hover to a slightly deeper background than before
+    (`colorPalette.3` → `.4`), so every hovered `outline` Button changes shade.
+
+- [#1936](https://github.com/commercetools/nimbus/pull/1936)
+  [`3ccc421`](https://github.com/commercetools/nimbus/commit/3ccc421cf32fe2ab2dac5efb6bdf194f8422f278)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `LocalizedField`: the
+  info popover opened by the hint button now has an accessible name, so screen
+  readers announce it instead of an unnamed dialog. It also matches the
+  appearance of other popovers — one shadow rather than two stacked, no border
+  or background tint of its own — and fades in and out like them. It no longer
+  draws an outline around itself when opened, matching `Dialog` and `Drawer`.
+
+### Patch Changes
+
+- [#1950](https://github.com/commercetools/nimbus/pull/1950)
+  [`afaa921`](https://github.com/commercetools/nimbus/commit/afaa9212582d144c27f55fa0798338cd8076bb76)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `DataTable`: frozen
+  (sticky) columns — including the selection/checkbox column — now follow the
+  row's hover and selection highlight instead of keeping their own background,
+  so the highlight reads as one continuous row across the frozen columns.
+
+- [#1992](https://github.com/commercetools/nimbus/pull/1992)
+  [`8f85752`](https://github.com/commercetools/nimbus/commit/8f8575214f0b7f31d550847d7d1fa94a7b77a8b5)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `DataTable`: rows no
+  longer fire `onRowClick` or toggle row selection for a click that never
+  actually landed on the row. This could happen when the row sat underneath
+  other floating UI (e.g. a `ComboBox` or `Select` popover positioned above the
+  table) that closed the moment an option was picked — the browser would deliver
+  the tail end of that click to the row instead, causing an unrelated row to
+  appear to get clicked or selected.
+
+- [#1983](https://github.com/commercetools/nimbus/pull/1983)
+  [`0d9e5e3`](https://github.com/commercetools/nimbus/commit/0d9e5e33ad27ceaacbf7132a979d87f384b62c31)
+  Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency
+  `@vitest/browser` to `5.0.0`, `@vitest/browser-playwright` to `5.0.0`,
+  `@vitest/coverage-v8` to `5.0.0`, `@testing-library/jest-dom` to `7.0.1`,
+  `vitest` to `5.0.0`, `jsdom` to `30.0.1`.
+
+- [#1973](https://github.com/commercetools/nimbus/pull/1973)
+  [`2ecb781`](https://github.com/commercetools/nimbus/commit/2ecb781d73d7a86113fc4823e9277ff617754f6c)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Update runtime
+  dependencies to their latest non-breaking versions: `react-aria` (3.51.0 →
+  3.52.1), `react-aria-components` (1.20.0 → 1.21.1), `react-stately` (3.49.0 →
+  3.50.0), and `remend` (1.3.0 → 1.3.1). No API changes.
+
+- [#1942](https://github.com/commercetools/nimbus/pull/1942)
+  [`bc113da`](https://github.com/commercetools/nimbus/commit/bc113da912c9f2376dad4bf33eb14d49d5cd91fa)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - `DataTable`: Reduced
+  bundle size for consumers who do not use `DataTable.Manager`. The settings
+  drawer and its dependencies (Drawer, Tabs, DraggableList, etc.) are now loaded
+  on demand, saving ~87 KB gzipped from the initial DataTable import. No API
+  changes required.
+
+- [#1940](https://github.com/commercetools/nimbus/pull/1940)
+  [`4a04f8b`](https://github.com/commercetools/nimbus/commit/4a04f8b568669ced1a5b6091465c5f92a2a8a349)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Tree`: `useTree`'s
+  `move`, `moveBefore` and `moveAfter` no longer discard a node when it is moved
+  into its own subtree. Previously the node and everything beneath it were
+  removed from the tree without anything being reported — `move` for any such
+  target, and `moveBefore` / `moveAfter` whenever the moved node was a top-level
+  node. All three now throw instead, and the error comes from the call itself so
+  it can be caught where the move is made. Drag-and-drop was never affected —
+  such a drop is refused before it reaches the tree.
+
 ## 3.5.1
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @commercetools/nimbus-design-token-ts-plugin
 
+## 3.6.0
+
+### Patch Changes
+
+- [#1983](https://github.com/commercetools/nimbus/pull/1983)
+  [`0d9e5e3`](https://github.com/commercetools/nimbus/commit/0d9e5e33ad27ceaacbf7132a979d87f384b62c31)
+  Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency
+  `@vitest/browser` to `5.0.0`, `@vitest/browser-playwright` to `5.0.0`,
+  `@vitest/coverage-v8` to `5.0.0`, `@testing-library/jest-dom` to `7.0.1`,
+  `vitest` to `5.0.0`, `jsdom` to `30.0.1`.
+
 ## 3.5.1
 
 ## 3.5.0
