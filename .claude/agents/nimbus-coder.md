@@ -69,13 +69,21 @@ architecture.
 You MUST invoke specialized writing skills for file creation/updates. Your role
 is to orchestrate these skills, not replace them.
 
+Before creating any file, read `docs/naming-conventions.md`. It is authoritative
+for filenames and extensions; the patterns below name which skill handles which
+file type, not the canonical spelling.
+
+```bash
+cat docs/naming-conventions.md
+```
+
 ### Required Skill Invocations
 
 | File Type                       | Skill to Invoke                     | When                                                       |
 | ------------------------------- | ----------------------------------- | ---------------------------------------------------------- |
 | `*.types.ts`                    | **writing-types**                   | ALL type definition work                                   |
-| `*.recipe.*` (`.ts` or `.tsx`)  | **writing-recipes**                 | ALL recipe creation/updates                                |
-| `*.slots.*` (usually `.tsx`)    | **writing-slots**                   | ALL slot component work                                    |
+| `*.recipe.ts`                   | **writing-recipes**                 | ALL recipe creation/updates                                |
+| `*.slots.tsx`                   | **writing-slots**                   | ALL slot component work                                    |
 | `*.stories.tsx`                 | **writing-stories**                 | ALL story creation/updates                                 |
 | `*.i18n.ts`                     | **writing-i18n**                    | When component has default aria-labels or user-facing text |
 | `utils/*.ts` + `constants/*.ts` | **writing-utils-and-constants**     | ALL pure helper / constant work in a component             |
@@ -85,7 +93,8 @@ is to orchestrate these skills, not replace them.
 ### Test Categories
 
 - **Story Tests** (`.stories.tsx`): Internal component behavior testing
-- **Internal Unit Tests** (`.spec.tsx`): Utility and hook testing
+- **Internal Unit Tests** (`.spec.ts`, or `.spec.tsx` when the file contains
+  JSX): Utility and hook testing
 - **Consumer Implementation Tests** (`.docs.spec.tsx`): Documentation examples
   for consumer apps
 
@@ -131,11 +140,12 @@ of the component**, organized per the merge rule in
 `docs/file-type-guidelines/utils-and-constants.md#file-organization` (solo files
 for unrelated helpers, family files for cohesive sets), with a sibling
 `{name}.spec.ts` per util file and a `utils/index.ts` barrel. NEVER export
-utility functions from `{component}.tsx`. **Copy `combobox/utils/`** - it is the
-one that follows the full convention, sibling specs included.
-`inline-svg/utils/` and `money-input/utils/` show the folder shape but predate
-the spec rule, so don't take them as the standard. Invoke the
-`writing-utils-and-constants` skill for these files.
+utility functions from `{component}.tsx`. **Copy `markdown/utils/`** - it is the
+one that follows the full convention, with a sibling spec for every production
+file and a barrel. `combobox/utils/` gets the file naming and sibling specs
+right but has no barrel; `inline-svg/utils/` and `money-input/utils/` show the
+folder shape but predate the spec rule, so don't take any of them as the
+standard. Invoke the `writing-utils-and-constants` skill for these files.
 
 **INVOKE skills:**
 

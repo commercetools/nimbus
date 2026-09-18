@@ -79,8 +79,7 @@ You MUST create files in this structure:
 
 ```
 packages/nimbus/src/components/{component}/
-├── recipes/
-│   └── {component}.recipe.ts          # REQUIRED
+├── {component}.recipe.ts              # REQUIRED
 ├── {component}.types.ts               # MUST update with recipe types
 └── {component}.slots.tsx              # REQUIRED for slot recipes
 ```
@@ -160,7 +159,7 @@ You MUST update the component's types file:
 
 ```typescript
 import { type RecipeVariantProps } from '@chakra-ui/react/styled-system'
-import { type {componentName}Recipe } from './recipes/{component}.recipe'
+import { type {componentName}Recipe } from './{component}.recipe'
 
 /**
  * Recipe variant props for {ComponentName}.
@@ -181,7 +180,7 @@ You MUST create a slots file for slot recipes:
 
 ```typescript
 import { createSlotRecipeContext } from '@chakra-ui/react/styled-system'
-import { {componentName}Recipe } from './recipes/{component}.recipe'
+import { {componentName}Recipe } from './{component}.recipe'
 
 const { withProvider, withContext } = createSlotRecipeContext({
   recipe: {componentName}Recipe,
@@ -198,7 +197,7 @@ You MUST register the recipe in `packages/nimbus/src/theme/recipes.ts`:
 **For standard recipes:**
 
 ```typescript
-export { {componentName}Recipe } from '../components/{component}/recipes/{component}.recipe'
+export { {componentName}Recipe } from '../components/{component}/{component}.recipe'
 
 // Add to recipes object:
 recipes: {
@@ -209,7 +208,7 @@ recipes: {
 **For slot recipes:**
 
 ```typescript
-export { {componentName}Recipe } from '../components/{component}/recipes/{component}.recipe'
+export { {componentName}Recipe } from '../components/{component}/{component}.recipe'
 
 // Add to slotRecipes object:
 slotRecipes: {
@@ -268,7 +267,7 @@ You MUST validate against these requirements:
 #### File Structure
 
 - [ ] Recipe file location MUST be:
-      `packages/nimbus/src/components/{component}/recipes/{component}.recipe.ts`
+      `packages/nimbus/src/components/{component}/{component}.recipe.ts`
 - [ ] Import MUST be from `@chakra-ui/react/styled-system` (never the barrel `@chakra-ui/react`)
 - [ ] Export name MUST follow pattern: `{componentName}Recipe`
 
@@ -363,9 +362,9 @@ If verification fails:
 
 You SHOULD reference these recipes:
 
-- **Standard**: `packages/nimbus/src/components/button/recipes/button.recipe.ts`
-- **Slot**: `packages/nimbus/src/components/input/recipes/input.recipe.ts`
-- **Complex**: `packages/nimbus/src/components/badge/recipes/badge.recipe.ts`
+- **Standard**: `packages/nimbus/src/components/button/button.recipe.ts`
+- **Slot**: `packages/nimbus/src/components/input/input.recipe.ts`
+- **Complex**: `packages/nimbus/src/components/badge/badge.recipe.ts`
 
 ## RFC 2119 Key Words
 

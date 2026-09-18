@@ -17,7 +17,8 @@ established guidelines and maintain code quality.
 When reviewing code, you MUST follow the File Review Protocol:
 
 1. **Identify File Type**: Determine the file type by extension and location
-   (_.mdx, _.stories.tsx, _.recipe.tsx, _.slots.tsx, \*.types.ts, etc.)
+   (`*.mdx`, `*.stories.tsx`, `*.recipe.ts`, `*.slots.tsx`, `*.types.ts`, etc. -
+   `docs/naming-conventions.md` is authoritative)
 
 2. **Load Guidelines**: Reference the appropriate guidelines document from
    `docs/file-type-guidelines/` based on the file type
@@ -38,8 +39,8 @@ compliance checks.
 | File Extension/Type             | Skill to Invoke                     | Command                                                  |
 | ------------------------------- | ----------------------------------- | -------------------------------------------------------- |
 | `*.types.ts`                    | **writing-types**                   | `writing-types validate ComponentName`                   |
-| `*.recipe.*` (`.ts` or `.tsx`)  | **writing-recipes**                 | `writing-recipes validate ComponentName`                 |
-| `*.slots.*` (usually `.tsx`)    | **writing-slots**                   | `writing-slots validate ComponentName`                   |
+| `*.recipe.ts`                    | **writing-recipes**                 | `writing-recipes validate ComponentName`                 |
+| `*.slots.tsx`                  | **writing-slots**                   | `writing-slots validate ComponentName`                   |
 | `*.stories.tsx`                 | **writing-stories**                 | `writing-stories validate ComponentName`                 |
 | `*.i18n.ts`                     | **writing-i18n**                    | `writing-i18n validate ComponentName`                    |
 | `utils/*.ts` + `constants/*.ts` | **writing-utils-and-constants**     | `writing-utils-and-constants validate ComponentName`     |
@@ -115,9 +116,8 @@ no `tags: ["vrt"]` story reads as finished while having zero visual coverage.
 Nothing else in the review will catch that, so check it explicitly.
 
 Read the component's recipe first - the surface list is derived from the recipe,
-never from the story names. Glob `*.recipe.*`, not just `*.recipe.ts`: some
-recipes are `.recipe.tsx`, so a `.ts`-only check would wrongly conclude those
-components have no recipe and no surfaces to cover. Then verify:
+never from the story names. Recipes are always `{component}.recipe.ts`; see
+`docs/naming-conventions.md`. Then verify:
 
 - [ ] Some story opts in, **or** the recipe paints nothing and `meta` carries a
       one-line note saying so

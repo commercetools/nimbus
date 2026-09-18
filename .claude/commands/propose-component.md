@@ -91,13 +91,19 @@ flowchart LR
 
 The task list MUST include these file creation steps in this order:
 
-1. **Scaffold component structure** - You MUST create shell files:
+1. **Scaffold component structure** - You MUST first read
+   `docs/naming-conventions.md`, which is authoritative for file extensions,
+   then create shell files:
    - `component.tsx` (empty, with exports)
    - `component.types.ts` (prop/slot type definitions)
    - `component.recipe.ts` (Chakra UI v3 recipe)
-   - `component.slots.ts` (slot definitions, if applicable)
+   - `component.slots.tsx` (slot definitions, if applicable)
    - `component.stories.tsx` (story file with play functions)
    - `index.ts` (barrel export)
+
+   Note `component.slots.tsx` takes the `.tsx` extension even though most slot
+   files contain no JSX — the extension is part of the fixed template. See
+   `docs/naming-conventions.md`.
 
 2. **Create failing Storybook tests** - You MUST write play functions that test:
    - Core functionality
@@ -109,7 +115,7 @@ The task list MUST include these file creation steps in this order:
 3. **Implementation steps** - You MUST execute in dependency order:
    - Implement component types in `component.types.ts`
    - Implement recipe in `component.recipe.ts`
-   - Implement slots in `component.slots.ts` (if applicable)
+   - Implement slots in `component.slots.tsx` (if applicable)
    - Implement component logic in `component.tsx`
    - Create/update documentation using the `/writing-developer-documentation`
      skill

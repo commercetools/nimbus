@@ -21,7 +21,8 @@ Patterns enforced:
   share a meaningful name token, have a factory relationship, or form a direct
   dependency chain — see [File Organization](../../../docs/file-type-guidelines/utils-and-constants.md#file-organization)
   in `utils-and-constants.md` for the canonical rule
-- Sibling `*.spec.ts` per util file (one source file = one spec file)
+- Sibling `*.spec.ts` per util file (one source file = one spec file); `.spec.tsx`
+  only if that spec contains JSX - see `docs/naming-conventions.md`
 - `utils/index.ts` barrel re-exporting every util
 - Pure functions only — no React, no JSX, no side effects
 - JSDoc on every export
@@ -80,7 +81,8 @@ packages/nimbus/src/components/{component}/
 - File name is kebab-case of the function/constant: `getInitials` lives in
   `get-initials.ts`. `MAX_FILE_SIZE` lives in `max-file-size.ts` (or grouped
   by topic: `validation-limits.ts`).
-- Spec file mirrors the source file with a `.spec.ts` suffix.
+- Spec file mirrors the source file with a `.spec.ts` suffix, or `.spec.tsx` if it
+contains JSX (`docs/naming-conventions.md` is authoritative).
 
 ---
 

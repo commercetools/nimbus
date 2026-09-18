@@ -31,8 +31,9 @@ simultaneously (not as separate stories):
   via `addon-a11y` and **fail the run** on a violation (`test: "error"`); play
   functions may add targeted a11y assertions on top.
 
-Unit tests of utilities and hooks live in `*.spec.tsx`, and consumer examples in
-`*.docs.spec.tsx` - separate test categories, not story roles.
+Unit tests of utilities and hooks live in `*.spec.ts` (or `*.spec.tsx` when the
+file contains JSX), and consumer examples in `*.docs.spec.tsx` - separate test
+categories, not story roles. See `docs/naming-conventions.md` for extensions.
 
 **The play requirement is per component, not per story.** Give a story its own
 play when its name makes a behavioral claim, or when its snapshot needs an

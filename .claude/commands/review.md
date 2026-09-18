@@ -18,7 +18,7 @@ First, determine what needs to be reviewed based on the user's request:
    "Dialog"), locate and review all related files:
    - Main component file (`packages/nimbus/src/components/{ComponentName}/`)
    - Stories (`*.stories.tsx`)
-   - Recipes (`*.recipe.tsx`)
+   - Recipes (`*.recipe.ts`)
    - Slots (`*.slots.tsx`)
    - Types (`*.types.ts`)
    - Utilities and hooks
