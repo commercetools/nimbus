@@ -164,12 +164,15 @@ The testing system uses Vitest with three distinct test categories:
 - **Critical**: Interactive components MUST have play functions that test user
   interactions
 
-**Internal Unit Tests (`*.spec.tsx`, utilities and hooks only):**
+**Internal Unit Tests (`*.spec.ts` / `*.spec.tsx`, utilities and hooks):**
 
 - Fast JSDOM-based tests for utilities, hooks, and non-component logic
 - All component testing happens in Storybook stories with play functions
-- Unit tests focus exclusively on pure functions, custom hooks, and business
-  logic
+- Unit tests focus on pure functions, custom hooks, and business logic, plus a
+  small set of component-level exceptions listed in
+  `./docs/file-type-guidelines/unit-testing.md`
+- Extension follows contents: `.spec.tsx` only with JSX, else `.spec.ts` - see
+  `./docs/naming-conventions.md`
 
 **Consumer Implementation Tests (`*.docs.spec.tsx`):**
 
@@ -290,7 +293,7 @@ packages/nimbus/
 │   │   │   ├── button.tsx           # Main component
 │   │   │   ├── button.types.ts      # TypeScript types
 │   │   │   ├── button.stories.tsx   # Storybook stories + tests
-│   │   │   ├── button.spec.tsx      # Unit tests (if needed)
+│   │   │   ├── button.spec.ts       # Unit tests (.tsx if it has JSX)
 │   │   │   ├── button.recipe.ts     # Chakra UI recipe
 │   │   │   ├── button.i18n.ts       # i18n messages
 │   │   │   ├── button.mdx           # Documentation
@@ -320,17 +323,19 @@ When adding a new component:
 
 1. Create component directory in `src/components/`
 2. Implement all required files (see component templates)
-3. Register recipe in `src/theme/recipes/index.ts`
+3. Register recipe in `src/theme/recipes/index.ts`, or
+   `src/theme/slot-recipes/index.ts` for a slot recipe
 4. Export component from `src/index.ts`
 5. Add Storybook stories with play functions
 6. Document in `.mdx` file
 
 ### Recipe Registration
 
-All components using Chakra UI styling must register their recipes:
+All components using Chakra UI styling must register their recipes. There are
+**two** registries, and which one you use depends on the recipe kind:
 
 ```typescript
-// src/theme/recipes/index.ts
+// Standard recipes -> src/theme/recipes/index.ts
 import { buttonRecipe } from "../components/button/button.recipe";
 
 export const recipes = {
@@ -338,6 +343,21 @@ export const recipes = {
   // Add new component recipes here
 };
 ```
+
+```typescript
+// Slot recipes -> src/theme/slot-recipes/index.ts
+import { accordionSlotRecipe } from "@/components/accordion/accordion.recipe";
+
+export const slotRecipes = {
+  accordion: accordionSlotRecipe,
+  // Add new slot recipes here
+};
+```
+
+Both import extensionlessly, and every recipe file is `{component}.recipe.ts` -
+see `../../docs/naming-conventions.md`. Derivative components have no recipe of
+their own and are registered in neither registry; see
+`../../docs/file-type-guidelines/derivatives.md`.
 
 ## Detailed Documentation
 

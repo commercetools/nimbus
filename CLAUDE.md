@@ -487,13 +487,16 @@ The testing system uses Vitest with three distinct test categories:
 | Category                          | File Pattern      | Purpose                                  | Audience     |
 | --------------------------------- | ----------------- | ---------------------------------------- | ------------ |
 | **Story Tests**                   | `*.stories.tsx`   | Internal component behavior testing      | Internal     |
-| **Internal Unit Tests**           | `*.spec.tsx`      | Internal utility and hook testing        | Internal     |
+| **Internal Unit Tests**           | `*.spec.ts` / `*.spec.tsx` | Internal utility and hook testing | Internal |
 | **Consumer Implementation Tests** | `*.docs.spec.tsx` | Documentation examples for consumer apps | **External** |
 
 - **Story Tests**: Test component behavior with play functions in headless
   Chromium via Playwright. ALL component states, interactions, and a11y tested
   here.
-- **Internal Unit Tests**: Fast JSDOM-based tests for utilities and hooks.
+- **Internal Unit Tests**: Fast JSDOM-based tests for utilities and hooks. The
+  extension follows the file's contents: `.spec.tsx` only when it contains JSX,
+  otherwise `.spec.ts`. `docs/naming-conventions.md` is authoritative for all
+  file extensions.
 - **Consumer Implementation Tests**: Working code examples consumers can copy to
   test components in their apps. Injected into `.dev.mdx` docs at build time.
 

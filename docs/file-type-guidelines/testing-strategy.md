@@ -3,8 +3,10 @@
 [← Back to Index](./index.md) |
 [← Component Guidelines](../component-guidelines.md)
 
-> **Note**: This guide is the authoritative source for test categorization.
-> Other files provide context-specific summaries.
+> **Note**: This guide is the authoritative source for test **categorization** —
+> which category a test belongs to, and why. It is not authoritative for file
+> extensions: `docs/naming-conventions.md` owns those. Where this guide shows a
+> filename, it is illustrating a category.
 
 ## Overview
 
@@ -12,11 +14,22 @@ Nimbus uses 3 test categories, each serving a distinct purpose and audience.
 
 ## The 3 Test Categories
 
-| Category                          | File Pattern      | Purpose                                  | Audience     |
-| --------------------------------- | ----------------- | ---------------------------------------- | ------------ |
-| **Story Tests**                   | `*.stories.tsx`   | Internal component behavior testing      | Internal     |
-| **Internal Unit Tests**           | `*.spec.tsx`      | Internal utility and hook testing        | Internal     |
-| **Consumer Implementation Tests** | `*.docs.spec.tsx` | Documentation examples for consumer apps | **External** |
+| Category                          | File Pattern               | Purpose                                  | Audience     |
+| --------------------------------- | -------------------------- | ---------------------------------------- | ------------ |
+| **Story Tests**                   | `*.stories.tsx`            | Internal component behavior testing      | Internal     |
+| **Internal Unit Tests**           | `*.spec.ts` / `*.spec.tsx` | Internal utility and hook testing        | Internal     |
+| **Consumer Implementation Tests** | `*.docs.spec.tsx`          | Documentation examples for consumer apps | **External** |
+
+Internal unit tests take `.spec.tsx` only when the file contains JSX, and
+`.spec.ts` when it does not — see
+[Naming Conventions](../naming-conventions.md#rule-2-extension-follows-contents).
+Consumer implementation tests are always `.docs.spec.tsx`.
+
+> **Note on the test runner**: `vitest.unit.config.ts` includes
+> `src/**/*.spec.{ts,tsx}` with no `*.docs.spec.*` exclusion, so consumer
+> implementation tests currently execute in the same `unit` project as internal
+> unit tests. The categories below describe purpose and audience, not separate
+> runner projects.
 
 ---
 
@@ -54,7 +67,7 @@ export const Disabled: Story = {
 
 ---
 
-## Internal Unit Tests (`*.spec.tsx`)
+## Internal Unit Tests (`*.spec.ts` / `*.spec.tsx`)
 
 ### Purpose
 
@@ -161,7 +174,7 @@ Internal component behavior tests belong in Stories, not here:
 flowchart TD
     Start[What am I testing?] --> Q1{Utility function,<br/>hook, or pure logic?}
 
-    Q1 -->|Yes| Unit[Internal Unit Test<br/>.spec.tsx]
+    Q1 -->|Yes| Unit[Internal Unit Test<br/>.spec.ts or .spec.tsx]
     Q1 -->|No| Q2{Documentation example<br/>for consumers?}
 
     Q2 -->|Yes| Consumer[Consumer Implementation Test<br/>.docs.spec.tsx]
@@ -187,8 +200,12 @@ flowchart TD
 | Form library integration example | Consumer Implementation Test | `*.docs.spec.tsx` |
 | Async data loading example       | Consumer Implementation Test | `*.docs.spec.tsx` |
 | State management example         | Consumer Implementation Test | `*.docs.spec.tsx` |
-| Utility function                 | Internal Unit Test           | `*.spec.tsx`      |
-| Custom hook                      | Internal Unit Test           | `*.spec.tsx`      |
+| Utility function                 | Internal Unit Test           | `*.spec.ts`†      |
+| Custom hook                      | Internal Unit Test           | `*.spec.ts`†      |
+
+† `.spec.tsx` instead if the test file contains JSX — for example a hook tested
+through a wrapper component. A utility or hook test with no JSX stays
+`.spec.ts`.
 
 ---
 

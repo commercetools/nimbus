@@ -5,13 +5,24 @@
 
 ## Purpose
 
-Unit test files (`{utility-name}.spec.ts` or `{hook-name}.spec.ts`) provide
-fast, isolated testing of **utility functions and React hooks** using JSDOM.
-Unit tests are exclusively for non-component logic.
+Unit test files (`{utility-name}.spec.ts` / `{hook-name}.spec.ts`, or
+`.spec.tsx` when the file contains JSX) provide fast, isolated testing of
+**utility functions and React hooks** using JSDOM.
 
-**IMPORTANT**: All component behavior, interactions, and visual states are
-tested in Storybook stories with play functions. Unit tests are reserved for
-utilities and hooks only.
+The extension follows the file's contents, not its category:
+`use-heading-skip-warning.spec.ts` calls `renderHook` but has no JSX, so it
+stays `.ts`; a hook test that renders a wrapper component takes `.tsx`.
+[Naming Conventions](../naming-conventions.md#rule-2-extension-follows-contents)
+is authoritative.
+
+**IMPORTANT**: Component behavior, interactions, and visual states are tested in
+Storybook stories with play functions. Unit tests are for utilities and hooks —
+plus a small set of component-level exceptions listed in
+[Component-Level Unit Tests](#component-level-unit-tests), for behaviour a play
+function cannot reach.
+
+This guide is also authoritative for **how a hook is tested**: with `renderHook`
+in a spec file, as shown throughout below.
 
 ## When to Use
 
@@ -37,6 +48,37 @@ injected into engineering documentation at build time.
 
 See [Testing Strategy Guide](./testing-strategy.md) for detailed rules.
 
+## Component-Level Unit Tests
+
+Storybook play functions are the right home for component behaviour, but a few
+things cannot be asserted from inside a browser story. For those, a
+component-level spec file is correct and expected.
+
+Five sanctioned categories:
+
+| #   | Category                                  | Why a story cannot do it                                                                                                             | Example                                                                                 |
+| --- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| 1   | **Module mocking**                        | `vi.mock` replaces a module before import; stories have no equivalent                                                                | `toast.spec.tsx` — the `ToastManager` imperative API                                    |
+| 2   | **Dev-mode warnings and malformed input** | Asserting on `console` output, or on input that would break a rendered story                                                         | `markdown.spec.tsx`, `tabs.spec.tsx` — "does not emit an empty-string href warning"     |
+| 3   | **Provider and ambient wiring**           | Tests configuration and ambient scope, not rendered output                                                                           | `nimbus-provider.spec.tsx` — font loading, ambient Region scope                         |
+| 4   | **Synchronous timing**                    | An assertion that must hold _before_ paint                                                                                           | `splitter.reconcile-timing.spec.tsx` — controlled reconcile causes no first-paint flash |
+| 5   | **Static API surface and forwarding**     | `displayName`, presence of compound sub-parts, ref forwarding, `data-`/`aria-` pass-through are module facts, not rendered behaviour | `flex.spec.tsx`, `table.spec.tsx`                                                       |
+
+If your test does not fall into one of these, it belongs in a story.
+
+### Isolation for mocked modules
+
+A spec that calls `vi.mock` pollutes the shared module cache, because the `unit`
+project runs with `isolate: false`. Such files are moved to a separate runner:
+
+- `vitest.unit.config.ts` **excludes** them by exact path
+- `vitest.unit-isolated.config.ts` **includes** the same paths
+
+The two lists must stay in sync. Renaming one of these files while updating only
+one config means the test silently stops running — a file dropped from a vitest
+`include` glob is not an error, so the suite still passes. After any such
+rename, check the reported test count, not just the exit code.
+
 ## Testing Infrastructure
 
 ### Test Configuration
@@ -58,18 +100,30 @@ export default defineConfig({
 ### Unit Test Configuration
 
 ```typescript
-// vitest.unit.config.ts
+// vitest.unit.config.ts — abridged; see the file for the authoritative version
 export default defineConfig({
   test: {
     name: "unit",
     environment: "jsdom", // Use JSDOM instead of real browser
-    include: ["src/**/*.spec.{ts,tsx}"], // Test file patterns
-    exclude: ["src/**/*.stories.{ts,tsx}", "node_modules"], // Exclude Storybook tests
+    include: ["src/**/*.spec.{ts,tsx}"], // Both extensions, per Rule 2
+    exclude: [
+      "src/**/*.stories.{ts,tsx}",
+      // Files using vi.mock() must run isolated to avoid polluting the
+      // shared module cache — mirrored in vitest.unit-isolated.config.ts
+      "src/components/toast/toast.spec.tsx",
+      "src/plugins/*.spec.ts",
+      "node_modules",
+      "dist",
+    ],
     globals: true, // Enable global test APIs
     setupFiles: ["./src/test/unit-test-setup.ts"], // Setup file runs before tests
+    isolate: false, // Shared module cache — hence the excludes above
   },
 });
 ```
+
+Note that `include` has no `*.docs.spec.*` exclusion, so consumer implementation
+tests run in this project too.
 
 ### Test Setup File
 
@@ -780,7 +834,11 @@ behavior is tested in Storybook stories with play functions.
 
 ## Validation Checklist
 
-- [ ] Test file exists with `.spec.ts` or `.spec.tsx` extension
+- [ ] Test file exists, with `.spec.tsx` only if it contains JSX, else
+      `.spec.ts`
+- [ ] A component-level spec falls into one of the five sanctioned categories
+- [ ] Any file using `vi.mock` is listed in **both** `vitest.unit.config.ts`
+      (exclude) and `vitest.unit-isolated.config.ts` (include)
 - [ ] File located alongside utility or hook being tested
 - [ ] **Testing utilities or hooks only** (components use Storybook stories)
 - [ ] Uses `describe` blocks to organize tests by feature area

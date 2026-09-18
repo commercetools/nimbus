@@ -165,8 +165,8 @@ For detailed guidance on creating new components, see the
 
 ## 🧪 Testing
 
-Nimbus uses Vitest for testing with two distinct test types that serve different
-purposes.
+Nimbus uses Vitest for testing with three distinct test types that serve
+different purposes.
 
 ### Test Types
 
@@ -183,8 +183,21 @@ purposes.
 - **Purpose**: Test utility functions and React hooks in isolation
 - **Environment**: JSDOM (fast, simulated browser environment)
 - **Use for**: Pure functions, custom hooks, validators, formatters
-- **Location**: `*.spec.ts` or `*.spec.tsx` files
+- **Location**: `*.spec.ts` files, or `*.spec.tsx` when the file contains JSX
 - **Speed**: Very fast (~milliseconds per test)
+
+#### 3. Consumer Implementation Tests
+
+- **Purpose**: Working examples consumers can copy to test Nimbus in their apps
+- **Environment**: JSDOM
+- **Use for**: Form-library integration, async loading, state management
+- **Location**: `*.docs.spec.tsx` files, injected into `.dev.mdx` at build time
+- **Speed**: Fast
+
+See
+[Testing Strategy](./docs/file-type-guidelines/testing-strategy.md) for which
+category a test belongs to, and
+[Naming Conventions](./docs/naming-conventions.md) for extensions.
 
 ### Running Tests
 

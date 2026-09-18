@@ -33,8 +33,20 @@ Create a hook when you need to:
 
 ## Critical Rule: Hooks Location
 
-**ALL hooks MUST go in a `hooks/` subfolder** - Never place hooks in the
-component root directory.
+**A hook extracted from a component MUST go in a `hooks/` subfolder** - never in
+the component root directory.
+
+Two sanctioned exceptions:
+
+- **Hook-only components.** When a component's entire public surface _is_ a
+  hook, that hook is the component's main module and belongs in the component
+  root, named for the component. `region/use-region.ts` is the example:
+  `useRegion` is exported from `region/index.ts` as the component's API, so a
+  `hooks/` subfolder would imply an implementation detail it is not.
+- **Context accessors.** A one-line `useXContext` wrapper around `useContext`
+  lives beside its context in `{component}.context.tsx`, not in `hooks/` — see
+  [Context Files](./context-files.md). Nine components follow this. Separating
+  the accessor from the context it reads makes both harder to find.
 
 ### Component-Specific Hooks
 
@@ -235,22 +247,30 @@ Document hooks with:
 
 ## Testing Hooks
 
-Test hooks using Storybook's play functions by using them in a component:
+Test hooks with `renderHook` in a sibling spec file.
+[Unit Testing](./unit-testing.md) is authoritative for how — including the
+patterns for async hooks, timers and cleanup.
 
 ```typescript
-// component-name.stories.tsx
-export const InteractiveTest: Story = {
-  render: () => {
-    const { value, setValue } = useComponentName({ defaultValue: 'test' });
-    return <div onClick={() => setValue('clicked')}>{value}</div>;
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByText('test'));
-    await expect(canvas.getByText('clicked')).toBeInTheDocument();
-  },
-};
+// hooks/use-component-name.spec.ts
+describe("useComponentName", () => {
+  it("returns the default value", () => {
+    const { result } = renderHook(() =>
+      useComponentName({ defaultValue: "test" })
+    );
+    expect(result.current.value).toBe("test");
+  });
+});
 ```
+
+The spec takes `.spec.ts` when it contains no JSX and `.spec.tsx` when it does —
+see
+[Naming Conventions](../naming-conventions.md#rule-2-extension-follows-contents).
+`renderHook` alone does not require `.tsx`.
+
+Exercising a hook through a story is still worthwhile when what you need to
+verify is the _rendered_ result of using it — but that is a story test of the
+component, not the hook's unit test.
 
 ## Related Guidelines
 
