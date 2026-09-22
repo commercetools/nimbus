@@ -236,5 +236,8 @@ The component SHALL be exported from the main package barrel.
 - **WHEN** PageContent is imported from @commercetools/nimbus
 - **THEN** SHALL export PageContent namespace object
 - **AND** SHALL export all prop types
-- **AND** SHALL export underscore-prefixed individual parts
+- **AND** SHALL NOT export underscore-prefixed individual parts —
+  sub-component prop tables are resolved by the docs pipeline via each part's
+  authored `displayName` (see Debug Identification), not via barrel
+  re-exports
 
