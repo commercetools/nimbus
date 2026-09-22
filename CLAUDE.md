@@ -63,6 +63,17 @@ too. Common places patterns are referenced:
 A pattern change is not complete until all references to the old pattern are
 updated.
 
+When updating those references, state the new requirement positively. You SHOULD
+NOT add a prohibition against the pattern you just removed: once it is gone from
+the templates a reader will not invent it, and describing it teaches a dead
+pattern to people who would otherwise never encounter it. Deleting it is enough.
+
+Warn against something only when a reader would plausibly reach for it anyway —
+it is a common habit outside this repo (e.g. barrel imports from
+`@chakra-ui/react`), an older pattern still present elsewhere in the codebase,
+or, in designer-facing docs, a component someone could reasonably pick for the
+wrong job.
+
 ### Updating Documentation
 
 Use the `/create-eng-docs` command:
