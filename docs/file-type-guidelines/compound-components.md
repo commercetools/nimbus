@@ -299,12 +299,6 @@ This is what the prop-table generator keys on: it strips the dot (`Menu.Trigger`
 right — exactly `Parent.Key` — and the sub-component's prop table generates
 correctly. Get it wrong, or omit it, and the prop table will not resolve.
 
-**Do not add underscore-prefixed re-exports** (the old `_MenuTrigger`-style
-aliases) to make a sub-component visible to the docs pipeline. That was an older
-workaround for `react-docgen-typescript` resolving sub-components only through a
-bare object-literal export on the barrel; it is no longer needed and must not be
-added to new components.
-
 **Implementation File JSDoc Requirement:**
 
 JSDoc tags like `@supportsStyleProps` must also be placed **directly above the
@@ -568,8 +562,6 @@ For comprehensive type patterns and examples for compound components, see:
 - [ ] Display names set for all components (Pattern: `ComponentName.PartName`) —
       required for the docs pipeline to generate each part's prop table, not
       just for debugging
-- [ ] No underscore-prefixed re-exports added (e.g. `_ComponentRoot`) — not
-      needed by the docs pipeline
 
 ### Props & Types
 

@@ -151,10 +151,14 @@ The system SHALL extract TypeScript types from components.
 #### Scenario: Component API extraction
 - **WHEN** buildTypes runs
 - **THEN** SHALL parse packages/nimbus/src/index.ts
+- **AND** SHALL also parse component implementation files, so compound
+  sub-components are extracted and identified by their authored `displayName`
+  (`"Parent.Key"`)
 - **AND** SHALL use react-docgen-typescript to extract props
 - **AND** SHALL filter unwanted props (HTML, Chakra system props, React internals)
 - **AND** SHALL write per-component type files to src/data/types/
 - **AND** SHALL generate types manifest
+- **AND** SHALL remove previously generated type files absent from the manifest
 
 ### Requirement: Vite Build Optimization
 The system SHALL optimize production bundle.

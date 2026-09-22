@@ -295,9 +295,6 @@ The component SHALL be exported from the main package barrel.
 - **WHEN** DefaultPage is imported from @commercetools/nimbus
 - **THEN** SHALL export DefaultPage namespace object
 - **AND** SHALL export all prop types
-- **AND** SHALL NOT export underscore-prefixed individual parts — sub-component
-  prop tables are resolved by the docs pipeline via each part's authored
-  `displayName` (see Debug Identification), not via barrel re-exports
 
 ### Requirement: Internationalization
 

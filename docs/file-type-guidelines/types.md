@@ -21,8 +21,6 @@ by parsing its implementation file directly and keying on its authored
 `displayName` (`"Parent.Key"`, e.g. `MenuTrigger.displayName = 'Menu.Trigger'`)
 — see
 [Compound Components — JSDoc Tags in Implementation Files](./compound-components.md#jsdoc-tags-in-implementation-files-critical).
-No underscore-prefixed re-export (e.g. `_MenuTrigger`) is needed or used for
-this.
 
 ## When to Use
 
