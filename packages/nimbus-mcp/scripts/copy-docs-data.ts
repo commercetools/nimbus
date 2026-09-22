@@ -1,4 +1,4 @@
-import { cp, mkdir, access } from "node:fs/promises";
+import { cp, mkdir, access, rm } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -26,6 +26,13 @@ export async function copyDocsData() {
     const dest = resolve(TARGET, item);
     try {
       await access(src);
+      // Clear the destination first. `cp` overwrites but never deletes, so a
+      // file removed upstream would linger here indefinitely. That matters
+      // because `data-loader`/`get-component` discover type files by reading
+      // the directory and prefix-matching names rather than consulting
+      // `manifest.json` — a stale file is a live input and surfaces as a
+      // bogus sub-component.
+      await rm(dest, { recursive: true, force: true });
       await cp(src, dest, { recursive: true, force: true });
     } catch {
       console.warn(`[copy-docs-data] Skipping missing: ${item}`);
