@@ -19,7 +19,7 @@ The system SHALL extract and display TypeScript component APIs.
 - **THEN** SHALL use react-docgen-typescript to parse component exports
 - **AND** SHALL filter out HTML/Chakra/React internal props
 - **AND** SHALL generate per-component JSON files in src/data/types/
-- **AND** SHALL create ~283 type files for all components
+- **AND** SHALL create one type file per documented component export
 
 #### Scenario: Props table display
 - **WHEN** documentation page renders <PropsTable>
