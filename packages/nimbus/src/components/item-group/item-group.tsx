@@ -54,8 +54,3 @@ export const ItemGroup = {
    */
   Separator: ItemGroupSeparator,
 };
-
-export {
-  ItemGroupRoot as _ItemGroupRoot,
-  ItemGroupSeparator as _ItemGroupSeparator,
-};

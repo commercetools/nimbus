@@ -179,16 +179,3 @@ export const ModalPage = {
    */
   Footer: ModalPageFooter,
 };
-
-// Internal named exports for react-docgen
-export {
-  ModalPageRoot as _ModalPageRoot,
-  ModalPageTopBar as _ModalPageTopBar,
-  ModalPageHeader as _ModalPageHeader,
-  ModalPageTitle as _ModalPageTitle,
-  ModalPageSubtitle as _ModalPageSubtitle,
-  ModalPageActions as _ModalPageActions,
-  ModalPageTabNav as _ModalPageTabNav,
-  ModalPageContent as _ModalPageContent,
-  ModalPageFooter as _ModalPageFooter,
-};

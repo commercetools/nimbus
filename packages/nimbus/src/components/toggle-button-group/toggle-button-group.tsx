@@ -11,8 +11,3 @@ export const ToggleButtonGroup = {
   Root: ToggleButtonGroupRoot,
   Button: ToggleButtonGroupButton,
 };
-
-export {
-  ToggleButtonGroupRoot as _ToggleButtonGroupRoot,
-  ToggleButtonGroupButton as _ToggleButtonGroupButton,
-};

@@ -184,25 +184,3 @@ export type {
   StepsStatusProps,
   StepsChangeDetails,
 } from "./steps.types";
-
-/**
- * todo: get rid of this, this is needed for the react-docgen-typescript script
- * that is parsing the typescript types for our documentation. The _ underscores
- * serve as a reminder that this exports are awkward and should not be used.
- */
-export {
-  StepsRoot as _StepsRoot,
-  StepsList as _StepsList,
-  StepsItem as _StepsItem,
-  StepsTrigger as _StepsTrigger,
-  StepsIndicator as _StepsIndicator,
-  StepsNumber as _StepsNumber,
-  StepsTitle as _StepsTitle,
-  StepsDescription as _StepsDescription,
-  StepsSeparator as _StepsSeparator,
-  StepsContent as _StepsContent,
-  StepsCompletedContent as _StepsCompletedContent,
-  StepsPrevTrigger as _StepsPrevTrigger,
-  StepsNextTrigger as _StepsNextTrigger,
-  StepsStatus as _StepsStatus,
-};

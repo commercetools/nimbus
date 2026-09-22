@@ -54,8 +54,3 @@ export const PageContent = {
    */
   Column: PageContentColumn,
 };
-
-export {
-  PageContentRoot as _PageContentRoot,
-  PageContentColumn as _PageContentColumn,
-};

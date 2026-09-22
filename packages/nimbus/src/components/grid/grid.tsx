@@ -1,8 +1,8 @@
 import {
   Grid as ChakraGrid,
-  GridItem,
   type GridProps as ChakraGridProps,
 } from "@chakra-ui/react/grid";
+import { GridItem } from "./components";
 
 /**
  * # Grid

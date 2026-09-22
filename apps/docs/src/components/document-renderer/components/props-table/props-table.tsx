@@ -66,6 +66,13 @@ export const PropsTable = ({ id }: { id: string }) => {
       // Exclude hooks (start with "use")
       if (key.startsWith("use")) return false;
 
+      // Exclude utility methods hung off a namespace (e.g. LocalizedField.getId,
+      // LocalizedField.isEmpty, ComboBox.filters). React components are
+      // PascalCase by convention; a lowercase-leading key is a plain value or
+      // function even if it happens to pass the function/object shape checks
+      // below.
+      if (!/^[A-Z]/.test(key)) return false;
+
       // Exclude context objects (end with "Context" but not component wrappers)
       if (key.endsWith("Context")) {
         const value = (exportItem as Record<string, unknown>)[key];

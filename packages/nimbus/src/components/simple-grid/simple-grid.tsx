@@ -3,7 +3,7 @@ import {
   type SimpleGridProps as ChakraSimpleGridProps,
 } from "@chakra-ui/react/simple-grid";
 
-import { GridItem } from "@chakra-ui/react/grid";
+import { SimpleGridItem } from "./components";
 
 /**
  * # SimpleGrid
@@ -25,5 +25,5 @@ const GridComponent = (props: SimpleGridProps) => {
 GridComponent.displayName = "SimpleGrid";
 
 export const SimpleGrid = Object.assign(GridComponent, {
-  Item: GridItem,
+  Item: SimpleGridItem,
 });

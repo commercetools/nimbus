@@ -203,15 +203,3 @@ export const Drawer = {
    */
   CloseTrigger: DrawerCloseTrigger,
 };
-
-// Internal exports for react-docgen
-export {
-  DrawerRoot as _DrawerRoot,
-  DrawerTrigger as _DrawerTrigger,
-  DrawerContent as _DrawerContent,
-  DrawerHeader as _DrawerHeader,
-  DrawerBody as _DrawerBody,
-  DrawerFooter as _DrawerFooter,
-  DrawerTitle as _DrawerTitle,
-  DrawerCloseTrigger as _DrawerCloseTrigger,
-};
