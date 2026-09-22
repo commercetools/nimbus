@@ -84,3 +84,25 @@ Guidelines for the summary body:
 
 When in doubt between `patch` and `minor`, prefer `minor` — it costs the
 consumer nothing and signals the change clearly.
+
+### Removing an export that was never public API
+
+Removing an export is normally `major`. The one exception is an export that was
+only ever an internal artifact — most often an underscore-prefixed symbol that
+existed to satisfy tooling. Those may go out as `minor`, provided **all** of:
+
+- the name marks it as internal by convention (a leading `_`), or it carries an
+  `@internal` tag;
+- a documented public alternative already exists and always did (for compound
+  components, the namespace API — `Card.Header`, never `_CardHeader`);
+- a usage search across the commercetools org finds no importers.
+
+State the reasoning in the changeset, and say what the usage search covered.
+Nimbus publishes publicly to npm, so an org-wide search does not rule out
+consumers outside the org — describe the evidence honestly rather than claiming
+the change cannot affect anyone.
+
+This exception is deliberately narrow. It does **not** cover removing a
+documented export, one a consumer could reasonably have reached for, or one that
+shipped without any marker indicating it was internal. When an export does not
+clearly meet every condition above, it is `major`.
