@@ -24,6 +24,7 @@ export * from "./image";
 export * from "./kbd";
 export * from "./link";
 export * from "./list";
+export * from "./list-box";
 export * from "./markdown";
 export * from "./draggable-list";
 export * from "./simple-grid";
