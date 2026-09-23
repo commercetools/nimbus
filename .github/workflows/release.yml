@@ -62,26 +62,42 @@ jobs:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
-      - name: Storing release version for changeset
-        id: release_version
-        run: echo "VALUE=$(./scripts/print_release_version.sh)" >> $GITHUB_OUTPUT
-        shell: bash
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_github_token.outputs.token }}
-
+      # Keep this action's major version in step with @changesets/cli's: v1
+      # cannot read v3's publish output and silently skips tags and releases.
       - name: Creating release pull request or publishing release to npm registry
         id: changesets
-        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
+        uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          publish: pnpm changeset publish
-          version: pnpm changeset:version-and-format
-          commit: "ci(changesets): version packages"
-          title: "ci(changesets): version packages"
-          createGithubReleases: true
-          commitMode: "github-api"
+          github-token: ${{ steps.generate_github_token.outputs.token }}
+          publish-script: pnpm changeset publish
+          version-script: pnpm changeset:version-and-format
+          commit-message: "ci(changesets): version packages"
+          pr-title: "ci(changesets): version packages"
+          create-github-releases: true
         env:
-          GITHUB_TOKEN: ${{ steps.generate_github_token.outputs.token }}
           SKIP_POSTINSTALL_DEV_SETUP: true
+
+      # Derived independently of the step above, which has reported success
+      # while creating no tags at all.
+      - name: Verify the published version is tagged
+        if: github.ref == 'refs/heads/main'
+        run: |
+          set -euo pipefail
+          VERSION=$(node -p "require('./packages/nimbus/package.json').version")
+          TAG="@commercetools/nimbus@${VERSION}"
+
+          if ! npm view "$TAG" version >/dev/null 2>&1; then
+            echo "$TAG is not on npm - nothing to verify."
+            exit 0
+          fi
+
+          if git ls-remote --exit-code --tags origin "refs/tags/${TAG}" >/dev/null 2>&1; then
+            echo "OK: $TAG is on npm and tagged in git."
+            exit 0
+          fi
+
+          echo "::error::${VERSION} is published on npm but the git tag ${TAG} is missing, so no GitHub release exists for it. The publish step reported success without creating tags -- check that the changesets/action and @changesets/cli major versions are still compatible."
+          exit 1
 
       # Publish canary releases only if the packages weren't published already
       - name: Regenerate GitHub token for canary
@@ -101,6 +117,12 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
           git clean -fd
+          # @changesets/cli v3 exits 1 when there are no unreleased changesets
+          # (changesets/changesets#1860), the normal state right after a release.
+          if [ -z "$(find .changeset -maxdepth 1 -name '*.md' ! -name 'README.md' -print -quit)" ]; then
+            echo "No pending changesets - nothing to publish as a canary."
+            exit 0
+          fi
           pnpm changeset version --snapshot canary
           pnpm changeset publish --tag canary
         env:
@@ -176,6 +198,11 @@ jobs:
         run: |
           set -euo pipefail
           SNAPSHOT_TAG="canary-${{ steps.pr.outputs.tag }}"
+          # v3 exits 1 with no changesets; say why rather than leaking that.
+          if [ -z "$(find .changeset -maxdepth 1 -name '*.md' ! -name 'README.md' -print -quit)" ]; then
+            echo "::error::This PR has no changeset, so there is nothing to publish as a canary. Add one with 'pnpm changeset'."
+            exit 1
+          fi
           pnpm changeset version --snapshot "$SNAPSHOT_TAG"
           pnpm changeset publish --tag canary 2>&1 | tee /tmp/publish-output.txt
 
