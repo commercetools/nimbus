@@ -517,10 +517,14 @@ export type NotificationPosition = "top" | "bottom" | "center";
 export type DataFetchStatus = "idle" | "loading" | "success" | "error";
 
 // ✅ Type exports
-export type ButtonProps = {/* ... */};
+export type ButtonProps = {
+  /* ... */
+};
 
 // ✅ Hook return types
-export type UseButtonReturn = {/* ... */};
+export type UseButtonReturn = {
+  /* ... */
+};
 
 // Note: Recipe variants (variant, size, colorPalette) are automatically inherited
 // when extending slot props - no explicit declarations needed

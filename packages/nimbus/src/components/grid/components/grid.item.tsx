@@ -3,6 +3,10 @@ import {
   type GridItemProps as ChakraGridItemProps,
 } from "@chakra-ui/react/grid";
 
+export type GridItemProps = ChakraGridItemProps & {
+  ref?: React.Ref<HTMLDivElement>;
+};
+
 /**
  * Grid.Item - thin, prop-transparent wrapper around Chakra's `GridItem`.
  *
@@ -13,10 +17,6 @@ import {
  *
  * @supportsStyleProps
  */
-export type GridItemProps = ChakraGridItemProps & {
-  ref?: React.Ref<HTMLDivElement>;
-};
-
 export const GridItem = ({ ref, ...restProps }: GridItemProps) => {
   return <ChakraGridItem ref={ref} {...restProps} />;
 };

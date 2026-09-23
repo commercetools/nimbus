@@ -10,7 +10,7 @@ import docgen from "react-docgen-typescript";
 import type { ComponentDoc } from "react-docgen-typescript";
 import ts from "typescript";
 import { processComponentTypes } from "./process-types.js";
-import { warnLog } from "../utils/logger.js";
+import { flog, warnLog } from "../utils/logger.js";
 import type { DocsBuilderConfig } from "../types/config.js";
 
 /**
@@ -221,8 +221,12 @@ function readBarrelExports(
   const moduleSymbol = sourceFile && checker.getSymbolAtLocation(sourceFile);
 
   if (!moduleSymbol) {
-    warnLog(`Could not resolve barrel exports from ${indexPath}`);
-    return new Map();
+    // Fatal rather than a warning: the admission rules below are all keyed on
+    // the barrel's exports, so an empty map silently drops every supplemental
+    // doc and still exits 0. There is no correct output from here.
+    throw new Error(
+      `[parse-types] Could not resolve barrel exports from ${indexPath}`
+    );
   }
 
   const exports = new Map<string, BarrelExport>();
@@ -375,6 +379,15 @@ export async function parseSupplementalComponentTypes(
     admitted.push({ ...doc, displayName: name });
   }
 
+  // A silent supplement is the failure mode this stage is most exposed to: a
+  // sub-component that stops being admitted loses its prop table on the docs
+  // site only, which CI never builds. Report the counts every run.
+  const dotted = rawDocs.filter((doc) => doc.displayName.includes(".")).length;
+  flog(
+    `[TSX] Supplement: admitted ${admitted.length} of ${dotted} dotted displayNames ` +
+      `across ${files.length} implementation files`
+  );
+
   // Run the supplement through the same post-processing as the barrel docs so
   // the emitted shape (filtered props + supportsStyleProps) is identical.
   return processComponentTypes(admitted, propFilter);
@@ -520,7 +533,13 @@ export async function parseTypesToFiles(
   }
 
   // Drop type files from earlier runs that are no longer in the manifest
-  await pruneStaleTypeFiles(outputDir, new Set(Object.keys(manifest)));
+  const pruned = await pruneStaleTypeFiles(
+    outputDir,
+    new Set(Object.keys(manifest))
+  );
+  if (pruned > 0) {
+    flog(`[TSX] Pruned ${pruned} stale type file(s) from ${outputDir}`);
+  }
 
   // Write manifest file
   const manifestPath = `${outputDir}/manifest.json`;
