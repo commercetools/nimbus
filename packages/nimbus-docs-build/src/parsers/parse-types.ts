@@ -332,8 +332,16 @@ export async function parseSupplementalComponentTypes(
 ): Promise<ComponentDoc[]> {
   const componentsDir = path.join(path.dirname(indexPath), "components");
 
+  // Each bail-out below wipes out the supplement entirely, which is the exact
+  // silent-drop shape the summary log further down exists to catch — and none
+  // of them reach it. Announce them here instead.
   try {
-    if (!(await fs.stat(componentsDir)).isDirectory()) return [];
+    if (!(await fs.stat(componentsDir)).isDirectory()) {
+      warnLog(
+        `${componentsDir} is not a directory; skipping the file-level type supplement`
+      );
+      return [];
+    }
   } catch {
     warnLog(
       `No components directory at ${componentsDir}; skipping the file-level type supplement`
@@ -342,7 +350,12 @@ export async function parseSupplementalComponentTypes(
   }
 
   const files = await collectComponentImplementationFiles(componentsDir);
-  if (files.length === 0) return [];
+  if (files.length === 0) {
+    warnLog(
+      `No component implementation files under ${componentsDir}; the file-level type supplement produced nothing`
+    );
+    return [];
+  }
 
   // Same tsconfig discovery as the barrel parse: without it, subpath imports
   // like @chakra-ui/react/styled-system fail to resolve and recipe props
