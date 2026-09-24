@@ -22,8 +22,8 @@ type AlertRecipeProps = {
 // ============================================================
 
 export type AlertRootSlotProps = HTMLChakraProps<"div", AlertRecipeProps> & {
-  /** Color palette variant of the alert */
-  colorPalette?: Exclude<SemanticPalettesOnly, "neutral" | "primary">;
+  /** Color palette / status of the alert. */
+  colorPalette?: SemanticPalettesOnly;
 };
 
 export type AlertIconSlotProps = HTMLChakraProps<"div">;
@@ -40,6 +40,11 @@ export type AlertActionsSlotProps = HTMLChakraProps<"div">;
 export type AlertProps = OmitInternalProps<AlertRootSlotProps> & {
   [key: `data-${string}`]: unknown;
   ref?: React.Ref<HTMLDivElement>;
+  /**
+   * Hide the status icon entirely. Suppresses both the automatic status icon
+   * and any explicit `Alert.Icon`.
+   */
+  hideIcon?: boolean;
 };
 
 /**
