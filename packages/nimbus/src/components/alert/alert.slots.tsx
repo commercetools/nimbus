@@ -17,15 +17,15 @@ export const AlertRoot = withProvider<HTMLDivElement, AlertRootSlotProps>(
   "root"
 );
 
-export const AlertTitle = withContext<HTMLDivElement, AlertTitleProps>(
+export const AlertTitle = withContext<HTMLHeadingElement, AlertTitleProps>(
   "div",
   "title"
 );
 
-export const AlertDescription = withContext<
-  HTMLDivElement,
-  AlertDescriptionProps
->("div", "description");
+export const AlertDescription = withContext<HTMLElement, AlertDescriptionProps>(
+  "div",
+  "description"
+);
 
 export const AlertIcon = withContext<HTMLDivElement, AlertIconSlotProps>(
   "div",

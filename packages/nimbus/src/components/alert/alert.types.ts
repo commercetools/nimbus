@@ -3,6 +3,7 @@ import type {
   SlotRecipeProps,
 } from "@chakra-ui/react/styled-system";
 import type { TextProps } from "../text/text";
+import type { HeadingProps } from "../heading/heading";
 import type { ButtonProps } from "../button/button.types";
 import type { SemanticPalettesOnly } from "../../type-utils/shared-types";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
@@ -52,17 +53,18 @@ export type AlertRootComponent = React.FC<AlertProps>;
 export type AlertIconProps = AlertIconSlotProps;
 
 /**
- * Props for the Alert.Title component.
+ * Props for the Alert.Title component. Renders the Nimbus `Heading` primitive;
+ * defaults to a non-heading element (`as="p"`), overridable via `as`.
  */
-export type AlertTitleProps = Omit<TextProps, "ref"> & {
-  ref?: React.Ref<HTMLDivElement>;
+export type AlertTitleProps = Omit<HeadingProps, "ref"> & {
+  ref?: React.Ref<HTMLHeadingElement>;
 };
 
 /**
- * Props for the Alert.Description component.
+ * Props for the Alert.Description component. Renders the Nimbus `Text` primitive.
  */
 export type AlertDescriptionProps = Omit<TextProps, "ref"> & {
-  ref?: React.Ref<HTMLDivElement>;
+  ref?: React.Ref<HTMLElement>;
 };
 
 /**
