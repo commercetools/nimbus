@@ -214,7 +214,7 @@ catalogs:
     "@testing-library/jest-dom": ^7.0.1
     "@testing-library/user-event": ^14.6.7
     "@testing-library/react": ^16.3.3
-    playwright: 1.63.0
+    playwright: 1.62.1
     vitest: ^5.0.0
     axe-core: ^4.13.0
     "@typescript-eslint/types": ^8.70.0
