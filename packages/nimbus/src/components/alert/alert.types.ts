@@ -13,7 +13,13 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 // ============================================================
 
 type AlertRecipeProps = {
-  /** Visual style variant of the alert */
+  /**
+   * Visual emphasis of the alert surface.
+   *
+   * `"outlined"` (default) is a tinted card, `"accent-start"` a neutral card
+   * with a status-colored bar on the leading edge, and `"flat"` no chrome at
+   * all.
+   */
   variant?: SlotRecipeProps<"nimbusAlert">["variant"];
 };
 
