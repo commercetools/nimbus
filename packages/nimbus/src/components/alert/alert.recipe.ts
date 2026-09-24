@@ -20,10 +20,26 @@ export const alertRecipe = defineSlotRecipe({
     icon: {
       gridColumn: "1",
       gridRow: "1",
-      marginTop: "50",
+      /**
+       * One text line tall. `lh` resolves against this slot's own computed
+       * line height, which it inherits from the alert along with the font
+       * size, so the box keeps matching the first line of text when either is
+       * changed by a consumer or by the theme.
+       *
+       * Centring inside that box keeps the row honest: as a block box the svg
+       * would sit on the text baseline and stretch the line box past its own
+       * height.
+       */
+      height: "1lh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
       "& svg": {
-        width: "500",
-        height: "500",
+        // `1.25em` is 20px at the default font size, and follows the alert's
+        // text when it changes — the `ActivityIndicator` `size="inherit"`
+        // pattern.
+        width: "1.25em",
+        height: "1.25em",
         color: "colorPalette.11",
       },
     },
@@ -44,6 +60,10 @@ export const alertRecipe = defineSlotRecipe({
     dismissButton: {
       gridColumn: "3",
       gridRow: "1",
+      // Boxed to the first text line for the same reason as the icon.
+      height: "1lh",
+      display: "flex",
+      alignItems: "center",
     },
   },
 
