@@ -21,9 +21,10 @@ figmaLink: >-
 
 ## Overview
 
-These specifications define the standard styles and variations for icon buttons
-within our design system, covering different visual treatments for diverse use
-cases.
+Alerts provide feedback to the user about the status of an action or a system
+event. These specifications define the standard styles and variations for
+alerts within our design system, covering different visual treatments and
+severities for diverse use cases.
 
 ### Resources
 
@@ -101,7 +102,9 @@ const App = () => (
 
 ### Style
 
-#### Outlined
+The `variant` prop controls emphasis. `outlined` is the default.
+
+#### Outlined (default)
 
 Use when getting attention is more important. These can be used inline, but they
 take up space and it is not as easy to slide into compact areas as much the flat
@@ -113,6 +116,26 @@ const App = () => (
     <Alert.Title>Success! Your Account is Verified</Alert.Title>
     <Alert.Description>
       Congratulations! Your account has been successfully verified. You now have full access to all features.
+    </Alert.Description>
+  </Alert.Root>
+)
+```
+
+#### Accent start
+
+A neutral card with a status-colored bar down the leading edge — the same
+treatment `Toast` uses by default. The surface and the text stay neutral and
+the bar, the icon and the action buttons carry the status color, so a page can hold several of
+these at once without turning into a color chart. Use it where the message
+matters but the surrounding layout should stay calm. The bar follows the
+reading direction and moves to the right edge in right-to-left languages.
+
+```jsx live
+const App = () => (
+  <Alert.Root colorPalette="warning" variant="accent-start" width="8000">
+    <Alert.Title>Inventory Is Running Low</Alert.Title>
+    <Alert.Description>
+      Three products in this category have fewer than ten units left in stock.
     </Alert.Description>
   </Alert.Root>
 )
@@ -175,6 +198,47 @@ const App = () => (
   </Grid>
 );
 ```
+
+### Layout
+
+Alert has one layout: the status icon on the leading edge, the title and
+description stacked beside it, actions below, and the dismiss button on the
+trailing edge. There is no `layout` prop — anything beyond this arrangement is
+a matter of placement and style props.
+
+A full-width page banner, for example, is the same alert with its corners and
+side borders removed:
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Alert.Root colorPalette="info" variant="outlined">
+      <Alert.Title>Default</Alert.Title>
+      <Alert.Description>
+        Icon on the leading edge, title and description beside it, actions and
+        the dismiss button below.
+      </Alert.Description>
+    </Alert.Root>
+
+    <Alert.Root
+      colorPalette="warning"
+      variant="outlined"
+      borderRadius="0"
+      borderInline="none"
+      paddingInline="600"
+    >
+      <Alert.Title>Scheduled maintenance</Alert.Title>
+      <Alert.Description>
+        The system will be unavailable tonight from 02:00 to 03:00 UTC.
+      </Alert.Description>
+    </Alert.Root>
+  </Stack>
+);
+```
+
+For a compact horizontal row with leading media and trailing actions — a
+settings row, a notification row, an agent confirmation — reach for `Item`
+instead. Alert is for status messages that may need announcing.
 
 ### Color palette
 
@@ -260,7 +324,9 @@ const App = () => (
 
 These are used to message immediate, severe problems that require urgent action.
 They indicate that something has already gone wrong and needs to be addressed
-immediately.
+immediately. Because these must interrupt the user, `critical` defaults to
+`role="alert"`; every other palette defaults to the polite `"status"` (see the
+Accessibility tab for the full announcement model).
 
 ```jsx live
 const App = () => (
@@ -279,5 +345,22 @@ const App = () => (
       </Alert.Description>
     </Alert.Root>
   </Grid>
+)
+```
+
+#### Neutral
+
+Use for messages that don't map to a status severity — general notices that
+aren't positive, informational, a warning, or an error. Neutral has no
+automatic icon; pair it with an explicit `Alert.Icon` or use `hideIcon`.
+
+```jsx live
+const App = () => (
+  <Alert.Root colorPalette="neutral" variant="outlined" width="8000" hideIcon>
+    <Alert.Title>Heads up</Alert.Title>
+    <Alert.Description>
+      This workspace will be archived at the end of the billing period.
+    </Alert.Description>
+  </Alert.Root>
 )
 ```
