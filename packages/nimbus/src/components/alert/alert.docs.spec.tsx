@@ -34,7 +34,7 @@ describe("Alert - Basic rendering", () => {
       </NimbusProvider>
     );
 
-    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toBeInTheDocument();
     expect(screen.getByText("Success: Item created.")).toBeInTheDocument();
   });
 
@@ -49,7 +49,7 @@ describe("Alert - Basic rendering", () => {
       </NimbusProvider>
     );
 
-    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toBeInTheDocument();
     expect(
       screen.getByText("System maintenance scheduled for tonight at 02:00 UTC.")
     ).toBeInTheDocument();

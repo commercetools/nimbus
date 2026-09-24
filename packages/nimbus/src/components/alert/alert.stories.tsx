@@ -73,7 +73,7 @@ export const Base: Story = {
 
     await step("Renders all parts correctly", async () => {
       await expect(alertRoot).toBeInTheDocument();
-      await expect(alertRoot).toHaveAttribute("role", "alert");
+      await expect(alertRoot).toHaveAttribute("role", "status");
       await expect(canvas.getByText("Base Alert Title")).toBeInTheDocument();
       await expect(
         canvas.getByText("Base Alert Description")

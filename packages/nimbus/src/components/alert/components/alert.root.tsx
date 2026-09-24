@@ -30,8 +30,13 @@ const getIconFromColorPalette = (colorPalette: AlertProps["colorPalette"]) => {
 export const AlertRoot: AlertRootComponent = (props) => {
   const { ref, children, ...restProps } = props;
 
+  // A critical alert interrupts the screen reader; every other palette is
+  // announced politely. A consumer-supplied `role` overrides either.
+  const defaultRole =
+    restProps.colorPalette === "critical" ? "alert" : "status";
+
   return (
-    <AlertRootSlot ref={ref} {...restProps} role="alert">
+    <AlertRootSlot ref={ref} role={defaultRole} {...restProps}>
       {/* No alignment prop: the recipe boxes the icon to one text line and
           centres it there, which a `flex-start` style prop would override. */}
       <AlertIcon>
