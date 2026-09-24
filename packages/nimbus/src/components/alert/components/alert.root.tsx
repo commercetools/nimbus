@@ -32,7 +32,9 @@ export const AlertRoot: AlertRootComponent = (props) => {
 
   return (
     <AlertRootSlot ref={ref} {...restProps} role="alert">
-      <AlertIcon alignItems="flex-start">
+      {/* No alignment prop: the recipe boxes the icon to one text line and
+          centres it there, which a `flex-start` style prop would override. */}
+      <AlertIcon>
         {getIconFromColorPalette(restProps.colorPalette)}
       </AlertIcon>
       {children}
