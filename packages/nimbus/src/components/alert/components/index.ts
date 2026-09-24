@@ -3,3 +3,4 @@ export { AlertTitle } from "./alert.title";
 export { AlertDescription } from "./alert.description";
 export { AlertActions } from "./alert.actions";
 export { AlertDismissButton } from "./alert.dismiss-button";
+export { AlertIcon } from "./alert.icon";
