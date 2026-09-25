@@ -22,7 +22,13 @@ import type {
   DataTableContextValue,
   CustomSettingsContextValue,
   TableSelectionContextValue,
+  DataTableRowItem,
 } from "../data-table.types";
+import {
+  defaultGetRowKey,
+  findRowKeyProblems,
+  formatRowKeyProblems,
+} from "../utils/row-keys.utils";
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "../data-table.messages";
@@ -139,6 +145,15 @@ export const DataTableRoot = function DataTableRoot<
       .filter((col): col is NonNullable<typeof col> => col !== undefined);
   }, [columns, visibleColumns]);
 
+  // One resolver for row identity, stable for the component's lifetime so it
+  // can sit in context without destabilising it. Everything that keys a row —
+  // selection, disabledKeys, expansion, pinning, and the key React Aria uses
+  // for the collection — goes through this, so those can never disagree.
+  const getRowKey = useCallback(
+    (row: DataTableRowItem<T>): string => defaultGetRowKey(row),
+    []
+  );
+
   const filteredRows = useMemo(
     () => (search ? filterRows(rows, search, activeColumns, nestedKey) : rows),
     [rows, search, activeColumns, nestedKey]
@@ -151,14 +166,31 @@ export const DataTableRoot = function DataTableRoot<
         sortDescriptor,
         activeColumns,
         nestedKey,
-        pinnedRows
+        pinnedRows,
+        getRowKey
       ),
-    [filteredRows, sortDescriptor, activeColumns, nestedKey, pinnedRows]
+    [
+      filteredRows,
+      sortDescriptor,
+      activeColumns,
+      nestedKey,
+      pinnedRows,
+      getRowKey,
+    ]
   );
 
+  // Duplicate or empty keys otherwise surface only as React Aria's opaque
+  // "Cell count must match column count", which names neither the row nor the
+  // cause. Development only.
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    const message = formatRowKeyProblems(findRowKeyProblems(rows, getRowKey));
+    if (message) console.warn(message);
+  }, [rows, getRowKey]);
+
   const pinnedRowIds = useMemo(
-    () => rows.filter((r) => pinnedRows.has(r.id)).map((r) => r.id),
-    [rows, pinnedRows]
+    () => rows.filter((r) => pinnedRows.has(getRowKey(r))).map(getRowKey),
+    [rows, pinnedRows, getRowKey]
   );
 
   const hasNestedKeyContent = useMemo(
@@ -266,6 +298,7 @@ export const DataTableRoot = function DataTableRoot<
 
   const contextValue = useMemo(
     () => ({
+      getRowKey,
       columns,
       rows,
       visibleColumns,
@@ -322,6 +355,7 @@ export const DataTableRoot = function DataTableRoot<
       isResizable,
       disabledKeys,
       togglePin,
+      getRowKey,
     ]
   );
 

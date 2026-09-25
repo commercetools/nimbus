@@ -136,8 +136,10 @@ const columns: DataTableColumnItem[] = [
 
 ### Row data structure
 
-Each row must have a unique `id` property. Additional properties are accessed
-via column `accessor` functions:
+Each row must have a unique `id` property. It is the key for selection,
+`disabledKeys`, expansion and pinning. To identify rows by another property,
+set `id` in the row data, for example `rows.map((v) => ({ ...v, id: v.sku }))`.
+Additional properties are accessed via column `accessor` functions:
 
 ```tsx
 import type { DataTableRowItem } from "@commercetools/nimbus";
@@ -1048,7 +1050,8 @@ replace the **data columns/cells**.
 Pass a render function to `DataTable.Body` to control how each row renders.
 The function receives the row data and render props (`isExpanded`, `isPinned`,
 etc.). Spread the render props onto `DataTable.Row` to preserve expansion and
-pinning behavior:
+pinning behavior. Do not set `id` on `DataTable.Row`; the row's identity comes
+from the row data, and a different `id` logs a development warning:
 
 ```jsx live-dev
 const App = () => {

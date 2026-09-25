@@ -64,31 +64,78 @@ export function createListDataHandlers<T>(list: ListData<T>): StateHandlers<T> {
  * @param getKey - Function to extract a unique key from an item.
  *   Defaults to `(item) => item.key ?? item.id`.
  *
+ *   Pass this explicitly for `DataTable`, which keys rows by `row.id`. Domain
+ *   rows commonly also carry a business `key` field, which the default would
+ *   prefer, and reordering would then match nothing.
+ *
  * @example
  * ```tsx
- * const [items, setItems] = useState(initialItems);
+ * // DataTable rows are keyed by `id` — always say so explicitly.
  * const { dragAndDropHooks } = useDragAndDrop({
- *   ...createArrayHandlers(setItems, (item) => item.key),
+ *   ...createArrayHandlers(setRows, (row) => row.id),
  * });
  * ```
  */
+const defaultGetKey = <T extends Record<string, unknown>>(item: T): Key => {
+  const key = (item.key as Key) ?? (item.id as Key);
+  if (key == null) {
+    throw new Error(
+      "createArrayHandlers: item has no `key` or `id` field. Provide a custom `getKey` function."
+    );
+  }
+  return key;
+};
+
+/**
+ * Warns when a key handed over by React Aria matched no item.
+ *
+ * The common cause is a mismatch between how the collection is keyed and how
+ * `getKey` reads the item. `DataTable` keys rows by `row.id`, but the default
+ * `getKey` prefers a business `key` field, which domain objects (customer
+ * groups, categories, product types, channels, stores) usually have. When that
+ * is what happened, say so and name the fix rather than leaving the developer
+ * with a drag that silently does nothing.
+ */
+function warnKeyMismatch<T extends Record<string, unknown>>(
+  operation: string,
+  items: T[],
+  usesDefaultGetKey: boolean,
+  matches: (item: T) => boolean
+) {
+  if (typeof process === "undefined" || process.env.NODE_ENV === "production") {
+    return;
+  }
+  const looksLikeIdKeying =
+    usesDefaultGetKey &&
+    items.some((i) => i.key != null && i.id != null && matches(i));
+  console.warn(
+    looksLikeIdKeying
+      ? `createArrayHandlers: ${operation} matched no item. Your items have ` +
+          "both a `key` and an `id` field, so the default getKey used `key`, " +
+          "but this collection is keyed by `id`. Pass an explicit getKey, " +
+          "e.g. createArrayHandlers(setItems, (item) => item.id)."
+      : `createArrayHandlers: ${operation} matched no item.`
+  );
+}
+
 export function createArrayHandlers<T extends Record<string, unknown>>(
   setItems: Dispatch<SetStateAction<T[]>>,
-  getKey: (item: T) => Key = (item) => {
-    const key = (item.key as Key) ?? (item.id as Key);
-    if (key == null) {
-      throw new Error(
-        "createArrayHandlers: item has no `key` or `id` field. Provide a custom `getKey` function."
-      );
-    }
-    return key;
-  }
+  getKey: (item: T) => Key = defaultGetKey
 ): StateHandlers<T> {
+  const usesDefaultGetKey = getKey === defaultGetKey;
   return {
     onInsertItems(items, target) {
       setItems((prev) => {
         const idx = prev.findIndex((i) => getKey(i) === target.key);
-        if (idx === -1) return [...prev, ...items];
+        if (idx === -1) {
+          warnKeyMismatch(
+            "the drop target",
+            prev,
+            usesDefaultGetKey,
+            (i) => (i.id as Key) === target.key
+          );
+          return [...prev, ...items];
+        }
         const pos = target.dropPosition === "before" ? idx : idx + 1;
         return [...prev.slice(0, pos), ...items, ...prev.slice(pos)];
       });
@@ -102,14 +149,12 @@ export function createArrayHandlers<T extends Record<string, unknown>>(
         const remaining = prev.filter((i) => !keys.has(getKey(i)));
         const idx = remaining.findIndex((i) => getKey(i) === target.key);
         if (idx === -1) {
-          if (
-            typeof process !== "undefined" &&
-            process.env.NODE_ENV !== "production"
-          ) {
-            console.warn(
-              "createArrayHandlers: target key not found in remaining items — appending to end."
-            );
-          }
+          warnKeyMismatch(
+            "the reorder target",
+            prev,
+            usesDefaultGetKey,
+            (i) => (i.id as Key) === target.key
+          );
           return [...remaining, ...movedItems];
         }
         const pos = target.dropPosition === "before" ? idx : idx + 1;
@@ -121,7 +166,15 @@ export function createArrayHandlers<T extends Record<string, unknown>>(
       });
     },
     onRemoveItems(keys) {
-      setItems((prev) => prev.filter((i) => !keys.has(getKey(i))));
+      setItems((prev) => {
+        const next = prev.filter((i) => !keys.has(getKey(i)));
+        if (next.length === prev.length && keys.size > 0) {
+          warnKeyMismatch("the keys to remove", prev, usesDefaultGetKey, (i) =>
+            keys.has(i.id as Key)
+          );
+        }
+        return next;
+      });
     },
   };
 }
