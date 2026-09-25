@@ -771,6 +771,30 @@ export const PaletteFallback: Story = {
   },
 };
 
+/** Inside a React Aria slot provider without a default slot, such as a radio group. */
+export const InsideRadioGroup: Story = {
+  name: "Composition: inside a radio group",
+  render: () => (
+    <RadioInput.Root aria-label="Shipping" name="alert-shipping">
+      <RadioInput.Option value="standard">Standard</RadioInput.Option>
+      <Alert.Root colorPalette="warning">
+        <Alert.Title>Delayed</Alert.Title>
+        <Alert.Description>Standard shipping is delayed.</Alert.Description>
+      </Alert.Root>
+    </RadioInput.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("title and description render without throwing", async () => {
+      await expect(canvas.getByText("Delayed")).toBeInTheDocument();
+      await expect(
+        canvas.getByText("Standard shipping is delayed.")
+      ).toBeInTheDocument();
+    });
+  },
+};
+
 /** `Alert.DismissButton` with the default and a custom variant. */
 export const Dismiss: Story = {
   name: "Dismiss: composed button and variant override",
