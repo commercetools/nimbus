@@ -26,7 +26,6 @@ The component SHALL export as a compound component namespace.
 - **WHEN** ModalPage is imported from @commercetools/nimbus
 - **THEN** SHALL export ModalPage namespace object
 - **AND** SHALL export all prop types
-- **AND** SHALL export underscore-prefixed individual parts
 
 ### Requirement: Controlled-Only State
 

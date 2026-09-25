@@ -13,8 +13,14 @@ keeping implementation details encapsulated.
 
 All types files follow a consistent, layered architecture that makes them
 discoverable, maintainable, and self-documenting. This architecture enables
-`react-docgen-typescript` to extract comprehensive API documentation for the
-Nimbus documentation site.
+`react-docgen-typescript` (via the `packages/nimbus-docs-build` pipeline) to
+extract comprehensive API documentation for the Nimbus documentation site.
+
+For compound components, the pipeline resolves each sub-component's prop table
+by parsing its implementation file directly and keying on its authored
+`displayName` (`"Parent.Key"`, e.g. `MenuTrigger.displayName = 'Menu.Trigger'`)
+— see
+[Compound Components — JSDoc Tags in Implementation Files](./compound-components.md#jsdoc-tags-in-implementation-files-critical).
 
 ## When to Use
 

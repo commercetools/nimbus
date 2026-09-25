@@ -135,12 +135,3 @@ export const FormField = {
    */
   InfoBox: FormFieldInfoBox,
 };
-
-export {
-  FormFieldRoot as _FormFieldRoot,
-  FormFieldLabel as _FormFieldLabel,
-  FormFieldInput as _FormFieldInput,
-  FormFieldDescription as _FormFieldDescription,
-  FormFieldError as _FormFieldError,
-  FormFieldInfoBox as _FormFieldInfoBox,
-};

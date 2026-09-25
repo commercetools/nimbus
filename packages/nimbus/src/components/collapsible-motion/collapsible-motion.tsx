@@ -4,20 +4,7 @@ import {
   CollapsibleMotionContent,
 } from "./components";
 
-// Exports for internal use by react-docgen
-export {
-  CollapsibleMotionRoot as _CollapsibleMotionRoot,
-  CollapsibleMotionTrigger as _CollapsibleMotionTrigger,
-  CollapsibleMotionContent as _CollapsibleMotionContent,
-};
-
-type CollapsibleMotionNamespace = {
-  Root: typeof CollapsibleMotionRoot;
-  Trigger: typeof CollapsibleMotionTrigger;
-  Content: typeof CollapsibleMotionContent;
-};
-
-export const CollapsibleMotion: CollapsibleMotionNamespace = {
+export const CollapsibleMotion = {
   /**
    * # CollapsibleMotion.Root
    *

@@ -203,15 +203,3 @@ export const Dialog = {
    */
   CloseTrigger: DialogCloseTrigger,
 };
-
-// Internal exports for react-docgen
-export {
-  DialogRoot as _DialogRoot,
-  DialogTrigger as _DialogTrigger,
-  DialogContent as _DialogContent,
-  DialogHeader as _DialogHeader,
-  DialogBody as _DialogBody,
-  DialogFooter as _DialogFooter,
-  DialogTitle as _DialogTitle,
-  DialogCloseTrigger as _DialogCloseTrigger,
-};

@@ -285,18 +285,33 @@ MenuTrigger.displayName = 'Menu.Trigger';
 
 ### JSDoc Tags in Implementation Files (CRITICAL)
 
+**The load-bearing convention: `displayName = "Parent.Key"`.** The docs pipeline
+(`packages/nimbus-docs-build`) parses each sub-component's _implementation file_
+directly — not just the public barrel — and identifies the sub-component by its
+**authored `displayName`**:
+
+```typescript
+MenuTrigger.displayName = "Menu.Trigger";
+```
+
+This is what the prop-table generator keys on: it strips the dot (`Menu.Trigger`
+→ `MenuTrigger`) to produce the doc id the docs site looks up. Get this string
+right — exactly `Parent.Key` — and the sub-component's prop table generates
+correctly. Get it wrong, or omit it, and the prop table will not resolve.
+
 **Implementation File JSDoc Requirement:**
 
-JSDoc tags like `@supportsStyleProps` must be placed **directly above the
+JSDoc tags like `@supportsStyleProps` must also be placed **directly above the
 component function** in implementation files (e.g.,
-`components/menu.trigger.tsx`) for `react-docgen-typescript` to extract metadata
-for documentation generation.
+`components/menu.trigger.tsx`) — this is where the parser reads them from.
 
 #### Parser Behavior
 
-The `react-docgen-typescript` parser extracts JSDoc tags from component function
-definitions in implementation files. Place the `@supportsStyleProps` tag in
-individual subcomponent implementation files where the parser can process it.
+The docs pipeline parses each component's implementation file directly (in
+addition to the public barrel), extracting JSDoc tags from the component
+function definition and keying the generated doc on the component's authored
+`displayName`. Place the `@supportsStyleProps` tag in individual subcomponent
+implementation files where this parser can process it.
 
 #### Implementation File JSDoc Pattern
 
@@ -323,6 +338,8 @@ export const MenuTrigger = ({
   // Implementation...
 };
 
+// REQUIRED — the docs pipeline keys this sub-component's prop table on this
+// exact "Parent.Key" string:
 MenuTrigger.displayName = "Menu.Trigger";
 ```
 
@@ -368,7 +385,10 @@ export { MenuItem } from "./menu.item";
 
 ## Display Names
 
-Always set display names for debugging:
+Always set display names — for debugging (React DevTools) and because the docs
+pipeline requires this exact string to generate each part's prop table (see
+[JSDoc Tags in Implementation Files](#jsdoc-tags-in-implementation-files-critical)
+above):
 
 ```typescript
 // Pattern: ComponentName.PartName
@@ -539,7 +559,9 @@ For comprehensive type patterns and examples for compound components, see:
 - [ ] **All components use `extractStyleProps`** to separate style props
 - [ ] **Style props forwarded to slot components**
 - [ ] **Functional props forwarded to React Aria or underlying components**
-- [ ] Display names set for all components (Pattern: `ComponentName.PartName`)
+- [ ] Display names set for all components (Pattern: `ComponentName.PartName`) —
+      required for the docs pipeline to generate each part's prop table, not
+      just for debugging
 
 ### Props & Types
 

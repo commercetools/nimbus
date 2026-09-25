@@ -134,11 +134,3 @@ export const Tree = {
    */
   SubTree: TreeSubTree,
 };
-
-export {
-  TreeRoot as _TreeRoot,
-  TreeItem as _TreeItem,
-  TreeItemContent as _TreeItemContent,
-  TreeIndicator as _TreeIndicator,
-  TreeSubTree as _TreeSubTree,
-};
