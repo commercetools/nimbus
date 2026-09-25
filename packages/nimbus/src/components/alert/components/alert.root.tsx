@@ -1,4 +1,10 @@
-import { Children, Fragment, isValidElement, type ReactNode } from "react";
+import {
+  Children,
+  cloneElement,
+  Fragment,
+  isValidElement,
+  type ReactNode,
+} from "react";
 import {
   AlertRoot as AlertRootSlot,
   AlertIcon as AlertIconSlot,
@@ -17,7 +23,11 @@ import {
 const flattenFragments = (nodes: ReactNode[]): ReactNode[] =>
   nodes.flatMap((node) =>
     isValidElement<{ children?: ReactNode }>(node) && node.type === Fragment
-      ? flattenFragments(Children.toArray(node.props.children))
+      ? flattenFragments(Children.toArray(node.props.children)).map((child) =>
+          isValidElement(child)
+            ? cloneElement(child, { key: `${node.key}/${child.key}` })
+            : child
+        )
       : node
   );
 
@@ -57,7 +67,7 @@ export const AlertRoot: AlertRootComponent = (props) => {
     ? childArray.filter(
         (child) => !(isValidElement(child) && child.type === AlertIcon)
       )
-    : children;
+    : childArray;
 
   const autoIcon =
     !hideIcon && !hasCustomIcon
