@@ -31,7 +31,16 @@ const flattenFragments = (nodes: ReactNode[]): ReactNode[] =>
       : node
   );
 
-const getIconFromColorPalette = (colorPalette: AlertProps["colorPalette"]) => {
+const resolveBasePalette = (colorPalette: AlertProps["colorPalette"]) => {
+  if (colorPalette == null || typeof colorPalette === "string") {
+    return colorPalette;
+  }
+  if (Array.isArray(colorPalette)) return colorPalette[0];
+  return (colorPalette as { base?: string }).base;
+};
+
+const getIconFromColorPalette = (colorPalette: string | null | undefined) => {
+  if (colorPalette == null) return null;
   switch (colorPalette) {
     case "critical":
       return <ErrorOutline />;
@@ -43,10 +52,8 @@ const getIconFromColorPalette = (colorPalette: AlertProps["colorPalette"]) => {
       return <CheckCircleOutline />;
     case "primary":
       return <Campaign />;
-    case "neutral":
-      return <Article />;
     default:
-      return null;
+      return <Article />;
   }
 };
 
@@ -69,13 +76,12 @@ export const AlertRoot: AlertRootComponent = (props) => {
       )
     : childArray;
 
-  const autoIcon =
-    !hideIcon && !hasCustomIcon
-      ? getIconFromColorPalette(restProps.colorPalette)
-      : null;
+  const basePalette = resolveBasePalette(restProps.colorPalette);
 
-  const defaultRole =
-    restProps.colorPalette === "critical" ? "alert" : "status";
+  const autoIcon =
+    !hideIcon && !hasCustomIcon ? getIconFromColorPalette(basePalette) : null;
+
+  const defaultRole = basePalette === "critical" ? "alert" : "status";
 
   return (
     <AlertRootSlot ref={ref} role={defaultRole} {...restProps}>
