@@ -110,6 +110,24 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   // see `getRowKey(row)`. Reading the key back from an element `id` would make
   // this row toggle state under a name the rest of the table never checks.
   const rowKey = getRowKey(row);
+
+  // A custom `DataTable.Body` renderer may still put a different `id` on the
+  // row. React Aria then keys selection by that id while expansion, pinning
+  // and `disabledKeys` keep using `row.id` — one row, two identities. That is
+  // unsupported; say so in development instead of failing quietly.
+  // `restProps` is a broad Omit<> of every DOM attribute, so narrow to the one
+  // field we care about rather than widening the whole type.
+  const suppliedId = (restProps as { id?: string | number }).id;
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    if (suppliedId == null || String(suppliedId) === rowKey) return;
+    console.warn(
+      `DataTable: row "${rowKey}" was rendered with a different id, ` +
+        `"${suppliedId}". Selection would use "${suppliedId}" while ` +
+        `expansion, pinning and disabledKeys use "${rowKey}". To choose a ` +
+        "row's identity, set `id` in the row data instead."
+    );
+  }, [suppliedId, rowKey]);
   const hasCustomBg = !!(
     styleProps.bg ||
     styleProps.bgColor ||

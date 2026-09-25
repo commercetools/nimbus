@@ -78,6 +78,9 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
       // equals a column id collides in the collection ("Cell count must match
       // column count"). The row objects themselves stay the collection items
       // so React Aria's per-item render cache keeps working.
+      // An element that already carries an `id` is left alone rather than
+      // overwritten, but a value other than the row's key is unsupported —
+      // DataTable.Row warns about it in development.
       if (childrenRef.current) {
         const rendered = childrenRef.current(row, rowRenderProps);
         return isValidElement<{ id?: string }>(rendered) &&

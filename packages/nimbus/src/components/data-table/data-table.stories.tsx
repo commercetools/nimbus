@@ -13,6 +13,7 @@ import {
   userEvent,
   fireEvent,
   fn,
+  spyOn,
 } from "storybook/test";
 import {
   Box,
@@ -7075,6 +7076,21 @@ const identityColumns: DataTableColumnItem[] = [
 ];
 
 /**
+ * Records `console.warn` calls for a story and restores the original afterwards.
+ * `beforeEach` returns the cleanup, so the console is restored even when an
+ * assertion in `play` fails part-way.
+ */
+const recordWarnings = (warnings: string[]) => () => {
+  const spy = spyOn(console, "warn").mockImplementation((...args) => {
+    warnings.push(args.map(String).join(" "));
+  });
+  return () => {
+    spy.mockRestore();
+    warnings.length = 0;
+  };
+};
+
+/**
  * A row's identity comes from its data. To identify rows by something other
  * than their database id — a SKU here — set `id` in the row data. Selection,
  * expansion and pinning then all agree on that one value, because every part
@@ -7145,6 +7161,139 @@ export const RowIdentityComesFromRowData: Story = {
         expect(canvas.getByTestId("data-id-pinned")).toHaveTextContent(
           /^SKU-RED$/
         );
+      });
+    });
+  },
+};
+
+/**
+ * Setting a different `id` on `DataTable.Row` from a custom renderer is not
+ * supported: React Aria would key selection by it, while expansion, pinning and
+ * `disabledKeys` keep using `row.id`. The table must keep working on `row.id` —
+ * a row that expands and pins, not one that silently ignores clicks — and warn
+ * in development, pointing at the row data as the place to set identity.
+ */
+const customRowIdWarnings: string[] = [];
+
+export const CustomRowIdOnElementWarns: Story = {
+  beforeEach: recordWarnings(customRowIdWarnings),
+  render: () => (
+    <DataTable.Root
+      columns={businessKeyColumns}
+      rows={businessKeyRows}
+      allowsPinning
+      renderNestedContent={(row) => <Text>Details for {row.id}</Text>}
+    >
+      <DataTable.Table aria-label="Rows rendered with a custom element id">
+        <DataTable.Header />
+        <DataTable.Body>
+          {(row, rowRenderProps) => (
+            <DataTable.Row
+              row={row}
+              {...rowRenderProps}
+              id={`custom-${row.id}`}
+            />
+          )}
+        </DataTable.Body>
+      </DataTable.Table>
+    </DataTable.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const firstRow = () => canvas.getAllByRole("row")[1];
+
+    await step("A development warning names both ids", async () => {
+      await canvas.findByText("Key group");
+      await waitFor(() => {
+        expect(
+          customRowIdWarnings.some(
+            (w) => w.includes('"a1"') && w.includes('"custom-a1"')
+          ),
+          `warnings seen: ${JSON.stringify(customRowIdWarnings)}`
+        ).toBe(true);
+      });
+    });
+
+    await step("Expanding the row still opens it", async () => {
+      await userEvent.click(
+        within(firstRow()).getByRole("button", { name: /expand/i })
+      );
+
+      expect(await canvas.findByText("Details for a1")).toBeInTheDocument();
+    });
+
+    await step("Pinning the row still pins it", async () => {
+      await userEvent.hover(firstRow());
+      await userEvent.click(
+        within(firstRow()).getByRole("button", { name: /pin row/i })
+      );
+
+      await waitFor(() => {
+        expect(firstRow()).toHaveClass("data-table-row-pinned");
+      });
+    });
+  },
+};
+
+/**
+ * Rows rendered through the default body never trigger the custom-id warning:
+ * the body sets the row's own id, so the two always match.
+ */
+const defaultRowIdWarnings: string[] = [];
+
+export const DefaultRowIdDoesNotWarn: Story = {
+  beforeEach: recordWarnings(defaultRowIdWarnings),
+  render: () => (
+    <DataTable
+      columns={businessKeyColumns}
+      rows={businessKeyRows}
+      aria-label="Rows with default ids"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Key group");
+
+    expect(
+      defaultRowIdWarnings.filter((w) => w.includes("different id"))
+    ).toEqual([]);
+  },
+};
+
+/**
+ * Duplicate row keys otherwise surface only as React Aria's opaque "Cell count
+ * must match column count", which names neither the row nor the cause.
+ * `DataTable` warns in development instead.
+ */
+const duplicateKeyWarnings: string[] = [];
+
+export const DuplicateRowKeysWarnInDevelopment: Story = {
+  beforeEach: recordWarnings(duplicateKeyWarnings),
+  render: () => (
+    <DataTable
+      columns={identityColumns}
+      rows={[
+        { id: "SAME", sku: "A", name: "First" },
+        { id: "SAME", sku: "B", name: "Second" },
+      ]}
+      aria-label="Rows with duplicate ids"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("The table still renders", async () => {
+      expect(await canvas.findByText("Second")).toBeInTheDocument();
+    });
+
+    await step("A development warning names the duplicate", async () => {
+      await waitFor(() => {
+        expect(
+          duplicateKeyWarnings.some(
+            (w) => w.includes("SAME") && w.includes("unique")
+          ),
+          `warnings seen: ${JSON.stringify(duplicateKeyWarnings)}`
+        ).toBe(true);
       });
     });
   },
