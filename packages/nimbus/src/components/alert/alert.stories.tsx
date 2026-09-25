@@ -369,7 +369,7 @@ export const NoActions: Story = {
   },
 };
 
-/** Omitting `variant` renders `outlined`; no variant changes the box. */
+/** Omitting `variant` renders the flush, unstyled alert; every variant shares one box. */
 export const EmphasisContract: Story = {
   name: "Compat: default emphasis and a stable box",
   render: () => (
@@ -393,13 +393,16 @@ export const EmphasisContract: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Omitting variant renders the outlined surface", async () => {
-      const bg = getComputedStyle(
-        canvas.getByTestId("default-alert")
-      ).backgroundColor;
-      await expect(bg).not.toBe("rgba(0, 0, 0, 0)");
-      await expect(bg).not.toBe("transparent");
-    });
+    await step(
+      "Omitting variant renders no surface and no padding",
+      async () => {
+        const style = getComputedStyle(canvas.getByTestId("default-alert"));
+        await expect(style.backgroundColor).toBe("rgba(0, 0, 0, 0)");
+        await expect(style.boxShadow).toBe("none");
+        await expect(style.paddingTop).toBe("0px");
+        await expect(style.paddingLeft).toBe("0px");
+      }
+    );
 
     await step("Every emphasis variant has the same box", async () => {
       const boxes = variants.map((variant) =>
@@ -407,11 +410,13 @@ export const EmphasisContract: Story = {
       );
       const [first] = boxes;
 
+      await expect(first.paddingTop).not.toBe("0px");
       for (const box of boxes) {
         await expect(box.paddingTop).toBe(first.paddingTop);
         await expect(box.paddingBottom).toBe(first.paddingBottom);
         await expect(box.paddingLeft).toBe(first.paddingLeft);
         await expect(box.paddingRight).toBe(first.paddingRight);
+        await expect(box.borderTopWidth).toBe("0px");
         await expect(box.borderTopLeftRadius).toBe(first.borderTopLeftRadius);
       }
     });
@@ -580,7 +585,7 @@ export const AccentStart: Story = {
       for (const root of roots) {
         const shadow = getComputedStyle(root).boxShadow;
         await expect(shadow).toContain("inset");
-        await expect(shadow).toMatch(/(^|\s)3px 0px 0px 0px inset/);
+        await expect(shadow).toMatch(/(^|\s)4px 0px 0px 0px inset/);
       }
     });
 
@@ -588,7 +593,7 @@ export const AccentStart: Story = {
       const shadow = getComputedStyle(
         canvas.getByTestId("accent-rtl")
       ).boxShadow;
-      await expect(shadow).toMatch(/-3px 0px 0px 0px inset/);
+      await expect(shadow).toMatch(/-4px 0px 0px 0px inset/);
     });
   },
 };
