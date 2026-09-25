@@ -34,6 +34,10 @@ let ToastManager: any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let toast: any;
 
+/** Toaster mutations are deferred to a microtask; wait for them to run. */
+const flushMicrotasks = () =>
+  new Promise<void>((resolve) => queueMicrotask(resolve));
+
 describe("ToastManager", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -62,53 +66,60 @@ describe("ToastManager", () => {
   });
 
   describe("Toast Creation", () => {
-    it("Creates toast via the toaster instance", () => {
+    it("Creates toast via the toaster instance", async () => {
       toast({ title: "Test", placement: "top-end" });
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalledTimes(1);
     });
 
-    it("Reuses toaster for same placement", () => {
+    it("Reuses toaster for same placement", async () => {
       toast({ title: "First", placement: "top-end" });
       toast({ title: "Second", placement: "top-end" });
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalledTimes(2);
     });
 
-    it("Uses default placement (top-end) when not specified", () => {
+    it("Uses default placement (top-end) when not specified", async () => {
       toast({ title: "Default" });
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalled();
     });
   });
 
   describe("ID Routing", () => {
-    it("Routes toast update to correct placement toaster", () => {
+    it("Routes toast update to correct placement toaster", async () => {
       const id = toast({ title: "Original", placement: "top-end" });
       toast.update(id, { title: "Updated" });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.update).toHaveBeenCalledWith(
         id,
         expect.objectContaining({ title: "Updated" })
       );
     });
 
-    it("Routes toast dismiss to correct placement toaster", () => {
+    it("Routes toast dismiss to correct placement toaster", async () => {
       const id = toast({ title: "Test", placement: "bottom-end" });
       toast.dismiss(id);
 
+      await flushMicrotasks();
       expect(mockToasterInstance.dismiss).toHaveBeenCalledWith(id);
     });
 
-    it("Routes toast remove to correct placement toaster", () => {
+    it("Routes toast remove to correct placement toaster", async () => {
       const id = toast({ title: "Test", placement: "bottom-start" });
       toast.remove(id);
 
+      await flushMicrotasks();
       expect(mockToasterInstance.remove).toHaveBeenCalledWith(id);
     });
   });
 
   describe("Convenience Methods", () => {
-    it("toast.info() creates info toast", () => {
+    it("toast.info() creates info toast", async () => {
       toast.info({ title: "Info message" });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
           title: "Info message",
@@ -117,9 +128,10 @@ describe("ToastManager", () => {
       );
     });
 
-    it("toast.success() creates success toast", () => {
+    it("toast.success() creates success toast", async () => {
       toast.success({ title: "Success message" });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
           title: "Success message",
@@ -128,9 +140,10 @@ describe("ToastManager", () => {
       );
     });
 
-    it("toast.warning() creates warning toast", () => {
+    it("toast.warning() creates warning toast", async () => {
       toast.warning({ title: "Warning message" });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
           title: "Warning message",
@@ -139,9 +152,10 @@ describe("ToastManager", () => {
       );
     });
 
-    it("toast.error() creates error toast", () => {
+    it("toast.error() creates error toast", async () => {
       toast.error({ title: "Error message" });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
           title: "Error message",
@@ -150,9 +164,10 @@ describe("ToastManager", () => {
       );
     });
 
-    it("Convenience methods respect duration option", () => {
+    it("Convenience methods respect duration option", async () => {
       toast.error({ title: "Error", duration: 10000 });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
           title: "Error",
@@ -173,6 +188,7 @@ describe("ToastManager", () => {
         error: { title: "Failed!" },
       });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.promise).toHaveBeenCalledWith(
         promise,
         expect.objectContaining({
@@ -210,6 +226,7 @@ describe("ToastManager", () => {
         error: { title: "Failed!" },
       });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.promise).toHaveBeenCalledWith(
         promise,
         expect.objectContaining({
@@ -237,6 +254,7 @@ describe("ToastManager", () => {
         error: { title: "Failed!" },
       });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.promise).toHaveBeenCalledWith(
         promise,
         expect.objectContaining({
@@ -247,7 +265,7 @@ describe("ToastManager", () => {
       );
     });
 
-    it("Tunnels closable, variant, and icon through meta for each promise state", () => {
+    it("Tunnels closable, variant, and icon through meta for each promise state", async () => {
       const promise = Promise.resolve();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const customIcon = { type: "svg", props: {} } as any;
@@ -273,6 +291,7 @@ describe("ToastManager", () => {
         },
       });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.promise).toHaveBeenCalledWith(
         promise,
         expect.objectContaining({
@@ -303,7 +322,7 @@ describe("ToastManager", () => {
   });
 
   describe("Action Button → Duration Behavior", () => {
-    it("Uses default duration when action is provided without explicit duration", () => {
+    it("Uses default duration when action is provided without explicit duration", async () => {
       toast({
         title: "Action toast",
         action: {
@@ -312,6 +331,7 @@ describe("ToastManager", () => {
         },
       });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
           title: "Action toast",
@@ -321,7 +341,7 @@ describe("ToastManager", () => {
       );
     });
 
-    it("Respects explicit duration when action is provided", () => {
+    it("Respects explicit duration when action is provided", async () => {
       toast({
         title: "Action toast",
         duration: 5000,
@@ -331,6 +351,7 @@ describe("ToastManager", () => {
         },
       });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
           duration: 5000,
@@ -338,12 +359,13 @@ describe("ToastManager", () => {
       );
     });
 
-    it("Respects custom duration when no action", () => {
+    it("Respects custom duration when no action", async () => {
       toast({
         title: "Normal toast",
         duration: 10000,
       });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
           duration: 10000,
@@ -351,9 +373,10 @@ describe("ToastManager", () => {
       );
     });
 
-    it("Uses default duration (6000ms) when not specified", () => {
+    it("Uses default duration (6000ms) when not specified", async () => {
       toast({ title: "Default duration" });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
           duration: 6000,
@@ -363,37 +386,41 @@ describe("ToastManager", () => {
   });
 
   describe("remove() vs dismiss()", () => {
-    it("dismiss() calls underlying toaster dismiss with animation", () => {
+    it("dismiss() calls underlying toaster dismiss with animation", async () => {
       const id = toast({ title: "Test" });
       toast.dismiss(id);
 
+      await flushMicrotasks();
       expect(mockToasterInstance.dismiss).toHaveBeenCalledWith(id);
       expect(mockToasterInstance.remove).not.toHaveBeenCalled();
     });
 
-    it("remove() calls underlying toaster remove without animation", () => {
+    it("remove() calls underlying toaster remove without animation", async () => {
       const id = toast({ title: "Test" });
       toast.remove(id);
 
+      await flushMicrotasks();
       expect(mockToasterInstance.remove).toHaveBeenCalledWith(id);
       expect(mockToasterInstance.dismiss).not.toHaveBeenCalled();
     });
 
-    it("dismiss() without ID dismisses all toasts across placements", () => {
+    it("dismiss() without ID dismisses all toasts across placements", async () => {
       toast.dismiss();
 
       // Should attempt to dismiss on all placement toasters
+      await flushMicrotasks();
       expect(mockToasterInstance.dismiss).toHaveBeenCalled();
     });
 
-    it("remove() without ID removes all toasts across placements", () => {
+    it("remove() without ID removes all toasts across placements", async () => {
       toast.remove();
 
       // Should attempt to remove on all placement toasters
+      await flushMicrotasks();
       expect(mockToasterInstance.remove).toHaveBeenCalled();
     });
 
-    it("dismiss() cleans up ID-to-placement mapping", () => {
+    it("dismiss() cleans up ID-to-placement mapping", async () => {
       const id = toast({ title: "Test" });
       toast.dismiss(id);
 
@@ -402,24 +429,27 @@ describe("ToastManager", () => {
       mockToasterInstance.update.mockClear();
       toast.update(id, { title: "Updated" });
       // Still calls update (via default placement fallback), but the mapping is gone
+      await flushMicrotasks();
       expect(mockToasterInstance.update).toHaveBeenCalled();
     });
 
-    it("dismiss() without ID clears all ID-to-placement mappings", () => {
+    it("dismiss() without ID clears all ID-to-placement mappings", async () => {
       toast({ title: "First" });
       toast({ title: "Second" });
       toast.dismiss();
 
       // Verify internal state is cleared by checking that reset() has nothing to clear
       // (no error thrown, clean state)
+      await flushMicrotasks();
       expect(mockToasterInstance.dismiss).toHaveBeenCalled();
     });
   });
 
   describe("Closable option forwarding", () => {
-    it("Forwards closable: false to meta by default", () => {
+    it("Forwards closable: false to meta by default", async () => {
       toast({ title: "Closable toast" });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
           meta: expect.objectContaining({
@@ -429,9 +459,10 @@ describe("ToastManager", () => {
       );
     });
 
-    it("Forwards closable: false to meta", () => {
+    it("Forwards closable: false to meta", async () => {
       toast({ title: "Non-closable toast", closable: false });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({
           meta: expect.objectContaining({
@@ -442,46 +473,100 @@ describe("ToastManager", () => {
     });
   });
 
+  describe("Deferred store mutations", () => {
+    it("Defers toaster calls to a microtask (avoids flushSync in React lifecycles)", async () => {
+      const id = toast({ title: "Deferred" });
+      toast.update(id, { title: "Updated" });
+      toast.dismiss(id);
+
+      expect(mockToasterInstance.create).not.toHaveBeenCalled();
+      expect(mockToasterInstance.update).not.toHaveBeenCalled();
+      expect(mockToasterInstance.dismiss).not.toHaveBeenCalled();
+
+      await flushMicrotasks();
+
+      expect(mockToasterInstance.create).toHaveBeenCalledTimes(1);
+      expect(mockToasterInstance.update).toHaveBeenCalledTimes(1);
+      expect(mockToasterInstance.dismiss).toHaveBeenCalledTimes(1);
+    });
+
+    it("Returns the same ID it passes to the toaster", async () => {
+      const id = toast({ title: "With ID" });
+      await flushMicrotasks();
+
+      expect(typeof id).toBe("string");
+      expect(mockToasterInstance.create).toHaveBeenCalledWith(
+        expect.objectContaining({ id })
+      );
+    });
+
+    it("Preserves call order across create, update, and dismiss", async () => {
+      const calls: string[] = [];
+      mockToasterInstance.create.mockImplementation(() => calls.push("create"));
+      mockToasterInstance.update.mockImplementation(() => calls.push("update"));
+      mockToasterInstance.dismiss.mockImplementation(() =>
+        calls.push("dismiss")
+      );
+
+      const id = toast({ title: "Ordered" });
+      toast.update(id, { title: "Updated" });
+      toast.dismiss(id);
+      await flushMicrotasks();
+
+      expect(calls).toEqual(["create", "update", "dismiss"]);
+
+      mockToasterInstance.update.mockReset();
+      mockToasterInstance.dismiss.mockReset();
+    });
+  });
+
   describe("Edge Cases", () => {
-    it("Handles undefined title gracefully", () => {
+    it("Handles undefined title gracefully", async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       toast({ title: undefined as any });
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalled();
     });
 
-    it("Handles empty string title", () => {
+    it("Handles empty string title", async () => {
       toast({ title: "" });
 
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalledWith(
         expect.objectContaining({ title: "" })
       );
     });
 
-    it("Handles missing options object", () => {
+    it("Handles missing options object", async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       toast(undefined as any);
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalled();
     });
 
-    it("Handles invalid placement fallback", () => {
+    it("Handles invalid placement fallback", async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       toast({ title: "Test", placement: "invalid" as any });
       // Should fallback to default placement without throwing
+      await flushMicrotasks();
       expect(mockToasterInstance.create).toHaveBeenCalled();
     });
 
-    it("Handles update with non-existent ID", () => {
+    it("Handles update with non-existent ID", async () => {
       toast.update("non-existent-id", { title: "Updated" });
+      await flushMicrotasks();
       expect(mockToasterInstance.update).toHaveBeenCalled();
     });
 
-    it("Handles dismiss with non-existent ID", () => {
+    it("Handles dismiss with non-existent ID", async () => {
       toast.dismiss("non-existent-id");
+      await flushMicrotasks();
       expect(mockToasterInstance.dismiss).toHaveBeenCalled();
     });
 
-    it("Handles remove with non-existent ID", () => {
+    it("Handles remove with non-existent ID", async () => {
       toast.remove("non-existent-id");
+      await flushMicrotasks();
       expect(mockToasterInstance.remove).toHaveBeenCalled();
     });
   });
