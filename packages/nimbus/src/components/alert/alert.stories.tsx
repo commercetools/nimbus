@@ -10,11 +10,7 @@ import {
 import { Info } from "@commercetools/nimbus-icons";
 
 const variants: AlertProps["variant"][] = ["flat", "outlined", "accent-start"];
-// Every Button variant, rendered inside each SmokeTest cell, so that the
-// treatment of each against every alert surface stays visible.
 const buttonVariants = ["solid", "subtle", "outline", "ghost", "link"] as const;
-// Every supported status color, "neutral" included, so the smoke matrix
-// exercises the full palette axis.
 const smokeColorPalettes: AlertProps["colorPalette"][] = [
   "neutral",
   "primary",
@@ -24,8 +20,6 @@ const smokeColorPalettes: AlertProps["colorPalette"][] = [
   "positive",
 ];
 
-// Realistic, status-appropriate placeholder copy so the smoke matrix reads like
-// a real product surface rather than debug labels. Titles are Title Case.
 const smokeContent: Record<
   string,
   { title: string; description: string; action: string }
@@ -87,21 +81,11 @@ const px = (value: string) => parseFloat(value) || 0;
 const slot = (root: HTMLElement, name: string) =>
   root.querySelector<HTMLElement>(`.nimbus-alert__${name}`);
 
-/** Vertical centre of an element's border box. */
 const centreY = (el: Element) => {
   const { top, bottom } = el.getBoundingClientRect();
   return (top + bottom) / 2;
 };
 
-/**
- * Vertical centre of the first line box of an element, so a wrapped paragraph
- * reports its first line rather than the whole block.
- *
- * The first line box starts at the element's content top and is one
- * line-height tall. Measuring it that way rather than from the glyph rects
- * keeps the number free of the half-leading rounding that makes a glyph box
- * sit half a pixel off the line box it lives in.
- */
 const firstLineCentreY = (el: HTMLElement) => {
   const style = getComputedStyle(el);
   const rect = el.getBoundingClientRect();
@@ -109,7 +93,6 @@ const firstLineCentreY = (el: HTMLElement) => {
   return contentTop + px(style.lineHeight) / 2;
 };
 
-/** The root's content box, with border and padding removed. */
 const contentBox = (root: HTMLElement) => {
   const style = getComputedStyle(root);
   const rect = root.getBoundingClientRect();
@@ -125,22 +108,9 @@ const contentBox = (root: HTMLElement) => {
   };
 };
 
-/** Two measurements count as matching when they differ by half a pixel or less. */
 const expectAligned = (actual: number, expected: number) =>
   expect(Math.abs(actual - expected)).toBeLessThanOrEqual(0.5);
 
-/**
- * The icon and the dismiss button size themselves in `lh`, so they follow the
- * alert's text instead of a fixed pixel height. The Sizing stories change the
- * text size on `Alert.Root` and check that everything still lines up on the
- * first text line, and that the icon glyph scales rather than floating at a
- * fixed size inside a box that moved without it.
- *
- * Also asserts that both text slots actually take the alert's type cascade.
- * That is what makes `1lh` correct: the icon is a sibling and can only use
- * its own inherited line height, so a text row that pinned its own would
- * quietly drift out of alignment as soon as the alert was resized.
- */
 const sizingAssertions = (alert: HTMLElement) => {
   const rootStyle = getComputedStyle(alert);
 
@@ -158,9 +128,6 @@ const sizingAssertions = (alert: HTMLElement) => {
   const icon = slot(alert, "icon")!;
   expectAligned(centreY(icon), firstLine);
 
-  // The glyph is `1.25em`, so it is sized off the same font size the `1lh`
-  // box is. Pinning it to a token instead would leave a fixed 20px icon
-  // rattling around inside a box that grew with the text.
   const glyph = icon.querySelector("svg")!;
   const expectedGlyph = px(rootStyle.fontSize) * 1.25;
   expectAligned(glyph.getBoundingClientRect().width, expectedGlyph);
@@ -233,10 +200,7 @@ export const Base: Story = {
   },
 };
 
-/**
- * A title with no description. Not snapshotted: a missing description row
- * subtracts from the `SmokeTest` cell rather than painting a new surface.
- */
+/** A title with no description. */
 export const TitleOnly: Story = {
   name: "Composition: Title Only",
   args: {
@@ -270,10 +234,7 @@ export const TitleOnly: Story = {
   },
 };
 
-/**
- * A description with no title. Not snapshotted, for the same reason as
- * `TitleOnly`.
- */
+/** A description with no title. */
 export const DescriptionOnly: Story = {
   name: "Composition: Description Only",
   args: {
@@ -305,10 +266,7 @@ export const DescriptionOnly: Story = {
   },
 };
 
-/**
- * A title and an actions row with no description. Not snapshotted: the
- * actions row appears in every `SmokeTest` cell.
- */
+/** A title and actions, with no description. */
 export const TitleAndActions: Story = {
   name: "Composition: Title and Actions",
   args: {
@@ -356,10 +314,7 @@ export const TitleAndActions: Story = {
 };
 
 const mockDismissNoActions = fn();
-/**
- * Title, description and a dismiss button, with no actions row. Not
- * snapshotted: every slot it renders is already in a `SmokeTest` cell.
- */
+/** Title, description and dismiss button, with no actions. */
 export const NoActions: Story = {
   name: "Composition: Title, Description, Dismiss (No Actions)",
   args: {
@@ -413,16 +368,7 @@ export const NoActions: Story = {
   },
 };
 
-/**
- * The two guarantees the emphasis axis makes. Omitting `variant` renders the
- * `outlined` tinted card rather than nothing, and emphasis is color and
- * border only — the box (grid, padding, corner radius) lives in the recipe's
- * `base`, so switching variant never reflows the alert or shifts the content
- * inside it, `flat` included.
- *
- * Not snapshotted: it asserts computed geometry, and every surface it renders
- * is already a `SmokeTest` cell.
- */
+/** Omitting `variant` renders `outlined`; no variant changes the box. */
 export const EmphasisContract: Story = {
   name: "Compat: default emphasis and a stable box",
   render: () => (
@@ -480,19 +426,7 @@ export const EmphasisContract: Story = {
   },
 };
 
-/**
- * `Alert.Description` holds block content in practice — a `Stack`, a list,
- * several paragraphs — so it renders a `div`. A `p` would be invalid markup
- * for all three: the HTML parser closes the paragraph at the first block child
- * and lifts the rest out of it, which breaks the layout anywhere the markup is
- * parsed rather than built by React.
- *
- * The composition below mirrors real consumer code (commerce-agents
- * `modify-conflict` / `modify-success`).
- *
- * Snapshotted: block content inside a slot is an internal layout no
- * `SmokeTest` cell renders; every cell holds single-line text.
- */
+/** Block content inside `Alert.Description`. */
 export const BlockContentInDescription: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
@@ -524,15 +458,12 @@ export const BlockContentInDescription: Story = {
     });
 
     await step("Block content stays inside the description", async () => {
-      // A `p` parent would have had the parser re-parent all three of these
-      // out of the description, leaving it empty.
       await expect(description.querySelector("div")).not.toBeNull();
       await expect(description.querySelector("ul")).not.toBeNull();
       await expect(description.querySelector("li")).not.toBeNull();
     });
 
     await step("No paragraph nested inside a paragraph", async () => {
-      // The Text child renders a `p`; it must not sit inside another one.
       const nestedParagraph = description.querySelector("p");
       await expect(nestedParagraph).not.toBeNull();
       await expect(nestedParagraph!.closest("p")).toBe(nestedParagraph);
@@ -540,10 +471,7 @@ export const BlockContentInDescription: Story = {
   },
 };
 
-/**
- * `as` still overrides the element for a description that really is a single
- * paragraph.
- */
+/** `Alert.Description` with `as="p"`. */
 export const DescriptionAsParagraph: Story = {
   name: "Composition: Description as Paragraph",
   args: {
@@ -561,20 +489,7 @@ export const DescriptionAsParagraph: Story = {
   },
 };
 
-/**
- * `accent-start` is the treatment `Toast` uses as its default: a neutral card
- * with a status-colored bar down the leading edge. It is the quietest way to
- * carry a status, because the reading surface stays out of the way — useful
- * where several alerts sit on one page and tinted cards would read as a color
- * chart.
- *
- * The split is between the surface and the things sitting on it. The card and
- * the text are neutral; the bar, the icon and the buttons in `Alert.Actions`
- * carry the status color. The dismiss button stays neutral, being chrome
- * rather than an action. The play function asserts that split directly:
- * surface and text identical across palettes, icon and action different,
- * dismiss the same.
- */
+/** The `accent-start` variant, left-to-right and right-to-left. */
 export const AccentStart: Story = {
   name: "Variant: accent-start",
   tags: ["vrt"],
@@ -599,9 +514,6 @@ export const AccentStart: Story = {
           </Alert.Actions>
         </Alert.Root>
       ))}
-      {/* Chakra's `_rtl` condition is `[dir=rtl] &`, so any ancestor with the
-          attribute flips the bar. This is the whole reason the variant is
-          named `start` rather than `left`. */}
       <div dir="rtl">
         <Alert.Root
           data-testid="accent-rtl"
@@ -682,15 +594,7 @@ export const AccentStart: Story = {
 
 const mockDismissPress = fn();
 
-/**
- * The icon slot in its three reachable states: replaced by a consumer icon,
- * suppressed with `hideIcon`, and suppressed even when an explicit
- * `Alert.Icon` is present — `hideIcon` wins over the slot.
- *
- * Snapshotted: `SmokeTest` renders only the automatic status icon, so a
- * replaced or absent icon — and the leading column collapsing with it — is a
- * surface the matrix structurally cannot hold.
- */
+/** Custom, hidden and automatic icons. */
 export const Icon: Story = {
   name: "Icon: custom, hidden, hidden over custom",
   tags: ["vrt"],
@@ -737,14 +641,7 @@ export const Icon: Story = {
   },
 };
 
-/**
- * Dismissal is composed: `Alert.DismissButton` carries its own localized
- * accessible name, and a consumer `variant` reaches the underlying button.
- * Queries are scoped per alert, because both dismiss buttons share the canvas.
- *
- * Not snapshotted: a dismiss button sits in every `SmokeTest` cell, and the
- * button variants are Button's own baselines.
- */
+/** `Alert.DismissButton` with the default and a custom variant. */
 export const Dismiss: Story = {
   name: "Dismiss: composed button and variant override",
   render: () => (
@@ -784,7 +681,6 @@ export const Dismiss: Story = {
     });
 
     await step("a consumer variant reaches the button", async () => {
-      // Default dismiss is "ghost" (transparent); "solid" must differ.
       const def = getComputedStyle(canvas.getByTestId("btn-default"));
       const solid = getComputedStyle(canvas.getByTestId("btn-solid"));
       await expect(solid.backgroundColor).not.toBe(def.backgroundColor);
@@ -792,12 +688,7 @@ export const Dismiss: Story = {
   },
 };
 
-/**
- * The announcement modes, side by side: the polite `status` default, the
- * assertive `alert` default on `critical`, an explicit override in each
- * direction, and `group` for an inline confirmation that should not be
- * announced as a live region at all.
- */
+/** Default and overridden `role` values. */
 export const RoleBehavior: Story = {
   name: "A11y: role default + override",
   render: () => (
@@ -863,11 +754,7 @@ export const RoleBehavior: Story = {
   },
 };
 
-/**
- * `Alert.Title` renders a non-heading element by default, because the
- * component cannot know which level keeps the page's document outline
- * sequential. `as` promotes it to a real heading where the page calls for one.
- */
+/** `Alert.Title` renders a `div` by default and a heading with `as`. */
 export const TitleRendersHeading: Story = {
   name: "Semantics: Title Heading",
   render: () => (
@@ -883,9 +770,6 @@ export const TitleRendersHeading: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     await step("Title defaults to a non-heading element", async () => {
-      // A `div`, not `Heading`'s own `h2`: the component cannot know which
-      // level keeps the surrounding outline sequential. Not a `p` either — a
-      // title is not a paragraph and could not hold block content.
       await expect(canvas.getByText("Default title").tagName).toBe("DIV");
     });
     await step(
@@ -912,14 +796,7 @@ export const TitleRendersHeading: Story = {
   },
 };
 
-/**
- * Every emphasis against every status — the one visual matrix for the two axes
- * Alert has. `SmokeTest` covers the same grid with all slots populated; this
- * one stays bare so the surfaces themselves are easy to compare.
- *
- * Not snapshotted: `SmokeTest` spans the same two axes with more in each cell,
- * so a baseline here would add cells, not coverage.
- */
+/** Every variant on every palette. */
 export const Variants: Story = {
   render: () => (
     <Stack direction="column" gap="400" alignItems="flex-start">
@@ -944,15 +821,7 @@ export const Variants: Story = {
   ),
 };
 
-/**
- * There is no `layout` axis: an alert is always the icon + stacked content
- * grid. A full-bleed page banner is a matter of where the alert is placed and
- * how it is styled, which style props already cover.
- *
- * Snapshotted: a full-bleed box — square corners, no side
- * borders, wide inline padding — is a layout `SmokeTest` structurally
- * cannot hold.
- */
+/** A full-bleed page banner built with style props. */
 export const FullBleedBanner: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
@@ -984,21 +853,10 @@ export const FullBleedBanner: Story = {
   },
 };
 
-// --- Silent confirmations (agent flows): role="group", no live region ---
-
 const onApproveUndo = fn();
 const onRejectUndo = fn();
 
-/**
- * The icon and dismiss boxes are one text line tall and derive from the type
- * cascade, so they follow the alert at any size. Three cases in one frame:
- * larger text, smaller text, and a description long enough to wrap — the last
- * being the one that tells the difference between aligning the icon to the
- * first line and centring it against the whole block.
- *
- * Snapshotted: `SmokeTest` renders at the default type scale only, so a
- * resized alert is a surface the matrix structurally cannot hold.
- */
+/** Icon and dismiss alignment with larger, smaller and wrapping text. */
 export const Sizing: Story = {
   name: "Sizing: larger, smaller, wrapping",
   tags: ["vrt"],
@@ -1078,8 +936,6 @@ export const Sizing: Story = {
 
         sizingAssertions(alert);
 
-        // Guard against the assertion above passing by coincidence on a block
-        // that happens to be one line tall.
         await expect(centreY(slot(alert, "icon")!)).toBeLessThan(
           centreY(description)
         );
@@ -1088,15 +944,7 @@ export const Sizing: Story = {
   },
 };
 
-/**
- * Every `colorPalette` now supplies an icon, so an alert renders without one
- * only when you say so: omit `colorPalette` entirely, or pass `hideIcon`. In
- * both cases the leading column collapses and the text starts at the padding
- * edge rather than being indented away from an empty column.
- *
- * Snapshotted: the collapsed leading column is a layout no `SmokeTest` cell
- * reaches, because every cell there has a palette and therefore an icon.
- */
+/** Alerts without an icon. */
 export const NoIcon: Story = {
   name: "No icon: omitted palette and hideIcon",
   tags: ["vrt"],
@@ -1144,20 +992,13 @@ export const NoIcon: Story = {
       const box = contentBox(alert);
       const title = slot(alert, "title")!.getBoundingClientRect();
 
-      // No icon column, so nothing indents the text from the left...
       expectAligned(title.left, box.left);
-      // ...and no dismiss button, so nothing reserves space on the right.
       expectAligned(title.right, box.right);
     });
   },
 };
 
-/**
- * Agent-style confirmations: `role="group"` so they contribute no live region,
- * `hideIcon` so they stay quiet, and an undo action. Not snapshotted — both
- * surfaces (a hidden icon, a populated actions row) are already baselined by
- * `Icon` and `SmokeTest`.
- */
+/** Confirmations with `role="group"` and no icon. */
 export const SilentConfirmations: Story = {
   name: "Silent: approve and reject confirmations",
   render: () => (
@@ -1228,18 +1069,7 @@ export const SilentConfirmations: Story = {
   },
 };
 
-/**
- * SmokeTest — the full visual matrix in a single story: every emphasis
- * `variant` × `colorPalette` combination (3 × 5 = 15 cells). Alert has no
- * `size` or `layout` axis, so the matrix covers the two axes it does have.
- *
- * Each cell exercises every slot — auto icon, Title, Description, an action
- * (`Alert.Actions`), and an `Alert.DismissButton` — so slot
- * placement is visible in every emphasis.
- * Cells use `role="group"` + `aria-label` so the matrix doesn't spawn live
- * regions — the announcement role model is covered by `RoleBehavior`.
- * Every palette supplies an icon, so every cell shows a leading column.
- */
+/** SmokeTest: every `variant` × `colorPalette` combination, with all slots. */
 export const SmokeTest: Story = {
   tags: ["vrt"],
   parameters: {
@@ -1248,8 +1078,6 @@ export const SmokeTest: Story = {
   render: () => (
     <Stack direction="column" gap="400" width="100%">
       {smokeColorPalettes.map((colorPalette) => {
-        // Recipe axes are typed as ConditionalValue<...>, not plain strings —
-        // coerce to string for display, keys, and labels.
         const paletteLabel = String(colorPalette);
         const content = smokeContent[paletteLabel];
         return (

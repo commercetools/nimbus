@@ -53,7 +53,6 @@ const Caption = ({ children }: { children: ReactNode }) => (
   </Text>
 );
 
-/** Status-appropriate copy, so the matrix reads like product rather than lorem. */
 const copy: Record<string, { title: string; description: string }> = {
   primary: {
     title: "New workspace available",
@@ -81,11 +80,6 @@ const copy: Record<string, { title: string; description: string }> = {
   },
 };
 
-// ---------------------------------------------------------------------------
-// In-use assemblies
-// ---------------------------------------------------------------------------
-
-/** Full-bleed page banner — built from style props, not a layout axis. */
 const MaintenanceBannerAssembly = () => (
   <Box
     borderWidth="1px"
@@ -119,7 +113,6 @@ const MaintenanceBannerAssembly = () => (
   </Box>
 );
 
-/** Form validation summary — `critical`, so it defaults to `role="alert"`. */
 const FormErrorAssembly = () => (
   <Stack
     gap="400"
@@ -153,7 +146,6 @@ const FormErrorAssembly = () => (
   </Stack>
 );
 
-/** Agent confirmation — silent, icon-less, with a single undo action. */
 const AgentConfirmationAssembly = () => (
   <Stack
     gap="300"
@@ -188,7 +180,6 @@ const AgentConfirmationAssembly = () => (
   </Stack>
 );
 
-/** Onboarding hint — flat, custom icon, no surface of its own. */
 const OnboardingHintAssembly = () => (
   <Stack
     gap="300"
@@ -213,7 +204,6 @@ const OnboardingHintAssembly = () => (
   </Stack>
 );
 
-/** Trial expiry — promoted heading, two actions, with a dismiss button. */
 const TrialExpiryAssembly = () => (
   <Stack
     gap="300"
@@ -231,10 +221,6 @@ const TrialExpiryAssembly = () => (
       <Alert.Description>
         Add a payment method to keep your projects active after 28 September.
       </Alert.Description>
-      {/* No colorPalette on the buttons: they inherit the alert's, so the
-          action hierarchy is carried by variant alone. A primary-palette
-          button here would put a second colour identity inside a container
-          that already has one. */}
       <Alert.Actions>
         <Button size="sm" variant="solid">
           Add payment method

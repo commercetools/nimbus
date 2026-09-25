@@ -13,13 +13,7 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 // ============================================================
 
 type AlertRecipeProps = {
-  /**
-   * Visual emphasis of the alert surface.
-   *
-   * `"outlined"` (default) is a tinted card, `"accent-start"` a neutral card
-   * with a status-colored bar on the leading edge, and `"flat"` no chrome at
-   * all.
-   */
+  /** Visual style variant of the alert */
   variant?: SlotRecipeProps<"nimbusAlert">["variant"];
 };
 
@@ -46,10 +40,7 @@ export type AlertActionsSlotProps = HTMLChakraProps<"div">;
 export type AlertProps = OmitInternalProps<AlertRootSlotProps> & {
   [key: `data-${string}`]: unknown;
   ref?: React.Ref<HTMLDivElement>;
-  /**
-   * Hide the status icon entirely. Suppresses both the automatic status icon
-   * and any explicit `Alert.Icon`.
-   */
+  /** Hides the status icon, including a custom `Alert.Icon`. */
   hideIcon?: boolean;
 };
 
@@ -64,15 +55,14 @@ export type AlertRootComponent = React.FC<AlertProps>;
 export type AlertIconProps = AlertIconSlotProps;
 
 /**
- * Props for the Alert.Title component. Renders the Nimbus `Heading` primitive;
- * defaults to a non-heading element (`as="p"`), overridable via `as`.
+ * Props for the Alert.Title component.
  */
 export type AlertTitleProps = Omit<HeadingProps, "ref"> & {
   ref?: React.Ref<HTMLHeadingElement>;
 };
 
 /**
- * Props for the Alert.Description component. Renders the Nimbus `Text` primitive.
+ * Props for the Alert.Description component.
  */
 export type AlertDescriptionProps = Omit<TextProps, "ref"> & {
   ref?: React.Ref<HTMLElement>;
