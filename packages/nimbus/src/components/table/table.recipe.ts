@@ -121,6 +121,8 @@ export const tableSlotRecipe = defineSlotRecipe({
         },
       },
     },
+    // DataTable shares these sm/md/lg values (`data-table.recipe.ts`,
+    // `sharedSizeVariant`). Keep the two in sync.
     size: {
       sm: {
         root: {
