@@ -32,6 +32,7 @@ import {
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "../data-table.messages";
+import { DATA_TABLE_DEFAULT_SIZE } from "../utils/sizes.utils";
 
 /**
  * DataTable.Root - The root container that provides context and state management for the entire data table
@@ -58,7 +59,8 @@ export const DataTableRoot = function DataTableRoot<
     allowsSorting = false,
     maxHeight,
     isTruncated = false,
-    density = "default",
+    size: sizeProp,
+    density: densityProp,
     nestedKey,
     onRowClick,
     renderNestedContent,
@@ -84,6 +86,35 @@ export const DataTableRoot = function DataTableRoot<
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const selectRowLabel = msg.format("selectRow");
+
+  const size = sizeProp ?? DATA_TABLE_DEFAULT_SIZE;
+  const density = densityProp ?? "default";
+  // `density` only modifies the deprecated `xl` default. An explicit `size`
+  // owns the padding, so `density` is not passed to the recipe then.
+  const recipeDensity = sizeProp === undefined ? density : "default";
+
+  // Deprecation warnings, once per mount. Development only.
+  const hasWarnedRef = useRef({ xl: false, density: false });
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    const warned = hasWarnedRef.current;
+    if (sizeProp === "xl" && !warned.xl) {
+      warned.xl = true;
+      console.warn(
+        '[Nimbus] DataTable: size="xl" is deprecated. It is the default only to keep the previous appearance. Use size="lg" instead.'
+      );
+    }
+    if (
+      sizeProp !== undefined &&
+      densityProp !== undefined &&
+      !warned.density
+    ) {
+      warned.density = true;
+      console.warn(
+        "[Nimbus] DataTable: `density` is deprecated and ignored when `size` is set. Remove `density`."
+      );
+    }
+  }, [sizeProp, densityProp]);
 
   useEffect(() => {
     const el = localRef.current;
@@ -309,6 +340,7 @@ export const DataTableRoot = function DataTableRoot<
       maxHeight,
       isTruncated,
       density,
+      size,
       nestedKey,
       onSortChange: handleSortChange,
       isRowClickable,
@@ -340,6 +372,7 @@ export const DataTableRoot = function DataTableRoot<
       maxHeight,
       isTruncated,
       density,
+      size,
       nestedKey,
       handleSortChange,
       isRowClickable,
@@ -379,7 +412,8 @@ export const DataTableRoot = function DataTableRoot<
     <DataTableRootSlot
       ref={ref}
       truncated={isTruncated}
-      density={density}
+      size={size}
+      density={recipeDensity}
       maxH={maxHeight}
       {...rest}
       asChild
