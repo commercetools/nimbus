@@ -24,7 +24,11 @@ import type {
   TableSelectionContextValue,
   DataTableRowItem,
 } from "../data-table.types";
-import { defaultGetRowKey } from "../utils/row-keys.utils";
+import {
+  defaultGetRowKey,
+  findRowKeyProblems,
+  formatRowKeyProblems,
+} from "../utils/row-keys.utils";
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "../data-table.messages";
@@ -174,6 +178,15 @@ export const DataTableRoot = function DataTableRoot<
       getRowKey,
     ]
   );
+
+  // Duplicate or empty keys otherwise surface only as React Aria's opaque
+  // "Cell count must match column count", which names neither the row nor the
+  // cause. Development only.
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    const message = formatRowKeyProblems(findRowKeyProblems(rows, getRowKey));
+    if (message) console.warn(message);
+  }, [rows, getRowKey]);
 
   const pinnedRowIds = useMemo(
     () => rows.filter((r) => pinnedRows.has(getRowKey(r))).map(getRowKey),

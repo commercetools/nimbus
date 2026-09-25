@@ -22,6 +22,9 @@ meant the business key leaked into the keying of the table.
   could still be selected.
 - Two rows sharing a business key keep separate React identities instead of
   colliding on a duplicate key.
+- Duplicate or empty row ids now log a warning in development naming the
+  offending id. They previously surfaced only as React Aria's "Cell count must
+  match column count", which named neither the row nor the cause.
 
 ### Check this after upgrading
 
@@ -35,6 +38,10 @@ meant the business key leaked into the keying of the table.
   the column `id`.
 - **Row ids must be unique.** Rows sharing an `id` but differing in `key` used
   to work by accident and now collide.
+- **Custom row ids.** To identify rows by another property, set `id` in the row
+  data. Setting a different `id` on `DataTable.Row` in a custom `DataTable.Body`
+  now logs a development warning, because selection would use it while
+  expansion, pinning and `disabledKeys` use the row's `id`.
 - **Drag and drop.** `createArrayHandlers` still defaults `getKey` to
   `(item) => item.key ?? item.id`, which is correct for collections genuinely
   keyed by `key`. For `DataTable`, pass it explicitly:
