@@ -35,7 +35,8 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   ...props
 }: DataTableBodyProps<T>) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
-  const { activeColumns, renderEmptyState } = useDataTableContext<T>();
+  const { activeColumns, renderEmptyState, getRowKey } =
+    useDataTableContext<T>();
   const { sortedRows, expanded, pinnedRows, pinnedRowIds } =
     useInteractionContext<T>();
   const [styleProps, restProps] = extractStyleProps(props);
@@ -43,6 +44,8 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   // Use provided aria-label or fall back to default
   const ariaLabel = ariaLabelProp ?? msg.format("dataTableBody");
 
+  const getRowKeyRef = useRef(getRowKey);
+  getRowKeyRef.current = getRowKey;
   const childrenRef = useRef(children);
   childrenRef.current = children;
   const expandedRef = useRef(expanded);
@@ -56,10 +59,11 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
     (row: DataTableRowItem<T>) => {
       const currentPinnedRows = pinnedRowsRef.current;
       const currentPinnedRowIds = pinnedRowIdsRef.current;
-      const isPinned = currentPinnedRows.has(row.id);
-      const pinnedIdx = isPinned ? currentPinnedRowIds.indexOf(row.id) : -1;
+      const rowKey = getRowKeyRef.current(row);
+      const isPinned = currentPinnedRows.has(rowKey);
+      const pinnedIdx = isPinned ? currentPinnedRowIds.indexOf(rowKey) : -1;
       const rowRenderProps: DataTableRowRenderProps = {
-        isExpanded: expandedRef.current.has(row.id),
+        isExpanded: expandedRef.current.has(rowKey),
         isPinned,
         isFirstPinned: pinnedIdx === 0,
         isLastPinned: pinnedIdx === currentPinnedRowIds.length - 1,
@@ -78,11 +82,11 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
         const rendered = childrenRef.current(row, rowRenderProps);
         return isValidElement<{ id?: string }>(rendered) &&
           rendered.props.id == null
-          ? cloneElement(rendered, { id: row.id })
+          ? cloneElement(rendered, { id: rowKey })
           : rendered;
       }
       return (
-        <DataTableRow key={row.id} id={row.id} row={row} {...rowRenderProps} />
+        <DataTableRow key={rowKey} id={rowKey} row={row} {...rowRenderProps} />
       );
     },
     // Stable identity — delegates through refs so RaTableBody never

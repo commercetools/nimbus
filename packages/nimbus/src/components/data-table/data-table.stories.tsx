@@ -7057,3 +7057,95 @@ export const BusinessKeyCollectionKeysAreIds: Story = {
     });
   },
 };
+
+/**
+ * A minimal two-column fixture for the row-key diagnostics below.
+ */
+const identityColumns: DataTableColumnItem[] = [
+  {
+    id: "sku",
+    header: "SKU",
+    accessor: (row: Record<string, unknown>) => row.sku as ReactNode,
+  },
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row: Record<string, unknown>) => row.name as ReactNode,
+  },
+];
+
+/**
+ * A row's identity comes from its data. To identify rows by something other
+ * than their database id — a SKU here — set `id` in the row data. Selection,
+ * expansion and pinning then all agree on that one value, because every part
+ * of the table reads identity from the same place.
+ */
+export const RowIdentityComesFromRowData: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+    const [pinnedId, setPinnedId] = useState("none");
+    const variants = [
+      { databaseId: "a1", sku: "SKU-RED", name: "Red" },
+      { databaseId: "b2", sku: "SKU-BLUE", name: "Blue" },
+    ];
+
+    return (
+      <Stack>
+        <DataTable
+          columns={identityColumns}
+          rows={variants.map((variant) => ({ ...variant, id: variant.sku }))}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          allowsPinning
+          onPinToggle={(rowId) => setPinnedId(rowId)}
+          renderNestedContent={(row) => <Text>Details for {row.id}</Text>}
+          aria-label="Rows identified by SKU"
+        />
+        <Text data-testid="data-id-selected">
+          {selectedKeys === "all"
+            ? "all"
+            : Array.from(selectedKeys).join(",") || "none"}
+        </Text>
+        <Text data-testid="data-id-pinned">{pinnedId}</Text>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const firstRow = () => canvas.getAllByRole("row")[1];
+
+    await step("Selection reports the id from the data", async () => {
+      await canvas.findByText("Red");
+      await userEvent.click(within(firstRow()).getByRole("checkbox"));
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("data-id-selected")).toHaveTextContent(
+          /^SKU-RED$/
+        );
+      });
+    });
+
+    await step("Expansion opens that same row", async () => {
+      await userEvent.click(
+        within(firstRow()).getByRole("button", { name: /expand/i })
+      );
+
+      expect(
+        await canvas.findByText("Details for SKU-RED")
+      ).toBeInTheDocument();
+    });
+
+    await step("Pinning reports the same id as selection", async () => {
+      await userEvent.click(
+        within(firstRow()).getByRole("button", { name: /pin row/i })
+      );
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("data-id-pinned")).toHaveTextContent(
+          /^SKU-RED$/
+        );
+      });
+    });
+  },
+};
