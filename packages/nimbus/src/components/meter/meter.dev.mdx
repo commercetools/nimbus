@@ -1,0 +1,271 @@
+---
+title: Meter component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Meter, type MeterProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+The simplest implementation passes a `value` and a `label`. The default range is
+0 to 100, and the value is formatted as a percent.
+
+```jsx live-dev
+const App = () => <Meter value={40} label="CPU usage" />;
+```
+
+## Usage examples
+
+### Size options
+
+The `2xs` and `md` (default) size variants are available to match your interface
+density:
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Meter value={60} size="2xs" label="Extra small (2xs)" />
+    <Meter value={60} size="md" label="Medium (md)" />
+  </Stack>
+);
+```
+
+### Layout options
+
+The `layout` prop controls the positioning of the label and value text:
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <Meter value={50} layout="stacked" label="Stacked (default)" />
+    <Meter value={50} layout="inline" label="Inline" />
+    <Meter value={50} layout="minimal" aria-label="Minimal (no visual label)" />
+  </Stack>
+);
+```
+
+> [!TIP]\
+> When using `layout="minimal"`, the visual label is not shown. You **must**
+> provide an `aria-label` so the meter still has an accessible name.
+
+### Custom range
+
+Use `minValue` and `maxValue` to measure against a range other than 0-100. The
+filled part is always relative to this range.
+
+```jsx live-dev
+const App = () => (
+  <Meter
+    value={35}
+    minValue={10}
+    maxValue={60}
+    label="Temperature"
+    formatOptions={{ style: "unit", unit: "celsius" }}
+  />
+);
+```
+
+### Value formatting
+
+Use `formatOptions` to control how the value is displayed. This accepts a
+standard `Intl.NumberFormatOptions` object. The default is
+`{ style: "percent" }`. Use `valueLabel` to replace the formatted text with a
+fully custom string, for example to show a fraction instead of a percent.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Meter value={72} label="Default (percent)" />
+    <Meter
+      value={50}
+      label="Unit"
+      formatOptions={{ style: "unit", unit: "gigabyte" }}
+    />
+    <Meter value={50} label="Custom value label" valueLabel="50 of 100 GB" />
+  </Stack>
+);
+```
+
+### Multiple segments
+
+Pass `segments` instead of `value` to show several measured parts inside one
+total. `value` and `segments` cannot both be set — the type is a discriminated
+union that rejects passing both. Each item in `segments` needs a unique `id`, a
+`label`, and a `value` (the amount it contributes, counted from `minValue`).
+Meter draws the segments in array order, adds a legend below the bar, and builds
+one accessible summary for the whole meter.
+
+```jsx live-dev
+const App = () => (
+  <Meter
+    label="Storage"
+    formatOptions={{ style: "unit", unit: "gigabyte" }}
+    segments={[
+      { id: "images", label: "Images", value: 30 },
+      { id: "videos", label: "Videos", value: 20 },
+    ]}
+  />
+);
+```
+
+If the segment values add up to more than the range, they are cut once the track
+is full. If a segment has a negative value, it is treated as `0`. Both cases log
+a warning in development mode, so keep the total inside the range in production
+data. A segment with value `0` draws nothing in the track but still appears in
+the legend.
+
+### Segment colors
+
+A segment can set its own `colorPalette`, for example to mark one part as a
+warning. A segment without a `colorPalette` gets the next color from a fixed
+default sequence (`primary`, `teal`, `orange`, `pink`, `blue`, `brown`,
+repeating), so adjacent segments never share a color by default.
+
+```jsx live-dev
+const App = () => (
+  <Meter
+    label="System health"
+    segments={[
+      { id: "ok", label: "Healthy", value: 40, colorPalette: "positive" },
+      { id: "warn", label: "Degraded", value: 20, colorPalette: "warning" },
+    ]}
+  />
+);
+```
+
+### Color palettes
+
+The `colorPalette` prop themes the fill of a single-value meter using the system
+color tokens. Use a semantic palette, such as `positive`, `warning`, or
+`critical`, to communicate a state:
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Meter value={80} colorPalette="primary" label="Primary" />
+    <Meter value={90} colorPalette="positive" label="Healthy" />
+    <Meter value={55} colorPalette="warning" label="Degraded" />
+    <Meter value={15} colorPalette="critical" label="Critical" />
+  </Stack>
+);
+```
+
+## Component requirements
+
+### Accessibility
+
+The Meter component handles most accessibility requirements internally, using
+React Aria Components' `<Meter>`. It renders `role="meter"` in the DOM (React
+Aria adds a second, fallback role token, `progressbar`, for browsers that do not
+support the `meter` role; assistive technology reads this as the `meter` role).
+
+- **Labeling**: give the meter an accessible name, either with the visible
+  `label` prop or with `aria-label` / `aria-labelledby` when the visual label is
+  hidden (for example with `layout="minimal"`). If none of these is provided,
+  React Aria logs a warning in development mode.
+- **Role**: the element has `role="meter"` and exposes `aria-valuemin`,
+  `aria-valuemax`, and `aria-valuenow`. In segment mode, `aria-valuenow` is the
+  sum of the segment values, and `aria-valuetext` announces the total followed
+  by every segment's label and value, for example
+  `"50 GB (Images: 30 GB, Videos: 20 GB)"`.
+- **Not interactive**: a meter shows a measured value, not a control. It is
+  never focusable and does not respond to keyboard input, so it does not need a
+  keyboard interaction pattern.
+- **Legend**: in segment mode, the legend below the bar is marked
+  `aria-hidden="true"`, because `aria-valuetext` already announces the same
+  information. It stays visible for sighted users so the color of each segment
+  has a text meaning next to it.
+
+If your use case requires tracking and analytics for this component, it is good
+practice to add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "storage-quota-meter";
+
+export const Example = () => (
+  <Meter id={PERSISTENT_ID} value={72} label="Storage used" />
+);
+```
+
+## API reference
+
+<PropsTable id="Meter" />
+
+## Common patterns
+
+### Storage quota broken down by category
+
+This example shows a total quota broken into categories, a common use of the
+segmented mode.
+
+```jsx live-dev
+const App = () => {
+  const usage = [
+    { id: "images", label: "Images", value: 18 },
+    { id: "videos", label: "Videos", value: 34 },
+    { id: "documents", label: "Documents", value: 6 },
+  ];
+  const total = usage.reduce((sum, item) => sum + item.value, 0);
+
+  return (
+    <Stack direction="column" gap="200">
+      <Meter
+        label="Storage"
+        maxValue={100}
+        formatOptions={{ style: "unit", unit: "gigabyte" }}
+        segments={usage}
+      />
+      <Text fontSize="sm" color="neutral.11">
+        {total} GB of 100 GB used
+      </Text>
+    </Stack>
+  );
+};
+```
+
+### Reacting to a threshold
+
+Because Meter always shows a known, measured value, a consumer can decide its
+own color based on the value, for example to warn when a quota is nearly full.
+
+```jsx live-dev
+const App = () => {
+  const [used, setUsed] = useState(72);
+  const palette = used >= 90 ? "critical" : used >= 70 ? "warning" : "positive";
+
+  return (
+    <Stack direction="column" gap="400">
+      <Meter value={used} label="Storage used" colorPalette={palette} />
+      <Stack direction="row" gap="200">
+        <Button onClick={() => setUsed((v) => Math.max(0, v - 10))}>-10</Button>
+        <Button onClick={() => setUsed((v) => Math.min(100, v + 10))}>
+          +10
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Meter
+within your application. As the component's internal functionality is already
+tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+{{docs-tests: meter.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](link-tbd)
+- [React Aria Meter](https://react-spectrum.adobe.com/react-aria/Meter.html)
+- [ARIA Authoring Practices: Meter pattern](https://www.w3.org/WAI/ARIA/apg/patterns/meter/)
+- [Progress bar](/components/feedback/progress-bar)
