@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn } from "storybook/test";
 import {
@@ -637,6 +638,54 @@ export const Icon: Story = {
       await expect(
         canvas.queryByTestId("should-not-render")
       ).not.toBeInTheDocument();
+    });
+  },
+};
+
+const HideIconToggle = () => {
+  const [hideIcon, setHideIcon] = useState(false);
+  return (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      <Button onPress={() => setHideIcon((v) => !v)}>Toggle icon</Button>
+      <Alert.Root
+        data-testid="toggle-alert"
+        colorPalette="info"
+        hideIcon={hideIcon}
+      >
+        <>
+          <Alert.Title>Toggling the icon</Alert.Title>
+          <Alert.Description>
+            <input aria-label="Draft" />
+          </Alert.Description>
+        </>
+      </Alert.Root>
+    </Stack>
+  );
+};
+
+/** Toggling `hideIcon` keeps the children mounted. */
+export const HideIconToggleKeepsChildren: Story = {
+  name: "Icon: toggling hideIcon keeps children mounted",
+  render: () => <HideIconToggle />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox", { name: "Draft" });
+
+    await step("typed text survives hiding and showing the icon", async () => {
+      await userEvent.type(input, "unsaved");
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Toggle icon" })
+      );
+      await expect(
+        canvas.getByTestId("toggle-alert").querySelector("svg")
+      ).toBeNull();
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Toggle icon" })
+      );
+
+      const after = canvas.getByRole("textbox", { name: "Draft" });
+      await expect(after).toBe(input);
+      await expect(after).toHaveValue("unsaved");
     });
   },
 };
