@@ -102,9 +102,9 @@ const App = () => (
 
 ### Style
 
-The `variant` prop controls emphasis. `outlined` is the default.
+The `variant` prop controls emphasis. Without a `variant`, the alert has no surface and no padding and sits flush with its container.
 
-#### Outlined (default)
+#### Outlined
 
 Use when getting attention is more important. These can be used inline, but they
 take up space and it is not as easy to slide into compact areas as much the flat
@@ -123,7 +123,7 @@ const App = () => (
 
 #### Accent start
 
-A neutral card with a status-colored bar down the leading edge — the same
+A neutral card with a status-colored bar down the leading edge — close to the
 treatment `Toast` uses by default. The surface and the text stay neutral and
 the bar, the icon and the action buttons carry the status color, so a page can hold several of
 these at once without turning into a color chart. Use it where the message

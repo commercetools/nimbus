@@ -6,37 +6,49 @@ The component SHALL support three visual emphasis variants — `flat`,
 `outlined` and `accent-start` — selected with the `variant` prop on
 `Alert.Root`.
 
-The variant SHALL control color and border color only. The box — the grid, the
-padding and the corner radius — SHALL be identical across every variant, so
-switching variant never reflows the alert nor shifts the content inside it.
+Every variant SHALL apply the same padding. The variant SHALL otherwise
+control color and the outline only. The box — the grid, the padding and the
+corner radius — SHALL be identical across every variant, so switching variant
+never reflows the alert nor shifts the content inside it. No variant SHALL
+use a CSS border; outlines and bars are inset shadows, which take no layout
+space.
 
-#### Scenario: Default variant
+#### Scenario: No variant
 
 - **WHEN** no `variant` is set on Root
-- **THEN** SHALL render the `outlined` treatment
+- **THEN** SHALL apply no variant styles: no padding, no background and no
+  outline
+- **AND** SHALL therefore sit flush with its container, as before this change
 
 #### Scenario: Flat variant
 
 - **WHEN** `variant="flat"` is set on Root
-- **THEN** SHALL render no visible border and no background
+- **THEN** SHALL render no visible outline and no background
 - **AND** SHALL rely on the icon and the text color for distinction
-- **AND** SHALL still occupy the shared box, including the transparent border
+- **AND** SHALL apply the shared padding
 
 #### Scenario: Outlined variant
 
 - **WHEN** `variant="outlined"` is set on Root
-- **THEN** SHALL render a visible border of `solid-25` width
-- **AND** SHALL use `colorPalette.5` for the border color
+- **THEN** SHALL render a 1px outline in `colorPalette.5`, drawn as an inset
+  shadow
 - **AND** SHALL use `colorPalette.2` for the background color
 
 #### Scenario: Accent-start variant
 
 - **WHEN** `variant="accent-start"` is set on Root
 - **THEN** SHALL use `neutral.2` for the background color
-- **AND** SHALL use `neutral.5` for the border color
-- **AND** SHALL render a 3px bar in `colorPalette.9` on the inline-start edge
-- **AND** SHALL draw that bar with an inset shadow rather than a border, so
-  that it consumes no layout space
+- **AND** SHALL render a 1px outline in `neutral.5`, drawn as an inset shadow
+- **AND** SHALL render a 4px bar in `colorPalette.9` on the inline-start edge,
+  drawn as an inset shadow above the outline so it sits flush with the edge
+
+#### Scenario: Outline in forced-colors mode
+
+- **WHEN** `variant="outlined"` or `variant="accent-start"` renders while the
+  operating system's forced-colors mode is active
+- **THEN** the card edge SHALL remain visible, through a transparent 1px
+  outline inset by 1px that the browser repaints in the system color, because
+  forced-colors mode drops box shadows
 
 #### Scenario: Accent-start keeps the reading surface neutral
 
@@ -65,14 +77,15 @@ switching variant never reflows the alert nor shifts the content inside it.
 #### Scenario: Variant does not affect the box
 
 - **WHEN** the same content is rendered under each supported `variant`
-- **THEN** padding, border width and corner radius SHALL be identical in all
-  of them
+- **THEN** padding and corner radius SHALL be identical in all of them
+- **AND** none of them SHALL have a border width
 - **AND** the content SHALL start at the same inline offset in all of them
 
 ### Requirement: Semantic Color Palettes
 
-The component SHALL accept every semantic color palette. The four severities
-carry an automatic status icon; the two that express no severity do not.
+The component SHALL accept every Nimbus color palette. The four severities
+and `primary` carry their own automatic icon; every other palette carries the
+`neutral` icon.
 
 #### Scenario: Critical palette
 
@@ -105,20 +118,25 @@ carry an automatic status icon; the two that express no severity do not.
 
 #### Scenario: Non-severity palettes
 
-- **WHEN** colorPalette="neutral" or colorPalette="primary" is set on Root
-- **THEN** SHALL apply those semantic colors
+- **WHEN** colorPalette="primary", "neutral" or any other non-severity palette
+  (brand or system) is set on Root
+- **THEN** SHALL apply that palette's colors
 - **AND** primary SHALL display the Campaign icon, for announcements
-- **AND** neutral SHALL display the Article icon
+- **AND** neutral and every other palette SHALL display the Article icon
 - **AND** those icons SHALL be decorative rather than a redundancy affordance,
   since neither palette expresses a severity for the icon to reinforce
 
 #### Scenario: Color palette restrictions
 
 - **WHEN** colorPalette prop is set
-- **THEN** SHALL accept the full semantic set: critical, info, warning,
-  positive, neutral, primary
-- **AND** SHALL type as: SemanticPalettesOnly, the same type `Button` uses
-- **AND** SHALL NOT exclude any semantic palette by hand
+- **THEN** SHALL accept every Nimbus palette: semantic, brand and system
+- **AND** SHALL type as `ConditionalValue<NimbusColorPalette>`
+
+#### Scenario: Responsive color palette
+
+- **WHEN** colorPalette is a responsive object or array
+- **THEN** the automatic icon and the default `role` SHALL come from its base
+  value (the `base` key, or the first array entry)
 
 ### Requirement: Automatic Icon Display
 
@@ -132,11 +150,13 @@ allow that icon to be replaced, and SHALL allow it to be suppressed.
 - **AND** info SHALL display Info
 - **AND** warning SHALL display WarningAmber
 - **AND** positive SHALL display CheckCircleOutline
-- **AND** neutral SHALL display Article and primary SHALL display Campaign
+- **AND** primary SHALL display Campaign
+- **AND** neutral and every other palette SHALL display Article
 
 #### Scenario: Custom icon
 
-- **WHEN** an `Alert.Icon` child is provided
+- **WHEN** an `Alert.Icon` child is provided as a direct child of Root
+  (fragments, conditionals and arrays allowed)
 - **THEN** it SHALL replace the automatic status icon
 - **AND** SHALL occupy the same slot and box as the automatic icon
 
@@ -146,6 +166,12 @@ allow that icon to be replaced, and SHALL allow it to be suppressed.
 - **THEN** no icon SHALL render, automatic or custom
 - **AND** the leading grid column SHALL collapse, leaving no gap before the
   content
+
+#### Scenario: Toggling icon suppression
+
+- **WHEN** `hideIcon` changes while the alert is mounted
+- **THEN** the other children SHALL stay mounted, keeping focus and
+  uncontrolled state
 
 #### Scenario: Icon box tracks the text
 
@@ -191,6 +217,8 @@ cascade and whose rendered element is controllable.
 - **THEN** SHALL render a Heading defaulting to a non-heading element
 - **AND** SHALL register with root context via withContext("title")
 - **AND** SHALL set displayName="Alert.Title"
+- **AND** SHALL NOT take slot props from a React Aria provider above the
+  alert unless the consumer passes `slot`
 
 #### Scenario: Title inherits the alert's type
 
@@ -234,6 +262,8 @@ whose rendered element is controllable.
   such as lists and stacks remains valid markup
 - **AND** SHALL register with root context via withContext("description")
 - **AND** SHALL set displayName="Alert.Description"
+- **AND** SHALL NOT take slot props from a React Aria provider above the
+  alert unless the consumer passes `slot`
 
 #### Scenario: Description element control
 
@@ -266,6 +296,8 @@ row.
 - **WHEN** Alert.Actions contains more than one control
 - **THEN** SHALL lay them out as a wrapping row with a consistent gap
 - **AND** SHALL separate the row from the message above it
+- **AND** SHALL add the same space below the row, so the buttons keep the
+  intended spacing in every variant, including an alert without padding
 
 #### Scenario: Actions rendering
 
@@ -322,8 +354,9 @@ The component SHALL provide a composable dismiss button.
 #### Scenario: Dismiss button styling
 
 - **WHEN** DismissButton renders
-- **THEN** the IconButton SHALL default to `variant="ghost"`
-- **AND** SHALL default to `size="2xs"`
+- **THEN** the IconButton SHALL default to `variant="ghost"`, which a
+  consumer `variant` overrides
+- **AND** SHALL default to `size="2xs"`, which a consumer `size` overrides
 - **AND** the Clear icon SHALL have `role="img"`
 - **AND** SHALL inherit color from the parent context, except under
   `accent-start`, which resolves the slot's `colorPalette` to `neutral` so the
@@ -413,4 +446,4 @@ The component SHALL support all valid combinations of `variant` and
 #### Scenario: Default variant values
 
 - **WHEN** no `variant` prop is provided
-- **THEN** SHALL apply `variant="outlined"`
+- **THEN** SHALL apply no default variant
