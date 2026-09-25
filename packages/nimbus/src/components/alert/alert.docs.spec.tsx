@@ -20,8 +20,6 @@ describe("Alert - Basic rendering", () => {
       </NimbusProvider>
     );
 
-    // `critical` defaults to role="alert" (assertive); every other palette
-    // defaults to the polite "status". Pass `role` to override either.
     expect(screen.getByRole("alert")).toBeInTheDocument();
     expect(screen.getByText("Error saving")).toBeInTheDocument();
     expect(screen.getByText("Connection lost")).toBeInTheDocument();
@@ -36,7 +34,6 @@ describe("Alert - Basic rendering", () => {
       </NimbusProvider>
     );
 
-    // Alert.Root defaults to role="status" (polite) when `role` isn't set.
     expect(screen.getByRole("status")).toBeInTheDocument();
     expect(screen.getByText("Success: Item created.")).toBeInTheDocument();
   });
@@ -78,8 +75,6 @@ describe("Alert - Basic rendering", () => {
       </NimbusProvider>
     );
 
-    // Silent inline confirmations use role="group" + aria-label instead of a
-    // live-region role, so they aren't announced as status/alert.
     expect(
       screen.getByRole("group", { name: "Suggestion approved" })
     ).toBeInTheDocument();
