@@ -2,48 +2,27 @@
 "@commercetools/nimbus": minor
 ---
 
-`DataTable`: rows and columns are now keyed strictly by their `id`.
+`DataTable` now identifies rows and columns only by their `id`. A `key` field,
+which customer groups, categories, channels and stores usually have, is treated
+as ordinary data.
 
-React Aria derives a collection key as `id ?? key ?? …`, so a `key` field on a
-row or column definition used to win. Domain objects commonly have one —
-customer groups, categories, product types, channels and stores all do — which
-meant the business key leaked into the keying of the table.
+### `DataTable`
 
-### Fixed
+- **Fixed:** a row whose `key` equals a column id no longer crashes the table
+  with "Cell count must match column count".
+- **Fixed:** `onSelectionChange` reports row ids and `onSortChange` reports
+  column ids, so sorting works for columns that have a `key` field.
+- **Fixed:** rows in `disabledKeys` are really disabled: they cannot be
+  selected, and keyboard navigation skips them.
+- `selectedKeys`, `defaultSelectedKeys` and `disabledKeys` must hold row ids.
+  Stored selections that use business keys no longer match.
+- Row ids must be unique. In development, a duplicate or empty id logs a warning
+  that names it.
+- To identify rows by another property, set `id` in the row data. A different
+  `id` on `DataTable.Row` in a custom `DataTable.Body` logs a development
+  warning.
 
-- A row whose `key` equals a column id no longer crashes the table with "Cell
-  count must match column count".
-- `onSelectionChange` reports row ids. It previously reported the business key.
-- `onSortChange` reports column ids. It previously reported a column's `key`
-  field, so `sortDescriptor.column` never matched `column.id` and sorting
-  silently stopped working.
-- `disabledKeys` now actually disables the rows you name. Before, those rows
-  were only styled as disabled — they stayed in the keyboard focus order and
-  could still be selected.
-- Two rows sharing a business key keep separate React identities instead of
-  colliding on a duplicate key.
-- Duplicate or empty row ids now log a warning in development naming the
-  offending id. They previously surfaced only as React Aria's "Cell count must
-  match column count", which named neither the row nor the cause.
+### `createArrayHandlers`
 
-### Check this after upgrading
-
-- **Selection.** `selectedKeys` and `defaultSelectedKeys` must hold row ids. If
-  you persist selection to a URL, `localStorage` or a server, stored business
-  keys no longer match — migrate or discard them.
-- **Disabled rows.** `disabledKeys` must hold row ids. Rows named by business
-  key are no longer disabled; rows named by id now genuinely are, so keyboard
-  navigation skips them.
-- **Sorting.** If you compare `sortDescriptor.column` yourself, it is now always
-  the column `id`.
-- **Row ids must be unique.** Rows sharing an `id` but differing in `key` used
-  to work by accident and now collide.
-- **Custom row ids.** To identify rows by another property, set `id` in the row
-  data. Setting a different `id` on `DataTable.Row` in a custom `DataTable.Body`
-  now logs a development warning, because selection would use it while
-  expansion, pinning and `disabledKeys` use the row's `id`.
-- **Drag and drop.** `createArrayHandlers` still defaults `getKey` to
-  `(item) => item.key ?? item.id`, which is correct for collections genuinely
-  keyed by `key`. For `DataTable`, pass it explicitly:
-  `createArrayHandlers(setRows, (row) => row.id)`. A mismatch now logs a
-  development warning naming the cause instead of silently doing nothing.
+- When a drag operation matches no item, a development warning explains why. For
+  `DataTable` rows, pass `createArrayHandlers(setRows, (row) => row.id)`.
