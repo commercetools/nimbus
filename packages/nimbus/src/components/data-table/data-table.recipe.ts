@@ -649,8 +649,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
   ],
   defaultVariants: {
     size: DATA_TABLE_DEFAULT_SIZE,
-  },
-  defaultVariants: {
     truncated: false,
     density: "default",
   },
