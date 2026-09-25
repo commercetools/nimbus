@@ -9,11 +9,17 @@ import { Text } from "../../text/text";
  * @supportsStyleProps
  */
 export const AlertDescription = (props: AlertDescriptionProps) => {
-  const { ref: forwardedRef, children, as = "div", ...restProps } = props;
+  const {
+    ref: forwardedRef,
+    children,
+    as = "div",
+    slot = null,
+    ...restProps
+  } = props;
 
   return (
     <AlertDescriptionSlot asChild {...restProps}>
-      <Text ref={forwardedRef} as={as}>
+      <Text ref={forwardedRef} as={as} slot={slot}>
         {children}
       </Text>
     </AlertDescriptionSlot>

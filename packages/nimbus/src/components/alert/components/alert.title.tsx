@@ -9,13 +9,20 @@ import { Heading } from "../../heading/heading";
  * @supportsStyleProps
  */
 export const AlertTitle = (props: AlertTitleProps) => {
-  const { ref: forwardedRef, children, as = "div", ...restProps } = props;
+  const {
+    ref: forwardedRef,
+    children,
+    as = "div",
+    slot = null,
+    ...restProps
+  } = props;
 
   return (
     <AlertTitleSlot asChild {...restProps}>
       <Heading
-        ref={forwardedRef}
+        ref={forwardedRef as React.Ref<HTMLHeadingElement>}
         as={as}
+        slot={slot}
         fontSize="inherit"
         lineHeight="inherit"
         fontWeight="600"

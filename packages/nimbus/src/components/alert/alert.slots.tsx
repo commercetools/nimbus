@@ -17,7 +17,7 @@ export const AlertRoot = withProvider<HTMLDivElement, AlertRootSlotProps>(
   "root"
 );
 
-export const AlertTitle = withContext<HTMLHeadingElement, AlertTitleProps>(
+export const AlertTitle = withContext<HTMLElement, AlertTitleProps>(
   "div",
   "title"
 );

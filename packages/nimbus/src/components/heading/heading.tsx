@@ -8,7 +8,7 @@ import type { HeadingRootSlotProps } from "./heading.types";
  * @property {React.Ref<HTMLHeadingElement>} [ref] - Ref to the underlying heading element.
  * @property {string | null | undefined} [slot] - Slot attribute for custom element slotting.
  */
-export type HeadingProps = HeadingRootSlotProps & {
+export type HeadingProps = Omit<HeadingRootSlotProps, "slot"> & {
   /**
    * Ref to the underlying heading element.
    */
