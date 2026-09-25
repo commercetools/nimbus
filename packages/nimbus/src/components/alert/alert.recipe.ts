@@ -72,10 +72,6 @@ export const alertRecipe = defineSlotRecipe({
           py: "200",
           backgroundColor: "colorPalette.2",
           boxShadow: "inset 0 0 0 1px {colors.colorPalette.5}",
-          // Shadows are dropped in forced-colors mode; a transparent outline
-          // is repainted there and keeps the card visible.
-          outline: "1px solid transparent",
-          outlineOffset: "-1px",
         },
       },
       "accent-start": {
@@ -89,8 +85,6 @@ export const alertRecipe = defineSlotRecipe({
             boxShadow:
               "inset -4px 0 0 0 {colors.colorPalette.9}, inset 0 0 0 1px {colors.neutral.5}",
           },
-          outline: "1px solid transparent",
-          outlineOffset: "-1px",
         },
         title: { color: "neutral.12" },
         description: { color: "neutral.11" },

@@ -42,14 +42,6 @@ space.
 - **AND** SHALL render a 4px bar in `colorPalette.9` on the inline-start edge,
   drawn as an inset shadow above the outline so it sits flush with the edge
 
-#### Scenario: Outline in forced-colors mode
-
-- **WHEN** `variant="outlined"` or `variant="accent-start"` renders while the
-  operating system's forced-colors mode is active
-- **THEN** the card edge SHALL remain visible, through a transparent 1px
-  outline inset by 1px that the browser repaints in the system color, because
-  forced-colors mode drops box shadows
-
 #### Scenario: Accent-start keeps the reading surface neutral
 
 - **WHEN** `variant="accent-start"` is set on Root

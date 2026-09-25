@@ -43,9 +43,7 @@ the card sits outside an inset shadow, so a bar drawn as a shadow reads as
 `inset 0 0 0 1px`, and `accent-start` lists the bar shadow before the outline
 shadow, so the bar paints on top and sits flush with the edge. Shadows take
 no layout space, so the box is identical in every variant. A story asserts
-padding, corner radius and content offset across all of them. Forced-colors
-mode drops box shadows, so both variants also set a transparent 1px outline
-inset by 1px, which the browser repaints in the system colour.
+padding, corner radius and content offset across all of them.
 
 **Rejected.** A reserved transparent border in `base` with the bar as a
 shadow inside it: the bar then does not reach the edge. Also rejected:
