@@ -9,7 +9,8 @@ Current state that shapes the approach:
   `paddingTop/Bottom: "400"`, `paddingLeft/Right: "600"`). The `density` variant
   repeats or overrides only the vertical padding (`default`: 400, `condensed`:
   300).
-- **Header** has a fixed `height: "1000"` (40px), `textStyle: "sm"`, and column
+- **Header** has a fixed `height: "1000"` (40px), `textStyle: "sm"` overridden
+  by `fontSize: "300"` (so the header text is 12px, not 14px), and column
   containers with `py: "100"` / `px: "600"`. The header block exists twice in
   the recipe (FEC-1347 §4).
 - **Cells set no text style.** `theme/global-css.ts` sets no font size either,
@@ -156,6 +157,23 @@ the WCAG 2.5.8 minimum target size; the expand column already sits exactly there
 
 Rollback: revert the PR. No data or storage is involved.
 
+## Findings During Implementation
+
+- **Header without fixed height (`sm`–`lg`)**: tried in the `Sizes` story;
+  the header looks balanced with padding alone (35px for `sm`, 43px for
+  `md`/`lg`). Kept without a fixed height.
+- **Header text grows from 12px to 14px at `sm`/`md`**: the shared sizes use
+  Table's header text (14px, 16px for `lg`), while `xl` keeps today's 12px.
+- **Rows are ~7px taller than padding plus line height** at every size,
+  including `xl` (for example `xl`: 63px = 32px padding + 24px line + 7px).
+  Cause: the cell content wrapper is `inline-block`, so its baseline adds
+  space. It exists on `main` too, so it is not introduced by this change,
+  but it costs density; worth a follow-up.
+- **Drag-and-drop with `renderNestedContent`** logs React Aria's "Draggable
+  items in a Table must contain a `<Button slot="drag">`" once per nested
+  row (the `SizeInternalColumns` story shows it). Not related to `size`;
+  existing behavior worth a follow-up.
+
 ## Open Questions
 
 - **Layout settings panel**: it still toggles the deprecated `density` and
@@ -163,8 +181,6 @@ Rollback: revert the PR. No data or storage is involved.
   or a segmented control) to pick the desired size, and decide the labels,
   whether `xl` is offered, and what the `onSettingsChange` payload carries.
   Decide together with FEC-1346 §6 and design.
-- **Header height for `sm`–`lg`**: whether padding alone looks right or a fixed
-  height per size is needed. Decide after trying it in stories.
 - **Design sign-off** on the four sizes.
 - **When the default moves away from `xl`**: which major release, and to which
   size.
