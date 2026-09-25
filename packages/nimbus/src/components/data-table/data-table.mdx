@@ -185,11 +185,14 @@ const App = () => {
 }
 ```
 
-**Condensed**
+**Size**
 
-To show more data in smaller spaces, condense the vertical padding. This setting
-is also included in the data table manager if giving control to users to choose
-a more condensed styling is appealing for the placement of a data table.
+To show more data in smaller spaces, choose a smaller size. The sizes `sm`,
+`md` and `lg` match the sizes of the Table component: they change the padding
+of cells and headers and the text size. The drag, selection, expand and pin
+controls keep their 24×24px size, so they stay easy to hit.
+
+Without a size, a data table keeps its previous, most spacious appearance.
 
 ```jsx live
 const App = () => {
@@ -211,20 +214,10 @@ const App = () => {
     },
   ];
 
-  const [condensed, setCondensed] = useState(false);
-
   return <Stack gap={16}>
-    <Checkbox
-      isSelected={condensed}
-      onChange={setCondensed}
-    >
-      Condensed
-    </Checkbox>
-    <DataTable
-      rows={data}
-      columns={columns}
-      density={condensed ? "condensed" : "default"}
-    />
+    {['sm', 'md', 'lg'].map((size) => (
+      <DataTable key={size} rows={data} columns={columns} size={size} />
+    ))}
   </Stack>
 }
 ```
