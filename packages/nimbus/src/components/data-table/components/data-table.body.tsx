@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { cloneElement, isValidElement, useCallback, useRef } from "react";
 import { TableBody as RaTableBody } from "react-aria-components";
 import { Box } from "@/components";
 import { extractStyleProps } from "@/utils";
@@ -65,10 +65,25 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
         isLastPinned: pinnedIdx === currentPinnedRowIds.length - 1,
         isSinglePinned: currentPinnedRowIds.length === 1 && isPinned,
       };
+      // React Aria derives the collection key from
+      // `rendered.props.id ?? item.key ?? item.id` (see `useCachedChildren`),
+      // so the rendered element has to carry the id explicitly. Domain rows
+      // commonly have a business `key` field (customer groups, categories,
+      // product types, ...) which would otherwise win: selection callbacks
+      // would report that key instead of the row id, and a row whose `key`
+      // equals a column id collides in the collection ("Cell count must match
+      // column count"). The row objects themselves stay the collection items
+      // so React Aria's per-item render cache keeps working.
       if (childrenRef.current) {
-        return childrenRef.current(row, rowRenderProps);
+        const rendered = childrenRef.current(row, rowRenderProps);
+        return isValidElement<{ id?: string }>(rendered) &&
+          rendered.props.id == null
+          ? cloneElement(rendered, { id: row.id })
+          : rendered;
       }
-      return <DataTableRow key={row.id} row={row} {...rowRenderProps} />;
+      return (
+        <DataTableRow key={row.id} id={row.id} row={row} {...rowRenderProps} />
+      );
     },
     // Stable identity — delegates through refs so RaTableBody never
     // unmounts/remounts rows due to a new render-function reference.
