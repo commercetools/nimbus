@@ -31,7 +31,7 @@ const App = () => (
 
 ### Color palettes
 
-The `colorPalette` prop determines the semantic color and the accompanying icon. Alert accepts the full semantic set — `critical`, `warning`, `positive`, `info`, `neutral` and `primary` — and each supplies its own icon. The four severities use status glyphs; `primary` uses a megaphone for announcements and `neutral` a document for a plain notice. Supply your own with `Alert.Icon`, or remove it with `hideIcon`.
+The `colorPalette` prop determines the color and the accompanying icon. Alert accepts every Nimbus palette. The four severities — `critical`, `warning`, `positive` and `info` — use status glyphs, and `primary` uses a megaphone for announcements. Every other palette, `neutral` included, uses a document icon for a plain notice. An alert without a `colorPalette` shows no icon. Supply your own with `Alert.Icon`, or remove it with `hideIcon`.
 
 ```jsx live-dev
 const App = () => (
@@ -71,15 +71,15 @@ const App = () => (
 
 ### Visual variants (emphasis)
 
-The `variant` prop controls emphasis: `outlined` (default, tinted card), `accent-start` (neutral card with a status-colored bar on the leading edge), and `flat` (no chrome).
+The `variant` prop controls emphasis: `outlined` (tinted card), `accent-start` (neutral card with a status-colored bar on the leading edge), and `flat` (no chrome). All three share the same padded box. Omit `variant` for an unstyled alert with no padding, which sits flush with its container.
 
-`accent-start` is the treatment `Toast` uses by default. The reading surface and the text stay neutral while the bar, the icon and any buttons in `Alert.Actions` carry the status color, so several of them can sit on one page without it reading as a color chart. The dismiss button stays neutral, since it is chrome rather than an action. The bar follows the reading direction: it moves to the right edge under `dir="rtl"`.
+`accent-start` is close to the treatment `Toast` uses by default. The reading surface and the text stay neutral while the bar, the icon and any buttons in `Alert.Actions` carry the status color, so several of them can sit on one page without it reading as a color chart. The dismiss button stays neutral, since it is chrome rather than an action. The bar follows the reading direction: it moves to the right edge under `dir="rtl"`.
 
 ```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
     <Alert.Root variant="outlined" colorPalette="info">
-      <Alert.Title>Outlined (default)</Alert.Title>
+      <Alert.Title>Outlined</Alert.Title>
       <Alert.Description>
         Tinted card. Best when the alert needs to stand out against surrounding content.
       </Alert.Description>
@@ -88,7 +88,7 @@ const App = () => (
     <Alert.Root variant="accent-start" colorPalette="info">
       <Alert.Title>Accent start</Alert.Title>
       <Alert.Description>
-        Neutral card, status color in the bar and the icon only. The same look Toast uses.
+        Neutral card, status color in the bar and the icon only. Close to the look Toast uses.
       </Alert.Description>
     </Alert.Root>
 
@@ -104,12 +104,12 @@ const App = () => (
 
 ### Layout
 
-Alert has a single arrangement and no `layout` prop: the status icon leads, the title and description stack beside it, actions sit below, and the dismiss button sits on the trailing edge. Anything beyond that is placement and style props — a full-width page banner is the same alert with its corners and side borders removed.
+Alert has a single arrangement and no `layout` prop: the status icon leads, the title and description stack beside it, actions sit below, and the dismiss button sits on the trailing edge. Anything beyond that is placement and style props — a full-width page banner is the same alert with its corners squared and its padding widened.
 
 ```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
-    <Alert.Root colorPalette="info">
+    <Alert.Root colorPalette="info" variant="outlined">
       <Alert.Title>Default</Alert.Title>
       <Alert.Description>
         Icon on the leading edge, title and description beside it, actions and the dismiss button below.
@@ -118,8 +118,8 @@ const App = () => (
 
     <Alert.Root
       colorPalette="warning"
+      variant="outlined"
       borderRadius="0"
-      borderInline="none"
       paddingInline="600"
     >
       <Alert.Title>Full-bleed banner</Alert.Title>
@@ -292,7 +292,7 @@ export const Example = () => (
 
 The `Alert` component manages its own layout grid. To ensure correct placement:
 
-- Keep sub-components (`Title`, `Description`, `Actions`, `DismissButton`) as direct children of `Alert.Root`.
+- Keep sub-components (`Icon`, `Title`, `Description`, `Actions`, `DismissButton`) as direct children of `Alert.Root`. Fragments, conditionals and arrays are fine. An `Alert.Icon` inside a wrapper component or a `memo` is not detected: the automatic icon then renders as well, and `hideIcon` does not remove the custom one.
 - Do not wrap sub-components in other elements (like `div` or `Stack`), as these wrappers will be rendered as part of the layout and may break the visual structure.
 - You *can* use layout components *inside* `Alert.Actions` or `Alert.Description` to organize content within those slots.
 

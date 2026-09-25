@@ -29,22 +29,24 @@
 
 ## 4. Slots and defaults
 
-- [x] 4.1 Widen `colorPalette` to the full `SemanticPalettesOnly` set; the
-      two non-severities render no icon and collapse the leading column
+- [x] 4.1 Widen `colorPalette` to every Nimbus palette; `primary` gets
+      Campaign, every non-severity palette falls back to the neutral icon,
+      and a responsive value resolves its base value for icon and role
 - [x] 4.2 Make `Alert.Icon` a public slot; add `hideIcon`, which wins over an
       explicit icon
 - [x] 4.3 Render `Alert.Title` as a `Heading` and `Alert.Description` as a
       `Text`, both defaulting to a `div` and accepting `as`
-- [x] 4.4 Make `outlined` the explicit default variant
+- [x] 4.4 Keep no default variant, so an alert without `variant` keeps its
+      earlier flush look
 
 ## 5. Spacing
 
 - [x] 5.1 Move horizontal padding to 12px, keep vertical at 8px, tighten the
       title and description, and lay `Alert.Actions` out as a spaced row
 - [x] 5.2 Collapse the leading column entirely when no icon renders
-- [x] 5.3 Keep the box identical across variants — grid, padding and radius in
-      `base`, colour and border colour in the variants — with a story
-      asserting it
+- [x] 5.3 Keep the box identical across variants — the same padding in each
+      variant, outlines as inset shadows, no border — with a story asserting
+      it
 
 ## 6. Documentation
 

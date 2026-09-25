@@ -36,7 +36,7 @@ which element the title and description render as.
 **`variant="accent-start"`** — a neutral card where the reading surface and
 the text stay out of the way, and the status colour is carried by the leading
 bar, the icon and the buttons in `Alert.Actions`. The dismiss button stays
-neutral, being chrome rather than an action. It is the same treatment Toast uses, so
+neutral, being chrome rather than an action. It is close to the treatment Toast uses, so
 the two components can be matched where a surface wants them to look alike.
 Teams that want the opposite can still pick a different variant per alert, or
 re-default the whole surface, because the axis stays open.
@@ -57,21 +57,21 @@ all passes `role="group"`.
 
 **Smaller additions**, each closing one of the gaps above:
 
-- `colorPalette` widens to the full semantic set. `neutral` and `primary`
+- `colorPalette` accepts every Nimbus palette. `neutral` and `primary`
   were excluded by hand while the other four were allowed, with nothing in
-  the component to justify the split. Accepting the whole set removes a
-  special case rather than adding one, and matches `Button`, whose
-  `colorPalette` is the same type. Both gain an icon so the leading column is
-  consistent across the set — `Campaign` for `primary`, which suits the
-  announcement and new-feature messages it is for, and `Article` for
-  `neutral`. Unlike the four severity glyphs, these are decorative: there is
+  the component to justify the split. Accepting every palette removes a
+  special case rather than adding one. `primary` gains `Campaign`, which
+  suits the announcement and new-feature messages it is for, and every other
+  non-severity palette, `neutral` included, gets `Article`, so the leading
+  column is consistent across every palette. Unlike the four severity glyphs, these are decorative: there is
   no severity for them to reinforce, so they are a matter of tone rather than
   an affordance against relying on colour alone.
 - `Alert.Icon` as a public slot, and `hideIcon` to suppress the icon entirely.
 - `as` on `Alert.Title` and `Alert.Description`, so a persistent alert can
   promote its title to a real heading at the level the page needs.
-- `outlined` becomes the explicit default. An alert with no `variant` today
-  renders with no surface at all, which is never what the caller wanted.
+- The padding moves into the variants. An alert with no `variant` keeps its
+  earlier flush, unstyled look; `flat`, `outlined` and `accent-start` share
+  one padded box.
 
 **A spacing pass.** Horizontal padding moves from 8px to 12px while vertical
 stays at 8px. With padding and the internal gap both at 8px the icon sat as
@@ -109,11 +109,11 @@ and the `.mdx` / `.dev.mdx` / `.guidelines.mdx` / `.a11y.mdx` documentation.
   must still interrupt the user needs an explicit `role="alert"`. Nothing
   errors — the screen reader simply stops interrupting — so this will not
   surface through tests. `critical` alerts keep interrupting.
-- `variant="flat"` gains the shared padding and a transparent border, so
-  alerts that relied on it sitting flush with their container need
+- `variant="flat"` gains the shared padding, so alerts that relied on it
+  sitting flush with their container should drop `variant` or pass
   `padding="0"`.
-- An alert with no `variant` now renders the `outlined` card instead of
-  nothing.
+- An alert with no `variant` keeps its flush look, apart from the icon
+  alignment fix and a tighter gap between title and description.
 - Alerts are a little wider inside and a little shorter, so surrounding
   layouts may shift.
 - `variant="outlined"` is unchanged in name, meaning and rendering.

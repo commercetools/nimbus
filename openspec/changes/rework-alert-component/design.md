@@ -1,6 +1,6 @@
 ## Design notes
 
-Three decisions here are not obvious. Each is recorded with the alternative it
+Four decisions here are not obvious. Each is recorded with the alternative it
 was chosen over.
 
 ### 1. Sizing the icon box from the cascade, not a token
@@ -26,18 +26,34 @@ has to be unpinned as part of this change — the two are a pair, not
 independent. At the default size the title renders identically (16px, weight
 600), so this is invisible unless an alert is resized.
 
-### 2. The accent bar as an inset shadow
+**Browser support.** `lh` is not new to Nimbus: List, Combobox, ListBox and
+SkeletonText already use it without a fallback, and the repo has no
+browserslist. A browser without `lh` drops the height; the slot then falls
+back to `auto` and the grid's `alignItems: start` puts the icon at the top of
+the first line — a few pixels off centre, but the layout holds.
 
-**Problem.** `accent-start` needs a 3px bar on the leading edge, and Alert
-reserves a 1px border on all four sides in `base` specifically so that
-changing variant never reflows the box.
+### 2. Outline and accent bar as inset shadows, no border
 
-**Chosen.** An inset `box-shadow`, which paints inside the reserved border box
-and consumes no layout space. A story asserts that padding, border width,
-corner radius and content offset are identical across every variant.
+**Problem.** `accent-start` needs a 4px bar on the leading edge and a 1px
+outline, and changing variant must never reflow the box. A real border on
+the card sits outside an inset shadow, so a bar drawn as a shadow reads as
+1px of outline colour and then the bar, not a bar flush with the edge.
 
-**Rejected.** `borderInlineStartWidth: "3px"`, which would shift the content
-by 2px and break the invariant the `base`/variant split exists to protect.
+**Chosen.** No variant uses a CSS border. `outlined` draws its outline as
+`inset 0 0 0 1px`, and `accent-start` lists the bar shadow before the outline
+shadow, so the bar paints on top and sits flush with the edge. Shadows take
+no layout space, so the box is identical in every variant. A story asserts
+padding, corner radius and content offset across all of them. Forced-colors
+mode drops box shadows, so both variants also set a transparent 1px outline
+inset by 1px, which the browser repaints in the system colour.
+
+**Rejected.** A reserved transparent border in `base` with the bar as a
+shadow inside it: the bar then does not reach the edge. Also rejected:
+`borderInlineStartWidth`, which shifts the content by the extra width.
+
+**Padding lives in the variants.** An alert without `variant` gets only the
+`base` styles and no default variant, so it keeps its earlier flush look.
+Every variant applies the same padding, which keeps the shared box.
 
 ### 3. The bar follows the reading direction
 
@@ -46,6 +62,13 @@ bar to the right in right-to-left languages. Every other offset in the recipe
 is already logical (`marginInlineEnd`, `marginInlineStart`), so a physically
 left-anchored bar would be the only exception.
 
-Toast, whose treatment this matches, paints its bar physically on the left and
-does not mirror. Aligning it is worth doing but belongs in its own change —
-Toast's baselines and stories are not in scope here.
+Toast, whose treatment this is close to, paints its bar physically on the
+left and does not mirror. Aligning it is worth doing but belongs in its own
+change — Toast's baselines and stories are not in scope here.
+
+### 4. No `filled` variant
+
+A filled surface needs every child — buttons, links, icons — to recolour for
+contrast against it, and Alert cannot list every component a consumer might
+place inside. Adding it waits for a general recolouring mechanism rather than
+an Alert-only list.
