@@ -1,5 +1,43 @@
 # @commercetools/nimbus
 
+## 3.7.0
+
+### Minor Changes
+
+- [#1971](https://github.com/commercetools/nimbus/pull/1971)
+  [`1fda80a`](https://github.com/commercetools/nimbus/commit/1fda80a3a3731ee7eb8daa52439704f8502dbdda)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `ListBox`: new compound
+  component for a standalone selection list — `ListBox.Root`, `ListBox.Item`,
+  `ListBox.Section` and `ListBox.LoadMore`. Reach for it when a list of options
+  should stay visible on the page — filter lists, list pickers, transfer lists,
+  command palettes; `Select` still covers dropdown fields and `ComboBox` covers
+  type-to-filter fields.
+
+  - Single and multiple selection. Single-select shows the selected row with a
+    full-row highlight; multiple-select shows a checkbox on each option.
+  - Sections with headers, rich items (leading media, a `label` + `description`
+    two-line option, and trailing content), and drag-and-drop reordering via
+    React Aria's `dragAndDropHooks`.
+  - Full keyboard support and the WAI-ARIA listbox pattern (arrow keys,
+    Home/End, type-ahead). Name the list with `aria-label` or `aria-labelledby`.
+  - `variant` — `card` (default, a standalone elevated surface) or `plain` (a
+    bare list for embedding inside an overlay). Plus a `size` scale (`sm`/`md`).
+  - A localized empty state (overridable with `renderEmptyState`) and an in-list
+    loading spinner via `ListBox.LoadMore`.
+
+  Experimental. See the
+  [ListBox docs](https://nimbus-documentation.vercel.app/components/inputs/list-box)
+  for the full prop reference.
+
+### Patch Changes
+
+- [#1999](https://github.com/commercetools/nimbus/pull/1999)
+  [`3a4b508`](https://github.com/commercetools/nimbus/commit/3a4b50820778f269abea484c16755817b995d6c7)
+  Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency
+  `slate-hyperscript` to `0.115.0 || ^0.127.0`, `slate` to
+  `0.123.0 || ^0.126.0`, `slate-react` to `0.123.0 || ^0.126.0`,
+  `@huggingface/transformers` to `4.3.0`, `react-router` to `8.4.0`.
+
 ## 3.6.0
 
 ### Minor Changes
