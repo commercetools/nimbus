@@ -412,6 +412,13 @@ const DataTableWithModals = ({
 const meta: Meta<object> = {
   title: "Components/DataTable",
   component: DataTable,
+  argTypes: {
+    // `xl` is the deprecated default and deliberately not offered here.
+    size: {
+      control: "select",
+      options: ["sm", "md", "lg"],
+    },
+  },
 };
 
 export default meta;
@@ -7296,5 +7303,276 @@ export const DuplicateRowKeysWarnInDevelopment: Story = {
         ).toBe(true);
       });
     });
+  },
+};
+
+// ============================================================
+// SIZE
+// ============================================================
+
+/** First data cell (not an internal column) of the first body row. */
+const firstDataCell = (container: HTMLElement) =>
+  container.querySelector("tbody td[data-column-id]") as HTMLElement;
+
+/** The sizes consumers choose. `xl` is the deprecated default. */
+const documentedSizes = ["sm", "md", "lg"] as const;
+
+/**
+ * Expected values per size. `sm`, `md` and `lg` match `Table`'s sizes;
+ * `xl` is the pre-`size` appearance.
+ */
+const expectedSizeStyles = {
+  sm: { padX: "8px", padY: "8px", fontSize: "14px", padded: 40 },
+  md: { padX: "12px", padY: "12px", fontSize: "14px", padded: 48 },
+  lg: { padX: "16px", padY: "12px", fontSize: "16px", padded: 56 },
+  xl: { padX: "24px", padY: "16px", fontSize: undefined, padded: 72 },
+} as const;
+
+/**
+ * `size` controls cell padding, header padding and text size. `sm`, `md` and
+ * `lg` share their values with `Table`. Header height follows the padding.
+ */
+export const Sizes: Story = {
+  render: () => (
+    <Stack gap="800">
+      {documentedSizes.map((size) => (
+        <Stack key={size} gap="200">
+          <Heading size="sm">size=&quot;{size}&quot;</Heading>
+          <DataTable
+            columns={columns}
+            rows={rows.slice(0, 3)}
+            size={size}
+            allowsPinning={false}
+            aria-label={`Table size ${size}`}
+            data-testid={`size-${size}`}
+          />
+        </Stack>
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    for (const size of documentedSizes) {
+      await step(`size="${size}" applies the Table values`, async () => {
+        const expected = expectedSizeStyles[size];
+        const table = await canvas.findByTestId(`size-${size}`);
+
+        const cell = firstDataCell(table);
+        const cellStyles = window.getComputedStyle(cell);
+        expect(cellStyles.paddingLeft).toBe(expected.padX);
+        expect(cellStyles.paddingRight).toBe(expected.padX);
+        expect(cellStyles.paddingTop).toBe(expected.padY);
+        expect(cellStyles.paddingBottom).toBe(expected.padY);
+        expect(cellStyles.fontSize).toBe(expected.fontSize);
+
+        const header = within(table).getAllByRole("columnheader")[0];
+        const container = header.querySelector(
+          ".nimbus-data-table__column-container"
+        ) as HTMLElement;
+        const headerStyles = window.getComputedStyle(container);
+        expect(headerStyles.paddingLeft).toBe(expected.padX);
+        expect(headerStyles.paddingTop).toBe(expected.padY);
+        expect(headerStyles.fontSize).toBe(expected.fontSize);
+      });
+    }
+
+    await step("Header height follows padding, not a fixed 40px", async () => {
+      const heights = documentedSizes.map((size) =>
+        Math.round(
+          canvas
+            .getByTestId(`size-${size}`)
+            .querySelector("thead")!
+            .getBoundingClientRect().height
+        )
+      );
+      // sm has the least padding, so the shortest header
+      expect(heights[0]).toBeLessThan(heights[1]);
+    });
+
+    await step("Cell content without own text style inherits", async () => {
+      const table = canvas.getByTestId("size-lg");
+      const cell = firstDataCell(table);
+      const content = (cell.firstElementChild as HTMLElement) ?? cell;
+      expect(window.getComputedStyle(content).fontSize).toBe("16px");
+    });
+  },
+};
+
+const sizeScrollRows = wideData.slice(0, 4);
+
+const InternalColumnsTable = ({ size }: { size: DataTableProps["size"] }) => {
+  const [tableRows, setTableRows] =
+    useState<DataTableRowItem[]>(sizeScrollRows);
+  const { dragAndDropHooks } = useDragAndDrop({
+    ...createArrayHandlers(setTableRows, (row) => row.id),
+  });
+  return (
+    <Box maxW="600px">
+      <DataTable
+        columns={manyColumns}
+        rows={tableRows}
+        size={size}
+        selectionMode="multiple"
+        dragAndDropHooks={dragAndDropHooks}
+        renderNestedContent={(row) => <Text>Details for {row.id}</Text>}
+        aria-label={`Internal columns size ${size ?? "default"}`}
+        data-testid={`internal-${size ?? "default"}`}
+      />
+    </Box>
+  );
+};
+
+/**
+ * The drag, selection, expand and pin columns scale with the size: controls
+ * stay 24×24px (WCAG 2.5.8), the padding around them follows the cell
+ * padding. Sticky columns stay flush while scrolling horizontally.
+ */
+export const SizeInternalColumns: Story = {
+  render: () => (
+    <Stack gap="800">
+      {[...documentedSizes, undefined].map((size) => (
+        <InternalColumnsTable key={size ?? "default"} size={size} />
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const width = (el: Element) => Math.round(el.getBoundingClientRect().width);
+
+    for (const size of [...documentedSizes, "xl" as const]) {
+      const testId = size === "xl" ? "internal-default" : `internal-${size}`;
+      const expected = expectedSizeStyles[size];
+
+      await step(`${size}: internal column widths`, async () => {
+        const table = await canvas.findByTestId(testId);
+        const thead = table.querySelector("thead")!;
+        expect(width(thead.querySelector(".drag-column-header")!)).toBe(24);
+        expect(width(thead.querySelector(".selection-column-header")!)).toBe(
+          expected.padded
+        );
+        expect(width(thead.querySelector(".expand-column-header")!)).toBe(24);
+        expect(width(thead.querySelector(".pin-rows-column-header")!)).toBe(
+          expected.padded
+        );
+      });
+
+      await step(`${size}: sticky columns stay flush on scroll`, async () => {
+        const table = canvas.getByTestId(testId);
+        table.scrollLeft = 400;
+        await waitFor(() => expect(table.scrollLeft).toBeGreaterThan(0));
+
+        const row = within(table).getAllByRole("row")[1];
+        const drag = row.querySelector("[data-slot='drag']")!;
+        const selection = row.querySelector("[data-slot='selection']")!;
+        const expand = row.querySelector("[data-slot='expand']")!;
+        const edge = (el: Element, side: "left" | "right") =>
+          Math.round(el.getBoundingClientRect()[side]);
+
+        expect(edge(selection, "left")).toBe(edge(drag, "right"));
+        expect(edge(expand, "left")).toBe(edge(selection, "right"));
+        table.scrollLeft = 0;
+      });
+    }
+
+    await step("sm: controls keep a 24×24px target", async () => {
+      const table = canvas.getByTestId("internal-sm");
+      const row = within(table).getAllByRole("row")[1];
+      const targets = [
+        row.querySelector("[data-slot='drag'] button")!,
+        row.querySelector("[data-slot='expand'] button")!,
+        row.querySelector("[data-slot='pin-row-cell'] button")!,
+      ];
+      for (const target of targets) {
+        const rect = target.getBoundingClientRect();
+        expect(Math.round(rect.width)).toBeGreaterThanOrEqual(24);
+        expect(Math.round(rect.height)).toBeGreaterThanOrEqual(24);
+      }
+      // The checkbox indicator is 16px; its hit area is a 24px ::after.
+      const indicator = row.querySelector(
+        "[data-slot='selection'] .nimbus-checkbox__indicator"
+      )!;
+      const hitArea = window.getComputedStyle(indicator, "::after");
+      expect(hitArea.width).toBe("24px");
+      expect(hitArea.height).toBe("24px");
+    });
+  },
+};
+
+const explicitXlWarnings: string[] = [];
+
+/** Passing `size="xl"` explicitly warns in development: it is deprecated. */
+export const ExplicitXlSizeWarns: Story = {
+  beforeEach: recordWarnings(explicitXlWarnings),
+  render: () => (
+    <DataTable
+      columns={columns}
+      rows={rows.slice(0, 2)}
+      size="xl"
+      aria-label="Explicit xl"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByRole("grid");
+    await waitFor(() =>
+      expect(
+        explicitXlWarnings.filter((w) => w.includes('size="xl"'))
+      ).toHaveLength(1)
+    );
+  },
+};
+
+const defaultSizeWarnings: string[] = [];
+
+/** The default size is `xl` too, but not passing `size` never warns. */
+export const DefaultSizeDoesNotWarn: Story = {
+  beforeEach: recordWarnings(defaultSizeWarnings),
+  render: () => (
+    <DataTable
+      columns={columns}
+      rows={rows.slice(0, 2)}
+      aria-label="Default size"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByRole("grid");
+    const cell = firstDataCell(canvasElement);
+    expect(window.getComputedStyle(cell).paddingLeft).toBe("24px");
+    expect(window.getComputedStyle(cell).paddingTop).toBe("16px");
+    expect(
+      defaultSizeWarnings.filter(
+        (w) => w.includes("size=") || w.includes("density")
+      )
+    ).toEqual([]);
+  },
+};
+
+const sizeAndDensityWarnings: string[] = [];
+
+/** With both props set, `size` wins, `density` is ignored, and it warns. */
+export const SizeWinsOverDensity: Story = {
+  beforeEach: recordWarnings(sizeAndDensityWarnings),
+  render: () => (
+    <DataTable
+      columns={columns}
+      rows={rows.slice(0, 2)}
+      size="md"
+      density="condensed"
+      aria-label="Size and density"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByRole("grid");
+    const cell = firstDataCell(canvasElement);
+    expect(window.getComputedStyle(cell).paddingTop).toBe("12px");
+    expect(window.getComputedStyle(cell).paddingLeft).toBe("12px");
+    await waitFor(() =>
+      expect(
+        sizeAndDensityWarnings.filter((w) => w.includes("`density`"))
+      ).toHaveLength(1)
+    );
   },
 };

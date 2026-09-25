@@ -159,14 +159,21 @@ const rows: DataTableRowItem[] = [
 
 ## Usage examples
 
-### Density options
+### Size
 
-The `density` prop controls row height and padding. Use `condensed` for
-data-dense interfaces:
+The `size` prop controls cell padding, header padding and text size. `sm`,
+`md` and `lg` use the same values as the `Table` component. Choose a smaller
+size to show more data on one screen:
+
+| Size | Cell padding (horizontal / vertical) | Text |
+| ---- | ------------------------------------ | ---- |
+| `sm` | 8px / 8px                            | 14px |
+| `md` | 12px / 12px                          | 14px |
+| `lg` | 16px / 12px                          | 16px |
 
 ```jsx live-dev
 const App = () => {
-  const [density, setDensity] = useState('default');
+  const [size, setSize] = useState('md');
 
   const columns = [
     { id: 'name', header: 'Name', accessor: (row) => row.name },
@@ -182,26 +189,40 @@ const App = () => {
   return (
     <Stack gap="400">
       <Stack direction="row" gap="300">
-        <Button
-          variant={density === 'default' ? 'solid' : 'outline'}
-          colorPalette="primary"
-          onPress={() => setDensity('default')}
-        >
-          Default
-        </Button>
-        <Button
-          variant={density === 'condensed' ? 'solid' : 'outline'}
-          colorPalette="primary"
-          onPress={() => setDensity('condensed')}
-        >
-          Condensed
-        </Button>
+        {['sm', 'md', 'lg'].map((option) => (
+          <Button
+            key={option}
+            variant={size === option ? 'solid' : 'outline'}
+            colorPalette="primary"
+            onPress={() => setSize(option)}
+          >
+            {option}
+          </Button>
+        ))}
       </Stack>
-      <DataTable columns={columns} rows={rows} density={density} />
+      <DataTable columns={columns} rows={rows} size={size} />
     </Stack>
   );
 }
 ```
+
+**Default size.** Without a `size` prop, the table uses `xl`: 24px / 16px cell
+padding and a 40px header, the appearance from before `size` existed. `xl` is
+deprecated. Do not pass it explicitly (it logs a warning in development); use
+`lg` instead. A future major release will change the default.
+
+**Cell text.** `sm`, `md` and `lg` set the text size of the cells. If your cell
+renderers set their own size, for example `<Text textStyle="sm">`, remove it so
+the content follows the table's size.
+
+**Internal columns.** The drag, selection, expand and pin controls stay 24×24px
+at every size, the minimum target size of WCAG 2.2 SC 2.5.8. Only the padding
+around them follows the size.
+
+**Deprecated `density`.** `density="condensed"` still works when no `size` is
+passed, but is deprecated: use `size="lg"` or `size="md"` instead. When both
+are passed, `size` wins and `density` is ignored. `density` will be removed in
+the next major release.
 
 ### Sorting
 
@@ -1364,6 +1385,11 @@ const App = () => {
 
 The Layout Settings tab allows users to control text truncation and row density.
 These settings update the table's visual appearance in real-time:
+
+> [!NOTE]\
+> The row density setting still controls the deprecated `density` prop and
+> cannot choose a `size` yet. A size control for the Layout Settings tab is
+> planned as a follow-up.
 
 ```jsx live-dev
 const App = () => {

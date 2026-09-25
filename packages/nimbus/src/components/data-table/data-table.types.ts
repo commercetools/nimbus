@@ -24,7 +24,21 @@ import type { OmitInternalProps } from "../../type-utils";
 type DataTableSlotRecipeProps = {
   /** Whether to truncate cell content with ellipsis */
   truncated?: boolean;
-  /** Density variant controlling row height and padding */
+  /**
+   * Controls cell padding, header padding and cell text size.
+   *
+   * Supported values are `sm`, `md` and `lg`; they match the sizes of
+   * `Table`. `xl` is the default and keeps the appearance from before this
+   * prop existed. It is deprecated: do not pass `xl` explicitly — choose
+   * `lg` instead.
+   */
+  size?: DataTableSize;
+  /**
+   * Vertical cell padding (`condensed` reduces it from 16px to 12px).
+   *
+   * @deprecated Use `size` instead (`size="lg"` or `size="md"`). Ignored
+   * when `size` is set. Will be removed in the next major release.
+   */
   density?: "default" | "condensed";
 } & UnstyledProp;
 
@@ -100,7 +114,18 @@ export type DataTableNestedContentOptions = {
   close: () => void;
 };
 
+/**
+ * @deprecated Use `DataTableSize` and the `size` prop instead. Will be
+ * removed in the next major release.
+ */
 export type DataTableDensity = "default" | "condensed";
+
+/**
+ * Size of a DataTable. `sm`, `md` and `lg` match the sizes of `Table`; `xl`
+ * is the deprecated default that keeps the appearance from before `size`
+ * existed.
+ */
+export type DataTableSize = "sm" | "md" | "lg" | "xl";
 
 export type DataTableCustomSettings = {
   icon?: ReactNode;
@@ -125,6 +150,8 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     maxHeight?: string | number;
     isTruncated?: boolean;
     density?: "default" | "condensed";
+    /** Resolved size (the default applied), used for internal column widths */
+    size: DataTableSize;
     nestedKey?: string;
     onSortChange?: (descriptor: SortDescriptor) => void;
     onSelectionChange?: (keys: Selection) => void;
@@ -233,6 +260,12 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
     options: DataTableNestedContentOptions
   ) => ReactNode;
   children?: ReactNode;
+  /**
+   * Vertical cell padding (`condensed` reduces it from 16px to 12px).
+   *
+   * @deprecated Use `size` instead (`size="lg"` or `size="md"`). Ignored
+   * when `size` is set. Will be removed in the next major release.
+   */
   density?: DataTableDensity;
   isTruncated?: boolean;
   footer?: ReactNode;

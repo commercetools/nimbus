@@ -16,6 +16,7 @@ import { DataTableHeaderSlot } from "../data-table.slots";
 import { useDataTableContext } from "./data-table.context";
 import { DataTableColumn } from "./data-table.column";
 import { dataTableMessagesStrings } from "../data-table.messages";
+import { DATA_TABLE_INTERNAL_COLUMN_WIDTHS } from "../utils/sizes.utils";
 
 /**
  * DataTable.Header - The table header section that renders column headers with sorting capabilities
@@ -37,10 +38,16 @@ export const DataTableHeader = <
     maxHeight,
     showExpandColumn,
     showPinColumn,
+    size,
   } = useDataTableContext();
   const { selectionBehavior, selectionMode, allowsDragging } =
     useTableOptions();
   const [styleProps, restProps] = extractStyleProps(props);
+  const internalWidths = DATA_TABLE_INTERNAL_COLUMN_WIDTHS[size];
+  const expandWidth =
+    selectionBehavior === "toggle"
+      ? internalWidths.bare
+      : internalWidths.padded;
 
   // Use provided aria-label or fall back to default
   const ariaLabel = ariaLabelProp ?? msg.format("dataTableHeader");
@@ -106,8 +113,8 @@ export const DataTableHeader = <
           <DataTableColumn
             id="__nimbus-drag__"
             className="drag-column-header"
-            maxWidth={24}
-            minWidth={24}
+            maxWidth={internalWidths.bare}
+            minWidth={internalWidths.bare}
             allowsSorting={false}
             isInternalColumn={true}
             aria-label={msg.format("dragRowsColumn")}
@@ -119,8 +126,8 @@ export const DataTableHeader = <
           <DataTableColumn
             id="selection"
             className="selection-column-header"
-            maxWidth={72}
-            minWidth={72}
+            maxWidth={internalWidths.padded}
+            minWidth={internalWidths.padded}
             allowsSorting={false}
             isInternalColumn={true}
           >
@@ -140,8 +147,8 @@ export const DataTableHeader = <
         {showExpandColumn && (
           <DataTableColumn
             className="expand-column-header"
-            maxWidth={selectionBehavior === "toggle" ? 24 : 72}
-            minWidth={selectionBehavior === "toggle" ? 24 : 72}
+            maxWidth={expandWidth}
+            minWidth={expandWidth}
             allowsSorting={false}
             aria-label={msg.format("expandRows")}
             isInternalColumn={true}
@@ -169,8 +176,8 @@ export const DataTableHeader = <
           <DataTableColumn
             className="pin-rows-column-header"
             id="pin-rows"
-            maxWidth={72}
-            minWidth={72}
+            maxWidth={internalWidths.padded}
+            minWidth={internalWidths.padded}
             allowsSorting={false}
             isInternalColumn={true}
             aria-label={msg.format("pinRows")}
