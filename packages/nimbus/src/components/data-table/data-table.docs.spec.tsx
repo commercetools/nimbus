@@ -554,16 +554,16 @@ describe("DataTable - Column visibility", () => {
 });
 
 /**
- * @docs-section density
- * @docs-title Density Tests
- * @docs-description Test density variants
+ * @docs-section size
+ * @docs-title Size Tests
+ * @docs-description Test size variants
  * @docs-order 7
  */
-describe("DataTable - Density", () => {
-  it("renders with default density", () => {
+describe("DataTable - Size", () => {
+  it.each(["sm", "md", "lg"] as const)("renders with size %s", (size) => {
     render(
       <NimbusProvider>
-        <DataTable columns={columns} rows={rows} density="default" />
+        <DataTable columns={columns} rows={rows} size={size} />
       </NimbusProvider>
     );
 
@@ -571,10 +571,10 @@ describe("DataTable - Density", () => {
     expect(table).toBeInTheDocument();
   });
 
-  it("renders with condensed density", () => {
+  it("renders with the default size when size is not set", () => {
     render(
       <NimbusProvider>
-        <DataTable columns={columns} rows={rows} density="condensed" />
+        <DataTable columns={columns} rows={rows} />
       </NimbusProvider>
     );
 
