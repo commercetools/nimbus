@@ -655,3 +655,93 @@ describe("resolveDropOperation", () => {
     expect(result).toBe("cancel");
   });
 });
+
+// ============================================================
+// createArrayHandlers — default getKey vs. id-keyed collections
+// ============================================================
+
+/**
+ * `DataTable` keys rows strictly by `row.id`, but the default `getKey` prefers
+ * a business `key` field, which commercetools domain objects (customer groups,
+ * categories, product types, channels, stores) normally have. These tests pin
+ * that the default still prefers `key` — deliberately, so collections that are
+ * genuinely keyed by `key` keep working — and that the mismatch now reports
+ * itself instead of failing silently.
+ */
+describe("createArrayHandlers default getKey with both `key` and `id`", () => {
+  type Row = Record<string, unknown> & { id: string; key: string };
+  const r1 = { id: "a1", key: "vip" } as Row;
+  const r2 = { id: "b2", key: "gold" } as Row;
+  const r3 = { id: "c3", key: "std" } as Row;
+
+  let rows: Row[];
+  const setRows = (fn: Row[] | ((prev: Row[]) => Row[])) => {
+    rows = typeof fn === "function" ? fn(rows) : fn;
+  };
+
+  beforeEach(() => {
+    rows = [r1, r2, r3];
+    vi.restoreAllMocks();
+  });
+
+  it("prefers `key` over `id` — the default is unchanged on purpose", () => {
+    const h = createArrayHandlers<Row>(setRows);
+    h.onReorder(new Set(["std"]), beforeTarget("gold"));
+    expect(rows.map((r) => r.id)).toEqual(["a1", "c3", "b2"]);
+  });
+
+  it("names the cause when reordering with id-shaped keys", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const h = createArrayHandlers<Row>(setRows);
+    // React Aria hands over row ids, which the default getKey never returns.
+    h.onReorder(new Set(["c3"]), beforeTarget("b2"));
+
+    expect(rows.map((r) => r.id)).toEqual(["a1", "b2", "c3"]); // unchanged
+    expect(warn).toHaveBeenCalledOnce();
+    expect(warn.mock.calls[0][0]).toContain("(item) => item.id");
+  });
+
+  it("names the cause when removing with id-shaped keys", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    createArrayHandlers<Row>(setRows).onRemoveItems(new Set(["a1"]));
+
+    expect(rows).toHaveLength(3); // nothing removed
+    expect(warn.mock.calls[0][0]).toContain("(item) => item.id");
+  });
+
+  it("names the cause when inserting against an id-shaped target", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const extra = { id: "z9", key: "new" } as Row;
+    createArrayHandlers<Row>(setRows).onInsertItems(
+      [extra],
+      beforeTarget("b2")
+    );
+
+    expect(rows.map((r) => r.id)).toEqual(["a1", "b2", "c3", "z9"]); // appended
+    expect(warn.mock.calls[0][0]).toContain("(item) => item.id");
+  });
+
+  it("stays quiet and works when an explicit getKey is passed", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const h = createArrayHandlers<Row>(setRows, (r) => r.id);
+    h.onReorder(new Set(["c3"]), beforeTarget("b2"));
+
+    expect(rows.map((r) => r.id)).toEqual(["a1", "c3", "b2"]);
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it("does not blame key/id shape when items carry only one of them", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    let plain = [{ key: "a" }, { key: "b" }] as Row[];
+    const set = (fn: Row[] | ((p: Row[]) => Row[])) => {
+      plain = typeof fn === "function" ? fn(plain) : fn;
+    };
+    createArrayHandlers<Row>(set).onReorder(
+      new Set(["a"]),
+      beforeTarget("nope")
+    );
+
+    expect(warn).toHaveBeenCalledOnce();
+    expect(warn.mock.calls[0][0]).not.toContain("(item) => item.id");
+  });
+});

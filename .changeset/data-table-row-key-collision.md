@@ -35,3 +35,8 @@ meant the business key leaked into the keying of the table.
   the column `id`.
 - **Row ids must be unique.** Rows sharing an `id` but differing in `key` used
   to work by accident and now collide.
+- **Drag and drop.** `createArrayHandlers` still defaults `getKey` to
+  `(item) => item.key ?? item.id`, which is correct for collections genuinely
+  keyed by `key`. For `DataTable`, pass it explicitly:
+  `createArrayHandlers(setRows, (row) => row.id)`. A mismatch now logs a
+  development warning naming the cause instead of silently doing nothing.
