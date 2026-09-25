@@ -1,0 +1,91 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Meter is built on React Aria Components' `<Meter>` and follows the
+[ARIA Authoring Practices Guide (APG) Meter pattern](https://www.w3.org/WAI/ARIA/apg/patterns/meter/).
+A meter shows a measured value inside a known range. It is not a control, so it
+is never focusable and does not respond to keyboard input.
+
+```jsx live
+const App = () => <Meter value={40} label="CPU usage" />;
+```
+
+### Roles and states
+
+- The rendered element has `role="meter"`. React Aria adds a second, fallback
+  role token in the DOM (`role="meter progressbar"`) for browsers that do not
+  support the `meter` role; assistive technology treats this as the `meter`
+  role.
+- The element exposes `aria-valuemin`, `aria-valuemax`, and `aria-valuenow`.
+- In segment mode, `aria-valuenow` is `minValue` plus the sum of the clamped
+  segment values, and `aria-valuetext` announces a full summary: the formatted
+  total, followed in parentheses by every segment's label and formatted value,
+  in order, joined the way a list is normally read out (for example, "50 GB
+  (Images: 30 GB, Videos: 20 GB)").
+- The meter itself is the only element with an explicit ARIA role. Segments and
+  the legend do not carry their own role, because ARIA treats the children of a
+  `meter` as presentational; giving a segment its own role would make it
+  invisible to assistive technology anyway.
+
+### Labelling
+
+Give every meter an accessible name:
+
+- Use the visible `label` prop when there is room for a visible label.
+- Use `aria-label` or `aria-labelledby` when the visible label is hidden, for
+  example with `layout="minimal"`.
+- If none of `label`, `aria-label`, or `aria-labelledby` is provided, React Aria
+  logs a warning in development mode so the missing name is caught before
+  release.
+
+```jsx live
+const App = () => (
+  <Meter value={72} layout="minimal" aria-label="Storage used" />
+);
+```
+
+### Keyboard interaction
+
+Meter shows a value; it does not accept input. It supports no keyboard
+interaction:
+
+| Key    | Behavior                                                                                                                                   |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| (none) | Meter is not part of the tab order and does not respond to any key. Tab moves from the element before it directly to the element after it. |
+
+### Legend
+
+In segment mode, Meter renders a visible legend below the track, with one item
+per segment (a color swatch, the label, and the formatted value). The legend is
+marked `aria-hidden="true"`, because the same information is already announced
+through `aria-valuetext` on the meter itself. Without `aria-hidden`, a screen
+reader would announce every segment twice: once from the meter's summary, and
+once from reading the legend's own text.
+
+The legend is not hidden visually. It stays on screen for sighted users, so the
+meaning of each segment's color does not depend on color alone (WCAG 2.1 success
+criterion 1.4.1, Use of Color).
+
+### Color and contrast
+
+- Fills are flat colors; they do not use a gradient and do not animate. A
+  transition may play when the width of a segment changes, and it is removed
+  under `prefers-reduced-motion: reduce`.
+- Every fill color, in both the default sequence and the semantic palettes,
+  keeps a contrast ratio of at least 3:1 against the track (WCAG 2.1 success
+  criterion 1.4.11, Non-text Contrast) in both light and dark mode.
+- Meaning never depends on color alone: the legend and the value text carry the
+  same information as the fill color.
+
+### Known limitation and open question
+
+Whether the legend should stay `aria-hidden`, or instead be made readable by
+assistive technology (with the segment detail removed from `aria-valuetext` to
+avoid double announcement), has not yet been confirmed with a manual screen
+reader test. A manual check with VoiceOver (macOS) and NVDA (Windows) of a
+segmented meter is still pending; the result of that check will decide whether
+this behavior stays as documented here or changes in a future release.

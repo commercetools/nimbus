@@ -1,0 +1,117 @@
+---
+id: Components-Meter
+title: Meter
+exportName: Meter
+description:
+  A linear visual indicator that shows a measured value inside a known range,
+  such as storage used or a quota consumed.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Feedback
+  - Meter
+tags:
+  - component
+  - meter
+  - gauge
+  - quota
+  - storage
+---
+
+## Overview
+
+A meter shows a value that is measured, not a value that changes over time
+toward completion. Typical examples are storage used, a quota consumed, a
+battery level, or a score inside a known range. Use
+[Progress bar](/components/feedback/progress-bar) instead when the value shows
+how far a task has moved toward finishing.
+
+A meter can show one value, or it can show several parts of one total (for
+example "Images" and "Videos" inside one "Storage" total). When it shows several
+parts, Meter draws them as one bar and adds a legend below it, so a person can
+see what each part is without needing color alone.
+
+### Resources
+
+[ARIA Authoring Practices: Meter pattern](https://www.w3.org/WAI/ARIA/apg/patterns/meter/)
+
+## Variables
+
+Get familiar with the features.
+
+### A single value
+
+The simplest use of Meter shows one value inside a range. The default range is 0
+to 100, and the default format is a percent.
+
+```jsx live
+const App = () => <Meter value={72} label="Storage used" />;
+```
+
+### Several segments of one total
+
+Pass `segments` instead of `value` to show several measured parts inside one
+total. Each segment needs an `id`, a `label`, and a `value`. Meter adds the
+segment values together, draws each one as its own part of the bar, and shows a
+legend with a color swatch, the label, and the formatted value for each part.
+
+```jsx live
+const App = () => (
+  <Meter
+    label="Storage"
+    formatOptions={{ style: "unit", unit: "gigabyte" }}
+    segments={[
+      { id: "images", label: "Images", value: 30 },
+      { id: "videos", label: "Videos", value: 20 },
+    ]}
+  />
+);
+```
+
+### Size
+
+Meter has two sizes: the default size is medium (`md`) and a smaller size
+(`2xs`).
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="400" alignItems="stretch">
+    <Meter value={60} label="Extra small (2xs)" size="2xs" />
+    <Meter value={60} label="Medium (default)" size="md" />
+  </Stack>
+);
+```
+
+### Layouts
+
+Three layouts place the label and value text differently, so Meter fits
+different places in a UI.
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="600" alignItems="stretch">
+    <Meter value={55} label="Stacked (default)" layout="stacked" />
+    <Meter value={55} label="Inline" layout="inline" />
+    <Meter value={55} aria-label="Minimal" layout="minimal" />
+  </Stack>
+);
+```
+
+### Color palette
+
+Use `colorPalette` to give the fill a meaning. Use a semantic palette, such as
+`positive`, `warning`, or `critical`, to show a state. Segments can also each
+have their own `colorPalette`; a segment without one gets a color from a fixed
+default sequence.
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="400" alignItems="stretch">
+    <Meter value={80} label="Primary" colorPalette="primary" />
+    <Meter value={90} label="Healthy" colorPalette="positive" />
+    <Meter value={55} label="Degraded" colorPalette="warning" />
+    <Meter value={15} label="Critical" colorPalette="critical" />
+  </Stack>
+);
+```

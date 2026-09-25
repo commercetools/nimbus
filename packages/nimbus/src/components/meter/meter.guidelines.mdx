@@ -1,0 +1,154 @@
+---
+title: Meter
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+Meter guidelines aim to help you choose between Meter and Progress bar, and to
+help you use Meter's segmented mode in a way that stays clear and accessible.
+
+### Meter vs. Progress bar
+
+Meter and Progress bar look similar, but they mean different things. The W3C
+ARIA Authoring Practices Guide (APG) is explicit about this:
+
+> "The meter role should not be used to indicate progress."
+>
+> —
+> [ARIA Authoring Practices Guide: Meter pattern](https://www.w3.org/WAI/ARIA/apg/patterns/meter/)
+
+- **Use Meter** for a value that is measured at a point in time and does not
+  move toward a finish line: storage used, a quota consumed, a battery level, a
+  score, a rating.
+- **Use [Progress bar](/components/feedback/progress-bar)** for a task that
+  moves toward completion over time: a file upload, a multi-step wizard, a page
+  load.
+
+A simple test: if the value can go down as well as up while the meaning stays
+the same (for example, storage used goes down when a person deletes a file), it
+is a measured value, so use Meter. If the value only moves forward toward
+"done", it is progress, so use Progress bar.
+
+### Best practices
+
+- **Always label the meter.** Use the visible `label` prop when there is room
+  for it. Use `aria-label` only when the visual label is hidden, for example
+  with the `minimal` layout.
+- **Show the number, not only the bar.** A filled bar alone is hard to read
+  precisely. Meter shows a formatted value next to the label by default, so
+  people do not have to guess.
+- **Use a semantic color palette on purpose.** `colorPalette="positive"`,
+  `"warning"`, or `"critical"` should mean what they say. Do not use a semantic
+  palette for a value that is not in that state.
+- **Keep the number of segments small.** Segmented mode is meant for a handful
+  of parts of one total, for example categories of storage used. As a guideline,
+  keep segments to about five or fewer. With many segments, the legend becomes
+  hard to scan, and the text announced to screen reader users becomes long and
+  hard to follow.
+- **Do not rely on color alone.** Every segment already shows its label and
+  value in the legend, so the meaning does not depend on recognizing a color.
+
+### When to use segments
+
+Use `segments` instead of `value` when one total is made up of a few meaningful,
+named parts, and showing that breakdown helps the person reading it. A good
+example is a storage quota split into "Images", "Videos", and "Documents": the
+total tells you how full the quota is, and the parts tell you why.
+
+Do not use `segments` only to show several unrelated values next to each other —
+use one Meter per value instead. Segments are for parts of a single total, drawn
+inside a single track.
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="600" alignItems="stretch">
+    <Box>
+      <Text fontWeight="500" mb="200">
+        Good: parts of one storage total
+      </Text>
+      <Meter
+        label="Storage"
+        formatOptions={{ style: "unit", unit: "gigabyte" }}
+        segments={[
+          { id: "images", label: "Images", value: 30 },
+          { id: "videos", label: "Videos", value: 20 },
+          { id: "documents", label: "Documents", value: 10 },
+        ]}
+      />
+    </Box>
+    <Box>
+      <Text fontWeight="500" mb="200">
+        Also good: unrelated values as separate meters
+      </Text>
+      <Stack direction="column" gap="200" alignItems="stretch">
+        <Meter value={80} label="CPU usage" />
+        <Meter value={45} label="Memory usage" />
+      </Stack>
+    </Box>
+  </Stack>
+);
+```
+
+### Color
+
+- A single-value meter uses `colorPalette` (default `primary`).
+- A segment can set its own `colorPalette`, for example `"warning"` for a part
+  that needs attention.
+- A segment without a `colorPalette` gets a color from a fixed default sequence,
+  so adjacent segments are never the same color. This default sequence
+  deliberately leaves out semantic colors such as `positive`, `warning`, and
+  `critical`, so a segment with no explicit color never looks like it represents
+  a state it is not in.
+
+### Do and Don't
+
+> [!TIP]\
+> **Do**
+>
+> - Do give the meter a clear, specific label that says what is being measured,
+>   such as "Storage used" rather than just "Usage".
+> - Do use a semantic `colorPalette` (`positive`, `warning`, `critical`) when
+>   the value really represents that state.
+> - Do keep segmented meters to a small number of well-named parts.
+
+```jsx live
+const App = () => (
+  <Meter
+    value={92}
+    label="Storage used"
+    colorPalette="critical"
+    formatOptions={{ style: "unit", unit: "gigabyte" }}
+    maxValue={100}
+  />
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't use Meter to show the progress of a task that is running now. Use
+>   Progress bar instead.
+> - Don't leave the meter without any label. A meter with no `label`,
+>   `aria-label`, or `aria-labelledby` has no accessible name, and screen reader
+>   users cannot tell what it measures.
+> - Don't add many segments to one meter. A long list of parts is hard to scan
+>   visually and hard to follow when read aloud.
+
+```jsx live
+const App = () => (
+  <Meter
+    label="Too many parts to scan or listen to easily"
+    segments={[
+      { id: "a", label: "Part A", value: 10 },
+      { id: "b", label: "Part B", value: 10 },
+      { id: "c", label: "Part C", value: 10 },
+      { id: "d", label: "Part D", value: 10 },
+      { id: "e", label: "Part E", value: 10 },
+      { id: "f", label: "Part F", value: 10 },
+      { id: "g", label: "Part G", value: 10 },
+    ]}
+  />
+);
+```
