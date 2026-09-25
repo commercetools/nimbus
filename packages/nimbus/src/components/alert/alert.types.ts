@@ -58,13 +58,15 @@ export type AlertRootComponent = React.FC<AlertProps>;
 /**
  * Props for the Alert.Icon component.
  */
-export type AlertIconProps = AlertIconSlotProps;
+export type AlertIconProps = AlertIconSlotProps & {
+  ref?: React.Ref<HTMLDivElement>;
+};
 
 /**
  * Props for the Alert.Title component.
  */
 export type AlertTitleProps = Omit<HeadingProps, "ref"> & {
-  ref?: React.Ref<HTMLHeadingElement>;
+  ref?: React.Ref<HTMLElement>;
 };
 
 /**
