@@ -66,6 +66,11 @@
       ]
     },
     {
+      "description": "Playwright 1.63.0 (npm + CI container image, which must stay in lockstep) breaks nested-overlay Escape handling in Storybook tests: after an inner Dialog/Drawer/Popover/ModalPage closes, the next Escape no longer closes the outer one (Nested Dialogs, Nested Drawers, Escape Stops At The Popover, Stacked Modal Pages all fail; they pass on 1.62.1). Skip exactly 1.63.0 so a later patch (1.63.1+) or minor is still proposed. Remove this rule once a newer version is adopted.",
+      "matchPackageNames": ["playwright", "mcr.microsoft.com/playwright"],
+      "allowedVersions": "!/^v?1\\.63\\.0(-|$)/"
+    },
+    {
       "description": "Vite, Rollup and build tooling",
       "groupName": "build-tooling",
       "matchPackageNames": [
