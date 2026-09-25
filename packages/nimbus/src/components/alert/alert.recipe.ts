@@ -11,10 +11,6 @@ export const alertRecipe = defineSlotRecipe({
   base: {
     root: {
       width: "100%",
-      border: "solid-25",
-      borderColor: "transparent",
-      px: "300",
-      py: "200",
       borderRadius: "200",
 
       display: "grid",
@@ -67,28 +63,39 @@ export const alertRecipe = defineSlotRecipe({
 
   variants: {
     variant: {
-      flat: {},
+      flat: {
+        root: { px: "300", py: "200" },
+      },
       outlined: {
         root: {
-          borderColor: "colorPalette.5",
+          px: "300",
+          py: "200",
           backgroundColor: "colorPalette.2",
+          boxShadow: "inset 0 0 0 1px {colors.colorPalette.5}",
+          // Shadows are dropped in forced-colors mode; a transparent outline
+          // is repainted there and keeps the card visible.
+          outline: "1px solid transparent",
+          outlineOffset: "-1px",
         },
       },
       "accent-start": {
         root: {
+          px: "300",
+          py: "200",
           backgroundColor: "neutral.2",
-          borderColor: "neutral.5",
-          boxShadow: "inset 3px 0 0 0 {colors.colorPalette.9}",
-          _rtl: { boxShadow: "inset -3px 0 0 0 {colors.colorPalette.9}" },
+          boxShadow:
+            "inset 4px 0 0 0 {colors.colorPalette.9}, inset 0 0 0 1px {colors.neutral.5}",
+          _rtl: {
+            boxShadow:
+              "inset -4px 0 0 0 {colors.colorPalette.9}, inset 0 0 0 1px {colors.neutral.5}",
+          },
+          outline: "1px solid transparent",
+          outlineOffset: "-1px",
         },
         title: { color: "neutral.12" },
         description: { color: "neutral.11" },
         dismissButton: { colorPalette: "neutral" },
       },
     },
-  },
-
-  defaultVariants: {
-    variant: "outlined",
   },
 });
