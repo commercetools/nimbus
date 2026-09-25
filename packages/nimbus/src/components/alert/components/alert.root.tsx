@@ -35,8 +35,11 @@ const resolveBasePalette = (colorPalette: AlertProps["colorPalette"]) => {
   if (colorPalette == null || typeof colorPalette === "string") {
     return colorPalette;
   }
-  if (Array.isArray(colorPalette)) return colorPalette[0];
-  return (colorPalette as { base?: string }).base;
+  const base = Array.isArray(colorPalette)
+    ? colorPalette[0]
+    : (colorPalette as { base?: string }).base;
+  // Without a base value the palette is inherited, so assume a non-status one.
+  return base ?? "neutral";
 };
 
 const getIconFromColorPalette = (colorPalette: string | null | undefined) => {

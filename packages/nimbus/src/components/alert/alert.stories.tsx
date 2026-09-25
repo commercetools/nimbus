@@ -6,6 +6,7 @@ import {
   type AlertProps,
   Button,
   Stack,
+  RadioInput,
   Text,
 } from "@commercetools/nimbus";
 import { Info } from "@commercetools/nimbus-icons";
@@ -712,6 +713,12 @@ export const PaletteFallback: Story = {
       >
         <Alert.Title>responsive critical</Alert.Title>
       </Alert.Root>
+      <Alert.Root
+        data-testid="palette-no-base"
+        colorPalette={{ md: "critical" }}
+      >
+        <Alert.Title>responsive, no base</Alert.Title>
+      </Alert.Root>
       <Alert.Root data-testid="palette-none">
         <Alert.Title>no palette</Alert.Title>
       </Alert.Root>
@@ -740,6 +747,19 @@ export const PaletteFallback: Story = {
           "alert"
         );
         await expect(iconMarkup("palette-responsive")).not.toBe(
+          iconMarkup("palette-neutral")
+        );
+      }
+    );
+
+    await step(
+      "a responsive palette without a base gets the neutral icon",
+      async () => {
+        await expect(canvas.getByTestId("palette-no-base")).toHaveAttribute(
+          "role",
+          "status"
+        );
+        await expect(iconMarkup("palette-no-base")).toBe(
           iconMarkup("palette-neutral")
         );
       }

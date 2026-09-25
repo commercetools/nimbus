@@ -27,7 +27,8 @@ export type AlertRootSlotProps = HTMLChakraProps<"div", AlertRecipeProps> & {
    * Color palette of the alert. Accepts every Nimbus palette. `critical`,
    * `warning`, `positive`, `info` and `primary` get their own icon; every
    * other palette gets the `neutral` icon. For a responsive value, the icon
-   * and the default `role` come from the base value.
+   * and the default `role` come from the base value; without one, the alert
+   * gets the `neutral` icon and `role="status"`.
    */
   colorPalette?: ConditionalValue<NimbusColorPalette>;
 };

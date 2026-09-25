@@ -129,6 +129,9 @@ and `primary` carry their own automatic icon; every other palette carries the
 - **WHEN** colorPalette is a responsive object or array
 - **THEN** the automatic icon and the default `role` SHALL come from its base
   value (the `base` key, or the first array entry)
+- **AND** when there is no base value, the palette below the first
+  breakpoint is inherited, so SHALL display the Article icon and default to
+  `role="status"`
 
 ### Requirement: Automatic Icon Display
 
