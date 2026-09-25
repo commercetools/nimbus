@@ -136,41 +136,10 @@ const columns: DataTableColumnItem[] = [
 
 ### Row data structure
 
-Each row must have a unique `id` property. Additional properties are accessed
-via column `accessor` functions:
-
-> [!IMPORTANT]
-> **`id` is the row's identity, and nothing else is.** Every key DataTable
-> reports or accepts is a row `id`: `onSelectionChange`, `selectedKeys`,
-> `defaultSelectedKeys` and `disabledKeys`. The same is true of columns —
-> `onSortChange` reports `column.id`.
->
-> This matters because commercetools domain objects usually carry a business
-> `key` field as well. Customer groups, categories, product types, channels and
-> stores all do. That field is ordinary row data: render it in a column if you
-> want, but it never affects identity.
->
-> ```tsx
-> const rows = [{ id: "a1b2-c3", key: "warehouse-berlin", name: "Berlin" }];
->
-> // ✅ selection, disabling and sorting all speak in ids
-> <DataTable rows={rows} disabledKeys={new Set(["a1b2-c3"])} />
-> ```
->
-> Ids must be unique. Two rows sharing an `id` collide in the collection, even
-> if their business keys differ. In development, `DataTable` warns when it sees
-> a duplicate or empty key.
->
-> To identify rows by something other than their database id, set `id` in the
-> row data. Do not set a different `id` on `DataTable.Row` in a custom
-> `DataTable.Body`: selection would use it while expansion, pinning and
-> `disabledKeys` keep using the row's `id`. `DataTable` warns about this in
-> development.
->
-> ```tsx
-> // ✅ identity set in the data — every feature agrees on it
-> <DataTable rows={variants.map((v) => ({ ...v, id: v.sku }))} />
-> ```
+Each row must have a unique `id` property. It is the key for selection,
+`disabledKeys`, expansion and pinning. To identify rows by another property,
+set `id` in the row data, for example `rows.map((v) => ({ ...v, id: v.sku }))`.
+Additional properties are accessed via column `accessor` functions:
 
 ```tsx
 import type { DataTableRowItem } from "@commercetools/nimbus";
@@ -1081,7 +1050,8 @@ replace the **data columns/cells**.
 Pass a render function to `DataTable.Body` to control how each row renders.
 The function receives the row data and render props (`isExpanded`, `isPinned`,
 etc.). Spread the render props onto `DataTable.Row` to preserve expansion and
-pinning behavior:
+pinning behavior. Do not set `id` on `DataTable.Row`; the row's identity comes
+from the row data, and a different `id` logs a development warning:
 
 ```jsx live-dev
 const App = () => {

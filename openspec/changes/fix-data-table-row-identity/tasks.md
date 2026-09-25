@@ -5,7 +5,7 @@
 - [x] 1.3 Leave cells unkeyed
 - [x] 1.4 Make `Base` assert the key `onSelectionChange` reports, not only checkbox state
 - [x] 1.5 Add business-key stories: key/column-id collision, selection reports ids, custom body, column sorting reports ids, duplicate business keys survive sort, `disabledKeys` really disables, `data-key` equals ids
-- [x] 1.6 Document `id` as the only identity in `data-table.dev.mdx`; add minor changeset with a consumer checklist
+- [x] 1.6 Add a minor changeset for consumers
 
 ## 2. Explain drag-and-drop key mismatches (commit 3)
 
@@ -25,7 +25,7 @@
 - [x] 4.2 Warn from `DataTable.Row` when a custom body renders it with an `id` different from `getRowKey(row)`
 - [x] 4.3 Stories `CustomRowIdOnElementWarns` (row still expands and pins), `DefaultRowIdDoesNotWarn`, `DuplicateRowKeysWarnInDevelopment`; record warnings with `spyOn` in `beforeEach` with a cleanup
 - [x] 4.4 Unit tests in `row-keys.utils.spec.ts`
-- [x] 4.5 Document identity-from-data and both warnings in `data-table.dev.mdx` and the changeset
+- [x] 4.5 In `data-table.dev.mdx`, state that `id` keys selection, `disabledKeys`, expansion and pinning and how to choose another identity ("Row data structure"), and that a custom body must not set `id` on `DataTable.Row` ("Custom row styling"); list both warnings in the changeset
 
 ## 5. Validation
 
