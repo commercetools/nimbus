@@ -1,11 +1,12 @@
 import type {
+  ConditionalValue,
   HTMLChakraProps,
   SlotRecipeProps,
 } from "@chakra-ui/react/styled-system";
 import type { TextProps } from "../text/text";
 import type { HeadingProps } from "../heading/heading";
 import type { ButtonProps } from "../button/button.types";
-import type { SemanticPalettesOnly } from "../../type-utils/shared-types";
+import type { NimbusColorPalette } from "../../type-utils/shared-types";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
@@ -22,8 +23,13 @@ type AlertRecipeProps = {
 // ============================================================
 
 export type AlertRootSlotProps = HTMLChakraProps<"div", AlertRecipeProps> & {
-  /** Color palette / status of the alert. */
-  colorPalette?: SemanticPalettesOnly;
+  /**
+   * Color palette of the alert. Accepts every Nimbus palette. `critical`,
+   * `warning`, `positive`, `info` and `primary` get their own icon; every
+   * other palette gets the `neutral` icon. For a responsive value, the icon
+   * and the default `role` come from the base value.
+   */
+  colorPalette?: ConditionalValue<NimbusColorPalette>;
 };
 
 export type AlertIconSlotProps = HTMLChakraProps<"div">;

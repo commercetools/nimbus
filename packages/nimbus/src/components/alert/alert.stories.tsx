@@ -690,6 +690,62 @@ export const HideIconToggleKeepsChildren: Story = {
   },
 };
 
+/** Any Nimbus palette is accepted; palettes without a status icon use the neutral one. */
+export const PaletteFallback: Story = {
+  name: "Icon: fallback for non-status palettes",
+  render: () => (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      <Alert.Root data-testid="palette-neutral" colorPalette="neutral">
+        <Alert.Title>neutral</Alert.Title>
+      </Alert.Root>
+      <Alert.Root data-testid="palette-amber" colorPalette="amber">
+        <Alert.Title>amber</Alert.Title>
+      </Alert.Root>
+      <Alert.Root
+        data-testid="palette-responsive"
+        colorPalette={{ base: "critical", md: "warning" }}
+      >
+        <Alert.Title>responsive critical</Alert.Title>
+      </Alert.Root>
+      <Alert.Root data-testid="palette-none">
+        <Alert.Title>no palette</Alert.Title>
+      </Alert.Root>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const iconMarkup = (id: string) =>
+      slot(canvas.getByTestId(id), "icon")?.innerHTML;
+
+    await step(
+      "a palette without a status icon gets the neutral icon",
+      async () => {
+        await expect(iconMarkup("palette-amber")).toBeDefined();
+        await expect(iconMarkup("palette-amber")).toBe(
+          iconMarkup("palette-neutral")
+        );
+      }
+    );
+
+    await step(
+      "a responsive palette takes role and icon from its base value",
+      async () => {
+        await expect(canvas.getByTestId("palette-responsive")).toHaveAttribute(
+          "role",
+          "alert"
+        );
+        await expect(iconMarkup("palette-responsive")).not.toBe(
+          iconMarkup("palette-neutral")
+        );
+      }
+    );
+
+    await step("no palette renders no icon", async () => {
+      await expect(iconMarkup("palette-none")).toBeUndefined();
+    });
+  },
+};
+
 /** `Alert.DismissButton` with the default and a custom variant. */
 export const Dismiss: Story = {
   name: "Dismiss: composed button and variant override",
