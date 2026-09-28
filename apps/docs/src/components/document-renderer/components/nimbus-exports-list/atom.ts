@@ -6,7 +6,7 @@ import * as nimbus from "@commercetools/nimbus";
  */
 export interface NimbusExportItem {
   name: string;
-  type: "component" | "hook" | "util" | "type-export";
+  type: "component" | "hook" | "util";
 }
 
 /**
@@ -16,7 +16,6 @@ const typePriority: Record<NimbusExportItem["type"], number> = {
   component: 1,
   hook: 2,
   util: 3,
-  "type-export": 4,
 };
 
 /**
@@ -25,9 +24,6 @@ const typePriority: Record<NimbusExportItem["type"], number> = {
 function getExportType(name: string): NimbusExportItem["type"] {
   if (name.startsWith("use")) {
     return "hook";
-  }
-  if (name.charAt(0) === "_") {
-    return "type-export";
   }
   if (name.charAt(0) === name.charAt(0).toUpperCase()) {
     return "component";

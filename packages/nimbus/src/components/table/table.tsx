@@ -125,19 +125,7 @@ TableColumn.displayName = "Table.Column";
 /**
  * Export Table with all sub-components as a compound component
  */
-export const Table: {
-  Root: typeof TableRoot;
-  Caption: typeof TableCaption;
-  Header: typeof TableHeader;
-  Body: typeof TableBody;
-  Footer: typeof TableFooter;
-  Row: typeof TableRow;
-  ColumnHeader: typeof TableColumnHeader;
-  Cell: typeof TableCell;
-  ScrollArea: typeof TableScrollArea;
-  ColumnGroup: typeof TableColumnGroup;
-  Column: typeof TableColumn;
-} = {
+export const Table = {
   Root: TableRoot,
   Caption: TableCaption,
   Header: TableHeader,

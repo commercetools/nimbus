@@ -71,8 +71,3 @@ export const ChatMessageList = {
    */
   Item: ChatMessageListItem,
 };
-
-export {
-  ChatMessageListRoot as _ChatMessageListRoot,
-  ChatMessageListItem as _ChatMessageListItem,
-};

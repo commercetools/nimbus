@@ -158,9 +158,15 @@ guideline references.
       `./components/index.ts`, NOT individual files
 - [ ] **Single implementation**: For single components, implementation is
       present in main file
-- [ ] **DisplayName**: Component has `displayName` set correctly:
+- [ ] **DisplayName (load-bearing for docs)**: Component has `displayName` set
+      correctly:
   - Single: `Component.displayName = "ComponentName"`
-  - Compound part: `ComponentPart.displayName = "Component.Part"`
+  - Compound part: `ComponentPart.displayName = "Component.Part"` (e.g.
+    `MenuTrigger.displayName = 'Menu.Trigger'`)
+  - This is not just a React DevTools convenience — for compound parts, the
+    docs pipeline parses the implementation file directly and keys the
+    generated prop table on this exact `displayName` string. Get it wrong, or
+    omit it, and that part's prop table will not generate.
 - [ ] **No utility exports**: Main component file MUST NOT export pure helper
       functions (non-React, non-component values). Pure functions live in
       `utils/{kebab-name}.ts` with a sibling `{kebab-name}.spec.ts` and an
@@ -622,14 +628,12 @@ export const ComponentName = {
    */
   Content: ComponentContent,
 };
-
-// Internal exports for react-docgen
-export {
-  ComponentRoot as _ComponentRoot,
-  ComponentTrigger as _ComponentTrigger,
-  ComponentContent as _ComponentContent,
-};
 ````
+
+The namespace object is the only export. Each sub-component's prop table is
+generated from its own implementation file, keyed on its authored `displayName`
+(`ComponentRoot.displayName = 'ComponentName.Root'`) — see
+[Compound Components Guidelines — JSDoc Tags in Implementation Files](../../../docs/file-type-guidelines/compound-components.md#jsdoc-tags-in-implementation-files-critical).
 
 #### Step 4: Verify Creation
 
@@ -969,9 +973,12 @@ import type { ButtonProps } from "./button.types";
 ### Error 5: Missing DisplayName
 
 **Problem**: Components show as "Anonymous" in React DevTools, making debugging
-difficult
+difficult. For a compound sub-component, a missing or malformed `displayName`
+also means the docs pipeline cannot generate its prop table — it keys on the
+exact `Parent.Key` string (e.g. `Menu.Trigger`).
 
-**Root Cause**: Forgot to set `displayName` property
+**Root Cause**: Forgot to set `displayName` property, or set it to something
+other than the exact `Parent.Key` string for a compound part
 
 **Solutions**:
 

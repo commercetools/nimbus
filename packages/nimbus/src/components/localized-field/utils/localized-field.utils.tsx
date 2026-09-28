@@ -21,12 +21,19 @@ type CustomFormikErrors<Values> = {
   [K in keyof Values]?: FieldErrorsData;
 };
 
-export const RequiredValueErrorMessage = () => {
+// Typed as `React.FC` (rather than a bare `() => {...}`) so
+// `react-docgen-typescript` recognizes it as a documentable component: its
+// default heuristic only picks up an exported function that has a declared
+// props type, and this component intentionally takes none. Matches the same
+// pattern used for `DataTable.Manager`.
+export const RequiredValueErrorMessage: React.FC = () => {
   const msg = useLocalizedStringFormatter(localizedFieldMessagesStrings);
   return (
     <FormField.Error>{msg.format("missingRequiredField")}</FormField.Error>
   );
 };
+RequiredValueErrorMessage.displayName =
+  "LocalizedField.RequiredValueErrorMessage";
 
 export const getLocaleFieldAttribute = (
   fieldGroupAttr?: string,
