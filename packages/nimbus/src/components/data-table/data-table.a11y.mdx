@@ -12,23 +12,23 @@ cognitive, and physical limitations.
 ```jsx live
 const App = () => {
   const data = [
-    { id: 1, name: 'Product A', modified: '2023-10-27' },
-    { id: 2, name: 'Product B', modified: '2023-10-26' },
+    { id: 1, name: "Product A", modified: "2023-10-27" },
+    { id: 2, name: "Product B", modified: "2023-10-26" },
   ];
   const columns = [
     {
-      id: 'name',
+      id: "name",
       header: "Name",
       accessor: (row) => row.name,
     },
     {
-      id: 'modified',
+      id: "modified",
       header: "Date Modified",
       accessor: (row) => row.modified,
     },
   ];
   return <DataTable rows={data} columns={columns} />;
-}
+};
 ```
 
 ### Accessibility standards
@@ -44,3 +44,19 @@ const App = () => {
   (sort buttons, links, etc.) are reachable and operable via the keyboard.
 - **Maintain sufficient contrast:** Ensure text and background colors meet WCAG
   AA contrast standards for readability.
+
+### Keyboard interaction
+
+| Key                                     | Action                                                                                |
+| --------------------------------------- | ------------------------------------------------------------------------------------- |
+| `Tab` / `Shift+Tab`                     | Move focus into / out of the table                                                    |
+| `Arrow Up` / `Arrow Down`               | Move focus between rows                                                               |
+| `Arrow Left` / `Arrow Right`            | Move focus between the row and its cells                                              |
+| `Home` / `End`                          | Move focus to the first / last cell in the row                                        |
+| `Enter`                                 | Activate the focused row (`onRowAction`), or expand it when there is no expand column |
+| `Space`                                 | Toggle selection of the focused row (when selection is enabled)                       |
+| `Enter` / `Space` on a button in a cell | Operate that button only (pin, expand, sort, drag handle)                             |
+
+Row activation works by keyboard and pointer alike, so a row that opens a detail
+view with a click also opens it with `Enter`. Pinning and expanding use the
+buttons in their cells and have no separate shortcut.

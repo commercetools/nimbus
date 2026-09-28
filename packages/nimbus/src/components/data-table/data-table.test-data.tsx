@@ -748,7 +748,7 @@ export const modifiedFetchedData = fetchData.map((item) => ({
         rows={item.sky}
         allowsSorting={true}
         isResizable={true}
-        onRowClick={() => {}}
+        onRowAction={() => {}}
         // No nestedKey needed for this inner table since sky data doesn't have further nesting
       />
     </Box>

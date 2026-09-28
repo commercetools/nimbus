@@ -234,7 +234,7 @@ export const DataTableRoot = function DataTableRoot<
 
   // Ref-stabilize consumer callback props so their identity doesn't
   // destabilize contextValue. Without this, inline callbacks like
-  // `onRowClick={(row) => ...}` create a new context value every
+  // `onRowAction={(row) => ...}` create a new context value every
   // consumer render, which bypasses memo() on every Row and forces a
   // full table re-render. The refs are passed into the context; call
   // sites read .current at invocation time.
@@ -300,7 +300,7 @@ export const DataTableRoot = function DataTableRoot<
     ]
   );
 
-  const isRowClickable = !!onRowClick;
+  const isRowClickable = !!(onRowAction || onRowClick);
   const hasRenderNestedContent = !!renderNestedContent;
 
   const contextValue = useMemo(

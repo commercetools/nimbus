@@ -1755,6 +1755,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "columns prop shape changed: key→id, label→header, accessor required (returns cell content, can be string or JSX)",
       "DataTableColumnItem<T> is generic — without <T> accessors return unknown and TS rejects them as ReactNode",
       "onSortChange signature changed from (key, order) to (descriptor: { column, direction })",
+      "onRowClick(row, rowIndex, columnKey) becomes onRowAction(row) — rowIndex and columnKey are not passed",
       "Selection type is 'all' | Set<Key> — missing the 'all' branch silently drops select-all clicks",
     ],
     propMappings: [
@@ -1767,10 +1768,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       },
       {
         uiKitProp: "onRowClick",
-        nimbusProp: "onSelectionChange",
+        nimbusProp: "onRowAction",
         changeType: "structural",
         notes:
-          "Row interaction via onRowClick replaced by onSelectionChange with Selection = 'all' | Set<Key>.",
+          "Signature changed from (row, rowIndex, columnKey) to (row). Fires on click and on Enter, never for disabled rows. UI Kit's per-column shouldIgnoreRowClick has no equivalent: clicks on buttons, checkboxes and inputs inside a cell are ignored automatically. Do not use Nimbus onRowClick; it is deprecated. Selection is separate: use selectionMode and onSelectionChange.",
       },
       {
         uiKitProp: "onSortChange",
@@ -1797,6 +1798,11 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         prop: "onSortChange",
         from: "(key: string, order: 'asc' | 'desc')",
         to: "(descriptor: { column: string, direction: 'ascending' | 'descending' })",
+      },
+      {
+        prop: "onRowAction",
+        from: "(row: Row, rowIndex: number, columnKey: string)",
+        to: "(row: DataTableRowItem<Row>)",
       },
     ],
     typeNotes: [

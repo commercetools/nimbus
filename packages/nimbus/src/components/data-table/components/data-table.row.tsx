@@ -192,6 +192,35 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
 
   const isClickable = isRowClickable || expandViaRowClick;
 
+  /**
+   * Activates the row: expands it when there is no expand column, then calls
+   * `onRowAction` (or the deprecated `onRowClick`). Shared by the mouse path,
+   * which calls it after the double-click delay, and the Enter key, which
+   * calls it immediately.
+   *
+   * @param columnId - Column of the cell that triggered the activation
+   */
+  const activateRow = useCallback(
+    (columnId?: string) => {
+      if (isDisabled) return;
+      if (expandViaRowClick && (hasNestedContent || hasRenderNestedContent)) {
+        toggleExpand(rowKey, columnId);
+      }
+      (onRowActionRef.current ?? onRowClickRef.current)?.(row);
+    },
+    [
+      isDisabled,
+      expandViaRowClick,
+      hasNestedContent,
+      hasRenderNestedContent,
+      toggleExpand,
+      rowKey,
+      onRowActionRef,
+      onRowClickRef,
+      row,
+    ]
+  );
+
   const handleRowClick = useCallback(
     (e: Event) => {
       // Reject a mouseup that has no matching pointerdown on this row.
@@ -205,7 +234,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       pressStartedOnRowRef.current = false;
       if (!pressStartedHere) return;
 
-      if (!isClickable) return;
+      if (!isClickable || isDisabled) return;
       const isInteractiveElement = getIsTableRowChildElementInteractive(e);
       if (!isInteractiveElement) {
         const hasSelectedText =
@@ -220,36 +249,41 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         const columnId =
           clickedCell?.getAttribute("data-column-id") ?? undefined;
 
+        // Wait so that a double-click (selecting a word to copy it) can
+        // cancel the activation in handleRowDoubleClick.
         clickTimeoutRef.current = window.setTimeout(() => {
-          if (!isDisabled) {
-            if (
-              expandViaRowClick &&
-              (hasNestedContent || hasRenderNestedContent)
-            ) {
-              toggleExpand(rowKey, columnId);
-            }
-            onRowClickRef.current?.(row);
-          } else {
-            if (onRowActionRef.current) {
-              onRowActionRef.current(row, "click");
-            }
-          }
+          activateRow(columnId);
           clickTimeoutRef.current = null;
         }, 300);
       }
     },
-    [
-      isClickable,
-      onRowClickRef,
-      hasRenderNestedContent,
-      onRowActionRef,
-      row,
-      isDisabled,
-      expandViaRowClick,
-      hasNestedContent,
-      toggleExpand,
-      rowKey,
-    ]
+    [isClickable, isDisabled, activateRow]
+  );
+
+  /**
+   * Activates the row on Enter, the keyboard equivalent of a click (WCAG
+   * 2.1.1). Space is left to React Aria, which uses it for selection.
+   *
+   * Runs in the capture phase and stops the event, so React Aria does not
+   * also toggle selection on Enter. Enter on a button, checkbox or other
+   * interactive element inside the row is left alone.
+   *
+   * @param e - Native DOM Event from the keydown listener
+   */
+  const handleRowKeyDown = useCallback(
+    (e: Event) => {
+      if (!(e instanceof KeyboardEvent)) return;
+      if (e.key !== "Enter" || e.repeat || e.isComposing) return;
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      if (!isClickable || isDisabled) return;
+      if (getIsTableRowChildElementInteractive(e)) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+      const focusedCell = (e.target as Element)?.closest("[data-column-id]");
+      activateRow(focusedCell?.getAttribute("data-column-id") ?? undefined);
+    },
+    [isClickable, isDisabled, activateRow]
   );
 
   /**
@@ -339,7 +373,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   //
   // Native DOM listeners are used instead of React events because React Aria's
   // row-level press handling conflicts with custom click behavior (e.g. it
-  // disables row actions when selection is enabled). Three capture-phase
+  // disables row actions when selection is enabled). Four capture-phase
   // listeners on the row element handle this:
   //
   //   pointerdown (capture) — stops propagation for non-interactive targets,
@@ -354,6 +388,10 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   //     is draggable, programmatically selects the word under the cursor
   //     (draggable="true" suppresses native text selection).
   //
+  //   keydown (capture) — activates the row on Enter, immediately, before
+  //     React Aria can treat Enter as selection. React Aria's Row does not
+  //     forward keyboard props to the DOM, so this is a native listener too.
+  //
   // Stable-identity wrappers delegate through refs so the listeners never need
   // to be removed and reattached when handler deps change — only the ref value
   // is updated each render.
@@ -362,6 +400,8 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   handleRowClickRef.current = handleRowClick;
   const handleRowDoubleClickRef = useRef(handleRowDoubleClick);
   handleRowDoubleClickRef.current = handleRowDoubleClick;
+  const handleRowKeyDownRef = useRef(handleRowKeyDown);
+  handleRowKeyDownRef.current = handleRowKeyDown;
 
   const stableRowClick = useCallback(
     (e: Event) => handleRowClickRef.current(e),
@@ -369,6 +409,10 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   );
   const stableRowDblClick = useCallback(
     (e: Event) => handleRowDoubleClickRef.current(e),
+    []
+  );
+  const stableRowKeyDown = useCallback(
+    (e: Event) => handleRowKeyDownRef.current(e),
     []
   );
   const stablePointerDownCapture = useCallback((e: Event) => {
@@ -392,6 +436,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       prev.removeEventListener("dblclick", stableRowDblClick, {
         capture: true,
       });
+      prev.removeEventListener("keydown", stableRowKeyDown, { capture: true });
     }
 
     rowNodeRef.current = node;
@@ -402,6 +447,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       });
       node.addEventListener("mouseup", stableRowClick, { capture: true });
       node.addEventListener("dblclick", stableRowDblClick, { capture: true });
+      node.addEventListener("keydown", stableRowKeyDown, { capture: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -424,6 +470,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           capture: true,
         });
         node.removeEventListener("dblclick", stableRowDblClick, {
+          capture: true,
+        });
+        node.removeEventListener("keydown", stableRowKeyDown, {
           capture: true,
         });
       }

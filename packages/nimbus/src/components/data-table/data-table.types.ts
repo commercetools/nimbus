@@ -161,8 +161,7 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     selectRowLabel: string;
     disabledKeys?: Selection;
     onRowActionRef: React.RefObject<
-      | ((row: DataTableRowItem<T>, action: "click" | "select") => void)
-      | undefined
+      ((row: DataTableRowItem<T>) => void) | undefined
     >;
     isResizable?: boolean;
     pinnedRows: Set<string>;
@@ -233,6 +232,10 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   selectedKeys?: Selection;
   defaultSelectedKeys?: Selection;
   onSelectionChange?: (keys: Selection) => void;
+  /**
+   * @deprecated Use `onRowAction` instead. Called in the same cases; ignored
+   * when `onRowAction` is also passed.
+   */
   onRowClick?: (row: DataTableRowItem<T>) => void;
   /** Renders a full-width nested content panel below a row when expanded. Use this when every row should render the same component template with its own data. For per-row heterogeneous content, use `nestedKey` instead. The options object provides a `close` callback for collapsing the panel from within. */
   renderNestedContent?: (
@@ -246,7 +249,15 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   nestedKey?: string;
   /** Row ids that are disabled, or `"all"` to disable every row. Disabled rows cannot be selected or activated. A row can also be disabled by setting `isDisabled: true` in its data. */
   disabledKeys?: Selection;
-  onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
+  /**
+   * Called when the user activates a row: by clicking it, or by pressing Enter
+   * while the row or one of its cells has focus. Space selects the row and does
+   * not activate it. Never called for disabled rows, or when the click or key
+   * press lands on a button, checkbox or input inside the row. Clicks wait
+   * about 300 ms so that double-clicking a word to select it does not activate
+   * the row; Enter activates immediately.
+   */
+  onRowAction?: (row: DataTableRowItem<T>) => void;
   /** Controlled expansion state - map of row IDs to their expanded state */
   expandedRows?: Set<string>;
   /** Default expansion state for uncontrolled mode */
@@ -259,7 +270,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   ) => void;
   /** Whether to show the pin column. Defaults to `true`. */
   allowsPinning?: boolean;
-  /** Whether to show the expand chevron column. When `false`, rows with nested content can be expanded via row click. If `onRowClick` is also provided, both the expand toggle and `onRowClick` fire on click. Defaults to `true`. */
+  /** Whether to show the expand chevron column. When `false`, rows with nested content are expanded by activating the row (click or Enter). If `onRowAction` is also provided, both the expand toggle and `onRowAction` fire. Defaults to `true`. */
   allowsExpandColumn?: boolean;
   pinnedRows?: Set<string>;
   defaultPinnedRows?: Set<string>;

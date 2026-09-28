@@ -304,13 +304,13 @@ const ProductDetailsModal = ({
   );
 };
 
-// Wrapper component that automatically handles modals for onRowClick
+// Wrapper component that automatically handles modals for onRowAction
 const DataTableWithModals = ({
-  onRowClick,
+  onRowAction,
   isProductDetailsTable,
   ...props
 }: DataTableProps & {
-  onRowClick?: (row: DataTableRowItem) => void;
+  onRowAction?: (row: DataTableRowItem) => void;
   isProductDetailsTable?: boolean;
 }) => {
   const [rowClickModalState, setRowClickModalState] = useState<{
@@ -332,10 +332,10 @@ const DataTableWithModals = ({
     }
   }, [props.rows]);
 
-  const handleRowClick = onRowClick
+  const handleRowClick = onRowAction
     ? (row: DataTableRowItem) => {
         setRowClickModalState({ isOpen: true, row });
-        onRowClick?.(row);
+        onRowAction?.(row);
       }
     : undefined;
 
@@ -358,12 +358,12 @@ const DataTableWithModals = ({
       <DataTable
         {...props}
         rows={tableData}
-        onRowClick={handleRowClick}
+        onRowAction={handleRowClick}
         key={`table-v${dataVersion}`} // Force re-render when data changes
       />
 
       {/* Details Modal */}
-      {onRowClick &&
+      {onRowAction &&
         (isProductDetailsTable ? (
           <ProductDetailsModal
             isOpen={rowClickModalState.isOpen}
@@ -434,7 +434,7 @@ export const Base: Story = {
     <DataTableWithModals
       {...args}
       isProductDetailsTable
-      onRowClick={() => {}}
+      onRowAction={() => {}}
     />
   ),
   args: {
@@ -695,7 +695,7 @@ export const ColumnManager: Story = {
         <DataTableWithModals
           {...args}
           visibleColumns={visible}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           data-testid="column-manager-table"
         />
       </>
@@ -887,7 +887,7 @@ export const ColumnManager: Story = {
 };
 
 export const CustomColumn: Story = {
-  render: (args) => <DataTableWithModals {...args} onRowClick={() => {}} />,
+  render: (args) => <DataTableWithModals {...args} onRowAction={() => {}} />,
   args: { columns, rows },
 };
 
@@ -907,7 +907,7 @@ export const SearchAndHighlight: Story = {
         <DataTableWithModals
           {...args}
           search={search}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           data-testid="search-table"
         />
       </Stack>
@@ -1151,7 +1151,7 @@ export const AdjustableColumns: Story = {
         <DataTableWithModals
           {...args}
           isResizable={isResizable}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
         />
       </Stack>
     );
@@ -1180,7 +1180,7 @@ export const Condensed: Story = {
         <DataTableWithModals
           {...args}
           density={condensed ? "condensed" : "default"}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           data-testid="condensed-table"
         />
       </Stack>
@@ -1401,7 +1401,7 @@ export const StickyHeader: Story = {
         <DataTableWithModals
           {...args}
           maxHeight={sticky ? "400px" : undefined}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           data-testid="sticky-table"
         />
       </Stack>
@@ -1560,7 +1560,7 @@ export const ClickableRows: Story = {
         </Checkbox>
         <DataTableWithModals
           {...args}
-          onRowClick={isRowClickable ? () => {} : undefined} // Just need to pass a function to enable the modal
+          onRowAction={isRowClickable ? () => {} : undefined} // Just need to pass a function to enable the modal
           data-testid="clickable-rows-table"
         />
       </Stack>
@@ -1650,25 +1650,28 @@ export const ClickableRows: Story = {
       }
     );
 
-    await step("Double-clicking text does not trigger onRowClick", async () => {
-      const rows = canvas.getAllByRole("row");
-      const firstDataRow = rows[1];
-      const cells = within(firstDataRow).getAllByRole("gridcell");
-      const textCell = cells.find(
-        (cell) => !within(cell).queryByRole("checkbox")
-      );
-      expect(textCell).toBeTruthy();
+    await step(
+      "Double-clicking text does not trigger onRowAction",
+      async () => {
+        const rows = canvas.getAllByRole("row");
+        const firstDataRow = rows[1];
+        const cells = within(firstDataRow).getAllByRole("gridcell");
+        const textCell = cells.find(
+          (cell) => !within(cell).queryByRole("checkbox")
+        );
+        expect(textCell).toBeTruthy();
 
-      await userEvent.dblClick(textCell!);
+        await userEvent.dblClick(textCell!);
 
-      // Wait past the 300ms click timeout to confirm it was cancelled
-      await new Promise((resolve) => setTimeout(resolve, 500));
+        // Wait past the 300ms click timeout to confirm it was cancelled
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // No modal should have opened
-      expect(
-        within(document.body).queryByRole("dialog")
-      ).not.toBeInTheDocument();
-    });
+        // No modal should have opened
+        expect(
+          within(document.body).queryByRole("dialog")
+        ).not.toBeInTheDocument();
+      }
+    );
 
     await step("Disabling clickable rows prevents row clicks", async () => {
       // Uncheck the "Clickable Rows" checkbox
@@ -1812,7 +1815,7 @@ export const ClickableRows: Story = {
  * capture listener to have fired before honoring a `mouseup`. This story
  * exercises that guard directly, without needing a real popover: it fires
  * a `mouseup` with no preceding `pointerdown` on the row (simulating the
- * retargeted event) and confirms `onRowClick` is not called, then performs
+ * retargeted event) and confirms `onRowAction` is not called, then performs
  * a normal click to confirm the row still responds to real presses.
  */
 const retargetedMouseupGuardRowClick = fn();
@@ -1822,7 +1825,7 @@ export const RowClickIgnoresRetargetedMouseup: Story = {
       columns={columns}
       rows={rows}
       selectionMode="none"
-      onRowClick={retargetedMouseupGuardRowClick}
+      onRowAction={retargetedMouseupGuardRowClick}
     >
       <DataTable.Table aria-label="Retargeted mouseup guard table">
         <DataTable.Header />
@@ -1844,14 +1847,14 @@ export const RowClickIgnoresRetargetedMouseup: Story = {
         // mouseup looks like from the row's perspective.
         fireEvent.mouseUp(cell);
 
-        // handleRowClick debounces by 300ms before calling onRowClick.
+        // handleRowClick debounces by 300ms before calling onRowAction.
         await new Promise((resolve) => setTimeout(resolve, 400));
         await expect(retargetedMouseupGuardRowClick).not.toHaveBeenCalled();
       }
     );
 
     await step(
-      "A normal click (pointerdown and mouseup on the row) still fires onRowClick",
+      "A normal click (pointerdown and mouseup on the row) still fires onRowAction",
       async () => {
         const dataRow = canvas.getAllByRole("row")[2];
         const cell = dataRow.querySelector('[data-column-id="name"]');
@@ -1881,7 +1884,7 @@ export const WithSorting: Story = {
             sortable.
           </Text>
         </Stack>
-        <DataTableWithModals {...args} onRowClick={() => {}} />
+        <DataTableWithModals {...args} onRowAction={() => {}} />
       </Stack>
     );
   },
@@ -1950,7 +1953,7 @@ export const ControlledSorting: Story = {
           {...args}
           sortDescriptor={sortDescriptor}
           onSortChange={setSortDescriptor}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
         />
       </Stack>
     );
@@ -1982,7 +1985,7 @@ export const SortingWithSearch: Story = {
           width="1/3"
           aria-label="filter-rows"
         />
-        <DataTableWithModals {...args} search={search} onRowClick={() => {}} />
+        <DataTableWithModals {...args} search={search} onRowAction={() => {}} />
       </Stack>
     );
   },
@@ -2167,7 +2170,7 @@ export const SelectionShowcase: Story = {
           selectionMode={selectionMode}
           disallowEmptySelection={disallowEmptySelection}
           allowsSorting={true}
-          onRowClick={isRowClickable ? () => {} : undefined}
+          onRowAction={isRowClickable ? () => {} : undefined}
         />
         {/* Feature Explanation */}
         <Box
@@ -2435,7 +2438,7 @@ export const TextTruncation: Story = {
           <DataTableWithModals
             {...args}
             isTruncated={isTruncated}
-            onRowClick={() => {}}
+            onRowAction={() => {}}
           />
         </Box>
       </Stack>
@@ -2507,7 +2510,7 @@ export const MultilineHeaders: Story = {
     rows: multilineHeadersData,
     allowsSorting: true,
     isResizable: true,
-    onRowClick: () => {},
+    onRowAction: () => {},
   },
 };
 
@@ -2568,7 +2571,7 @@ export const WithFooter: Story = {
           allowsSorting={true}
           selectionMode="multiple"
           footer={footerContent}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           data-testid="footer-table"
         />
 
@@ -2634,7 +2637,7 @@ export const HorizontalScrolling: Story = {
           allowsSorting={true}
           maxHeight="400px"
           defaultSelectedKeys={new Set(["1", "3"])}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           footer={
             <Stack
               direction="row"
@@ -2706,7 +2709,7 @@ export const FlexibleNestedChildren: Story = {
             Click the expand buttons to see different types of nested content.
           </Text>
         </Stack>
-        <DataTableWithModals {...args} onRowClick={() => {}} />
+        <DataTableWithModals {...args} onRowAction={() => {}} />
       </Stack>
     );
   },
@@ -3120,10 +3123,10 @@ export const RowNestedContentViaRowClick: Story = {
 };
 
 /**
- * ## Row Nested Content via Row Click with onRowClick
+ * ## Row Nested Content via Row Click with onRowAction
  *
- * When `allowsExpandColumn` is `false` and `onRowClick` is provided,
- * clicking a row fires both the expand toggle and `onRowClick`.
+ * When `allowsExpandColumn` is `false` and `onRowAction` is provided,
+ * clicking a row fires both the expand toggle and `onRowAction`.
  */
 export const RowNestedContentViaRowClickWithOnRowClick: Story = {
   render: () => {
@@ -3137,7 +3140,7 @@ export const RowNestedContentViaRowClickWithOnRowClick: Story = {
           columns={columns}
           rows={rows}
           allowsExpandColumn={false}
-          onRowClick={(row) => setLastClicked(row.id)}
+          onRowAction={(row) => setLastClicked(row.id)}
           renderNestedContent={(row) => (
             <Box p="400">
               <Text>Details for {row.id}</Text>
@@ -3152,7 +3155,7 @@ export const RowNestedContentViaRowClickWithOnRowClick: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Clicking a row fires both expand and onRowClick", async () => {
+    await step("Clicking a row fires both expand and onRowAction", async () => {
       const allRows = canvas.getAllByRole("row");
       const firstDataRow = allRows[1];
       const cell = within(firstDataRow).getAllByRole("rowheader")[0];
@@ -3175,7 +3178,7 @@ export const RowNestedContentViaRowClickWithOnRowClick: Story = {
     });
 
     await step(
-      "Clicking again collapses and fires onRowClick again",
+      "Clicking again collapses and fires onRowAction again",
       async () => {
         const allRows = canvas.getAllByRole("row");
         const firstDataRow = allRows[1];
@@ -3337,7 +3340,7 @@ export const NoNestedContent: Story = {
             </Text>
           </Box>
         </Stack>
-        <DataTableWithModals {...args} onRowClick={() => {}} />
+        <DataTableWithModals {...args} onRowAction={() => {}} />
       </Stack>
     );
   },
@@ -3430,7 +3433,7 @@ export const NestedTable: Story = {
             </Text>
           </Box>
         </Stack>
-        <DataTableWithModals {...args} onRowClick={() => {}} />
+        <DataTableWithModals {...args} onRowAction={() => {}} />
       </Stack>
     );
   },
@@ -3609,7 +3612,7 @@ export const NestedTableDefaultExpanded: Story = {
         <Text>
           The first row is expanded by default using the defaultExpanded prop.
         </Text>
-        <DataTableWithModals {...args} onRowClick={() => {}} />
+        <DataTableWithModals {...args} onRowAction={() => {}} />
       </Stack>
     );
   },
@@ -3738,7 +3741,7 @@ export const NestedTableControlledExpansion: Story = {
           {...args}
           expandedRows={expandedRows}
           onExpandRowsChange={setExpandedRows}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
         />
       </Stack>
     );
@@ -3897,7 +3900,7 @@ export const AllFeatures: Story = {
             rows={item.children as DataTableRowItem[]}
             allowsSorting={true}
             isResizable={true}
-            onRowClick={() => {}}
+            onRowAction={() => {}}
           />
         </Box>
       ),
@@ -4124,7 +4127,7 @@ export const AllFeatures: Story = {
             isTruncated={isTruncated}
             density={density}
             nestedKey="children"
-            onRowClick={isRowClickable ? () => {} : undefined}
+            onRowAction={isRowClickable ? () => {} : undefined}
           />
         </Box>
         {/* Feature Information */}
@@ -4189,16 +4192,6 @@ export const DisabledRowsShowcase: Story = {
     const [disabledKeys, setDisabledKeys] = useState<Selection>(
       new Set(["3", "5", "7"])
     );
-    const [rowActionLog, setRowActionLog] = useState<string[]>([]);
-
-    const handleRowAction = (
-      row: DataTableRowItem,
-      action: "click" | "select"
-    ) => {
-      const message = `${action.toUpperCase()} attempted on disabled row: ${row.name} (ID: ${row.id})`;
-      setRowActionLog((prev) => [message, ...prev.slice(0, 4)]); // Keep last 5 messages
-    };
-
     const toggleDisabled = (rowId: string) => {
       setDisabledKeys((prev) => {
         if (prev === "all") return new Set([rowId]);
@@ -4218,8 +4211,7 @@ export const DisabledRowsShowcase: Story = {
           <Heading size="lg">Disabled Rows Showcase</Heading>
           <Text color="neutral.11" fontSize="400">
             Demonstration of disabled row functionality. Disabled rows cannot be
-            selected or clicked, and show visual feedback when interactions are
-            attempted.
+            selected or activated.
           </Text>
         </Stack>
 
@@ -4274,26 +4266,6 @@ export const DisabledRowsShowcase: Story = {
           </Flex>
         </Box>
 
-        {/* Action Log */}
-        {rowActionLog.length > 0 && (
-          <Box
-            p="300"
-            bg="warning.2"
-            border="1px solid"
-            borderColor="warning.4"
-            borderRadius="150"
-          >
-            <Heading as="h5" size="md" marginBottom="200" color="warning.11">
-              🚫 Disabled Row Interactions Log
-            </Heading>
-            {rowActionLog.map((message, index) => (
-              <Text key={index} fontSize="300" color="warning.11" marginY="50">
-                {message}
-              </Text>
-            ))}
-          </Box>
-        )}
-
         {/* DataTable */}
         <DataTableWithModals
           columns={sortableColumns}
@@ -4301,10 +4273,8 @@ export const DisabledRowsShowcase: Story = {
           selectedKeys={selectedKeys}
           onSelectionChange={setSelectedKeys}
           disabledKeys={disabledKeys}
-          onRowAction={handleRowAction}
           selectionMode="multiple"
           allowsSorting={true}
-          onRowClick={() => {}}
         />
       </Stack>
     );
@@ -4347,7 +4317,7 @@ export const RowPinning: Story = {
           onPinToggle={handlePinToggle}
           allowsSorting={true}
           selectionMode="multiple"
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           data-testid="pinning-data-table"
         />
       </Stack>
@@ -4537,7 +4507,7 @@ export const RowPinningEdgeCases: Story = {
           onSelectionChange={setSelectedKeys}
           allowsSorting={true}
           selectionMode="multiple"
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           data-testid="edge-cases-data-table"
         />
       </Stack>
@@ -5620,7 +5590,7 @@ export const DragAndDropRows: Story = {
             columns={simpleColumns}
             rows={tableRows}
             selectionMode="multiple"
-            onRowClick={(row) => setClickedRow(row.id)}
+            onRowAction={(row) => setClickedRow(row.id)}
             dragAndDropHooks={dragAndDropHooks}
           />
           <Text data-testid="row-order">
@@ -6097,7 +6067,7 @@ export const HiddenExpandColumnWithRowClick: Story = {
           allowsExpandColumn={false}
           expandedRows={expanded}
           onExpandRowsChange={setExpanded}
-          onRowClick={(row) => {
+          onRowAction={(row) => {
             setLastClicked(row.id);
             const next = new Set(expanded);
             if (next.has(row.id)) {
@@ -6125,7 +6095,7 @@ export const HiddenExpandColumnWithRowClick: Story = {
     });
 
     await step(
-      "Row click fires onRowClick and expands via controlled state",
+      "Row click fires onRowAction and expands via controlled state",
       async () => {
         const dataRows = canvasElement.querySelectorAll("tbody tr");
         const firstDataRow = dataRows[0] as HTMLElement;
@@ -7502,6 +7472,252 @@ export const RowDisabledByData: Story = {
       expect(
         within(canvas.getByRole("row", { name: /Grace/ })).getByRole("checkbox")
       ).toBeDisabled();
+    });
+  },
+};
+
+// ============================================================
+// FEC-1346 — row activation (click and Enter)
+// ============================================================
+
+const rowNamed = (canvasElement: HTMLElement, name: RegExp) =>
+  within(canvasElement).getByRole("row", { name });
+
+/**
+ * Enter on a focused row activates it, like a click. Space keeps selecting.
+ * Activation works while other rows are selected, and buttons inside the row
+ * keep their own Enter behaviour.
+ */
+export const RowActionWithKeyboard: Story = {
+  args: { onRowAction: fn() },
+  render: (args) => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+    return (
+      <Stack>
+        <DataTable
+          columns={behaviourColumns}
+          rows={behaviourRows}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          onRowAction={args.onRowAction}
+          aria-label="Row activation with the keyboard"
+        />
+        <Text data-testid="activation-selected">
+          {formatSelection(selectedKeys)}
+        </Text>
+      </Stack>
+    );
+  },
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const onRowAction = args.onRowAction as ReturnType<typeof fn>;
+    await canvas.findByText("Ada");
+
+    await step("Enter activates the row without selecting it", async () => {
+      rowNamed(canvasElement, /Ada/).focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(onRowAction).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "r1" })
+        )
+      );
+      expect(canvas.getByTestId("activation-selected")).toHaveTextContent(
+        /^none$/
+      );
+    });
+
+    await step("Space selects the row and does not activate it", async () => {
+      onRowAction.mockClear();
+      rowNamed(canvasElement, /Ada/).focus();
+      await userEvent.keyboard(" ");
+      await waitFor(() =>
+        expect(canvas.getByTestId("activation-selected")).toHaveTextContent(
+          /^r1$/
+        )
+      );
+      await wait(400);
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("Enter still activates while a row is selected", async () => {
+      rowNamed(canvasElement, /Grace/).focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(onRowAction).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "r2" })
+        )
+      );
+      expect(canvas.getByTestId("activation-selected")).toHaveTextContent(
+        /^r1$/
+      );
+    });
+
+    await step("Enter on the pin button pins, not activates", async () => {
+      onRowAction.mockClear();
+      const pinButton = within(rowNamed(canvasElement, /Linus/)).getByRole(
+        "button",
+        { pressed: false }
+      );
+      pinButton.focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(
+          within(rowNamed(canvasElement, /Linus/)).getByRole("button", {
+            pressed: true,
+          })
+        ).toBeInTheDocument()
+      );
+      await wait(400);
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("A click activates the row", async () => {
+      await userEvent.click(
+        within(rowNamed(canvasElement, /Ada/)).getByText("Ada")
+      );
+      await waitFor(() =>
+        expect(onRowAction).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "r1" })
+        )
+      );
+    });
+  },
+};
+
+/**
+ * Disabled rows are never activated.
+ */
+export const RowActionSkipsDisabledRows: Story = {
+  args: { onRowAction: fn() },
+  render: (args) => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      disabledKeys={new Set(["r2"])}
+      onRowAction={args.onRowAction}
+      aria-label="Disabled rows are not activated"
+    />
+  ),
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const onRowAction = args.onRowAction as ReturnType<typeof fn>;
+    await canvas.findByText("Grace");
+
+    await step("Clicking a disabled row calls nothing", async () => {
+      await userEvent.click(canvas.getByText("Grace"), {
+        pointerEventsCheck: 0,
+      });
+      await wait(500);
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("Clicking an enabled row still activates it", async () => {
+      await userEvent.click(canvas.getByText("Ada"));
+      await waitFor(() => expect(onRowAction).toHaveBeenCalledTimes(1));
+      expect(onRowAction).toHaveBeenCalledWith(
+        expect.objectContaining({ id: "r1" })
+      );
+    });
+  },
+};
+
+/**
+ * The deprecated `onRowClick` keeps working, including for Enter.
+ */
+export const DeprecatedOnRowClick: Story = {
+  args: { onRowClick: fn() },
+  render: (args) => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      onRowClick={args.onRowClick}
+      aria-label="Deprecated onRowClick"
+    />
+  ),
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const onRowClick = args.onRowClick as ReturnType<typeof fn>;
+    await canvas.findByText("Ada");
+
+    await step("A click calls onRowClick", async () => {
+      await userEvent.click(canvas.getByText("Ada"));
+      await waitFor(() =>
+        expect(onRowClick).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "r1" })
+        )
+      );
+    });
+
+    await step("Enter calls onRowClick", async () => {
+      onRowClick.mockClear();
+      rowNamed(canvasElement, /Grace/).focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(onRowClick).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "r2" })
+        )
+      );
+    });
+  },
+};
+
+/**
+ * When both are passed, only `onRowAction` is called.
+ */
+export const OnRowActionWinsOverOnRowClick: Story = {
+  args: { onRowAction: fn(), onRowClick: fn() },
+  render: (args) => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      onRowAction={args.onRowAction}
+      onRowClick={args.onRowClick}
+      aria-label="Both activation callbacks"
+    />
+  ),
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Ada");
+
+    await step("Only onRowAction is called", async () => {
+      await userEvent.click(canvas.getByText("Ada"));
+      await waitFor(() => expect(args.onRowAction).toHaveBeenCalledTimes(1));
+      expect(args.onRowClick).not.toHaveBeenCalled();
+    });
+  },
+};
+
+/**
+ * Without an expand column, Enter expands the row, like a click.
+ */
+export const EnterExpandsWithoutExpandColumn: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      allowsExpandColumn={false}
+      renderNestedContent={(row) => <Text>Details for {String(row.name)}</Text>}
+      aria-label="Expand with Enter"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Ada");
+
+    await step("Enter expands the focused row", async () => {
+      expect(canvas.queryByText("Details for Ada")).not.toBeInTheDocument();
+      rowNamed(canvasElement, /Ada/).focus();
+      await userEvent.keyboard("{Enter}");
+      expect(await canvas.findByText("Details for Ada")).toBeInTheDocument();
+    });
+
+    await step("Enter again collapses it", async () => {
+      rowNamed(canvasElement, /Ada/).focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(canvas.queryByText("Details for Ada")).not.toBeInTheDocument()
+      );
     });
   },
 };

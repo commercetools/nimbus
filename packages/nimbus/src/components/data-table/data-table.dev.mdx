@@ -424,7 +424,18 @@ const App = () => {
 
 ### Clickable rows
 
-Use `onRowClick` to handle row click events for navigation or detail views:
+Use `onRowAction` to react when a user activates a row, for navigation or
+detail views. A row is activated by a click, or by pressing <kbd>Enter</kbd>
+while the row or one of its cells has focus. <kbd>Space</kbd> keeps selecting
+the row. Disabled rows are never activated, and clicks or key presses on a
+button, checkbox or input inside the row only affect that element.
+
+A click waits about 300 ms before it activates the row, so that
+double-clicking a word to select it does not activate the row.
+<kbd>Enter</kbd> activates immediately.
+
+`onRowClick` is deprecated. It still works and is called in the same cases,
+but it is ignored when `onRowAction` is also passed.
 
 ```jsx live-dev
 const App = () => {
@@ -449,7 +460,7 @@ const App = () => {
       <DataTable
         columns={columns}
         rows={rows}
-        onRowClick={(row) => setClickedRow(row)}
+        onRowAction={(row) => setClickedRow(row)}
       />
     </Stack>
   );
@@ -606,7 +617,7 @@ const App = () => {
 
   return (
     <Stack gap="300">
-      <Text>Click the expand button to toggle nested content.</Text>
+      <Text>Click a row, or press Enter on it, to toggle nested content.</Text>
       <DataTable
         columns={columns}
         rows={rows}
@@ -813,9 +824,9 @@ const App = () => {
 
 ### Hiding the expand column
 
-Set `allowsExpandColumn={false}` to hide the expand chevron column. When no
-`onRowClick` handler is provided, rows with nested content can still be expanded
-by clicking anywhere on the row:
+Set `allowsExpandColumn={false}` to hide the expand chevron column. Rows with
+nested content are then expanded by activating the row: a click anywhere on it,
+or <kbd>Enter</kbd>:
 
 ```jsx live-dev
 const App = () => {
@@ -859,15 +870,18 @@ const App = () => {
 }
 ```
 
-### Hidden expand column with custom row click
+### Hidden expand column with custom row activation
 
-When `onRowClick` is provided alongside `allowsExpandColumn={false}`, the
-`onRowClick` handler takes precedence and the automatic expand-on-click behavior
-is disabled. To still support expansion, use controlled expansion state:
+When `onRowAction` is provided alongside `allowsExpandColumn={false}`,
+activating a row does both: it toggles the row's expansion and calls
+`onRowAction`. Use `onRowAction` for your own logic; the table handles the
+expansion. To control the expansion state, use `expandedRows` and
+`onExpandRowsChange`:
 
 ```jsx live-dev
 const App = () => {
   const [expanded, setExpanded] = useState(new Set());
+  const [lastActivated, setLastActivated] = useState(null);
 
   const columns = [
     { id: 'name', header: 'Category', accessor: (row) => row.name },
@@ -897,7 +911,11 @@ const App = () => {
 
   return (
     <Stack gap="300">
-      <Text>Click a row to toggle expansion and trigger custom logic.</Text>
+      <Text>
+        {lastActivated
+          ? `Last activated: ${lastActivated}`
+          : 'Click a row, or press Enter on it, to toggle it.'}
+      </Text>
       <DataTable
         columns={columns}
         rows={rows}
@@ -905,15 +923,7 @@ const App = () => {
         allowsExpandColumn={false}
         expandedRows={expanded}
         onExpandRowsChange={setExpanded}
-        onRowClick={(row) => {
-          const next = new Set(expanded);
-          if (next.has(row.id)) {
-            next.delete(row.id);
-          } else {
-            next.add(row.id);
-          }
-          setExpanded(next);
-        }}
+        onRowAction={(row) => setLastActivated(row.name)}
       />
     </Stack>
   );

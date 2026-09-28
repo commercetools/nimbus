@@ -27,30 +27,30 @@ it once and see it fail, then fix. Paths are relative to
 
 ## 2. Row activation
 
-- [ ] 2.1 Stories: Enter on a focused row calls `onRowAction` (also with a row
+- [x] 2.1 Stories: Enter on a focused row calls `onRowAction` (also with a row
       selected, and without changing the selection); Enter expands when
       `allowsExpandColumn={false}`; Space toggles selection and does not call
       `onRowAction`; Enter on the pin button pins and does not call
       `onRowAction`; clicking a disabled row calls nothing; `onRowClick` alone
       still fires on click and Enter; with both props only `onRowAction` fires
-- [ ] 2.2 Check whether `RaRow` forwards `onKeyDownCapture` to the DOM (design
+- [x] 2.2 Check whether `RaRow` forwards `onKeyDownCapture` to the DOM (design
       D2); pick React prop or native listener accordingly
-- [ ] 2.3 `row.tsx`: extract `activateRow(columnId?)` (early return when
+- [x] 2.3 `row.tsx`: extract `activateRow(columnId?)` (early return when
       disabled, expand via row click, `onRowActionRef.current ??
       onRowClickRef.current`); the mouse path calls it inside the existing
       300 ms timeout; remove the disabled → `onRowAction(row, "click")` branch
-- [ ] 2.4 `row.tsx`: Enter handler — no modifiers, not `repeat`, row clickable,
+- [x] 2.4 `row.tsx`: Enter handler — no modifiers, not `repeat`, row clickable,
       target not interactive (`getIsTableRowChildElementInteractive`) →
       `preventDefault`, `stopPropagation`, `activateRow` with the focused cell's
       column id; update the listener comment block
-- [ ] 2.5 `data-table.types.ts`: `onRowAction?: (row) => void` with JSDoc (click
+- [x] 2.5 `data-table.types.ts`: `onRowAction?: (row) => void` with JSDoc (click
       or Enter, not Space, never for disabled rows); `@deprecated` on
       `onRowClick`; update context ref types and the `allowsExpandColumn` JSDoc
-- [ ] 2.6 `root.tsx`: `isRowClickable` true for `onRowAction` or `onRowClick`
-- [ ] 2.7 Move stories, `data-table.docs.spec.tsx`, `data-table.dev.mdx` and
+- [x] 2.6 `root.tsx`: `isRowClickable` true for `onRowAction` or `onRowClick`
+- [x] 2.7 Move stories, `data-table.docs.spec.tsx`, `data-table.dev.mdx` and
       `data-table.mdx` to `onRowAction`; keep one story for `onRowClick`
-- [ ] 2.8 Search the MCP migration data for `onRowClick` and update it
-- [ ] 2.9 `data-table.a11y.mdx`: keyboard table (arrow keys, Enter activates,
+- [x] 2.8 Search the MCP migration data for `onRowClick` and update it
+- [x] 2.9 `data-table.a11y.mdx`: keyboard table (arrow keys, Enter activates,
       Space selects, buttons inside cells)
 
 ## 3. Localized labels
