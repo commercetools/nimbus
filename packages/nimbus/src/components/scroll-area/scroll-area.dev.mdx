@@ -20,7 +20,7 @@ after a short idle delay:
 
 ```jsx live-dev
 const App = () => (
-  <ScrollArea maxH="200px" w="400px">
+  <ScrollArea maxH="5200" w="9600">
     {Array.from({ length: 20 }, (_, i) => (
       <Text key={i} fontSize="sm">
         Line {i + 1}: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -41,7 +41,7 @@ const App = () => (
   <Stack gap="600">
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">both (default)</Text>
-      <ScrollArea maxH="120px" maxW="300px" scrollbarVisibility="always">
+      <ScrollArea maxH="3200" maxW="7200" scrollbarVisibility="always">
         <Box whiteSpace="nowrap">
           {Array.from({ length: 15 }, (_, i) => (
             <Text key={i} fontSize="sm">{"Both axes content ".repeat(15)}</Text>
@@ -51,7 +51,7 @@ const App = () => (
     </Box>
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">vertical</Text>
-      <ScrollArea maxH="120px" w="300px" orientation="vertical" scrollbarVisibility="always">
+      <ScrollArea maxH="3200" w="7200" orientation="vertical" scrollbarVisibility="always">
         {Array.from({ length: 15 }, (_, i) => (
           <Text key={i} fontSize="sm">Line {i + 1}</Text>
         ))}
@@ -59,7 +59,7 @@ const App = () => (
     </Box>
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">horizontal</Text>
-      <ScrollArea maxW="300px" orientation="horizontal" scrollbarVisibility="always">
+      <ScrollArea maxW="7200" orientation="horizontal" scrollbarVisibility="always">
         <Box whiteSpace="nowrap">
           {Array.from({ length: 5 }, (_, i) => (
             <Text key={i} fontSize="sm">{"Long horizontal content ".repeat(15)}</Text>
@@ -85,7 +85,7 @@ const App = () => (
   <Stack gap="600" direction="row">
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">auto-hide (default)</Text>
-      <ScrollArea maxH="120px" w="200px">
+      <ScrollArea maxH="3200" w="5200">
         {Array.from({ length: 15 }, (_, i) => (
           <Text key={i} fontSize="sm">Line {i + 1}</Text>
         ))}
@@ -93,7 +93,7 @@ const App = () => (
     </Box>
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">always</Text>
-      <ScrollArea maxH="120px" w="200px" scrollbarVisibility="always">
+      <ScrollArea maxH="3200" w="5200" scrollbarVisibility="always">
         {Array.from({ length: 15 }, (_, i) => (
           <Text key={i} fontSize="sm">Line {i + 1}</Text>
         ))}
@@ -116,8 +116,8 @@ const App = () => (
       <Box key={variant}>
         <Text fontSize="sm" mb="200" fontWeight="bold">{variant}</Text>
         <ScrollArea
-          maxH="120px"
-          w="180px"
+          maxH="3200"
+          w="4400"
           variant={variant}
           scrollbarVisibility="always"
         >
@@ -138,7 +138,7 @@ scrollable viewport, so `p`, `px`, `py`, etc. work as expected:
 
 ```jsx live-dev
 const App = () => (
-  <ScrollArea maxH="200px" w="400px" bg="neutral.2" borderRadius="300" scrollbarVisibility="always" p="200">
+  <ScrollArea maxH="5200" w="9600" bg="neutral.2" borderRadius="300" scrollbarVisibility="always" p="200">
     {Array.from({ length: 20 }, (_, i) => (
       <Text key={i} fontSize="sm">
         Line {i + 1}: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -160,7 +160,7 @@ you direct access to the native DOM `scrollTo()` method:
 ```tsx
 const viewportRef = useRef<HTMLDivElement>(null);
 
-<ScrollArea viewportRef={viewportRef} maxH="400px">
+<ScrollArea viewportRef={viewportRef} maxH="9600">
   {content}
 </ScrollArea>
 
@@ -176,7 +176,7 @@ different component tree), use the `ids` prop to set a known ID on the viewport
 element for `getElementById` access:
 
 ```tsx
-<ScrollArea ids={{ viewport: 'my-scroll-viewport' }} maxH="400px">
+<ScrollArea ids={{ viewport: 'my-scroll-viewport' }} maxH="9600">
   {content}
 </ScrollArea>
 
@@ -203,7 +203,7 @@ function ParentComponent() {
         Scroll to top
       </button>
       <p>Has vertical overflow: {String(scrollArea.hasOverflowY)}</p>
-      <ScrollArea maxH="400px" value={scrollArea}>
+      <ScrollArea maxH="9600" value={scrollArea}>
         {content}
       </ScrollArea>
     </>

@@ -50,7 +50,7 @@ const App = () => (
   <Stack gap="600">
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">Both (default)</Text>
-      <ScrollArea maxH="120px" maxW="300px" scrollbarVisibility="always">
+      <ScrollArea maxH="3200" maxW="7200" scrollbarVisibility="always">
         <Box whiteSpace="nowrap">
           {Array.from({ length: 15 }, (_, i) => (
             <Text key={i} fontSize="sm">{"Bidirectional content ".repeat(15)}</Text>
@@ -60,7 +60,7 @@ const App = () => (
     </Box>
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">Vertical</Text>
-      <ScrollArea maxH="120px" w="300px" orientation="vertical" scrollbarVisibility="always">
+      <ScrollArea maxH="3200" w="7200" orientation="vertical" scrollbarVisibility="always">
         {Array.from({ length: 15 }, (_, i) => (
           <Text key={i} fontSize="sm">Line {i + 1}: Sample content for vertical scrolling.</Text>
         ))}
@@ -68,7 +68,7 @@ const App = () => (
     </Box>
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">Horizontal</Text>
-      <ScrollArea maxW="300px" orientation="horizontal" scrollbarVisibility="always">
+      <ScrollArea maxW="7200" orientation="horizontal" scrollbarVisibility="always">
         <Box whiteSpace="nowrap">
           {Array.from({ length: 5 }, (_, i) => (
             <Text key={i} fontSize="sm">{"Horizontal content ".repeat(15)}</Text>
@@ -96,7 +96,7 @@ const App = () => (
   <Stack gap="600" direction="row">
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">Auto-hide (default)</Text>
-      <ScrollArea maxH="120px" w="200px">
+      <ScrollArea maxH="3200" w="5200">
         {Array.from({ length: 15 }, (_, i) => (
           <Text key={i} fontSize="sm">Line {i + 1}</Text>
         ))}
@@ -104,7 +104,7 @@ const App = () => (
     </Box>
     <Box>
       <Text fontSize="sm" mb="200" fontWeight="bold">Always</Text>
-      <ScrollArea maxH="120px" w="200px" scrollbarVisibility="always">
+      <ScrollArea maxH="3200" w="5200" scrollbarVisibility="always">
         {Array.from({ length: 15 }, (_, i) => (
           <Text key={i} fontSize="sm">Line {i + 1}</Text>
         ))}
@@ -131,8 +131,8 @@ const App = () => (
       <Box key={variant}>
         <Text fontSize="sm" mb="200" fontWeight="bold">{variant}</Text>
         <ScrollArea
-          maxH="120px"
-          w="180px"
+          maxH="3200"
+          w="4400"
           variant={variant}
           scrollbarVisibility="always"
         >
@@ -156,7 +156,7 @@ const App = () => (
     {["xs", "sm", "md", "lg"].map((size) => (
       <Box key={size}>
         <Text fontSize="sm" mb="200" fontWeight="bold">{size}</Text>
-        <ScrollArea maxH="120px" w="180px" size={size} scrollbarVisibility="always">
+        <ScrollArea maxH="3200" w="4400" size={size} scrollbarVisibility="always">
           {Array.from({ length: 15 }, (_, i) => (
             <Text key={i} fontSize="sm">Line {i + 1}</Text>
           ))}
