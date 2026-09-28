@@ -6,5 +6,7 @@
 storage used or a quota consumed. Use it instead of `ProgressBar` when the value
 is not the progress of a task. Pass `value` for one measurement, or `segments`
 to show several parts of one total in one bar with an automatic legend. Supports
-`formatOptions`, `valueLabel`, `size`, `layout`, and `colorPalette` (for example
-`positive`, `warning`, or `critical` to show a state).
+`formatOptions`, `valueLabel`, `layout`, and `colorPalette` (for example
+`positive`, `warning`, or `critical` to show a state). `size` sets the bar
+thickness and `textStyle` sets the text, so the text can match the content
+around the meter; `textStyle="inherit"` takes the surrounding text style.
