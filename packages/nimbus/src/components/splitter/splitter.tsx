@@ -83,14 +83,3 @@ export const Splitter = {
    */
   Handle: SplitterHandle,
 };
-
-// Underscore-prefixed re-exports exist solely so the react-docgen-typescript
-// script can extract per-subcomponent prop tables. Consumers should use the
-// namespaced `Splitter.Root` / `Splitter.Aside` / `Splitter.Main` /
-// `Splitter.Handle`.
-export {
-  SplitterRoot as _SplitterRoot,
-  SplitterAside as _SplitterAside,
-  SplitterMain as _SplitterMain,
-  SplitterHandle as _SplitterHandle,
-};

@@ -62,13 +62,3 @@ export type {
   BreadcrumbsProps,
   BreadcrumbsItemProps,
 } from "./breadcrumbs.types";
-
-/**
- * todo: get rid of this, this is needed for the react-docgen-typescript script
- * that is parsing the typescript types for our documentation. The _ underscores
- * serve as a reminder that this exports are awkward and should not be used.
- */
-export {
-  BreadcrumbsRoot as _BreadcrumbsRoot,
-  BreadcrumbsItem as _BreadcrumbsItem,
-};

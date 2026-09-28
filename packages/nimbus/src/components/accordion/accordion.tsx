@@ -111,11 +111,3 @@ export const Accordion = {
    */
   HeaderRightContent: AccordionHeaderRightContent,
 };
-
-export {
-  AccordionRoot as _AccordionRoot,
-  AccordionItem as _AccordionItem,
-  AccordionHeader as _AccordionHeader,
-  AccordionContent as _AccordionContent,
-  AccordionHeaderRightContent as _AccordionHeaderRightContent,
-};

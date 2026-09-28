@@ -107,10 +107,3 @@ export const DraggableList = {
    */
   Field: DraggableListField,
 };
-
-// Internal exports for react-docgen
-export {
-  DraggableListRoot as _DraggableListRoot,
-  DraggableListItem as _DraggableListItem,
-  DraggableListField as _DraggableListField,
-};

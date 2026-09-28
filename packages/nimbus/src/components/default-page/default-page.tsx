@@ -192,15 +192,3 @@ export const DefaultPage = {
    */
   TabNav: DefaultPageTabNav,
 };
-
-export {
-  DefaultPageRoot as _DefaultPageRoot,
-  DefaultPageHeader as _DefaultPageHeader,
-  DefaultPageActions as _DefaultPageActions,
-  DefaultPageBackLink as _DefaultPageBackLink,
-  DefaultPageTitle as _DefaultPageTitle,
-  DefaultPageSubtitle as _DefaultPageSubtitle,
-  DefaultPageContent as _DefaultPageContent,
-  DefaultPageFooter as _DefaultPageFooter,
-  DefaultPageTabNav as _DefaultPageTabNav,
-};

@@ -139,14 +139,3 @@ export const Menu = {
    */
   SubmenuTrigger: MenuSubmenuTrigger,
 };
-
-// Exports for internal use by react-docgen
-export {
-  MenuRoot as _MenuRoot,
-  MenuTrigger as _MenuTrigger,
-  MenuContent as _MenuContent,
-  MenuItem as _MenuItem,
-  MenuSection as _MenuSection,
-  MenuSubmenuTrigger as _MenuSubmenuTrigger,
-  MenuSubmenu as _MenuSubmenu,
-};

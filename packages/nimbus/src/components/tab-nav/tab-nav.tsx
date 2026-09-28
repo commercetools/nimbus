@@ -57,10 +57,3 @@ export const TabNav = {
 };
 
 export type { TabNavProps, TabNavItemProps } from "./tab-nav.types";
-
-/**
- * todo: get rid of this, this is needed for the react-docgen-typescript script
- * that is parsing the typescript types for our documentation. The _ underscores
- * serve as a reminder that this exports are awkward and should not be used.
- */
-export { TabNavRoot as _TabNavRoot, TabNavItem as _TabNavItem };
