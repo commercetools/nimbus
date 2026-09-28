@@ -65,9 +65,7 @@ export const meterSlotRecipe = defineSlotRecipe({
     },
 
     segment: {
-      // Step 11 is the lowest step that keeps >= 3:1 against the track for
-      // every palette in light and dark mode (WCAG 2.1 SC 1.4.11)
-      backgroundColor: "colorPalette.11",
+      backgroundColor: "colorPalette.9",
       height: "100%",
       // Lets segments give up the gap space when they fill the whole track
       flexShrink: 1,
@@ -106,7 +104,7 @@ export const meterSlotRecipe = defineSlotRecipe({
       width: "var(--meter-swatch-size)",
       height: "var(--meter-swatch-size)",
       borderRadius: "full",
-      backgroundColor: "colorPalette.11",
+      backgroundColor: "colorPalette.9",
     },
   },
 

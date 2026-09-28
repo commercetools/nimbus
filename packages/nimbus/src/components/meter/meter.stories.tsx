@@ -445,7 +445,7 @@ export const SemanticColors: Story = {
           />
           <Box
             data-testid={`reference-${palette}`}
-            bg={`${palette}.11`}
+            bg={`${palette}.9`}
             width="0"
             height="0"
           />
@@ -482,7 +482,7 @@ export const SegmentColors: Story = {
           { id: "warn", label: "Degraded", value: 20, colorPalette: "warning" },
         ]}
       />
-      <Box data-testid="reference-warning" bg="warning.11" w="0" h="0" />
+      <Box data-testid="reference-warning" bg="warning.9" w="0" h="0" />
       <Meter
         data-testid="defaults"
         label="Default colors"

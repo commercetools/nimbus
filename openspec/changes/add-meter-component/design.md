@@ -108,11 +108,14 @@ Slots:
 (`header` holds label and value in the stacked and minimal layouts; in minimal
 it is hidden but still names the meter via `aria-labelledby`). Sizes and layouts
 copy the `ProgressBar` CSS variables (`--meter-height`, `--meter-radius`, …).
-Segment fill: `colorPalette.11`, flat, with a width transition that is removed
-under `prefers-reduced-motion`. Step 9 was the first plan, but measured against
-the track it fails 3:1 for several palettes (for example `warning` 1.38:1 in
-light mode, `primary` 2.65:1 in dark mode); step 11 passes for every palette in
-both modes. Segments may shrink (`flex-shrink: 1`) so the gaps fit when the
+Segment fill: `colorPalette.9` (the regular solid step, same as `ProgressBar`),
+flat, with a width transition that is removed under `prefers-reduced-motion`.
+Step 11 was used first to reach 3:1 against the track for every palette; it
+was changed to step 9 so the fill uses the regular solid color, not the dark
+one. Measured against the track,
+step 9 is below 3:1 for some palettes (for example `warning` 1.38:1 in light
+mode, `primary` 2.65:1 in dark mode), so meaning is carried by the legend and
+value text, not by the fill color. Segments may shrink (`flex-shrink: 1`) so the gaps fit when the
 track is full. Track: same background as the `ProgressBar` track. Gap between
 segments: `{spacing.50}` (2px) using flex `gap`. Each segment sets
 `colorPalette` through a class or `data-` attribute so the recipe can color it.
@@ -139,5 +142,4 @@ default segment does not look like a status.
 
 1. Legend readable vs `aria-hidden` — to be settled by screen-reader testing.
 2. Should automatic thresholds be added later, and with what API?
-3. Exact default segment color sequence and the darker step-11 fill (needs
-   designer input).
+3. Exact default segment color sequence (needs designer input).

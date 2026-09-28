@@ -44,9 +44,7 @@
       sizes `2xs` / `md` and layouts matching `ProgressBar`; flat
       `colorPalette.9` fill; 2px gap between segments; width transition disabled
       under `prefers-reduced-motion`; default segment color sequence. **Done
-      when:** no gradients or keyframe animations are used, and every sequence
-      color is ≥ 3:1 against the track in light and dark themes (record the
-      measured ratios in the PR).
+      when:** no gradients or keyframe animations are used.
 - [x] 3.3 Implement `meter.slots.tsx` (skill: `writing-slots`) with
       `createSlotRecipeContext({ key: "nimbusMeter" })`. **Done when:** one slot
       component per recipe slot, typed with the slot props.

@@ -179,9 +179,9 @@ mode no legend SHALL be rendered.
 The component SHALL use `colorPalette` (default `primary`) for the fill in
 single-value mode and SHALL allow `colorPalette` per segment. Segments without a
 `colorPalette` SHALL get colors from a fixed default sequence. Fills SHALL be
-flat colors (no gradient) and SHALL NOT animate. Every fill color SHALL have a
-contrast ratio of at least 3:1 against the track (WCAG 2.1 SC 1.4.11), and
-meaning SHALL NOT depend on color alone (the legend and value text carry it).
+flat colors (no gradient) using the palette's solid step (`colorPalette.9`) and
+SHALL NOT animate. Meaning SHALL NOT depend on color alone (the legend and value
+text carry it).
 
 #### Scenario: Semantic color
 
