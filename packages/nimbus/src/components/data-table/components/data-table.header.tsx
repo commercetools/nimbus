@@ -37,9 +37,10 @@ export const DataTableHeader = <
     maxHeight,
     showExpandColumn,
     showPinColumn,
+    showSelectionColumn,
+    disabledKeys,
   } = useDataTableContext();
-  const { selectionBehavior, selectionMode, allowsDragging } =
-    useTableOptions();
+  const { selectionMode, allowsDragging } = useTableOptions();
   const [styleProps, restProps] = extractStyleProps(props);
 
   // Use provided aria-label or fall back to default
@@ -115,7 +116,7 @@ export const DataTableHeader = <
             <VisuallyHidden>{msg.format("dragRowsColumn")}</VisuallyHidden>
           </DataTableColumn>
         )}
-        {selectionBehavior === "toggle" && (
+        {showSelectionColumn && (
           <DataTableColumn
             id="selection"
             className="selection-column-header"
@@ -132,7 +133,12 @@ export const DataTableHeader = <
                 w="100%"
                 h="100%"
               >
-                <Checkbox slot="selection" />
+                {/* React Aria's select-all ignores disabled rows and reports
+                 * "all", so disable it when no row can be selected. */}
+                <Checkbox
+                  slot="selection"
+                  {...(disabledKeys === "all" && { isDisabled: true })}
+                />
               </Box>
             )}
           </DataTableColumn>
@@ -140,8 +146,8 @@ export const DataTableHeader = <
         {showExpandColumn && (
           <DataTableColumn
             className="expand-column-header"
-            maxWidth={selectionBehavior === "toggle" ? 24 : 72}
-            minWidth={selectionBehavior === "toggle" ? 24 : 72}
+            maxWidth={showSelectionColumn ? 24 : 72}
+            minWidth={showSelectionColumn ? 24 : 72}
             allowsSorting={false}
             aria-label={msg.format("expandRows")}
             isInternalColumn={true}

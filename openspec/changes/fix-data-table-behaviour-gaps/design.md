@@ -135,6 +135,13 @@ React Stately does `new Set(props.disabledKeys)` (`useGridState.mjs:14`), and
 `row.isDisabled` before `disabledKeys`, so a row can be disabled by its data
 alone.
 
+**Found during implementation:** each row already passes `isDisabled` to React
+Aria's `Row`, so the keyboard and the row checkboxes already treated every row
+as disabled. The visible defect was the header checkbox. React Aria's select-all
+ignores disabled rows: its checkbox is only disabled for an empty table
+(`useTableSelectionCheckbox.mjs:41`), and it reports the literal `"all"`. So the
+header checkbox is also disabled when `disabledKeys === "all"`.
+
 ### D7 — i18n
 
 - New keys: `pinRow`, `unpinRow`, `noData`, and `nestedItemsCount` (ICU plural).

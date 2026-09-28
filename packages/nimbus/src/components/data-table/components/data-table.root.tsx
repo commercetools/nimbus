@@ -54,6 +54,7 @@ export const DataTableRoot = function DataTableRoot<
     defaultSelectedKeys,
     onSelectionChange,
     selectionMode = "none",
+    selectionBehavior = "toggle",
     disallowEmptySelection = false,
     allowsSorting = false,
     maxHeight,
@@ -76,6 +77,7 @@ export const DataTableRoot = function DataTableRoot<
     onColumnsChange,
     onSettingsChange,
     customSettings,
+    renderEmptyState,
     children,
     ...rest
   } = props;
@@ -199,7 +201,12 @@ export const DataTableRoot = function DataTableRoot<
   );
   const hasExpandableContent = hasNestedKeyContent || !!renderNestedContent;
   const showExpandColumn = hasExpandableContent && allowsExpandColumn;
-  const showSelectionColumn = selectionMode !== "none";
+  // The single rule for whether the selection column exists. Header, cells
+  // and the nested row's colSpan all read it, so they cannot disagree.
+  // React Aria reports `selectionBehavior: null` for selectionMode "none"
+  // and only "toggle" renders checkboxes.
+  const showSelectionColumn =
+    selectionMode !== "none" && selectionBehavior === "toggle";
   const showPinColumn = allowsPinning;
 
   const expandedRef = useRef(expanded);
@@ -305,11 +312,13 @@ export const DataTableRoot = function DataTableRoot<
       search,
       allowsSorting,
       selectionMode,
+      selectionBehavior,
       disallowEmptySelection,
       maxHeight,
       isTruncated,
       density,
       nestedKey,
+      renderEmptyState,
       onSortChange: handleSortChange,
       isRowClickable,
       hasRenderNestedContent,
@@ -336,11 +345,13 @@ export const DataTableRoot = function DataTableRoot<
       search,
       allowsSorting,
       selectionMode,
+      selectionBehavior,
       disallowEmptySelection,
       maxHeight,
       isTruncated,
       density,
       nestedKey,
+      renderEmptyState,
       handleSortChange,
       isRowClickable,
       hasRenderNestedContent,

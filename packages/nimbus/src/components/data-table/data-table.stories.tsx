@@ -7298,3 +7298,210 @@ export const DuplicateRowKeysWarnInDevelopment: Story = {
     });
   },
 };
+
+// ============================================================
+// FEC-1346 — props that were typed but ignored
+// ============================================================
+
+const behaviourColumns: DataTableColumnItem[] = [
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row: Record<string, unknown>) => row.name as ReactNode,
+  },
+  {
+    id: "role",
+    header: "Role",
+    accessor: (row: Record<string, unknown>) => row.role as ReactNode,
+  },
+];
+
+const behaviourRows: DataTableRowItem[] = [
+  { id: "r1", name: "Ada", role: "Admin" },
+  { id: "r2", name: "Grace", role: "Editor" },
+  { id: "r3", name: "Linus", role: "Viewer" },
+];
+
+const formatSelection = (keys: Selection) =>
+  keys === "all" ? "all" : Array.from(keys).sort().join(",") || "none";
+
+/**
+ * `renderEmptyState` replaces the built-in empty message.
+ */
+export const CustomEmptyState: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={[]}
+      renderEmptyState={() => "Nothing matches your filters"}
+      aria-label="Empty table with custom empty state"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("The consumer's empty state renders", async () => {
+      expect(
+        await canvas.findByText("Nothing matches your filters")
+      ).toBeInTheDocument();
+      expect(canvas.queryByText("No Data")).not.toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * With `selectionBehavior="replace"` there is no checkbox column, and the
+ * nested row still spans exactly the cells a data row renders.
+ */
+export const ReplaceSelectionBehavior: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+    return (
+      <Stack>
+        <DataTable
+          columns={behaviourColumns}
+          rows={behaviourRows}
+          selectionMode="multiple"
+          selectionBehavior="replace"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          defaultExpandedRows={new Set(["r1"])}
+          renderNestedContent={(row) => (
+            <Text>Details for {String(row.name)}</Text>
+          )}
+          aria-label="Replace selection"
+        />
+        <Text data-testid="replace-selected">
+          {formatSelection(selectedKeys)}
+        </Text>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("No checkbox column is rendered", async () => {
+      await canvas.findByText("Details for Ada");
+      expect(
+        within(canvas.getByRole("grid")).queryAllByRole("checkbox")
+      ).toHaveLength(0);
+    });
+
+    await step("The nested row spans every rendered column", async () => {
+      const firstDataRow = canvas.getByRole("row", { name: /Ada/ });
+      const cellCount = firstDataRow.querySelectorAll(
+        '[role="gridcell"], [role="rowheader"]'
+      ).length;
+      const nestedCell = canvasElement.querySelector(
+        "[data-nested-cell]"
+      ) as HTMLTableCellElement;
+      expect(nestedCell.colSpan).toBe(cellCount);
+    });
+
+    await step("Space on a focused row replaces the selection", async () => {
+      const ada = canvas.getByRole("row", { name: /Ada/ });
+      const grace = canvas.getByRole("row", { name: /Grace/ });
+      ada.focus();
+      await userEvent.keyboard(" ");
+      await waitFor(() =>
+        expect(canvas.getByTestId("replace-selected")).toHaveTextContent(/^r1$/)
+      );
+      grace.focus();
+      await userEvent.keyboard(" ");
+      await waitFor(() =>
+        expect(canvas.getByTestId("replace-selected")).toHaveTextContent(/^r2$/)
+      );
+    });
+  },
+};
+
+/**
+ * `disabledKeys="all"` disables every row for React Aria too: the header
+ * checkbox and the keyboard cannot select anything.
+ */
+export const AllRowsDisabled: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+    return (
+      <Stack>
+        <DataTable
+          columns={behaviourColumns}
+          rows={behaviourRows}
+          selectionMode="multiple"
+          disabledKeys="all"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          aria-label="All rows disabled"
+        />
+        <Text data-testid="all-disabled-selected">
+          {formatSelection(selectedKeys)}
+        </Text>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Every row is disabled", async () => {
+      await canvas.findByText("Ada");
+      const dataRows = canvas.getAllByRole("row").slice(1);
+      for (const row of dataRows) {
+        expect(row).toHaveAttribute("data-disabled");
+      }
+    });
+
+    await step("Space on a focused row selects nothing", async () => {
+      canvas.getByRole("row", { name: /Ada/ }).focus();
+      await userEvent.keyboard(" ");
+      await wait(100);
+      expect(canvas.getByTestId("all-disabled-selected")).toHaveTextContent(
+        /^none$/
+      );
+    });
+
+    await step("The header checkbox is disabled", async () => {
+      const headerRow = canvas.getAllByRole("row")[0];
+      const headerCheckbox = within(headerRow).getByRole("checkbox");
+      expect(headerCheckbox).toBeDisabled();
+      await userEvent.click(headerCheckbox, { pointerEventsCheck: 0 });
+      await wait(100);
+      expect(canvas.getByTestId("all-disabled-selected")).toHaveTextContent(
+        /^none$/
+      );
+    });
+  },
+};
+
+/**
+ * A row with `isDisabled: true` is disabled without `disabledKeys`.
+ */
+export const RowDisabledByData: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={[
+        behaviourRows[0],
+        { ...behaviourRows[1], isDisabled: true },
+        behaviourRows[2],
+      ]}
+      selectionMode="multiple"
+      aria-label="Row disabled by its data"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Only the row with isDisabled is disabled", async () => {
+      await canvas.findByText("Grace");
+      expect(canvas.getByRole("row", { name: /Grace/ })).toHaveAttribute(
+        "data-disabled"
+      );
+      expect(canvas.getByRole("row", { name: /Ada/ })).not.toHaveAttribute(
+        "data-disabled"
+      );
+      expect(
+        within(canvas.getByRole("row", { name: /Grace/ })).getByRole("checkbox")
+      ).toBeDisabled();
+    });
+  },
+};

@@ -4,24 +4,24 @@ it once and see it fail, then fix. Paths are relative to
 
 ## 1. Dead props and disabled rows
 
-- [ ] 1.1 Stories: `renderEmptyState` renders custom content (not "No Data") and
+- [x] 1.1 Stories: `renderEmptyState` renders custom content (not "No Data") and
       is not an attribute on the root element
-- [ ] 1.2 Stories: `selectionBehavior="replace"` renders no checkbox column and a
+- [x] 1.2 Stories: `selectionBehavior="replace"` renders no checkbox column and a
       click replaces the selection; nested row `colSpan` equals the rendered cell
       count in `"toggle"` and in `"replace"`
-- [ ] 1.3 Stories: `disabledKeys="all"` — no row selectable by click, checkbox,
+- [x] 1.3 Stories: `disabledKeys="all"` — no row selectable by click, checkbox,
       Space or header checkbox; a row with `isDisabled: true` and no
       `disabledKeys` is disabled
-- [ ] 1.4 `root.tsx`: destructure `renderEmptyState` and
+- [x] 1.4 `root.tsx`: destructure `renderEmptyState` and
       `selectionBehavior = "toggle"`, compute `showSelectionColumn`
       (`selectionMode !== "none" && selectionBehavior === "toggle"`), add all to
       `contextValue` and its deps
-- [ ] 1.5 `table.tsx`: forward `selectionBehavior`; pass
+- [x] 1.5 `table.tsx`: forward `selectionBehavior`; pass
       `new Set(rows.map(getRowKey))` when `disabledKeys === "all"`
-- [ ] 1.6 `header.tsx` and `row.tsx`: use `showSelectionColumn` for the selection
+- [x] 1.6 `header.tsx` and `row.tsx`: use `showSelectionColumn` for the selection
       column, the selection cell and the expand column width
-- [ ] 1.7 `row.tsx` `getIsDisabled`: check `row.isDisabled` before `disabledKeys`
-- [ ] 1.8 `data-table.types.ts`: remove `onVisibilityChange`; add
+- [x] 1.7 `row.tsx` `getIsDisabled`: check `row.isDisabled` before `disabledKeys`
+- [x] 1.8 `data-table.types.ts`: remove `onVisibilityChange`; add
       `selectionBehavior` and `showSelectionColumn` to the context type; JSDoc on
       `renderEmptyState`, `selectionBehavior`, `disabledKeys`
 

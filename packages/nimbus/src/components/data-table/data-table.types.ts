@@ -121,6 +121,7 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     expanded: Set<string>;
     allowsSorting?: boolean;
     selectionMode?: "none" | "single" | "multiple";
+    selectionBehavior?: "toggle" | "replace";
     disallowEmptySelection?: boolean;
     maxHeight?: string | number;
     isTruncated?: boolean;
@@ -149,6 +150,11 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     sortedRows: DataTableRowItem<T>[];
     showExpandColumn: boolean;
     hasExpandableContent: boolean;
+    /**
+     * Whether the checkbox selection column exists: `selectionMode` is not
+     * `"none"` and `selectionBehavior` is `"toggle"`. The header, the row
+     * cells and the nested row's `colSpan` all read this value.
+     */
     showSelectionColumn: boolean;
     showPinColumn: boolean;
     pinnedRowIds: string[];
@@ -173,7 +179,6 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
         ) => void)
       | undefined
     >;
-    onVisibilityChange?: (visibleColumnIds: string[]) => void;
   };
 
 export type TableSelectionContextValue = {
@@ -212,6 +217,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   unstyled?: boolean;
   rows: DataTableRowItem<T>[];
   visibleColumns?: string[];
+  /** Content to render when the table has no rows. Defaults to a localized "No Data" message. */
   renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
   isResizable?: boolean;
   allowsSorting?: boolean;
@@ -221,6 +227,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   defaultSortDescriptor?: SortDescriptor;
   onSortChange?: (descriptor: SortDescriptor) => void;
   selectionMode?: "none" | "single" | "multiple";
+  /** How selection behaves. `"toggle"` (default) renders a checkbox column and each selection toggles a row. `"replace"` renders no checkbox column and a selection replaces the previous one; hold Ctrl/Cmd or Shift to extend it. */
   selectionBehavior?: "toggle" | "replace";
   disallowEmptySelection?: boolean;
   selectedKeys?: Selection;
@@ -237,6 +244,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   isTruncated?: boolean;
   footer?: ReactNode;
   nestedKey?: string;
+  /** Row ids that are disabled, or `"all"` to disable every row. Disabled rows cannot be selected or activated. A row can also be disabled by setting `isDisabled: true` in its data. */
   disabledKeys?: Selection;
   onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
   /** Controlled expansion state - map of row IDs to their expanded state */

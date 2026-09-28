@@ -137,9 +137,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
 
   // Helper function to check if row is disabled
   const getIsDisabled = (rowId: string) => {
+    if (row.isDisabled) return true;
     if (!disabledKeys) return false;
     if (disabledKeys === "all") return true;
-    if (row.isDisabled) return true;
     return disabledKeys.has(rowId);
   };
   const isDisabled = getIsDisabled(rowKey);
@@ -449,7 +449,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
 
   const rowRef = mergeRefs(ref, rowCallbackRef, ariaRef);
 
-  const { selectionBehavior, allowsDragging } = useTableOptions();
+  const { allowsDragging } = useTableOptions();
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
 
   const nestedContentRowRef = useCallback(
@@ -564,7 +564,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
             </RaCell>
           )}
           {/* Selection checkbox cell if selection is enabled */}
-          {selectionBehavior === "toggle" && (
+          {showSelectionColumn && (
             <DataTableCell
               className="data-table-sticky-cell"
               data-slot="selection"
