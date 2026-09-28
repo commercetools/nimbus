@@ -237,7 +237,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
    * when `onRowAction` is also passed.
    */
   onRowClick?: (row: DataTableRowItem<T>) => void;
-  /** Renders a full-width nested content panel below a row when expanded. Use this when every row should render the same component template with its own data. For per-row heterogeneous content, use `nestedKey` instead. The options object provides a `close` callback for collapsing the panel from within. */
+  /** Renders a full-width nested content panel below a row when expanded. The function receives the row, so it can render different content per row. The options object provides a `close` callback for collapsing the panel from within. */
   renderNestedContent?: (
     row: DataTableRowItem<T>,
     options: DataTableNestedContentOptions
@@ -246,6 +246,11 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   density?: DataTableDensity;
   isTruncated?: boolean;
   footer?: ReactNode;
+  /**
+   * @deprecated Use `renderNestedContent` instead, and read the nested data from
+   * the row it receives: `renderNestedContent={(row) => row.children}`. Still
+   * works; will be removed in a future major version.
+   */
   nestedKey?: string;
   /** Row ids that are disabled, or `"all"` to disable every row. Disabled rows cannot be selected or activated. A row can also be disabled by setting `isDisabled: true` in its data. */
   disabledKeys?: Selection;

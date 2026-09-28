@@ -71,10 +71,10 @@ it once and see it fail, then fix. Paths are relative to
 
 ## 4. Deprecate nestedKey
 
-- [ ] 4.1 `data-table.types.ts`: `@deprecated Use renderNestedContent instead.`
+- [x] 4.1 `data-table.types.ts`: `@deprecated Use renderNestedContent instead.`
       on `nestedKey`; fix the `renderNestedContent` JSDoc that recommends
       `nestedKey`
-- [ ] 4.2 `data-table.dev.mdx` / `data-table.mdx`: deprecation note with a
+- [x] 4.2 `data-table.dev.mdx` / `data-table.mdx`: deprecation note with a
       migration snippet
 
 ## 5. Tests without code change
