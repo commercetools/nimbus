@@ -500,6 +500,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
 
   const { allowsDragging } = useTableOptions();
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
+  const pinLabel = msg.format(isPinned ? "unpinRow" : "pinRow");
 
   const nestedContentRowRef = useCallback(
     (node: HTMLElement | null) => {
@@ -680,13 +681,13 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                     ? "nimbus-table-cell-pin-button-pinned"
                     : "nimbus-table-cell-pin-button"
                 }
-                title={isPinned ? "Unpin row" : "Pin row"}
+                title={pinLabel}
               >
                 <IconToggleButton
                   key="pin-btn"
                   size="2xs"
                   variant="ghost"
-                  aria-label={isPinned ? "Unpin row" : "Pin row"}
+                  aria-label={pinLabel}
                   colorPalette="primary"
                   isSelected={isPinned}
                   onChange={() => togglePin(rowKey)}
@@ -720,7 +721,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               {isExpanded
                 ? hasNestedContent
                   ? nestedKey && Array.isArray(row[nestedKey])
-                    ? `${(row[nestedKey] as unknown[]).length} nested items`
+                    ? msg.format("nestedItemsCount", {
+                        count: (row[nestedKey] as unknown[]).length,
+                      })
                     : nestedKey && (row[nestedKey] as React.ReactNode)
                   : renderNestedContent
                     ? renderNestedContent(row, {

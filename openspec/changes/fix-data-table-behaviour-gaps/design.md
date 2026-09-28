@@ -144,7 +144,7 @@ header checkbox is also disabled when `disabledKeys === "all"`.
 
 ### D7 — i18n
 
-- New keys: `pinRow`, `unpinRow`, `noData`, and `nestedItemsCount` (ICU plural).
+- New keys: `pinRow`, `unpinRow`, `noData`, and `nestedItemsCount` ("Nested items: {count}"). No ICU plural: the i18n pipeline does not support it — `normalizeMessages` drops the formatter argument that compiled plural functions need, and their parameters are untyped.
 - `layoutSettingsAriaLabel` names the layout panel group.
 - `hideColumn` names the remove button in the visible-columns list. This needs a
   new optional `removeButtonLabel` on `DraggableList.Item`, defaulting to the

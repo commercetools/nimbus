@@ -100,7 +100,7 @@ The `nestedKey` prop SHALL be deprecated.
 #### Scenario: Localized nested placeholder
 
 - **WHEN** a row expanded through `nestedKey` holds an array
-- **THEN** SHALL show the localized, pluralized item count
+- **THEN** SHALL show the localized item count ("Nested items: {count}")
 
 ### Requirement: Localized Row and Panel Labels
 

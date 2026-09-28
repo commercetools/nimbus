@@ -40,6 +40,8 @@ export const LayoutSettingsPanel = ({
 
   return (
     <SimpleGrid
+      role="group"
+      aria-label={msg.format("layoutSettingsAriaLabel")}
       templateColumns="repeat(4, 1fr)"
       columnGap="400"
       rowGap="600"

@@ -55,19 +55,19 @@ it once and see it fail, then fix. Paths are relative to
 
 ## 3. Localized labels
 
-- [ ] 3.1 Stories: pin button named "Pin row" / "Unpin row"; default empty state
+- [x] 3.1 Stories: pin button named "Pin row" / "Unpin row"; default empty state
       text from messages; layout panel is a group named "Layout settings
       section"; the column remove button is named "Hide column"
-- [ ] 3.2 `data-table.i18n.ts`: add `pinRow`, `unpinRow`, `noData`,
-      `nestedItemsCount` (ICU plural); delete `comfortableAriaLabel`,
+- [x] 3.2 `data-table.i18n.ts`: add `pinRow`, `unpinRow`, `noData`,
+      `nestedItemsCount` ("Nested items: {count}"); delete `comfortableAriaLabel`,
       `compactAriaLabel`, `fullTextAriaLabel`, `textPreviewsAriaLabel`
-- [ ] 3.3 `row.tsx`: pin `title` / `aria-label` and nested placeholder from
+- [x] 3.3 `row.tsx`: pin `title` / `aria-label` and nested placeholder from
       messages; `body.tsx`: `DefaultEmptyStateMessage` uses `noData`
-- [ ] 3.4 `layout-settings-panel.tsx`: group with `layoutSettingsAriaLabel`
-- [ ] 3.5 `DraggableList.Item`: optional `removeButtonLabel` (types, component,
+- [x] 3.4 `layout-settings-panel.tsx`: group with `layoutSettingsAriaLabel`
+- [x] 3.5 `DraggableList.Item`: optional `removeButtonLabel` (types, component,
       JSDoc, story, `draggable-list.dev.mdx`); `visible-columns-panel.tsx`
       passes `msg.format("hideColumn")`
-- [ ] 3.6 Run `pnpm extract-intl` and commit the generated files
+- [x] 3.6 Run `pnpm extract-intl` and commit the generated files
 
 ## 4. Deprecate nestedKey
 

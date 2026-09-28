@@ -7721,3 +7721,123 @@ export const EnterExpandsWithoutExpandColumn: Story = {
     });
   },
 };
+
+// ============================================================
+// FEC-1346 — localized labels
+// ============================================================
+
+/**
+ * The pin button's name and tooltip come from the message catalog.
+ */
+export const PinButtonName: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      aria-label="Pin button name"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Ada");
+
+    await step("An unpinned row offers 'Pin row'", async () => {
+      const row = rowNamed(canvasElement, /Ada/);
+      const pin = within(row).getByRole("button", { name: "Pin row" });
+      expect(pin.closest("[title]")).toHaveAttribute("title", "Pin row");
+      await userEvent.click(pin);
+    });
+
+    await step("A pinned row offers 'Unpin row'", async () => {
+      const row = await waitFor(() => rowNamed(canvasElement, /Ada/));
+      const unpin = await within(row).findByRole("button", {
+        name: "Unpin row",
+      });
+      expect(unpin.closest("[title]")).toHaveAttribute("title", "Unpin row");
+    });
+  },
+};
+
+/**
+ * The placeholder for list-valued `nestedKey` data comes from the message
+ * catalog.
+ */
+export const NestedItemsCountIsLocalized: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={[
+        { ...behaviourRows[0], children: [{ id: "c1" }] },
+        { ...behaviourRows[1], children: [{ id: "c2" }, { id: "c3" }] },
+      ]}
+      nestedKey="children"
+      defaultExpandedRows={new Set(["r1", "r2"])}
+      aria-label="Localized nested placeholder"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("The item count reads from the catalog", async () => {
+      expect(await canvas.findByText("Nested items: 1")).toBeInTheDocument();
+      expect(canvas.getByText("Nested items: 2")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * The layout settings panel is a named group, and the remove button in the
+ * visible-columns list says what it does.
+ */
+export const ManagerLabels: Story = {
+  render: () => {
+    const [visibleColumns, setVisibleColumns] = useState<
+      DataTableProps["columns"]
+    >(initialVisibleColumns);
+    return (
+      <DataTable.Root
+        columns={[...initialVisibleColumns, ...initialHiddenColumns]}
+        rows={managerRows}
+        visibleColumns={visibleColumns.map((col) => col.id)}
+        onColumnsChange={setVisibleColumns}
+        onSettingsChange={() => {}}
+      >
+        <DataTable.Manager />
+        <DataTable.Table aria-label="Manager labels table">
+          <DataTable.Header />
+          <DataTable.Body />
+        </DataTable.Table>
+      </DataTable.Root>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Open the settings drawer", async () => {
+      await userEvent.click(
+        await canvas.findByRole("button", { name: /table settings/i })
+      );
+      await within(document.body).findByRole("dialog", {}, { timeout: 3000 });
+    });
+
+    await step("Visible columns can be hidden with 'Hide column'", async () => {
+      const dialog = within(document.body).getByRole("dialog");
+      const hideButtons = await within(dialog).findAllByRole("button", {
+        name: "Hide column",
+      });
+      expect(hideButtons.length).toBeGreaterThan(0);
+    });
+
+    await step("The layout settings panel is a named group", async () => {
+      const dialog = within(document.body).getByRole("dialog");
+      await userEvent.click(
+        within(dialog).getByRole("tab", { name: /layout settings/i })
+      );
+      expect(
+        await within(dialog).findByRole("group", {
+          name: "Layout settings section",
+        })
+      ).toBeInTheDocument();
+    });
+  },
+};
