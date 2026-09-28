@@ -88,13 +88,13 @@ it once and see it fail, then fix. Paths are relative to
 
 ## 6. Release and validation
 
-- [ ] 6.1 Minor changeset for `@commercetools/nimbus` (consumer view, per
+- [x] 6.1 Minor changeset for `@commercetools/nimbus` (consumer view, per
       `docs/changeset-conventions.md`): keyboard activation, `onRowAction` and
       deprecated `onRowClick`, disabled rows no longer call `onRowAction`,
       working `selectionBehavior` / `renderEmptyState` / `disabledKeys="all"`,
       `nestedKey` deprecated, `DraggableList.Item removeButtonLabel`
-- [ ] 6.2 `pnpm --filter @commercetools/nimbus typecheck:dev` shows no new errors
-- [ ] 6.3 `pnpm test:dev` for `data-table.stories.tsx`, `data-table.docs.spec.tsx`
+- [x] 6.2 `pnpm --filter @commercetools/nimbus typecheck:dev` shows no new errors
+- [x] 6.3 `pnpm test:dev` for `data-table.stories.tsx`, `data-table.docs.spec.tsx`
       and `draggable-list` green; `pnpm lint` clean
 - [ ] 6.4 Keyboard-only walkthrough in Storybook
 - [ ] 6.5 Update FEC-1346: corrections to items 3 and 6, Enter instead of
