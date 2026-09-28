@@ -79,10 +79,10 @@ it once and see it fail, then fix. Paths are relative to
 
 ## 5. Tests without code change
 
-- [ ] 5.1 Story: pressing the active layout option does not call
+- [x] 5.1 Story: pressing the active layout option does not call
       `onSettingsChange`; pressing the other option calls it once with the
       matching action
-- [ ] 5.2 Story: measure the expand button with and without a selection column;
+- [x] 5.2 Story: measure the expand button with and without a selection column;
       assert at least 24×24; record the size in FEC-1346 and widen only if it
       fails
 

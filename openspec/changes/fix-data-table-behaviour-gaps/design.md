@@ -177,7 +177,12 @@ storage is involved.
 
 ## Open Questions
 
-- Does React Aria's `Row` forward `onKeyDownCapture` to the DOM? This decides
-  D2's first choice or its fallback during implementation.
-- The expand button's rendered size: measured in a story (item 7) and recorded
-  in the ticket. It is widened only if it is below 24×24.
+- ~~Does React Aria's `Row` forward `onKeyDownCapture` to the DOM?~~ No.
+  `filterDOMProps(props, { global: true })` forwards pointer, mouse and touch
+  events but no keyboard events, so Enter uses a native capture listener next to
+  the other three.
+- The expand button's rendered size, measured in Chromium by the
+  `ExpandButtonTargetSize` story: 72×62 px without a selection column, 24×62 px
+  with one. The narrow case meets WCAG 2.2 SC 2.5.8 (24×24) exactly, with no
+  margin, so it is not widened. The story fails if a later change (for example
+  the `size` prop in #2007) drops it below 24 px.

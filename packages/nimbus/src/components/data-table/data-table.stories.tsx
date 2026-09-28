@@ -7841,3 +7841,116 @@ export const ManagerLabels: Story = {
     });
   },
 };
+
+// ============================================================
+// FEC-1346 — behaviour that was already correct, now under test
+// ============================================================
+
+/**
+ * Pressing the layout option that is already active does not emit a change;
+ * pressing the other option emits it once.
+ */
+export const LayoutSettingsReselect: Story = {
+  args: { onSettingsChange: fn() },
+  render: (args) => {
+    const [visibleColumns, setVisibleColumns] = useState<
+      DataTableProps["columns"]
+    >(initialVisibleColumns);
+    return (
+      <DataTable.Root
+        columns={[...initialVisibleColumns, ...initialHiddenColumns]}
+        rows={managerRows}
+        visibleColumns={visibleColumns.map((col) => col.id)}
+        onColumnsChange={setVisibleColumns}
+        onSettingsChange={args.onSettingsChange}
+      >
+        <DataTable.Manager />
+        <DataTable.Table aria-label="Layout settings table">
+          <DataTable.Header />
+          <DataTable.Body />
+        </DataTable.Table>
+      </DataTable.Root>
+    );
+  },
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+
+    await step("Open the layout settings tab", async () => {
+      await userEvent.click(
+        await canvas.findByRole("button", { name: /table settings/i })
+      );
+      const dialog = await body.findByRole("dialog", {}, { timeout: 3000 });
+      await userEvent.click(
+        within(dialog).getByRole("tab", { name: /layout settings/i })
+      );
+      await within(dialog).findByRole("group", {
+        name: "Layout settings section",
+      });
+    });
+
+    await step("Pressing the active options emits nothing", async () => {
+      const dialog = body.getByRole("dialog");
+      await userEvent.click(
+        within(dialog).getByRole("radio", { name: "Full text" })
+      );
+      await userEvent.click(
+        within(dialog).getByRole("radio", { name: "Comfortable" })
+      );
+      expect(args.onSettingsChange).not.toHaveBeenCalled();
+    });
+
+    await step("Pressing the other option emits it once", async () => {
+      const dialog = body.getByRole("dialog");
+      await userEvent.click(
+        within(dialog).getByRole("radio", { name: "Text previews" })
+      );
+      expect(args.onSettingsChange).toHaveBeenCalledTimes(1);
+      expect(args.onSettingsChange).toHaveBeenCalledWith(
+        UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY
+      );
+    });
+  },
+};
+
+/**
+ * The expand button meets the WCAG 2.2 SC 2.5.8 minimum target size of
+ * 24×24 CSS px, with and without a selection column (the expand column is
+ * narrower next to the selection column).
+ */
+export const ExpandButtonTargetSize: Story = {
+  render: () => (
+    <Stack gap="600">
+      <Box data-testid="Expand without selection">
+        <DataTable
+          columns={behaviourColumns}
+          rows={behaviourRows.slice(0, 1)}
+          renderNestedContent={(row) => <Text>{String(row.name)}</Text>}
+        />
+      </Box>
+      <Box data-testid="Expand with selection">
+        <DataTable
+          columns={behaviourColumns}
+          rows={behaviourRows.slice(0, 1)}
+          selectionMode="multiple"
+          renderNestedContent={(row) => <Text>{String(row.name)}</Text>}
+        />
+      </Box>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    for (const name of ["Expand without selection", "Expand with selection"]) {
+      await step(`${name}: at least 24×24`, async () => {
+        const table = await canvas.findByTestId(name);
+        const button = await within(table).findByRole("button", {
+          name: "Expand",
+        });
+        const { width, height } = button.getBoundingClientRect();
+        expect(width).toBeGreaterThanOrEqual(24);
+        expect(height).toBeGreaterThanOrEqual(24);
+      });
+    }
+  },
+};
