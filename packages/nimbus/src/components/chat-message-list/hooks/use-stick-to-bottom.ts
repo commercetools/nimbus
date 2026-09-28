@@ -91,6 +91,9 @@ export const useStickToBottom = ({
   // animation only ever moves toward the bottom (distance shrinks), so a growth
   // means the user grabbed the scroll mid-animation.
   const lastProgrammaticDistanceRef = useRef(Number.POSITIVE_INFINITY);
+  // The viewport's scrollTop at the previous scroll event. Only a decrease
+  // means the user moved up; see `update` in the scroll-tracking effect.
+  const lastScrollTopRef = useRef(0);
 
   const setPinned = useCallback((next: boolean) => {
     pinnedRef.current = next;
@@ -149,6 +152,8 @@ export const useStickToBottom = ({
       const distanceFromBottom =
         el.scrollHeight - el.scrollTop - el.clientHeight;
       const atBottom = distanceFromBottom <= BOTTOM_THRESHOLD_PX;
+      const movedUp = el.scrollTop < lastScrollTopRef.current;
+      lastScrollTopRef.current = el.scrollTop;
 
       // While an intentional programmatic scroll animates toward the bottom, hold
       // the pin engaged (so the jump control doesn't flicker back) until we
@@ -163,6 +168,17 @@ export const useStickToBottom = ({
         lastProgrammaticDistanceRef.current = distanceFromBottom;
         if (!atBottom && !userScrolledUp) return;
         programmaticScrollRef.current = false;
+      }
+
+      // Only the user scrolling up releases the pin. Content growth can push the
+      // bottom away without any upward move: our own stick's scroll event is
+      // dispatched in the next frame *before* ResizeObserver callbacks, so if
+      // the last item grew in between (e.g. an image loaded), this handler reads
+      // the post-growth distance. Releasing here would leave the growth
+      // unfollowed, because the ResizeObserver then sees `pinned === false`.
+      // With auto-scroll off nothing sticks, so keep reporting the real position.
+      if (enabledRef.current && pinnedRef.current && !atBottom && !movedUp) {
+        return;
       }
 
       setPinned(atBottom);
