@@ -14,6 +14,7 @@ import {
 import createBaseConfig from "./vite.config.ts";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import { playwright } from "@vitest/browser-playwright";
+import { resetPointer } from "./.storybook/vitest-commands.ts";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Plugin } from "vite";
@@ -107,6 +108,9 @@ export default defineConfig(async () => {
         // Keep in sync with vitest.storybook.config.ts — see the comment
         // there for why an explicit desktop viewport is required.
         viewport: { width: 1280, height: 720 },
+        // Server-side command used by the global afterEach in
+        // .storybook/vitest.setup.ts to park the real cursor off-screen.
+        commands: { resetPointer },
       },
       coverage: {
         exclude: [

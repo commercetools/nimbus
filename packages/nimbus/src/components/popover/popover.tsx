@@ -91,10 +91,3 @@ export const Popover = {
    */
   Content: PopoverContent,
 };
-
-// Internal exports for react-docgen
-export {
-  PopoverRoot as _PopoverRoot,
-  PopoverTrigger as _PopoverTrigger,
-  PopoverContent as _PopoverContent,
-};

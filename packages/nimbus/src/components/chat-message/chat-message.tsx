@@ -148,12 +148,3 @@ export const ChatMessage = {
    */
   Typing: ChatMessageTyping,
 };
-
-export {
-  ChatMessageRoot as _ChatMessageRoot,
-  ChatMessageAvatar as _ChatMessageAvatar,
-  ChatMessageBody as _ChatMessageBody,
-  ChatMessageActions as _ChatMessageActions,
-  ChatMessageMeta as _ChatMessageMeta,
-  ChatMessageTyping as _ChatMessageTyping,
-};

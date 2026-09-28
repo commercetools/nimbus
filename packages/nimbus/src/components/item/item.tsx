@@ -160,14 +160,3 @@ export const Item = {
    */
   Footer: ItemFooter,
 };
-
-export {
-  ItemRoot as _ItemRoot,
-  ItemHeader as _ItemHeader,
-  ItemMedia as _ItemMedia,
-  ItemContent as _ItemContent,
-  ItemTitle as _ItemTitle,
-  ItemDescription as _ItemDescription,
-  ItemActions as _ItemActions,
-  ItemFooter as _ItemFooter,
-};

@@ -39,7 +39,3 @@ export const Region = Object.assign(RegionTarget, {
    */
   Provider: RegionProvider,
 });
-
-// Underscore-prefixed re-exports for react-docgen-typescript prop-table
-// extraction. Consumers should use `Region` / `Region.Provider`.
-export { RegionTarget as _Region, RegionProvider as _RegionProvider };

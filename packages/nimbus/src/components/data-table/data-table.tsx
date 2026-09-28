@@ -1,4 +1,4 @@
-import { lazy, Suspense, useRef } from "react";
+import { useRef } from "react";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
 import {
@@ -10,32 +10,13 @@ import {
   DataTableCell,
   DataTableColumn,
   DataTableFooter,
+  DataTableManager,
   DataTableContext,
   useDataTableContext,
 } from "./components";
 import type { DataTableProps } from "./data-table.types";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "./data-table.messages";
-
-// Lazy-load the Manager (settings drawer) to keep Drawer, Tabs, DraggableList,
-// and SearchInput out of the core DataTable chunk. These heavy dependencies are
-// only needed when a consumer explicitly renders <DataTable.Manager />.
-const LazyManager = lazy(() => import("./components/data-table.manager.lazy"));
-
-/**
- * DataTable.Manager - Manager component for the data table
- *
- * Provides a settings drawer for column visibility and layout configuration.
- * Lazy-loaded so the heavy dependencies (Drawer, Tabs, DraggableList) are only
- * fetched when this component is rendered. The Suspense boundary lives here so
- * consumers do not need one of their own.
- */
-const DataTableManager: React.FC = () => (
-  <Suspense fallback={null}>
-    <LazyManager />
-  </Suspense>
-);
-DataTableManager.displayName = "DataTable.Manager";
 
 // Default DataTable component that provides the standard structure
 const DataTableBase = function DataTable<
@@ -242,23 +223,3 @@ export const DataTable = Object.assign(DataTableBase, {
    */
   useDataTableContext,
 });
-
-/**
- * todo: get rid of this, this is needed for the react-docgen-typescript script
- * that is parsing the typescript types for our documentation. The _ underscores
- * serve as a reminder that this exports are awkward and should not be used.
- */
-export {
-  DataTableRoot as _DataTableRoot,
-  DataTableTable as _DataTableTable,
-  DataTableHeader as _DataTableHeader,
-  DataTableBody as _DataTableBody,
-  DataTableRow as _DataTableRow,
-  DataTableCell as _DataTableCell,
-  DataTableColumn as _DataTableColumn,
-  DataTableFooter as _DataTableFooter,
-};
-// Docgen uses the source variable name as displayName → filename, so the
-// wrapper must be named DataTableManager (not DataTableManagerLazy) to
-// produce the expected DataTableManager.json type-data file.
-export { DataTableManager as _DataTableManager };
