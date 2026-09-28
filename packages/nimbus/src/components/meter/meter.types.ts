@@ -12,10 +12,18 @@ import type { NimbusColorPalette } from "@/type-utils";
 
 type MeterRecipeProps = {
   /**
-   * Size variant of the meter
+   * Thickness of the bar: `sm` (4px) for dense contexts like tables,
+   * `md` (8px) for standard content, `lg` (12px) when the meter is the main
+   * focus of the view
    * @default "md"
    */
   size?: SlotRecipeProps<"nimbusMeter">["size"];
+  /**
+   * Text style of the label, value and legend. `inherit` takes the text
+   * style of the surrounding content.
+   * @default follows `size`: `sm` → `xs`, `md` → `sm`, `lg` → `md`
+   */
+  textStyle?: SlotRecipeProps<"nimbusMeter">["textStyle"];
   /**
    * Layout configuration for label and value positioning
    * @default "stacked"

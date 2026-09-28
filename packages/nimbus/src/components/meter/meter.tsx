@@ -14,7 +14,7 @@ import {
   MeterLegendItemSlot,
   MeterLegendSwatchSlot,
 } from "./meter.slots";
-import { METER_SEGMENT_PALETTES } from "./constants";
+import { METER_DEFAULT_TEXT_STYLES, METER_SEGMENT_PALETTES } from "./constants";
 import { getMeterSegments } from "./utils";
 import type { MeterProps, MeterSegment } from "./meter.types";
 
@@ -48,12 +48,20 @@ export const Meter = (props: MeterProps) => {
     valueLabel,
     colorPalette = "primary",
     layout = "stacked",
+    size = "md",
+    // A responsive `size` has no single matching text style, so it uses the
+    // text style of the default size
+    textStyle = METER_DEFAULT_TEXT_STYLES[
+      typeof size === "string" ? size : "md"
+    ],
     ...rest
   } = props;
 
   const recipe = useSlotRecipe({ key: "nimbusMeter" });
   const [recipeProps, restWithoutRecipeProps] = recipe.splitVariantProps({
     layout,
+    size,
+    textStyle,
     ...rest,
   });
   const [styleProps, functionalProps] = extractStyleProps(

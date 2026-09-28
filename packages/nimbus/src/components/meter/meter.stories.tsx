@@ -13,7 +13,7 @@ import {
 import { within, expect, fn, userEvent } from "storybook/test";
 import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 
-const sizes: MeterProps["size"][] = ["2xs", "md"];
+const sizes: MeterProps["size"][] = ["sm", "md", "lg"];
 const layouts: MeterProps["layout"][] = ["minimal", "inline", "stacked"];
 const statePalettes = ["primary", "positive", "warning", "critical"] as const;
 
@@ -550,6 +550,13 @@ export const Sizes: Story = {
             {size as string}
           </Text>
           <Stack direction="column" flexGrow="1" gap="400" alignItems="stretch">
+            <Meter
+              value={60}
+              label="Usage"
+              size={size}
+              layout="minimal"
+              aria-label="Usage"
+            />
             <Meter value={60} label="Usage" size={size} />
             <Meter
               label="Storage"
@@ -560,6 +567,56 @@ export const Sizes: Story = {
           </Stack>
         </Flex>
       ))}
+    </Stack>
+  ),
+};
+
+/**
+ * `textStyle="inherit"` takes the font size of the surrounding text, so
+ * the meter fits into content like a table cell, a card, or a heading.
+ */
+export const TextStyleInherit: Story = {
+  render: () => (
+    <Stack direction="column" alignItems="stretch" width="100%" gap="800">
+      {(["xs", "sm", "md", "lg", "2xl"] as const).map((textStyle) => (
+        <Box key={textStyle} textStyle={textStyle}>
+          <Text textStyle={textStyle} fontWeight="600" marginBottom="0.5em">
+            Text style {textStyle}
+          </Text>
+          <Meter
+            textStyle="inherit"
+            label="Storage"
+            formatOptions={gigabytes}
+            segments={storageSegments}
+          />
+        </Box>
+      ))}
+      <Box textStyle="sm">
+        <Text textStyle="sm" fontWeight="600" marginBottom="0.5em">
+          In a list (textStyle sm, minimal layout)
+        </Text>
+        {[
+          ["Warehouse Berlin", 82],
+          ["Warehouse Munich", 45],
+          ["Warehouse Hamburg", 12],
+        ].map(([name, value]) => (
+          <Flex key={name} gap="400" alignItems="center" paddingBlock="100">
+            <Text textStyle="sm" minWidth="20ch">
+              {name}
+            </Text>
+            <Meter
+              textStyle="inherit"
+              layout="minimal"
+              aria-label={`${name} capacity`}
+              value={value as number}
+              maxWidth="160px"
+            />
+            <Text textStyle="sm" fontVariantNumeric="tabular-nums">
+              {value}%
+            </Text>
+          </Flex>
+        ))}
+      </Box>
     </Stack>
   ),
 };
@@ -610,7 +667,7 @@ export const ColorPalettes: Story = {
   render: () => (
     <DisplayColorPalettes>
       {(palette) => (
-        <Meter value={70} label={palette} colorPalette={palette} size="2xs" />
+        <Meter value={70} label={palette} colorPalette={palette} size="sm" />
       )}
     </DisplayColorPalettes>
   ),

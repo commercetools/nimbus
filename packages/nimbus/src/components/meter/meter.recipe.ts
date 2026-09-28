@@ -3,6 +3,10 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 /**
  * Recipe configuration for the Meter component.
  * Defines the styling variants and base styles using Chakra UI's slot recipe system.
+ *
+ * Two independent axes: `size` sets the bar (height, radius, segment gap) in
+ * fixed tokens, and `textStyle` sets the text. Spacing and the legend swatch
+ * are in `em`, so they follow the text.
  */
 export const meterSlotRecipe = defineSlotRecipe({
   className: "nimbus-meter",
@@ -24,39 +28,37 @@ export const meterSlotRecipe = defineSlotRecipe({
     root: {
       "--meter-text-color": "{colors.neutral.12}",
       "--meter-track-bg": "{colors.neutralAlpha.3}",
+      "--meter-swatch-size": "round(0.625em, 1px)",
       position: "relative",
       width: "100%",
       display: "flex",
       flexDirection: "column",
-      gap: "200",
+      gap: "0.5em",
+      color: "var(--meter-text-color)",
     },
 
     header: {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "baseline",
-      gap: "200",
+      gap: "0.5em",
     },
 
-    label: {
-      color: "var(--meter-text-color)",
-      fontSize: "var(--meter-font-size)",
-      lineHeight: "var(--meter-line-height)",
-    },
+    label: {},
 
     value: {
-      color: "var(--meter-text-color)",
-      fontSize: "var(--meter-font-size)",
-      lineHeight: "var(--meter-line-height)",
       fontVariantNumeric: "tabular-nums",
       // Keeps the value at the end of the header, also without a label
       marginInlineStart: "auto",
+      // A value such as "62 GB" must not break onto two lines
+      whiteSpace: "nowrap",
+      flexShrink: 0,
     },
 
     track: {
       display: "flex",
       // Gap keeps adjacent segments distinguishable, even with similar colors
-      gap: "50",
+      gap: "var(--meter-segment-gap)",
       backgroundColor: "var(--meter-track-bg)",
       borderRadius: "var(--meter-radius)",
       overflow: "hidden",
@@ -67,7 +69,7 @@ export const meterSlotRecipe = defineSlotRecipe({
     segment: {
       backgroundColor: "colorPalette.9",
       height: "100%",
-      // Lets segments give up the gap space when they fill the whole track
+      // Lets segments give up gap space to fill the whole track
       flexShrink: 1,
       minWidth: 0,
       borderRadius: "var(--meter-radius)",
@@ -82,8 +84,8 @@ export const meterSlotRecipe = defineSlotRecipe({
     legend: {
       display: "flex",
       flexWrap: "wrap",
-      columnGap: "400",
-      rowGap: "100",
+      columnGap: "1em",
+      rowGap: "0.25em",
       listStyle: "none",
       margin: 0,
       padding: 0,
@@ -92,10 +94,7 @@ export const meterSlotRecipe = defineSlotRecipe({
     legendItem: {
       display: "inline-flex",
       alignItems: "center",
-      gap: "100",
-      color: "var(--meter-text-color)",
-      fontSize: "var(--meter-font-size)",
-      lineHeight: "var(--meter-line-height)",
+      gap: "0.375em",
     },
 
     legendSwatch: {
@@ -103,32 +102,49 @@ export const meterSlotRecipe = defineSlotRecipe({
       flexShrink: 0,
       width: "var(--meter-swatch-size)",
       height: "var(--meter-swatch-size)",
-      borderRadius: "full",
+      borderRadius: "{radii.50}",
       backgroundColor: "colorPalette.9",
     },
   },
 
   // Available variants for customizing the component's appearance
   variants: {
+    // Bar thickness only; the text is set by `textStyle`
     size: {
-      "2xs": {
+      // Dense contexts: tables, sidebars, several meters in a card
+      sm: {
         root: {
-          "--meter-radius": "{radii.300}",
-          "--meter-font-size": "{fontSizes.350}",
-          "--meter-height": "{sizes.300}",
-          "--meter-line-height": "{fontSizes.500}",
-          "--meter-swatch-size": "{sizes.200}",
+          "--meter-height": "{spacing.100}",
+          "--meter-radius": "{radii.50}",
+          "--meter-segment-gap": "{spacing.25}",
         },
       },
+      // Standard page content
       md: {
         root: {
-          "--meter-radius": "{radii.600}",
-          "--meter-font-size": "{fontSizes.400}",
-          "--meter-height": "{sizes.600}",
-          "--meter-line-height": "{fontSizes.600}",
-          "--meter-swatch-size": "{sizes.300}",
+          "--meter-height": "{spacing.200}",
+          "--meter-radius": "{radii.50}",
+          "--meter-segment-gap": "{spacing.50}",
         },
       },
+      // The meter is the main focus of the view
+      lg: {
+        root: {
+          "--meter-height": "{spacing.300}",
+          "--meter-radius": "{radii.50}",
+          "--meter-segment-gap": "{spacing.50}",
+        },
+      },
+    },
+
+    // Text of label, value and legend; the default follows `size` (see
+    // METER_DEFAULT_TEXT_STYLES)
+    textStyle: {
+      xs: { root: { textStyle: "xs" } },
+      sm: { root: { textStyle: "sm" } },
+      md: { root: { textStyle: "md" } },
+      // Takes font size and line height from the surrounding text
+      inherit: { root: {} },
     },
 
     layout: {
@@ -142,11 +158,18 @@ export const meterSlotRecipe = defineSlotRecipe({
           flexDirection: "row",
           flexWrap: "wrap",
           alignItems: "center",
-          columnGap: "400",
-          rowGap: "200",
+          columnGap: "1em",
+          rowGap: "0.5em",
         },
         track: {
           flex: 1,
+        },
+        value: {
+          // With tabular numbers every digit is 1ch wide, so the widest
+          // percent ("100 %" with a space, as in German) fits in 5ch. Meters
+          // in a column then get the same track width. Longer values grow.
+          minWidth: "5ch",
+          textAlign: "end",
         },
         legend: {
           flexBasis: "100%",
@@ -155,7 +178,6 @@ export const meterSlotRecipe = defineSlotRecipe({
       stacked: {
         root: {
           flexDirection: "column",
-          gap: "200",
         },
       },
     },

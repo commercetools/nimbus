@@ -71,14 +71,24 @@ const App = () => (
 
 ### Size
 
-Meter has two sizes: the default size is medium (`md`) and a smaller size
-(`2xs`).
+The `size` sets the thickness of the bar:
+
+- **Small (`sm`)**: for dense places, such as tables, sidebars or several meters
+  in one card.
+- **Medium (`md`)**: the default, for standard page content.
+- **Large (`lg`)**: when the meter is the main focus of the view.
+
+The text size follows the bar size. To match the text around the meter, set
+`textStyle` (`xs`, `sm`, `md`), or use `inherit` to take the surrounding text
+style.
 
 ```jsx live
 const App = () => (
   <Stack direction="column" gap="400" alignItems="stretch">
-    <Meter value={60} label="Extra small (2xs)" size="2xs" />
+    <Meter value={60} label="Small (sm)" size="sm" />
     <Meter value={60} label="Medium (default)" size="md" />
+    <Meter value={60} label="Large (lg)" size="lg" />
+    <Meter value={60} label="Small bar, medium text" size="sm" textStyle="md" />
   </Stack>
 );
 ```

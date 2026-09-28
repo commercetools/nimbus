@@ -106,8 +106,20 @@ Aria's own (`useLabel`), so the component does not add a second one.
 Slots:
 `root, header, label, value, track, segment, legend, legendItem, legendSwatch`
 (`header` holds label and value in the stacked and minimal layouts; in minimal
-it is hidden but still names the meter via `aria-labelledby`). Sizes and layouts
-copy the `ProgressBar` CSS variables (`--meter-height`, `--meter-radius`, …).
+it is hidden but still names the meter via `aria-labelledby`). Layouts copy
+the `ProgressBar` CSS variables (`--meter-height`, `--meter-radius`, …).
+
+Sizing uses two independent axes. `size` (`sm` 4px, `md` 8px, `lg` 12px, all
+spacing tokens, corner radius `radii.50` = 2px) sets only the bar; `textStyle`
+(`xs`, `sm`, `md`, `inherit`) sets only the text, and spacing and legend
+swatches are in `em` so they follow the text. Without `textStyle`, the text
+follows `size` (`sm` → `xs`, `md` → `sm`, `lg` → `md`). Three bar sizes follow
+the three uses named in other systems' guidance (GitLab Pajamas: dense layouts
+such as a "table row or narrow sidebar widget", standard content, and the
+"primary focal point"; Spectrum: "Use the small size … in tables or cards").
+Other systems ship 2–4 bar sizes (Spectrum Meter 2, Carbon 2, Primer 3,
+Spectrum 2 4). A first prototype with 5 × 6 combinations was reduced to 3 × 4,
+because adding values later is not breaking but removing them is.
 Segment fill: `colorPalette.9` (the regular solid step, same as `ProgressBar`),
 flat, with a width transition that is removed under `prefers-reduced-motion`.
 Step 11 was used first to reach 3:1 against the track for every palette; it

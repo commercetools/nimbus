@@ -15,3 +15,13 @@ export const METER_SEGMENT_PALETTES = [
   "blue",
   "brown",
 ] as const satisfies readonly NimbusColorPalette[];
+
+/**
+ * Text style used for each bar size when `textStyle` is not set, so a meter
+ * without `textStyle` always gets a matching pair.
+ */
+export const METER_DEFAULT_TEXT_STYLES = {
+  sm: "xs",
+  md: "sm",
+  lg: "md",
+} as const;

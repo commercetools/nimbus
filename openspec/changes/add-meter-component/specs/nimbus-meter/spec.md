@@ -201,9 +201,30 @@ text carry it).
 
 ### Requirement: Sizes and layouts
 
-The component SHALL support `size` (`2xs` | `md`, default `md`) and `layout`
-(`minimal` | `inline` | `stacked`, default `stacked`) with the same meaning as
-`ProgressBar`.
+The component SHALL support two independent props: `size` (`sm` | `md` | `lg`,
+default `md`) sets only the bar thickness (4px, 8px, 12px), and `textStyle`
+(`xs` | `sm` | `md` | `inherit`) sets only the text of label, value and legend.
+When `textStyle` is not set, it SHALL follow `size` (`sm` → `xs`, `md` → `sm`,
+`lg` → `md`). `inherit` SHALL take the text style of the surrounding content.
+The component SHALL support `layout` (`minimal` | `inline` | `stacked`, default
+`stacked`) with the same meaning as `ProgressBar`.
+
+#### Scenario: Default text style follows size
+
+- **WHEN** `size="lg"` and no `textStyle` is provided
+- **THEN** the bar SHALL be 12px high and the text SHALL use text style `md`
+
+#### Scenario: Independent text style
+
+- **WHEN** `size="sm"` and `textStyle="md"`
+- **THEN** the bar SHALL be 4px high and the text SHALL use text style `md`
+
+#### Scenario: Inherited text style
+
+- **WHEN** `textStyle="inherit"` and the Meter is inside text with another text
+  style
+- **THEN** label, value and legend SHALL use the font size and line height of
+  the surrounding text
 
 #### Scenario: Stacked layout
 

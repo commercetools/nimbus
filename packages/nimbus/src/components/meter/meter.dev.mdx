@@ -25,14 +25,21 @@ const App = () => <Meter value={40} label="CPU usage" />;
 
 ### Size options
 
-The `2xs` and `md` (default) size variants are available to match your interface
-density:
+`size` sets only the bar thickness: `sm` (4px), `md` (8px, default) and `lg`
+(12px). `textStyle` sets only the text of label, value and legend: `xs`, `sm`,
+`md`, or `inherit` to take the text style of the surrounding content. Without
+`textStyle`, the text follows `size` (`sm` → `xs`, `md` → `sm`, `lg` → `md`).
 
 ```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
-    <Meter value={60} size="2xs" label="Extra small (2xs)" />
+    <Meter value={60} size="sm" label="Small (sm)" />
     <Meter value={60} size="md" label="Medium (md)" />
+    <Meter value={60} size="lg" label="Large (lg)" />
+    <Meter value={60} size="sm" textStyle="md" label="Small bar, text md" />
+    <Box textStyle="lg">
+      <Meter value={60} textStyle="inherit" label="Inherits text style lg" />
+    </Box>
   </Stack>
 );
 ```
