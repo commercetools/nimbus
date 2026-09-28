@@ -150,8 +150,8 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
         },
         scrollbar: {
           bg: "bg/60",
-          backdropFilter: "blur(8px)",
-          WebkitBackdropFilter: "blur(8px)",
+          backdropFilter: "blur({blurs.200})",
+          WebkitBackdropFilter: "blur({blurs.200})",
         },
       },
     },
