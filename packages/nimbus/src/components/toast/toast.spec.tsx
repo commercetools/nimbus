@@ -501,22 +501,17 @@ describe("ToastManager", () => {
     });
 
     it("Preserves call order across create, update, and dismiss", async () => {
-      const calls: string[] = [];
-      mockToasterInstance.create.mockImplementation(() => calls.push("create"));
-      mockToasterInstance.update.mockImplementation(() => calls.push("update"));
-      mockToasterInstance.dismiss.mockImplementation(() =>
-        calls.push("dismiss")
-      );
-
       const id = toast({ title: "Ordered" });
       toast.update(id, { title: "Updated" });
       toast.dismiss(id);
       await flushMicrotasks();
 
-      expect(calls).toEqual(["create", "update", "dismiss"]);
-
-      mockToasterInstance.update.mockReset();
-      mockToasterInstance.dismiss.mockReset();
+      const [createOrder] = mockToasterInstance.create.mock.invocationCallOrder;
+      const [updateOrder] = mockToasterInstance.update.mock.invocationCallOrder;
+      const [dismissOrder] =
+        mockToasterInstance.dismiss.mock.invocationCallOrder;
+      expect(createOrder).toBeLessThan(updateOrder);
+      expect(updateOrder).toBeLessThan(dismissOrder);
     });
   });
 
