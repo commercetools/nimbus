@@ -30,7 +30,7 @@ describe("ScrollArea - Basic usage", () => {
   it("renders children inside a scrollable container", () => {
     render(
       <NimbusProvider>
-        <ScrollArea maxH="200px">
+        <ScrollArea maxH="5200">
           <OverflowingContent />
         </ScrollArea>
       </NimbusProvider>
@@ -42,7 +42,7 @@ describe("ScrollArea - Basic usage", () => {
   it("renders with always-visible scrollbars", () => {
     const { container } = render(
       <NimbusProvider>
-        <ScrollArea maxH="200px" variant="always">
+        <ScrollArea maxH="5200" scrollbarVisibility="always">
           <OverflowingContent />
         </ScrollArea>
       </NimbusProvider>
@@ -64,7 +64,7 @@ describe("ScrollArea - Orientation", () => {
   it("renders horizontal scrollbar", () => {
     const { container } = render(
       <NimbusProvider>
-        <ScrollArea maxW="300px" orientation="horizontal">
+        <ScrollArea maxW="7200" orientation="horizontal">
           <Box whiteSpace="nowrap">
             <Text>{"Wide content ".repeat(30)}</Text>
           </Box>
@@ -79,7 +79,7 @@ describe("ScrollArea - Orientation", () => {
   it("renders both axes with a corner", () => {
     const { container } = render(
       <NimbusProvider>
-        <ScrollArea maxH="200px" maxW="300px" orientation="both">
+        <ScrollArea maxH="5200" maxW="7200" orientation="both">
           <Box whiteSpace="nowrap">
             <OverflowingContent />
           </Box>
@@ -105,7 +105,7 @@ describe("ScrollArea - Programmatic access", () => {
 
     render(
       <NimbusProvider>
-        <ScrollArea maxH="200px" viewportRef={ref}>
+        <ScrollArea maxH="5200" viewportRef={ref}>
           <OverflowingContent />
         </ScrollArea>
       </NimbusProvider>
@@ -119,7 +119,7 @@ describe("ScrollArea - Programmatic access", () => {
     const ExternalControl = () => {
       const scrollArea = useScrollArea();
       return (
-        <ScrollArea maxH="200px" value={scrollArea}>
+        <ScrollArea maxH="5200" value={scrollArea}>
           <OverflowingContent />
         </ScrollArea>
       );
@@ -145,7 +145,7 @@ describe("ScrollArea - Content padding", () => {
   it("renders padded content via a nested Box", () => {
     render(
       <NimbusProvider>
-        <ScrollArea maxH="200px">
+        <ScrollArea maxH="5200">
           <Box p="200">
             <OverflowingContent />
           </Box>

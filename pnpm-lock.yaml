@@ -299,8 +299,8 @@ catalogs:
       specifier: ^2.0.3
       version: 2.0.3
     dotenv:
-      specifier: ^17.4.2
-      version: 17.4.2
+      specifier: ^18.0.0
+      version: 18.0.3
     escape-html:
       specifier: ^1.0.3
       version: 1.0.3
@@ -399,7 +399,7 @@ importers:
         version: 2.9.0(supports-color@8.1.1)
       dotenv:
         specifier: catalog:utils
-        version: 17.4.2
+        version: 18.0.3
       eslint:
         specifier: catalog:tooling
         version: 10.10.0(supports-color@8.1.1)
@@ -5634,6 +5634,11 @@ packages:
   dotenv@17.4.2:
     resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
     engines: {node: '>=12'}
+
+  dotenv@18.0.3:
+    resolution: {integrity: sha512-/8CJTyL817qPnfbQrJgOEcrU3fDrJkRIoXBE566wHuvIXKOCHUZhPqGPbCPi9SogjdGnreF0TlvnTgK6J/8zpA==}
+    engines: {node: '>=12'}
+    hasBin: true
 
   dotenv@8.6.0:
     resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
@@ -15799,6 +15804,8 @@ snapshots:
   dotenv@16.6.1: {}
 
   dotenv@17.4.2: {}
+
+  dotenv@18.0.3: {}
 
   dotenv@8.6.0: {}
 
