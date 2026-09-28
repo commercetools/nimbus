@@ -12,6 +12,13 @@ import {
   ALL_PLACEMENTS,
 } from "../constants";
 
+/**
+ * Per-module prefix for generated toast IDs. Keeps IDs unique when more than
+ * one copy of this module is loaded on a page (e.g. micro-frontends), since
+ * each copy has its own counter.
+ */
+const ID_PREFIX = `nimbus-toast:${Math.random().toString(36).slice(2, 8)}`;
+
 /** Counter for generating unique toast IDs. */
 let idCounter = 0;
 
@@ -108,7 +115,7 @@ class ToastManager implements ToastManagerApi {
 
     // Generate the ID up front so it can be returned synchronously while
     // the actual store mutation is deferred.
-    const id = `nimbus-toast:${++idCounter}`;
+    const id = `${ID_PREFIX}:${++idCounter}`;
 
     const toastOptions = {
       ...restOptions,
@@ -273,8 +280,10 @@ class ToastManager implements ToastManagerApi {
   /**
    * Reset manager state (for testing only).
    *
-   * Clears the ID-to-placement map and resets all underlying toaster
-   * instances so tests start from a clean slate.
+   * Clears the ID-to-placement map only; the underlying toaster instances
+   * are left untouched. `idCounter` is deliberately not reset: toasts may
+   * still exist in a toaster store (or be pending in a microtask), and a
+   * reused ID would update or dismiss that toast instead of creating a new one.
    */
   public reset(): void {
     this.toastPlacements.clear();
