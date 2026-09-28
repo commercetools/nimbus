@@ -6010,6 +6010,16 @@ export const PortalPositioningInDialog: Story = {
       await waitFor(() => {
         expect(comboboxInput.value).toBe("Koala");
       });
+
+      // The synthetic option click blurs the input (user-event moves focus to
+      // the option's nearest focusable ancestor, and there is none). The
+      // Dialog's FocusScope restores focus one animation frame later. The
+      // Escape below only reaches the Dialog's handler while focus is inside
+      // it, so wait for the restore — on a slow runner the frame can land
+      // after the Escape, leaving the dialog open.
+      await waitFor(() => {
+        expect(comboboxInput).toHaveFocus();
+      });
     });
 
     await step("Close dialog and verify cleanup", async () => {
