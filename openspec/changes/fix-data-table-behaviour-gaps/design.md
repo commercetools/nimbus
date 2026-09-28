@@ -186,3 +186,15 @@ storage is involved.
   with one. The narrow case meets WCAG 2.2 SC 2.5.8 (24×24) exactly, with no
   margin, so it is not widened. The story fails if a later change (for example
   the `size` prop in #2007) drops it below 24 px.
+
+## Found during the keyboard walkthrough (not fixed here)
+
+Every row with expandable content always renders its nested row, hidden with
+`display: none` while collapsed (`data-table.recipe.ts`,
+`&[data-nested-row-expanded='false']`). React Aria keeps those rows in the
+collection, so ArrowDown / ArrowUp first moves React Aria's focus onto the
+hidden row, which the browser cannot focus. For the user, one arrow press
+per collapsed row appears to do nothing. This exists on the base branch and
+this change does not touch it; it needs its own fix (for example, not rendering
+the nested row while collapsed).
+

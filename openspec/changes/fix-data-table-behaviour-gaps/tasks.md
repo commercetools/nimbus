@@ -96,6 +96,6 @@ it once and see it fail, then fix. Paths are relative to
 - [x] 6.2 `pnpm --filter @commercetools/nimbus typecheck:dev` shows no new errors
 - [x] 6.3 `pnpm test:dev` for `data-table.stories.tsx`, `data-table.docs.spec.tsx`
       and `draggable-list` green; `pnpm lint` clean
-- [ ] 6.4 Keyboard-only walkthrough in Storybook
-- [ ] 6.5 Update FEC-1346: corrections to items 3 and 6, Enter instead of
+- [x] 6.4 Keyboard-only walkthrough in Storybook
+- [x] 6.5 Update FEC-1346: corrections to items 3 and 6, Enter instead of
       "Enter and Space", the `row.isDisabled` finding, the measured target size
