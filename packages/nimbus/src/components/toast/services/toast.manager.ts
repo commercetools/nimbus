@@ -13,6 +13,31 @@ import {
 } from "../constants";
 
 /**
+ * Per-module prefix for generated toast IDs. Keeps IDs unique when more than
+ * one copy of this module is loaded on a page (e.g. micro-frontends), since
+ * each copy has its own counter.
+ */
+const ID_PREFIX = `nimbus-toast:${Math.random().toString(36).slice(2, 8)}`;
+
+/** Counter for generating unique toast IDs. */
+let idCounter = 0;
+
+/**
+ * Defer a toaster store mutation to a microtask.
+ *
+ * zag-js's toast group machine keeps its toast list in a `sync: true`
+ * bindable, so every store change (create/update/dismiss/remove) triggers
+ * `flushSync` synchronously. When `toast()` is called from a React lifecycle
+ * (e.g. `useEffect`), React warns: "flushSync was called from inside a
+ * lifecycle method". Running the mutation in a microtask moves it outside
+ * React's render/commit phase. Microtasks run in FIFO order, so the relative
+ * order of create → update → dismiss calls is preserved.
+ */
+function schedule(fn: () => void): void {
+  queueMicrotask(fn);
+}
+
+/**
  * Map action to the shape expected by the internal toast infrastructure.
  */
 function mapAction(
@@ -88,8 +113,13 @@ class ToastManager implements ToastManagerApi {
     } = safeOptions;
     const action = mapAction(consumerAction);
 
+    // Generate the ID up front so it can be returned synchronously while
+    // the actual store mutation is deferred.
+    const id = `${ID_PREFIX}:${++idCounter}`;
+
     const toastOptions = {
       ...restOptions,
+      id,
       action,
       duration,
       meta: {
@@ -100,8 +130,8 @@ class ToastManager implements ToastManagerApi {
       },
     };
 
-    const id = toaster.create(toastOptions);
     this.toastPlacements.set(id, placement);
+    schedule(() => toaster.create(toastOptions));
 
     return id;
   }
@@ -131,11 +161,12 @@ class ToastManager implements ToastManagerApi {
       if (updateAriaLive !== undefined)
         metaUpdate["aria-live"] = updateAriaLive;
 
-      toaster.update(id, {
+      const updateOptions = {
         ...rest,
         action: mapAction(action),
         ...(Object.keys(metaUpdate).length > 0 ? { meta: metaUpdate } : {}),
-      });
+      };
+      schedule(() => toaster.update(id, updateOptions));
     }
   }
 
@@ -148,14 +179,14 @@ class ToastManager implements ToastManagerApi {
       const placement = this.toastPlacements.get(id) || DEFAULT_PLACEMENT;
       const toaster = getToaster(placement);
       if (toaster) {
-        toaster.dismiss(id);
+        schedule(() => toaster.dismiss(id));
       }
       this.toastPlacements.delete(id);
     } else {
       ALL_PLACEMENTS.forEach((placement) => {
         const toaster = getToaster(placement);
         if (toaster) {
-          toaster.dismiss();
+          schedule(() => toaster.dismiss());
         }
       });
       this.toastPlacements.clear();
@@ -171,14 +202,14 @@ class ToastManager implements ToastManagerApi {
       const placement = this.toastPlacements.get(id) || DEFAULT_PLACEMENT;
       const toaster = getToaster(placement);
       if (toaster) {
-        toaster.remove(id);
+        schedule(() => toaster.remove(id));
       }
       this.toastPlacements.delete(id);
     } else {
       ALL_PLACEMENTS.forEach((placement) => {
         const toaster = getToaster(placement);
         if (toaster) {
-          toaster.remove();
+          schedule(() => toaster.remove());
         }
       });
       this.toastPlacements.clear();
@@ -242,15 +273,17 @@ class ToastManager implements ToastManagerApi {
         success: mapState(options.success),
         error: mapState(options.error),
       };
-      toaster.promise(promise, mapped);
+      schedule(() => toaster.promise(promise, mapped));
     }
   }
 
   /**
    * Reset manager state (for testing only).
    *
-   * Clears the ID-to-placement map and resets all underlying toaster
-   * instances so tests start from a clean slate.
+   * Clears the ID-to-placement map only; the underlying toaster instances
+   * are left untouched. `idCounter` is deliberately not reset: toasts may
+   * still exist in a toaster store (or be pending in a microtask), and a
+   * reused ID would update or dismiss that toast instead of creating a new one.
    */
   public reset(): void {
     this.toastPlacements.clear();

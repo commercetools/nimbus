@@ -13,11 +13,12 @@
  * - Reduced motion
  * - Keyboard navigation
  * - Closable control
+ * - Calls from React lifecycles (useEffect)
  */
 
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { userEvent, within, expect, waitFor, fn } from "storybook/test";
+import { userEvent, within, expect, waitFor, fn, spyOn } from "storybook/test";
 import {
   Button,
   Dialog,
@@ -1273,6 +1274,77 @@ export const ProgrammaticUpdate: Story = {
         expect(body.queryByText("Initial title")).not.toBeInTheDocument();
       });
     });
+  },
+};
+
+/**
+ * Calls From useEffect
+ * Regression test: toast(), toast.update(), toast.dismiss() and toast.remove()
+ * called from inside a React lifecycle must not trigger React's "flushSync
+ * was called from inside a lifecycle method" warning.
+ */
+export const CallsFromUseEffect: Story = {
+  render: function UseEffectToastDemo() {
+    const [count, setCount] = React.useState(0);
+
+    React.useEffect(() => {
+      if (count === 0) return;
+      if (count === 3) {
+        toast.remove();
+        return;
+      }
+      const id = toast({
+        title: `${count} changes pending`,
+        duration: Infinity,
+      });
+      toast.update(id, { title: `${count} changes pending (updated)` });
+      if (count === 2) toast.dismiss(id);
+    }, [count]);
+
+    return (
+      <Button onPress={() => setCount((c) => c + 1)}>Increment count</Button>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    await clearToasts();
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+    const button = canvas.getByRole("button", { name: /Increment count/i });
+    const consoleErrorSpy = spyOn(console, "error");
+
+    try {
+      await step("toast() and toast.update() from useEffect", async () => {
+        await userEvent.click(button);
+        await expect(
+          await body.findByText("1 changes pending (updated)")
+        ).toBeInTheDocument();
+      });
+
+      await step("toast.dismiss() from useEffect", async () => {
+        await userEvent.click(button);
+        await expect(
+          await body.findByText("2 changes pending (updated)")
+        ).toBeInTheDocument();
+      });
+
+      await step("toast.remove() from useEffect", async () => {
+        await userEvent.click(button);
+        await waitFor(() =>
+          expect(
+            body.queryByText("1 changes pending (updated)")
+          ).not.toBeInTheDocument()
+        );
+      });
+
+      await step("No flushSync warning is logged", async () => {
+        const flushSyncWarnings = consoleErrorSpy.mock.calls.filter((args) =>
+          args.some((arg) => String(arg).includes("flushSync"))
+        );
+        await expect(flushSyncWarnings).toEqual([]);
+      });
+    } finally {
+      consoleErrorSpy.mockRestore();
+    }
   },
 };
 
