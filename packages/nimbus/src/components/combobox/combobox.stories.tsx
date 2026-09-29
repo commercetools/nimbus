@@ -13,13 +13,13 @@ import {
 import { Search, Tune } from "@commercetools/nimbus-icons";
 import { ReactProfilerWrapper } from "@github-ui/storybook-addon-performance-panel/components";
 import { ComboBox } from "./combobox";
-import { type SimpleOption, simpleOptions } from "./utils/combobox.test-data";
 import {
-  ComposedComboBox,
   type Pokemon,
-  PokemonOption,
+  type SimpleOption,
   createMockAsyncLoad,
-} from "./utils/combobox.test-utils";
+  simpleOptions,
+} from "./utils/combobox.test-data";
+import { ComposedComboBox, PokemonOption } from "./utils/combobox.test-utils";
 
 // Helper functions to reduce test verbosity - should be here since storybook has problems with importing RTL methods from other files
 
