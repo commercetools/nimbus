@@ -118,6 +118,32 @@ export const DataTableRoot = function DataTableRoot<
     };
   }, []);
 
+  // While a column is being resized, keep its right edge in view. Once the
+  // table is wider than its container, the edge would otherwise move under
+  // the frozen pin column or out of the visible area, where the mouse can no
+  // longer reach its resize handle. A ResizeObserver runs after the browser
+  // has laid out the new width and before it paints.
+  useEffect(() => {
+    const el = localRef.current;
+    const table = el?.querySelector("table");
+    if (!el || !table) return;
+
+    const keepResizedEdgeInView = () => {
+      const column = el.querySelector("[data-resizing='true']")?.closest("th");
+      if (!column) return;
+      const pinColumn = el.querySelector("th.pin-rows-column-header");
+      const visibleRight = pinColumn
+        ? pinColumn.getBoundingClientRect().left
+        : el.getBoundingClientRect().left + el.clientLeft + el.clientWidth;
+      const hiddenWidth = column.getBoundingClientRect().right - visibleRight;
+      if (hiddenWidth > 0) el.scrollLeft += hiddenWidth;
+    };
+
+    const ro = new ResizeObserver(keepResizedEdgeInView);
+    ro.observe(table);
+    return () => ro.disconnect();
+  }, []);
+
   const [internalSortDescriptor, setInternalSortDescriptor] = useState<
     SortDescriptor | undefined
   >(defaultSortDescriptor);

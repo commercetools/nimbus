@@ -51,6 +51,10 @@ were accepted but ignored now work.
 - **Changed:** if every data column has a fixed pixel width, the pin column
   fills the rest of the table width instead of leaving it empty. The pin button
   stays centered in the column.
+- **Fixed:** when a column is resized wider than the table can show, the table
+  scrolls along, so the edge you are dragging stays in view. Before, it moved
+  under the pin column or out of view, and its resize handle could no longer be
+  reached with the mouse.
 - **Deprecated:** `nestedKey`. Use `renderNestedContent`, which receives the
   row: `renderNestedContent={(row) => row.children}`.
 

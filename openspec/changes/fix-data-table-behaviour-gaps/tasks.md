@@ -152,3 +152,8 @@ it once and see it fail, then fix. Paths are relative to
       `defaultWidth` (`0.001fr`) instead of a fixed 72px, so it takes free space
       only when no other column can
 - [x] 11.3 `row.tsx`: center the pin button in its cell, like the header icon
+- [x] 11.4 Story step: while the last data column is dragged wider, its right
+      edge stays left of the pin column and the table scrolls
+- [x] 11.5 `root.tsx`: a `ResizeObserver` on the table scrolls the container
+      while a column is resizing, so the dragged edge never moves under the pin
+      column or out of the visible area

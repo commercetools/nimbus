@@ -8285,8 +8285,15 @@ export const HeaderFocusRingAndStickyHeader: Story = {
   },
 };
 
-/** Drags a column's resize handle horizontally by `dx` pixels. */
-const dragColumnResizer = async (columnHeader: HTMLElement, dx: number) => {
+/**
+ * Drags a column's resize handle horizontally by `dx` pixels. `whileHeld`
+ * runs after the move and before the mouse button is released.
+ */
+const dragColumnResizer = async (
+  columnHeader: HTMLElement,
+  dx: number,
+  whileHeld?: () => Promise<void>
+) => {
   const handle = columnHeader.querySelector(
     ".react-aria-ColumnResizer > *"
   ) as HTMLElement;
@@ -8303,6 +8310,9 @@ const dragColumnResizer = async (columnHeader: HTMLElement, dx: number) => {
       target: handle,
       coords: { clientX: x + dx, clientY: y, pageX: x + dx, pageY: y },
     },
+  ]);
+  await whileHeld?.();
+  await userEvent.pointer([
     {
       keys: "[/MouseLeft]",
       target: handle,
@@ -8376,5 +8386,23 @@ export const PinColumnFillsSpaceAfterResize: Story = {
       );
       expect(widthOf(header(/Pin rows/))).toBe(72);
     });
+
+    await step(
+      "The dragged edge stays in view, left of the pin column",
+      async () => {
+        const edgeIsVisible = () =>
+          expect(
+            Math.round(header(/^Role/).getBoundingClientRect().right)
+          ).toBeLessThanOrEqual(
+            Math.round(header(/Pin rows/).getBoundingClientRect().left) + 1
+          );
+        container.scrollLeft = 0;
+        await dragColumnResizer(header(/^Role/), 100, async () => {
+          await waitFor(edgeIsVisible);
+        });
+        expect(container.scrollLeft).toBeGreaterThan(0);
+        edgeIsVisible();
+      }
+    );
   },
 };
