@@ -17,33 +17,54 @@ const stickyBgOverlap = {
   },
 } as const;
 
+// A layer covering a row, cell or column header, drawn above the frozen
+// (sticky) cells so their backgrounds cannot hide it. The focus ring and the
+// pinned-row outline share it and use different properties (`outline` and
+// `box-shadow`), so a focused pinned row shows both. It must be `::after`: in
+// a table row, `::before` takes the place of the first cell and shifts every
+// cell one column to the right. `zIndex` must be higher than every frozen
+// cell next to the element. The element, or the cell that contains it, must
+// be positioned.
+const layerAboveFrozenCells = (zIndex: number) =>
+  ({
+    content: '""',
+    position: "absolute",
+    inset: 0,
+    pointerEvents: "none",
+    zIndex,
+  }) as const;
+
+// Frozen body cells go up to z-index 12. The sticky header is 14, so a body
+// layer scrolled under the header stays below it.
+const bodyLayer = layerAboveFrozenCells(13);
+// Frozen header cells go up to z-index 13.
+const headerLayer = layerAboveFrozenCells(14);
+
 // Keyboard focus ring for rows, cells and column headers. An outline on the
 // element itself is drawn just outside its box, where neighbouring frozen
-// (sticky) cells, the next row and the table edge cover parts of it. This ring
-// is drawn inside the element's box, on a pseudo-element above the frozen
-// cells. `zIndex` must be higher than every frozen cell next to the element.
-// The element, or the cell that contains it, must be positioned.
-const focusRingAboveFrozenCells = (zIndex: number) =>
+// cells, the next row and the table edge cover parts of it. This ring is
+// drawn inside the element's box instead.
+const focusRingOn = (layer: typeof bodyLayer) =>
   ({
     _focusVisible: {
       outline: "none",
       _after: {
-        content: '""',
-        position: "absolute",
-        inset: 0,
+        ...layer,
         layerStyle: "focusRing",
         outlineOffset: "calc(var(--focus-ring-width) * -1)",
-        pointerEvents: "none",
-        zIndex,
       },
     },
   }) as const;
 
-// Frozen body cells go up to z-index 12. The sticky header is 14, so a body
-// ring scrolled under the header stays below it.
-const bodyFocusRing = focusRingAboveFrozenCells(13);
-// Frozen header cells go up to z-index 13.
-const headerFocusRing = focusRingAboveFrozenCells(14);
+const bodyFocusRing = focusRingOn(bodyLayer);
+const headerFocusRing = focusRingOn(headerLayer);
+
+// Outline of a group of pinned rows. `edges` lists the inset shadows for the
+// sides this row draws.
+const pinnedOutline = (edges: string) =>
+  ({
+    _after: { ...bodyLayer, boxShadow: edges },
+  }) as const;
 
 /**
  * Slot recipe configuration for the DataTable component.
@@ -90,17 +111,12 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       "&[data-scroll-left='true']": {
         "& .data-table-row .data-table-sticky-cell:not([data-slot='pin-row-cell']):not([data-slot='selection'] ~ [data-slot='expand'])":
           { boxShadow: "{shadows.right}" },
-        "& .data-table-row-pinned .data-table-sticky-cell:not([data-slot='pin-row-cell'])":
-          { clipPath: "none" },
         "& .data-table-header .selection-column-header, & .data-table-header .drag-column-header, & .data-table-header .expand-column-header:not(.selection-column-header ~ .expand-column-header)":
           { boxShadow: "{shadows.right}" },
       },
       "&[data-scroll-right='true']": {
         "& .data-table-row [data-slot='pin-row-cell']": {
           boxShadow: "{shadows.left}",
-        },
-        "& .data-table-row-pinned [data-slot='pin-row-cell']": {
-          clipPath: "none",
         },
         "& .data-table-header .pin-rows-column-header": {
           boxShadow: "{shadows.left}",
@@ -171,17 +187,13 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         },
       },
       "& .data-table-row-pinned": {
-        boxShadow: "var(--pinned-shadow-left), var(--pinned-shadow-right)",
+        ...pinnedOutline(
+          "var(--pinned-shadow-left), var(--pinned-shadow-right)"
+        ),
         "& .data-table-sticky-cell": {
           position: "sticky",
           left: 0,
           zIndex: 3,
-        },
-        "& [data-slot='selection']": {
-          clipPath: "inset(2px 0 2px 2px)",
-        },
-        "& [data-slot='expand']": {
-          clipPath: "inset(2px 0)",
         },
         // When drag column is present in pinned rows, offset selection and expand columns
         "& [data-slot='drag'] ~ [data-slot='selection']": {
@@ -203,20 +215,16 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         "& [data-slot='pin-row-cell']": {
           backgroundColor: "var(--dt-row-bg, inherit)",
           position: "sticky",
-          clipPath: "inset(2px 2px 2px 0)",
         },
-        "&.data-table-row-pinned-first": {
-          boxShadow:
-            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-top)",
-        },
-        "&.data-table-row-pinned-last": {
-          boxShadow:
-            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-bottom)",
-        },
-        "&.data-table-row-pinned-single": {
-          boxShadow:
-            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-top), var(--pinned-shadow-bottom)",
-        },
+        "&.data-table-row-pinned-first": pinnedOutline(
+          "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-top)"
+        ),
+        "&.data-table-row-pinned-last": pinnedOutline(
+          "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-bottom)"
+        ),
+        "&.data-table-row-pinned-single": pinnedOutline(
+          "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-top), var(--pinned-shadow-bottom)"
+        ),
       },
       "& .data-table-header": {
         background: "colorPalette.2",

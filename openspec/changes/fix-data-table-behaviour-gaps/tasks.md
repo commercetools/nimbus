@@ -157,3 +157,11 @@ it once and see it fail, then fix. Paths are relative to
 - [x] 11.5 `root.tsx`: a `ResizeObserver` on the table scrolls the container
       while a column is resizing, so the dragged edge never moves under the pin
       column or out of the visible area
+
+## 12. Pinned row outline
+
+- [x] 12.1 Story `PinnedRowOutlineAboveFrozenCells`: pinned rows line up with
+      the header, and their outline is drawn above every frozen cell
+- [x] 12.2 `data-table.recipe.ts`: the pinned outline moves from the row's
+      `box-shadow` to the same `::after` layer as the focus ring (z-index 13);
+      the `clip-path` workarounds on frozen cells in pinned rows are removed

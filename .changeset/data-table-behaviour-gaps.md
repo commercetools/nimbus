@@ -55,6 +55,9 @@ were accepted but ignored now work.
   scrolls along, so the edge you are dragging stays in view. Before, it moved
   under the pin column or out of view, and its resize handle could no longer be
   reached with the mouse.
+- **Fixed:** the outline around pinned rows is complete. Before, the frozen
+  checkbox, expand and pin cells covered parts of it, so its lines stopped short
+  of the pin column.
 - **Deprecated:** `nestedKey`. Use `renderNestedContent`, which receives the
   row: `renderNestedContent={(row) => row.children}`.
 

@@ -8406,3 +8406,52 @@ export const PinColumnFillsSpaceAfterResize: Story = {
     );
   },
 };
+
+/**
+ * The outline around pinned rows is drawn above the frozen checkbox, expand
+ * and pin cells. Before, their backgrounds covered it, so the lines stopped
+ * short of the pin column.
+ */
+export const PinnedRowOutlineAboveFrozenCells: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      selectionMode="multiple"
+      allowsPinning
+      defaultPinnedRows={new Set(["r1", "r2"])}
+      renderNestedContent={(row) => <Text>Details for {String(row.name)}</Text>}
+      aria-label="Pinned row outline"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Linus");
+    const leftEdges = (row: Element) =>
+      Array.from(row.children).map((cell) =>
+        Math.round(cell.getBoundingClientRect().left)
+      );
+    const headerRow = canvasElement.querySelector("thead tr") as Element;
+
+    for (const name of [/Ada/, /Grace/]) {
+      const row = rowNamed(canvasElement, name);
+
+      await step(`${name.source}: cells line up with the header`, async () => {
+        expect(leftEdges(row)).toEqual(leftEdges(headerRow));
+      });
+
+      await step(
+        `${name.source}: outline is above the frozen cells`,
+        async () => {
+          const outline = getComputedStyle(row, "::after");
+          expect(outline.boxShadow).not.toBe("none");
+          const frozenCells = frozenCellsOfRow(row);
+          expect(frozenCells.length).toBeGreaterThan(0);
+          for (const frozen of frozenCells) {
+            expect(Number(outline.zIndex)).toBeGreaterThan(zIndexOf(frozen));
+          }
+        }
+      );
+    }
+  },
+};
