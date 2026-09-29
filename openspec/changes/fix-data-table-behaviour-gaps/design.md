@@ -103,8 +103,31 @@ written in the ticket). The first click of a double-click would activate the row
   "activate, whatever the input". `onRowPress` was rejected: in React Aria,
   "press" (`usePress`) includes Space, which does not activate rows here.
 - The current `onRowAction(row, "click" | "select")` only fires on clicks on
-  _disabled_ rows, and `"select"` is never emitted. No consumer in the 13
-  mirrored repositories uses it. `onRowClick` is used in 55 consumer files.
+  _disabled_ rows, and `"select"` is never emitted. `onRowClick` is used in 55
+  consumer files.
+- No consumer uses `onRowAction` (usage scan on 2026-09-29). Nimbus is not yet
+  offered to customers for Merchant Center Custom Applications, so every
+  consumer is a GitHub repository:
+  - 16 repositories depend on Nimbus. They were found with GitHub code search
+    for `"@commercetools/nimbus"` in `package.json` and with the discovery list
+    of `@mcf/nimbus-consumer-registry`. Code search does not index archived
+    repositories, forks, or repositories without activity in the last year, so
+    the `package.json` files of those 61 repositories (pushed to since
+    2025-08-21) were read directly. The only extra consumer found,
+    `intake-agent-frontend`, is one of the 16.
+  - Each repository's full default branch, every branch with a commit since
+    2025-08-21 (when the prop first shipped) and open PRs from forks were
+    scanned with `git diff -G onRowAction`: 1,175 branches scanned, 790 skipped
+    as older than the prop, 0 hits. A control run found the 6 known `<DataTable`
+    files in `commerce-agents`.
+  - deps.dev reports 0 npm packages that depend on `@commercetools/nimbus`.
+  - The old behaviour had no documented purpose. The first DataTable commit
+    (#279) added it with the comment "TODO: Clarify business requirement - why
+    allow clicks on disabled rows?". UI Kit's DataTable has no disabled rows.
+- Keeping the old `onRowAction` was rejected. An optional second parameter still
+  fails to compile for a handler typed `(row, action: "click" | "select")`, and
+  old handlers that do compile would silently run for enabled rows. Moving
+  activation to `onRowClick` instead was also rejected: Enter is not a click.
 - New signature: `onRowAction?: (row) => void`. One internal `activateRow`
   returns early for disabled rows, toggles expansion when
   `allowsExpandColumn={false}`, then calls
@@ -144,7 +167,10 @@ header checkbox is also disabled when `disabledKeys === "all"`.
 
 ### D7 — i18n
 
-- New keys: `pinRow`, `unpinRow`, `noData`, and `nestedItemsCount` ("Nested items: {count}"). No ICU plural: the i18n pipeline does not support it — `normalizeMessages` drops the formatter argument that compiled plural functions need, and their parameters are untyped.
+- New keys: `pinRow`, `unpinRow`, `noData`, and `nestedItemsCount` ("Nested
+  items: {count}"). No ICU plural: the i18n pipeline does not support it —
+  `normalizeMessages` drops the formatter argument that compiled plural
+  functions need, and their parameters are untyped.
 - `layoutSettingsAriaLabel` names the layout panel group.
 - `hideColumn` names the remove button in the visible-columns list. This needs a
   new optional `removeButtonLabel` on `DraggableList.Item`, defaulting to the
@@ -160,8 +186,8 @@ header checkbox is also disabled when `disabledKeys === "all"`.
   checkbox still works, and this matches React Aria's convention for rows with
   an action. Documented in the changeset.
 - [`onRowAction` changes meaning. A handler written for the old
-  disabled-row-only behaviour would now run for enabled rows.] → No known
-  consumer uses it. The changeset calls it out.
+  disabled-row-only behaviour would now run for enabled rows.] → The usage scan
+  in D4 found no consumer that uses it. The changeset calls it out.
 - [`RaRow` may not forward `onKeyDownCapture`.] → Fall back to the native
   listener pattern that already exists in the row.
 - [The new message keys show English in de, es, fr-FR and pt-BR until the next
@@ -171,9 +197,10 @@ header checkbox is also disabled when `disabledKeys === "all"`.
 
 ## Migration Plan
 
-Minor release, no required consumer action. `onRowClick` and `nestedKey` keep
-working with deprecation notices. Rollback means reverting the PR; no data or
-storage is involved.
+Minor release. The one breaking change, to `onRowAction`, ships in a minor on
+purpose, because no consumer uses the prop (D4). No other consumer action is
+required. `onRowClick` and `nestedKey` keep working with deprecation notices.
+Rollback means reverting the PR; no data or storage is involved.
 
 ## Open Questions
 
@@ -191,12 +218,12 @@ storage is involved.
 
 ### D8 — Nested rows exist only while expanded
 
-Every row with expandable content used to render its nested row all the time
-and hide it with `display: none` while collapsed. React Aria kept those hidden
-rows in the collection, so ArrowDown / ArrowUp first moved React Aria's focus
-onto a row the browser cannot focus: one press per collapsed row appeared to do
-nothing. The grid also counted the hidden rows. This came from `main`, not
-from this change.
+Every row with expandable content used to render its nested row all the time and
+hide it with `display: none` while collapsed. React Aria kept those hidden rows
+in the collection, so ArrowDown / ArrowUp first moved React Aria's focus onto a
+row the browser cannot focus: one press per collapsed row appeared to do
+nothing. The grid also counted the hidden rows. This came from `main`, not from
+this change.
 
 **Decision:** render the nested row only while its row is expanded, and delete
 the `display: none` rule. Collapsed nested content was already rendered as
@@ -205,10 +232,10 @@ the `display: none` rule. Collapsed nested content was already rendered as
 ### D9 — Closing nested content returns focus to its opener
 
 With the nested row gone after collapse, closing it from inside (the `close`
-callback of `renderNestedContent`) removes the focused element. React
-Stately's grid state then moves focus to the row now at that position
-(`useGridState.mjs`, "Reset focused key if that item is deleted"), so focus
-jumped to the next row. Before D8 it fell to the page body.
+callback of `renderNestedContent`) removes the focused element. React Stately's
+grid state then moves focus to the row now at that position (`useGridState.mjs`,
+"Reset focused key if that item is deleted"), so focus jumped to the next row.
+Before D8 it fell to the page body.
 
 **Decision:** `close` first sets React Aria's focused key to the control that
 opened the panel: the row's expand cell, or the row itself when there is no
@@ -225,10 +252,9 @@ browser run and failed in the story, depending on which effect ran last.
 ### D10 — Disabled rows use the shared disabled layer style
 
 DataTable dimmed disabled rows with its own `opacity: 0.8`, in two rules (root
-and row slot); `layerStyle: "disabled"` had been commented out in both since
-the first DataTable commit, with no stated reason. Tree, ListBox and
-DraggableList put the layer style (`opacity: 0.5`, `cursor: not-allowed`) on
-the whole row.
+and row slot); `layerStyle: "disabled"` had been commented out in both since the
+first DataTable commit, with no stated reason. Tree, ListBox and DraggableList
+put the layer style (`opacity: 0.5`, `cursor: not-allowed`) on the whole row.
 
 **Decision:** the row slot uses `layerStyle: "disabled"`, the duplicate root
 rule is deleted, and disabled rows get no hover highlight.
@@ -237,8 +263,7 @@ rule is deleted, and disabled rows get no hover highlight.
 
 - Cell text contrast on white drops from 8.4:1 to 3.19:1. WCAG 1.4.3 does not
   require contrast for inactive user interface components.
-- A disabled row's checkbox applies the layer style too, so it renders at
-  0.25 instead of 0.4. DraggableList behaves the same way.
+- A disabled row's checkbox applies the layer style too, so it renders at 0.25
+  instead of 0.4. DraggableList behaves the same way.
 - Opacity below 1 already made each disabled row its own stacking context at
   0.8, so sticky columns are unaffected.
-

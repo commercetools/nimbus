@@ -54,8 +54,10 @@ Three claims from the ticket did not hold and are **not** part of this change:
   `allowsExpandColumn={false}`, Enter also expands the row.
 - **BREAKING (behaviour):** clicking a disabled row no longer calls
   `onRowAction`. Disabled rows do nothing. The old signature
-  `(row, action: "click" | "select")` becomes `(row)`. No consumer in the 13
-  mirrored repositories uses `onRowAction`.
+  `(row, action: "click" | "select")` becomes `(row)`. No consumer uses
+  `onRowAction`: a scan on 2026-09-29 of all 16 repositories that depend on
+  Nimbus found 0 uses. It covered the default branch and every branch with a
+  commit since the prop first shipped (1,175 branches). See design.md, D4.
 - `onRowClick` is **deprecated** in favour of `onRowAction`. It keeps working,
   including for Enter.
 - Enter activates the row immediately. A mouse click keeps its 300 ms wait, so
@@ -72,7 +74,9 @@ Three claims from the ticket did not hold and are **not** part of this change:
 - `onVisibilityChange` is removed from the internal context type (never
   provided, never read).
 - Released as **minor** (new behaviour: keyboard activation, working props,
-  deprecations).
+  deprecations). The `onRowAction` change would normally need a major release
+  (`docs/changeset-conventions.md`). It ships as a minor on purpose, because the
+  usage scan above found no consumer to break.
 
 ## Capabilities
 
