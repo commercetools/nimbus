@@ -141,3 +141,14 @@ it once and see it fail, then fix. Paths are relative to
       on a positioned `::after` (z-index 13 in the body, 14 in the header)
       instead of an outline on the element; the sticky header moves from
       z-index 10 to 14, above the frozen body cells
+
+## 11. Pin column after resizing
+
+- [x] 11.1 Story `PinColumnFillsSpaceAfterResize`: after the last data column
+      is made narrower, the table still fills its container and the pin column
+      is wider than 72px; after it is made wider, the pin column stays at 72px;
+      the row pin button stays in line with the header icon
+- [x] 11.2 `header.tsx`: the pin column gets `minWidth={72}` and a tiny
+      `defaultWidth` (`0.001fr`) instead of a fixed 72px, so it takes free space
+      only when no other column can
+- [x] 11.3 `row.tsx`: center the pin button in its cell, like the header icon

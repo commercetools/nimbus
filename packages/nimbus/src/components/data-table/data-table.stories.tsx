@@ -8284,3 +8284,97 @@ export const HeaderFocusRingAndStickyHeader: Story = {
     });
   },
 };
+
+/** Drags a column's resize handle horizontally by `dx` pixels. */
+const dragColumnResizer = async (columnHeader: HTMLElement, dx: number) => {
+  const handle = columnHeader.querySelector(
+    ".react-aria-ColumnResizer > *"
+  ) as HTMLElement;
+  const box = handle.getBoundingClientRect();
+  const x = box.left + box.width / 2;
+  const y = box.top + box.height / 2;
+  await userEvent.pointer([
+    {
+      keys: "[MouseLeft>]",
+      target: handle,
+      coords: { clientX: x, clientY: y, pageX: x, pageY: y },
+    },
+    {
+      target: handle,
+      coords: { clientX: x + dx, clientY: y, pageX: x + dx, pageY: y },
+    },
+    {
+      keys: "[/MouseLeft]",
+      target: handle,
+      coords: { clientX: x + dx, clientY: y, pageX: x + dx, pageY: y },
+    },
+  ]);
+};
+
+/**
+ * The pin column is at least 72px wide, not exactly 72px. When the last data
+ * column is made narrower, the pin column takes the freed space, so the table
+ * still fills its container. Before, the table shrank and left a gap.
+ */
+export const PinColumnFillsSpaceAfterResize: Story = {
+  render: () => (
+    <Box w="700px">
+      <DataTable
+        columns={behaviourColumns}
+        rows={behaviourRows}
+        isResizable
+        selectionMode="multiple"
+        allowsPinning
+        aria-label="Resizable table with a pin column"
+      />
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Linus");
+    const table = canvas.getByRole("grid");
+    const container = table.parentElement as HTMLElement;
+    const header = (name: RegExp) =>
+      canvas.getByRole("columnheader", { name }) as HTMLElement;
+    const widthOf = (el: HTMLElement) =>
+      Math.round(el.getBoundingClientRect().width);
+
+    await step("The pin column starts at its 72px minimum", async () => {
+      expect(widthOf(header(/Pin rows/))).toBe(72);
+    });
+
+    await step("A narrower last column leaves no gap", async () => {
+      const roleWidth = widthOf(header(/^Role/));
+      await dragColumnResizer(header(/^Role/), -100);
+      await waitFor(() =>
+        expect(widthOf(header(/^Role/))).toBeLessThan(roleWidth)
+      );
+      expect(widthOf(table)).toBe(container.clientWidth);
+      expect(widthOf(header(/Pin rows/))).toBeGreaterThan(72);
+    });
+
+    await step(
+      "The row's pin button stays in line with the header icon",
+      async () => {
+        const centerX = (el: Element) => {
+          const box = el.getBoundingClientRect();
+          return Math.round(box.left + box.width / 2);
+        };
+        const headerIcon = header(/Pin rows/).querySelector("svg") as Element;
+        const pinButton = within(rowNamed(canvasElement, /Grace/)).getByRole(
+          "button",
+          { name: "Pin row" }
+        );
+        expect(centerX(pinButton)).toBe(centerX(headerIcon));
+      }
+    );
+
+    await step("A wider last column keeps the pin column at 72px", async () => {
+      await dragColumnResizer(header(/^Role/), 300);
+      await waitFor(() =>
+        expect(widthOf(table)).toBeGreaterThan(container.clientWidth)
+      );
+      expect(widthOf(header(/Pin rows/))).toBe(72);
+    });
+  },
+};

@@ -175,8 +175,12 @@ export const DataTableHeader = <
           <DataTableColumn
             className="pin-rows-column-header"
             id="pin-rows"
-            maxWidth={72}
             minWidth={72}
+            // A tiny share of the free space keeps the column at its minimum
+            // while other columns can grow. When nothing else can, for example
+            // after the last data column is made narrower, it fills the rest
+            // of the table instead of leaving a gap.
+            defaultWidth="0.001fr"
             allowsSorting={false}
             isInternalColumn={true}
             aria-label={msg.format("pinRows")}
