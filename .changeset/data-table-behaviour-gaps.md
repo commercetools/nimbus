@@ -41,6 +41,10 @@ were accepted but ignored now work.
   and selection, without a fade.
 - **Fixed:** the pin button is visible when it has keyboard focus. Before, it
   only showed on mouse hover.
+- **Fixed:** the keyboard focus ring of a row, a cell or a column header is
+  visible on all four sides. Before, frozen columns, the next row or the table
+  edge covered parts of it. Rows scrolled under a sticky header no longer show
+  their frozen cells above the header.
 - **Deprecated:** `nestedKey`. Use `renderNestedContent`, which receives the
   row: `renderNestedContent={(row) => row.children}`.
 

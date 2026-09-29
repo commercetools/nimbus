@@ -130,3 +130,14 @@ it once and see it fail, then fix. Paths are relative to
       `selectionBehavior="toggle"` from two stories
 - [x] 9.4 Changeset, spec delta and PR description say the prop is removed and
       why
+
+## 10. Focus ring hidden by neighbouring cells
+
+- [x] 10.1 Stories `RowFocusRingAboveFrozenCells`,
+      `CellFocusRingAboveFrozenCells` and `HeaderFocusRingAndStickyHeader`: the
+      ring is drawn inside the element, above every frozen cell of its row, and
+      a body ring stays below the sticky header
+- [x] 10.2 `data-table.recipe.ts`: rows, cells and column headers draw the ring
+      on a positioned `::after` (z-index 13 in the body, 14 in the header)
+      instead of an outline on the element; the sticky header moves from
+      z-index 10 to 14, above the frozen body cells

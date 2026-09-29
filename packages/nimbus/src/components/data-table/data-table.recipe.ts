@@ -17,6 +17,34 @@ const stickyBgOverlap = {
   },
 } as const;
 
+// Keyboard focus ring for rows, cells and column headers. An outline on the
+// element itself is drawn just outside its box, where neighbouring frozen
+// (sticky) cells, the next row and the table edge cover parts of it. This ring
+// is drawn inside the element's box, on a pseudo-element above the frozen
+// cells. `zIndex` must be higher than every frozen cell next to the element.
+// The element, or the cell that contains it, must be positioned.
+const focusRingAboveFrozenCells = (zIndex: number) =>
+  ({
+    _focusVisible: {
+      outline: "none",
+      _after: {
+        content: '""',
+        position: "absolute",
+        inset: 0,
+        layerStyle: "focusRing",
+        outlineOffset: "calc(var(--focus-ring-width) * -1)",
+        pointerEvents: "none",
+        zIndex,
+      },
+    },
+  }) as const;
+
+// Frozen body cells go up to z-index 12. The sticky header is 14, so a body
+// ring scrolled under the header stays below it.
+const bodyFocusRing = focusRingAboveFrozenCells(13);
+// Frozen header cells go up to z-index 13.
+const headerFocusRing = focusRingAboveFrozenCells(14);
+
 /**
  * Slot recipe configuration for the DataTable component.
  * Defines the styling variants, base styles, and slots using Chakra UI's slot recipe system.
@@ -241,7 +269,9 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       "&[data-sticky]": {
         position: "sticky",
         top: 0,
-        zIndex: 10,
+        // Above every frozen body cell (up to 12) and the body focus ring
+        // (13), so rows scrolled under the header stay hidden behind it.
+        zIndex: 14,
       },
       "& span[data-multiline-header]": {
         overflow: "hidden",
@@ -287,7 +317,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       // allowing children (height:100%) to fill the full cell.
       h: "1px",
       p: 0,
-      focusVisibleRing: "inside",
+      ...headerFocusRing,
 
       "& > .nimbus-data-table__column-container": {
         py: "100",
@@ -296,7 +326,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         alignItems: "center",
         h: "100%",
         // https://react-spectrum.adobe.com/react-aria/Table.html#width-values
-        focusVisibleRing: "inside",
+        // Not positioned itself, so the ring covers the whole header cell.
+        ...headerFocusRing,
         "& > span:not(:first-of-type)": {
           flexShrink: 0,
         },
@@ -384,7 +415,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         "--dt-row-bg": "{colors.bg}",
       },
       borderBottom: "1px solid {colors.neutral.3}",
-      focusVisibleRing: "inside",
+      ...bodyFocusRing,
       "&[data-dragging='true']": {
         cursor: "grabbing",
       },
@@ -425,7 +456,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       paddingLeft: "600",
       paddingRight: "600",
       color: "neutral.12",
-      focusVisibleRing: "inside",
+      // Containing block for the focus ring. Frozen cells override it with
+      // `position: sticky`, which is a containing block too.
+      position: "relative",
+      ...bodyFocusRing,
       hyphens: "auto",
       // td height:auto is not "definite" per CSS spec, so child height:100%
       // collapses to content height. Setting an explicit height makes it

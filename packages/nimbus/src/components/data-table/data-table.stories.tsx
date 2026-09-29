@@ -8150,3 +8150,137 @@ export const PinButtonVisibleOnKeyboardFocus: Story = {
     );
   },
 };
+
+const zIndexOf = (el: Element) => Number(getComputedStyle(el).zIndex) || 0;
+
+/** The frozen (sticky) cells of the row that contains `el`. */
+const frozenCellsOfRow = (el: Element) =>
+  Array.from(
+    el.closest('[role="row"]')?.querySelectorAll("td, th") ?? []
+  ).filter((cell) => getComputedStyle(cell).position === "sticky");
+
+/**
+ * Checks that the keyboard focus ring of `el` is drawn inside its own box and
+ * above every frozen cell of its row, so neither a neighbouring cell, the next
+ * row nor a frozen column can paint over it.
+ */
+const expectFocusRingOnTop = (el: HTMLElement) => {
+  const ring = getComputedStyle(el, "::after");
+  expect(ring.outlineStyle).toBe("solid");
+  expect(parseFloat(ring.outlineOffset)).toBeLessThan(0);
+  expect(getComputedStyle(el).outlineStyle).toBe("none");
+  const frozenCells = frozenCellsOfRow(el);
+  expect(frozenCells.length).toBeGreaterThan(0);
+  for (const frozen of frozenCells) {
+    expect(Number(ring.zIndex)).toBeGreaterThan(zIndexOf(frozen));
+  }
+};
+
+const renderFrozenCellsTable = () => (
+  <DataTable
+    columns={behaviourColumns}
+    rows={behaviourRows}
+    selectionMode="multiple"
+    allowsPinning
+    renderNestedContent={(row) => <Text>Details for {String(row.name)}</Text>}
+    aria-label="Focus ring and frozen cells"
+  />
+);
+
+/**
+ * A focused row keeps its whole focus ring visible. The frozen selection,
+ * expand and pin cells used to cover its left and right ends.
+ */
+export const RowFocusRingAboveFrozenCells: Story = {
+  render: renderFrozenCellsTable,
+  parameters: { chromatic: { disableSnapshot: false } },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Linus");
+
+    await step(
+      "The row's focus ring is drawn above the frozen cells",
+      async () => {
+        rowNamed(canvasElement, /Ada/).focus();
+        await userEvent.keyboard("{ArrowDown}");
+        const row = rowNamed(canvasElement, /Grace/);
+        await waitFor(() => expect(row).toHaveAttribute("data-focus-visible"));
+        expectFocusRingOnTop(row);
+      }
+    );
+  },
+};
+
+/**
+ * A focused cell keeps its whole focus ring visible. The frozen expand cell
+ * on its left and the next row used to cover parts of it.
+ */
+export const CellFocusRingAboveFrozenCells: Story = {
+  render: renderFrozenCellsTable,
+  parameters: { chromatic: { disableSnapshot: false } },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Linus");
+
+    await step(
+      "The cell's focus ring is drawn above the frozen cells",
+      async () => {
+        rowNamed(canvasElement, /Grace/).focus();
+        // Selection checkbox, expand button, then the first data cell.
+        await userEvent.keyboard("{ArrowRight}{ArrowRight}{ArrowRight}");
+        const cell = within(rowNamed(canvasElement, /Grace/))
+          .getByText("Grace")
+          .closest('[role="rowheader"], [role="gridcell"]') as HTMLElement;
+        await waitFor(() => expect(cell).toHaveAttribute("data-focus-visible"));
+        expectFocusRingOnTop(cell);
+      }
+    );
+  },
+};
+
+/**
+ * A focused column header keeps its whole focus ring visible, and with a
+ * sticky header, frozen body cells scroll behind the header, not over it.
+ */
+export const HeaderFocusRingAndStickyHeader: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      selectionMode="multiple"
+      allowsPinning
+      maxHeight="160px"
+      aria-label="Header focus ring"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Linus");
+    const header = canvasElement.querySelector("thead") as HTMLElement;
+    const ada = rowNamed(canvasElement, /Ada/);
+
+    await step("The header is above every frozen body cell", async () => {
+      for (const frozen of frozenCellsOfRow(ada)) {
+        expect(zIndexOf(header)).toBeGreaterThan(zIndexOf(frozen));
+      }
+    });
+
+    await step("A body row's focus ring stays below the header", async () => {
+      ada.focus();
+      await waitFor(() => expect(ada).toHaveAttribute("data-focus-visible"));
+      const ring = getComputedStyle(ada, "::after");
+      expect(Number(ring.zIndex)).toBeLessThan(zIndexOf(header));
+    });
+
+    await step("A column header's focus ring is drawn inside it", async () => {
+      await userEvent.keyboard("{ArrowRight}{ArrowRight}{ArrowUp}");
+      const nameHeader = within(header)
+        .getByText("Name")
+        .closest('[role="columnheader"]') as HTMLElement;
+      await waitFor(() =>
+        expect(nameHeader.contains(document.activeElement)).toBe(true)
+      );
+      expectFocusRingOnTop(document.activeElement as HTMLElement);
+    });
+  },
+};
