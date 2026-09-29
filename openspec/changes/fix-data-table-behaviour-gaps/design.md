@@ -187,14 +187,37 @@ storage is involved.
   margin, so it is not widened. The story fails if a later change (for example
   the `size` prop in #2007) drops it below 24 px.
 
-## Found during the keyboard walkthrough (not fixed here)
+## Found during the keyboard walkthrough
 
-Every row with expandable content always renders its nested row, hidden with
-`display: none` while collapsed (`data-table.recipe.ts`,
-`&[data-nested-row-expanded='false']`). React Aria keeps those rows in the
-collection, so ArrowDown / ArrowUp first moves React Aria's focus onto the
-hidden row, which the browser cannot focus. For the user, one arrow press
-per collapsed row appears to do nothing. This exists on the base branch and
-this change does not touch it; it needs its own fix (for example, not rendering
-the nested row while collapsed).
+### D8 — Nested rows exist only while expanded
 
+Every row with expandable content used to render its nested row all the time
+and hide it with `display: none` while collapsed. React Aria kept those hidden
+rows in the collection, so ArrowDown / ArrowUp first moved React Aria's focus
+onto a row the browser cannot focus: one press per collapsed row appeared to do
+nothing. The grid also counted the hidden rows. This came from `main`, not
+from this change.
+
+**Decision:** render the nested row only while its row is expanded, and delete
+the `display: none` rule. Collapsed nested content was already rendered as
+`null`, so nothing that was visible or mounted is lost.
+
+### D9 — Closing nested content returns focus to its opener
+
+With the nested row gone after collapse, closing it from inside (the `close`
+callback of `renderNestedContent`) removes the focused element. React
+Stately's grid state then moves focus to the row now at that position
+(`useGridState.mjs`, "Reset focused key if that item is deleted"), so focus
+jumped to the next row. Before D8 it fell to the page body.
+
+**Decision:** `close` first sets React Aria's focused key to the control that
+opened the panel: the row's expand cell, or the row itself when there is no
+expand column. React Aria then moves focus there before the nested row is
+removed. This needs `TableStateContext`, which React Aria does not provide to
+`DataTable.Row` itself (row components run in its collection-building pass),
+only to cell content. So a small `NestedContentPanel` inside the nested cell
+owns `close`.
+
+**Alternative rejected:** focusing the expand button from an effect after the
+collapse. It races React Aria's own focus correction: it worked in a manual
+browser run and failed in the story, depending on which effect ran last.

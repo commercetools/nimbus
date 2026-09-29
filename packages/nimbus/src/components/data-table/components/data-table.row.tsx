@@ -1,8 +1,9 @@
-import { useRef, useCallback, useEffect, memo } from "react";
+import { useRef, useCallback, useContext, useEffect, memo } from "react";
 import {
   Row as RaRow,
   Collection as RaCollection,
   Cell as RaCell,
+  TableStateContext,
   useTableOptions,
 } from "react-aria-components";
 import { mergeRefs } from "@/utils";
@@ -66,6 +67,47 @@ function stopPropagationForNonInteractiveElements(e: Event) {
     e.stopPropagation();
   }
 }
+
+/**
+ * Renders a row's nested content and owns its `close` callback.
+ *
+ * Closing from inside removes the element that has focus, and React Aria
+ * would then move focus to whichever row now sits in that position. `close`
+ * first points React Aria's focus at the control that opened the panel (the
+ * expand cell, or the row when there is no expand column), so focus returns
+ * there instead.
+ *
+ * This is a component of its own because React Aria renders
+ * `DataTable.Row` itself outside the table's state context; cell content is
+ * rendered inside it, so `TableStateContext` is only available here.
+ */
+const NestedContentPanel = ({
+  rowKey,
+  nestedContentId,
+  openerCellIndex,
+  onClose,
+  children,
+}: {
+  rowKey: string;
+  nestedContentId: string;
+  openerCellIndex?: number;
+  onClose: () => void;
+  children: (close: () => void) => React.ReactNode;
+}) => {
+  const tableState = useContext(TableStateContext);
+  const close = useCallback(() => {
+    const nestedRow = document.getElementById(nestedContentId);
+    if (tableState && nestedRow?.contains(document.activeElement)) {
+      const cells = [...(tableState.collection.getChildren?.(rowKey) ?? [])];
+      const openerKey =
+        openerCellIndex === undefined ? rowKey : cells[openerCellIndex]?.key;
+      tableState.selectionManager.setFocusedKey(openerKey ?? rowKey);
+    }
+    onClose();
+  }, [tableState, nestedContentId, rowKey, openerCellIndex, onClose]);
+
+  return <>{children(close)}</>;
+};
 
 type DataTableRowPerRowProps = Partial<DataTableRowRenderProps>;
 
@@ -700,12 +742,14 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         </RaRow>
       </DataTableRowSlot>
 
-      {hasExpandableContent && (
+      {/* The nested row exists only while its row is expanded. A hidden
+       * row would still be in React Aria's collection, so arrow keys would
+       * stop on it and the grid's row count would include it. */}
+      {hasExpandableContent && isExpanded && (
         <DataTableRowSlot {...styleProps} asChild>
           <RaRow
             ref={hasRenderNestedContent ? nestedContentRowRef : undefined}
-            data-nested-row-expanded={isExpanded ? "true" : "false"}
-            dependencies={[isExpanded]}
+            data-nested-row-expanded="true"
           >
             <DataTableCell
               isDisabled={isDisabled}
@@ -718,19 +762,27 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               }
               data-nested-cell
             >
-              {isExpanded
-                ? hasNestedContent
-                  ? nestedKey && Array.isArray(row[nestedKey])
-                    ? msg.format("nestedItemsCount", {
-                        count: (row[nestedKey] as unknown[]).length,
-                      })
-                    : nestedKey && (row[nestedKey] as React.ReactNode)
-                  : renderNestedContent
-                    ? renderNestedContent(row, {
-                        close: () => toggleExpand(rowKey),
-                      })
-                    : null
-                : null}
+              {hasNestedContent
+                ? nestedKey && Array.isArray(row[nestedKey])
+                  ? msg.format("nestedItemsCount", {
+                      count: (row[nestedKey] as unknown[]).length,
+                    })
+                  : nestedKey && (row[nestedKey] as React.ReactNode)
+                : renderNestedContent && (
+                    <NestedContentPanel
+                      rowKey={rowKey}
+                      nestedContentId={nestedContentId}
+                      openerCellIndex={
+                        showExpandColumn
+                          ? (allowsDragging ? 1 : 0) +
+                            (showSelectionColumn ? 1 : 0)
+                          : undefined
+                      }
+                      onClose={() => toggleExpand(rowKey)}
+                    >
+                      {(close) => renderNestedContent(row, { close })}
+                    </NestedContentPanel>
+                  )}
             </DataTableCell>
           </RaRow>
         </DataTableRowSlot>

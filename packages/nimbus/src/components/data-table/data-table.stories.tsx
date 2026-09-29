@@ -7954,3 +7954,143 @@ export const ExpandButtonTargetSize: Story = {
     }
   },
 };
+
+/**
+ * A collapsed row's nested content is not part of the table. Arrow keys move
+ * straight to the next data row, and the grid reports only the rows a user
+ * can reach.
+ */
+export const CollapsedRowsDoNotTrapArrowKeys: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      renderNestedContent={(row) => <Text>Details for {String(row.name)}</Text>}
+      aria-label="Collapsed rows and arrow keys"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Ada");
+    const focusedRowText = () =>
+      (document.activeElement?.closest('[role="row"]')?.textContent ?? "")
+        .trim()
+        .slice(0, 12);
+
+    await step("Collapsed rows have no hidden nested row", async () => {
+      const bodyRows = canvasElement.querySelectorAll("tbody [role='row']");
+      expect(bodyRows).toHaveLength(behaviourRows.length);
+    });
+
+    await step("ArrowDown moves from row to row", async () => {
+      rowNamed(canvasElement, /Ada/).focus();
+      await userEvent.keyboard("{ArrowDown}");
+      expect(focusedRowText()).toMatch(/^Grace/);
+      await userEvent.keyboard("{ArrowDown}");
+      expect(focusedRowText()).toMatch(/^Linus/);
+    });
+
+    await step("ArrowUp moves back row by row", async () => {
+      await userEvent.keyboard("{ArrowUp}");
+      expect(focusedRowText()).toMatch(/^Grace/);
+    });
+
+    await step("An expanded row's content is reachable", async () => {
+      const ada = rowNamed(canvasElement, /Ada/);
+      await userEvent.click(
+        within(ada).getByRole("button", { name: "Expand" })
+      );
+      expect(await canvas.findByText("Details for Ada")).toBeInTheDocument();
+      rowNamed(canvasElement, /Ada/).focus();
+      await userEvent.keyboard("{ArrowDown}");
+      expect(focusedRowText()).toMatch(/^Details for/);
+      await userEvent.keyboard("{ArrowDown}");
+      expect(focusedRowText()).toMatch(/^Grace/);
+    });
+  },
+};
+
+/**
+ * Closing nested content from inside returns focus to the control that opened
+ * it, so a keyboard user does not end up on the page body.
+ */
+export const CloseReturnsFocusToOpener: Story = {
+  render: () => {
+    const renderPanel = (
+      row: DataTableRowItem,
+      { close }: { close: () => void }
+    ) => (
+      <Button size="xs" variant="outline" onPress={close}>
+        Close {String(row.name)}
+      </Button>
+    );
+    return (
+      <Stack gap="600">
+        <Box data-testid="with-expand-column">
+          <DataTable
+            columns={behaviourColumns}
+            rows={behaviourRows}
+            renderNestedContent={renderPanel}
+          />
+        </Box>
+        <Box data-testid="without-expand-column">
+          <DataTable
+            columns={behaviourColumns}
+            rows={behaviourRows}
+            allowsExpandColumn={false}
+            renderNestedContent={renderPanel}
+          />
+        </Box>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("With an expand column, focus returns to it", async () => {
+      const table = within(await canvas.findByTestId("with-expand-column"));
+      await userEvent.click(
+        within(table.getByRole("row", { name: /Ada/ })).getByRole("button", {
+          name: "Expand",
+        })
+      );
+      const close = await table.findByRole("button", { name: "Close Ada" });
+      close.focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(
+          table.queryByRole("button", { name: "Close Ada" })
+        ).not.toBeInTheDocument()
+      );
+      await waitFor(() =>
+        expect(document.activeElement).toBe(
+          within(table.getByRole("row", { name: /Ada/ })).getByRole("button", {
+            name: "Expand",
+          })
+        )
+      );
+    });
+
+    await step(
+      "Without an expand column, focus returns to the row",
+      async () => {
+        const table = within(canvas.getByTestId("without-expand-column"));
+        table.getByRole("row", { name: /Ada/ }).focus();
+        await userEvent.keyboard("{Enter}");
+        const close = await table.findByRole("button", { name: "Close Ada" });
+        close.focus();
+        await userEvent.keyboard("{Enter}");
+        await waitFor(() =>
+          expect(
+            table.queryByRole("button", { name: "Close Ada" })
+          ).not.toBeInTheDocument()
+        );
+        await waitFor(() =>
+          expect(document.activeElement).toBe(
+            table.getByRole("row", { name: /Ada/ })
+          )
+        );
+      }
+    );
+  },
+};

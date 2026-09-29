@@ -102,6 +102,20 @@ The `nestedKey` prop SHALL be deprecated.
 - **WHEN** a row expanded through `nestedKey` holds an array
 - **THEN** SHALL show the localized item count ("Nested items: {count}")
 
+#### Scenario: Collapsed rows are not in the grid
+
+- **WHEN** a row with nested content is collapsed
+- **THEN** its nested row SHALL NOT be rendered
+- **AND** ArrowDown / ArrowUp SHALL move directly between data rows
+
+#### Scenario: Closing nested content returns focus
+
+- **WHEN** focus is inside a row's nested content and the content calls
+  `close`
+- **THEN** focus SHALL move to the row's expand button, or to the row when
+  there is no expand column
+
+
 ### Requirement: Localized Row and Panel Labels
 
 Every user-facing string rendered by the component SHALL come from its message

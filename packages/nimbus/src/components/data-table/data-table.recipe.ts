@@ -427,9 +427,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         opacity: 0.8,
         cursor: "not-allowed",
       },
-      "&[data-nested-row-expanded='false']": {
-        display: "none",
-      },
     },
     cell: {
       paddingTop: "400",

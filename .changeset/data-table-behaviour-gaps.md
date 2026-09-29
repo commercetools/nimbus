@@ -28,6 +28,11 @@ were accepted but ignored now work.
 - **Fixed:** the pin button, the empty state and the nested-items placeholder
   are translated. They show English in other languages until the translations
   arrive.
+- **Fixed:** arrow keys move directly between rows. Before, each collapsed
+  expandable row took one extra key press that seemed to do nothing.
+- **Fixed:** when nested content is closed from inside, with the `close`
+  callback of `renderNestedContent`, focus returns to the row's expand button,
+  or to the row when there is no expand column.
 - **Deprecated:** `nestedKey`. Use `renderNestedContent`, which receives the
   row: `renderNestedContent={(row) => row.children}`.
 

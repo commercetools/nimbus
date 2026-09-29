@@ -99,3 +99,16 @@ it once and see it fail, then fix. Paths are relative to
 - [x] 6.4 Keyboard-only walkthrough in Storybook
 - [x] 6.5 Update FEC-1346: corrections to items 3 and 6, Enter instead of
       "Enter and Space", the `row.isDisabled` finding, the measured target size
+
+## 7. Nested rows and keyboard focus (found in 6.4)
+
+- [x] 7.1 Story `CollapsedRowsDoNotTrapArrowKeys`: no hidden nested rows;
+      ArrowDown / ArrowUp move row by row; an expanded row's content is
+      reachable
+- [x] 7.2 `row.tsx`: render the nested row only while expanded; delete the
+      `display: none` rule in `data-table.recipe.ts`
+- [x] 7.3 Story `CloseReturnsFocusToOpener`: `close` from inside returns focus to
+      the expand button, or to the row without an expand column
+- [x] 7.4 `NestedContentPanel` in the nested cell: `close` sets React Aria's
+      focused key to the opener before collapsing
+
