@@ -6,24 +6,22 @@ it once and see it fail, then fix. Paths are relative to
 
 - [x] 1.1 Stories: `renderEmptyState` renders custom content (not "No Data") and
       is not an attribute on the root element
-- [x] 1.2 Stories: `selectionBehavior="replace"` renders no checkbox column and a
-      click replaces the selection; nested row `colSpan` equals the rendered cell
-      count in `"toggle"` and in `"replace"`
+- [x] 1.2 Story: nested row `colSpan` equals the rendered cell count, including
+      the checkbox column (`NestedRowSpansSelectionColumn`)
 - [x] 1.3 Stories: `disabledKeys="all"` — no row selectable by click, checkbox,
       Space or header checkbox; a row with `isDisabled: true` and no
       `disabledKeys` is disabled
-- [x] 1.4 `root.tsx`: destructure `renderEmptyState` and
-      `selectionBehavior = "toggle"`, compute `showSelectionColumn`
-      (`selectionMode !== "none" && selectionBehavior === "toggle"`), add all to
+- [x] 1.4 `root.tsx`: destructure `renderEmptyState`, compute
+      `showSelectionColumn` (`selectionMode !== "none"`), add both to
       `contextValue` and its deps
-- [x] 1.5 `table.tsx`: forward `selectionBehavior`; pass
-      `new Set(rows.map(getRowKey))` when `disabledKeys === "all"`
+- [x] 1.5 `table.tsx`: pass `new Set(rows.map(getRowKey))` when
+      `disabledKeys === "all"`
 - [x] 1.6 `header.tsx` and `row.tsx`: use `showSelectionColumn` for the selection
       column, the selection cell and the expand column width
 - [x] 1.7 `row.tsx` `getIsDisabled`: check `row.isDisabled` before `disabledKeys`
 - [x] 1.8 `data-table.types.ts`: remove `onVisibilityChange`; add
-      `selectionBehavior` and `showSelectionColumn` to the context type; JSDoc on
-      `renderEmptyState`, `selectionBehavior`, `disabledKeys`
+      `showSelectionColumn` to the context type; JSDoc on `renderEmptyState` and
+      `disabledKeys`
 
 ## 2. Row activation
 
@@ -91,7 +89,8 @@ it once and see it fail, then fix. Paths are relative to
 - [x] 6.1 Minor changeset for `@commercetools/nimbus` (consumer view, per
       `docs/changeset-conventions.md`): keyboard activation, `onRowAction` and
       deprecated `onRowClick`, disabled rows no longer call `onRowAction`,
-      working `selectionBehavior` / `renderEmptyState` / `disabledKeys="all"`,
+      removed `selectionBehavior`, working `renderEmptyState` /
+      `disabledKeys="all"`,
       `nestedKey` deprecated, `DraggableList.Item removeButtonLabel`
 - [x] 6.2 `pnpm --filter @commercetools/nimbus typecheck:dev` shows no new errors
 - [x] 6.3 `pnpm test:dev` for `data-table.stories.tsx`, `data-table.docs.spec.tsx`
@@ -120,3 +119,14 @@ it once and see it fail, then fix. Paths are relative to
 - [x] 8.2 `data-table.recipe.ts`: row slot uses `layerStyle: "disabled"`;
       delete the duplicate root rule; no hover highlight on disabled rows
 
+## 9. Remove selectionBehavior (design.md, D5)
+
+- [x] 9.1 Check whether replace mode is needed: history (#279), specs, UI Kit,
+      consumer usage, conflict with row activation
+- [x] 9.2 Remove `selectionBehavior` from `DataTableProps`, the context,
+      `root.tsx` and `table.tsx`; `showSelectionColumn` becomes
+      `selectionMode !== "none"`
+- [x] 9.3 Stories: delete `ReplaceSelectionBehavior`; drop
+      `selectionBehavior="toggle"` from two stories
+- [x] 9.4 Changeset, spec delta and PR description say the prop is removed and
+      why

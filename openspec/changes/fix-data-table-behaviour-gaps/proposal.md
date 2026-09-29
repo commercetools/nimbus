@@ -13,7 +13,7 @@ The defects, verified against `react-aria-components@1.21.1`,
 | Area                 | What consumers see today                                                                                                                                                                                                                          |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `renderEmptyState`   | Ignored. Every empty table shows the built-in "No Data". The prop is spread onto the root DOM element instead.                                                                                                                                    |
-| `selectionBehavior`  | Ignored. It never reaches React Aria, so `"replace"` behaves like `"toggle"`.                                                                                                                                                                     |
+| `selectionBehavior`  | Ignored since the first release. It never reaches React Aria, so `"replace"` behaves like `"toggle"`. No requirement asks for replace mode and no consumer passes the prop (design.md, D5).                                                       |
 | `disabledKeys="all"` | Rows look disabled, but React Aria receives the string `"all"`. `new Set("all")` is `{"a", "l"}` (`useGridState.mjs:14`), so rows stay selectable and focusable.                                                                                  |
 | `row.isDisabled`     | Ignored unless `disabledKeys` is also passed.                                                                                                                                                                                                     |
 | Selection column     | Two rules decide whether it exists: `selectionMode !== "none"` (nested row `colSpan`) and `selectionBehavior === "toggle"` (cell and header). Wiring `selectionBehavior` alone would make the nested row one column too wide in `"replace"` mode. |
@@ -41,10 +41,13 @@ Three claims from the ticket did not hold and are **not** part of this change:
 ## What Changes
 
 - `renderEmptyState` is rendered when the table has no rows.
-- `selectionBehavior` is forwarded to React Aria. One rule decides whether the
-  selection column exists: `selectionMode !== "none"` and
-  `selectionBehavior === "toggle"`. Header, cells and nested row `colSpan` all
-  use it.
+- **BREAKING (type):** `selectionBehavior` is removed from `DataTableProps`. It
+  never had an effect, so nothing changes at runtime. Code that passes it no
+  longer compiles; delete the prop. Selection always uses React Aria's
+  `"toggle"` behavior. See design.md, D5, for why the prop is removed instead of
+  fixed.
+- One rule decides whether the selection column exists:
+  `selectionMode !== "none"`. Header, cells and nested row `colSpan` all use it.
 - `disabledKeys="all"` disables every row for React Aria as well (selection,
   focus order), not only visually.
 - `row.isDisabled: true` disables a row without `disabledKeys`.
@@ -74,9 +77,10 @@ Three claims from the ticket did not hold and are **not** part of this change:
 - `onVisibilityChange` is removed from the internal context type (never
   provided, never read).
 - Released as **minor** (new behaviour: keyboard activation, working props,
-  deprecations). The `onRowAction` change would normally need a major release
-  (`docs/changeset-conventions.md`). It ships as a minor on purpose, because the
-  usage scan above found no consumer to break.
+  deprecations). The `onRowAction` change and the removal of `selectionBehavior`
+  would normally need a major release (`docs/changeset-conventions.md`). They
+  ship as a minor on purpose, because the usage checks found no consumer to
+  break (design.md, D4 and D5).
 
 ## Capabilities
 
@@ -88,8 +92,8 @@ None.
 
 - `nimbus-data-table`: adds "Row Activation" (click and Enter, deprecated
   `onRowClick`, disabled rows, mouse delay vs. immediate Enter) and "Disabled
-  Rows" (`disabledKeys="all"`, `row.isDisabled`); modifies "Row Selection"
-  (`selectionBehavior`, single selection-column rule), "No Data Display"
+  Rows" (`disabledKeys="all"`, `row.isDisabled`); modifies "Row Selection" (no
+  `selectionBehavior` prop, single selection-column rule), "No Data Display"
   (`renderEmptyState`, localized default); adds "Nested Content API"
   (`nestedKey` deprecated) and "Localized Row and Panel Labels" (pin, nested
   placeholder, layout panel, hide column); modifies "Row Click Cursor Feedback"
@@ -115,6 +119,6 @@ None.
 - **Depends on**: `fix-data-table-row-identity` (#1996). Row ids come from its
   `getRowKey`, and its "Row Selection" delta is the base for this one.
 - **Follow-up**: #2007 (`size` prop) computes the expand column width from
-  `selectionBehavior === "toggle"`; it must switch to the single
-  selection-column rule.
+  `selectionBehavior === "toggle"`; it must switch to `showSelectionColumn` from
+  context.
 - **Not in scope**: performance and recipe cleanup (FEC-1347).

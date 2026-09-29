@@ -54,7 +54,6 @@ export const DataTableRoot = function DataTableRoot<
     defaultSelectedKeys,
     onSelectionChange,
     selectionMode = "none",
-    selectionBehavior = "toggle",
     disallowEmptySelection = false,
     allowsSorting = false,
     maxHeight,
@@ -203,10 +202,7 @@ export const DataTableRoot = function DataTableRoot<
   const showExpandColumn = hasExpandableContent && allowsExpandColumn;
   // The single rule for whether the selection column exists. Header, cells
   // and the nested row's colSpan all read it, so they cannot disagree.
-  // React Aria reports `selectionBehavior: null` for selectionMode "none"
-  // and only "toggle" renders checkboxes.
-  const showSelectionColumn =
-    selectionMode !== "none" && selectionBehavior === "toggle";
+  const showSelectionColumn = selectionMode !== "none";
   const showPinColumn = allowsPinning;
 
   const expandedRef = useRef(expanded);
@@ -312,7 +308,6 @@ export const DataTableRoot = function DataTableRoot<
       search,
       allowsSorting,
       selectionMode,
-      selectionBehavior,
       disallowEmptySelection,
       maxHeight,
       isTruncated,
@@ -345,7 +340,6 @@ export const DataTableRoot = function DataTableRoot<
       search,
       allowsSorting,
       selectionMode,
-      selectionBehavior,
       disallowEmptySelection,
       maxHeight,
       isTruncated,

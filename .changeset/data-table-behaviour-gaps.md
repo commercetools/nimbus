@@ -20,8 +20,8 @@ were accepted but ignored now work.
   receives only the row.
 - **Fixed:** `renderEmptyState` is shown when the table has no rows, instead of
   the built-in "No Data".
-- **Fixed:** `selectionBehavior="replace"` works. It renders no checkbox column,
-  and a click replaces the selection.
+- **Removed:** the `selectionBehavior` prop. It never had an effect: every table
+  already behaved as `"toggle"`, and still does. If you pass it, delete it.
 - **Fixed:** `disabledKeys="all"` disables every row, including the header
   checkbox.
 - **Fixed:** a row with `isDisabled: true` is disabled without `disabledKeys`.

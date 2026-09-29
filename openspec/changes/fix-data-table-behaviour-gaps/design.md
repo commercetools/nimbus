@@ -17,7 +17,8 @@ Versions checked: `react-aria-components@1.21.1`, `react-aria@3.52.1`,
 
 **Goals:**
 
-- Every public prop that exists does what its type says.
+- Every public prop that exists does what its type says, or is removed when
+  nobody needs it (`selectionBehavior`, D5).
 - One rule decides whether the selection column exists.
 - A keyboard user can activate and expand any row a mouse user can (WCAG 2.1.1).
 - A clear name for row activation (`onRowAction`), with `onRowClick` kept as a
@@ -135,18 +136,66 @@ written in the ticket). The first click of a double-click would activate the row
 - `onRowClick` gets `@deprecated Use onRowAction instead.` and keeps working,
   including for Enter.
 
-### D5 — One rule for the selection column
+### D5 — `selectionBehavior` is removed; one rule for the selection column
 
 React Aria gives `selectionBehavior: selectionMode === 'none' ? null : …`
-(`Table.mjs:328`). Today the header and cells check
+(`Table.mjs:328`). On `main` the header and cells check
 `selectionBehavior === "toggle"` from `useTableOptions()`, while the nested row
 `colSpan` checks `selectionMode !== "none"`. They agree only because
 `selectionBehavior` never reaches React Aria.
 
-**Decision:** Root computes
-`showSelectionColumn = selectionMode !== "none" && selectionBehavior === "toggle"`
-and puts it in context. Header, cells, the expand column width and `colSpan` all
-read it. `selectionBehavior` (default `"toggle"`) is forwarded to `RaTable`.
+The first version of this change forwarded `selectionBehavior` to `RaTable`. In
+`"replace"` mode the keyboard worked, but a mouse click did not select a row. We
+then checked whether the prop is needed at all.
+
+**Findings:**
+
+- **Never worked.** The first DataTable commit (`87a531acc`, #279, 2025-08-21)
+  declared `selectionBehavior?: "toggle" | "replace"` on the public props. Root
+  never read it and `DataTable.Table` never passed it to `RaTable`, so every
+  table behaved as `"toggle"`. The only two stories that set it pass `"toggle"`,
+  the default.
+- **No requirement.** The `nimbus-data-table` spec on `main` does not mention
+  it. The feature list of #279 has "Select row" and "Select all rows", not a
+  replace mode. UI Kit's DataTable has no selection props; its only row callback
+  is `onRowClick(row, rowIndex, columnKey)`. The only request is FEC-1346, and
+  it asks for the prop to work because the type declares it.
+- **No use.** GitHub code search for `selectionBehavior` in the `commercetools`
+  organisation (default branches, 2026-09-29): 11 files, all in `nimbus`. The
+  local mirrors of 13 consumer repositories
+  (`@mcf/nimbus-consumer-registry`): 0. None of the 12 consumer files that
+  render a DataTable sets `selectionMode` either.
+- **Conflicts with row activation.** In React Aria's replace mode, when a row
+  has both selection and an action, a click selects and a double-click runs the
+  action (`hasSecondaryAction`, `useSelectableItem.mjs:117`; `onDoubleClick`,
+  `:225`). DataTable does the opposite: a click runs `onRowAction`, and a
+  double-click selects a word and cancels the click (D3). Supporting replace
+  mode needs a new click design, not a bug fix.
+- **Possible use cases.** The
+  [React Aria selection guide](https://react-aria.adobe.com/selection) says:
+  "This behavior emulates native platforms such as macOS and Windows, and is
+  often used when checkboxes in each row are not desired." That suggests
+  desktop-style selection without checkboxes, and a list whose selection
+  follows the arrow keys, for example next to a detail panel. No product has
+  asked for either. `onRowAction` already opens a detail view on click or
+  Enter.
+
+**Decision:** remove `selectionBehavior` from `DataTableProps` and the context.
+DataTable always uses React Aria's default, `"toggle"`. Root computes
+`showSelectionColumn = selectionMode !== "none"` and puts it in context. Header,
+cells, the expand column width and `colSpan` all read it.
+
+Removing a prop narrows the type, which `docs/changeset-conventions.md` counts
+as major. It ships in a minor on purpose, like the `onRowAction` change (D4): no
+consumer uses it, and at runtime nothing changes, because the value never
+reached React Aria. A TypeScript consumer that passes it gets a compile error;
+the fix is to delete the prop.
+
+**Alternative rejected:** keep the prop and fix mouse selection in replace mode.
+That means maintaining and testing a mode nobody uses, and deciding how a click
+and a double-click behave with `onRowAction`. If a product needs it later,
+adding it back is additive (minor), with its own proposal that makes that
+decision.
 
 ### D6 — `disabledKeys="all"` normalised before React Aria
 
@@ -192,15 +241,20 @@ header checkbox is also disabled when `disabledKeys === "all"`.
   listener pattern that already exists in the row.
 - [The new message keys show English in de, es, fr-FR and pt-BR until the next
   Transifex sync.] → Stated in the PR. This is the normal flow for new keys.
+- [`selectionBehavior` is removed from the types. Code that passes it no longer
+  compiles.] → The usage check in D5 found no consumer that passes it, and it
+  never had an effect. The changeset says to delete it.
 - [Conflict with #2007 in `data-table.header.tsx`.] → #2007 moves its expand
   width to `showSelectionColumn` when it is rebased.
 
 ## Migration Plan
 
-Minor release. The one breaking change, to `onRowAction`, ships in a minor on
-purpose, because no consumer uses the prop (D4). No other consumer action is
-required. `onRowClick` and `nestedKey` keep working with deprecation notices.
-Rollback means reverting the PR; no data or storage is involved.
+Minor release. The two breaking changes ship in a minor on purpose, because no
+consumer uses either prop: the `onRowAction` change (D4) and the removal of
+`selectionBehavior` (D5). If a consumer passes `selectionBehavior`, they delete
+it; nothing changes at runtime. No other consumer action is required.
+`onRowClick` and `nestedKey` keep working with deprecation notices. Rollback
+means reverting the PR; no data or storage is involved.
 
 ## Open Questions
 

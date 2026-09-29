@@ -180,18 +180,16 @@ The component SHALL support single and multi-row selection.
 - **AND** keyboard navigation SHALL skip it
 - **AND** it SHALL be styled as disabled
 
-#### Scenario: Replace selection behavior
+#### Scenario: No selection behavior prop
 
-- **WHEN** `selectionBehavior="replace"` and selection is enabled
-- **THEN** SHALL pass `selectionBehavior="replace"` to React Aria
-- **AND** SHALL NOT render the checkbox column
-- **AND** clicking a row SHALL select it and deselect the others
+- **WHEN** a consumer configures selection
+- **THEN** the component SHALL NOT accept a `selectionBehavior` prop
+- **AND** selection SHALL always use React Aria's `"toggle"` behavior
 
 #### Scenario: One rule for the selection column
 
 - **WHEN** the table decides whether the selection column exists
-- **THEN** it SHALL exist only when `selectionMode` is not `"none"` and
-  `selectionBehavior` is `"toggle"`
+- **THEN** it SHALL exist only when `selectionMode` is not `"none"`
 - **AND** the header, the row cells and the nested row `colSpan` SHALL all use
   this rule
 

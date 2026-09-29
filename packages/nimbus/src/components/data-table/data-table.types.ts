@@ -121,7 +121,6 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     expanded: Set<string>;
     allowsSorting?: boolean;
     selectionMode?: "none" | "single" | "multiple";
-    selectionBehavior?: "toggle" | "replace";
     disallowEmptySelection?: boolean;
     maxHeight?: string | number;
     isTruncated?: boolean;
@@ -152,8 +151,8 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     hasExpandableContent: boolean;
     /**
      * Whether the checkbox selection column exists: `selectionMode` is not
-     * `"none"` and `selectionBehavior` is `"toggle"`. The header, the row
-     * cells and the nested row's `colSpan` all read this value.
+     * `"none"`. The header, the row cells and the nested row's `colSpan` all
+     * read this value.
      */
     showSelectionColumn: boolean;
     showPinColumn: boolean;
@@ -226,8 +225,6 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   defaultSortDescriptor?: SortDescriptor;
   onSortChange?: (descriptor: SortDescriptor) => void;
   selectionMode?: "none" | "single" | "multiple";
-  /** How selection behaves. `"toggle"` (default) renders a checkbox column and each selection toggles a row. `"replace"` renders no checkbox column and a selection replaces the previous one; hold Ctrl/Cmd or Shift to extend it. */
-  selectionBehavior?: "toggle" | "replace";
   disallowEmptySelection?: boolean;
   selectedKeys?: Selection;
   defaultSelectedKeys?: Selection;

@@ -31,7 +31,6 @@ export const DataTableTable = function DataTableTable({
     sortDescriptor,
     onSortChange,
     selectionMode,
-    selectionBehavior,
     disallowEmptySelection,
     disabledKeys,
     hasRenderNestedContent,
@@ -85,7 +84,6 @@ export const DataTableTable = function DataTableTable({
         defaultSelectedKeys={defaultSelectedKeys}
         onSelectionChange={onSelectionChange}
         selectionMode={selectionMode}
-        selectionBehavior={selectionBehavior}
         disallowEmptySelection={disallowEmptySelection}
         disabledKeys={ariaDisabledKeys}
         disabledBehavior="all"

@@ -5794,7 +5794,6 @@ export const StickyColumnBackground: Story = {
           rows={stickyRows}
           maxHeight="300px"
           selectionMode="multiple"
-          selectionBehavior="toggle"
         />
       </Box>
     );
@@ -6177,7 +6176,6 @@ export const ScrollShadows: Story = {
           columns={scrollColumns}
           rows={scrollRows}
           selectionMode="multiple"
-          selectionBehavior="toggle"
           data-testid="scroll-shadow-table"
         />
       </Box>
@@ -7320,45 +7318,27 @@ export const CustomEmptyState: Story = {
 };
 
 /**
- * With `selectionBehavior="replace"` there is no checkbox column, and the
- * nested row still spans exactly the cells a data row renders.
+ * With selection enabled, the nested row spans exactly the cells a data row
+ * renders, including the checkbox column.
  */
-export const ReplaceSelectionBehavior: Story = {
-  render: () => {
-    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
-    return (
-      <Stack>
-        <DataTable
-          columns={behaviourColumns}
-          rows={behaviourRows}
-          selectionMode="multiple"
-          selectionBehavior="replace"
-          selectedKeys={selectedKeys}
-          onSelectionChange={setSelectedKeys}
-          defaultExpandedRows={new Set(["r1"])}
-          renderNestedContent={(row) => (
-            <Text>Details for {String(row.name)}</Text>
-          )}
-          aria-label="Replace selection"
-        />
-        <Text data-testid="replace-selected">
-          {formatSelection(selectedKeys)}
-        </Text>
-      </Stack>
-    );
-  },
+export const NestedRowSpansSelectionColumn: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      selectionMode="multiple"
+      defaultExpandedRows={new Set(["r1"])}
+      renderNestedContent={(row) => <Text>Details for {String(row.name)}</Text>}
+      aria-label="Nested row with a selection column"
+    />
+  ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("No checkbox column is rendered", async () => {
-      await canvas.findByText("Details for Ada");
-      expect(
-        within(canvas.getByRole("grid")).queryAllByRole("checkbox")
-      ).toHaveLength(0);
-    });
-
     await step("The nested row spans every rendered column", async () => {
+      await canvas.findByText("Details for Ada");
       const firstDataRow = canvas.getByRole("row", { name: /Ada/ });
+      expect(within(firstDataRow).getByRole("checkbox")).toBeInTheDocument();
       const cellCount = firstDataRow.querySelectorAll(
         '[role="gridcell"], [role="rowheader"]'
       ).length;
@@ -7366,21 +7346,6 @@ export const ReplaceSelectionBehavior: Story = {
         "[data-nested-cell]"
       ) as HTMLTableCellElement;
       expect(nestedCell.colSpan).toBe(cellCount);
-    });
-
-    await step("Space on a focused row replaces the selection", async () => {
-      const ada = canvas.getByRole("row", { name: /Ada/ });
-      const grace = canvas.getByRole("row", { name: /Grace/ });
-      ada.focus();
-      await userEvent.keyboard(" ");
-      await waitFor(() =>
-        expect(canvas.getByTestId("replace-selected")).toHaveTextContent(/^r1$/)
-      );
-      grace.focus();
-      await userEvent.keyboard(" ");
-      await waitFor(() =>
-        expect(canvas.getByTestId("replace-selected")).toHaveTextContent(/^r2$/)
-      );
     });
   },
 };
