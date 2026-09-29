@@ -145,12 +145,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           },
         },
       },
-      "& .data-table-row[data-disabled='true']": {
-        // layerStyle: "disabled",
-        opacity: 0.8,
-        cursor: "not-allowed",
-        backgroundColor: "inherit",
-      },
       "& .data-table-row-pinned": {
         boxShadow: "var(--pinned-shadow-left), var(--pinned-shadow-right)",
         "& .data-table-sticky-cell": {
@@ -401,15 +395,17 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         cursor: "grab",
       },
 
-      "&:hover:not([data-nested-row-expanded])": {
+      // Disabled rows give no hover feedback: they cannot be interacted with.
+      "&:hover:not([data-nested-row-expanded]):not([data-disabled])": {
         backgroundColor: "{colors.primary.3}",
         transition: "background-color {durations.moderate} ease",
       },
       // Frozen cells mirror the hover highlight through the variable. Skipped for
       // custom-bg rows so their frozen cells keep inheriting the consumer color.
-      "&:hover:not([data-nested-row-expanded]):not([data-custom-bg])": {
-        "--dt-row-bg": "{colors.primary.3}",
-      },
+      "&:hover:not([data-nested-row-expanded]):not([data-disabled]):not([data-custom-bg])":
+        {
+          "--dt-row-bg": "{colors.primary.3}",
+        },
       _last: {
         borderBottom: "none",
       },
@@ -423,9 +419,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         "--dt-row-bg": "{colors.primary.4}",
       },
       "&[data-disabled='true']": {
-        // layerStyle: "disabled",
-        opacity: 0.8,
-        cursor: "not-allowed",
+        layerStyle: "disabled",
       },
     },
     cell: {

@@ -112,3 +112,11 @@ it once and see it fail, then fix. Paths are relative to
 - [x] 7.4 `NestedContentPanel` in the nested cell: `close` sets React Aria's
       focused key to the opener before collapsing
 
+## 8. Disabled row style
+
+- [x] 8.1 Story `DisabledRowStyle`: opacity 0.5 and `not-allowed`; real-pointer
+      hover leaves a disabled row's background unchanged and still highlights
+      an enabled row
+- [x] 8.2 `data-table.recipe.ts`: row slot uses `layerStyle: "disabled"`;
+      delete the duplicate root rule; no hover highlight on disabled rows
+

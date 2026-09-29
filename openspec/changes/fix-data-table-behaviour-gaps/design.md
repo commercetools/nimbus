@@ -221,3 +221,24 @@ owns `close`.
 **Alternative rejected:** focusing the expand button from an effect after the
 collapse. It races React Aria's own focus correction: it worked in a manual
 browser run and failed in the story, depending on which effect ran last.
+
+### D10 — Disabled rows use the shared disabled layer style
+
+DataTable dimmed disabled rows with its own `opacity: 0.8`, in two rules (root
+and row slot); `layerStyle: "disabled"` had been commented out in both since
+the first DataTable commit, with no stated reason. Tree, ListBox and
+DraggableList put the layer style (`opacity: 0.5`, `cursor: not-allowed`) on
+the whole row.
+
+**Decision:** the row slot uses `layerStyle: "disabled"`, the duplicate root
+rule is deleted, and disabled rows get no hover highlight.
+
+**Trade-offs, measured in Chromium:**
+
+- Cell text contrast on white drops from 8.4:1 to 3.19:1. WCAG 1.4.3 does not
+  require contrast for inactive user interface components.
+- A disabled row's checkbox applies the layer style too, so it renders at
+  0.25 instead of 0.4. DraggableList behaves the same way.
+- Opacity below 1 already made each disabled row its own stacking context at
+  0.8, so sticky columns are unaffected.
+

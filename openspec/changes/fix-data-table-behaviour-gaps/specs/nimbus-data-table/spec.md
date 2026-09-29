@@ -234,6 +234,13 @@ The component SHALL provide visual cursor feedback when rows are clickable.
 - **THEN** the row SHALL display `cursor: not-allowed`
 - **AND** the disabled cursor SHALL take precedence over the clickable cursor
 
+#### Scenario: Disabled row style
+
+- **WHEN** a row is disabled
+- **THEN** it SHALL use the shared `disabled` layer style, like disabled rows
+  in Tree, ListBox and DraggableList
+- **AND** hovering it SHALL NOT change its background
+
 ### Requirement: Text Selection in Clickable Rows
 
 The component SHALL allow users to select and copy text within table cells,

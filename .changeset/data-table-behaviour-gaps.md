@@ -25,6 +25,9 @@ were accepted but ignored now work.
 - **Fixed:** `disabledKeys="all"` disables every row, including the header
   checkbox.
 - **Fixed:** a row with `isDisabled: true` is disabled without `disabledKeys`.
+- **Changed:** disabled rows use the same disabled style as other Nimbus
+  components, so they look lighter than before. They no longer highlight on
+  hover.
 - **Fixed:** the pin button, the empty state and the nested-items placeholder
   are translated. They show English in other languages until the translations
   arrive.

@@ -8094,3 +8094,54 @@ export const CloseReturnsFocusToOpener: Story = {
     );
   },
 };
+
+/**
+ * Disabled rows use the shared `disabled` layer style, like disabled rows in
+ * Tree, ListBox and DraggableList, and give no hover feedback.
+ */
+export const DisabledRowStyle: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={[behaviourRows[0], { ...behaviourRows[1], isDisabled: true }]}
+      aria-label="Disabled row style"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Grace");
+    const disabledRow = rowNamed(canvasElement, /Grace/);
+    const enabledRow = rowNamed(canvasElement, /Ada/);
+
+    await step("A disabled row uses the disabled layer style", async () => {
+      expect(getComputedStyle(disabledRow).opacity).toBe("0.5");
+      expect(getComputedStyle(disabledRow).cursor).toBe("not-allowed");
+      expect(getComputedStyle(enabledRow).opacity).toBe("1");
+    });
+
+    // CSS :hover needs a real pointer. Simulated events from storybook/test
+    // do not trigger it, so this step runs only under the Vitest browser
+    // runner (see isVitestBrowser in checkbox.stories.tsx).
+    const isVitestBrowser = Boolean(
+      (globalThis as { __vitest_browser__?: boolean }).__vitest_browser__
+    );
+    if (isVitestBrowser) {
+      const { userEvent: realUserEvent } = await import("vitest/browser");
+      await step("Hovering a disabled row does not highlight it", async () => {
+        const restingBg = getComputedStyle(disabledRow).backgroundColor;
+        await realUserEvent.hover(within(disabledRow).getByText("Grace"));
+        await wait(400);
+        expect(getComputedStyle(disabledRow).backgroundColor).toBe(restingBg);
+      });
+
+      await step("Hovering an enabled row still highlights it", async () => {
+        const restingBg = getComputedStyle(enabledRow).backgroundColor;
+        await realUserEvent.hover(within(enabledRow).getByText("Ada"));
+        await wait(400);
+        expect(getComputedStyle(enabledRow).backgroundColor).not.toBe(
+          restingBg
+        );
+      });
+    }
+  },
+};
