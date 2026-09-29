@@ -173,7 +173,10 @@ overrides:
 catalogs:
   tooling:
     "@figma/code-connect": ^1.5.3
-    "@fission-ai/openspec": ^1.13.2
+    # Held on 1.10.x: 1.11 adds a "Purpose section is still a placeholder"
+    # warning, which fails CI's `openspec validate --all --strict` for 24 specs.
+    # Move to ^1.11 once those specs have a written Purpose section.
+    "@fission-ai/openspec": ~1.10.0
     eslint-plugin-react-hooks: ^7.1.1
     globals: ^17.12.0
     glob: ^13.0.6
