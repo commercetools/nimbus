@@ -85,9 +85,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           right: 0,
           zIndex: 3,
           backgroundColor: "var(--dt-row-bg, inherit)",
-          // Match the row's hover/selection fade (row slot `_hover`) so frozen
-          // columns move in lockstep with the rest of the row.
-          transition: "background-color {durations.moderate} ease",
           ...stickyBgOverlap,
           "&::before": { right: 0 },
           "& [data-slot='nimbus-table-cell-pin-button']": {
@@ -101,9 +98,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           position: "sticky",
           left: 0,
           backgroundColor: "var(--dt-row-bg, inherit)",
-          // Match the row's hover/selection fade (row slot `_hover`) so frozen
-          // columns move in lockstep with the rest of the row.
-          transition: "background-color {durations.moderate} ease",
           ...stickyBgOverlap,
         },
         "& [data-slot='drag']": {
@@ -137,7 +131,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         // driven by the row's `--dt-row-bg` variable (frozen cells read it), so
         // there is no sticky-cell background rule here — and therefore no
         // specificity race with the resting background.
-        _hover: {
+        //
+        // Keyboard focus reveals it too: a keyboard user moving through the
+        // row must be able to see the pin button they land on (WCAG 2.4.7).
+        "&:hover, &[data-focus-visible], &[data-focus-visible-within]": {
           "& [data-slot='pin-row-cell']": {
             "& [data-slot='nimbus-table-cell-pin-button']": {
               opacity: 1,
@@ -398,7 +395,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       // Disabled rows give no hover feedback: they cannot be interacted with.
       "&:hover:not([data-nested-row-expanded]):not([data-disabled])": {
         backgroundColor: "{colors.primary.3}",
-        transition: "background-color {durations.moderate} ease",
       },
       // Frozen cells mirror the hover highlight through the variable. Skipped for
       // custom-bg rows so their frozen cells keep inheriting the consumer color.
@@ -412,11 +408,12 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       "&[data-clickable='true']": {
         cursor: "pointer",
       },
+      // Step 5 is the scale's "Active / Selected UI element background".
       "&[data-selected='true']": {
-        background: "{colors.primary.4}",
+        background: "{colors.primary.5}",
       },
       "&[data-selected='true']:not([data-custom-bg])": {
-        "--dt-row-bg": "{colors.primary.4}",
+        "--dt-row-bg": "{colors.primary.5}",
       },
       "&[data-disabled='true']": {
         layerStyle: "disabled",

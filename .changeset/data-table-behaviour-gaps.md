@@ -36,6 +36,11 @@ were accepted but ignored now work.
 - **Fixed:** when nested content is closed from inside, with the `close`
   callback of `renderNestedContent`, focus returns to the row's expand button,
   or to the row when there is no expand column.
+- **Changed:** selected rows use a slightly stronger background, the palette's
+  selected step. Rows and their frozen columns change color immediately on hover
+  and selection, without a fade.
+- **Fixed:** the pin button is visible when it has keyboard focus. Before, it
+  only showed on mouse hover.
 - **Deprecated:** `nestedKey`. Use `renderNestedContent`, which receives the
   row: `renderNestedContent={(row) => row.children}`.
 

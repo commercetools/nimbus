@@ -8145,3 +8145,43 @@ export const DisabledRowStyle: Story = {
     }
   },
 };
+
+/**
+ * The pin button is revealed on hover for mouse users. A keyboard user who
+ * moves focus into the row sees it too, instead of focusing an invisible
+ * button.
+ */
+export const PinButtonVisibleOnKeyboardFocus: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      aria-label="Pin button focus"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Grace");
+    const effectiveOpacity = (el: Element) => {
+      let o = 1;
+      for (let n: Element | null = el; n; n = n.parentElement) {
+        o *= parseFloat(getComputedStyle(n).opacity);
+      }
+      return o;
+    };
+
+    await step(
+      "The row's pin button shows when the row has focus",
+      async () => {
+        rowNamed(canvasElement, /Grace/).focus();
+        await userEvent.keyboard("{ArrowLeft}");
+        const pin = within(rowNamed(canvasElement, /Grace/)).getByRole(
+          "button",
+          { name: "Pin row" }
+        );
+        await waitFor(() => expect(document.activeElement).toBe(pin));
+        expect(effectiveOpacity(pin)).toBe(1);
+      }
+    );
+  },
+};
