@@ -72,6 +72,12 @@ Fallback: a native listener in `rowCallbackRef` next to the existing three. When
 the handler activates the row, it calls `preventDefault` and `stopPropagation`.
 Otherwise it does nothing and React Aria's default applies.
 
+A capture listener on the row sees every key press inside the row, not only
+those on the row. So the handler acts only when the event target is the row
+itself or one of its cells. Enter on anything focused inside a cell (a link, a
+text field, a button) reaches that element. A list of elements to skip would
+miss some, and each one it missed would lose its Enter.
+
 **Alternative rejected:** `RaTable onRowAction`. Enter would stop activating as
 soon as any row is selected, so keyboard and mouse would behave differently.
 

@@ -254,8 +254,9 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   /**
    * Called when the user activates a row: by clicking it, or by pressing Enter
    * while the row or one of its cells has focus. Space selects the row and does
-   * not activate it. Never called for disabled rows, or when the click or key
-   * press lands on a button, checkbox or input inside the row. Clicks wait
+   * not activate it. Never called for disabled rows, for Enter on anything
+   * focused inside a cell (a link, a button, a text field), or for a click on a
+   * button, checkbox or input inside the row. Clicks wait
    * about 300 ms so that double-clicking a word to select it does not activate
    * the row; Enter activates immediately.
    */

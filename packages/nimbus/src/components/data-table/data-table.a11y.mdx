@@ -47,15 +47,16 @@ const App = () => {
 
 ### Keyboard interaction
 
-| Key                                     | Action                                                                                |
-| --------------------------------------- | ------------------------------------------------------------------------------------- |
-| `Tab` / `Shift+Tab`                     | Move focus into / out of the table                                                    |
-| `Arrow Up` / `Arrow Down`               | Move focus between rows                                                               |
-| `Arrow Left` / `Arrow Right`            | Move focus between the row and its cells                                              |
-| `Home` / `End`                          | Move focus to the first / last cell in the row                                        |
-| `Enter`                                 | Activate the focused row (`onRowAction`), or expand it when there is no expand column |
-| `Space`                                 | Toggle selection of the focused row (when selection is enabled)                       |
-| `Enter` / `Space` on a button in a cell | Operate that button only (pin, expand, sort, drag handle)                             |
+| Key                                       | Action                                                                                |
+| ----------------------------------------- | ------------------------------------------------------------------------------------- |
+| `Tab` / `Shift+Tab`                       | Move focus into / out of the table                                                    |
+| `Arrow Up` / `Arrow Down`                 | Move focus between rows                                                               |
+| `Arrow Left` / `Arrow Right`              | Move focus between the row and its cells                                              |
+| `Home` / `End`                            | Move focus to the first / last cell in the row                                        |
+| `Enter`                                   | Activate the focused row (`onRowAction`), or expand it when there is no expand column |
+| `Space`                                   | Toggle selection of the focused row (when selection is enabled)                       |
+| `Enter` / `Space` on a button in a cell   | Operate that button only (pin, expand, sort, drag handle)                             |
+| `Enter` on a link or text field in a cell | Follow the link, or add a line break; the row is not activated                        |
 
 Row activation works by keyboard and pointer alike, so a row that opens a detail
 view with a click also opens it with `Enter`. Pinning and expanding use the

@@ -165,3 +165,11 @@ it once and see it fail, then fix. Paths are relative to
 - [x] 12.2 `data-table.recipe.ts`: the pinned outline moves from the row's
       `box-shadow` to the same `::after` layer as the focus ring (z-index 13);
       the `clip-path` workarounds on frozen cells in pinned rows are removed
+
+## 13. Review follow-ups
+
+- [x] 13.1 Story `RowActionLeavesEnterToCellContent`: Enter on a link in a cell
+      opens the link, Enter in a text field adds a line break, and neither calls
+      `onRowAction`; Enter on a focused cell still does
+- [x] 13.2 `row.tsx`: the Enter handler acts only when the event target is the
+      row or one of its cells (replaces the element list check in 2.4)

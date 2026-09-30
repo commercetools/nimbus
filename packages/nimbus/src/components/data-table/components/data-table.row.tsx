@@ -307,8 +307,10 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
    * 2.1.1). Space is left to React Aria, which uses it for selection.
    *
    * Runs in the capture phase and stops the event, so React Aria does not
-   * also toggle selection on Enter. Enter on a button, checkbox or other
-   * interactive element inside the row is left alone.
+   * also toggle selection on Enter. A capture listener sees every keydown
+   * inside the row, so it only acts when the row itself or one of its cells
+   * has focus. Enter on anything focused inside a cell (a link, a button, a
+   * checkbox) is left to that element.
    *
    * @param e - Native DOM Event from the keydown listener
    */
@@ -318,7 +320,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       if (e.key !== "Enter" || e.repeat || e.isComposing) return;
       if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
       if (!isClickable || isDisabled) return;
-      if (getIsTableRowChildElementInteractive(e)) return;
+      const rowElement = e.currentTarget as Element;
+      const target = e.target as Element;
+      if (target !== rowElement && target.parentElement !== rowElement) return;
 
       e.preventDefault();
       e.stopPropagation();

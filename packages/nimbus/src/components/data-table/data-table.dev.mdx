@@ -427,8 +427,9 @@ const App = () => {
 Use `onRowAction` to react when a user activates a row, for navigation or
 detail views. A row is activated by a click, or by pressing <kbd>Enter</kbd>
 while the row or one of its cells has focus. <kbd>Space</kbd> keeps selecting
-the row. Disabled rows are never activated, and clicks or key presses on a
-button, checkbox or input inside the row only affect that element.
+the row. Disabled rows are never activated. <kbd>Enter</kbd> on a link, button
+or text field inside a cell, and a click on a button, checkbox or input, only
+affect that element.
 
 A click waits about 300 ms before it activates the row, so that
 double-clicking a word to select it does not activate the row.

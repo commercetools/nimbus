@@ -22,6 +22,8 @@ import {
   Dialog,
   Flex,
   Heading,
+  Link,
+  MultilineTextInput,
   Select,
   Stack,
   Text,
@@ -7544,6 +7546,99 @@ export const RowActionWithKeyboard: Story = {
       await waitFor(() =>
         expect(onRowAction).toHaveBeenCalledWith(
           expect.objectContaining({ id: "r1" })
+        )
+      );
+    });
+  },
+};
+
+/**
+ * Enter on a link or a text field inside a cell goes to that element, not to
+ * the row. The row is activated only when the row itself or one of its cells
+ * has focus.
+ */
+export const RowActionLeavesEnterToCellContent: Story = {
+  args: { onRowAction: fn() },
+  render: (args) => {
+    const [linkClicks, setLinkClicks] = useState(0);
+    const cellContentColumns: DataTableColumnItem[] = [
+      ...behaviourColumns,
+      {
+        id: "profile",
+        header: "Profile",
+        accessor: (row: Record<string, unknown>) => (
+          <Link
+            href={`#profile-${row.id}`}
+            onClick={(e) => {
+              e.preventDefault();
+              setLinkClicks((count) => count + 1);
+            }}
+          >
+            {`Profile of ${row.name}`}
+          </Link>
+        ),
+      },
+      {
+        id: "note",
+        header: "Note",
+        accessor: (row: Record<string, unknown>) => (
+          <MultilineTextInput aria-label={`Note for ${row.name}`} rows={1} />
+        ),
+      },
+    ];
+    return (
+      <Stack>
+        <DataTable
+          columns={cellContentColumns}
+          rows={behaviourRows}
+          onRowAction={args.onRowAction}
+          aria-label="Enter on cell content"
+        />
+        <Text data-testid="link-clicks">{linkClicks}</Text>
+      </Stack>
+    );
+  },
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const onRowAction = args.onRowAction as ReturnType<typeof fn>;
+    await canvas.findByText("Ada");
+
+    await step("Enter on a link opens the link, not the row", async () => {
+      rowNamed(canvasElement, /Ada/).focus();
+      // Row, then the Name, Role and Profile cells; a cell with a link
+      // passes focus on to the link.
+      await userEvent.keyboard("{ArrowRight}{ArrowRight}{ArrowRight}");
+      expect(
+        canvas.getByRole("link", { name: "Profile of Ada" })
+      ).toHaveFocus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(canvas.getByTestId("link-clicks")).not.toHaveTextContent(/^0$/)
+      );
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("Enter in a text field adds a line break", async () => {
+      await userEvent.keyboard("{ArrowRight}");
+      const note = canvas.getByRole("textbox", { name: "Note for Ada" });
+      expect(note).toHaveFocus();
+      await userEvent.keyboard("{Enter}");
+      expect(note).toHaveValue("\n");
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("Enter on a focused cell still activates the row", async () => {
+      rowNamed(canvasElement, /Grace/).focus();
+      await userEvent.keyboard("{ArrowRight}");
+      expect(
+        canvas
+          .getByText("Grace")
+          .closest('[role="gridcell"], [role="rowheader"]')
+      ).toHaveFocus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(onRowAction).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "r2" })
         )
       );
     });
