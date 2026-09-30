@@ -332,7 +332,7 @@ overrides:
   react-aria-components: 1.21.1
   react-stately: 3.50.0
   '@react-aria/interactions': 3.28.1
-  brace-expansion@<2: ^2.1.2
+  brace-expansion@<2: ^5.0.12
   brace-expansion@2: ^2.1.2
   brace-expansion@>=3.0.0 <5.0.7: '>=5.0.7'
   mdast-util-to-hast: ^13.2.1
@@ -5178,6 +5178,10 @@ packages:
 
   brace-expansion@2.1.2:
     resolution: {integrity: sha512-w5JZcKgdhDOgOwm8H+KgbosopHMuGcl6qbulwjtz3SM7I7P3yW1eAjzMPLrIE+NQ9vjgANKHWeMHnrT0OXW1oA==}
+
+  brace-expansion@5.0.12:
+    resolution: {integrity: sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ==}
+    engines: {node: 20 || >=22}
 
   brace-expansion@5.0.9:
     resolution: {integrity: sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==}
@@ -15486,6 +15490,10 @@ snapshots:
     dependencies:
       balanced-match: 1.0.2
 
+  brace-expansion@5.0.12:
+    dependencies:
+      balanced-match: 4.0.4
+
   brace-expansion@5.0.9:
     dependencies:
       balanced-match: 4.0.4
@@ -17703,7 +17711,7 @@ snapshots:
 
   minimatch@3.1.5:
     dependencies:
-      brace-expansion: 2.1.2
+      brace-expansion: 5.0.12
 
   minimatch@5.1.9:
     dependencies:
