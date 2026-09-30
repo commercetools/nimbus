@@ -7553,51 +7553,72 @@ export const RowActionWithKeyboard: Story = {
 };
 
 /**
+ * A table whose cells hold a link, a text field and a checkbox, for the
+ * stories that check that these controls keep their own clicks and keys.
+ */
+const CellControlsTable = ({
+  onRowAction,
+  "aria-label": ariaLabel,
+}: Pick<DataTableProps, "onRowAction"> & { "aria-label": string }) => {
+  const [linkClicks, setLinkClicks] = useState(0);
+  const cellControlColumns: DataTableColumnItem[] = [
+    ...behaviourColumns,
+    {
+      id: "profile",
+      header: "Profile",
+      accessor: (row: Record<string, unknown>) => (
+        <Link
+          href={`#profile-${row.id}`}
+          onClick={(e) => {
+            e.preventDefault();
+            setLinkClicks((count) => count + 1);
+          }}
+        >
+          {`Profile of ${row.name}`}
+        </Link>
+      ),
+    },
+    {
+      id: "note",
+      header: "Note",
+      accessor: (row: Record<string, unknown>) => (
+        <MultilineTextInput aria-label={`Note for ${row.name}`} rows={1} />
+      ),
+    },
+    {
+      id: "reviewed",
+      header: "Reviewed",
+      accessor: (row: Record<string, unknown>) => (
+        <Checkbox>{`Reviewed ${row.name}`}</Checkbox>
+      ),
+    },
+  ];
+  return (
+    <Stack>
+      <DataTable
+        columns={cellControlColumns}
+        rows={behaviourRows}
+        onRowAction={onRowAction}
+        aria-label={ariaLabel}
+      />
+      <Text data-testid="link-clicks">{linkClicks}</Text>
+    </Stack>
+  );
+};
+
+/**
  * Enter on a link or a text field inside a cell goes to that element, not to
  * the row. The row is activated only when the row itself or one of its cells
  * has focus.
  */
 export const RowActionLeavesEnterToCellContent: Story = {
   args: { onRowAction: fn() },
-  render: (args) => {
-    const [linkClicks, setLinkClicks] = useState(0);
-    const cellContentColumns: DataTableColumnItem[] = [
-      ...behaviourColumns,
-      {
-        id: "profile",
-        header: "Profile",
-        accessor: (row: Record<string, unknown>) => (
-          <Link
-            href={`#profile-${row.id}`}
-            onClick={(e) => {
-              e.preventDefault();
-              setLinkClicks((count) => count + 1);
-            }}
-          >
-            {`Profile of ${row.name}`}
-          </Link>
-        ),
-      },
-      {
-        id: "note",
-        header: "Note",
-        accessor: (row: Record<string, unknown>) => (
-          <MultilineTextInput aria-label={`Note for ${row.name}`} rows={1} />
-        ),
-      },
-    ];
-    return (
-      <Stack>
-        <DataTable
-          columns={cellContentColumns}
-          rows={behaviourRows}
-          onRowAction={args.onRowAction}
-          aria-label="Enter on cell content"
-        />
-        <Text data-testid="link-clicks">{linkClicks}</Text>
-      </Stack>
-    );
-  },
+  render: (args) => (
+    <CellControlsTable
+      onRowAction={args.onRowAction}
+      aria-label="Enter on cell content"
+    />
+  ),
   play: async ({ args, canvasElement, step }) => {
     const canvas = within(canvasElement);
     const onRowAction = args.onRowAction as ReturnType<typeof fn>;
@@ -7636,6 +7657,65 @@ export const RowActionLeavesEnterToCellContent: Story = {
           .closest('[role="gridcell"], [role="rowheader"]')
       ).toHaveFocus();
       await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(onRowAction).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "r2" })
+        )
+      );
+    });
+  },
+};
+
+/**
+ * A click on a link, a text field or a checkbox label inside a cell goes to
+ * that control and does not activate the row. A click anywhere else in the
+ * row still does.
+ */
+export const RowActionIgnoresClicksOnCellControls: Story = {
+  args: { onRowAction: fn() },
+  render: (args) => (
+    <CellControlsTable
+      onRowAction={args.onRowAction}
+      aria-label="Clicks on cell controls"
+    />
+  ),
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const onRowAction = args.onRowAction as ReturnType<typeof fn>;
+    await canvas.findByText("Ada");
+
+    await step("A click on a link opens the link, not the row", async () => {
+      await userEvent.click(
+        canvas.getByRole("link", { name: "Profile of Ada" })
+      );
+      await waitFor(() =>
+        expect(canvas.getByTestId("link-clicks")).not.toHaveTextContent(/^0$/)
+      );
+      await wait(400);
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("A click in a text field focuses it", async () => {
+      const note = canvas.getByRole("textbox", { name: "Note for Ada" });
+      await userEvent.click(note);
+      expect(note).toHaveFocus();
+      await wait(400);
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("A click on a checkbox label checks the box", async () => {
+      await userEvent.click(canvas.getByText("Reviewed Ada"));
+      await waitFor(() =>
+        expect(
+          canvas.getByRole("checkbox", { name: "Reviewed Ada" })
+        ).toBeChecked()
+      );
+      await wait(400);
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("A click on plain cell text activates the row", async () => {
+      await userEvent.click(canvas.getByText("Grace"));
       await waitFor(() =>
         expect(onRowAction).toHaveBeenCalledWith(
           expect.objectContaining({ id: "r2" })

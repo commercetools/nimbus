@@ -97,8 +97,14 @@ check, so this protects every table, not only draggable ones. The story
 "Double-clicking text does not trigger onRowClick" tests it on a table that is
 not draggable.
 
-**Decision:** no change to the mouse path. The keyboard path is immediate,
-because Enter has no double-click.
+**Decision:** no change to the mouse path's timing. The keyboard path is
+immediate, because Enter has no double-click.
+
+The mouse path's check for controls inside a cell used to be a list (buttons,
+inputs, checkboxes), so a click on a link or a text field in a cell also
+activated the row after the delay. The check now also counts anything that can
+take focus below the cell, and labels, which pass their click on to a control
+such as a checkbox. A click on plain cell content still activates the row.
 
 **Alternative rejected:** remove the delay when the table is not draggable (as
 written in the ticket). The first click of a double-click would activate the row

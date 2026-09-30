@@ -22,6 +22,9 @@ were accepted but ignored now work.
   the built-in "No Data".
 - **Removed:** the `selectionBehavior` prop. It never had an effect: every table
   already behaved as `"toggle"`, and still does. If you pass it, delete it.
+- **Fixed:** a click on a link, a text field or a checkbox label inside a cell
+  no longer activates the row. Before, the row was activated too, about 300 ms
+  after the click. Enter on these controls also goes to the control only.
 - **Fixed:** with `nestedKey` and `allowsExpandColumn={false}`, a row without
   nested items no longer shows a pointer cursor, and Enter selects it.
 - **Fixed:** `disabledKeys="all"` disables every row, including the header

@@ -186,3 +186,8 @@ it once and see it fail, then fix. Paths are relative to
       only the row with children has `data-clickable`
 - [x] 13.7 `row.tsx`: `expandViaRowClick` is true only for a row with something
       to expand, so a row without children is not clickable
+- [x] 13.8 Story `RowActionIgnoresClicksOnCellControls`: a click on a link, a
+      text field or a checkbox label in a cell does not call `onRowAction`; a
+      click on plain cell text does
+- [x] 13.9 `row.tsx`: `getIsTableRowChildElementInteractive` also counts
+      anything focusable below the cell, and labels

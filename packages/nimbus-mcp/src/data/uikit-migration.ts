@@ -1771,7 +1771,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         nimbusProp: "onRowAction",
         changeType: "structural",
         notes:
-          "Signature changed from (row, rowIndex, columnKey) to (row). Fires on click and on Enter, never for disabled rows. UI Kit's per-column shouldIgnoreRowClick has no equivalent: clicks on buttons, checkboxes and inputs inside a cell are ignored automatically. Do not use Nimbus onRowClick; it is deprecated. Selection is separate: use selectionMode and onSelectionChange.",
+          "Signature changed from (row, rowIndex, columnKey) to (row). Fires on click and on Enter, never for disabled rows. UI Kit's per-column shouldIgnoreRowClick has no equivalent: clicks and Enter on links, buttons, checkboxes and text fields inside a cell are ignored automatically. Do not use Nimbus onRowClick; it is deprecated. Selection is separate: use selectionMode and onSelectionChange.",
       },
       {
         uiKitProp: "onSortChange",

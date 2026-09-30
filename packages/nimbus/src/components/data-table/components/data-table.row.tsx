@@ -6,6 +6,7 @@ import {
   TableStateContext,
   useTableOptions,
 } from "react-aria-components";
+import { isFocusable } from "@react-aria/utils";
 import { mergeRefs } from "@/utils";
 import { Highlight } from "@chakra-ui/react/highlight";
 import { useStableDataTableContext } from "./data-table.context";
@@ -38,17 +39,39 @@ import { dataTableMessagesStrings } from "../data-table.messages";
 /**
  * Determines if a click event originated from an interactive element within a table row.
  * This is crucial for preventing row click handlers from interfering with intended
- * interactions like checkbox selection, button clicks, or other form controls.
+ * interactions like checkbox selection, button clicks, links, or other form controls.
  *
- * @param e - The DOM Event object from the click listener
+ * Besides the elements listed below, anything that can take focus inside a
+ * cell (a link, a text field, a custom widget with `tabindex`) counts, and so
+ * does a label, which passes its click on to a form control such as a
+ * checkbox. The row and its cells can take focus too, so that search stops
+ * below the cell.
+ *
+ * @param e - The DOM Event object from a listener on the row element
  * @returns Element if an interactive element was found, null otherwise
  */
 function getIsTableRowChildElementInteractive(e: Event) {
   // Cast target to Element since EventTarget doesn't have closest method
   const clickedElement = e.target as Element;
-  return clickedElement?.closest(
+  const listedElement = clickedElement?.closest(
     'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"], [slot="drag"], [data-slot="drag"]'
   );
+  if (listedElement) return listedElement;
+
+  const rowElement = e.currentTarget as Element | null;
+  for (
+    let element: Element | null = clickedElement;
+    element && element !== rowElement && element.parentElement !== rowElement;
+    element = element.parentElement
+  ) {
+    if (
+      element.tagName === "LABEL" ||
+      isFocusable(element, { skipVisibilityCheck: true })
+    ) {
+      return element;
+    }
+  }
+  return null;
 }
 
 /**
