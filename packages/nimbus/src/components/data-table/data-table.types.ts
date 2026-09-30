@@ -50,7 +50,7 @@ export type DataTableTableSlotProps = Omit<
   dragAndDropHooks?: RaDragAndDropHooks;
 };
 
-export type DataTableHeaderSlotProps = HTMLChakraProps<"tr">;
+export type DataTableHeaderSlotProps = HTMLChakraProps<"thead">;
 export type DataTableColumnSlotProps = HTMLChakraProps<"th">;
 export type DataTableBodySlotProps = HTMLChakraProps<"tbody">;
 export type DataTableRowSlotProps = HTMLChakraProps<"tr">;

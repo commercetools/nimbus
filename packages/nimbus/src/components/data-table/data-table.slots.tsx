@@ -35,7 +35,7 @@ export const DataTableTableSlot = withContext<
 export const DataTableHeaderSlot = withContext<
   HTMLTableSectionElement,
   DataTableHeaderSlotProps
->("tr", "header");
+>("thead", "header");
 
 // Wrapper slot for react aria `Column` component
 export const DataTableColumnSlot = withContext<
