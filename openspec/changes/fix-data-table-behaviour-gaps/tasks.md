@@ -180,3 +180,9 @@ it once and see it fail, then fix. Paths are relative to
       from `document.getElementById`
 - [x] 13.5 `tags: ["vrt"]` on `RowFocusRingAboveFrozenCells` and
       `CellFocusRingAboveFrozenCells`
+- [x] 13.6 Story `EnterSelectsRowWithoutChildren`: with `nestedKey`,
+      `allowsExpandColumn={false}`, selection and no `onRowAction`, Enter
+      selects a row without children, still expands a row with children, and
+      only the row with children has `data-clickable`
+- [x] 13.7 `row.tsx`: `expandViaRowClick` is true only for a row with something
+      to expand, so a row without children is not clickable

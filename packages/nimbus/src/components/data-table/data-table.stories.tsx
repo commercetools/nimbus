@@ -7782,6 +7782,65 @@ export const EnterExpandsWithoutExpandColumn: Story = {
   },
 };
 
+/**
+ * Without an expand column and without `onRowAction`, only rows with nested
+ * content are activated. On a row without children, Enter selects the row, as
+ * it does in a table without nested content.
+ */
+export const EnterSelectsRowWithoutChildren: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+    return (
+      <Stack>
+        <DataTable
+          columns={behaviourColumns}
+          rows={[
+            { ...behaviourRows[0], children: [{ id: "c1" }] },
+            ...behaviourRows.slice(1),
+          ]}
+          nestedKey="children"
+          allowsExpandColumn={false}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          aria-label="Enter on rows without children"
+        />
+        <Text data-testid="leaf-selected">{formatSelection(selectedKeys)}</Text>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Grace");
+
+    await step("Enter selects a row without children", async () => {
+      rowNamed(canvasElement, /Grace/).focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(canvas.getByTestId("leaf-selected")).toHaveTextContent(/^r2$/)
+      );
+    });
+
+    await step("Enter still expands a row with children", async () => {
+      rowNamed(canvasElement, /Ada/).focus();
+      await userEvent.keyboard("{Enter}");
+      expect(await canvas.findByText("Nested items: 1")).toBeInTheDocument();
+      expect(canvas.getByTestId("leaf-selected")).toHaveTextContent(/^r2$/);
+    });
+
+    await step("Only the row with children looks clickable", async () => {
+      expect(rowNamed(canvasElement, /Ada/)).toHaveAttribute(
+        "data-clickable",
+        "true"
+      );
+      expect(rowNamed(canvasElement, /Grace/)).not.toHaveAttribute(
+        "data-clickable",
+        "true"
+      );
+    });
+  },
+};
+
 // ============================================================
 // FEC-1346 — localized labels
 // ============================================================

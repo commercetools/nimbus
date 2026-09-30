@@ -231,7 +231,13 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     row[nestedKey] &&
     (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
 
-  const expandViaRowClick = hasExpandableContent && !showExpandColumn;
+  // Without an expand column, activating a row expands it, but only a row
+  // that has something to expand. A row without children is not clickable
+  // for this reason, so Enter still reaches React Aria and selects it.
+  const expandViaRowClick =
+    hasExpandableContent &&
+    !showExpandColumn &&
+    !!(hasNestedContent || hasRenderNestedContent);
 
   const isClickable = isRowClickable || expandViaRowClick;
 
@@ -246,16 +252,12 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   const activateRow = useCallback(
     (columnId?: string) => {
       if (isDisabled) return;
-      if (expandViaRowClick && (hasNestedContent || hasRenderNestedContent)) {
-        toggleExpand(rowKey, columnId);
-      }
+      if (expandViaRowClick) toggleExpand(rowKey, columnId);
       (onRowActionRef.current ?? onRowClickRef.current)?.(row);
     },
     [
       isDisabled,
       expandViaRowClick,
-      hasNestedContent,
-      hasRenderNestedContent,
       toggleExpand,
       rowKey,
       onRowActionRef,

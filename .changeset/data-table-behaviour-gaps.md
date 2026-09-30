@@ -22,6 +22,8 @@ were accepted but ignored now work.
   the built-in "No Data".
 - **Removed:** the `selectionBehavior` prop. It never had an effect: every table
   already behaved as `"toggle"`, and still does. If you pass it, delete it.
+- **Fixed:** with `nestedKey` and `allowsExpandColumn={false}`, a row without
+  nested items no longer shows a pointer cursor, and Enter selects it.
 - **Fixed:** `disabledKeys="all"` disables every row, including the header
   checkbox.
 - **Fixed:** a row with `isDisabled: true` is disabled without `disabledKeys`.
