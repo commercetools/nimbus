@@ -783,6 +783,9 @@ You MUST validate against these requirements:
 - [ ] Story file location - `src/components/{name}/{name}.stories.tsx` for a
       component, `src/patterns/{group}/{name}/{name}.stories.tsx` for a pattern
       (groups: `buttons`, `actions`, `dialogs`, `fields`, `pages`)
+- [ ] A large stories file is split by topic into `{name}.{topic}.stories.tsx`
+      files with the same `title` and `component` (see "Splitting a large
+      stories file" in `docs/file-type-guidelines/stories.md`)
 - [ ] Imports from `@storybook/react-vite` and `storybook/test`
 - [ ] Meta configuration with title, component, tags
 - [ ] Default export of meta

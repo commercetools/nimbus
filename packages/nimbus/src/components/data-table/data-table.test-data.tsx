@@ -1426,3 +1426,22 @@ export const compoundRows: DataTableRowItem[] = [
   { id: "2", name: "Bob", email: "bob@example.com", department: "Design" },
   { id: "3", name: "Carol", email: "carol@example.com", department: "PM" },
 ];
+
+export const behaviourColumns: DataTableColumnItem[] = [
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+  },
+  {
+    id: "role",
+    header: "Role",
+    accessor: (row: Record<string, unknown>) => row.role as React.ReactNode,
+  },
+];
+
+export const behaviourRows: DataTableRowItem[] = [
+  { id: "r1", name: "Ada", role: "Admin" },
+  { id: "r2", name: "Grace", role: "Editor" },
+  { id: "r3", name: "Linus", role: "Viewer" },
+];
