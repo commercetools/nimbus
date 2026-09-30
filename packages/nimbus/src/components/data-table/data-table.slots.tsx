@@ -66,16 +66,6 @@ export const DataTableFooter = withContext<
   HTMLChakraProps<"div">
 >("footer", "footer");
 
-export const DataTableSelectionCell = withContext<
-  HTMLTableCellElement,
-  HTMLChakraProps<"td">
->("td", "selectionCell");
-
-export const DataTableNestedIcon = withContext<
-  HTMLSpanElement,
-  HTMLChakraProps<"span">
->("span", "nestedIcon");
-
 export const DataTableHeaderSortIcon = withContext<
   HTMLSpanElement,
   HTMLChakraProps<"span">

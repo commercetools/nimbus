@@ -24,7 +24,7 @@ import type { OmitInternalProps } from "../../type-utils";
 type DataTableSlotRecipeProps = {
   /** Whether to truncate cell content with ellipsis */
   truncated?: boolean;
-  /** Density variant controlling row height and padding */
+  /** Density variant controlling the vertical padding of cells */
   density?: "default" | "condensed";
 } & UnstyledProp;
 
