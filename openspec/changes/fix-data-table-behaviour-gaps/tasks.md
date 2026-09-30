@@ -178,3 +178,5 @@ it once and see it fail, then fix. Paths are relative to
       to its own expand button
 - [x] 13.4 `row.tsx`: `NestedContentPanel` gets its nested row from a ref, not
       from `document.getElementById`
+- [x] 13.5 `tags: ["vrt"]` on `RowFocusRingAboveFrozenCells` and
+      `CellFocusRingAboveFrozenCells`

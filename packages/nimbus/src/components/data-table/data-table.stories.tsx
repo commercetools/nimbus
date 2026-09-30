@@ -8355,6 +8355,8 @@ const renderFrozenCellsTable = () => (
  */
 export const RowFocusRingAboveFrozenCells: Story = {
   render: renderFrozenCellsTable,
+  // VRT: a focused row's ring, complete on all four sides above frozen cells.
+  tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -8379,6 +8381,8 @@ export const RowFocusRingAboveFrozenCells: Story = {
  */
 export const CellFocusRingAboveFrozenCells: Story = {
   render: renderFrozenCellsTable,
+  // VRT: a focused cell's ring, complete on all four sides above frozen cells.
+  tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
