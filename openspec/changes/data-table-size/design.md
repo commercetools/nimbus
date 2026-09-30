@@ -42,8 +42,7 @@ Current state that shapes the approach:
   (WCAG 2.5.8 minimum).
 - Removing `density` or changing the default away from `xl` (next major).
 - Merging the duplicated header blocks (FEC-1347 §4). This change edits both
-  copies consistently so that FEC-1347 can merge them later without a behavior
-  question.
+  copies consistently, so the header looks the same whichever copy wins.
 
 ## Decisions
 
@@ -141,8 +140,8 @@ the WCAG 2.5.8 minimum target size; the expand column already sits exactly there
   columns touch without gap or overlap.
 - [Value drift between Table and DataTable] → Cross-reference comments in both
   recipes; a unit test compares the resolved padding tokens.
-- [Merge conflicts with FEC-1347] → This change lands first; FEC-1347 §4 and §5
-  rebase on it.
+- [Merge conflicts with FEC-1347] → FEC-1347 lands first; this change rebases
+  on it afterwards.
 - [Deprecated default feels odd] → Accepted on purpose: it keeps today's look
   without inviting new uses. Documented in the JSDoc and the changeset.
 

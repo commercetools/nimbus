@@ -71,8 +71,9 @@ _None._
   existing stories.
 - **Docs**: `data-table.dev.mdx`, `data-table.mdx`, stories (about 89
   mentions of `density`/`condensed` to review).
-- **Sequencing**: lands after PR #1996 (row identity), before FEC-1346 and
-  FEC-1347. FEC-1347 §4 (duplicated header styles) and §5 (density variant
-  cleanup) touch the same recipe code and must rebase on this change.
+- **Sequencing**: based on `main`, not part of the DataTable stack (#1996 →
+  #2015 → FEC-1347). FEC-1347 §4 (duplicated header styles) and §5 (density
+  variant cleanup) touch the same recipe code. FEC-1347 is done first, and
+  this change rebases on it afterwards.
 - **Consumers**: none need to change. Teams that set `textStyle="sm"` in
   cells can remove it once they choose `sm`–`lg`.
