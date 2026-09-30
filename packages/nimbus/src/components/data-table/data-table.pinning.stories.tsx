@@ -8,6 +8,7 @@ import { type Selection } from "react-aria-components";
 import { within, expect, waitFor, userEvent } from "storybook/test";
 import { Heading, Stack, Text, DataTable } from "@/components";
 import {
+  columns,
   sortableColumns,
   rows,
   behaviourColumns,
@@ -419,6 +420,35 @@ export const PinButtonVisibleOnKeyboardFocus: Story = {
         );
         await waitFor(() => expect(document.activeElement).toBe(pin));
         expect(effectiveOpacity(pin)).toBe(1);
+      }
+    );
+  },
+};
+
+/**
+ * The outline of the pinned rows follows the rows on screen. When the search
+ * hides the first pinned row, the next pinned row draws the top edge of the
+ * outline; before, it was treated as the last of two pinned rows and had no
+ * top edge.
+ */
+export const PinnedRowOutlineFollowsSearch: Story = {
+  render: () => (
+    <DataTable
+      columns={columns}
+      rows={rows}
+      defaultPinnedRows={new Set(["1", "2"])}
+      search="Bob"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "The only pinned row on screen is outlined on every side",
+      async () => {
+        const row = canvas.getByRole("row", { name: /Bob/ });
+        expect(row).toHaveClass("data-table-row-pinned-single");
+        expect(row).not.toHaveClass("data-table-row-pinned-last");
       }
     );
   },

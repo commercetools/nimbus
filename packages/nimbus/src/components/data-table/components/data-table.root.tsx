@@ -240,9 +240,17 @@ export const DataTableRoot = function DataTableRoot<
     if (message) console.warn(message);
   }, [rows, getRowKey]);
 
-  const pinnedRowIds = useMemo(
-    () => rows.filter((r) => pinnedRows.has(getRowKey(r))).map(getRowKey),
-    [rows, pinnedRows, getRowKey]
+  // The pinned rows on screen, in display order. It comes from `sortedRows`,
+  // not from `rows`: a pinned row that the search hides must not count as the
+  // first or last pinned row, or the row that is shown loses its outline.
+  // Sorting or searching gives a new array with the same ids. Keeping the old
+  // array then keeps DataTable.Body from re-rendering every row.
+  const pinnedRowIds = useStableArray(
+    useMemo(
+      () =>
+        sortedRows.filter((r) => pinnedRows.has(getRowKey(r))).map(getRowKey),
+      [sortedRows, pinnedRows, getRowKey]
+    )
   );
 
   const hasNestedKeyContent = useMemo(
