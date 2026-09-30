@@ -76,6 +76,10 @@ Three claims from the ticket did not hold and are **not** part of this change:
   can pass "Hide column" instead of the generic "remove item".
 - `onVisibilityChange` is removed from the internal context type (never
   provided, never read).
+- The expand column header no longer shows an arrow icon. Internal feedback
+  (#2019) says users can mistake it for a control they can click, but the
+  header does nothing. The header keeps its hidden name "Expand rows" for
+  screen readers.
 - Released as **minor** (new behaviour: keyboard activation, working props,
   deprecations). The `onRowAction` change and the removal of `selectionBehavior`
   would normally need a major release (`docs/changeset-conventions.md`). They
@@ -97,7 +101,8 @@ None.
   (`renderEmptyState`, localized default); adds "Nested Content API"
   (`nestedKey` deprecated) and "Localized Row and Panel Labels" (pin, nested
   placeholder, layout panel, hide column); modifies "Row Click Cursor Feedback"
-  and "Text Selection in Clickable Rows" (now keyed on `onRowAction`).
+  and "Text Selection in Clickable Rows" (now keyed on `onRowAction`), and "Row
+  Expansion" (no icon in the expand column header).
 - `nimbus-draggable-list`: adds an optional `removeButtonLabel` on items.
 
 ## Impact

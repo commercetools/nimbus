@@ -191,3 +191,8 @@ it once and see it fail, then fix. Paths are relative to
       click on plain cell text does
 - [x] 13.9 `row.tsx`: `getIsTableRowChildElementInteractive` also counts
       anything focusable below the cell, and labels
+
+## 14. Expand column header icon (#2019)
+
+- [x] 14.1 `header.tsx`: remove the arrow icon from the expand column header;
+      keep the visually hidden name

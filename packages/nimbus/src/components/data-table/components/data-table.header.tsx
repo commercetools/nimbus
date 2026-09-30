@@ -5,7 +5,7 @@ import {
   useTableOptions,
 } from "react-aria-components";
 import { Box, Checkbox, Icon } from "@/components";
-import { KeyboardArrowRight, PushPin } from "@commercetools/nimbus-icons";
+import { PushPin } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import type {
@@ -152,17 +152,9 @@ export const DataTableHeader = <
             aria-label={msg.format("expandRows")}
             isInternalColumn={true}
           >
+            {/* No icon here: an arrow looked like a control, but the header
+             * does nothing. Each row has its own expand button (#2019). */}
             <VisuallyHidden>{msg.format("expandRows")}</VisuallyHidden>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              w="100%"
-              h="100%"
-              aria-hidden="true"
-            >
-              <Icon as={KeyboardArrowRight} boxSize="400" color="neutral.10" />
-            </Box>
           </DataTableColumn>
         )}
         {children

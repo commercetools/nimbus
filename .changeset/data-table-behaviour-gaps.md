@@ -41,6 +41,9 @@ were accepted but ignored now work.
 - **Fixed:** when nested content is closed from inside, with the `close`
   callback of `renderNestedContent`, focus returns to the row's expand button,
   or to the row when there is no expand column.
+- **Changed:** the expand column header no longer shows an arrow icon. It looked
+  like a button, but only the expand button in each row expands a row. If you
+  hid the icon yourself, you can remove that workaround.
 - **Changed:** selected rows use a slightly stronger background, the palette's
   selected step. Rows and their frozen columns change color immediately on hover
   and selection, without a fade.
