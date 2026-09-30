@@ -303,7 +303,8 @@ expand column. React Aria then moves focus there before the nested row is
 removed. This needs `TableStateContext`, which React Aria does not provide to
 `DataTable.Row` itself (row components run in its collection-building pass),
 only to cell content. So a small `NestedContentPanel` inside the nested cell
-owns `close`.
+owns `close`. It gets the nested row from a ref, not from its DOM id, because
+two tables on one page can use the same row ids.
 
 **Alternative rejected:** focusing the expand button from an effect after the
 collapse. It races React Aria's own focus correction: it worked in a manual

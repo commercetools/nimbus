@@ -173,3 +173,8 @@ it once and see it fail, then fix. Paths are relative to
       `onRowAction`; Enter on a focused cell still does
 - [x] 13.2 `row.tsx`: the Enter handler acts only when the event target is the
       row or one of its cells (replaces the element list check in 2.4)
+- [x] 13.3 Story `CloseReturnsFocusWithSharedRowIds`: two tables with the same
+      row ids, the same row open in both; closing the second one returns focus
+      to its own expand button
+- [x] 13.4 `row.tsx`: `NestedContentPanel` gets its nested row from a ref, not
+      from `document.getElementById`

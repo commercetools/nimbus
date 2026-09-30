@@ -8156,6 +8156,73 @@ export const CloseReturnsFocusToOpener: Story = {
 };
 
 /**
+ * Two tables on one page can use the same row ids. Closing nested content
+ * returns focus to the opener in the table that closed it, not in the other
+ * table.
+ */
+export const CloseReturnsFocusWithSharedRowIds: Story = {
+  render: () => {
+    const renderPanel = (
+      row: DataTableRowItem,
+      { close }: { close: () => void }
+    ) => (
+      <Button size="xs" variant="outline" onPress={close}>
+        Close {String(row.name)}
+      </Button>
+    );
+    return (
+      <Stack gap="600">
+        <Box data-testid="first-table">
+          <DataTable
+            columns={behaviourColumns}
+            rows={behaviourRows}
+            renderNestedContent={renderPanel}
+            aria-label="First table"
+          />
+        </Box>
+        <Box data-testid="second-table">
+          <DataTable
+            columns={behaviourColumns}
+            rows={behaviourRows}
+            renderNestedContent={renderPanel}
+            aria-label="Second table"
+          />
+        </Box>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const first = within(await canvas.findByTestId("first-table"));
+    const second = within(canvas.getByTestId("second-table"));
+    const expandButtonOfAda = (table: typeof first) =>
+      within(table.getByRole("row", { name: /Ada/ })).getByRole("button", {
+        name: "Expand",
+      });
+
+    await step(
+      "With Ada open in both tables, closing the second returns focus there",
+      async () => {
+        await userEvent.click(expandButtonOfAda(first));
+        await first.findByRole("button", { name: "Close Ada" });
+        await userEvent.click(expandButtonOfAda(second));
+        const close = await second.findByRole("button", { name: "Close Ada" });
+        close.focus();
+        await userEvent.keyboard("{Enter}");
+        await waitFor(() =>
+          expect(
+            second.queryByRole("button", { name: "Close Ada" })
+          ).not.toBeInTheDocument()
+        );
+        await waitFor(() =>
+          expect(document.activeElement).toBe(expandButtonOfAda(second))
+        );
+      }
+    );
+  },
+};
+
+/**
  * Disabled rows use the shared `disabled` layer style, like disabled rows in
  * Tree, ListBox and DraggableList, and give no hover feedback.
  */

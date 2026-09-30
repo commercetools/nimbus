@@ -75,7 +75,8 @@ function stopPropagationForNonInteractiveElements(e: Event) {
  * would then move focus to whichever row now sits in that position. `close`
  * first points React Aria's focus at the control that opened the panel (the
  * expand cell, or the row when there is no expand column), so focus returns
- * there instead.
+ * there instead. The nested row comes from a ref, not from its DOM id: two
+ * tables on one page can use the same row ids.
  *
  * This is a component of its own because React Aria renders
  * `DataTable.Row` itself outside the table's state context; cell content is
@@ -83,20 +84,20 @@ function stopPropagationForNonInteractiveElements(e: Event) {
  */
 const NestedContentPanel = ({
   rowKey,
-  nestedContentId,
+  nestedRowRef,
   openerCellIndex,
   onClose,
   children,
 }: {
   rowKey: string;
-  nestedContentId: string;
+  nestedRowRef: React.RefObject<HTMLElement | null>;
   openerCellIndex?: number;
   onClose: () => void;
   children: (close: () => void) => React.ReactNode;
 }) => {
   const tableState = useContext(TableStateContext);
   const close = useCallback(() => {
-    const nestedRow = document.getElementById(nestedContentId);
+    const nestedRow = nestedRowRef.current;
     if (tableState && nestedRow?.contains(document.activeElement)) {
       const cells = [...(tableState.collection.getChildren?.(rowKey) ?? [])];
       const openerKey =
@@ -104,7 +105,7 @@ const NestedContentPanel = ({
       tableState.selectionManager.setFocusedKey(openerKey ?? rowKey);
     }
     onClose();
-  }, [tableState, nestedContentId, rowKey, openerCellIndex, onClose]);
+  }, [tableState, nestedRowRef, rowKey, openerCellIndex, onClose]);
 
   return <>{children(close)}</>;
 };
@@ -548,8 +549,10 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const pinLabel = msg.format(isPinned ? "unpinRow" : "pinRow");
 
+  const nestedRowNodeRef = useRef<HTMLElement | null>(null);
   const nestedContentRowRef = useCallback(
     (node: HTMLElement | null) => {
+      nestedRowNodeRef.current = node;
       if (node) {
         node.id = nestedContentId;
         node.removeAttribute("aria-labelledby");
@@ -779,7 +782,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                 : renderNestedContent && (
                     <NestedContentPanel
                       rowKey={rowKey}
-                      nestedContentId={nestedContentId}
+                      nestedRowRef={nestedRowNodeRef}
                       openerCellIndex={
                         showExpandColumn
                           ? (allowsDragging ? 1 : 0) +
