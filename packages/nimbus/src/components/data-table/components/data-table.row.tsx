@@ -9,7 +9,7 @@ import {
 import { isFocusable } from "@react-aria/utils";
 import { mergeRefs } from "@/utils";
 import { Highlight } from "@chakra-ui/react/highlight";
-import { useStableDataTableContext } from "./data-table.context";
+import { useDataTableRowContext } from "./data-table.context";
 import { DataTableCell } from "./data-table.cell";
 import { DataTableRowSlot } from "../data-table.slots";
 import type {
@@ -201,7 +201,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     togglePin,
     selectRowLabel,
     getRowKey,
-  } = useStableDataTableContext<T>();
+  } = useDataTableRowContext<T>();
 
   const [styleProps, restProps] = extractStyleProps(props);
 

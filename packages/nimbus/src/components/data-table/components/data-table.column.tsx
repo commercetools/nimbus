@@ -3,7 +3,7 @@ import { ArrowDownward } from "@commercetools/nimbus-icons";
 import { Flex, Separator } from "@/components";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
-import { useDataTableContext } from "./data-table.context";
+import { useStableDataTableContext } from "./data-table.context";
 import {
   DataTableColumnSlot,
   DataTableHeaderSortIcon,
@@ -28,8 +28,10 @@ export const DataTableColumn: DataTableColumnComponent = ({
   ...otherProps
 }) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
-  const { sortDescriptor, isResizable } = useDataTableContext();
-  const isActive = sortDescriptor?.column === column?.id;
+  // Only configuration here. The sort state comes from React Aria's render
+  // props below, so expanding, pinning or selecting a row does not re-render
+  // every column header.
+  const { isResizable } = useStableDataTableContext();
   const isColumnResizable =
     column?.isResizable !== undefined ? column?.isResizable : isResizable;
 
@@ -45,7 +47,9 @@ export const DataTableColumn: DataTableColumnComponent = ({
         {...restProps}
       >
         {(renderProps) => {
-          const { allowsSorting } = renderProps;
+          // `sortDirection` is set only for the sorted column. It is the
+          // value React Aria uses for this header's `aria-sort`.
+          const { allowsSorting, sortDirection } = renderProps;
 
           if (isInternalColumn) {
             return typeof children === "function"
@@ -68,10 +72,8 @@ export const DataTableColumn: DataTableColumnComponent = ({
               {allowsSorting && (
                 <DataTableHeaderSortIcon
                   aria-hidden="true"
-                  data-sort-active={isActive}
-                  data-sort-direction={
-                    isActive ? sortDescriptor?.direction : "none"
-                  }
+                  data-sort-active={sortDirection !== undefined}
+                  data-sort-direction={sortDirection ?? "none"}
                 >
                   <ArrowDownward />
                 </DataTableHeaderSortIcon>

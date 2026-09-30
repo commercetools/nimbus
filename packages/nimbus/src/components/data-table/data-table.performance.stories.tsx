@@ -10,6 +10,7 @@ import { DataTable } from "@/components";
 import { useStableDataTableContext } from "./components/data-table.context";
 import { columns, sortableColumns, rows } from "./data-table.test-data";
 import type {
+  DataTableCellRenderProps,
   DataTableRowItem,
   DataTableColumnItem,
   DataTableProps,
@@ -328,5 +329,178 @@ export const PerfSelectionContextIsolation: Story = {
         expect(afterCount).toBe(initialCount);
       }
     );
+  },
+};
+
+// Render counts for the stories below, read by their play functions.
+const renderCounts: Record<string, number> = {};
+const countRender = (id: string) => {
+  renderCounts[id] = (renderCounts[id] ?? 0) + 1;
+};
+const resetRenderCounts = () => {
+  for (const id of Object.keys(renderCounts)) delete renderCounts[id];
+};
+
+const countedColumns: DataTableColumnItem[] = [
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row: Record<string, unknown>) => row.name as ReactNode,
+  },
+  {
+    id: "role",
+    header: "Role",
+    accessor: (row: Record<string, unknown>) => row.role as ReactNode,
+  },
+];
+const countedRows = rows.slice(0, 5);
+
+// DataTable.Row calls its `children` on every render, so this counts the
+// renders of each row. React Aria caches cells, so a column `render` function
+// would not see a row render whose cells did not change. It is defined once,
+// outside any component, so passing it does not itself defeat `memo`.
+const CountedCells = ({
+  columns: cols,
+  row,
+}: DataTableCellRenderProps<DataTableRowItem>) => {
+  countRender(`row-${row.id}`);
+  return cols.map((col) => (
+    <DataTable.Cell key={col.id} data-column-id={col.id}>
+      {col.accessor(row)}
+    </DataTable.Cell>
+  ));
+};
+
+const CountedBody = () => (
+  <DataTable.Body>
+    {(row, rowRenderProps) => (
+      <DataTable.Row row={row} {...rowRenderProps}>
+        {CountedCells}
+      </DataTable.Row>
+    )}
+  </DataTable.Body>
+);
+
+// `React.Profiler` calls `onRender` for every commit that re-renders a
+// component inside it.
+const countCommit = (id: string) => countRender(id);
+
+const renderNestedDetails = (row: DataTableRowItem) => `Details of ${row.name}`;
+
+/**
+ * Expanding or pinning a row re-renders that row and nothing else. The
+ * header, the column headers and DataTable.Manager read only configuration,
+ * which a row interaction does not change. The other rows receive the same
+ * props as before, so `memo` skips them.
+ */
+export const RowInteractionsRenderOnlyThatRow: Story = {
+  render: () => (
+    <DataTable.Root
+      columns={countedColumns}
+      rows={countedRows}
+      visibleColumns={["name", "role"]}
+      renderNestedContent={renderNestedDetails}
+    >
+      <React.Profiler id="manager" onRender={countCommit}>
+        <DataTable.Manager />
+      </React.Profiler>
+      <DataTable.Table aria-label="Render counts">
+        <React.Profiler id="header" onRender={countCommit}>
+          <DataTable.Header />
+        </React.Profiler>
+        <CountedBody />
+      </DataTable.Table>
+    </DataTable.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const rowOf = (name: string) =>
+      canvas.getByRole("row", { name: new RegExp(name) });
+
+    await step("Expanding a row renders only that row", async () => {
+      resetRenderCounts();
+      await userEvent.click(
+        within(rowOf("Bob")).getByRole("button", { name: "Expand" })
+      );
+      await waitFor(() => {
+        expect(canvas.getByText("Details of Bob")).toBeInTheDocument();
+      });
+
+      expect(renderCounts["row-2"]).toBeGreaterThan(0);
+      for (const id of ["1", "3", "4", "5"]) {
+        expect(renderCounts[`row-${id}`]).toBeUndefined();
+      }
+      expect(renderCounts.header).toBeUndefined();
+      expect(renderCounts.manager).toBeUndefined();
+    });
+
+    await step("Pinning a row renders only that row", async () => {
+      resetRenderCounts();
+      await userEvent.click(
+        within(rowOf("Carol")).getByRole("button", { name: "Pin row" })
+      );
+      await waitFor(() => {
+        expect(
+          within(rowOf("Carol")).getByRole("button", { name: "Unpin row" })
+        ).toBeInTheDocument();
+      });
+
+      expect(renderCounts["row-3"]).toBeGreaterThan(0);
+      for (const id of ["1", "2", "4", "5"]) {
+        expect(renderCounts[`row-${id}`]).toBeUndefined();
+      }
+      expect(renderCounts.header).toBeUndefined();
+      expect(renderCounts.manager).toBeUndefined();
+    });
+  },
+};
+
+const InlineArraysParent = () => {
+  const [renders, setRenders] = useState(0);
+  return (
+    <>
+      <button type="button" onClick={() => setRenders(renders + 1)}>
+        Re-render parent ({renders})
+      </button>
+      {/* New arrays on every render, holding the same items. */}
+      <DataTable.Root
+        columns={[...countedColumns]}
+        rows={countedRows.filter(() => true)}
+        visibleColumns={["name", "role"]}
+      >
+        <DataTable.Table aria-label="Inline arrays">
+          <DataTable.Header />
+          <CountedBody />
+        </DataTable.Table>
+      </DataTable.Root>
+    </>
+  );
+};
+
+/**
+ * `columns={[...]}`, `rows={data.filter(...)}` and `visibleColumns={[...]}`
+ * give DataTable new arrays on every render. While they hold the same items,
+ * no row re-renders.
+ */
+export const InlineArraysKeepRowsMemoized: Story = {
+  render: () => <InlineArraysParent />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Re-rendering the parent renders no row", async () => {
+      resetRenderCounts();
+      await userEvent.click(
+        canvas.getByRole("button", { name: /Re-render parent/ })
+      );
+      await waitFor(() => {
+        expect(
+          canvas.getByRole("button", { name: "Re-render parent (1)" })
+        ).toBeInTheDocument();
+      });
+
+      for (const id of ["1", "2", "3", "4", "5"]) {
+        expect(renderCounts[`row-${id}`]).toBeUndefined();
+      }
+    });
   },
 };
