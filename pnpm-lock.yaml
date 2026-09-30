@@ -40,8 +40,8 @@ catalogs:
       specifier: 2.4.1
       version: 2.4.1
     react-live:
-      specifier: 4.1.8
-      version: 4.1.8
+      specifier: 5.0.0
+      version: 5.0.0
     react-router:
       specifier: 8.4.0
       version: 8.4.0
@@ -571,7 +571,7 @@ importers:
         version: 19.2.0(react@19.2.0)
       react-live:
         specifier: catalog:apps
-        version: 4.1.8(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 5.0.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-router:
         specifier: catalog:apps
         version: 8.4.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -7796,9 +7796,8 @@ packages:
   react-is@19.2.6:
     resolution: {integrity: sha512-XjBR15BhXuylgWGuslhDKqlSayuqvqBX91BP8pauG8kd1zY8kotkNWbXksTCNRarse4kuGbe2kIY05ARtwNIvw==}
 
-  react-live@4.1.8:
-    resolution: {integrity: sha512-B2SgNqwPuS2ekqj4lcxi5TibEcjWkdVyYykBEUBshPAPDQ527x2zPEZg560n8egNtAjUpwXFQm7pcXV65aAYmg==}
-    engines: {node: '>= 0.12.0', npm: '>= 2.0.0'}
+  react-live@5.0.0:
+    resolution: {integrity: sha512-7bedhRQx8DmF1tppVijaKAu6El99x+fKDYB2/h5oIwaJK6DBzshuJtq4IHRYEuAVGXg6f+xUOi4vPcNwS0f8HQ==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
@@ -8492,6 +8491,11 @@ packages:
 
   sucrase@3.35.0:
     resolution: {integrity: sha512-8EbVDiu9iN/nESwxeSxDKe0dunta1GOlHufmSSXxMD2z2/tMZpDMpvXQGsc+ajGo8y2uYUmixaSRUc/QPoQ0GA==}
+    engines: {node: '>=16 || 14 >=14.17'}
+    hasBin: true
+
+  sucrase@3.35.1:
+    resolution: {integrity: sha512-DhuTmvZWux4H1UOnWMB3sk0sbaCVOoQZjv8u1rDoTV0HTdGem9hkAZtl4JZy8P2z4Bg0nT+YMeOFyVr4zcG5Tw==}
     engines: {node: '>=16 || 14 >=14.17'}
     hasBin: true
 
@@ -18368,12 +18372,12 @@ snapshots:
 
   react-is@19.2.6: {}
 
-  react-live@4.1.8(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  react-live@5.0.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       prism-react-renderer: 2.4.1(react@19.2.0)
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
-      sucrase: 3.35.0
+      sucrase: 3.35.1
       use-editable: 2.3.3(react@19.2.0)
 
   react-markdown@10.1.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1):
@@ -19340,6 +19344,16 @@ snapshots:
       lines-and-columns: 1.2.4
       mz: 2.7.0
       pirates: 4.0.7
+      ts-interface-checker: 0.1.13
+
+  sucrase@3.35.1:
+    dependencies:
+      '@jridgewell/gen-mapping': 0.3.13
+      commander: 4.1.1
+      lines-and-columns: 1.2.4
+      mz: 2.7.0
+      pirates: 4.0.7
+      tinyglobby: 0.2.17
       ts-interface-checker: 0.1.13
 
   supports-color@7.2.0:
