@@ -8758,6 +8758,72 @@ export const ResizedColumnEdgeStaysInView: Story = {
 };
 
 /**
+ * The dragged edge also stays in view when `DataTable.Table` mounts after
+ * `DataTable.Root`, for example because it is rendered conditionally.
+ */
+export const ResizedColumnEdgeStaysInViewInLateTable: Story = {
+  render: () => {
+    const [showTable, setShowTable] = useState(false);
+    return (
+      <Stack w="700px">
+        <Button onPress={() => setShowTable(true)}>Show table</Button>
+        <DataTable.Root
+          columns={behaviourColumns}
+          rows={behaviourRows}
+          isResizable
+          selectionMode="multiple"
+          allowsPinning
+        >
+          {showTable && (
+            <DataTable.Table aria-label="Table mounted after its root">
+              <DataTable.Header />
+              <DataTable.Body />
+            </DataTable.Table>
+          )}
+        </DataTable.Root>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const header = (name: RegExp) =>
+      canvas.getByRole("columnheader", { name }) as HTMLElement;
+    const widthOf = (el: HTMLElement) =>
+      Math.round(el.getBoundingClientRect().width);
+
+    await step("The table mounts after the root", async () => {
+      expect(canvas.queryByRole("grid")).not.toBeInTheDocument();
+      await userEvent.click(canvas.getByRole("button", { name: "Show table" }));
+      await canvas.findByText("Linus");
+    });
+
+    await step(
+      "The dragged edge stays in view, left of the pin column",
+      async () => {
+        const table = canvas.getByRole("grid");
+        const container = table.parentElement as HTMLElement;
+        await dragColumnResizer(header(/^Role/), 300);
+        await waitFor(() =>
+          expect(widthOf(table)).toBeGreaterThan(container.clientWidth)
+        );
+        const edgeIsVisible = () =>
+          expect(
+            Math.round(header(/^Role/).getBoundingClientRect().right)
+          ).toBeLessThanOrEqual(
+            Math.round(header(/Pin rows/).getBoundingClientRect().left) + 1
+          );
+        container.scrollLeft = 0;
+        await dragColumnResizer(header(/^Role/), 100, async () => {
+          await waitFor(edgeIsVisible);
+        });
+        expect(container.scrollLeft).toBeGreaterThan(0);
+        edgeIsVisible();
+      }
+    );
+  },
+};
+
+/**
  * The outline around pinned rows is drawn above the frozen checkbox, expand
  * and pin cells. Before, their backgrounds covered it, so the lines stopped
  * short of the pin column.

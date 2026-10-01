@@ -123,7 +123,19 @@ export const DataTableRoot = function DataTableRoot<
   // the frozen pin column or out of the visible area, where the mouse can no
   // longer reach its resize handle. A ResizeObserver runs after the browser
   // has laid out the new width and before it paints.
-  useEffect(() => {
+  //
+  // The observer exists only during a resize, and it looks up the table when
+  // the resize starts. `DataTable.Table` can mount after `DataTable.Root`
+  // (rendered conditionally, for example), so the table may not exist yet
+  // when the root mounts.
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+
+  const stopKeepingResizedEdgeInView = useCallback(() => {
+    resizeObserverRef.current?.disconnect();
+    resizeObserverRef.current = null;
+  }, []);
+
+  const startKeepingResizedEdgeInView = useCallback(() => {
     const el = localRef.current;
     const table = el?.querySelector("table");
     if (!el || !table) return;
@@ -139,10 +151,13 @@ export const DataTableRoot = function DataTableRoot<
       if (hiddenWidth > 0) el.scrollLeft += hiddenWidth;
     };
 
-    const ro = new ResizeObserver(keepResizedEdgeInView);
-    ro.observe(table);
-    return () => ro.disconnect();
+    resizeObserverRef.current?.disconnect();
+    resizeObserverRef.current = new ResizeObserver(keepResizedEdgeInView);
+    resizeObserverRef.current.observe(table);
   }, []);
+
+  // The root can unmount during a resize, before React Aria reports its end.
+  useEffect(() => stopKeepingResizedEdgeInView, [stopKeepingResizedEdgeInView]);
 
   const [internalSortDescriptor, setInternalSortDescriptor] = useState<
     SortDescriptor | undefined
@@ -415,7 +430,10 @@ export const DataTableRoot = function DataTableRoot<
       {...rest}
       asChild
     >
-      <ResizableTableContainer>
+      <ResizableTableContainer
+        onResizeStart={startKeepingResizedEdgeInView}
+        onResizeEnd={stopKeepingResizedEdgeInView}
+      >
         <InteractionContext.Provider value={interactionValue}>
           <DataTableContext.Provider
             value={

@@ -188,6 +188,11 @@ it once and see it fail, then fix. Paths are relative to
       `selectionMode="multiple"`, a click on a link, a text field or a checkbox
       label in a cell leaves the row's selection unchanged and keeps focus in
       the text field; the row's own checkbox still selects it
+- [x] 13.11 Story `ResizedColumnEdgeStaysInViewInLateTable`: `DataTable.Table`
+      mounts after `DataTable.Root`, and the dragged edge still stays in view
+- [x] 13.12 `root.tsx`: the `ResizeObserver` from 11.2 is created on
+      `onResizeStart` of `ResizableTableContainer` and removed on
+      `onResizeEnd`, so it finds a table that mounted after the root
 
 ## 14. Expand column header icon (#2019)
 
