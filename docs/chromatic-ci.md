@@ -136,6 +136,9 @@ the branch's git ancestry**:
 
 - Turns TurboSnap **off** (`onlyChanged: false`), so **every** story is
   snapshotted, not just changed ones.
+- Forces a new build (`forceRebuild: true`), even when the commit already has a
+  passed build. That is the usual case: a TurboSnap build that missed an
+  affected story finds no diff, so it passes.
 - Bypasses the changed-files gate, so it runs even with no UI diff.
 
 Reach for it to:
@@ -151,8 +154,9 @@ You can also run Chromatic locally
 (`pnpm --filter @commercetools/nimbus chromatic`), but it needs
 `CHROMATIC_PROJECT_TOKEN` set locally, and two behaviors differ from CI: the
 config file sets `onlyChanged: true`, so pass `--no-only-changed` to force the
-full snapshot, and the script itself passes `--exit-zero-on-changes`, so a local
-run reports diffs without failing. The button is usually the easier path.
+full snapshot (plus `--force-rebuild` if the commit already has a passed build),
+and the script itself passes `--exit-zero-on-changes`, so a local run reports
+diffs without failing. The button is usually the easier path.
 
 ### Config lives in two places (by design)
 

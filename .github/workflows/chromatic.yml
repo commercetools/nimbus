@@ -102,6 +102,9 @@ jobs:
           zip: true
           # TurboSnap: snapshot only diff-affected stories (full on dispatch). See runbook.
           onlyChanged: ${{ github.event_name != 'workflow_dispatch' }}
+          # Build even if this commit already has a passed build (full on dispatch).
+          # See runbook "The manual button".
+          forceRebuild: ${{ github.event_name == 'workflow_dispatch' }}
           # Return once Storybook is uploaded; Chromatic tests on its servers and
           # posts the status check when done. Avoids timeouts on full builds.
           exitOnceUploaded: true
