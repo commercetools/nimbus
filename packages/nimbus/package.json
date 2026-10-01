@@ -84,7 +84,6 @@
   "dependencies": {
     "@chakra-ui/cli": "catalog:react",
     "@emotion/is-prop-valid": "catalog:react",
-    "@github-ui/storybook-addon-performance-panel": "catalog:tooling",
     "@internationalized/string": "catalog:react",
     "@react-aria/interactions": "catalog:react",
     "@react-aria/utils": "catalog:react",
@@ -107,6 +106,7 @@
     "@commercetools/nimbus-design-token-ts-plugin": "workspace:^",
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
+    "@github-ui/storybook-addon-performance-panel": "catalog:tooling",
     "@internationalized/date": "catalog:react",
     "@react-aria/optimize-locales-plugin": "catalog:react",
     "@react-types/shared": "catalog:tooling",
