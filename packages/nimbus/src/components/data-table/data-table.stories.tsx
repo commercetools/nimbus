@@ -7801,6 +7801,81 @@ export const RowSelectionIgnoresClicksOnCellControls: Story = {
   },
 };
 
+const plainCellContentColumns: DataTableColumnItem[] = [
+  ...behaviourColumns,
+  {
+    id: "content",
+    header: "Content",
+    accessor: (row: Record<string, unknown>) => (
+      <>
+        <a href={`#details-${row.id}`} onClick={(e) => e.preventDefault()}>
+          <span>{`Details of ${row.name}`}</span>
+        </a>{" "}
+        <label>
+          <input type="checkbox" /> {`Archived ${row.name}`}
+        </label>{" "}
+        <span tabIndex={-1}>{`Note on ${row.name}`}</span>
+      </>
+    ),
+  },
+];
+
+/**
+ * Plain HTML in a cell leaves the row's selection unchanged too: a click on
+ * an element inside a link, on a label, or on an element with
+ * `tabindex="-1"`. React Aria does not ignore these presses itself.
+ */
+export const RowSelectionIgnoresClicksOnPlainCellContent: Story = {
+  args: { onSelectionChange: fn() },
+  render: (args) => (
+    <DataTable
+      columns={plainCellContentColumns}
+      rows={behaviourRows}
+      selectionMode="multiple"
+      onSelectionChange={args.onSelectionChange}
+      aria-label="Selection and plain cell content"
+    />
+  ),
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const onSelectionChange = args.onSelectionChange as ReturnType<typeof fn>;
+    await canvas.findByText("Ada");
+    const adaRow = rowNamed(canvasElement, /Ada/);
+
+    await step(
+      "A click on text inside a link does not select the row",
+      async () => {
+        await userEvent.click(canvas.getByText("Details of Ada"));
+        expect(onSelectionChange).not.toHaveBeenCalled();
+        expect(adaRow).toHaveAttribute("aria-selected", "false");
+      }
+    );
+
+    await step(
+      "A click on a label checks its box and does not select the row",
+      async () => {
+        await userEvent.click(canvas.getByText("Archived Ada"));
+        await waitFor(() =>
+          expect(
+            canvas.getByRole("checkbox", { name: "Archived Ada" })
+          ).toBeChecked()
+        );
+        expect(onSelectionChange).not.toHaveBeenCalled();
+        expect(adaRow).toHaveAttribute("aria-selected", "false");
+      }
+    );
+
+    await step(
+      'A click on an element with tabindex="-1" does not select the row',
+      async () => {
+        await userEvent.click(canvas.getByText("Note on Ada"));
+        expect(onSelectionChange).not.toHaveBeenCalled();
+        expect(adaRow).toHaveAttribute("aria-selected", "false");
+      }
+    );
+  },
+};
+
 /**
  * Disabled rows are never activated.
  */

@@ -37,12 +37,27 @@ import { dataTableMessagesStrings } from "../data-table.messages";
  */
 
 /**
+ * Finds the control from a fixed list (buttons, inputs, checkboxes, the
+ * selection and drag handles) that an event came from.
+ *
+ * @param e - The DOM Event object from a listener on the row element
+ * @returns The listed element if one was found, null otherwise
+ */
+function getListedInteractiveElement(e: Event) {
+  // Cast target to Element since EventTarget doesn't have closest method
+  return (e.target as Element)?.closest(
+    'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"], [slot="drag"], [data-slot="drag"]'
+  );
+}
+
+/**
  * Determines if a click event originated from an interactive element within a table row.
  * This is crucial for preventing row click handlers from interfering with intended
  * interactions like checkbox selection, button clicks, links, or other form controls.
  *
- * Besides the elements listed below, anything that can take focus inside a
- * cell (a link, a text field, a custom widget with `tabindex`) counts, and so
+ * Besides the elements in `getListedInteractiveElement`, anything that can
+ * take focus inside a cell (a link, a text field, a custom widget with
+ * `tabindex`) counts, and so
  * does a label, which passes its click on to a form control such as a
  * checkbox. The row and its cells can take focus too, so that search stops
  * below the cell.
@@ -53,9 +68,7 @@ import { dataTableMessagesStrings } from "../data-table.messages";
 function getIsTableRowChildElementInteractive(e: Event) {
   // Cast target to Element since EventTarget doesn't have closest method
   const clickedElement = e.target as Element;
-  const listedElement = clickedElement?.closest(
-    'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"], [slot="drag"], [data-slot="drag"]'
-  );
+  const listedElement = getListedInteractiveElement(e);
   if (listedElement) return listedElement;
 
   const rowElement = e.currentTarget as Element | null;
@@ -81,10 +94,32 @@ function getIsTableRowChildElementInteractive(e: Event) {
  * when clicking on empty row areas. Interactive elements (buttons, checkboxes)
  * are left alone so their own press handlers (usePress/onPress) can work.
  *
+ * Besides the fixed list, only elements that handle presses themselves count
+ * here: React Aria's `usePress` marks them with `data-react-aria-pressable`.
+ * The label of a Nimbus Checkbox is one; it cancels the native label click
+ * and toggles the checkbox from its own press. The wider check that click
+ * and Enter activation use does not fit: React Aria selects the row when a
+ * press starts, unless the target can be reached with Tab, so a plain label,
+ * an element inside a link or an element with `tabindex="-1"` would select
+ * the row if it got through. The row and its cells use `usePress` too, so
+ * the search stops below the cell.
+ *
  * @param e - The DOM Event to potentially stop propagation on
  */
 function stopPropagationForNonInteractiveElements(e: Event) {
-  const isInteractiveElement = getIsTableRowChildElementInteractive(e);
+  let isInteractiveElement = !!getListedInteractiveElement(e);
+
+  const rowElement = e.currentTarget as Element | null;
+  for (
+    let element: Element | null = e.target as Element;
+    !isInteractiveElement &&
+    element &&
+    element !== rowElement &&
+    element.parentElement !== rowElement;
+    element = element.parentElement
+  ) {
+    isInteractiveElement = element.hasAttribute("data-react-aria-pressable");
+  }
 
   if (!isInteractiveElement) {
     e.stopPropagation();

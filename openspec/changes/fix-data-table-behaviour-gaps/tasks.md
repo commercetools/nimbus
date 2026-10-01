@@ -193,6 +193,13 @@ it once and see it fail, then fix. Paths are relative to
 - [x] 13.12 `root.tsx`: the `ResizeObserver` from 11.2 is created on
       `onResizeStart` of `ResizableTableContainer` and removed on
       `onResizeEnd`, so it finds a table that mounted after the root
+- [x] 13.13 Story `RowSelectionIgnoresClicksOnPlainCellContent`: with
+      selection, a click on an element inside a link, on a label or on an
+      element with `tabindex="-1"` leaves the row's selection unchanged
+- [x] 13.14 `row.tsx`: the pointerdown listener lets through only the fixed
+      element list and elements below the cell that React Aria's `usePress`
+      handles (`data-react-aria-pressable`), such as a Nimbus Checkbox label;
+      the wider check from 13.9 is used for click and Enter activation only
 
 ## 14. Expand column header icon (#2019)
 
