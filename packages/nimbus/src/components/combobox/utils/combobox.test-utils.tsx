@@ -134,7 +134,7 @@ export const PokemonOption = ({ pokemon }: { pokemon: Pokemon }) => {
           <Text fontSize="400" fontWeight="600" textTransform="capitalize">
             {details.name}
           </Text>
-          <Text fontSize="350" color="fg.muted">
+          <Text fontSize="350" color="fg.subtle">
             #{details.id.toString().padStart(3, "0")}
           </Text>
         </Stack>
@@ -161,10 +161,10 @@ export const PokemonOption = ({ pokemon }: { pokemon: Pokemon }) => {
         gap="0"
         mt="auto"
       >
-        <Text fontSize="300" lineHeight="400" color="fg.muted">
+        <Text fontSize="300" lineHeight="400" color="fg.subtle">
           H: {(details.height / 10).toFixed(1)}m
         </Text>
-        <Text fontSize="300" lineHeight="400" color="fg.muted">
+        <Text fontSize="300" lineHeight="400" color="fg.subtle">
           W: {(details.weight / 10).toFixed(1)}kg
         </Text>
       </Stack>

@@ -207,7 +207,7 @@ const App = () => {
         <DraggableList.Item id={item.id}>
           <Stack direction="column" gap="100" padding="200">
             <Text fontWeight="500">{item.title}</Text>
-            <Text fontSize="sm" color="fg.muted">
+            <Text fontSize="sm" color="fg.subtle">
               Priority: {item.priority}
             </Text>
           </Stack>
@@ -481,7 +481,7 @@ const App = () => {
         <DraggableList.Item id={item.key}>
           <Stack direction="column" gap="100" padding="200">
             <Text fontWeight="500">{item.label}</Text>
-            <Text fontSize="sm" color="fg.muted">
+            <Text fontSize="sm" color="fg.subtle">
               {item.assignee} • {item.status}
             </Text>
           </Stack>
@@ -664,7 +664,7 @@ const App = () => {
         onUpdateItems={handleUpdateItems}
         aria-label="Project phases"
       />
-      <Text fontSize="sm" color="fg.muted">
+      <Text fontSize="sm" color="fg.subtle">
         Last saved: {lastSaved}
       </Text>
     </Stack>
