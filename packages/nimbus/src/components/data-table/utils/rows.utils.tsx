@@ -3,6 +3,10 @@ import type {
   DataTableRowItem as DataTableRowType,
   SortDescriptor,
 } from "../data-table.types";
+import {
+  defaultGetRowKey,
+  type DataTableRowKeyResolver,
+} from "./row-keys.utils";
 
 // Utility functions
 export function filterRows<T extends object>(
@@ -58,14 +62,15 @@ export function sortRows<T extends object>(
   sortDescriptor: SortDescriptor | undefined,
   columns: DataTableColumnItem<T>[],
   nestedKey?: string,
-  pinnedRows?: Set<string>
+  pinnedRows?: Set<string>,
+  getRowKey: DataTableRowKeyResolver<T> = defaultGetRowKey
 ): DataTableRowType<T>[] {
   // Separate pinned and unpinned rows
   const pinned: DataTableRowType<T>[] = [];
   const unpinned: DataTableRowType<T>[] = [];
 
   rows.forEach((row) => {
-    if (pinnedRows?.has(row.id)) {
+    if (pinnedRows?.has(getRowKey(row))) {
       pinned.push(row);
     } else {
       unpinned.push(row);
@@ -84,13 +89,13 @@ export function sortRows<T extends object>(
       });
       const valueMap = new Map<string, unknown>();
       for (const row of unpinned) {
-        valueMap.set(row.id, column.accessor(row));
+        valueMap.set(getRowKey(row), column.accessor(row));
       }
       const direction = sortDescriptor.direction === "ascending" ? 1 : -1;
 
       sortedUnpinnedRows = [...unpinned].sort((a, b) => {
-        const aValue = valueMap.get(a.id);
-        const bValue = valueMap.get(b.id);
+        const aValue = valueMap.get(getRowKey(a));
+        const bValue = valueMap.get(getRowKey(b));
 
         if (aValue == null && bValue == null) return 0;
         if (aValue == null) return 1;

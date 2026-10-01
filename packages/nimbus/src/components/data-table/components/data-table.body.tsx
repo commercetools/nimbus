@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { cloneElement, isValidElement, useCallback, useRef } from "react";
 import { TableBody as RaTableBody } from "react-aria-components";
 import { Box } from "@/components";
 import { extractStyleProps } from "@/utils";
@@ -35,7 +35,8 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   ...props
 }: DataTableBodyProps<T>) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
-  const { activeColumns, renderEmptyState } = useDataTableContext<T>();
+  const { activeColumns, renderEmptyState, getRowKey } =
+    useDataTableContext<T>();
   const { sortedRows, expanded, pinnedRows, pinnedRowIds } =
     useInteractionContext<T>();
   const [styleProps, restProps] = extractStyleProps(props);
@@ -43,6 +44,8 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   // Use provided aria-label or fall back to default
   const ariaLabel = ariaLabelProp ?? msg.format("dataTableBody");
 
+  const getRowKeyRef = useRef(getRowKey);
+  getRowKeyRef.current = getRowKey;
   const childrenRef = useRef(children);
   childrenRef.current = children;
   const expandedRef = useRef(expanded);
@@ -56,19 +59,38 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
     (row: DataTableRowItem<T>) => {
       const currentPinnedRows = pinnedRowsRef.current;
       const currentPinnedRowIds = pinnedRowIdsRef.current;
-      const isPinned = currentPinnedRows.has(row.id);
-      const pinnedIdx = isPinned ? currentPinnedRowIds.indexOf(row.id) : -1;
+      const rowKey = getRowKeyRef.current(row);
+      const isPinned = currentPinnedRows.has(rowKey);
+      const pinnedIdx = isPinned ? currentPinnedRowIds.indexOf(rowKey) : -1;
       const rowRenderProps: DataTableRowRenderProps = {
-        isExpanded: expandedRef.current.has(row.id),
+        isExpanded: expandedRef.current.has(rowKey),
         isPinned,
         isFirstPinned: pinnedIdx === 0,
         isLastPinned: pinnedIdx === currentPinnedRowIds.length - 1,
         isSinglePinned: currentPinnedRowIds.length === 1 && isPinned,
       };
+      // React Aria derives the collection key from
+      // `rendered.props.id ?? item.key ?? item.id` (see `useCachedChildren`),
+      // so the rendered element has to carry the id explicitly. Domain rows
+      // commonly have a business `key` field (customer groups, categories,
+      // product types, ...) which would otherwise win: selection callbacks
+      // would report that key instead of the row id, and a row whose `key`
+      // equals a column id collides in the collection ("Cell count must match
+      // column count"). The row objects themselves stay the collection items
+      // so React Aria's per-item render cache keeps working.
+      // An element that already carries an `id` is left alone rather than
+      // overwritten, but a value other than the row's key is unsupported —
+      // DataTable.Row warns about it in development.
       if (childrenRef.current) {
-        return childrenRef.current(row, rowRenderProps);
+        const rendered = childrenRef.current(row, rowRenderProps);
+        return isValidElement<{ id?: string }>(rendered) &&
+          rendered.props.id == null
+          ? cloneElement(rendered, { id: rowKey })
+          : rendered;
       }
-      return <DataTableRow key={row.id} row={row} {...rowRenderProps} />;
+      return (
+        <DataTableRow key={rowKey} id={rowKey} row={row} {...rowRenderProps} />
+      );
     },
     // Stable identity — delegates through refs so RaTableBody never
     // unmounts/remounts rows due to a new render-function reference.

@@ -99,9 +99,35 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     renderNestedContent,
     togglePin,
     selectRowLabel,
+    getRowKey,
   } = useStableDataTableContext<T>();
 
   const [styleProps, restProps] = extractStyleProps(props);
+
+  // The row's identity comes from the row data, never from the rendered
+  // element. DataTable.Body computes `isExpanded` / `isPinned` and `sortRows`
+  // partitions pinned rows before any element exists, so they can only ever
+  // see `getRowKey(row)`. Reading the key back from an element `id` would make
+  // this row toggle state under a name the rest of the table never checks.
+  const rowKey = getRowKey(row);
+
+  // A custom `DataTable.Body` renderer may still put a different `id` on the
+  // row. React Aria then keys selection by that id while expansion, pinning
+  // and `disabledKeys` keep using `row.id` — one row, two identities. That is
+  // unsupported; say so in development instead of failing quietly.
+  // `restProps` is a broad Omit<> of every DOM attribute, so narrow to the one
+  // field we care about rather than widening the whole type.
+  const suppliedId = (restProps as { id?: string | number }).id;
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    if (suppliedId == null || String(suppliedId) === rowKey) return;
+    console.warn(
+      `DataTable: row "${rowKey}" was rendered with a different id, ` +
+        `"${suppliedId}". Selection would use "${suppliedId}" while ` +
+        `expansion, pinning and disabledKeys use "${rowKey}". To choose a ` +
+        "row's identity, set `id` in the row data instead."
+    );
+  }, [suppliedId, rowKey]);
   const hasCustomBg = !!(
     styleProps.bg ||
     styleProps.bgColor ||
@@ -116,7 +142,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     if (row.isDisabled) return true;
     return disabledKeys.has(rowId);
   };
-  const isDisabled = getIsDisabled(row.id);
+  const isDisabled = getIsDisabled(rowKey);
 
   /**
    * Custom row click handling implementation to work around React Aria limitations.
@@ -200,7 +226,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               expandViaRowClick &&
               (hasNestedContent || hasRenderNestedContent)
             ) {
-              toggleExpand(row.id, columnId);
+              toggleExpand(rowKey, columnId);
             }
             onRowClickRef.current?.(row);
           } else {
@@ -222,6 +248,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       expandViaRowClick,
       hasNestedContent,
       toggleExpand,
+      rowKey,
     ]
   );
 
@@ -404,7 +431,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const nestedContentId = `nested-content-${row.id}`;
+  const nestedContentId = `nested-content-${rowKey}`;
   const ariaNodeRef = useRef<HTMLElement | null>(null);
   const ariaRef = useCallback((node: HTMLElement | null) => {
     ariaNodeRef.current = node;
@@ -432,11 +459,11 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         node.removeAttribute("aria-labelledby");
         node.setAttribute(
           "aria-label",
-          msg.format("nestedContentRow", { rowId: row.id })
+          msg.format("nestedContentRow", { rowId: rowKey })
         );
       }
     },
-    [nestedContentId, msg, row.id]
+    [nestedContentId, msg, rowKey]
   );
 
   // Generate pinned row CSS classes
@@ -510,7 +537,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           isDisabled={isDisabled}
           columns={activeColumns}
           ref={rowRef}
-          id={row.id}
+          id={rowKey}
           hasChildItems={
             !!(hasRenderNestedContent || hasNestedContent) || undefined
           }
@@ -581,7 +608,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                       ? msg.format("collapseRow")
                       : msg.format("expandRow")
                   }
-                  onPress={() => toggleExpand(row.id)}
+                  onPress={() => toggleExpand(rowKey)}
                 >
                   {isExpanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
                 </IconButton>
@@ -613,7 +640,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                   aria-label={isPinned ? "Unpin row" : "Pin row"}
                   colorPalette="primary"
                   isSelected={isPinned}
-                  onChange={() => togglePin(row.id)}
+                  onChange={() => togglePin(rowKey)}
                 >
                   <PushPin />
                 </IconToggleButton>
@@ -648,7 +675,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                     : nestedKey && (row[nestedKey] as React.ReactNode)
                   : renderNestedContent
                     ? renderNestedContent(row, {
-                        close: () => toggleExpand(row.id),
+                        close: () => toggleExpand(rowKey),
                       })
                     : null
                 : null}
