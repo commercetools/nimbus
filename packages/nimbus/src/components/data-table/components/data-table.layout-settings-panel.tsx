@@ -60,13 +60,7 @@ export const LayoutSettingsPanel = ({
             onSelectionChange={handleTextVisibilityChange}
             aria-label={msg.format("textVisibilityAriaLabel")}
           >
-            <ToggleButton
-              id="full"
-              size="xs"
-              variant="ghost"
-              px="300"
-              flex="1"
-            >
+            <ToggleButton id="full" size="xs" variant="ghost" px="300" flex="1">
               <WrapText />
               {msg.format("fullText")}
             </ToggleButton>
