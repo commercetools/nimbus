@@ -8627,11 +8627,11 @@ const dragColumnResizer = async (
 };
 
 /**
- * The pin column is at least 72px wide, not exactly 72px. When the last data
- * column is made narrower, the pin column takes the freed space, so the table
- * still fills its container. Before, the table shrank and left a gap.
+ * While a column is dragged wider than the table can show, the table scrolls
+ * along, so the dragged edge stays left of the pin column where the mouse can
+ * still reach it.
  */
-export const PinColumnFillsSpaceAfterResize: Story = {
+export const ResizedColumnEdgeStaysInView: Story = {
   render: () => (
     <Box w="700px">
       <DataTable
@@ -8654,42 +8654,11 @@ export const PinColumnFillsSpaceAfterResize: Story = {
     const widthOf = (el: HTMLElement) =>
       Math.round(el.getBoundingClientRect().width);
 
-    await step("The pin column starts at its 72px minimum", async () => {
-      expect(widthOf(header(/Pin rows/))).toBe(72);
-    });
-
-    await step("A narrower last column leaves no gap", async () => {
-      const roleWidth = widthOf(header(/^Role/));
-      await dragColumnResizer(header(/^Role/), -100);
-      await waitFor(() =>
-        expect(widthOf(header(/^Role/))).toBeLessThan(roleWidth)
-      );
-      expect(widthOf(table)).toBe(container.clientWidth);
-      expect(widthOf(header(/Pin rows/))).toBeGreaterThan(72);
-    });
-
-    await step(
-      "The row's pin button stays in line with the header icon",
-      async () => {
-        const centerX = (el: Element) => {
-          const box = el.getBoundingClientRect();
-          return Math.round(box.left + box.width / 2);
-        };
-        const headerIcon = header(/Pin rows/).querySelector("svg") as Element;
-        const pinButton = within(rowNamed(canvasElement, /Grace/)).getByRole(
-          "button",
-          { name: "Pin row" }
-        );
-        expect(centerX(pinButton)).toBe(centerX(headerIcon));
-      }
-    );
-
-    await step("A wider last column keeps the pin column at 72px", async () => {
+    await step("A wider last column makes the table scroll", async () => {
       await dragColumnResizer(header(/^Role/), 300);
       await waitFor(() =>
         expect(widthOf(table)).toBeGreaterThan(container.clientWidth)
       );
-      expect(widthOf(header(/Pin rows/))).toBe(72);
     });
 
     await step(

@@ -749,8 +749,6 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               data-slot="pin-row-cell"
               isDisabled={isDisabled}
             >
-              {/* Centered like the pin icon in the header, which stays in
-               * line with it when the pin column is wider than its minimum. */}
               <Box
                 data-slot={
                   isPinned
@@ -758,8 +756,6 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                     : "nimbus-table-cell-pin-button"
                 }
                 title={pinLabel}
-                display="flex"
-                justifyContent="center"
               >
                 <IconToggleButton
                   key="pin-btn"

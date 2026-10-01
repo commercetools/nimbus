@@ -53,12 +53,6 @@ were accepted but ignored now work.
   visible on all four sides. Before, frozen columns, the next row or the table
   edge covered parts of it. Rows scrolled under a sticky header no longer show
   their frozen cells above the header.
-- **Fixed:** in a resizable table, making the last data column narrower no
-  longer leaves an empty gap at the right. The pin column is now at least 72px
-  wide instead of exactly 72px, and takes the freed space.
-- **Changed:** if every data column has a fixed pixel width, the pin column
-  fills the rest of the table width instead of leaving it empty. The pin button
-  stays centered in the column.
 - **Fixed:** when a column is resized wider than the table can show, the table
   scrolls along, so the edge you are dragging stays in view. Before, it moved
   under the pin column or out of view, and its resize handle could no longer be

@@ -142,19 +142,12 @@ it once and see it fail, then fix. Paths are relative to
       instead of an outline on the element; the sticky header moves from
       z-index 10 to 14, above the frozen body cells
 
-## 11. Pin column after resizing
+## 11. Dragged column edge stays in view
 
-- [x] 11.1 Story `PinColumnFillsSpaceAfterResize`: after the last data column
-      is made narrower, the table still fills its container and the pin column
-      is wider than 72px; after it is made wider, the pin column stays at 72px;
-      the row pin button stays in line with the header icon
-- [x] 11.2 `header.tsx`: the pin column gets `minWidth={72}` and a tiny
-      `defaultWidth` (`0.001fr`) instead of a fixed 72px, so it takes free space
-      only when no other column can
-- [x] 11.3 `row.tsx`: center the pin button in its cell, like the header icon
-- [x] 11.4 Story step: while the last data column is dragged wider, its right
-      edge stays left of the pin column and the table scrolls
-- [x] 11.5 `root.tsx`: a `ResizeObserver` on the table scrolls the container
+- [x] 11.1 Story `ResizedColumnEdgeStaysInView`: while the last data column is
+      dragged wider, its right edge stays left of the pin column and the table
+      scrolls
+- [x] 11.2 `root.tsx`: a `ResizeObserver` on the table scrolls the container
       while a column is resizing, so the dragged edge never moves under the pin
       column or out of the visible area
 
