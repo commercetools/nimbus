@@ -184,6 +184,10 @@ it once and see it fail, then fix. Paths are relative to
       click on plain cell text does
 - [x] 13.9 `row.tsx`: `getIsTableRowChildElementInteractive` also counts
       anything focusable below the cell, and labels
+- [x] 13.10 Story `RowSelectionIgnoresClicksOnCellControls`: with
+      `selectionMode="multiple"`, a click on a link, a text field or a checkbox
+      label in a cell leaves the row's selection unchanged and keeps focus in
+      the text field; the row's own checkbox still selects it
 
 ## 14. Expand column header icon (#2019)
 

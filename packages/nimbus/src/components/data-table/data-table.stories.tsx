@@ -7558,8 +7558,13 @@ export const RowActionWithKeyboard: Story = {
  */
 const CellControlsTable = ({
   onRowAction,
+  selectionMode,
+  onSelectionChange,
   "aria-label": ariaLabel,
-}: Pick<DataTableProps, "onRowAction"> & { "aria-label": string }) => {
+}: Pick<
+  DataTableProps,
+  "onRowAction" | "selectionMode" | "onSelectionChange"
+> & { "aria-label": string }) => {
   const [linkClicks, setLinkClicks] = useState(0);
   const cellControlColumns: DataTableColumnItem[] = [
     ...behaviourColumns,
@@ -7599,6 +7604,8 @@ const CellControlsTable = ({
         columns={cellControlColumns}
         rows={behaviourRows}
         onRowAction={onRowAction}
+        selectionMode={selectionMode}
+        onSelectionChange={onSelectionChange}
         aria-label={ariaLabel}
       />
       <Text data-testid="link-clicks">{linkClicks}</Text>
@@ -7721,6 +7728,75 @@ export const RowActionIgnoresClicksOnCellControls: Story = {
           expect.objectContaining({ id: "r2" })
         )
       );
+    });
+  },
+};
+
+/**
+ * In a table with selection, a click on a link, a text field or a checkbox
+ * label inside a cell leaves the row's selection unchanged. Only the row's
+ * own checkbox selects it.
+ */
+export const RowSelectionIgnoresClicksOnCellControls: Story = {
+  args: { onSelectionChange: fn() },
+  render: (args) => (
+    <CellControlsTable
+      selectionMode="multiple"
+      onSelectionChange={args.onSelectionChange}
+      aria-label="Selection and cell controls"
+    />
+  ),
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const onSelectionChange = args.onSelectionChange as ReturnType<typeof fn>;
+    await canvas.findByText("Ada");
+    const adaRow = rowNamed(canvasElement, /Ada/);
+
+    await step("A click on a link does not select the row", async () => {
+      await userEvent.click(
+        canvas.getByRole("link", { name: "Profile of Ada" })
+      );
+      await waitFor(() =>
+        expect(canvas.getByTestId("link-clicks")).not.toHaveTextContent(/^0$/)
+      );
+      expect(onSelectionChange).not.toHaveBeenCalled();
+      expect(adaRow).toHaveAttribute("aria-selected", "false");
+    });
+
+    await step(
+      "A click in a text field keeps focus there and does not select the row",
+      async () => {
+        const note = canvas.getByRole("textbox", { name: "Note for Ada" });
+        await userEvent.click(note);
+        expect(note).toHaveFocus();
+        expect(onSelectionChange).not.toHaveBeenCalled();
+        expect(adaRow).toHaveAttribute("aria-selected", "false");
+      }
+    );
+
+    await step(
+      "A click on a checkbox label checks the box and does not select the row",
+      async () => {
+        await userEvent.click(canvas.getByText("Reviewed Ada"));
+        await waitFor(() =>
+          expect(
+            canvas.getByRole("checkbox", { name: "Reviewed Ada" })
+          ).toBeChecked()
+        );
+        expect(onSelectionChange).not.toHaveBeenCalled();
+        expect(adaRow).toHaveAttribute("aria-selected", "false");
+      }
+    );
+
+    await step("The row's own checkbox still selects it", async () => {
+      const selectionCell = adaRow.querySelector(
+        '[data-slot="selection"]'
+      ) as HTMLElement;
+      await userEvent.click(within(selectionCell).getByRole("checkbox"));
+      await waitFor(() =>
+        expect(adaRow).toHaveAttribute("aria-selected", "true")
+      );
+      expect(onSelectionChange).toHaveBeenCalledTimes(1);
     });
   },
 };
