@@ -1,4 +1,5 @@
 import type { ReactNode, FC, Ref } from "react";
+import type { DataTableRowKeyResolver } from "./utils/row-keys.utils";
 import type {
   SortDirection as RaSortDirection,
   TableHeaderProps as RaTableHeaderProps,
@@ -137,6 +138,12 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
       options: DataTableNestedContentOptions
     ) => ReactNode;
     toggleExpand: (id: string, columnId?: string) => void;
+    /**
+     * Resolves a row's identity. Every key the table reports or accepts comes
+     * from here, so internal state can never disagree with the key React Aria
+     * uses for the collection. Stable across renders.
+     */
+    getRowKey: DataTableRowKeyResolver<T>;
     activeColumns: DataTableColumnItem<T>[];
     filteredRows: DataTableRowItem<T>[];
     sortedRows: DataTableRowItem<T>[];

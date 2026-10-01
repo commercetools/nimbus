@@ -51,6 +51,14 @@ export const DataTableHeader = <
         const align = column.align ?? "start";
         return (
           <DataTableColumn
+            // React Aria derives a column's collection key from
+            // `rendered.props.id ?? item.key ?? item.id`, so the rendered
+            // element has to carry the id. Column definitions can hold a
+            // business `key` field, which would otherwise win and make
+            // `onSortChange` report it instead of the column id. Setting it
+            // here rather than inside DataTableColumn leaves a consumer's own
+            // `id` on <DataTable.Column> free to override it.
+            id={column.id}
             allowsSorting={
               column.isSortable !== undefined
                 ? column.isSortable
