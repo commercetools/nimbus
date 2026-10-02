@@ -49,6 +49,23 @@ describe("sortRows", () => {
       (sortedParent.children as DataTableRowItem[]).map((row) => row.id)
     ).toEqual(["c1", "c2"]);
   });
+
+  it("resolves the keys of nested rows with the given getRowKey", () => {
+    // "key:c1" is pinned. Only the given resolver produces that key, so
+    // the nested sort must use it to keep c1 at the top.
+    const [sortedParent] = sortRows(
+      [parent],
+      { column: "name", direction: "descending" },
+      columns,
+      "children",
+      new Set(["key:c1"]),
+      (row) => `key:${row.id}`
+    );
+
+    expect(
+      (sortedParent.children as DataTableRowItem[]).map((row) => row.id)
+    ).toEqual(["c1", "c2"]);
+  });
 });
 
 describe("filterRows", () => {

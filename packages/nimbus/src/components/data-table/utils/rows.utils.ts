@@ -136,7 +136,14 @@ export function sortRows<T extends object>(
     return withNestedRows(
       row,
       nestedKey,
-      sortRows(row[nestedKey], sortDescriptor, columns, nestedKey, pinnedRows)
+      sortRows(
+        row[nestedKey],
+        sortDescriptor,
+        columns,
+        nestedKey,
+        pinnedRows,
+        getRowKey
+      )
     );
   });
 }
