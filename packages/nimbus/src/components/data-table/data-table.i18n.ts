@@ -44,6 +44,28 @@ export const messages = {
     description: "aria-label for the pin rows column header",
     defaultMessage: "Pin rows",
   },
+  pinRow: {
+    id: "Nimbus.DataTable.pinRow",
+    description:
+      "aria-label and tooltip for the pin button of a row that is not pinned",
+    defaultMessage: "Pin row",
+  },
+  unpinRow: {
+    id: "Nimbus.DataTable.unpinRow",
+    description: "aria-label and tooltip for the pin button of a pinned row",
+    defaultMessage: "Unpin row",
+  },
+  noData: {
+    id: "Nimbus.DataTable.noData",
+    description: "message shown in the table body when there are no rows",
+    defaultMessage: "No Data",
+  },
+  nestedItemsCount: {
+    id: "Nimbus.DataTable.nestedItemsCount",
+    description:
+      "placeholder shown in an expanded row whose nested data is a list, with the number of items",
+    defaultMessage: "Nested items: {count}",
+  },
   nestedContentRow: {
     id: "Nimbus.DataTable.nestedContentRow",
     description:
@@ -143,23 +165,11 @@ export const messages = {
       "title for the full text section in the data table manager layout",
     defaultMessage: "Full text",
   },
-  fullTextAriaLabel: {
-    id: "Nimbus.DataTable.fullTextAriaLabel",
-    description:
-      "aria-label for the full text section in the data table manager layout",
-    defaultMessage: "Full text section",
-  },
   TextPreviews: {
     id: "Nimbus.DataTable.textPreviews",
     description:
       "title for the text previews section in the data table manager layout",
     defaultMessage: "Text previews",
-  },
-  TextPreviewsAriaLabel: {
-    id: "Nimbus.DataTable.textPreviewsAriaLabel",
-    description:
-      "aria-label for the text previews section in the data table manager layout",
-    defaultMessage: "Text previews section",
   },
   RowDensity: {
     id: "Nimbus.DataTable.rowDensity",
@@ -179,23 +189,11 @@ export const messages = {
       "title for the comfortable togglebutton in the data table manager layout",
     defaultMessage: "Comfortable",
   },
-  comfortableAriaLabel: {
-    id: "Nimbus.DataTable.comfortableAriaLabel",
-    description:
-      "aria-label for the comfortable togglebutton in the data table manager layout",
-    defaultMessage: "Comfortable section",
-  },
   compact: {
     id: "Nimbus.DataTable.compact",
     description:
       "title for the compact togglebutton in the data table manager layout",
     defaultMessage: "Compact",
-  },
-  compactAriaLabel: {
-    id: "Nimbus.DataTable.compactAriaLabel",
-    description:
-      "aria-label for the compact togglebutton in the data table manager layout",
-    defaultMessage: "Compact section",
   },
   searchHiddenColumns: {
     id: "Nimbus.DataTable.searchHiddenColumns",

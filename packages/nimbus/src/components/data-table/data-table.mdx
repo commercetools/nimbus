@@ -336,7 +336,13 @@ const App = () => {
       isResizable: true,
     },
   ];
-  return <DataTable rows={data} columns={columns} nestedKey="children" />;
+  return (
+    <DataTable
+      rows={data}
+      columns={columns}
+      renderNestedContent={(row) => row.children}
+    />
+  );
 }
 ```
 

@@ -1,10 +1,12 @@
-import { useRef, useCallback, useEffect, memo } from "react";
+import { useRef, useCallback, useContext, useEffect, memo } from "react";
 import {
   Row as RaRow,
   Collection as RaCollection,
   Cell as RaCell,
+  TableStateContext,
   useTableOptions,
 } from "react-aria-components";
+import { isFocusable } from "@react-aria/utils";
 import { mergeRefs } from "@/utils";
 import { Highlight } from "@chakra-ui/react/highlight";
 import { useStableDataTableContext } from "./data-table.context";
@@ -35,19 +37,54 @@ import { dataTableMessagesStrings } from "../data-table.messages";
  */
 
 /**
+ * Finds the control from a fixed list (buttons, inputs, checkboxes, the
+ * selection and drag handles) that an event came from.
+ *
+ * @param e - The DOM Event object from a listener on the row element
+ * @returns The listed element if one was found, null otherwise
+ */
+function getListedInteractiveElement(e: Event) {
+  // Cast target to Element since EventTarget doesn't have closest method
+  return (e.target as Element)?.closest(
+    'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"], [slot="drag"], [data-slot="drag"]'
+  );
+}
+
+/**
  * Determines if a click event originated from an interactive element within a table row.
  * This is crucial for preventing row click handlers from interfering with intended
- * interactions like checkbox selection, button clicks, or other form controls.
+ * interactions like checkbox selection, button clicks, links, or other form controls.
  *
- * @param e - The DOM Event object from the click listener
+ * Besides the elements in `getListedInteractiveElement`, anything that can
+ * take focus inside a cell (a link, a text field, a custom widget with
+ * `tabindex`) counts, and so
+ * does a label, which passes its click on to a form control such as a
+ * checkbox. The row and its cells can take focus too, so that search stops
+ * below the cell.
+ *
+ * @param e - The DOM Event object from a listener on the row element
  * @returns Element if an interactive element was found, null otherwise
  */
 function getIsTableRowChildElementInteractive(e: Event) {
   // Cast target to Element since EventTarget doesn't have closest method
   const clickedElement = e.target as Element;
-  return clickedElement?.closest(
-    'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"], [slot="drag"], [data-slot="drag"]'
-  );
+  const listedElement = getListedInteractiveElement(e);
+  if (listedElement) return listedElement;
+
+  const rowElement = e.currentTarget as Element | null;
+  for (
+    let element: Element | null = clickedElement;
+    element && element !== rowElement && element.parentElement !== rowElement;
+    element = element.parentElement
+  ) {
+    if (
+      element.tagName === "LABEL" ||
+      isFocusable(element, { skipVisibilityCheck: true })
+    ) {
+      return element;
+    }
+  }
+  return null;
 }
 
 /**
@@ -57,15 +94,79 @@ function getIsTableRowChildElementInteractive(e: Event) {
  * when clicking on empty row areas. Interactive elements (buttons, checkboxes)
  * are left alone so their own press handlers (usePress/onPress) can work.
  *
+ * Besides the fixed list, only elements that handle presses themselves count
+ * here: React Aria's `usePress` marks them with `data-react-aria-pressable`.
+ * The label of a Nimbus Checkbox is one; it cancels the native label click
+ * and toggles the checkbox from its own press. The wider check that click
+ * and Enter activation use does not fit: React Aria selects the row when a
+ * press starts, unless the target can be reached with Tab, so a plain label,
+ * an element inside a link or an element with `tabindex="-1"` would select
+ * the row if it got through. The row and its cells use `usePress` too, so
+ * the search stops below the cell.
+ *
  * @param e - The DOM Event to potentially stop propagation on
  */
 function stopPropagationForNonInteractiveElements(e: Event) {
-  const isInteractiveElement = getIsTableRowChildElementInteractive(e);
+  let isInteractiveElement = !!getListedInteractiveElement(e);
+
+  const rowElement = e.currentTarget as Element | null;
+  for (
+    let element: Element | null = e.target as Element;
+    !isInteractiveElement &&
+    element &&
+    element !== rowElement &&
+    element.parentElement !== rowElement;
+    element = element.parentElement
+  ) {
+    isInteractiveElement = element.hasAttribute("data-react-aria-pressable");
+  }
 
   if (!isInteractiveElement) {
     e.stopPropagation();
   }
 }
+
+/**
+ * Renders a row's nested content and owns its `close` callback.
+ *
+ * Closing from inside removes the element that has focus, and React Aria
+ * would then move focus to whichever row now sits in that position. `close`
+ * first points React Aria's focus at the control that opened the panel (the
+ * expand cell, or the row when there is no expand column), so focus returns
+ * there instead. The nested row comes from a ref, not from its DOM id: two
+ * tables on one page can use the same row ids.
+ *
+ * This is a component of its own because React Aria renders
+ * `DataTable.Row` itself outside the table's state context; cell content is
+ * rendered inside it, so `TableStateContext` is only available here.
+ */
+const NestedContentPanel = ({
+  rowKey,
+  nestedRowRef,
+  openerCellIndex,
+  onClose,
+  children,
+}: {
+  rowKey: string;
+  nestedRowRef: React.RefObject<HTMLElement | null>;
+  openerCellIndex?: number;
+  onClose: () => void;
+  children: (close: () => void) => React.ReactNode;
+}) => {
+  const tableState = useContext(TableStateContext);
+  const close = useCallback(() => {
+    const nestedRow = nestedRowRef.current;
+    if (tableState && nestedRow?.contains(document.activeElement)) {
+      const cells = [...(tableState.collection.getChildren?.(rowKey) ?? [])];
+      const openerKey =
+        openerCellIndex === undefined ? rowKey : cells[openerCellIndex]?.key;
+      tableState.selectionManager.setFocusedKey(openerKey ?? rowKey);
+    }
+    onClose();
+  }, [tableState, nestedRowRef, rowKey, openerCellIndex, onClose]);
+
+  return <>{children(close)}</>;
+};
 
 type DataTableRowPerRowProps = Partial<DataTableRowRenderProps>;
 
@@ -137,9 +238,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
 
   // Helper function to check if row is disabled
   const getIsDisabled = (rowId: string) => {
+    if (row.isDisabled) return true;
     if (!disabledKeys) return false;
     if (disabledKeys === "all") return true;
-    if (row.isDisabled) return true;
     return disabledKeys.has(rowId);
   };
   const isDisabled = getIsDisabled(rowKey);
@@ -188,9 +289,40 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     row[nestedKey] &&
     (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
 
-  const expandViaRowClick = hasExpandableContent && !showExpandColumn;
+  // Without an expand column, activating a row expands it, but only a row
+  // that has something to expand. A row without children is not clickable
+  // for this reason, so Enter still reaches React Aria and selects it.
+  const expandViaRowClick =
+    hasExpandableContent &&
+    !showExpandColumn &&
+    !!(hasNestedContent || hasRenderNestedContent);
 
   const isClickable = isRowClickable || expandViaRowClick;
+
+  /**
+   * Activates the row: expands it when there is no expand column, then calls
+   * `onRowAction` (or the deprecated `onRowClick`). Shared by the mouse path,
+   * which calls it after the double-click delay, and the Enter key, which
+   * calls it immediately.
+   *
+   * @param columnId - Column of the cell that triggered the activation
+   */
+  const activateRow = useCallback(
+    (columnId?: string) => {
+      if (isDisabled) return;
+      if (expandViaRowClick) toggleExpand(rowKey, columnId);
+      (onRowActionRef.current ?? onRowClickRef.current)?.(row);
+    },
+    [
+      isDisabled,
+      expandViaRowClick,
+      toggleExpand,
+      rowKey,
+      onRowActionRef,
+      onRowClickRef,
+      row,
+    ]
+  );
 
   const handleRowClick = useCallback(
     (e: Event) => {
@@ -205,7 +337,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       pressStartedOnRowRef.current = false;
       if (!pressStartedHere) return;
 
-      if (!isClickable) return;
+      if (!isClickable || isDisabled) return;
       const isInteractiveElement = getIsTableRowChildElementInteractive(e);
       if (!isInteractiveElement) {
         const hasSelectedText =
@@ -220,36 +352,45 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         const columnId =
           clickedCell?.getAttribute("data-column-id") ?? undefined;
 
+        // Wait so that a double-click (selecting a word to copy it) can
+        // cancel the activation in handleRowDoubleClick.
         clickTimeoutRef.current = window.setTimeout(() => {
-          if (!isDisabled) {
-            if (
-              expandViaRowClick &&
-              (hasNestedContent || hasRenderNestedContent)
-            ) {
-              toggleExpand(rowKey, columnId);
-            }
-            onRowClickRef.current?.(row);
-          } else {
-            if (onRowActionRef.current) {
-              onRowActionRef.current(row, "click");
-            }
-          }
+          activateRow(columnId);
           clickTimeoutRef.current = null;
         }, 300);
       }
     },
-    [
-      isClickable,
-      onRowClickRef,
-      hasRenderNestedContent,
-      onRowActionRef,
-      row,
-      isDisabled,
-      expandViaRowClick,
-      hasNestedContent,
-      toggleExpand,
-      rowKey,
-    ]
+    [isClickable, isDisabled, activateRow]
+  );
+
+  /**
+   * Activates the row on Enter, the keyboard equivalent of a click (WCAG
+   * 2.1.1). Space is left to React Aria, which uses it for selection.
+   *
+   * Runs in the capture phase and stops the event, so React Aria does not
+   * also toggle selection on Enter. A capture listener sees every keydown
+   * inside the row, so it only acts when the row itself or one of its cells
+   * has focus. Enter on anything focused inside a cell (a link, a button, a
+   * checkbox) is left to that element.
+   *
+   * @param e - Native DOM Event from the keydown listener
+   */
+  const handleRowKeyDown = useCallback(
+    (e: Event) => {
+      if (!(e instanceof KeyboardEvent)) return;
+      if (e.key !== "Enter" || e.repeat || e.isComposing) return;
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      if (!isClickable || isDisabled) return;
+      const rowElement = e.currentTarget as Element;
+      const target = e.target as Element;
+      if (target !== rowElement && target.parentElement !== rowElement) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+      const focusedCell = (e.target as Element)?.closest("[data-column-id]");
+      activateRow(focusedCell?.getAttribute("data-column-id") ?? undefined);
+    },
+    [isClickable, isDisabled, activateRow]
   );
 
   /**
@@ -339,7 +480,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   //
   // Native DOM listeners are used instead of React events because React Aria's
   // row-level press handling conflicts with custom click behavior (e.g. it
-  // disables row actions when selection is enabled). Three capture-phase
+  // disables row actions when selection is enabled). Four capture-phase
   // listeners on the row element handle this:
   //
   //   pointerdown (capture) — stops propagation for non-interactive targets,
@@ -354,6 +495,10 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   //     is draggable, programmatically selects the word under the cursor
   //     (draggable="true" suppresses native text selection).
   //
+  //   keydown (capture) — activates the row on Enter, immediately, before
+  //     React Aria can treat Enter as selection. React Aria's Row does not
+  //     forward keyboard props to the DOM, so this is a native listener too.
+  //
   // Stable-identity wrappers delegate through refs so the listeners never need
   // to be removed and reattached when handler deps change — only the ref value
   // is updated each render.
@@ -362,6 +507,8 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   handleRowClickRef.current = handleRowClick;
   const handleRowDoubleClickRef = useRef(handleRowDoubleClick);
   handleRowDoubleClickRef.current = handleRowDoubleClick;
+  const handleRowKeyDownRef = useRef(handleRowKeyDown);
+  handleRowKeyDownRef.current = handleRowKeyDown;
 
   const stableRowClick = useCallback(
     (e: Event) => handleRowClickRef.current(e),
@@ -369,6 +516,10 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   );
   const stableRowDblClick = useCallback(
     (e: Event) => handleRowDoubleClickRef.current(e),
+    []
+  );
+  const stableRowKeyDown = useCallback(
+    (e: Event) => handleRowKeyDownRef.current(e),
     []
   );
   const stablePointerDownCapture = useCallback((e: Event) => {
@@ -392,6 +543,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       prev.removeEventListener("dblclick", stableRowDblClick, {
         capture: true,
       });
+      prev.removeEventListener("keydown", stableRowKeyDown, { capture: true });
     }
 
     rowNodeRef.current = node;
@@ -402,6 +554,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       });
       node.addEventListener("mouseup", stableRowClick, { capture: true });
       node.addEventListener("dblclick", stableRowDblClick, { capture: true });
+      node.addEventListener("keydown", stableRowKeyDown, { capture: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -424,6 +577,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           capture: true,
         });
         node.removeEventListener("dblclick", stableRowDblClick, {
+          capture: true,
+        });
+        node.removeEventListener("keydown", stableRowKeyDown, {
           capture: true,
         });
       }
@@ -449,11 +605,14 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
 
   const rowRef = mergeRefs(ref, rowCallbackRef, ariaRef);
 
-  const { selectionBehavior, allowsDragging } = useTableOptions();
+  const { allowsDragging } = useTableOptions();
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
+  const pinLabel = msg.format(isPinned ? "unpinRow" : "pinRow");
 
+  const nestedRowNodeRef = useRef<HTMLElement | null>(null);
   const nestedContentRowRef = useCallback(
     (node: HTMLElement | null) => {
+      nestedRowNodeRef.current = node;
       if (node) {
         node.id = nestedContentId;
         node.removeAttribute("aria-labelledby");
@@ -564,7 +723,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
             </RaCell>
           )}
           {/* Selection checkbox cell if selection is enabled */}
-          {selectionBehavior === "toggle" && (
+          {showSelectionColumn && (
             <DataTableCell
               className="data-table-sticky-cell"
               data-slot="selection"
@@ -631,13 +790,13 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                     ? "nimbus-table-cell-pin-button-pinned"
                     : "nimbus-table-cell-pin-button"
                 }
-                title={isPinned ? "Unpin row" : "Pin row"}
+                title={pinLabel}
               >
                 <IconToggleButton
                   key="pin-btn"
                   size="2xs"
                   variant="ghost"
-                  aria-label={isPinned ? "Unpin row" : "Pin row"}
+                  aria-label={pinLabel}
                   colorPalette="primary"
                   isSelected={isPinned}
                   onChange={() => togglePin(rowKey)}
@@ -650,12 +809,14 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         </RaRow>
       </DataTableRowSlot>
 
-      {hasExpandableContent && (
+      {/* The nested row exists only while its row is expanded. A hidden
+       * row would still be in React Aria's collection, so arrow keys would
+       * stop on it and the grid's row count would include it. */}
+      {hasExpandableContent && isExpanded && (
         <DataTableRowSlot {...styleProps} asChild>
           <RaRow
             ref={hasRenderNestedContent ? nestedContentRowRef : undefined}
-            data-nested-row-expanded={isExpanded ? "true" : "false"}
-            dependencies={[isExpanded]}
+            data-nested-row-expanded="true"
           >
             <DataTableCell
               isDisabled={isDisabled}
@@ -668,17 +829,27 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               }
               data-nested-cell
             >
-              {isExpanded
-                ? hasNestedContent
-                  ? nestedKey && Array.isArray(row[nestedKey])
-                    ? `${(row[nestedKey] as unknown[]).length} nested items`
-                    : nestedKey && (row[nestedKey] as React.ReactNode)
-                  : renderNestedContent
-                    ? renderNestedContent(row, {
-                        close: () => toggleExpand(rowKey),
-                      })
-                    : null
-                : null}
+              {hasNestedContent
+                ? nestedKey && Array.isArray(row[nestedKey])
+                  ? msg.format("nestedItemsCount", {
+                      count: (row[nestedKey] as unknown[]).length,
+                    })
+                  : nestedKey && (row[nestedKey] as React.ReactNode)
+                : renderNestedContent && (
+                    <NestedContentPanel
+                      rowKey={rowKey}
+                      nestedRowRef={nestedRowNodeRef}
+                      openerCellIndex={
+                        showExpandColumn
+                          ? (allowsDragging ? 1 : 0) +
+                            (showSelectionColumn ? 1 : 0)
+                          : undefined
+                      }
+                      onClose={() => toggleExpand(rowKey)}
+                    >
+                      {(close) => renderNestedContent(row, { close })}
+                    </NestedContentPanel>
+                  )}
             </DataTableCell>
           </RaRow>
         </DataTableRowSlot>

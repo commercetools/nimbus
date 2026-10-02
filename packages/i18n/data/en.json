@@ -67,17 +67,9 @@
     "developer_comment": "title for the comfortable togglebutton in the data table manager layout",
     "string": "Comfortable"
   },
-  "Nimbus.DataTable.comfortableAriaLabel": {
-    "developer_comment": "aria-label for the comfortable togglebutton in the data table manager layout",
-    "string": "Comfortable section"
-  },
   "Nimbus.DataTable.compact": {
     "developer_comment": "title for the compact togglebutton in the data table manager layout",
     "string": "Compact"
-  },
-  "Nimbus.DataTable.compactAriaLabel": {
-    "developer_comment": "aria-label for the compact togglebutton in the data table manager layout",
-    "string": "Compact section"
   },
   "Nimbus.DataTable.dataTable": {
     "developer_comment": "aria-label for the data table element",
@@ -111,10 +103,6 @@
     "developer_comment": "title for the full text section in the data table manager layout",
     "string": "Full text"
   },
-  "Nimbus.DataTable.fullTextAriaLabel": {
-    "developer_comment": "aria-label for the full text section in the data table manager layout",
-    "string": "Full text section"
-  },
   "Nimbus.DataTable.hiddenColumns": {
     "developer_comment": "title for the hidden columns section in the data table manager",
     "string": "Hidden columns"
@@ -139,9 +127,21 @@
     "developer_comment": "aria-label for the nested content row that expands below a data row",
     "string": "Details for row {rowId}"
   },
+  "Nimbus.DataTable.nestedItemsCount": {
+    "developer_comment": "placeholder shown in an expanded row whose nested data is a list, with the number of items",
+    "string": "Nested items: {count}"
+  },
+  "Nimbus.DataTable.noData": {
+    "developer_comment": "message shown in the table body when there are no rows",
+    "string": "No Data"
+  },
   "Nimbus.DataTable.noHiddenColumns": {
     "developer_comment": "message when there is no hidden columns in the data table manager",
     "string": "No Hidden columns"
+  },
+  "Nimbus.DataTable.pinRow": {
+    "developer_comment": "aria-label and tooltip for the pin button of a row that is not pinned",
+    "string": "Pin row"
   },
   "Nimbus.DataTable.pinRows": {
     "developer_comment": "aria-label for the pin rows column header",
@@ -183,10 +183,6 @@
     "developer_comment": "title for the text previews section in the data table manager layout",
     "string": "Text previews"
   },
-  "Nimbus.DataTable.textPreviewsAriaLabel": {
-    "developer_comment": "aria-label for the text previews section in the data table manager layout",
-    "string": "Text previews section"
-  },
   "Nimbus.DataTable.textVisibility": {
     "developer_comment": "title for the text visibility section in the data table manager layout",
     "string": "Text visibility"
@@ -194,6 +190,10 @@
   "Nimbus.DataTable.textVisibilityAriaLabel": {
     "developer_comment": "aria-label for the text visibility section in the data table manager layout",
     "string": "Text visibility section"
+  },
+  "Nimbus.DataTable.unpinRow": {
+    "developer_comment": "aria-label and tooltip for the pin button of a pinned row",
+    "string": "Unpin row"
   },
   "Nimbus.DataTable.visibleColumns": {
     "developer_comment": "title for the visible columns section in the data table manager",
