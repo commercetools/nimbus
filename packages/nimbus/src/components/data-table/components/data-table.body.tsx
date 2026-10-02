@@ -16,12 +16,6 @@ import {
 import { DataTableRow } from "./data-table.row";
 import { dataTableMessagesStrings } from "../data-table.messages";
 
-const DefaultEmptyStateMessage = () => (
-  <Box w="100%" p="200">
-    No Data
-  </Box>
-);
-
 /**
  * DataTable.Body - The table body section that renders all data rows with selection and expansion capabilities
  *
@@ -43,6 +37,18 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
 
   // Use provided aria-label or fall back to default
   const ariaLabel = ariaLabelProp ?? msg.format("dataTableBody");
+
+  // React Aria calls renderEmptyState as a plain function, not as a
+  // component, so the default message must not call hooks itself.
+  const noDataMessage = msg.format("noData");
+  const renderDefaultEmptyState = useCallback(
+    () => (
+      <Box w="100%" p="200">
+        {noDataMessage}
+      </Box>
+    ),
+    [noDataMessage]
+  );
 
   const getRowKeyRef = useRef(getRowKey);
   getRowKeyRef.current = getRowKey;
@@ -104,7 +110,7 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
         ref={ref}
         aria-label={ariaLabel}
         items={sortedRows}
-        renderEmptyState={renderEmptyState ?? DefaultEmptyStateMessage}
+        renderEmptyState={renderEmptyState ?? renderDefaultEmptyState}
         {...restProps}
         dependencies={[
           activeColumns,

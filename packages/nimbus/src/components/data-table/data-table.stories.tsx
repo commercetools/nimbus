@@ -22,6 +22,8 @@ import {
   Dialog,
   Flex,
   Heading,
+  Link,
+  MultilineTextInput,
   Select,
   Stack,
   Text,
@@ -304,13 +306,13 @@ const ProductDetailsModal = ({
   );
 };
 
-// Wrapper component that automatically handles modals for onRowClick
+// Wrapper component that automatically handles modals for onRowAction
 const DataTableWithModals = ({
-  onRowClick,
+  onRowAction,
   isProductDetailsTable,
   ...props
 }: DataTableProps & {
-  onRowClick?: (row: DataTableRowItem) => void;
+  onRowAction?: (row: DataTableRowItem) => void;
   isProductDetailsTable?: boolean;
 }) => {
   const [rowClickModalState, setRowClickModalState] = useState<{
@@ -332,10 +334,10 @@ const DataTableWithModals = ({
     }
   }, [props.rows]);
 
-  const handleRowClick = onRowClick
+  const handleRowClick = onRowAction
     ? (row: DataTableRowItem) => {
         setRowClickModalState({ isOpen: true, row });
-        onRowClick?.(row);
+        onRowAction?.(row);
       }
     : undefined;
 
@@ -358,12 +360,12 @@ const DataTableWithModals = ({
       <DataTable
         {...props}
         rows={tableData}
-        onRowClick={handleRowClick}
+        onRowAction={handleRowClick}
         key={`table-v${dataVersion}`} // Force re-render when data changes
       />
 
       {/* Details Modal */}
-      {onRowClick &&
+      {onRowAction &&
         (isProductDetailsTable ? (
           <ProductDetailsModal
             isOpen={rowClickModalState.isOpen}
@@ -434,7 +436,7 @@ export const Base: Story = {
     <DataTableWithModals
       {...args}
       isProductDetailsTable
-      onRowClick={() => {}}
+      onRowAction={() => {}}
     />
   ),
   args: {
@@ -695,7 +697,7 @@ export const ColumnManager: Story = {
         <DataTableWithModals
           {...args}
           visibleColumns={visible}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           data-testid="column-manager-table"
         />
       </>
@@ -887,7 +889,7 @@ export const ColumnManager: Story = {
 };
 
 export const CustomColumn: Story = {
-  render: (args) => <DataTableWithModals {...args} onRowClick={() => {}} />,
+  render: (args) => <DataTableWithModals {...args} onRowAction={() => {}} />,
   args: { columns, rows },
 };
 
@@ -907,7 +909,7 @@ export const SearchAndHighlight: Story = {
         <DataTableWithModals
           {...args}
           search={search}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           data-testid="search-table"
         />
       </Stack>
@@ -1151,7 +1153,7 @@ export const AdjustableColumns: Story = {
         <DataTableWithModals
           {...args}
           isResizable={isResizable}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
         />
       </Stack>
     );
@@ -1180,7 +1182,7 @@ export const Condensed: Story = {
         <DataTableWithModals
           {...args}
           density={condensed ? "condensed" : "default"}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           data-testid="condensed-table"
         />
       </Stack>
@@ -1401,7 +1403,7 @@ export const StickyHeader: Story = {
         <DataTableWithModals
           {...args}
           maxHeight={sticky ? "400px" : undefined}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           data-testid="sticky-table"
         />
       </Stack>
@@ -1560,7 +1562,7 @@ export const ClickableRows: Story = {
         </Checkbox>
         <DataTableWithModals
           {...args}
-          onRowClick={isRowClickable ? () => {} : undefined} // Just need to pass a function to enable the modal
+          onRowAction={isRowClickable ? () => {} : undefined} // Just need to pass a function to enable the modal
           data-testid="clickable-rows-table"
         />
       </Stack>
@@ -1650,25 +1652,28 @@ export const ClickableRows: Story = {
       }
     );
 
-    await step("Double-clicking text does not trigger onRowClick", async () => {
-      const rows = canvas.getAllByRole("row");
-      const firstDataRow = rows[1];
-      const cells = within(firstDataRow).getAllByRole("gridcell");
-      const textCell = cells.find(
-        (cell) => !within(cell).queryByRole("checkbox")
-      );
-      expect(textCell).toBeTruthy();
+    await step(
+      "Double-clicking text does not trigger onRowAction",
+      async () => {
+        const rows = canvas.getAllByRole("row");
+        const firstDataRow = rows[1];
+        const cells = within(firstDataRow).getAllByRole("gridcell");
+        const textCell = cells.find(
+          (cell) => !within(cell).queryByRole("checkbox")
+        );
+        expect(textCell).toBeTruthy();
 
-      await userEvent.dblClick(textCell!);
+        await userEvent.dblClick(textCell!);
 
-      // Wait past the 300ms click timeout to confirm it was cancelled
-      await new Promise((resolve) => setTimeout(resolve, 500));
+        // Wait past the 300ms click timeout to confirm it was cancelled
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // No modal should have opened
-      expect(
-        within(document.body).queryByRole("dialog")
-      ).not.toBeInTheDocument();
-    });
+        // No modal should have opened
+        expect(
+          within(document.body).queryByRole("dialog")
+        ).not.toBeInTheDocument();
+      }
+    );
 
     await step("Disabling clickable rows prevents row clicks", async () => {
       // Uncheck the "Clickable Rows" checkbox
@@ -1812,7 +1817,7 @@ export const ClickableRows: Story = {
  * capture listener to have fired before honoring a `mouseup`. This story
  * exercises that guard directly, without needing a real popover: it fires
  * a `mouseup` with no preceding `pointerdown` on the row (simulating the
- * retargeted event) and confirms `onRowClick` is not called, then performs
+ * retargeted event) and confirms `onRowAction` is not called, then performs
  * a normal click to confirm the row still responds to real presses.
  */
 const retargetedMouseupGuardRowClick = fn();
@@ -1822,7 +1827,7 @@ export const RowClickIgnoresRetargetedMouseup: Story = {
       columns={columns}
       rows={rows}
       selectionMode="none"
-      onRowClick={retargetedMouseupGuardRowClick}
+      onRowAction={retargetedMouseupGuardRowClick}
     >
       <DataTable.Table aria-label="Retargeted mouseup guard table">
         <DataTable.Header />
@@ -1844,14 +1849,14 @@ export const RowClickIgnoresRetargetedMouseup: Story = {
         // mouseup looks like from the row's perspective.
         fireEvent.mouseUp(cell);
 
-        // handleRowClick debounces by 300ms before calling onRowClick.
+        // handleRowClick debounces by 300ms before calling onRowAction.
         await new Promise((resolve) => setTimeout(resolve, 400));
         await expect(retargetedMouseupGuardRowClick).not.toHaveBeenCalled();
       }
     );
 
     await step(
-      "A normal click (pointerdown and mouseup on the row) still fires onRowClick",
+      "A normal click (pointerdown and mouseup on the row) still fires onRowAction",
       async () => {
         const dataRow = canvas.getAllByRole("row")[2];
         const cell = dataRow.querySelector('[data-column-id="name"]');
@@ -1881,7 +1886,7 @@ export const WithSorting: Story = {
             sortable.
           </Text>
         </Stack>
-        <DataTableWithModals {...args} onRowClick={() => {}} />
+        <DataTableWithModals {...args} onRowAction={() => {}} />
       </Stack>
     );
   },
@@ -1950,7 +1955,7 @@ export const ControlledSorting: Story = {
           {...args}
           sortDescriptor={sortDescriptor}
           onSortChange={setSortDescriptor}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
         />
       </Stack>
     );
@@ -1982,7 +1987,7 @@ export const SortingWithSearch: Story = {
           width="1/3"
           aria-label="filter-rows"
         />
-        <DataTableWithModals {...args} search={search} onRowClick={() => {}} />
+        <DataTableWithModals {...args} search={search} onRowAction={() => {}} />
       </Stack>
     );
   },
@@ -2167,7 +2172,7 @@ export const SelectionShowcase: Story = {
           selectionMode={selectionMode}
           disallowEmptySelection={disallowEmptySelection}
           allowsSorting={true}
-          onRowClick={isRowClickable ? () => {} : undefined}
+          onRowAction={isRowClickable ? () => {} : undefined}
         />
         {/* Feature Explanation */}
         <Box
@@ -2435,7 +2440,7 @@ export const TextTruncation: Story = {
           <DataTableWithModals
             {...args}
             isTruncated={isTruncated}
-            onRowClick={() => {}}
+            onRowAction={() => {}}
           />
         </Box>
       </Stack>
@@ -2507,7 +2512,7 @@ export const MultilineHeaders: Story = {
     rows: multilineHeadersData,
     allowsSorting: true,
     isResizable: true,
-    onRowClick: () => {},
+    onRowAction: () => {},
   },
 };
 
@@ -2568,7 +2573,7 @@ export const WithFooter: Story = {
           allowsSorting={true}
           selectionMode="multiple"
           footer={footerContent}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           data-testid="footer-table"
         />
 
@@ -2634,7 +2639,7 @@ export const HorizontalScrolling: Story = {
           allowsSorting={true}
           maxHeight="400px"
           defaultSelectedKeys={new Set(["1", "3"])}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           footer={
             <Stack
               direction="row"
@@ -2706,7 +2711,7 @@ export const FlexibleNestedChildren: Story = {
             Click the expand buttons to see different types of nested content.
           </Text>
         </Stack>
-        <DataTableWithModals {...args} onRowClick={() => {}} />
+        <DataTableWithModals {...args} onRowAction={() => {}} />
       </Stack>
     );
   },
@@ -3120,10 +3125,10 @@ export const RowNestedContentViaRowClick: Story = {
 };
 
 /**
- * ## Row Nested Content via Row Click with onRowClick
+ * ## Row Nested Content via Row Click with onRowAction
  *
- * When `allowsExpandColumn` is `false` and `onRowClick` is provided,
- * clicking a row fires both the expand toggle and `onRowClick`.
+ * When `allowsExpandColumn` is `false` and `onRowAction` is provided,
+ * clicking a row fires both the expand toggle and `onRowAction`.
  */
 export const RowNestedContentViaRowClickWithOnRowClick: Story = {
   render: () => {
@@ -3137,7 +3142,7 @@ export const RowNestedContentViaRowClickWithOnRowClick: Story = {
           columns={columns}
           rows={rows}
           allowsExpandColumn={false}
-          onRowClick={(row) => setLastClicked(row.id)}
+          onRowAction={(row) => setLastClicked(row.id)}
           renderNestedContent={(row) => (
             <Box p="400">
               <Text>Details for {row.id}</Text>
@@ -3152,7 +3157,7 @@ export const RowNestedContentViaRowClickWithOnRowClick: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Clicking a row fires both expand and onRowClick", async () => {
+    await step("Clicking a row fires both expand and onRowAction", async () => {
       const allRows = canvas.getAllByRole("row");
       const firstDataRow = allRows[1];
       const cell = within(firstDataRow).getAllByRole("rowheader")[0];
@@ -3175,7 +3180,7 @@ export const RowNestedContentViaRowClickWithOnRowClick: Story = {
     });
 
     await step(
-      "Clicking again collapses and fires onRowClick again",
+      "Clicking again collapses and fires onRowAction again",
       async () => {
         const allRows = canvas.getAllByRole("row");
         const firstDataRow = allRows[1];
@@ -3337,7 +3342,7 @@ export const NoNestedContent: Story = {
             </Text>
           </Box>
         </Stack>
-        <DataTableWithModals {...args} onRowClick={() => {}} />
+        <DataTableWithModals {...args} onRowAction={() => {}} />
       </Stack>
     );
   },
@@ -3430,7 +3435,7 @@ export const NestedTable: Story = {
             </Text>
           </Box>
         </Stack>
-        <DataTableWithModals {...args} onRowClick={() => {}} />
+        <DataTableWithModals {...args} onRowAction={() => {}} />
       </Stack>
     );
   },
@@ -3609,7 +3614,7 @@ export const NestedTableDefaultExpanded: Story = {
         <Text>
           The first row is expanded by default using the defaultExpanded prop.
         </Text>
-        <DataTableWithModals {...args} onRowClick={() => {}} />
+        <DataTableWithModals {...args} onRowAction={() => {}} />
       </Stack>
     );
   },
@@ -3738,7 +3743,7 @@ export const NestedTableControlledExpansion: Story = {
           {...args}
           expandedRows={expandedRows}
           onExpandRowsChange={setExpandedRows}
-          onRowClick={() => {}}
+          onRowAction={() => {}}
         />
       </Stack>
     );
@@ -3897,7 +3902,7 @@ export const AllFeatures: Story = {
             rows={item.children as DataTableRowItem[]}
             allowsSorting={true}
             isResizable={true}
-            onRowClick={() => {}}
+            onRowAction={() => {}}
           />
         </Box>
       ),
@@ -4124,7 +4129,7 @@ export const AllFeatures: Story = {
             isTruncated={isTruncated}
             density={density}
             nestedKey="children"
-            onRowClick={isRowClickable ? () => {} : undefined}
+            onRowAction={isRowClickable ? () => {} : undefined}
           />
         </Box>
         {/* Feature Information */}
@@ -4189,16 +4194,6 @@ export const DisabledRowsShowcase: Story = {
     const [disabledKeys, setDisabledKeys] = useState<Selection>(
       new Set(["3", "5", "7"])
     );
-    const [rowActionLog, setRowActionLog] = useState<string[]>([]);
-
-    const handleRowAction = (
-      row: DataTableRowItem,
-      action: "click" | "select"
-    ) => {
-      const message = `${action.toUpperCase()} attempted on disabled row: ${row.name} (ID: ${row.id})`;
-      setRowActionLog((prev) => [message, ...prev.slice(0, 4)]); // Keep last 5 messages
-    };
-
     const toggleDisabled = (rowId: string) => {
       setDisabledKeys((prev) => {
         if (prev === "all") return new Set([rowId]);
@@ -4218,8 +4213,7 @@ export const DisabledRowsShowcase: Story = {
           <Heading size="lg">Disabled Rows Showcase</Heading>
           <Text color="neutral.11" fontSize="400">
             Demonstration of disabled row functionality. Disabled rows cannot be
-            selected or clicked, and show visual feedback when interactions are
-            attempted.
+            selected or activated.
           </Text>
         </Stack>
 
@@ -4274,26 +4268,6 @@ export const DisabledRowsShowcase: Story = {
           </Flex>
         </Box>
 
-        {/* Action Log */}
-        {rowActionLog.length > 0 && (
-          <Box
-            p="300"
-            bg="warning.2"
-            border="1px solid"
-            borderColor="warning.4"
-            borderRadius="150"
-          >
-            <Heading as="h5" size="md" marginBottom="200" color="warning.11">
-              🚫 Disabled Row Interactions Log
-            </Heading>
-            {rowActionLog.map((message, index) => (
-              <Text key={index} fontSize="300" color="warning.11" marginY="50">
-                {message}
-              </Text>
-            ))}
-          </Box>
-        )}
-
         {/* DataTable */}
         <DataTableWithModals
           columns={sortableColumns}
@@ -4301,10 +4275,8 @@ export const DisabledRowsShowcase: Story = {
           selectedKeys={selectedKeys}
           onSelectionChange={setSelectedKeys}
           disabledKeys={disabledKeys}
-          onRowAction={handleRowAction}
           selectionMode="multiple"
           allowsSorting={true}
-          onRowClick={() => {}}
         />
       </Stack>
     );
@@ -4347,7 +4319,7 @@ export const RowPinning: Story = {
           onPinToggle={handlePinToggle}
           allowsSorting={true}
           selectionMode="multiple"
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           data-testid="pinning-data-table"
         />
       </Stack>
@@ -4537,7 +4509,7 @@ export const RowPinningEdgeCases: Story = {
           onSelectionChange={setSelectedKeys}
           allowsSorting={true}
           selectionMode="multiple"
-          onRowClick={() => {}}
+          onRowAction={() => {}}
           data-testid="edge-cases-data-table"
         />
       </Stack>
@@ -5620,7 +5592,7 @@ export const DragAndDropRows: Story = {
             columns={simpleColumns}
             rows={tableRows}
             selectionMode="multiple"
-            onRowClick={(row) => setClickedRow(row.id)}
+            onRowAction={(row) => setClickedRow(row.id)}
             dragAndDropHooks={dragAndDropHooks}
           />
           <Text data-testid="row-order">
@@ -5824,7 +5796,6 @@ export const StickyColumnBackground: Story = {
           rows={stickyRows}
           maxHeight="300px"
           selectionMode="multiple"
-          selectionBehavior="toggle"
         />
       </Box>
     );
@@ -6097,7 +6068,7 @@ export const HiddenExpandColumnWithRowClick: Story = {
           allowsExpandColumn={false}
           expandedRows={expanded}
           onExpandRowsChange={setExpanded}
-          onRowClick={(row) => {
+          onRowAction={(row) => {
             setLastClicked(row.id);
             const next = new Set(expanded);
             if (next.has(row.id)) {
@@ -6125,7 +6096,7 @@ export const HiddenExpandColumnWithRowClick: Story = {
     });
 
     await step(
-      "Row click fires onRowClick and expands via controlled state",
+      "Row click fires onRowAction and expands via controlled state",
       async () => {
         const dataRows = canvasElement.querySelectorAll("tbody tr");
         const firstDataRow = dataRows[0] as HTMLElement;
@@ -6207,7 +6178,6 @@ export const ScrollShadows: Story = {
           columns={scrollColumns}
           rows={scrollRows}
           selectionMode="multiple"
-          selectionBehavior="toggle"
           data-testid="scroll-shadow-table"
         />
       </Box>
@@ -7296,5 +7266,1683 @@ export const DuplicateRowKeysWarnInDevelopment: Story = {
         ).toBe(true);
       });
     });
+  },
+};
+
+// ============================================================
+// FEC-1346 — props that were typed but ignored
+// ============================================================
+
+const behaviourColumns: DataTableColumnItem[] = [
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row: Record<string, unknown>) => row.name as ReactNode,
+  },
+  {
+    id: "role",
+    header: "Role",
+    accessor: (row: Record<string, unknown>) => row.role as ReactNode,
+  },
+];
+
+const behaviourRows: DataTableRowItem[] = [
+  { id: "r1", name: "Ada", role: "Admin" },
+  { id: "r2", name: "Grace", role: "Editor" },
+  { id: "r3", name: "Linus", role: "Viewer" },
+];
+
+const formatSelection = (keys: Selection) =>
+  keys === "all" ? "all" : Array.from(keys).sort().join(",") || "none";
+
+/**
+ * `renderEmptyState` replaces the built-in empty message.
+ */
+export const CustomEmptyState: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={[]}
+      renderEmptyState={() => "Nothing matches your filters"}
+      aria-label="Empty table with custom empty state"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("The consumer's empty state renders", async () => {
+      expect(
+        await canvas.findByText("Nothing matches your filters")
+      ).toBeInTheDocument();
+      expect(canvas.queryByText("No Data")).not.toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * With selection enabled, the nested row spans exactly the cells a data row
+ * renders, including the checkbox column.
+ */
+export const NestedRowSpansSelectionColumn: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      selectionMode="multiple"
+      defaultExpandedRows={new Set(["r1"])}
+      renderNestedContent={(row) => <Text>Details for {String(row.name)}</Text>}
+      aria-label="Nested row with a selection column"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("The nested row spans every rendered column", async () => {
+      await canvas.findByText("Details for Ada");
+      const firstDataRow = canvas.getByRole("row", { name: /Ada/ });
+      expect(within(firstDataRow).getByRole("checkbox")).toBeInTheDocument();
+      const cellCount = firstDataRow.querySelectorAll(
+        '[role="gridcell"], [role="rowheader"]'
+      ).length;
+      const nestedCell = canvasElement.querySelector(
+        "[data-nested-cell]"
+      ) as HTMLTableCellElement;
+      expect(nestedCell.colSpan).toBe(cellCount);
+    });
+  },
+};
+
+/**
+ * `disabledKeys="all"` disables every row for React Aria too: the header
+ * checkbox and the keyboard cannot select anything.
+ */
+export const AllRowsDisabled: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+    return (
+      <Stack>
+        <DataTable
+          columns={behaviourColumns}
+          rows={behaviourRows}
+          selectionMode="multiple"
+          disabledKeys="all"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          aria-label="All rows disabled"
+        />
+        <Text data-testid="all-disabled-selected">
+          {formatSelection(selectedKeys)}
+        </Text>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Every row is disabled", async () => {
+      await canvas.findByText("Ada");
+      const dataRows = canvas.getAllByRole("row").slice(1);
+      for (const row of dataRows) {
+        expect(row).toHaveAttribute("data-disabled");
+      }
+    });
+
+    await step("Space on a focused row selects nothing", async () => {
+      canvas.getByRole("row", { name: /Ada/ }).focus();
+      await userEvent.keyboard(" ");
+      await wait(100);
+      expect(canvas.getByTestId("all-disabled-selected")).toHaveTextContent(
+        /^none$/
+      );
+    });
+
+    await step("The header checkbox is disabled", async () => {
+      const headerRow = canvas.getAllByRole("row")[0];
+      const headerCheckbox = within(headerRow).getByRole("checkbox");
+      expect(headerCheckbox).toBeDisabled();
+      await userEvent.click(headerCheckbox, { pointerEventsCheck: 0 });
+      await wait(100);
+      expect(canvas.getByTestId("all-disabled-selected")).toHaveTextContent(
+        /^none$/
+      );
+    });
+  },
+};
+
+/**
+ * A row with `isDisabled: true` is disabled without `disabledKeys`.
+ */
+export const RowDisabledByData: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={[
+        behaviourRows[0],
+        { ...behaviourRows[1], isDisabled: true },
+        behaviourRows[2],
+      ]}
+      selectionMode="multiple"
+      aria-label="Row disabled by its data"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Only the row with isDisabled is disabled", async () => {
+      await canvas.findByText("Grace");
+      expect(canvas.getByRole("row", { name: /Grace/ })).toHaveAttribute(
+        "data-disabled"
+      );
+      expect(canvas.getByRole("row", { name: /Ada/ })).not.toHaveAttribute(
+        "data-disabled"
+      );
+      expect(
+        within(canvas.getByRole("row", { name: /Grace/ })).getByRole("checkbox")
+      ).toBeDisabled();
+    });
+  },
+};
+
+// ============================================================
+// FEC-1346 — row activation (click and Enter)
+// ============================================================
+
+const rowNamed = (canvasElement: HTMLElement, name: RegExp) =>
+  within(canvasElement).getByRole("row", { name });
+
+/**
+ * Enter on a focused row activates it, like a click. Space keeps selecting.
+ * Activation works while other rows are selected, and buttons inside the row
+ * keep their own Enter behaviour.
+ */
+export const RowActionWithKeyboard: Story = {
+  args: { onRowAction: fn() },
+  render: (args) => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+    return (
+      <Stack>
+        <DataTable
+          columns={behaviourColumns}
+          rows={behaviourRows}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          onRowAction={args.onRowAction}
+          aria-label="Row activation with the keyboard"
+        />
+        <Text data-testid="activation-selected">
+          {formatSelection(selectedKeys)}
+        </Text>
+      </Stack>
+    );
+  },
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const onRowAction = args.onRowAction as ReturnType<typeof fn>;
+    await canvas.findByText("Ada");
+
+    await step("Enter activates the row without selecting it", async () => {
+      rowNamed(canvasElement, /Ada/).focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(onRowAction).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "r1" })
+        )
+      );
+      expect(canvas.getByTestId("activation-selected")).toHaveTextContent(
+        /^none$/
+      );
+    });
+
+    await step("Space selects the row and does not activate it", async () => {
+      onRowAction.mockClear();
+      rowNamed(canvasElement, /Ada/).focus();
+      await userEvent.keyboard(" ");
+      await waitFor(() =>
+        expect(canvas.getByTestId("activation-selected")).toHaveTextContent(
+          /^r1$/
+        )
+      );
+      await wait(400);
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("Enter still activates while a row is selected", async () => {
+      rowNamed(canvasElement, /Grace/).focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(onRowAction).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "r2" })
+        )
+      );
+      expect(canvas.getByTestId("activation-selected")).toHaveTextContent(
+        /^r1$/
+      );
+    });
+
+    await step("Enter on the pin button pins, not activates", async () => {
+      onRowAction.mockClear();
+      const pinButton = within(rowNamed(canvasElement, /Linus/)).getByRole(
+        "button",
+        { pressed: false }
+      );
+      pinButton.focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(
+          within(rowNamed(canvasElement, /Linus/)).getByRole("button", {
+            pressed: true,
+          })
+        ).toBeInTheDocument()
+      );
+      await wait(400);
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("A click activates the row", async () => {
+      await userEvent.click(
+        within(rowNamed(canvasElement, /Ada/)).getByText("Ada")
+      );
+      await waitFor(() =>
+        expect(onRowAction).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "r1" })
+        )
+      );
+    });
+  },
+};
+
+/**
+ * A table whose cells hold a link, a text field and a checkbox, for the
+ * stories that check that these controls keep their own clicks and keys.
+ */
+const CellControlsTable = ({
+  onRowAction,
+  selectionMode,
+  onSelectionChange,
+  "aria-label": ariaLabel,
+}: Pick<
+  DataTableProps,
+  "onRowAction" | "selectionMode" | "onSelectionChange"
+> & { "aria-label": string }) => {
+  const [linkClicks, setLinkClicks] = useState(0);
+  const cellControlColumns: DataTableColumnItem[] = [
+    ...behaviourColumns,
+    {
+      id: "profile",
+      header: "Profile",
+      accessor: (row: Record<string, unknown>) => (
+        <Link
+          href={`#profile-${row.id}`}
+          onClick={(e) => {
+            e.preventDefault();
+            setLinkClicks((count) => count + 1);
+          }}
+        >
+          {`Profile of ${row.name}`}
+        </Link>
+      ),
+    },
+    {
+      id: "note",
+      header: "Note",
+      accessor: (row: Record<string, unknown>) => (
+        <MultilineTextInput aria-label={`Note for ${row.name}`} rows={1} />
+      ),
+    },
+    {
+      id: "reviewed",
+      header: "Reviewed",
+      accessor: (row: Record<string, unknown>) => (
+        <Checkbox>{`Reviewed ${row.name}`}</Checkbox>
+      ),
+    },
+  ];
+  return (
+    <Stack>
+      <DataTable
+        columns={cellControlColumns}
+        rows={behaviourRows}
+        onRowAction={onRowAction}
+        selectionMode={selectionMode}
+        onSelectionChange={onSelectionChange}
+        aria-label={ariaLabel}
+      />
+      <Text data-testid="link-clicks">{linkClicks}</Text>
+    </Stack>
+  );
+};
+
+/**
+ * Enter on a link or a text field inside a cell goes to that element, not to
+ * the row. The row is activated only when the row itself or one of its cells
+ * has focus.
+ */
+export const RowActionLeavesEnterToCellContent: Story = {
+  args: { onRowAction: fn() },
+  render: (args) => (
+    <CellControlsTable
+      onRowAction={args.onRowAction}
+      aria-label="Enter on cell content"
+    />
+  ),
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const onRowAction = args.onRowAction as ReturnType<typeof fn>;
+    await canvas.findByText("Ada");
+
+    await step("Enter on a link opens the link, not the row", async () => {
+      rowNamed(canvasElement, /Ada/).focus();
+      // Row, then the Name, Role and Profile cells; a cell with a link
+      // passes focus on to the link.
+      await userEvent.keyboard("{ArrowRight}{ArrowRight}{ArrowRight}");
+      expect(
+        canvas.getByRole("link", { name: "Profile of Ada" })
+      ).toHaveFocus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(canvas.getByTestId("link-clicks")).not.toHaveTextContent(/^0$/)
+      );
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("Enter in a text field adds a line break", async () => {
+      await userEvent.keyboard("{ArrowRight}");
+      const note = canvas.getByRole("textbox", { name: "Note for Ada" });
+      expect(note).toHaveFocus();
+      await userEvent.keyboard("{Enter}");
+      expect(note).toHaveValue("\n");
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("Enter on a focused cell still activates the row", async () => {
+      rowNamed(canvasElement, /Grace/).focus();
+      await userEvent.keyboard("{ArrowRight}");
+      expect(
+        canvas
+          .getByText("Grace")
+          .closest('[role="gridcell"], [role="rowheader"]')
+      ).toHaveFocus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(onRowAction).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "r2" })
+        )
+      );
+    });
+  },
+};
+
+/**
+ * A click on a link, a text field or a checkbox label inside a cell goes to
+ * that control and does not activate the row. A click anywhere else in the
+ * row still does.
+ */
+export const RowActionIgnoresClicksOnCellControls: Story = {
+  args: { onRowAction: fn() },
+  render: (args) => (
+    <CellControlsTable
+      onRowAction={args.onRowAction}
+      aria-label="Clicks on cell controls"
+    />
+  ),
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const onRowAction = args.onRowAction as ReturnType<typeof fn>;
+    await canvas.findByText("Ada");
+
+    await step("A click on a link opens the link, not the row", async () => {
+      await userEvent.click(
+        canvas.getByRole("link", { name: "Profile of Ada" })
+      );
+      await waitFor(() =>
+        expect(canvas.getByTestId("link-clicks")).not.toHaveTextContent(/^0$/)
+      );
+      await wait(400);
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("A click in a text field focuses it", async () => {
+      const note = canvas.getByRole("textbox", { name: "Note for Ada" });
+      await userEvent.click(note);
+      expect(note).toHaveFocus();
+      await wait(400);
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("A click on a checkbox label checks the box", async () => {
+      await userEvent.click(canvas.getByText("Reviewed Ada"));
+      await waitFor(() =>
+        expect(
+          canvas.getByRole("checkbox", { name: "Reviewed Ada" })
+        ).toBeChecked()
+      );
+      await wait(400);
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("A click on plain cell text activates the row", async () => {
+      await userEvent.click(canvas.getByText("Grace"));
+      await waitFor(() =>
+        expect(onRowAction).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "r2" })
+        )
+      );
+    });
+  },
+};
+
+/**
+ * In a table with selection, a click on a link, a text field or a checkbox
+ * label inside a cell leaves the row's selection unchanged. Only the row's
+ * own checkbox selects it.
+ */
+export const RowSelectionIgnoresClicksOnCellControls: Story = {
+  args: { onSelectionChange: fn() },
+  render: (args) => (
+    <CellControlsTable
+      selectionMode="multiple"
+      onSelectionChange={args.onSelectionChange}
+      aria-label="Selection and cell controls"
+    />
+  ),
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const onSelectionChange = args.onSelectionChange as ReturnType<typeof fn>;
+    await canvas.findByText("Ada");
+    const adaRow = rowNamed(canvasElement, /Ada/);
+
+    await step("A click on a link does not select the row", async () => {
+      await userEvent.click(
+        canvas.getByRole("link", { name: "Profile of Ada" })
+      );
+      await waitFor(() =>
+        expect(canvas.getByTestId("link-clicks")).not.toHaveTextContent(/^0$/)
+      );
+      expect(onSelectionChange).not.toHaveBeenCalled();
+      expect(adaRow).toHaveAttribute("aria-selected", "false");
+    });
+
+    await step(
+      "A click in a text field keeps focus there and does not select the row",
+      async () => {
+        const note = canvas.getByRole("textbox", { name: "Note for Ada" });
+        await userEvent.click(note);
+        expect(note).toHaveFocus();
+        expect(onSelectionChange).not.toHaveBeenCalled();
+        expect(adaRow).toHaveAttribute("aria-selected", "false");
+      }
+    );
+
+    await step(
+      "A click on a checkbox label checks the box and does not select the row",
+      async () => {
+        await userEvent.click(canvas.getByText("Reviewed Ada"));
+        await waitFor(() =>
+          expect(
+            canvas.getByRole("checkbox", { name: "Reviewed Ada" })
+          ).toBeChecked()
+        );
+        expect(onSelectionChange).not.toHaveBeenCalled();
+        expect(adaRow).toHaveAttribute("aria-selected", "false");
+      }
+    );
+
+    await step("The row's own checkbox still selects it", async () => {
+      const selectionCell = adaRow.querySelector(
+        '[data-slot="selection"]'
+      ) as HTMLElement;
+      await userEvent.click(within(selectionCell).getByRole("checkbox"));
+      await waitFor(() =>
+        expect(adaRow).toHaveAttribute("aria-selected", "true")
+      );
+      expect(onSelectionChange).toHaveBeenCalledTimes(1);
+    });
+  },
+};
+
+const plainCellContentColumns: DataTableColumnItem[] = [
+  ...behaviourColumns,
+  {
+    id: "content",
+    header: "Content",
+    accessor: (row: Record<string, unknown>) => (
+      <>
+        <a href={`#details-${row.id}`} onClick={(e) => e.preventDefault()}>
+          <span>{`Details of ${row.name}`}</span>
+        </a>{" "}
+        <label>
+          <input type="checkbox" /> {`Archived ${row.name}`}
+        </label>{" "}
+        <span tabIndex={-1}>{`Note on ${row.name}`}</span>
+      </>
+    ),
+  },
+];
+
+/**
+ * Plain HTML in a cell leaves the row's selection unchanged too: a click on
+ * an element inside a link, on a label, or on an element with
+ * `tabindex="-1"`. React Aria does not ignore these presses itself.
+ */
+export const RowSelectionIgnoresClicksOnPlainCellContent: Story = {
+  args: { onSelectionChange: fn() },
+  render: (args) => (
+    <DataTable
+      columns={plainCellContentColumns}
+      rows={behaviourRows}
+      selectionMode="multiple"
+      onSelectionChange={args.onSelectionChange}
+      aria-label="Selection and plain cell content"
+    />
+  ),
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const onSelectionChange = args.onSelectionChange as ReturnType<typeof fn>;
+    await canvas.findByText("Ada");
+    const adaRow = rowNamed(canvasElement, /Ada/);
+
+    await step(
+      "A click on text inside a link does not select the row",
+      async () => {
+        await userEvent.click(canvas.getByText("Details of Ada"));
+        expect(onSelectionChange).not.toHaveBeenCalled();
+        expect(adaRow).toHaveAttribute("aria-selected", "false");
+      }
+    );
+
+    await step(
+      "A click on a label checks its box and does not select the row",
+      async () => {
+        await userEvent.click(canvas.getByText("Archived Ada"));
+        await waitFor(() =>
+          expect(
+            canvas.getByRole("checkbox", { name: "Archived Ada" })
+          ).toBeChecked()
+        );
+        expect(onSelectionChange).not.toHaveBeenCalled();
+        expect(adaRow).toHaveAttribute("aria-selected", "false");
+      }
+    );
+
+    await step(
+      'A click on an element with tabindex="-1" does not select the row',
+      async () => {
+        await userEvent.click(canvas.getByText("Note on Ada"));
+        expect(onSelectionChange).not.toHaveBeenCalled();
+        expect(adaRow).toHaveAttribute("aria-selected", "false");
+      }
+    );
+  },
+};
+
+/**
+ * Disabled rows are never activated.
+ */
+export const RowActionSkipsDisabledRows: Story = {
+  args: { onRowAction: fn() },
+  render: (args) => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      disabledKeys={new Set(["r2"])}
+      onRowAction={args.onRowAction}
+      aria-label="Disabled rows are not activated"
+    />
+  ),
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const onRowAction = args.onRowAction as ReturnType<typeof fn>;
+    await canvas.findByText("Grace");
+
+    await step("Clicking a disabled row calls nothing", async () => {
+      await userEvent.click(canvas.getByText("Grace"), {
+        pointerEventsCheck: 0,
+      });
+      await wait(500);
+      expect(onRowAction).not.toHaveBeenCalled();
+    });
+
+    await step("Clicking an enabled row still activates it", async () => {
+      await userEvent.click(canvas.getByText("Ada"));
+      await waitFor(() => expect(onRowAction).toHaveBeenCalledTimes(1));
+      expect(onRowAction).toHaveBeenCalledWith(
+        expect.objectContaining({ id: "r1" })
+      );
+    });
+  },
+};
+
+/**
+ * The deprecated `onRowClick` keeps working, including for Enter.
+ */
+export const DeprecatedOnRowClick: Story = {
+  args: { onRowClick: fn() },
+  render: (args) => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      onRowClick={args.onRowClick}
+      aria-label="Deprecated onRowClick"
+    />
+  ),
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const onRowClick = args.onRowClick as ReturnType<typeof fn>;
+    await canvas.findByText("Ada");
+
+    await step("A click calls onRowClick", async () => {
+      await userEvent.click(canvas.getByText("Ada"));
+      await waitFor(() =>
+        expect(onRowClick).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "r1" })
+        )
+      );
+    });
+
+    await step("Enter calls onRowClick", async () => {
+      onRowClick.mockClear();
+      rowNamed(canvasElement, /Grace/).focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(onRowClick).toHaveBeenCalledWith(
+          expect.objectContaining({ id: "r2" })
+        )
+      );
+    });
+  },
+};
+
+/**
+ * When both are passed, only `onRowAction` is called.
+ */
+export const OnRowActionWinsOverOnRowClick: Story = {
+  args: { onRowAction: fn(), onRowClick: fn() },
+  render: (args) => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      onRowAction={args.onRowAction}
+      onRowClick={args.onRowClick}
+      aria-label="Both activation callbacks"
+    />
+  ),
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Ada");
+
+    await step("Only onRowAction is called", async () => {
+      await userEvent.click(canvas.getByText("Ada"));
+      await waitFor(() => expect(args.onRowAction).toHaveBeenCalledTimes(1));
+      expect(args.onRowClick).not.toHaveBeenCalled();
+    });
+  },
+};
+
+/**
+ * Without an expand column, Enter expands the row, like a click.
+ */
+export const EnterExpandsWithoutExpandColumn: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      allowsExpandColumn={false}
+      renderNestedContent={(row) => <Text>Details for {String(row.name)}</Text>}
+      aria-label="Expand with Enter"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Ada");
+
+    await step("Enter expands the focused row", async () => {
+      expect(canvas.queryByText("Details for Ada")).not.toBeInTheDocument();
+      rowNamed(canvasElement, /Ada/).focus();
+      await userEvent.keyboard("{Enter}");
+      expect(await canvas.findByText("Details for Ada")).toBeInTheDocument();
+    });
+
+    await step("Enter again collapses it", async () => {
+      rowNamed(canvasElement, /Ada/).focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(canvas.queryByText("Details for Ada")).not.toBeInTheDocument()
+      );
+    });
+  },
+};
+
+/**
+ * Without an expand column and without `onRowAction`, only rows with nested
+ * content are activated. On a row without children, Enter selects the row, as
+ * it does in a table without nested content.
+ */
+export const EnterSelectsRowWithoutChildren: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+    return (
+      <Stack>
+        <DataTable
+          columns={behaviourColumns}
+          rows={[
+            { ...behaviourRows[0], children: [{ id: "c1" }] },
+            ...behaviourRows.slice(1),
+          ]}
+          nestedKey="children"
+          allowsExpandColumn={false}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          aria-label="Enter on rows without children"
+        />
+        <Text data-testid="leaf-selected">{formatSelection(selectedKeys)}</Text>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Grace");
+
+    await step("Enter selects a row without children", async () => {
+      rowNamed(canvasElement, /Grace/).focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(canvas.getByTestId("leaf-selected")).toHaveTextContent(/^r2$/)
+      );
+    });
+
+    await step("Enter still expands a row with children", async () => {
+      rowNamed(canvasElement, /Ada/).focus();
+      await userEvent.keyboard("{Enter}");
+      expect(await canvas.findByText("Nested items: 1")).toBeInTheDocument();
+      expect(canvas.getByTestId("leaf-selected")).toHaveTextContent(/^r2$/);
+    });
+
+    await step("Only the row with children looks clickable", async () => {
+      expect(rowNamed(canvasElement, /Ada/)).toHaveAttribute(
+        "data-clickable",
+        "true"
+      );
+      expect(rowNamed(canvasElement, /Grace/)).not.toHaveAttribute(
+        "data-clickable",
+        "true"
+      );
+    });
+  },
+};
+
+// ============================================================
+// FEC-1346 — localized labels
+// ============================================================
+
+/**
+ * The pin button's name and tooltip come from the message catalog.
+ */
+export const PinButtonName: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      aria-label="Pin button name"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Ada");
+
+    await step("An unpinned row offers 'Pin row'", async () => {
+      const row = rowNamed(canvasElement, /Ada/);
+      const pin = within(row).getByRole("button", { name: "Pin row" });
+      expect(pin.closest("[title]")).toHaveAttribute("title", "Pin row");
+      await userEvent.click(pin);
+    });
+
+    await step("A pinned row offers 'Unpin row'", async () => {
+      const row = await waitFor(() => rowNamed(canvasElement, /Ada/));
+      const unpin = await within(row).findByRole("button", {
+        name: "Unpin row",
+      });
+      expect(unpin.closest("[title]")).toHaveAttribute("title", "Unpin row");
+    });
+  },
+};
+
+/**
+ * The placeholder for list-valued `nestedKey` data comes from the message
+ * catalog.
+ */
+export const NestedItemsCountIsLocalized: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={[
+        { ...behaviourRows[0], children: [{ id: "c1" }] },
+        { ...behaviourRows[1], children: [{ id: "c2" }, { id: "c3" }] },
+      ]}
+      nestedKey="children"
+      defaultExpandedRows={new Set(["r1", "r2"])}
+      aria-label="Localized nested placeholder"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("The item count reads from the catalog", async () => {
+      expect(await canvas.findByText("Nested items: 1")).toBeInTheDocument();
+      expect(canvas.getByText("Nested items: 2")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * The layout settings panel is a named group, and the remove button in the
+ * visible-columns list says what it does.
+ */
+export const ManagerLabels: Story = {
+  render: () => {
+    const [visibleColumns, setVisibleColumns] = useState<
+      DataTableProps["columns"]
+    >(initialVisibleColumns);
+    return (
+      <DataTable.Root
+        columns={[...initialVisibleColumns, ...initialHiddenColumns]}
+        rows={managerRows}
+        visibleColumns={visibleColumns.map((col) => col.id)}
+        onColumnsChange={setVisibleColumns}
+        onSettingsChange={() => {}}
+      >
+        <DataTable.Manager />
+        <DataTable.Table aria-label="Manager labels table">
+          <DataTable.Header />
+          <DataTable.Body />
+        </DataTable.Table>
+      </DataTable.Root>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Open the settings drawer", async () => {
+      await userEvent.click(
+        await canvas.findByRole("button", { name: /table settings/i })
+      );
+      await within(document.body).findByRole("dialog", {}, { timeout: 3000 });
+    });
+
+    await step("Visible columns can be hidden with 'Hide column'", async () => {
+      const dialog = within(document.body).getByRole("dialog");
+      const hideButtons = await within(dialog).findAllByRole("button", {
+        name: "Hide column",
+      });
+      expect(hideButtons.length).toBeGreaterThan(0);
+    });
+
+    await step("The layout settings panel is a named group", async () => {
+      const dialog = within(document.body).getByRole("dialog");
+      await userEvent.click(
+        within(dialog).getByRole("tab", { name: /layout settings/i })
+      );
+      expect(
+        await within(dialog).findByRole("group", {
+          name: "Layout settings section",
+        })
+      ).toBeInTheDocument();
+    });
+  },
+};
+
+// ============================================================
+// FEC-1346 — behaviour that was already correct, now under test
+// ============================================================
+
+/**
+ * Pressing the layout option that is already active does not emit a change;
+ * pressing the other option emits it once.
+ */
+export const LayoutSettingsReselect: Story = {
+  args: { onSettingsChange: fn() },
+  render: (args) => {
+    const [visibleColumns, setVisibleColumns] = useState<
+      DataTableProps["columns"]
+    >(initialVisibleColumns);
+    return (
+      <DataTable.Root
+        columns={[...initialVisibleColumns, ...initialHiddenColumns]}
+        rows={managerRows}
+        visibleColumns={visibleColumns.map((col) => col.id)}
+        onColumnsChange={setVisibleColumns}
+        onSettingsChange={args.onSettingsChange}
+      >
+        <DataTable.Manager />
+        <DataTable.Table aria-label="Layout settings table">
+          <DataTable.Header />
+          <DataTable.Body />
+        </DataTable.Table>
+      </DataTable.Root>
+    );
+  },
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+
+    await step("Open the layout settings tab", async () => {
+      await userEvent.click(
+        await canvas.findByRole("button", { name: /table settings/i })
+      );
+      const dialog = await body.findByRole("dialog", {}, { timeout: 3000 });
+      await userEvent.click(
+        within(dialog).getByRole("tab", { name: /layout settings/i })
+      );
+      await within(dialog).findByRole("group", {
+        name: "Layout settings section",
+      });
+    });
+
+    await step("Pressing the active options emits nothing", async () => {
+      const dialog = body.getByRole("dialog");
+      await userEvent.click(
+        within(dialog).getByRole("radio", { name: "Full text" })
+      );
+      await userEvent.click(
+        within(dialog).getByRole("radio", { name: "Comfortable" })
+      );
+      expect(args.onSettingsChange).not.toHaveBeenCalled();
+    });
+
+    await step("Pressing the other option emits it once", async () => {
+      const dialog = body.getByRole("dialog");
+      await userEvent.click(
+        within(dialog).getByRole("radio", { name: "Text previews" })
+      );
+      expect(args.onSettingsChange).toHaveBeenCalledTimes(1);
+      expect(args.onSettingsChange).toHaveBeenCalledWith(
+        UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY
+      );
+    });
+  },
+};
+
+/**
+ * The expand button meets the WCAG 2.2 SC 2.5.8 minimum target size of
+ * 24×24 CSS px, with and without a selection column (the expand column is
+ * narrower next to the selection column).
+ */
+export const ExpandButtonTargetSize: Story = {
+  render: () => (
+    <Stack gap="600">
+      <Box data-testid="Expand without selection">
+        <DataTable
+          columns={behaviourColumns}
+          rows={behaviourRows.slice(0, 1)}
+          renderNestedContent={(row) => <Text>{String(row.name)}</Text>}
+        />
+      </Box>
+      <Box data-testid="Expand with selection">
+        <DataTable
+          columns={behaviourColumns}
+          rows={behaviourRows.slice(0, 1)}
+          selectionMode="multiple"
+          renderNestedContent={(row) => <Text>{String(row.name)}</Text>}
+        />
+      </Box>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    for (const name of ["Expand without selection", "Expand with selection"]) {
+      await step(`${name}: at least 24×24`, async () => {
+        const table = await canvas.findByTestId(name);
+        const button = await within(table).findByRole("button", {
+          name: "Expand",
+        });
+        const { width, height } = button.getBoundingClientRect();
+        expect(width).toBeGreaterThanOrEqual(24);
+        expect(height).toBeGreaterThanOrEqual(24);
+      });
+    }
+  },
+};
+
+/**
+ * A collapsed row's nested content is not part of the table. Arrow keys move
+ * straight to the next data row, and the grid reports only the rows a user
+ * can reach.
+ */
+export const CollapsedRowsDoNotTrapArrowKeys: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      renderNestedContent={(row) => <Text>Details for {String(row.name)}</Text>}
+      aria-label="Collapsed rows and arrow keys"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Ada");
+    const focusedRowText = () =>
+      (document.activeElement?.closest('[role="row"]')?.textContent ?? "")
+        .trim()
+        .slice(0, 12);
+
+    await step("Collapsed rows have no hidden nested row", async () => {
+      const bodyRows = canvasElement.querySelectorAll("tbody [role='row']");
+      expect(bodyRows).toHaveLength(behaviourRows.length);
+    });
+
+    await step("ArrowDown moves from row to row", async () => {
+      rowNamed(canvasElement, /Ada/).focus();
+      await userEvent.keyboard("{ArrowDown}");
+      expect(focusedRowText()).toMatch(/^Grace/);
+      await userEvent.keyboard("{ArrowDown}");
+      expect(focusedRowText()).toMatch(/^Linus/);
+    });
+
+    await step("ArrowUp moves back row by row", async () => {
+      await userEvent.keyboard("{ArrowUp}");
+      expect(focusedRowText()).toMatch(/^Grace/);
+    });
+
+    await step("An expanded row's content is reachable", async () => {
+      const ada = rowNamed(canvasElement, /Ada/);
+      await userEvent.click(
+        within(ada).getByRole("button", { name: "Expand" })
+      );
+      expect(await canvas.findByText("Details for Ada")).toBeInTheDocument();
+      rowNamed(canvasElement, /Ada/).focus();
+      await userEvent.keyboard("{ArrowDown}");
+      expect(focusedRowText()).toMatch(/^Details for/);
+      await userEvent.keyboard("{ArrowDown}");
+      expect(focusedRowText()).toMatch(/^Grace/);
+    });
+  },
+};
+
+/**
+ * Closing nested content from inside returns focus to the control that opened
+ * it, so a keyboard user does not end up on the page body.
+ */
+export const CloseReturnsFocusToOpener: Story = {
+  render: () => {
+    const renderPanel = (
+      row: DataTableRowItem,
+      { close }: { close: () => void }
+    ) => (
+      <Button size="xs" variant="outline" onPress={close}>
+        Close {String(row.name)}
+      </Button>
+    );
+    return (
+      <Stack gap="600">
+        <Box data-testid="with-expand-column">
+          <DataTable
+            columns={behaviourColumns}
+            rows={behaviourRows}
+            renderNestedContent={renderPanel}
+          />
+        </Box>
+        <Box data-testid="without-expand-column">
+          <DataTable
+            columns={behaviourColumns}
+            rows={behaviourRows}
+            allowsExpandColumn={false}
+            renderNestedContent={renderPanel}
+          />
+        </Box>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("With an expand column, focus returns to it", async () => {
+      const table = within(await canvas.findByTestId("with-expand-column"));
+      await userEvent.click(
+        within(table.getByRole("row", { name: /Ada/ })).getByRole("button", {
+          name: "Expand",
+        })
+      );
+      const close = await table.findByRole("button", { name: "Close Ada" });
+      close.focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() =>
+        expect(
+          table.queryByRole("button", { name: "Close Ada" })
+        ).not.toBeInTheDocument()
+      );
+      await waitFor(() =>
+        expect(document.activeElement).toBe(
+          within(table.getByRole("row", { name: /Ada/ })).getByRole("button", {
+            name: "Expand",
+          })
+        )
+      );
+    });
+
+    await step(
+      "Without an expand column, focus returns to the row",
+      async () => {
+        const table = within(canvas.getByTestId("without-expand-column"));
+        table.getByRole("row", { name: /Ada/ }).focus();
+        await userEvent.keyboard("{Enter}");
+        const close = await table.findByRole("button", { name: "Close Ada" });
+        close.focus();
+        await userEvent.keyboard("{Enter}");
+        await waitFor(() =>
+          expect(
+            table.queryByRole("button", { name: "Close Ada" })
+          ).not.toBeInTheDocument()
+        );
+        await waitFor(() =>
+          expect(document.activeElement).toBe(
+            table.getByRole("row", { name: /Ada/ })
+          )
+        );
+      }
+    );
+  },
+};
+
+/**
+ * Two tables on one page can use the same row ids. Closing nested content
+ * returns focus to the opener in the table that closed it, not in the other
+ * table.
+ */
+export const CloseReturnsFocusWithSharedRowIds: Story = {
+  render: () => {
+    const renderPanel = (
+      row: DataTableRowItem,
+      { close }: { close: () => void }
+    ) => (
+      <Button size="xs" variant="outline" onPress={close}>
+        Close {String(row.name)}
+      </Button>
+    );
+    return (
+      <Stack gap="600">
+        <Box data-testid="first-table">
+          <DataTable
+            columns={behaviourColumns}
+            rows={behaviourRows}
+            renderNestedContent={renderPanel}
+            aria-label="First table"
+          />
+        </Box>
+        <Box data-testid="second-table">
+          <DataTable
+            columns={behaviourColumns}
+            rows={behaviourRows}
+            renderNestedContent={renderPanel}
+            aria-label="Second table"
+          />
+        </Box>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const first = within(await canvas.findByTestId("first-table"));
+    const second = within(canvas.getByTestId("second-table"));
+    const expandButtonOfAda = (table: typeof first) =>
+      within(table.getByRole("row", { name: /Ada/ })).getByRole("button", {
+        name: "Expand",
+      });
+
+    await step(
+      "With Ada open in both tables, closing the second returns focus there",
+      async () => {
+        await userEvent.click(expandButtonOfAda(first));
+        await first.findByRole("button", { name: "Close Ada" });
+        await userEvent.click(expandButtonOfAda(second));
+        const close = await second.findByRole("button", { name: "Close Ada" });
+        close.focus();
+        await userEvent.keyboard("{Enter}");
+        await waitFor(() =>
+          expect(
+            second.queryByRole("button", { name: "Close Ada" })
+          ).not.toBeInTheDocument()
+        );
+        await waitFor(() =>
+          expect(document.activeElement).toBe(expandButtonOfAda(second))
+        );
+      }
+    );
+  },
+};
+
+/**
+ * Disabled rows use the shared `disabled` layer style, like disabled rows in
+ * Tree, ListBox and DraggableList, and give no hover feedback.
+ */
+export const DisabledRowStyle: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={[behaviourRows[0], { ...behaviourRows[1], isDisabled: true }]}
+      aria-label="Disabled row style"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Grace");
+    const disabledRow = rowNamed(canvasElement, /Grace/);
+    const enabledRow = rowNamed(canvasElement, /Ada/);
+
+    await step("A disabled row uses the disabled layer style", async () => {
+      expect(getComputedStyle(disabledRow).opacity).toBe("0.5");
+      expect(getComputedStyle(disabledRow).cursor).toBe("not-allowed");
+      expect(getComputedStyle(enabledRow).opacity).toBe("1");
+    });
+
+    // CSS :hover needs a real pointer. Simulated events from storybook/test
+    // do not trigger it, so this step runs only under the Vitest browser
+    // runner (see isVitestBrowser in checkbox.stories.tsx).
+    const isVitestBrowser = Boolean(
+      (globalThis as { __vitest_browser__?: boolean }).__vitest_browser__
+    );
+    if (isVitestBrowser) {
+      const { userEvent: realUserEvent } = await import("vitest/browser");
+      await step("Hovering a disabled row does not highlight it", async () => {
+        const restingBg = getComputedStyle(disabledRow).backgroundColor;
+        await realUserEvent.hover(within(disabledRow).getByText("Grace"));
+        await wait(400);
+        expect(getComputedStyle(disabledRow).backgroundColor).toBe(restingBg);
+      });
+
+      await step("Hovering an enabled row still highlights it", async () => {
+        const restingBg = getComputedStyle(enabledRow).backgroundColor;
+        await realUserEvent.hover(within(enabledRow).getByText("Ada"));
+        await wait(400);
+        expect(getComputedStyle(enabledRow).backgroundColor).not.toBe(
+          restingBg
+        );
+      });
+    }
+  },
+};
+
+/**
+ * The pin button is revealed on hover for mouse users. A keyboard user who
+ * moves focus into the row sees it too, instead of focusing an invisible
+ * button.
+ */
+export const PinButtonVisibleOnKeyboardFocus: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      aria-label="Pin button focus"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Grace");
+    const effectiveOpacity = (el: Element) => {
+      let o = 1;
+      for (let n: Element | null = el; n; n = n.parentElement) {
+        o *= parseFloat(getComputedStyle(n).opacity);
+      }
+      return o;
+    };
+
+    await step(
+      "The row's pin button shows when the row has focus",
+      async () => {
+        rowNamed(canvasElement, /Grace/).focus();
+        await userEvent.keyboard("{ArrowLeft}");
+        const pin = within(rowNamed(canvasElement, /Grace/)).getByRole(
+          "button",
+          { name: "Pin row" }
+        );
+        await waitFor(() => expect(document.activeElement).toBe(pin));
+        expect(effectiveOpacity(pin)).toBe(1);
+      }
+    );
+  },
+};
+
+const zIndexOf = (el: Element) => Number(getComputedStyle(el).zIndex) || 0;
+
+/** The frozen (sticky) cells of the row that contains `el`. */
+const frozenCellsOfRow = (el: Element) =>
+  Array.from(
+    el.closest('[role="row"]')?.querySelectorAll("td, th") ?? []
+  ).filter((cell) => getComputedStyle(cell).position === "sticky");
+
+/**
+ * Checks that the keyboard focus ring of `el` is drawn inside its own box and
+ * above every frozen cell of its row, so neither a neighbouring cell, the next
+ * row nor a frozen column can paint over it.
+ */
+const expectFocusRingOnTop = (el: HTMLElement) => {
+  const ring = getComputedStyle(el, "::after");
+  expect(ring.outlineStyle).toBe("solid");
+  expect(parseFloat(ring.outlineOffset)).toBeLessThan(0);
+  expect(getComputedStyle(el).outlineStyle).toBe("none");
+  const frozenCells = frozenCellsOfRow(el);
+  expect(frozenCells.length).toBeGreaterThan(0);
+  for (const frozen of frozenCells) {
+    expect(Number(ring.zIndex)).toBeGreaterThan(zIndexOf(frozen));
+  }
+};
+
+const renderFrozenCellsTable = () => (
+  <DataTable
+    columns={behaviourColumns}
+    rows={behaviourRows}
+    selectionMode="multiple"
+    allowsPinning
+    renderNestedContent={(row) => <Text>Details for {String(row.name)}</Text>}
+    aria-label="Focus ring and frozen cells"
+  />
+);
+
+/**
+ * A focused row keeps its whole focus ring visible. The frozen selection,
+ * expand and pin cells used to cover its left and right ends.
+ */
+export const RowFocusRingAboveFrozenCells: Story = {
+  render: renderFrozenCellsTable,
+  // VRT: a focused row's ring, complete on all four sides above frozen cells.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Linus");
+
+    await step(
+      "The row's focus ring is drawn above the frozen cells",
+      async () => {
+        rowNamed(canvasElement, /Ada/).focus();
+        await userEvent.keyboard("{ArrowDown}");
+        const row = rowNamed(canvasElement, /Grace/);
+        await waitFor(() => expect(row).toHaveAttribute("data-focus-visible"));
+        expectFocusRingOnTop(row);
+      }
+    );
+  },
+};
+
+/**
+ * A focused cell keeps its whole focus ring visible. The frozen expand cell
+ * on its left and the next row used to cover parts of it.
+ */
+export const CellFocusRingAboveFrozenCells: Story = {
+  render: renderFrozenCellsTable,
+  // VRT: a focused cell's ring, complete on all four sides above frozen cells.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Linus");
+
+    await step(
+      "The cell's focus ring is drawn above the frozen cells",
+      async () => {
+        rowNamed(canvasElement, /Grace/).focus();
+        // Selection checkbox, expand button, then the first data cell.
+        await userEvent.keyboard("{ArrowRight}{ArrowRight}{ArrowRight}");
+        const cell = within(rowNamed(canvasElement, /Grace/))
+          .getByText("Grace")
+          .closest('[role="rowheader"], [role="gridcell"]') as HTMLElement;
+        await waitFor(() => expect(cell).toHaveAttribute("data-focus-visible"));
+        expectFocusRingOnTop(cell);
+      }
+    );
+  },
+};
+
+/**
+ * A focused column header keeps its whole focus ring visible, and with a
+ * sticky header, frozen body cells scroll behind the header, not over it.
+ */
+export const HeaderFocusRingAndStickyHeader: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      selectionMode="multiple"
+      allowsPinning
+      maxHeight="160px"
+      aria-label="Header focus ring"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Linus");
+    const header = canvasElement.querySelector("thead") as HTMLElement;
+    const ada = rowNamed(canvasElement, /Ada/);
+
+    await step("The header is above every frozen body cell", async () => {
+      for (const frozen of frozenCellsOfRow(ada)) {
+        expect(zIndexOf(header)).toBeGreaterThan(zIndexOf(frozen));
+      }
+    });
+
+    await step("A body row's focus ring stays below the header", async () => {
+      ada.focus();
+      await waitFor(() => expect(ada).toHaveAttribute("data-focus-visible"));
+      const ring = getComputedStyle(ada, "::after");
+      expect(Number(ring.zIndex)).toBeLessThan(zIndexOf(header));
+    });
+
+    await step("A column header's focus ring is drawn inside it", async () => {
+      await userEvent.keyboard("{ArrowRight}{ArrowRight}{ArrowUp}");
+      const nameHeader = within(header)
+        .getByText("Name")
+        .closest('[role="columnheader"]') as HTMLElement;
+      await waitFor(() =>
+        expect(nameHeader.contains(document.activeElement)).toBe(true)
+      );
+      expectFocusRingOnTop(document.activeElement as HTMLElement);
+    });
+  },
+};
+
+/**
+ * Drags a column's resize handle horizontally by `dx` pixels. `whileHeld`
+ * runs after the move and before the mouse button is released.
+ */
+const dragColumnResizer = async (
+  columnHeader: HTMLElement,
+  dx: number,
+  whileHeld?: () => Promise<void>
+) => {
+  const handle = columnHeader.querySelector(
+    ".react-aria-ColumnResizer > *"
+  ) as HTMLElement;
+  const box = handle.getBoundingClientRect();
+  const x = box.left + box.width / 2;
+  const y = box.top + box.height / 2;
+  await userEvent.pointer([
+    {
+      keys: "[MouseLeft>]",
+      target: handle,
+      coords: { clientX: x, clientY: y, pageX: x, pageY: y },
+    },
+    {
+      target: handle,
+      coords: { clientX: x + dx, clientY: y, pageX: x + dx, pageY: y },
+    },
+  ]);
+  await whileHeld?.();
+  await userEvent.pointer([
+    {
+      keys: "[/MouseLeft]",
+      target: handle,
+      coords: { clientX: x + dx, clientY: y, pageX: x + dx, pageY: y },
+    },
+  ]);
+};
+
+/**
+ * While a column is dragged wider than the table can show, the table scrolls
+ * along, so the dragged edge stays left of the pin column where the mouse can
+ * still reach it.
+ */
+export const ResizedColumnEdgeStaysInView: Story = {
+  render: () => (
+    <Box w="700px">
+      <DataTable
+        columns={behaviourColumns}
+        rows={behaviourRows}
+        isResizable
+        selectionMode="multiple"
+        allowsPinning
+        aria-label="Resizable table with a pin column"
+      />
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Linus");
+    const table = canvas.getByRole("grid");
+    const container = table.parentElement as HTMLElement;
+    const header = (name: RegExp) =>
+      canvas.getByRole("columnheader", { name }) as HTMLElement;
+    const widthOf = (el: HTMLElement) =>
+      Math.round(el.getBoundingClientRect().width);
+
+    await step("A wider last column makes the table scroll", async () => {
+      await dragColumnResizer(header(/^Role/), 300);
+      await waitFor(() =>
+        expect(widthOf(table)).toBeGreaterThan(container.clientWidth)
+      );
+    });
+
+    await step(
+      "The dragged edge stays in view, left of the pin column",
+      async () => {
+        const edgeIsVisible = () =>
+          expect(
+            Math.round(header(/^Role/).getBoundingClientRect().right)
+          ).toBeLessThanOrEqual(
+            Math.round(header(/Pin rows/).getBoundingClientRect().left) + 1
+          );
+        container.scrollLeft = 0;
+        await dragColumnResizer(header(/^Role/), 100, async () => {
+          await waitFor(edgeIsVisible);
+        });
+        expect(container.scrollLeft).toBeGreaterThan(0);
+        edgeIsVisible();
+      }
+    );
+  },
+};
+
+/**
+ * The dragged edge also stays in view when `DataTable.Table` mounts after
+ * `DataTable.Root`, for example because it is rendered conditionally.
+ */
+export const ResizedColumnEdgeStaysInViewInLateTable: Story = {
+  render: () => {
+    const [showTable, setShowTable] = useState(false);
+    return (
+      <Stack w="700px">
+        <Button onPress={() => setShowTable(true)}>Show table</Button>
+        <DataTable.Root
+          columns={behaviourColumns}
+          rows={behaviourRows}
+          isResizable
+          selectionMode="multiple"
+          allowsPinning
+        >
+          {showTable && (
+            <DataTable.Table aria-label="Table mounted after its root">
+              <DataTable.Header />
+              <DataTable.Body />
+            </DataTable.Table>
+          )}
+        </DataTable.Root>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const header = (name: RegExp) =>
+      canvas.getByRole("columnheader", { name }) as HTMLElement;
+    const widthOf = (el: HTMLElement) =>
+      Math.round(el.getBoundingClientRect().width);
+
+    await step("The table mounts after the root", async () => {
+      expect(canvas.queryByRole("grid")).not.toBeInTheDocument();
+      await userEvent.click(canvas.getByRole("button", { name: "Show table" }));
+      await canvas.findByText("Linus");
+    });
+
+    await step(
+      "The dragged edge stays in view, left of the pin column",
+      async () => {
+        const table = canvas.getByRole("grid");
+        const container = table.parentElement as HTMLElement;
+        await dragColumnResizer(header(/^Role/), 300);
+        await waitFor(() =>
+          expect(widthOf(table)).toBeGreaterThan(container.clientWidth)
+        );
+        const edgeIsVisible = () =>
+          expect(
+            Math.round(header(/^Role/).getBoundingClientRect().right)
+          ).toBeLessThanOrEqual(
+            Math.round(header(/Pin rows/).getBoundingClientRect().left) + 1
+          );
+        container.scrollLeft = 0;
+        await dragColumnResizer(header(/^Role/), 100, async () => {
+          await waitFor(edgeIsVisible);
+        });
+        expect(container.scrollLeft).toBeGreaterThan(0);
+        edgeIsVisible();
+      }
+    );
+  },
+};
+
+/**
+ * The outline around pinned rows is drawn above the frozen checkbox, expand
+ * and pin cells. Before, their backgrounds covered it, so the lines stopped
+ * short of the pin column.
+ */
+export const PinnedRowOutlineAboveFrozenCells: Story = {
+  render: () => (
+    <DataTable
+      columns={behaviourColumns}
+      rows={behaviourRows}
+      selectionMode="multiple"
+      allowsPinning
+      defaultPinnedRows={new Set(["r1", "r2"])}
+      renderNestedContent={(row) => <Text>Details for {String(row.name)}</Text>}
+      aria-label="Pinned row outline"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Linus");
+    const leftEdges = (row: Element) =>
+      Array.from(row.children).map((cell) =>
+        Math.round(cell.getBoundingClientRect().left)
+      );
+    const headerRow = canvasElement.querySelector("thead tr") as Element;
+
+    for (const name of [/Ada/, /Grace/]) {
+      const row = rowNamed(canvasElement, name);
+
+      await step(`${name.source}: cells line up with the header`, async () => {
+        expect(leftEdges(row)).toEqual(leftEdges(headerRow));
+      });
+
+      await step(
+        `${name.source}: outline is above the frozen cells`,
+        async () => {
+          const outline = getComputedStyle(row, "::after");
+          expect(outline.boxShadow).not.toBe("none");
+          const frozenCells = frozenCellsOfRow(row);
+          expect(frozenCells.length).toBeGreaterThan(0);
+          for (const frozen of frozenCells) {
+            expect(Number(outline.zIndex)).toBeGreaterThan(zIndexOf(frozen));
+          }
+        }
+      );
+    }
   },
 };

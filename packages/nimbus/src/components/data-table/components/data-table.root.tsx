@@ -76,6 +76,7 @@ export const DataTableRoot = function DataTableRoot<
     onColumnsChange,
     onSettingsChange,
     customSettings,
+    renderEmptyState,
     children,
     ...rest
   } = props;
@@ -116,6 +117,47 @@ export const DataTableRoot = function DataTableRoot<
       ro.disconnect();
     };
   }, []);
+
+  // While a column is being resized, keep its right edge in view. Once the
+  // table is wider than its container, the edge would otherwise move under
+  // the frozen pin column or out of the visible area, where the mouse can no
+  // longer reach its resize handle. A ResizeObserver runs after the browser
+  // has laid out the new width and before it paints.
+  //
+  // The observer exists only during a resize, and it looks up the table when
+  // the resize starts. `DataTable.Table` can mount after `DataTable.Root`
+  // (rendered conditionally, for example), so the table may not exist yet
+  // when the root mounts.
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+
+  const stopKeepingResizedEdgeInView = useCallback(() => {
+    resizeObserverRef.current?.disconnect();
+    resizeObserverRef.current = null;
+  }, []);
+
+  const startKeepingResizedEdgeInView = useCallback(() => {
+    const el = localRef.current;
+    const table = el?.querySelector("table");
+    if (!el || !table) return;
+
+    const keepResizedEdgeInView = () => {
+      const column = el.querySelector("[data-resizing='true']")?.closest("th");
+      if (!column) return;
+      const pinColumn = el.querySelector("th.pin-rows-column-header");
+      const visibleRight = pinColumn
+        ? pinColumn.getBoundingClientRect().left
+        : el.getBoundingClientRect().left + el.clientLeft + el.clientWidth;
+      const hiddenWidth = column.getBoundingClientRect().right - visibleRight;
+      if (hiddenWidth > 0) el.scrollLeft += hiddenWidth;
+    };
+
+    resizeObserverRef.current?.disconnect();
+    resizeObserverRef.current = new ResizeObserver(keepResizedEdgeInView);
+    resizeObserverRef.current.observe(table);
+  }, []);
+
+  // The root can unmount during a resize, before React Aria reports its end.
+  useEffect(() => stopKeepingResizedEdgeInView, [stopKeepingResizedEdgeInView]);
 
   const [internalSortDescriptor, setInternalSortDescriptor] = useState<
     SortDescriptor | undefined
@@ -199,6 +241,8 @@ export const DataTableRoot = function DataTableRoot<
   );
   const hasExpandableContent = hasNestedKeyContent || !!renderNestedContent;
   const showExpandColumn = hasExpandableContent && allowsExpandColumn;
+  // The single rule for whether the selection column exists. Header, cells
+  // and the nested row's colSpan all read it, so they cannot disagree.
   const showSelectionColumn = selectionMode !== "none";
   const showPinColumn = allowsPinning;
 
@@ -227,7 +271,7 @@ export const DataTableRoot = function DataTableRoot<
 
   // Ref-stabilize consumer callback props so their identity doesn't
   // destabilize contextValue. Without this, inline callbacks like
-  // `onRowClick={(row) => ...}` create a new context value every
+  // `onRowAction={(row) => ...}` create a new context value every
   // consumer render, which bypasses memo() on every Row and forces a
   // full table re-render. The refs are passed into the context; call
   // sites read .current at invocation time.
@@ -293,7 +337,7 @@ export const DataTableRoot = function DataTableRoot<
     ]
   );
 
-  const isRowClickable = !!onRowClick;
+  const isRowClickable = !!(onRowAction || onRowClick);
   const hasRenderNestedContent = !!renderNestedContent;
 
   const contextValue = useMemo(
@@ -310,6 +354,7 @@ export const DataTableRoot = function DataTableRoot<
       isTruncated,
       density,
       nestedKey,
+      renderEmptyState,
       onSortChange: handleSortChange,
       isRowClickable,
       hasRenderNestedContent,
@@ -341,6 +386,7 @@ export const DataTableRoot = function DataTableRoot<
       isTruncated,
       density,
       nestedKey,
+      renderEmptyState,
       handleSortChange,
       isRowClickable,
       hasRenderNestedContent,
@@ -384,7 +430,10 @@ export const DataTableRoot = function DataTableRoot<
       {...rest}
       asChild
     >
-      <ResizableTableContainer>
+      <ResizableTableContainer
+        onResizeStart={startKeepingResizedEdgeInView}
+        onResizeEnd={stopKeepingResizedEdgeInView}
+      >
         <InteractionContext.Provider value={interactionValue}>
           <DataTableContext.Provider
             value={

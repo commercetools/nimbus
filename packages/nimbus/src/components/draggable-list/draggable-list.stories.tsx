@@ -426,6 +426,54 @@ export const RemovableItems: Story = {
   },
 };
 
+/**
+ * `removeButtonLabel` replaces the default "remove item" name of the remove
+ * button, for lists where removing means something more specific.
+ */
+export const CustomRemoveButtonLabel: Story = {
+  render: () => {
+    const ControlledList = () => {
+      const [listItems, setListItems] = useState(items.slice(0, 2));
+      return (
+        <DraggableList.Root
+          aria-label="list with custom remove label"
+          items={listItems}
+          removableItems
+          onUpdateItems={setListItems}
+        >
+          {(item) => (
+            <DraggableList.Item
+              key={item.key}
+              id={item.key}
+              textValue={String(item.label)}
+              onRemoveItem={
+                (item as { onRemoveItem?: (key: string | number) => void })
+                  .onRemoveItem
+              }
+              removeButtonLabel={`Hide ${String(item.label)}`}
+            >
+              {item.label}
+            </DraggableList.Item>
+          )}
+        </DraggableList.Root>
+      );
+    };
+    return <ControlledList />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("The remove button uses the custom label", async () => {
+      expect(
+        await canvas.findByRole("button", { name: "Hide Item 1" })
+      ).toBeInTheDocument();
+      expect(
+        canvas.queryByRole("button", { name: /remove item/i })
+      ).not.toBeInTheDocument();
+    });
+  },
+};
+
 export const DisabledItems: Story = {
   render: () => {
     const itemsWithDisabled = [
