@@ -1,5 +1,291 @@
 # @commercetools/nimbus
 
+## 3.7.0
+
+### Minor Changes
+
+- [#1971](https://github.com/commercetools/nimbus/pull/1971)
+  [`1fda80a`](https://github.com/commercetools/nimbus/commit/1fda80a3a3731ee7eb8daa52439704f8502dbdda)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `ListBox`: new compound
+  component for a standalone selection list — `ListBox.Root`, `ListBox.Item`,
+  `ListBox.Section` and `ListBox.LoadMore`. Reach for it when a list of options
+  should stay visible on the page — filter lists, list pickers, transfer lists,
+  command palettes; `Select` still covers dropdown fields and `ComboBox` covers
+  type-to-filter fields.
+
+  - Single and multiple selection. Single-select shows the selected row with a
+    full-row highlight; multiple-select shows a checkbox on each option.
+  - Sections with headers, rich items (leading media, a `label` + `description`
+    two-line option, and trailing content), and drag-and-drop reordering via
+    React Aria's `dragAndDropHooks`.
+  - Full keyboard support and the WAI-ARIA listbox pattern (arrow keys,
+    Home/End, type-ahead). Name the list with `aria-label` or `aria-labelledby`.
+  - `variant` — `card` (default, a standalone elevated surface) or `plain` (a
+    bare list for embedding inside an overlay). Plus a `size` scale (`sm`/`md`).
+  - A localized empty state (overridable with `renderEmptyState`) and an in-list
+    loading spinner via `ListBox.LoadMore`.
+
+  Experimental. See the
+  [ListBox docs](https://nimbus-documentation.vercel.app/components/inputs/list-box)
+  for the full prop reference.
+
+- [#2004](https://github.com/commercetools/nimbus/pull/2004)
+  [`39ddf88`](https://github.com/commercetools/nimbus/commit/39ddf88cb081c62664168eb7f31154f673c6f979)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Alert`:
+
+  **Action required:** `Alert.Root` now defaults to `role="status"` (polite)
+  instead of `role="alert"` (assertive) on every palette except `critical`,
+  which keeps `role="alert"`. `role` can now be overridden. Add `role="alert"`
+  to any non-critical alert that must interrupt a screen reader. A live region
+  only announces content that changes after the region is already on the page,
+  so an alert mounted together with its message may not be announced — keep
+  `Alert.Root` mounted and change its children, or pass `role="alert"`. See the
+  Accessibility tab, "Live-region priming".
+
+  New:
+
+  - `variant="accent-start"` — a neutral card with a 4px status-colored bar on
+    the leading edge, close to the treatment `Toast` uses. The card and text
+    stay neutral while the bar, the icon and any buttons in `Alert.Actions`
+    carry the status color.
+  - `colorPalette` accepts every Nimbus palette. `critical`, `warning`,
+    `positive`, `info` and `primary` each have their own icon; every other
+    palette, `neutral` included, shows the neutral icon. A responsive
+    `colorPalette` takes its icon and default `role` from its base value.
+  - `Alert.Icon` for a custom icon; `hideIcon` to remove it.
+  - `as` on `Alert.Title` and `Alert.Description`.
+
+  Fixed:
+
+  - The icon and dismiss button now line up with the first line of text instead
+    of sitting about 2px above it, and both scale with a `fontSize` set on
+    `Alert.Root`.
+  - `variant` and `size` passed to `Alert.DismissButton` now apply. Before, they
+    were ignored and the button always rendered as `ghost` / `2xs`.
+
+  Other visible changes:
+
+  - An alert without `variant` keeps its unstyled, flush look.
+  - `variant="flat"` now has the same padding as `outlined` and `accent-start`.
+    Omit `variant` if you relied on `flat` sitting flush with its container.
+  - `outlined` and `accent-start` draw their outline as an inset shadow instead
+    of a border, so the card is 1px roomier inside.
+  - Slightly more horizontal padding in every variant, a tighter gap between
+    title and description, and buttons inside `Alert.Actions` are now spaced
+    apart.
+
+- [#2015](https://github.com/commercetools/nimbus/pull/2015)
+  [`6f7e856`](https://github.com/commercetools/nimbus/commit/6f7e856730104a130155c42ff8812f7fdad08637)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `DataTable` rows can now
+  be activated with the keyboard, and several props that were accepted but
+  ignored now work.
+
+  ### `DataTable`
+  - **New:** `onRowAction(row)` is called when a user clicks a row or presses
+    <kbd>Enter</kbd> on it. <kbd>Space</kbd> still selects the row. Enter also
+    expands the row when `allowsExpandColumn={false}`.
+  - **Deprecated:** `onRowClick`. Use `onRowAction` instead. `onRowClick` keeps
+    working, now also on Enter, and is ignored when `onRowAction` is passed.
+  - **Changed:** in a table with selection and `onRowAction` or `onRowClick`,
+    Enter now activates the row instead of selecting it. Space and the checkbox
+    still select.
+  - **Changed:** `onRowAction` used to be called only for clicks on disabled
+    rows, as `(row, "click")`. Disabled rows are now never activated, and the
+    callback receives only the row.
+  - **Fixed:** `renderEmptyState` is shown when the table has no rows, instead
+    of the built-in "No Data".
+  - **Removed:** the `selectionBehavior` prop. It never had an effect: every
+    table already behaved as `"toggle"`, and still does. If you pass it, delete
+    it.
+  - **Fixed:** a click on a link, a text field or a checkbox label inside a cell
+    no longer activates the row. Before, the row was activated too, about 300 ms
+    after the click. Enter on these controls also goes to the control only.
+  - **Fixed:** a `Checkbox` inside a cell can be checked by clicking its box or
+    its label. Before, the click did nothing.
+  - **Fixed:** with `nestedKey` and `allowsExpandColumn={false}`, a row without
+    nested items no longer shows a pointer cursor, and Enter selects it.
+  - **Fixed:** `disabledKeys="all"` disables every row, including the header
+    checkbox.
+  - **Fixed:** a row with `isDisabled: true` is disabled without `disabledKeys`.
+  - **Changed:** disabled rows use the same disabled style as other Nimbus
+    components, so they look lighter than before. They no longer highlight on
+    hover.
+  - **Fixed:** the pin button, the empty state and the nested-items placeholder
+    are translated. They show English in other languages until the translations
+    arrive.
+  - **Fixed:** arrow keys move directly between rows. Before, each collapsed
+    expandable row took one extra key press that seemed to do nothing.
+  - **Fixed:** when nested content is closed from inside, with the `close`
+    callback of `renderNestedContent`, focus returns to the row's expand button,
+    or to the row when there is no expand column.
+  - **Changed:** the expand column header no longer shows an arrow icon. It
+    looked like a button, but only the expand button in each row expands a row.
+    If you hid the icon yourself, you can remove that workaround.
+  - **Changed:** selected rows use a slightly stronger background, the palette's
+    selected step. Rows and their frozen columns change color immediately on
+    hover and selection, without a fade.
+  - **Fixed:** the pin button is visible when it has keyboard focus. Before, it
+    only showed on mouse hover.
+  - **Fixed:** the keyboard focus ring of a row, a cell or a column header is
+    visible on all four sides. Before, frozen columns, the next row or the table
+    edge covered parts of it. Rows scrolled under a sticky header no longer show
+    their frozen cells above the header.
+  - **Fixed:** when a column is resized wider than the table can show, the table
+    scrolls along, so the edge you are dragging stays in view. Before, it moved
+    under the pin column or out of view, and its resize handle could no longer
+    be reached with the mouse.
+  - **Fixed:** the outline around pinned rows is complete. Before, the frozen
+    checkbox, expand and pin cells covered parts of it, so its lines stopped
+    short of the pin column.
+  - **Deprecated:** `nestedKey`. Use `renderNestedContent`, which receives the
+    row: `renderNestedContent={(row) => row.children}`.
+
+  ### `DraggableList`
+  - **New:** `DraggableList.Item` accepts `removeButtonLabel` to name the remove
+    button, for example "Hide column". The default stays "remove item".
+
+- [#1996](https://github.com/commercetools/nimbus/pull/1996)
+  [`d61f298`](https://github.com/commercetools/nimbus/commit/d61f298317cf7b4a78d94b5b8e2e877b184aff50)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `DataTable` now
+  identifies rows and columns only by their `id`. A `key` field, which customer
+  groups, categories, channels and stores usually have, is treated as ordinary
+  data.
+
+  ### `DataTable`
+  - **Fixed:** a row whose `key` equals a column id no longer crashes the table
+    with "Cell count must match column count".
+  - **Fixed:** `onSelectionChange` reports row ids and `onSortChange` reports
+    column ids, so sorting works for columns that have a `key` field.
+  - **Fixed:** rows in `disabledKeys` are really disabled: they cannot be
+    selected, and keyboard navigation skips them.
+  - `selectedKeys`, `defaultSelectedKeys` and `disabledKeys` must hold row ids.
+    Stored selections that use business keys no longer match.
+  - Row ids must be unique. In development, a duplicate or empty id logs a
+    warning that names it.
+  - To identify rows by another property, set `id` in the row data. A different
+    `id` on `DataTable.Row` in a custom `DataTable.Body` logs a development
+    warning.
+
+  ### `createArrayHandlers`
+  - When a drag operation matches no item, a development warning explains why.
+    For `DataTable` rows, pass `createArrayHandlers(setRows, (row) => row.id)`.
+
+- [#1981](https://github.com/commercetools/nimbus/pull/1981)
+  [`cdb6ff0`](https://github.com/commercetools/nimbus/commit/cdb6ff0997fe805d0849520a96a55ac9eb81df6e)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `ScrollArea`:
+  auto-hide-when-idle behavior, four visual styles, and a dedicated visibility
+  prop.
+
+  - **The scrollbar now auto-hides when idle by default.** It appears when the
+    pointer enters the area or when the content scrolls, then fades out after a
+    short idle delay; while the pointer rests inside, scrolling or moving toward
+    the bar brings it back — so a resting reader is not distracted. Wheel,
+    touch, and keyboard scrolling keep working while it is hidden.
+  - **`variant` now selects the visual style:** `solid` (default — grey track,
+    thumb fills it), `inset` (grey track with an inset, floating pill thumb),
+    `overlay` (no track, only the thumb shows), and `glass` (translucent,
+    frosted track that blurs the content behind it).
+  - **New `scrollbarVisibility` prop:** `auto-hide` (default) or `always` (the
+    bar stays visible and the viewport reserves a gutter). It is independent of
+    `variant`, so any visual can also be always-visible, e.g.
+    `<ScrollArea variant="inset" scrollbarVisibility="always" />`.
+  - **Higher-contrast thumb** at rest, so the bar reads clearly (previously it
+    looked washed out).
+  - **Fixed:** the scrollbar now updates when the content changes — e.g. content
+    loading in, or swapping the children while the same `ScrollArea` stays
+    mounted (tab panels) — without needing a scroll first to trigger it.
+
+  Deprecations (still working, no code change required): `variant="hover"` — use
+  `variant="solid"`; `variant="always"` — use `scrollbarVisibility="always"`.
+
+- [#2009](https://github.com/commercetools/nimbus/pull/2009)
+  [`09950b9`](https://github.com/commercetools/nimbus/commit/09950b95802c83bcca645205a71c50803ed9a827)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Toast`: calling
+  `toast()`, `toast.update()`, `toast.dismiss()`, or `toast.remove()` from
+  inside `useEffect` no longer logs the
+  `flushSync was called from inside a lifecycle method` warning, so the
+  `queueMicrotask` workaround is no longer needed.
+
+  Toasts now render on the next microtask after `toast()` is called. The
+  returned ID is still valid immediately. Tests that query a toast synchronously
+  right after calling `toast()` should use `findBy*` queries or `waitFor`
+  instead of `getBy*`.
+
+### Patch Changes
+
+- [#2025](https://github.com/commercetools/nimbus/pull/2025)
+  [`b9850ca`](https://github.com/commercetools/nimbus/commit/b9850caa2817aaf9e5cb07ad9226008562de5aa1)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Button`: the `link`
+  variant is now underlined at rest, not only on hover. Before, it had the same
+  text color and no background as `ghost`, so the two variants looked the same
+  until the pointer was over the button. On hover the text now gets darker, like
+  the other variants. The button's height, padding and minimum width do not
+  change.
+
+- [#2008](https://github.com/commercetools/nimbus/pull/2008)
+  [`5686f35`](https://github.com/commercetools/nimbus/commit/5686f35035d3be72c7436b0e0ff515695685ca22)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `ChatMessageList`: the
+  transcript no longer stops following the newest message when the last item
+  grows (for example, an image finishes loading) right after new content
+  arrives. Auto-scroll now pauses only when the user scrolls up.
+
+- [#2026](https://github.com/commercetools/nimbus/pull/2026)
+  [`70dde92`](https://github.com/commercetools/nimbus/commit/70dde92f3b2fa62abff6cf09c156855673a46589)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `DataTable` renders less,
+  and outlines pinned rows correctly during a search.
+
+  - **Fixed:** expanding, pinning or sorting rows no longer renders the column
+    headers and `DataTable.Manager` again. Pinning a row no longer renders every
+    other row again.
+  - **Fixed:** new `rows`, `columns` or `visibleColumns` arrays that hold the
+    same items, such as `rows={data.filter(isActive)}`, no longer render every
+    row again. See "When rows render again" in the DataTable docs.
+  - **Fixed:** when the search hides the first pinned row, the next pinned row
+    now draws the top edge of the pinned-row outline. For the same reason,
+    `pinnedRowIds` from `DataTable.useDataTableContext()` lists only the pinned
+    rows on screen. `pinnedRows` still holds every pinned row.
+  - **Fixed:** in a custom `DataTable.Body`, `isFirstPinned`, `isLastPinned` and
+    `isSinglePinned` are `false` for rows that are not pinned. `isLastPinned`
+    was `true` for every row while no row was pinned.
+  - **Fixed:** the `DataTableHeaderSlotProps` type describes the `<thead>` that
+    `DataTable.Header` renders. It described a `<tr>` before.
+  - If you override the undocumented CSS custom properties `--dt-row-bg` or
+    `--pinned-shadow-*`, rename them to `--data-table-row-bg` and
+    `--data-table-pinned-shadow-*`.
+
+- [#1999](https://github.com/commercetools/nimbus/pull/1999)
+  [`3a4b508`](https://github.com/commercetools/nimbus/commit/3a4b50820778f269abea484c16755817b995d6c7)
+  Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency
+  `slate-hyperscript` to `0.115.0 || ^0.127.0`, `slate` to
+  `0.123.0 || ^0.126.0`, `slate-react` to `0.123.0 || ^0.126.0`,
+  `@huggingface/transformers` to `4.3.0`, `react-router` to `8.4.0`.
+
+- [#2017](https://github.com/commercetools/nimbus/pull/2017)
+  [`8466ed4`](https://github.com/commercetools/nimbus/commit/8466ed4dafa7b7428d1ff3a49316d440111d0b6e)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Update runtime
+  dependencies: `dompurify` to `3.4.16` (bundled SVG sanitizer used by
+  `InlineSvg`), `@github-ui/storybook-addon-performance-panel` to `^1.3.0`, and
+  `zod` to `^4.6.5` (`@commercetools/nimbus-mcp`).
+
+- [#2002](https://github.com/commercetools/nimbus/pull/2002)
+  [`5fba541`](https://github.com/commercetools/nimbus/commit/5fba541ce2b514ee976e834bcfcc57ddfaa707f0)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Removed the internal
+  `_`-prefixed symbols (e.g. `_CardRoot`, `_MenuTrigger`) that our documentation
+  tooling no longer needs. They were never part of the supported API. If you
+  imported one directly, use the namespace API instead — `Card.Header` rather
+  than `_CardHeader`.
+
+  `Grid.Item` and `SimpleGrid.Item` are now Nimbus components instead of
+  Chakra's `GridItem` re-exported directly. Props, ref forwarding and rendered
+  DOM are unchanged; only the component identity differs.
+
+- [#2020](https://github.com/commercetools/nimbus/pull/2020)
+  [`b004456`](https://github.com/commercetools/nimbus/commit/b004456f845c751aca941291667c3b5e33409f6c)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Installing
+  `@commercetools/nimbus` no longer installs
+  `@github-ui/storybook-addon-performance-panel` or its Storybook peer
+  dependencies into your app. The addon is only used by Nimbus's own Storybook.
+
 ## 3.6.0
 
 ### Minor Changes

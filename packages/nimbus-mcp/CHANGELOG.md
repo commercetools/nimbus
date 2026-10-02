@@ -1,5 +1,16 @@
 # @commercetools/nimbus-mcp
 
+## 3.7.0
+
+### Patch Changes
+
+- [#2017](https://github.com/commercetools/nimbus/pull/2017)
+  [`8466ed4`](https://github.com/commercetools/nimbus/commit/8466ed4dafa7b7428d1ff3a49316d440111d0b6e)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Update runtime
+  dependencies: `dompurify` to `3.4.16` (bundled SVG sanitizer used by
+  `InlineSvg`), `@github-ui/storybook-addon-performance-panel` to `^1.3.0`, and
+  `zod` to `^4.6.5` (`@commercetools/nimbus-mcp`).
+
 ## 3.6.0
 
 No changes in this release.
