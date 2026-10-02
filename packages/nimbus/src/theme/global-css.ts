@@ -58,7 +58,8 @@ export const globalCss = defineGlobalStyles({
     colorPalette: "neutral",
   },
   "*::placeholder": {
-    color: "fg.muted/80",
+    opacity: 0.5,
+    color: "currentColor",
   },
   "*::selection": {
     bg: "colorPalette.9",

@@ -53,7 +53,7 @@ export default function DynamicRoute() {
             <Heading as="h1" size="2xl">
               Nimbus Design System
             </Heading>
-            <Text color="fg.muted" fontSize="lg">
+            <Text color="fg.subtle" fontSize="lg">
               Build beautiful, accessible interfaces with React
             </Text>
           </Box>

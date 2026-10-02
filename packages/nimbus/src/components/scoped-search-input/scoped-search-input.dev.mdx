@@ -133,7 +133,7 @@ const App = () => {
 
   return (
     <Stack direction="column" gap="200">
-      <Text fontSize="sm" color="fg.muted">
+      <Text fontSize="sm" color="fg.subtle">
         Select a different option to see auto-focus in action
       </Text>
       <ScopedSearchInput
@@ -187,7 +187,7 @@ const App = () => {
           <>
             <Text fontWeight="medium" marginTop="200">Event history:</Text>
             {history.slice(-3).map((event, i) => (
-              <Text key={i} color="fg.muted">{event}</Text>
+              <Text key={i} color="fg.subtle">{event}</Text>
             ))}
           </>
         )}
@@ -566,7 +566,7 @@ const App = () => {
         searchPlaceholder="Enter search term..."
       />
       {isSearching && (
-        <Text fontSize="sm" color="fg.muted">Searching...</Text>
+        <Text fontSize="sm" color="fg.subtle">Searching...</Text>
       )}
       {!isSearching && results.length > 0 && (
         <Stack direction="column" gap="200">

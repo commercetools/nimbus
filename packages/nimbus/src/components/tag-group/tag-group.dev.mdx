@@ -175,7 +175,7 @@ const App = () => {
           {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
         </TagGroup.TagList>
       </TagGroup.Root>
-      <Text fontSize="sm" color="fg.muted">
+      <Text fontSize="sm" color="fg.subtle">
         {tags.length} {tags.length === 1 ? 'tag' : 'tags'} remaining
       </Text>
     </Stack>
@@ -389,7 +389,7 @@ const App = () => {
           </TagGroup.TagList>
         </TagGroup.Root>
       ) : (
-        <Text fontSize="sm" color="fg.muted">No filters applied</Text>
+        <Text fontSize="sm" color="fg.subtle">No filters applied</Text>
       )}
     </Stack>
   );
@@ -431,7 +431,7 @@ const App = () => {
           {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
         </TagGroup.TagList>
       </TagGroup.Root>
-      <Text fontSize="sm" color="fg.muted">
+      <Text fontSize="sm" color="fg.subtle">
         Showing {itemCount} products
       </Text>
     </Stack>
@@ -496,7 +496,7 @@ const App = () => {
         </TagGroup.Root>
       </Stack>
 
-      <Text fontSize="sm" color="fg.muted">
+      <Text fontSize="sm" color="fg.subtle">
         Filters: {selectedSizes.size + selectedColors.size} selected
       </Text>
     </Stack>
