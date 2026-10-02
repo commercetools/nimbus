@@ -9,7 +9,7 @@ import {
 import { isFocusable } from "@react-aria/utils";
 import { mergeRefs } from "@/utils";
 import { Highlight } from "@chakra-ui/react/highlight";
-import { useStableDataTableContext } from "./data-table.context";
+import { useDataTableRowContext } from "./data-table.context";
 import { DataTableCell } from "./data-table.cell";
 import { DataTableRowSlot } from "../data-table.slots";
 import type {
@@ -29,12 +29,6 @@ import {
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "../data-table.messages";
-
-/**
- * DataTable.Row - Individual row component that renders data cells and handles row-level interactions
- *
- * @supportsStyleProps
- */
 
 /**
  * Finds the control from a fixed list (buttons, inputs, checkboxes, the
@@ -201,7 +195,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     togglePin,
     selectRowLabel,
     getRowKey,
-  } = useStableDataTableContext<T>();
+  } = useDataTableRowContext<T>();
 
   const [styleProps, restProps] = extractStyleProps(props);
 
@@ -245,22 +239,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   };
   const isDisabled = getIsDisabled(rowKey);
 
-  /**
-   * Custom row click handling implementation to work around React Aria limitations.
-   *
-   * React Aria Components disable row actions when a row is selected, which prevents
-   * custom click handlers from working properly. This implementation uses native DOM
-   * event listeners to bypass this limitation and provide consistent row click behavior.
-   *
-   * @see https://github.com/adobe/react-spectrum/issues/7962
-   */
-
-  /**
-   * Handles row click events with smart filtering to avoid conflicts with interactive elements.
-   * Uses native DOM Event type to be compatible with addEventListener.
-   *
-   * @param e - Native DOM Event from the click listener
-   */
+  // The pending single-click activation. handleRowDoubleClick cancels it.
   const clickTimeoutRef = useRef<number | null>(null);
 
   // Set by the pointerdown capture listener below when it fires on this
@@ -269,21 +248,6 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   // pointerdown on this row.
   const pressStartedOnRowRef = useRef(false);
 
-  /**
-   * Handles row click events with sophisticated filtering to ensure proper UX behavior.
-   *
-   * This function implements multiple layers of click validation:
-   * - Prevents interference with interactive elements (buttons, checkboxes, inputs)
-   * - Respects text selection (users shouldn't trigger onClick handler when copying text)
-   * - Handles both enabled and disabled row states appropriately
-   * - Only triggers onClick handler when the row is explicitly marked as clickable
-   * - Uses a delay mechanism to distinguish single clicks from double clicks
-   *
-   * Uses native DOM Event type to maintain compatibility with addEventListener and
-   * ensure consistent behavior across different browsers and interaction methods.
-   *
-   * @param e - Native DOM Event from the click listener
-   */
   const hasNestedContent =
     nestedKey &&
     row[nestedKey] &&
@@ -324,6 +288,25 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     ]
   );
 
+  /**
+   * Handles row click events with sophisticated filtering to ensure proper UX behavior.
+   *
+   * This function implements multiple layers of click validation:
+   * - Prevents interference with interactive elements (buttons, checkboxes, inputs)
+   * - Respects text selection (users shouldn't trigger onClick handler when copying text)
+   * - Handles both enabled and disabled row states appropriately
+   * - Only triggers onClick handler when the row is explicitly marked as clickable
+   * - Uses a delay mechanism to distinguish single clicks from double clicks
+   *
+   * It runs from a native DOM listener, not from React Aria. React Aria
+   * Components disable row actions when a row is selected, which prevents
+   * custom click handlers from working properly. The native listener bypasses
+   * this limitation and provides consistent row click behavior.
+   *
+   * @see https://github.com/adobe/react-spectrum/issues/7962
+   *
+   * @param e - Native DOM Event from the click listener
+   */
   const handleRowClick = useCallback(
     (e: Event) => {
       // Reject a mouseup that has no matching pointerdown on this row.
@@ -858,6 +841,11 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   );
 };
 
+/**
+ * DataTable.Row - Individual row component that renders data cells and handles row-level interactions
+ *
+ * @supportsStyleProps
+ */
 export const DataTableRow = memo(
   DataTableRowInner
 ) as typeof DataTableRowInner & {

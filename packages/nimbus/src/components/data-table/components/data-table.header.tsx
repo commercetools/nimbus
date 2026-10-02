@@ -13,7 +13,7 @@ import type {
   DataTableColumnItem,
 } from "../data-table.types";
 import { DataTableHeaderSlot } from "../data-table.slots";
-import { useDataTableContext } from "./data-table.context";
+import { useStableDataTableContext } from "./data-table.context";
 import { DataTableColumn } from "./data-table.column";
 import { dataTableMessagesStrings } from "../data-table.messages";
 
@@ -39,7 +39,7 @@ export const DataTableHeader = <
     showPinColumn,
     showSelectionColumn,
     disabledKeys,
-  } = useDataTableContext();
+  } = useStableDataTableContext();
   const { selectionMode, allowsDragging } = useTableOptions();
   const [styleProps, restProps] = extractStyleProps(props);
 

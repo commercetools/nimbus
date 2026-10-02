@@ -9,7 +9,7 @@ import {
   FormatAlignJustify,
 } from "@commercetools/nimbus-icons";
 import { dataTableMessagesStrings } from "../data-table.messages";
-import { useDataTableContext } from "./data-table.context";
+import { useStableDataTableContext } from "./data-table.context";
 import type { DataTableProps } from "../data-table.types";
 
 export const LayoutSettingsPanel = ({
@@ -18,7 +18,7 @@ export const LayoutSettingsPanel = ({
   onSettingsChange?: DataTableProps["onSettingsChange"];
 }) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
-  const context = useDataTableContext();
+  const context = useStableDataTableContext();
 
   const textVisibility = context.isTruncated ?? false;
   const rowDensity: "comfortable" | "compact" =

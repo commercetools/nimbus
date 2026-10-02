@@ -5,7 +5,7 @@ import { Settings, ViewWeek, ViewDay } from "@commercetools/nimbus-icons";
 import { VisibleColumnsPanel } from "./data-table.visible-columns-panel";
 import { LayoutSettingsPanel } from "./data-table.layout-settings-panel";
 import {
-  useDataTableContext,
+  useStableDataTableContext,
   useCustomSettingsContext,
 } from "./data-table.context";
 import type { DataTableColumnItem } from "../data-table.types";
@@ -20,7 +20,7 @@ import { dataTableMessagesStrings } from "../data-table.messages";
  */
 export default function DataTableManagerImpl() {
   const [isOpen, setIsOpen] = useState(false);
-  const context = useDataTableContext();
+  const context = useStableDataTableContext();
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
 
   const { columns, visibleColumns, onColumnsChangeRef, onSettingsChangeRef } =

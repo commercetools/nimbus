@@ -5,6 +5,7 @@ import {
   useRef,
   useEffect,
   startTransition,
+  type ContextType,
 } from "react";
 import { ResizableTableContainer } from "react-aria-components";
 import { useObjectRef } from "react-aria";
@@ -12,6 +13,7 @@ import { mergeRefs } from "@/utils";
 import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
 import {
   DataTableContext,
+  DataTableRowContext,
   InteractionContext,
   CustomSettingsContext,
   TableSelectionContext,
@@ -30,6 +32,7 @@ import {
   formatRowKeyProblems,
 } from "../utils/row-keys.utils";
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
+import { useStableArray } from "../hooks";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "../data-table.messages";
 
@@ -43,9 +46,9 @@ export const DataTableRoot = function DataTableRoot<
 >(props: DataTableProps<T>) {
   const {
     ref: forwardedRef,
-    columns = [],
-    rows = [],
-    visibleColumns,
+    columns: columnsProp = [],
+    rows: rowsProp = [],
+    visibleColumns: visibleColumnsProp,
     search,
     sortDescriptor: controlledSortDescriptor,
     defaultSortDescriptor,
@@ -80,6 +83,13 @@ export const DataTableRoot = function DataTableRoot<
     children,
     ...rest
   } = props;
+
+  // `columns={[...]}` or `rows={data.filter(...)}` is a new array on every
+  // render. Keeping the previous array while its items are the same stops
+  // that from re-sorting the rows and re-rendering every row.
+  const columns = useStableArray(columnsProp);
+  const rows = useStableArray(rowsProp);
+  const visibleColumns = useStableArray(visibleColumnsProp);
 
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
@@ -230,9 +240,17 @@ export const DataTableRoot = function DataTableRoot<
     if (message) console.warn(message);
   }, [rows, getRowKey]);
 
-  const pinnedRowIds = useMemo(
-    () => rows.filter((r) => pinnedRows.has(getRowKey(r))).map(getRowKey),
-    [rows, pinnedRows, getRowKey]
+  // The pinned rows on screen, in display order. It comes from `sortedRows`,
+  // not from `rows`: a pinned row that the search hides must not count as the
+  // first or last pinned row, or the row that is shown loses its outline.
+  // Sorting or searching gives a new array with the same ids. Keeping the old
+  // array then keeps DataTable.Body from re-rendering every row.
+  const pinnedRowIds = useStableArray(
+    useMemo(
+      () =>
+        sortedRows.filter((r) => pinnedRows.has(getRowKey(r))).map(getRowKey),
+      [sortedRows, pinnedRows, getRowKey]
+    )
   );
 
   const hasNestedKeyContent = useMemo(
@@ -405,6 +423,49 @@ export const DataTableRoot = function DataTableRoot<
     ]
   );
 
+  // Same values as in `contextValue`, without `columns` and `rows`, so a new
+  // `rows` array re-renders only the rows whose data changed.
+  const rowContextValue = useMemo(
+    () => ({
+      activeColumns,
+      search,
+      toggleExpand,
+      nestedKey,
+      disabledKeys,
+      showExpandColumn,
+      hasExpandableContent,
+      showSelectionColumn,
+      showPinColumn,
+      isTruncated,
+      isRowClickable,
+      hasRenderNestedContent,
+      onRowClickRef,
+      onRowActionRef,
+      renderNestedContent,
+      togglePin,
+      selectRowLabel,
+      getRowKey,
+    }),
+    [
+      activeColumns,
+      search,
+      toggleExpand,
+      nestedKey,
+      disabledKeys,
+      showExpandColumn,
+      hasExpandableContent,
+      showSelectionColumn,
+      showPinColumn,
+      isTruncated,
+      isRowClickable,
+      hasRenderNestedContent,
+      renderNestedContent,
+      togglePin,
+      selectRowLabel,
+      getRowKey,
+    ]
+  );
+
   const selectionContextValue: TableSelectionContextValue = useMemo(
     () => ({
       selectedKeys,
@@ -442,13 +503,21 @@ export const DataTableRoot = function DataTableRoot<
               >
             }
           >
-            <TableSelectionContext.Provider value={selectionContextValue}>
-              <CustomSettingsContext.Provider
-                value={customSettingsContextValue}
-              >
-                {children}
-              </CustomSettingsContext.Provider>
-            </TableSelectionContext.Provider>
+            <DataTableRowContext.Provider
+              value={
+                rowContextValue as unknown as ContextType<
+                  typeof DataTableRowContext
+                >
+              }
+            >
+              <TableSelectionContext.Provider value={selectionContextValue}>
+                <CustomSettingsContext.Provider
+                  value={customSettingsContextValue}
+                >
+                  {children}
+                </CustomSettingsContext.Provider>
+              </TableSelectionContext.Provider>
+            </DataTableRowContext.Provider>
           </DataTableContext.Provider>
         </InteractionContext.Provider>
       </ResizableTableContainer>

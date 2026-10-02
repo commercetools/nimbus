@@ -129,7 +129,11 @@ export const DataTable = Object.assign(DataTableBase, {
    * <DataTable.Root columns={columns} rows={rows}>
    *   <DataTable.Table>
    *     <DataTable.Header />
-   *     <DataTable.Body />
+   *     <DataTable.Body>
+   *       {(row, rowRenderProps) => (
+   *         <DataTable.Row row={row} {...rowRenderProps} bg="primary.2" />
+   *       )}
+   *     </DataTable.Body>
    *   </DataTable.Table>
    * </DataTable.Root>
    * ```

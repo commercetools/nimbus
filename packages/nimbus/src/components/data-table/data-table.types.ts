@@ -24,7 +24,7 @@ import type { OmitInternalProps } from "../../type-utils";
 type DataTableSlotRecipeProps = {
   /** Whether to truncate cell content with ellipsis */
   truncated?: boolean;
-  /** Density variant controlling row height and padding */
+  /** Density variant controlling the vertical padding of cells */
   density?: "default" | "condensed";
 } & UnstyledProp;
 
@@ -50,7 +50,7 @@ export type DataTableTableSlotProps = Omit<
   dragAndDropHooks?: RaDragAndDropHooks;
 };
 
-export type DataTableHeaderSlotProps = HTMLChakraProps<"tr">;
+export type DataTableHeaderSlotProps = HTMLChakraProps<"thead">;
 export type DataTableColumnSlotProps = HTMLChakraProps<"th">;
 export type DataTableBodySlotProps = HTMLChakraProps<"tbody">;
 export type DataTableRowSlotProps = HTMLChakraProps<"tr">;
@@ -156,6 +156,10 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
      */
     showSelectionColumn: boolean;
     showPinColumn: boolean;
+    /**
+     * The ids of the pinned rows on screen, in display order. A pinned row
+     * that the search hides is not in it. `pinnedRows` holds every pinned id.
+     */
     pinnedRowIds: string[];
     selectRowLabel: string;
     disabledKeys?: Selection;
