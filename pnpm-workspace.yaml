@@ -327,7 +327,7 @@ catalogs:
     chokidar: 5.0.0
     fuse.js: 7.5.0
     github-slugger: 2.0.0
-    jotai: 3.0.0
+    jotai: 3.0.1
     prism-react-renderer: 2.4.1
     react-live: 4.1.8
     react-router: 8.4.0
