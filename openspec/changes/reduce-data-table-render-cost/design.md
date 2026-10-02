@@ -41,6 +41,9 @@ Header, `DataTable.Manager`, the layout settings panel and `DataTable.Column`
 read `useStableDataTableContext()`. `DataTable.Table` reads the configuration
 and the interaction context separately. `DataTable.Body` already read the
 interaction context; it now reads the configuration without the merge.
+`useStableDataTableContext()` returns a type without the interaction and
+selection fields, so reading one of them from it is a type error, not
+`undefined` at runtime.
 
 `DataTable.Column` does not subscribe to the interaction context for the sort
 icon. React Aria passes `sortDirection` to the column's render function, set

@@ -17,6 +17,18 @@ type InteractionContextValue<T extends object = Record<string, unknown>> = {
 };
 
 /**
+ * What `DataTableContext` holds: the configuration, without the interaction
+ * state and the selection, which live in their own contexts. Reading one of
+ * those fields from the stable context is a type error, not `undefined` at
+ * runtime.
+ */
+type DataTableConfigContextValue<T extends object = Record<string, unknown>> =
+  Omit<
+    DataTableContextValue<T>,
+    keyof InteractionContextValue<T> | keyof TableSelectionContextValue
+  >;
+
+/**
  * The configuration `DataTable.Row` reads. It leaves out `columns` and `rows`:
  * a row renders `activeColumns`, and its own data arrives as the `row` prop.
  * So a new `rows` array, or a change to one row, re-renders only the rows
@@ -104,10 +116,10 @@ export const useDataTableContext = <
  */
 export const useStableDataTableContext = <
   T extends object = Record<string, unknown>,
->() => {
+>(): DataTableConfigContextValue<T> => {
   const context = useContext(
     DataTableContext
-  ) as DataTableContextValue<T> | null;
+  ) as DataTableConfigContextValue<T> | null;
   if (!context) {
     throw new Error("DataTable components must be used within DataTable.Root");
   }
