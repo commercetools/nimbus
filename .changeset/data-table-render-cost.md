@@ -15,6 +15,8 @@
 - **Fixed:** in a custom `DataTable.Body`, `isFirstPinned`, `isLastPinned` and
   `isSinglePinned` are `false` for rows that are not pinned. `isLastPinned` was
   `true` for every row while no row was pinned.
+- **Fixed:** the `DataTableHeaderSlotProps` type describes the `<thead>` that
+  `DataTable.Header` renders. It described a `<tr>` before.
 - If you override the undocumented CSS custom properties `--dt-row-bg` or
   `--pinned-shadow-*`, rename them to `--data-table-row-bg` and
   `--data-table-pinned-shadow-*`.

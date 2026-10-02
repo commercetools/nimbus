@@ -443,7 +443,8 @@ into `{component-name}.{topic}.stories.tsx` files next to
 Every file uses the same `title` and `component` in its `meta`. Storybook then
 lists all of them under one sidebar entry, and each story keeps its id
 (`title` + export name), so Chromatic compares it with its existing baseline.
-The story export names must stay unique across the files.
+The story export names must stay unique across the files. The Default story
+stays the first export of `{component-name}.stories.tsx`.
 
 Keep a helper in the file that uses it. Move a helper that several files use
 into the component's test files: fixtures into `{component-name}.test-data`,
@@ -915,7 +916,8 @@ const [value, setValue] = useState({ amount: "", currencyCode: "EUR" });
 
 - [ ] Stories file exists with `.stories.tsx` extension
 - [ ] Meta configuration with title and component
-- [ ] Default story as first export
+- [ ] Default story as first export (in a split stories file, the first export
+      of `{component-name}.stories.tsx`)
 - [ ] Progressive complexity (simple → complex)
 - [ ] All variants covered (combined in single story with render function)
 - [ ] **Play functions for ALL interactive components**

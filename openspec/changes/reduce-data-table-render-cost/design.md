@@ -168,13 +168,20 @@ moved to `utils/data-table.test-utils.ts`,
 `docs/component-guidelines.md`.
 
 **Alternative rejected:** a title per topic (`Components/DataTable/Pinning`).
-It changes every story id, so Chromatic would see 89 new stories without
+It changes every story id, so Chromatic would see 92 new stories without
 baselines.
 
 ## Risks / Trade-offs
 
 - **Stable arrays hide in-place mutation.** Already the case before (D3).
   The docs now say to replace a changed row with a new object.
+- **An inline `renderNestedContent` renders every row again.** It is in the
+  row context, and unlike the event callbacks it is not read through a ref: a
+  ref would keep showing the old nested content when the function changes,
+  because the rows would not render again. The docs say to create it once.
+  Measured with a temporary story: a new function on every parent render
+  renders 5 of 5 rows again; a new `expandedRows` Set with the same keys
+  renders none, because rows receive `isExpanded` as a boolean prop.
 - **Renamed CSS custom properties.** A consumer that overrides
   `--dt-row-bg` or `--pinned-shadow-*` must rename it. They were not
   documented. The changeset names both.

@@ -172,9 +172,10 @@ To keep large tables fast:
   the old values.
 - **Create column definitions once**, outside the component or with
   `useMemo`. A new column object on every render renders every row again.
-- **Keep the same `disabledKeys` and `expandedRows` Sets between renders**,
-  for example with `useState` or `useMemo`. A new Set on every render renders
-  every row again.
+- **Create `renderNestedContent` once**, outside the component or with
+  `useCallback`. A new function on every render renders every row again.
+- **Keep the same `disabledKeys` Set between renders**, for example with
+  `useState` or `useMemo`. A new Set on every render renders every row again.
 - **`search` filters the rows on every change.** In a large table, debounce
   the search field, or pass a value from React's `useDeferredValue`, so that
   filtering does not slow down typing:
@@ -190,7 +191,7 @@ const deferredSearch = useDeferredValue(search);
 
 ### Density options
 
-The `density` prop controls row height and padding. Use `condensed` for
+The `density` prop controls the vertical padding of cells. Use `condensed` for
 data-dense interfaces:
 
 ```jsx live-dev

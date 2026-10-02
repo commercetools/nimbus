@@ -794,7 +794,8 @@ You MUST validate against these requirements:
 
 #### Required Stories
 
-- [ ] Base/Default story exists (MUST be first)
+- [ ] Base/Default story exists (MUST be first; in a split stories file, first
+      in `{name}.stories.tsx`)
 - [ ] Sizes story (if component has sizes)
 - [ ] Variants story (if component has variants)
 - [ ] Focused story (if component is focusable)

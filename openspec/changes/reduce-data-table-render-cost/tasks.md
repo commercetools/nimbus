@@ -58,4 +58,4 @@ to `packages/nimbus/src/components/data-table/`.
 - [x] 5.2 Changeset
 - [x] 5.3 `typecheck:dev`, lint, `pnpm test:dev` for DataTable
 - [x] 5.4 `pnpm test:storybook` against the built bundle
-- [ ] 5.5 Chromatic: no unexplained visual diff
+- [x] 5.5 Chromatic: no unexplained visual diff
