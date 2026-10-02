@@ -11,7 +11,9 @@
   items, such as `rows={data.filter(isActive)}`, no longer render every row
   again. See "When rows render again" in the DataTable docs.
 - **Fixed:** when the search hides the first pinned row, the next pinned row now
-  draws the top edge of the pinned-row outline.
+  draws the top edge of the pinned-row outline. For the same reason,
+  `pinnedRowIds` from `DataTable.useDataTableContext()` lists only the pinned
+  rows on screen. `pinnedRows` still holds every pinned row.
 - **Fixed:** in a custom `DataTable.Body`, `isFirstPinned`, `isLastPinned` and
   `isSinglePinned` are `false` for rows that are not pinned. `isLastPinned` was
   `true` for every row while no row was pinned.

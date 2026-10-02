@@ -156,6 +156,10 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
      */
     showSelectionColumn: boolean;
     showPinColumn: boolean;
+    /**
+     * The ids of the pinned rows on screen, in display order. A pinned row
+     * that the search hides is not in it. `pinnedRows` holds every pinned id.
+     */
     pinnedRowIds: string[];
     selectRowLabel: string;
     disabledKeys?: Selection;

@@ -89,6 +89,9 @@ per change.
 
 `pinnedRowIds` comes from `sortedRows` (the rows on screen) instead of `rows`.
 A pinned row that the search hides is no longer counted as first or last.
+Consumers see the same value through `DataTable.useDataTableContext()`, so the
+changeset and the field's JSDoc say that it lists only the pinned rows on
+screen; `pinnedRows` keeps every pinned id.
 
 ### D5 — `nestedKey` rows keep their object when nothing changed
 
