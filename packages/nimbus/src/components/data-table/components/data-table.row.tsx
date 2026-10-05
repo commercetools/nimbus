@@ -656,6 +656,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               maxW="100%"
               position="relative"
               overflow="hidden"
+              verticalAlign="top"
               cursor={isDisabled ? "not-allowed" : undefined}
             >
               {col.render

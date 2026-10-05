@@ -2062,3 +2062,57 @@ export const SizeWinsOverDensity: Story = {
     );
   },
 };
+
+/**
+ * The text in a body cell has the same space above and below it. A wrapper
+ * with `overflow: hidden` aligned to the text baseline used to add the font's
+ * descender space under the content, so rows were taller than their padding
+ * and line height.
+ */
+export const CellTextIsCenteredVertically: Story = {
+  render: () => (
+    <DataTable
+      columns={columns}
+      rows={rows.slice(0, 3)}
+      size="md"
+      allowsPinning={false}
+      aria-label="Cell spacing"
+      data-testid="cell-spacing-table"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Space above and below the cell text is equal", async () => {
+      const table = canvas.getByTestId("cell-spacing-table");
+      const cells = Array.from(
+        table.querySelectorAll<HTMLElement>("tbody td[data-column-id]")
+      );
+      expect(cells.length).toBeGreaterThan(0);
+      for (const cell of cells) {
+        const range = document.createRange();
+        range.selectNodeContents(cell);
+        const text = range.getBoundingClientRect();
+        const box = cell.getBoundingClientRect();
+        expect(
+          Math.abs(text.top - box.top - (box.bottom - text.bottom))
+        ).toBeLessThan(1.5);
+      }
+    });
+
+    await step("Row height is padding plus one line plus border", async () => {
+      const cell = canvas
+        .getByTestId("cell-spacing-table")
+        .querySelector<HTMLElement>("tbody td[data-column-id]")!;
+      const style = window.getComputedStyle(cell);
+      const expected =
+        parseFloat(style.paddingTop) +
+        parseFloat(style.paddingBottom) +
+        parseFloat(style.lineHeight) +
+        parseFloat(style.borderBottomWidth);
+      expect(
+        Math.abs(cell.getBoundingClientRect().height - expected)
+      ).toBeLessThan(1.5);
+    });
+  },
+};
