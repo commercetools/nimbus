@@ -596,6 +596,20 @@ export const SizeComparison: Story = {
             />
           </Box>
         </Section>
+
+        <Section
+          title="6. Plain table"
+          description="Text cells only: no selection, no pinning, no controls in the rows. Use it to inspect spacing without internal columns."
+        >
+          <DataTable
+            columns={productColumns}
+            rows={productRows}
+            size={toSizeProp(size)}
+            allowsPinning={false}
+            aria-label="Plain products"
+            data-testid="playground-plain"
+          />
+        </Section>
       </Stack>
     );
   },
@@ -608,6 +622,7 @@ export const SizeComparison: Story = {
       "playground-list-page",
       "playground-agents",
       "playground-summary",
+      "playground-plain",
     ];
 
     for (const [label, padding] of [
