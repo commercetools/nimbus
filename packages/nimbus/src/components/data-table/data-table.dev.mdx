@@ -157,11 +157,41 @@ const rows: DataTableRowItem[] = [
 ];
 ```
 
+### When rows render again
+
+A row renders again only when something about that row changes, for example
+its data, or whether it is expanded or pinned. DataTable compares `rows`,
+`columns` and `visibleColumns` item by item. A new array that holds the same
+objects, such as `rows={data.filter(isActive)}`, does not render any row
+again.
+
+To keep large tables fast:
+
+- **Replace a changed row with a new object.** A row renders again when its
+  object changes. If you change a row object in place, the table keeps showing
+  the old values.
+- **Create column definitions once**, outside the component or with
+  `useMemo`. A new column object on every render renders every row again.
+- **Create `renderNestedContent` once**, outside the component or with
+  `useCallback`. A new function on every render renders every row again.
+- **Keep the same `disabledKeys` Set between renders**, for example with
+  `useState` or `useMemo`. A new Set on every render renders every row again.
+- **`search` filters the rows on every change.** In a large table, debounce
+  the search field, or pass a value from React's `useDeferredValue`, so that
+  filtering does not slow down typing:
+
+```tsx
+const [search, setSearch] = useState("");
+const deferredSearch = useDeferredValue(search);
+
+<DataTable columns={columns} rows={rows} search={deferredSearch} />;
+```
+
 ## Usage examples
 
 ### Density options
 
-The `density` prop controls row height and padding. Use `condensed` for
+The `density` prop controls the vertical padding of cells. Use `condensed` for
 data-dense interfaces:
 
 ```jsx live-dev

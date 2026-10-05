@@ -35,7 +35,7 @@ export const DataTableTableSlot = withContext<
 export const DataTableHeaderSlot = withContext<
   HTMLTableSectionElement,
   DataTableHeaderSlotProps
->("tr", "header");
+>("thead", "header");
 
 // Wrapper slot for react aria `Column` component
 export const DataTableColumnSlot = withContext<
@@ -65,16 +65,6 @@ export const DataTableFooter = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
 >("footer", "footer");
-
-export const DataTableSelectionCell = withContext<
-  HTMLTableCellElement,
-  HTMLChakraProps<"td">
->("td", "selectionCell");
-
-export const DataTableNestedIcon = withContext<
-  HTMLSpanElement,
-  HTMLChakraProps<"span">
->("span", "nestedIcon");
 
 export const DataTableHeaderSortIcon = withContext<
   HTMLSpanElement,

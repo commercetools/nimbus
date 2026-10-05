@@ -5,7 +5,8 @@ import { mergeRefs } from "@/utils";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import {
-  useDataTableContext,
+  useStableDataTableContext,
+  useInteractionContext,
   useTableSelectionContext,
 } from "./data-table.context";
 import { DataTableTableSlot } from "../data-table.slots";
@@ -28,16 +29,15 @@ export const DataTableTable = function DataTableTable({
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const {
-    sortDescriptor,
     onSortChange,
     selectionMode,
     disallowEmptySelection,
     disabledKeys,
     hasRenderNestedContent,
-    expanded,
     rows,
     getRowKey,
-  } = useDataTableContext();
+  } = useStableDataTableContext();
+  const { sortDescriptor, expanded } = useInteractionContext();
 
   // React Aria's `disabledKeys` is an `Iterable<Key>`, so the string "all"
   // would iterate to the keys "a", "l", "l". Expand it to every row id.

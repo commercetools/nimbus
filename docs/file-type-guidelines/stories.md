@@ -435,6 +435,22 @@ type Story = StoryObj<typeof ComponentName>;
 > `const meta: Meta = {…}` hosting render-only examples), where `typeof meta`
 > resolves to a loose `Args` type and is already cheap.
 
+### Splitting a large stories file
+
+When a component's stories grow past a few thousand lines, split them by topic
+into `{component-name}.{topic}.stories.tsx` files next to
+`{component-name}.stories.tsx`, for example `data-table.pinning.stories.tsx`.
+Every file uses the same `title` and `component` in its `meta`. Storybook then
+lists all of them under one sidebar entry, and each story keeps its id
+(`title` + export name), so Chromatic compares it with its existing baseline.
+The story export names must stay unique across the files. The Default story
+stays the first export of `{component-name}.stories.tsx`.
+
+Keep a helper in the file that uses it. Move a helper that several files use
+into the component's test files: fixtures into `{component-name}.test-data`,
+play helpers into `utils/{component-name}.test-utils.ts`, and shared wrapper
+components into `utils/{component-name}.test-component.tsx`.
+
 ## Story Organization
 
 ### Progressive Complexity Pattern
@@ -900,7 +916,8 @@ const [value, setValue] = useState({ amount: "", currencyCode: "EUR" });
 
 - [ ] Stories file exists with `.stories.tsx` extension
 - [ ] Meta configuration with title and component
-- [ ] Default story as first export
+- [ ] Default story as first export (in a split stories file, the first export
+      of `{component-name}.stories.tsx`)
 - [ ] Progressive complexity (simple → complex)
 - [ ] All variants covered (combined in single story with render function)
 - [ ] **Play functions for ALL interactive components**

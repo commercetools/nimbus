@@ -783,6 +783,9 @@ You MUST validate against these requirements:
 - [ ] Story file location - `src/components/{name}/{name}.stories.tsx` for a
       component, `src/patterns/{group}/{name}/{name}.stories.tsx` for a pattern
       (groups: `buttons`, `actions`, `dialogs`, `fields`, `pages`)
+- [ ] A large stories file is split by topic into `{name}.{topic}.stories.tsx`
+      files with the same `title` and `component` (see "Splitting a large
+      stories file" in `docs/file-type-guidelines/stories.md`)
 - [ ] Imports from `@storybook/react-vite` and `storybook/test`
 - [ ] Meta configuration with title, component, tags
 - [ ] Default export of meta
@@ -791,7 +794,8 @@ You MUST validate against these requirements:
 
 #### Required Stories
 
-- [ ] Base/Default story exists (MUST be first)
+- [ ] Base/Default story exists (MUST be first; in a split stories file, first
+      in `{name}.stories.tsx`)
 - [ ] Sizes story (if component has sizes)
 - [ ] Variants story (if component has variants)
 - [ ] Focused story (if component is focusable)
