@@ -737,10 +737,12 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               isDisabled={isDisabled}
             >
               {hasNestedContent || hasRenderNestedContent ? (
-                // TODO:Button does not occupy the whole height
                 <IconButton
                   w="100%"
                   h="100%"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
                   unstyled
                   cursor="pointer"
                   focusVisibleRing="inside"
