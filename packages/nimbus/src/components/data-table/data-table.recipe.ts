@@ -134,10 +134,7 @@ const sharedSizeVariant = (
   // override them here rather than relying on textStyle alone.
   const headerText = { textStyle, fontSize, lineHeight: "550" };
   return {
-    root: {
-      ...internalColumnWidthVars(size),
-      "& .data-table-header": { ...headerText, height: "auto" },
-    },
+    root: internalColumnWidthVars(size),
     header: { ...headerText, height: "auto" },
     column: {
       lineHeight: "550",
