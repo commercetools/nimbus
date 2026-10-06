@@ -1819,6 +1819,9 @@ const expectedSizeStyles = {
  * `lg` share their values with `Table`. Header height follows the padding.
  */
 export const Sizes: Story = {
+  // VRT: every size with the shared Table padding, header padding and text size.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack gap="800">
       {documentedSizes.map((size) => (
@@ -1915,6 +1918,9 @@ const InternalColumnsTable = ({ size }: { size: DataTableProps["size"] }) => {
  * padding. Sticky columns stay flush while scrolling horizontally.
  */
 export const SizeInternalColumns: Story = {
+  // VRT: internal columns at every size - widths, 24px controls, sticky offsets.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack gap="800">
       {[...documentedSizes, undefined].map((size) => (

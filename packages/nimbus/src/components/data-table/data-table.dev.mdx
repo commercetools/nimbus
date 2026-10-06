@@ -195,12 +195,6 @@ The `size` prop controls cell padding, header padding and text size. `sm`,
 `md` and `lg` use the same values as the `Table` component. Choose a smaller
 size to show more data on one screen:
 
-| Size | Cell padding (horizontal / vertical) | Text |
-| ---- | ------------------------------------ | ---- |
-| `sm` | 8px / 8px                            | 14px |
-| `md` | 12px / 12px                          | 14px |
-| `lg` | 16px / 12px                          | 16px |
-
 ```jsx live-dev
 const App = () => {
   const [size, setSize] = useState('md');
@@ -236,9 +230,8 @@ const App = () => {
 }
 ```
 
-**Default size.** Without a `size` prop, the table uses `xl`: 24px / 16px cell
-padding and a 40px header, the appearance from before `size` existed. `xl` is
-deprecated. Do not pass it explicitly (it logs a warning in development); use
+**Default size.** Without a `size` prop, the table uses `xl`, the appearance
+from before `size` existed. `xl` is deprecated. Do not pass it explicitly (it logs a warning in development); use
 `lg` instead. A future major release will change the default.
 
 **Cell text.** `sm`, `md` and `lg` set the text size of the cells. If your cell

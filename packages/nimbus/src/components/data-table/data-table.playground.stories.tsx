@@ -1,18 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState, type ReactNode } from "react";
-import { within, expect, userEvent, waitFor } from "storybook/test";
+import type { ReactNode } from "react";
 import {
   Badge,
   Box,
   DataTable,
-  Heading,
   IconButton,
   Pagination,
   Stack,
-  Switch,
-  Table,
   Text,
-  ToggleButtonGroup,
 } from "@commercetools/nimbus";
 import {
   AutoFixNormal,
@@ -21,158 +16,30 @@ import {
   RemoveRedEye,
   SmartToy,
 } from "@commercetools/nimbus-icons";
-import type {
-  DataTableColumnItem,
-  DataTableRowItem,
-  DataTableSize,
-} from "./data-table.types";
+import type { DataTableColumnItem, DataTableRowItem } from "./data-table.types";
 
+/**
+ * Playground for how consumers use DataTable. The story replicates usages
+ * from `merchant-center-frontend` or `commerce-agents` (nimbus-pulse scan 20)
+ * with the default size, as those consumers render it today, so a change that
+ * affects real content shows up in the snapshot. Sizes are covered by the
+ * `Sizes` story in `data-table.stories.tsx`.
+ */
 const meta: Meta<typeof DataTable> = {
   title: "Playground/DataTable",
   component: DataTable,
+  tags: ["vrt"],
+  parameters: {
+    chromatic: { disableSnapshot: false },
+  },
 };
 
 export default meta;
 
 type Story = StoryObj<typeof DataTable>;
 
-const sizeOptions: { value: DataTableSize; label: string }[] = [
-  { value: "sm", label: "sm" },
-  { value: "md", label: "md" },
-  { value: "lg", label: "lg" },
-  { value: "xl", label: "xl (DataTable default)" },
-];
-
-/**
- * `xl` is the deprecated default: it is reached by leaving `size` out, so the
- * playground never triggers the deprecation warning.
- */
-const toSizeProp = (size: DataTableSize) => (size === "xl" ? undefined : size);
-
-const Section = ({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description: ReactNode;
-  children: ReactNode;
-}) => (
-  <Stack gap="300">
-    <Stack gap="100">
-      <Heading size="md">{title}</Heading>
-      <Text color="neutral.11" textStyle="sm">
-        {description}
-      </Text>
-    </Stack>
-    {children}
-  </Stack>
-);
-
 // ============================================================
-// 1. Table vs DataTable
-// ============================================================
-
-type Product = {
-  name: string;
-  sku: string;
-  category: string;
-  stock: number;
-};
-
-const productRows: DataTableRowItem<Product>[] = [
-  {
-    id: "1",
-    name: "Espresso machine",
-    sku: "EM-100",
-    category: "Kitchen",
-    stock: 12,
-  },
-  {
-    id: "2",
-    name: "Standing desk",
-    sku: "SD-220",
-    category: "Office",
-    stock: 4,
-  },
-  {
-    id: "3",
-    name: "Trail shoes",
-    sku: "TS-042",
-    category: "Outdoor",
-    stock: 37,
-  },
-];
-
-const productColumns: DataTableColumnItem<Product>[] = [
-  { id: "name", header: "Name", accessor: (row) => row.name },
-  { id: "sku", header: "SKU", accessor: (row) => row.sku },
-  { id: "category", header: "Category", accessor: (row) => row.category },
-  { id: "stock", header: "Stock", accessor: (row) => row.stock, align: "end" },
-];
-
-const TableComparison = ({ size }: { size: DataTableSize }) => {
-  const tableSize = toSizeProp(size);
-  return (
-    <Stack gap="400">
-      <Text textStyle="sm" fontWeight="500">
-        Table{" "}
-        <Text as="span" color="neutral.11" fontWeight="400">
-          size={tableSize ? `"${tableSize}"` : "default (md) — Table has no xl"}
-        </Text>
-      </Text>
-      <Table.Root
-        size={tableSize}
-        variant="outline"
-        data-testid="playground-table"
-      >
-        <Table.Header>
-          <Table.Row>
-            {productColumns.map((column) => (
-              <Table.ColumnHeader
-                key={column.id}
-                textAlign={column.align === "end" ? "end" : undefined}
-              >
-                {column.header}
-              </Table.ColumnHeader>
-            ))}
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {productRows.map((row) => (
-            <Table.Row key={row.id}>
-              {productColumns.map((column) => (
-                <Table.Cell
-                  key={column.id}
-                  textAlign={column.align === "end" ? "end" : undefined}
-                >
-                  {column.accessor(row)}
-                </Table.Cell>
-              ))}
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table.Root>
-      <Text textStyle="sm" fontWeight="500">
-        DataTable{" "}
-        <Text as="span" color="neutral.11" fontWeight="400">
-          size=&quot;{size}&quot;
-        </Text>
-      </Text>
-      <DataTable
-        columns={productColumns}
-        rows={productRows}
-        size={tableSize}
-        selectionMode="multiple"
-        aria-label="Products"
-        data-testid="playground-data-table"
-      />
-    </Stack>
-  );
-};
-
-// ============================================================
-// 2. List page (modelled on the MCP servers list)
+// 1. List page (modelled on the MCP servers list)
 // ============================================================
 
 type McpServer = {
@@ -217,13 +84,11 @@ const mcpServerRows: DataTableRowItem<McpServer>[] = [
 ];
 
 /**
- * @param ownTextStyle - cells set `textStyle="sm"` themselves, as the
- * Merchant Center tables do today; this overrides the size's text style
+ * Cells set `textStyle="sm"` themselves, as the Merchant Center tables do
+ * today.
  */
-const buildMcpServerColumns = (
-  ownTextStyle: boolean
-): DataTableColumnItem<McpServer>[] => {
-  const textStyle = ownTextStyle ? "sm" : undefined;
+const buildMcpServerColumns = (): DataTableColumnItem<McpServer>[] => {
+  const textStyle = "sm";
   return [
     {
       id: "name",
@@ -320,49 +185,8 @@ const buildMcpServerColumns = (
   ];
 };
 
-const ListPageTable = ({
-  size,
-  ownTextStyle,
-}: {
-  size: DataTableSize;
-  ownTextStyle: boolean;
-}) => {
-  const [clicked, setClicked] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  return (
-    <Stack gap="200">
-      <DataTable.Root
-        columns={buildMcpServerColumns(ownTextStyle)}
-        rows={mcpServerRows}
-        size={toSizeProp(size)}
-        allowsPinning={false}
-        onRowClick={(row) => setClicked(row.name as string)}
-        data-testid="playground-list-page"
-      >
-        <DataTable.Table aria-label="MCP servers">
-          <DataTable.Header />
-          <DataTable.Body />
-        </DataTable.Table>
-        <DataTable.Footer>
-          <Box pt="600">
-            <Pagination
-              totalItems={42}
-              pageSize={20}
-              currentPage={currentPage}
-              onPageChange={setCurrentPage}
-            />
-          </Box>
-        </DataTable.Footer>
-      </DataTable.Root>
-      <Text textStyle="sm" color="neutral.11" data-testid="playground-clicked">
-        Last row click: {clicked ?? "none"}
-      </Text>
-    </Stack>
-  );
-};
-
 // ============================================================
-// 3. Two-line cells with an image (modelled on the agent registry)
+// 2. Two-line cells with an image (modelled on the agent registry)
 // ============================================================
 
 type Agent = {
@@ -467,7 +291,7 @@ const agentColumns: DataTableColumnItem<Agent>[] = [
 ];
 
 // ============================================================
-// 4. Key/value summary (modelled on the commerce-agents chat UI)
+// 3. Key/value summary (modelled on the commerce-agents chat UI)
 // ============================================================
 
 type PropertyValue = { property: string; value: ReactNode };
@@ -501,205 +325,83 @@ const summaryColumns: DataTableColumnItem<PropertyValue>[] = [
   { id: "value", header: "Value", accessor: (row) => row.value },
 ];
 
-// ============================================================
-// STORY
-// ============================================================
+const SectionHeading = ({ children }: { children: ReactNode }) => (
+  <Text fontWeight="700" fontSize="500">
+    {children}
+  </Text>
+);
+
+const SectionDescription = ({ children }: { children: ReactNode }) => (
+  <Text color="neutral.11" textStyle="sm">
+    {children}
+  </Text>
+);
 
 /**
- * One size control drives every table below. Sections 2–4 replicate how
- * DataTable is used in `merchant-center-frontend` and `commerce-agents`
- * (nimbus-pulse scan #20), so `size` can be judged on real content.
+ * One story with every consumer usage, as the other playgrounds do.
  */
-export const SizeComparison: Story = {
-  render: () => {
-    const [size, setSize] = useState<DataTableSize>("md");
-    const [ownTextStyle, setOwnTextStyle] = useState(true);
-
-    return (
-      <Stack gap="1000">
-        <Box
-          position="sticky"
-          top="0"
-          zIndex="10"
-          bg="bg"
-          py="300"
-          borderBottom="1px solid {colors.neutral.3}"
+export const UsageExploration: Story = {
+  render: () => (
+    <Stack gap="1000">
+      <Stack gap="300">
+        <SectionHeading>1 · List page</SectionHeading>
+        <SectionDescription>
+          Bold name, status badge, key with a copy button, clamped text,
+          fixed-width columns, an action column, clickable rows, and pagination
+          in the footer (compound API).
+        </SectionDescription>
+        <DataTable.Root
+          columns={buildMcpServerColumns()}
+          rows={mcpServerRows}
+          allowsPinning={false}
+          onRowClick={() => {}}
         >
-          <ToggleButtonGroup.Root
-            aria-label="Size"
-            size="xs"
-            disallowEmptySelection
-            selectedKeys={new Set([size])}
-            onSelectionChange={(keys) => {
-              const [next] = Array.from(keys);
-              if (next) setSize(next as DataTableSize);
-            }}
-          >
-            {sizeOptions.map((option) => (
-              <ToggleButtonGroup.Button key={option.value} id={option.value}>
-                {option.label}
-              </ToggleButtonGroup.Button>
-            ))}
-          </ToggleButtonGroup.Root>
-        </Box>
-
-        <Section
-          title="1. Table vs DataTable"
-          description="sm, md and lg should look the same on both. The DataTable has selection and pinning on, so the internal columns scale too."
-        >
-          <TableComparison size={size} />
-        </Section>
-
-        <Section
-          title="2. List page"
-          description="Modelled on the MCP servers list: bold name, status badge, key with a copy button, clamped text, fixed-width columns, an action column, clickable rows, and pagination in the footer (compound API)."
-        >
-          <ListPageTable size={size} ownTextStyle={ownTextStyle} />
-        </Section>
-
-        <Section
-          title="3. Cells that set their own text style"
-          description='Most Merchant Center tables wrap every cell in <Text textStyle="sm">. That overrides the size: at lg the text stays 14px. Turn it off to see the text follow the size. Applies to the list page above.'
-        >
-          <Switch isSelected={ownTextStyle} onChange={setOwnTextStyle}>
-            Cells set textStyle=&quot;sm&quot; themselves
-          </Switch>
-        </Section>
-
-        <Section
-          title="4. Two-line cells with an image"
-          description="Modelled on the agent registry: a 24px logo next to name and publisher, plus badges with icons. Content height dominates the row."
-        >
-          <DataTable
-            columns={agentColumns}
-            rows={agentRows}
-            size={toSizeProp(size)}
-            allowsPinning={false}
-            onRowClick={() => {}}
-            aria-label="Agents"
-            data-testid="playground-agents"
-          />
-        </Section>
-
-        <Section
-          title="5. Key/value summary"
-          description="Modelled on the commerce-agents chat UI: two columns, bold property, any content as value, no pinning."
-        >
-          <Box maxW="480px">
-            <DataTable
-              columns={summaryColumns}
-              rows={summaryRows}
-              size={toSizeProp(size)}
-              allowsPinning={false}
-              aria-label="Discount summary"
-              data-testid="playground-summary"
-            />
-          </Box>
-        </Section>
-
-        <Section
-          title="6. Plain table"
-          description="Text cells only: no selection, no pinning, no controls in the rows. Use it to inspect spacing without internal columns."
-        >
-          <DataTable
-            columns={productColumns}
-            rows={productRows}
-            size={toSizeProp(size)}
-            allowsPinning={false}
-            aria-label="Plain products"
-            data-testid="playground-plain"
-          />
-        </Section>
+          <DataTable.Table aria-label="MCP servers">
+            <DataTable.Header />
+            <DataTable.Body />
+          </DataTable.Table>
+          <DataTable.Footer>
+            <Box pt="600">
+              <Pagination
+                totalItems={42}
+                pageSize={20}
+                currentPage={1}
+                onPageChange={() => {}}
+              />
+            </Box>
+          </DataTable.Footer>
+        </DataTable.Root>
       </Stack>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const style = (container: HTMLElement, selector: string) =>
-      window.getComputedStyle(container.querySelector(selector)!);
-    const dataTableIds = [
-      "playground-data-table",
-      "playground-list-page",
-      "playground-agents",
-      "playground-summary",
-      "playground-plain",
-    ];
 
-    for (const [label, padding] of [
-      ["sm", "8px"],
-      ["md", "12px"],
-      ["lg", "16px"],
-    ] as const) {
-      await step(`${label}: every table follows the size control`, async () => {
-        await userEvent.click(canvas.getByRole("radio", { name: label }));
-        await waitFor(() => {
-          expect(
-            style(canvas.getByTestId("playground-table"), "tbody td")
-              .paddingLeft
-          ).toBe(padding);
-          for (const id of dataTableIds) {
-            expect(
-              style(canvas.getByTestId(id), "tbody td[data-column-id]")
-                .paddingLeft
-            ).toBe(padding);
-          }
-        });
-      });
-    }
+      <Stack gap="300">
+        <SectionHeading>2 · Two-line cells with an image</SectionHeading>
+        <SectionDescription>
+          A 24px logo next to name and publisher, plus badges with icons.
+          Content height dominates the row.
+        </SectionDescription>
+        <DataTable
+          columns={agentColumns}
+          rows={agentRows}
+          allowsPinning={false}
+          onRowClick={() => {}}
+          aria-label="Agents"
+        />
+      </Stack>
 
-    await step("xl: every DataTable returns to its previous look", async () => {
-      await userEvent.click(canvas.getByRole("radio", { name: /^xl/ }));
-      await waitFor(() => {
-        for (const id of dataTableIds) {
-          expect(
-            style(canvas.getByTestId(id), "tbody td[data-column-id]")
-              .paddingLeft
-          ).toBe("24px");
-        }
-      });
-    });
-
-    await step(
-      "Own text style overrides the size until turned off",
-      async () => {
-        await userEvent.click(canvas.getByRole("radio", { name: "lg" }));
-        const listPage = canvas.getByTestId("playground-list-page");
-        const cellText =
-          "tbody td[data-column-id='description'] p, tbody td[data-column-id='description'] span";
-        await waitFor(() =>
-          expect(style(listPage, cellText).fontSize).toBe("14px")
-        );
-        await userEvent.click(
-          canvas.getByRole("switch", { name: /set textStyle/ })
-        );
-        await waitFor(() =>
-          expect(style(listPage, cellText).fontSize).toBe("16px")
-        );
-      }
-    );
-
-    await step("Copy button does not trigger the row click", async () => {
-      const listPage = canvas.getByTestId("playground-list-page");
-      await userEvent.click(
-        within(listPage).getByRole("button", { name: /Copy URL of Promotions/ })
-      );
-      expect(canvas.getByTestId("playground-clicked")).toHaveTextContent(
-        "Last row click: none"
-      );
-    });
-
-    // Storybook runs this play on open; leave the story in its start state.
-    await step("Restore the start state", async () => {
-      await userEvent.click(canvas.getByRole("radio", { name: "md" }));
-      await userEvent.click(
-        canvas.getByRole("switch", { name: /set textStyle/ })
-      );
-      (document.activeElement as HTMLElement | null)?.blur();
-      await waitFor(() =>
-        expect(
-          canvas.getByRole("switch", { name: /set textStyle/ })
-        ).toBeChecked()
-      );
-    });
-  },
+      <Stack gap="300">
+        <SectionHeading>3 · Key/value summary</SectionHeading>
+        <SectionDescription>
+          Two columns, bold property, any content as value, no pinning.
+        </SectionDescription>
+        <Box maxW="480px">
+          <DataTable
+            columns={summaryColumns}
+            rows={summaryRows}
+            allowsPinning={false}
+            aria-label="Discount summary"
+          />
+        </Box>
+      </Stack>
+    </Stack>
+  ),
 };
