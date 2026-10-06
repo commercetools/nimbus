@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
+import { themeTokens } from "@commercetools/nimbus-tokens";
 import { tableSlotRecipe } from "../../table/table.recipe";
 import { dataTableSlotRecipe } from "../data-table.recipe";
+import type { DataTableSize } from "../data-table.types";
 import {
   DATA_TABLE_CELL_PADDING_X,
   DATA_TABLE_CONTROL_SIZE,
@@ -8,35 +10,56 @@ import {
 } from "./sizes.utils";
 
 const sharedSizes = ["sm", "md", "lg"] as const;
+const allSizes = [...sharedSizes, "xl"] as const;
 
 type SlotStyles = Record<string, Record<string, unknown>>;
 const tableSize = (size: string) =>
   (tableSlotRecipe.variants!.size as Record<string, SlotStyles>)[size];
 const dataTableSize = (size: string) =>
   (dataTableSlotRecipe.variants!.size as Record<string, SlotStyles>)[size];
+const dataTableVar = (size: DataTableSize, name: string) =>
+  dataTableSize(size).root[name];
 
 describe("DataTable sizes shared with Table", () => {
   it.each(sharedSizes)("%s uses Table's cell padding", (size) => {
     const table = tableSize(size).cell;
-    const dataTable = dataTableSize(size).cell;
 
-    expect(dataTable.paddingLeft).toBe(table.px);
-    expect(dataTable.paddingRight).toBe(table.px);
-    expect(dataTable.paddingTop).toBe(table.py);
-    expect(dataTable.paddingBottom).toBe(table.py);
+    expect(dataTableVar(size, "--data-table-padding-x")).toBe(
+      `{spacing.${table.px}}`
+    );
+    expect(dataTableVar(size, "--data-table-cell-padding-y")).toBe(
+      `{spacing.${table.py}}`
+    );
+  });
+
+  it.each(sharedSizes)("%s uses Table's column header padding", (size) => {
+    expect(dataTableVar(size, "--data-table-header-padding-y")).toBe(
+      `{spacing.${tableSize(size).columnHeader.py}}`
+    );
   });
 
   it.each(sharedSizes)("%s uses Table's text style", (size) => {
     expect(dataTableSize(size).cell.textStyle).toBe(
       tableSize(size).root.textStyle
     );
+    expect(dataTableSize(size).header.textStyle).toBe(
+      tableSize(size).root.textStyle
+    );
   });
+});
 
-  it.each(sharedSizes)(
-    "%s padding constant matches Table's padding token",
+describe("DATA_TABLE_CELL_PADDING_X", () => {
+  it.each(allSizes)(
+    "%s matches the recipe's horizontal padding token",
     (size) => {
-      expect(DATA_TABLE_CELL_PADDING_X[size].token).toBe(
-        tableSize(size).cell.px
+      const token = /^\{spacing\.(\w+)\}$/.exec(
+        String(dataTableVar(size, "--data-table-padding-x"))
+      )?.[1];
+      const spacing = themeTokens.spacing as Record<string, { value: string }>;
+
+      expect(token, "padding is not a spacing token").toBeDefined();
+      expect(spacing[token!].value).toBe(
+        `${DATA_TABLE_CELL_PADDING_X[size]}px`
       );
     }
   );

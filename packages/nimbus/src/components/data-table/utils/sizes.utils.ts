@@ -15,24 +15,22 @@ export const DATA_TABLE_DEFAULT_SIZE: DataTableSize = "xl";
 export const DATA_TABLE_CONTROL_SIZE = 24;
 
 /**
- * Horizontal cell padding per size, as spacing token and its px value.
- * `sm`, `md` and `lg` match `table.recipe.ts`. The recipe uses the token; the
- * px value drives the internal column widths below.
+ * Horizontal cell padding in px per size: the px value of the size's
+ * `--data-table-padding-x` in `data-table.recipe.ts`. Drives the internal
+ * column widths below.
  */
-export const DATA_TABLE_CELL_PADDING_X: Record<
-  DataTableSize,
-  { token: string; px: number }
-> = {
-  sm: { token: "200", px: 8 },
-  md: { token: "300", px: 12 },
-  lg: { token: "400", px: 16 },
-  xl: { token: "600", px: 24 },
+export const DATA_TABLE_CELL_PADDING_X: Record<DataTableSize, number> = {
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 24,
 };
 
 /**
- * Widths in px of the internal columns per size — the single source for both
- * the React Aria column widths (numbers, `data-table.header.tsx`) and the
- * sticky offsets (CSS variables, `data-table.recipe.ts`).
+ * Widths in px of the internal columns per size, passed to React Aria in
+ * `data-table.header.tsx`. The recipe computes the same widths in CSS for
+ * the sticky offsets (`--data-table-drag-column-width`,
+ * `--data-table-selection-column-width`).
  *
  * - `padded`: selection, pin, and expand without a selection column —
  *   control plus the size's horizontal cell padding on both sides
@@ -42,7 +40,7 @@ export const DATA_TABLE_INTERNAL_COLUMN_WIDTHS = Object.fromEntries(
   (Object.keys(DATA_TABLE_CELL_PADDING_X) as DataTableSize[]).map((size) => [
     size,
     {
-      padded: DATA_TABLE_CONTROL_SIZE + 2 * DATA_TABLE_CELL_PADDING_X[size].px,
+      padded: DATA_TABLE_CONTROL_SIZE + 2 * DATA_TABLE_CELL_PADDING_X[size],
       bare: DATA_TABLE_CONTROL_SIZE,
     },
   ])

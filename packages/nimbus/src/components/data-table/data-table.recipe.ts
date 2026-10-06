@@ -1,10 +1,5 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
-import type { DataTableSize } from "./data-table.types";
-import {
-  DATA_TABLE_CELL_PADDING_X,
-  DATA_TABLE_DEFAULT_SIZE,
-  DATA_TABLE_INTERNAL_COLUMN_WIDTHS,
-} from "./utils/sizes.utils";
+import { DATA_TABLE_DEFAULT_SIZE } from "./utils/sizes.utils";
 
 // Stacking order inside the table, lowest first. Frozen (sticky) cells must
 // stay above the cells that scroll under them, the focus ring and the pinned
@@ -103,67 +98,6 @@ const pinnedOutline = (edges: string) =>
   }) as const;
 
 /**
- * Internal column widths as CSS variables, read by the sticky offsets below.
- * The same numbers are passed to React Aria in `data-table.header.tsx`, so
- * the offsets and the column widths cannot drift apart.
- */
-const internalColumnWidthVars = (size: DataTableSize) => ({
-  "--data-table-drag-column-width": `${DATA_TABLE_INTERNAL_COLUMN_WIDTHS[size].bare}px`,
-  "--data-table-selection-column-width": `${DATA_TABLE_INTERNAL_COLUMN_WIDTHS[size].padded}px`,
-});
-
-/**
- * Size variant shared with `Table` (`table.recipe.ts`, `size` variant): same
- * cell and column header padding, same text style. Keep the two in sync.
- *
- * The base styles hold the `xl` values (the pre-`size` appearance); these
- * variants override them. Only the header height changes shape: `xl` has a
- * fixed 40px header, the shared sizes size the header by its padding, as
- * `Table` does.
- */
-const sharedSizeVariant = (
-  size: Exclude<DataTableSize, "xl">,
-  {
-    paddingY,
-    fontSize,
-    textStyle,
-  }: { paddingY: string; fontSize: string; textStyle: string }
-) => {
-  const paddingX = DATA_TABLE_CELL_PADDING_X[size].token;
-  // The header sets fontSize/lineHeight explicitly in the base styles, so
-  // override them here rather than relying on textStyle alone.
-  const headerText = { textStyle, fontSize, lineHeight: "550" };
-  return {
-    root: internalColumnWidthVars(size),
-    header: { ...headerText, height: "auto" },
-    column: {
-      lineHeight: "550",
-      "& > .nimbus-data-table__column-container": {
-        py: paddingY,
-        px: paddingX,
-      },
-      "&.selection-column-header": {
-        paddingTop: paddingY,
-        paddingBottom: paddingY,
-        paddingLeft: paddingX,
-        paddingRight: paddingX,
-      },
-      "&.pin-rows-column-header": {
-        py: paddingY,
-        px: paddingX,
-      },
-    },
-    cell: {
-      textStyle,
-      paddingTop: paddingY,
-      paddingBottom: paddingY,
-      paddingLeft: paddingX,
-      paddingRight: paddingX,
-    },
-  };
-};
-
-/**
  * Slot recipe configuration for the DataTable component.
  * Defines the styling variants, base styles, and slots using Chakra UI's slot recipe system.
  */
@@ -189,6 +123,14 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       "--data-table-pinned-shadow-right": "inset -2px 0 0 {colors.neutral.7}",
       "--data-table-pinned-shadow-top": "inset 0 2px 0 {colors.neutral.7}",
       "--data-table-pinned-shadow-bottom": "inset 0 -2px 0 {colors.neutral.7}",
+
+      // Widths of the internal columns, read by the sticky offsets below:
+      // the 24px control, plus the horizontal padding on both sides for the
+      // selection column. React Aria gets the same widths as numbers from
+      // `DATA_TABLE_INTERNAL_COLUMN_WIDTHS` (`utils/sizes.utils.ts`).
+      "--data-table-drag-column-width": "{sizes.600}",
+      "--data-table-selection-column-width":
+        "calc({sizes.600} + 2 * var(--data-table-padding-x))",
 
       width: "100%",
       display: "block",
@@ -320,11 +262,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       background: "colorPalette.2",
       color: "colorPalette.11",
       borderBottom: "1px solid {colors.neutral.3}",
-      lineHeight: "400",
       fontWeight: "500",
-      textStyle: "sm",
-      fontSize: "300",
-      height: "1000",
       "&[data-sticky]": {
         position: "sticky",
         top: 0,
@@ -370,7 +308,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     column: {
       textAlign: "right",
       position: "relative",
-      lineHeight: "450",
       // td height:auto is not "definite" per CSS spec, so child height:100%
       // collapses to content height. Setting an explicit height makes it
       // definite; table layout still stretches the cell to match the row,
@@ -380,8 +317,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       ...headerFocusRing,
 
       "& > .nimbus-data-table__column-container": {
-        py: "100",
-        px: "600",
+        py: "var(--data-table-header-padding-y)",
+        px: "var(--data-table-padding-x)",
         display: "flex",
         alignItems: "center",
         h: "100%",
@@ -394,10 +331,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
       "&.selection-column-header": {
         cursor: "default",
-        paddingTop: "100",
-        paddingBottom: "100",
-        paddingLeft: "600",
-        paddingRight: "600",
+        py: "var(--data-table-header-padding-y)",
+        px: "var(--data-table-padding-x)",
         position: "sticky",
         left: 0,
         zIndex: zIndex.frozenHeaderCell,
@@ -442,8 +377,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         },
       "&.pin-rows-column-header": {
         cursor: "default",
-        py: "100",
-        px: "600",
+        py: "var(--data-table-header-padding-y)",
+        px: "var(--data-table-padding-x)",
         position: "sticky",
         right: 0,
         zIndex: zIndex.pinHeaderCell,
@@ -513,10 +448,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
     },
     cell: {
-      paddingTop: "400",
-      paddingBottom: "400",
-      paddingLeft: "600",
-      paddingRight: "600",
+      py: "var(--data-table-cell-padding-y)",
+      px: "var(--data-table-padding-x)",
       color: "neutral.12",
       // Containing block for the focus ring. Frozen cells override it with
       // `position: sticky`, which is a containing block too.
@@ -605,25 +538,49 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         },
       },
     },
+    // Each size sets the padding variables the base styles read, and the
+    // text style. `sm`, `md` and `lg` use the padding and text style of
+    // `Table`'s sizes (`table.recipe.ts`); keep the two in sync.
+    // `--data-table-padding-x` must also match `DATA_TABLE_CELL_PADDING_X`
+    // (`utils/sizes.utils.ts`), which sets the internal column widths.
     size: {
-      sm: sharedSizeVariant("sm", {
-        paddingY: "200",
-        fontSize: "350",
-        textStyle: "sm",
-      }),
-      md: sharedSizeVariant("md", {
-        paddingY: "300",
-        fontSize: "350",
-        textStyle: "sm",
-      }),
-      lg: sharedSizeVariant("lg", {
-        paddingY: "300",
-        fontSize: "400",
-        textStyle: "md",
-      }),
-      // Deprecated default: the base styles already hold these values.
+      sm: {
+        root: {
+          "--data-table-padding-x": "{spacing.200}",
+          "--data-table-cell-padding-y": "{spacing.200}",
+          "--data-table-header-padding-y": "{spacing.200}",
+        },
+        header: { textStyle: "sm" },
+        cell: { textStyle: "sm" },
+      },
+      md: {
+        root: {
+          "--data-table-padding-x": "{spacing.300}",
+          "--data-table-cell-padding-y": "{spacing.300}",
+          "--data-table-header-padding-y": "{spacing.300}",
+        },
+        header: { textStyle: "sm" },
+        cell: { textStyle: "sm" },
+      },
+      lg: {
+        root: {
+          "--data-table-padding-x": "{spacing.400}",
+          "--data-table-cell-padding-y": "{spacing.300}",
+          "--data-table-header-padding-y": "{spacing.300}",
+        },
+        header: { textStyle: "md" },
+        cell: { textStyle: "md" },
+      },
+      // Deprecated default: the appearance from before `size` existed. A
+      // fixed 40px header with 12px text; cells set no text style.
       xl: {
-        root: internalColumnWidthVars("xl"),
+        root: {
+          "--data-table-padding-x": "{spacing.600}",
+          "--data-table-cell-padding-y": "{spacing.400}",
+          "--data-table-header-padding-y": "{spacing.100}",
+        },
+        header: { fontSize: "300", height: "1000" },
+        column: { lineHeight: "450" },
       },
     },
     /** @deprecated Use `size`. Only applies together with `size: "xl"`. */
@@ -637,10 +594,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       size: "xl",
       density: "condensed",
       css: {
-        cell: {
-          paddingTop: "300",
-          paddingBottom: "300",
-        },
+        root: { "--data-table-cell-padding-y": "{spacing.300}" },
       },
     },
   ],

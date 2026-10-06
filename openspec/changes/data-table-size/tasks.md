@@ -19,8 +19,9 @@
 
 - [x] 3.1 Move cell padding out of the base `cell` slot into a `size` variant
       with the values from design.md → Decision 1; set
-      `defaultVariants: { size: "xl" }`
-- [x] 3.2 Add header padding, text style and height per size
+      `defaultVariants: { size: "xl" }`. Each size sets the padding as CSS
+      variables on the root slot; the base styles read them
+- [x] 3.2 Add header padding, text style and height per size, `xl` included
 - [x] 3.3 Replace the `condensed` density padding with a compound variant
       `{ size: "xl", density: "condensed" }`
 - [x] 3.4 Replace the sticky offsets `"600"`, `"1800"`, `"2400"` with the
@@ -32,8 +33,8 @@
 
 - [x] 4.1 Root: destructure `size` without a default, resolve `size ?? "xl"`,
       pass `density` to the recipe only when `size` was not passed
-- [x] 4.2 Recipe: write the internal column widths for each size as CSS
-      variables on the root slot
+- [x] 4.2 Recipe: compute the internal column widths as CSS variables on the
+      root slot, from the horizontal padding variable
 - [x] 4.3 Root: development warnings (once per mount) for explicit
       `size="xl"`, for `density` alone, and for `size` + `density` together
 - [x] 4.4 Header: read internal column `minWidth`/`maxWidth` from the width map
@@ -53,7 +54,9 @@
       (unchanged) and warns once
 - [x] 5.5 Story: `size` + `density` → `size` wins; assert one console warning
 - [x] 5.6 Story: explicit `size="xl"` warns once; default does not warn
-- [x] 5.7 Unit test: the `sm`/`md`/`lg` padding tokens match `table.recipe.ts`
+- [x] 5.7 Unit test: the `sm`/`md`/`lg` padding tokens and text styles match
+      `table.recipe.ts`, and each size's horizontal padding token matches the
+      px value in `DATA_TABLE_CELL_PADDING_X`
 - [x] 5.8 Hide `xl` from the Storybook `size` control
 
 ## 6. Documentation

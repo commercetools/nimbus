@@ -32,8 +32,8 @@ Current state that shapes the approach:
 - One `size` axis whose `sm`/`md`/`lg` values are identical to `Table`.
 - No change to cell padding, header height or text for tables that do not pass
   `size`. (The two cell alignment fixes in Decision 6 do change row height.)
-- One source of truth for internal column widths, shared by React Aria
-  (JavaScript numbers) and the sticky offsets (CSS).
+- Internal column widths that React Aria (JavaScript numbers) and the sticky
+  offsets (CSS) compute with the same formula from the same horizontal padding.
 
 **Non-Goals:**
 
@@ -47,15 +47,21 @@ Current state that shapes the approach:
 ### 1. `size` is a recipe variant; `xl` holds today's values
 
 `size` becomes a variant of the DataTable slot recipe with
-`defaultVariants: { size: "xl" }`. Padding moves out of the base `cell` slot
-into the variants, so each size owns its padding completely:
+`defaultVariants: { size: "xl" }`. Each size owns its padding, header and text
+values completely; the base styles hold no size values:
 
 | Size | Cell px / py  | Header                                                       | Text (cell + header)    |
 | ---- | ------------- | ------------------------------------------------------------ | ----------------------- |
 | `sm` | `200` / `200` | padding as cells, no fixed height                            | `sm`                    |
 | `md` | `300` / `300` | padding as cells, no fixed height                            | `sm`                    |
 | `lg` | `400` / `300` | padding as cells, no fixed height                            | `md`                    |
-| `xl` | `600` / `400` | today: `height: "1000"`, container `py: "100"` / `px: "600"` | header `sm`, cell unset |
+| `xl` | `600` / `400` | today: `height: "1000"`, container `py: "100"` / `px: "600"` | header `fontSize: "300"`, cell unset |
+
+Each size sets its padding as CSS variables on the root slot:
+`--data-table-padding-x` (cells and column headers), `--data-table-cell-padding-y`
+and `--data-table-header-padding-y`. The base styles read each variable, so the
+padding rules are written once and every size, `xl` included, is a short entry
+of values.
 
 The text style is set on the cell and header slots, not on the root. The root
 also contains the footer and pagination, which must not change.
@@ -72,7 +78,7 @@ stay aligned.
 ### 2. `density` keeps working through a compound variant
 
 The `density` variant stays, but the `condensed` padding becomes a compound
-variant `{ size: "xl", density: "condensed" }` → `py: "300"`. The root passes
+variant `{ size: "xl", density: "condensed" }` → `--data-table-cell-padding-y: 300`. The root passes
 `density` to the recipe only when the consumer did not pass `size`. So:
 
 - no `size`, `density="condensed"` → today's condensed look
@@ -93,7 +99,7 @@ following the pattern in `breadcrumbs.root.tsx` and `splitter.root.tsx`.
 TypeScript cannot mark one literal of a union deprecated, so the JSDoc on `size`
 states it, and stories and docs list only `sm`/`md`/`lg`.
 
-### 4. Internal column widths from one map
+### 4. Internal column widths from one formula
 
 `utils/sizes.utils.ts` maps each size to its horizontal cell padding
 (`DATA_TABLE_CELL_PADDING_X`) and to the internal column widths:
@@ -110,19 +116,27 @@ DATA_TABLE_INTERNAL_COLUMN_WIDTHS = {
 
 - `data-table.header.tsx` reads it for `minWidth`/`maxWidth` (replacing the
   hardcoded 24/72).
-- The recipe writes the same numbers as CSS variables on the root slot (for
-  example `--data-table-drag-column-width`,
-  `--data-table-selection-column-width`), per size variant.
+- The recipe computes the same widths in CSS on the root slot, from the same
+  formula: `--data-table-drag-column-width` is `{sizes.600}` (24px), and
+  `--data-table-selection-column-width` is
+  `calc({sizes.600} + 2 * var(--data-table-padding-x))`.
 - The recipe's sticky offsets use those variables
   (`left: var(--data-table-drag-column-width)`, `calc(...)` for the sum) instead
   of `"600"`, `"1800"` and `"2400"`.
-- The selection and pin cell padding is `(padded − 24) / 2`, which equals the
-  cell padding of the size. The recipe takes it from the size variant, so no
-  extra variable is needed.
+- A unit test checks that each size's `--data-table-padding-x` token resolves to
+  the px value in `DATA_TABLE_CELL_PADDING_X`, so both widths use the same
+  padding. The 24px control size is in both places too: `{sizes.600}` in the
+  recipe, `DATA_TABLE_CONTROL_SIZE` in TSX.
 
 _Alternative considered_: repeat the widths per size in the recipe by hand. Rejected: it
 keeps two copies (TSX and CSS) that must match in every combination, which is
 the problem this change should remove.
+
+_Alternative considered_: write the numbers from the TSX map into CSS variables
+for each size, so the CSS has no formula of its own. Rejected after a first
+implementation: it needs a helper that builds every size variant in code, and
+the recipe became hard to read and edit. Computing the widths in CSS keeps each
+size a plain list of values.
 
 _Alternative considered_: shrink the controls at small sizes. Rejected: 24px is
 the WCAG 2.5.8 minimum target size; the expand column already sits exactly there
