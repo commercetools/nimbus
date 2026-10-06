@@ -171,29 +171,41 @@ export const messages = {
       "title for the text previews section in the data table manager layout",
     defaultMessage: "Text previews",
   },
-  RowDensity: {
-    id: "Nimbus.DataTable.rowDensity",
+  rowSize: {
+    id: "Nimbus.DataTable.rowSize",
     description:
-      "title for the row density section in the data table manager layout",
-    defaultMessage: "Row density",
+      "title for the row size section in the data table manager layout",
+    defaultMessage: "Row size",
   },
-  RowDensityAriaLabel: {
-    id: "Nimbus.DataTable.rowDensityAriaLabel",
+  rowSizeAriaLabel: {
+    id: "Nimbus.DataTable.rowSizeAriaLabel",
     description:
-      "aria-label for the row density section in the data table manager layout",
-    defaultMessage: "Row density section",
+      "aria-label for the row size select in the data table manager layout",
+    defaultMessage: "Row size",
   },
-  comfortable: {
-    id: "Nimbus.DataTable.comfortable",
+  sizeSmall: {
+    id: "Nimbus.DataTable.sizeSmall",
     description:
-      "title for the comfortable togglebutton in the data table manager layout",
-    defaultMessage: "Comfortable",
+      "option for the small row size in the data table manager layout",
+    defaultMessage: "Small",
   },
-  compact: {
-    id: "Nimbus.DataTable.compact",
+  sizeMedium: {
+    id: "Nimbus.DataTable.sizeMedium",
     description:
-      "title for the compact togglebutton in the data table manager layout",
-    defaultMessage: "Compact",
+      "option for the medium row size in the data table manager layout",
+    defaultMessage: "Medium",
+  },
+  sizeLarge: {
+    id: "Nimbus.DataTable.sizeLarge",
+    description:
+      "option for the large row size in the data table manager layout",
+    defaultMessage: "Large",
+  },
+  sizeExtraLarge: {
+    id: "Nimbus.DataTable.sizeExtraLarge",
+    description:
+      "option for the extra large row size in the data table manager layout",
+    defaultMessage: "Extra large",
   },
   searchHiddenColumns: {
     id: "Nimbus.DataTable.searchHiddenColumns",

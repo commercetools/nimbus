@@ -112,7 +112,7 @@ export const DataTableRoot = function DataTableRoot<
     if (sizeProp === "xl" && !warned.xl) {
       warned.xl = true;
       console.warn(
-        '[Nimbus] DataTable: size="xl" is deprecated. It is the default only to keep the previous appearance. Use size="lg" instead.'
+        '[Nimbus] DataTable: size="xl" is deprecated. It is the default only to keep the previous appearance. Use size="md" instead: it becomes the default in the next major release. size="lg" is the larger option.'
       );
     }
     if (

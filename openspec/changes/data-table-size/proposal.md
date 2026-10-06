@@ -38,11 +38,9 @@ Evidence from the same scan:
 - The header follows the size: `sm`–`lg` use the same padding as the cells;
   `xl` keeps today's fixed 40px header.
 - Deprecate `density`. It keeps working unchanged until the next major
-  release. The deprecation note points to `size="lg"` or `size="md"`.
+  release. The deprecation note points to `size="md"`, or `size="lg"` for more space.
 - `Table` is **not** changed. It does not get `xl`.
-- The layout settings panel is **not** changed. Its "Row density" control
-  keeps reading and toggling the deprecated `density` prop. How it should
-  offer sizes is decided together with FEC-1346 §6, with design input.
+- The layout settings panel replaces its "Row density" toggle with a "Row size" select. It offers `xl`, `lg`, `md` and `sm` while the table uses `xl` (no `size`, or `size="xl"`), and `lg`, `md` and `sm` once another size is set. `onSettingsChange` receives the action `changeSize` and the chosen size as a second argument. The `toggleRowDensity` action is no longer emitted.
 
 No breaking changes. Removing `density` and moving the default away from
 `xl` are planned for a later major release and are not part of this change.

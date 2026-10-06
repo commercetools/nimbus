@@ -250,7 +250,7 @@ at every size, the minimum target size of WCAG 2.2 SC 2.5.8. Only the padding
 around them follows the size.
 
 **Deprecated `density`.** `density="condensed"` still works when no `size` is
-passed, but is deprecated: use `size="lg"` or `size="md"` instead. When both
+passed, but is deprecated: use `size="md"` instead (`size="lg"` for more space). When both
 are passed, `size` wins and `density` is ignored. `density` will be removed in
 the next major release.
 
@@ -1360,7 +1360,7 @@ configuration tabs:
 const App = () => {
   const [visibleColumns, setVisibleColumns] = useState(['name', 'email', 'role']);
   const [isTruncated, setIsTruncated] = useState(false);
-  const [density, setDensity] = useState('default');
+  const [size, setSize] = useState('md');
 
   const columns = [
     { id: 'name', header: 'Name', accessor: (row) => row.name },
@@ -1374,11 +1374,11 @@ const App = () => {
     { id: '3', name: 'Carol Williams', email: 'carol@example.com', role: 'Editor' },
   ];
 
-  const handleSettingsChange = (action) => {
+  const handleSettingsChange = (action, value) => {
     if (action === 'toggleTextVisibility') {
       setIsTruncated(!isTruncated);
-    } else if (action === 'toggleRowDensity') {
-      setDensity(density === 'default' ? 'condensed' : 'default');
+    } else if (action === 'changeSize') {
+      setSize(value);
     }
   };
 
@@ -1391,7 +1391,7 @@ const App = () => {
         setVisibleColumns(updatedColumns.map(col => col.id));
       }}
       isTruncated={isTruncated}
-      density={density}
+      size={size}
       onSettingsChange={handleSettingsChange}
     >
       <Stack direction="row" justifyContent="space-between" mb="400">
@@ -1453,19 +1453,19 @@ const App = () => {
 
 ### Manager: Layout settings
 
-The Layout Settings tab allows users to control text truncation and row density.
+The Layout Settings tab allows users to control text truncation and row size.
 These settings update the table's visual appearance in real-time:
 
-> [!NOTE]\
-> The row density setting still controls the deprecated `density` prop and
-> cannot choose a `size` yet. A size control for the Layout Settings tab is
-> planned as a follow-up.
+The row size select offers `sm`, `md` and `lg`. It also offers the deprecated
+`xl` while the table has no `size`, or `size="xl"`. `onSettingsChange` receives
+the action `"changeSize"` and the chosen size as its second argument; pass it to
+`size`.
 
 ```jsx live-dev
 const App = () => {
   const [visibleColumns, setVisibleColumns] = useState(['name', 'description']);
   const [isTruncated, setIsTruncated] = useState(false);
-  const [density, setDensity] = useState('default');
+  const [size, setSize] = useState('md');
 
   const columns = [
     { id: 'name', header: 'Name', accessor: (row) => row.name },
@@ -1485,11 +1485,11 @@ const App = () => {
     },
   ];
 
-  const handleSettingsChange = (action) => {
+  const handleSettingsChange = (action, value) => {
     if (action === 'toggleTextVisibility') {
       setIsTruncated(!isTruncated);
-    } else if (action === 'toggleRowDensity') {
-      setDensity(density === 'default' ? 'condensed' : 'default');
+    } else if (action === 'changeSize') {
+      setSize(value);
     }
   };
 
@@ -1502,7 +1502,7 @@ const App = () => {
         setVisibleColumns(updatedColumns.map(col => col.id));
       }}
       isTruncated={isTruncated}
-      density={density}
+      size={size}
       onSettingsChange={handleSettingsChange}
     >
       <Stack direction="row" justifyContent="space-between" mb="400">
@@ -1652,7 +1652,7 @@ DataTable.Manager **must** be used within a DataTable.Root component. It relies
 on the DataTable context for:
 
 - Column configuration (`columns`, `visibleColumns`)
-- Layout settings (`isTruncated`, `density`)
+- Layout settings (`isTruncated`, `size`)
 - Callbacks (`onColumnsChange`, `onSettingsChange`)
 - Custom settings configuration
 

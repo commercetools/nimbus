@@ -37,7 +37,6 @@ Current state that shapes the approach:
 **Non-Goals:**
 
 - Changing `Table`.
-- Changing the layout settings panel (follow-up, see Open Questions).
 - Scaling the interactive controls themselves. They stay 24px at every size
   (WCAG 2.5.8 minimum).
 - Removing `density` or changing the default away from `xl` (next major).
@@ -131,8 +130,8 @@ the WCAG 2.5.8 minimum target size; the expand column already sits exactly there
 ## Risks / Trade-offs
 
 - [Header without fixed height looks different from the rows] → Try it out in
-  stories for `sm`–`lg` before merge; the fixed-height question is open (see
-  below). `xl` is unaffected.
+  stories for `sm`–`lg` before merge; decided: padding only, no fixed height, because cells can need two or
+  more lines. `xl` is unaffected.
 - [Consumers' own `<Text textStyle="sm">` in cells overrides the size] →
   Document it: remove the own text style when choosing `sm`–`lg`. 4 of 10
   current DataTables do this (nimbus-pulse scan #20).
@@ -173,14 +172,3 @@ Rollback: revert the PR. No data or storage is involved.
   items in a Table must contain a `<Button slot="drag">`" once per nested
   row (the `SizeInternalColumns` story shows it). Not related to `size`;
   existing behavior worth a follow-up.
-
-## Open Questions
-
-- **Layout settings panel**: it still toggles the deprecated `density` and
-  cannot select a size. A follow-up must add a control (for example a dropdown
-  or a segmented control) to pick the desired size, and decide the labels,
-  whether `xl` is offered, and what the `onSettingsChange` payload carries.
-  Decide together with FEC-1346 §6 and design.
-- **Design sign-off** on the four sizes.
-- **When the default moves away from `xl`**: which major release, and to which
-  size.

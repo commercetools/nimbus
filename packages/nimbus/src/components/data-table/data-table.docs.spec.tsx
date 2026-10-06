@@ -991,7 +991,7 @@ describe("DataTable.Manager - Column management", () => {
 /**
  * @docs-section manager-layout-settings
  * @docs-title Manager: Layout Settings Tests
- * @docs-description Test text visibility and row density controls
+ * @docs-description Test text visibility and row size controls
  * @docs-order 13
  */
 describe("DataTable.Manager - Layout settings", () => {

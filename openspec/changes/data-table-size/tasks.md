@@ -11,8 +11,7 @@
 - [x] 2.1 Add `size?: "sm" | "md" | "lg" | "xl"` to the DataTable recipe props
       and public props, with JSDoc that lists `sm`/`md`/`lg` and names `xl` as
       the deprecated default
-- [x] 2.2 Mark `density` `@deprecated` in the types, pointing to `size="lg"` /
-      `size="md"`
+- [x] 2.2 Mark `density` `@deprecated` in the types, pointing to `size="md"` (or `size="lg"`)
 - [x] 2.3 Add the size → internal column width map to `constants.ts` (see
       design.md → Decision 4)
 

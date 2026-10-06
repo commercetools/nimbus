@@ -125,6 +125,25 @@ their interactive controls keep a target size of at least 24×24 CSS pixels
 - **THEN** each sticky column SHALL sit directly next to the previous
   sticky column at every size, with no gap and no overlap
 
+### Requirement: Layout Settings Size Control
+
+The Layout settings tab of `DataTable.Manager` SHALL offer a "Row size" select instead of a row density toggle.
+
+#### Scenario: Table uses the default size
+
+- **WHEN** the table has no `size`, or `size="xl"`
+- **THEN** the select offers `xl`, `lg`, `md` and `sm`, with `xl` selected
+
+#### Scenario: Table uses another size
+
+- **WHEN** the table has `size` set to `sm`, `md` or `lg`
+- **THEN** the select offers only `lg`, `md` and `sm`, with the current size selected
+
+#### Scenario: User picks a size
+
+- **WHEN** the user picks a size other than the current one
+- **THEN** `onSettingsChange` is called once with the action `changeSize` and the chosen size as the second argument
+
 ## MODIFIED Requirements
 
 ### Requirement: Multi-Slot Recipe
@@ -147,6 +166,6 @@ implemented; the actual prop was `density: "default" | "condensed"`.
 Spacing is now controlled by the `size` prop, so tables share one scale
 with `Table`.
 
-**Migration**: Replace `density="condensed"` with `size="lg"` or
-`size="md"`. `density` keeps working until the next major release; see
+**Migration**: Replace `density="condensed"` with `size="md"`
+(or `size="lg"` for more space). `density` keeps working until the next major release; see
 "Deprecated Density Prop".

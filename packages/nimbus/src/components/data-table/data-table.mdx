@@ -380,7 +380,7 @@ organizes customization options into two primary tabs: **Visible columns** and
 - **Visible columns:** This tab controls the visibility and order of available
   data columns within the data table.
 - **Layout settings:** This tab controls structural and display properties for
-  the entire table view. Users have control over the row density and text
+  the entire table view. Users have control over the row size and text
   truncation.
 
 ```jsx live
@@ -481,13 +481,13 @@ const App = () => {
 
   const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns);
   const [isTruncated, setIsTruncated] = useState(false);
-  const [density, setDensity] = useState("default");
+  const [size, setSize] = useState("md");
 
   const handleColumnsChange = (updatedColumns) => {
     setVisibleColumns(updatedColumns);
   };
 
-  const handleSettingsChange = (action) => {
+  const handleSettingsChange = (action, value) => {
     if (!action) {
       return;
     }
@@ -495,8 +495,8 @@ const App = () => {
       case "toggleTextVisibility":
         setIsTruncated(!isTruncated);
         break;
-      case "toggleRowDensity":
-        setDensity(density === "condensed" ? "default" : "condensed");
+      case "changeSize":
+        setSize(value);
         break;
     }
   };
@@ -509,7 +509,7 @@ const App = () => {
         visibleColumns={visibleColumns.map((col) => col.id)}
         allowsSorting={true}
         isTruncated={isTruncated}
-        density={density}
+        size={size}
         onColumnsChange={handleColumnsChange}
         onSettingsChange={handleSettingsChange}
       >

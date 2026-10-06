@@ -29,14 +29,14 @@ type DataTableSlotRecipeProps = {
    *
    * Supported values are `sm`, `md` and `lg`; they match the sizes of
    * `Table`. `xl` is the default and keeps the appearance from before this
-   * prop existed. It is deprecated: do not pass `xl` explicitly — choose
-   * `lg` instead.
+   * prop existed. It is deprecated: do not pass `xl` explicitly — use
+   * `md`, the default in the next major release. `lg` is the larger option.
    */
   size?: DataTableSize;
   /**
    * Vertical cell padding (`condensed` reduces it from 16px to 12px).
    *
-   * @deprecated Use `size` instead (`size="lg"` or `size="md"`). Ignored
+   * @deprecated Use `size` instead (`size="md"`, or `size="lg"` for more space). Ignored
    * when `size` is set. Will be removed in the next major release.
    */
   density?: "default" | "condensed";
@@ -204,7 +204,8 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
           action:
             | (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS]
             | string
-            | undefined
+            | undefined,
+          value?: string
         ) => void)
       | undefined
     >;
@@ -274,7 +275,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   /**
    * Vertical cell padding (`condensed` reduces it from 16px to 12px).
    *
-   * @deprecated Use `size` instead (`size="lg"` or `size="md"`). Ignored
+   * @deprecated Use `size` instead (`size="md"`, or `size="lg"` for more space). Ignored
    * when `size` is set. Will be removed in the next major release.
    */
   density?: DataTableDensity;
@@ -316,9 +317,15 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   defaultPinnedRows?: Set<string>;
   onPinToggle?: (rowId: string) => void;
   onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
+  /**
+   * Called when the user changes a setting in the Layout settings tab of
+   * `DataTable.Manager`. `changeSize` passes the chosen `DataTableSize` as
+   * `value`; the other actions pass no value.
+   */
   onSettingsChange?: (
     action:
-      (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS] | string | undefined
+      (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS] | string | undefined,
+    value?: string
   ) => void;
   customSettings?: DataTableCustomSettings;
 };
