@@ -342,3 +342,5 @@ minimumReleaseAgeExclude:
   - vitest@4.1.11
   # Renovate security update: adm-zip@0.6.1
   - adm-zip@0.6.1
+  # Renovate security update: @modelcontextprotocol/sdk@1.31.0
+  - "@modelcontextprotocol/sdk@1.31.0"
