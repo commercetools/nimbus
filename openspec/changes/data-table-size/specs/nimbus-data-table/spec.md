@@ -14,8 +14,10 @@ DataTable appearance from before this prop existed.
 - **THEN** cells SHALL have 24px horizontal and 16px vertical padding
 - **AND** the header row SHALL be 40px high
 - **AND** cells SHALL NOT set a text style (text inherits from the page)
-- **AND** the rendered output SHALL be visually identical to the output
-  before this change
+- **AND** cell padding, header height and text SHALL be the same as before
+  this change
+- **AND** the cell alignment fixes in "Cell Content Alignment" apply, as they
+  do to every table
 
 #### Scenario: Sizes shared with Table
 
@@ -130,23 +132,60 @@ their interactive controls keep a target size of at least 24×24 CSS pixels
 
 ### Requirement: Layout Settings Size Control
 
-The Layout settings tab of `DataTable.Manager` SHALL offer a "Row density" select with one icon and label per option: Spacious (`xl`), Comfortable (`lg`), Standard (`md`) and Compact (`sm`).
+The Layout settings tab of `DataTable.Manager` SHALL offer a "Row density"
+select that sets the table size, with one icon and label per option: Spacious
+(`xl`), Comfortable (`lg`), Standard (`md`) and Compact (`sm`). The select SHALL
+NOT be clearable.
 
-#### Scenario: Table started with the default size
+#### Scenario: Table that has been on xl
 
-- **WHEN** the table started with no `size`, or `size="xl"`
-- **THEN** the select offers `xl`, `lg`, `md` and `sm`, with the current size selected
-- **AND** it keeps offering `xl` after the user picks another size
+- **WHEN** the table has had `xl` as its size at any render (no `size`, or
+  `size="xl"`)
+- **THEN** the select SHALL offer `xl`, `lg`, `md` and `sm`, with the current
+  size selected
+- **AND** it SHALL keep offering `xl` after the user picks another size
 
-#### Scenario: Table started with another size
+#### Scenario: Table that was never on xl
 
-- **WHEN** the table started with `size` set to `sm`, `md` or `lg`
-- **THEN** the select offers only `lg`, `md` and `sm`, with the current size selected
+- **WHEN** the table has only had `sm`, `md` or `lg` as its size
+- **THEN** the select SHALL offer only `lg`, `md` and `sm`, with the current
+  size selected
+
+#### Scenario: xl arrives after the first render
+
+- **WHEN** the table starts with `md` and is later given `size="xl"`
+- **THEN** the select SHALL show `xl` as the current size and offer it
+- **AND** it SHALL keep offering `xl` after the user picks another size
 
 #### Scenario: User picks a size
 
 - **WHEN** the user picks a size other than the current one
-- **THEN** `onSettingsChange` is called once with the action `changeSize` and the chosen size as the second argument
+- **THEN** `onSettingsChange` SHALL be called once with the action `"changeSize"`
+  and the chosen `DataTableSize` as the second argument
+
+#### Scenario: Removed action
+
+- **WHEN** the user changes the size in the layout settings
+- **THEN** the component SHALL NOT call `onSettingsChange` with
+  `"toggleRowDensity"`
+- **AND** `UPDATE_ACTIONS.TOGGLE_ROW_DENSITY` SHALL no longer exist; it is
+  replaced by `UPDATE_ACTIONS.CHANGE_SIZE`
+
+### Requirement: Cell Content Alignment
+
+The body cell content and the expand button SHALL be vertically centered in
+their cells. This applies to every table, with or without `size`.
+
+#### Scenario: Text between the padding
+
+- **WHEN** a body cell renders a single line of text
+- **THEN** the space above the text and the space below it SHALL be equal
+- **AND** the row height SHALL be the cell padding plus the line height
+
+#### Scenario: Expand arrow
+
+- **WHEN** a row has an expand button
+- **THEN** the arrow SHALL be centered in its cell
 
 ## MODIFIED Requirements
 

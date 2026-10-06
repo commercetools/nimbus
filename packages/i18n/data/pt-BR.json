@@ -64,11 +64,11 @@
     "string": "Recolher"
   },
   "Nimbus.DataTable.comfortable": {
-    "developer_comment": "title for the comfortable togglebutton in the data table manager layout",
+    "developer_comment": "option for the comfortable row density in the data table manager layout",
     "string": "Confortável"
   },
   "Nimbus.DataTable.compact": {
-    "developer_comment": "title for the compact togglebutton in the data table manager layout",
+    "developer_comment": "option for the compact row density in the data table manager layout",
     "string": "Compacto"
   },
   "Nimbus.DataTable.dataTable": {
@@ -180,11 +180,11 @@
     "string": "Guias de Configurações"
   },
   "Nimbus.DataTable.spacious": {
-    "developer_comment": "title for the spacious togglebutton in the data table manager layout",
+    "developer_comment": "option for the spacious row density in the data table manager layout",
     "string": "Espaçoso"
   },
   "Nimbus.DataTable.standard": {
-    "developer_comment": "title for the standard togglebutton in the data table manager layout",
+    "developer_comment": "option for the standard row density in the data table manager layout",
     "string": "Padrão"
   },
   "Nimbus.DataTable.textPreviews": {

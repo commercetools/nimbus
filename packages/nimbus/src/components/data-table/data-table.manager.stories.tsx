@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { within, expect, waitFor, userEvent, fn } from "storybook/test";
 import {
   Box,
+  Button,
   Checkbox,
   Flex,
   Heading,
@@ -314,7 +315,7 @@ export const WithTableManager: Story = {
 
     const handleSettingsChange = (
       action: string | undefined,
-      value?: string
+      value?: DataTableSize
     ) => {
       if (!action) {
         return;
@@ -324,7 +325,7 @@ export const WithTableManager: Story = {
           setIsTruncated(!isTruncated);
           break;
         case UPDATE_ACTIONS.CHANGE_SIZE:
-          setSize(value as DataTableSize);
+          if (value) setSize(value);
           break;
       }
     };
@@ -690,7 +691,7 @@ export const LayoutSettingsSizeChange: Story = {
  * // 2. Create a handler that accepts both built-in and custom actions
  * const handleSettingsChange = (
       action: string | undefined,
-      value?: string
+      value?: DataTableSize
     ) => {
  *   // Handle built-in actions
  *   if (action === UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY) { ... }
@@ -754,7 +755,7 @@ export const WithCustomSettings: Story = {
     // Dynamic settings handler that supports both built-in and custom actions
     const handleSettingsChange = (
       action: string | undefined,
-      value?: string
+      value?: DataTableSize
     ) => {
       if (!action) {
         return;
@@ -766,7 +767,7 @@ export const WithCustomSettings: Story = {
           setIsTruncated(!isTruncated);
           break;
         case UPDATE_ACTIONS.CHANGE_SIZE:
-          setSize(value as DataTableSize);
+          if (value) setSize(value);
           break;
       }
     };
@@ -1181,6 +1182,81 @@ export const LayoutSettingsSizeOptions: Story = {
         UPDATE_ACTIONS.CHANGE_SIZE,
         "sm"
       );
+    });
+  },
+};
+
+/**
+ * A table that starts on `md` and is later given `xl` (for example when saved
+ * settings arrive after the first render) shows `xl` as the current size, and
+ * keeps offering it after another size is picked.
+ */
+export const LayoutSettingsXlArrivesLate: Story = {
+  render: () => {
+    const [size, setSize] = useState<DataTableSize>("md");
+    return (
+      <>
+        <Button onPress={() => setSize("xl")}>Apply saved size</Button>
+        <DataTable.Root
+          columns={[...initialVisibleColumns, ...initialHiddenColumns]}
+          rows={managerRows}
+          visibleColumns={initialVisibleColumns.map((col) => col.id)}
+          size={size}
+          onSettingsChange={(action, value) => {
+            if (action === UPDATE_ACTIONS.CHANGE_SIZE && value) setSize(value);
+          }}
+        >
+          <DataTable.Manager />
+          <DataTable.Table aria-label="Layout settings table">
+            <DataTable.Header />
+            <DataTable.Body />
+          </DataTable.Table>
+        </DataTable.Root>
+      </>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+
+    await step("Apply the late size and open the settings", async () => {
+      await userEvent.click(
+        await canvas.findByRole("button", { name: /apply saved size/i })
+      );
+      await userEvent.click(
+        await canvas.findByRole("button", { name: /table settings/i })
+      );
+      const dialog = await body.findByRole("dialog", {}, { timeout: 3000 });
+      await userEvent.click(
+        within(dialog).getByRole("tab", { name: /layout settings/i })
+      );
+    });
+
+    await step("The select shows xl and offers it", async () => {
+      const dialog = body.getByRole("dialog");
+      expect(getDensitySelect(dialog)).toHaveTextContent("Spacious");
+      expect(await openDensityOptions(dialog)).toEqual([
+        "Spacious",
+        "Comfortable",
+        "Standard",
+        "Compact",
+      ]);
+    });
+
+    await step("xl stays offered after picking another size", async () => {
+      await userEvent.click(
+        await body.findByRole("option", { name: "Compact" })
+      );
+      const dialog = body.getByRole("dialog");
+      await waitFor(() =>
+        expect(getDensitySelect(dialog)).toHaveTextContent("Compact")
+      );
+      expect(await openDensityOptions(dialog)).toEqual([
+        "Spacious",
+        "Comfortable",
+        "Standard",
+        "Compact",
+      ]);
     });
   },
 };

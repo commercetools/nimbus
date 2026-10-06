@@ -29,7 +29,7 @@ const SIZE_ICONS = {
   xl: HorizontalRule,
 } as const satisfies Record<DataTableSize, unknown>;
 
-// The deprecated `xl` is offered only to tables that started with it, so a
+// The deprecated `xl` is offered only to a table that has been on it, so a
 // table that was never on `xl` does not offer it.
 const SIZE_OPTIONS: Record<"withXl" | "withoutXl", DataTableSize[]> = {
   withXl: ["xl", "lg", "md", "sm"],
@@ -46,7 +46,7 @@ export const LayoutSettingsPanel = ({
 
   const textVisibility = context.isTruncated ?? false;
   const size = context.size;
-  const sizeOptions = context.startedWithXl
+  const sizeOptions = context.hasBeenXl
     ? SIZE_OPTIONS.withXl
     : SIZE_OPTIONS.withoutXl;
 
@@ -59,7 +59,7 @@ export const LayoutSettingsPanel = ({
 
   const handleSizeChange = (key: Key | null) => {
     if (key !== null && key !== size) {
-      onSettingsChange?.(UPDATE_ACTIONS.CHANGE_SIZE, String(key));
+      onSettingsChange?.(UPDATE_ACTIONS.CHANGE_SIZE, key as DataTableSize);
     }
   };
 

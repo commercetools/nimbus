@@ -11,8 +11,8 @@ Current state that shapes the approach:
   300).
 - **Header** has a fixed `height: "1000"` (40px), `textStyle: "sm"` overridden
   by `fontSize: "300"` (so the header text is 12px, not 14px), and column
-  containers with `py: "100"` / `px: "600"`. The header block exists twice in
-  the recipe (FEC-1347 §4).
+  containers with `py: "100"` / `px: "600"`. The recipe has one `header` slot
+  (FEC-1347 merged the duplicate header blocks).
 - **Cells set no text style.** `theme/global-css.ts` sets no font size either,
   so cell text follows the host app.
 - **Internal column widths** are hardcoded numbers in
@@ -30,7 +30,8 @@ Current state that shapes the approach:
 **Goals:**
 
 - One `size` axis whose `sm`/`md`/`lg` values are identical to `Table`.
-- Zero visual change for tables that do not pass `size` (Chromatic clean).
+- No change to cell padding, header height or text for tables that do not pass
+  `size`. (The two cell alignment fixes in Decision 6 do change row height.)
 - One source of truth for internal column widths, shared by React Aria
   (JavaScript numbers) and the sticky offsets (CSS).
 
@@ -40,9 +41,6 @@ Current state that shapes the approach:
 - Scaling the interactive controls themselves. They stay 24px at every size
   (WCAG 2.5.8 minimum).
 - Removing `density` or changing the default away from `xl` (next major).
-- Merging the duplicated header blocks (FEC-1347 §4). This change edits both
-  copies consistently so that FEC-1347 can merge them later without a behavior
-  question.
 
 ## Decisions
 
@@ -80,6 +78,8 @@ variant `{ size: "xl", density: "condensed" }` → `py: "300"`. The root passes
 - no `size`, `density="condensed"` → today's condensed look
 - explicit `size` + `density` → `size` wins, `density` ignored, one development
   warning
+- `density` alone → works as before, with one development warning that it is
+  deprecated
 
 _Alternative considered_: map `condensed` to a size. Rejected: `condensed`
 changes vertical padding only and matches no size (24/12px).
@@ -95,7 +95,8 @@ states it, and stories and docs list only `sm`/`md`/`lg`.
 
 ### 4. Internal column widths from one map
 
-A constant maps each size to the internal column widths:
+`utils/sizes.utils.ts` maps each size to its horizontal cell padding
+(`DATA_TABLE_CELL_PADDING_X`) and to the internal column widths:
 
 ```ts
 // width = 24 (control) + 2 × horizontal cell padding
@@ -109,9 +110,9 @@ DATA_TABLE_INTERNAL_COLUMN_WIDTHS = {
 
 - `data-table.header.tsx` reads it for `minWidth`/`maxWidth` (replacing the
   hardcoded 24/72).
-- The root writes the same numbers as CSS variables on the root element (for
+- The recipe writes the same numbers as CSS variables on the root slot (for
   example `--data-table-drag-column-width`,
-  `--data-table-selection-column-width`).
+  `--data-table-selection-column-width`), per size variant.
 - The recipe's sticky offsets use those variables
   (`left: var(--data-table-drag-column-width)`, `calc(...)` for the sum) instead
   of `"600"`, `"1800"` and `"2400"`.
@@ -119,13 +120,61 @@ DATA_TABLE_INTERNAL_COLUMN_WIDTHS = {
   cell padding of the size. The recipe takes it from the size variant, so no
   extra variable is needed.
 
-_Alternative considered_: repeat the widths per size in the recipe. Rejected: it
+_Alternative considered_: repeat the widths per size in the recipe by hand. Rejected: it
 keeps two copies (TSX and CSS) that must match in every combination, which is
 the problem this change should remove.
 
 _Alternative considered_: shrink the controls at small sizes. Rejected: 24px is
 the WCAG 2.5.8 minimum target size; the expand column already sits exactly there
 (FEC-1346 §7).
+
+### 5. Layout settings panel
+
+The "Row density" control in `DataTable.Manager` keeps its place and becomes a
+select that sets the size.
+
+- Options: Spacious (`xl`), Comfortable (`lg`), Standard (`md`), Compact (`sm`),
+  each with an icon (`HorizontalRule`, `DensityLarge`, `DensityMedium`,
+  `DensitySmall`: fewer lines mean more space between rows). The select is not
+  clearable.
+- `xl` is deprecated, so it is offered only to a table that has had it. The
+  root keeps a flag, `hasBeenXl`, that latches on the first render where the
+  size is `xl` (no `size`, or `size="xl"`) and stays set. A table that is later
+  given `xl` (for example restored settings) therefore shows `xl` in the
+  select, and `xl` never disappears once it was current. A table that was never
+  on `xl` never offers it.
+- The panel calls `onSettingsChange("changeSize", size)`. The second argument is
+  typed `DataTableSize`. `UPDATE_ACTIONS.CHANGE_SIZE` replaces
+  `TOGGLE_ROW_DENSITY`, which is removed.
+- The select (`size="sm"`) and the text visibility `ToggleButtonGroup`
+  (`size="xs"`) are both 32px tall. `Select` has no size that matches the
+  Button scale at 36px, so the two smallest common heights were used.
+- Labels: Comfortable and Compact reuse existing messages. Spacious and
+  Standard are new, with placeholder translations until Transifex.
+
+_Alternative considered_: always offer all four sizes. Rejected: it advertises
+the deprecated `xl` to tables that never used it.
+
+_Alternative considered_: a toggle button group with icons, or a slider with
+four stops. Rejected: the labels did not fit the toggles, and the slider tooltip
+can only show the stop number.
+
+_Alternative considered_: keep sending `toggleRowDensity` as well. Rejected: a
+size does not map to the two `density` values.
+
+### 6. Cell alignment fixes
+
+Two fixes apply to every table, with or without `size`:
+
+- The body cell content wrapper is `inline-block` with `overflow: hidden`, so
+  the wrapper's baseline sat on its bottom edge and the font's descender space
+  was added below the text. Aligning the wrapper to the top removes it. Rows
+  are about 6px shorter and the text is centered between the padding.
+- The expand button was inline-level on the text baseline, so the arrow sat
+  about 2px above the cell center. It is now a flex box that centers its icon.
+
+They are the reason the default is not pixel-identical to before. Cell
+padding, header height and text are unchanged for `xl`.
 
 ## Risks / Trade-offs
 
@@ -134,20 +183,23 @@ the WCAG 2.5.8 minimum target size; the expand column already sits exactly there
   more lines. `xl` is unaffected.
 - [Consumers' own `<Text textStyle="sm">` in cells overrides the size] →
   Document it: remove the own text style when choosing `sm`–`lg`. 4 of 10
-  current DataTables do this (nimbus-pulse scan #20).
+  current DataTables do this (nimbus-pulse scan 20).
 - [Sticky offsets break at a size] → A story per size with drag, selection,
   expand and pin columns and horizontal scroll; play function asserts the sticky
   columns touch without gap or overlap.
 - [Value drift between Table and DataTable] → Cross-reference comments in both
   recipes; a unit test compares the resolved padding tokens.
-- [Merge conflicts with FEC-1347] → This change lands first; FEC-1347 §4 and §5
-  rebase on it.
+- [Consumers' `onSettingsChange` handlers miss `"changeSize"`] → The removed
+  `UPDATE_ACTIONS.TOGGLE_ROW_DENSITY` gives a compile error to code that
+  references it; code that compares the string stops receiving it. Accepted:
+  scan 27 shows no usage of `onSettingsChange`, and the changeset documents it.
 - [Deprecated default feels odd] → Accepted on purpose: it keeps today's look
   without inviting new uses. Documented in the JSDoc and the changeset.
 
 ## Migration Plan
 
-1. Ship as a **minor** release (additive `size`, deprecations only).
+1. Ship as a **minor** release (additive `size`, deprecations, and the one
+   accepted break of the removed action constant).
 2. Consumers who want denser tables pass `size="md"` or `size="sm"` and may
    remove their own cell text styles.
 3. Next major release (separate change): remove `density`, remove `xl`, and
@@ -163,11 +215,11 @@ Rollback: revert the PR. No data or storage is involved.
   `md`/`lg`). Kept without a fixed height.
 - **Header text grows from 12px to 14px at `sm`/`md`**: the shared sizes use
   Table's header text (14px, 16px for `lg`), while `xl` keeps today's 12px.
-- **Rows are ~7px taller than padding plus line height** at every size,
+- **Rows were ~7px taller than padding plus line height** at every size,
   including `xl` (for example `xl`: 63px = 32px padding + 24px line + 7px).
-  Cause: the cell content wrapper is `inline-block`, so its baseline adds
-  space. It exists on `main` too, so it is not introduced by this change,
-  but it costs density; worth a follow-up.
+  Cause: the cell content wrapper is `inline-block`, so its baseline added
+  space. It existed on `main` too. It is fixed in this change (Decision 6), so
+  rows are now padding plus line height.
 - **Drag-and-drop with `renderNestedContent`** logs React Aria's "Draggable
   items in a Table must contain a `<Button slot="drag">`" once per nested
   row (the `SizeInternalColumns` story shows it). Not related to `size`;

@@ -1456,10 +1456,11 @@ const App = () => {
 The Layout Settings tab allows users to control text truncation and row density.
 These settings update the table's visual appearance in real-time:
 
-The row density select offers `sm`, `md` and `lg`. It also offers the deprecated
-`xl` to a table that started with no `size`, or `size="xl"`. `onSettingsChange` receives
-the action `"changeSize"` and the chosen size as its second argument; pass it to
-`size`.
+The row density select offers Comfortable (`lg`), Standard (`md`) and Compact
+(`sm`). It also offers the deprecated Spacious (`xl`) to a table that has had
+`xl` as its size, which includes a table with no `size`. `onSettingsChange`
+receives the action `"changeSize"` and the chosen `DataTableSize` as its second
+argument; pass it to `size`.
 
 ```jsx live-dev
 const App = () => {
@@ -1711,9 +1712,11 @@ const App = () => {
 ```
 
 > [!NOTE]\
-> `DataTable.Root` reads the size from its first render to decide whether the
-> size select offers the deprecated `xl`. Load the saved settings before that
-> first render, as above, rather than applying them in an effect afterwards.
+> The size select offers the deprecated `xl` to a table that has had `xl` as its
+> size at any render, and keeps offering it afterwards. A table without `size`
+> counts, so load the saved settings before the first render, as above, rather
+> than applying them in an effect afterwards. Otherwise a table that should
+> start on a saved size offers `xl` for a moment.
 
 ### Manager: Context requirements
 

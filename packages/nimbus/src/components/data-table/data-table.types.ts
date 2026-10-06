@@ -28,8 +28,8 @@ type DataTableSlotRecipeProps = {
    * Controls cell padding, header padding and cell text size.
    *
    * Supported values are `sm`, `md` and `lg`; they match the sizes of
-   * `Table`. `xl` is the default and keeps the appearance from before this
-   * prop existed. It is deprecated: do not pass `xl` explicitly — use
+   * `Table`. `xl` is the default and keeps the cell padding, header height and
+   * text from before this prop existed. It is deprecated: do not pass `xl` explicitly — use
    * `md`, the default in the next major release. `lg` is the larger option.
    */
   size?: DataTableSize;
@@ -150,15 +150,20 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     disallowEmptySelection?: boolean;
     maxHeight?: string | number;
     isTruncated?: boolean;
+    /**
+     * @deprecated Nothing in DataTable reads this any more; the recipe gets its
+     * density from the root. Use `size`. Will be removed in the next major
+     * release.
+     */
     density?: "default" | "condensed";
     /** Resolved size (the default applied), used for internal column widths */
     size: DataTableSize;
     /**
-     * Whether the table started with `xl` (no `size`, or `size="xl"`). The
-     * layout settings panel then keeps offering `xl` after another size is
-     * chosen.
+     * Whether the table has had `xl` as its size at any render (no `size`, or
+     * `size="xl"`). Once set it stays set, so the layout settings panel keeps
+     * offering `xl` after another size is chosen.
      */
-    startedWithXl: boolean;
+    hasBeenXl: boolean;
     nestedKey?: string;
     onSortChange?: (descriptor: SortDescriptor) => void;
     onSelectionChange?: (keys: Selection) => void;
@@ -212,7 +217,7 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
             | (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS]
             | string
             | undefined,
-          value?: string
+          value?: DataTableSize
         ) => void)
       | undefined
     >;
@@ -333,7 +338,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   onSettingsChange?: (
     action:
       (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS] | string | undefined,
-    value?: string
+    value?: DataTableSize
   ) => void;
   customSettings?: DataTableCustomSettings;
 };

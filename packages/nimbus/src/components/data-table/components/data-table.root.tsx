@@ -99,10 +99,13 @@ export const DataTableRoot = function DataTableRoot<
   const selectRowLabel = msg.format("selectRow");
 
   const size = sizeProp ?? DATA_TABLE_DEFAULT_SIZE;
-  // Fixed at mount: the size the table started with decides whether the
-  // layout settings panel offers `xl`, not the size it has now.
-  const startedWithXlRef = useRef(size === "xl");
-  const startedWithXl = startedWithXlRef.current;
+  // Latches once the table has had `xl` at any render and stays set. The
+  // layout settings panel offers `xl` only to such a table, so a table that
+  // has always been on another size does not offer it, and a table that is on
+  // `xl` can always go back to it.
+  const hasBeenXlRef = useRef(false);
+  if (size === "xl") hasBeenXlRef.current = true;
+  const hasBeenXl = hasBeenXlRef.current;
   const density = densityProp ?? "default";
   // `density` only modifies the deprecated `xl` default. An explicit `size`
   // owns the padding, so `density` is not passed to the recipe then.
@@ -405,7 +408,7 @@ export const DataTableRoot = function DataTableRoot<
       isTruncated,
       density,
       size,
-      startedWithXl,
+      hasBeenXl,
       nestedKey,
       renderEmptyState,
       onSortChange: handleSortChange,
@@ -439,7 +442,7 @@ export const DataTableRoot = function DataTableRoot<
       isTruncated,
       density,
       size,
-      startedWithXl,
+      hasBeenXl,
       nestedKey,
       renderEmptyState,
       handleSortChange,
