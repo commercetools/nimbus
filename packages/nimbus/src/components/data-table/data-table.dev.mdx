@@ -250,8 +250,8 @@ at every size, the minimum target size of WCAG 2.2 SC 2.5.8. Only the padding
 around them follows the size.
 
 **Deprecated `density`.** `density="condensed"` still works when no `size` is
-passed, but is deprecated: use `size="md"` instead (`size="lg"` for more space). When both
-are passed, `size` wins and `density` is ignored. `density` will be removed in
+passed, but is deprecated: use `size` instead. `size` sets the default text size and the density (cell
+padding). When both are passed, `size` wins and `density` is ignored. `density` will be removed in
 the next major release.
 
 ### Sorting
@@ -1453,11 +1453,11 @@ const App = () => {
 
 ### Manager: Layout settings
 
-The Layout Settings tab allows users to control text truncation and row size.
+The Layout Settings tab allows users to control text truncation and row density.
 These settings update the table's visual appearance in real-time:
 
-The row size select offers `sm`, `md` and `lg`. It also offers the deprecated
-`xl` while the table has no `size`, or `size="xl"`. `onSettingsChange` receives
+The row density select offers `sm`, `md` and `lg`. It also offers the deprecated
+`xl` to a table that started with no `size`, or `size="xl"`. `onSettingsChange` receives
 the action `"changeSize"` and the chosen size as its second argument; pass it to
 `size`.
 

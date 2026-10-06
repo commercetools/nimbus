@@ -171,41 +171,41 @@ export const messages = {
       "title for the text previews section in the data table manager layout",
     defaultMessage: "Text previews",
   },
-  rowSize: {
-    id: "Nimbus.DataTable.rowSize",
+  RowDensity: {
+    id: "Nimbus.DataTable.rowDensity",
     description:
-      "title for the row size section in the data table manager layout",
-    defaultMessage: "Row size",
+      "title for the row density section in the data table manager layout",
+    defaultMessage: "Row density",
   },
-  rowSizeAriaLabel: {
-    id: "Nimbus.DataTable.rowSizeAriaLabel",
+  RowDensityAriaLabel: {
+    id: "Nimbus.DataTable.rowDensityAriaLabel",
     description:
-      "aria-label for the row size select in the data table manager layout",
-    defaultMessage: "Row size",
+      "aria-label for the row density section in the data table manager layout",
+    defaultMessage: "Row density section",
   },
-  sizeSmall: {
-    id: "Nimbus.DataTable.sizeSmall",
+  spacious: {
+    id: "Nimbus.DataTable.spacious",
     description:
-      "option for the small row size in the data table manager layout",
-    defaultMessage: "Small",
+      "option for the spacious row density in the data table manager layout",
+    defaultMessage: "Spacious",
   },
-  sizeMedium: {
-    id: "Nimbus.DataTable.sizeMedium",
+  comfortable: {
+    id: "Nimbus.DataTable.comfortable",
     description:
-      "option for the medium row size in the data table manager layout",
-    defaultMessage: "Medium",
+      "option for the comfortable row density in the data table manager layout",
+    defaultMessage: "Comfortable",
   },
-  sizeLarge: {
-    id: "Nimbus.DataTable.sizeLarge",
+  standard: {
+    id: "Nimbus.DataTable.standard",
     description:
-      "option for the large row size in the data table manager layout",
-    defaultMessage: "Large",
+      "option for the standard row density in the data table manager layout",
+    defaultMessage: "Standard",
   },
-  sizeExtraLarge: {
-    id: "Nimbus.DataTable.sizeExtraLarge",
+  compact: {
+    id: "Nimbus.DataTable.compact",
     description:
-      "option for the extra large row size in the data table manager layout",
-    defaultMessage: "Extra large",
+      "option for the compact row density in the data table manager layout",
+    defaultMessage: "Compact",
   },
   searchHiddenColumns: {
     id: "Nimbus.DataTable.searchHiddenColumns",

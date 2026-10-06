@@ -38,9 +38,9 @@ Evidence from the same scan:
 - The header follows the size: `sm`–`lg` use the same padding as the cells;
   `xl` keeps today's fixed 40px header.
 - Deprecate `density`. It keeps working unchanged until the next major
-  release. The deprecation note points to `size="md"`, or `size="lg"` for more space.
+  release. The deprecation note points to `size`, which sets the default text size and the density.
 - `Table` is **not** changed. It does not get `xl`.
-- The layout settings panel replaces its "Row density" toggle with a "Row size" select. It offers `xl`, `lg`, `md` and `sm` while the table uses `xl` (no `size`, or `size="xl"`), and `lg`, `md` and `sm` once another size is set. `onSettingsChange` receives the action `changeSize` and the chosen size as a second argument. The `toggleRowDensity` action is no longer emitted.
+- The layout settings panel replaces its "Row density" toggle with a select that sets a size (one icon and label per size: Spacious, Comfortable, Standard, Compact; icons `DensitySmall`, `DensityMedium`, `DensityLarge`, and `HorizontalRule` for `xl`). It offers `xl`, `lg`, `md` and `sm` to a table that started with `xl` (no `size`, or `size="xl"`), also after another size is chosen. A table that started with `sm`, `md` or `lg` is offered only `lg`, `md` and `sm`. `onSettingsChange` receives the action `changeSize` and the chosen size as a second argument. The `toggleRowDensity` action is no longer emitted.
 
 No breaking changes. Removing `density` and moving the default away from
 `xl` are planned for a later major release and are not part of this change.

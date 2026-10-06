@@ -36,8 +36,9 @@ type DataTableSlotRecipeProps = {
   /**
    * Vertical cell padding (`condensed` reduces it from 16px to 12px).
    *
-   * @deprecated Use `size` instead (`size="md"`, or `size="lg"` for more space). Ignored
-   * when `size` is set. Will be removed in the next major release.
+   * @deprecated Use `size` instead. `size` sets the default text size and the
+   * density (cell padding). Ignored when `size` is set. Will be removed in the
+   * next major release.
    */
   density?: "default" | "condensed";
 } & UnstyledProp;
@@ -152,6 +153,12 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     density?: "default" | "condensed";
     /** Resolved size (the default applied), used for internal column widths */
     size: DataTableSize;
+    /**
+     * Whether the table started with `xl` (no `size`, or `size="xl"`). The
+     * layout settings panel then keeps offering `xl` after another size is
+     * chosen.
+     */
+    startedWithXl: boolean;
     nestedKey?: string;
     onSortChange?: (descriptor: SortDescriptor) => void;
     onSelectionChange?: (keys: Selection) => void;
@@ -275,8 +282,9 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   /**
    * Vertical cell padding (`condensed` reduces it from 16px to 12px).
    *
-   * @deprecated Use `size` instead (`size="md"`, or `size="lg"` for more space). Ignored
-   * when `size` is set. Will be removed in the next major release.
+   * @deprecated Use `size` instead. `size` sets the default text size and the
+   * density (cell padding). Ignored when `size` is set. Will be removed in the
+   * next major release.
    */
   density?: DataTableDensity;
   isTruncated?: boolean;

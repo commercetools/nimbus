@@ -163,14 +163,6 @@
     "developer_comment": "aria-label for the row density section in the data table manager layout",
     "string": "Sección de densidad de filas"
   },
-  "Nimbus.DataTable.rowSize": {
-    "developer_comment": "title for the row size section in the data table manager layout",
-    "string": "Row size"
-  },
-  "Nimbus.DataTable.rowSizeAriaLabel": {
-    "developer_comment": "aria-label for the row size select in the data table manager layout",
-    "string": "Row size"
-  },
   "Nimbus.DataTable.searchHiddenColumns": {
     "developer_comment": "placeholder for the search input in the hidden columns section in the data table manager",
     "string": "Buscar..."
@@ -187,21 +179,13 @@
     "developer_comment": "aria-label for the settings tabs in the data table manager drawer",
     "string": "Pestañas de configuración"
   },
-  "Nimbus.DataTable.sizeExtraLarge": {
-    "developer_comment": "option for the extra large row size in the data table manager layout",
-    "string": "Extra large"
+  "Nimbus.DataTable.spacious": {
+    "developer_comment": "title for the spacious togglebutton in the data table manager layout",
+    "string": "Spacious"
   },
-  "Nimbus.DataTable.sizeLarge": {
-    "developer_comment": "option for the large row size in the data table manager layout",
-    "string": "Large"
-  },
-  "Nimbus.DataTable.sizeMedium": {
-    "developer_comment": "option for the medium row size in the data table manager layout",
-    "string": "Medium"
-  },
-  "Nimbus.DataTable.sizeSmall": {
-    "developer_comment": "option for the small row size in the data table manager layout",
-    "string": "Small"
+  "Nimbus.DataTable.standard": {
+    "developer_comment": "title for the standard togglebutton in the data table manager layout",
+    "string": "Standard"
   },
   "Nimbus.DataTable.textPreviews": {
     "developer_comment": "title for the text previews section in the data table manager layout",

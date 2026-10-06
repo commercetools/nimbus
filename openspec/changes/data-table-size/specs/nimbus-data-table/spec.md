@@ -53,7 +53,7 @@ default. Consumers SHALL be discouraged from selecting it.
 - **WHEN** a consumer passes `size="xl"` explicitly
 - **AND** the build is not a production build
 - **THEN** the component SHALL log one console warning that names `xl` as
-  deprecated and suggests `lg`
+  deprecated and suggests `md`
 
 #### Scenario: Default xl does not warn
 
@@ -127,16 +127,17 @@ their interactive controls keep a target size of at least 24×24 CSS pixels
 
 ### Requirement: Layout Settings Size Control
 
-The Layout settings tab of `DataTable.Manager` SHALL offer a "Row size" select instead of a row density toggle.
+The Layout settings tab of `DataTable.Manager` SHALL offer a "Row density" select with one icon and label per option: Spacious (`xl`), Comfortable (`lg`), Standard (`md`) and Compact (`sm`).
 
-#### Scenario: Table uses the default size
+#### Scenario: Table started with the default size
 
-- **WHEN** the table has no `size`, or `size="xl"`
-- **THEN** the select offers `xl`, `lg`, `md` and `sm`, with `xl` selected
+- **WHEN** the table started with no `size`, or `size="xl"`
+- **THEN** the select offers `xl`, `lg`, `md` and `sm`, with the current size selected
+- **AND** it keeps offering `xl` after the user picks another size
 
-#### Scenario: Table uses another size
+#### Scenario: Table started with another size
 
-- **WHEN** the table has `size` set to `sm`, `md` or `lg`
+- **WHEN** the table started with `size` set to `sm`, `md` or `lg`
 - **THEN** the select offers only `lg`, `md` and `sm`, with the current size selected
 
 #### Scenario: User picks a size
@@ -166,6 +167,6 @@ implemented; the actual prop was `density: "default" | "condensed"`.
 Spacing is now controlled by the `size` prop, so tables share one scale
 with `Table`.
 
-**Migration**: Replace `density="condensed"` with `size="md"`
-(or `size="lg"` for more space). `density` keeps working until the next major release; see
+**Migration**: Replace `density` with `size`, which sets the default text size
+and the density (cell padding). `density` keeps working until the next major release; see
 "Deprecated Density Prop".

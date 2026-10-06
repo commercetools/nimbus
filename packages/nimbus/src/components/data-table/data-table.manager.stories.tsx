@@ -49,6 +49,17 @@ export default meta;
  */
 type Story = StoryObj<DataTableProps>;
 
+/** The row density select in `container`. */
+const getDensitySelect = (container: HTMLElement) =>
+  within(container).getByRole("button", { name: /row density/i });
+
+/** Opens the row density select and returns the names of its options. */
+const openDensityOptions = async (container: HTMLElement) => {
+  await userEvent.click(getDensitySelect(container));
+  const options = await within(document.body).findAllByRole("option");
+  return options.map((option) => option.textContent);
+};
+
 export const ColumnManager: Story = {
   render: (args) => {
     const [visible, setVisible] = useState(["name", "age"]);
@@ -532,7 +543,7 @@ export const WithTableManager: Story = {
       );
     });
 
-    await step("Row size select renders correctly", async () => {
+    await step("Row density toggles render correctly", async () => {
       const dialog = await canvas.getByRole("dialog");
       const tabPanel = within(dialog).getByRole("tab", {
         name: /layout settings/i,
@@ -540,17 +551,12 @@ export const WithTableManager: Story = {
       await userEvent.click(tabPanel);
 
       // The table uses the default `xl`, so all four sizes are offered
-      const sizeSelect = within(dialog).getByRole("button", {
-        name: /row size/i,
-      });
-      expect(sizeSelect).toHaveTextContent("Extra large");
-      await userEvent.click(sizeSelect);
-      const options = await within(document.body).findAllByRole("option");
-      expect(options.map((option) => option.textContent)).toEqual([
-        "Extra large",
-        "Large",
-        "Medium",
-        "Small",
+      expect(getDensitySelect(dialog)).toHaveTextContent("Spacious");
+      expect(await openDensityOptions(dialog)).toEqual([
+        "Spacious",
+        "Comfortable",
+        "Standard",
+        "Compact",
       ]);
       await userEvent.keyboard("{Escape}");
 
@@ -567,35 +573,6 @@ export const WithTableManager: Story = {
       expect(defaultStyles.paddingBottom).toBe("16px");
       expect(defaultStyles.paddingLeft).toBe("24px");
       expect(defaultStyles.paddingRight).toBe("24px");
-    });
-
-    await step("Row size select changes the size", async () => {
-      const dialog = canvas.getByRole("dialog");
-      const sizeSelect = within(dialog).getByRole("button", {
-        name: /row size/i,
-      });
-      await userEvent.click(sizeSelect);
-      await userEvent.click(
-        await within(document.body).findByRole("option", { name: "Medium" })
-      );
-
-      await waitFor(() => {
-        expect(sizeSelect).toHaveTextContent("Medium");
-        const firstCell = within(canvas.getAllByRole("row")[1]).getAllByRole(
-          "gridcell"
-        )[0];
-        expect(window.getComputedStyle(firstCell).padding).toBe("12px");
-      });
-
-      // `xl` is no longer offered once another size is set
-      await userEvent.click(sizeSelect);
-      const options = await within(document.body).findAllByRole("option");
-      expect(options.map((option) => option.textContent)).toEqual([
-        "Large",
-        "Medium",
-        "Small",
-      ]);
-      await userEvent.keyboard("{Escape}");
     });
 
     await step("Text visibility toggle changes state", async () => {
@@ -639,6 +616,57 @@ export const WithTableManager: Story = {
         },
         { timeout: 3000 }
       );
+    });
+  },
+};
+
+/**
+ * Picking another size changes the table. The deprecated `xl` stays in the
+ * options, because the table started with it. Kept apart from
+ * `WithTableManager`, so that story opens on `xl`.
+ */
+export const LayoutSettingsSizeChange: Story = {
+  render: WithTableManager.render,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Open the layout settings tab", async () => {
+      await userEvent.click(
+        await canvas.findByRole("button", { name: /table settings/i })
+      );
+      const dialog = await within(document.body).findByRole(
+        "dialog",
+        {},
+        { timeout: 3000 }
+      );
+      await userEvent.click(
+        within(dialog).getByRole("tab", { name: /layout settings/i })
+      );
+    });
+
+    await step("Picking a density changes the size", async () => {
+      const dialog = within(document.body).getByRole("dialog");
+      await userEvent.click(getDensitySelect(dialog));
+      await userEvent.click(
+        await within(document.body).findByRole("option", { name: "Standard" })
+      );
+
+      await waitFor(() => {
+        expect(getDensitySelect(dialog)).toHaveTextContent("Standard");
+        const firstCell = within(
+          within(canvasElement).getAllByRole("row")[1]
+        ).getAllByRole("gridcell")[0];
+        expect(window.getComputedStyle(firstCell).padding).toBe("12px");
+      });
+
+      // The table started with `xl`, so `xl` stays available
+      expect(await openDensityOptions(dialog)).toEqual([
+        "Spacious",
+        "Comfortable",
+        "Standard",
+        "Compact",
+      ]);
+      await userEvent.keyboard("{Escape}");
     });
   },
 };
@@ -1079,11 +1107,9 @@ export const LayoutSettingsReselect: Story = {
       await userEvent.click(
         within(dialog).getByRole("radio", { name: "Full text" })
       );
+      await userEvent.click(getDensitySelect(dialog));
       await userEvent.click(
-        within(dialog).getByRole("button", { name: /row size/i })
-      );
-      await userEvent.click(
-        await body.findByRole("option", { name: "Extra large" })
+        await body.findByRole("option", { name: "Spacious" })
       );
       expect(args.onSettingsChange).not.toHaveBeenCalled();
     });
@@ -1102,7 +1128,7 @@ export const LayoutSettingsReselect: Story = {
 };
 
 /**
- * A table that uses one of the three current sizes does not offer the
+ * A table that starts with one of the three current sizes does not offer the
  * deprecated `xl`. Picking a size reports `changeSize` with the size.
  */
 export const LayoutSettingsSizeOptions: Story = {
@@ -1138,21 +1164,18 @@ export const LayoutSettingsSizeOptions: Story = {
 
     await step("Only the three current sizes are offered", async () => {
       const dialog = body.getByRole("dialog");
-      const sizeSelect = within(dialog).getByRole("button", {
-        name: /row size/i,
-      });
-      expect(sizeSelect).toHaveTextContent("Medium");
-      await userEvent.click(sizeSelect);
-      const options = await body.findAllByRole("option");
-      expect(options.map((option) => option.textContent)).toEqual([
-        "Large",
-        "Medium",
-        "Small",
+      expect(getDensitySelect(dialog)).toHaveTextContent("Standard");
+      expect(await openDensityOptions(dialog)).toEqual([
+        "Comfortable",
+        "Standard",
+        "Compact",
       ]);
     });
 
     await step("Picking a size reports it", async () => {
-      await userEvent.click(await body.findByRole("option", { name: "Small" }));
+      await userEvent.click(
+        await body.findByRole("option", { name: "Compact" })
+      );
       expect(args.onSettingsChange).toHaveBeenCalledTimes(1);
       expect(args.onSettingsChange).toHaveBeenCalledWith(
         UPDATE_ACTIONS.CHANGE_SIZE,
