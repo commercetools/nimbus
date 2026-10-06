@@ -29,8 +29,9 @@ type DataTableSlotRecipeProps = {
    *
    * Supported values are `sm`, `md` and `lg`; they match the sizes of
    * `Table`. `xl` is the default and keeps the cell padding, header height and
-   * text from before this prop existed. It is deprecated: do not pass `xl` explicitly — use
-   * `md`, the default in the next major release. `lg` is the larger option.
+   * text from before this prop existed. It is deprecated: do not pass `xl`
+   * explicitly — use `md`, the default in the next major release. `lg` is the
+   * larger option.
    */
   size?: DataTableSize;
   /**

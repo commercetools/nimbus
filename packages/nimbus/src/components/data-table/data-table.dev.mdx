@@ -1716,7 +1716,7 @@ const App = () => {
 > size at any render, and keeps offering it afterwards. A table without `size`
 > counts, so load the saved settings before the first render, as above, rather
 > than applying them in an effect afterwards. Otherwise a table that should
-> start on a saved size offers `xl` for a moment.
+> start on a saved size keeps offering `xl` for as long as it is mounted.
 
 ### Manager: Context requirements
 

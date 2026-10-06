@@ -690,9 +690,9 @@ export const LayoutSettingsSizeChange: Story = {
  *
  * // 2. Create a handler that accepts both built-in and custom actions
  * const handleSettingsChange = (
-      action: string | undefined,
-      value?: DataTableSize
-    ) => {
+ *   action: string | undefined,
+ *   value?: DataTableSize
+ * ) => {
  *   // Handle built-in actions
  *   if (action === UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY) { ... }
  * };
