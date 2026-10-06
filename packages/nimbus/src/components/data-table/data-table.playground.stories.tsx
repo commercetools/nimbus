@@ -20,8 +20,8 @@ import type { DataTableColumnItem, DataTableRowItem } from "./data-table.types";
 
 /**
  * Playground for how consumers use DataTable. The story replicates usages
- * from `merchant-center-frontend` or `commerce-agents` (nimbus-pulse scan 20)
- * with the default size, as those consumers render it today, so a change that
+ * from `merchant-center-frontend` or `commerce-agents`, found by a repository
+ * scan, with the default size, as those consumers render it today, so a change that
  * affects real content shows up in the snapshot. Sizes are covered by the
  * `Sizes` story in `data-table.stories.tsx`.
  */

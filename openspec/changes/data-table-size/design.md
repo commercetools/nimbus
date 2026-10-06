@@ -196,8 +196,8 @@ padding, header height and text are unchanged for `xl`.
   stories for `sm`–`lg` before merge; decided: padding only, no fixed height, because cells can need two or
   more lines. `xl` is unaffected.
 - [Consumers' own `<Text textStyle="sm">` in cells overrides the size] →
-  Document it: remove the own text style when choosing `sm`–`lg`. 4 of 10
-  current DataTables do this (nimbus-pulse scan 20).
+  Document it: remove the own text style when choosing `sm`–`lg`. A repository
+  scan showed that 4 of 10 current DataTables do this.
 - [Sticky offsets break at a size] → A story per size with drag, selection,
   expand and pin columns and horizontal scroll; play function asserts the sticky
   columns touch without gap or overlap.
@@ -206,7 +206,8 @@ padding, header height and text are unchanged for `xl`.
 - [Consumers' `onSettingsChange` handlers miss `"changeSize"`] → The removed
   `UPDATE_ACTIONS.TOGGLE_ROW_DENSITY` gives a compile error to code that
   references it; code that compares the string stops receiving it. Accepted:
-  scan 27 shows no usage of `onSettingsChange`, and the changeset documents it.
+  a repository scan showed no usage of `onSettingsChange`, and the changeset
+  documents it.
 - [Deprecated default feels odd] → Accepted on purpose: it keeps today's look
   without inviting new uses. Documented in the JSDoc and the changeset.
 

@@ -8,12 +8,12 @@ Nimbus has two different ways to express table spacing, with values that
 match nowhere.
 
 We want one axis, `size`, on both table components, with the same names
-meaning the same values. Now is the right time: nimbus-pulse scan 27
-(6 October 2026) finds only two DataTable usages that pass `density`, both
-`"condensed"` (`commerce-agents` and `search-config`), so the migration cost is
-small. Nobody uses `DataTable.Manager`, `onSettingsChange` or `customSettings`.
+meaning the same values. Now is the right time: a repository scan showed that
+only two DataTable usages pass `density`, both `"condensed"`
+(`commerce-agents` and `search-config`), so the migration cost is small.
+Nobody uses `DataTable.Manager`, `onSettingsChange` or `customSettings`.
 
-Evidence from scan 20:
+The repository scan also showed that:
 
 - 4 of 10 DataTables set `textStyle="sm"` on `<Text>` inside cell renderers
   by hand, because DataTable cells set no text style and inherit the host
@@ -102,7 +102,7 @@ _None._
   mentions of `density`/`condensed` to review).
 - **Sequencing**: based on `main`, which already contains PR #1996 (row
   identity), PR #2015 (FEC-1346) and PR #2026 (FEC-1347, recipe cleanup).
-- **Consumers**: scan 27 shows two usages that pass `density`; they keep
+- **Consumers**: a repository scan showed two usages that pass `density`; they keep
   working and should move to `size` before the next major release. Handlers of
   `onSettingsChange` must handle `"changeSize"` (no known usage). Teams that
   set `textStyle="sm"` in cells can remove it once they choose `sm`–`lg`.
