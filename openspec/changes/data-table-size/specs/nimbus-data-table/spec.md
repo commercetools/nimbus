@@ -78,6 +78,9 @@ until the next major release, and SHALL be marked deprecated in favor of
 - **AND** no `size` prop is passed
 - **THEN** cells SHALL have 24px horizontal and 12px vertical padding, as
   before this change
+- **AND** in a non-production build the component SHALL log one console
+  warning that `density` is deprecated and will be removed in the next major
+  release, and that `size` sets the default text size and the density
 
 #### Scenario: Size wins over density
 

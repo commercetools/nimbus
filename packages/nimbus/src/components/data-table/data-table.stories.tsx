@@ -2063,6 +2063,36 @@ export const SizeWinsOverDensity: Story = {
   },
 };
 
+const densityOnlyWarnings: string[] = [];
+
+/**
+ * `density` alone still works (`xl` with 12px vertical padding), and it warns
+ * once in development that it is deprecated in favor of `size`.
+ */
+export const DensityAloneWarns: Story = {
+  beforeEach: recordWarnings(densityOnlyWarnings),
+  render: () => (
+    <DataTable
+      columns={columns}
+      rows={rows.slice(0, 2)}
+      density="condensed"
+      aria-label="Density only"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByRole("grid");
+    const cell = firstDataCell(canvasElement);
+    expect(window.getComputedStyle(cell).paddingTop).toBe("12px");
+    expect(window.getComputedStyle(cell).paddingLeft).toBe("24px");
+    await waitFor(() =>
+      expect(
+        densityOnlyWarnings.filter((w) => w.includes("`density`"))
+      ).toHaveLength(1)
+    );
+  },
+};
+
 /**
  * The text in a body cell has the same space above and below it. A wrapper
  * with `overflow: hidden` aligned to the text baseline used to add the font's

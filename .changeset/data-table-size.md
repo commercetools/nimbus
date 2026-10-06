@@ -11,7 +11,7 @@ the same cell padding and text size as `Table`.
 - The drag, selection, expand and pin controls stay 24×24px at every size.
 - **Deprecated:** `density`. Use `size` instead: it sets the default text size
   and the density (cell padding). When both are passed, `size` wins and
-  `density` is ignored. In development, this logs a warning.
+  `density` is ignored. In development, passing `density` logs a warning.
 - **Deprecated:** `size="xl"`. It is the default only to keep the previous
   appearance; passing it explicitly logs a warning in development. Use `md`,
   which becomes the default in the next major release. `lg` is the larger

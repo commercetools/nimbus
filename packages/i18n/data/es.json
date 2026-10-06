@@ -181,11 +181,11 @@
   },
   "Nimbus.DataTable.spacious": {
     "developer_comment": "title for the spacious togglebutton in the data table manager layout",
-    "string": "Spacious"
+    "string": "Espaciosa"
   },
   "Nimbus.DataTable.standard": {
     "developer_comment": "title for the standard togglebutton in the data table manager layout",
-    "string": "Standard"
+    "string": "Estándar"
   },
   "Nimbus.DataTable.textPreviews": {
     "developer_comment": "title for the text previews section in the data table manager layout",

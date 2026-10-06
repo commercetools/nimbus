@@ -252,7 +252,7 @@ around them follows the size.
 **Deprecated `density`.** `density="condensed"` still works when no `size` is
 passed, but is deprecated: use `size` instead. `size` sets the default text size and the density (cell
 padding). When both are passed, `size` wins and `density` is ignored. `density` will be removed in
-the next major release.
+the next major release. In development, passing `density` logs a warning.
 
 ### Sorting
 
@@ -1645,6 +1645,75 @@ const App = () => {
   );
 }
 ```
+
+### Manager: Controlled layout settings with persistence
+
+The Layout settings tab does not keep its own state. `isTruncated` and `size`
+come from the props of `DataTable.Root`, and `onSettingsChange` reports each
+change. To save a user's choice, store it when `onSettingsChange` is called and
+pass it back as props:
+
+```jsx live-dev
+const STORAGE_KEY = 'tableLayoutSettings';
+
+const loadSettings = () => {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? {};
+  } catch {
+    return {};
+  }
+};
+
+const App = () => {
+  // Read once, before the first render
+  const [settings, setSettings] = useState(loadSettings);
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'email', header: 'Email', accessor: (row) => row.email },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice Johnson', email: 'alice@example.com' },
+    { id: '2', name: 'Bob Smith', email: 'bob@example.com' },
+  ];
+
+  const handleSettingsChange = (action, value) => {
+    let next = settings;
+    if (action === 'toggleTextVisibility') {
+      next = { ...settings, isTruncated: !settings.isTruncated };
+    } else if (action === 'changeSize') {
+      next = { ...settings, size: value };
+    }
+    setSettings(next);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  };
+
+  return (
+    <DataTable.Root
+      columns={columns}
+      rows={rows}
+      isTruncated={settings.isTruncated ?? false}
+      size={settings.size ?? 'md'}
+      onSettingsChange={handleSettingsChange}
+    >
+      <Stack direction="row" justifyContent="space-between" mb="400">
+        <Text fontSize="lg" fontWeight="600">Team Directory</Text>
+        <DataTable.Manager />
+      </Stack>
+      <DataTable.Table>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+}
+```
+
+> [!NOTE]\
+> `DataTable.Root` reads the size from its first render to decide whether the
+> size select offers the deprecated `xl`. Load the saved settings before that
+> first render, as above, rather than applying them in an effect afterwards.
 
 ### Manager: Context requirements
 

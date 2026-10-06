@@ -543,7 +543,7 @@ export const WithTableManager: Story = {
       );
     });
 
-    await step("Row density toggles render correctly", async () => {
+    await step("Row density select renders correctly", async () => {
       const dialog = await canvas.getByRole("dialog");
       const tabPanel = within(dialog).getByRole("tab", {
         name: /layout settings/i,

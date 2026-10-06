@@ -119,14 +119,12 @@ export const DataTableRoot = function DataTableRoot<
         '[Nimbus] DataTable: size="xl" is deprecated. It is the default only to keep the previous appearance. Use size="md" instead: it becomes the default in the next major release. size="lg" is the larger option.'
       );
     }
-    if (
-      sizeProp !== undefined &&
-      densityProp !== undefined &&
-      !warned.density
-    ) {
+    if (densityProp !== undefined && !warned.density) {
       warned.density = true;
       console.warn(
-        "[Nimbus] DataTable: `density` is deprecated and ignored when `size` is set. Remove `density`."
+        sizeProp === undefined
+          ? "[Nimbus] DataTable: `density` is deprecated and will be removed in the next major release. Use `size` instead: it sets the default text size and the density (cell padding)."
+          : "[Nimbus] DataTable: `density` is deprecated and ignored when `size` is set. Remove `density`."
       );
     }
   }, [sizeProp, densityProp]);
