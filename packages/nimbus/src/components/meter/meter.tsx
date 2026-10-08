@@ -97,10 +97,13 @@ export const Meter = (props: MeterProps) => {
   const totalText =
     valueLabel ??
     (isPercent ? formatAmount(total) : formatter.format(meterValue));
+  // Segments show the drawn (clamped) amount, so the parts add up to the total
   const valueText =
     isSegmented && items.length > 0
       ? `${totalText} (${listFormatter.format(
-          items.map((item) => `${item.label}: ${formatAmount(item.value)}`)
+          items.map(
+            (item) => `${item.label}: ${formatAmount(item.clampedValue)}`
+          )
         )})`
       : totalText;
 
@@ -178,7 +181,7 @@ export const Meter = (props: MeterProps) => {
               <MeterLegendItemSlot key={item.id}>
                 <MeterLegendSwatchSlot colorPalette={paletteOf(item, index)} />
                 <span>{item.label}</span>
-                <span>{formatAmount(item.value)}</span>
+                <span>{formatAmount(item.clampedValue)}</span>
               </MeterLegendItemSlot>
             ))}
           </MeterLegendSlot>

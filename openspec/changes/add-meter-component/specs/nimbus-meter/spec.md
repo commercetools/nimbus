@@ -109,12 +109,16 @@ visible gap.
 
 - **WHEN** the sum of segment values is greater than `maxValue`
 - **THEN** segments SHALL be drawn in order and cut at 100% of the track
+- **AND** the legend and `aria-valuetext` SHALL show each segment's drawn
+  amount, so `[60, 60]` with `maxValue={100}` is announced as "100% (A: 60%, B:
+  40%)"
 - **AND** the component SHALL log a warning in development mode
 
 #### Scenario: Negative segment value
 
 - **WHEN** a segment has a negative value
-- **THEN** it SHALL be treated as `0`
+- **THEN** it SHALL be treated as `0`, including in the legend and
+  `aria-valuetext`
 - **AND** the component SHALL log a warning in development mode
 
 #### Scenario: Zero segment

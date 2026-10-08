@@ -36,6 +36,12 @@ const getValueText = (root: HTMLElement) =>
 const getLegend = (root: HTMLElement) =>
   root.querySelector<HTMLElement>(".nimbus-meter__legend");
 
+/** Formatted value of each legend item, in order */
+const getLegendValues = (root: HTMLElement) =>
+  Array.from(getLegend(root)?.children ?? []).map(
+    (item) => item.lastElementChild?.textContent
+  );
+
 /**
  * Replaces console.warn with a mock for the story and restores it afterwards,
  * so expected development warnings can be asserted.
@@ -385,6 +391,15 @@ export const SegmentEdgeCases: Story = {
       await expect(meter).toHaveAttribute("aria-valuenow", "100");
     });
 
+    await step("Overflowing segments show the drawn amount", async () => {
+      const meter = canvas.getByTestId("overflow");
+      await expect(meter).toHaveAttribute(
+        "aria-valuetext",
+        "100% (A: 60%, B: 40%)"
+      );
+      await expect(getLegendValues(meter)).toEqual(["60%", "40%"]);
+    });
+
     await step("Overflow logs a development warning", async () => {
       await expect(console.warn).toHaveBeenCalledWith(
         expect.stringContaining("exceeds the range")
@@ -397,6 +412,11 @@ export const SegmentEdgeCases: Story = {
         "20%",
       ]);
       await expect(meter).toHaveAttribute("aria-valuenow", "20");
+      await expect(meter).toHaveAttribute(
+        "aria-valuetext",
+        "20% (A: 0%, B: 20%)"
+      );
+      await expect(getLegendValues(meter)).toEqual(["0%", "20%"]);
     });
 
     await step("Negative values log a development warning", async () => {
@@ -413,7 +433,7 @@ export const SegmentEdgeCases: Story = {
         "30% (A: 30%, B: 0%)"
       );
       await expect(getSegments(meter)).toHaveLength(1);
-      const legendItems = getLegend(meter.parentElement!)!.children;
+      const legendItems = getLegend(meter)!.children;
       await expect(legendItems).toHaveLength(2);
     });
 
@@ -512,7 +532,7 @@ export const SegmentColors: Story = {
       const meter = canvas.getByTestId("explicit");
       const segments = getSegments(meter);
       const swatches = Array.from(
-        getLegend(meter.parentElement!)!.querySelectorAll<HTMLElement>(
+        getLegend(meter)!.querySelectorAll<HTMLElement>(
           ".nimbus-meter__legendSwatch"
         )
       );
