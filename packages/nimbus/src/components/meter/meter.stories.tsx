@@ -1159,6 +1159,42 @@ export const MissingParts: Story = {
 };
 
 /**
+ * Naming with Meter.Label and an extra aria-labelledby on Root: the visible
+ * label stays part of the name, and the referenced element adds context.
+ * Not snapshotted: no visual difference to `Base`.
+ */
+export const LabelWithContext: Story = {
+  render: () => (
+    <Stack direction="column" gap="400" alignItems="stretch">
+      <Text id="plan-heading" fontWeight="600">
+        Business plan
+      </Text>
+      <Meter.Root value={40} aria-labelledby="plan-heading">
+        <Meter.Label>Storage</Meter.Label>
+        <Meter.Value />
+        <Meter.Track />
+      </Meter.Root>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const meter = within(canvasElement).getByRole("meter");
+
+    await step("Meter.Label stays linked next to aria-labelledby", async () => {
+      const ids = meter.getAttribute("aria-labelledby")?.split(" ") ?? [];
+      await expect(ids).toHaveLength(2);
+      await expect(ids).toContain("plan-heading");
+      await expect(document.getElementById(ids[0])).toHaveTextContent(
+        "Storage"
+      );
+    });
+
+    await step("The name starts with the visible label", async () => {
+      await expect(meter).toHaveAccessibleName("Storage Business plan");
+    });
+  },
+};
+
+/**
  * Every part forwards its ref to its own element
  */
 export const RefForwarding: Story = {

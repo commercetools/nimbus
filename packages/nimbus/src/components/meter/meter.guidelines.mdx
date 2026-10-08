@@ -45,6 +45,10 @@ is a measured value, so use Meter. If the value only moves forward toward
 - **Use a semantic color palette on purpose.** `colorPalette="positive"`,
   `"warning"`, or `"critical"` should mean what they say. Do not use a semantic
   palette for a value that is not in that state.
+- **Use a threshold color as a hint, not as the message.** `thresholds` change
+  the fill color when the value reaches a limit, for example `critical` from
+  95%. If the state matters, also show it in words, for example with
+  `valueLabel="97% – almost full"` or in text near the meter.
 - **Keep the number of segments small.** Segmented mode is meant for a handful
   of parts of one total, for example categories of storage used. As a guideline,
   keep segments to about five or fewer. With many segments, the legend becomes
