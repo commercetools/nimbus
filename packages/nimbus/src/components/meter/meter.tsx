@@ -97,7 +97,7 @@ export const Meter = (props: MeterProps) => {
   const totalText =
     valueLabel ??
     (isPercent ? formatAmount(total) : formatter.format(meterValue));
-  // Segments show the drawn (clamped) amount, so the parts add up to the total
+  // Segments show the drawn (clamped) amount, so the text matches the bar
   const valueText =
     isSegmented && items.length > 0
       ? `${totalText} (${listFormatter.format(

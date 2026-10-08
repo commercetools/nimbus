@@ -103,6 +103,11 @@ type MeterValueProps =
       /**
        * Several measured parts of one total, drawn in array order inside
        * one track. A legend is rendered for them automatically.
+       *
+       * Segment values are counted from `minValue`, but the total includes
+       * it: with `minValue={10}` and segments `30` and `20`, the total is
+       * `60`. Keep `minValue` at `0` when the parts should add up to the
+       * total.
        */
       segments: MeterSegment[];
     };

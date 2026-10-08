@@ -112,6 +112,10 @@ union that rejects passing both. Each item in `segments` needs a unique `id`, a
 Meter draws the segments in array order, adds a legend below the bar, and builds
 one accessible summary for the whole meter.
 
+The total includes `minValue`, so with `minValue={10}` and segments `30` and
+`20` the total is `60`. Keep `minValue` at `0` (the default) when the parts
+should add up to the total.
+
 ```jsx live-dev
 const App = () => (
   <Meter
@@ -127,10 +131,12 @@ const App = () => (
 
 If the segment values add up to more than the range, they are cut once the track
 is full. If a segment has a negative value, it is treated as `0`. In both cases
-the legend and the announced text show the amount that is drawn, so the parts
-always add up to the total. Both cases log a warning in development mode, so
-keep the total inside the range in production data. A segment with value `0`
-draws nothing in the track but still appears in the legend.
+the legend and the announced text show the amount that is drawn, so they match
+the bar. Each value is rounded on its own, so rounded parts can differ slightly
+from the total (for example `100%` from three parts of `33%`). Both cases log a
+warning in development mode, so keep the total inside the range in production
+data. A segment with value `0` draws nothing in the track but still appears in
+the legend.
 
 ### Segment colors
 

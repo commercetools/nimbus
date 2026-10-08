@@ -65,9 +65,11 @@ union so both cannot be set.
 = `"<total> (<label>: <value>, <label>: <value>)"`, values formatted with
 `useNumberFormatter(formatOptions)` from `react-aria`, list joined with
 `Intl.ListFormat(locale, { type: "unit" })`. Each segment value is its drawn
-(clamped) amount, so the parts always add up to the total. React Aria clamps
-before formatting (`useProgressBar`), and Base UI changed its Meter to do the
-same (https://github.com/mui/base-ui/pull/5409).
+(clamped) amount, so the text matches the bar. The parts add up to the total
+only when `minValue` is `0` (the total includes `minValue`), and up to rounding
+(three parts of `33%` give `100%`). React Aria clamps before formatting
+(`useProgressBar`), and Base UI changed its Meter to do the same
+(https://github.com/mui/base-ui/pull/5409).
 
 - Why not one role per segment (Primer, Mantine): in ARIA, the children of
   `meter` are presentational, so nested meters would be hidden from assistive
@@ -139,14 +141,13 @@ against the track, step 9 is below 3:1 for some palettes (for example `warning`
 1.38:1 in light mode, `primary` 2.65:1 in dark mode), so meaning is carried by
 the legend and value text, not by the fill color. The `minimal` layout hides the
 value text, so the guidelines ask for the same value as visible text near the
-meter. Segments may shrink
-(`flex-shrink: 1`) so the gaps fit when the track is full. Track: same
-background as the `ProgressBar` track. Gap between segments: `{spacing.50}`
-(2px) using flex `gap`. Each segment sets `colorPalette` through a class or
-`data-` attribute so the recipe can color it. Default segment sequence
-(`constants/meter.constants.ts`): primary, teal, orange, pink, blue, brown,
-repeated. Semantic state palettes are left out so a default segment does not
-look like a status.
+meter. Segments may shrink (`flex-shrink: 1`) so the gaps fit when the track is
+full. Track: same background as the `ProgressBar` track. Gap between segments:
+`{spacing.50}` (2px) using flex `gap`. Each segment sets `colorPalette` through
+a class or `data-` attribute so the recipe can color it. Default segment
+sequence (`constants/meter.constants.ts`): primary, teal, orange, pink, blue,
+brown, repeated. Semantic state palettes are left out so a default segment does
+not look like a status.
 
 ## Risks / Trade-offs
 
