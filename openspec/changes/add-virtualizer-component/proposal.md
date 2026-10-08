@@ -46,12 +46,12 @@ layout.
   renders the `Virtualizer` itself, supplies defaults for its `size` and
   `variant`, and owns its scroll container. ListBox gets these props in this
   change; ComboBox, Select, DataTable and GridList get them in their tickets.
-- **Keep the `Virtualizer` internal.** Consumers only use Nimbus components,
-  never React Aria directly, so `isVirtualized` is the only way to virtualize.
-  The package exports one type, `VirtualizerListLayoutOptions`, which types
-  `virtualizerOptions`. (A public `Virtualizer` could not work anyway: Nimbus
-  bundles its own copy of React Aria, so it would not reach a consumer's own
-  React Aria components.)
+- **Keep the `Virtualizer` internal for now.** Consumers only use Nimbus
+  components, never React Aria directly. This change builds the component and
+  uses it inside Nimbus, so `isVirtualized` is the only way to virtualize for
+  now. The package exports one type, `VirtualizerListLayoutOptions`, which types
+  `virtualizerOptions`. Exporting the `Virtualizer`, so consumers can compose it
+  with Nimbus collections, is a later step (design Decision 10).
 - **Stories and tests**: ListBox with 500 and 10,000 options, accessibility play
   tests, resilience stories (zoom, text spacing, long labels), internal grid and
   table stories, a timing story comparing virtualized and non-virtualized

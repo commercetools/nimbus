@@ -241,30 +241,40 @@ DataTable's styling (sticky columns, recipe selectors for `table`, `tr` and
 `td`, which no longer match when React Aria renders `div` elements); that is
 FEC-1145.
 
-### Decision 10 — Internal component; consumers use the collection prop
+### Decision 10 — Internal for now; consumers use the collection prop
 
-The `Virtualizer` component is **not exported**. Consumers only use Nimbus
-components, never React Aria directly, so the only way to virtualize is the
-`isVirtualized` prop of a Nimbus collection. The package exports one related
+The `Virtualizer` component is **not exported in this change**. Consumers only
+use Nimbus components, never React Aria directly. This change builds the
+component and uses it inside Nimbus, so for now the only way to virtualize is
+the `isVirtualized` prop of a Nimbus collection. The package exports one related
 type, `VirtualizerListLayoutOptions`, which types `virtualizerOptions`.
 
-The decision followed task 8.3: Nimbus bundles its own copy of React Aria
-(externalization is on hold, `packages/nimbus/vite.config.ts:130-134`). A public
-`Virtualizer` from the built package would provide its contexts from that
-bundled copy, and a React Aria collection from the consumer's own
-`react-aria-components` would never see it: in the built-bundle test, a wrapped
-React Aria `ListBox` rendered all 10,000 options.
+The long-term goal is to export the `Virtualizer` so consumers can compose it
+with Nimbus collections. Before that:
+
+- Wrapping a Nimbus collection in the `Virtualizer` must not loop (see
+  Implementation Findings).
+- The `Virtualizer` needs its own documentation page.
+
+A public `Virtualizer` will work with Nimbus collections only, not with a
+consumer's own `react-aria-components`. Nimbus bundles its own copy of React
+Aria (externalization is on hold, `packages/nimbus/vite.config.ts:130-134`), and
+the `Virtualizer` provides its contexts from that copy. Nimbus collections use
+the same copy, so this does not block the intended use. In the built-bundle test
+(task 8.3), a React Aria `ListBox` from outside the package, wrapped in the
+built `Virtualizer`, rendered all 10,000 options.
 
 `isVirtualized` and `virtualizerOptions` are documented as experimental in the
-ListBox documentation. The Virtualizer has no documentation page of its own; its
-stories live under "Components/Virtualizer (internal)" for maintainers.
+ListBox documentation. The Virtualizer has no documentation page of its own yet;
+its stories live under "Components/Virtualizer (internal)" for maintainers.
 
-- **Alternative: export it, marked Experimental** (the earlier decision).
-  Rejected: it cannot work with a consumer's own React Aria components, and
-  consumers do not use React Aria components directly.
-- **Alternative: externalize React Aria in the Nimbus build.** Rejected for this
-  change: a cross-cutting build change that is deliberately on hold, and
-  unnecessary once the component is internal.
+- **Alternative: export it now, marked Experimental** (the earlier decision).
+  Rejected for now: this change builds the component for use inside Nimbus, and
+  wrapping a Nimbus collection in it still loops.
+- **Alternative: externalize React Aria in the Nimbus build.** Not needed: the
+  `Virtualizer` only has to work with Nimbus collections, which use the same
+  bundled copy. Externalization is also a cross-cutting build change that is
+  deliberately on hold.
 
 ### Decision 11 — Unbounded collections scroll with their parent; no warning
 
@@ -413,14 +423,15 @@ ListBox root, types and recipe changes.
   announced as "2 of 1000". The story `VirtualizedWithSections` records this
   behaviour and fails if React Aria changes it. Documented as a known
   limitation; worth reporting upstream.
-- **A bundled React Aria copy.** The public `Virtualizer` did not virtualize a
-  consumer's own React Aria `ListBox` in the built bundle, because Nimbus
-  bundles React Aria. This led to Decision 10 (internal component).
+- **A bundled React Aria copy.** The built `Virtualizer` did not virtualize a
+  React Aria `ListBox` from outside the package, because Nimbus bundles React
+  Aria. Nimbus collections use the same copy, so this only limits a future
+  public `Virtualizer` to Nimbus collections (Decision 10).
 - **Wrapping a Nimbus collection in a `Virtualizer` loops.** Without the
   collection's virtualized styles and defaults, React reports "Maximum update
-  depth exceeded". With the component internal, consumers cannot do this, so
-  Nimbus adds no guard for it; collections must use `isVirtualized` internally
-  too.
+  depth exceeded". While the component is internal, collections only use it
+  through `isVirtualized`, so Nimbus adds no guard yet. Fixing this is a
+  prerequisite for exporting the `Virtualizer`.
 - **Focus ring at the scroll edge.** Keyboard focus scrolls the focused row
   flush with the scroll container's edge, cutting off the outside focus ring.
   React Aria's `scrollIntoView` respects CSS `scroll-padding`
