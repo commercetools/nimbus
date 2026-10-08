@@ -39,6 +39,10 @@ is a measured value, so use Meter. If the value only moves forward toward
 - **Show the number, not only the bar.** A filled bar alone is hard to read
   precisely. Meter shows a formatted value next to the label by default, so
   people do not have to guess.
+- **Show the value as text with the `minimal` layout.** This layout hides the
+  label and the value, so the bar is the only thing people see. Some fill colors
+  have low contrast with the track, so put the same value as visible text near
+  the meter, for example in the same table row.
 - **Use a semantic color palette on purpose.** `colorPalette="positive"`,
   `"warning"`, or `"critical"` should mean what they say. Do not use a semantic
   palette for a value that is not in that state.

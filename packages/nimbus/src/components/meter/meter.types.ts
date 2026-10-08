@@ -20,7 +20,8 @@ type MeterRecipeProps = {
   size?: SlotRecipeProps<"nimbusMeter">["size"];
   /**
    * Text style of the label, value and legend. `inherit` takes the text
-   * style of the surrounding content.
+   * style of the surrounding content. With a responsive `size`, the text
+   * uses `sm` unless `textStyle` is set.
    * @default follows `size`: `sm` → `xs`, `md` → `sm`, `lg` → `md`
    */
   textStyle?: SlotRecipeProps<"nimbusMeter">["textStyle"];
@@ -72,7 +73,9 @@ export type MeterSegment = {
   label: string;
   /**
    * Amount this segment contributes to the meter, in the same unit as
-   * `minValue`/`maxValue`. Negative values are treated as `0`.
+   * `minValue`/`maxValue`. Negative values are treated as `0`, and segments
+   * are cut where the total reaches `maxValue`. The legend and the text
+   * announced to assistive technology show the amount that is drawn.
    */
   value: number;
   /**
@@ -88,7 +91,8 @@ export type MeterSegment = {
 type MeterValueProps =
   | {
       /**
-       * The measured value
+       * The measured value. A value outside `minValue`–`maxValue` is clamped
+       * to the range, like the native `<meter>` element.
        * @default 0
        */
       value?: number;

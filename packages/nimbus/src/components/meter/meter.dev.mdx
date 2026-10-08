@@ -28,7 +28,10 @@ const App = () => <Meter value={40} label="CPU usage" />;
 `size` sets only the bar thickness: `sm` (4px), `md` (8px, default) and `lg`
 (12px). `textStyle` sets only the text of label, value and legend: `xs`, `sm`,
 `md`, or `inherit` to take the text style of the surrounding content. Without
-`textStyle`, the text follows `size` (`sm` → `xs`, `md` → `sm`, `lg` → `md`).
+`textStyle`, the text follows `size` (`sm` → `xs`, `md` → `sm`, `lg` → `md`). A
+responsive `size` (for example `size={{ base: "sm", md: "lg" }}`) has no single
+matching text style, so the text uses `sm`. Set `textStyle` yourself if the text
+should change too.
 
 ```jsx live-dev
 const App = () => (
@@ -123,10 +126,11 @@ const App = () => (
 ```
 
 If the segment values add up to more than the range, they are cut once the track
-is full. If a segment has a negative value, it is treated as `0`. Both cases log
-a warning in development mode, so keep the total inside the range in production
-data. A segment with value `0` draws nothing in the track but still appears in
-the legend.
+is full. If a segment has a negative value, it is treated as `0`. In both cases
+the legend and the announced text show the amount that is drawn, so the parts
+always add up to the total. Both cases log a warning in development mode, so
+keep the total inside the range in production data. A segment with value `0`
+draws nothing in the track but still appears in the legend.
 
 ### Segment colors
 

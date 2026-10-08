@@ -106,6 +106,8 @@
       explains why no focus/overlay snapshots exist.
 - [x] 5.7 Run nimbus-reviewer on the component folder; resolve all MUST-level
       findings.
-- [ ] 5.8 Manual screen-reader check (VoiceOver + NVDA) of a segmented meter;
-      record the result for Open Question 1 in `design.md`.
+- [ ] 5.8 Manual screen-reader check (VoiceOver + NVDA, JAWS if available) of a
+      segmented meter: check how `role="meter progressbar"` is announced and
+      whether the parentheses in `aria-valuetext` are spoken; record the result
+      for Open Question 1 in `design.md`.
 - [x] 5.9 `pnpm openspec validate add-meter-component --strict` passes.

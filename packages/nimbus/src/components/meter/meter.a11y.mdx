@@ -75,8 +75,12 @@ criterion 1.4.1, Use of Color).
 - Fills are flat colors; they do not use a gradient and do not animate. A
   transition may play when the width of a segment changes, and it is removed
   under `prefers-reduced-motion: reduce`.
-- Meaning never depends on color alone: the legend and the value text carry the
-  same information as the fill color.
+- Some fill colors have less than 3:1 contrast with the track, so the fill is
+  not the only way to read the value. In the `stacked` and `inline` layouts, and
+  in segment mode, visible text shows the same information as the fill.
+- The `minimal` layout hides the value text, and a single value has no legend.
+  Show the same value as visible text near the meter, for example in the same
+  table row (WCAG 2.1 success criterion 1.4.11, Non-text Contrast).
 
 ### Known limitation and open question
 

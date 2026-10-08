@@ -304,13 +304,15 @@ https://primer.style/product/components/progress-bar/accessibility/
     />
   </ProgressBar>
   ```
-- **Accessibility model: one `role="progressbar"` on the outer bar, with
-  `aria-valuenow` manually set to the SUM of the segments** (50 = 30+15+5). Each
-  `ProgressBar.Item` carries only its own `aria-label` (e.g. "30%") — no
-  evidence Items get their own role or aria-valuenow. Docs pair this with a
-  visible legend (`Stack` with `role="presentation"`) and say: "Use colors that
-  are easy to tell apart and include a legend that identifies what each segment
-  represents," and caution against overusing segments on narrow bars.
+- **Accessibility model: each `ProgressBar.Item` renders its own
+  `role="progressbar"` with `aria-valuenow`; the container has no role and drops
+  the `aria-valuenow` passed to it when it has Item children** (source:
+  https://github.com/primer/react/blob/main/packages/react/src/ProgressBar/ProgressBar.tsx,
+  checked 2026-10-08; an earlier reading of the docs example above wrongly
+  concluded one role on the outer bar). Docs pair this with a visible legend
+  (`Stack` with `role="presentation"`) and say: "Use colors that are easy to
+  tell apart and include a legend that identifies what each segment represents,"
+  and caution against overusing segments on narrow bars.
 - Accessibility page requires 3:1 contrast between adjacent segments ("This
   contrast requirement extends to multiple segments within ProgressBar"), "Do
   not rely on color alone to convey progress," legends must not rely solely on
@@ -409,9 +411,9 @@ https://github.com/mantinedev/mantine/blob/master/packages/@mantine/core/src/com
   Each `Progress.Section` has its own `value` and `color`; tooltips are added by
   wrapping an individual Section in a `<Tooltip>`, not a built-in prop.
   `orientation="vertical"` and `autoContrast` supported on Root.
-- **Accessibility model — the inverse of Primer's**: quoted from the docs,
-  "Progress section has `role="progressbar"` attribute" and "Progress section
-  has `aria-valuenow` attribute [with the] current value" — i.e. **each
+- **Accessibility model — one role per section, like Primer's**: quoted from the
+  docs, "Progress section has `role="progressbar"` attribute" and "Progress
+  section has `aria-valuenow` attribute [with the] current value" — i.e. **each
   individual `Progress.Section` gets its own `role="progressbar"` and
   `aria-valuenow`**, not one summarizing role on the Root.
   `aria-valuemin`/`aria-valuemax` are "always set to 0 and 100" regardless of
@@ -691,7 +693,7 @@ https://nordhealth.design/components/progress-bar/
 | Radix                           | No (`Progress`)                                      | `progressbar` (assumed)                 | No — open feature request               | n/a                                                                                                                        | radix-ui.com, GH #3740                        |
 | MUI Base UI                     | **Yes — `Meter`** (Root/Track/Indicator/Value/Label) | not stated in fetched text              | No                                      | n/a                                                                                                                        | base-ui.com                                   |
 | shadcn/ui                       | No (`Progress`)                                      | inherited from Radix/Base               | Community-only                          | consumer-composed array of Indicators                                                                                      | GH discussion #3464                           |
-| GitHub Primer                   | No (`ProgressBar`)                                   | one `progressbar`                       | **Yes**                                 | `ProgressBar.Item` children; one summed `aria-valuenow`, per-item `aria-label`, visible legend recommended                 | primer.style                                  |
+| GitHub Primer                   | No (`ProgressBar`)                                   | one `progressbar` per Item              | **Yes**                                 | `ProgressBar.Item` children, each with its own `aria-valuenow`; container has no role; visible legend recommended          | primer.style, github.com/primer/react         |
 | IBM Carbon (`@carbon/react`)    | No                                                   | `progressbar`-like (not stated)         | No                                      | n/a                                                                                                                        | github.com/carbon-design-system               |
 | Carbon Components Svelte        | **Yes — `Meter`**                                    | `meter`                                 | No                                      | thresholds only (warning/error), not multi-value                                                                           | svelte.carbondesignsystem.com                 |
 | Atlassian                       | No                                                   | not stated                              | No                                      | n/a                                                                                                                        | atlassian.design                              |
@@ -749,25 +751,25 @@ https://nordhealth.design/components/progress-bar/
    multi-segment implementation found is a library-level invention layered on
    top of (or around) the single-value primitive.
 
-4. **Where multi-segment support exists, exactly two accessibility strategies
-   were found, and they are mutually exclusive**:
-   - **(a) One role, summarized value.** GitHub Primer: a single
-     `role="progressbar"` on the outer container, `aria-valuenow` set to the
-     _sum_ of all segment values, each segment (`ProgressBar.Item`) given only a
-     plain `aria-label` describing its own share, plus an explicit
-     recommendation to add a **visible legend** and meet 3:1 contrast between
-     adjacent segments. Source: primer.style/components/ progress-bar.
-   - **(b) Multiple roles, one per segment.** Mantine: every `Progress.Section`
-     gets its **own** `role="progressbar"` and `aria-valuenow`, with
-     `aria-valuemin`/`aria-valuemax` hard-coded to 0/100 regardless of the real
-     data range, and per-section `aria-label` set by the consumer. Source:
-     mantine.dev/core/progress.
-   - A third pattern exists one level removed, in a chart rather than a bar:
-     Fluent UI's `GaugeChart` exposes the **whole gauge as one `role="img"`**
-     with a single generated `aria-label`, and per-segment text is baked into
-     that one label or into a customizable `accessibilityData` object — i.e.,
-     segments are described in prose, not exposed as separate ARIA nodes at all.
-     Source: microsoft.github.io/fluentui-charting-contrib.
+4. **Where multi-segment support exists in a bar, both libraries found use the
+   same accessibility strategy: one role per segment.** A summarizing strategy
+   was found only in a chart:
+   - **(a) Multiple roles, one per segment.** GitHub Primer: each
+     `ProgressBar.Item` renders its own `role="progressbar"` and
+     `aria-valuenow`, and the container has no role; Primer also recommends a
+     **visible legend** and 3:1 contrast between adjacent segments. Sources:
+     primer.style/components/progress-bar,
+     github.com/primer/react/blob/main/packages/react/src/ProgressBar/ProgressBar.tsx.
+     Mantine: every `Progress.Section` gets its **own** `role="progressbar"` and
+     `aria-valuenow`, with `aria-valuemin`/`aria-valuemax` hard-coded to 0/100
+     regardless of the real data range, and per-section `aria-label` set by the
+     consumer. Source: mantine.dev/core/progress.
+   - **(b) One role, summarized in prose**, one level removed, in a chart rather
+     than a bar: Fluent UI's `GaugeChart` exposes the **whole gauge as one
+     `role="img"`** with a single generated `aria-label`, and per-segment text
+     is baked into that one label or into a customizable `accessibilityData`
+     object — i.e., segments are described in prose, not exposed as separate
+     ARIA nodes at all. Source: microsoft.github.io/fluentui-charting-contrib.
    - Ant Design's `success`/`steps` segments, by contrast, appear to be **purely
      visual** — no ARIA documentation was found distinguishing them for
      assistive tech. Source: ant.design/components/progress.
@@ -818,10 +820,9 @@ added.
 
 - Pros: simplest consumer-facing API; easy to derive the summed `aria-valuenow`
   and a generated `aria-valuetext` automatically (e.g. "75% used: Photos 40%,
-  Apps 25%, System 10%") in one place, matching the "one role, summarized value"
-  strategy Primer uses (primer.style/components/progress-bar) but going further
-  by using `aria-valuetext` rather than only a legend, addressing the actual
-  content of aria-practices#1791 head-on.
+  Apps 25%, System 10%") in one place. No bar library found uses this "one role,
+  summarized value" strategy (Primer and Mantine use one role per segment); it
+  addresses the actual content of aria-practices#1791 head-on.
 - Cons: least composable — consumers can't slot in custom per-segment content
   (tooltips, icons) without an escape hatch; doesn't match Nimbus's general
   compound-component convention elsewhere in the library (per
@@ -845,11 +846,10 @@ added.
   Chakra v3 itself (chakra-ui.com/docs/components/progress) already use for the
   _single-value_ case, so it's the most idiomatic fit for a Chakra-v3-based
   library; each `Meter.Segment` can carry a tooltip, custom render, or
-  `render`/`asChild` prop the way Base UI's parts do; naturally extends to
-  Mantine's "each segment gets its own `role=progressbar`" strategy
-  (mantine.dev/core/progress) OR to Primer's "one summarizing role" strategy —
-  the choice is an internal implementation detail, not baked into the public
-  shape.
+  `render`/`asChild` prop the way Base UI's parts do; naturally extends to the
+  "each segment gets its own `role=progressbar`" strategy of Primer and Mantine
+  (mantine.dev/core/progress) OR to a "one summarizing role" strategy — the
+  choice is an internal implementation detail, not baked into the public shape.
 - Cons: more boilerplate for the common two-or-three-segment case; the
   single-value `Meter` and the multi-segment `Meter.Root`/`Segment` need careful
   API reconciliation so `<Meter value={40} />` and
@@ -880,8 +880,8 @@ added.
   reach for `Meter` vs `MeterGroup`.
 
 **Cross-cutting accessibility question for all three options**: which strategy
-to use for the underlying ARIA — Primer's "one role, summed value, per-item
-aria-label, visible legend" vs. Mantine's "one role per segment" — is
+to use for the underlying ARIA — "one role, summed value, generated text,
+visible legend" vs. Primer's and Mantine's "one role per segment" — is
 independent of which public API shape (1, 2, or 3) Nimbus picks, but must be
 decided explicitly, because (per w3c/aria-practices#1791 and the "no semantic
 children" constraint on `role=meter`/`role=progressbar` described in A2/A4)
@@ -889,12 +889,13 @@ there is no ratified standard to defer to.
 
 ### F3. Open questions
 
-1. **Which ARIA strategy for the composite value — Primer's single summed
-   `role=meter` + `aria-valuetext` describing all segments, or Mantine's one
-   `role=progressbar`-equivalent per segment?** Not resolved by any standard
-   (A4). This needs its own accessibility review/decision, likely with real
-   screen-reader testing, before implementation — this research surfaced only
-   what existing libraries chose, not evidence for which is better for users.
+1. **Which ARIA strategy for the composite value — a single summed `role=meter`
+   with `aria-valuetext` describing all segments, or one
+   `role=progressbar`-equivalent per segment as in Primer and Mantine?** Not
+   resolved by any standard (A4). This needs its own accessibility
+   review/decision, likely with real screen-reader testing, before
+   implementation — this research surfaced only what existing libraries chose,
+   not evidence for which is better for users.
 2. **Is `role="meter"` even valid to repeat on multiple sibling elements inside
    one widget**, the way Mantine repeats `role="progressbar"` per
    `Progress.Section`? The ARIA spec text this research could retrieve did not
