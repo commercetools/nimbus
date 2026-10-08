@@ -28,7 +28,12 @@ export const meterSlotRecipe = defineSlotRecipe({
     root: {
       "--meter-text-color": "{colors.neutral.12}",
       "--meter-track-bg": "{colors.neutralAlpha.3}",
-      "--meter-swatch-size": "round(0.625em, 1px)",
+      "--meter-swatch-size": "0.625em",
+      // Whole pixels keep the swatch edges sharp. Without the check, browsers
+      // without `round()` would draw no swatch at all
+      "@supports (width: round(1px, 1px))": {
+        "--meter-swatch-size": "round(0.625em, 1px)",
+      },
       position: "relative",
       width: "100%",
       display: "flex",
