@@ -312,7 +312,7 @@ const App = () => {
 
   return (
     <Stack direction="column" gap="400">
-      <Text fontSize="sm" color="fg.muted">
+      <Text fontSize="sm" color="fg.subtle">
         Last dismissal attempt: {lastAction || 'None'}
       </Text>
 
@@ -406,7 +406,7 @@ const App = () => {
               <Text>• Stop the shipment if it hasn't been dispatched</Text>
               <Text>• Send a cancellation confirmation email</Text>
             </Stack>
-            <Text fontSize="sm" color="fg.muted">
+            <Text fontSize="sm" color="fg.subtle">
               Refunds typically take 3-5 business days to appear in your account.
             </Text>
           </Stack>
@@ -517,7 +517,7 @@ const App = () => {
                 Please wait while we delete the selected products. This may take a moment.
               </Text>
               <Stack direction="column" gap="200">
-                <Text fontSize="sm" color="fg.muted">
+                <Text fontSize="sm" color="fg.subtle">
                   {deletedCount} of {totalItems} products deleted
                 </Text>
                 <Box

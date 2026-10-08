@@ -11,6 +11,9 @@ export const colors = defineSemanticTokens.colors({
     DEFAULT: {
       value: "{colors.neutral.12}",
     },
+    subtle: {
+      value: "{colors.neutral.11}",
+    },
   },
   border: {
     DEFAULT: {
