@@ -72,4 +72,19 @@ describe("getMeterSegments", () => {
     expect(result.total).toBe(0);
     expect(result.hasOverflow).toBe(false);
   });
+
+  it("shares the gaps between drawn segments in proportion to their width", () => {
+    const result = getMeterSegments(
+      [{ value: 30 }, { value: 0 }, { value: 20 }],
+      0,
+      100
+    );
+    // Two drawn segments, one gap: 30/50 and 20/50 of it
+    expect(result.items.map((item) => item.gapShare)).toEqual([0.6, 0, 0.4]);
+  });
+
+  it("gives no gap share to a single drawn segment", () => {
+    const result = getMeterSegments([{ value: 40 }], 0, 100);
+    expect(result.items[0].gapShare).toBe(0);
+  });
 });

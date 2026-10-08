@@ -10,18 +10,22 @@ GB of 100 GB"), which no Nimbus component supports today.
 
 ## What Changes
 
-- Add a new `Meter` component, built on React Aria Components `<Meter>`
-  (`role="meter"`).
-- Single-value mode: `value` / `minValue` / `maxValue`, `label`,
-  `formatOptions`, `valueLabel`, `size` (`2xs` | `md`), `layout` (`minimal` |
-  `inline` | `stacked`), `colorPalette`. Visual shape matches `ProgressBar`, but
-  uses a flat fill (no gradient, no animation).
+- Add a new compound `Meter` component, built on React Aria Components `<Meter>`
+  (`role="meter"`): `Meter.Root` holds all data, and the parts `Meter.Label`,
+  `Meter.Value`, `Meter.Track` and `Meter.Legend` show it. Consumers choose
+  which parts to render and style each part.
+- `Meter.Root` props: `value` / `minValue` / `maxValue`, `formatOptions`,
+  `valueLabel`, `size` (`sm` | `md` | `lg`), `layout` (`stacked` | `inline`),
+  `colorPalette`. Visual shape matches `ProgressBar`, but uses a flat fill (no
+  gradient, no animation).
 - Multi-segment mode: a `segments` array (`{ id, label, value, colorPalette? }`)
-  draws several parts inside one track, always with a visible legend. One
-  `role="meter"` whose `aria-valuenow` is the sum of the segments and whose
-  `aria-valuetext` is a generated, locale-formatted summary of all segments.
+  on `Meter.Root` draws several parts inside one track, with a visible legend
+  from `Meter.Legend`. One `role="meter"` whose `aria-valuenow` is the sum of
+  the segments and whose `aria-valuetext` is a generated, locale-formatted
+  summary of all segments.
 - Semantic color (for example `positive` / `warning` / `critical`) is set by the
-  consumer through `colorPalette`. No automatic thresholds in this change.
+  consumer through `colorPalette`, or changes with the value through
+  `thresholds` (single value only).
 - Register the `nimbusMeter` slot recipe and export `Meter` from
   `@commercetools/nimbus`.
 - No breaking changes. `ProgressBar` is not changed.

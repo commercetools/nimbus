@@ -4,16 +4,16 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * Recipe configuration for the Meter component.
  * Defines the styling variants and base styles using Chakra UI's slot recipe system.
  *
- * Two independent axes: `size` sets the bar (height, radius, segment gap) in
- * fixed tokens, and `textStyle` sets the text. Spacing and the legend swatch
- * are in `em`, so they follow the text.
+ * Each part has a fixed grid area, so `layout` places the parts no matter in
+ * which order they are written. Spacing comes from margins on the parts, not
+ * from grid `gap`, so a part that is left out leaves no empty space. Spacing
+ * and the legend swatch are in `em`, so they follow the text.
  */
 export const meterSlotRecipe = defineSlotRecipe({
   className: "nimbus-meter",
 
   slots: [
     "root",
-    "header",
     "label",
     "value",
     "track",
@@ -36,31 +36,24 @@ export const meterSlotRecipe = defineSlotRecipe({
       },
       position: "relative",
       width: "100%",
-      display: "flex",
-      flexDirection: "column",
-      gap: "0.5em",
+      display: "grid",
       color: "var(--meter-text-color)",
     },
 
-    header: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "baseline",
-      gap: "0.5em",
+    label: {
+      gridArea: "label",
     },
 
-    label: {},
-
     value: {
+      gridArea: "value",
       fontVariantNumeric: "tabular-nums",
-      // Keeps the value at the end of the header, also without a label
-      marginInlineStart: "auto",
+      textAlign: "end",
       // A value such as "62 GB" must not break onto two lines
       whiteSpace: "nowrap",
-      flexShrink: 0,
     },
 
     track: {
+      gridArea: "track",
       display: "flex",
       // Gap keeps adjacent segments distinguishable, even with similar colors
       gap: "var(--meter-segment-gap)",
@@ -74,8 +67,8 @@ export const meterSlotRecipe = defineSlotRecipe({
     segment: {
       backgroundColor: "colorPalette.9",
       height: "100%",
-      // Lets segments give up gap space to fill the whole track
-      flexShrink: 1,
+      // The width already leaves room for the gaps (see Meter.Track)
+      flexShrink: 0,
       minWidth: 0,
       borderRadius: "var(--meter-radius)",
       transitionProperty: "width",
@@ -87,12 +80,14 @@ export const meterSlotRecipe = defineSlotRecipe({
     },
 
     legend: {
+      gridArea: "legend",
       display: "flex",
       flexWrap: "wrap",
       columnGap: "1em",
       rowGap: "0.25em",
       listStyle: "none",
       margin: 0,
+      marginTop: "0.5em",
       padding: 0,
     },
 
@@ -114,7 +109,8 @@ export const meterSlotRecipe = defineSlotRecipe({
 
   // Available variants for customizing the component's appearance
   variants: {
-    // Bar thickness only; the text is set by `textStyle`
+    // Bar thickness, and the default text style that matches it. The
+    // `textStyle` style prop on Root or on one part changes the text.
     size: {
       // Dense contexts: tables, sidebars, several meters in a card
       sm: {
@@ -122,6 +118,7 @@ export const meterSlotRecipe = defineSlotRecipe({
           "--meter-height": "{spacing.100}",
           "--meter-radius": "{radii.50}",
           "--meter-segment-gap": "{spacing.25}",
+          textStyle: "xs",
         },
       },
       // Standard page content
@@ -130,6 +127,7 @@ export const meterSlotRecipe = defineSlotRecipe({
           "--meter-height": "{spacing.200}",
           "--meter-radius": "{radii.50}",
           "--meter-segment-gap": "{spacing.50}",
+          textStyle: "sm",
         },
       },
       // The meter is the main focus of the view
@@ -138,51 +136,44 @@ export const meterSlotRecipe = defineSlotRecipe({
           "--meter-height": "{spacing.300}",
           "--meter-radius": "{radii.50}",
           "--meter-segment-gap": "{spacing.50}",
+          textStyle: "md",
         },
       },
-    },
-
-    // Text of label, value and legend; the default follows `size` (see
-    // METER_DEFAULT_TEXT_STYLES)
-    textStyle: {
-      xs: { root: { textStyle: "xs" } },
-      sm: { root: { textStyle: "sm" } },
-      md: { root: { textStyle: "md" } },
-      // Takes font size and line height from the surrounding text
-      inherit: { root: {} },
     },
 
     layout: {
-      minimal: {
-        header: {
-          display: "none",
-        },
-      },
-      inline: {
+      // Label and value on one line above the track, legend below
+      stacked: {
         root: {
-          flexDirection: "row",
-          flexWrap: "wrap",
-          alignItems: "center",
-          columnGap: "1em",
-          rowGap: "0.5em",
+          gridTemplateAreas: `"label value" "track track" "legend legend"`,
+          gridTemplateColumns: "minmax(0, 1fr) auto",
         },
-        track: {
-          flex: 1,
+        label: {
+          alignSelf: "baseline",
+          marginBottom: "0.5em",
         },
         value: {
+          alignSelf: "baseline",
+          marginBottom: "0.5em",
+          marginInlineStart: "0.5em",
+        },
+      },
+      // Label, track and value on one line, legend below
+      inline: {
+        root: {
+          gridTemplateAreas: `"label track value" "legend legend legend"`,
+          gridTemplateColumns: "auto minmax(0, 1fr) auto",
+          alignItems: "center",
+        },
+        label: {
+          marginInlineEnd: "1em",
+        },
+        value: {
+          marginInlineStart: "1em",
           // With tabular numbers every digit is 1ch wide, so the widest
           // percent ("100 %" with a space, as in German) fits in 5ch. Meters
           // in a column then get the same track width. Longer values grow.
           minWidth: "5ch",
-          textAlign: "end",
-        },
-        legend: {
-          flexBasis: "100%",
-        },
-      },
-      stacked: {
-        root: {
-          flexDirection: "column",
         },
       },
     },

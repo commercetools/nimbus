@@ -8,7 +8,7 @@ import {
   Flex,
   Heading,
   Meter,
-  type MeterProps,
+  type MeterRootProps,
   type MeterSegment,
   ProgressBar,
   Separator,
@@ -18,9 +18,9 @@ import {
   Text,
 } from "@commercetools/nimbus";
 
-const meta: Meta<typeof Meter> = {
+const meta: Meta<typeof Meter.Root> = {
   title: "Playground/Meter",
-  component: Meter,
+  component: Meter.Root,
   parameters: {
     a11y: {
       config: {
@@ -40,10 +40,10 @@ const meta: Meta<typeof Meter> = {
 
 export default meta;
 
-type Story = StoryObj<typeof Meter>;
+type Story = StoryObj<typeof Meter.Root>;
 
 const sizes = ["sm", "md", "lg"] as const;
-const layouts = ["minimal", "inline", "stacked"] as const;
+const layouts = ["stacked", "inline"] as const;
 const statePalettes = ["primary", "positive", "warning", "critical"] as const;
 
 const storage: MeterSegment[] = [
@@ -108,6 +108,25 @@ const Frame = ({
   </Box>
 );
 
+type FullMeterProps = MeterRootProps & {
+  /** Content of `Meter.Label` */
+  label: string;
+};
+
+/**
+ * Meter with every part: label, value, track and legend. The matrices
+ * compare sizes, layouts and values, so they all use the same parts.
+ * `Meter.Legend` renders nothing for a single value.
+ */
+const FullMeter = ({ label, ...rootProps }: FullMeterProps) => (
+  <Meter.Root {...rootProps}>
+    <Meter.Label>{label}</Meter.Label>
+    <Meter.Value />
+    <Meter.Track />
+    <Meter.Legend />
+  </Meter.Root>
+);
+
 // ============================================================
 // MATRICES
 // ============================================================
@@ -121,63 +140,92 @@ const SizeLayoutMatrix = ({ segments }: { segments?: MeterSegment[] }) => (
           <Text fontWeight="600">{layout}</Text>
         </Box>
       ))}
+      <Box flex="1">
+        <Text fontWeight="600">only Meter.Track</Text>
+      </Box>
     </Stack>
     {sizes.map((size) => (
       <Stack key={size} direction="row" gap="600" alignItems="flex-start">
         <RowLabel>{size}</RowLabel>
         {layouts.map((layout) => (
           <Box key={layout} flex="1" minWidth="0">
-            <Meter
+            <FullMeter
               size={size}
               layout={layout}
               label={segments ? "Storage" : "Usage"}
-              aria-label={segments ? "Storage" : "Usage"}
               {...(segments
                 ? { segments, formatOptions: gigabytes }
                 : { value: 62 })}
             />
           </Box>
         ))}
+        <Box flex="1" minWidth="0">
+          {/* Without label and value, only the bar is shown. The legend
+              stays for segments, so they are not told apart by color only */}
+          <Meter.Root
+            size={size}
+            aria-label={segments ? "Storage" : "Usage"}
+            {...(segments
+              ? { segments, formatOptions: gigabytes }
+              : { value: 62 })}
+          >
+            <Meter.Track />
+            <Meter.Legend />
+          </Meter.Root>
+        </Box>
       </Stack>
     ))}
   </Stack>
 );
 
-const textStyles = ["xs", "sm", "md"] as const;
-
-const SizeTextStyleMatrix = () => (
+const TextStyleMatrix = () => (
   <Stack gap="600">
     <Stack direction="row" gap="400">
       <Box width="90px" flexShrink="0">
-        <Caption>size ↓ text →</Caption>
+        <Caption>size ↓</Caption>
       </Box>
-      {textStyles.map((textStyle) => (
-        <Box key={textStyle} flex="1">
-          <Text fontWeight="600">{textStyle}</Text>
-        </Box>
-      ))}
+      <Box flex="1">
+        <Text fontWeight="600">Default text</Text>
+      </Box>
+      <Box flex="1">
+        <Text fontWeight="600">textStyle md on Meter.Root</Text>
+      </Box>
+      <Box flex="1">
+        <Text fontWeight="600">textStyle 2xl on Meter.Value</Text>
+      </Box>
     </Stack>
     {sizes.map((size) => (
       <Stack key={size} direction="row" gap="400" alignItems="flex-start">
         <RowLabel>{size}</RowLabel>
-        {textStyles.map((textStyle) => (
-          <Box
-            key={textStyle}
-            flex="1"
-            minWidth="0"
-            padding="200"
-            borderRadius="200"
-            bg={size === textStyle ? "primary.2" : undefined}
+        <Box flex="1" minWidth="0">
+          <FullMeter
+            size={size}
+            label="Storage"
+            segments={storage.slice(0, 2)}
+            formatOptions={gigabytes}
+          />
+        </Box>
+        <Box flex="1" minWidth="0">
+          <FullMeter
+            size={size}
+            textStyle="md"
+            label="Storage"
+            segments={storage.slice(0, 2)}
+            formatOptions={gigabytes}
+          />
+        </Box>
+        <Box flex="1" minWidth="0">
+          <Meter.Root
+            size={size}
+            segments={storage.slice(0, 2)}
+            formatOptions={gigabytes}
           >
-            <Meter
-              size={size}
-              textStyle={textStyle}
-              label="Storage"
-              segments={storage.slice(0, 2)}
-              formatOptions={gigabytes}
-            />
-          </Box>
-        ))}
+            <Meter.Label>Storage</Meter.Label>
+            <Meter.Value textStyle="2xl" fontWeight="700" />
+            <Meter.Track />
+            <Meter.Legend />
+          </Meter.Root>
+        </Box>
       </Stack>
     ))}
   </Stack>
@@ -199,32 +247,42 @@ const PlanUsageCardAssembly = () => (
     </Card.Header>
     <Card.Body>
       <Stack gap="500">
-        <Meter
+        <Meter.Root
           size="sm"
           textStyle="sm"
-          label="API calls this month"
           value={1_240_000}
           maxValue={2_000_000}
           formatOptions={{ notation: "compact" }}
           valueLabel="1.24M of 2M"
-        />
-        <Meter
+        >
+          <Meter.Label>API calls this month</Meter.Label>
+          <Meter.Value />
+          <Meter.Track />
+        </Meter.Root>
+        <Meter.Root
           size="sm"
           textStyle="sm"
-          label="Storage"
           segments={storage}
           formatOptions={gigabytes}
-        />
-        <Meter
+        >
+          <Meter.Label>Storage</Meter.Label>
+          <Meter.Value />
+          <Meter.Track />
+          <Meter.Legend />
+        </Meter.Root>
+        <Meter.Root
           size="sm"
           textStyle="sm"
-          label="Team seats"
           value={9}
           maxValue={10}
           formatOptions={{}}
           valueLabel="9 of 10"
           colorPalette="warning"
-        />
+        >
+          <Meter.Label>Team seats</Meter.Label>
+          <Meter.Value />
+          <Meter.Track />
+        </Meter.Root>
       </Stack>
     </Card.Body>
   </Card.Root>
@@ -256,14 +314,20 @@ const WarehouseTableAssembly = () => (
             <Table.Cell>{w.name}</Table.Cell>
             <Table.Cell>{w.sku}</Table.Cell>
             <Table.Cell>
-              <Meter
+              {/* The warehouse name is in the first column, so the meter
+                  is named with aria-label. textStyle sm matches the text of
+                  a table cell (Table size md) */}
+              <Meter.Root
                 size="sm"
-                textStyle="inherit"
+                textStyle="sm"
                 layout="inline"
                 aria-label={`${w.name} capacity`}
                 value={w.capacity}
                 colorPalette={paletteForCapacity(w.capacity)}
-              />
+              >
+                <Meter.Track />
+                <Meter.Value />
+              </Meter.Root>
             </Table.Cell>
           </Table.Row>
         ))}
@@ -282,16 +346,15 @@ const KpiTilesAssembly = () => (
       <Card.Root key={kpi.title} variant="outlined" size="sm">
         <Card.Body>
           <Stack gap="200">
-            <Caption>{kpi.title}</Caption>
-            <Text fontSize="750" fontWeight="700" lineHeight="1">
-              {kpi.value}%
-            </Text>
-            <Meter
-              size="sm"
-              layout="minimal"
-              aria-label={kpi.title}
-              value={kpi.value}
-            />
+            {/* The title names the meter and the big number is its own
+                formatted value, so both stay linked to the meter */}
+            <Meter.Root size="sm" value={kpi.value}>
+              <Meter.Label color="neutral.11" fontSize="300">
+                {kpi.title}
+              </Meter.Label>
+              <Meter.Value fontSize="750" fontWeight="700" lineHeight="1" />
+              <Meter.Track />
+            </Meter.Root>
             <Caption>{kpi.note}</Caption>
           </Stack>
         </Card.Body>
@@ -313,14 +376,17 @@ const SidebarQuotaAssembly = () => (
       <Text fontWeight="600" fontSize="350">
         Media library
       </Text>
-      <Meter
+      <Meter.Root
         size="sm"
-        label="Storage used"
         value={7.4}
         maxValue={10}
         formatOptions={gigabytes}
         valueLabel="7.4 of 10 GB"
-      />
+      >
+        <Meter.Label>Storage used</Meter.Label>
+        <Meter.Value />
+        <Meter.Track />
+      </Meter.Root>
       <Button size="2xs" variant="outline">
         Upgrade storage
       </Button>
@@ -335,9 +401,8 @@ const ImportJobAssembly = () => (
         <Heading size="md">Last product import</Heading>
         <Caption>Finished 5 minutes ago</Caption>
       </Flex>
-      <Meter
+      <Meter.Root
         size="md"
-        label="Rows processed"
         formatOptions={{}}
         maxValue={12_000}
         valueLabel="12,000 rows"
@@ -361,7 +426,12 @@ const ImportJobAssembly = () => (
             colorPalette: "critical",
           },
         ]}
-      />
+      >
+        <Meter.Label>Rows processed</Meter.Label>
+        <Meter.Value />
+        <Meter.Track />
+        <Meter.Legend />
+      </Meter.Root>
     </Stack>
   </Frame>
 );
@@ -370,20 +440,19 @@ const InlineTextAssembly = () => (
   <Frame>
     <Stack gap="400">
       {(["xs", "sm", "md", "lg", "2xl"] as const).map((textStyle) => (
-        <Box key={textStyle} textStyle={textStyle}>
-          <Flex gap="1em" alignItems="center">
-            <Text textStyle={textStyle} whiteSpace="nowrap">
-              Profile {textStyle}
-            </Text>
-            <Meter
-              textStyle="inherit"
-              layout="inline"
-              aria-label="Profile completeness"
-              value={70}
-              maxWidth="240px"
-            />
-          </Flex>
-        </Box>
+        // textStyle on Root gives label and value the size of the text
+        // around the meter; the bar keeps size md
+        <Meter.Root
+          key={textStyle}
+          textStyle={textStyle}
+          layout="inline"
+          value={70}
+          maxWidth="420px"
+        >
+          <Meter.Label whiteSpace="nowrap">Profile {textStyle}</Meter.Label>
+          <Meter.Track />
+          <Meter.Value />
+        </Meter.Root>
       ))}
     </Stack>
   </Frame>
@@ -433,10 +502,15 @@ const ComparisonMatrix = ({ layout }: { layout: "stacked" | "inline" }) => (
           />
         </Box>
         <Box flex="1" minWidth="0">
-          <Meter size={row.meter} layout={layout} label="Storage" value={62} />
+          <FullMeter
+            size={row.meter}
+            layout={layout}
+            label="Storage"
+            value={62}
+          />
         </Box>
         <Box flex="1" minWidth="0">
-          <Meter
+          <FullMeter
             size={row.meter}
             textStyle={row.matchedText}
             layout={layout}
@@ -457,13 +531,13 @@ const MixedCardAssembly = () => (
     <Card.Body>
       <Stack gap="500">
         <ProgressBar size="md" label="Uploading 12 files" value={40} />
-        <Meter
+        <FullMeter
           size="md"
           label="Storage used"
           segments={storage}
           formatOptions={gigabytes}
         />
-        <Meter
+        <FullMeter
           size="md"
           textStyle="md"
           label="Storage used (text md)"
@@ -490,25 +564,26 @@ export const Exploration: Story = {
         <SectionHeading>1 · Single value — size × layout</SectionHeading>
         <Caption>
           Without `textStyle`, the text follows `size`, so each row is a matched
-          pair.
+          pair. The last column leaves out Meter.Label and Meter.Value.
         </Caption>
         <SizeLayoutMatrix />
       </Stack>
 
       <Stack gap="400">
-        <SectionHeading>
-          1b · Independent axes — size × textStyle
-        </SectionHeading>
+        <SectionHeading>1b · Text style — size × textStyle</SectionHeading>
         <Caption>
-          `size` sets only the bar, `textStyle` only the text. The diagonal is
-          the default pairing.
+          `size` sets the bar and a matching default text. The `textStyle` style
+          prop changes the text: on Meter.Root for every part, or on one part
+          only.
         </Caption>
-        <SizeTextStyleMatrix />
+        <TextStyleMatrix />
       </Stack>
 
       <Stack gap="400">
         <SectionHeading>2 · Segments — size × layout</SectionHeading>
-        <Caption>The legend is added automatically for segments.</Caption>
+        <Caption>
+          Meter.Legend shows the name and value of each segment.
+        </Caption>
         <SizeLayoutMatrix segments={storage} />
       </Stack>
 
@@ -517,7 +592,7 @@ export const Exploration: Story = {
         <SubHeading>Semantic palettes (single value)</SubHeading>
         <SimpleGrid columns={2} gap="400" maxWidth="760px">
           {statePalettes.map((palette) => (
-            <Meter
+            <FullMeter
               key={palette}
               label={palette}
               value={65}
@@ -527,35 +602,35 @@ export const Exploration: Story = {
         </SimpleGrid>
         <SubHeading>Default segment sequence (7 segments, repeats)</SubHeading>
         <Box maxWidth="760px">
-          <Meter label="Revenue by category" segments={manySegments} />
+          <FullMeter label="Revenue by category" segments={manySegments} />
         </Box>
       </Stack>
 
       <Stack gap="400">
         <SectionHeading>4 · Values and formatting</SectionHeading>
         <SimpleGrid columns={2} gap="600" maxWidth="760px">
-          <Meter label="Percent (default)" value={0} />
-          <Meter label="Full" value={100} />
-          <Meter
+          <FullMeter label="Percent (default)" value={0} />
+          <FullMeter label="Full" value={100} />
+          <FullMeter
             label="Units"
             value={42}
             maxValue={64}
             formatOptions={gigabytes}
           />
-          <Meter
+          <FullMeter
             label="Custom value label"
             value={42}
             maxValue={64}
             valueLabel="42 of 64 GB"
           />
-          <Meter
+          <FullMeter
             label="Custom range (−20 to 40 °C)"
             value={18}
             minValue={-20}
             maxValue={40}
             formatOptions={{ style: "unit", unit: "celsius" }}
           />
-          <Meter label="Clamped (value 140)" value={140} />
+          <FullMeter label="Clamped (value 140)" value={140} />
         </SimpleGrid>
       </Stack>
 
@@ -563,7 +638,7 @@ export const Exploration: Story = {
         <SectionHeading>5 · Stress cases</SectionHeading>
         <SubHeading>Long label and legend in a narrow container</SubHeading>
         <Frame maxWidth="280px">
-          <Meter
+          <FullMeter
             label="Storage used by the product media library across all stores"
             segments={storage}
             formatOptions={gigabytes}
@@ -571,7 +646,7 @@ export const Exploration: Story = {
         </Frame>
         <SubHeading>Very small segments</SubHeading>
         <Box maxWidth="760px">
-          <Meter
+          <FullMeter
             label="Tiny parts"
             segments={[
               { id: "a", label: "Main", value: 80 },
@@ -597,15 +672,17 @@ export const Exploration: Story = {
         <Stack gap="300">
           <SubHeading>Table cell</SubHeading>
           <Caption>
-            sm · textStyle inherit · inline · takes the table text size ·
-            palette chosen by the consumer from the value
+            sm · textStyle sm (same as the table text) · inline · track and
+            value only · palette chosen by the consumer from the value
           </Caption>
           <WarehouseTableAssembly />
         </Stack>
 
         <Stack gap="300">
           <SubHeading>KPI tiles</SubHeading>
-          <Caption>sm · minimal · the big number carries the value</Caption>
+          <Caption>
+            sm · Meter.Label as the title · big Meter.Value through style props
+          </Caption>
           <KpiTilesAssembly />
         </Stack>
 
@@ -626,9 +703,10 @@ export const Exploration: Story = {
         </Stack>
 
         <Stack gap="300">
-          <SubHeading>Next to text of different sizes</SubHeading>
+          <SubHeading>Text of different sizes</SubHeading>
           <Caption>
-            textStyle inherit · inline · text follows the context, bar stays md
+            textStyle on Meter.Root · inline · text follows the textStyle, bar
+            stays md
           </Caption>
           <InlineTextAssembly />
         </Stack>
@@ -638,8 +716,8 @@ export const Exploration: Story = {
         <SectionHeading>7 · Meter and ProgressBar side by side</SectionHeading>
         <Caption>
           Same value and layout. ProgressBar sets bar and text together; the
-          Meter sets them separately. The right column shows the Meter with its
-          text matched to the ProgressBar.
+          Meter text follows its size unless `textStyle` is set. The right
+          column shows the Meter with its text matched to the ProgressBar.
         </Caption>
 
         <Stack gap="400">
@@ -669,11 +747,14 @@ type ConfiguratorArgs = {
   value: number;
   minValue: number;
   maxValue: number;
-  size: NonNullable<MeterProps["size"]>;
-  textStyle: NonNullable<MeterProps["textStyle"]> | "same as size";
-  layout: NonNullable<MeterProps["layout"]>;
-  colorPalette: NonNullable<MeterProps["colorPalette"]>;
+  size: NonNullable<MeterRootProps["size"]>;
+  textStyle: "none" | "xs" | "sm" | "md" | "lg" | "xl";
+  layout: NonNullable<MeterRootProps["layout"]>;
+  colorPalette: NonNullable<MeterRootProps["colorPalette"]>;
   label: string;
+  showLabel: boolean;
+  showValue: boolean;
+  showLegend: boolean;
   mode: "single" | "segments";
   segmentCount: number;
   format: "percent" | "gigabytes" | "plain";
@@ -700,10 +781,13 @@ export const Configurator: StoryObj<ConfiguratorArgs> = {
     maxValue: 100,
     segmentCount: 3,
     size: "md",
-    textStyle: "same as size",
+    textStyle: "none",
     layout: "stacked",
     colorPalette: "primary",
     label: "Storage",
+    showLabel: true,
+    showValue: true,
+    showLegend: true,
     format: "percent",
     context: "none",
     containerWidth: 480,
@@ -719,14 +803,24 @@ export const Configurator: StoryObj<ConfiguratorArgs> = {
     size: {
       control: "inline-radio",
       options: sizes,
-      description: "Bar thickness",
+      description: "Bar thickness and default text",
     },
     textStyle: {
       control: "inline-radio",
-      options: ["same as size", ...textStyles, "inherit"],
-      description: "Text of label, value and legend",
+      options: ["none", "xs", "sm", "md", "lg", "xl"],
+      description: "textStyle style prop on Meter.Root (none: follows size)",
     },
     layout: { control: "inline-radio", options: layouts },
+    showLabel: {
+      control: "boolean",
+      description:
+        "Render Meter.Label (without it, aria-label names the meter)",
+    },
+    showValue: { control: "boolean", description: "Render Meter.Value" },
+    showLegend: {
+      control: "boolean",
+      description: "Render Meter.Legend (shows only with segments)",
+    },
     colorPalette: {
       control: "select",
       options: [...statePalettes, "neutral", "teal", "orange", "pink"],
@@ -746,7 +840,7 @@ export const Configurator: StoryObj<ConfiguratorArgs> = {
     contextTextStyle: {
       control: "inline-radio",
       options: ["xs", "sm", "md", "lg", "2xl"],
-      description: "Text style of the context; used by textStyle `inherit`",
+      description: "Text style of the content around the meter",
     },
   },
   render: ({
@@ -758,18 +852,28 @@ export const Configurator: StoryObj<ConfiguratorArgs> = {
     contextTextStyle,
     value,
     textStyle,
-    ...meterProps
+    label,
+    showLabel,
+    showValue,
+    showLegend,
+    minValue,
+    ...rootProps
   }) => {
     const meter = (
-      <Meter
-        {...meterProps}
-        textStyle={textStyle === "same as size" ? undefined : textStyle}
-        aria-label={meterProps.label ? undefined : "Meter"}
+      <Meter.Root
+        {...rootProps}
+        textStyle={textStyle === "none" ? undefined : textStyle}
+        aria-label={showLabel ? undefined : label || "Meter"}
         formatOptions={formats[format]}
         {...(mode === "segments"
           ? { segments: manySegments.slice(0, segmentCount) }
-          : { value })}
-      />
+          : { value, minValue })}
+      >
+        {showLabel && <Meter.Label>{label}</Meter.Label>}
+        {showValue && <Meter.Value />}
+        <Meter.Track />
+        {showLegend && <Meter.Legend />}
+      </Meter.Root>
     );
 
     if (context === "card") {

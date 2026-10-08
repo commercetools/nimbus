@@ -11,21 +11,28 @@ A meter shows a measured value inside a known range. It is not a control, so it
 is never focusable and does not respond to keyboard input.
 
 ```jsx live
-const App = () => <Meter value={40} label="CPU usage" />;
+const App = () => (
+  <Meter.Root value={40}>
+    <Meter.Label>CPU usage</Meter.Label>
+    <Meter.Value />
+    <Meter.Track />
+  </Meter.Root>
+);
 ```
 
 ### Roles and states
 
-- The rendered element has `role="meter"`. React Aria adds a second, fallback
+- `Meter.Root` renders the element with `role="meter"`. React Aria adds a second, fallback
   role token in the DOM (`role="meter progressbar"`) for browsers that do not
   support the `meter` role; assistive technology treats this as the `meter`
   role.
 - The element exposes `aria-valuemin`, `aria-valuemax`, and `aria-valuenow`.
-- In segment mode, `aria-valuenow` is `minValue` plus the sum of the clamped
+- In segment mode, `aria-valuenow` is the sum of the clamped
   segment values, and `aria-valuetext` announces a full summary: the formatted
   total, followed in parentheses by every segment's label and formatted value,
   in order, joined the way a list is normally read out (for example, "50 GB
-  (Images: 30 GB, Videos: 20 GB)").
+  (Images: 30 GB, Videos: 20 GB)"). `Meter.Root` builds this text from its
+  data, so it is the same no matter which parts are rendered.
 - The meter itself is the only element with an explicit ARIA role. Segments and
   the legend do not carry their own role, because ARIA treats the children of a
   `meter` as presentational; giving a segment its own role would make it
@@ -35,16 +42,19 @@ const App = () => <Meter value={40} label="CPU usage" />;
 
 Give every meter an accessible name:
 
-- Use the visible `label` prop when there is room for a visible label.
-- Use `aria-label` or `aria-labelledby` when the visible label is hidden, for
-  example with `layout="minimal"`.
-- If none of `label`, `aria-label`, or `aria-labelledby` is provided, React Aria
-  logs a warning in development mode so the missing name is caught before
-  release.
+- Use `Meter.Label` when there is room for a visible label. The meter is
+  labelled by it through `aria-labelledby`.
+- Use `aria-label` or `aria-labelledby` on `Meter.Root` when the meter has no
+  visible label, for example when it shows only the bar.
+- If there is no `Meter.Label` and `Meter.Root` has neither `aria-label` nor
+  `aria-labelledby`, React Aria logs a warning in development mode so the
+  missing name is caught before release.
 
 ```jsx live
 const App = () => (
-  <Meter value={72} layout="minimal" aria-label="Storage used" />
+  <Meter.Root value={72} aria-label="Storage used">
+    <Meter.Track />
+  </Meter.Root>
 );
 ```
 
@@ -59,9 +69,10 @@ interaction:
 
 ### Legend
 
-In segment mode, Meter renders a visible legend below the track, with one item
-per segment (a color swatch, the label, and the formatted value). The legend is
-marked `aria-hidden="true"`, because the same information is already announced
+In segment mode, `Meter.Legend` renders a visible legend below the track, with
+one item per segment (a color swatch, the label, and the formatted value).
+Always render it with segments; `Meter.Root` logs a warning in development mode
+when segments have no legend. The legend is marked `aria-hidden="true"`, because the same information is already announced
 through `aria-valuetext` on the meter itself. Without `aria-hidden`, a screen
 reader would announce every segment twice: once from the meter's summary, and
 once from reading the legend's own text.
@@ -76,18 +87,8 @@ criterion 1.4.1, Use of Color).
   transition may play when the width of a segment changes, and it is removed
   under `prefers-reduced-motion: reduce`.
 - Some fill colors have less than 3:1 contrast with the track, so the fill is
-  not the only way to read the value. In the `stacked` and `inline` layouts, and
-  in segment mode, visible text shows the same information as the fill.
-- The `minimal` layout hides the value text, and a single value has no legend.
-  Show the same value as visible text near the meter, for example in the same
-  table row (WCAG 2.1 success criterion 1.4.11, Non-text Contrast).
-
-### Known limitation and open question
-
-Whether the legend should stay `aria-hidden`, or instead be made readable by
-assistive technology (with the segment detail removed from `aria-valuetext` to
-avoid double announcement), has not yet been confirmed with a manual screen
-reader test. A manual check with VoiceOver (macOS), NVDA (Windows) and, if
-available, JAWS (Windows) of a segmented meter is still pending; the result of
-that check will decide whether this behavior stays as documented here or changes
-in a future release.
+  not the only way to read the value. `Meter.Value` and, in segment mode,
+  `Meter.Legend` show the same information as visible text.
+- When a meter shows only the bar, show the same value as visible text near the
+  meter, for example in the same table row (WCAG 2.1 success criterion 1.4.11,
+  Non-text Contrast).

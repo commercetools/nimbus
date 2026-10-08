@@ -1,2 +1,10 @@
 export * from "./meter";
-export * from "./meter.types";
+export type {
+  MeterRootProps,
+  MeterLabelProps,
+  MeterValueProps,
+  MeterTrackProps,
+  MeterLegendProps,
+  MeterSegment,
+  MeterThreshold,
+} from "./meter.types";

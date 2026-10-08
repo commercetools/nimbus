@@ -4,24 +4,17 @@ import type { NimbusColorPalette } from "@/type-utils";
  * Colors for segments without an explicit `colorPalette`, used in order and
  * repeated when there are more segments than colors.
  *
- * Semantic state palettes (positive, warning, critical) are left out so a
- * default segment never looks like a status.
+ * The order keeps the first colors as far apart as possible, also for color
+ * vision deficiencies (CIEDE2000 on step 9; see `design.md` D6). Palettes
+ * that look like a status are left out: the semantic ones (positive, warning,
+ * critical, info) and those with the same step 9 (blue = info, red =
+ * critical, green = positive).
  */
 export const METER_SEGMENT_PALETTES = [
   "primary",
-  "teal",
   "orange",
+  "teal",
+  "gold",
   "pink",
-  "blue",
   "brown",
 ] as const satisfies readonly NimbusColorPalette[];
-
-/**
- * Text style used for each bar size when `textStyle` is not set, so a meter
- * without `textStyle` always gets a matching pair.
- */
-export const METER_DEFAULT_TEXT_STYLES = {
-  sm: "xs",
-  md: "sm",
-  lg: "md",
-} as const;

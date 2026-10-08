@@ -2,7 +2,6 @@ import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import type { SlotComponent } from "@/type-utils";
 import type {
   MeterRootSlotProps,
-  MeterHeaderSlotProps,
   MeterLabelSlotProps,
   MeterValueSlotProps,
   MeterTrackSlotProps,
@@ -19,12 +18,6 @@ const { withProvider, withContext } = createSlotRecipeContext({
 // Meter Root - Main container, carries role="meter"
 export const MeterRootSlot: SlotComponent<HTMLDivElement, MeterRootSlotProps> =
   withProvider<HTMLDivElement, MeterRootSlotProps>("div", "root");
-
-// Meter Header - Row holding label and value text
-export const MeterHeaderSlot: SlotComponent<
-  HTMLDivElement,
-  MeterHeaderSlotProps
-> = withContext<HTMLDivElement, MeterHeaderSlotProps>("div", "header");
 
 // Meter Label - Label text
 export const MeterLabelSlot: SlotComponent<

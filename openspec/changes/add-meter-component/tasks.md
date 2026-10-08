@@ -106,8 +106,38 @@
       explains why no focus/overlay snapshots exist.
 - [x] 5.7 Run nimbus-reviewer on the component folder; resolve all MUST-level
       findings.
-- [ ] 5.8 Manual screen-reader check (VoiceOver + NVDA, JAWS if available) of a
-      segmented meter: check how `role="meter progressbar"` is announced and
-      whether the parentheses in `aria-valuetext` are spoken; record the result
-      for Open Question 1 in `design.md`.
-- [x] 5.9 `pnpm openspec validate add-meter-component --strict` passes.
+- [x] 5.8 `pnpm openspec validate add-meter-component --strict` passes.
+
+## 6. Compound API (design D1, D3, D6)
+
+- [x] 6.1 Update `design.md`, `proposal.md` and the spec for the compound API.
+      **Done when:** `pnpm openspec validate add-meter-component --strict`
+      passes.
+- [x] 6.2 Convert `meter.stories.tsx` and `meter.docs.spec.tsx` to the compound
+      API and add tests for: part order does not change the layout, only
+      `Meter.Track` + `aria-label`, legend warning with segments and no
+      `Meter.Legend`, React Aria's missing-name warning, `Meter.Legend` with a
+      single value, `textStyle` on Root and on one part. **Done when:** the new
+      tests fail against the flat component.
+- [x] 6.3 Implement `components/meter.{context,root,label,value,track,legend}.tsx`,
+      make `meter.tsx` exports only, update types, slots (no `header`) and
+      recipe (grid areas, `stacked` | `inline`, text style from `size`, no
+      `textStyle` variant). **Done when:** `pnpm test:dev
+      packages/nimbus/src/components/meter/` and
+      `pnpm --filter @commercetools/nimbus typecheck:dev` pass.
+- [x] 6.4 Convert `.mdx`, `.dev.mdx`, `.guidelines.mdx`, `.a11y.mdx`, the
+      playground stories and the changeset. **Done when:** no flat-API usage is
+      left in the meter folder and `pnpm lint` passes.
+- [x] 6.5 Run nimbus-reviewer on the component folder; resolve all MUST-level
+      findings.
+
+## 7. Follow-ups from review
+
+- [x] 7.1 Thresholds for a single value (`thresholds`, D7) with
+      `getThresholdPalette` util, unit tests and a `Thresholds` story.
+- [x] 7.2 Default segment color order from computed distance (D6).
+- [x] 7.3 With `segments`, `minValue` is typed as `0`.
+- [x] 7.4 Segment widths subtract their share of the gaps, so the fill ends at
+      the value (`SegmentGeometry` story).
+- [x] 7.5 Development warnings are logged once per meter.
+- [x] 7.6 Export only public types from the barrel.

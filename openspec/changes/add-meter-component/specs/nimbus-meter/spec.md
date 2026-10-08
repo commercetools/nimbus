@@ -1,8 +1,29 @@
 ## ADDED Requirements
 
+### Requirement: Compound parts
+
+The component SHALL be a compound component with the parts `Meter.Root`,
+`Meter.Label`, `Meter.Value`, `Meter.Track` and `Meter.Legend`. `Meter.Root`
+SHALL hold all data (`value` or `segments`, `minValue`, `maxValue`,
+`formatOptions`, `valueLabel`, `colorPalette`). The other parts SHALL hold no
+values and SHALL read what they show from `Meter.Root`. Each part except
+`Meter.Root` SHALL be optional.
+
+#### Scenario: Only the track
+
+- **WHEN** `Meter.Root` contains only `Meter.Track`
+- **THEN** only the bar SHALL be shown
+- **AND** `aria-valuenow` and `aria-valuetext` SHALL be the same as with all
+  parts rendered
+
+#### Scenario: Part outside Root
+
+- **WHEN** `Meter.Value` is rendered outside `Meter.Root`
+- **THEN** an error SHALL be thrown that names `Meter.Root`
+
 ### Requirement: Meter semantics
 
-The component SHALL render a single element with `role="meter"` using React Aria
+`Meter.Root` SHALL render a single element with `role="meter"` using React Aria
 Components `<Meter>` (React Aria renders `role="meter progressbar"`; the second
 token is a fallback for browsers without `meter` support), and SHALL expose
 `aria-valuemin`, `aria-valuemax` and `aria-valuenow`. The component SHALL NOT be
@@ -28,31 +49,32 @@ focusable and SHALL NOT respond to keyboard input.
 
 ### Requirement: Accessible name
 
-The component SHALL have an accessible name, from the visible `label` or from
-`aria-label` / `aria-labelledby`.
+The meter SHALL have an accessible name, from `Meter.Label` or from `aria-label`
+/ `aria-labelledby` on `Meter.Root`.
 
 #### Scenario: Visible label
 
-- **WHEN** `label="Storage"` is provided
+- **WHEN** `<Meter.Label>Storage</Meter.Label>` is rendered inside `Meter.Root`
 - **THEN** the label text SHALL be visible
 - **AND** the meter SHALL be labelled by it via `aria-labelledby`
 
 #### Scenario: No visible label
 
-- **WHEN** `layout="minimal"` and `aria-label="Storage"` are provided
+- **WHEN** `Meter.Root` has `aria-label="Storage"` and no `Meter.Label`
 - **THEN** the meter's accessible name SHALL be "Storage"
 
 #### Scenario: Missing name
 
-- **WHEN** neither `label`, `aria-label` nor `aria-labelledby` is provided
+- **WHEN** there is no `Meter.Label` and `Meter.Root` has neither `aria-label`
+  nor `aria-labelledby`
 - **THEN** a warning SHALL be logged in development mode (React Aria's built-in
   missing-label warning)
 
 ### Requirement: Value formatting
 
-The component SHALL format the displayed value with `Intl.NumberFormat` in the
-current locale, using `formatOptions` (default `{ style: "percent" }`).
-`valueLabel` SHALL replace the visible value text.
+`Meter.Value` SHALL show the value formatted with `Intl.NumberFormat` in the
+current locale, using `formatOptions` on `Meter.Root` (default
+`{ style: "percent" }`). `valueLabel` SHALL replace the visible value text.
 
 #### Scenario: Default percent
 
@@ -135,14 +157,15 @@ visible gap.
 ### Requirement: Segment accessibility
 
 In multi-segment mode the component SHALL expose exactly one `role="meter"`.
-Segment values are amounts counted from `minValue`. `aria-valuenow` SHALL be
-`minValue` plus the sum of the clamped segment amounts, and `aria-valuetext`
+With `segments`, `minValue` SHALL be `0` (enforced by the type), so the parts
+add up to the total. `aria-valuenow` SHALL be the sum of the clamped segment
+amounts, and `aria-valuetext`
 SHALL be the formatted total followed, in parentheses, by each segment's label
 and formatted value, joined with `Intl.ListFormat` (type `unit`, style `short`).
 
 #### Scenario: Summary value text
 
-- **WHEN** `label="Storage"`,
+- **WHEN** `<Meter.Label>Storage</Meter.Label>`,
   `formatOptions={{ style: "unit", unit: "gigabyte" }}` and segments "Images"
   (30) and "Videos" (20) are rendered in `en-US`
 - **THEN** there SHALL be exactly one element with `role="meter"`
@@ -156,27 +179,34 @@ and formatted value, joined with `Intl.ListFormat` (type `unit`, style `short`).
 
 ### Requirement: Legend
 
-In multi-segment mode the component SHALL render a visible legend with one item
+In multi-segment mode `Meter.Legend` SHALL render a visible legend with one item
 per segment, showing a color swatch, the segment label and the formatted value.
 The legend SHALL be hidden from assistive technology (`aria-hidden="true"`)
 because `aria-valuetext` already carries the same information. In single-value
-mode no legend SHALL be rendered.
+mode `Meter.Legend` SHALL render nothing. When `segments` are given and no
+`Meter.Legend` is rendered, `Meter.Root` SHALL log a development warning,
+because the segments would then differ by color only.
 
 #### Scenario: Legend items
 
-- **WHEN** three segments are provided
+- **WHEN** three segments are provided and `Meter.Legend` is rendered
 - **THEN** the legend SHALL show three items, in segment order, each with
   swatch, label and formatted value
 
 #### Scenario: Legend hidden from assistive technology
 
-- **WHEN** segments are rendered
+- **WHEN** segments are rendered with `Meter.Legend`
 - **THEN** the legend container SHALL have `aria-hidden="true"`
 
 #### Scenario: No legend for single value
 
-- **WHEN** only `value` is provided
+- **WHEN** only `value` is provided and `Meter.Legend` is rendered
 - **THEN** no legend SHALL be rendered
+
+#### Scenario: Segments without legend
+
+- **WHEN** `segments` are provided and no `Meter.Legend` is rendered
+- **THEN** a development warning SHALL be logged that names `Meter.Legend`
 
 ### Requirement: Color
 
@@ -203,47 +233,76 @@ text carry it).
 - **THEN** each segment SHALL get the next color of the default sequence, and
   adjacent segments SHALL NOT share the same color
 
+### Requirement: Thresholds
+
+`Meter.Root` SHALL accept `thresholds` (an array of `{ from, colorPalette }`)
+for a single `value`. The fill SHALL use the `colorPalette` of the threshold
+with the highest `from` that the clamped value reaches (greater than or equal
+to `from`). Below all thresholds, the fill SHALL use `colorPalette` of
+`Meter.Root`. The order of the array SHALL NOT change the result. The type
+SHALL NOT allow `thresholds` together with `segments`.
+
+#### Scenario: Value reaches a threshold
+
+- **WHEN** `value={92}` and `thresholds` are `warning` from 80 and `critical`
+  from 95
+- **THEN** the fill SHALL use the `warning` palette
+
+#### Scenario: Value at a threshold
+
+- **WHEN** `value={95}` with the same thresholds
+- **THEN** the fill SHALL use the `critical` palette
+
+#### Scenario: Value below all thresholds
+
+- **WHEN** `value={50}` with the same thresholds and no `colorPalette`
+- **THEN** the fill SHALL use the `primary` palette
+
 ### Requirement: Sizes and layouts
 
-The component SHALL support two independent props: `size` (`sm` | `md` | `lg`,
-default `md`) sets only the bar thickness (4px, 8px, 12px), and `textStyle`
-(`xs` | `sm` | `md` | `inherit`) sets only the text of label, value and legend.
-When `textStyle` is not set, it SHALL follow `size` (`sm` → `xs`, `md` → `sm`,
-`lg` → `md`). `inherit` SHALL take the text style of the surrounding content.
-The component SHALL support `layout` (`minimal` | `inline` | `stacked`, default
-`stacked`) with the same meaning as `ProgressBar`.
+`Meter.Root` SHALL support `size` (`sm` | `md` | `lg`, default `md`), which sets
+the bar thickness (4px, 8px, 12px) and a matching text style for label, value
+and legend (`sm` → `xs`, `md` → `sm`, `lg` → `md`). The `textStyle` style prop
+SHALL change the text, on `Meter.Root` for all parts or on one part only.
+
+`Meter.Root` SHALL support `layout` (`stacked` | `inline`, default `stacked`),
+which places each part in a fixed area. The result SHALL NOT depend on the order
+in which the parts are written. A part that is left out SHALL leave no empty
+space.
 
 #### Scenario: Default text style follows size
 
 - **WHEN** `size="lg"` and no `textStyle` is provided
 - **THEN** the bar SHALL be 12px high and the text SHALL use text style `md`
 
-#### Scenario: Independent text style
+#### Scenario: Text style on Root
 
-- **WHEN** `size="sm"` and `textStyle="md"`
-- **THEN** the bar SHALL be 4px high and the text SHALL use text style `md`
+- **WHEN** `size="sm"` and `textStyle="md"` are set on `Meter.Root`
+- **THEN** the bar SHALL be 4px high and label, value and legend SHALL use text
+  style `md`
 
-#### Scenario: Inherited text style
+#### Scenario: Text style on one part
 
-- **WHEN** `textStyle="inherit"` and the Meter is inside text with another text
-  style
-- **THEN** label, value and legend SHALL use the font size and line height of
-  the surrounding text
+- **WHEN** `textStyle="xl"` is set on `Meter.Value` only
+- **THEN** the value text SHALL use text style `xl` and the label SHALL keep the
+  default text style
 
 #### Scenario: Stacked layout
 
-- **WHEN** `layout="stacked"` with a label
-- **THEN** label and value text SHALL be shown above the track
+- **WHEN** `layout="stacked"` with `Meter.Label`, `Meter.Value` and
+  `Meter.Track`
+- **THEN** the label SHALL be at the start and the value text at the end of one
+  line above the track
 
 #### Scenario: Inline layout
 
-- **WHEN** `layout="inline"` with a label
-- **THEN** label, track and value text SHALL be shown on one line
+- **WHEN** `layout="inline"` with `Meter.Label`, `Meter.Value` and `Meter.Track`
+- **THEN** label, track and value text SHALL be shown on one line, in this order
 
-#### Scenario: Minimal layout
+#### Scenario: Parts in another order
 
-- **WHEN** `layout="minimal"`
-- **THEN** only the track SHALL be shown (plus the legend in multi-segment mode)
+- **WHEN** the parts are written in another order inside `Meter.Root`
+- **THEN** they SHALL be placed as in the same layout with the default order
 
 ### Requirement: Style props and ref
 

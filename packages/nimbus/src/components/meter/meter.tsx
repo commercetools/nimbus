@@ -1,194 +1,113 @@
-import { useEffect, useMemo } from "react";
-import { Meter as RaMeter, Label as RaLabel } from "react-aria-components";
-import { useLocale, useNumberFormatter, useObjectRef } from "react-aria";
-import { useSlotRecipe } from "@chakra-ui/react/styled-system";
-import { extractStyleProps } from "@/utils";
 import {
-  MeterRootSlot,
-  MeterHeaderSlot,
-  MeterLabelSlot,
-  MeterValueSlot,
-  MeterTrackSlot,
-  MeterSegmentSlot,
-  MeterLegendSlot,
-  MeterLegendItemSlot,
-  MeterLegendSwatchSlot,
-} from "./meter.slots";
-import { METER_DEFAULT_TEXT_STYLES, METER_SEGMENT_PALETTES } from "./constants";
-import { getMeterSegments } from "./utils";
-import type { MeterProps, MeterSegment } from "./meter.types";
+  MeterRoot,
+  MeterLabel,
+  MeterValue,
+  MeterTrack,
+  MeterLegend,
+} from "./components";
 
 /**
  * Meter
  * ============================================================
- * Displays a measured value within a known range, such as storage used or
- * a quota consumed. Use ProgressBar instead to show progress of a task.
+ * Displays a measured value within a known range, such as storage used or a
+ * quota consumed. Use ProgressBar instead to show the progress of a task.
  *
- * Features:
+ * Meter.Root holds all data (`value` or `segments`, range, formatting) and
+ * computes one summary for assistive technology. The other parts show that
+ * data; render only the parts you need, in any order.
  *
- * - Single value, or several segments of one total inside one track
- * - Automatic legend for segments
- * - One `role="meter"` with a generated, localized summary for assistive tech
- * - Three layouts: minimal, inline, and stacked
- * - Configurable value formatting with internationalization support
- * - Allows forwarding refs to the underlying DOM element
- * - Supports variants, sizes, etc. configured in the recipe
- * - Allows overriding styles by using style-props
- * @supportsStyleProps
+ * @see {@link https://nimbus-documentation.vercel.app/components/feedback/meter}
+ *
+ * @example
+ * ```tsx
+ * <Meter.Root value={62}>
+ *   <Meter.Label>Storage</Meter.Label>
+ *   <Meter.Value />
+ *   <Meter.Track />
+ * </Meter.Root>
+ * ```
  */
-export const Meter = (props: MeterProps) => {
-  const {
-    ref: forwardedRef,
-    value = 0,
-    segments,
-    minValue = 0,
-    maxValue = 100,
-    label,
-    formatOptions = { style: "percent" },
-    valueLabel,
-    colorPalette = "primary",
-    layout = "stacked",
-    size = "md",
-    // A responsive `size` has no single matching text style, so it uses the
-    // text style of the default size
-    textStyle = METER_DEFAULT_TEXT_STYLES[
-      typeof size === "string" ? size : "md"
-    ],
-    ...rest
-  } = props;
-
-  const recipe = useSlotRecipe({ key: "nimbusMeter" });
-  const [recipeProps, restWithoutRecipeProps] = recipe.splitVariantProps({
-    layout,
-    size,
-    textStyle,
-    ...rest,
-  });
-  const [styleProps, functionalProps] = extractStyleProps(
-    restWithoutRecipeProps
-  );
-
-  const ref = useObjectRef(forwardedRef);
-  const { locale } = useLocale();
-  const formatter = useNumberFormatter(formatOptions);
-  const listFormatter = useMemo(
-    () => new Intl.ListFormat(locale, { type: "unit", style: "short" }),
-    [locale]
-  );
-
-  const isSegmented = segments !== undefined;
-  // A single value is drawn as one segment, so there is one render path
-  const source: MeterSegment[] = isSegmented
-    ? segments
-    : [{ id: "value", label: "", value: value - minValue }];
-  const { items, total, hasOverflow, hasNegative } = getMeterSegments(
-    source,
-    minValue,
-    maxValue
-  );
-  const meterValue = minValue + total;
-
-  const range = maxValue - minValue;
-  const isPercent = formatOptions.style === "percent";
-  /** Formats an amount counted from `minValue` */
-  const formatAmount = (amount: number) =>
-    formatter.format(isPercent ? (range > 0 ? amount / range : 0) : amount);
-
-  const totalText =
-    valueLabel ??
-    (isPercent ? formatAmount(total) : formatter.format(meterValue));
-  // Segments show the drawn (clamped) amount, so the text matches the bar
-  const valueText =
-    isSegmented && items.length > 0
-      ? `${totalText} (${listFormatter.format(
-          items.map(
-            (item) => `${item.label}: ${formatAmount(item.clampedValue)}`
-          )
-        )})`
-      : totalText;
-
-  useEffect(() => {
-    if (process.env.NODE_ENV === "production" || !isSegmented) return;
-    if (hasOverflow) {
-      console.warn(
-        `Meter: the sum of segment values exceeds the range (${minValue} to ${maxValue}). Segments are cut at maxValue.`
-      );
-    }
-    if (hasNegative) {
-      console.warn(
-        "Meter: segment values must not be negative. Negative values are treated as 0."
-      );
-    }
-  }, [isSegmented, hasOverflow, hasNegative, minValue, maxValue]);
-
-  const paletteOf = (segment: MeterSegment, index: number) =>
-    isSegmented
-      ? (segment.colorPalette ??
-        METER_SEGMENT_PALETTES[index % METER_SEGMENT_PALETTES.length])
-      : undefined;
-
-  const labelElement = label ? (
-    <MeterLabelSlot asChild>
-      <RaLabel>{label}</RaLabel>
-    </MeterLabelSlot>
-  ) : null;
-  const valueElement = <MeterValueSlot>{totalText}</MeterValueSlot>;
-
-  return (
-    <MeterRootSlot
-      {...recipeProps}
-      {...styleProps}
-      colorPalette={colorPalette}
-      asChild
-    >
-      <RaMeter
-        ref={ref}
-        value={meterValue}
-        minValue={minValue}
-        maxValue={maxValue}
-        formatOptions={formatOptions}
-        valueLabel={valueText}
-        {...functionalProps}
-      >
-        {layout === "inline" ? (
-          labelElement
-        ) : (
-          <MeterHeaderSlot>
-            {labelElement}
-            {valueElement}
-          </MeterHeaderSlot>
-        )}
-
-        <MeterTrackSlot>
-          {items.map((item, index) =>
-            item.widthPercent > 0 ? (
-              <MeterSegmentSlot
-                key={item.id}
-                colorPalette={paletteOf(item, index)}
-                style={{ width: `${item.widthPercent}%` }}
-              />
-            ) : null
-          )}
-        </MeterTrackSlot>
-
-        {layout === "inline" && valueElement}
-
-        {isSegmented && items.length > 0 && (
-          // Hidden from assistive tech: the meter's aria-valuetext already
-          // announces the same information
-          <MeterLegendSlot aria-hidden="true">
-            {items.map((item, index) => (
-              <MeterLegendItemSlot key={item.id}>
-                <MeterLegendSwatchSlot colorPalette={paletteOf(item, index)} />
-                <span>{item.label}</span>
-                <span>{formatAmount(item.clampedValue)}</span>
-              </MeterLegendItemSlot>
-            ))}
-          </MeterLegendSlot>
-        )}
-      </RaMeter>
-    </MeterRootSlot>
-  );
+export const Meter = {
+  /**
+   * # Meter.Root
+   *
+   * Holds all data of the meter and renders the element with `role="meter"`.
+   * Takes `value` for one measurement or `segments` for several parts of one
+   * total, and `size` and `layout` for the look. Without Meter.Label, set
+   * `aria-label` on Root.
+   *
+   * @example
+   * ```tsx
+   * <Meter.Root value={62} size="lg" layout="inline">
+   *   <Meter.Label>Storage</Meter.Label>
+   *   <Meter.Track />
+   *   <Meter.Value />
+   * </Meter.Root>
+   * ```
+   */
+  Root: MeterRoot,
+  /**
+   * # Meter.Label
+   *
+   * Visible name of the meter. The meter is labelled by it, so assistive
+   * technology announces it with the value.
+   *
+   * @example
+   * ```tsx
+   * <Meter.Root value={62}>
+   *   <Meter.Label>Storage</Meter.Label>
+   *   <Meter.Track />
+   * </Meter.Root>
+   * ```
+   */
+  Label: MeterLabel,
+  /**
+   * # Meter.Value
+   *
+   * Formatted total, using `formatOptions` of Meter.Root, or its `valueLabel`
+   * when it is set.
+   *
+   * @example
+   * ```tsx
+   * <Meter.Root value={50} formatOptions={{ style: "unit", unit: "gigabyte" }}>
+   *   <Meter.Label>Storage</Meter.Label>
+   *   <Meter.Value textStyle="xl" />
+   *   <Meter.Track />
+   * </Meter.Root>
+   * ```
+   */
+  Value: MeterValue,
+  /**
+   * # Meter.Track
+   *
+   * The bar. Draws the value, or each segment in array order.
+   *
+   * @example
+   * ```tsx
+   * <Meter.Root value={62} aria-label="Storage">
+   *   <Meter.Track />
+   * </Meter.Root>
+   * ```
+   */
+  Track: MeterTrack,
+  /**
+   * # Meter.Legend
+   *
+   * Color, name and value of each segment. Render it whenever Meter.Root has
+   * `segments`, so the segments are not told apart by color only. Renders
+   * nothing for a single value.
+   *
+   * @example
+   * ```tsx
+   * <Meter.Root segments={[
+   *   { id: "images", label: "Images", value: 30 },
+   *   { id: "videos", label: "Videos", value: 20 },
+   * ]}>
+   *   <Meter.Label>Storage</Meter.Label>
+   *   <Meter.Track />
+   *   <Meter.Legend />
+   * </Meter.Root>
+   * ```
+   */
+  Legend: MeterLegend,
 };
-
-Meter.displayName = "Meter";

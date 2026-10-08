@@ -9,10 +9,14 @@ import { Meter, NimbusProvider } from "@commercetools/nimbus";
  * @docs-order 1
  */
 describe("Meter - Basic rendering", () => {
-  it("renders a meter with an accessible name from the label prop", () => {
+  it("renders a meter with an accessible name from Meter.Label", () => {
     render(
       <NimbusProvider>
-        <Meter value={42} label="Storage used" />
+        <Meter.Root value={42}>
+          <Meter.Label>Storage used</Meter.Label>
+          <Meter.Value />
+          <Meter.Track />
+        </Meter.Root>
       </NimbusProvider>
     );
 
@@ -20,10 +24,12 @@ describe("Meter - Basic rendering", () => {
     expect(meter).toBeInTheDocument();
   });
 
-  it("renders with an accessible name from aria-label when the visible label is hidden", () => {
+  it("renders with an accessible name from aria-label when there is no Meter.Label", () => {
     render(
       <NimbusProvider>
-        <Meter value={42} layout="minimal" aria-label="Storage used" />
+        <Meter.Root value={42} aria-label="Storage used">
+          <Meter.Track />
+        </Meter.Root>
       </NimbusProvider>
     );
 
@@ -35,7 +41,10 @@ describe("Meter - Basic rendering", () => {
   it("has the correct aria-valuenow, aria-valuemin, and aria-valuemax attributes", () => {
     render(
       <NimbusProvider>
-        <Meter value={42} label="Quota" />
+        <Meter.Root value={42}>
+          <Meter.Label>Quota</Meter.Label>
+          <Meter.Track />
+        </Meter.Root>
       </NimbusProvider>
     );
 
@@ -61,11 +70,14 @@ describe("Meter - Segments", () => {
   it("sums the segment values into aria-valuenow", () => {
     render(
       <NimbusProvider>
-        <Meter
-          label="Storage"
+        <Meter.Root
           formatOptions={{ style: "unit", unit: "gigabyte" }}
           segments={storageSegments}
-        />
+        >
+          <Meter.Label>Storage</Meter.Label>
+          <Meter.Track />
+          <Meter.Legend />
+        </Meter.Root>
       </NimbusProvider>
     );
 
@@ -75,11 +87,14 @@ describe("Meter - Segments", () => {
   it("announces a summary of every segment through aria-valuetext", () => {
     render(
       <NimbusProvider>
-        <Meter
-          label="Storage"
+        <Meter.Root
           formatOptions={{ style: "unit", unit: "gigabyte" }}
           segments={storageSegments}
-        />
+        >
+          <Meter.Label>Storage</Meter.Label>
+          <Meter.Track />
+          <Meter.Legend />
+        </Meter.Root>
       </NimbusProvider>
     );
 
@@ -89,14 +104,18 @@ describe("Meter - Segments", () => {
     );
   });
 
-  it("shows the formatted total as the visible value text", () => {
+  it("shows the formatted total in Meter.Value", () => {
     render(
       <NimbusProvider>
-        <Meter
-          label="Storage"
+        <Meter.Root
           formatOptions={{ style: "unit", unit: "gigabyte" }}
           segments={storageSegments}
-        />
+        >
+          <Meter.Label>Storage</Meter.Label>
+          <Meter.Value />
+          <Meter.Track />
+          <Meter.Legend />
+        </Meter.Root>
       </NimbusProvider>
     );
 
@@ -114,7 +133,11 @@ describe("Meter - Format options", () => {
   it("formats the value as a percent by default", () => {
     render(
       <NimbusProvider>
-        <Meter value={72} label="Quota" />
+        <Meter.Root value={72}>
+          <Meter.Label>Quota</Meter.Label>
+          <Meter.Value />
+          <Meter.Track />
+        </Meter.Root>
       </NimbusProvider>
     );
 
@@ -125,11 +148,14 @@ describe("Meter - Format options", () => {
   it("formats the value with a custom unit", () => {
     render(
       <NimbusProvider>
-        <Meter
+        <Meter.Root
           value={50}
-          label="Storage"
           formatOptions={{ style: "unit", unit: "gigabyte" }}
-        />
+        >
+          <Meter.Label>Storage</Meter.Label>
+          <Meter.Value />
+          <Meter.Track />
+        </Meter.Root>
       </NimbusProvider>
     );
 
@@ -139,7 +165,11 @@ describe("Meter - Format options", () => {
   it("replaces the value text with a custom valueLabel", () => {
     render(
       <NimbusProvider>
-        <Meter value={50} label="Storage" valueLabel="50 of 100 GB" />
+        <Meter.Root value={50} valueLabel="50 of 100 GB">
+          <Meter.Label>Storage</Meter.Label>
+          <Meter.Value />
+          <Meter.Track />
+        </Meter.Root>
       </NimbusProvider>
     );
 

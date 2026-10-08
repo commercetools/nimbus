@@ -8,8 +8,13 @@ export type MeterSegmentsGeometry<T> = {
   hasOverflow: boolean;
   /** Whether at least one segment has a negative amount */
   hasNegative: boolean;
-  /** Input segments, in order, with their clamped amount and drawn width */
-  items: Array<T & { clampedValue: number; widthPercent: number }>;
+  /**
+   * Input segments, in order, with their clamped amount, drawn width and
+   * share of the gaps between drawn segments
+   */
+  items: Array<
+    T & { clampedValue: number; widthPercent: number; gapShare: number }
+  >;
 };
 
 /**
@@ -20,10 +25,14 @@ export type MeterSegmentsGeometry<T> = {
  * segments are cut once the range between `minValue` and `maxValue` is full.
  * An empty or inverted range draws nothing.
  *
+ * The track puts a gap between drawn segments. So that the fill still ends at
+ * the total, each drawn segment gives up `gapShare` gaps of its width, in
+ * proportion to its width: the shares add up to the number of gaps.
+ *
  * @param segments - The segments, in drawing order
  * @param minValue - Lower bound of the meter range
  * @param maxValue - Upper bound of the meter range
- * @returns The clamped amount and width in percent for every segment
+ * @returns The clamped amount, width in percent and gap share for every segment
  *
  * @example
  * getMeterSegments([{ value: 30 }, { value: 20 }], 0, 100);
@@ -39,7 +48,7 @@ export const getMeterSegments = <T extends { value: number }>(
   let requested = 0;
   let hasNegative = false;
 
-  const items = segments.map((segment) => {
+  const clamped = segments.map((segment) => {
     if (segment.value < 0) hasNegative = true;
     const amount = Number.isFinite(segment.value)
       ? Math.max(0, segment.value)
@@ -56,8 +65,18 @@ export const getMeterSegments = <T extends { value: number }>(
     };
   });
 
+  const total = range - remaining;
+  const gapCount = Math.max(
+    0,
+    clamped.filter((item) => item.widthPercent > 0).length - 1
+  );
+  const items = clamped.map((item) => ({
+    ...item,
+    gapShare: total > 0 ? (item.clampedValue / total) * gapCount : 0,
+  }));
+
   return {
-    total: range - remaining,
+    total,
     hasOverflow: range > 0 && requested > range,
     hasNegative,
     items,

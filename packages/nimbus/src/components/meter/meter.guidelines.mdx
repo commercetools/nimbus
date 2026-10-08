@@ -33,16 +33,15 @@ is a measured value, so use Meter. If the value only moves forward toward
 
 ### Best practices
 
-- **Always label the meter.** Use the visible `label` prop when there is room
-  for it. Use `aria-label` only when the visual label is hidden, for example
-  with the `minimal` layout.
+- **Always label the meter.** Show a visible label (`Meter.Label`) when there
+  is room for it. When the meter has no visible label, give it an `aria-label`
+  instead.
 - **Show the number, not only the bar.** A filled bar alone is hard to read
-  precisely. Meter shows a formatted value next to the label by default, so
-  people do not have to guess.
-- **Show the value as text with the `minimal` layout.** This layout hides the
-  label and the value, so the bar is the only thing people see. Some fill colors
-  have low contrast with the track, so put the same value as visible text near
-  the meter, for example in the same table row.
+  precisely. Show the formatted value (`Meter.Value`) next to the bar, so people
+  do not have to guess.
+- **Show the value as text when the meter shows only the bar.** Some fill
+  colors have low contrast with the track, so put the same value as visible text
+  near the meter, for example in the same table row.
 - **Use a semantic color palette on purpose.** `colorPalette="positive"`,
   `"warning"`, or `"critical"` should mean what they say. Do not use a semantic
   palette for a value that is not in that state.
@@ -51,8 +50,9 @@ is a measured value, so use Meter. If the value only moves forward toward
   keep segments to about five or fewer. With many segments, the legend becomes
   hard to scan, and the text announced to screen reader users becomes long and
   hard to follow.
-- **Do not rely on color alone.** Every segment already shows its label and
-  value in the legend, so the meaning does not depend on recognizing a color.
+- **Do not rely on color alone.** Always show the legend (`Meter.Legend`) with
+  segments. It shows the label and value of every segment, so the meaning does
+  not depend on recognizing a color.
 
 ### When to use segments
 
@@ -72,23 +72,35 @@ const App = () => (
       <Text fontWeight="500" mb="200">
         Good: parts of one storage total
       </Text>
-      <Meter
-        label="Storage"
+      <Meter.Root
         formatOptions={{ style: "unit", unit: "gigabyte" }}
         segments={[
           { id: "images", label: "Images", value: 30 },
           { id: "videos", label: "Videos", value: 20 },
           { id: "documents", label: "Documents", value: 10 },
         ]}
-      />
+      >
+        <Meter.Label>Storage</Meter.Label>
+        <Meter.Value />
+        <Meter.Track />
+        <Meter.Legend />
+      </Meter.Root>
     </Box>
     <Box>
       <Text fontWeight="500" mb="200">
         Also good: unrelated values as separate meters
       </Text>
       <Stack direction="column" gap="200" alignItems="stretch">
-        <Meter value={80} label="CPU usage" />
-        <Meter value={45} label="Memory usage" />
+        <Meter.Root value={80}>
+          <Meter.Label>CPU usage</Meter.Label>
+          <Meter.Value />
+          <Meter.Track />
+        </Meter.Root>
+        <Meter.Root value={45}>
+          <Meter.Label>Memory usage</Meter.Label>
+          <Meter.Value />
+          <Meter.Track />
+        </Meter.Root>
       </Stack>
     </Box>
   </Stack>
@@ -119,13 +131,16 @@ const App = () => (
 
 ```jsx live
 const App = () => (
-  <Meter
+  <Meter.Root
     value={92}
-    label="Storage used"
     colorPalette="critical"
     formatOptions={{ style: "unit", unit: "gigabyte" }}
     maxValue={100}
-  />
+  >
+    <Meter.Label>Storage used</Meter.Label>
+    <Meter.Value />
+    <Meter.Track />
+  </Meter.Root>
 );
 ```
 
@@ -134,7 +149,7 @@ const App = () => (
 >
 > - Don't use Meter to show the progress of a task that is running now. Use
 >   Progress bar instead.
-> - Don't leave the meter without any label. A meter with no `label`,
+> - Don't leave the meter without any label. A meter with no `Meter.Label`,
 >   `aria-label`, or `aria-labelledby` has no accessible name, and screen reader
 >   users cannot tell what it measures.
 > - Don't add many segments to one meter. A long list of parts is hard to scan
@@ -142,8 +157,7 @@ const App = () => (
 
 ```jsx live
 const App = () => (
-  <Meter
-    label="Too many parts to scan or listen to easily"
+  <Meter.Root
     segments={[
       { id: "a", label: "Part A", value: 10 },
       { id: "b", label: "Part B", value: 10 },
@@ -153,6 +167,11 @@ const App = () => (
       { id: "f", label: "Part F", value: 10 },
       { id: "g", label: "Part G", value: 10 },
     ]}
-  />
+  >
+    <Meter.Label>Too many parts to scan or listen to easily</Meter.Label>
+    <Meter.Value />
+    <Meter.Track />
+    <Meter.Legend />
+  </Meter.Root>
 );
 ```
