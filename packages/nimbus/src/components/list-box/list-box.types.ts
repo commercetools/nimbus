@@ -10,6 +10,7 @@ import type {
   SlotRecipeProps,
 } from "@chakra-ui/react/styled-system";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
+import type { VirtualizerListLayoutOptions } from "../virtualizer/virtualizer.types";
 
 // ============================================================
 // RECIPE PROPS
@@ -59,6 +60,23 @@ export type ListBoxLoaderSlotProps = HTMLChakraProps<"div">;
  */
 export type ListBoxRootProps<T extends object = object> = RaListBoxProps<T> &
   OmitInternalProps<ListBoxRootSlotProps, keyof RaListBoxProps<T>> & {
+    /**
+     * Renders only the visible options, for long lists (hundreds of options or
+     * more). Row heights, gap and padding match the `size` and `variant`
+     * automatically. The list needs a bounded height to scroll itself: the
+     * `card` variant has one; a `plain` list scrolls with its parent.
+     *
+     * Experimental. See "Long lists (virtualization)" in the ListBox
+     * documentation.
+     * @default false
+     */
+    isVirtualized?: boolean;
+    /**
+     * Overrides the virtualized layout, for example `estimatedRowHeight` for
+     * options that are usually taller than one line. Only used together with
+     * `isVirtualized`.
+     */
+    virtualizerOptions?: VirtualizerListLayoutOptions;
     /**
      * Ref forwarding to the listbox element.
      */
