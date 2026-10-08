@@ -165,7 +165,10 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       _hover: {
         bg: "primary.2",
       },
-      _placeholder: { opacity: 0.5 },
+      _placeholder: {
+        opacity: 0.5,
+        color: "currentColor",
+      },
     },
     popover: {
       bg: "bg",

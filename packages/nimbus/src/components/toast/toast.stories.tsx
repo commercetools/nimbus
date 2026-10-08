@@ -106,7 +106,7 @@ export const Types: Story = {
     return (
       <Stack direction="column" gap="16px">
         <Button onPress={showToasts}>Show All Types</Button>
-        <Text fontSize="sm" color="fg.muted">
+        <Text fontSize="sm" color="fg.subtle">
           Click to show info, success, warning, and error toasts
         </Text>
       </Stack>
@@ -348,7 +348,7 @@ export const AutoDismiss: Story = {
         <Button onPress={showAutoDismissToasts} data-testid="auto-dismiss-btn">
           Show Auto-Dismiss Variations
         </Button>
-        <Text fontSize="sm" color="fg.muted">
+        <Text fontSize="sm" color="fg.subtle">
           Short, longer, and persistent (duration: Infinity)
         </Text>
       </Stack>
@@ -979,7 +979,7 @@ export const KeyboardNavigation: Story = {
         <Button onPress={showKeyboardToast} data-testid="keyboard-toast-btn">
           Show Keyboard Toast
         </Button>
-        <Text fontSize="sm" color="fg.muted">
+        <Text fontSize="sm" color="fg.subtle">
           Use Ctrl+Shift+9 to focus top-end region, then Tab to navigate
         </Text>
       </Stack>
@@ -1185,7 +1185,7 @@ export const ReducedMotion: Story = {
         <Button onPress={showMotionToast} data-testid="motion-toast-btn">
           Show Toast
         </Button>
-        <Text fontSize="sm" color="fg.muted">
+        <Text fontSize="sm" color="fg.subtle">
           Enable &quot;prefers-reduced-motion&quot; in your OS to verify
           animations are reduced
         </Text>
