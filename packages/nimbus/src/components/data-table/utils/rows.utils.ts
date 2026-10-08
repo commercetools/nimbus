@@ -3,6 +3,34 @@ import type {
   DataTableRowItem as DataTableRowType,
   SortDescriptor,
 } from "../data-table.types";
+import {
+  defaultGetRowKey,
+  type DataTableRowKeyResolver,
+} from "./row-keys.utils";
+
+/**
+ * Whether two arrays hold the same items in the same order.
+ */
+function haveSameItems(a: unknown[], b: unknown[]): boolean {
+  return a.length === b.length && a.every((item, i) => Object.is(item, b[i]));
+}
+
+/**
+ * Returns `row` itself when its nested rows are unchanged, otherwise a copy
+ * with the new nested rows. `DataTable.Row` is memoised by the row object, so
+ * a copy with the same content would re-render the row for nothing.
+ */
+function withNestedRows<T extends object>(
+  row: DataTableRowType<T>,
+  nestedKey: string,
+  nestedRows: DataTableRowType<T>[]
+): DataTableRowType<T> {
+  const current = row[nestedKey];
+  if (Array.isArray(current) && haveSameItems(current, nestedRows)) {
+    return row;
+  }
+  return { ...row, [nestedKey]: nestedRows };
+}
 
 // Utility functions
 export function filterRows<T extends object>(
@@ -24,26 +52,18 @@ export function filterRows<T extends object>(
       });
 
       if (nestedKey && row[nestedKey]) {
-        let nestedContent = row[nestedKey];
         if (Array.isArray(row[nestedKey])) {
-          nestedContent = filterRows(
+          const nestedRows = filterRows(
             row[nestedKey],
             search,
             columns,
             nestedKey
           );
-          if (
-            match ||
-            (nestedContent &&
-              Array.isArray(nestedContent) &&
-              nestedContent.length > 0)
-          ) {
-            return { ...row, [nestedKey]: nestedContent };
+          if (match || nestedRows.length > 0) {
+            return withNestedRows(row, nestedKey, nestedRows);
           }
-        } else {
-          if (match) {
-            return { ...row, [nestedKey]: nestedContent };
-          }
+        } else if (match) {
+          return row;
         }
         return null;
       } else {
@@ -58,14 +78,15 @@ export function sortRows<T extends object>(
   sortDescriptor: SortDescriptor | undefined,
   columns: DataTableColumnItem<T>[],
   nestedKey?: string,
-  pinnedRows?: Set<string>
+  pinnedRows?: Set<string>,
+  getRowKey: DataTableRowKeyResolver<T> = defaultGetRowKey
 ): DataTableRowType<T>[] {
   // Separate pinned and unpinned rows
   const pinned: DataTableRowType<T>[] = [];
   const unpinned: DataTableRowType<T>[] = [];
 
   rows.forEach((row) => {
-    if (pinnedRows?.has(row.id)) {
+    if (pinnedRows?.has(getRowKey(row))) {
       pinned.push(row);
     } else {
       unpinned.push(row);
@@ -84,13 +105,13 @@ export function sortRows<T extends object>(
       });
       const valueMap = new Map<string, unknown>();
       for (const row of unpinned) {
-        valueMap.set(row.id, column.accessor(row));
+        valueMap.set(getRowKey(row), column.accessor(row));
       }
       const direction = sortDescriptor.direction === "ascending" ? 1 : -1;
 
       sortedUnpinnedRows = [...unpinned].sort((a, b) => {
-        const aValue = valueMap.get(a.id);
-        const bValue = valueMap.get(b.id);
+        const aValue = valueMap.get(getRowKey(a));
+        const bValue = valueMap.get(getRowKey(b));
 
         if (aValue == null && bValue == null) return 0;
         if (aValue == null) return 1;
@@ -109,21 +130,21 @@ export function sortRows<T extends object>(
   const allSortedRows = [...pinned, ...sortedUnpinnedRows];
 
   return allSortedRows.map((row) => {
-    if (!nestedKey || !row[nestedKey]) {
+    if (!nestedKey || !Array.isArray(row[nestedKey])) {
       return row;
     }
-    return {
-      ...row,
-      [nestedKey]: Array.isArray(row[nestedKey])
-        ? sortRows(
-            row[nestedKey],
-            sortDescriptor,
-            columns,
-            nestedKey,
-            pinnedRows
-          )
-        : row[nestedKey],
-    };
+    return withNestedRows(
+      row,
+      nestedKey,
+      sortRows(
+        row[nestedKey],
+        sortDescriptor,
+        columns,
+        nestedKey,
+        pinnedRows,
+        getRowKey
+      )
+    );
   });
 }
 

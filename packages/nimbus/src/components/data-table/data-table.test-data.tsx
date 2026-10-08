@@ -748,7 +748,7 @@ export const modifiedFetchedData = fetchData.map((item) => ({
         rows={item.sky}
         allowsSorting={true}
         isResizable={true}
-        onRowClick={() => {}}
+        onRowAction={() => {}}
         // No nestedKey needed for this inner table since sky data doesn't have further nesting
       />
     </Box>
@@ -1425,4 +1425,23 @@ export const compoundRows: DataTableRowItem[] = [
   { id: "1", name: "Alice", email: "alice@example.com", department: "Eng" },
   { id: "2", name: "Bob", email: "bob@example.com", department: "Design" },
   { id: "3", name: "Carol", email: "carol@example.com", department: "PM" },
+];
+
+export const behaviourColumns: DataTableColumnItem[] = [
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+  },
+  {
+    id: "role",
+    header: "Role",
+    accessor: (row: Record<string, unknown>) => row.role as React.ReactNode,
+  },
+];
+
+export const behaviourRows: DataTableRowItem[] = [
+  { id: "r1", name: "Ada", role: "Admin" },
+  { id: "r2", name: "Grace", role: "Editor" },
+  { id: "r3", name: "Linus", role: "Viewer" },
 ];

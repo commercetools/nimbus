@@ -212,6 +212,7 @@ export const VisibleColumnsPanel = ({
                 onRemoveItem={
                   hasRemoveItem(item) ? item.onRemoveItem : undefined
                 }
+                removeButtonLabel={msg.format("hideColumn")}
                 aria-label={item.label?.toString() ?? item.id}
               >
                 {item.label}

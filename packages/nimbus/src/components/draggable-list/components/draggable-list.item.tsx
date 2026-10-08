@@ -25,6 +25,7 @@ export const DraggableListItem = <T extends DraggableListItemData>({
   children,
   id,
   onRemoveItem,
+  removeButtonLabel,
   textValue: textValueFromProps,
   ...restProps
 }: DraggableListItemProps<T>) => {
@@ -59,7 +60,9 @@ export const DraggableListItem = <T extends DraggableListItemData>({
             </DraggableListItemContentSlot>
             {onRemoveItem && (
               <IconButton
-                aria-label={msg.format("removeButtonLabel")}
+                aria-label={
+                  removeButtonLabel ?? msg.format("removeButtonLabel")
+                }
                 size="2xs"
                 variant="ghost"
                 onPress={id ? () => onRemoveItem(id) : undefined}

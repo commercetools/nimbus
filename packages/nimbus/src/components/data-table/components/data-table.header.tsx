@@ -5,7 +5,7 @@ import {
   useTableOptions,
 } from "react-aria-components";
 import { Box, Checkbox, Icon } from "@/components";
-import { KeyboardArrowRight, PushPin } from "@commercetools/nimbus-icons";
+import { PushPin } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import type {
@@ -13,7 +13,7 @@ import type {
   DataTableColumnItem,
 } from "../data-table.types";
 import { DataTableHeaderSlot } from "../data-table.slots";
-import { useDataTableContext } from "./data-table.context";
+import { useStableDataTableContext } from "./data-table.context";
 import { DataTableColumn } from "./data-table.column";
 import { dataTableMessagesStrings } from "../data-table.messages";
 
@@ -37,9 +37,10 @@ export const DataTableHeader = <
     maxHeight,
     showExpandColumn,
     showPinColumn,
-  } = useDataTableContext();
-  const { selectionBehavior, selectionMode, allowsDragging } =
-    useTableOptions();
+    showSelectionColumn,
+    disabledKeys,
+  } = useStableDataTableContext();
+  const { selectionMode, allowsDragging } = useTableOptions();
   const [styleProps, restProps] = extractStyleProps(props);
 
   // Use provided aria-label or fall back to default
@@ -51,6 +52,14 @@ export const DataTableHeader = <
         const align = column.align ?? "start";
         return (
           <DataTableColumn
+            // React Aria derives a column's collection key from
+            // `rendered.props.id ?? item.key ?? item.id`, so the rendered
+            // element has to carry the id. Column definitions can hold a
+            // business `key` field, which would otherwise win and make
+            // `onSortChange` report it instead of the column id. Setting it
+            // here rather than inside DataTableColumn leaves a consumer's own
+            // `id` on <DataTable.Column> free to override it.
+            id={column.id}
             allowsSorting={
               column.isSortable !== undefined
                 ? column.isSortable
@@ -107,7 +116,7 @@ export const DataTableHeader = <
             <VisuallyHidden>{msg.format("dragRowsColumn")}</VisuallyHidden>
           </DataTableColumn>
         )}
-        {selectionBehavior === "toggle" && (
+        {showSelectionColumn && (
           <DataTableColumn
             id="selection"
             className="selection-column-header"
@@ -124,7 +133,12 @@ export const DataTableHeader = <
                 w="100%"
                 h="100%"
               >
-                <Checkbox slot="selection" />
+                {/* React Aria's select-all ignores disabled rows and reports
+                 * "all", so disable it when no row can be selected. */}
+                <Checkbox
+                  slot="selection"
+                  {...(disabledKeys === "all" && { isDisabled: true })}
+                />
               </Box>
             )}
           </DataTableColumn>
@@ -132,23 +146,15 @@ export const DataTableHeader = <
         {showExpandColumn && (
           <DataTableColumn
             className="expand-column-header"
-            maxWidth={selectionBehavior === "toggle" ? 24 : 72}
-            minWidth={selectionBehavior === "toggle" ? 24 : 72}
+            maxWidth={showSelectionColumn ? 24 : 72}
+            minWidth={showSelectionColumn ? 24 : 72}
             allowsSorting={false}
             aria-label={msg.format("expandRows")}
             isInternalColumn={true}
           >
+            {/* No icon here: an arrow looked like a control, but the header
+             * does nothing. Each row has its own expand button (#2019). */}
             <VisuallyHidden>{msg.format("expandRows")}</VisuallyHidden>
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              w="100%"
-              h="100%"
-              aria-hidden="true"
-            >
-              <Icon as={KeyboardArrowRight} boxSize="400" color="neutral.10" />
-            </Box>
           </DataTableColumn>
         )}
         {children

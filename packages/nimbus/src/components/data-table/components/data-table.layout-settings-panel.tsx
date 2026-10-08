@@ -1,5 +1,5 @@
 import { ToggleButtonGroup, Text, SimpleGrid, Toolbar } from "@/components";
-import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
+import { ToggleButton } from "@/components/toggle-button/toggle-button";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { UPDATE_ACTIONS } from "../constants";
 import {
@@ -9,7 +9,7 @@ import {
   FormatAlignJustify,
 } from "@commercetools/nimbus-icons";
 import { dataTableMessagesStrings } from "../data-table.messages";
-import { useDataTableContext } from "./data-table.context";
+import { useStableDataTableContext } from "./data-table.context";
 import type { DataTableProps } from "../data-table.types";
 
 export const LayoutSettingsPanel = ({
@@ -18,7 +18,7 @@ export const LayoutSettingsPanel = ({
   onSettingsChange?: DataTableProps["onSettingsChange"];
 }) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
-  const context = useDataTableContext();
+  const context = useStableDataTableContext();
 
   const textVisibility = context.isTruncated ?? false;
   const rowDensity: "comfortable" | "compact" =
@@ -40,6 +40,8 @@ export const LayoutSettingsPanel = ({
 
   return (
     <SimpleGrid
+      role="group"
+      aria-label={msg.format("layoutSettingsAriaLabel")}
       templateColumns="repeat(4, 1fr)"
       columnGap="400"
       rowGap="600"
@@ -58,28 +60,20 @@ export const LayoutSettingsPanel = ({
             onSelectionChange={handleTextVisibilityChange}
             aria-label={msg.format("textVisibilityAriaLabel")}
           >
-            <IconToggleButton
-              id="full"
-              size="xs"
-              aria-label={msg.format("fullText")}
-              variant="ghost"
-              px="300"
-              flex="1"
-            >
+            <ToggleButton id="full" size="xs" variant="ghost" px="300" flex="1">
               <WrapText />
               {msg.format("fullText")}
-            </IconToggleButton>
-            <IconToggleButton
+            </ToggleButton>
+            <ToggleButton
               id="preview"
               size="xs"
-              aria-label={msg.format("textPreviews")}
               variant="ghost"
               px="300"
               flex="1"
             >
               <ShortText />
               {msg.format("textPreviews")}
-            </IconToggleButton>
+            </ToggleButton>
           </ToggleButtonGroup.Root>
         </Toolbar>
       </SimpleGrid.Item>
@@ -96,28 +90,26 @@ export const LayoutSettingsPanel = ({
             onSelectionChange={handleRowDensityChange}
             aria-label={msg.format("rowDensityAriaLabel")}
           >
-            <IconToggleButton
+            <ToggleButton
               id="comfortable"
               size="xs"
               variant="ghost"
-              aria-label={msg.format("comfortable")}
               px="300"
               flex="1"
             >
               <DensitySmall />
               {msg.format("comfortable")}
-            </IconToggleButton>
-            <IconToggleButton
+            </ToggleButton>
+            <ToggleButton
               id="compact"
               size="xs"
               variant="ghost"
-              aria-label={msg.format("compact")}
               px="300"
               flex="1"
             >
               <FormatAlignJustify />
               {msg.format("compact")}
-            </IconToggleButton>
+            </ToggleButton>
           </ToggleButtonGroup.Root>
         </Toolbar>
       </SimpleGrid.Item>

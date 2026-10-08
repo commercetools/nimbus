@@ -190,8 +190,11 @@ export const buttonRecipe = defineRecipe({
       },
       link: {
         color: "colorPalette.11",
+        // Underlined at rest, so it does not look like `ghost`.
+        textDecoration: "underline",
+        textUnderlineOffset: "3px",
         _hover: {
-          textDecoration: "underline",
+          color: "colorPalette.12",
         },
       },
     },

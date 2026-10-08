@@ -136,8 +136,10 @@ const columns: DataTableColumnItem[] = [
 
 ### Row data structure
 
-Each row must have a unique `id` property. Additional properties are accessed
-via column `accessor` functions:
+Each row must have a unique `id` property. It is the key for selection,
+`disabledKeys`, expansion and pinning. To identify rows by another property,
+set `id` in the row data, for example `rows.map((v) => ({ ...v, id: v.sku }))`.
+Additional properties are accessed via column `accessor` functions:
 
 ```tsx
 import type { DataTableRowItem } from "@commercetools/nimbus";
@@ -155,11 +157,41 @@ const rows: DataTableRowItem[] = [
 ];
 ```
 
+### When rows render again
+
+A row renders again only when something about that row changes, for example
+its data, or whether it is expanded or pinned. DataTable compares `rows`,
+`columns` and `visibleColumns` item by item. A new array that holds the same
+objects, such as `rows={data.filter(isActive)}`, does not render any row
+again.
+
+To keep large tables fast:
+
+- **Replace a changed row with a new object.** A row renders again when its
+  object changes. If you change a row object in place, the table keeps showing
+  the old values.
+- **Create column definitions once**, outside the component or with
+  `useMemo`. A new column object on every render renders every row again.
+- **Create `renderNestedContent` once**, outside the component or with
+  `useCallback`. A new function on every render renders every row again.
+- **Keep the same `disabledKeys` Set between renders**, for example with
+  `useState` or `useMemo`. A new Set on every render renders every row again.
+- **`search` filters the rows on every change.** In a large table, debounce
+  the search field, or pass a value from React's `useDeferredValue`, so that
+  filtering does not slow down typing:
+
+```tsx
+const [search, setSearch] = useState("");
+const deferredSearch = useDeferredValue(search);
+
+<DataTable columns={columns} rows={rows} search={deferredSearch} />;
+```
+
 ## Usage examples
 
 ### Density options
 
-The `density` prop controls row height and padding. Use `condensed` for
+The `density` prop controls the vertical padding of cells. Use `condensed` for
 data-dense interfaces:
 
 ```jsx live-dev
@@ -422,7 +454,18 @@ const App = () => {
 
 ### Clickable rows
 
-Use `onRowClick` to handle row click events for navigation or detail views:
+Use `onRowAction` to react when a user activates a row, for navigation or
+detail views. A row is activated by a click, or by pressing <kbd>Enter</kbd>
+while the row or one of its cells has focus. <kbd>Space</kbd> keeps selecting
+the row. Disabled rows are never activated. Clicks and <kbd>Enter</kbd> on a
+link, button, checkbox or text field inside a cell only affect that element.
+
+A click waits about 300 ms before it activates the row, so that
+double-clicking a word to select it does not activate the row.
+<kbd>Enter</kbd> activates immediately.
+
+`onRowClick` is deprecated. It still works and is called in the same cases,
+but it is ignored when `onRowAction` is also passed.
 
 ```jsx live-dev
 const App = () => {
@@ -447,7 +490,7 @@ const App = () => {
       <DataTable
         columns={columns}
         rows={rows}
-        onRowClick={(row) => setClickedRow(row)}
+        onRowAction={(row) => setClickedRow(row)}
       />
     </Stack>
   );
@@ -537,7 +580,28 @@ const App = () => {
 
 ### Nested rows
 
-Use `nestedKey` to enable expandable nested content:
+> **Deprecated:** `nestedKey` is deprecated. Use
+> [`renderNestedContent`](#nested-content-via-render-function) instead. It
+> receives the row, so the nested data is one property access away:
+>
+> ```jsx
+> // Before
+> <DataTable columns={columns} rows={rows} nestedKey="children" />
+>
+> // After
+> <DataTable
+>   columns={columns}
+>   rows={rows}
+>   renderNestedContent={(row) =>
+>     row.children && <MyNestedList items={row.children} />
+>   }
+> />
+> ```
+>
+> `nestedKey` keeps working until a future major version.
+
+`nestedKey` names a row field whose value is shown when the row is expanded. An
+array shows only the number of items:
 
 ```jsx live-dev
 const App = () => {
@@ -582,7 +646,8 @@ const App = () => {
 
 Use `renderNestedContent` to render a uniform component template below each row
 when expanded. This is ideal when every row should show the same layout with its
-own data. For per-row heterogeneous content, use `nestedKey` instead.
+own data. To show different content for some rows, branch on the row inside the
+function.
 
 An expand column with a chevron button is shown by default. Set
 `allowsExpandColumn={false}` to hide the chevron and expand via row click
@@ -604,7 +669,7 @@ const App = () => {
 
   return (
     <Stack gap="300">
-      <Text>Click the expand button to toggle nested content.</Text>
+      <Text>Click a row, or press Enter on it, to toggle nested content.</Text>
       <DataTable
         columns={columns}
         rows={rows}
@@ -620,13 +685,10 @@ const App = () => {
 }
 ```
 
-### Overriding renderNestedContent with nestedKey
+### Different nested content per row
 
-When both `renderNestedContent` and `nestedKey` are provided, rows that have
-data at `row[nestedKey]` render that content instead of the default template.
-Rows without `nestedKey` data fall through to `renderNestedContent`. This lets
-you define a default layout for most rows while providing custom content for
-specific ones.
+`renderNestedContent` receives the row, so it can return different content for
+some rows. This replaces combining it with the deprecated `nestedKey`:
 
 ```jsx live-dev
 const App = () => {
@@ -645,12 +707,13 @@ const App = () => {
     <DataTable
       columns={columns}
       rows={rows}
-      nestedKey="details"
-      renderNestedContent={(row) => (
-        <Box p="400">
-          <Text>Default: {row.name} ({row.role})</Text>
-        </Box>
-      )}
+      renderNestedContent={(row) =>
+        row.details ?? (
+          <Box p="400">
+            <Text>Default: {row.name} ({row.role})</Text>
+          </Box>
+        )
+      }
     />
   );
 }
@@ -811,9 +874,9 @@ const App = () => {
 
 ### Hiding the expand column
 
-Set `allowsExpandColumn={false}` to hide the expand chevron column. When no
-`onRowClick` handler is provided, rows with nested content can still be expanded
-by clicking anywhere on the row:
+Set `allowsExpandColumn={false}` to hide the expand chevron column. Rows with
+nested content are then expanded by activating the row: a click anywhere on it,
+or <kbd>Enter</kbd>:
 
 ```jsx live-dev
 const App = () => {
@@ -849,7 +912,12 @@ const App = () => {
       <DataTable
         columns={columns}
         rows={rows}
-        nestedKey="children"
+        renderNestedContent={(row) => (
+          <Text p="300">
+            {row.children?.map((child) => child.name).join(', ') ??
+              'No subcategories'}
+          </Text>
+        )}
         allowsExpandColumn={false}
       />
     </Stack>
@@ -857,15 +925,18 @@ const App = () => {
 }
 ```
 
-### Hidden expand column with custom row click
+### Hidden expand column with custom row activation
 
-When `onRowClick` is provided alongside `allowsExpandColumn={false}`, the
-`onRowClick` handler takes precedence and the automatic expand-on-click behavior
-is disabled. To still support expansion, use controlled expansion state:
+When `onRowAction` is provided alongside `allowsExpandColumn={false}`,
+activating a row does both: it toggles the row's expansion and calls
+`onRowAction`. Use `onRowAction` for your own logic; the table handles the
+expansion. To control the expansion state, use `expandedRows` and
+`onExpandRowsChange`:
 
 ```jsx live-dev
 const App = () => {
   const [expanded, setExpanded] = useState(new Set());
+  const [lastActivated, setLastActivated] = useState(null);
 
   const columns = [
     { id: 'name', header: 'Category', accessor: (row) => row.name },
@@ -895,23 +966,24 @@ const App = () => {
 
   return (
     <Stack gap="300">
-      <Text>Click a row to toggle expansion and trigger custom logic.</Text>
+      <Text>
+        {lastActivated
+          ? `Last activated: ${lastActivated}`
+          : 'Click a row, or press Enter on it, to toggle it.'}
+      </Text>
       <DataTable
         columns={columns}
         rows={rows}
-        nestedKey="children"
+        renderNestedContent={(row) => (
+          <Text p="300">
+            {row.children?.map((child) => child.name).join(', ') ??
+              'No subcategories'}
+          </Text>
+        )}
         allowsExpandColumn={false}
         expandedRows={expanded}
         onExpandRowsChange={setExpanded}
-        onRowClick={(row) => {
-          const next = new Set(expanded);
-          if (next.has(row.id)) {
-            next.delete(row.id);
-          } else {
-            next.add(row.id);
-          }
-          setExpanded(next);
-        }}
+        onRowAction={(row) => setLastActivated(row.name)}
       />
     </Stack>
   );
@@ -1048,7 +1120,8 @@ replace the **data columns/cells**.
 Pass a render function to `DataTable.Body` to control how each row renders.
 The function receives the row data and render props (`isExpanded`, `isPinned`,
 etc.). Spread the render props onto `DataTable.Row` to preserve expansion and
-pinning behavior:
+pinning behavior. Do not set `id` on `DataTable.Row`; the row's identity comes
+from the row data, and a different `id` logs a development warning:
 
 ```jsx live-dev
 const App = () => {

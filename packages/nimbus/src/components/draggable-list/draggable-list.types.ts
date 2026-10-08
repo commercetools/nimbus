@@ -175,6 +175,12 @@ export type DraggableListItemProps<T extends DraggableListItemData> = Omit<
      * @param key - The key of the item being removed
      */
     onRemoveItem?: (key: Key) => void;
+    /**
+     * Accessible name of the remove button. Use it when removing means
+     * something more specific, such as hiding a column.
+     * @default localized "remove item"
+     */
+    removeButtonLabel?: string;
   };
 
 /**

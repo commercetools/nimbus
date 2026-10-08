@@ -1,7 +1,7 @@
 import figma from "@figma/code-connect/react";
 import { Alert } from "./alert";
 
-// NOTE: Skipped BOOLEAN "Clear button" → no matching code prop found
+// NOTE: `accent-start` has no Figma counterpart yet, so it is not mapped.
 figma.connect(
   Alert.Root,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=339-5419",

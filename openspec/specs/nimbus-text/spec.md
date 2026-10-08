@@ -171,7 +171,7 @@ The component SHALL support comprehensive color palette for text color.
 
 #### Scenario: Semantic colors
 - **WHEN** color prop is set to semantic value
-- **THEN** SHALL accept: fg (foreground), fg.subtle (secondary), fg.muted
+- **THEN** SHALL accept: fg (foreground), fg.subtle (secondary)
 - **AND** SHALL accept semantic palettes: primary.11, neutral.11, info.11, positive.11, warning.11, critical.11
 - **AND** SHALL maintain WCAG AA contrast ratios against backgrounds
 - **AND** SHALL support light and dark modes via semantic tokens

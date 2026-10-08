@@ -1,4 +1,5 @@
 import type { ReactNode, FC, Ref } from "react";
+import type { DataTableRowKeyResolver } from "./utils/row-keys.utils";
 import type {
   SortDirection as RaSortDirection,
   TableHeaderProps as RaTableHeaderProps,
@@ -23,7 +24,7 @@ import type { OmitInternalProps } from "../../type-utils";
 type DataTableSlotRecipeProps = {
   /** Whether to truncate cell content with ellipsis */
   truncated?: boolean;
-  /** Density variant controlling row height and padding */
+  /** Density variant controlling the vertical padding of cells */
   density?: "default" | "condensed";
 } & UnstyledProp;
 
@@ -49,7 +50,7 @@ export type DataTableTableSlotProps = Omit<
   dragAndDropHooks?: RaDragAndDropHooks;
 };
 
-export type DataTableHeaderSlotProps = HTMLChakraProps<"tr">;
+export type DataTableHeaderSlotProps = HTMLChakraProps<"thead">;
 export type DataTableColumnSlotProps = HTMLChakraProps<"th">;
 export type DataTableBodySlotProps = HTMLChakraProps<"tbody">;
 export type DataTableRowSlotProps = HTMLChakraProps<"tr">;
@@ -137,19 +138,33 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
       options: DataTableNestedContentOptions
     ) => ReactNode;
     toggleExpand: (id: string, columnId?: string) => void;
+    /**
+     * Resolves a row's identity. Every key the table reports or accepts comes
+     * from here, so internal state can never disagree with the key React Aria
+     * uses for the collection. Stable across renders.
+     */
+    getRowKey: DataTableRowKeyResolver<T>;
     activeColumns: DataTableColumnItem<T>[];
     filteredRows: DataTableRowItem<T>[];
     sortedRows: DataTableRowItem<T>[];
     showExpandColumn: boolean;
     hasExpandableContent: boolean;
+    /**
+     * Whether the checkbox selection column exists: `selectionMode` is not
+     * `"none"`. The header, the row cells and the nested row's `colSpan` all
+     * read this value.
+     */
     showSelectionColumn: boolean;
     showPinColumn: boolean;
+    /**
+     * The ids of the pinned rows on screen, in display order. A pinned row
+     * that the search hides is not in it. `pinnedRows` holds every pinned id.
+     */
     pinnedRowIds: string[];
     selectRowLabel: string;
     disabledKeys?: Selection;
     onRowActionRef: React.RefObject<
-      | ((row: DataTableRowItem<T>, action: "click" | "select") => void)
-      | undefined
+      ((row: DataTableRowItem<T>) => void) | undefined
     >;
     isResizable?: boolean;
     pinnedRows: Set<string>;
@@ -166,7 +181,6 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
         ) => void)
       | undefined
     >;
-    onVisibilityChange?: (visibleColumnIds: string[]) => void;
   };
 
 export type TableSelectionContextValue = {
@@ -205,6 +219,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   unstyled?: boolean;
   rows: DataTableRowItem<T>[];
   visibleColumns?: string[];
+  /** Content to render when the table has no rows. Defaults to a localized "No Data" message. */
   renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
   isResizable?: boolean;
   allowsSorting?: boolean;
@@ -214,13 +229,16 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   defaultSortDescriptor?: SortDescriptor;
   onSortChange?: (descriptor: SortDescriptor) => void;
   selectionMode?: "none" | "single" | "multiple";
-  selectionBehavior?: "toggle" | "replace";
   disallowEmptySelection?: boolean;
   selectedKeys?: Selection;
   defaultSelectedKeys?: Selection;
   onSelectionChange?: (keys: Selection) => void;
+  /**
+   * @deprecated Use `onRowAction` instead. Called in the same cases; ignored
+   * when `onRowAction` is also passed.
+   */
   onRowClick?: (row: DataTableRowItem<T>) => void;
-  /** Renders a full-width nested content panel below a row when expanded. Use this when every row should render the same component template with its own data. For per-row heterogeneous content, use `nestedKey` instead. The options object provides a `close` callback for collapsing the panel from within. */
+  /** Renders a full-width nested content panel below a row when expanded. The function receives the row, so it can render different content per row. The options object provides a `close` callback for collapsing the panel from within. */
   renderNestedContent?: (
     row: DataTableRowItem<T>,
     options: DataTableNestedContentOptions
@@ -229,9 +247,24 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   density?: DataTableDensity;
   isTruncated?: boolean;
   footer?: ReactNode;
+  /**
+   * @deprecated Use `renderNestedContent` instead, and read the nested data from
+   * the row it receives: `renderNestedContent={(row) => row.children}`. Still
+   * works; will be removed in a future major version.
+   */
   nestedKey?: string;
+  /** Row ids that are disabled, or `"all"` to disable every row. Disabled rows cannot be selected or activated. A row can also be disabled by setting `isDisabled: true` in its data. */
   disabledKeys?: Selection;
-  onRowAction?: (row: DataTableRowItem<T>, action: "click" | "select") => void;
+  /**
+   * Called when the user activates a row: by clicking it, or by pressing Enter
+   * while the row or one of its cells has focus. Space selects the row and does
+   * not activate it. Never called for disabled rows, or when the click or Enter
+   * lands on a control inside a cell (a link, a button, a checkbox, a text
+   * field). Clicks wait
+   * about 300 ms so that double-clicking a word to select it does not activate
+   * the row; Enter activates immediately.
+   */
+  onRowAction?: (row: DataTableRowItem<T>) => void;
   /** Controlled expansion state - map of row IDs to their expanded state */
   expandedRows?: Set<string>;
   /** Default expansion state for uncontrolled mode */
@@ -244,7 +277,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   ) => void;
   /** Whether to show the pin column. Defaults to `true`. */
   allowsPinning?: boolean;
-  /** Whether to show the expand chevron column. When `false`, rows with nested content can be expanded via row click. If `onRowClick` is also provided, both the expand toggle and `onRowClick` fire on click. Defaults to `true`. */
+  /** Whether to show the expand chevron column. When `false`, rows with nested content are expanded by activating the row (click or Enter). If `onRowAction` is also provided, both the expand toggle and `onRowAction` fire. Defaults to `true`. */
   allowsExpandColumn?: boolean;
   pinnedRows?: Set<string>;
   defaultPinnedRows?: Set<string>;

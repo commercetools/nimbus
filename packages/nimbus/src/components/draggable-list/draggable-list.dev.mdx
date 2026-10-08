@@ -9,57 +9,69 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { DraggableList, type DraggableListRootProps } from '@commercetools/nimbus';
+import {
+  DraggableList,
+  type DraggableListRootProps,
+} from "@commercetools/nimbus";
 ```
 
 ### Basic usage
 
-The simplest implementation uses an array of items with `key` and `label` properties. The component automatically handles drag-and-drop reordering:
+The simplest implementation uses an array of items with `key` and `label`
+properties. The component automatically handles drag-and-drop reordering:
 
 ```jsx live-dev
 const App = () => {
   const items = [
-    { key: '1', label: 'First item' },
-    { key: '2', label: 'Second item' },
-    { key: '3', label: 'Third item' },
+    { key: "1", label: "First item" },
+    { key: "2", label: "Second item" },
+    { key: "3", label: "Third item" },
   ];
 
-  return (
-    <DraggableList.Root
-      items={items}
-      aria-label="Task list"
-    />
-  );
-}
+  return <DraggableList.Root items={items} aria-label="Task list" />;
+};
 ```
 
-**Important:** You must provide either an `aria-label` or `aria-labelledby` prop for accessibility. The drag-and-drop functionality requires an accessible label.
+**Important:** You must provide either an `aria-label` or `aria-labelledby` prop
+for accessibility. The drag-and-drop functionality requires an accessible label.
 
 ## Working with React Aria drag-and-drop
 
-The DraggableList relies on React Aria Components' GridList and drag-and-drop hooks for accessible drag-and-drop functionality. This integration provides keyboard navigation, screen reader support, and touch-friendly interactions.
+The DraggableList relies on React Aria Components' GridList and drag-and-drop
+hooks for accessible drag-and-drop functionality. This integration provides
+keyboard navigation, screen reader support, and touch-friendly interactions.
 
 ### Drag-and-drop behavior
 
 React Aria's drag-and-drop system provides:
-- **Visual feedback**: Items show grab cursors and drag previews during interactions
+
+- **Visual feedback**: Items show grab cursors and drag previews during
+  interactions
 - **Drop indicators**: Visual cues show where items will be placed
 - **Move operations**: Items are moved (not copied) between lists
 - **Keyboard support**: Full keyboard navigation for drag-and-drop
 
 ### Data format
 
-Items being dragged use a custom format (`nimbus-draggable-list-item`) that allows items to be dragged between multiple DraggableList instances while preventing drops from external sources. When the `dragNamespace` prop is set, the format is scoped to that namespace (e.g. `nimbus-draggable-list-item:fruits`), so only lists sharing the same namespace can exchange items.
+Items being dragged use a custom format (`nimbus-draggable-list-item`) that
+allows items to be dragged between multiple DraggableList instances while
+preventing drops from external sources. When the `dragNamespace` prop is set,
+the format is scoped to that namespace (e.g.
+`nimbus-draggable-list-item:fruits`), so only lists sharing the same namespace
+can exchange items.
 
 ### State management
 
-The component uses React Stately's `useListData` hook internally to manage item state and reordering operations. This provides:
+The component uses React Stately's `useListData` hook internally to manage item
+state and reordering operations. This provides:
+
 - Efficient list operations (insert, remove, move)
 - Selection state management
 - Synchronization with external state via `onUpdateItems`
 
 > [!TIP]\
-> See [React Aria Drag and Drop](https://react-spectrum.adobe.com/react-aria/dnd.html) for complete API reference and advanced usage.
+> See [React Aria Drag and Drop](https://react-spectrum.adobe.com/react-aria/dnd.html)
+> for complete API reference and advanced usage.
 
 ## Usage examples
 
@@ -70,13 +82,13 @@ The `sm` and `md` size variants are available to match your interface density:
 ```jsx live-dev
 const App = () => {
   const [smallItems, setSmallItems] = useState([
-    { key: '1', label: 'Task 1' },
-    { key: '2', label: 'Task 2' },
+    { key: "1", label: "Task 1" },
+    { key: "2", label: "Task 2" },
   ]);
 
   const [mediumItems, setMediumItems] = useState([
-    { key: '3', label: 'Task 3' },
-    { key: '4', label: 'Task 4' },
+    { key: "3", label: "Task 3" },
+    { key: "4", label: "Task 4" },
   ]);
 
   return (
@@ -95,12 +107,14 @@ const App = () => {
       />
     </Stack>
   );
-}
+};
 ```
 
 ### Single selection
 
-Use `selectionMode="single"` to allow users to select one item at a time. Clicking a row selects it; clicking another row changes the selection. No checkboxes are rendered — the row itself is the click target:
+Use `selectionMode="single"` to allow users to select one item at a time.
+Clicking a row selects it; clicking another row changes the selection. No
+checkboxes are rendered — the row itself is the click target:
 
 ```jsx live-dev
 const App = () => {
@@ -110,26 +124,25 @@ const App = () => {
     <Stack direction="column" gap="400">
       <DraggableList.Root
         items={[
-          { key: '1', label: 'Option A' },
-          { key: '2', label: 'Option B' },
-          { key: '3', label: 'Option C' },
+          { key: "1", label: "Option A" },
+          { key: "2", label: "Option B" },
+          { key: "3", label: "Option C" },
         ]}
         selectionMode="single"
         selectedKeys={selected}
         onSelectionChange={setSelected}
         aria-label="Single selection list"
       />
-      <Text fontSize="sm">
-        Selected: {[...selected].join(', ') || 'none'}
-      </Text>
+      <Text fontSize="sm">Selected: {[...selected].join(", ") || "none"}</Text>
     </Stack>
   );
-}
+};
 ```
 
 ### Multiple selection
 
-Use `selectionMode="multiple"` to allow users to select any number of items. Each item renders a checkbox for toggling selection independently:
+Use `selectionMode="multiple"` to allow users to select any number of items.
+Each item renders a checkbox for toggling selection independently:
 
 ```jsx live-dev
 const App = () => {
@@ -139,36 +152,38 @@ const App = () => {
     <Stack direction="column" gap="400">
       <DraggableList.Root
         items={[
-          { key: '1', label: 'Task A' },
-          { key: '2', label: 'Task B' },
-          { key: '3', label: 'Task C' },
+          { key: "1", label: "Task A" },
+          { key: "2", label: "Task B" },
+          { key: "3", label: "Task C" },
         ]}
         selectionMode="multiple"
         selectedKeys={selected}
         onSelectionChange={setSelected}
         aria-label="Multiple selection list"
       />
-      <Text fontSize="sm">
-        Selected: {[...selected].join(', ') || 'none'}
-      </Text>
+      <Text fontSize="sm">Selected: {[...selected].join(", ") || "none"}</Text>
     </Stack>
   );
-}
+};
 ```
 
-> [!NOTE]
-> Selection props (`selectionMode`, `selectedKeys`, `onSelectionChange`, `defaultSelectedKeys`, `disallowEmptySelection`) are passed through to the underlying React Aria GridList. See the [React Aria GridList docs](https://react-spectrum.adobe.com/react-aria/GridList.html#selection) for the full selection API.
+> [!NOTE] Selection props (`selectionMode`, `selectedKeys`, `onSelectionChange`,
+> `defaultSelectedKeys`, `disallowEmptySelection`) are passed through to the
+> underlying React Aria GridList. See the
+> [React Aria GridList docs](https://react-spectrum.adobe.com/react-aria/GridList.html#selection)
+> for the full selection API.
 
 ### Item removal
 
-Enable item removal by setting `removableItems={true}`. When items are removed, the `onUpdateItems` callback receives the updated list:
+Enable item removal by setting `removableItems={true}`. When items are removed,
+the `onUpdateItems` callback receives the updated list:
 
 ```jsx live-dev
 const App = () => {
   const [items, setItems] = useState([
-    { key: '1', label: 'Item 1' },
-    { key: '2', label: 'Item 2' },
-    { key: '3', label: 'Item 3' },
+    { key: "1", label: "Item 1" },
+    { key: "2", label: "Item 2" },
+    { key: "3", label: "Item 3" },
   ]);
 
   return (
@@ -182,19 +197,39 @@ const App = () => {
       <Text fontSize="sm">Items: {items.length}</Text>
     </Stack>
   );
-}
+};
+```
+
+The remove button is named "remove item" by default. When removing means
+something more specific, render the items yourself and pass `removeButtonLabel`
+to `DraggableList.Item`. The label must be translated, like any other text you
+pass:
+
+```jsx
+<DraggableList.Root items={items} removableItems onUpdateItems={setItems}>
+  {(item) => (
+    <DraggableList.Item
+      id={item.key}
+      onRemoveItem={item.onRemoveItem}
+      removeButtonLabel="Hide column"
+    >
+      {item.label}
+    </DraggableList.Item>
+  )}
+</DraggableList.Root>
 ```
 
 ### Custom item rendering
 
-For items without `key` and `label` properties, or when you need custom rendering, provide a render function as children:
+For items without `key` and `label` properties, or when you need custom
+rendering, provide a render function as children:
 
 ```jsx live-dev
 const App = () => {
   const items = [
-    { id: 'task-1', title: 'Design mockups', priority: 'High' },
-    { id: 'task-2', title: 'Write tests', priority: 'Medium' },
-    { id: 'task-3', title: 'Review PR', priority: 'Low' },
+    { id: "task-1", title: "Design mockups", priority: "High" },
+    { id: "task-2", title: "Write tests", priority: "Medium" },
+    { id: "task-3", title: "Review PR", priority: "Low" },
   ];
 
   return (
@@ -207,7 +242,7 @@ const App = () => {
         <DraggableList.Item id={item.id}>
           <Stack direction="column" gap="100" padding="200">
             <Text fontWeight="500">{item.title}</Text>
-            <Text fontSize="sm" color="fg.muted">
+            <Text fontSize="sm" color="fg.subtle">
               Priority: {item.priority}
             </Text>
           </Stack>
@@ -215,10 +250,12 @@ const App = () => {
       )}
     </DraggableList.Root>
   );
-}
+};
 ```
 
-**Note:** When using custom rendering, you must provide a `getKey` function to extract unique keys from your items. Wrap this function in `useCallback` to prevent unnecessary re-synchronization:
+**Note:** When using custom rendering, you must provide a `getKey` function to
+extract unique keys from your items. Wrap this function in `useCallback` to
+prevent unnecessary re-synchronization:
 
 ```tsx
 const getKey = useCallback((item) => item.id, []);
@@ -226,21 +263,22 @@ const getKey = useCallback((item) => item.id, []);
 
 ### Controlled updates
 
-Use the `onUpdateItems` callback to track changes when items are reordered or removed:
+Use the `onUpdateItems` callback to track changes when items are reordered or
+removed:
 
 ```jsx live-dev
 const App = () => {
   const [items, setItems] = useState([
-    { key: '1', label: 'High priority' },
-    { key: '2', label: 'Medium priority' },
-    { key: '3', label: 'Low priority' },
+    { key: "1", label: "High priority" },
+    { key: "2", label: "Medium priority" },
+    { key: "3", label: "Low priority" },
   ]);
 
   const [updateCount, setUpdateCount] = useState(0);
 
   const handleUpdateItems = useCallback((updatedItems) => {
     setItems(updatedItems);
-    setUpdateCount(prev => prev + 1);
+    setUpdateCount((prev) => prev + 1);
   }, []);
 
   return (
@@ -251,12 +289,12 @@ const App = () => {
         aria-label="Priority list"
       />
       <Text fontSize="sm">
-        Order: {items.map(item => item.label).join(', ')}
+        Order: {items.map((item) => item.label).join(", ")}
       </Text>
       <Text fontSize="sm">Updates: {updateCount}</Text>
     </Stack>
   );
-}
+};
 ```
 
 ### Custom empty state
@@ -289,7 +327,7 @@ const App = () => {
       </Button>
     </Stack>
   );
-}
+};
 ```
 
 ### Multiple lists
@@ -299,12 +337,12 @@ Items can be dragged between multiple DraggableList instances:
 ```jsx live-dev
 const App = () => {
   const [todoItems, setTodoItems] = useState([
-    { key: '1', label: 'Design homepage' },
-    { key: '2', label: 'Write docs' },
+    { key: "1", label: "Design homepage" },
+    { key: "2", label: "Write docs" },
   ]);
 
   const [doneItems, setDoneItems] = useState([
-    { key: '3', label: 'Setup project' },
+    { key: "3", label: "Setup project" },
   ]);
 
   return (
@@ -327,25 +365,25 @@ const App = () => {
       </Stack>
     </Stack>
   );
-}
+};
 ```
 
 ### Isolating lists with `dragNamespace`
 
-By default, all DraggableList instances on a page can exchange items. Use the `dragNamespace` prop to isolate groups of lists so that only lists sharing the same namespace accept each other's items:
+By default, all DraggableList instances on a page can exchange items. Use the
+`dragNamespace` prop to isolate groups of lists so that only lists sharing the
+same namespace accept each other's items:
 
 ```jsx live-dev
 const App = () => {
   const [fruitsA, setFruitsA] = useState([
-    { key: '1', label: 'Apple' },
-    { key: '2', label: 'Banana' },
+    { key: "1", label: "Apple" },
+    { key: "2", label: "Banana" },
   ]);
-  const [fruitsB, setFruitsB] = useState([
-    { key: '3', label: 'Cherry' },
-  ]);
+  const [fruitsB, setFruitsB] = useState([{ key: "3", label: "Cherry" }]);
   const [veggies, setVeggies] = useState([
-    { key: '4', label: 'Carrot' },
-    { key: '5', label: 'Broccoli' },
+    { key: "4", label: "Carrot" },
+    { key: "5", label: "Broccoli" },
   ]);
 
   return (
@@ -379,31 +417,33 @@ const App = () => {
       </Stack>
     </Stack>
   );
-}
+};
 ```
 
-Items can be dragged between Fruits A and Fruits B (same namespace), but the Vegetables list is isolated and will not accept fruit items or vice versa. Omitting `dragNamespace` preserves the default behavior where all lists interoperate.
+Items can be dragged between Fruits A and Fruits B (same namespace), but the
+Vegetables list is isolated and will not accept fruit items or vice versa.
+Omitting `dragNamespace` preserves the default behavior where all lists
+interoperate.
 
 ### Accepting external drops
 
-Use `onExternalDrop` and `acceptExternalTypes` to accept drops from outside Nimbus. Helper functions are provided for common drop types:
+Use `onExternalDrop` and `acceptExternalTypes` to accept drops from outside
+Nimbus. Helper functions are provided for common drop types:
 
 ```jsx live-dev
 const App = () => {
-  const [items, setItems] = useState([
-    { key: '1', label: 'Existing item' },
-  ]);
+  const [items, setItems] = useState([{ key: "1", label: "Existing item" }]);
 
   return (
     <DraggableList.Root
       items={items}
       onUpdateItems={setItems}
-      acceptExternalTypes={['text/plain']}
+      acceptExternalTypes={["text/plain"]}
       onExternalDrop={async (dropItems) => {
         const results = [];
         for (const item of dropItems) {
-          if (item.kind === 'text') {
-            const text = await item.getText('text/plain');
+          if (item.kind === "text") {
+            const text = await item.getText("text/plain");
             results.push({ key: crypto.randomUUID(), label: text });
           }
         }
@@ -412,7 +452,7 @@ const App = () => {
       aria-label="Drop text here"
     />
   );
-}
+};
 ```
 
 For file and directory drops, use the composable helpers:
@@ -421,33 +461,35 @@ For file and directory drops, use the composable helpers:
 import {
   createItemsFromFileDrop,
   createItemsFromDirectoryDrop,
-} from '@commercetools/nimbus';
+} from "@commercetools/nimbus";
 
 <DraggableList.Root
   items={items}
   onUpdateItems={setItems}
-  acceptExternalTypes={['image/png', 'application/pdf']}
+  acceptExternalTypes={["image/png", "application/pdf"]}
   onExternalDrop={async (dropItems) => [
     ...(await createItemsFromFileDrop(dropItems)),
     ...(await createItemsFromDirectoryDrop(dropItems)),
   ]}
   aria-label="Drop files here"
-/>
+/>;
 ```
 
-See the [`useDragAndDrop` hook documentation](/hooks/use-drag-and-drop) for the full list of helpers and advanced usage.
+See the [`useDragAndDrop` hook documentation](/hooks/use-drag-and-drop) for the
+full list of helpers and advanced usage.
 
 ### Outgoing drag formats
 
-Use `serializeDragItem` to make items droppable into non-Nimbus targets by providing additional format representations:
+Use `serializeDragItem` to make items droppable into non-Nimbus targets by
+providing additional format representations:
 
 ```tsx
 <DraggableList.Root
   items={items}
   onUpdateItems={setItems}
   serializeDragItem={(item) => ({
-    'text/plain': item.label,
-    'text/html': `<li>${item.label}</li>`,
+    "text/plain": item.label,
+    "text/html": `<li>${item.label}</li>`,
   })}
   aria-label="Drag items out"
 />
@@ -481,7 +523,7 @@ const App = () => {
         <DraggableList.Item id={item.key}>
           <Stack direction="column" gap="100" padding="200">
             <Text fontWeight="500">{item.label}</Text>
-            <Text fontSize="sm" color="fg.muted">
+            <Text fontSize="sm" color="fg.subtle">
               {item.assignee} • {item.status}
             </Text>
           </Stack>
@@ -496,15 +538,14 @@ const App = () => {
 
 ## Accessibility
 
-The DraggableList handles most accessibility requirements internally through React Aria's GridList component. However, you must always provide an accessible label using one of these methods:
+The DraggableList handles most accessibility requirements internally through
+React Aria's GridList component. However, you must always provide an accessible
+label using one of these methods:
 
 **Using DraggableList.Field (recommended):**
 
 ```tsx
-<DraggableList.Field
-  label={msg.format(labelMessage)}
-  items={items}
-/>
+<DraggableList.Field label={msg.format(labelMessage)} items={items} />
 ```
 
 **Using aria-labelledby:**
@@ -522,29 +563,24 @@ The DraggableList handles most accessibility requirements internally through Rea
 **Using aria-label:**
 
 ```tsx
-<DraggableList.Root
-  aria-label={msg.format(labelMessage)}
-  items={items}
-/>
+<DraggableList.Root aria-label={msg.format(labelMessage)} items={items} />
 ```
 
-If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
+If your use case requires tracking and analytics for this component, it is good
+practice to add a **persistent**, **unique** id to the component:
 
 ```tsx
 const PERSISTENT_ID = "example-draggable-list";
 
 export const Example = () => (
-  <DraggableList.Root
-    id={PERSISTENT_ID}
-    aria-label="Task list"
-    items={items}
-  />
+  <DraggableList.Root id={PERSISTENT_ID} aria-label="Task list" items={items} />
 );
 ```
 
 #### Keyboard navigation
 
 The component supports full keyboard interaction:
+
 - `Tab` / `Shift+Tab`: Move focus between items and drag handles
 - `Arrow keys`: Navigate between items in the list
 - `Enter` / `Space`: Activate drag mode for the focused item
@@ -560,14 +596,15 @@ The component supports full keyboard interaction:
 
 ### Form integration with validation
 
-Integrate DraggableList with form libraries like Formik for validated priority lists:
+Integrate DraggableList with form libraries like Formik for validated priority
+lists:
 
 ```jsx live-dev
 const App = () => {
   const [items, setItems] = useState([
-    { key: '1', label: 'Critical bug' },
-    { key: '2', label: 'Feature request' },
-    { key: '3', label: 'Documentation' },
+    { key: "1", label: "Critical bug" },
+    { key: "2", label: "Feature request" },
+    { key: "3", label: "Documentation" },
   ]);
 
   const [touched, setTouched] = useState(false);
@@ -585,16 +622,21 @@ const App = () => {
         description="Drag to reorder by priority"
         items={items}
         onUpdateItems={handleUpdateItems}
-        error={touched && !hasMinimumItems ? 'At least 2 items required' : undefined}
+        error={
+          touched && !hasMinimumItems ? "At least 2 items required" : undefined
+        }
         isInvalid={touched && !hasMinimumItems}
         aria-label="Priority list"
       />
-      <Text fontSize="sm" color={hasMinimumItems ? 'positive.11' : 'critical.11'}>
-        {hasMinimumItems ? '✓ Valid' : '✗ Invalid: Add more items'}
+      <Text
+        fontSize="sm"
+        color={hasMinimumItems ? "positive.11" : "critical.11"}
+      >
+        {hasMinimumItems ? "✓ Valid" : "✗ Invalid: Add more items"}
       </Text>
     </Stack>
   );
-}
+};
 ```
 
 ### Dynamic item management
@@ -604,8 +646,8 @@ Allow users to add, remove, and reorder items dynamically:
 ```jsx live-dev
 const App = () => {
   const [items, setItems] = useState([
-    { key: '1', label: 'Task 1' },
-    { key: '2', label: 'Task 2' },
+    { key: "1", label: "Task 1" },
+    { key: "2", label: "Task 2" },
   ]);
   const [nextId, setNextId] = useState(3);
 
@@ -631,7 +673,7 @@ const App = () => {
       </Button>
     </Stack>
   );
-}
+};
 ```
 
 ### Synchronized state with external storage
@@ -641,12 +683,12 @@ Sync list order with external state management or API:
 ```jsx live-dev
 const App = () => {
   const [items, setItems] = useState([
-    { key: '1', label: 'Design system' },
-    { key: '2', label: 'API integration' },
-    { key: '3', label: 'Testing' },
+    { key: "1", label: "Design system" },
+    { key: "2", label: "API integration" },
+    { key: "3", label: "Testing" },
   ]);
 
-  const [lastSaved, setLastSaved] = useState('Not saved');
+  const [lastSaved, setLastSaved] = useState("Not saved");
 
   const handleUpdateItems = useCallback((updatedItems) => {
     setItems(updatedItems);
@@ -664,17 +706,20 @@ const App = () => {
         onUpdateItems={handleUpdateItems}
         aria-label="Project phases"
       />
-      <Text fontSize="sm" color="fg.muted">
+      <Text fontSize="sm" color="fg.subtle">
         Last saved: {lastSaved}
       </Text>
     </Stack>
   );
-}
+};
 ```
 
 ## Testing your implementation
 
-These examples demonstrate how to test your implementation when using DraggableList within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+These examples demonstrate how to test your implementation when using
+DraggableList within your application. As the component's internal functionality
+is already tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
 
 {{docs-tests: draggable-list.docs.spec.tsx}}
 

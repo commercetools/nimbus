@@ -235,9 +235,9 @@ describe("DataTable - Selection", () => {
  * @docs-order 4
  */
 describe("DataTable - Row interactions", () => {
-  it("calls onRowClick when a row is clicked", async () => {
+  it("calls onRowAction when a row is clicked", async () => {
     const user = userEvent.setup();
-    const handleRowClick = vi.fn();
+    const handleRowAction = vi.fn();
 
     render(
       <NimbusProvider>
@@ -245,7 +245,7 @@ describe("DataTable - Row interactions", () => {
           columns={columns}
           rows={rows}
           search=""
-          onRowClick={handleRowClick}
+          onRowAction={handleRowAction}
         />
       </NimbusProvider>
     );
@@ -256,8 +256,31 @@ describe("DataTable - Row interactions", () => {
     await user.click(clickableCell[0]);
 
     await waitFor(() => {
-      expect(handleRowClick).toHaveBeenCalled();
+      expect(handleRowAction).toHaveBeenCalled();
     });
+  });
+
+  it("calls onRowAction when Enter is pressed on a focused row", async () => {
+    const user = userEvent.setup();
+    const handleRowAction = vi.fn();
+
+    render(
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          onRowAction={handleRowAction}
+        />
+      </NimbusProvider>
+    );
+
+    const firstDataRow = screen.getAllByRole("row")[1];
+    firstDataRow.focus();
+    await user.keyboard("{Enter}");
+
+    expect(handleRowAction).toHaveBeenCalledWith(
+      expect.objectContaining({ id: rows[0].id })
+    );
   });
 
   it("applies disabled state to specified rows", () => {
@@ -359,16 +382,16 @@ describe("DataTable - Row nested content panels", () => {
     });
   });
 
-  it("fires onRowClick alongside expand toggle", async () => {
+  it("fires onRowAction alongside expand toggle", async () => {
     const user = userEvent.setup();
-    const handleRowClick = vi.fn();
+    const handleRowAction = vi.fn();
 
     render(
       <NimbusProvider>
         <DataTable
           columns={columns}
           rows={rows}
-          onRowClick={handleRowClick}
+          onRowAction={handleRowAction}
           renderNestedContent={(row) => (
             <Box data-testid={`detail-${row.id}`}>
               Nested content for {row.id}
@@ -378,7 +401,7 @@ describe("DataTable - Row nested content panels", () => {
       </NimbusProvider>
     );
 
-    // Expand via chevron — onRowClick should NOT fire
+    // Expand via chevron — onRowAction should NOT fire
     const allRows = screen.getAllByRole("row");
     const firstDataRow = allRows[1];
     const expandButton = within(firstDataRow).getByRole("button", {
@@ -389,14 +412,14 @@ describe("DataTable - Row nested content panels", () => {
     await waitFor(() => {
       expect(screen.getByTestId("detail-1")).toBeInTheDocument();
     });
-    expect(handleRowClick).not.toHaveBeenCalled();
+    expect(handleRowAction).not.toHaveBeenCalled();
 
-    // Click a data cell — onRowClick should fire
+    // Click a data cell — onRowAction should fire
     const dataCell = within(firstDataRow).getAllByRole("gridcell").at(-1)!;
     await user.click(dataCell);
 
     await waitFor(() => {
-      expect(handleRowClick).toHaveBeenCalled();
+      expect(handleRowAction).toHaveBeenCalled();
     });
   });
 

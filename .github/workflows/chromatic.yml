@@ -90,7 +90,7 @@ jobs:
           (steps.changed-files.outputs.any_changed == 'true' ||
           github.event_name == 'workflow_dispatch') && github.head_ref !=
           'changeset-release/main'
-        uses: chromaui/action@2a0b63f30233c48591844a46d451b9cf68128186 # v18
+        uses: chromaui/action@db3ceb5efb0cd7447d63c2d8cce7da732ce89322 # v18
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           # storybookBaseDir + zip mirror chromatic.config.json (local-only);
@@ -102,6 +102,9 @@ jobs:
           zip: true
           # TurboSnap: snapshot only diff-affected stories (full on dispatch). See runbook.
           onlyChanged: ${{ github.event_name != 'workflow_dispatch' }}
+          # Build even if this commit already has a passed build (full on dispatch).
+          # See runbook "The manual button".
+          forceRebuild: ${{ github.event_name == 'workflow_dispatch' }}
           # Return once Storybook is uploaded; Chromatic tests on its servers and
           # posts the status check when done. Avoids timeouts on full builds.
           exitOnceUploaded: true

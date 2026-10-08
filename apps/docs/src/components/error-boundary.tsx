@@ -42,7 +42,7 @@ export function ErrorBoundary() {
           </Heading>
         </Box>
 
-        <Text color="fg.muted">{errorMessage}</Text>
+        <Text color="fg.subtle">{errorMessage}</Text>
 
         <Box>
           <Button onClick={() => (window.location.href = "/")} variant="solid">

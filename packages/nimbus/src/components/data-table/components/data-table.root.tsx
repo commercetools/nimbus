@@ -5,6 +5,7 @@ import {
   useRef,
   useEffect,
   startTransition,
+  type ContextType,
 } from "react";
 import { ResizableTableContainer } from "react-aria-components";
 import { useObjectRef } from "react-aria";
@@ -12,6 +13,7 @@ import { mergeRefs } from "@/utils";
 import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
 import {
   DataTableContext,
+  DataTableRowContext,
   InteractionContext,
   CustomSettingsContext,
   TableSelectionContext,
@@ -22,8 +24,15 @@ import type {
   DataTableContextValue,
   CustomSettingsContextValue,
   TableSelectionContextValue,
+  DataTableRowItem,
 } from "../data-table.types";
+import {
+  defaultGetRowKey,
+  findRowKeyProblems,
+  formatRowKeyProblems,
+} from "../utils/row-keys.utils";
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
+import { useStableArray } from "../hooks";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "../data-table.messages";
 
@@ -37,9 +46,9 @@ export const DataTableRoot = function DataTableRoot<
 >(props: DataTableProps<T>) {
   const {
     ref: forwardedRef,
-    columns = [],
-    rows = [],
-    visibleColumns,
+    columns: columnsProp = [],
+    rows: rowsProp = [],
+    visibleColumns: visibleColumnsProp,
     search,
     sortDescriptor: controlledSortDescriptor,
     defaultSortDescriptor,
@@ -70,9 +79,17 @@ export const DataTableRoot = function DataTableRoot<
     onColumnsChange,
     onSettingsChange,
     customSettings,
+    renderEmptyState,
     children,
     ...rest
   } = props;
+
+  // `columns={[...]}` or `rows={data.filter(...)}` is a new array on every
+  // render. Keeping the previous array while its items are the same stops
+  // that from re-sorting the rows and re-rendering every row.
+  const columns = useStableArray(columnsProp);
+  const rows = useStableArray(rowsProp);
+  const visibleColumns = useStableArray(visibleColumnsProp);
 
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
@@ -111,6 +128,47 @@ export const DataTableRoot = function DataTableRoot<
     };
   }, []);
 
+  // While a column is being resized, keep its right edge in view. Once the
+  // table is wider than its container, the edge would otherwise move under
+  // the frozen pin column or out of the visible area, where the mouse can no
+  // longer reach its resize handle. A ResizeObserver runs after the browser
+  // has laid out the new width and before it paints.
+  //
+  // The observer exists only during a resize, and it looks up the table when
+  // the resize starts. `DataTable.Table` can mount after `DataTable.Root`
+  // (rendered conditionally, for example), so the table may not exist yet
+  // when the root mounts.
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+
+  const stopKeepingResizedEdgeInView = useCallback(() => {
+    resizeObserverRef.current?.disconnect();
+    resizeObserverRef.current = null;
+  }, []);
+
+  const startKeepingResizedEdgeInView = useCallback(() => {
+    const el = localRef.current;
+    const table = el?.querySelector("table");
+    if (!el || !table) return;
+
+    const keepResizedEdgeInView = () => {
+      const column = el.querySelector("[data-resizing='true']")?.closest("th");
+      if (!column) return;
+      const pinColumn = el.querySelector("th.pin-rows-column-header");
+      const visibleRight = pinColumn
+        ? pinColumn.getBoundingClientRect().left
+        : el.getBoundingClientRect().left + el.clientLeft + el.clientWidth;
+      const hiddenWidth = column.getBoundingClientRect().right - visibleRight;
+      if (hiddenWidth > 0) el.scrollLeft += hiddenWidth;
+    };
+
+    resizeObserverRef.current?.disconnect();
+    resizeObserverRef.current = new ResizeObserver(keepResizedEdgeInView);
+    resizeObserverRef.current.observe(table);
+  }, []);
+
+  // The root can unmount during a resize, before React Aria reports its end.
+  useEffect(() => stopKeepingResizedEdgeInView, [stopKeepingResizedEdgeInView]);
+
   const [internalSortDescriptor, setInternalSortDescriptor] = useState<
     SortDescriptor | undefined
   >(defaultSortDescriptor);
@@ -139,6 +197,15 @@ export const DataTableRoot = function DataTableRoot<
       .filter((col): col is NonNullable<typeof col> => col !== undefined);
   }, [columns, visibleColumns]);
 
+  // One resolver for row identity, stable for the component's lifetime so it
+  // can sit in context without destabilising it. Everything that keys a row —
+  // selection, disabledKeys, expansion, pinning, and the key React Aria uses
+  // for the collection — goes through this, so those can never disagree.
+  const getRowKey = useCallback(
+    (row: DataTableRowItem<T>): string => defaultGetRowKey(row),
+    []
+  );
+
   const filteredRows = useMemo(
     () => (search ? filterRows(rows, search, activeColumns, nestedKey) : rows),
     [rows, search, activeColumns, nestedKey]
@@ -151,14 +218,39 @@ export const DataTableRoot = function DataTableRoot<
         sortDescriptor,
         activeColumns,
         nestedKey,
-        pinnedRows
+        pinnedRows,
+        getRowKey
       ),
-    [filteredRows, sortDescriptor, activeColumns, nestedKey, pinnedRows]
+    [
+      filteredRows,
+      sortDescriptor,
+      activeColumns,
+      nestedKey,
+      pinnedRows,
+      getRowKey,
+    ]
   );
 
-  const pinnedRowIds = useMemo(
-    () => rows.filter((r) => pinnedRows.has(r.id)).map((r) => r.id),
-    [rows, pinnedRows]
+  // Duplicate or empty keys otherwise surface only as React Aria's opaque
+  // "Cell count must match column count", which names neither the row nor the
+  // cause. Development only.
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    const message = formatRowKeyProblems(findRowKeyProblems(rows, getRowKey));
+    if (message) console.warn(message);
+  }, [rows, getRowKey]);
+
+  // The pinned rows on screen, in display order. It comes from `sortedRows`,
+  // not from `rows`: a pinned row that the search hides must not count as the
+  // first or last pinned row, or the row that is shown loses its outline.
+  // Sorting or searching gives a new array with the same ids. Keeping the old
+  // array then keeps DataTable.Body from re-rendering every row.
+  const pinnedRowIds = useStableArray(
+    useMemo(
+      () =>
+        sortedRows.filter((r) => pinnedRows.has(getRowKey(r))).map(getRowKey),
+      [sortedRows, pinnedRows, getRowKey]
+    )
   );
 
   const hasNestedKeyContent = useMemo(
@@ -167,6 +259,8 @@ export const DataTableRoot = function DataTableRoot<
   );
   const hasExpandableContent = hasNestedKeyContent || !!renderNestedContent;
   const showExpandColumn = hasExpandableContent && allowsExpandColumn;
+  // The single rule for whether the selection column exists. Header, cells
+  // and the nested row's colSpan all read it, so they cannot disagree.
   const showSelectionColumn = selectionMode !== "none";
   const showPinColumn = allowsPinning;
 
@@ -195,7 +289,7 @@ export const DataTableRoot = function DataTableRoot<
 
   // Ref-stabilize consumer callback props so their identity doesn't
   // destabilize contextValue. Without this, inline callbacks like
-  // `onRowClick={(row) => ...}` create a new context value every
+  // `onRowAction={(row) => ...}` create a new context value every
   // consumer render, which bypasses memo() on every Row and forces a
   // full table re-render. The refs are passed into the context; call
   // sites read .current at invocation time.
@@ -261,11 +355,12 @@ export const DataTableRoot = function DataTableRoot<
     ]
   );
 
-  const isRowClickable = !!onRowClick;
+  const isRowClickable = !!(onRowAction || onRowClick);
   const hasRenderNestedContent = !!renderNestedContent;
 
   const contextValue = useMemo(
     () => ({
+      getRowKey,
       columns,
       rows,
       visibleColumns,
@@ -277,6 +372,7 @@ export const DataTableRoot = function DataTableRoot<
       isTruncated,
       density,
       nestedKey,
+      renderEmptyState,
       onSortChange: handleSortChange,
       isRowClickable,
       hasRenderNestedContent,
@@ -308,6 +404,7 @@ export const DataTableRoot = function DataTableRoot<
       isTruncated,
       density,
       nestedKey,
+      renderEmptyState,
       handleSortChange,
       isRowClickable,
       hasRenderNestedContent,
@@ -322,6 +419,50 @@ export const DataTableRoot = function DataTableRoot<
       isResizable,
       disabledKeys,
       togglePin,
+      getRowKey,
+    ]
+  );
+
+  // Same values as in `contextValue`, without `columns` and `rows`, so a new
+  // `rows` array re-renders only the rows whose data changed.
+  const rowContextValue = useMemo(
+    () => ({
+      activeColumns,
+      search,
+      toggleExpand,
+      nestedKey,
+      disabledKeys,
+      showExpandColumn,
+      hasExpandableContent,
+      showSelectionColumn,
+      showPinColumn,
+      isTruncated,
+      isRowClickable,
+      hasRenderNestedContent,
+      onRowClickRef,
+      onRowActionRef,
+      renderNestedContent,
+      togglePin,
+      selectRowLabel,
+      getRowKey,
+    }),
+    [
+      activeColumns,
+      search,
+      toggleExpand,
+      nestedKey,
+      disabledKeys,
+      showExpandColumn,
+      hasExpandableContent,
+      showSelectionColumn,
+      showPinColumn,
+      isTruncated,
+      isRowClickable,
+      hasRenderNestedContent,
+      renderNestedContent,
+      togglePin,
+      selectRowLabel,
+      getRowKey,
     ]
   );
 
@@ -350,7 +491,10 @@ export const DataTableRoot = function DataTableRoot<
       {...rest}
       asChild
     >
-      <ResizableTableContainer>
+      <ResizableTableContainer
+        onResizeStart={startKeepingResizedEdgeInView}
+        onResizeEnd={stopKeepingResizedEdgeInView}
+      >
         <InteractionContext.Provider value={interactionValue}>
           <DataTableContext.Provider
             value={
@@ -359,13 +503,21 @@ export const DataTableRoot = function DataTableRoot<
               >
             }
           >
-            <TableSelectionContext.Provider value={selectionContextValue}>
-              <CustomSettingsContext.Provider
-                value={customSettingsContextValue}
-              >
-                {children}
-              </CustomSettingsContext.Provider>
-            </TableSelectionContext.Provider>
+            <DataTableRowContext.Provider
+              value={
+                rowContextValue as unknown as ContextType<
+                  typeof DataTableRowContext
+                >
+              }
+            >
+              <TableSelectionContext.Provider value={selectionContextValue}>
+                <CustomSettingsContext.Provider
+                  value={customSettingsContextValue}
+                >
+                  {children}
+                </CustomSettingsContext.Provider>
+              </TableSelectionContext.Provider>
+            </DataTableRowContext.Provider>
           </DataTableContext.Provider>
         </InteractionContext.Provider>
       </ResizableTableContainer>

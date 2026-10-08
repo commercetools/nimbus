@@ -1,5 +1,38 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
+// Stacking order inside the table, lowest first. Frozen (sticky) cells must
+// stay above the cells that scroll under them, the focus ring and the pinned
+// row outline must stay above frozen cells, and the sticky header must stay
+// above everything in the body.
+const zIndex = {
+  // Background extension of a frozen cell, behind the cell's own content.
+  stickyBgOverlap: -1,
+  // Column resize handle, above the header cell's content.
+  columnResizer: 2,
+  // Frozen pin cell at the right edge. Frozen cells of pinned rows use the
+  // same level.
+  pinCell: 3,
+  pinnedRowFrozenCell: 3,
+  // Expand cell next to the selection cell: below it, so the selection
+  // cell's scroll shadow falls over the expand cell.
+  expandCellAfterSelection: 10,
+  // Frozen body cells at the left edge. The expand cell is above the drag
+  // cell, so it covers the drag cell's scroll shadow.
+  frozenCell: 11,
+  expandCell: 12,
+  // Focus ring and pinned row outline in the body, above every frozen body
+  // cell.
+  bodyLayer: 13,
+  // Frozen header cells. The pin header is below the others.
+  pinHeaderCell: 11,
+  expandHeaderCell: 12,
+  frozenHeaderCell: 13,
+  // Sticky header, above the body layer so rows that scroll under the
+  // header stay hidden. Also the header's focus ring layer, above every
+  // frozen header cell.
+  header: 14,
+} as const;
+
 // Pseudo-element that extends a sticky cell's background by 2px on each side.
 // Fixes a Firefox/Safari rendering gap where the table's inset box-shadow
 // bleeds through at the edges of sticky cells in border-collapse:collapse tables.
@@ -13,9 +46,55 @@ const stickyBgOverlap = {
     right: "-2px",
     background: "inherit",
     pointerEvents: "none",
-    zIndex: -1,
+    zIndex: zIndex.stickyBgOverlap,
   },
 } as const;
+
+// A layer covering a row, cell or column header, drawn above the frozen
+// (sticky) cells so their backgrounds cannot hide it. The focus ring and the
+// pinned-row outline share it and use different properties (`outline` and
+// `box-shadow`), so a focused pinned row shows both. It must be `::after`: in
+// a table row, `::before` takes the place of the first cell and shifts every
+// cell one column to the right. `zIndex` must be higher than every frozen
+// cell next to the element. The element, or the cell that contains it, must
+// be positioned.
+const layerAboveFrozenCells = (layerZIndex: number) =>
+  ({
+    content: '""',
+    position: "absolute",
+    inset: 0,
+    pointerEvents: "none",
+    zIndex: layerZIndex,
+  }) as const;
+
+const bodyLayer = layerAboveFrozenCells(zIndex.bodyLayer);
+const headerLayer = layerAboveFrozenCells(zIndex.header);
+
+// Keyboard focus ring for rows, cells and column headers. An outline on the
+// element itself is drawn just outside its box, where neighbouring frozen
+// cells, the next row and the table edge cover parts of it. This ring is
+// drawn inside the element's box instead.
+const focusRingOn = (layer: typeof bodyLayer) =>
+  ({
+    _focusVisible: {
+      outline: "none",
+      _after: {
+        ...layer,
+        layerStyle: "focusRing",
+        outlineOffset: "calc(var(--focus-ring-width) * -1)",
+      },
+    },
+  }) as const;
+
+const bodyFocusRing = focusRingOn(bodyLayer);
+const headerFocusRing = focusRingOn(headerLayer);
+
+// Outline of a group of pinned rows. `edges` lists the inset shadows for the
+// sides this row draws.
+const pinnedOutline = (edges: string) =>
+  ({
+    _after: { ...bodyLayer, boxShadow: edges },
+  }) as const;
 
 /**
  * Slot recipe configuration for the DataTable component.
@@ -32,8 +111,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     "row",
     "cell",
     "footer",
-    "selectionCell",
-    "nestedIcon",
     "headerSortIcon",
     "columnResizer",
   ],
@@ -41,10 +118,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
   base: {
     root: {
       // CSS custom properties for pinned row shadows
-      "--pinned-shadow-left": "inset 2px 0 0 {colors.neutral.7}",
-      "--pinned-shadow-right": "inset -2px 0 0 {colors.neutral.7}",
-      "--pinned-shadow-top": "inset 0 2px 0 {colors.neutral.7}",
-      "--pinned-shadow-bottom": "inset 0 -2px 0 {colors.neutral.7}",
+      "--data-table-pinned-shadow-left": "inset 2px 0 0 {colors.neutral.7}",
+      "--data-table-pinned-shadow-right": "inset -2px 0 0 {colors.neutral.7}",
+      "--data-table-pinned-shadow-top": "inset 0 2px 0 {colors.neutral.7}",
+      "--data-table-pinned-shadow-bottom": "inset 0 -2px 0 {colors.neutral.7}",
 
       width: "100%",
       display: "block",
@@ -62,8 +139,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       "&[data-scroll-left='true']": {
         "& .data-table-row .data-table-sticky-cell:not([data-slot='pin-row-cell']):not([data-slot='selection'] ~ [data-slot='expand'])":
           { boxShadow: "{shadows.right}" },
-        "& .data-table-row-pinned .data-table-sticky-cell:not([data-slot='pin-row-cell'])":
-          { clipPath: "none" },
         "& .data-table-header .selection-column-header, & .data-table-header .drag-column-header, & .data-table-header .expand-column-header:not(.selection-column-header ~ .expand-column-header)":
           { boxShadow: "{shadows.right}" },
       },
@@ -71,23 +146,19 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         "& .data-table-row [data-slot='pin-row-cell']": {
           boxShadow: "{shadows.left}",
         },
-        "& .data-table-row-pinned [data-slot='pin-row-cell']": {
-          clipPath: "none",
-        },
         "& .data-table-header .pin-rows-column-header": {
           boxShadow: "{shadows.left}",
         },
       },
 
+      // Pinned rows carry `.data-table-row` too, so everything here applies
+      // to them as well.
       "& .data-table-row": {
         "& [data-slot='pin-row-cell']": {
           position: "sticky",
           right: 0,
-          zIndex: 3,
-          backgroundColor: "var(--dt-row-bg, inherit)",
-          // Match the row's hover/selection fade (row slot `_hover`) so frozen
-          // columns move in lockstep with the rest of the row.
-          transition: "background-color {durations.moderate} ease",
+          zIndex: zIndex.pinCell,
+          backgroundColor: "var(--data-table-row-bg, inherit)",
           ...stickyBgOverlap,
           "&::before": { right: 0 },
           "& [data-slot='nimbus-table-cell-pin-button']": {
@@ -100,20 +171,17 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         "& .data-table-sticky-cell:not([data-slot='pin-row-cell'])": {
           position: "sticky",
           left: 0,
-          backgroundColor: "var(--dt-row-bg, inherit)",
-          // Match the row's hover/selection fade (row slot `_hover`) so frozen
-          // columns move in lockstep with the rest of the row.
-          transition: "background-color {durations.moderate} ease",
+          backgroundColor: "var(--data-table-row-bg, inherit)",
           ...stickyBgOverlap,
         },
         "& [data-slot='drag']": {
-          zIndex: 11,
+          zIndex: zIndex.frozenCell,
         },
         "& [data-slot='selection']": {
-          zIndex: 11,
+          zIndex: zIndex.frozenCell,
         },
         "& [data-slot='expand']": {
-          zIndex: 12,
+          zIndex: zIndex.expandCell,
         },
         // When drag column is present, offset selection and expand columns
         "& [data-slot='drag'] ~ [data-slot='selection']": {
@@ -126,18 +194,31 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         // and lower its z-index so it doesn't overlap selection during scroll
         "& [data-slot='selection'] ~ [data-slot='expand']": {
           left: "1800",
-          zIndex: 10,
+          zIndex: zIndex.expandCellAfterSelection,
         },
         // When both drag and selection columns are present, offset expand column
         "& [data-slot='drag'] ~ [data-slot='selection'] ~ [data-slot='expand']":
           {
             left: "2400",
           },
+        // Frozen cells of pinned rows sit at a lower level than those of other
+        // rows. The level dates from when the pinned outline was drawn on the
+        // row itself; the outline is now on its own layer above all frozen
+        // cells. What remains visible: in a pinned row, the expand cell covers
+        // the selection cell's scroll shadow. The expand cell next to the
+        // selection cell keeps its own level.
+        "&.data-table-row-pinned .data-table-sticky-cell:not([data-slot='selection'] ~ [data-slot='expand'])":
+          {
+            zIndex: zIndex.pinnedRowFrozenCell,
+          },
         // Reveal the pin button on row hover. The row-highlight background is
-        // driven by the row's `--dt-row-bg` variable (frozen cells read it), so
+        // driven by the row's `--data-table-row-bg` variable (frozen cells read it), so
         // there is no sticky-cell background rule here — and therefore no
         // specificity race with the resting background.
-        _hover: {
+        //
+        // Keyboard focus reveals it too: a keyboard user moving through the
+        // row must be able to see the pin button they land on (WCAG 2.4.7).
+        "&:hover, &[data-focus-visible], &[data-focus-visible-within]": {
           "& [data-slot='pin-row-cell']": {
             "& [data-slot='nimbus-table-cell-pin-button']": {
               opacity: 1,
@@ -145,90 +226,20 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           },
         },
       },
-      "& .data-table-row[data-disabled='true']": {
-        // layerStyle: "disabled",
-        opacity: 0.8,
-        cursor: "not-allowed",
-        backgroundColor: "inherit",
-      },
       "& .data-table-row-pinned": {
-        boxShadow: "var(--pinned-shadow-left), var(--pinned-shadow-right)",
-        "& .data-table-sticky-cell": {
-          position: "sticky",
-          left: 0,
-          zIndex: 3,
-        },
-        "& [data-slot='selection']": {
-          clipPath: "inset(2px 0 2px 2px)",
-        },
-        "& [data-slot='expand']": {
-          clipPath: "inset(2px 0)",
-        },
-        // When drag column is present in pinned rows, offset selection and expand columns
-        "& [data-slot='drag'] ~ [data-slot='selection']": {
-          left: "600",
-        },
-        "& [data-slot='drag'] ~ [data-slot='expand']": {
-          left: "600",
-        },
-        // When selection column is present in pinned rows, move expand column
-        "& [data-slot='selection'] ~ [data-slot='expand']": {
-          left: "1800",
-          zIndex: 10,
-        },
-        // When both drag and selection columns are present in pinned rows
-        "& [data-slot='drag'] ~ [data-slot='selection'] ~ [data-slot='expand']":
-          {
-            left: "2400",
-          },
-        "& [data-slot='pin-row-cell']": {
-          backgroundColor: "var(--dt-row-bg, inherit)",
-          position: "sticky",
-          clipPath: "inset(2px 2px 2px 0)",
-        },
-        "&.data-table-row-pinned-first": {
-          boxShadow:
-            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-top)",
-        },
-        "&.data-table-row-pinned-last": {
-          boxShadow:
-            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-bottom)",
-        },
-        "&.data-table-row-pinned-single": {
-          boxShadow:
-            "var(--pinned-shadow-left), var(--pinned-shadow-right), var(--pinned-shadow-top), var(--pinned-shadow-bottom)",
-        },
+        ...pinnedOutline(
+          "var(--data-table-pinned-shadow-left), var(--data-table-pinned-shadow-right)"
+        ),
+        "&.data-table-row-pinned-first": pinnedOutline(
+          "var(--data-table-pinned-shadow-left), var(--data-table-pinned-shadow-right), var(--data-table-pinned-shadow-top)"
+        ),
+        "&.data-table-row-pinned-last": pinnedOutline(
+          "var(--data-table-pinned-shadow-left), var(--data-table-pinned-shadow-right), var(--data-table-pinned-shadow-bottom)"
+        ),
+        "&.data-table-row-pinned-single": pinnedOutline(
+          "var(--data-table-pinned-shadow-left), var(--data-table-pinned-shadow-right), var(--data-table-pinned-shadow-top), var(--data-table-pinned-shadow-bottom)"
+        ),
       },
-      "& .data-table-header": {
-        background: "colorPalette.2",
-        color: "colorPalette.11",
-        borderBottom: "1px solid {colors.neutral.3}",
-        lineHeight: "400",
-        fontWeight: "500",
-        textStyle: "sm",
-        fontSize: "300",
-        height: "1000",
-        zIndex: 14,
-        "& .data-table-column-divider": {
-          display: "none",
-          position: "absolute",
-          right: 0,
-          top: "10%",
-          bottom: "10%",
-          height: "80%",
-          width: "1px",
-          pointerEvents: "none",
-        },
-        _hover: {
-          "& .data-table-column-divider": {
-            display: "inherit",
-          },
-          "& tr th:last-of-type .data-table-column-divider": {
-            display: "none",
-          },
-        },
-      },
-      // Multiline header truncation using webkit line clamp
     },
     table: {
       tableLayout: "fixed",
@@ -250,8 +261,11 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       "&[data-sticky]": {
         position: "sticky",
         top: 0,
-        zIndex: 10,
+        // Above every frozen body cell and the body focus ring, so rows
+        // scrolled under the header stay hidden behind it.
+        zIndex: zIndex.header,
       },
+      // Multiline header truncation using webkit line clamp
       "& span[data-multiline-header]": {
         overflow: "hidden",
         lineHeight: "450",
@@ -296,7 +310,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       // allowing children (height:100%) to fill the full cell.
       h: "1px",
       p: 0,
-      focusVisibleRing: "inside",
+      ...headerFocusRing,
 
       "& > .nimbus-data-table__column-container": {
         py: "100",
@@ -305,7 +319,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         alignItems: "center",
         h: "100%",
         // https://react-spectrum.adobe.com/react-aria/Table.html#width-values
-        focusVisibleRing: "inside",
+        // Not positioned itself, so the ring covers the whole header cell.
+        ...headerFocusRing,
         "& > span:not(:first-of-type)": {
           flexShrink: 0,
         },
@@ -318,7 +333,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         paddingRight: "600",
         position: "sticky",
         left: 0,
-        zIndex: 13,
+        zIndex: zIndex.frozenHeaderCell,
         background: "colorPalette.2",
         ...stickyBgOverlap,
       },
@@ -327,7 +342,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         padding: "0",
         position: "sticky",
         left: 0,
-        zIndex: 13,
+        zIndex: zIndex.frozenHeaderCell,
         background: "colorPalette.2",
         ...stickyBgOverlap,
       },
@@ -336,23 +351,25 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         padding: "0",
         position: "sticky",
         left: 0, // Default position when no selection column
-        zIndex: 12,
+        zIndex: zIndex.expandHeaderCell,
         background: "colorPalette.2",
         ...stickyBgOverlap,
       },
+      // Same offsets as the frozen body cells. `~` rather than `+`, as in the
+      // body, so an offset does not depend on the columns being adjacent.
       // When drag column is present, offset selection and expand columns
-      "&.drag-column-header + &.selection-column-header": {
+      "&.drag-column-header ~ &.selection-column-header": {
         left: "600",
       },
-      "&.drag-column-header + &.expand-column-header": {
+      "&.drag-column-header ~ &.expand-column-header": {
         left: "600",
       },
       // When selection column is present, adjust expand column header position
-      "&.selection-column-header + &.expand-column-header": {
+      "&.selection-column-header ~ &.expand-column-header": {
         left: "1800",
       },
       // When both drag and selection columns are present, offset expand column
-      "&.drag-column-header + &.selection-column-header + &.expand-column-header":
+      "&.drag-column-header ~ &.selection-column-header ~ &.expand-column-header":
         {
           left: "2400",
         },
@@ -362,13 +379,13 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         px: "600",
         position: "sticky",
         right: 0,
-        zIndex: 11,
+        zIndex: zIndex.pinHeaderCell,
         background: "colorPalette.2",
         ...stickyBgOverlap,
         "&::before": { right: 0 },
       },
       "&[aria-sort]": {
-        fontWeight: 600,
+        fontWeight: "600",
         cursor: "pointer",
         "&[aria-sort='none']:hover": {
           "& .nimbus-data-table__headerSortIcon > svg": {
@@ -385,15 +402,15 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     row: {
       position: "relative",
       // Single source of truth for the row background. Frozen (sticky) cells read
-      // this variable (`background-color: var(--dt-row-bg, inherit)`) so they
+      // this variable (`background-color: var(--data-table-row-bg, inherit)`) so they
       // mirror the row without a specificity race. Custom-bg rows deliberately
       // leave it unset (the `:not([data-custom-bg])` guards below), so the frozen
       // cell falls back to `inherit` and picks up the consumer-provided color.
       "&:not([data-custom-bg])": {
-        "--dt-row-bg": "{colors.bg}",
+        "--data-table-row-bg": "{colors.bg}",
       },
       borderBottom: "1px solid {colors.neutral.3}",
-      focusVisibleRing: "inside",
+      ...bodyFocusRing,
       "&[data-dragging='true']": {
         cursor: "grabbing",
       },
@@ -401,34 +418,31 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         cursor: "grab",
       },
 
-      "&:hover:not([data-nested-row-expanded])": {
+      // Disabled rows give no hover feedback: they cannot be interacted with.
+      "&:hover:not([data-nested-row-expanded]):not([data-disabled])": {
         backgroundColor: "{colors.primary.3}",
-        transition: "background-color {durations.moderate} ease",
       },
       // Frozen cells mirror the hover highlight through the variable. Skipped for
       // custom-bg rows so their frozen cells keep inheriting the consumer color.
-      "&:hover:not([data-nested-row-expanded]):not([data-custom-bg])": {
-        "--dt-row-bg": "{colors.primary.3}",
-      },
+      "&:hover:not([data-nested-row-expanded]):not([data-disabled]):not([data-custom-bg])":
+        {
+          "--data-table-row-bg": "{colors.primary.3}",
+        },
       _last: {
         borderBottom: "none",
       },
       "&[data-clickable='true']": {
         cursor: "pointer",
       },
+      // Step 5 is the scale's "Active / Selected UI element background".
       "&[data-selected='true']": {
-        background: "{colors.primary.4}",
+        background: "{colors.primary.5}",
       },
       "&[data-selected='true']:not([data-custom-bg])": {
-        "--dt-row-bg": "{colors.primary.4}",
+        "--data-table-row-bg": "{colors.primary.5}",
       },
       "&[data-disabled='true']": {
-        // layerStyle: "disabled",
-        opacity: 0.8,
-        cursor: "not-allowed",
-      },
-      "&[data-nested-row-expanded='false']": {
-        display: "none",
+        layerStyle: "disabled",
       },
     },
     cell: {
@@ -437,7 +451,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       paddingLeft: "600",
       paddingRight: "600",
       color: "neutral.12",
-      focusVisibleRing: "inside",
+      // Containing block for the focus ring. Frozen cells override it with
+      // `position: sticky`, which is a containing block too.
+      position: "relative",
+      ...bodyFocusRing,
       hyphens: "auto",
       // td height:auto is not "definite" per CSS spec, so child height:100%
       // collapses to content height. Setting an explicit height makes it
@@ -456,16 +473,15 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     footer: {
       width: "100%",
     },
-    selectionCell: {},
-    nestedIcon: {},
     headerSortIcon: {
-      transition: "transform 300ms cubic-bezier(0.4, 0.0, 0.2, 1)",
+      // No easing token matches this curve.
+      transition: "transform {durations.slow} cubic-bezier(0.4, 0.0, 0.2, 1)",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      marginLeft: "6px",
-      width: "16px",
-      height: "16px",
+      marginLeft: "150",
+      width: "400",
+      height: "400",
       willChange: "opacity, color, transform",
       color: "neutral.10",
       // Only hide the svg so that the sort icon appearing does not cause layout shift
@@ -488,13 +504,12 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       // separator within the interactive area
       width: "calc({sizes.150} + {sizes.25})",
       right: "calc(-1 * ({sizes.50} + {sizes.25}))",
-      // ##########################################################
 
       cursor: "col-resize",
-      transition: "background 100ms",
+      transition: "background {durations.faster}",
       background: "transparent",
 
-      zIndex: 2,
+      zIndex: zIndex.columnResizer,
       "&:hover": {
         background: "var(--focus-ring-color)",
       },
@@ -514,6 +529,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       true: {
         root: {
           "& .truncated-cell": {
+            // No size token is 200px (the nearest are 192px and 208px).
             maxWidth: "200px",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -523,12 +539,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
     },
     density: {
-      default: {
-        cell: {
-          paddingTop: "400",
-          paddingBottom: "400",
-        },
-      },
+      // The base cell padding.
+      default: {},
       condensed: {
         cell: {
           paddingTop: "300",
@@ -536,5 +548,9 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         },
       },
     },
+  },
+  defaultVariants: {
+    truncated: false,
+    density: "default",
   },
 });

@@ -1,11 +1,12 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { Table as RaTable, type SortDescriptor } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import {
-  useDataTableContext,
+  useStableDataTableContext,
+  useInteractionContext,
   useTableSelectionContext,
 } from "./data-table.context";
 import { DataTableTableSlot } from "../data-table.slots";
@@ -28,14 +29,23 @@ export const DataTableTable = function DataTableTable({
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const {
-    sortDescriptor,
     onSortChange,
     selectionMode,
     disallowEmptySelection,
     disabledKeys,
     hasRenderNestedContent,
-    expanded,
-  } = useDataTableContext();
+    rows,
+    getRowKey,
+  } = useStableDataTableContext();
+  const { sortDescriptor, expanded } = useInteractionContext();
+
+  // React Aria's `disabledKeys` is an `Iterable<Key>`, so the string "all"
+  // would iterate to the keys "a", "l", "l". Expand it to every row id.
+  const ariaDisabledKeys = useMemo(
+    () =>
+      disabledKeys === "all" ? new Set(rows.map(getRowKey)) : disabledKeys,
+    [disabledKeys, rows, getRowKey]
+  );
 
   const { selectedKeys, defaultSelectedKeys, onSelectionChange } =
     useTableSelectionContext();
@@ -75,7 +85,7 @@ export const DataTableTable = function DataTableTable({
         onSelectionChange={onSelectionChange}
         selectionMode={selectionMode}
         disallowEmptySelection={disallowEmptySelection}
-        disabledKeys={disabledKeys}
+        disabledKeys={ariaDisabledKeys}
         disabledBehavior="all"
         // nestedKey rows manage expansion internally; only renderNestedContent needs React Aria to track expanded state for aria-expanded
         expandedKeys={hasRenderNestedContent ? expanded : undefined}

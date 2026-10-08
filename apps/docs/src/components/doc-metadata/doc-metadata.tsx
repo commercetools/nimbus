@@ -64,7 +64,7 @@ export const DocMetadata = ({
             target="_blank"
             rel="noopener noreferrer"
             fontSize="350"
-            color="fg.muted"
+            color="fg.subtle"
           >
             View in Figma ↗
           </Link>
