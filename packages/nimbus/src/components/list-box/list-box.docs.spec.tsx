@@ -198,10 +198,11 @@ describe("ListBox - Async load more", () => {
  * @docs-description A virtualized list renders only the options on screen in
  *   a browser. In JSDOM (Jest, Vitest) virtualization is turned off, so every
  *   option is in the DOM and tests can reach any option without scrolling.
+ *   Keep test data small: rendering hundreds of options in JSDOM is slow.
  * @docs-order 7
  */
 describe("ListBox - Virtualized long list", () => {
-  const projects = Array.from({ length: 500 }, (_, i) => ({
+  const projects = Array.from({ length: 100 }, (_, i) => ({
     id: `project-${i + 1}`,
     name: `Project ${i + 1}`,
   }));
@@ -233,7 +234,7 @@ describe("ListBox - Virtualized long list", () => {
     render(<ProjectList />);
 
     expect(
-      screen.getByRole("option", { name: "Project 500" })
+      screen.getByRole("option", { name: "Project 100" })
     ).toBeInTheDocument();
   });
 
@@ -244,10 +245,10 @@ describe("ListBox - Virtualized long list", () => {
 
     await user.tab();
     await user.keyboard("{End}");
-    expect(screen.getByRole("option", { name: "Project 500" })).toHaveFocus();
+    expect(screen.getByRole("option", { name: "Project 100" })).toHaveFocus();
 
     await user.keyboard(" ");
-    expect(screen.getByRole("option", { name: "Project 500" })).toHaveAttribute(
+    expect(screen.getByRole("option", { name: "Project 100" })).toHaveAttribute(
       "aria-selected",
       "true"
     );
