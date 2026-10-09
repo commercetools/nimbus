@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { FormField, RadioInput, Stack, Tooltip } from "@commercetools/nimbus";
+import { Box, FormField, RadioInput, Stack, Tooltip } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 
 /**
@@ -518,6 +518,32 @@ export const Focused: Story = {
     const canvas = within(canvasElement);
     await userEvent.tab();
     await expect(canvas.getByLabelText("First")).toHaveFocus();
+  },
+};
+
+/** The label font size is the same regardless of the surrounding font size. */
+export const LabelFontSizeIsIndependentOfParent: Story = {
+  render: () => (
+    <Stack gap="400">
+      <Box fontSize="300">
+        <RadioInput.Root aria-label="small-parent" name="small-parent">
+          <RadioInput.Option value="small">Small parent</RadioInput.Option>
+        </RadioInput.Root>
+      </Box>
+      <Box fontSize="800">
+        <RadioInput.Root aria-label="large-parent" name="large-parent">
+          <RadioInput.Option value="large">Large parent</RadioInput.Option>
+        </RadioInput.Root>
+      </Box>
+    </Stack>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const small = canvas.getByLabelText("Small parent").closest("label")!;
+    const large = canvas.getByLabelText("Large parent").closest("label")!;
+    await expect(getComputedStyle(small).fontSize).toBe(
+      getComputedStyle(large).fontSize
+    );
   },
 };
 
