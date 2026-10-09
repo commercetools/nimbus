@@ -1,5 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box, FormField, RadioInput, Stack, Tooltip } from "@commercetools/nimbus";
+import {
+  Box,
+  FormField,
+  RadioInput,
+  Stack,
+  Tooltip,
+} from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 
 /**
