@@ -457,7 +457,7 @@ export type ComboBoxRootProps<T extends object> = Omit<
    *   allowsEmptyMenu={true}
    *   renderEmptyState={() => (
    *     <Box padding="400" textAlign="center">
-   *       <Text color="fg.muted">No results found</Text>
+   *       <Text color="fg.subtle">No results found</Text>
    *     </Box>
    *   )}
    * />
