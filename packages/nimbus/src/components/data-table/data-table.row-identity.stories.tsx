@@ -5,8 +5,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, type ReactNode } from "react";
 import { type Selection } from "react-aria-components";
-import { within, expect, waitFor, userEvent, spyOn } from "storybook/test";
+import { within, expect, waitFor, userEvent } from "storybook/test";
 import { Stack, Text, DataTable } from "@/components";
+import { recordWarnings } from "./utils/data-table.test-utils";
 
 import type {
   DataTableRowItem,
@@ -464,21 +465,6 @@ const identityColumns: DataTableColumnItem[] = [
     accessor: (row: Record<string, unknown>) => row.name as ReactNode,
   },
 ];
-
-/**
- * Records `console.warn` calls for a story and restores the original afterwards.
- * `beforeEach` returns the cleanup, so the console is restored even when an
- * assertion in `play` fails part-way.
- */
-const recordWarnings = (warnings: string[]) => () => {
-  const spy = spyOn(console, "warn").mockImplementation((...args) => {
-    warnings.push(args.map(String).join(" "));
-  });
-  return () => {
-    spy.mockRestore();
-    warnings.length = 0;
-  };
-};
 
 /**
  * A row's identity comes from its data. To identify rows by something other

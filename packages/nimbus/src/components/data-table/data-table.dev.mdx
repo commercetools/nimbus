@@ -189,14 +189,15 @@ const deferredSearch = useDeferredValue(search);
 
 ## Usage examples
 
-### Density options
+### Size
 
-The `density` prop controls the vertical padding of cells. Use `condensed` for
-data-dense interfaces:
+The `size` prop controls cell padding, header padding and text size. `sm`,
+`md` and `lg` use the same values as the `Table` component. Choose a smaller
+size to show more data on one screen:
 
 ```jsx live-dev
 const App = () => {
-  const [density, setDensity] = useState('default');
+  const [size, setSize] = useState('md');
 
   const columns = [
     { id: 'name', header: 'Name', accessor: (row) => row.name },
@@ -212,26 +213,39 @@ const App = () => {
   return (
     <Stack gap="400">
       <Stack direction="row" gap="300">
-        <Button
-          variant={density === 'default' ? 'solid' : 'outline'}
-          colorPalette="primary"
-          onPress={() => setDensity('default')}
-        >
-          Default
-        </Button>
-        <Button
-          variant={density === 'condensed' ? 'solid' : 'outline'}
-          colorPalette="primary"
-          onPress={() => setDensity('condensed')}
-        >
-          Condensed
-        </Button>
+        {['sm', 'md', 'lg'].map((option) => (
+          <Button
+            key={option}
+            variant={size === option ? 'solid' : 'outline'}
+            colorPalette="primary"
+            onPress={() => setSize(option)}
+          >
+            {option}
+          </Button>
+        ))}
       </Stack>
-      <DataTable columns={columns} rows={rows} density={density} />
+      <DataTable columns={columns} rows={rows} size={size} />
     </Stack>
   );
 }
 ```
+
+**Default size.** Without a `size` prop, the table uses `xl`, the appearance
+from before `size` existed. `xl` is deprecated. Do not pass it explicitly (it logs a warning in development); use
+`lg` instead. A future major release will change the default.
+
+**Cell text.** `sm`, `md` and `lg` set the text size of the cells. If your cell
+renderers set their own size, for example `<Text textStyle="sm">`, remove it so
+the content follows the table's size.
+
+**Internal columns.** The drag, selection, expand and pin controls stay 24×24px
+at every size, the minimum target size of WCAG 2.2 SC 2.5.8. Only the padding
+around them follows the size.
+
+**Deprecated `density`.** `density="condensed"` still works when no `size` is
+passed, but is deprecated: use `size` instead. `size` sets the default text size and the density (cell
+padding). When both are passed, `size` wins and `density` is ignored. `density` will be removed in
+the next major release. In development, passing `density` logs a warning.
 
 ### Sorting
 
@@ -1339,7 +1353,7 @@ configuration tabs:
 const App = () => {
   const [visibleColumns, setVisibleColumns] = useState(['name', 'email', 'role']);
   const [isTruncated, setIsTruncated] = useState(false);
-  const [density, setDensity] = useState('default');
+  const [size, setSize] = useState('md');
 
   const columns = [
     { id: 'name', header: 'Name', accessor: (row) => row.name },
@@ -1353,11 +1367,11 @@ const App = () => {
     { id: '3', name: 'Carol Williams', email: 'carol@example.com', role: 'Editor' },
   ];
 
-  const handleSettingsChange = (action) => {
+  const handleSettingsChange = (action, value) => {
     if (action === 'toggleTextVisibility') {
       setIsTruncated(!isTruncated);
-    } else if (action === 'toggleRowDensity') {
-      setDensity(density === 'default' ? 'condensed' : 'default');
+    } else if (action === 'changeSize') {
+      setSize(value);
     }
   };
 
@@ -1370,7 +1384,7 @@ const App = () => {
         setVisibleColumns(updatedColumns.map(col => col.id));
       }}
       isTruncated={isTruncated}
-      density={density}
+      size={size}
       onSettingsChange={handleSettingsChange}
     >
       <Stack direction="row" justifyContent="space-between" mb="400">
@@ -1435,11 +1449,17 @@ const App = () => {
 The Layout Settings tab allows users to control text truncation and row density.
 These settings update the table's visual appearance in real-time:
 
+The row density select offers Comfortable (`lg`), Standard (`md`) and Compact
+(`sm`). It also offers the deprecated Spacious (`xl`) to a table that has had
+`xl` as its size, which includes a table with no `size`. `onSettingsChange`
+receives the action `"changeSize"` and the chosen `DataTableSize` as its second
+argument; pass it to `size`.
+
 ```jsx live-dev
 const App = () => {
   const [visibleColumns, setVisibleColumns] = useState(['name', 'description']);
   const [isTruncated, setIsTruncated] = useState(false);
-  const [density, setDensity] = useState('default');
+  const [size, setSize] = useState('md');
 
   const columns = [
     { id: 'name', header: 'Name', accessor: (row) => row.name },
@@ -1459,11 +1479,11 @@ const App = () => {
     },
   ];
 
-  const handleSettingsChange = (action) => {
+  const handleSettingsChange = (action, value) => {
     if (action === 'toggleTextVisibility') {
       setIsTruncated(!isTruncated);
-    } else if (action === 'toggleRowDensity') {
-      setDensity(density === 'default' ? 'condensed' : 'default');
+    } else if (action === 'changeSize') {
+      setSize(value);
     }
   };
 
@@ -1476,7 +1496,7 @@ const App = () => {
         setVisibleColumns(updatedColumns.map(col => col.id));
       }}
       isTruncated={isTruncated}
-      density={density}
+      size={size}
       onSettingsChange={handleSettingsChange}
     >
       <Stack direction="row" justifyContent="space-between" mb="400">
@@ -1620,13 +1640,84 @@ const App = () => {
 }
 ```
 
+### Manager: Controlled layout settings with persistence
+
+The Layout settings tab does not keep its own state. `isTruncated` and `size`
+come from the props of `DataTable.Root`, and `onSettingsChange` reports each
+change. To save a user's choice, store it when `onSettingsChange` is called and
+pass it back as props:
+
+```jsx live-dev
+const STORAGE_KEY = 'tableLayoutSettings';
+
+const loadSettings = () => {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? {};
+  } catch {
+    return {};
+  }
+};
+
+const App = () => {
+  // Read once, before the first render
+  const [settings, setSettings] = useState(loadSettings);
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'email', header: 'Email', accessor: (row) => row.email },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice Johnson', email: 'alice@example.com' },
+    { id: '2', name: 'Bob Smith', email: 'bob@example.com' },
+  ];
+
+  const handleSettingsChange = (action, value) => {
+    let next = settings;
+    if (action === 'toggleTextVisibility') {
+      next = { ...settings, isTruncated: !settings.isTruncated };
+    } else if (action === 'changeSize') {
+      next = { ...settings, size: value };
+    }
+    setSettings(next);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  };
+
+  return (
+    <DataTable.Root
+      columns={columns}
+      rows={rows}
+      isTruncated={settings.isTruncated ?? false}
+      size={settings.size ?? 'md'}
+      onSettingsChange={handleSettingsChange}
+    >
+      <Stack direction="row" justifyContent="space-between" mb="400">
+        <Text fontSize="lg" fontWeight="600">Team Directory</Text>
+        <DataTable.Manager />
+      </Stack>
+      <DataTable.Table>
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+}
+```
+
+> [!NOTE]\
+> The size select offers the deprecated `xl` to a table that has had `xl` as its
+> size at any render, and keeps offering it afterwards. A table without `size`
+> counts, so load the saved settings before the first render, as above, rather
+> than applying them in an effect afterwards. Otherwise a table that should
+> start on a saved size keeps offering `xl` for as long as it is mounted.
+
 ### Manager: Context requirements
 
 DataTable.Manager **must** be used within a DataTable.Root component. It relies
 on the DataTable context for:
 
 - Column configuration (`columns`, `visibleColumns`)
-- Layout settings (`isTruncated`, `density`)
+- Layout settings (`isTruncated`, `size`)
 - Callbacks (`onColumnsChange`, `onSettingsChange`)
 - Custom settings configuration
 

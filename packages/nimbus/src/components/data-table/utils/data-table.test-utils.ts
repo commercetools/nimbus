@@ -1,4 +1,4 @@
-import { within, userEvent } from "storybook/test";
+import { within, userEvent, spyOn } from "storybook/test";
 
 // Toggle a checkbox given its root (the data-testid'd <label>). As of
 // react-aria 3.49 the press needs trusted pointer events, so the synthetic
@@ -10,3 +10,18 @@ export const toggleCheckbox = (checkbox: HTMLElement) =>
 
 export const rowNamed = (canvasElement: HTMLElement, name: RegExp) =>
   within(canvasElement).getByRole("row", { name });
+
+/**
+ * Records `console.warn` calls for a story and restores the original afterwards.
+ * `beforeEach` returns the cleanup, so the console is restored even when an
+ * assertion in `play` fails part-way.
+ */
+export const recordWarnings = (warnings: string[]) => () => {
+  const spy = spyOn(console, "warn").mockImplementation((...args) => {
+    warnings.push(args.map(String).join(" "));
+  });
+  return () => {
+    spy.mockRestore();
+    warnings.length = 0;
+  };
+};

@@ -1,4 +1,5 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
+import { DATA_TABLE_DEFAULT_SIZE } from "./utils/sizes.utils";
 
 // Stacking order inside the table, lowest first. Frozen (sticky) cells must
 // stay above the cells that scroll under them, the focus ring and the pinned
@@ -123,6 +124,14 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       "--data-table-pinned-shadow-top": "inset 0 2px 0 {colors.neutral.7}",
       "--data-table-pinned-shadow-bottom": "inset 0 -2px 0 {colors.neutral.7}",
 
+      // Widths of the internal columns, read by the sticky offsets below:
+      // the 24px control, plus the horizontal padding on both sides for the
+      // selection column. React Aria gets the same widths as numbers from
+      // `DATA_TABLE_INTERNAL_COLUMN_WIDTHS` (`utils/sizes.utils.ts`).
+      "--data-table-drag-column-width": "{sizes.600}",
+      "--data-table-selection-column-width":
+        "calc({sizes.600} + 2 * var(--data-table-padding-x))",
+
       width: "100%",
       display: "block",
       overflow: "auto",
@@ -185,21 +194,21 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         },
         // When drag column is present, offset selection and expand columns
         "& [data-slot='drag'] ~ [data-slot='selection']": {
-          left: "600",
+          left: "var(--data-table-drag-column-width)",
         },
         "& [data-slot='drag'] ~ [data-slot='expand']": {
-          left: "600",
+          left: "var(--data-table-drag-column-width)",
         },
         // When selection column is present, move expand column to the right
         // and lower its z-index so it doesn't overlap selection during scroll
         "& [data-slot='selection'] ~ [data-slot='expand']": {
-          left: "1800",
+          left: "var(--data-table-selection-column-width)",
           zIndex: zIndex.expandCellAfterSelection,
         },
         // When both drag and selection columns are present, offset expand column
         "& [data-slot='drag'] ~ [data-slot='selection'] ~ [data-slot='expand']":
           {
-            left: "2400",
+            left: "calc(var(--data-table-drag-column-width) + var(--data-table-selection-column-width))",
           },
         // Frozen cells of pinned rows sit at a lower level than those of other
         // rows. The level dates from when the pinned outline was drawn on the
@@ -253,11 +262,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       background: "colorPalette.2",
       color: "colorPalette.11",
       borderBottom: "1px solid {colors.neutral.3}",
-      lineHeight: "400",
       fontWeight: "500",
-      textStyle: "sm",
-      fontSize: "300",
-      height: "1000",
       "&[data-sticky]": {
         position: "sticky",
         top: 0,
@@ -303,7 +308,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     column: {
       textAlign: "right",
       position: "relative",
-      lineHeight: "450",
       // td height:auto is not "definite" per CSS spec, so child height:100%
       // collapses to content height. Setting an explicit height makes it
       // definite; table layout still stretches the cell to match the row,
@@ -313,8 +317,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       ...headerFocusRing,
 
       "& > .nimbus-data-table__column-container": {
-        py: "100",
-        px: "600",
+        py: "var(--data-table-header-padding-y)",
+        px: "var(--data-table-padding-x)",
         display: "flex",
         alignItems: "center",
         h: "100%",
@@ -327,10 +331,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
       "&.selection-column-header": {
         cursor: "default",
-        paddingTop: "100",
-        paddingBottom: "100",
-        paddingLeft: "600",
-        paddingRight: "600",
+        py: "var(--data-table-header-padding-y)",
+        px: "var(--data-table-padding-x)",
         position: "sticky",
         left: 0,
         zIndex: zIndex.frozenHeaderCell,
@@ -359,24 +361,24 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       // body, so an offset does not depend on the columns being adjacent.
       // When drag column is present, offset selection and expand columns
       "&.drag-column-header ~ &.selection-column-header": {
-        left: "600",
+        left: "var(--data-table-drag-column-width)",
       },
       "&.drag-column-header ~ &.expand-column-header": {
-        left: "600",
+        left: "var(--data-table-drag-column-width)",
       },
       // When selection column is present, adjust expand column header position
       "&.selection-column-header ~ &.expand-column-header": {
-        left: "1800",
+        left: "var(--data-table-selection-column-width)",
       },
       // When both drag and selection columns are present, offset expand column
       "&.drag-column-header ~ &.selection-column-header ~ &.expand-column-header":
         {
-          left: "2400",
+          left: "calc(var(--data-table-drag-column-width) + var(--data-table-selection-column-width))",
         },
       "&.pin-rows-column-header": {
         cursor: "default",
-        py: "100",
-        px: "600",
+        py: "var(--data-table-header-padding-y)",
+        px: "var(--data-table-padding-x)",
         position: "sticky",
         right: 0,
         zIndex: zIndex.pinHeaderCell,
@@ -446,10 +448,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
     },
     cell: {
-      paddingTop: "400",
-      paddingBottom: "400",
-      paddingLeft: "600",
-      paddingRight: "600",
+      py: "var(--data-table-cell-padding-y)",
+      px: "var(--data-table-padding-x)",
       color: "neutral.12",
       // Containing block for the focus ring. Frozen cells override it with
       // `position: sticky`, which is a containing block too.
@@ -538,18 +538,68 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         },
       },
     },
-    density: {
-      // The base cell padding.
-      default: {},
-      condensed: {
-        cell: {
-          paddingTop: "300",
-          paddingBottom: "300",
+    // Each size sets the padding variables the base styles read, and the
+    // text style. `sm`, `md` and `lg` use the padding and text style of
+    // `Table`'s sizes (`table.recipe.ts`); keep the two in sync.
+    // `--data-table-padding-x` must also match `DATA_TABLE_CELL_PADDING_X`
+    // (`utils/sizes.utils.ts`), which sets the internal column widths.
+    size: {
+      sm: {
+        root: {
+          "--data-table-padding-x": "{spacing.200}",
+          "--data-table-cell-padding-y": "{spacing.200}",
+          "--data-table-header-padding-y": "{spacing.200}",
         },
+        header: { textStyle: "sm" },
+        cell: { textStyle: "sm" },
+      },
+      md: {
+        root: {
+          "--data-table-padding-x": "{spacing.300}",
+          "--data-table-cell-padding-y": "{spacing.300}",
+          "--data-table-header-padding-y": "{spacing.300}",
+        },
+        header: { textStyle: "sm" },
+        cell: { textStyle: "sm" },
+      },
+      lg: {
+        root: {
+          "--data-table-padding-x": "{spacing.400}",
+          "--data-table-cell-padding-y": "{spacing.300}",
+          "--data-table-header-padding-y": "{spacing.300}",
+        },
+        header: { textStyle: "md" },
+        cell: { textStyle: "md" },
+      },
+      // Deprecated default: the appearance from before `size` existed. A
+      // fixed 40px header with 12px text; cells set no text style.
+      xl: {
+        root: {
+          "--data-table-padding-x": "{spacing.600}",
+          "--data-table-cell-padding-y": "{spacing.400}",
+          "--data-table-header-padding-y": "{spacing.100}",
+        },
+        header: { fontSize: "300", height: "1000" },
+        column: { lineHeight: "450" },
       },
     },
+    /** @deprecated Use `size`. Only applies together with `size: "xl"`. */
+    density: {
+      default: {},
+      condensed: {},
+    },
   },
+  compoundVariants: [
+    {
+      size: "xl",
+      density: "condensed",
+      css: {
+        root: { "--data-table-cell-padding-y": "{spacing.300}" },
+      },
+    },
+  ],
   defaultVariants: {
+    size: DATA_TABLE_DEFAULT_SIZE,
     truncated: false,
     density: "default",
   },
