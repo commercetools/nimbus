@@ -51,3 +51,35 @@ When an option's content is not a plain string (icons, a description line), pass
 `textValue` so type-ahead and screen-reader announcements use the right text. Use
 the `Text` `label` and `description` slots so the description becomes part of the
 option's accessible description.
+
+### Long lists (`isVirtualized`)
+
+A virtualized list keeps only the visible options in the page, but it behaves
+the same as a regular list for keyboard and screen reader users:
+
+- **Keyboard navigation reaches every option.** Arrow keys, `Home`, `End`,
+  `Page Up`, `Page Down` and type-ahead move focus to options that are not
+  rendered yet; the list renders them and scrolls them into view.
+- **Focus is kept.** The focused option stays in the page when people scroll it
+  out of view with the mouse, so focus is never lost and the next arrow key
+  continues from it.
+- **Selection is kept** for options that scroll out of view and back.
+- **Position and size are announced.** Each rendered option tells screen readers
+  its position and the total number of options, for example "250 of 1000".
+- **Zoom, larger text and text spacing work.** Options are measured after they
+  appear and again when their size changes, so they never overlap at 200% zoom
+  or with the text spacing of WCAG 1.4.12.
+- **The focus ring stays visible** at the top and bottom edge of the list.
+
+What to provide yourself:
+
+- **A search or filter field for long lists.** Browser find (Ctrl+F / Cmd+F) and
+  a screen reader's browse mode only reach options that are on screen.
+- **The total, when people need it before they enter the list**, in the label or
+  nearby text, for example "5,000 projects".
+- **Avoid sections when the position matters.** In a virtualized list with
+  sections, the announced position counts within the section (plus one for the
+  header), while the total counts the whole list.
+- **Keep measured heights for text that can wrap.** A fixed `rowHeight` in
+  `virtualizerOptions` breaks when people increase text spacing or the text
+  wraps.

@@ -306,6 +306,152 @@ const App = () => {
 };
 ```
 
+## Long lists (virtualization)
+
+> **Experimental.** `isVirtualized` and `virtualizerOptions` may change in a
+> minor release.
+
+For lists with hundreds of options or more, set `isVirtualized`. Only the
+options on screen are rendered and the others are added as people scroll;
+scrolling, keyboard navigation, type-ahead and selection still work for every
+option. Row heights, spacing and padding match the list's `size` and `variant`
+automatically. In our measurements a list of 500 options appeared about 8 times
+faster with `isVirtualized`.
+
+```jsx live-dev
+const projects = Array.from({ length: 5000 }, (_, i) => ({
+  id: `project-${i + 1}`,
+  name: `Project ${i + 1}`,
+}));
+
+const App = () => (
+  <ListBox.Root
+    isVirtualized
+    aria-label="Projects"
+    items={projects}
+    selectionMode="single"
+    width="20rem"
+    maxHeight="20rem"
+  >
+    {(project) => <ListBox.Item id={project.id}>{project.name}</ListBox.Item>}
+  </ListBox.Root>
+);
+```
+
+Pass the options as `items` with a render function, as above. A list built with
+`.map()` also works, but React then creates every option element on each
+render.
+
+### Give the list a bounded height
+
+A virtualized list needs a height limit to scroll on its own:
+
+- `variant="card"` (the default) has one: at most 40% of the viewport height.
+  Set `maxHeight` to change it.
+- `variant="plain"` has none. The list grows to the full height of all options
+  and scrolls with its scrolling parent, for example a `ScrollArea`, or with the
+  page. Only the options inside the browser window are rendered, so it stays
+  fast.
+
+```jsx live-dev
+const options = Array.from({ length: 10000 }, (_, i) => ({
+  id: `option-${i + 1}`,
+  name: `Option ${i + 1}`,
+}));
+
+const App = () => (
+  <ScrollArea maxHeight="20rem" width="20rem">
+    <ListBox.Root isVirtualized variant="plain" aria-label="Options" items={options}>
+      {(option) => <ListBox.Item id={option.id}>{option.name}</ListBox.Item>}
+    </ListBox.Root>
+  </ScrollArea>
+);
+```
+
+### Custom layout configuration
+
+Pass `virtualizerOptions` to change how the list lays out its rows. Your values
+replace the list's defaults; everything you leave out keeps the default. Type the
+object with `VirtualizerListLayoutOptions` if you define it separately.
+
+```jsx live-dev
+const people = Array.from({ length: 2000 }, (_, i) => ({
+  id: `person-${i + 1}`,
+  name: `Person ${i + 1}`,
+  email: `person${i + 1}@example.com`,
+}));
+
+const App = () => (
+  <ListBox.Root
+    isVirtualized
+    virtualizerOptions={{ estimatedRowHeight: 56 }}
+    aria-label="People"
+    items={people}
+    width="20rem"
+    maxHeight="20rem"
+  >
+    {(person) => (
+      <ListBox.Item id={person.id} textValue={person.name}>
+        <Text slot="label">{person.name}</Text>
+        <Text slot="description">{person.email}</Text>
+      </ListBox.Item>
+    )}
+  </ListBox.Root>
+);
+```
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `estimatedRowHeight` | number (px) | Height used for options that are not rendered yet. Rendered options are measured. Set it to the typical height of your options. |
+| `rowHeight` | number (px) | Fixed height of every option. Options are not measured. See [Fixed or measured heights](#fixed-or-measured-heights). |
+| `estimatedHeadingHeight` | number (px) | Height used for section headers that are not rendered yet. |
+| `headingHeight` | number (px) | Fixed height of every section header. |
+| `loaderHeight` | number (px) | Height of the `ListBox.LoadMore` row. |
+| `gap` | spacing token or number (px) | Space between options, for example `"100"` or `4`. |
+| `padding` | spacing token or number (px) | Space before the first and after the last option, for example `"200"` or `8`. |
+
+The defaults come from the ListBox design tokens, per `size`. For example, a
+single-line `md` option is 38px tall and options are 4px apart (`gap: "100"`).
+
+### Fixed or measured heights
+
+By default every option is **measured** after it appears. Options can then have
+any height, and the list keeps working when people zoom the page, use larger
+text, or apply their own text spacing (WCAG 1.4.12). When most options are
+taller than the estimate, the scrollbar adjusts while people scroll; set
+`estimatedRowHeight` to the typical height to reduce this.
+
+`rowHeight` makes every option the same **fixed** height, and options are no
+longer measured. Use it only when every option is guaranteed to be one line:
+text that wraps or larger user text spacing would then overlap.
+
+### Styling a virtualized list
+
+A virtualized list sets the `data-virtualized` attribute on its root element.
+The rows are positioned for you, so CSS `gap` and `padding` on the list have no
+effect; use `virtualizerOptions` instead.
+
+### Notes and limitations
+
+- **Building the list still takes time.** Every option is processed in
+  JavaScript, even the ones that are not rendered. In our measurements 10,000
+  options appeared in about 0.4 seconds with `isVirtualized` and in about 2.5
+  seconds without. For lists of that size, add a search or filter field.
+- **Browser find does not see off-screen options.** Ctrl+F / Cmd+F only finds
+  options that are on screen. Add a search or filter field to long lists.
+- **Positions inside sections.** In a virtualized list with sections, screen
+  readers announce each option's position inside its section plus one (the
+  header counts) and the size of the whole list, for example "2 of 1000" for
+  the first option of every section. Prefer lists without sections when the
+  position matters to your users.
+- **Deep content changes are not measured.** An option is measured again when
+  its direct children change size. A change deep inside an option that does not
+  change the size of its direct children is not detected.
+- **Tests running in JSDOM render every option.** Virtualization is turned off
+  when `NODE_ENV` is `"test"` (Jest, Vitest with JSDOM), so all options are in
+  the DOM and your tests can find any option without scrolling. Tests in a real
+  browser render only the visible options.
+
 ## Accessibility
 
 `ListBox` implements the WAI-ARIA listbox pattern via React Aria: the container

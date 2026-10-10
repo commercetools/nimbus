@@ -53,6 +53,19 @@ export const listBoxSlotRecipe = defineSlotRecipe({
         outlineColor: "primary.9",
         outlineOffset: "-2px",
       },
+      // Virtualized (`isVirtualized`): React Aria positions every row
+      // absolutely, so flex gap and CSS padding have no effect. The layout
+      // applies the same gap and padding instead (see
+      // constants/virtualization.constants.ts). Overrides the variant padding.
+      "&[data-virtualized]": {
+        display: "block",
+        gap: "0",
+        p: "0",
+        // Keyboard focus scrolls the focused row into view with React Aria's
+        // scrollIntoView, which respects scroll-padding. Without it the row
+        // lands flush with the edge and its outside focus ring is cut off.
+        scrollPaddingBlock: "200",
+      },
     },
     // RA <ListBoxItem>
     item: {
@@ -196,6 +209,13 @@ export const listBoxSlotRecipe = defineSlotRecipe({
       // that already separates the header from its own first item below.
       "&:not(:first-of-type)": {
         mt: "100",
+      },
+      // Virtualized: the layout positions the header and items, so the
+      // section's own spacing is not applied.
+      "[data-virtualized] &": {
+        display: "block",
+        gap: "0",
+        mt: "0",
       },
     },
     // RA <Header> inside a section

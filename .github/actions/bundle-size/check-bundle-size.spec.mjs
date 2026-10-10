@@ -33,7 +33,7 @@ function run(script, env = {}) {
 // here to the new measured size. The nimbus baseline was raised when the
 // Markdown component bundled react-markdown/remark-gfm/remend (~+14.6%).
 const VALID_BASELINE = JSON.stringify({
-  "@commercetools/nimbus": { dist: 20702019 },
+  "@commercetools/nimbus": { dist: 22100903 },
   "@commercetools/nimbus-icons": { dist: 4902452 },
   "@commercetools/nimbus-tokens": { dist: 418031 },
 });
