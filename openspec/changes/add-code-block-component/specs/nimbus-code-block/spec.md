@@ -249,8 +249,8 @@ visible focus indicator.
 
 `CodeBlock.Header` SHALL lay out its children in a row. `CodeBlock.Actions`
 inside `Header` SHALL align to the end of the header. `CodeBlock.Actions` inside
-`CodeBlock.Content` SHALL float in the top-end corner of the content, and the
-content SHALL reserve end padding so the first line is not covered.
+`CodeBlock.Content` SHALL sit in the top-end corner of the content, in a column
+next to the scroll area, so that it never covers code.
 `CodeBlock.Footer` SHALL render below the content. In a constrained container,
 long lines SHALL scroll horizontally inside the `pre` without overflowing the
 container; with `width="full"` the root SHALL fill the available width.

@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import {
   CodeBlock,
-  type CodeBlockProps,
+  type CodeBlockRootProps,
+  type CodeBlockContentProps,
   Box,
   Stack,
 } from "@commercetools/nimbus";
@@ -29,16 +30,55 @@ const tsxSample = `const greeting = (name: string): string => {
  */
 const longLineSample = `const extremelyLongVariableName = someFunction(argumentOne, argumentTwo, argumentThree, argumentFour, argumentFive, argumentSix, argumentSeven, argumentEight, argumentNine, argumentTen);`;
 
-const sizes: CodeBlockProps["size"][] = ["sm", "md"];
+const sizes: CodeBlockRootProps["size"][] = ["sm", "md"];
+
+/**
+ * Story args: the props of `CodeBlock.Root`, the line options of
+ * `CodeBlock.Content`, and `onCopy` of `CodeBlock.CopyTrigger`.
+ */
+type CodeBlockStoryArgs = CodeBlockRootProps &
+  Pick<
+    CodeBlockContentProps,
+    "showLineNumbers" | "startLineNumber" | "highlightedLines"
+  > & {
+    onCopy?: () => void;
+  };
+
+/**
+ * The layout most stories use: a header with the language label and a copy
+ * button, then the content.
+ */
+const DefaultLayout = ({
+  showLineNumbers,
+  startLineNumber,
+  highlightedLines,
+  onCopy,
+  ...rootProps
+}: CodeBlockStoryArgs) => (
+  <CodeBlock.Root {...rootProps}>
+    <CodeBlock.Header>
+      <CodeBlock.LanguageLabel />
+      <CodeBlock.Actions>
+        <CodeBlock.CopyTrigger onCopy={onCopy} />
+      </CodeBlock.Actions>
+    </CodeBlock.Header>
+    <CodeBlock.Content
+      showLineNumbers={showLineNumbers}
+      startLineNumber={startLineNumber}
+      highlightedLines={highlightedLines}
+    />
+  </CodeBlock.Root>
+);
 
 /**
  * Storybook metadata configuration
  * - title: determines the location in the sidebar
  * - component: references the component being documented
+ * - render: `DefaultLayout`; stories with another layout override it
  */
-const meta: Meta<typeof CodeBlock> = {
+const meta: Meta<CodeBlockStoryArgs> = {
   title: "Components/CodeBlock",
-  component: CodeBlock,
+  component: CodeBlock.Root,
   tags: ["autodocs"],
   args: {
     onCopy: fn(),
@@ -50,11 +90,11 @@ const meta: Meta<typeof CodeBlock> = {
     },
     language: {
       control: { type: "text" },
-      description: "Prism language identifier for syntax highlighting.",
+      description: "Language id or alias for syntax highlighting.",
     },
     showLineNumbers: {
       control: { type: "boolean" },
-      description: "Whether to show per-line number gutter.",
+      description: "Whether to show per-line number gutter (Content).",
     },
     startLineNumber: {
       control: { type: "number" },
@@ -64,15 +104,7 @@ const meta: Meta<typeof CodeBlock> = {
     highlightedLines: {
       control: { type: "object" },
       description:
-        "Displayed line numbers to highlight with a background band (e.g. [4, 5]). Honors the startLineNumber offset and works without the gutter.",
-    },
-    showHeader: {
-      control: { type: "boolean" },
-      description: "Whether to render the header bar.",
-    },
-    showCopyButton: {
-      control: { type: "boolean" },
-      description: "Whether to show the copy-to-clipboard button.",
+        "Displayed line numbers and [start, end] ranges to highlight (e.g. [4, 5]). Honors the startLineNumber offset and works without the gutter.",
     },
     size: {
       control: { type: "radio" },
@@ -87,10 +119,11 @@ const meta: Meta<typeof CodeBlock> = {
       description: "Callback fired once per successful clipboard write.",
     },
   },
+  render: (args) => <DefaultLayout {...args} />,
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<CodeBlockStoryArgs>;
 
 // ---------------------------------------------------------------------------
 // Base
@@ -341,10 +374,10 @@ export const HighlightedLines: Story = {
   },
   play: async ({ canvasElement, step }) => {
     await step(
-      "Exactly the specified lines carry data-highlighted",
+      "Exactly the specified lines are marked as highlighted",
       async () => {
         const highlighted = canvasElement.querySelectorAll(
-          ".nimbus-code-block__line[data-highlighted]"
+          ".nimbus-code-block__line[data-mark='highlighted']"
         );
         await expect(highlighted.length).toBe(2);
         // The highlighted lines are the ones whose gutter reads 4 and 5.
@@ -377,7 +410,7 @@ export const HighlightedExcerpt: Story = {
   play: async ({ canvasElement, step }) => {
     await step("The offset line number is the one highlighted", async () => {
       const highlighted = canvasElement.querySelectorAll(
-        ".nimbus-code-block__line[data-highlighted]"
+        ".nimbus-code-block__line[data-mark='highlighted']"
       );
       await expect(highlighted.length).toBe(1);
       await expect(
@@ -409,7 +442,7 @@ export const HighlightWithoutLineNumbers: Story = {
       );
       await expect(gutter.length).toBe(0);
       const highlighted = canvasElement.querySelectorAll(
-        ".nimbus-code-block__line[data-highlighted]"
+        ".nimbus-code-block__line[data-mark='highlighted']"
       );
       await expect(highlighted.length).toBe(1);
     });
@@ -421,14 +454,18 @@ export const HighlightWithoutLineNumbers: Story = {
 // ---------------------------------------------------------------------------
 
 /**
- * `showHeader={false}` hides the entire header — including the copy button.
+ * Without `CodeBlock.Header` there is no language label and no copy button.
  */
 export const NoHeader: Story = {
   args: {
     code: jsxSample,
     language: "jsx",
-    showHeader: false,
   },
+  render: ({ code, language }) => (
+    <CodeBlock.Root code={code} language={language}>
+      <CodeBlock.Content />
+    </CodeBlock.Root>
+  ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -451,15 +488,22 @@ export const NoHeader: Story = {
 // ---------------------------------------------------------------------------
 
 /**
- * `showCopyButton={false}` hides the copy button while keeping the header
- * and language label visible.
+ * A header with only `CodeBlock.LanguageLabel`: the language label is visible
+ * and there is no copy button.
  */
 export const NoCopyButton: Story = {
   args: {
     code: jsxSample,
     language: "jsx",
-    showCopyButton: false,
   },
+  render: ({ code, language }) => (
+    <CodeBlock.Root code={code} language={language}>
+      <CodeBlock.Header>
+        <CodeBlock.LanguageLabel />
+      </CodeBlock.Header>
+      <CodeBlock.Content />
+    </CodeBlock.Root>
+  ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -532,14 +576,14 @@ export const CopyBehavior: Story = {
 export const SizeSmall: Story = {
   render: () => (
     <Stack direction="column" gap="400">
-      <CodeBlock
+      <DefaultLayout
         aria-label="Code block — size sm"
         code={jsxSample}
         language="jsx"
         size="sm"
         data-testid="size-sm"
       />
-      <CodeBlock
+      <DefaultLayout
         aria-label="Code block — size md"
         code={jsxSample}
         language="jsx"
@@ -599,14 +643,14 @@ export const SizeSmall: Story = {
 export const SizeMedium: Story = {
   render: () => (
     <Stack direction="column" gap="400">
-      <CodeBlock
+      <DefaultLayout
         aria-label="Code block — size sm"
         code={jsxSample}
         language="jsx"
         size="sm"
         data-testid="size-sm"
       />
-      <CodeBlock
+      <DefaultLayout
         aria-label="Code block — size md"
         code={jsxSample}
         language="jsx"
@@ -677,7 +721,7 @@ export const WithAriaLabel: Story = {
 export const HorizontalOverflow: Story = {
   render: () => (
     <Box width="400px">
-      <CodeBlock
+      <DefaultLayout
         code={longLineSample}
         language="js"
         aria-label="Long line overflow example"
@@ -796,7 +840,7 @@ export const WidthFull: Story = {
   },
   render: (args) => (
     <Box width="600px">
-      <CodeBlock {...args} />
+      <DefaultLayout {...args} />
     </Box>
   ),
   play: async ({ canvasElement, step }) => {
@@ -871,10 +915,14 @@ export const Accessibility: Story = {
 
         // Internal/React-managed props that must NOT appear as DOM attributes
         const internalProps = [
-          "isCopied",
-          "showHeader",
-          "showCopyButton",
+          "code",
+          "language",
+          "highlighter",
+          "maxLines",
+          "isExpanded",
+          "onExpandedChange",
           "showLineNumbers",
+          "highlightedLines",
           "onCopy",
           "data-rac",
         ];
@@ -900,7 +948,7 @@ export const Sizes: Story = {
   render: () => (
     <Stack direction="column" gap="400">
       {sizes.map((size) => (
-        <CodeBlock
+        <DefaultLayout
           key={size as string}
           aria-label={`Code block — size ${size as string}`}
           code={`// size="${size as string}"\nconst x = 1;`}

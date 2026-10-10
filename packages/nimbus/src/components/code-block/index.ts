@@ -1,5 +1,16 @@
 export { CodeBlock } from "./code-block";
-export type { CodeBlockProps } from "./code-block.types";
+export type {
+  CodeBlockRootProps,
+  CodeBlockHeaderProps,
+  CodeBlockTitleProps,
+  CodeBlockLanguageLabelProps,
+  CodeBlockActionsProps,
+  CodeBlockCopyTriggerProps,
+  CodeBlockDownloadTriggerProps,
+  CodeBlockContentProps,
+  CodeBlockExpandTriggerProps,
+  CodeBlockFooterProps,
+} from "./code-block.types";
 export {
   createPrismHighlighter,
   defaultCodeLanguages,

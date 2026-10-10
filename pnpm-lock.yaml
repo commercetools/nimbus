@@ -794,9 +794,6 @@ importers:
       next-themes:
         specifier: catalog:react
         version: 0.4.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      prism-react-renderer:
-        specifier: ^2.4.1
-        version: 2.4.1(react@19.2.0)
       react-aria:
         specifier: 3.52.1
         version: 3.52.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)

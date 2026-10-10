@@ -44,76 +44,77 @@
 
 ## 3. Recipe, slots and types
 
-- [ ] 3.1 Rewrite `code-block.recipe.ts` (slot recipe `nimbusCodeBlock`): slots
-      for root, header, title, languageLabel, actions, content (`pre`), code,
-      line, lineNumber, marker, prompt, expandTrigger, footer; token-class →
+- [x] 3.1 Rewrite `code-block.recipe.ts` (slot recipe `nimbusCodeBlock`): slots
+      for root, header, title, languageLabel, actions, trigger, content, pre,
+      code, line, lineNumber, marker, prompt, lineContent, expandTrigger,
+      footer; token-class →
       `--code-token-*` mapping from design Decision 3 including
       `inserted`/`deleted`; highlighted start-edge bar and background;
-      added/removed backgrounds; floating actions inside content with reserved
-      end padding; gutter width in `ch`; wrap styles; `user-select: none` on
+      added/removed backgrounds; actions inside content in a column next to the
+      scroll area; gutter width in `ch` (set by `Content`); wrap styles; `user-select: none` on
       numbers, prompts, markers and announcement text; extended 44×44px hit area
       for triggers; `size` `sm`/`md`. Keep the existing contrast notes.
-- [ ] 3.2 Confirm the recipe is still registered as `nimbusCodeBlock` in
+- [x] 3.2 Confirm the recipe is still registered as `nimbusCodeBlock` in
       `packages/nimbus/src/theme/slot-recipes/index.ts`, then run
       `pnpm --filter @commercetools/nimbus build-theme-typings`.
-- [ ] 3.3 Rewrite `code-block.slots.tsx` for the new slots, each with a
+- [x] 3.3 Rewrite `code-block.slots.tsx` for the new slots, each with a
       `SlotComponent` return type.
-- [ ] 3.4 Rewrite `code-block.types.ts` with the four-layer type structure:
+- [x] 3.4 Rewrite `code-block.types.ts` with the four-layer type structure:
       recipe props, slot props, helper types, and the props of every part, with
       JSDoc and `@default` tags.
 
 ## 4. CodeBlock parts (Layer 2)
 
-- [ ] 4.1 `code-block.context.ts`: Root context and a
-      `useCodeBlockContext(partName)` hook that throws an error naming the part
-      when used outside `CodeBlock.Root`.
-- [ ] 4.2 `components/code-block.root.tsx`: `section` with `role="region"`;
+- [x] 4.1 `code-block.context.ts`: Root context; and
+      `hooks/use-code-block-context.ts`: a `useCodeBlockContext(partName)` hook
+      that throws an error naming the part when used outside `CodeBlock.Root`.
+- [x] 4.2 `components/code-block.root.tsx`: `section` with `role="region"`;
       accessible name order (`aria-label`, then `Title`, then the localized
       default); element ids; highlighter from the provider; line normalization;
       expanded state (controlled and uncontrolled); one polite live region;
       recipe and style prop split.
-- [ ] 4.3 `components/` for `Header`, `Title` (registers its id for
+- [x] 4.3 `components/` for `Header`, `Title` (registers its id for
       `aria-labelledby`), `LanguageLabel` (`aria-hidden`, defaults to the
       language), `Actions` (placement depends on whether it is inside `Header`
       or `Content`) and `Footer`.
-- [ ] 4.4 `components/code-block.content.tsx`: focusable `pre` (`tabIndex={0}`)
+- [x] 4.4 `components/code-block.content.tsx`: focusable `pre` (`tabIndex={0}`)
       and `code`; token spans with type classes and React text children; line
       numbers with `startLineNumber`; highlighted, added and removed lines with
       precedence; `+`/`−` marker column only when needed; visually hidden
       start/end text per run; word highlights with `mark`; `prompt` and
       `outputLines`; `wrapLongLines`; only the first `maxLines` lines while
       collapsed; content id for `aria-controls`.
-- [ ] 4.5 `components/code-block.copy-trigger.tsx`: icon button "Copy code";
+- [x] 4.5 `components/code-block.copy-trigger.tsx`: icon button "Copy code";
       copies `text ?? code`; `onCopy`, `onCopyError`, `timeout` (default 2000);
       icon swap; "Copied" and "Copy failed" announcements; state survives `code`
       updates. Reuse the copy logic of the first version.
-- [ ] 4.6 `components/code-block.download-trigger.tsx`: icon button "Download
+- [x] 4.6 `components/code-block.download-trigger.tsx`: icon button "Download
       code"; `fileName`, `mimeType`, `text`, `onDownload`; uses `Blob` and
       object URLs only on press.
-- [ ] 4.7 `components/code-block.expand-trigger.tsx`: renders only when
+- [x] 4.7 `components/code-block.expand-trigger.tsx`: renders only when
       collapsible; localized "Show more" / "Show less" or `children`;
       `aria-expanded` and `aria-controls`; focus stays on the button.
-- [ ] 4.8 Make `code-block.tsx` exports only, with `Root` first and JSDoc for
+- [x] 4.8 Make `code-block.tsx` exports only, with `Root` first and JSDoc for
       every part; add `components/index.ts`; set `displayName` on every part.
-- [ ] 4.9 Delete the static `PrismTheme` in `code-block.constants.ts` and any
+- [x] 4.9 Delete the static `PrismTheme` in `code-block.constants.ts` and any
       other code from the first version that is no longer used; remove
       `prism-react-renderer` from `packages/nimbus/package.json` and run
       `pnpm install`.
 
 ## 5. i18n
 
-- [ ] 5.1 Extend `code-block.i18n.ts` with `copyFailed`, `downloadCode`,
+- [x] 5.1 Extend `code-block.i18n.ts` with `copyFailed`, `downloadCode`,
       `showMore`, `showLess`, `highlightedLinesStart`, `highlightedLinesEnd`,
       `addedLinesStart`, `addedLinesEnd`, `removedLinesStart`,
       `removedLinesEnd`; keep `regionLabel`, `copyCode`, `copied`.
-- [ ] 5.2 Add pattern messages: `Nimbus.CodeSnippetGroup.switcherLabel` ("Code
+- [x] 5.2 Add pattern messages: `Nimbus.CodeSnippetGroup.switcherLabel` ("Code
       example") and `Nimbus.CommandSnippet.regionLabel` ("Command").
-- [ ] 5.3 Run `pnpm extract-intl` and confirm the generated files and `en`
+- [x] 5.3 Run `pnpm extract-intl` and confirm the generated files and `en`
       defaults.
 
 ## 6. CodeBlock stories and tests
 
-- [ ] 6.1 Move the existing stories in `code-block.stories.tsx` to the compound
+- [x] 6.1 Move the existing stories in `code-block.stories.tsx` to the compound
       API and keep every scenario they cover today.
 - [ ] 6.2 Add play functions for engine behavior: bash highlighting, alias,
       unknown language, custom provider, async highlighter (plain text first,

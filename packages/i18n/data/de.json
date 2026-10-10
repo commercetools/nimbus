@@ -35,6 +35,14 @@
     "developer_comment": "aria-label for the control that jumps to the newest message in a chat transcript",
     "string": "Zur neuesten Nachricht scrollen"
   },
+  "Nimbus.CodeBlock.addedLinesEnd": {
+    "developer_comment": "Screen reader text after a group of lines marked as added in CodeBlock",
+    "string": "Added lines end"
+  },
+  "Nimbus.CodeBlock.addedLinesStart": {
+    "developer_comment": "Screen reader text before a group of lines marked as added in CodeBlock",
+    "string": "Added lines start"
+  },
   "Nimbus.CodeBlock.copied": {
     "developer_comment": "Screen reader announcement after code is successfully copied to the clipboard",
     "string": "Copied"
@@ -43,9 +51,45 @@
     "developer_comment": "Accessible name for the copy-to-clipboard button in the CodeBlock header",
     "string": "Copy code"
   },
+  "Nimbus.CodeBlock.copyFailed": {
+    "developer_comment": "Screen reader announcement when CodeBlock could not copy the code to the clipboard",
+    "string": "Copy failed"
+  },
+  "Nimbus.CodeBlock.downloadCode": {
+    "developer_comment": "Accessible name for the button in CodeBlock that downloads the code as a file",
+    "string": "Download code"
+  },
+  "Nimbus.CodeBlock.highlightedLinesEnd": {
+    "developer_comment": "Screen reader text after a group of highlighted lines in CodeBlock",
+    "string": "Highlighted lines end"
+  },
+  "Nimbus.CodeBlock.highlightedLinesStart": {
+    "developer_comment": "Screen reader text before a group of highlighted lines in CodeBlock",
+    "string": "Highlighted lines start"
+  },
   "Nimbus.CodeBlock.regionLabel": {
     "developer_comment": "Default accessible name for the CodeBlock region landmark, used when no aria-label prop is provided",
     "string": "Code block"
+  },
+  "Nimbus.CodeBlock.removedLinesEnd": {
+    "developer_comment": "Screen reader text after a group of lines marked as removed in CodeBlock",
+    "string": "Removed lines end"
+  },
+  "Nimbus.CodeBlock.removedLinesStart": {
+    "developer_comment": "Screen reader text before a group of lines marked as removed in CodeBlock",
+    "string": "Removed lines start"
+  },
+  "Nimbus.CodeBlock.showLess": {
+    "developer_comment": "Label of the button that collapses an expanded CodeBlock to its first lines",
+    "string": "Show less"
+  },
+  "Nimbus.CodeBlock.showMore": {
+    "developer_comment": "Label of the button that shows all lines of a collapsed CodeBlock",
+    "string": "Show more"
+  },
+  "Nimbus.CodeSnippetGroup.switcherLabel": {
+    "developer_comment": "Default accessible name for the tabs or select that switch between the code examples of a CodeSnippetGroup",
+    "string": "Code example"
   },
   "Nimbus.ComboBox.clearSelection": {
     "developer_comment": "aria-label for clear selection button in ComboBox",
@@ -62,6 +106,10 @@
   "Nimbus.ComboBox.toggleOptions": {
     "developer_comment": "aria-label for toggle button to open/close options",
     "string": "Optionen anzeigen/ verbergen"
+  },
+  "Nimbus.CommandSnippet.regionLabel": {
+    "developer_comment": "Default accessible name for the CommandSnippet region, used when no aria-label prop is provided",
+    "string": "Command"
   },
   "Nimbus.ConfirmationDialog.cancel": {
     "developer_comment": "default label for the cancel button in a confirmation dialog",

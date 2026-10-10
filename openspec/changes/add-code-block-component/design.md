@@ -221,8 +221,8 @@ main files): `Root` (33), `Content` (11), `Header` (9), `Footer` (8), `Title`
 - one polite live region for announcements
 
 `Actions` placed inside `Header` aligns to the end of the header. `Actions`
-placed inside `Content` floats in the top-end corner, and `Content` reserves end
-padding so the first line is not covered. This gives a copy button without a
+placed inside `Content` sits in the top-end corner, in its own column next to the
+scroll area, so it never covers code, also when the code scrolls horizontally. This gives a copy button without a
 header, which the first version could not do and the Nimbus docs icon dialog
 builds by hand.
 
@@ -270,8 +270,9 @@ reason.
   - On success it swaps the icon, announces "Copied" in the Root live region,
     calls `onCopy` once, and resets after `timeout` (default 2000 ms, as in Kibo
     UI and Vercel AI Elements).
-  - On failure (for example an insecure origin) it announces "Copy failed" and
-    calls `onCopyError`.
+  - On failure (the clipboard write throws) it announces "Copy failed" and
+    calls `onCopyError` with the error. When the browser can only offer a
+    manual-copy prompt, this is not a failure.
   - It works anywhere inside `Root`.
 - **`DownloadTrigger`.**
   - Creates a `Blob` from `text ?? code` (default MIME type
@@ -382,6 +383,9 @@ no slots).
 - [`tabIndex={0}` on `pre` adds a tab stop even when nothing overflows] → Kept
   from the first version for simplicity; a later refinement can set it only when
   the content overflows.
+- [`CodeBlock.Title` is detected after mount, so server-rendered HTML names the
+  region "Code block" until the page hydrates] → Documented on the Title prop;
+  set `aria-label` on Root where the server HTML matters.
 - [Very long code renders every line; there is no virtualization] → `maxLines`
   limits the rendered lines while collapsed.
 - [Some screen readers announce `mark` elements] → Accepted: word highlights are

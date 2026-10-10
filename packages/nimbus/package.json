@@ -91,7 +91,6 @@
     "escape-html": "catalog:utils",
     "is-hotkey": "catalog:utils",
     "next-themes": "catalog:react",
-    "prism-react-renderer": "^2.4.1",
     "react-aria": "catalog:react",
     "react-aria-components": "catalog:react",
     "react-hotkeys-hook": "catalog:react",

@@ -26,11 +26,13 @@ const renderWithProvider = (ui: React.ReactElement) =>
 describe("CodeBlock - Basic usage", () => {
   it("renders a named code region that a consumer can query", () => {
     renderWithProvider(
-      <CodeBlock
+      <CodeBlock.Root
         code={`const greeting = (name) => \`Hello, \${name}!\`;`}
         language="js"
         aria-label="Greeting example"
-      />
+      >
+        <CodeBlock.Content />
+      </CodeBlock.Root>
     );
 
     // Consumers can locate the code region by its accessible name.
@@ -42,7 +44,11 @@ describe("CodeBlock - Basic usage", () => {
   it("renders code content that a consumer can read as text", () => {
     const code = `export const add = (a: number, b: number) => a + b;`;
 
-    renderWithProvider(<CodeBlock code={code} language="tsx" />);
+    renderWithProvider(
+      <CodeBlock.Root code={code} language="tsx">
+        <CodeBlock.Content />
+      </CodeBlock.Root>
+    );
 
     // Consumers can assert the code text is present in the document.
     const region = screen.getByRole("region");
@@ -66,11 +72,13 @@ describe("CodeBlock - onCopy callback integration", () => {
     const handleCopy = vi.fn();
 
     renderWithProvider(
-      <CodeBlock
-        code="npm install @commercetools/nimbus"
-        language="bash"
-        onCopy={handleCopy}
-      />
+      <CodeBlock.Root code="npm install @commercetools/nimbus" language="bash">
+        <CodeBlock.Content>
+          <CodeBlock.Actions>
+            <CodeBlock.CopyTrigger onCopy={handleCopy} />
+          </CodeBlock.Actions>
+        </CodeBlock.Content>
+      </CodeBlock.Root>
     );
 
     await user.click(screen.getByRole("button", { name: /copy code/i }));
@@ -88,11 +96,15 @@ describe("CodeBlock - onCopy callback integration", () => {
 
       return (
         <NimbusProvider>
-          <CodeBlock
-            code="const x = 1;"
-            language="js"
-            onCopy={() => setCount((prev) => prev + 1)}
-          />
+          <CodeBlock.Root code="const x = 1;" language="js">
+            <CodeBlock.Content>
+              <CodeBlock.Actions>
+                <CodeBlock.CopyTrigger
+                  onCopy={() => setCount((prev) => prev + 1)}
+                />
+              </CodeBlock.Actions>
+            </CodeBlock.Content>
+          </CodeBlock.Root>
           <output data-testid="copy-count">{count}</output>
         </NimbusProvider>
       );
@@ -111,18 +123,22 @@ describe("CodeBlock - onCopy callback integration", () => {
 
 /**
  * @docs-section display-options
- * @docs-title Controlling Display Options
+ * @docs-title Choosing What to Show
  * @docs-description
- *   Toggle `showLineNumbers`, `showHeader`, and `showCopyButton` to suit
- *   different contexts — for example, hiding the header in compact layouts or
- *   showing line numbers for long snippets. This pattern shows how to wire
- *   these props to application state.
+ *   Render only the parts you need — for example, leave out the header in
+ *   compact layouts — and wire `showLineNumbers` on `CodeBlock.Content` to
+ *   application state.
  * @docs-order 3
  */
 describe("CodeBlock - Display option toggling", () => {
-  it("renders without a copy button when showCopyButton is false", () => {
+  it("renders without a copy button when no CopyTrigger is rendered", () => {
     renderWithProvider(
-      <CodeBlock code="const x = 1;" language="js" showCopyButton={false} />
+      <CodeBlock.Root code="const x = 1;" language="js">
+        <CodeBlock.Header>
+          <CodeBlock.LanguageLabel />
+        </CodeBlock.Header>
+        <CodeBlock.Content />
+      </CodeBlock.Root>
     );
 
     // Consumers embedding CodeBlock in read-only contexts can confirm
@@ -132,13 +148,15 @@ describe("CodeBlock - Display option toggling", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("renders without a header when showHeader is false", () => {
+  it("renders without a header when no Header is rendered", () => {
     renderWithProvider(
-      <CodeBlock code="const x = 1;" language="js" showHeader={false} />
+      <CodeBlock.Root code="const x = 1;" language="js">
+        <CodeBlock.Content />
+      </CodeBlock.Root>
     );
 
-    // No header means no copy button or language label — useful for
-    // embedding code inline without chrome.
+    // No header and no actions means no copy button or language label —
+    // useful for embedding code without chrome.
     expect(
       screen.queryByRole("button", { name: /copy code/i })
     ).not.toBeInTheDocument();
@@ -155,12 +173,13 @@ describe("CodeBlock - Display option toggling", () => {
           <button onClick={() => setShowNumbers((prev) => !prev)}>
             Toggle line numbers
           </button>
-          <CodeBlock
+          <CodeBlock.Root
             code={`const a = 1;\nconst b = 2;\nconst c = 3;`}
             language="js"
-            showLineNumbers={showNumbers}
             aria-label="Preference example"
-          />
+          >
+            <CodeBlock.Content showLineNumbers={showNumbers} />
+          </CodeBlock.Root>
         </NimbusProvider>
       );
     };
@@ -203,13 +222,9 @@ describe("CodeBlock - Excerpt with real line numbers", () => {
     ].join("\n");
 
     renderWithProvider(
-      <CodeBlock
-        code={excerpt}
-        language="js"
-        showLineNumbers
-        startLineNumber={42}
-        aria-label="Excerpt example"
-      />
+      <CodeBlock.Root code={excerpt} language="js" aria-label="Excerpt example">
+        <CodeBlock.Content showLineNumbers startLineNumber={42} />
+      </CodeBlock.Root>
     );
 
     // The gutter starts at the offset and increments per line.
@@ -240,18 +255,21 @@ describe("CodeBlock - Highlighting lines", () => {
     ].join("\n");
 
     renderWithProvider(
-      <CodeBlock
+      <CodeBlock.Root
         code={excerpt}
         language="js"
-        showLineNumbers
-        startLineNumber={42}
-        highlightedLines={[43]}
         aria-label="Highlight example"
-      />
+      >
+        <CodeBlock.Content
+          showLineNumbers
+          startLineNumber={42}
+          highlightedLines={[43]}
+        />
+      </CodeBlock.Root>
     );
 
     const highlighted = document.querySelectorAll(
-      ".nimbus-code-block__line[data-highlighted]"
+      ".nimbus-code-block__line[data-mark='highlighted']"
     );
     expect(highlighted).toHaveLength(1);
     expect(
@@ -273,12 +291,14 @@ describe("CodeBlock - Highlighting lines", () => {
 describe("CodeBlock - Size variants", () => {
   it("renders at sm size without errors", () => {
     renderWithProvider(
-      <CodeBlock
+      <CodeBlock.Root
         code="const x = 1;"
         language="js"
         size="sm"
         aria-label="Compact example"
-      />
+      >
+        <CodeBlock.Content />
+      </CodeBlock.Root>
     );
 
     expect(
@@ -288,12 +308,14 @@ describe("CodeBlock - Size variants", () => {
 
   it("renders at md size (default) without errors", () => {
     renderWithProvider(
-      <CodeBlock
+      <CodeBlock.Root
         code="const x = 1;"
         language="js"
         size="md"
         aria-label="Default size example"
-      />
+      >
+        <CodeBlock.Content />
+      </CodeBlock.Root>
     );
 
     expect(
@@ -315,16 +337,20 @@ describe("CodeBlock - Multiple snippets on one page", () => {
   it("renders multiple labelled code regions that can each be queried independently", () => {
     renderWithProvider(
       <div>
-        <CodeBlock
+        <CodeBlock.Root
           code="npm install @commercetools/nimbus"
           language="bash"
           aria-label="Installation command"
-        />
-        <CodeBlock
+        >
+          <CodeBlock.Content />
+        </CodeBlock.Root>
+        <CodeBlock.Root
           code={`import { Button } from '@commercetools/nimbus';`}
           language="tsx"
           aria-label="Import example"
-        />
+        >
+          <CodeBlock.Content />
+        </CodeBlock.Root>
       </div>
     );
 

@@ -147,9 +147,19 @@ maps) and allows 5% growth:
 | refractor engine files, all formats and maps    | 484.4 KB     | of which 109.2 KB JS |
 | prism chunk files, all formats and maps         | 681.0 KB     | of which 202.1 KB JS |
 
-The gate failure is temporary: task 4.9 removes `prism-react-renderer`. The
-budget left for the compound parts and the patterns is not known yet; run the
-check again after section 4.
+The gate failure was temporary: task 4.9 removes `prism-react-renderer`.
+
+Measured again after sections 3–5 (compound parts, `prism-react-renderer`
+removed):
+
+| Item                                                  | Value                           |
+| ----------------------------------------------------- | ------------------------------- |
+| `@commercetools/nimbus` `dist` total                  | 21715.3 KB, +3.5% (gate passes) |
+| `code-block-*` ES chunk (refractor + all parts)       | 82.0 KB raw, 26.7 KB gzip       |
+| All code-block files in `dist` (ES, CJS, maps, entry) | 675.9 KB                        |
+
+The patterns (section 7) are not built yet; they must fit in the remaining
+1.5% (about 315 KB of `dist`, maps included).
 
 ### Maintenance (npm registry, 2026-10-10)
 
