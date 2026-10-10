@@ -1,82 +1,89 @@
 ## Why
 
-Nimbus has an inline `Code` component for short, unstyled inline snippets, but no
-way to render a block of source code with syntax highlighting. Product surfaces
-that show API examples, configuration, integration guides, and developer docs
-currently hand-roll `<pre>` blocks with ad-hoc styling and no accessibility,
-theming, or copy affordance. A first-class, read-only `CodeBlock` gives consumers
-a consistent, accessible, token-themed way to display multi-line code with
-syntax highlighting, light/dark support, and copy-to-clipboard.
+Nimbus has an inline `Code` component but no way to show a block of source code
+with syntax highlighting. Products build their own: the dashboard has two
+`CodeSnippet` stand-ins (one says it exists because Nimbus `CodeBlock` "didn't
+make it into the published bundle"), merchant-center-frontend shows JSON, curl
+commands and multi-language snippets with hand-made `pre` blocks, and Nimbus
+`Markdown` renders code fences as plain text while its docs promise "a richer
+`CodeBlock`" as a fast-follow. See `research.md` for the evidence.
+
+The first version on this branch (a single props-driven `CodeBlock`) does not
+cover these needs: the copy button exists only inside the header, there is no
+title, wrap, collapse, download, diff or language switch, and `bash` gets no
+colors. The component is not released yet, so we can change its structure now at
+no cost to consumers.
 
 ## What Changes
 
-- Add a new **`CodeBlock`** component to `@commercetools/nimbus`: a block-level,
-  **read-only** source-code renderer with syntax highlighting. It is the
-  block-level sibling of the existing inline `Code` component (Chakra v3 /
-  Atlassian convention: inline `Code` + block `CodeBlock`).
-- Public API is a single **props-driven** component:
-  `<CodeBlock code={string} language="tsx" showLineNumbers aria-label="…" />`
-  (not a compound `.Root` API — the content is data, a code string + language,
-  not composable JSX).
-- v1 capabilities: syntax highlighting for the common language set, an opt-out
-  header bar showing the language label, a copy-to-clipboard button with a
-  screen-reader success announcement, and opt-in line numbers. The line-number
-  gutter starts at `1` by default but accepts a `startLineNumber` offset, so a
-  consumer can render an excerpt of a file with its real source line numbers
-  (e.g. a five-line snippet numbered 42–46). Specific lines can be emphasized
-  with a background band via `highlightedLines` (keyed to the displayed line
-  numbers). A `size` variant
-  (`sm`/`md`) scales typography + padding.
-- Syntax highlighting via **`prism-react-renderer`** (added as a bundled
-  `dependency`). It renders through React elements (no `dangerouslySetInnerHTML`
-  → no XSS), is synchronous (SSR-safe), and exposes a plain-object theme whose
-  color values can be CSS variables.
-- **Token-driven theming**: every syntax-token color is a namespaced CSS custom
-  property declared in the recipe (light defaults + `_dark` overrides) and mapped
-  to Nimbus color tokens; a static `PrismTheme` maps each token type to a
-  `var(--code-token-*)`. Light/dark and any future brand redesign touch only
-  tokens + recipe — never component logic.
-- Internally composed from a registered Chakra slot recipe `nimbusCodeBlock`
-  (slots: root, header, languageLabel, copyButton, pre, code, line, lineNumber),
-  so future additions (collapsible, word-wrap, filename/title) slot in without an
-  API break.
-- Accessibility: the outer container is a labelled `role="region"`; the scrollable
-  `<pre>` is keyboard-operable; the copy button has an i18n accessible name and
-  announces success via an `aria-live` region. No accessible name is ever placed
-  on the `<code>` element (ARIA prohibits it on `role=code`).
+The code block becomes three layers, following the Component vs Pattern split in
+`docs/file-type-guidelines/component-vs-pattern.md`:
 
-No breaking changes — this is purely additive.
+- **Layer 1 — highlighting engine.** A small `CodeHighlighter` interface that
+  turns code into lines of typed tokens. The default implementation,
+  `createPrismHighlighter`, uses `refractor` (Prism grammars) with 14 bundled
+  languages, including `bash`, `diff` and `http`. Consumers can add languages
+  and aliases, or supply their own engine through `CodeHighlighterProvider`.
+  **BREAKING (unreleased):** `prism-react-renderer` is replaced by `refractor`.
+- **Layer 2 — `CodeBlock` compound component** (`src/components/code-block/`).
+  Parts: `CodeBlock.Root`, `.Header`, `.Title`, `.LanguageLabel`, `.Actions`,
+  `.CopyTrigger`, `.DownloadTrigger`, `.Content`, `.ExpandTrigger`, `.Footer`.
+  New capabilities on these parts: copy and download anywhere in the block,
+  title that names the region, line ranges, added/removed lines, word highlight,
+  command prompts, wrap long lines, maximum lines with expand/collapse, and safe
+  updates for streamed code. **BREAKING (unreleased):** the flat `CodeBlock`
+  props API on this branch is removed; its behavior moves to the `CodeSnippet`
+  pattern.
+- **Layer 3 — patterns** (`src/patterns/code/`), each with a flat-props API and
+  no own recipe:
+  - `CodeSnippet` — the default snippet: title, language label, copy, download,
+    and all line options.
+  - `CodeSnippetGroup` — several snippets with one visible at a time, switched
+    by tabs or a select.
+  - `JsonSnippet` — formats any value as JSON.
+  - `CommandSnippet` — shell commands with a prompt that is not copied.
+- Fixes found in the first version: aligned line-number gutter, no extra empty
+  line for a trailing newline, colors for `bash`, and correct keyboard order in
+  the docs.
 
 ## Capabilities
 
 ### New Capabilities
 
-- `code-block`: A read-only, syntax-highlighted, accessible, token-themed
-  block-level code renderer with an optional header (language label), an optional
-  copy-to-clipboard button with screen-reader announcement, optional line
-  numbers (with an optional `startLineNumber` offset for displaying excerpts at
-  their real source line numbers), optional line highlighting via
-  `highlightedLines`, light/dark theming, and constrained-width
-  horizontal-scroll behavior.
+- `nimbus-code-block`: the highlighting engine interface, the default Prism
+  highlighter, the highlighter provider, and the `CodeBlock` compound component
+  with all its parts.
+- `nimbus-code-snippet`: the `CodeSnippet` pattern.
+- `nimbus-code-snippet-group`: the `CodeSnippetGroup` pattern.
+- `nimbus-json-snippet`: the `JsonSnippet` pattern.
+- `nimbus-command-snippet`: the `CommandSnippet` pattern.
 
 ### Modified Capabilities
 
-<!-- None. The existing inline `Code` component is unchanged; `CodeBlock` is a new, separate component. -->
+<!-- None. `nimbus-code` (inline Code) and `nimbus-markdown` are unchanged.
+     Switching Markdown code fences to CodeBlock is a separate follow-up change. -->
 
 ## Impact
 
-- **New component**: `packages/nimbus/src/components/code-block/` (full Nimbus
-  file set: types, recipe, slots, tsx, constants, stories, i18n, dev.mdx,
-  docs.spec.tsx, mdx, index.ts).
-- **New dependency**: `prism-react-renderer` (`^2.4.1`) added to
-  `packages/nimbus/package.json` `dependencies` (already present in the monorepo
-  lockfile via `apps/docs`). Bundle-size CI gate (`pnpm check:bundle-size`) and
-  package-shape gate apply.
-- **Theme registration**: `nimbusCodeBlock` slot recipe registered in
-  `packages/nimbus/src/theme/slot-recipes/index.ts`.
-- **Barrel export**: `CodeBlock` + its public types exported from
-  `packages/nimbus/src/components/index.ts`.
-- **i18n**: new `code-block.i18n.ts` with two messages (`Copy code`, `Copied`);
-  requires `pnpm extract-intl` (CI build-breaker if missed).
-- **Reuses**: existing `useCopyToClipboard` hook, `IconButton`,
-  `VisuallyHidden`, `fontFamily: "mono"` token.
+- **New code**: `packages/nimbus/src/components/code-block/` (compound
+  component, highlighter, provider) and `packages/nimbus/src/patterns/code/`
+  (four patterns), with stories, docs and consumer tests.
+- **Dependencies**: remove `prism-react-renderer` from
+  `packages/nimbus/package.json`; add `refractor` (`^5.0.0`). Measured engine
+  size: 24.1 KB gzip with 14 languages, compared with 26.2 KB gzip for
+  `prism-react-renderer` today. `pnpm check:bundle-size` and
+  `pnpm check:package-shape` apply.
+- **Exports**: `CodeBlock`, `CodeHighlighterProvider`, `createPrismHighlighter`,
+  `defaultCodeLanguages` and their types from the components barrel;
+  `CodeSnippet`, `CodeSnippetGroup`, `JsonSnippet`, `CommandSnippet` from the
+  patterns barrel.
+- **Theme**: the `nimbusCodeBlock` slot recipe gets new slots; it stays
+  registered in `packages/nimbus/src/theme/slot-recipes/index.ts`.
+- **i18n**: new messages for download, show more / show less, marked-line
+  announcements, copy failure, the snippet-group switcher label, and the command
+  region label; requires `pnpm extract-intl`.
+- **Changeset**: the unreleased `add-code-block-component` changeset is
+  rewritten to describe the final API.
+- **Not changed here** (follow-up changes): Nimbus `Markdown` using `CodeBlock`
+  for fences, the Nimbus docs app replacing `react-syntax-highlighter`, an
+  optional Shiki engine entry point.

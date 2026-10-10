@@ -1,89 +1,208 @@
-## 1. Scaffold & dependency
+> The previous task list (sections 1–15) built the first, single-component
+> version in commits `7009a6253`, `9551f9305` and `f06559639`. This list
+> replaces it. Reuse existing code, stories and docs where the task says so.
 
-- [x] 1.1 Create `packages/nimbus/src/components/code-block/` directory.
-- [x] 1.2 Add `prism-react-renderer` (`^2.4.1`) to `packages/nimbus/package.json` `dependencies`; run `pnpm install` and confirm it resolves from the existing lockfile.
-- [x] 1.3 Create empty/stub files for the full file set: `code-block.types.ts`, `code-block.constants.ts`, `code-block.recipe.ts`, `code-block.slots.tsx`, `code-block.tsx`, `code-block.i18n.ts`, `code-block.stories.tsx`, `code-block.dev.mdx`, `code-block.docs.spec.tsx`, `code-block.mdx`, `index.ts`.
+## 1. Engine (Layer 1)
 
-## 2. Failing play functions (TDD baseline)
+- [ ] 1.1 In `packages/nimbus/package.json`, replace `prism-react-renderer` with
+      `refractor` (`^5.0.0`) and run `pnpm install`.
+- [ ] 1.2 Create `code-block/highlighter/code-highlighter.types.ts` with
+      `CodeToken`, `CodeLine`, `CodeHighlighter`, `CodeLanguageDefinition` and
+      `CodeLineSelection`, each with JSDoc.
+- [ ] 1.3 Create `code-block/highlighter/create-prism-highlighter.ts`: a new
+      `refractor/core` instance per call, the 14 default languages, the default
+      aliases, `plaintext`/`text`/`txt` as no highlighting,
+      `additionalLanguages`, `aliases`, `resolveLanguage`, and a hast-to-lines
+      conversion that splits multi-line text nodes and keeps the token types of
+      all ancestor elements.
+- [ ] 1.4 Export `defaultCodeLanguages` (the default language ids).
+- [ ] 1.5 Create `code-block/highlighter/code-highlighter-provider.tsx` with its
+      context and a shared default highlighter; it renders no DOM element; set
+      `displayName`.
+- [ ] 1.6 Unit tests (`create-prism-highlighter.spec.ts`): lines reproduce the
+      input, a three-line block comment is split per line, bash code gets
+      non-plain tokens, `sh` resolves to bash, unknown and plain languages
+      return plain tokens, `additionalLanguages` adds Java, two highlighters are
+      isolated, no global object changes, an unterminated string does not throw.
 
-- [x] 2.1 In `code-block.stories.tsx`, write the Storybook meta (`tags:["autodocs"]`, typed `Meta`/`StoryObj`, `fn()` for `onCopy`) and a `Base` story with a `play` function — these will fail until implementation lands.
-- [x] 2.2 Write play functions / stories for every Tier-2 acceptance scenario from `specs/code-block/spec.md`: supported-language render (text content preserved), unknown-language fallback, empty-code block, region has accessible name + `<code>` has no `aria-label`, default localized region name, language label `aria-hidden`, `<pre>` is `tabIndex=0` and scroll container, no stray tabIndex, constrained-width horizontal overflow (no layout break), `width="full"` stretch, header shown by default / hidden via `showHeader={false}`, copy button accessible name, single-activation copies once + `onCopy` once + live-region updates, `showCopyButton={false}`, line numbers shown/hidden + excluded from copy, dark-mode color resolution, `size` sm/md, event/prop-leak integrity.
+## 2. Shared utilities and hooks
 
-## 3. Types
+- [ ] 2.1 `code-block/utils/normalize-lines.ts`: split on `\r\n`, `\n`, `\r`;
+      drop one trailing line break. Unit tests for CRLF, CR, trailing newline,
+      empty string.
+- [ ] 2.2 `code-block/utils/line-selection.ts`: turn a `CodeLineSelection` into
+      a set of displayed line numbers (inclusive ranges, ignore non-integers and
+      reversed ranges) and group marked lines into contiguous runs. Unit tests.
+- [ ] 2.3 `code-block/utils/highlight-words.ts`: split token runs at exact,
+      case-sensitive word matches, also across token borders, and keep token
+      types. Unit tests.
+- [ ] 2.4 `code-block/hooks/use-highlighted-lines.ts`: memoize by code, language
+      and highlighter; for Promise results render plain lines first, keep the
+      last highlighted result while a new one is pending, and discard outdated
+      results. Unit tests with a fake async highlighter.
 
-- [x] 3.1 `code-block.types.ts`: define recipe prop types from the slot recipe, slot prop types (`SlotComponent` return annotations to avoid TS2742), and the public `CodeBlockProps` (`code`, `language`, `showLineNumbers`, `showHeader`, `showCopyButton`, `size`, `aria-label`, `onCopy`, plus style-prop passthrough). Use `type` not `interface`; JSDoc every public prop with `@default` on optional booleans. No `any`/`as unknown as`.
+## 3. Recipe, slots and types
 
-## 4. Constants (highlighter theme)
+- [ ] 3.1 Rewrite `code-block.recipe.ts` (slot recipe `nimbusCodeBlock`): slots
+      for root, header, title, languageLabel, actions, content (`pre`), code,
+      line, lineNumber, marker, prompt, expandTrigger, footer; token-class →
+      `--code-token-*` mapping from design Decision 3 including
+      `inserted`/`deleted`; highlighted start-edge bar and background;
+      added/removed backgrounds; floating actions inside content with reserved
+      end padding; gutter width in `ch`; wrap styles; `user-select: none` on
+      numbers, prompts, markers and announcement text; extended 44×44px hit area
+      for triggers; `size` `sm`/`md`. Keep the existing contrast notes.
+- [ ] 3.2 Confirm the recipe is still registered as `nimbusCodeBlock` in
+      `packages/nimbus/src/theme/slot-recipes/index.ts`, then run
+      `pnpm --filter @commercetools/nimbus build-theme-typings`.
+- [ ] 3.3 Rewrite `code-block.slots.tsx` for the new slots, each with a
+      `SlotComponent` return type.
+- [ ] 3.4 Rewrite `code-block.types.ts` with the four-layer type structure:
+      recipe props, slot props, helper types, and the props of every part, with
+      JSDoc and `@default` tags.
 
-- [x] 4.1 `code-block.constants.ts`: define the static `PrismTheme` mapping each Prism token type to a namespaced `var(--code-token-*)`; export the component class-name prefix and the ordered token-type → CSS-var map. No raw colors.
+## 4. CodeBlock parts (Layer 2)
 
-## 5. Recipe (design layer)
+- [ ] 4.1 `code-block.context.ts`: Root context and a
+      `useCodeBlockContext(partName)` hook that throws an error naming the part
+      when used outside `CodeBlock.Root`.
+- [ ] 4.2 `components/code-block.root.tsx`: `section` with `role="region"`;
+      accessible name order (`aria-label`, then `Title`, then the localized
+      default); element ids; highlighter from the provider; line normalization;
+      expanded state (controlled and uncontrolled); one polite live region;
+      recipe and style prop split.
+- [ ] 4.3 `components/` for `Header`, `Title` (registers its id for
+      `aria-labelledby`), `LanguageLabel` (`aria-hidden`, defaults to the
+      language), `Actions` (placement depends on whether it is inside `Header`
+      or `Content`) and `Footer`.
+- [ ] 4.4 `components/code-block.content.tsx`: focusable `pre` (`tabIndex={0}`)
+      and `code`; token spans with type classes and React text children; line
+      numbers with `startLineNumber`; highlighted, added and removed lines with
+      precedence; `+`/`−` marker column only when needed; visually hidden
+      start/end text per run; word highlights with `mark`; `prompt` and
+      `outputLines`; `wrapLongLines`; only the first `maxLines` lines while
+      collapsed; content id for `aria-controls`.
+- [ ] 4.5 `components/code-block.copy-trigger.tsx`: icon button "Copy code";
+      copies `text ?? code`; `onCopy`, `onCopyError`, `timeout` (default 2000);
+      icon swap; "Copied" and "Copy failed" announcements; state survives `code`
+      updates. Reuse the copy logic of the first version.
+- [ ] 4.6 `components/code-block.download-trigger.tsx`: icon button "Download
+      code"; `fileName`, `mimeType`, `text`, `onDownload`; uses `Blob` and
+      object URLs only on press.
+- [ ] 4.7 `components/code-block.expand-trigger.tsx`: renders only when
+      collapsible; localized "Show more" / "Show less" or `children`;
+      `aria-expanded` and `aria-controls`; focus stays on the button.
+- [ ] 4.8 Make `code-block.tsx` exports only, with `Root` first and JSDoc for
+      every part; add `components/index.ts`; set `displayName` on every part.
+- [ ] 4.9 Delete the static `PrismTheme` in `code-block.constants.ts` and any
+      other code from the first version that is no longer used.
 
-- [x] 5.1 `code-block.recipe.ts`: `defineSlotRecipe({ slots: ["root","header","languageLabel","copyButton","pre","code","line","lineNumber"], className:"nimbus-code-block", ... })`. Surface/border/radius via semantic tokens; `fontFamily:"mono"`; declare all `--code-token-*` custom properties (light defaults + `_dark` overrides) on `root`; `size` variant (`sm`/`md`) scaling font + padding; `defaultVariants.size = "md"`. No raw px/hex.
-- [x] 5.2 Register the recipe as `nimbusCodeBlock` in `packages/nimbus/src/theme/slot-recipes/index.ts`.
-- [x] 5.3 Run `pnpm --filter @commercetools/nimbus build-theme-typings`.
+## 5. i18n
 
-## 6. Slots (design layer)
+- [ ] 5.1 Extend `code-block.i18n.ts` with `copyFailed`, `downloadCode`,
+      `showMore`, `showLess`, `highlightedLinesStart`, `highlightedLinesEnd`,
+      `addedLinesStart`, `addedLinesEnd`, `removedLinesStart`,
+      `removedLinesEnd`; keep `regionLabel`, `copyCode`, `copied`.
+- [ ] 5.2 Add pattern messages: `Nimbus.CodeSnippetGroup.switcherLabel` ("Code
+      example") and `Nimbus.CommandSnippet.regionLabel` ("Command").
+- [ ] 5.3 Run `pnpm extract-intl` and confirm the generated files and `en`
+      defaults.
 
-- [x] 6.1 `code-block.slots.tsx`: `createSlotRecipeContext({ key:"nimbusCodeBlock" })`; export `withProvider` root (`section` element) + `withContext` for header, languageLabel, copyButton, pre (`pre`), code (`code`), line, lineNumber — each annotated with `SlotComponent` return types.
+## 6. CodeBlock stories and tests
 
-## 7. i18n
+- [ ] 6.1 Move the existing stories in `code-block.stories.tsx` to the compound
+      API and keep every scenario they cover today.
+- [ ] 6.2 Add play functions for engine behavior: bash highlighting, alias,
+      unknown language, custom provider, async highlighter (plain text first,
+      then tokens; outdated result discarded).
+- [ ] 6.3 Add play functions for safety, theming and semantics: injected markup
+      stays text, empty code, no `style` attribute on tokens, dark mode, region
+      name order (`aria-label`, `Title`, default), hidden language label, no
+      name on `code`, locale `de`, no prop leakage.
+- [ ] 6.4 Add play functions for keyboard and layout: Tab reaches the header
+      copy button before the `pre`, no stray `tabIndex`, Enter and Space
+      activate every trigger, visible focus, floating actions inside content do
+      not cover the first line, long line in a 400px container.
+- [ ] 6.5 Add play functions for lines: trailing newline, CRLF copied as given,
+      offset numbers, equal code start position for lines 9 and 10 (bounding
+      boxes), `user-select: none` on numbers, prompts, markers and announcement
+      text, ranges, invalid selections, diff markers, one announcement pair per
+      run, word highlight across tokens, prompt with output lines, wrapped line
+      with one line number.
+- [ ] 6.6 Add play functions for actions: copy success, custom copy text, reset
+      after `timeout`, copy failure (mocked clipboard), download (spy on object
+      URL and anchor click), expand collapsed/expanded with `aria-expanded`,
+      `aria-controls` and focus, copy while collapsed copies all lines, 44×44px
+      hit area for `sm` triggers.
+- [ ] 6.7 Add play functions for streaming: scroll position kept when code
+      grows, copy state kept across updates, unterminated string renders.
+- [ ] 6.8 Mark the visual stories for Chromatic (sizes, light/dark, diff,
+      highlighted lines, wrap, collapsed) following
+      `docs/chromatic-visual-testing.md`.
 
-- [x] 7.1 `code-block.i18n.ts`: define messages `Nimbus.CodeBlock.copyCode` ("Copy code") and `Nimbus.CodeBlock.copied` ("Copied"), plus `Nimbus.CodeBlock.regionLabel` ("Code block") default region name.
-- [x] 7.2 Run `pnpm extract-intl` and confirm generated message files exist and the `en` default matches (CI build-breaker if skipped).
+## 7. Patterns (Layer 3)
 
-## 8. Main component (mechanics layer)
+- [ ] 7.1 Create `packages/nimbus/src/patterns/code/index.ts` and export it from
+      `packages/nimbus/src/patterns/index.ts`.
+- [ ] 7.2 `patterns/code/code-snippet/`: `.tsx`, `.types.ts`, `.stories.tsx`
+      with play functions for every scenario in
+      `specs/nimbus-code-snippet/spec.md`, `.mdx`, `.dev.mdx`, `.docs.spec.tsx`,
+      `index.ts`. Reuse docs content from the first version.
+- [ ] 7.3 `patterns/code/code-snippet-group/`: same file set plus `.i18n.ts`;
+      built from `CodeBlock` parts with `Tabs` or `Select`; play functions for
+      arrow-key switching, select switching and its accessible name, single
+      item, copy and download following the selected item, controlled selection.
+- [ ] 7.4 `patterns/code/json-snippet/`: same file set; a safe stringify utility
+      with unit tests for indentation, circular references, `BigInt` and
+      `undefined`; play functions for highlighting and copying formatted JSON.
+- [ ] 7.5 `patterns/code/command-snippet/`: same file set plus `.i18n.ts`; play
+      functions for the prompt, no prompt, output lines, copy without prompts,
+      floating copy button, default region name "Command".
+- [ ] 7.6 Confirm that no pattern folder contains a `.recipe.ts` or `.slots.tsx`
+      file.
 
-- [x] 8.1 `code-block.tsx`: implement `CodeBlock`. Split recipe variants, extract style props, render `Root(section, role="region", aria-label or default i18n)` → optional `Header(languageLabel aria-hidden + copy IconButton)` → `pre tabIndex={0}` → `code` → `prism-react-renderer` `Highlight` render-prop emitting `line`/`lineNumber`/token spans using the static `PrismTheme`. Set `displayName`. JSDoc tags (`@see`, `@example`, `@supportsStyleProps`, `@default`). Guard any `process.env` with `typeof`. No raw design values; no DOM/prop leakage.
-- [x] 8.2 Copy behavior: `useCopyToClipboard`; copy button `onPress` copies `code`, fires `onCopy` once, sets transient "copied" state (icon swap + live-region message via `VisuallyHidden` `aria-live="polite"`), resets after ~2s. Live region always mounted (empty until copied).
-- [x] 8.3 Line numbers: render the `lineNumber` gutter only when `showLineNumbers`; ensure gutter text is non-selectable and not part of the copied string (copy uses the `code` prop, not DOM text).
-- [x] 8.4 Header/copy toggles: honor `showHeader={false}` (no header, no copy) and `showCopyButton={false}` (header without copy).
+## 8. Documentation
 
-## 9. Barrel & integration
+- [ ] 8.1 Rewrite `code-block.mdx` for the compound API: start "When to use"
+      with a table that points to the four patterns; fix the keyboard table so
+      it matches DOM order.
+- [ ] 8.2 Rewrite `code-block.dev.mdx` and `code-block.docs.spec.tsx` with
+      composition examples: copy without header, title, diff lines, collapse,
+      download, `createPrismHighlighter` with `additionalLanguages`,
+      `CodeHighlighterProvider`.
+- [ ] 8.3 Add `code-block.a11y.mdx` and `code-block.guidelines.mdx` following
+      the existing component docs files (for example `tabs.a11y.mdx`,
+      `tabs.guidelines.mdx`).
+- [ ] 8.4 Link every pattern doc back to `CodeBlock` for custom layouts.
+- [ ] 8.5 Confirm the docs site lists the new `patterns/code` category; update
+      any place that lists pattern categories (skills, commands, guidelines,
+      templates).
 
-- [x] 9.1 `index.ts`: export `CodeBlock` and its public types.
-- [x] 9.2 Export the component from `packages/nimbus/src/components/index.ts` (no name collision with existing `Code`).
+## 9. Exports and release notes
 
-## 10. Documentation
+- [ ] 9.1 `code-block/index.ts`: export `CodeBlock`, `CodeHighlighterProvider`,
+      `createPrismHighlighter`, `defaultCodeLanguages` and the public types.
+- [ ] 9.2 Confirm `packages/nimbus/src/components/index.ts` and
+      `packages/nimbus/src/patterns/index.ts` expose all new exports.
+- [ ] 9.3 Rewrite `.changeset/add-code-block-component.md` for consumers: the
+      `CodeBlock` compound component and the four patterns.
 
-- [x] 10.1 `code-block.dev.mdx`: engineering doc with frontmatter, `<PropsTable>`, the `{{docs-tests:}}` injection block, usage examples, and a Resources section.
-- [x] 10.2 `code-block.docs.spec.tsx`: consumer-facing working examples (the `.dev.mdx` companion required by the docs build).
-- [x] 10.3 `code-block.mdx`: designer documentation.
+## 10. Validation
 
-## 11. Validation gates
+- [ ] 10.1 `pnpm --filter @commercetools/nimbus typecheck:dev` — green.
+- [ ] 10.2 `pnpm lint` — green.
+- [ ] 10.3 `pnpm test:unit` for the new utilities, hooks and highlighter —
+      green.
+- [ ] 10.4 `pnpm build`, then `pnpm typecheck:strict` — green.
+- [ ] 10.5 `pnpm test:storybook` for `code-block.stories.tsx` and the four
+      pattern stories — green.
+- [ ] 10.6 `pnpm check:package-shape` and `pnpm check:bundle-size` — within the
+      gates; record the engine size compared with `prism-react-renderer`.
+- [ ] 10.7 Review with the `nimbus-reviewer` agent and fix all findings.
 
-- [x] 11.1 `pnpm --filter @commercetools/nimbus build-theme-typings` then `pnpm typecheck:strict` — both green.
-- [x] 11.2 `pnpm lint` — green.
-- [x] 11.3 `pnpm build` — green.
-- [x] 11.4 `pnpm test:storybook` for `code-block.stories.tsx` — all play functions pass (Tier-2 scenarios now satisfied).
-- [x] 11.5 `pnpm check:package-shape` and `pnpm check:bundle-size` (new dependency + exports changed) — within gate.
-- [x] 11.6 Remove any leftover TDD scaffolding comments ("WILL FAIL"/"TDD baseline"/"Phase 1") from stories/source.
+## Follow-up changes (not tracked in this change)
 
-## 12. Finalize
-
-- [x] 12.1 `pnpm changeset` — consumer-framed, minor bump (new feature).
-- [x] 12.2 Mark all tasks complete; create a conventional commit.
-
-## 13. `startLineNumber` gutter offset (proposal extension)
-
-- [x] 13.1 `code-block.types.ts`: add optional `startLineNumber?: number` to `CodeBlockProps`, JSDoc'd with `@default 1` and a note that it only takes effect when `showLineNumbers` is true and is excluded from copy.
-- [x] 13.2 `code-block.tsx`: destructure `startLineNumber = 1`; render the gutter as `lineIndex + startLineNumber` instead of `lineIndex + 1`. No other behavior change.
-- [x] 13.3 `code-block.stories.tsx`: add play-function coverage for the new scenarios — default starts at 1, `startLineNumber={42}` numbers an excerpt 42–46, offset ignored when `showLineNumbers` is false, copied text excludes numbers with an offset set.
-- [x] 13.4 Docs: add a "real source line numbers" example to `code-block.dev.mdx` / `code-block.docs.spec.tsx`; ensure `<PropsTable>` picks up the new prop.
-- [x] 13.5 Gates: `pnpm typecheck:strict`, `pnpm lint`, `pnpm test:storybook` for `code-block.stories.tsx` — all green.
-- [x] 13.6 Changeset — folded the `startLineNumber` capability into the existing unreleased `add-code-block-component.md` changeset (component not yet published).
-
-## 14. `highlightedLines` line highlighting (proposal extension)
-
-- [x] 14.1 `code-block.types.ts`: add optional `highlightedLines?: number[]` to `CodeBlockProps`, JSDoc'd `@default []`, keyed to displayed line numbers, independent of `showLineNumbers`, excluded from copy.
-- [x] 14.2 `code-block.tsx`: destructure `highlightedLines = []`; compute `lineNumber = lineIndex + startLineNumber` once and set `data-highlighted={highlightedLines.includes(lineNumber) || undefined}` on the line slot.
-- [x] 14.3 `code-block.recipe.ts`: style `line` `&[data-highlighted]` with a token-driven `backgroundColor` (`amber.3`, mode-adaptive); add `width:max-content` + `minWidth:100%` to the `line` slot so the band spans the full scrollable width.
-- [x] 14.4 `code-block.stories.tsx`: add play coverage — specified lines highlighted, offset honored, highlight without gutter.
-- [x] 14.5 Docs: add a "highlighting lines" example to `code-block.dev.mdx` + `code-block.docs.spec.tsx`; `<PropsTable>` picks up the new prop.
-- [x] 14.6 Gates: `pnpm typecheck:strict`, `pnpm lint`, `pnpm test:storybook` — all green.
-- [x] 14.7 Changeset — fold the `highlightedLines` capability into the unreleased changeset.
-
-## 15. Smaller copy button in the `sm` size (fix)
-
-- [x] 15.1 `code-block.recipe.ts`: in the `sm` variant, scale the nested copy button below IconButton's `xs` floor via a `copyButton` descendant override (button box + icon).
-- [x] 15.2 `code-block.stories.tsx`: assert in `SizeSmall` that the sm copy button is shorter than the md copy button.
+- Nimbus `Markdown` renders code fences with `CodeBlock` and maps fence meta
+  (`{1,3-4}`, `/word/`) to `Content` props.
+- The Nimbus docs app replaces `react-syntax-highlighter` with `CodeSnippet`.
+- Optional Shiki engine entry point `@commercetools/nimbus/code-block/shiki`.
