@@ -4,22 +4,23 @@
 
 ## 1. Engine (Layer 1)
 
-- [ ] 1.1 In `packages/nimbus/package.json`, replace `prism-react-renderer` with
-      `refractor` (`^5.0.0`) and run `pnpm install`.
-- [ ] 1.2 Create `code-block/highlighter/code-highlighter.types.ts` with
+- [x] 1.1 In `packages/nimbus/package.json`, add `refractor` (`^5.0.0`, through
+      the `utils` catalog) and run `pnpm install`. `prism-react-renderer` is
+      removed in 4.9, together with the first-version code that imports it.
+- [x] 1.2 Create `code-block/highlighter/code-highlighter.types.ts` with
       `CodeToken`, `CodeLine`, `CodeHighlighter`, `CodeLanguageDefinition` and
       `CodeLineSelection`, each with JSDoc.
-- [ ] 1.3 Create `code-block/highlighter/create-prism-highlighter.ts`: a new
-      `refractor/core` instance per call, the 14 default languages, the default
-      aliases, `plaintext`/`text`/`txt` as no highlighting,
+- [x] 1.3 Create `code-block/highlighter/create-prism-highlighter.ts`: the
+      shared `refractor/core` registry with a separate language and alias list
+      per highlighter, the 14 default languages, the default aliases, `plaintext`/`text`/`txt` as no highlighting,
       `additionalLanguages`, `aliases`, `resolveLanguage`, and a hast-to-lines
       conversion that splits multi-line text nodes and keeps the token types of
       all ancestor elements.
-- [ ] 1.4 Export `defaultCodeLanguages` (the default language ids).
-- [ ] 1.5 Create `code-block/highlighter/code-highlighter-provider.tsx` with its
+- [x] 1.4 Export `defaultCodeLanguages` (the default language ids).
+- [x] 1.5 Create `code-block/highlighter/code-highlighter-provider.tsx` with its
       context and a shared default highlighter; it renders no DOM element; set
       `displayName`.
-- [ ] 1.6 Unit tests (`create-prism-highlighter.spec.ts`): lines reproduce the
+- [x] 1.6 Unit tests (`create-prism-highlighter.spec.ts`): lines reproduce the
       input, a three-line block comment is split per line, bash code gets
       non-plain tokens, `sh` resolves to bash, unknown and plain languages
       return plain tokens, `additionalLanguages` adds Java, two highlighters are
@@ -27,16 +28,16 @@
 
 ## 2. Shared utilities and hooks
 
-- [ ] 2.1 `code-block/utils/normalize-lines.ts`: split on `\r\n`, `\n`, `\r`;
+- [x] 2.1 `code-block/utils/normalize-lines.ts`: split on `\r\n`, `\n`, `\r`;
       drop one trailing line break. Unit tests for CRLF, CR, trailing newline,
       empty string.
-- [ ] 2.2 `code-block/utils/line-selection.ts`: turn a `CodeLineSelection` into
+- [x] 2.2 `code-block/utils/line-selection.ts`: turn a `CodeLineSelection` into
       a set of displayed line numbers (inclusive ranges, ignore non-integers and
       reversed ranges) and group marked lines into contiguous runs. Unit tests.
-- [ ] 2.3 `code-block/utils/highlight-words.ts`: split token runs at exact,
+- [x] 2.3 `code-block/utils/highlight-words.ts`: split token runs at exact,
       case-sensitive word matches, also across token borders, and keep token
       types. Unit tests.
-- [ ] 2.4 `code-block/hooks/use-highlighted-lines.ts`: memoize by code, language
+- [x] 2.4 `code-block/hooks/use-highlighted-lines.ts`: memoize by code, language
       and highlighter; for Promise results render plain lines first, keep the
       last highlighted result while a new one is pending, and discard outdated
       results. Unit tests with a fake async highlighter.
@@ -95,7 +96,9 @@
 - [ ] 4.8 Make `code-block.tsx` exports only, with `Root` first and JSDoc for
       every part; add `components/index.ts`; set `displayName` on every part.
 - [ ] 4.9 Delete the static `PrismTheme` in `code-block.constants.ts` and any
-      other code from the first version that is no longer used.
+      other code from the first version that is no longer used; remove
+      `prism-react-renderer` from `packages/nimbus/package.json` and run
+      `pnpm install`.
 
 ## 5. i18n
 

@@ -121,6 +121,36 @@ bash, yaml, graphql, diff, sql, markdown, http.
 prism-react-renderer bundles a fixed grammar set. It has no `bash`, `diff` or
 `http` grammar (checked by listing `Prism.languages` in version 2.4.1).
 
+### Measured in the Nimbus build
+
+Measured after tasks 1–2, with `pnpm build:packages` and
+`pnpm check:bundle-size` (baseline: the comment chain on `main`). At that point
+the build contained both engines: `prism-react-renderer` through the
+first-version `CodeBlock`, and refractor through the new exports.
+
+| Item                                                       | ES chunk raw | ES chunk gzip |
+| ---------------------------------------------------------- | ------------ | ------------- |
+| refractor + 14 languages (`code-highlighter-provider-*`)   | 62.2 KB      | 20.9 KB       |
+| Chunk with prism-react-renderer (`no-op-*`), see note      | 114.7 KB     | 31.5 KB       |
+
+The prism chunk also contains the first-version `CodeBlock` code and
+`copy-to-clipboard`, so its prism-only share is smaller than shown. The ES output
+is mangled but not whitespace-minified.
+
+The bundle-size gate sums every file in `dist` (ES, CJS, `.d.ts` and source
+maps) and allows 5% growth:
+
+| State                                           | `dist` total | Compared with `main` |
+| ----------------------------------------------- | ------------ | -------------------- |
+| First-version `CodeBlock` only (computed)       | 21668.9 KB   | +3.26%               |
+| Plus the refractor engine (measured)            | 22159.0 KB   | +5.59% (gate fails)  |
+| refractor engine files, all formats and maps    | 484.4 KB     | of which 109.2 KB JS |
+| prism chunk files, all formats and maps         | 681.0 KB     | of which 202.1 KB JS |
+
+The gate failure is temporary: task 4.9 removes `prism-react-renderer`. The
+budget left for the compound parts and the patterns is not known yet; run the
+check again after section 4.
+
 ### Maintenance (npm registry, 2026-10-10)
 
 | Package              | Latest  | Released   | Weekly downloads |

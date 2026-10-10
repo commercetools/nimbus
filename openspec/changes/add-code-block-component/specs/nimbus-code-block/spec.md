@@ -83,9 +83,12 @@ highlighting". `defaultCodeLanguages` SHALL list the default language ids.
 ### Requirement: Adding languages and aliases
 
 `createPrismHighlighter` SHALL accept `additionalLanguages` (refractor language
-definitions) and `aliases` (alias → language id). Each call SHALL create an
-independent highlighter: registering a language on one highlighter MUST NOT
-change any other highlighter or any global object.
+definitions) and `aliases` (alias → language id). Each highlighter SHALL resolve
+only its own languages and aliases: a language or alias added to one highlighter
+MUST NOT be resolved by any other highlighter, and no global object (such as
+`window.Prism`) SHALL change. Grammars are registered in refractor's registry,
+which all highlighters share; a grammar that extends another grammar (for
+example `jsdoc` extends `javascript`) therefore applies to every highlighter.
 
 #### Scenario: Additional language is highlighted
 

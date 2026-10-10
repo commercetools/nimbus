@@ -99,8 +99,8 @@ wrapped by `createPrismHighlighter`. Measured cost (`research.md` §2):
 Why `refractor`:
 
 - It is smaller than today and adds `bash`, `diff` and `http`.
-- It registers grammars without global state. `prism-react-renderer` needs the
-  Prism instance assigned to `global`/`window` to add a language.
+- It registers grammars without changing global objects. `prism-react-renderer`
+  needs the Prism instance assigned to `global`/`window` to add a language.
 - It is synchronous, so code never flashes as plain text, server rendering
   works, and streamed code is simple.
 - Its output is a data tree that we render as React elements, so we never use
@@ -134,6 +134,12 @@ createPrismHighlighter(options?: {
   aliases?: Readonly<Record<string, string>>;
 }): CodeHighlighter;
 ```
+
+`refractor/core` exports one shared instance, so all highlighters in a bundle
+use one grammar registry. Each highlighter keeps its own list of languages and
+aliases and resolves only those. A grammar that extends another grammar (for
+example `refractor/jsdoc` extends `javascript`) therefore changes that grammar
+for every highlighter.
 
 `CodeHighlighterProvider` supplies a highlighter to every `CodeBlock.Root` below
 it. Without a provider, a shared default Prism highlighter is used. The name
@@ -362,6 +368,10 @@ no slots).
 - [Prism grammars are no longer actively developed; prismjs 1.30.0 is from
   2025-03-10] → The engine interface allows a different engine without an API
   change. Shiki is planned as an opt-in entry point.
+- [All highlighters share refractor's grammar registry, so a grammar that
+  extends another one (`jsdoc`, `js-extras`, `css-extras`) applies to every
+  highlighter in the bundle] → Accepted: these grammars only add tokens. Each
+  highlighter still resolves only its own languages and aliases.
 - [Extra grammars come from `refractor/<language>`, which ties the
   `additionalLanguages` type to refractor and needs `refractor` as a consumer
   dependency under strict pnpm] → Expose our own `CodeLanguageDefinition` type
