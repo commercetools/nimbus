@@ -120,6 +120,9 @@ export const codeBlockSlotRecipe = defineSlotRecipe({
       },
     },
     trigger: {
+      // Keeps triggers neutral inside components that set another palette
+      // (Tabs sets primary for its subtree).
+      colorPalette: "neutral",
       display: "inline-flex",
       ...extendedHitArea,
     },
@@ -290,6 +293,7 @@ export const codeBlockSlotRecipe = defineSlotRecipe({
       },
     },
     expandTrigger: {
+      colorPalette: "neutral",
       display: "flex",
       justifyContent: "center",
       paddingBottom: "200",

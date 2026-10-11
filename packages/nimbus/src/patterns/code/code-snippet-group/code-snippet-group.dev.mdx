@@ -1,0 +1,238 @@
+---
+title: CodeSnippetGroup Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+## Comparison: pattern vs manual composition
+
+**With CodeSnippetGroup:**
+
+```tsx
+<CodeSnippetGroup
+  title="List products"
+  items={[
+    { key: "curl", label: "cURL", code: curlCode, language: "bash" },
+    { key: "js", label: "JavaScript", code: jsCode, language: "js" },
+  ]}
+/>
+```
+
+**Manual composition (escape hatch):**
+
+The code and language of the root must follow the selected tab. This sketch
+keeps the selection in state.
+
+```tsx
+const [key, setKey] = useState("curl");
+const selected = items.find((item) => item.key === key) ?? items[0];
+
+<CodeBlock.Root code={selected.code} language={selected.language}>
+  <Tabs.Root
+    variant="pill"
+    size="sm"
+    selectedKey={key}
+    onSelectionChange={(next) => setKey(String(next))}
+  >
+    <CodeBlock.Header>
+      <Tabs.List aria-label="Code example">
+        {items.map((item) => (
+          <Tabs.Tab key={item.key} id={item.key}>
+            {item.label}
+          </Tabs.Tab>
+        ))}
+      </Tabs.List>
+      <CodeBlock.LanguageLabel />
+      <CodeBlock.Actions>
+        <CodeBlock.CopyTrigger />
+      </CodeBlock.Actions>
+    </CodeBlock.Header>
+    <Tabs.Panels>
+      {items.map((item) => (
+        <Tabs.Panel key={item.key} id={item.key} padding="0">
+          <CodeBlock.Content />
+        </Tabs.Panel>
+      ))}
+    </Tabs.Panels>
+  </Tabs.Root>
+</CodeBlock.Root>;
+```
+
+### When to use which
+
+**Use CodeSnippetGroup when:**
+
+- You show alternative examples of one thing
+- You want copy, download and the language label to follow the selection
+
+**Use [CodeBlock](/components/data-display/codeblock) when:**
+
+- You need a custom switcher or a custom layout
+- You need to control the layout of the header
+
+## Getting started
+
+### Import
+
+```tsx
+import {
+  CodeSnippetGroup,
+  type CodeSnippetGroupProps,
+  type CodeSnippetGroupItem,
+} from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+Each item has a `key`, a `label` and `code`. It can also have a `language` and
+a `fileName`. The first item is shown first.
+
+```jsx live-dev
+const App = () => (
+  <CodeSnippetGroup
+    title="List products"
+    items={[
+      { key: "curl", label: "cURL", language: "bash", code: "curl https://api.example.com/products" },
+      { key: "js", label: "JavaScript", language: "js", code: 'await fetch("https://api.example.com/products");' },
+    ]}
+  />
+)
+```
+
+## Usage examples
+
+### Select switcher
+
+Set `switcher="select"` for many items or long labels.
+
+```jsx live-dev
+const App = () => (
+  <CodeSnippetGroup
+    title="List products"
+    switcher="select"
+    items={[
+      { key: "curl", label: "cURL", language: "bash", code: "curl https://api.example.com/products" },
+      { key: "js", label: "JavaScript", language: "js", code: 'await fetch("https://api.example.com/products");' },
+      { key: "java", label: "Java", language: "java", code: 'client.get("https://api.example.com/products");' },
+    ]}
+  />
+)
+```
+
+### Switcher label
+
+The tab list or select is named "Code example" by default. Set `switcherLabel`
+to use a more exact name.
+
+```jsx live-dev
+const App = () => (
+  <CodeSnippetGroup
+    aria-label="Product API"
+    switcherLabel="Language"
+    items={[
+      { key: "curl", label: "cURL", language: "bash", code: "curl https://api.example.com/products" },
+      { key: "js", label: "JavaScript", language: "js", code: 'await fetch("https://api.example.com/products");' },
+    ]}
+  />
+)
+```
+
+### Download button
+
+When the shown item has a `fileName`, a download button appears. It downloads
+that item under that name.
+
+```jsx live-dev
+const App = () => (
+  <CodeSnippetGroup
+    title="Configuration"
+    items={[
+      { key: "env", label: ".env", language: "bash", fileName: "client.env", code: "API_URL=https://example.com" },
+      { key: "json", label: "JSON", language: "json", code: '{ "apiUrl": "https://example.com" }' },
+    ]}
+  />
+)
+```
+
+### Uncontrolled selection
+
+Use `defaultSelectedKey` to choose the item that is shown first.
+
+```jsx live-dev
+const App = () => (
+  <CodeSnippetGroup
+    title="List products"
+    defaultSelectedKey="js"
+    items={[
+      { key: "curl", label: "cURL", language: "bash", code: "curl https://api.example.com/products" },
+      { key: "js", label: "JavaScript", language: "js", code: 'await fetch("https://api.example.com/products");' },
+    ]}
+  />
+)
+```
+
+### Controlled selection
+
+Use `selectedKey` and `onSelectionChange` to keep the selection in your state.
+For example, you can use one choice for several groups on a page.
+
+```jsx live-dev
+const App = () => {
+  const [key, setKey] = React.useState("js");
+  return (
+    <Stack gap="200">
+      <CodeSnippetGroup
+        title="List products"
+        selectedKey={key}
+        onSelectionChange={setKey}
+        items={[
+          { key: "curl", label: "cURL", language: "bash", code: "curl https://api.example.com/products" },
+          { key: "js", label: "JavaScript", language: "js", code: 'await fetch("https://api.example.com/products");' },
+        ]}
+      />
+      <Text>Selected: {key}</Text>
+    </Stack>
+  );
+}
+```
+
+### Track copies
+
+`onCopy` receives the key of the item that was copied.
+
+```tsx
+<CodeSnippetGroup items={items} onCopy={(key) => track("copy", key)} />
+```
+
+### One item
+
+With one item, no switcher is rendered. The item is shown like a `CodeSnippet`.
+
+## Accessibility
+
+- With tabs, the arrow keys move between tabs and `Tab` moves focus to the next
+  control. Each tab controls a real tab panel.
+- The tab list or select has an accessible name: `switcherLabel`, or "Code
+  example" by default.
+- The group is a `region` landmark only when it has a name: a `title` or an
+  `aria-label`.
+- The copy button announces "Copied" or "Copy failed". Copy uses the Clipboard
+  API and falls back to `document.execCommand("copy")`.
+
+## API reference
+
+<PropsTable id="CodeSnippetGroup" />
+
+## Testing your implementation
+
+These examples show how to test CodeSnippetGroup in your application. Nimbus
+already tests the component itself.
+
+{{docs-tests: code-snippet-group.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-code-codesnippetgroup--docs)
+- [CodeBlock Component](/components/data-display/codeblock) - for custom
+  layouts
+- [Tabs Component](/components/navigation/tabs)

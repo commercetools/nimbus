@@ -1,0 +1,119 @@
+---
+id: Patterns-CommandSnippet
+title: Command snippet
+exportName: CommandSnippet
+description: Shows shell commands with a prompt and a copy button next to the code. The prompt is never copied.
+documentState: InitialDraft
+lifecycleState: Beta
+order: 999
+menu:
+  - Patterns
+  - Code
+  - Command snippet
+tags:
+  - component
+  - pattern
+  - code
+  - command
+  - snippet
+  - CodeBlock
+related-components:
+  - CodeBlock
+  - CodeSnippet
+---
+
+## Overview
+
+CommandSnippet shows one or more shell commands, for example an install
+command. Each command line starts with a prompt, such as `$`. The copy button
+copies the command without the prompt. It is made from the
+[CodeBlock](/components/data-display/codeblock) component.
+
+For layouts that this pattern does not cover, use
+[CodeBlock](/components/data-display/codeblock) and compose its parts yourself.
+
+### Resources
+
+- [CodeBlock guidelines](/components/data-display/codeblock) - the component
+  that CommandSnippet is built from
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-code-commandsnippet--docs)
+
+## Anatomy
+
+- The command text, highlighted as `bash` by default.
+- A prompt before each command line. Output lines have no prompt.
+- A copy button next to the code.
+
+CommandSnippet has no header, so it stays small. It has no language label and
+no title.
+
+## Variables
+
+### One command
+
+```jsx live
+const App = () => (
+  <CommandSnippet command="pnpm add @commercetools/nimbus" />
+)
+```
+
+### Command with output
+
+Use `outputLines` to mark lines that are output. These lines have no prompt.
+
+```jsx live
+const App = () => (
+  <CommandSnippet
+    command={"npm whoami\nalice"}
+    outputLines={[2]}
+  />
+)
+```
+
+### Prompt
+
+The default prompt is `$`. Set `prompt` to another text, or to an empty string
+for no prompt.
+
+```jsx live
+const App = () => (
+  <Stack gap="400">
+    <CommandSnippet prompt=">" command="dir" />
+    <CommandSnippet prompt="" command="pnpm add @commercetools/nimbus" />
+  </Stack>
+)
+```
+
+## Guidelines
+
+### When to use
+
+- For install steps and other commands that the user runs in a terminal.
+- When the user will copy the command.
+
+### When not to use
+
+- For code in a programming language, use
+  [CodeSnippet](/patterns/code/code-snippet).
+- For the same command in several tools, such as npm and pnpm, use
+  [CodeSnippetGroup](/patterns/code/code-snippet-group).
+- For a custom layout, use [CodeBlock](/components/data-display/codeblock).
+
+### Do
+
+- Show one command per line.
+- Use `outputLines` for results that the user should not type.
+- Set an `aria-label` such as "Install Nimbus" when the page has several
+  commands and you want them in the landmark list.
+
+### Don't
+
+- Don't write the prompt into the `command` text. The pattern adds it and does
+  not copy it.
+
+## Accessibility
+
+- A snippet is a `region` landmark only when you set an `aria-label`. Unnamed
+  snippets are not landmarks, so many commands on one page are fine.
+- The prompt is not part of the copied text.
+- The copy button announces "Copied" or "Copy failed" to screen readers.

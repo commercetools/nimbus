@@ -2,7 +2,7 @@
 id: Components-CodeBlock
 title: CodeBlock
 exportName: CodeBlock
-description: A read-only, syntax-highlighted, accessible block-level code renderer with optional line numbers, header, and copy-to-clipboard functionality.
+description: A read-only, syntax-highlighted block of source code, built from parts such as a title, language label, copy and download buttons, line numbers, marked lines and a collapsed view.
 order: 999
 menu:
   - Components
@@ -13,24 +13,77 @@ tags:
   - code
   - syntax-highlighting
   - copy
+  - download
+  - diff
 ---
 
 ## Overview
 
-CodeBlock displays source code in a visually distinct, read-only container with
-automatic syntax highlighting, an optional language label, and a one-click
-copy-to-clipboard button. It is suited for documentation pages, onboarding
-flows, API reference sections, and any context where developers need to read or
-copy code.
+CodeBlock shows source code in a clear, read-only container with syntax
+highlighting. You build it from parts: a header with a title, a language label
+and action buttons, the code area, and an optional footer. You choose the parts
+that your layout needs.
 
-Token colors adapt automatically to light and dark mode through CSS custom
-properties — no configuration required.
+Use CodeBlock in documentation, onboarding flows, API references, and anywhere
+people need to read or copy code. Colors adapt to light and dark mode through
+design tokens, so you do not need to set them.
+
+For the most common cases, use one of the code patterns. They put the parts
+together for you. Use the CodeBlock parts directly only when no pattern fits.
 
 ### Resources
 
 Deep dive into implementation details and access the Nimbus design library.
 
 [React ARIA documentation](https://react-spectrum.adobe.com/react-aria/)
+
+## When to use
+
+| You want to show                                                      | Use                                                      |
+| --------------------------------------------------------------------- | -------------------------------------------------------- |
+| One snippet with a title, a language label, copy and download buttons | [`CodeSnippet`](/patterns/code/code-snippet)             |
+| The same example in several languages, with tabs or a select          | [`CodeSnippetGroup`](/patterns/code/code-snippet-group)  |
+| Any value as formatted JSON                                           | [`JsonSnippet`](/patterns/code/json-snippet)             |
+| Shell commands with a prompt that is not copied                       | [`CommandSnippet`](/patterns/code/command-snippet)       |
+| A layout that the patterns do not cover                               | `CodeBlock` parts, as described on this page             |
+
+## Parts
+
+A code block is made of these parts. Only `CodeBlock.Root` and
+`CodeBlock.Content` are required.
+
+| Part                         | What it does                                                         |
+| ---------------------------- | -------------------------------------------------------------------- |
+| `CodeBlock.Root`             | Holds the code and language. Provides shared state to all parts.     |
+| `CodeBlock.Header`           | A row above the code for the title, language label and actions.      |
+| `CodeBlock.Title`            | A visible title, for example a file name. It can name the block.     |
+| `CodeBlock.LanguageLabel`    | A label that shows the language. It is decorative.                   |
+| `CodeBlock.Actions`          | A group of buttons, in the header or next to the code.               |
+| `CodeBlock.CopyTrigger`      | A button that copies the code.                                       |
+| `CodeBlock.DownloadTrigger`  | A button that downloads the code as a file.                          |
+| `CodeBlock.Content`          | The code area. Controls line numbers, marks, prompts and wrapping.   |
+| `CodeBlock.ExpandTrigger`    | A "Show more" / "Show less" button for collapsed code.               |
+| `CodeBlock.Footer`           | A note or link below the code.                                       |
+
+```jsx live
+const App = () => (
+  <CodeBlock.Root
+    language="tsx"
+    code={`import { Button } from "@commercetools/nimbus";\n\nexport const Demo = () => (\n  <Button variant="primary">Click me</Button>\n);`}
+  >
+    <CodeBlock.Header>
+      <CodeBlock.Title>demo.tsx</CodeBlock.Title>
+      <CodeBlock.LanguageLabel />
+      <CodeBlock.Actions>
+        <CodeBlock.DownloadTrigger fileName="demo.tsx" />
+        <CodeBlock.CopyTrigger />
+      </CodeBlock.Actions>
+    </CodeBlock.Header>
+    <CodeBlock.Content />
+    <CodeBlock.Footer>Requires Node 20 or later.</CodeBlock.Footer>
+  </CodeBlock.Root>
+)
+```
 
 ## Variables
 
@@ -44,139 +97,222 @@ The standard size for most documentation and informational contexts.
 
 ```jsx live
 const App = () => (
-  <CodeBlock
+  <CodeBlock.Root
     size="md"
     language="js"
+    aria-label="Medium example"
     code={`const greeting = (name) => \`Hello, \${name}!\`;`}
-  />
+  >
+    <CodeBlock.Content />
+  </CodeBlock.Root>
 )
 ```
 
 #### Small
 
-Use when vertical space is constrained or the code block appears inside a
-compact UI surface such as a sidebar or inline panel.
+Use when vertical space is limited, for example in a sidebar or a compact
+panel. The buttons stay easy to hit: each one has a 44 × 44 pixel hit area,
+also in this size.
 
 ```jsx live
 const App = () => (
-  <CodeBlock
+  <CodeBlock.Root
     size="sm"
     language="js"
+    aria-label="Small example"
     code={`const greeting = (name) => \`Hello, \${name}!\`;`}
-  />
+  >
+    <CodeBlock.Content />
+  </CodeBlock.Root>
 )
 ```
 
-### Header
+### Header and actions
 
-The header bar shows the language identifier on the left and the copy button on
-the right. Both are optional.
+The header holds the title, the language label and the actions. Every part is
+optional.
 
-#### With header (default)
+#### Header with title, language and actions
 
 ```jsx live
 const App = () => (
-  <CodeBlock
-    language="tsx"
-    code={`import { Button } from "@commercetools/nimbus";\n\nexport const Demo = () => (\n  <Button variant="primary">Click me</Button>\n);`}
-  />
+  <CodeBlock.Root
+    language="yaml"
+    code={`name: nimbus\nversion: 3`}
+  >
+    <CodeBlock.Header>
+      <CodeBlock.Title>config.yaml</CodeBlock.Title>
+      <CodeBlock.LanguageLabel />
+      <CodeBlock.Actions>
+        <CodeBlock.DownloadTrigger fileName="config.yaml" />
+        <CodeBlock.CopyTrigger />
+      </CodeBlock.Actions>
+    </CodeBlock.Header>
+    <CodeBlock.Content />
+  </CodeBlock.Root>
 )
 ```
 
-#### Without copy button
+#### Actions without a header
 
-Use when the code is reference material that users are unlikely to copy, or when
-clipboard access is unavailable.
-
-```jsx live
-const App = () => (
-  <CodeBlock
-    language="tsx"
-    showCopyButton={false}
-    code={`import { Button } from "@commercetools/nimbus";\n\nexport const Demo = () => (\n  <Button variant="primary">Click me</Button>\n);`}
-  />
-)
-```
-
-#### Without header
-
-Omit the header entirely when the language label and copy functionality are not
-needed — for example, short inline snippets used as visual callouts.
+Put `CodeBlock.Actions` inside `CodeBlock.Content` to show the buttons in the
+top corner of the code. Use this layout for short snippets, such as an install
+command.
 
 ```jsx live
 const App = () => (
-  <CodeBlock
-    showHeader={false}
+  <CodeBlock.Root
+    language="bash"
+    aria-label="Install command"
     code={`npm install @commercetools/nimbus`}
-  />
+  >
+    <CodeBlock.Content>
+      <CodeBlock.Actions>
+        <CodeBlock.CopyTrigger />
+      </CodeBlock.Actions>
+    </CodeBlock.Content>
+  </CodeBlock.Root>
 )
 ```
 
 ### Line numbers
 
-Enable the line number gutter when helping users reference specific lines — for
-example, in tutorials, code reviews, or error messages that cite line numbers.
+Show line numbers when people need to refer to a line, for example in
+tutorials, reviews or error messages. Line numbers are not selectable and are
+never copied. Use `startLineNumber` to show an excerpt at its real position in
+a file.
 
 ```jsx live
 const App = () => (
-  <CodeBlock
+  <CodeBlock.Root
+    language="js"
+    aria-label="Excerpt with line numbers"
+    code={`function greet(name) {\n  const message = "Hello, " + name;\n  console.log(message);\n  return message;\n}`}
+  >
+    <CodeBlock.Content showLineNumbers startLineNumber={42} />
+  </CodeBlock.Root>
+)
+```
+
+### Marked lines
+
+Mark lines to draw attention to them. Marked lines do not rely on color alone.
+
+- **Highlighted** lines have a background and a bar at the start edge.
+- **Added** lines have a `+` marker and an added background.
+- **Removed** lines have a `−` marker and a removed background.
+
+Screen readers also get a short text before and after each group of marked
+lines.
+
+#### Highlighted lines
+
+```jsx live
+const App = () => (
+  <CodeBlock.Root
+    language="js"
+    aria-label="Highlighted lines"
+    code={`function greet(name) {\n  const message = "Hello, " + name;\n  console.log(message);\n  return message;\n}`}
+  >
+    <CodeBlock.Content showLineNumbers highlightedLines={[2, [3, 4]]} />
+  </CodeBlock.Root>
+)
+```
+
+#### Added and removed lines
+
+```jsx live
+const App = () => (
+  <CodeBlock.Root
+    language="js"
+    aria-label="Diff example"
+    code={`const total = price;\nconst total = price * quantity;\nreturn total;`}
+  >
+    <CodeBlock.Content removedLines={[1]} addedLines={[2]} />
+  </CodeBlock.Root>
+)
+```
+
+#### Highlighted words
+
+Use `highlightedWords` to mark every exact occurrence of a word or phrase.
+
+```jsx live
+const App = () => (
+  <CodeBlock.Root
     language="tsx"
-    showLineNumbers
-    code={`import { Button } from "@commercetools/nimbus";\n\nexport const Demo = () => (\n  <Button variant="primary">\n    Click me\n  </Button>\n);`}
-  />
+    aria-label="Highlighted words"
+    code={`<Button variant="primary" size="md">\n  Save\n</Button>`}
+  >
+    <CodeBlock.Content highlightedWords={["variant"]} />
+  </CodeBlock.Root>
+)
+```
+
+### Prompt and output
+
+Use `prompt` for shell commands. The prompt is not selectable and is not
+copied. Use `outputLines` for lines that show output, so they have no prompt.
+
+```jsx live
+const App = () => (
+  <CodeBlock.Root
+    language="bash"
+    aria-label="Command with output"
+    code={`npm install @commercetools/nimbus\nadded 42 packages in 3s`}
+  >
+    <CodeBlock.Content prompt="$" outputLines={[2]}>
+      <CodeBlock.Actions>
+        <CodeBlock.CopyTrigger />
+      </CodeBlock.Actions>
+    </CodeBlock.Content>
+  </CodeBlock.Root>
+)
+```
+
+### Long code
+
+#### Collapsed view
+
+Set `maxLines` on `CodeBlock.Root` and add `CodeBlock.ExpandTrigger`. While
+the block is collapsed, only the first lines are shown. The copy and download
+buttons still use the full code. The button appears only when the code has more
+lines than `maxLines`.
+
+```jsx live
+const App = () => (
+  <CodeBlock.Root
+    language="js"
+    maxLines={4}
+    aria-label="Collapsed code"
+    code={Array.from({ length: 12 }, (_, i) => `const value${i + 1} = ${i + 1};`).join("\n")}
+  >
+    <CodeBlock.Content showLineNumbers />
+    <CodeBlock.ExpandTrigger />
+  </CodeBlock.Root>
+)
+```
+
+#### Wrapping long lines
+
+By default, long lines scroll horizontally. Set `wrapLongLines` to wrap them
+instead. Line numbers stay on the first row of a wrapped line.
+
+```jsx live
+const App = () => (
+  <Box width="320px">
+    <CodeBlock.Root
+      language="bash"
+      aria-label="Wrapped line"
+      code={`curl --request POST --header "Content-Type: application/json" --data '{"name":"nimbus"}' https://example.com/api/projects`}
+    >
+      <CodeBlock.Content wrapLongLines />
+    </CodeBlock.Root>
+  </Box>
 )
 ```
 
 ## Guidelines
 
-### Best practices
-
-- **Match the language**: Always set `language` to the actual programming
-  language of the snippet. This ensures syntax highlighting is accurate and the
-  label is meaningful.
-- **Use line numbers for long or referenced code**: Enable `showLineNumbers`
-  when the snippet is long or when documentation refers to specific lines.
-- **Keep snippets focused**: Show only the code relevant to the context. Avoid
-  embedding entire files — prefer curated excerpts.
-- **Prefer the default size**: Use `size="md"` unless the surrounding layout
-  clearly benefits from a smaller footprint.
-
-### When to use
-
-> [!TIP]\
-> When to use
-
-- **Code documentation**: Displaying API usage examples, configuration snippets,
-  or installation commands.
-- **Tutorials and guides**: Step-by-step instructions where users read and
-  follow code.
-- **Error messages with line context**: Showing the relevant code surrounding
-  an error alongside a line reference.
-- **Onboarding flows**: Helping new users get started with copy-paste commands.
-
-> [!CAUTION]\
-> When not to use
-
-- **Editable code**: CodeBlock is read-only. Use a code editor component if
-  users need to modify content.
-- **Inline code within prose**: For a single variable name or short keyword
-  inside a sentence, use the `Code` (inline) component instead.
-- **Large multi-file codebases**: Avoid embedding hundreds of lines. Link to an
-  external source or use a code sandbox instead.
-
-## Accessibility
-
-CodeBlock is built to meet WCAG 2.1 AA guidelines. The entire block is exposed
-as a named `region` landmark, enabling screen reader users to jump directly to
-it. The copy button has a localized accessible label and announces success
-("Copied") via a live region — no visual-only feedback. The scrollable code
-area is keyboard-reachable so users who rely on the keyboard can scroll
-overflowing content.
-
-### Keyboard navigation
-
-| Key               | Action                                               |
-| ----------------- | ---------------------------------------------------- |
-| `Tab`             | Moves focus to the scrollable code area, then to the copy button |
-| `Space` / `Enter` | Activates the copy button when focused               |
-| `Arrow keys`      | Scrolls overflowing code when the code area is focused |
+For best practices, when to use and when not to use CodeBlock, see the
+Guidelines tab. For accessibility details, see the Accessibility tab.

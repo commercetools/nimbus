@@ -9,258 +9,701 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { CodeBlock, type CodeBlockProps } from '@commercetools/nimbus';
+import {
+  CodeBlock,
+  CodeHighlighterProvider,
+  createPrismHighlighter,
+  defaultCodeLanguages,
+  type CodeBlockRootProps,
+  type CodeBlockContentProps,
+  type CodeHighlighter,
+} from '@commercetools/nimbus';
 ```
+
+### Which one to use
+
+For common cases, use a pattern. Use the `CodeBlock` parts directly only for
+layouts that the patterns do not cover.
+
+| You want to show                                                      | Use                |
+| --------------------------------------------------------------------- | ------------------ |
+| One snippet with a title, a language label, copy and download buttons | `CodeSnippet`      |
+| The same example in several languages, with tabs or a select          | `CodeSnippetGroup` |
+| Any value as formatted JSON                                           | `JsonSnippet`      |
+| Shell commands with a prompt that is not copied                       | `CommandSnippet`   |
 
 ### Basic usage
 
-The CodeBlock component renders a read-only, syntax-highlighted code snippet
-inside an accessible region landmark. At minimum, pass the `code` string and an
-optional `language` identifier:
+`CodeBlock` is a compound component. `CodeBlock.Root` takes the `code` and the
+`language`. `CodeBlock.Content` renders the code. All other parts are optional.
 
 ```jsx live-dev
 const App = () => (
-  <CodeBlock
-    code={`const greeting = (name) => \`Hello, \${name}!\`;`}
+  <CodeBlock.Root
     language="js"
-  />
+    aria-label="Greeting example"
+    code={`const greeting = (name) => \`Hello, \${name}!\`;`}
+  >
+    <CodeBlock.Content />
+  </CodeBlock.Root>
 )
 ```
+
+The parts are:
+
+| Part                         | Purpose                                                       |
+| ---------------------------- | ------------------------------------------------------------- |
+| `CodeBlock.Root`             | Holds `code` and `language`. Renders a `section`.             |
+| `CodeBlock.Header`           | A row for the title, language label and actions.              |
+| `CodeBlock.Title`            | A visible title. Names the block. Use at most one per Root.   |
+| `CodeBlock.LanguageLabel`    | Shows the language. Hidden from assistive technology.         |
+| `CodeBlock.Actions`          | Groups triggers. Works in the header or inside the content.   |
+| `CodeBlock.CopyTrigger`      | Copies the code.                                              |
+| `CodeBlock.DownloadTrigger`  | Downloads the code as a file.                                 |
+| `CodeBlock.Content`          | The code area. Use at most one per Root.                      |
+| `CodeBlock.ExpandTrigger`    | Shows or hides lines beyond `maxLines`.                       |
+| `CodeBlock.Footer`           | Content below the code.                                       |
+
+Every part except `CodeBlock.Root` must be rendered inside `CodeBlock.Root`.
+Outside of it, a part throws an error that names the part.
 
 ## Usage examples
 
-### Size options
+### Header with title, language and actions
 
-Use `size` to control typography and padding density. The default is `md`:
+Put the title, the language label and the actions in `CodeBlock.Header`.
+`CodeBlock.LanguageLabel` shows the `language` of the Root. Pass children to
+show your own text:
+
+```jsx live-dev
+const App = () => (
+  <CodeBlock.Root
+    language="tsx"
+    code={`import { Button } from "@commercetools/nimbus";\n\nexport const Demo = () => (\n  <Button variant="primary">Click me</Button>\n);`}
+  >
+    <CodeBlock.Header>
+      <CodeBlock.Title>demo.tsx</CodeBlock.Title>
+      <CodeBlock.LanguageLabel>TypeScript</CodeBlock.LanguageLabel>
+      <CodeBlock.Actions>
+        <CodeBlock.CopyTrigger />
+      </CodeBlock.Actions>
+    </CodeBlock.Header>
+    <CodeBlock.Content />
+  </CodeBlock.Root>
+)
+```
+
+### Copy without a header
+
+Place `CodeBlock.Actions` inside `CodeBlock.Content`. The actions float in the
+top-end corner, next to the code, and never cover it:
+
+```jsx live-dev
+const App = () => (
+  <CodeBlock.Root
+    language="bash"
+    aria-label="Install command"
+    code={`npm install @commercetools/nimbus`}
+  >
+    <CodeBlock.Content>
+      <CodeBlock.Actions>
+        <CodeBlock.CopyTrigger />
+      </CodeBlock.Actions>
+    </CodeBlock.Content>
+  </CodeBlock.Root>
+)
+```
+
+### Size
+
+Use `size` on `CodeBlock.Root` to control typography, padding and trigger size.
+The default is `md`:
 
 ```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
-    <CodeBlock
-      size="sm"
-      language="js"
-      code={`// size="sm"\nconst x = 1;`}
-    />
-    <CodeBlock
-      size="md"
-      language="js"
-      code={`// size="md"\nconst x = 1;`}
-    />
+    <CodeBlock.Root size="sm" language="js" aria-label="Small" code={`const x = 1; // size="sm"`}>
+      <CodeBlock.Content />
+    </CodeBlock.Root>
+    <CodeBlock.Root size="md" language="js" aria-label="Medium" code={`const x = 1; // size="md"`}>
+      <CodeBlock.Content />
+    </CodeBlock.Root>
   </Stack>
 )
 ```
 
-### Syntax highlighting
+### Title and region name
 
-Pass a Prism language identifier via the `language` prop. If the language is
-not recognized, the component falls back to plain text without throwing:
+A block is a `region` only when it has a name. The name is the `aria-label` on
+`CodeBlock.Root`, or the text of `CodeBlock.Title`. `aria-label` wins when both
+are set. A block without a name is a plain `section`:
 
 ```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
-    <CodeBlock
-      language="tsx"
-      code={`import { Button } from "@commercetools/nimbus";\n\nexport const Demo = () => (\n  <Button variant="primary">Click me</Button>\n);`}
-    />
-    <CodeBlock
-      language="json"
-      code={`{\n  "name": "nimbus",\n  "version": "3.0.0"\n}`}
-    />
+    <CodeBlock.Root language="yaml" code={`name: nimbus`}>
+      <CodeBlock.Header>
+        <CodeBlock.Title>config.yaml</CodeBlock.Title>
+      </CodeBlock.Header>
+      <CodeBlock.Content />
+    </CodeBlock.Root>
+    <CodeBlock.Root
+      language="bash"
+      aria-label="Installation command"
+      code={`npm install @commercetools/nimbus`}
+    >
+      <CodeBlock.Content />
+    </CodeBlock.Root>
+    <CodeBlock.Root language="bash" code={`npm run build`}>
+      <CodeBlock.Content />
+    </CodeBlock.Root>
   </Stack>
 )
 ```
+
+> [!NOTE]\
+> `CodeBlock.Title` is detected after the first render, so server-rendered HTML
+> has no region name from the title. Set `aria-label` on `CodeBlock.Root` when
+> the name must exist in server-rendered HTML.
 
 ### Line numbers
 
-Enable the line number gutter with `showLineNumbers`. Line numbers are rendered
-with `user-select: none` and excluded from the copied text — copying always
-uses the raw `code` prop, never DOM text:
+Enable the line-number column with `showLineNumbers` on `CodeBlock.Content`.
+Numbers are not selectable and are never copied. Use `startLineNumber`
+(default `1`) to show an excerpt at its real line numbers:
 
 ```jsx live-dev
 const App = () => (
-  <CodeBlock
+  <CodeBlock.Root
+    language="js"
+    aria-label="Excerpt"
+    code={`function greet(name) {\n  const message = "Hello, " + name;\n  console.log(message);\n  return message;\n}`}
+  >
+    <CodeBlock.Content showLineNumbers startLineNumber={42} />
+  </CodeBlock.Root>
+)
+```
+
+### Highlighted lines
+
+Pass `highlightedLines` to `CodeBlock.Content`. A selection is a list of line
+numbers and inclusive `[start, end]` ranges, for example `[2, [5, 7]]` for
+lines 2, 5, 6 and 7. The numbers are the displayed numbers, so they follow
+`startLineNumber`. Invalid entries are ignored:
+
+```jsx live-dev
+const App = () => (
+  <CodeBlock.Root
+    language="js"
+    aria-label="Highlighted lines"
+    code={`function greet(name) {\n  const message = "Hello, " + name;\n  console.log(message);\n  return message;\n}`}
+  >
+    <CodeBlock.Content
+      showLineNumbers
+      startLineNumber={42}
+      highlightedLines={[43, [44, 45]]}
+    />
+  </CodeBlock.Root>
+)
+```
+
+Marked lines are not shown by color alone. Highlighted lines have a bar at the
+start edge. Each group of marked lines also has visually hidden start and end
+text for screen readers.
+
+### Diff lines
+
+Use `addedLines` and `removedLines` to show a diff. Added lines get a `+`
+marker and removed lines get a `−` marker. The marker column is hidden from
+assistive technology and is never copied. It renders only when at least one
+line is added or removed. When a line is in more than one selection, the
+background follows the order removed, added, highlighted:
+
+```jsx live-dev
+const App = () => (
+  <CodeBlock.Root
+    language="js"
+    aria-label="Diff"
+    code={`const total = price;\nconst total = price * quantity;\nreturn total;`}
+  >
+    <CodeBlock.Content showLineNumbers removedLines={[1]} addedLines={[2]} />
+  </CodeBlock.Root>
+)
+```
+
+### Highlighted words
+
+Use `highlightedWords` to mark every exact, case-sensitive occurrence of each
+string. A match can span more than one syntax token. Syntax colors stay inside
+the match:
+
+```jsx live-dev
+const App = () => (
+  <CodeBlock.Root
     language="tsx"
-    showLineNumbers
-    code={`import { Button } from "@commercetools/nimbus";\n\nexport const Demo = () => (\n  <Button variant="primary">\n    Click me\n  </Button>\n);`}
-  />
+    aria-label="Highlighted words"
+    code={`<Button variant="primary" size="md">\n  Save\n</Button>`}
+  >
+    <CodeBlock.Content highlightedWords={["variant", "size"]} />
+  </CodeBlock.Root>
 )
 ```
 
-#### Real source line numbers
+### Prompt and output lines
 
-To display a contiguous excerpt of a file at its real line numbers, pass
-`startLineNumber` (default `1`). The gutter starts at that value and increments
-per line — here a five-line excerpt is numbered 42–46. The offset only affects
-the gutter; it has no effect when `showLineNumbers` is `false` and never changes
-the copied text:
+Use `prompt` for shell commands and `outputLines` for lines that show output.
+The prompt is shown before every line except the output lines. It is hidden
+from assistive technology and is never copied:
 
 ```jsx live-dev
 const App = () => (
-  <CodeBlock
+  <CodeBlock.Root
+    language="bash"
+    aria-label="Command with output"
+    code={`npm install @commercetools/nimbus\nadded 42 packages in 3s`}
+  >
+    <CodeBlock.Content prompt="$" outputLines={[2]}>
+      <CodeBlock.Actions>
+        <CodeBlock.CopyTrigger />
+      </CodeBlock.Actions>
+    </CodeBlock.Content>
+  </CodeBlock.Root>
+)
+```
+
+### Wrapping long lines
+
+Long lines scroll horizontally by default. Set `wrapLongLines` to wrap them.
+Line numbers, prompts and markers stay on the first row of a wrapped line, and
+line backgrounds cover all rows:
+
+```jsx live-dev
+const App = () => (
+  <Box width="320px">
+    <CodeBlock.Root
+      language="bash"
+      aria-label="Wrapped line"
+      code={`curl --request POST --header "Content-Type: application/json" --data '{"name":"nimbus"}' https://example.com/api/projects`}
+    >
+      <CodeBlock.Content wrapLongLines showLineNumbers />
+    </CodeBlock.Root>
+  </Box>
+)
+```
+
+### Collapsing long code
+
+Set `maxLines` on `CodeBlock.Root` and render `CodeBlock.ExpandTrigger`. When
+the code has more lines than `maxLines`, the block is collapsed. Only the first
+`maxLines` lines are rendered. The trigger renders only when the block is
+collapsible. It sets `aria-expanded` and `aria-controls`. Copy and download
+always use the full code:
+
+```jsx live-dev
+const App = () => (
+  <CodeBlock.Root
     language="js"
-    showLineNumbers
-    startLineNumber={42}
-    code={`function greet(name) {\n  const message = "Hello, " + name;\n  console.log(message);\n  return message;\n}`}
-  />
+    maxLines={4}
+    aria-label="Collapsed code"
+    code={Array.from({ length: 12 }, (_, i) => `const value${i + 1} = ${i + 1};`).join("\n")}
+  >
+    <CodeBlock.Content showLineNumbers>
+      <CodeBlock.Actions>
+        <CodeBlock.CopyTrigger />
+      </CodeBlock.Actions>
+    </CodeBlock.Content>
+    <CodeBlock.ExpandTrigger />
+  </CodeBlock.Root>
 )
 ```
 
-#### Highlighting lines
+#### Controlled state
 
-Pass `highlightedLines` to draw a background band on specific lines — useful for
-drawing attention to a particular statement. The numbers refer to the displayed
-line numbers, so they honor `startLineNumber` and work whether or not the gutter
-is shown. The highlight is decorative and is excluded from the copied text:
-
-```jsx live-dev
-const App = () => (
-  <CodeBlock
-    language="js"
-    showLineNumbers
-    startLineNumber={42}
-    highlightedLines={[43, 44]}
-    code={`function greet(name) {\n  const message = "Hello, " + name;\n  console.log(message);\n  return message;\n}`}
-  />
-)
-```
-
-### Header and copy button
-
-The header shows the language label and copy-to-clipboard button by default.
-Use `showHeader={false}` to hide the entire header, or `showCopyButton={false}`
-to keep the language label but remove the button:
-
-```jsx live-dev
-const App = () => (
-  <Stack direction="column" gap="400">
-    <CodeBlock
-      language="js"
-      code={`const x = 1; // default: header + copy`}
-    />
-    <CodeBlock
-      language="js"
-      showCopyButton={false}
-      code={`const x = 2; // showCopyButton={false}`}
-    />
-    <CodeBlock
-      language="js"
-      showHeader={false}
-      code={`const x = 3; // showHeader={false}`}
-    />
-  </Stack>
-)
-```
-
-### Responding to copy events
-
-The `onCopy` callback fires exactly once per successful clipboard write. Use it
-to show application-level feedback (e.g., a toast notification):
+Use `isExpanded` with `onExpandedChange`. Use `defaultExpanded` for an
+uncontrolled block that starts expanded. Pass children, or a function that
+receives the current state, to change the trigger label:
 
 ```jsx live-dev
 const App = () => {
-  const [copyCount, setCopyCount] = useState(0);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <CodeBlock.Root
+      language="js"
+      maxLines={3}
+      isExpanded={isExpanded}
+      onExpandedChange={setIsExpanded}
+      aria-label="Controlled collapse"
+      code={Array.from({ length: 10 }, (_, i) => `const value${i + 1} = ${i + 1};`).join("\n")}
+    >
+      <CodeBlock.Content />
+      <CodeBlock.ExpandTrigger>
+        {(expanded) => (expanded ? "Collapse" : "Expand")}
+      </CodeBlock.ExpandTrigger>
+    </CodeBlock.Root>
+  );
+}
+```
+
+### Copying
+
+`CodeBlock.CopyTrigger` writes to the clipboard with the Clipboard API. When the
+API is missing or rejects, it falls back to `document.execCommand("copy")`.
+After a successful copy, it shows a check icon and a polite live region
+announces "Copied". It resets after `timeout` milliseconds (default `2000`).
+When both ways fail, it announces "Copy failed" and calls `onCopyError`.
+
+| Prop          | Purpose                                                                    |
+| ------------- | -------------------------------------------------------------------------- |
+| `text`        | The text to copy. Defaults to the `code` of the Root.                      |
+| `onCopy`      | Called once after each successful copy.                                    |
+| `onCopyError` | Called once when copying fails. Receives the error, if there is one.       |
+| `timeout`     | Milliseconds until the copied state resets. Default `2000`.                |
+| `aria-label`  | Accessible name of the button. Default "Copy code".                        |
+
+```jsx live-dev
+const App = () => {
+  const [status, setStatus] = useState("Nothing copied yet");
 
   return (
     <Stack direction="column" gap="400">
-      <CodeBlock
-        language="js"
-        code={`const x = 1;`}
-        onCopy={() => setCopyCount((n) => n + 1)}
-      />
-      <Text>Copied {copyCount} time(s)</Text>
+      <CodeBlock.Root
+        language="bash"
+        aria-label="Copy example"
+        code={`npm install @commercetools/nimbus`}
+      >
+        <CodeBlock.Content>
+          <CodeBlock.Actions>
+            <CodeBlock.CopyTrigger
+              timeout={3000}
+              onCopy={() => setStatus("Copied")}
+              onCopyError={() => setStatus("Copy failed")}
+            />
+          </CodeBlock.Actions>
+        </CodeBlock.Content>
+      </CodeBlock.Root>
+      <Text>{status}</Text>
     </Stack>
   );
 }
 ```
 
-### Width control
+Line numbers, prompts, markers and screen-reader texts are never part of the
+copied text. The copy uses the exact `code` string, including its original line
+breaks.
 
-CodeBlock defaults to `width="fit-content"`. Override with any Chakra style
-prop to fill a container:
+### Downloading
+
+`CodeBlock.DownloadTrigger` downloads the code, or the `text` prop, as a file.
+`fileName` is required. `mimeType` defaults to `text/plain;charset=utf-8`.
+`onDownload` is called once after each download starts. The trigger uses
+browser APIs only in its press handler, so it is safe to render on the server:
 
 ```jsx live-dev
 const App = () => (
-  <CodeBlock
-    language="js"
-    width="full"
-    code={`const x = 1;`}
-  />
+  <CodeBlock.Root language="yaml" code={`name: nimbus\nversion: 3`}>
+    <CodeBlock.Header>
+      <CodeBlock.Title>config.yaml</CodeBlock.Title>
+      <CodeBlock.Actions>
+        <CodeBlock.DownloadTrigger fileName="config.yaml" />
+        <CodeBlock.DownloadTrigger
+          fileName="config.json"
+          mimeType="application/json"
+          text={JSON.stringify({ name: "nimbus", version: 3 }, null, 2)}
+          aria-label="Download as JSON"
+        />
+        <CodeBlock.CopyTrigger />
+      </CodeBlock.Actions>
+    </CodeBlock.Header>
+    <CodeBlock.Content />
+  </CodeBlock.Root>
 )
 ```
 
-### Custom accessible name
+### Footer
 
-The root element is a `role="region"` landmark. Its default accessible name is
-the localized "Code block" string. Override it when you have multiple code
-blocks on a page or need a more descriptive label:
+Use `CodeBlock.Footer` for a note or a link below the code:
+
+```jsx live-dev
+const App = () => (
+  <CodeBlock.Root
+    language="bash"
+    aria-label="Install with a note"
+    code={`npm install @commercetools/nimbus`}
+  >
+    <CodeBlock.Content />
+    <CodeBlock.Footer>Requires Node 20 or later.</CodeBlock.Footer>
+  </CodeBlock.Root>
+)
+```
+
+### Streaming code
+
+`code` can change many times per second, for example while an AI model writes
+code. On each change, the block renders the latest code and keeps the scroll
+position of the code area. The header, the actions and the triggers are not
+remounted, so a copy button keeps its state. Incomplete code, such as an open
+string or comment, renders without errors:
+
+```jsx live-dev
+const App = () => {
+  const full = `const message = "Hello, nimbus";\nconsole.log(message);\nreturn message;`;
+  const [length, setLength] = useState(20);
+
+  useEffect(() => {
+    if (length >= full.length) return;
+    const id = setTimeout(() => setLength((n) => n + 4), 150);
+    return () => clearTimeout(id);
+  }, [length]);
+
+  return (
+    <CodeBlock.Root
+      language="js"
+      aria-label="Streaming code"
+      code={full.slice(0, length)}
+    >
+      <CodeBlock.Content>
+        <CodeBlock.Actions>
+          <CodeBlock.CopyTrigger />
+        </CodeBlock.Actions>
+      </CodeBlock.Content>
+    </CodeBlock.Root>
+  );
+}
+```
+
+### Width and style props
+
+`CodeBlock.Root` accepts Chakra style props. Use them to set the width or the
+margin:
+
+```jsx live-dev
+const App = () => (
+  <CodeBlock.Root
+    width="full"
+    language="js"
+    aria-label="Full width"
+    code={`const x = 1;`}
+  >
+    <CodeBlock.Content />
+  </CodeBlock.Root>
+)
+```
+
+## Highlighting engine
+
+CodeBlock turns code into lines of typed tokens with a `CodeHighlighter`. You
+can use the default engine, extend it, or write your own.
+
+### Default engine
+
+Without any setup, every `CodeBlock.Root` uses a shared Prism highlighter that
+is built with `createPrismHighlighter()`. It uses `refractor` and supports the
+languages in `defaultCodeLanguages`:
+
+`tsx`, `typescript`, `javascript`, `jsx`, `json`, `css`, `markup`, `bash`,
+`yaml`, `graphql`, `diff`, `sql`, `markdown` and `http`.
+
+These aliases also work:
+
+| Alias                                                 | Language     |
+| ----------------------------------------------------- | ------------ |
+| `ts`                                                  | `typescript` |
+| `js`                                                  | `javascript` |
+| `html`, `xml`, `svg`                                  | `markup`     |
+| `sh`, `shell`, `zsh`, `console`, `terminal`, `curl`   | `bash`       |
+| `yml`                                                 | `yaml`       |
+| `md`                                                  | `markdown`   |
+| `gql`                                                 | `graphql`    |
+
+`plaintext`, `text` and `txt` mean no highlighting. A language that is not
+supported, or a missing `language`, also renders as plain text. It does not
+throw and does not log an error.
 
 ```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
-    <CodeBlock
-      language="tsx"
-      aria-label="Installation command"
-      code={`npm install @commercetools/nimbus`}
-    />
-    <CodeBlock
-      language="tsx"
-      aria-label="TypeScript configuration"
-      code={`{\n  "compilerOptions": { "strict": true }\n}`}
-    />
+    <CodeBlock.Root language="sh" aria-label="Alias for bash" code={`npm run build # alias sh`}>
+      <CodeBlock.Content />
+    </CodeBlock.Root>
+    <CodeBlock.Root language="text" aria-label="Plain text" code={`npm run build # no highlighting`}>
+      <CodeBlock.Content />
+    </CodeBlock.Root>
   </Stack>
 )
 ```
+
+### Adding languages and aliases
+
+Use `additionalLanguages` to add grammars, and `aliases` to add names. Import a
+grammar from `refractor`, and create the highlighter once, at module scope or
+with `useMemo`. Create the highlighter again only when the options change.
+
+Your app needs `refractor` as a dependency to import extra grammars:
+
+```tsx
+import {
+  CodeBlock,
+  CodeHighlighterProvider,
+  createPrismHighlighter,
+} from '@commercetools/nimbus';
+import java from 'refractor/java';
+
+// Created once, outside of render.
+const highlighter = createPrismHighlighter({
+  additionalLanguages: [java],
+  aliases: { jsonc: 'json' },
+});
+
+export const App = () => (
+  <CodeHighlighterProvider highlighter={highlighter}>
+    <CodeBlock.Root
+      language="java"
+      code={'public class Hello {\n  String name = "nimbus";\n}'}
+    >
+      <CodeBlock.Content />
+    </CodeBlock.Root>
+  </CodeHighlighterProvider>
+);
+```
+
+Aliases that you pass win over the default aliases. Each highlighter resolves
+only the languages and aliases that it was created with. No global object, such
+as `window.Prism`, is changed.
+
+> [!NOTE]\
+> Grammars are registered in one registry that all highlighters in your bundle
+> share. A grammar that extends another grammar, for example `refractor/jsdoc`
+> extends `javascript`, changes that grammar for every highlighter.
+
+### CodeHighlighterProvider
+
+`CodeHighlighterProvider` gives a highlighter to every `CodeBlock.Root` below
+it. It renders no DOM element. The nearest provider wins. The CodeSnippet,
+CodeSnippetGroup, JsonSnippet and CommandSnippet patterns also use it.
+
+The example below uses a small custom highlighter, because extra grammars need
+imports that are not available in live examples:
+
+```jsx live-dev
+const App = () => {
+  const highlighter = useMemo(
+    () => ({
+      resolveLanguage: (language) => (language === "shout" ? "shout" : undefined),
+      highlight: (code) =>
+        code.split("\n").map((line) =>
+          line === "" ? [] : [{ content: line, types: ["keyword"] }]
+        ),
+    }),
+    []
+  );
+
+  return (
+    <CodeHighlighterProvider highlighter={highlighter}>
+      <CodeBlock.Root
+        language="shout"
+        aria-label="Custom highlighter"
+        code={`HELLO NIMBUS\nGOODBYE NIMBUS`}
+      >
+        <CodeBlock.Content />
+      </CodeBlock.Root>
+    </CodeHighlighterProvider>
+  );
+}
+```
+
+### Custom and asynchronous engines
+
+To use another engine, implement the `CodeHighlighter` type:
+
+```ts
+type CodeHighlighter = {
+  resolveLanguage(language: string): string | undefined;
+  highlight(
+    code: string,
+    language: string
+  ): readonly CodeLine[] | Promise<readonly CodeLine[]>;
+};
+
+type CodeLine = readonly CodeToken[];
+type CodeToken = { content: string; types: readonly string[] };
+```
+
+- `resolveLanguage` returns the canonical language id, or `undefined` when the
+  language is not supported. The code is then shown as plain text.
+- `highlight` returns one entry per line of `code`. The joined `content` of the
+  tokens of a line must equal that line. A token never contains a line break.
+- `types` lists the token types from the outermost to the innermost element, for
+  example `["tag", "punctuation"]`. An empty list means plain text.
+- `highlight` may return a Promise, for engines that load grammars on demand.
+  The code shows as plain text until the Promise resolves. If `code` or
+  `language` changes before it resolves, the outdated result is discarded.
+  While a new result is pending, the last result for the same block stays
+  visible.
+
+Provide your engine with `CodeHighlighterProvider`, and create it once.
 
 ## Component requirements
 
 ### Accessibility
 
-The CodeBlock component satisfies the following accessibility requirements
-internally:
+CodeBlock meets these requirements internally:
 
-- **Landmark**: The root element renders as `<section role="region">` with an
-  accessible name (`aria-label`). This allows screen reader users to navigate
-  directly to code regions.
-- **Language label**: The language indicator carries `aria-hidden="true"` — it
-  is decorative because the region's accessible name already identifies the
-  content.
-- **Copy button**: The copy icon button has a localized `aria-label` ("Copy
-  code") and announces success via an `aria-live="polite"` region ("Copied") for
-  two seconds.
-- **Keyboard scrollable content**: The `<pre>` element has `tabIndex={0}`,
-  enabling keyboard users to scroll overflowing code per WCAG 2.1 Success
-  Criterion 2.1.1.
+- **Region:** `CodeBlock.Root` renders a `section`. It has `role="region"` and
+  an accessible name only when `aria-label` is set on it, or when it contains a
+  `CodeBlock.Title`. `aria-label` wins. Unnamed blocks are plain sections, so
+  several blocks on one page do not create duplicate landmarks. The `code`
+  element has no accessible name.
+- **Language label:** `CodeBlock.LanguageLabel` has `aria-hidden="true"`.
+- **Scrollable code:** The `pre` has `tabIndex={0}`, so keyboard users can scroll
+  overflowing code (WCAG 2.1.1). No other non-interactive part is a tab stop.
+- **Copy feedback:** A polite live region announces "Copied" or "Copy failed".
+- **Marked lines:** Highlighted lines have a start-edge bar. Added and removed
+  lines have `+` and `−` markers. Each group has visually hidden start and end
+  text (WCAG 1.4.1). These texts are not selectable and are not copied.
+- **Not copied or selectable:** Line numbers, prompts and markers.
+- **Hit area:** Every trigger has a hit area of at least 44 × 44 pixels in every
+  size.
+- **Dark mode:** Colors resolve from design tokens. The DOM does not change.
+- **Safe rendering:** The code is rendered as text. Markup in the code is shown,
+  not created.
 
-When you place multiple CodeBlock instances on a page, provide distinct
-`aria-label` values so each region can be uniquely identified:
-
-```tsx
-<CodeBlock aria-label="Installation command" code="npm install ..." />
-<CodeBlock aria-label="Configuration file" code="{ ... }" />
-```
-
-If your use case requires tracking and analytics for this component, it is good
-practice to add a **persistent**, **unique** id:
+If you track this component in analytics, add a **persistent**, **unique** `id`:
 
 ```tsx
-const PERSISTENT_ID = "code-block-install-example";
+const PERSISTENT_ID = 'code-block-install-example';
 
 export const Example = () => (
-  <CodeBlock id={PERSISTENT_ID} code="npm install @commercetools/nimbus" />
+  <CodeBlock.Root id={PERSISTENT_ID} code="npm install @commercetools/nimbus">
+    <CodeBlock.Content />
+  </CodeBlock.Root>
 );
 ```
 
 #### Keyboard navigation
 
-| Key               | Action                                                     |
-| ----------------- | ---------------------------------------------------------- |
-| `Tab`             | Moves focus to the `<pre>` element and to the copy button  |
-| `Space` / `Enter` | Activates the copy button when focused                     |
-| `Arrow keys`      | Scrolls overflowing code when `<pre>` has focus            |
+Focus follows the DOM order. Triggers in the header come before the code area.
+Triggers after the code, such as `CodeBlock.ExpandTrigger`, come after it.
+
+| Key               | Action                                                                          |
+| ----------------- | ------------------------------------------------------------------------------- |
+| `Tab`             | Moves focus to the header triggers (for example Download, then Copy), then to the code area (`pre`), then to `CodeBlock.ExpandTrigger` |
+| `Enter` / `Space` | Activates the focused trigger                                                   |
+| `Arrow keys`      | Scroll overflowing code when the code area has focus                            |
 
 ## API reference
 
+### CodeBlock.Root
+
 <PropsTable id="CodeBlock" />
+
+The parts `CodeBlock.Header`, `Title`, `LanguageLabel`, `Actions`,
+`CopyTrigger`, `DownloadTrigger`, `Content`, `ExpandTrigger` and `Footer` have
+the props that are described in the examples above. Their types are exported as
+`CodeBlockHeaderProps`, `CodeBlockTitleProps`, `CodeBlockLanguageLabelProps`,
+`CodeBlockActionsProps`, `CodeBlockCopyTriggerProps`,
+`CodeBlockDownloadTriggerProps`, `CodeBlockContentProps`,
+`CodeBlockExpandTriggerProps` and `CodeBlockFooterProps`.
 
 ## Testing your implementation
 
@@ -274,5 +717,5 @@ application-specific logic.
 ## Resources
 
 - [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-codeblock--docs)
-- [ARIA Authoring Practices – Code blocks](https://www.w3.org/WAI/ARIA/apg/)
 - [WCAG 2.1.1 Keyboard](https://www.w3.org/TR/WCAG21/#keyboard)
+- [WCAG 1.4.1 Use of Color](https://www.w3.org/TR/WCAG21/#use-of-color)

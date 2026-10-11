@@ -147,61 +147,61 @@
 
 ## 7. Patterns (Layer 3)
 
-- [ ] 7.1 Create `packages/nimbus/src/patterns/code/index.ts` and export it from
+- [x] 7.1 Create `packages/nimbus/src/patterns/code/index.ts` and export it from
       `packages/nimbus/src/patterns/index.ts`.
-- [ ] 7.2 `patterns/code/code-snippet/`: `.tsx`, `.types.ts`, `.stories.tsx`
+- [x] 7.2 `patterns/code/code-snippet/`: `.tsx`, `.types.ts`, `.stories.tsx`
       with play functions for every scenario in
       `specs/nimbus-code-snippet/spec.md`, `.mdx`, `.dev.mdx`, `.docs.spec.tsx`,
       `index.ts`. Reuse docs content from the first version.
-- [ ] 7.3 `patterns/code/code-snippet-group/`: same file set plus `.i18n.ts`;
+- [x] 7.3 `patterns/code/code-snippet-group/`: same file set plus `.i18n.ts`;
       built from `CodeBlock` parts with `Tabs` or `Select`; play functions for
       arrow-key switching, select switching and its accessible name, single
       item, copy and download following the selected item, controlled selection.
-- [ ] 7.4 `patterns/code/json-snippet/`: same file set; a safe stringify utility
+- [x] 7.4 `patterns/code/json-snippet/`: same file set; a safe stringify utility
       with unit tests for indentation, circular references, `BigInt` and
       `undefined`; play functions for highlighting and copying formatted JSON.
-- [ ] 7.5 `patterns/code/command-snippet/`: same file set plus `.i18n.ts`; play
+- [x] 7.5 `patterns/code/command-snippet/`: same file set; play
       functions for the prompt, no prompt, output lines, copy without prompts,
       floating copy button, region only with `aria-label`.
-- [ ] 7.6 Confirm that no pattern folder contains a `.recipe.ts` or `.slots.tsx`
+- [x] 7.6 Confirm that no pattern folder contains a `.recipe.ts` or `.slots.tsx`
       file.
 
 ## 8. Documentation
 
-- [ ] 8.1 Rewrite `code-block.mdx` for the compound API: start "When to use"
+- [x] 8.1 Rewrite `code-block.mdx` for the compound API: start "When to use"
       with a table that points to the four patterns; fix the keyboard table so
       it matches DOM order.
-- [ ] 8.2 Rewrite `code-block.dev.mdx` and `code-block.docs.spec.tsx` with
+- [x] 8.2 Rewrite `code-block.dev.mdx` and `code-block.docs.spec.tsx` with
       composition examples: copy without header, title, diff lines, collapse,
       download, `createPrismHighlighter` with `additionalLanguages`,
       `CodeHighlighterProvider`.
-- [ ] 8.3 Add `code-block.a11y.mdx` and `code-block.guidelines.mdx` following
+- [x] 8.3 Add `code-block.a11y.mdx` and `code-block.guidelines.mdx` following
       the existing component docs files (for example `tabs.a11y.mdx`,
       `tabs.guidelines.mdx`).
-- [ ] 8.4 Link every pattern doc back to `CodeBlock` for custom layouts.
-- [ ] 8.5 Confirm the docs site lists the new `patterns/code` category; update
+- [x] 8.4 Link every pattern doc back to `CodeBlock` for custom layouts.
+- [x] 8.5 Confirm the docs site lists the new `patterns/code` category; update
       any place that lists pattern categories (skills, commands, guidelines,
       templates).
 
 ## 9. Exports and release notes
 
-- [ ] 9.1 `code-block/index.ts`: export `CodeBlock`, `CodeHighlighterProvider`,
+- [x] 9.1 `code-block/index.ts`: export `CodeBlock`, `CodeHighlighterProvider`,
       `createPrismHighlighter`, `defaultCodeLanguages` and the public types.
-- [ ] 9.2 Confirm `packages/nimbus/src/components/index.ts` and
+- [x] 9.2 Confirm `packages/nimbus/src/components/index.ts` and
       `packages/nimbus/src/patterns/index.ts` expose all new exports.
-- [ ] 9.3 Rewrite `.changeset/add-code-block-component.md` for consumers: the
+- [x] 9.3 Rewrite `.changeset/add-code-block-component.md` for consumers: the
       `CodeBlock` compound component and the four patterns.
 
 ## 10. Validation
 
-- [ ] 10.1 `pnpm --filter @commercetools/nimbus typecheck:dev` — green.
-- [ ] 10.2 `pnpm lint` — green.
-- [ ] 10.3 `pnpm test:unit` for the new utilities, hooks and highlighter —
+- [x] 10.1 `pnpm --filter @commercetools/nimbus typecheck:dev` — green.
+- [x] 10.2 `pnpm lint` — green.
+- [x] 10.3 `pnpm test:unit` for the new utilities, hooks and highlighter —
       green.
-- [ ] 10.4 `pnpm build`, then `pnpm typecheck:strict` — green.
-- [ ] 10.5 `pnpm test:storybook` for `code-block.stories.tsx` and the four
+- [x] 10.4 `pnpm build`, then `pnpm typecheck:strict` — green.
+- [x] 10.5 `pnpm test:storybook` for `code-block.stories.tsx` and the four
       pattern stories — green.
-- [ ] 10.6 `pnpm check:package-shape` and `pnpm check:bundle-size` — within the
+- [x] 10.6 `pnpm check:package-shape` and `pnpm check:bundle-size` — within the
       gates; record the engine size compared with `prism-react-renderer`.
 - [ ] 10.7 Review with the `nimbus-reviewer` agent and fix all findings.
 

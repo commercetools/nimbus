@@ -49,9 +49,10 @@ recipe.
 
 ### Requirement: Header and action placement
 
-`CodeSnippet` SHALL render a `CodeBlock.Header` when `title` is set or
-`showLanguage` is `true`. The header SHALL contain the title (if set), the
-language label (if shown), and the actions. When no header is rendered, the
+`CodeSnippet` SHALL render a `CodeBlock.Header` when `title` is set or the
+language label is shown (`showLanguage` is `true` and a `language` is set). The
+header SHALL contain the title (if set), the language label (if shown), and the
+actions. When no header is rendered, the
 actions SHALL float inside `CodeBlock.Content`. When neither the copy button nor
 the download button is shown, no actions container SHALL be rendered.
 

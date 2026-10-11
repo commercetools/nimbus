@@ -158,8 +158,16 @@ removed):
 | `code-block-*` ES chunk (refractor + all parts)       | 82.0 KB raw, 26.7 KB gzip       |
 | All code-block files in `dist` (ES, CJS, maps, entry) | 675.9 KB                        |
 
-The patterns (section 7) are not built yet; they must fit in the remaining
-1.5% (about 315 KB of `dist`, maps included).
+Final measurement, after all sections (patterns, docs, engine):
+
+| Item                                                     | Value                           |
+| -------------------------------------------------------- | ------------------------------- |
+| `@commercetools/nimbus` `dist` total                     | 21780.4 KB, +3.8% (gate passes) |
+| `code-block-*` ES chunk (refractor + all parts)          | 80.3 KB raw, 26.1 KB gzip       |
+| First-version chunk with `prism-react-renderer` (before) | 114.7 KB raw, 31.5 KB gzip      |
+
+The four patterns add 0.3 percentage points; their `components/*.es.js`
+entries are re-export stubs of about 0.1 KB each.
 
 ### Maintenance (npm registry, 2026-10-10)
 
