@@ -57,10 +57,16 @@ The copy action SHALL copy exactly the `command` string, without prompts.
 
 ### Requirement: Accessible name
 
-The region's accessible name SHALL be the `aria-label` prop, or else the
-localized default "Command".
+When `aria-label` is set, the snippet SHALL be a region with that name.
+Without `aria-label`, it MUST NOT be a landmark, following the `CodeBlock.Root`
+rule for unnamed blocks.
 
-#### Scenario: Default name
+#### Scenario: Named command
+
+- **WHEN** `aria-label="Install Nimbus"` is set
+- **THEN** the snippet is a region named "Install Nimbus"
+
+#### Scenario: Unnamed command
 
 - **WHEN** no `aria-label` is set
-- **THEN** the region's accessible name is "Command" in the `en` locale
+- **THEN** the snippet has no `role="region"`

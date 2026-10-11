@@ -67,10 +67,6 @@
     "developer_comment": "Screen reader text before a group of highlighted lines in CodeBlock",
     "string": "Highlighted lines start"
   },
-  "Nimbus.CodeBlock.regionLabel": {
-    "developer_comment": "Default accessible name for the CodeBlock region landmark, used when no aria-label prop is provided",
-    "string": "Code block"
-  },
   "Nimbus.CodeBlock.removedLinesEnd": {
     "developer_comment": "Screen reader text after a group of lines marked as removed in CodeBlock",
     "string": "Removed lines end"
@@ -106,10 +102,6 @@
   "Nimbus.ComboBox.toggleOptions": {
     "developer_comment": "aria-label for toggle button to open/close options",
     "string": "Opciones de conmutación"
-  },
-  "Nimbus.CommandSnippet.regionLabel": {
-    "developer_comment": "Default accessible name for the CommandSnippet region, used when no aria-label prop is provided",
-    "string": "Command"
   },
   "Nimbus.ConfirmationDialog.cancel": {
     "developer_comment": "default label for the cancel button in a confirmation dialog",

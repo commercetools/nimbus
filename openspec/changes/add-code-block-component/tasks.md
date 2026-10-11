@@ -68,9 +68,8 @@
 - [x] 4.1 `code-block.context.ts`: Root context; and
       `hooks/use-code-block-context.ts`: a `useCodeBlockContext(partName)` hook
       that throws an error naming the part when used outside `CodeBlock.Root`.
-- [x] 4.2 `components/code-block.root.tsx`: `section` with `role="region"`;
-      accessible name order (`aria-label`, then `Title`, then the localized
-      default); element ids; highlighter from the provider; line normalization;
+- [x] 4.2 `components/code-block.root.tsx`: `section`, a `role="region"` only
+      when named (`aria-label`, then `Title`); element ids; highlighter from the provider; line normalization;
       expanded state (controlled and uncontrolled); one polite live region;
       recipe and style prop split.
 - [x] 4.3 `components/` for `Header`, `Title` (registers its id for
@@ -85,7 +84,8 @@
       `outputLines`; `wrapLongLines`; only the first `maxLines` lines while
       collapsed; content id for `aria-controls`.
 - [x] 4.5 `components/code-block.copy-trigger.tsx`: icon button "Copy code";
-      copies `text ?? code`; `onCopy`, `onCopyError`, `timeout` (default 2000);
+      copies `text ?? code` with the Clipboard API and an `execCommand`
+      fallback (a manual-copy prompt counts as a failure); `onCopy`, `onCopyError`, `timeout` (default 2000);
       icon swap; "Copied" and "Copy failed" announcements; state survives `code`
       updates. Reuse the copy logic of the first version.
 - [x] 4.6 `components/code-block.download-trigger.tsx`: icon button "Download
@@ -106,9 +106,10 @@
 - [x] 5.1 Extend `code-block.i18n.ts` with `copyFailed`, `downloadCode`,
       `showMore`, `showLess`, `highlightedLinesStart`, `highlightedLinesEnd`,
       `addedLinesStart`, `addedLinesEnd`, `removedLinesStart`,
-      `removedLinesEnd`; keep `regionLabel`, `copyCode`, `copied`.
+      `removedLinesEnd`; keep `copyCode`, `copied`; remove `regionLabel`
+      (unnamed blocks are not regions).
 - [x] 5.2 Add pattern messages: `Nimbus.CodeSnippetGroup.switcherLabel` ("Code
-      example") and `Nimbus.CommandSnippet.regionLabel` ("Command").
+      example").
 - [x] 5.3 Run `pnpm extract-intl` and confirm the generated files and `en`
       defaults.
 
@@ -133,9 +134,8 @@
       text, ranges, invalid selections, diff markers, one announcement pair per
       run, word highlight across tokens, prompt with output lines, wrapped line
       with one line number.
-- [ ] 6.6 Add play functions for actions: copy success, custom copy text, reset
-      after `timeout`, copy failure (mocked clipboard; open: see design Open
-      Questions "Copy failure"), download (spy on object
+- [x] 6.6 Add play functions for actions: copy success, custom copy text, reset
+      after `timeout`, Clipboard API fallback, copy failure (mocked clipboard), download (spy on object
       URL and anchor click), expand collapsed/expanded with `aria-expanded`,
       `aria-controls` and focus, copy while collapsed copies all lines, 44×44px
       hit area for `sm` triggers.
@@ -162,7 +162,7 @@
       `undefined`; play functions for highlighting and copying formatted JSON.
 - [ ] 7.5 `patterns/code/command-snippet/`: same file set plus `.i18n.ts`; play
       functions for the prompt, no prompt, output lines, copy without prompts,
-      floating copy button, default region name "Command".
+      floating copy button, region only with `aria-label`.
 - [ ] 7.6 Confirm that no pattern folder contains a `.recipe.ts` or `.slots.tsx`
       file.
 

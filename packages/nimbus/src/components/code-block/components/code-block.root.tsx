@@ -3,24 +3,22 @@ import { useDisclosureState } from "react-stately";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { VisuallyHidden } from "@/components/visually-hidden/visually-hidden";
 import { extractStyleProps } from "@/utils";
-import { useLocalizedStringFormatter } from "@/hooks";
 import { CodeBlockRootSlot } from "../code-block.slots";
 import {
   CodeBlockContext,
   type CodeBlockContextValue,
 } from "../code-block.context";
 import type { CodeBlockRootProps } from "../code-block.types";
-import { codeBlockMessagesStrings } from "../code-block.messages";
 import { useCodeHighlighter } from "../highlighter/code-highlighter-provider";
 import { useHighlightedLines } from "../hooks/use-highlighted-lines";
 
 /**
  * CodeBlock.Root - Holds the code, highlights it, and provides shared state to
- * all parts. Renders a named `section` region.
+ * all parts. Renders a `section`.
  *
- * The region's accessible name is `aria-label`, else the text of
- * `CodeBlock.Title`, else the localized "Code block". The Title is detected
- * after mount, so server-rendered HTML uses the default name until then.
+ * The section is a region only when it has a name: `aria-label`, else the
+ * text of `CodeBlock.Title`. The Title is detected after mount, so
+ * server-rendered HTML has no region until then.
  *
  * @supportsStyleProps
  */
@@ -41,7 +39,6 @@ export const CodeBlockRoot = (props: CodeBlockRootProps) => {
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(restProps);
   const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
 
-  const msg = useLocalizedStringFormatter(codeBlockMessagesStrings);
   const highlighter = useCodeHighlighter();
   const lines = useHighlightedLines(code, language, highlighter);
   const expandedState = useDisclosureState({
@@ -99,19 +96,19 @@ export const CodeBlockRoot = (props: CodeBlockRootProps) => {
     ]
   );
 
-  const hasTitle = titleCount > 0;
+  // A region only when named: unnamed blocks would otherwise be landmarks
+  // with the same name (axe `landmark-unique`).
   const nameProps =
     ariaLabel !== undefined
-      ? { "aria-label": ariaLabel }
-      : hasTitle
-        ? { "aria-labelledby": titleId }
-        : { "aria-label": msg.format("regionLabel") };
+      ? { role: "region", "aria-label": ariaLabel }
+      : titleCount > 0
+        ? { role: "region", "aria-labelledby": titleId }
+        : {};
 
   return (
     <CodeBlockContext.Provider value={contextValue}>
       <CodeBlockRootSlot
         ref={ref}
-        role="region"
         {...nameProps}
         {...recipeProps}
         {...styleProps}

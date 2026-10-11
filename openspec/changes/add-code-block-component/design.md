@@ -201,7 +201,7 @@ main files): `Root` (33), `Content` (11), `Header` (9), `Footer` (8), `Title`
 
 | Part                        | Element / role                     | Main props                                                                                                |
 | --------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `CodeBlock.Root`            | `section`, `role="region"`         | `code`, `language`, `size`, `maxLines`, `isExpanded`, `defaultExpanded`, `onExpandedChange`, `aria-label` |
+| `CodeBlock.Root`            | `section`; a region when named     | `code`, `language`, `size`, `maxLines`, `isExpanded`, `defaultExpanded`, `onExpandedChange`, `aria-label` |
 | `CodeBlock.Header`          | `div`                              | —                                                                                                         |
 | `CodeBlock.Title`           | `span`; names the region           | `children`                                                                                                |
 | `CodeBlock.LanguageLabel`   | `span`, `aria-hidden`              | `children` (defaults to the language)                                                                     |
@@ -271,13 +271,17 @@ reason.
 ### Decision 7: Copy, download, expand
 
 - **`CopyTrigger`.**
-  - Copies `text ?? code` with the existing `useCopyToClipboard` hook.
+  - Copies `text ?? code` with the Clipboard API. When the API is missing or
+    rejects (for example a permission policy in an iframe), it falls back to
+    the existing `useCopyToClipboard` hook (`execCommand("copy")`).
   - On success it swaps the icon, announces "Copied" in the Root live region,
     calls `onCopy` once, and resets after `timeout` (default 2000 ms, as in Kibo
     UI and Vercel AI Elements).
-  - On failure (the clipboard write throws) it announces "Copy failed" and
-    calls `onCopyError` with the error. When the browser can only offer a
-    manual-copy prompt, this is not a failure.
+  - On failure it announces "Copy failed" and calls `onCopyError` with the
+    error. The copy fails when both ways fail; the manual-copy prompt that the
+    fallback shows counts as a failure. Consumer tests in JSDOM still succeed:
+    `userEvent.setup()` installs a clipboard stub (user-event 14.6.7,
+    `dist/esm/setup/setup.js:56`).
   - It works anywhere inside `Root`.
 - **`DownloadTrigger`.**
   - Creates a `Blob` from `text ?? code` (default MIME type
@@ -298,8 +302,12 @@ reason.
 
 ### Decision 8: Accessibility structure
 
-- **Region name.** The order is: `aria-label` on Root, then the `Title` text
-  (through `aria-labelledby`), then the localized default "Code block".
+- **Region only when named.** Root is a region only when `aria-label` is set or
+  a `Title` is rendered; `aria-label` wins over the `Title` text (through
+  `aria-labelledby`). Without a name it is a plain `section`. A fixed default
+  name made several blocks on one page into landmarks with the same name,
+  which fails axe `landmark-unique`; the patterns follow the same rule (no
+  default "Command" name).
 - **No name on `code`.** `<code>` never has an accessible name, because ARIA
   prohibits it.
 - **Focusable code area.** The `pre` keeps `tabIndex={0}` so overflowing code
@@ -394,9 +402,9 @@ no slots).
 - [`tabIndex={0}` on `pre` adds a tab stop even when nothing overflows] → Kept
   from the first version for simplicity; a later refinement can set it only when
   the content overflows.
-- [`CodeBlock.Title` is detected after mount, so server-rendered HTML names the
-  region "Code block" until the page hydrates] → Documented on the Title prop;
-  set `aria-label` on Root where the server HTML matters.
+- [`CodeBlock.Title` is detected after mount, so server-rendered HTML has no
+  region until the page hydrates] → Documented on the Title prop; set
+  `aria-label` on Root where the server HTML matters.
 - [Very long code renders every line; there is no virtualization] → `maxLines`
   limits the rendered lines while collapsed.
 - [Some screen readers announce `mark` elements] → Accepted: word highlights are
@@ -431,16 +439,6 @@ Rollback: revert the change; nothing else depends on it.
   direct `refractor` dependency?
 - **Global highlighter.** Should the highlighter also be configurable on
   `NimbusProvider`, in addition to `CodeHighlighterProvider`?
-- **Copy failure.** `useCopyToClipboard` (react-use, through
-  `copy-to-clipboard`) reports an error only for empty text. When
-  `execCommand("copy")` fails, the library shows a manual-copy prompt and
-  reports no error, so "Copy failed" and `onCopyError` are almost never reached.
-  Options: use the Clipboard API first and treat the prompt as a failure, or
-  treat the prompt as a failure only, or relax the spec.
-- **Unnamed blocks on one page.** Several blocks without `aria-label` or
-  `Title` are all regions named "Code block", which fails axe
-  `landmark-unique`. Options: document that each block needs a name, render
-  the region role only when a name is given, or let patterns derive a name.
 - **Tabs or select.** For `CodeSnippetGroup`, should the docs recommend a number
   of items above which `switcher="select"` is preferred? The developer settings
   page uses a select for about 15 formats.

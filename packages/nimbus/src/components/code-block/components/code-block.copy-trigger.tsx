@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, ContentCopy } from "@commercetools/nimbus-icons";
 import { IconButton } from "@/components/icon-button/icon-button";
 import { useCopyToClipboard, useLocalizedStringFormatter } from "@/hooks";
@@ -26,41 +26,70 @@ export const CodeBlockCopyTrigger = (props: CodeBlockCopyTriggerProps) => {
     ...restProps
   } = props;
 
-  // react-use returns [state, copyFn]. A new state object is set on every
-  // copy call; `error` is set when the clipboard write threw. When the
-  // browser can only offer a manual-copy prompt, that is not an error.
-  const [copyState, copyToClipboard] = useCopyToClipboard();
-  // The last copy state we already reacted to, so each copy call is handled
-  // exactly once even when the effect re-runs for other reasons.
-  const handledCopyStateRef = useRef(copyState);
   const [isCopied, setIsCopied] = useState(false);
-  const [hasFeedback, setHasFeedback] = useState(false);
+  // Increases with every copy result, so the reset timer restarts.
+  const [resultCount, setResultCount] = useState(0);
+
+  const reportResult = useCallback(
+    (error?: Error) => {
+      const isSuccess = error === undefined;
+      setIsCopied(isSuccess);
+      setResultCount((count) => count + 1);
+      announce(msg.format(isSuccess ? "copied" : "copyFailed"));
+      if (isSuccess) {
+        onCopy?.();
+      } else {
+        onCopyError?.(error);
+      }
+    },
+    [announce, msg, onCopy, onCopyError]
+  );
+
+  // Fallback when the Clipboard API is missing or blocked: react-use copies
+  // with execCommand("copy") and sets a new state object on every call.
+  // `noUserInteraction` is false when the browser could only offer a
+  // manual-copy prompt, which counts as a failure.
+  const [fallbackState, copyWithFallback] = useCopyToClipboard();
+  // The last fallback state we already reacted to, so each call is reported
+  // exactly once even when the effect re-runs for other reasons.
+  const handledFallbackStateRef = useRef(fallbackState);
 
   useEffect(() => {
-    if (copyState === handledCopyStateRef.current) return;
-    handledCopyStateRef.current = copyState;
-
-    const isSuccess = copyState.error === undefined;
-    setIsCopied(isSuccess);
-    setHasFeedback(true);
-    announce(msg.format(isSuccess ? "copied" : "copyFailed"));
-    if (isSuccess) {
-      onCopy?.();
-    } else {
-      onCopyError?.(copyState.error);
-    }
-  }, [copyState, announce, msg, onCopy, onCopyError]);
+    if (fallbackState === handledFallbackStateRef.current) return;
+    handledFallbackStateRef.current = fallbackState;
+    reportResult(
+      fallbackState.error ??
+        (fallbackState.noUserInteraction
+          ? undefined
+          : new Error("The browser did not allow copying to the clipboard"))
+    );
+  }, [fallbackState, reportResult]);
 
   // Reset the icon and clear the live region after `timeout`
   useEffect(() => {
-    if (!hasFeedback) return;
+    if (resultCount === 0) return;
     const id = setTimeout(() => {
       setIsCopied(false);
-      setHasFeedback(false);
       announce("");
     }, timeout);
     return () => clearTimeout(id);
-  }, [hasFeedback, timeout, announce, copyState]);
+  }, [resultCount, timeout, announce]);
+
+  // Copies the string, not the DOM text, so line numbers, prompts and
+  // markers are never included. Browser APIs are used only on press.
+  const handlePress = async () => {
+    const value = text ?? code;
+    if (navigator.clipboard?.writeText !== undefined) {
+      try {
+        await navigator.clipboard.writeText(value);
+        reportResult();
+        return;
+      } catch {
+        // Blocked, for example by a permission policy in an iframe.
+      }
+    }
+    copyWithFallback(value);
+  };
 
   return (
     <CodeBlockTriggerSlot>
@@ -69,9 +98,7 @@ export const CodeBlockCopyTrigger = (props: CodeBlockCopyTriggerProps) => {
         size="xs"
         {...restProps}
         aria-label={ariaLabel ?? msg.format("copyCode")}
-        // Copies the string, not the DOM text, so line numbers, prompts and
-        // markers are never included.
-        onPress={() => copyToClipboard(text ?? code)}
+        onPress={handlePress}
       >
         {isCopied ? <Check /> : <ContentCopy />}
       </IconButton>

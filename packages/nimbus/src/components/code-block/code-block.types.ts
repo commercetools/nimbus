@@ -116,8 +116,8 @@ export type CodeBlockRootProps = OmitInternalProps<CodeBlockRootSlotProps> & {
    */
   onExpandedChange?: (isExpanded: boolean) => void;
   /**
-   * Accessible name of the code region. Wins over `CodeBlock.Title`. Without
-   * both, the localized "Code block" is used.
+   * Accessible name of the block, which makes it a region. Wins over
+   * `CodeBlock.Title`. Without both, the block is not a landmark.
    */
   "aria-label"?: string;
   /**
@@ -149,10 +149,10 @@ export type CodeBlockHeaderProps =
  */
 export type CodeBlockTitleProps = OmitInternalProps<CodeBlockTitleSlotProps> & {
   /**
-   * The title, for example a file name. It names the code region unless
-   * `aria-label` is set on `CodeBlock.Root`. The title is detected after
-   * mount, so server-rendered HTML uses the default name; set `aria-label` on
-   * Root when that matters.
+   * The title, for example a file name. It makes the block a region named by
+   * the title, unless `aria-label` is set on `CodeBlock.Root`. The title is
+   * detected after mount, so server-rendered HTML has no region; set
+   * `aria-label` on Root when that matters.
    */
   children: React.ReactNode;
   /**
@@ -205,7 +205,8 @@ export type CodeBlockCopyTriggerProps =
      */
     onCopy?: () => void;
     /**
-     * Called once when the clipboard write fails, with the error.
+     * Called once when copying fails: the Clipboard API is missing or rejects,
+     * and the `execCommand("copy")` fallback fails too.
      */
     onCopyError?: (error?: Error) => void;
     /**

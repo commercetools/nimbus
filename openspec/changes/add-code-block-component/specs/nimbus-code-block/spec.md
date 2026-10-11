@@ -193,11 +193,13 @@ spacing values in its logic. The recipe SHALL offer `size` `sm` and `md`
 
 ### Requirement: Region and accessible name
 
-`CodeBlock.Root` SHALL render a `section` with `role="region"`. Its accessible
-name SHALL be, in this order: the `aria-label` prop; else the text of
-`CodeBlock.Title` through `aria-labelledby`; else the localized default "Code
-block". The `code` element MUST NOT have an accessible name.
-`CodeBlock.LanguageLabel` SHALL be `aria-hidden="true"`.
+`CodeBlock.Root` SHALL render a `section`. When the `aria-label` prop is set or
+a `CodeBlock.Title` is rendered, the section SHALL have `role="region"` and an
+accessible name, in this order: the `aria-label` prop; else the text of
+`CodeBlock.Title` through `aria-labelledby`. Without both, the section MUST NOT
+have a role or an accessible name, so that unnamed blocks do not create
+landmarks with the same name. The `code` element MUST NOT have an accessible
+name. `CodeBlock.LanguageLabel` SHALL be `aria-hidden="true"`.
 
 #### Scenario: Title names the region
 
@@ -210,10 +212,12 @@ block". The `code` element MUST NOT have an accessible name.
 - **WHEN** Root has `aria-label="Example"` and a `Title` is present
 - **THEN** the region's accessible name is "Example"
 
-#### Scenario: Localized default name
+#### Scenario: Unnamed block is not a landmark
 
 - **WHEN** neither `aria-label` nor `Title` is present
-- **THEN** the region's accessible name is "Code block" in the `en` locale
+- **THEN** the section has no `role`, `aria-label` or `aria-labelledby`
+- **AND** several such blocks on one page cause no axe `landmark-unique`
+  violation
 
 #### Scenario: Code element has no name and label is hidden
 
@@ -433,12 +437,15 @@ wrapped rows. The default SHALL be `false`.
 
 `CodeBlock.CopyTrigger` SHALL render an icon button with the localized
 accessible name "Copy code" and SHALL work anywhere inside `CodeBlock.Root`. On
-activation it SHALL copy the `text` prop if given, otherwise the Root `code`. On
+activation it SHALL copy the `text` prop if given, otherwise the Root `code`. It
+SHALL write with the Clipboard API (`navigator.clipboard.writeText`) and, when
+that API is missing or rejects, fall back to `execCommand("copy")`. On
 success it SHALL call `onCopy` exactly once, show a "copied" icon, and announce
 the localized "Copied" message in a polite live region owned by Root; the icon
-and message SHALL reset after `timeout` milliseconds (default 2000). On failure
-it SHALL announce the localized "Copy failed" message and call `onCopyError`
-exactly once, and MUST NOT call `onCopy`.
+and message SHALL reset after `timeout` milliseconds (default 2000). The copy
+fails when both ways fail; a manual-copy prompt shown by the fallback counts as
+a failure. On failure it SHALL announce the localized "Copy failed" message and
+call `onCopyError` exactly once, and MUST NOT call `onCopy`.
 
 #### Scenario: Successful copy
 
@@ -458,9 +465,16 @@ exactly once, and MUST NOT call `onCopy`.
 - **THEN** after 500 ms the icon is the copy icon again and the live region is
   empty
 
+#### Scenario: Fallback when the Clipboard API is blocked
+
+- **WHEN** `navigator.clipboard.writeText` rejects and `execCommand("copy")`
+  succeeds
+- **THEN** the copy succeeds and the live region contains "Copied"
+
 #### Scenario: Copy failure
 
-- **WHEN** the clipboard write fails
+- **WHEN** `navigator.clipboard.writeText` rejects and `execCommand("copy")`
+  fails
 - **THEN** the live region contains "Copy failed", `onCopyError` is called once,
   and `onCopy` is not called
 
@@ -559,14 +573,14 @@ errors.
 ### Requirement: Localized messages
 
 All user-facing strings SHALL come from `code-block.i18n.ts` under the
-`Nimbus.CodeBlock.*` namespace: region label, copy code, copied, copy failed,
+`Nimbus.CodeBlock.*` namespace: copy code, copied, copy failed,
 download code, show more, show less, and the start/end texts for highlighted,
 added and removed lines.
 
 #### Scenario: Locale change
 
 - **WHEN** the block is rendered with the `de` locale
-- **THEN** the region name and trigger names use the German messages
+- **THEN** the trigger names and announcement texts use the German messages
 
 ### Requirement: Event and prop integrity
 

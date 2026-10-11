@@ -29,7 +29,7 @@ The code block becomes three layers, following the Component vs Pattern split in
   Parts: `CodeBlock.Root`, `.Header`, `.Title`, `.LanguageLabel`, `.Actions`,
   `.CopyTrigger`, `.DownloadTrigger`, `.Content`, `.ExpandTrigger`, `.Footer`.
   New capabilities on these parts: copy and download anywhere in the block,
-  title that names the region, line ranges, added/removed lines, word highlight,
+  title that names the region (a block is a landmark only when named), line ranges, added/removed lines, word highlight,
   command prompts, wrap long lines, maximum lines with expand/collapse, and safe
   updates for streamed code. **BREAKING (unreleased):** the flat `CodeBlock`
   props API on this branch is removed; its behavior moves to the `CodeSnippet`
@@ -80,8 +80,8 @@ The code block becomes three layers, following the Component vs Pattern split in
 - **Theme**: the `nimbusCodeBlock` slot recipe gets new slots; it stays
   registered in `packages/nimbus/src/theme/slot-recipes/index.ts`.
 - **i18n**: new messages for download, show more / show less, marked-line
-  announcements, copy failure, the snippet-group switcher label, and the command
-  region label; requires `pnpm extract-intl`.
+  announcements, copy failure, and the snippet-group switcher label; the unused
+  "Code block" region label is removed; requires `pnpm extract-intl`.
 - **Changeset**: the unreleased `add-code-block-component` changeset is
   rewritten to describe the final API.
 - **Not changed here** (follow-up changes): Nimbus `Markdown` using `CodeBlock`

@@ -45,13 +45,13 @@ describe("CodeBlock - Basic usage", () => {
     const code = `export const add = (a: number, b: number) => a + b;`;
 
     renderWithProvider(
-      <CodeBlock.Root code={code} language="tsx">
+      <CodeBlock.Root code={code} language="tsx" aria-label="Add function">
         <CodeBlock.Content />
       </CodeBlock.Root>
     );
 
     // Consumers can assert the code text is present in the document.
-    const region = screen.getByRole("region");
+    const region = screen.getByRole("region", { name: "Add function" });
     expect(region.textContent).toContain("add");
     expect(region.textContent).toContain("number");
   });

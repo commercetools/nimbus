@@ -45,6 +45,23 @@ const thirtyLineSample = Array.from(
 const sizes: CodeBlockRootProps["size"][] = ["sm", "md"];
 
 let consoleError: ReturnType<typeof spyOn>;
+let clipboard: ReturnType<typeof captureCopiedText>;
+
+/**
+ * Replaces the clipboard with a fake for stories that copy, so they never
+ * depend on the test browser's clipboard permissions.
+ */
+const withCapturedClipboard = () => {
+  clipboard = captureCopiedText();
+  return clipboard.restore;
+};
+
+/**
+ * Returns the root `section` of the first block; unnamed blocks have no
+ * role to query by.
+ */
+const getRoot = (container: HTMLElement) =>
+  container.querySelector<HTMLElement>(".nimbus-code-block__root")!;
 
 /**
  * Reads a message from the compiled dictionary, so locale assertions match
@@ -155,7 +172,8 @@ type Story = StoryObj<CodeBlockStoryArgs>;
 
 /**
  * Base story — default props, JSX code sample, header + copy button visible.
- * Asserts the region's accessible name equals "Code block" (the default i18n label).
+ * Without `aria-label` or `Title` the block is a plain section, not a
+ * landmark.
  */
 export const Base: Story = {
   args: {
@@ -165,16 +183,15 @@ export const Base: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step(
-      "Renders the code region with the default accessible name",
-      async () => {
-        // The default i18n regionLabel is "Code block"
-        const region = canvas.getByRole("region", { name: "Code block" });
-        await expect(region).toBeInTheDocument();
-        // Verify some representative text from the code sample is present
-        await expect(region).toHaveTextContent("Button");
-      }
-    );
+    await step("Without a name, the block is not a landmark", async () => {
+      await expect(canvas.queryByRole("region")).toBeNull();
+      const root = getRoot(canvasElement);
+      await expect(root.tagName).toBe("SECTION");
+      await expect(root).not.toHaveAttribute("role");
+      await expect(root).not.toHaveAttribute("aria-label");
+      // Verify some representative text from the code sample is present
+      await expect(root).toHaveTextContent("Button");
+    });
 
     await step("Language label is aria-hidden", async () => {
       // aria-hidden elements are not reachable via accessible queries;
@@ -201,10 +218,8 @@ export const SupportedLanguage: Story = {
     language: "tsx",
   },
   play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
     await step("Code text is present in the DOM", async () => {
-      const region = canvas.getByRole("region");
+      const region = getRoot(canvasElement);
       await expect(region).toHaveTextContent("greeting");
     });
 
@@ -236,15 +251,13 @@ export const UnknownLanguageFallback: Story = {
     return () => consoleError.mockRestore();
   },
   play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
     await step("Component renders without throwing", async () => {
-      const region = canvas.getByRole("region");
+      const region = getRoot(canvasElement);
       await expect(region).toBeInTheDocument();
     });
 
     await step("Code text content is present", async () => {
-      const region = canvas.getByRole("region");
+      const region = getRoot(canvasElement);
       await expect(region).toHaveTextContent("hello world");
     });
 
@@ -268,10 +281,8 @@ export const EmptyCode: Story = {
     language: "plaintext",
   },
   play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
     await step("Component renders without throwing", async () => {
-      const region = canvas.getByRole("region");
+      const region = getRoot(canvasElement);
       await expect(region).toBeInTheDocument();
     });
 
@@ -338,6 +349,7 @@ const excerptSample = `function greet(name) {
  * `startLineNumber`. A five-line excerpt starting at line 42 is numbered 42–46.
  */
 export const LineNumbersWithOffset: Story = {
+  beforeEach: withCapturedClipboard,
   args: {
     code: excerptSample,
     language: "js",
@@ -571,6 +583,7 @@ export const NoCopyButton: Story = {
  * aria-live region announces "Copied".
  */
 export const CopyBehavior: Story = {
+  beforeEach: withCapturedClipboard,
   args: {
     code: jsxSample,
     language: "jsx",
@@ -822,10 +835,8 @@ export const UntrustedCode: Story = {
     language: "html",
   },
   play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
     await step("Region renders without crashing", async () => {
-      const region = canvas.getByRole("region");
+      const region = getRoot(canvasElement);
       await expect(region).toBeInTheDocument();
     });
 
@@ -856,7 +867,7 @@ export const UntrustedCode: Story = {
     await step(
       "The literal tag text is present as text content in the region",
       async () => {
-        const region = canvas.getByRole("region");
+        const region = getRoot(canvasElement);
         await expect(region).toHaveTextContent("onerror");
         await expect(region).toHaveTextContent("alert");
       }
@@ -884,12 +895,10 @@ export const WidthFull: Story = {
     </Box>
   ),
   play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
     await step(
       "Component renders at full width inside its container",
       async () => {
-        const region = canvas.getByRole("region");
+        const region = getRoot(canvasElement);
         await expect(region).toBeInTheDocument();
       }
     );
@@ -909,17 +918,18 @@ export const Accessibility: Story = {
   args: {
     code: jsxSample,
     language: "jsx",
+    "aria-label": "Accessible example",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step(
-      "Root section has role='region' and an accessible name",
+      "A named root section has role='region' and that name",
       async () => {
-        const region = canvas.getByRole("region");
-        await expect(region).toBeInTheDocument();
-        const label = region.getAttribute("aria-label");
-        await expect(label).toBeTruthy();
+        const region = canvas.getByRole("region", {
+          name: "Accessible example",
+        });
+        await expect(region.tagName).toBe("SECTION");
       }
     );
 
@@ -949,7 +959,7 @@ export const Accessibility: Story = {
     await step(
       "No internal props are leaked onto the rendered DOM elements",
       async () => {
-        const region = canvas.getByRole("region");
+        const region = getRoot(canvasElement);
         const pre = canvasElement.querySelector("pre");
         const code = canvasElement.querySelector("code");
 
@@ -1213,6 +1223,33 @@ export const RegionNameFromTitle: Story = {
 };
 
 /**
+ * Several blocks without a name are not landmarks, so they do not create
+ * landmarks with the same name (axe `landmark-unique`).
+ */
+export const UnnamedBlocksAreNotLandmarks: Story = {
+  render: () => (
+    <Stack gap="400">
+      <CodeBlock.Root code="npm install" language="bash">
+        <CodeBlock.Content />
+      </CodeBlock.Root>
+      <CodeBlock.Root code="npm test" language="bash">
+        <CodeBlock.Content />
+      </CodeBlock.Root>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Neither block is a region", async () => {
+      await expect(
+        canvasElement.querySelectorAll(".nimbus-code-block__root")
+      ).toHaveLength(2);
+      await expect(canvas.queryAllByRole("region")).toHaveLength(0);
+    });
+  },
+};
+
+/**
  * `aria-label` on Root wins over `CodeBlock.Title`.
  */
 export const AriaLabelWinsOverTitle: Story = {
@@ -1255,10 +1292,7 @@ export const LocaleGerman: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Region and trigger names use the de messages", async () => {
-      await expect(
-        canvas.getByRole("region", { name: getMessage("regionLabel", "de") })
-      ).toBeInTheDocument();
+    await step("Trigger names use the de messages", async () => {
       for (const key of ["copyCode", "downloadCode", "showMore"]) {
         await expect(
           canvas.getByRole("button", { name: getMessage(key, "de") })
@@ -1387,7 +1421,6 @@ export const CompoundStructure: Story = {
 // Keyboard and layout
 // ---------------------------------------------------------------------------
 
-let clipboard: ReturnType<typeof captureCopiedText>;
 let downloads: ReturnType<typeof captureDownloads>;
 const keyboardOnCopy = fn();
 const keyboardOnDownload = fn();
@@ -1440,7 +1473,7 @@ export const KeyboardFocusOrder: Story = {
     });
 
     await step("No non-interactive part has a tabIndex", async () => {
-      const region = canvas.getByRole("region");
+      const region = getRoot(canvasElement);
       const withTabIndex = Array.from(
         region.querySelectorAll("[tabindex]")
       ).filter((element) => element.tagName !== "BUTTON");

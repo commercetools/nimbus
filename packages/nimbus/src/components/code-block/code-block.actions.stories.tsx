@@ -140,6 +140,92 @@ export const CustomCopyText: Story = {
 };
 
 // ---------------------------------------------------------------------------
+// CopyFallback
+// ---------------------------------------------------------------------------
+
+/**
+ * When the Clipboard API rejects (for example a permission policy in an
+ * iframe), the trigger falls back to `execCommand("copy")`.
+ */
+export const CopyFallback: Story = {
+  beforeEach: () => {
+    onCopy.mockClear();
+    clipboard = captureCopiedText({ clipboardApi: "reject" });
+    return clipboard.restore;
+  },
+  render: () => (
+    <CodeBlock.Root code={sample} language="js">
+      <CodeBlock.Content>
+        <CodeBlock.Actions>
+          <CodeBlock.CopyTrigger onCopy={onCopy} />
+        </CodeBlock.Actions>
+      </CodeBlock.Content>
+    </CodeBlock.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("The fallback copies the code", async () => {
+      await userEvent.click(canvas.getByRole("button", { name: "Copy code" }));
+      await waitFor(() => expect(onCopy).toHaveBeenCalledTimes(1));
+      await expect(clipboard.copied).toEqual([sample]);
+      await expect(getLiveRegion(canvasElement)).toHaveTextContent("Copied");
+    });
+  },
+};
+
+// ---------------------------------------------------------------------------
+// CopyFailure
+// ---------------------------------------------------------------------------
+
+const onCopyError = fn();
+
+/**
+ * When both the Clipboard API and the fallback fail, the trigger announces
+ * "Copy failed" and calls `onCopyError`, not `onCopy`.
+ */
+export const CopyFailure: Story = {
+  beforeEach: () => {
+    onCopy.mockClear();
+    onCopyError.mockClear();
+    clipboard = captureCopiedText({
+      clipboardApi: "reject",
+      execCommand: "fail",
+    });
+    return clipboard.restore;
+  },
+  render: () => (
+    <CodeBlock.Root code={sample} language="js">
+      <CodeBlock.Content>
+        <CodeBlock.Actions>
+          <CodeBlock.CopyTrigger onCopy={onCopy} onCopyError={onCopyError} />
+        </CodeBlock.Actions>
+      </CodeBlock.Content>
+    </CodeBlock.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole("button", { name: "Copy code" });
+    const idleIcon = button.innerHTML;
+
+    await step("The failure is reported once", async () => {
+      await userEvent.click(button);
+      await waitFor(() => expect(onCopyError).toHaveBeenCalledTimes(1));
+      await expect(onCopyError.mock.calls[0][0]).toBeInstanceOf(Error);
+      await expect(onCopy).not.toHaveBeenCalled();
+      await expect(clipboard.copied).toEqual([]);
+    });
+
+    await step("The live region says Copy failed", async () => {
+      await expect(getLiveRegion(canvasElement)).toHaveTextContent(
+        "Copy failed"
+      );
+      await expect(button.innerHTML).toBe(idleIcon);
+    });
+  },
+};
+
+// ---------------------------------------------------------------------------
 // CopyResetsAfterTimeout
 // ---------------------------------------------------------------------------
 

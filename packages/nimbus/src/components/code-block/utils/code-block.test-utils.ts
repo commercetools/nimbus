@@ -1,23 +1,56 @@
 import { spyOn } from "storybook/test";
 
 /**
- * Replaces `document.execCommand("copy")` with a fake that records the text
- * the copy trigger selected and reports success. Call it in a story's
- * `beforeEach` and return `restore`, so the fake never outlives the story.
+ * How the fake clipboard behaves in `captureCopiedText`.
  */
-export const captureCopiedText = () => {
+type ClipboardBehavior = {
+  /** Whether `navigator.clipboard.writeText` resolves or rejects. */
+  clipboardApi?: "resolve" | "reject";
+  /** Whether the `execCommand("copy")` fallback succeeds. */
+  execCommand?: "succeed" | "fail";
+};
+
+/**
+ * Replaces the Clipboard API, `execCommand("copy")` and `window.prompt` (the
+ * manual-copy prompt of the fallback) with fakes that record the copied text.
+ * Call it in a story's `beforeEach` and return `restore`, so the fakes never
+ * outlive the story.
+ */
+export const captureCopiedText = ({
+  clipboardApi = "resolve",
+  execCommand = "succeed",
+}: ClipboardBehavior = {}) => {
   const copied: string[] = [];
-  const spy = spyOn(document, "execCommand").mockImplementation((command) => {
-    if (command !== "copy") return false;
-    const selection = document.getSelection();
-    copied.push(
-      selection !== null && selection.rangeCount > 0
-        ? (selection.getRangeAt(0).commonAncestorContainer.textContent ?? "")
-        : ""
-    );
-    return true;
+  const writeTextSpy = spyOn(
+    navigator.clipboard,
+    "writeText"
+  ).mockImplementation(async (text) => {
+    if (clipboardApi === "reject") {
+      throw new DOMException("Write permission denied.", "NotAllowedError");
+    }
+    copied.push(text);
   });
-  return { copied, restore: () => spy.mockRestore() };
+  const execCommandSpy = spyOn(document, "execCommand").mockImplementation(
+    (command) => {
+      if (command !== "copy" || execCommand === "fail") return false;
+      const selection = document.getSelection();
+      copied.push(
+        selection !== null && selection.rangeCount > 0
+          ? (selection.getRangeAt(0).commonAncestorContainer.textContent ?? "")
+          : ""
+      );
+      return true;
+    }
+  );
+  const promptSpy = spyOn(window, "prompt").mockReturnValue(null);
+  return {
+    copied,
+    restore: () => {
+      writeTextSpy.mockRestore();
+      execCommandSpy.mockRestore();
+      promptSpy.mockRestore();
+    },
+  };
 };
 
 /**

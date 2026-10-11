@@ -71,10 +71,4 @@ export const messages = {
       "Screen reader text after a group of lines marked as removed in CodeBlock",
     defaultMessage: "Removed lines end",
   },
-  regionLabel: {
-    id: "Nimbus.CodeBlock.regionLabel",
-    description:
-      "Default accessible name for the CodeBlock region landmark, used when neither an aria-label prop nor a CodeBlock.Title is provided",
-    defaultMessage: "Code block",
-  },
 };
