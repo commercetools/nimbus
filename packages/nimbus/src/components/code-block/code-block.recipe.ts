@@ -141,13 +141,22 @@ export const codeBlockSlotRecipe = defineSlotRecipe({
       },
     },
     code: {
-      display: "block",
+      // A one-column grid as wide as its widest line (and at least as wide as
+      // the scroll area): every line stretches to that width, so line
+      // backgrounds continue behind horizontally scrolled text.
+      display: "grid",
+      width: "max-content",
+      minWidth: "100%",
       backgroundColor: "transparent",
       fontFamily: "mono",
       color: "var(--code-token-plain)",
       // The "\n" text nodes between lines keep `textContent` equal to the
       // code; `normal` collapses them so they add no empty rows.
       whiteSpace: "normal",
+      "&[data-wrap]": {
+        width: "100%",
+        gridTemplateColumns: "minmax(0, 1fr)",
+      },
       // Later rules win, so container types (tag, attr-value, string) come
       // before the types that occur inside them (punctuation, keyword, …).
       "& .token.tag, & .token.selector, & .token.property": {
@@ -191,18 +200,21 @@ export const codeBlockSlotRecipe = defineSlotRecipe({
       "& .token.italic": {
         fontStyle: "italic",
       },
+      // Word highlights: amber.4 / amber.1 keep token colors at or above 60Lc
+      // APCA; the underline marks them also on a highlighted line, whose band
+      // has a similar color.
       "& mark": {
         color: "inherit",
-        backgroundColor: "amber.5",
-        borderRadius: "50",
+        backgroundColor: "amber.4",
+        borderBottom: "solid-50",
+        borderColor: "amber.9",
+        _dark: {
+          backgroundColor: "amber.1",
+        },
       },
     },
     line: {
       display: "flex",
-      // width:max-content + min-width:100% lets the line background span the
-      // full scrollable width (not just the viewport) when code overflows.
-      width: "max-content",
-      minWidth: "100%",
       // A blank line has no text and no line box; keep one line of height.
       minHeight: "1lh",
       // A transparent start border on every line keeps all lines aligned;
@@ -210,20 +222,28 @@ export const codeBlockSlotRecipe = defineSlotRecipe({
       // color alone, WCAG 1.4.1).
       borderInlineStart: "solid-50",
       borderInlineStartColor: "transparent",
-      "&[data-wrap]": {
-        width: "100%",
-      },
-      // amber/green/red carry their own light/dark values, so the bands adapt
-      // to color mode with no _dark override.
+      // Band shades keep every shade-11 token color at or above 60Lc APCA:
+      // shade 3 in light mode (61.4–64.6Lc) and shade 1 in dark mode
+      // (60.6–60.7Lc). In dark mode, shade 3 drops to 57.4Lc and shade 2 to
+      // 59.96Lc (blue.11, the function color, is the limiting token).
       "&[data-mark='highlighted']": {
         backgroundColor: "amber.3",
         borderInlineStartColor: "amber.11",
+        _dark: {
+          backgroundColor: "amber.1",
+        },
       },
       "&[data-mark='added']": {
         backgroundColor: "green.3",
+        _dark: {
+          backgroundColor: "green.1",
+        },
       },
       "&[data-mark='removed']": {
         backgroundColor: "red.3",
+        _dark: {
+          backgroundColor: "red.1",
+        },
       },
     },
     lineNumber: {

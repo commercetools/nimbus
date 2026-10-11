@@ -246,6 +246,11 @@ builds by hand.
   `outputLines`.
 - **Wrap.** `wrapLongLines` wraps long lines instead of scrolling. The gutter
   stays on the first visual row, and backgrounds cover all wrapped rows.
+- **Line width.** The `code` element is a one-column grid that is as wide as
+  its widest line (and at least as wide as the scroll area). Every line
+  stretches to that width, so the background of a short marked line also
+  continues behind horizontally scrolled text. With `wrapLongLines`, the grid
+  is limited to the scroll area.
 - **Not selectable.** Line numbers, prompts, diff markers and announcement text
   use `user-select: none`, so manual text selection copies only code.
 
@@ -306,7 +311,13 @@ reason.
   pointer target of at least 44×44px. When the visible button is smaller (the
   `sm` size), the hit area is extended beyond the visible box.
 - **Contrast.** Token colors keep the contrast rule of the first version (shade
-  11/12 on `neutral.2`, documented in the recipe).
+  11/12 on `neutral.2`, documented in the recipe). Every background behind code
+  keeps all token colors at or above 60Lc APCA (the axe rule in the story
+  tests), measured per shade:
+  - Line bands: shade 3 in light mode (61.4–64.6Lc), shade 1 in dark mode
+    (60.6–60.7Lc). Dark shade 2 reaches only 59.96Lc for `blue.11`.
+  - Word highlights: `amber.4` in light mode (60.2Lc), `amber.1` in dark mode,
+    plus an `amber.9` underline so they stay visible on highlighted lines.
 
 ### Decision 9: Streaming
 
@@ -420,6 +431,16 @@ Rollback: revert the change; nothing else depends on it.
   direct `refractor` dependency?
 - **Global highlighter.** Should the highlighter also be configurable on
   `NimbusProvider`, in addition to `CodeHighlighterProvider`?
+- **Copy failure.** `useCopyToClipboard` (react-use, through
+  `copy-to-clipboard`) reports an error only for empty text. When
+  `execCommand("copy")` fails, the library shows a manual-copy prompt and
+  reports no error, so "Copy failed" and `onCopyError` are almost never reached.
+  Options: use the Clipboard API first and treat the prompt as a failure, or
+  treat the prompt as a failure only, or relax the spec.
+- **Unnamed blocks on one page.** Several blocks without `aria-label` or
+  `Title` are all regions named "Code block", which fails axe
+  `landmark-unique`. Options: document that each block needs a name, render
+  the region role only when a name is given, or let patterns derive a name.
 - **Tabs or select.** For `CodeSnippetGroup`, should the docs recommend a number
   of items above which `switcher="select"` is preferred? The developer settings
   page uses a select for about 15 formats.

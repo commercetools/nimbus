@@ -1,12 +1,19 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { userEvent, within, expect, fn, waitFor } from "storybook/test";
+import { userEvent, within, expect, fn, spyOn, waitFor } from "storybook/test";
+import { LocalizedStringDictionary } from "@internationalized/string";
 import {
   CodeBlock,
   type CodeBlockRootProps,
   type CodeBlockContentProps,
   Box,
+  NimbusI18nProvider,
   Stack,
 } from "@commercetools/nimbus";
+import { codeBlockMessagesStrings } from "./code-block.messages";
+import {
+  captureCopiedText,
+  captureDownloads,
+} from "./utils/code-block.test-utils";
 
 // ---------------------------------------------------------------------------
 // Sample code snippets used across stories
@@ -30,7 +37,24 @@ const tsxSample = `const greeting = (name: string): string => {
  */
 const longLineSample = `const extremelyLongVariableName = someFunction(argumentOne, argumentTwo, argumentThree, argumentFour, argumentFive, argumentSix, argumentSeven, argumentEight, argumentNine, argumentTen);`;
 
+const thirtyLineSample = Array.from(
+  { length: 30 },
+  (_, index) => `const line${index + 1} = ${index + 1};`
+).join("\n");
+
 const sizes: CodeBlockRootProps["size"][] = ["sm", "md"];
+
+let consoleError: ReturnType<typeof spyOn>;
+
+/**
+ * Reads a message from the compiled dictionary, so locale assertions match
+ * whatever translation the dictionary holds.
+ */
+const getMessage = (key: string, locale: string): string => {
+  const dictionary = new LocalizedStringDictionary(codeBlockMessagesStrings);
+  const message = dictionary.getStringForLocale(key, locale);
+  return typeof message === "string" ? message : (message?.({}) ?? "");
+};
 
 /**
  * Story args: the props of `CodeBlock.Root`, the line options of
@@ -207,6 +231,10 @@ export const UnknownLanguageFallback: Story = {
     code: "hello world",
     language: "brainfuck",
   },
+  beforeEach: () => {
+    consoleError = spyOn(console, "error");
+    return () => consoleError.mockRestore();
+  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -218,6 +246,11 @@ export const UnknownLanguageFallback: Story = {
     await step("Code text content is present", async () => {
       const region = canvas.getByRole("region");
       await expect(region).toHaveTextContent("hello world");
+    });
+
+    await step("The code is plain text and no error is logged", async () => {
+      await expect(canvasElement.querySelector(".token")).toBeNull();
+      await expect(consoleError).not.toHaveBeenCalled();
     });
   },
 };
@@ -240,6 +273,13 @@ export const EmptyCode: Story = {
     await step("Component renders without throwing", async () => {
       const region = canvas.getByRole("region");
       await expect(region).toBeInTheDocument();
+    });
+
+    await step("The pre is rendered and empty", async () => {
+      await expect(canvasElement.querySelector("pre")).toBeInTheDocument();
+      await expect(
+        canvasElement.querySelector(".nimbus-code-block__code")
+      ).toHaveTextContent("");
     });
   },
 };
@@ -938,24 +978,580 @@ export const Accessibility: Story = {
 };
 
 // ---------------------------------------------------------------------------
-// Sizes (showcase)
+// Visual stories (Chromatic)
 // ---------------------------------------------------------------------------
 
+const smokeSample = `import { Button } from "@commercetools/nimbus";
+
+export const App = () => (
+  <Button variant="primary">Save</Button>
+  <Button variant="secondary">Cancel</Button>
+);
+// The end`;
+
 /**
- * Side-by-side size comparison.
+ * Every painted surface of one block: header with title, language label and
+ * two triggers; line numbers; highlighted, added and removed lines; a word
+ * highlight; a footer.
  */
-export const Sizes: Story = {
+const FullBlock = ({
+  size,
+  "aria-label": ariaLabel,
+}: Pick<CodeBlockRootProps, "size" | "aria-label">) => (
+  <CodeBlock.Root
+    code={smokeSample}
+    language="tsx"
+    size={size}
+    aria-label={ariaLabel}
+  >
+    <CodeBlock.Header>
+      <CodeBlock.Title>app.tsx</CodeBlock.Title>
+      <CodeBlock.LanguageLabel />
+      <CodeBlock.Actions>
+        <CodeBlock.DownloadTrigger fileName="app.tsx" />
+        <CodeBlock.CopyTrigger />
+      </CodeBlock.Actions>
+    </CodeBlock.Header>
+    <CodeBlock.Content
+      showLineNumbers
+      highlightedLines={[3]}
+      addedLines={[4]}
+      removedLines={[5]}
+      highlightedWords={["variant"]}
+    />
+    <CodeBlock.Footer>Requires Nimbus 3 or later.</CodeBlock.Footer>
+  </CodeBlock.Root>
+);
+
+/**
+ * A block without header: prompt, output line and actions inside the content.
+ */
+const CommandBlock = ({
+  size,
+  "aria-label": ariaLabel,
+}: Pick<CodeBlockRootProps, "size" | "aria-label">) => (
+  <CodeBlock.Root
+    code={"npm whoami\nalice"}
+    language="bash"
+    size={size}
+    aria-label={ariaLabel}
+  >
+    <CodeBlock.Content prompt="$" outputLines={[2]}>
+      <CodeBlock.Actions>
+        <CodeBlock.CopyTrigger />
+      </CodeBlock.Actions>
+    </CodeBlock.Content>
+  </CodeBlock.Root>
+);
+
+/**
+ * Visual matrix. Axes: `size` (sm, md) × layout (full header + footer with
+ * marked lines and word highlight; header-less command with prompt and
+ * actions inside the content). `size` changes every slot, so it interacts
+ * with both layouts.
+ */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
-    <Stack direction="column" gap="400">
+    <Stack direction="column" gap="600" width="640px">
       {sizes.map((size) => (
-        <DefaultLayout
-          key={size as string}
-          aria-label={`Code block — size ${size as string}`}
-          code={`// size="${size as string}"\nconst x = 1;`}
-          language="js"
-          size={size}
-        />
+        <Stack key={size as string} direction="column" gap="400">
+          <FullBlock size={size} aria-label={`Full block ${size as string}`} />
+          <CommandBlock
+            size={size}
+            aria-label={`Command block ${size as string}`}
+          />
+        </Stack>
       ))}
     </Stack>
   ),
+};
+
+/**
+ * The same block in light and dark mode. Only the resolved colors change;
+ * the DOM structure is the same.
+ */
+export const DarkMode: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="400" width="640px">
+      <FullBlock aria-label="Light block" />
+      <Box className="dark" bg="bg" p="400">
+        <FullBlock aria-label="Dark block" />
+      </Box>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const light = canvas.getByRole("region", { name: "Light block" });
+    const dark = canvas.getByRole("region", { name: "Dark block" });
+
+    await step("Token and surface colors differ", async () => {
+      const color = (root: HTMLElement, selector: string) =>
+        getComputedStyle(root.querySelector(selector)!).color;
+      await expect(color(dark, ".token.keyword")).not.toBe(
+        color(light, ".token.keyword")
+      );
+      await expect(getComputedStyle(dark).backgroundColor).not.toBe(
+        getComputedStyle(light).backgroundColor
+      );
+    });
+
+    await step("The DOM structure is the same", async () => {
+      // Generated ids differ per block; compare the markup without them.
+      const markup = (root: HTMLElement) =>
+        root.innerHTML.replace(
+          /(id|aria-labelledby|aria-controls)="[^"]*"/g,
+          ""
+        );
+      await expect(markup(dark)).toBe(markup(light));
+    });
+  },
+};
+
+/**
+ * A collapsed block: the first lines and the "Show more" button.
+ */
+export const Collapsed: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <CodeBlock.Root code={smokeSample} language="tsx" maxLines={4}>
+      <CodeBlock.Content showLineNumbers />
+      <CodeBlock.ExpandTrigger />
+    </CodeBlock.Root>
+  ),
+};
+
+/**
+ * A long line wraps instead of scrolling; the band covers all rows.
+ */
+export const WrapLongLines: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Box width="400px">
+      <CodeBlock.Root code={longLineSample} language="js">
+        <CodeBlock.Content
+          showLineNumbers
+          wrapLongLines
+          highlightedLines={[1]}
+        />
+      </CodeBlock.Root>
+    </Box>
+  ),
+};
+
+/**
+ * The focus ring of the scrollable code area. The play ends with the code
+ * area focused, which is the frame Chromatic captures.
+ */
+export const FocusedCodeArea: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <CodeBlock.Root code={jsxSample} language="jsx">
+      <CodeBlock.Content />
+    </CodeBlock.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    await step("Tab focuses the code area with a visible ring", async () => {
+      await userEvent.tab();
+      const pre = canvasElement.querySelector("pre")!;
+      await expect(pre).toHaveFocus();
+      await expect(getComputedStyle(pre).outlineStyle).not.toBe("none");
+    });
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Semantics and theming
+// ---------------------------------------------------------------------------
+
+/**
+ * Tokens carry classes only; colors come from the recipe, never from inline
+ * styles.
+ */
+export const NoInlineTokenStyles: Story = {
+  args: {
+    code: tsxSample,
+    language: "tsx",
+  },
+  play: async ({ canvasElement, step }) => {
+    await step("No token element has a style attribute", async () => {
+      const tokens = canvasElement.querySelectorAll(".token");
+      await expect(tokens.length).toBeGreaterThan(0);
+      await expect(
+        canvasElement.querySelectorAll(".token[style]")
+      ).toHaveLength(0);
+    });
+  },
+};
+
+/**
+ * `CodeBlock.Title` names the region through `aria-labelledby`.
+ */
+export const RegionNameFromTitle: Story = {
+  render: () => (
+    <CodeBlock.Root code={tsxSample} language="tsx">
+      <CodeBlock.Header>
+        <CodeBlock.Title>button.tsx</CodeBlock.Title>
+      </CodeBlock.Header>
+      <CodeBlock.Content />
+    </CodeBlock.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("The region is named by the title", async () => {
+      const region = canvas.getByRole("region", { name: "button.tsx" });
+      await expect(region).not.toHaveAttribute("aria-label");
+    });
+  },
+};
+
+/**
+ * `aria-label` on Root wins over `CodeBlock.Title`.
+ */
+export const AriaLabelWinsOverTitle: Story = {
+  render: () => (
+    <CodeBlock.Root code={tsxSample} language="tsx" aria-label="Example">
+      <CodeBlock.Header>
+        <CodeBlock.Title>button.tsx</CodeBlock.Title>
+      </CodeBlock.Header>
+      <CodeBlock.Content />
+    </CodeBlock.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("The region is named by aria-label", async () => {
+      const region = canvas.getByRole("region", { name: "Example" });
+      await expect(region).not.toHaveAttribute("aria-labelledby");
+    });
+  },
+};
+
+/**
+ * All names come from the messages of the active locale.
+ */
+export const LocaleGerman: Story = {
+  render: () => (
+    <NimbusI18nProvider locale="de">
+      <CodeBlock.Root code={thirtyLineSample} language="js" maxLines={3}>
+        <CodeBlock.Header>
+          <CodeBlock.Actions>
+            <CodeBlock.DownloadTrigger fileName="lines.js" />
+            <CodeBlock.CopyTrigger />
+          </CodeBlock.Actions>
+        </CodeBlock.Header>
+        <CodeBlock.Content highlightedLines={[1]} />
+        <CodeBlock.ExpandTrigger />
+      </CodeBlock.Root>
+    </NimbusI18nProvider>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Region and trigger names use the de messages", async () => {
+      await expect(
+        canvas.getByRole("region", { name: getMessage("regionLabel", "de") })
+      ).toBeInTheDocument();
+      for (const key of ["copyCode", "downloadCode", "showMore"]) {
+        await expect(
+          canvas.getByRole("button", { name: getMessage(key, "de") })
+        ).toBeInTheDocument();
+      }
+      await expect(
+        canvasElement.querySelector("[data-line-announcement]")
+      ).toHaveTextContent(getMessage("highlightedLinesStart", "de"));
+    });
+  },
+};
+
+/**
+ * Props that configure parts never appear as attributes in the DOM.
+ */
+export const NoPropLeakage: Story = {
+  render: () => (
+    <CodeBlock.Root
+      code={thirtyLineSample}
+      language="js"
+      maxLines={3}
+      defaultExpanded={false}
+      onExpandedChange={() => {}}
+      data-testid="leak-root"
+    >
+      <CodeBlock.Header>
+        <CodeBlock.Title>lines.js</CodeBlock.Title>
+        <CodeBlock.LanguageLabel />
+        <CodeBlock.Actions>
+          <CodeBlock.DownloadTrigger
+            fileName="lines.js"
+            mimeType="text/javascript"
+            onDownload={() => {}}
+          />
+          <CodeBlock.CopyTrigger
+            text="copy me"
+            timeout={1000}
+            onCopy={() => {}}
+            onCopyError={() => {}}
+          />
+        </CodeBlock.Actions>
+      </CodeBlock.Header>
+      <CodeBlock.Content
+        showLineNumbers
+        startLineNumber={3}
+        highlightedLines={[3]}
+        addedLines={[4]}
+        removedLines={[5]}
+        highlightedWords={["line"]}
+        prompt=">"
+        outputLines={[4]}
+        wrapLongLines
+      />
+      <CodeBlock.ExpandTrigger />
+      <CodeBlock.Footer>Footer</CodeBlock.Footer>
+    </CodeBlock.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const internalProps = [
+      "code",
+      "language",
+      "highlighter",
+      "maxlines",
+      "isexpanded",
+      "defaultexpanded",
+      "onexpandedchange",
+      "text",
+      "timeout",
+      "oncopy",
+      "oncopyerror",
+      "filename",
+      "mimetype",
+      "ondownload",
+      "showlinenumbers",
+      "startlinenumber",
+      "highlightedlines",
+      "addedlines",
+      "removedlines",
+      "highlightedwords",
+      "prompt",
+      "outputlines",
+      "wraplonglines",
+    ];
+
+    await step("No element carries an internal prop", async () => {
+      const root = canvasElement.querySelector("[data-testid='leak-root']")!;
+      const elements = [root, ...Array.from(root.querySelectorAll("*"))];
+      const leaked = elements.flatMap((element) =>
+        element
+          .getAttributeNames()
+          .filter((name) => internalProps.includes(name))
+          .map((name) => `${element.tagName.toLowerCase()}[${name}]`)
+      );
+      await expect(leaked).toEqual([]);
+    });
+  },
+};
+
+/**
+ * `CodeBlock` is a namespace of parts with `Root` first.
+ */
+export const CompoundStructure: Story = {
+  args: {
+    code: tsxSample,
+    language: "tsx",
+  },
+  play: async ({ step }) => {
+    await step("The namespace lists the parts, Root first", async () => {
+      await expect(Object.keys(CodeBlock)).toEqual([
+        "Root",
+        "Header",
+        "Title",
+        "LanguageLabel",
+        "Actions",
+        "CopyTrigger",
+        "DownloadTrigger",
+        "Content",
+        "ExpandTrigger",
+        "Footer",
+      ]);
+    });
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Keyboard and layout
+// ---------------------------------------------------------------------------
+
+let clipboard: ReturnType<typeof captureCopiedText>;
+let downloads: ReturnType<typeof captureDownloads>;
+const keyboardOnCopy = fn();
+const keyboardOnDownload = fn();
+
+/**
+ * A block with every focusable part, in DOM order: download, copy, code
+ * area, expand.
+ */
+const KeyboardBlock = () => (
+  <CodeBlock.Root code={thirtyLineSample} language="js" maxLines={3}>
+    <CodeBlock.Header>
+      <CodeBlock.Title>lines.js</CodeBlock.Title>
+      <CodeBlock.Actions>
+        <CodeBlock.DownloadTrigger
+          fileName="lines.js"
+          onDownload={keyboardOnDownload}
+        />
+        <CodeBlock.CopyTrigger onCopy={keyboardOnCopy} />
+      </CodeBlock.Actions>
+    </CodeBlock.Header>
+    <CodeBlock.Content showLineNumbers />
+    <CodeBlock.ExpandTrigger />
+    <CodeBlock.Footer>Footer</CodeBlock.Footer>
+  </CodeBlock.Root>
+);
+
+/**
+ * Tab follows DOM order, and only the code area has a `tabIndex`.
+ */
+export const KeyboardFocusOrder: Story = {
+  render: () => <KeyboardBlock />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Tab moves through the parts in DOM order", async () => {
+      await userEvent.tab();
+      await expect(
+        canvas.getByRole("button", { name: "Download code" })
+      ).toHaveFocus();
+      await userEvent.tab();
+      await expect(
+        canvas.getByRole("button", { name: "Copy code" })
+      ).toHaveFocus();
+      await userEvent.tab();
+      await expect(canvasElement.querySelector("pre")).toHaveFocus();
+      await userEvent.tab();
+      await expect(
+        canvas.getByRole("button", { name: "Show more" })
+      ).toHaveFocus();
+    });
+
+    await step("No non-interactive part has a tabIndex", async () => {
+      const region = canvas.getByRole("region");
+      const withTabIndex = Array.from(
+        region.querySelectorAll("[tabindex]")
+      ).filter((element) => element.tagName !== "BUTTON");
+      await expect(withTabIndex).toEqual([canvasElement.querySelector("pre")]);
+    });
+  },
+};
+
+/**
+ * Enter and Space activate every trigger.
+ */
+export const KeyboardActivation: Story = {
+  beforeEach: () => {
+    keyboardOnCopy.mockClear();
+    keyboardOnDownload.mockClear();
+    clipboard = captureCopiedText();
+    downloads = captureDownloads();
+    return () => {
+      clipboard.restore();
+      downloads.restore();
+    };
+  },
+  render: () => <KeyboardBlock />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Download with Enter and Space", async () => {
+      canvas.getByRole("button", { name: "Download code" }).focus();
+      await userEvent.keyboard("{Enter}");
+      await userEvent.keyboard(" ");
+      await expect(keyboardOnDownload).toHaveBeenCalledTimes(2);
+      await expect(downloads.downloads).toHaveLength(2);
+    });
+
+    await step("Copy with Enter and Space", async () => {
+      canvas.getByRole("button", { name: "Copy code" }).focus();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() => expect(keyboardOnCopy).toHaveBeenCalledTimes(1));
+      await userEvent.keyboard(" ");
+      await waitFor(() => expect(keyboardOnCopy).toHaveBeenCalledTimes(2));
+      await expect(clipboard.copied).toEqual([
+        thirtyLineSample,
+        thirtyLineSample,
+      ]);
+    });
+
+    await step("Expand with Enter and collapse with Space", async () => {
+      const expand = canvas.getByRole("button", { name: "Show more" });
+      expand.focus();
+      await userEvent.keyboard("{Enter}");
+      await expect(expand).toHaveAttribute("aria-expanded", "true");
+      await userEvent.keyboard(" ");
+      await expect(expand).toHaveAttribute("aria-expanded", "false");
+    });
+  },
+};
+
+/**
+ * Keyboard focus is visible on triggers and on the code area.
+ */
+export const VisibleFocus: Story = {
+  render: () => <KeyboardBlock />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const hasRing = (element: Element) =>
+      getComputedStyle(element).outlineStyle !== "none";
+
+    await step("The focused trigger shows a focus ring", async () => {
+      await userEvent.tab();
+      const download = canvas.getByRole("button", { name: "Download code" });
+      await expect(download).toHaveFocus();
+      await expect(hasRing(download)).toBe(true);
+    });
+
+    await step("The focused code area shows a focus ring", async () => {
+      await userEvent.tab();
+      await userEvent.tab();
+      const pre = canvasElement.querySelector("pre")!;
+      await expect(pre).toHaveFocus();
+      await expect(hasRing(pre)).toBe(true);
+    });
+  },
+};
+
+/**
+ * Actions inside `CodeBlock.Content` sit next to the scroll area, so they do
+ * not cover the code, also when it overflows.
+ */
+export const FloatingActionsBesideCode: Story = {
+  render: () => (
+    <Box width="400px">
+      <CodeBlock.Root code={longLineSample} language="js">
+        <CodeBlock.Content>
+          <CodeBlock.Actions>
+            <CodeBlock.CopyTrigger />
+          </CodeBlock.Actions>
+        </CodeBlock.Content>
+      </CodeBlock.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("The copy button is outside the code area", async () => {
+      const pre = canvasElement.querySelector("pre")!;
+      const button = canvas.getByRole("button", { name: "Copy code" });
+      const preBox = pre.getBoundingClientRect();
+      const buttonBox = button.getBoundingClientRect();
+      await expect(pre.scrollWidth).toBeGreaterThan(pre.clientWidth);
+      await expect(buttonBox.left).toBeGreaterThanOrEqual(preBox.right - 0.5);
+      await expect(buttonBox.top).toBeLessThan(preBox.top + preBox.height / 2);
+    });
+  },
 };

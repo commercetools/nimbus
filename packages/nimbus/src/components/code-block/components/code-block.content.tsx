@@ -128,7 +128,7 @@ export const CodeBlockContent = (props: CodeBlockContentProps) => {
       <CodeBlockContentSlot ref={ref} {...styleProps} {...functionalProps}>
         {/* tabIndex={0} keeps overflowing code keyboard-scrollable (WCAG 2.1.1) */}
         <CodeBlockPreSlot id={contentId} tabIndex={0}>
-          <CodeBlockCodeSlot>
+          <CodeBlockCodeSlot data-wrap={wrap}>
             {visibleLines.map((line, index) => {
               const lineNumber = index + startLineNumber;
               const mark = marks[index];
@@ -139,7 +139,7 @@ export const CodeBlockContent = (props: CodeBlockContentProps) => {
                 <Fragment key={index}>
                   {/* Keeps the code element's text equal to the code. */}
                   {index > 0 && "\n"}
-                  <CodeBlockLineSlot data-mark={mark} data-wrap={wrap}>
+                  <CodeBlockLineSlot data-mark={mark}>
                     {showLineNumbers && (
                       <CodeBlockLineNumberSlot minWidth={gutterWidth}>
                         {lineNumber}

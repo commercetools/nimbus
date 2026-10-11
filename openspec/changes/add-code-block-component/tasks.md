@@ -116,31 +116,32 @@
 
 - [x] 6.1 Move the existing stories in `code-block.stories.tsx` to the compound
       API and keep every scenario they cover today.
-- [ ] 6.2 Add play functions for engine behavior: bash highlighting, alias,
+- [x] 6.2 Add play functions for engine behavior: bash highlighting, alias,
       unknown language, custom provider, async highlighter (plain text first,
       then tokens; outdated result discarded).
-- [ ] 6.3 Add play functions for safety, theming and semantics: injected markup
+- [x] 6.3 Add play functions for safety, theming and semantics: injected markup
       stays text, empty code, no `style` attribute on tokens, dark mode, region
       name order (`aria-label`, `Title`, default), hidden language label, no
       name on `code`, locale `de`, no prop leakage.
-- [ ] 6.4 Add play functions for keyboard and layout: Tab reaches the header
+- [x] 6.4 Add play functions for keyboard and layout: Tab reaches the header
       copy button before the `pre`, no stray `tabIndex`, Enter and Space
       activate every trigger, visible focus, floating actions inside content do
       not cover the first line, long line in a 400px container.
-- [ ] 6.5 Add play functions for lines: trailing newline, CRLF copied as given,
+- [x] 6.5 Add play functions for lines: trailing newline, CRLF copied as given,
       offset numbers, equal code start position for lines 9 and 10 (bounding
       boxes), `user-select: none` on numbers, prompts, markers and announcement
       text, ranges, invalid selections, diff markers, one announcement pair per
       run, word highlight across tokens, prompt with output lines, wrapped line
       with one line number.
 - [ ] 6.6 Add play functions for actions: copy success, custom copy text, reset
-      after `timeout`, copy failure (mocked clipboard), download (spy on object
+      after `timeout`, copy failure (mocked clipboard; open: see design Open
+      Questions "Copy failure"), download (spy on object
       URL and anchor click), expand collapsed/expanded with `aria-expanded`,
       `aria-controls` and focus, copy while collapsed copies all lines, 44×44px
       hit area for `sm` triggers.
-- [ ] 6.7 Add play functions for streaming: scroll position kept when code
+- [x] 6.7 Add play functions for streaming: scroll position kept when code
       grows, copy state kept across updates, unterminated string renders.
-- [ ] 6.8 Mark the visual stories for Chromatic (sizes, light/dark, diff,
+- [x] 6.8 Mark the visual stories for Chromatic (sizes, light/dark, diff,
       highlighted lines, wrap, collapsed) following
       `docs/chromatic-visual-testing.md`.
 
