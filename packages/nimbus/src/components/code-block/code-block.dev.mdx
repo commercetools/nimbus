@@ -351,7 +351,9 @@ const App = () => {
 API is missing or rejects, it falls back to `document.execCommand("copy")`.
 After a successful copy, it shows a check icon and a polite live region
 announces "Copied". It resets after `timeout` milliseconds (default `2000`).
-When both ways fail, it announces "Copy failed" and calls `onCopyError`.
+When both ways fail, it announces "Copy failed" and calls `onCopyError`. If
+the fallback can only show the browser's manual-copy prompt, this also counts
+as a failure.
 
 | Prop          | Purpose                                                                    |
 | ------------- | -------------------------------------------------------------------------- |

@@ -79,16 +79,22 @@ export const CodeBlockCopyTrigger = (props: CodeBlockCopyTriggerProps) => {
   // markers are never included. Browser APIs are used only on press.
   const handlePress = async () => {
     const value = text ?? code;
+    let isWritten = false;
     if (navigator.clipboard?.writeText !== undefined) {
       try {
         await navigator.clipboard.writeText(value);
-        reportResult();
-        return;
+        isWritten = true;
       } catch {
         // Blocked, for example by a permission policy in an iframe.
       }
     }
-    copyWithFallback(value);
+    // Reported outside the try, so an error thrown by `onCopy` is not
+    // mistaken for a failed write (which would copy and report again).
+    if (isWritten) {
+      reportResult();
+    } else {
+      copyWithFallback(value);
+    }
   };
 
   return (

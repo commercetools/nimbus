@@ -40,9 +40,9 @@ export const CodeBlock = {
    * # CodeBlock.Root
    *
    * Holds the code and language, highlights the code, and provides shared
-   * state to all parts. Renders a `section` region named by `aria-label`,
-   * `CodeBlock.Title`, or the localized "Code block". Accepts `size`,
-   * `maxLines` and the expanded state.
+   * state to all parts. Renders a `section`, which is a region only when it
+   * is named by `aria-label` or `CodeBlock.Title`. Accepts `size`, `maxLines`
+   * and the expanded state.
    *
    * @example
    * ```tsx
@@ -71,8 +71,8 @@ export const CodeBlock = {
   /**
    * # CodeBlock.Title
    *
-   * The visible title, for example a file name. It names the code region
-   * unless `aria-label` is set on `CodeBlock.Root`.
+   * The visible title, for example a file name. It makes the block a region
+   * named by the title, unless `aria-label` is set on `CodeBlock.Root`.
    *
    * @example
    * ```tsx

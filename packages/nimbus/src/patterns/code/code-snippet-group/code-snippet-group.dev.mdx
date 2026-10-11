@@ -156,7 +156,9 @@ const App = () => (
 
 ### Uncontrolled selection
 
-Use `defaultSelectedKey` to choose the item that is shown first.
+Use `defaultSelectedKey` to choose the item that is shown first. When the key
+(or a controlled `selectedKey`) is not in `items`, the first item is shown. An
+empty `items` list renders nothing.
 
 ```jsx live-dev
 const App = () => (
@@ -207,6 +209,17 @@ const App = () => {
 ### One item
 
 With one item, no switcher is rendered. The item is shown like a `CodeSnippet`.
+
+```jsx live-dev
+const App = () => (
+  <CodeSnippetGroup
+    title="List products"
+    items={[
+      { key: "curl", label: "cURL", language: "bash", code: "curl https://api.example.com/products" },
+    ]}
+  />
+)
+```
 
 ## Accessibility
 

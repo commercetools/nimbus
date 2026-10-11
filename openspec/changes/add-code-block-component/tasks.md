@@ -203,7 +203,7 @@
       pattern stories — green.
 - [x] 10.6 `pnpm check:package-shape` and `pnpm check:bundle-size` — within the
       gates; record the engine size compared with `prism-react-renderer`.
-- [ ] 10.7 Review with the `nimbus-reviewer` agent and fix all findings.
+- [x] 10.7 Review with the `nimbus-reviewer` agent and fix all findings.
 
 ## Follow-up changes (not tracked in this change)
 

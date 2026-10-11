@@ -13,7 +13,7 @@ const renderWithProvider = (ui: React.ReactElement) =>
  * @docs-order 1
  */
 describe("CommandSnippet - Accessible name", () => {
-  it("is a region when aria-label is set", () => {
+  it("finds the command by its aria-label", () => {
     renderWithProvider(
       <CommandSnippet
         aria-label="Install Nimbus"
@@ -24,14 +24,6 @@ describe("CommandSnippet - Accessible name", () => {
     expect(
       screen.getByRole("region", { name: "Install Nimbus" })
     ).toHaveTextContent("pnpm add @commercetools/nimbus");
-  });
-
-  it("is not a region without aria-label", () => {
-    renderWithProvider(
-      <CommandSnippet command="pnpm add @commercetools/nimbus" />
-    );
-
-    expect(screen.queryByRole("region")).not.toBeInTheDocument();
   });
 });
 
@@ -73,51 +65,5 @@ describe("CommandSnippet - Copy", () => {
     await waitFor(async () =>
       expect(await navigator.clipboard.readText()).toBe("npm whoami\nalice")
     );
-  });
-
-  it("hides the copy button with showCopyButton={false}", () => {
-    renderWithProvider(
-      <CommandSnippet command="pnpm install" showCopyButton={false} />
-    );
-
-    expect(
-      screen.queryByRole("button", { name: "Copy code" })
-    ).not.toBeInTheDocument();
-  });
-});
-
-/**
- * @docs-section prompt
- * @docs-title Show or hide the prompt
- * @docs-description The default prompt is "$". Set `prompt` to another text, or to an empty string for no prompt.
- * @docs-order 3
- */
-describe("CommandSnippet - Prompt", () => {
-  it("shows the default prompt", () => {
-    renderWithProvider(
-      <CommandSnippet aria-label="Install" command="pnpm install" />
-    );
-
-    expect(screen.getByRole("region", { name: "Install" })).toHaveTextContent(
-      "$"
-    );
-  });
-
-  it("shows no prompt for an empty string", () => {
-    renderWithProvider(
-      <CommandSnippet aria-label="Install" command="pnpm install" prompt="" />
-    );
-
-    expect(
-      screen.getByRole("region", { name: "Install" })
-    ).not.toHaveTextContent("$");
-  });
-
-  it("shows no header", () => {
-    renderWithProvider(
-      <CommandSnippet aria-label="Install" command="pnpm install" />
-    );
-
-    expect(screen.queryByText("bash")).not.toBeInTheDocument();
   });
 });

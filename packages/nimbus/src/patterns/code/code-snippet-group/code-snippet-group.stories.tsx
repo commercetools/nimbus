@@ -8,6 +8,8 @@ import {
 import { CodeSnippetGroup } from "./code-snippet-group";
 import type { CodeSnippetGroupItem } from "./code-snippet-group.types";
 
+// VRT: `Tabs` and `SelectSwitcher` snapshot the two switchers this pattern
+// places in the header; the code area is covered by `Components/CodeBlock`.
 const meta: Meta<typeof CodeSnippetGroup> = {
   title: "patterns/code/CodeSnippetGroup",
   component: CodeSnippetGroup,
@@ -60,12 +62,6 @@ export const Tabs: Story = {
     items,
     title: "List products",
   },
-  beforeEach: () => {
-    onSelectionChange.mockClear();
-  },
-  render: (args) => (
-    <CodeSnippetGroup {...args} onSelectionChange={onSelectionChange} />
-  ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -79,6 +75,25 @@ export const Tabs: Story = {
         canvas.getByRole("tablist", { name: "Code example" })
       ).toBeInTheDocument();
     });
+  },
+};
+
+/**
+ * Arrow keys move between tabs and show the selected example.
+ */
+export const KeyboardSwitching: Story = {
+  args: {
+    items,
+    title: "List products",
+  },
+  beforeEach: () => {
+    onSelectionChange.mockClear();
+  },
+  render: (args) => (
+    <CodeSnippetGroup {...args} onSelectionChange={onSelectionChange} />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
 
     await step("The right arrow key selects the next tab", async () => {
       canvas.getByRole("tab", { name: "cURL" }).focus();
@@ -95,6 +110,19 @@ export const Tabs: Story = {
       const panel = canvas.getByRole("tabpanel");
       await expect(panel).toContainElement(canvasElement.querySelector("pre"));
     });
+  },
+};
+
+/**
+ * The select switcher in the header, closed.
+ */
+export const SelectSwitcher: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    items,
+    switcher: "select",
+    title: "List products",
   },
 };
 
@@ -226,6 +254,36 @@ export const Controlled: Story = {
       await userEvent.click(canvas.getByRole("tab", { name: "cURL" }));
       await expect(canvas.getByTestId("requested")).toHaveTextContent("curl");
       await expect(getCode(canvasElement)).toHaveTextContent(items[2].code);
+    });
+  },
+};
+
+/**
+ * A key that is not in `items` shows the first item; an empty list renders
+ * nothing.
+ */
+export const FallbackSelection: Story = {
+  render: () => (
+    <>
+      <CodeSnippetGroup items={items} defaultSelectedKey="python" />
+      <div data-testid="empty-group">
+        <CodeSnippetGroup items={[]} />
+      </div>
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("An unknown key shows the first item", async () => {
+      await expect(getCode(canvasElement)).toHaveTextContent(items[0].code);
+      await expect(canvas.getByRole("tab", { name: "cURL" })).toHaveAttribute(
+        "aria-selected",
+        "true"
+      );
+    });
+
+    await step("An empty list renders nothing", async () => {
+      await expect(canvas.getByTestId("empty-group")).toBeEmptyDOMElement();
     });
   },
 };

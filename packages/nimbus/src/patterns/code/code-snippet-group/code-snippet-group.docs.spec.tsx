@@ -56,18 +56,6 @@ describe("CodeSnippetGroup - Tabs", () => {
     expect(handleChange).toHaveBeenCalledWith("js");
     await waitFor(() => expect(region).toHaveTextContent("await fetch"));
   });
-
-  it("names the tab list with switcherLabel", () => {
-    renderWithProvider(
-      <CodeSnippetGroup
-        title="List products"
-        items={items}
-        switcherLabel="Language"
-      />
-    );
-
-    expect(screen.getByRole("tablist", { name: "Language" })).toBeVisible();
-  });
 });
 
 /**
@@ -77,17 +65,6 @@ describe("CodeSnippetGroup - Tabs", () => {
  * @docs-order 2
  */
 describe("CodeSnippetGroup - Select", () => {
-  it("renders a select with the default accessible name", () => {
-    renderWithProvider(
-      <CodeSnippetGroup title="List products" switcher="select" items={items} />
-    );
-
-    expect(
-      screen.getByRole("button", { name: /Code example/ })
-    ).toBeInTheDocument();
-    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
-  });
-
   it("switches the shown example", async () => {
     const user = userEvent.setup();
 
@@ -203,24 +180,5 @@ describe("CodeSnippetGroup - Actions", () => {
     expect(
       await screen.findByRole("button", { name: "Download code" })
     ).toBeInTheDocument();
-  });
-});
-
-/**
- * @docs-section single-item
- * @docs-title A group with one item
- * @docs-description With one item, no switcher is rendered and the item is shown.
- * @docs-order 5
- */
-describe("CodeSnippetGroup - Single item", () => {
-  it("renders no switcher", () => {
-    renderWithProvider(
-      <CodeSnippetGroup title="List products" items={[items[0]]} />
-    );
-
-    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
-    expect(
-      screen.getByRole("region", { name: "List products" })
-    ).toHaveTextContent("curl https://api.example.com/products");
   });
 });

@@ -990,6 +990,11 @@ export const Accessibility: Story = {
 // ---------------------------------------------------------------------------
 // Visual stories (Chromatic)
 // ---------------------------------------------------------------------------
+// Snapshotted: SmokeTest, Rtl, DarkMode, Collapsed, WrapLongLines,
+// HighlightBandScrolled, CopiedState, FocusedCodeArea.
+// Not snapshotted: trigger focus rings and hover (owned by the IconButton and
+// Button recipes) and the expanded state (same rules as the default frame,
+// only more lines and another button label).
 
 const smokeSample = `import { Button } from "@commercetools/nimbus";
 
@@ -1027,7 +1032,7 @@ const FullBlock = ({
       highlightedLines={[3]}
       addedLines={[4]}
       removedLines={[5]}
-      highlightedWords={["variant"]}
+      highlightedWords={["variant", "App"]}
     />
     <CodeBlock.Footer>Requires Nimbus 3 or later.</CodeBlock.Footer>
   </CodeBlock.Root>
@@ -1076,6 +1081,95 @@ export const SmokeTest: Story = {
       ))}
     </Stack>
   ),
+};
+
+/**
+ * Right-to-left page: the header, actions and footer mirror; the code area
+ * stays left-to-right (gutter on the left), as code is left-to-right text.
+ */
+export const Rtl: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Box dir="rtl" width="640px">
+      <FullBlock aria-label="RTL block" />
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    await step("The code area is left-to-right", async () => {
+      const pre = canvasElement.querySelector("pre")!;
+      await expect(pre).toHaveAttribute("dir", "ltr");
+      await expect(getComputedStyle(pre).direction).toBe("ltr");
+    });
+  },
+};
+
+/**
+ * The band of a short highlighted line continues behind horizontally
+ * scrolled text. The play scrolls to the end, the only frame where this
+ * shows.
+ */
+export const HighlightBandScrolled: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Box width="400px">
+      <CodeBlock.Root code={`${longLineSample}\nshort`} language="js">
+        <CodeBlock.Content
+          showLineNumbers
+          highlightedLines={[2]}
+          addedLines={[1]}
+        />
+      </CodeBlock.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const pre = canvasElement.querySelector("pre")!;
+
+    await step("Scroll the code to its end", async () => {
+      await waitFor(() =>
+        expect(pre.scrollWidth).toBeGreaterThan(pre.clientWidth)
+      );
+      pre.scrollLeft = pre.scrollWidth;
+      await waitFor(() =>
+        expect(pre.scrollLeft + pre.clientWidth).toBeGreaterThanOrEqual(
+          pre.scrollWidth - 1
+        )
+      );
+    });
+  },
+};
+
+/**
+ * The "copied" icon after a copy. The play copies with a fake clipboard, a
+ * long `timeout` holds the state, and focus is removed so no ring shows.
+ */
+export const CopiedState: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  beforeEach: withCapturedClipboard,
+  render: () => (
+    <CodeBlock.Root code={jsxSample} language="jsx">
+      <CodeBlock.Header>
+        <CodeBlock.LanguageLabel />
+        <CodeBlock.Actions>
+          <CodeBlock.CopyTrigger timeout={60000} />
+        </CodeBlock.Actions>
+      </CodeBlock.Header>
+      <CodeBlock.Content />
+    </CodeBlock.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Copy, then remove focus", async () => {
+      const button = canvas.getByRole("button", { name: "Copy code" });
+      await userEvent.click(button);
+      await waitFor(() => expect(clipboard.copied).toEqual([jsxSample]));
+      button.blur();
+      await expect(button).not.toHaveFocus();
+    });
+  },
 };
 
 /**

@@ -9,6 +9,9 @@ import {
 } from "@/components/code-block/utils/code-block.test-utils";
 import { CodeSnippet } from "./code-snippet";
 
+// VRT: `Base` and `SmokeTest` snapshot the arrangement this pattern fixes.
+// Actions beside the code are covered by `Components/CodeBlock` `SmokeTest`
+// (command block); the collapsed state by its `Collapsed` story.
 const meta: Meta<typeof CodeSnippet> = {
   title: "patterns/code/CodeSnippet",
   component: CodeSnippet,
@@ -43,12 +46,6 @@ export const Base: Story = {
     code: tsxSample,
     language: "tsx",
   },
-  beforeEach: () => {
-    onCopy.mockClear();
-    clipboard = captureCopiedText();
-    return clipboard.restore;
-  },
-  render: (args) => <CodeSnippet {...args} onCopy={onCopy} />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -63,6 +60,45 @@ export const Base: Story = {
       ).toBeInTheDocument();
       await expect(canvasElement.querySelector(".token")).toBeInTheDocument();
     });
+  },
+};
+
+/**
+ * Every part this pattern arranges in one frame: title, language label,
+ * download and copy in the header, highlighted lines, the expand button and
+ * the footer.
+ */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    title: "lines.js",
+    code: fortyLines,
+    language: "js",
+    downloadFileName: "lines.js",
+    showLineNumbers: true,
+    highlightedLines: [2],
+    maxLines: 4,
+    footer: "Generated file",
+  },
+};
+
+/**
+ * Copy puts the code on the clipboard and calls `onCopy`.
+ */
+export const CopyCode: Story = {
+  args: {
+    code: tsxSample,
+    language: "tsx",
+  },
+  beforeEach: () => {
+    onCopy.mockClear();
+    clipboard = captureCopiedText();
+    return clipboard.restore;
+  },
+  render: (args) => <CodeSnippet {...args} onCopy={onCopy} />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
 
     await step("Copy puts the code on the clipboard", async () => {
       await userEvent.click(canvas.getByRole("button", { name: "Copy code" }));
@@ -199,6 +235,32 @@ export const Download: Story = {
       await expect(await download.blob.text()).toBe(
         "API_URL=https://api.example.com"
       );
+    });
+  },
+};
+
+/**
+ * An empty `title` or `footer` (`null`, `false`, `""`) renders no part, so
+ * the snippet does not become a region without a name.
+ */
+export const EmptyTitleAndFooter: Story = {
+  args: {
+    code: tsxSample,
+    language: "tsx",
+    title: "",
+    footer: null,
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("No title, no footer and no region", async () => {
+      await expect(
+        canvasElement.querySelector(".nimbus-code-block__title")
+      ).toBeNull();
+      await expect(
+        canvasElement.querySelector(".nimbus-code-block__footer")
+      ).toBeNull();
+      await expect(canvas.queryByRole("region")).toBeNull();
     });
   },
 };

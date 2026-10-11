@@ -6,7 +6,8 @@ import { useCodeBlockContext } from "../hooks/use-code-block-context";
 
 /**
  * CodeBlock.Title - The visible title of the block, for example a file name.
- * It names the code region unless `aria-label` is set on `CodeBlock.Root`.
+ * It makes the block a region named by the title, unless `aria-label` is set
+ * on `CodeBlock.Root`.
  *
  * @supportsStyleProps
  */

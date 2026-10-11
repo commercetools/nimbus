@@ -253,6 +253,9 @@ builds by hand.
   is limited to the scroll area.
 - **Not selectable.** Line numbers, prompts, diff markers and announcement text
   use `user-select: none`, so manual text selection copies only code.
+- **Direction.** The `pre` is always `dir="ltr"`. Without it, the bidi algorithm
+  reorders code punctuation on right-to-left pages (seen in the `Rtl` story:
+  `export const App = () => (` rendered as `) <= () = export const App`).
 
 ### Decision 6: Marked lines are not shown by color alone
 

@@ -13,7 +13,7 @@ const renderWithProvider = (ui: React.ReactElement) =>
  * @docs-order 1
  */
 describe("CodeSnippet - Accessible name", () => {
-  it("is a region named by its title", () => {
+  it("finds the snippet by its title", () => {
     renderWithProvider(
       <CodeSnippet title="button.tsx" language="tsx" code="const a = 1;" />
     );
@@ -23,7 +23,7 @@ describe("CodeSnippet - Accessible name", () => {
     ).toBeInTheDocument();
   });
 
-  it("is a region named by aria-label when there is no header", () => {
+  it("finds the snippet by its aria-label", () => {
     renderWithProvider(
       <CodeSnippet
         aria-label="Install step"
@@ -36,14 +36,6 @@ describe("CodeSnippet - Accessible name", () => {
     expect(
       screen.getByRole("region", { name: "Install step" })
     ).toBeInTheDocument();
-  });
-
-  it("is not a region without a name", () => {
-    renderWithProvider(
-      <CodeSnippet language="js" showLanguage={false} code="const a = 1;" />
-    );
-
-    expect(screen.queryByRole("region")).not.toBeInTheDocument();
   });
 });
 
@@ -73,21 +65,6 @@ describe("CodeSnippet - Copy", () => {
     await waitFor(() => expect(handleCopy).toHaveBeenCalledTimes(1));
     expect(await navigator.clipboard.readText()).toBe(code);
   });
-
-  it("hides the copy button with showCopyButton={false}", () => {
-    renderWithProvider(
-      <CodeSnippet
-        title="greeting.js"
-        language="js"
-        code="const a = 1;"
-        showCopyButton={false}
-      />
-    );
-
-    expect(
-      screen.queryByRole("button", { name: "Copy code" })
-    ).not.toBeInTheDocument();
-  });
 });
 
 /**
@@ -97,27 +74,6 @@ describe("CodeSnippet - Copy", () => {
  * @docs-order 3
  */
 describe("CodeSnippet - Header, download and footer", () => {
-  it("shows the language label in the header", () => {
-    renderWithProvider(
-      <CodeSnippet title="a.tsx" language="tsx" code="const a = 1;" />
-    );
-
-    expect(screen.getByText("tsx")).toBeInTheDocument();
-  });
-
-  it("hides the language label with showLanguage={false}", () => {
-    renderWithProvider(
-      <CodeSnippet
-        title="a.tsx"
-        language="tsx"
-        showLanguage={false}
-        code="const a = 1;"
-      />
-    );
-
-    expect(screen.queryByText("tsx")).not.toBeInTheDocument();
-  });
-
   it("shows a download button only with downloadFileName", () => {
     const { rerender } = renderWithProvider(
       <CodeSnippet title="a.env" language="bash" code="A=1" />

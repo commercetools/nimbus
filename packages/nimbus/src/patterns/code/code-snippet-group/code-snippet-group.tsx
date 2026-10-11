@@ -5,6 +5,7 @@ import { Select } from "@/components/select/select";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { codeSnippetGroupMessagesStrings } from "./code-snippet-group.messages";
 import type { CodeSnippetGroupProps } from "./code-snippet-group.types";
+import { hasContent } from "../utils/has-content";
 
 /**
  * # CodeSnippetGroup
@@ -62,7 +63,7 @@ export const CodeSnippetGroup = ({
   );
   const header = (switcherElement: React.ReactNode) => (
     <CodeBlock.Header>
-      {title !== undefined && <CodeBlock.Title>{title}</CodeBlock.Title>}
+      {hasContent(title) && <CodeBlock.Title>{title}</CodeBlock.Title>}
       {switcherElement}
       {selected.language !== undefined && <CodeBlock.LanguageLabel />}
       {(showCopyButton || selected.fileName !== undefined) && (

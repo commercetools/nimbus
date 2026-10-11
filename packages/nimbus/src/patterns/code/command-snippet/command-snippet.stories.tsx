@@ -6,6 +6,8 @@ import {
 } from "@/components/code-block/utils/code-block.test-utils";
 import { CommandSnippet } from "./command-snippet";
 
+// VRT: `Base` snapshots the arrangement this pattern fixes. Output lines are
+// covered by `Components/CodeBlock` `SmokeTest` (command block).
 const meta: Meta<typeof CommandSnippet> = {
   title: "patterns/code/CommandSnippet",
   component: CommandSnippet,

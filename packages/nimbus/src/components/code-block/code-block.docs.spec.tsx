@@ -69,16 +69,6 @@ describe("CodeBlock - Basic usage", () => {
     const region = screen.getByRole("region", { name: "Add function" });
     expect(region.querySelector("code")).toHaveTextContent(code);
   });
-
-  it("does not create a region when the block has no name", () => {
-    renderWithProvider(
-      <CodeBlock.Root code="const x = 1;" language="js">
-        <CodeBlock.Content />
-      </CodeBlock.Root>
-    );
-
-    expect(screen.queryByRole("region")).not.toBeInTheDocument();
-  });
 });
 
 /**
@@ -124,19 +114,6 @@ describe("CodeBlock - Title and header", () => {
     expect(
       screen.queryByRole("region", { name: "config.yaml" })
     ).not.toBeInTheDocument();
-  });
-
-  it("hides the language label from assistive technology", () => {
-    renderWithProvider(
-      <CodeBlock.Root code="a: 1" language="yaml" aria-label="Settings">
-        <CodeBlock.Header>
-          <CodeBlock.LanguageLabel />
-        </CodeBlock.Header>
-        <CodeBlock.Content />
-      </CodeBlock.Root>
-    );
-
-    expect(screen.getByText("yaml")).toHaveAttribute("aria-hidden", "true");
   });
 
   it("renders several blocks with distinct names", () => {
@@ -315,52 +292,6 @@ describe("CodeBlock - Line numbers and marked lines", () => {
       highlighted[0].querySelector(".nimbus-code-block__lineNumber")
     ).toHaveTextContent("43");
   });
-
-  it("gives each marked run a text cue for screen readers", () => {
-    renderWithProvider(
-      <CodeBlock.Root code={exampleCode} language="js" aria-label="Runs">
-        <CodeBlock.Content highlightedLines={[[2, 3]]} />
-      </CodeBlock.Root>
-    );
-
-    expect(screen.getByText("Highlighted lines start")).toBeInTheDocument();
-    expect(screen.getByText("Highlighted lines end")).toBeInTheDocument();
-  });
-
-  it("shows added and removed lines of a diff", () => {
-    const diffCode = [
-      "const total = price;",
-      "const total = price * quantity;",
-      "return total;",
-    ].join("\n");
-
-    renderWithProvider(
-      <CodeBlock.Root code={diffCode} language="js" aria-label="Diff">
-        <CodeBlock.Content removedLines={[1]} addedLines={[2]} />
-      </CodeBlock.Root>
-    );
-
-    expect(
-      document.querySelectorAll(".nimbus-code-block__line[data-mark='removed']")
-    ).toHaveLength(1);
-    expect(
-      document.querySelectorAll(".nimbus-code-block__line[data-mark='added']")
-    ).toHaveLength(1);
-    expect(screen.getByText("Added lines start")).toBeInTheDocument();
-    expect(screen.getByText("Removed lines start")).toBeInTheDocument();
-  });
-
-  it("marks words with a mark element", () => {
-    renderWithProvider(
-      <CodeBlock.Root code={exampleCode} language="js" aria-label="Words">
-        <CodeBlock.Content highlightedWords={["message"]} />
-      </CodeBlock.Root>
-    );
-
-    const marks = document.querySelectorAll("mark");
-    expect(marks.length).toBeGreaterThan(0);
-    marks.forEach((mark) => expect(mark).toHaveTextContent("message"));
-  });
 });
 
 /**
@@ -438,18 +369,14 @@ describe("CodeBlock - Collapse with ExpandTrigger", () => {
     const code = () => document.querySelector("code") as HTMLElement;
     expect(code().querySelectorAll(".nimbus-code-block__line")).toHaveLength(3);
 
-    const trigger = screen.getByRole("button", { name: "Show more" });
-    expect(trigger).toHaveAttribute("aria-expanded", "false");
-
-    await user.click(trigger);
+    await user.click(screen.getByRole("button", { name: "Show more" }));
 
     expect(code().querySelectorAll(".nimbus-code-block__line")).toHaveLength(
       12
     );
-    expect(screen.getByRole("button", { name: "Show less" })).toHaveAttribute(
-      "aria-expanded",
-      "true"
-    );
+    expect(
+      screen.getByRole("button", { name: "Show less" })
+    ).toBeInTheDocument();
   });
 
   it("copies the full code while the block is collapsed", async () => {
@@ -461,19 +388,6 @@ describe("CodeBlock - Collapse with ExpandTrigger", () => {
     await waitFor(async () =>
       expect(await navigator.clipboard.readText()).toBe(longCode)
     );
-  });
-
-  it("renders no expand button when the code is short", () => {
-    renderWithProvider(
-      <CodeBlock.Root code="const x = 1;" language="js" maxLines={3}>
-        <CodeBlock.Content />
-        <CodeBlock.ExpandTrigger />
-      </CodeBlock.Root>
-    );
-
-    expect(
-      screen.queryByRole("button", { name: /show more/i })
-    ).not.toBeInTheDocument();
   });
 
   it("reports state changes when the block is controlled", async () => {
@@ -560,77 +474,6 @@ describe("CodeBlock - Download", () => {
 });
 
 /**
- * @docs-section keyboard-order
- * @docs-title Keyboard Order
- * @docs-description
- *   Focus follows the DOM order: triggers in the header, then the code area,
- *   then triggers after the code such as `CodeBlock.ExpandTrigger`.
- * @docs-order 8
- */
-describe("CodeBlock - Keyboard order", () => {
-  it("moves focus from header triggers to the code area to the expand trigger", async () => {
-    const user = userEvent.setup();
-    const longCode = Array.from({ length: 6 }, (_, i) => `line ${i}`).join(
-      "\n"
-    );
-
-    renderWithProvider(
-      <CodeBlock.Root
-        code={longCode}
-        language="text"
-        maxLines={2}
-        aria-label="Order"
-      >
-        <CodeBlock.Header>
-          <CodeBlock.Actions>
-            <CodeBlock.DownloadTrigger fileName="lines.txt" />
-            <CodeBlock.CopyTrigger />
-          </CodeBlock.Actions>
-        </CodeBlock.Header>
-        <CodeBlock.Content />
-        <CodeBlock.ExpandTrigger />
-      </CodeBlock.Root>
-    );
-
-    await user.tab();
-    expect(screen.getByRole("button", { name: "Download code" })).toHaveFocus();
-    await user.tab();
-    expect(screen.getByRole("button", { name: "Copy code" })).toHaveFocus();
-    await user.tab();
-    expect(document.querySelector("pre")).toHaveFocus();
-    await user.tab();
-    expect(screen.getByRole("button", { name: "Show more" })).toHaveFocus();
-  });
-});
-
-/**
- * @docs-section size-variants
- * @docs-title Using Size Variants
- * @docs-description
- *   Choose `"sm"` (compact) or `"md"` (default) to match the density of the
- *   surrounding layout. Both sizes render the same code.
- * @docs-order 9
- */
-describe("CodeBlock - Size variants", () => {
-  it.each(["sm", "md"] as const)("renders at size %s", (size) => {
-    renderWithProvider(
-      <CodeBlock.Root
-        code="const x = 1;"
-        language="js"
-        size={size}
-        aria-label={`Size ${size}`}
-      >
-        <CodeBlock.Content />
-      </CodeBlock.Root>
-    );
-
-    expect(
-      screen.getByRole("region", { name: `Size ${size}` })
-    ).toBeInTheDocument();
-  });
-});
-
-/**
  * @docs-section additional-languages
  * @docs-title Adding Languages With createPrismHighlighter
  * @docs-description
@@ -638,7 +481,7 @@ describe("CodeBlock - Size variants", () => {
  *   Create your own highlighter once, with `additionalLanguages` and
  *   `aliases`, and give it to your code blocks with `CodeHighlighterProvider`.
  *   Your app needs `refractor` as a dependency to import extra grammars.
- * @docs-order 10
+ * @docs-order 8
  */
 describe("CodeBlock - Additional languages", () => {
   // Create highlighters once, outside of render.
@@ -715,7 +558,7 @@ describe("CodeBlock - Additional languages", () => {
  *   Implement the `CodeHighlighter` type to use another engine. `highlight`
  *   may return a Promise. The code shows as plain text until the Promise
  *   resolves.
- * @docs-order 11
+ * @docs-order 9
  */
 describe("CodeBlock - Custom highlighter", () => {
   const asyncHighlighter: CodeHighlighter = {

@@ -126,8 +126,12 @@ export const CodeBlockContent = (props: CodeBlockContentProps) => {
   return (
     <CodeBlockActionsPlacementContext.Provider value="content">
       <CodeBlockContentSlot ref={ref} {...styleProps} {...functionalProps}>
-        {/* tabIndex={0} keeps overflowing code keyboard-scrollable (WCAG 2.1.1) */}
-        <CodeBlockPreSlot id={contentId} tabIndex={0}>
+        {/*
+         * tabIndex={0} keeps overflowing code keyboard-scrollable (WCAG 2.1.1).
+         * Code is left-to-right text, also on right-to-left pages; without
+         * dir="ltr" the bidi algorithm reorders its punctuation.
+         */}
+        <CodeBlockPreSlot id={contentId} tabIndex={0} dir="ltr">
           <CodeBlockCodeSlot data-wrap={wrap}>
             {visibleLines.map((line, index) => {
               const lineNumber = index + startLineNumber;

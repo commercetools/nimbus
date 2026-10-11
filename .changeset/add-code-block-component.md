@@ -2,6 +2,8 @@
 "@commercetools/nimbus": minor
 ---
 
+### CodeBlock
+
 `CodeBlock`: new compound component for read-only, syntax-highlighted code.
 Compose `CodeBlock.Root` with `Header`, `Title`, `LanguageLabel`, `Actions`,
 `CopyTrigger`, `DownloadTrigger`, `Content`, `ExpandTrigger` and `Footer`.
@@ -22,7 +24,12 @@ Compose `CodeBlock.Root` with `Header`, `Title`, `LanguageLabel`, `Actions`,
 - A block is a named region only when it has `aria-label` or a `Title`.
 - Light and dark mode, `sm` and `md` sizes.
 
-New patterns built on `CodeBlock`: `CodeSnippet` (one snippet with title,
-language, copy and download), `CodeSnippetGroup` (one example in several
-languages, switched by tabs or a select), `JsonSnippet` (any value as formatted
-JSON) and `CommandSnippet` (shell commands with a prompt).
+### Patterns
+
+New patterns built on `CodeBlock`:
+
+- `CodeSnippet`: one snippet with title, language, copy and download.
+- `CodeSnippetGroup`: one example in several languages, switched by tabs or a
+  select.
+- `JsonSnippet`: any value as formatted JSON.
+- `CommandSnippet`: shell commands with a prompt that is not copied.

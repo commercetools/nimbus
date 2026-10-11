@@ -1,5 +1,6 @@
 import { CodeBlock } from "@/components/code-block/code-block";
 import type { CodeSnippetProps } from "./code-snippet.types";
+import { hasContent } from "../utils/has-content";
 
 /**
  * # CodeSnippet
@@ -43,7 +44,8 @@ export const CodeSnippet = ({
   ...rootProps
 }: CodeSnippetProps) => {
   const isLanguageShown = showLanguage && language !== undefined;
-  const hasHeader = title !== undefined || isLanguageShown;
+  const hasTitle = hasContent(title);
+  const hasHeader = hasTitle || isLanguageShown;
   const actions =
     showCopyButton || downloadFileName !== undefined ? (
       <CodeBlock.Actions>
@@ -58,7 +60,7 @@ export const CodeSnippet = ({
     <CodeBlock.Root code={code} language={language} {...rootProps}>
       {hasHeader && (
         <CodeBlock.Header>
-          {title !== undefined && <CodeBlock.Title>{title}</CodeBlock.Title>}
+          {hasTitle && <CodeBlock.Title>{title}</CodeBlock.Title>}
           {isLanguageShown && <CodeBlock.LanguageLabel />}
           {actions}
         </CodeBlock.Header>
@@ -75,7 +77,7 @@ export const CodeSnippet = ({
         {!hasHeader && actions}
       </CodeBlock.Content>
       <CodeBlock.ExpandTrigger />
-      {footer !== undefined && <CodeBlock.Footer>{footer}</CodeBlock.Footer>}
+      {hasContent(footer) && <CodeBlock.Footer>{footer}</CodeBlock.Footer>}
     </CodeBlock.Root>
   );
 };

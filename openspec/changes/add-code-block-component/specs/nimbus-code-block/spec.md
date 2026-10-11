@@ -257,7 +257,16 @@ inside `Header` SHALL align to the end of the header. `CodeBlock.Actions` inside
 next to the scroll area, so that it never covers code.
 `CodeBlock.Footer` SHALL render below the content. In a constrained container,
 long lines SHALL scroll horizontally inside the `pre` without overflowing the
-container; with `width="full"` the root SHALL fill the available width.
+container; with `width="full"` the root SHALL fill the available width. The
+`pre` SHALL have `dir="ltr"`, so code keeps its character order on
+right-to-left pages, while the header, actions and footer follow the page
+direction.
+
+#### Scenario: Right-to-left page
+
+- **WHEN** a block is rendered inside an element with `dir="rtl"`
+- **THEN** the code reads left to right with the gutter on the left
+- **AND** the header and footer are mirrored
 
 #### Scenario: Copy without a header
 
