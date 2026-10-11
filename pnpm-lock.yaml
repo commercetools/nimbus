@@ -49,8 +49,8 @@ catalogs:
       specifier: 7.18.4
       version: 7.18.4
     react-syntax-highlighter:
-      specifier: 16.1.1
-      version: 16.1.1
+      specifier: 16.1.2
+      version: 16.1.2
     remark-mark-highlight:
       specifier: 0.1.1
       version: 0.1.1
@@ -583,7 +583,7 @@ importers:
         version: 3.50.0(react@19.2.0)
       react-syntax-highlighter:
         specifier: catalog:apps
-        version: 16.1.1(react@19.2.0)
+        version: 16.1.2(react@19.2.0)
       remark-flexible-toc:
         specifier: catalog:markdown
         version: 1.2.7(unified@11.0.5)
@@ -7905,8 +7905,8 @@ packages:
       '@types/react':
         optional: true
 
-  react-syntax-highlighter@16.1.1:
-    resolution: {integrity: sha512-PjVawBGy80C6YbC5DDZJeUjBmC7skaoEUdvfFQediQHgCL7aKyVHe57SaJGfQsloGDac+gCpTfRdtxzWWKmCXA==}
+  react-syntax-highlighter@16.1.2:
+    resolution: {integrity: sha512-4dM0+mYtfnhgwYWAvFx56fgyjIYk2yFopfiICFvMDhRfeSGRNd+ngFALdPD9q7llyGAmiE6pzOSOwI8Lf9ca1w==}
     engines: {node: '>= 16.20.2'}
     peerDependencies:
       react: '>= 0.14.0'
@@ -18508,7 +18508,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.18
 
-  react-syntax-highlighter@16.1.1(react@19.2.0):
+  react-syntax-highlighter@16.1.2(react@19.2.0):
     dependencies:
       '@babel/runtime': 7.29.7
       highlight.js: 10.7.3
