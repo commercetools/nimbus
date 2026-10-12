@@ -210,13 +210,6 @@ export const listBoxSlotRecipe = defineSlotRecipe({
       "&:not(:first-of-type)": {
         mt: "100",
       },
-      // Virtualized: the layout positions the header and items, so the
-      // section's own spacing is not applied.
-      "[data-virtualized] &": {
-        display: "block",
-        gap: "0",
-        mt: "0",
-      },
     },
     // RA <Header> inside a section
     sectionHeader: {

@@ -106,8 +106,8 @@ Chromatic snapshot for 10,000-item stories).
       set `data-virtualized`; do not forward the two props to React Aria; call
       `useVirtualizationWarnings` (Decisions 4 and 7)
 - [x] 5.5 `list-box.recipe.ts`: under `&[data-virtualized]`, set root
-      `display: block`, root `gap: 0`, section `gap: 0` and section margin 0,
-      because the layout owns spacing
+      `display: block`, root `gap: 0` and root padding 0, because the layout
+      owns spacing
 - [x] 5.6 Story: `ListBox.Root isVirtualized` with 500 and 10,000 options, per
       `size` — play asserts DOM count, keyboard navigation, typeahead to an
       off-screen option, single and multiple selection of off-screen options,
