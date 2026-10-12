@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ListBox, Stack, Text, Button } from "@commercetools/nimbus";
 import { useLayoutEffect, useRef, useState } from "react";
-import { within, expect } from "storybook/test";
+import { within, expect, userEvent } from "storybook/test";
 
 /**
  * Timing comparison for `isVirtualized` (Virtualizer design Decision 12).
@@ -239,12 +239,16 @@ export const VirtualizationScrollCorrection: Story = {
  * Press "Run timing" to measure all four cases one after the other.
  */
 export const VirtualizationTiming: Story = {
+  // Excluded from the test runner: the 10,000-option case without
+  // virtualization takes several seconds in CI, and the numbers are not a
+  // CI gate. The play still runs when the story is opened in Storybook.
+  tags: ["!test", "!a11y-test"],
   render: () => <TimingComparison />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("All four cases run and report results", async () => {
-      canvas.getByRole("button", { name: "Run timing" }).click();
+      await userEvent.click(canvas.getByRole("button", { name: "Run timing" }));
       await canvas.findByText("Done", undefined, { timeout: 60000 });
       const rows = within(canvas.getByTestId("timing-results")).getAllByRole(
         "row"

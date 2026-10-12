@@ -312,7 +312,12 @@ first paint for a ListBox with 500 and 10,000 options, with and without
 `isVirtualized`, and shows the numbers on screen. It also records the scroll
 correction with estimated heights (Decision 8). The results are written into
 this document after implementation. The story is not a CI gate: timings in
-headless CI are not stable enough for a threshold.
+headless CI are not stable enough for a threshold. The timing story is therefore
+tagged `!test`, because its 10,000-option case without virtualization took
+about 9 seconds in CI. To measure again, open `ListBox/VirtualizationTiming`
+in Storybook; its play function runs all four cases. The scroll correction
+story stays in the test runner, because it asserts that single-line options do
+not shift.
 
 **Results** (`list-box.timing.stories.tsx`, `pnpm test:dev`, headless Chromium,
 source files not the built bundle, one developer laptop, three runs;
