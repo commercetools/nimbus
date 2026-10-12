@@ -402,10 +402,14 @@ added to FEC-1147.
 - [Browser find (Ctrl+F) does not reach off-screen items] → Documented, with a
   recommendation to add a search or filter field.
 - [Section spacing differs from the non-virtualized ListBox] → `ListLayout`
-  applies one `gap` between all rows, including section headers. The story
-  compares both modes; if the difference is visible, ListBox adjusts section
-  header spacing in its virtualized styles, or a list layout subclass adds
-  section spacing in `buildSection`.
+  applies one `gap` between all rows, including section headers. Measured in
+  Storybook: a section header is 4px below the last option of the previous
+  section when virtualized, and 8px without virtualization (row gap plus the
+  section's top margin). Accepted for now and documented in the ListBox docs.
+  Section header styles cannot add the space: a rendered header is measured, and
+  extra header padding would also add space above the first section. If the
+  spacing must match, a list layout subclass adds section spacing in
+  `buildSection`.
 - [Bundle size grows] → Measured before and after with `pnpm check:bundle-size`:
   `@commercetools/nimbus` dist 20,985.0 KB → 21,582.9 KB (+2.8%, within policy).
   Most of it is source maps and the CommonJS copy; the ESM chunk a consumer

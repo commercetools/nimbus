@@ -117,7 +117,8 @@ Chromatic snapshot for 10,000-item stories).
 - [x] 5.8 Story: virtualized ListBox with sections — record whether
       `aria-setsize` counts per section or for the whole list (design open
       question); compare spacing with the non-virtualized story and fix visible
-      differences (design risk)
+      differences (design risk). Result: sections are 4px apart instead of 8px;
+      accepted and documented (see design.md, Risks)
 - [x] 5.9 Story: long wrapping labels and items with descriptions — play asserts
       no two option rects overlap and no option content overflows its row
 - [x] 5.10 Story: text spacing override (WCAG 1.4.12) — inject a style with line

@@ -315,7 +315,8 @@ For lists with hundreds of options or more, set `isVirtualized`. Only the
 options on screen are rendered and the others are added as people scroll;
 scrolling, keyboard navigation, type-ahead and selection still work for every
 option. Row heights, spacing and padding match the list's `size` and `variant`
-automatically. In our measurements a list of 500 options appeared about 8 times
+automatically; only sections sit closer together (see
+[Notes and limitations](#notes-and-limitations)). In our measurements a list of 500 options appeared about 8 times
 faster with `isVirtualized`.
 
 ```jsx live-dev
@@ -444,6 +445,9 @@ effect; use `virtualizerOptions` instead.
   header counts) and the size of the whole list, for example "2 of 1000" for
   the first option of every section. Prefer lists without sections when the
   position matters to your users.
+- **Sections sit closer together.** In a virtualized list, a section header is
+  4px below the last option of the previous section. Without `isVirtualized`
+  it is 8px.
 - **Deep content changes are not measured.** An option is measured again when
   its direct children change size. A change deep inside an option that does not
   change the size of its direct children is not detected.

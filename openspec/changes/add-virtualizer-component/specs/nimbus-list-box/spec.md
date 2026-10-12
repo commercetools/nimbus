@@ -48,6 +48,12 @@ SHALL render the list virtually with defaults for its `size` and `variant`.
 - **THEN** the space between items and around the list SHALL match the
   non-virtualized ListBox of the same `variant` and `size`
 
+#### Scenario: Space between sections
+
+- **WHEN** a virtualized ListBox has sections
+- **THEN** a section header SHALL be one layout `gap` below the last item of
+  the previous section
+
 #### Scenario: Focus ring visible
 
 - **WHEN** a virtualized item receives keyboard focus, including the first and
