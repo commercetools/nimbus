@@ -354,7 +354,9 @@ renders React Aria's `ListBox` directly (`combobox.listbox.tsx:2`). The story is
 excluded from the published Storybook and from Chromatic, and its findings are
 added to FEC-1147.
 
-**Findings** (`combobox.virtualizer-spike.stories.tsx`, 500 options, passes):
+**Findings** (`combobox.virtualizer-spike.stories.tsx`, 500 options, passes).
+The story was deleted after the findings were recorded; it is in commit
+`1a83701e8` of PR #2039:
 
 1. The `ComboBox.ListBox` element is the scroll container (`overflowY: auto`).
 2. The ComboBox recipe bounds its height (`listBox` slot, `maxH: "40svh"`), so
@@ -412,10 +414,17 @@ added to FEC-1147.
   `buildSection`.
 - [Bundle size grows] → Measured before and after with `pnpm check:bundle-size`:
   `@commercetools/nimbus` dist 20,985.0 KB → 21,582.9 KB (+2.8%, within policy).
-  Most of it is source maps and the CommonJS copy; the ESM chunk a consumer
-  loads (`internal-virtualizer`) is 62 KB minified. It is loaded only by
-  components that import it. It includes the grid and table layouts, which no
-  shipped component uses yet.
+  Most of it is source maps and the CommonJS copy. Every ListBox consumer loads
+  the virtualizer, also without `isVirtualized`: `list-box.root.tsx` imports it
+  statically, so the ESM `list-box` chunk grew from 4 KB to 68 KB (not
+  minified), and it imports React Aria's `Table` chunk. Measured on a consumer
+  bundle of `import { ListBox }`: +55–60 KB minified, +15–17 KB gzip. About
+  5 KB gzip of it is the grid and table layouts, which no shipped component uses
+  yet; the `layoutClasses` map in `virtualizer.tsx` keeps all three. Accepted
+  for this change, because ListBox is not released yet. Follow-up before
+  FEC-1147/1148, which add the Virtualizer to Select and ComboBox: import only
+  the list layout for ListBox, or load the Virtualizer only when
+  `isVirtualized` is set (`React.lazy`).
 
 ## Migration Plan
 

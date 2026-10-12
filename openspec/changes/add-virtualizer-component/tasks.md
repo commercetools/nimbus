@@ -189,7 +189,8 @@ Chromatic snapshot for 10,000-item stories).
 
 Follows task 8.3: a public `Virtualizer` cannot reach a consumer's own React
 Aria components, and consumers only use Nimbus components. Replaces the export
-parts of tasks 1.3, 3.2, 3.4, 4.10, 5.14 and 7.1–7.7.
+parts of tasks 1.3, 3.2, 3.4, 4.10, 5.14 and 7.1–7.7, and the link to the
+Virtualizer docs in 5.1.
 
 - [x] 9.1 Merge the public wrapper into one internal `Virtualizer`
       (`virtualizer.tsx`, list, grid and table) and move its types into
@@ -210,3 +211,16 @@ parts of tasks 1.3, 3.2, 3.4, 4.10, 5.14 and 7.1–7.7.
 - [x] 9.6 Changeset describes only the ListBox props
 - [x] 9.7 Run typecheck, unit tests, lint, and the story tests against source
       files and against the built bundle (closes 8.3)
+
+## 10. Review follow-up
+
+- [x] 10.1 Unit spec for `hooks/use-virtualizer-options-warning.ts`: warns
+      without `isVirtualized`, silent with it, silent without options, silent
+      in production
+- [x] 10.2 Virtualizer stories: `// No VRT:` note on `meta`
+- [x] 10.3 Delete the ComboBox spike story; its findings are in `design.md`
+      (Decision 13)
+- [x] 10.4 Story: virtualized `ListBox.LoadMore` — play scrolls to the end and
+      asserts `onLoadMore`, the loader row and more options
+- [x] 10.5 Stories assert `data-virtualized` on a virtualized root and not on a
+      plain root, and that a virtualized `card` list scrolls itself

@@ -29,7 +29,7 @@ SHALL render the list virtually with defaults for its `size` and `variant`.
 
 #### Scenario: Custom options
 
-- **WHEN** a consumer passes `virtualizerOptions={{ estimatedRowHeight: 56 }}`
+- **WHEN** a consumer passes `virtualizerOptions={{ gap: "400" }}`
 - **THEN** that value SHALL replace the ListBox default
 
 #### Scenario: Long labels wrap
@@ -46,7 +46,8 @@ SHALL render the list virtually with defaults for its `size` and `variant`.
 
 - **WHEN** a ListBox is virtualized
 - **THEN** the space between items and around the list SHALL match the
-  non-virtualized ListBox of the same `variant` and `size`
+  non-virtualized ListBox of the same `variant` and `size`, except between
+  sections
 
 #### Scenario: Space between sections
 
@@ -56,10 +57,9 @@ SHALL render the list virtually with defaults for its `size` and `variant`.
 
 #### Scenario: Focus ring visible
 
-- **WHEN** a virtualized item receives keyboard focus, including the first and
-  the last item
-- **THEN** its focus ring SHALL be fully visible and not clipped by the scroll
-  container
+- **WHEN** an item of a virtualized `variant="card"` ListBox receives keyboard
+  focus, including the first and the last item
+- **THEN** its focus ring SHALL be fully visible and not clipped by the list
 
 #### Scenario: Card variant scrolls
 
