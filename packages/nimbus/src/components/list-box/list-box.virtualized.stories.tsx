@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box, ListBox, ScrollArea, Stack, Text } from "@commercetools/nimbus";
 import { userEvent, within, expect, waitFor, fn } from "storybook/test";
@@ -224,6 +225,13 @@ export const Virtualized: Story = {
         expect(options.length).toBeLessThan(60);
         expect(options[0]).toHaveAttribute("aria-posinset", "1");
         expect(options[0]).toHaveAttribute("aria-setsize", String(total));
+      });
+
+      await step(`${label}: the card root is marked and scrolls`, async () => {
+        const list = canvas.getByRole("listbox", { name: label });
+        expect(list).toHaveAttribute("data-virtualized");
+        expect(getComputedStyle(list).overflowY).toBe("auto");
+        expect(list.scrollHeight).toBeGreaterThan(list.clientHeight);
       });
     }
   },
@@ -642,6 +650,78 @@ export const VirtualizedFocusRing: Story = {
   },
 };
 
+const LOAD_MORE_PAGE = 100;
+const loadMoreOptions = makeOptions(3 * LOAD_MORE_PAGE);
+const loadMoreSpy = fn();
+
+const VirtualizedLoadMoreList = () => {
+  const [count, setCount] = useState(LOAD_MORE_PAGE);
+  const [isLoading, setIsLoading] = useState(false);
+  const handleLoadMore = async () => {
+    loadMoreSpy();
+    if (count >= loadMoreOptions.length) return;
+    setIsLoading(true);
+    // A real async gap, so the loader row renders before the next page.
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    setCount((c) => Math.min(c + LOAD_MORE_PAGE, loadMoreOptions.length));
+    setIsLoading(false);
+  };
+  return (
+    <ListBox.Root
+      isVirtualized
+      aria-label="Load more"
+      selectionMode="single"
+      width="18rem"
+      maxHeight="320px"
+    >
+      {loadMoreOptions.slice(0, count).map((option) => (
+        <ListBox.Item key={option.id} id={option.id} textValue={option.name}>
+          {option.name}
+        </ListBox.Item>
+      ))}
+      <ListBox.LoadMore isLoading={isLoading} onLoadMore={handleLoadMore} />
+    </ListBox.Root>
+  );
+};
+
+/**
+ * `ListBox.LoadMore` in a virtualized list: scrolling to the end calls
+ * `onLoadMore`, the loader row is announced while the next page loads, and
+ * the new options extend the list.
+ */
+export const VirtualizedLoadMore: Story = {
+  render: () => <VirtualizedLoadMoreList />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await waitForOptions(canvas);
+    const list = canvas.getByRole("listbox", { name: "Load more" });
+    const setSize = () =>
+      within(list)
+        .getAllByRole("option")
+        .find((option) => option.hasAttribute("aria-setsize"))
+        ?.getAttribute("aria-setsize");
+
+    await step("The first page is loaded", async () => {
+      expect(setSize()).toBe(String(LOAD_MORE_PAGE));
+    });
+
+    await step(
+      "Scrolling to the end loads the next page with a loader row",
+      async () => {
+        list.scrollTop = list.scrollHeight;
+        await waitFor(() => expect(loadMoreSpy).toHaveBeenCalled());
+        await waitFor(() =>
+          expect(within(list).getByRole("progressbar")).toBeInTheDocument()
+        );
+        await waitFor(
+          () => expect(setSize()).toBe(String(2 * LOAD_MORE_PAGE)),
+          { timeout: 3000 }
+        );
+      }
+    );
+  },
+};
+
 const warnSpy = fn();
 
 /**
@@ -675,6 +755,12 @@ export const VirtualizedOptionsWithoutIsVirtualized: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     await waitForOptions(canvas);
+
+    await step("The list is not virtualized", async () => {
+      expect(canvas.getByRole("listbox")).not.toHaveAttribute(
+        "data-virtualized"
+      );
+    });
 
     await step("virtualizerOptions without isVirtualized warns", async () => {
       await waitFor(() =>
