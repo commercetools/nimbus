@@ -31,9 +31,9 @@ import { Virtualizer } from "./virtualizer";
  *
  * Test rules (design Decision 14): fixed story sizes, `waitFor`/`findBy*`
  * instead of timeouts, scroll assertions through `scrollTop`/`scrollHeight`,
- * typeahead in one `userEvent.keyboard` call, ±1px for heights. 10,000-item
- * stories are not snapshotted by Chromatic.
+ * typeahead in one `userEvent.keyboard` call, ±1px for heights.
  */
+// No VRT: renders no DOM of its own (see chromatic-visual-testing.md).
 const meta: Meta<typeof Virtualizer> = {
   title: "Components/Virtualizer (internal)",
   component: Virtualizer,
