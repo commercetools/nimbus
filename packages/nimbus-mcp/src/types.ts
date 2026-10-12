@@ -34,16 +34,10 @@ export interface DocSearchResult {
   description: string;
   /** Route path to the documentation page. */
   path: string;
-  /**
-   * Top-level category of the page (e.g. "Components", "Guides", "Tokens").
-   * Equivalent to `category` on RouteManifestEntry — derived from menu[0].
-   * Omitted when the page has no menu hierarchy.
-   */
-  category?: string;
-  /** Which view the match was found in (e.g. "overview", "dev", "guidelines", "a11y"). */
+  /** Which view the match was found in (e.g. "dev", "guidelines", "a11y"); omitted for "overview". */
   matchedView?: string;
-  /** Content snippet highlighting the match. */
-  snippet: string;
+  /** Excerpt anchored on the query tokens. Omitted when no view content matched. */
+  snippet?: string;
   /** Suggested tool to call for deeper info on this result. */
   toolHint: string;
 }
@@ -319,17 +313,12 @@ export interface ComponentSummary {
 // ---------------------------------------------------------------------------
 
 /** Result of phase-1 candidate filtering in search_docs. */
-export interface CandidateResult {
-  /** Entries that matched in phase 1 (exact or fuzzy on metadata). */
-  matched: SearchIndexEntry[];
-  /** Additional entries added as fallback candidates for deep search. */
-  expanded: SearchIndexEntry[];
-}
-
 /** A view match with content from route data. */
 export interface ViewMatch {
   viewKey: string;
   content: string;
+  /** Number of distinct query tokens found in the view. */
+  hits: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -373,17 +362,13 @@ export interface CachedViewContent {
   lower: string;
 }
 
-/** Cached route view data with pre-computed combined lowered content. */
+/** Cached route views, stripped and lowered, sorted shortest first. */
 export interface CachedRouteViews {
   views: Array<{
     key: string;
     content: string;
     lower: string;
-    /** Truncated lower for matching (content cap). */
-    matchLower: string;
   }>;
-  /** All view content concatenated and lowered — for fast negative filtering. */
-  combinedLower: string;
 }
 
 /** Pre-lowercased relevance fields to avoid repeated toLowerCase() calls. */

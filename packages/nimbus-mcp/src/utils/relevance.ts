@@ -271,6 +271,9 @@ export function fuzzyScorePreLowered(
   fields: LoweredRelevanceFields,
   tokens: string[]
 ): number {
+  // Articles and other 1–2 letter words are a prefix of far too many tokens
+  // ("a" would match anything starting with "a") to count as a stem match.
+  const MIN_PREFIX_WORD_LENGTH = 3;
   let score = 0;
   const FUZZY_WEIGHTS = {
     title: WEIGHTS.title / 2,
@@ -327,7 +330,10 @@ export function fuzzyScorePreLowered(
           matched = true;
           break;
         }
-        if (token.startsWith(word) || word.startsWith(token)) {
+        if (
+          word.length >= MIN_PREFIX_WORD_LENGTH &&
+          (token.startsWith(word) || word.startsWith(token))
+        ) {
           matched = true;
           break;
         }

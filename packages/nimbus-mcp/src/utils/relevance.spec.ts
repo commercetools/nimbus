@@ -717,3 +717,29 @@ describe("fuzzyResolveName", () => {
     expect(fuzzyResolveName("abcdefwxyz", items, getNames)).toBeUndefined();
   });
 });
+
+describe("fuzzyScorePreLowered — prefix matching", () => {
+  const fields = (description: string) => ({
+    title: "avatar",
+    description,
+    tags: "component media",
+    content: "",
+    combined: "",
+    descriptionWords: description.split(/\s+/).filter(Boolean),
+    titleWords: ["avatar"],
+    tagsWords: ["component", "media"],
+  });
+
+  it("does not treat a one- or two-letter word as a prefix of a long token", () => {
+    const score = fuzzyScorePreLowered(
+      fields("a small image or icon that identifies the user"),
+      ["activefillstyle"]
+    );
+    expect(score).toBe(0);
+  });
+
+  it("still prefix-matches a real word stem", () => {
+    const score = fuzzyScorePreLowered(fields("avatars for users"), ["avatar"]);
+    expect(score).toBeGreaterThan(0);
+  });
+});
