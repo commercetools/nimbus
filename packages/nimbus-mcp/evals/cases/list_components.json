@@ -1,0 +1,51 @@
+{
+  "tool": "list_components",
+  "cases": [
+    {
+      "id": "lists-every-component",
+      "input": {},
+      "expect": {
+        "length": { "min": 60 },
+        "rankWithin": {
+          "field": "title",
+          "value": "Button",
+          "k": 100,
+          "also": {
+            "exportName": "Button",
+            "path": "/components/buttons/button"
+          }
+        }
+      }
+    },
+    {
+      "id": "inputs-category-filter",
+      "input": { "category": "Inputs" },
+      "expect": {
+        "contains": [
+          "\"title\":\"Select\"",
+          "\"title\":\"Combo box\"",
+          "\"title\":\"Text input\""
+        ],
+        "absent": { "field": "subcategory", "value": "Buttons" },
+        "length": { "min": 5 }
+      }
+    },
+    {
+      "id": "query-matches-descriptions",
+      "input": { "query": "dropdown" },
+      "expect": { "contains": "\"title\":\"Combo box\"" }
+    },
+    {
+      "id": "exact-title-match-ranks-first",
+      "input": { "query": "select" },
+      "expect": {
+        "rankWithin": { "field": "title", "value": "Select", "k": 1 }
+      }
+    },
+    {
+      "id": "nonsense-query-returns-nothing",
+      "input": { "query": "zzzzqqqxx" },
+      "expect": { "contains": "No components found.", "isError": false }
+    }
+  ]
+}

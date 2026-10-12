@@ -620,3 +620,92 @@ export interface StylePropsSummary {
   /** Human-readable hint for LLMs on how to drill down. */
   hint: string;
 }
+
+// ---------------------------------------------------------------------------
+// Tool evals (evals/)
+// ---------------------------------------------------------------------------
+
+/** Locates an element in an array response: first element whose `field` deep-equals `value`. */
+export interface EvalElementSelector {
+  /** Path to the array; omitted means the response root is the array. */
+  path?: string;
+  field: string;
+  value: unknown;
+}
+
+export interface EvalRankWithin extends EvalElementSelector {
+  /** The element must appear within the first k entries (1-based). */
+  k: number;
+  /** Extra `field: value` deep-equals checks on the matched element. */
+  also?: Record<string, unknown>;
+}
+
+export interface EvalLength {
+  path?: string;
+  min?: number;
+  max?: number;
+}
+
+/** The closed expectation vocabulary. Every key is optional; at least one is required. */
+export interface EvalExpectation {
+  isError?: boolean;
+  contains?: string | string[];
+  notContains?: string | string[];
+  /** JSON path → deep-equal value. Paths use dot segments and `[n]` indexes. */
+  field?: Record<string, unknown>;
+  rankWithin?: EvalRankWithin;
+  absent?: EvalElementSelector;
+  length?: EvalLength;
+  maxChars?: number;
+}
+
+export interface EvalCase {
+  id: string;
+  input: Record<string, unknown>;
+  expect: EvalExpectation;
+}
+
+export interface EvalCaseFile {
+  tool: string;
+  cases: EvalCase[];
+}
+
+/** The text payload and error flag of one tool call, as the matchers see it. */
+export interface EvalToolResponse {
+  text: string;
+  isError?: boolean;
+}
+
+export interface EvalMatcherResult {
+  key: keyof EvalExpectation;
+  ok: boolean;
+  expected: unknown;
+  actual: unknown;
+}
+
+export interface EvalRecord {
+  tool: string;
+  id: string;
+  pass: boolean;
+  chars: number;
+  ms: number;
+}
+
+export interface EvalStat {
+  p50: number;
+  max: number;
+}
+
+export interface EvalToolScorecard {
+  tool: string;
+  passed: number;
+  failed: number;
+  chars: EvalStat;
+  ms: EvalStat;
+}
+
+export interface EvalScorecard {
+  generatedAt: string;
+  totals: { passed: number; failed: number };
+  tools: EvalToolScorecard[];
+}

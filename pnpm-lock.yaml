@@ -1047,6 +1047,9 @@ importers:
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
+      vitest:
+        specifier: catalog:tooling
+        version: 5.0.2(@types/node@26.6.3)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(jsdom@30.0.1)(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.1)(terser@5.51.2)(tsx@4.23.15)(yaml@2.8.3))
 
   packages/tokens:
     devDependencies:

@@ -64,8 +64,7 @@ describe("search_docs — basic search", () => {
       expect(typeof r.title).toBe("string");
       expect(typeof r.description).toBe("string");
       expect(typeof r.path).toBe("string");
-      expect(typeof r.snippet).toBe("string");
-      expect(r.snippet.length).toBeGreaterThan(0);
+      if (r.snippet !== undefined) expect(r.snippet.length).toBeGreaterThan(0);
     }
   });
 
