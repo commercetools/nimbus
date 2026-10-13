@@ -319,7 +319,7 @@ catalogs:
   # Private docs-app pins — not published to npm. Exact versions (no ^ or ~) so
   # Renovate updates are explicit PRs rather than silent range expansion.
   apps:
-    "@huggingface/transformers": 4.3.0
+    "@huggingface/transformers": 4.3.1
     "@mdx-js/mdx": 3.1.1
     "@types/mdx": 2.0.14
     "@types/react-syntax-highlighter": 15.5.13
@@ -332,7 +332,7 @@ catalogs:
     react-live: 4.1.8
     react-router: 8.4.0
     react-router-dom: 7.18.4
-    react-syntax-highlighter: 16.1.1
+    react-syntax-highlighter: 16.1.2
     remark-mark-highlight: 0.1.1
     slug: 12.0.1
     vite-plugin-compression: 0.5.1
