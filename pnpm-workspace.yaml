@@ -137,7 +137,7 @@ overrides:
   # directory).
   hono: ">=4.13.5"
   esbuild: ">=0.28.1"
-  shell-quote: ">=1.9.0"
+  shell-quote: ">=1.11.0"
   "@babel/core": "catalog:tooling"
   # >=1.19.15 fixes GHSA-frvp-7c67-39w9 (path traversal in serve-static on
   # Windows via encoded backslash). Capped <2 deliberately: 2.x is a major
