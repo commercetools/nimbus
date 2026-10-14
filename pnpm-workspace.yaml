@@ -138,6 +138,9 @@ overrides:
   hono: ">=4.13.5"
   esbuild: ">=0.28.1"
   shell-quote: ">=1.11.0"
+  # >=2.0.8 fixes GHSA-jqcg-44mw-7w3h (IP spoofing via IPv4-mapped IPv6 trust
+  # subnet). express 5.2.1 allows it (^2.0.7) but the lockfile held 2.0.7.
+  proxy-addr: ">=2.0.8"
   "@babel/core": "catalog:tooling"
   # >=1.19.15 fixes GHSA-frvp-7c67-39w9 (path traversal in serve-static on
   # Windows via encoded backslash). Capped <2 deliberately: 2.x is a major
