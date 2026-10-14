@@ -19,6 +19,8 @@ large datasets render quickly. FEC-1141 built the internal `Virtualizer` and the
   rows in view are in the DOM. The compound API (`DataTable.Root`, `.Table`,
   `.Header`, `.Body`, `.Row`, `.Cell`) works unchanged, because the prop sits on
   the Root.
+- Estimated row and header heights follow the table's `size` (PR #2007), so
+  single-line rows do not shift the scrollbar.
 - The root element gets `data-virtualized`. The recipe uses this attribute to
   style the `div` elements React Aria renders in a virtualized table.
 - The built-in columns on the left (drag, selection, expand) stay frozen while
@@ -52,7 +54,7 @@ criterion asks for.
 - Browser find (Ctrl+F) cannot reach rows that are not rendered.
 - Tests in JSDOM render every row.
 - Row heights are estimated, then measured. The scrollbar corrects itself while
-  rows are measured.
+  rows are measured, also after the `size` changes at runtime.
 - CSS written against table elements (`tr`, `td`, `:last-of-type`, sibling
   combinators between cells) does not apply, because React Aria renders `div`
   elements and wraps each row and cell.
@@ -91,5 +93,13 @@ None.
   `isVirtualized`.
 - **Bundle:** the DataTable chunk imports the internal `Virtualizer`. Measure it
   with `pnpm check:bundle-size`.
-- **Depends on:** `add-virtualizer-component` (PR #2039). This branch is stacked
-  on it.
+- **Depends on, in merge order:**
+  1. `data-table-size` (PR #2007): adds `size` (`sm` | `md` | `lg` | `xl`,
+     default `xl`) and deprecates `density`. It merges to `main` first.
+     Virtualized row heights, the header and the frozen column widths all depend
+     on it.
+  2. `add-virtualizer-component` (PR #2039). This branch is stacked on it.
+
+  After #2007 is on `main`, #2039 is rebased onto `main` (it changes no
+  DataTable file), and this branch is rebased onto #2039. Implementation starts
+  on that base, because it changes the same DataTable files as #2007.

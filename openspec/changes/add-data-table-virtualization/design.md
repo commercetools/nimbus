@@ -6,6 +6,20 @@ The FEC-1141 design names DataTable as the next collection to adopt the same
 contract. It says DataTable's styling (sticky columns, recipe selectors for
 `table`, `tr` and `td`) is FEC-1145 work (Decision 9).
 
+**PR #2007 (`data-table-size`) merges to `main` before this change.** It adds
+`size` (`sm` | `md` | `lg` | `xl`, default `xl`, which keeps today's look) and
+deprecates `density`.
+- **Recipe.** Cell and header padding move into CSS variables per size; `sm` to
+  `lg` set a text style; `xl` keeps the fixed 40 px header.
+- **Columns.** The widths of the built-in columns depend on the size
+  (`DATA_TABLE_INTERNAL_COLUMN_WIDTHS`).
+- **Alignment.** Cell content is aligned differently.
+- **Runtime changes.** The settings drawer can change the size while the table
+  is shown.
+
+This design targets `main` with #2007 merged. The findings below were measured
+first on this branch, then again on a local merge of #2007 (at `917a6d8b4`).
+
 Installed versions: `react-aria-components` 1.21.1, `react-stately` 3.50.0,
 `react-aria` 3.52.1.
 
@@ -66,7 +80,45 @@ and are deleted when the implementation starts (task 1.1).
 | Truncation, condensed density | Same cell width as plain | — | — | — |
 | Compound API with custom rows and cells | Works; custom `bg` needs the background fix | — | — | — |
 
+### Findings with PR #2007 (`size`)
+
+Measured on a local merge of #2007 (`917a6d8b4`) into this branch. The setup:
+- 200 single-line rows per size;
+- virtualized with the candidate CSS and sticky-column layout, compared with
+  not virtualized;
+- values in px.
+
+The size stories need the `size` prop, so they are not in this PR's spike file.
+They are added after the rebase.
+
+| Size | Row, plain / virtualized | Header, plain / virtualized | Column header cell, plain / virtualized | Text offset in the row (top / bottom), plain / virtualized |
+| --- | --- | --- | --- | --- |
+| `sm` | 41 / 41 | 41 / 47 | 41 / 40 | 10 / 10 vs 9 / 10 |
+| `md` | 49 / 49 | 49 / 55 | 49 / 48 | 14 / 14 vs 13 / 14 |
+| `lg` | 50 / 50 | 49 / 54 | 49 / 48 | 14 / 14 vs 14 / 15 |
+| `xl` | 59 / 59 | 40 / 40 | 40 / 32 | 17 / 17 vs 17 / 18 |
+
+- **Rows** match at every size. #2007's alignment change and the spike's
+  centered flex cells work together.
+- **The header does not match.** At `sm` to `lg` the virtualized header is 5–6 px
+  taller than its column header cells. At `xl` the header has the right height
+  (fixed 40 px), but its cells are 8 px shorter. The cause is not known yet.
+- **Estimates must follow the size.** With React Aria's default estimate (48 px),
+  200 `sm` rows give a scroll height of 9,570 px before they are measured,
+  against 8,274 px when not virtualized.
+- **Size change at runtime** (1,000 rows, `xl` → `sm` → `xl`):
+  - rendered rows are measured again and change height (59 → 41 → 59 px);
+  - rows that were never rendered keep the earlier estimate, so the scroll
+    height corrects while scrolling;
+  - the shrinking problem reported upstream in
+    https://github.com/adobe/react-spectrum/issues/10708 did not appear for
+    rendered rows.
+- **Test setup limit.** One story with four non-virtualized tables of 1,000 rows
+  crashed the test runner ("Max payload size exceeded" on its websocket).
+  Comparison stories keep the non-virtualized side small.
+
 Not run in the spike, covered by the implementation's tests:
+- frozen columns at each size (column widths change with `size`);
 - `nestedKey` rows;
 - column resizing in DataTable. React Aria resizing under the Virtualizer is
   proven by the `TableLayoutResizable` Virtualizer story;
@@ -163,12 +215,19 @@ children). Upstream has an open request for styling wrappers
 assert the result (row height, background, sticky offsets), so a React Aria
 change that breaks them fails the tests.
 
-### Decision 4 — Estimated row heights from recipe tokens, per density
+### Decision 4 — Estimated row heights from recipe tokens, per size
 
 The approach follows ListBox (`list-box/constants/virtualization.constants.ts`)
 and FEC-1141 Decision 8.
 - **Defaults.** `estimatedRowHeight` and `estimatedHeadingHeight` come from the
-  cell padding and text line height tokens, separately for each `density`.
+  size's cell and header padding and the line height of its text style, for
+  each `size` from PR #2007.
+- **`xl`.** Its cells set no text style and inherit the host app's font size
+  (#2007 proposal), so its estimate assumes Nimbus's default body text. The
+  header estimate uses its fixed height. The deprecated `density="condensed"`
+  only changes `xl`, so it gets its own estimate.
+- **Size changes at runtime.** The merged options change with `size`, so React
+  Aria lays the table out again.
 - **Measurement.** Rows are measured after render, and `shouldObserveItemSize`
   re-measures them.
 - **Fixed heights.** A consumer can set `rowHeight` for uniform single-line
@@ -208,13 +267,34 @@ Decision 12, and its results are written into this document.
   story asserts single-line rows do not shift.
 - **[Bundle size]** → The DataTable chunk adds the internal Virtualizer. Measure
   with `pnpm check:bundle-size` and record the result here.
+- **[Virtualized header height differs from plain]** (measured with #2007) →
+  Cause not yet known. Find it before implementing the header rules; a story
+  compares header and column header heights at each size.
+- **[Implementation overlaps #2007]** → #2007 changes the recipe, `root.tsx`,
+  `data-table.types.ts`, `data-table.dev.mdx` and the stories. Implementing
+  before it merges means conflicts and rework. Implementation starts after the
+  rebase (Migration Plan).
 
 ## Migration Plan
 
-The change is additive; no migration is needed. This change must be archived
-after `add-virtualizer-component`, because it modifies `nimbus-virtualizer`.
+The change is additive; no migration is needed.
+
+**Merge order.** `main` squash-merges pull requests.
+1. #2007 (`data-table-size`) merges to `main`.
+2. #2039 (`add-virtualizer-component`) is rebased onto `main`. It changes no
+   DataTable file.
+3. This branch is rebased onto #2039.
+
+A test merge of #2007 into this branch had no text conflicts.
+
+**Archive order.** `data-table-size` and `add-virtualizer-component` are archived
+first: this change modifies `nimbus-data-table`, which #2007 also modifies, and
+`nimbus-virtualizer`, which #2039 introduces.
 
 ## Open Questions
 
 - Approve the limitations list in `proposal.md`, and the follow-up ticket for a
   frozen pin column.
+- Start implementing only after #2007 is merged, or now on a local merge of
+  #2007 and rebase later?
+- Cause of the header height difference (see the findings with PR #2007).

@@ -1,3 +1,8 @@
+## 0. Base
+
+- [ ] 0.1 After PR #2007 is on `main` and #2039 is rebased onto it, rebase this branch onto #2039 and run `pnpm nimbus:clean` + `pnpm extract-intl`
+- [ ] 0.2 Re-add the spike's size stories (local commit `255c51589` on `tmp/fec-1145-on-2007`) and find the cause of the virtualized header height difference
+
 ## 1. Spike cleanup
 
 - [ ] 1.1 Delete `data-table.virtualizer-spike.stories.tsx` and the temporary `DataTableSpikeVirtualizerContext` in `data-table.table.tsx`
@@ -14,11 +19,11 @@
 - [ ] 3.2 Write a failing story: `isVirtualized` with 1,000 rows renders fewer than 60 rows, `aria-rowcount="1001"`, `data-virtualized` on the root
 - [ ] 3.3 Root: read the props (not forwarded), put them in the stable context, set `data-virtualized`, call `useVirtualizerOptionsWarning`
 - [ ] 3.4 Give the expand column a fixed id; Table: render `<Virtualizer layout="table" stickyColumns={…} layoutOptions={merged}>` around the slot when virtualized
-- [ ] 3.5 Add `constants/virtualization.constants.ts` with estimated row and heading heights per density from `themeTokens`; write the estimates-match story first
+- [ ] 3.5 Add `constants/virtualization.constants.ts` with estimated row and heading heights per `size` (and `xl` with the deprecated `density="condensed"`) from `themeTokens`; write the estimates-match story for every size first
 
 ## 4. Recipe
 
-- [ ] 4.1 Write failing assertions: row height equals cell height, header height equals column header height, selected row background behind every cell, row separators present
+- [ ] 4.1 Write failing assertions at every size: row height equals cell height, header height equals column header height and the non-virtualized header, selected row background behind every cell, row separators present
 - [ ] 4.2 Add `&[data-virtualized]` rules: rows fill wrappers, cells and column headers `height: 100%` with centered content, borders on cells, wrappers inherit the row background, body wrapper `overflow: visible`
 - [ ] 4.3 Replace tag-based selectors (`& tr th:last-of-type`, `& th:has(...)`, row `_last`) with class or attribute selectors that work in both modes; existing stories stay green
 - [ ] 4.4 Write a failing story, then confirm: frozen drag, selection and expand columns stay at the left edge after scrolling sideways
@@ -31,7 +36,7 @@
 
 ## 6. Stories and tests
 
-- [ ] 6.1 `data-table.virtualized.stories.tsx`: 1,000 and 10,000 rows, compound composition with 1,000+ rows, sorting, selection surviving scroll, keyboard navigation, nested content, pinned rows, drag and drop, empty state, footer, options warning, one small `vrt` story
+- [ ] 6.1 `data-table.virtualized.stories.tsx`: 1,000 and 10,000 rows, compound composition with 1,000+ rows, sorting, selection surviving scroll, keyboard navigation, nested content, pinned rows, drag and drop, empty state, footer, options warning, every size, a size change at runtime, frozen columns at `sm` and `xl`, one small `vrt` story; keep the non-virtualized side of comparison stories small (four plain tables of 1,000 rows crash the test runner)
 - [ ] 6.2 `data-table.timing.stories.tsx` (`!test`, `!a11y-test`, no snapshot): mount time and first paint for 1,000 and 10,000 rows, with and without `isVirtualized`; record the results in `design.md`
 - [ ] 6.3 `data-table.docs.spec.tsx`: virtualized section with about 100 rows (JSDOM renders every row)
 

@@ -48,12 +48,17 @@ The component SHALL optimize for large datasets.
 
 ### Requirement: Virtualized Defaults
 The estimated row and header heights SHALL be derived from the recipe's tokens
-for each `density`, so single-line rows do not shift the scroll height while
-they are measured.
+for each `size`, so single-line rows do not shift the scroll height while they
+are measured.
 
 #### Scenario: Estimates match the rendered rows
-- **WHEN** a virtualized table renders single-line rows in each density
+- **WHEN** a virtualized table renders single-line rows at each size (`sm`, `md`, `lg`, `xl`)
 - **THEN** the estimated row height and header height SHALL equal the rendered heights within 1 px
+
+#### Scenario: Size changes at runtime
+- **WHEN** the `size` of a virtualized table changes, through the prop or the layout settings panel
+- **THEN** the rendered rows SHALL take the height of the new size
+- **AND** the estimates for rows not yet rendered SHALL be those of the new size
 
 ### Requirement: Virtualized Styling Contract
 A virtualized DataTable SHALL set `data-virtualized` on its root element. The
@@ -68,7 +73,7 @@ non-virtualized one.
 #### Scenario: Row and header size
 - **WHEN** a virtualized table renders
 - **THEN** each row SHALL be as tall as its cells
-- **AND** the header SHALL be as tall as its column headers
+- **AND** the header SHALL be as tall as its column headers, and as tall as the non-virtualized header at the same size
 - **AND** rows SHALL be separated by the same border as in the non-virtualized table
 
 #### Scenario: Row backgrounds
@@ -79,7 +84,7 @@ non-virtualized one.
 The component SHALL keep these features working when virtualized: sorting,
 selection, keyboard navigation, column resizing, the sticky header, nested
 content, pinned rows, drag and drop, row activation, the empty state, the
-footer, truncation and density.
+footer, truncation and every `size`.
 
 #### Scenario: Selection survives scrolling
 - **WHEN** a row is selected, scrolled out of view and back
