@@ -62,11 +62,10 @@ The component SHALL provide a clear button to remove search text.
 
 #### Scenario: Clear button visibility
 - **WHEN** input is empty
-- **THEN** SHALL render button with opacity=0 and pointerEvents="none"
-- **AND** SHALL keep button in DOM (not conditionally rendered)
+- **THEN** SHALL omit the clear button from the DOM so it takes up no space
+- **AND** a trailingElement SHALL sit at the trailing edge of the field
 - **WHEN** input has value
-- **THEN** SHALL render button with opacity=1 and pointerEvents="auto"
-- **AND** SHALL smoothly transition opacity on value change
+- **THEN** SHALL render the clear button after the trailingElement
 
 #### Scenario: Clear button interaction
 - **WHEN** user clicks clear button

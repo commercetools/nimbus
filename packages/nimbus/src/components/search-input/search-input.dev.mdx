@@ -74,9 +74,8 @@ const App = () => {
 ```
 
 **Behavioral notes:**
-- Clear button is always present in the DOM but hidden when input is empty
-- Clear button has `opacity: 0` and `pointerEvents: none` when hidden
-- Clear button automatically transitions when value changes
+- Clear button is rendered only when the input has a value. When the input is
+  empty, it takes up no space, so a `trailingElement` sits at the end of the field
 - Clear button is disabled when input is disabled or read-only
 - Clear button has an internationalized aria-label ("Clear search input")
 

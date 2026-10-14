@@ -63,7 +63,7 @@ export const SearchInput = (props: SearchInputProps) => {
     // the layout box, sizing like the other inputs.
     <chakra.div display="contents" asChild>
       <RaSearchField {...functionalProps}>
-        {({ state }) => (
+        {({ state, isEmpty }) => (
           <SearchInputRootSlot
             ref={rootRef}
             {...recipeProps}
@@ -83,19 +83,21 @@ export const SearchInput = (props: SearchInputProps) => {
                 <AdornmentContent>{trailingElement}</AdornmentContent>
               </SearchInputTrailingElementSlot>
             )}
-            <IconButton
-              slot="null"
-              size="2xs"
-              variant="ghost"
-              colorPalette="primary"
-              aria-label={msg.format("clearInput")}
-              onPress={() => state.setValue("")}
-              opacity={state.value ? 1 : 0}
-              pointerEvents={state.value ? "auto" : "none"}
-              isDisabled={props.isDisabled || props.isReadOnly}
-            >
-              <Close />
-            </IconButton>
+            {/* Not rendered while empty, so it reserves no space and a
+                trailingElement sits at the field's trailing edge. */}
+            {!isEmpty && (
+              <IconButton
+                slot="null"
+                size="2xs"
+                variant="ghost"
+                colorPalette="primary"
+                aria-label={msg.format("clearInput")}
+                onPress={() => state.setValue("")}
+                isDisabled={props.isDisabled || props.isReadOnly}
+              >
+                <Close />
+              </IconButton>
+            )}
           </SearchInputRootSlot>
         )}
       </RaSearchField>

@@ -9,7 +9,7 @@ import {
   Stack,
   Text,
 } from "@commercetools/nimbus";
-import { userEvent, within, expect, fn, waitFor } from "storybook/test";
+import { userEvent, within, expect, fn } from "storybook/test";
 import { Tune, Visibility } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof SearchInput> = {
@@ -69,14 +69,9 @@ export const Base: Story = {
     });
 
     await step("Clear button appears when typing", async () => {
-      const clearButton = canvas.getByRole("button", { hidden: true });
-      await waitFor(() =>
-        expect(window.getComputedStyle(clearButton).opacity).toBe("0")
-      );
+      await expect(canvas.queryByRole("button")).not.toBeInTheDocument();
       await userEvent.type(input, "test");
-      await waitFor(() =>
-        expect(window.getComputedStyle(clearButton).opacity).toBe("1")
-      );
+      await expect(canvas.getByRole("button")).toBeVisible();
       await userEvent.clear(input);
     });
   },
@@ -170,7 +165,7 @@ export const Disabled: Story = {
         throw new Error("Could not find SearchField container");
 
       const containerScope = within(searchFieldContainer);
-      const clearButton = containerScope.getByRole("button", { hidden: true });
+      const clearButton = containerScope.getByRole("button");
       await expect(clearButton).toBeDisabled();
     });
   },
@@ -490,28 +485,13 @@ export const ClearButton: Story = {
     const canvas = within(canvasElement);
     const input = canvas.getByRole("searchbox");
 
-    await step("Clear button is always in DOM (even when empty)", async () => {
-      const clearButton = canvas.getByRole("button");
-      await expect(clearButton).toBeInTheDocument();
-    });
-
-    await step("Clear button is hidden when input is empty", async () => {
-      const clearButton = canvas.getByRole("button", { hidden: true });
-      const computedStyle = window.getComputedStyle(clearButton);
-      await expect(computedStyle.opacity).toBe("0");
-      await expect(computedStyle.pointerEvents).toBe("none");
+    await step("Clear button is not rendered when input is empty", async () => {
+      await expect(canvas.queryByRole("button")).not.toBeInTheDocument();
     });
 
     await step("Clear button appears when typing", async () => {
       await userEvent.type(input, "search");
-      const clearButton = canvas.getByRole("button");
-
-      // Wait for transition to complete
-      await waitFor(() => {
-        const computedStyle = window.getComputedStyle(clearButton);
-        expect(computedStyle.opacity).toBe("1");
-        expect(computedStyle.pointerEvents).toBe("auto");
-      });
+      await expect(canvas.getByRole("button")).toBeVisible();
     });
 
     await step("Clear button clears the input", async () => {
@@ -520,16 +500,74 @@ export const ClearButton: Story = {
       await expect(input).toHaveValue("");
     });
 
-    await step("Clear button is hidden again after clearing", async () => {
-      const clearButton = canvas.getByRole("button", { hidden: true });
-
-      // Wait for transition to complete
-      await waitFor(() => {
-        const computedStyle = window.getComputedStyle(clearButton);
-        expect(computedStyle.opacity).toBe("0");
-        expect(computedStyle.pointerEvents).toBe("none");
-      });
+    await step("Clear button is removed again after clearing", async () => {
+      await expect(canvas.queryByRole("button")).not.toBeInTheDocument();
     });
+
+    await step("Focus stays on the input after clearing", async () => {
+      await expect(input).toHaveFocus();
+    });
+  },
+};
+
+/**
+ * Regression for #2057: an empty field must not reserve space for the clear
+ * button, so a trailing element sits at the field's trailing edge.
+ */
+export const TrailingElementAlignment: Story = {
+  render: () => (
+    <SearchInput
+      aria-label="trailing-alignment"
+      trailingElement={
+        <IconButton
+          size="xs"
+          colorPalette="primary"
+          variant="ghost"
+          aria-label="filter results"
+        >
+          <Icon as={Tune} />
+        </IconButton>
+      }
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("searchbox");
+    const root = canvasElement.querySelector<HTMLElement>(
+      ".nimbus-search-input__root"
+    )!;
+    const trailingSlot = canvas.getByLabelText("filter results").parentElement!;
+
+    // Right edge of the root's content box (no real border: it is a box-shadow).
+    const contentEnd = () =>
+      root.getBoundingClientRect().right -
+      parseFloat(window.getComputedStyle(root).paddingRight);
+
+    await step(
+      "Empty: trailing element sits at the trailing edge",
+      async () => {
+        await expect(canvas.queryByLabelText("Clear search input")).toBeNull();
+        await expect(trailingSlot.getBoundingClientRect().right).toBeCloseTo(
+          contentEnd(),
+          0
+        );
+      }
+    );
+
+    await step(
+      "With value: clear button follows the trailing element",
+      async () => {
+        await userEvent.type(input, "query");
+        const clearButton = canvas.getByLabelText("Clear search input");
+        await expect(clearButton.getBoundingClientRect().right).toBeCloseTo(
+          contentEnd(),
+          0
+        );
+        await expect(trailingSlot.getBoundingClientRect().right).toBeLessThan(
+          clearButton.getBoundingClientRect().left
+        );
+      }
+    );
   },
 };
 
@@ -555,9 +593,7 @@ export const KeyboardNavigation: Story = {
 
     await step("Clear button is visible but not in tab order", async () => {
       const clearButton = canvas.getByRole("button");
-      await waitFor(() =>
-        expect(window.getComputedStyle(clearButton).opacity).toBe("1")
-      );
+      await expect(clearButton).toBeVisible();
       await expect(clearButton).toHaveAttribute("tabindex", "-1");
     });
 
@@ -593,10 +629,7 @@ export const DefaultValue: Story = {
     });
 
     await step("Clear button visible with default value", async () => {
-      const clearButton = canvas.getByRole("button");
-      await waitFor(() =>
-        expect(window.getComputedStyle(clearButton).opacity).toBe("1")
-      );
+      await expect(canvas.getByRole("button")).toBeVisible();
     });
 
     await step("Can modify default value", async () => {
