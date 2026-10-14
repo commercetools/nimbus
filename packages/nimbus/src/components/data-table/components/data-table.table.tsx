@@ -1,5 +1,41 @@
-import { useMemo, useRef } from "react";
-import { Table as RaTable, type SortDescriptor } from "react-aria-components";
+import { createContext, useContext, useMemo, useRef } from "react";
+import {
+  Table as RaTable,
+  TableLayout as RaTableLayout,
+  Virtualizer as RaVirtualizer,
+  type SortDescriptor,
+} from "react-aria-components";
+import { Virtualizer } from "../../virtualizer/virtualizer";
+import type { VirtualizerTableLayoutOptions } from "../../virtualizer/virtualizer.types";
+
+// SPIKE (FEC-1145, not shipped): lets the spike story turn on the
+// Virtualizer without a public prop. Removed after the findings are written.
+export type DataTableSpikeVirtualizerValue =
+  false | { options: VirtualizerTableLayoutOptions; stickyColumns: boolean };
+export const DataTableSpikeVirtualizerContext =
+  createContext<DataTableSpikeVirtualizerValue>(false);
+
+const SPIKE_STICKY_KEYS = new Set(["__nimbus-drag__", "selection", "pin-rows"]);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+class SpikeStickyTableLayout extends RaTableLayout<any> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  isStickyColumn(node: any) {
+    // React Aria asks for columns and for body cells; a cell is sticky when
+    // its column is.
+    const column =
+      node.type === "column"
+        ? node
+        : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (this.virtualizer?.collection as any)?.columns[
+            node.colIndex ?? node.index
+          ];
+    const className = String(column?.props?.className ?? "");
+    return (
+      SPIKE_STICKY_KEYS.has(String(column?.key)) ||
+      className.includes("expand-column-header")
+    );
+  }
+}
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
 import { extractStyleProps } from "@/utils";
@@ -73,7 +109,9 @@ export const DataTableTable = function DataTableTable({
     }
   };
 
-  return (
+  const spikeVirtualizerOptions = useContext(DataTableSpikeVirtualizerContext);
+
+  const table = (
     <DataTableTableSlot {...styleProps} asChild>
       <RaTable
         ref={ref}
@@ -95,6 +133,24 @@ export const DataTableTable = function DataTableTable({
         {children}
       </RaTable>
     </DataTableTableSlot>
+  );
+
+  if (spikeVirtualizerOptions === false) return table;
+  if (spikeVirtualizerOptions.stickyColumns) {
+    return (
+      <RaVirtualizer
+        layout={SpikeStickyTableLayout}
+        layoutOptions={spikeVirtualizerOptions.options}
+        shouldObserveItemSize
+      >
+        {table}
+      </RaVirtualizer>
+    );
+  }
+  return (
+    <Virtualizer layout="table" layoutOptions={spikeVirtualizerOptions.options}>
+      {table}
+    </Virtualizer>
   );
 };
 
