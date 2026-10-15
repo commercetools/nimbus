@@ -18,6 +18,7 @@ import {
   SearchInputRootSlot,
   SearchInputLeadingElementSlot,
   SearchInputTrailingElementSlot,
+  SearchInputInputWrapperSlot,
   SearchInputInputSlot,
 } from "./search-input.slots";
 import type { SearchInputProps } from "./search-input.types";
@@ -63,39 +64,46 @@ export const SearchInput = (props: SearchInputProps) => {
     // the layout box, sizing like the other inputs.
     <chakra.div display="contents" asChild>
       <RaSearchField {...functionalProps}>
-        {({ state }) => (
+        {({ state, isEmpty }) => (
           <SearchInputRootSlot
             ref={rootRef}
             {...recipeProps}
             {...styleProps}
             {...stateProps}
+            data-empty={isEmpty ? "true" : undefined}
           >
             {leadingElement && (
               <SearchInputLeadingElementSlot>
                 <AdornmentContent>{leadingElement}</AdornmentContent>
               </SearchInputLeadingElementSlot>
             )}
-            <SearchInputInputSlot asChild>
-              <RaInput ref={ref} />
-            </SearchInputInputSlot>
+            {/* While empty, holds the clear button's space for the input to
+                use, so the field keeps its width (see the recipe). */}
+            <SearchInputInputWrapperSlot>
+              <SearchInputInputSlot asChild>
+                <RaInput ref={ref} />
+              </SearchInputInputSlot>
+            </SearchInputInputWrapperSlot>
             {trailingElement && (
               <SearchInputTrailingElementSlot>
                 <AdornmentContent>{trailingElement}</AdornmentContent>
               </SearchInputTrailingElementSlot>
             )}
-            <IconButton
-              slot="null"
-              size="2xs"
-              variant="ghost"
-              colorPalette="primary"
-              aria-label={msg.format("clearInput")}
-              onPress={() => state.setValue("")}
-              opacity={state.value ? 1 : 0}
-              pointerEvents={state.value ? "auto" : "none"}
-              isDisabled={props.isDisabled || props.isReadOnly}
-            >
-              <Close />
-            </IconButton>
+            {/* Not rendered while empty, so a trailingElement sits at the
+                field's trailing edge. */}
+            {!isEmpty && (
+              <IconButton
+                slot="null"
+                size="2xs"
+                variant="ghost"
+                colorPalette="primary"
+                aria-label={msg.format("clearInput")}
+                onPress={() => state.setValue("")}
+                isDisabled={props.isDisabled || props.isReadOnly}
+              >
+                <Close />
+              </IconButton>
+            )}
           </SearchInputRootSlot>
         )}
       </RaSearchField>

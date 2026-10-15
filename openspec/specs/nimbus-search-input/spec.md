@@ -13,9 +13,7 @@ The SearchInput component provides an accessible search input field with built-i
 ## Purpose
 
 Provide a specialized search input field that enables users to discover and filter content by entering keywords or phrases. Optimized for live search, autocomplete, and instant filtering scenarios with clear visual feedback and intuitive controls.
-
 ## Requirements
-
 ### Requirement: Search Field Type
 The component SHALL use the HTML search input type for semantic search functionality.
 
@@ -33,7 +31,7 @@ The component SHALL use the HTML search input type for semantic search functiona
 - **AND** SHALL hide native browser clear button (using custom clear)
 
 ### Requirement: Search Icon
-The component SHALL display a search icon as a visual indicator.
+The component SHALL display a search icon as a visual indicator by default, and SHALL allow that leading content to be replaced or removed via an optional `leadingElement` prop of type `ReactNode`.
 
 #### Scenario: Icon rendering
 - **WHEN** component renders
@@ -41,13 +39,36 @@ The component SHALL display a search icon as a visual indicator.
 - **AND** SHALL position icon at the left side of input
 - **AND** SHALL scale icon according to size variant (md: 20px, sm: 16px)
 - **AND** SHALL apply neutral.11 color to icon
-- **AND** SHALL make icon non-interactive (pointerEvents: none)
 
 #### Scenario: Icon with disabled state
 - **WHEN** isDisabled={true} is set
 - **THEN** SHALL maintain search icon visibility
 - **AND** SHALL apply disabled styling to icon
 - **AND** SHALL keep icon in disabled color palette
+
+#### Scenario: Default leading content
+- **WHEN** `leadingElement` is not provided
+- **THEN** SHALL render the Search icon, preserving existing rendering
+
+#### Scenario: Replaced leading content
+- **WHEN** `leadingElement` is provided
+- **THEN** SHALL render the provided element in the leadingElement slot instead of the Search icon
+
+#### Scenario: Removed leading content
+- **WHEN** `leadingElement` is explicitly `null`
+- **THEN** SHALL NOT render the leadingElement slot
+- **AND** SHALL NOT reserve horizontal space for it
+
+#### Scenario: Interactive leading element
+- **WHEN** `leadingElement` contains a button
+- **THEN** the button SHALL receive pointer events
+- **AND** the button SHALL be reachable by keyboard
+- **AND** activating it SHALL invoke its own handler
+- **AND** clicking it SHALL NOT move focus to the input
+
+#### Scenario: Click-to-focus on field chrome
+- **WHEN** user clicks non-interactive field chrome, including default leading icon content
+- **THEN** SHALL move focus to the input
 
 ### Requirement: Clear Button
 The component SHALL provide a clear button to remove search text.
@@ -57,16 +78,30 @@ The component SHALL provide a clear button to remove search text.
 - **THEN** SHALL display clear button with Close icon
 - **AND** SHALL render IconButton with size="2xs"
 - **AND** SHALL use ghost variant with primary colorPalette
-- **AND** SHALL position button at the right side of input
+- **AND** SHALL position button at the trailing edge of the field, after the trailingElement
 - **AND** SHALL set aria-label to localized "Clear search input" message
 
-#### Scenario: Clear button visibility
+#### Scenario: Clear button on an empty field
 - **WHEN** input is empty
-- **THEN** SHALL render button with opacity=0 and pointerEvents="none"
-- **AND** SHALL keep button in DOM (not conditionally rendered)
-- **WHEN** input has value
-- **THEN** SHALL render button with opacity=1 and pointerEvents="auto"
-- **AND** SHALL smoothly transition opacity on value change
+- **THEN** SHALL NOT render the clear button in the DOM
+- **AND** SHALL NOT expose a clear button in the accessibility tree
+- **AND** a trailingElement SHALL sit at the trailing edge of the field
+
+#### Scenario: Stable field width
+- **WHEN** the clear button appears or is removed
+- **THEN** the field's outer width SHALL NOT change
+- **AND** this SHALL hold for the input's default width and for a width set by the consumer
+- **AND** SHALL NOT replace the input's default width with a fixed width
+
+#### Scenario: Empty field uses the clear button's space
+- **WHEN** input is empty
+- **THEN** the input element SHALL extend over the clear button's space
+- **AND** a placeholder SHALL be able to use the space up to the trailingElement or the field's trailing edge
+
+#### Scenario: Narrow field
+- **WHEN** the field is narrower than the input's default width
+- **THEN** the input SHALL shrink to fit
+- **AND** the input, the trailingElement and the clear button SHALL stay inside the field's outline
 
 #### Scenario: Clear button interaction
 - **WHEN** user clicks clear button
@@ -74,7 +109,7 @@ The component SHALL provide a clear button to remove search text.
 - **AND** SHALL call onChange with empty string
 - **AND** SHALL call onClear callback if provided
 - **AND** SHALL maintain focus on input field
-- **AND** SHALL hide clear button after clearing
+- **AND** SHALL remove the clear button after clearing
 
 #### Scenario: Clear button with disabled input
 - **WHEN** isDisabled={true} is set
@@ -298,9 +333,11 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 #### Scenario: Slot styling
 - **WHEN** component renders
 - **THEN** SHALL apply searchInput slot recipe from theme/slot-recipes/search-input.ts
-- **AND** SHALL style slots: root, leadingElement, input
+- **AND** SHALL style slots: root, leadingElement, trailingElement, inputWrapper, input
 - **AND** root slot SHALL be container with flex layout
-- **AND** leadingElement slot SHALL contain search icon
+- **AND** leadingElement slot SHALL contain the search icon or consumer-provided leading content
+- **AND** trailingElement slot SHALL contain consumer-provided trailing content
+- **AND** inputWrapper slot SHALL contain the input and SHALL hold the clear button's space while the input is empty
 - **AND** input slot SHALL be the text input element
 
 #### Scenario: Recipe registration
@@ -311,7 +348,7 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 
 #### Scenario: State-based styling
 - **WHEN** component state changes
-- **THEN** SHALL apply data attributes: data-disabled, data-invalid
+- **THEN** SHALL apply data attributes: data-disabled, data-invalid, data-empty
 - **AND** recipe SHALL respond to these data attributes
 - **AND** SHALL use CSS selectors: _focusWithin, _hover, _disabled
 - **AND** SHALL support pseudo-selectors for interactive states
@@ -609,3 +646,31 @@ The component SHALL be optimized for search scenarios.
 - **AND** SHALL support tree-shaking
 - **AND** React Aria SearchField SHALL be bundled (internal)
 - **AND** icons SHALL be imported from @commercetools/nimbus-icons (external)
+
+### Requirement: Trailing Element
+The component SHALL accept an optional `trailingElement` of type `ReactNode`, rendered after the input and before the clear button.
+
+#### Scenario: Trailing element rendering
+- **WHEN** `trailingElement` is provided
+- **THEN** SHALL render the element in the trailingElement slot
+- **AND** SHALL position it after the input and before the clear button
+- **AND** SHALL scale contained icons according to size variant (md: 20px, sm: 16px)
+- **AND** SHALL apply neutral.11 color
+
+#### Scenario: Trailing element omitted
+- **WHEN** `trailingElement` is not provided
+- **THEN** SHALL NOT render the trailingElement slot
+- **AND** SHALL NOT reserve horizontal space for it
+
+#### Scenario: Interactive trailing element
+- **WHEN** `trailingElement` contains a button
+- **THEN** the button SHALL be reachable by keyboard
+- **AND** activating it SHALL invoke its own handler
+- **AND** activating it SHALL NOT clear the input value
+- **AND** clicking it SHALL NOT move focus to the input
+
+#### Scenario: Trailing element in disabled state
+- **WHEN** `isDisabled={true}` is set
+- **THEN** SHALL apply disabled styling to the trailing element
+- **AND** any interactive content within it SHALL NOT be activatable
+
