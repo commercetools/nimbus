@@ -1,7 +1,7 @@
 name: Release
 
 # Pushes to main release. A push to any other branch publishes a PR canary only
-# when its head commit message contains [deploy-canary]; otherwise every job is
+# when its head commit message contains [publish-preview]; otherwise every job is
 # skipped. npm trusted publishing (OIDC) rejects publishes from issue_comment
 # runs, which is why canaries start from a push instead of a PR comment.
 on:
@@ -140,7 +140,7 @@ jobs:
   canary-from-pr:
     if: >
       github.event_name == 'push' && github.ref != 'refs/heads/main' &&
-      contains(github.event.head_commit.message, '[deploy-canary]')
+      contains(github.event.head_commit.message, '[publish-preview]')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     concurrency:
