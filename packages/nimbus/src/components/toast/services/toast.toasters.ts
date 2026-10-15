@@ -1,10 +1,13 @@
-import { createToaster } from "@chakra-ui/react/toast";
+import {
+  createToaster,
+  type CreateToasterReturn,
+} from "@chakra-ui/react/toast";
 import type { ToastPlacement } from "../toast.types";
 import { ALL_PLACEMENTS, PLACEMENT_HOTKEYS } from "../constants";
 import { markToastersActive, resetActivation } from "./toast.activation";
 
 /** Local alias to avoid exposing transitive @zag-js/toast types in declarations. */
-type Toaster = ReturnType<typeof createToaster>;
+type Toaster = CreateToasterReturn;
 
 /**
  * Lazily-initialized toaster instances per placement.
@@ -19,8 +22,7 @@ type Toaster = ReturnType<typeof createToaster>;
  * browser globals. Initialize toasts only after hydration or inside event
  * handlers (e.g. `onClick`, `useEffect`).
  */
-let toasters: Map<ToastPlacement, ReturnType<typeof createToaster>> | null =
-  null;
+let toasters: Map<ToastPlacement, Toaster> | null = null;
 
 function ensureToasters() {
   if (!toasters) {
