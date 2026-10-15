@@ -1,0 +1,197 @@
+---
+id: Components-Meter
+title: Meter
+exportName: Meter
+description:
+  A linear visual indicator that shows a measured value inside a known range,
+  such as storage used or a quota consumed.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Feedback
+  - Meter
+tags:
+  - component
+  - meter
+  - gauge
+  - quota
+  - storage
+---
+
+## Overview
+
+A meter shows a value that is measured, not a value that changes over time
+toward completion. Typical examples are storage used, a quota consumed, a
+battery level, or a score inside a known range. Use
+[Progress bar](/components/feedback/progress-bar) instead when the value shows
+how far a task has moved toward finishing.
+
+A meter can show one value, or it can show several parts of one total (for
+example "Images" and "Videos" inside one "Storage" total). When it shows several
+parts, Meter draws them as one bar, and its legend shows what each part is, so a
+person does not need color alone.
+
+Meter is built from parts: a label, a value, the bar (track) and a legend. Use
+only the parts you need. For example, a meter in a table row can show only the
+bar.
+
+### Resources
+
+[ARIA Authoring Practices: Meter pattern](https://www.w3.org/WAI/ARIA/apg/patterns/meter/)
+
+## Variables
+
+Get familiar with the features.
+
+### A single value
+
+The simplest use of Meter shows one value inside a range. The default range is 0
+to 100, and the default format is a percent.
+
+```jsx live
+const App = () => (
+  <Meter.Root value={72}>
+    <Meter.Label>Storage used</Meter.Label>
+    <Meter.Value />
+    <Meter.Track />
+  </Meter.Root>
+);
+```
+
+### Several segments of one total
+
+Pass `segments` instead of `value` to show several measured parts inside one
+total. Each segment needs an `id`, a `label`, and a `value`. Meter adds the
+segment values together and draws each one as its own part of the bar. The
+legend shows a color swatch, the label, and the formatted value for each part.
+Always show the legend with segments.
+
+```jsx live
+const App = () => (
+  <Meter.Root
+    formatOptions={{ style: "unit", unit: "gigabyte" }}
+    segments={[
+      { id: "images", label: "Images", value: 30 },
+      { id: "videos", label: "Videos", value: 20 },
+    ]}
+  >
+    <Meter.Label>Storage</Meter.Label>
+    <Meter.Value />
+    <Meter.Track />
+    <Meter.Legend />
+  </Meter.Root>
+);
+```
+
+### Size
+
+The `size` sets the thickness of the bar:
+
+- **Small (`sm`)**: for dense places, such as tables, sidebars or several meters
+  in one card.
+- **Medium (`md`)**: the default, for standard page content.
+- **Large (`lg`)**: when the meter is the main focus of the view.
+
+The text size follows the bar size. To match the text around the meter, set a
+`textStyle` on the whole meter. To make one part stand out, set a `textStyle` on
+that part only, for example a large value.
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="400" alignItems="stretch">
+    <Meter.Root value={60} size="sm">
+      <Meter.Label>Small (sm)</Meter.Label>
+      <Meter.Value />
+      <Meter.Track />
+    </Meter.Root>
+    <Meter.Root value={60} size="md">
+      <Meter.Label>Medium (default)</Meter.Label>
+      <Meter.Value />
+      <Meter.Track />
+    </Meter.Root>
+    <Meter.Root value={60} size="lg">
+      <Meter.Label>Large (lg)</Meter.Label>
+      <Meter.Value />
+      <Meter.Track />
+    </Meter.Root>
+    <Meter.Root value={60} size="sm" textStyle="md">
+      <Meter.Label>Small bar, medium text</Meter.Label>
+      <Meter.Value />
+      <Meter.Track />
+    </Meter.Root>
+    <Meter.Root value={96} size="sm">
+      <Meter.Label>Small bar, large value</Meter.Label>
+      <Meter.Value textStyle="2xl" fontWeight="700" />
+      <Meter.Track />
+    </Meter.Root>
+  </Stack>
+);
+```
+
+### Layouts
+
+Two layouts place the label and value text differently, so Meter fits different
+places in a UI:
+
+- **Stacked** (default): label and value on one line above the bar.
+- **Inline**: label, bar and value on one line.
+
+To show only the bar, leave out the label and the value, and set `aria-label`
+on `Meter.Root` so the meter still has a name.
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="600" alignItems="stretch">
+    <Meter.Root value={55} layout="stacked">
+      <Meter.Label>Stacked (default)</Meter.Label>
+      <Meter.Value />
+      <Meter.Track />
+    </Meter.Root>
+    <Meter.Root value={55} layout="inline">
+      <Meter.Label>Inline</Meter.Label>
+      <Meter.Value />
+      <Meter.Track />
+    </Meter.Root>
+    <Meter.Root value={55} aria-label="Bar only">
+      <Meter.Track />
+    </Meter.Root>
+  </Stack>
+);
+```
+
+### Color palette
+
+Use `colorPalette` to give the fill a meaning. Use a semantic palette, such as
+`positive`, `warning`, or `critical`, to show a state. With `thresholds`, the
+fill changes color when the value reaches a threshold, for example `warning`
+from 80% and `critical` from 95%. Segments can also each have their own
+`colorPalette`; a segment without one gets a color from a fixed default
+sequence.
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="400" alignItems="stretch">
+    <Meter.Root value={80} colorPalette="primary">
+      <Meter.Label>Primary</Meter.Label>
+      <Meter.Value />
+      <Meter.Track />
+    </Meter.Root>
+    <Meter.Root value={90} colorPalette="positive">
+      <Meter.Label>Healthy</Meter.Label>
+      <Meter.Value />
+      <Meter.Track />
+    </Meter.Root>
+    <Meter.Root value={55} colorPalette="warning">
+      <Meter.Label>Degraded</Meter.Label>
+      <Meter.Value />
+      <Meter.Track />
+    </Meter.Root>
+    <Meter.Root value={15} colorPalette="critical">
+      <Meter.Label>Critical</Meter.Label>
+      <Meter.Value />
+      <Meter.Track />
+    </Meter.Root>
+  </Stack>
+);
+```
