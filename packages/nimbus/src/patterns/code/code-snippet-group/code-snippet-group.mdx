@@ -1,0 +1,137 @@
+---
+id: Patterns-CodeSnippetGroup
+title: Code snippet group
+exportName: CodeSnippetGroup
+description: Several code examples of the same thing, shown one at a time. The user switches between them with tabs or a select.
+documentState: InitialDraft
+lifecycleState: Beta
+order: 999
+menu:
+  - Patterns
+  - Code
+  - Code snippet group
+tags:
+  - component
+  - pattern
+  - code
+  - snippet
+  - tabs
+  - CodeBlock
+related-components:
+  - CodeBlock
+  - CodeSnippet
+  - Tabs
+  - Select
+---
+
+## Overview
+
+CodeSnippetGroup shows the same example in several forms, for example one API
+request in cURL, JavaScript and Java. One example is shown at a time. The user
+switches with tabs or with a select. It is made from the
+[CodeBlock](/components/data-display/codeblock) component, `Tabs` and `Select`.
+
+For layouts that this pattern does not cover, use
+[CodeBlock](/components/data-display/codeblock) and compose its parts yourself.
+
+### Resources
+
+- [CodeBlock guidelines](/components/data-display/codeblock) - the component
+  that CodeSnippetGroup is built from
+- [Tabs guidelines](/components/navigation/tabs)
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-code-codesnippetgroup--docs)
+
+## Anatomy
+
+- An optional title.
+- A switcher: tabs or a select.
+- The language label of the shown example.
+- A copy button, and a download button when the shown example has a `fileName`.
+- The highlighted code of the shown example.
+
+Copy, download and the language label always follow the shown example.
+
+## Variables
+
+### Tabs (default)
+
+Use tabs for a few examples with short labels.
+
+```jsx live
+const App = () => (
+  <CodeSnippetGroup
+    title="List products"
+    items={[
+      { key: "curl", label: "cURL", language: "bash", code: "curl https://api.example.com/products" },
+      { key: "js", label: "JavaScript", language: "js", code: 'await fetch("https://api.example.com/products");' },
+      { key: "java", label: "Java", language: "java", code: 'client.get("https://api.example.com/products");' },
+    ]}
+  />
+)
+```
+
+### Select
+
+Use a select for many examples or for long labels. Tabs need more width.
+
+```jsx live
+const App = () => (
+  <CodeSnippetGroup
+    title="List products"
+    switcher="select"
+    items={[
+      { key: "curl", label: "cURL", language: "bash", code: "curl https://api.example.com/products" },
+      { key: "js", label: "JavaScript", language: "js", code: 'await fetch("https://api.example.com/products");' },
+      { key: "java", label: "Java", language: "java", code: 'client.get("https://api.example.com/products");' },
+    ]}
+  />
+)
+```
+
+### One example
+
+When there is only one item, no switcher is shown.
+
+```jsx live
+const App = () => (
+  <CodeSnippetGroup
+    items={[
+      { key: "curl", label: "cURL", language: "bash", code: "curl https://api.example.com/products" },
+    ]}
+  />
+)
+```
+
+## Guidelines
+
+### When to use
+
+- When one task can be shown in several languages or tools.
+- When the examples are alternatives. The user needs only one of them.
+
+### When not to use
+
+- For a single example, use [CodeSnippet](/patterns/code/code-snippet).
+- For examples that the user must read together, show several `CodeSnippet`s.
+- For a custom layout, use [CodeBlock](/components/data-display/codeblock).
+
+### Do
+
+- Keep the labels short and clear.
+- Put the most common example first.
+- Use the same example in every item, written in a different language.
+
+### Don't
+
+- Don't use the group to show unrelated code.
+- Don't use tabs when you have many items. Use `switcher="select"`.
+
+## Accessibility
+
+- The tabs follow the Nimbus `Tabs` component. The arrow keys move between tabs.
+  `Tab` moves focus to the next control.
+- The tab list or the select has an accessible name. The default is "Code
+  example". Use `switcherLabel` to change it.
+- The group is a `region` landmark only when it has a name: a `title` or an
+  `aria-label`.
+- The copy button announces "Copied" or "Copy failed" to screen readers.

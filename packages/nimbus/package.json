@@ -97,6 +97,7 @@
     "react-markdown": "catalog:markdown",
     "react-stately": "catalog:react",
     "react-use": "catalog:react",
+    "refractor": "catalog:utils",
     "remark-gfm": "catalog:markdown",
     "remend": "catalog:markdown",
     "use-debounce": "catalog:react"

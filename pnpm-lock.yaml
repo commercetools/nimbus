@@ -319,6 +319,9 @@ catalogs:
     react-intl:
       specifier: ^7.1.14
       version: 7.1.14
+    refractor:
+      specifier: ^5.0.0
+      version: 5.0.0
     zod:
       specifier: ^4.6.6
       version: 4.6.6
@@ -812,6 +815,9 @@ importers:
       react-use:
         specifier: catalog:react
         version: 17.6.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      refractor:
+        specifier: catalog:utils
+        version: 5.0.0
       remark-gfm:
         specifier: catalog:markdown
         version: 4.0.1(supports-color@8.1.1)

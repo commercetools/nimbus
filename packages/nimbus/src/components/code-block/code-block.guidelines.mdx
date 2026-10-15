@@ -1,0 +1,124 @@
+---
+title: CodeBlock
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+CodeBlock shows source code in a read-only, syntax-highlighted container. It
+helps people read, scan and copy code. It is built from parts, so you can
+choose the parts that your layout needs.
+
+### Best practices
+
+- **Start with a pattern:** For common cases, use `CodeSnippet`,
+  `CodeSnippetGroup`, `JsonSnippet` or `CommandSnippet`. Use the `CodeBlock`
+  parts directly only for layouts that the patterns do not cover.
+- **Match the language:** Set `language` to the real language of the code. This
+  gives correct highlighting and a useful language label.
+- **Keep snippets short and focused:** Show the code that matters in the
+  context. Use an excerpt and `startLineNumber` instead of a whole file.
+- **Name every block that matters:** Use `CodeBlock.Title` or `aria-label` for
+  blocks that people should find with a screen reader. Use distinct names when
+  there are several blocks on a page.
+- **Use line numbers when people refer to lines:** Turn on `showLineNumbers` for
+  tutorials, reviews and error explanations. Do not turn it on for one-line
+  commands.
+- **Collapse long code:** Use `maxLines` with `CodeBlock.ExpandTrigger` when the
+  code is longer than people need at first glance. Copy and download still use
+  the full code.
+- **Mark lines with purpose:** Use highlighted, added and removed lines to point
+  at a change. Mark only a few lines, so that the marks stay meaningful.
+- **Use the default size:** Use `md` unless the layout clearly needs the
+  smaller `sm` size.
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+| You want to show                                                      | Use                                                     |
+| --------------------------------------------------------------------- | ------------------------------------------------------- |
+| One snippet with a title, a language label, copy and download buttons | [`CodeSnippet`](/patterns/code/code-snippet)            |
+| The same example in several languages, with tabs or a select          | [`CodeSnippetGroup`](/patterns/code/code-snippet-group) |
+| Any value as formatted JSON                                           | [`JsonSnippet`](/patterns/code/json-snippet)            |
+| Shell commands with a prompt that is not copied                       | [`CommandSnippet`](/patterns/code/command-snippet)      |
+| A layout that the patterns do not cover                               | `CodeBlock` parts                                       |
+
+Use the `CodeBlock` parts directly for layouts such as:
+
+- A code block with a footer note or link.
+- A code block with a copy button in the corner and no header.
+- A block with custom actions in the header.
+- A block with a controlled collapsed state.
+
+> [!CAUTION]\
+> When not to use
+
+- **Editable code:** CodeBlock is read-only. Use a code editor if people must
+  change the code.
+- **Code inside a sentence:** For a short word or name inside text, use the
+  inline `Code` component.
+- **Very large files:** Do not embed hundreds of lines. Link to the source, or
+  collapse the block with `maxLines`.
+- **Terminal sessions with a lot of output:** Show the command and the
+  important lines of output only.
+
+### Header and actions
+
+- **Title:** Use a file name or a short description. The title also names the
+  block for screen readers.
+- **Language label:** It is a visual hint only. Do not use it as the only way to
+  tell people what the code is.
+- **Action order:** Put the actions in the header, with Download before Copy.
+  Keyboard focus follows this order.
+- **Short snippets:** For one-line commands, put `CodeBlock.Actions` inside
+  `CodeBlock.Content` and skip the header.
+
+### Marked lines
+
+- **Highlighted:** Draw attention to lines, for example the line a message
+  refers to.
+- **Added and removed:** Show a change. Use them together to show a diff.
+- **Do not rely on color:** The `+` and `−` markers and the start-edge bar carry
+  the meaning. Do not describe changes in text by color only.
+- **Words:** Use `highlightedWords` to point at a name that appears many times.
+
+> [!TIP]\
+> **Do**
+>
+> - Mark the lines that explain the example.
+> - Keep marked groups of lines short.
+> - Use the numbers that are shown in the gutter. They follow
+>   `startLineNumber`.
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't mark most lines of a block.
+> - Don't use marks as decoration.
+> - Don't use a prompt on lines that show output. Use `outputLines`.
+
+### Copy and download
+
+- **Copy:** Copy uses the exact `code` string. Line numbers, prompts and markers
+  are never copied.
+- **Feedback:** The button shows a check icon and a screen reader announces
+  "Copied". If copying fails, it announces "Copy failed". Use `onCopyError` to
+  show your own message.
+- **Download:** Set `fileName` to a name that fits the code, for example
+  `config.yaml`.
+- **Copied value:** The copy trigger copies the shown code. Set `text` when
+  people need a different value than the one shown, for example the full value
+  of a masked line.
+
+### Content
+
+- **Wrapping:** Keep the default horizontal scrolling for code where line
+  length matters. Use `wrapLongLines` for long commands, for example in narrow
+  layouts.
+- **Streaming:** The block can show code that grows while it is generated. Its
+  buttons keep their state and the scroll position stays.
+- **Languages:** The default engine supports 14 languages. Other languages show
+  as plain text, unless your app adds a grammar. See the Implementation tab.
