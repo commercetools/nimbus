@@ -157,10 +157,12 @@ export const Disabled: Story = {
     });
 
     await step("Clear button is disabled when input is disabled", async () => {
-      // Scope the button query to this input's root slot (its parent), which
-      // also contains the clear button. The story renders multiple variants,
-      // so an unscoped query would be ambiguous.
-      const searchFieldContainer = input.parentElement;
+      // Scope the button query to this input's root slot, which also
+      // contains the clear button. The story renders multiple variants, so an
+      // unscoped query would be ambiguous.
+      const searchFieldContainer = input.closest<HTMLElement>(
+        ".nimbus-search-input__root"
+      );
       if (!searchFieldContainer)
         throw new Error("Could not find SearchField container");
 
@@ -511,6 +513,37 @@ export const ClearButton: Story = {
 };
 
 /**
+ * Empty field with a trailing button, per size (#2057). With no value there is
+ * no clear button, so the button sits at the field's trailing edge.
+ */
+export const EmptyWithTrailingElement: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      {inputSize.map((size) => (
+        <SearchInput
+          key={size}
+          size={size}
+          placeholder={`Search (${size})`}
+          aria-label={`empty-trailing-${size}`}
+          trailingElement={
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              colorPalette="primary"
+              variant="ghost"
+              aria-label="filter results"
+            >
+              <Icon as={Tune} />
+            </IconButton>
+          }
+        />
+      ))}
+    </Stack>
+  ),
+};
+
+/**
  * Regression for #2057: an empty field must not reserve space for the clear
  * button, so a trailing element sits at the field's trailing edge.
  */
@@ -566,6 +599,163 @@ export const TrailingElementAlignment: Story = {
         await expect(trailingSlot.getBoundingClientRect().right).toBeLessThan(
           clearButton.getBoundingClientRect().left
         );
+      }
+    );
+  },
+};
+
+/**
+ * Space between the end of the input and what follows it: the trailing element
+ * (less the gap) or the field's content edge. 0 means the placeholder can use
+ * all of the field's free space.
+ */
+const spaceAfterInput = (root: HTMLElement) => {
+  const rootStyle = window.getComputedStyle(root);
+  const trailing = root.querySelector(".nimbus-search-input__trailingElement");
+  const end = trailing
+    ? trailing.getBoundingClientRect().left - parseFloat(rootStyle.columnGap)
+    : root.getBoundingClientRect().right - parseFloat(rootStyle.paddingRight);
+  return end - root.querySelector("input")!.getBoundingClientRect().right;
+};
+
+/**
+ * The field's outline keeps its width when the clear button appears or goes
+ * away. Fields are sized by their content, so any change would show.
+ */
+export const StableWidth: Story = {
+  render: () => (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      {inputSize.map((size) => (
+        <SearchInput key={size} size={size} aria-label={`stable-${size}`} />
+      ))}
+      {inputSize.map((size) => (
+        <SearchInput
+          key={size}
+          size={size}
+          aria-label={`stable-trailing-${size}`}
+          trailingElement={
+            <IconButton
+              size={size === "sm" ? "2xs" : "xs"}
+              colorPalette="primary"
+              variant="ghost"
+              aria-label={`filter results ${size}`}
+            >
+              <Icon as={Tune} />
+            </IconButton>
+          }
+        />
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const inputs = canvas.getAllByRole("searchbox");
+    const rootOf = (input: HTMLElement) =>
+      input.closest<HTMLElement>(".nimbus-search-input__root")!;
+    const widthOf = (input: HTMLElement) =>
+      rootOf(input).getBoundingClientRect().width;
+    const emptyWidths = inputs.map(widthOf);
+
+    await step(
+      "Empty: the input reaches the trailing element or the field's edge",
+      async () => {
+        for (const input of inputs) {
+          await expect(spaceAfterInput(rootOf(input))).toBeCloseTo(0, 0);
+        }
+      }
+    );
+
+    await step("Width does not change when typing", async () => {
+      for (const [i, input] of inputs.entries()) {
+        await userEvent.type(input, "query");
+        await expect(
+          within(rootOf(input)).getByLabelText("Clear search input")
+        ).toBeVisible();
+        await expect(widthOf(input)).toBeCloseTo(emptyWidths[i], 1);
+      }
+    });
+
+    await step("Width does not change when clearing", async () => {
+      for (const [i, input] of inputs.entries()) {
+        await userEvent.click(
+          within(rootOf(input)).getByLabelText("Clear search input")
+        );
+        await expect(input).toHaveValue("");
+        await expect(widthOf(input)).toBeCloseTo(emptyWidths[i], 1);
+      }
+    });
+  },
+};
+
+/**
+ * Fields narrower than the input's default width (192px, token 4800). The
+ * input must shrink so its text, the trailing element and the clear button
+ * stay inside the field.
+ */
+export const NarrowField: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      {inputSize.map((size) => (
+        <SearchInput
+          key={size}
+          size={size}
+          width="4800"
+          defaultValue="Search query"
+          aria-label={`narrow-${size}`}
+        />
+      ))}
+      <SearchInput
+        width="4800"
+        defaultValue="Search query"
+        aria-label="narrow-trailing"
+        trailingElement={
+          <IconButton
+            size="xs"
+            colorPalette="primary"
+            variant="ghost"
+            aria-label="filter results"
+          >
+            <Icon as={Tune} />
+          </IconButton>
+        }
+      />
+      <SearchInput
+        width="4800"
+        placeholder="Search products by name or SKU"
+        aria-label="narrow-placeholder"
+      />
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const roots = Array.from(
+      canvasElement.querySelectorAll<HTMLElement>(".nimbus-search-input__root")
+    );
+
+    await step("Everything in the field stays inside its outline", async () => {
+      for (const root of roots) {
+        const outline = root.getBoundingClientRect();
+        const input = root.querySelector("input")!;
+        for (const child of [...Array.from(root.children), input]) {
+          const box = child.getBoundingClientRect();
+          await expect(Math.round(box.left)).toBeGreaterThanOrEqual(
+            Math.round(outline.left)
+          );
+          await expect(Math.round(box.right)).toBeLessThanOrEqual(
+            Math.round(outline.right)
+          );
+        }
+      }
+    });
+
+    await step(
+      "Empty: the placeholder can use the space up to the field's edge",
+      async () => {
+        const emptyRoot = roots.find(
+          (root) => !root.querySelector("input")!.value
+        )!;
+        await expect(spaceAfterInput(emptyRoot)).toBeCloseTo(0, 0);
       }
     );
   },
@@ -845,10 +1035,9 @@ export const WithFormField: Story = {
           /Search query must be at least 3 characters/
         );
 
-        await expect(invalidInput.parentElement).toHaveAttribute(
-          "data-invalid",
-          "true"
-        );
+        await expect(
+          invalidInput.closest(".nimbus-search-input__root")
+        ).toHaveAttribute("data-invalid", "true");
         await expect(errorMessage).toBeVisible();
       }
     );
@@ -896,10 +1085,9 @@ export const WithFormField: Story = {
       );
 
       await expect(combinedInput).toBeInTheDocument();
-      await expect(combinedInput.parentElement).toHaveAttribute(
-        "data-invalid",
-        "true"
-      );
+      await expect(
+        combinedInput.closest(".nimbus-search-input__root")
+      ).toHaveAttribute("data-invalid", "true");
       await expect(combinedLabel.innerHTML).toContain("*");
       await expect(combinedError).toBeVisible();
     });
@@ -1185,20 +1373,26 @@ export const LeadingElementConfiguration: Story = {
     const slot = "nimbus-search-input__leadingElement";
 
     await step("Omitting the prop keeps the search icon", async () => {
-      const field = canvas.getByLabelText("leading-default").closest("div");
+      const field = canvas
+        .getByLabelText("leading-default")
+        .closest(".nimbus-search-input__root");
       await expect(field?.querySelector(`.${slot} svg`)).toBeInTheDocument();
     });
 
     await step(
       "Providing an element renders it in the leading slot",
       async () => {
-        const field = canvas.getByLabelText("leading-replaced").closest("div");
+        const field = canvas
+          .getByLabelText("leading-replaced")
+          .closest(".nimbus-search-input__root");
         await expect(field?.querySelector(`.${slot}`)).toBeInTheDocument();
       }
     );
 
     await step("Passing null renders no leading slot", async () => {
-      const field = canvas.getByLabelText("leading-removed").closest("div");
+      const field = canvas
+        .getByLabelText("leading-removed")
+        .closest(".nimbus-search-input__root");
       await expect(field?.querySelector(`.${slot}`)).not.toBeInTheDocument();
     });
 

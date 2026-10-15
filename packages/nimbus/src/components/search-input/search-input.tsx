@@ -18,6 +18,7 @@ import {
   SearchInputRootSlot,
   SearchInputLeadingElementSlot,
   SearchInputTrailingElementSlot,
+  SearchInputInputWrapperSlot,
   SearchInputInputSlot,
 } from "./search-input.slots";
 import type { SearchInputProps } from "./search-input.types";
@@ -69,22 +70,27 @@ export const SearchInput = (props: SearchInputProps) => {
             {...recipeProps}
             {...styleProps}
             {...stateProps}
+            data-empty={isEmpty ? "true" : undefined}
           >
             {leadingElement && (
               <SearchInputLeadingElementSlot>
                 <AdornmentContent>{leadingElement}</AdornmentContent>
               </SearchInputLeadingElementSlot>
             )}
-            <SearchInputInputSlot asChild>
-              <RaInput ref={ref} />
-            </SearchInputInputSlot>
+            {/* While empty, holds the clear button's space for the input to
+                use, so the field keeps its width (see the recipe). */}
+            <SearchInputInputWrapperSlot>
+              <SearchInputInputSlot asChild>
+                <RaInput ref={ref} />
+              </SearchInputInputSlot>
+            </SearchInputInputWrapperSlot>
             {trailingElement && (
               <SearchInputTrailingElementSlot>
                 <AdornmentContent>{trailingElement}</AdornmentContent>
               </SearchInputTrailingElementSlot>
             )}
-            {/* Not rendered while empty, so it reserves no space and a
-                trailingElement sits at the field's trailing edge. */}
+            {/* Not rendered while empty, so a trailingElement sits at the
+                field's trailing edge. */}
             {!isEmpty && (
               <IconButton
                 slot="null"

@@ -452,7 +452,9 @@ describe("SearchInput - Leading and trailing elements", () => {
       </NimbusProvider>
     );
 
-    const field = screen.getByRole("searchbox").closest("div");
+    const field = screen
+      .getByRole("searchbox")
+      .closest(".nimbus-search-input__root");
     expect(
       field?.querySelector(".nimbus-search-input__leadingElement")
     ).toBeInTheDocument();
@@ -478,7 +480,9 @@ describe("SearchInput - Leading and trailing elements", () => {
       </NimbusProvider>
     );
 
-    const field = screen.getByRole("searchbox").closest("div");
+    const field = screen
+      .getByRole("searchbox")
+      .closest(".nimbus-search-input__root");
     expect(
       field?.querySelector(".nimbus-search-input__leadingElement")
     ).not.toBeInTheDocument();

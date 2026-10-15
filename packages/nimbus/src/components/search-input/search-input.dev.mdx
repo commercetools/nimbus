@@ -75,7 +75,8 @@ const App = () => {
 
 **Behavioral notes:**
 - Clear button is rendered only when the input has a value. When the input is
-  empty, it takes up no space, so a `trailingElement` sits at the end of the field
+  empty, a `trailingElement` sits at the end of the field
+- The field keeps the same width with or without the clear button
 - Clear button is disabled when input is disabled or read-only
 - Clear button has an internationalized aria-label ("Clear search input")
 
