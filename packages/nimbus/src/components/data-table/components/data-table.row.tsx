@@ -656,6 +656,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               maxW="100%"
               position="relative"
               overflow="hidden"
+              verticalAlign="top"
               cursor={isDisabled ? "not-allowed" : undefined}
             >
               {col.render
@@ -736,10 +737,12 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               isDisabled={isDisabled}
             >
               {hasNestedContent || hasRenderNestedContent ? (
-                // TODO:Button does not occupy the whole height
                 <IconButton
                   w="100%"
                   h="100%"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
                   unstyled
                   cursor="pointer"
                   focusVisibleRing="inside"
