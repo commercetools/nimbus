@@ -53,6 +53,30 @@ const App = () => (
 - `orientation="vertical"`: Options are stacked vertically with consistent spacing (default)
 - `orientation="horizontal"`: Options are arranged in a row, useful for compact layouts with few options
 
+### Sizes
+
+The `size` prop controls the label text style, the indicator size and the gap between options. The default is `md`:
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <RadioInput.Root name="sm-example" size="sm">
+      <RadioInput.Option value="option1">Small option</RadioInput.Option>
+      <RadioInput.Option value="option2">Small option</RadioInput.Option>
+    </RadioInput.Root>
+    <hr />
+    <RadioInput.Root name="md-example" size="md">
+      <RadioInput.Option value="option1">Medium option</RadioInput.Option>
+      <RadioInput.Option value="option2">Medium option</RadioInput.Option>
+    </RadioInput.Root>
+  </Stack>
+)
+```
+
+**Available sizes:**
+- `size="sm"`: 14px label text, 16px indicator
+- `size="md"`: 16px label text, 20px indicator (default)
+
 ### Uncontrolled mode
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:
