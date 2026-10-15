@@ -1,0 +1,79 @@
+{
+  "tool": "get_component",
+  "cases": [
+    {
+      "id": "button-metadata-lists-sections",
+      "input": { "name": "Button" },
+      "expect": {
+        "isError": false,
+        "field": {
+          "name": "Button",
+          "exportName": "Button",
+          "path": "/components/buttons/button",
+          "sections": [
+            "overview",
+            "accessibility",
+            "implementation",
+            "guidelines",
+            "props"
+          ]
+        }
+      }
+    },
+    {
+      "id": "button-props-are-filtered-to-component-specific",
+      "input": { "name": "Button", "section": "props" },
+      "expect": {
+        "field": { "component": "Button" },
+        "rankWithin": {
+          "path": "props",
+          "field": "name",
+          "value": "variant",
+          "k": 60,
+          "also": { "defaultValue": "\"subtle\"" }
+        },
+        "contains": [
+          "\"name\":\"size\"",
+          "\"name\":\"colorPalette\"",
+          "\"name\":\"isDisabled\""
+        ],
+        "absent": { "path": "props", "field": "name", "value": "key" },
+        "length": { "path": "props", "min": 1, "max": 59 }
+      }
+    },
+    {
+      "id": "drawer-props-aggregate-sub-components",
+      "input": { "name": "Drawer", "section": "props" },
+      "expect": {
+        "field": { "component": "Drawer" },
+        "rankWithin": {
+          "path": "props",
+          "field": "name",
+          "value": "isOpen",
+          "k": 100,
+          "also": { "subComponent": "DrawerRoot" }
+        },
+        "length": { "path": "props", "min": 1 }
+      }
+    },
+    {
+      "id": "implementation-section-strips-fences-keeps-code",
+      "input": { "name": "Button", "section": "implementation" },
+      "expect": {
+        "isError": false,
+        "notContains": "```",
+        "contains": ["import", "Button"]
+      }
+    },
+    {
+      "id": "name-lookup-is-case-insensitive",
+      "input": { "name": "bUtToN" },
+      "expect": { "isError": false, "field": { "name": "Button" } }
+    },
+    {
+      "id": "unknown-component-is-an-error",
+      "input": { "name": "NotARealComponentXyz" },
+      "expect": { "isError": true, "contains": "not found" }
+    }
+  ]
+}

@@ -59,6 +59,7 @@ npx @commercetools/nimbus-mcp
 | `list_components`    | Returns names and descriptions of all Nimbus components and patterns                   |
 | `get_component`      | Returns detailed info about a component or pattern (metadata, props, recipe, docs)     |
 | `search_docs`        | Full-text search across all Nimbus documentation pages                                 |
+| `get_docs_page`      | Returns the full content of a documentation page by route path (from `search_docs`)    |
 | `search_icons`       | Fuzzy-search Nimbus icons by name or keyword                                           |
 | `get_tokens`         | Returns design tokens — list categories, browse by category, or reverse-lookup a value |
 | `migrate_from_uikit` | Returns migration mappings from UI Kit components to Nimbus equivalents                |
@@ -94,12 +95,57 @@ pnpm --filter @commercetools/nimbus-mcp dev
 ### Testing
 
 ```bash
-# Run tests for this package only
-pnpm test packages/nimbus-mcp/src/server.spec.ts
+# Unit specs for this package (in-process server, no build needed)
+pnpm vitest run --project=nimbus-mcp
 
 # Run all monorepo tests (includes nimbus-mcp)
 pnpm test
 ```
+
+### Tool evals
+
+`evals/cases/<tool>.json` holds deterministic cases for every registered tool.
+The runner (`evals/run.eval.spec.ts`) spawns the **built** `dist/index.js` over
+stdio, exactly as an editor would, calls each case's input and checks its
+expectations. CI runs this as a blocking step after the build
+(`Nimbus MCP tool evals` in `build-and-test.yml`).
+
+```bash
+pnpm --filter @commercetools/nimbus-mcp build   # evals need dist/
+pnpm --filter @commercetools/nimbus-mcp eval
+
+# Re-run one case
+pnpm --filter @commercetools/nimbus-mcp eval -t "deep-implementation-term"
+```
+
+A run writes `evals/.report/scorecard.json` (gitignored) with pass/fail and
+p50/max response chars and ms per tool, and appends the same table to the GitHub
+job summary when `GITHUB_STEP_SUMMARY` is set.
+
+#### Adding a case
+
+Append to the tool's file. `id` must be unique within the file, `input` is sent
+verbatim as the tool arguments, and `expect` uses only these keys (a typo fails
+the run at load time, naming the file, case and key):
+
+| Key           | Checks                                                                                                                                          |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `isError`     | The MCP `isError` flag (`undefined` counts as `false`)                                                                                          |
+| `contains`    | String or array; each must appear in the raw response text                                                                                      |
+| `notContains` | String or array; none may appear in the raw response text                                                                                       |
+| `maxChars`    | Response text length is at most this                                                                                                            |
+| `field`       | `{ "<path>": value }`; each JSON path deep-equals the value (`[0].matchedView`, `results[2].name`)                                              |
+| `rankWithin`  | `{ path?, field, value, k, also? }`; an element with `field = value` is within the first `k`; `also` adds `field: value` checks on that element |
+| `absent`      | `{ path?, field, value }`; no element matches                                                                                                   |
+| `length`      | `{ path?, min?, max? }`; array length bounds                                                                                                    |
+
+`path` on the array matchers names the array inside the response; omit it when
+the response root is the array. Prefer stable identifiers (routes, export names,
+prop names) and bounds over prose, so a docs edit does not break a case.
+
+The coverage check fails if a registered tool has fewer than three cases, if a
+case file names a tool the server no longer registers, or if two cases share an
+id.
 
 ### Manual smoke test
 
@@ -145,8 +191,8 @@ export function registerMyTool(server: McpServer): void {
 ```
 
 2. Import and call `registerMyTool(server)` in `src/server.ts`.
-
-That's it — no other files need changing.
+3. Add `evals/cases/my_tool.json` with at least three cases (see
+   [Tool evals](#tool-evals)); the eval coverage check fails without it.
 
 ## Data & Build Pipeline
 

@@ -15,6 +15,19 @@
   and unnecessary characters before returning — do not return MDX verbatim, for
   the same reason JSON must not be pretty-printed.
 
+## Tool Evals
+
+- **Every registered tool needs at least three cases in
+  `evals/cases/<tool>.json`.** The eval run
+  (`pnpm --filter @commercetools/nimbus-mcp eval`, blocking in CI) lists the
+  tools the built server registers and fails if any has fewer. Cases use the
+  closed expectation vocabulary documented in
+  [README.md](./README.md#tool-evals).
+- Evals run against `dist/index.js` over stdio, so build first. Harness unit
+  tests (`evals/*.spec.ts`) run build-free with the package's unit project.
+- When a tool's behaviour changes on purpose, update the affected case in the
+  same PR; assert on stable identifiers and bounds, not prose.
+
 ## Performance
 
 - **Cache pre-computed data** — search uses pre-lowercased field maps and route

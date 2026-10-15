@@ -414,18 +414,34 @@ async function findNimbusSuggestion(
     };
   }
 
-  const minFuzzyScore = tokens.length * (WEIGHTS.title / 2);
-  const fuzzyScored: Array<{ route: RouteManifestEntry; score: number }> = [];
+  // Score tokens individually so a brand prefix that matches nothing
+  // ("Zylon" in ZylonAccordion) does not raise the bar for the ones that do.
+  // Each matching token must still average a title-strength fuzzy hit.
+  const fuzzyScored: Array<{
+    route: RouteManifestEntry;
+    score: number;
+    matchedTokens: number;
+  }> = [];
   for (const r of routes) {
-    const score = fuzzyScorePreLowered(lowered.get(r)!, tokens);
+    const fields = lowered.get(r)!;
+    let score = 0;
+    let matchedTokens = 0;
+    for (const token of tokens) {
+      const tokenScore = fuzzyScorePreLowered(fields, [token]);
+      if (tokenScore > 0) {
+        score += tokenScore;
+        matchedTokens++;
+      }
+    }
     if (score > 0) {
-      fuzzyScored.push({ route: r, score });
+      fuzzyScored.push({ route: r, score, matchedTokens });
     }
   }
   fuzzyScored.sort((a, b) => b.score - a.score);
 
   if (fuzzyScored.length > 0) {
     const best = fuzzyScored[0];
+    const minFuzzyScore = best.matchedTokens * (WEIGHTS.title / 2);
     if (best.score >= minFuzzyScore) {
       return {
         name: best.route.exportName ?? best.route.title,

@@ -1,0 +1,60 @@
+{
+  "tool": "get_docs_page",
+  "cases": [
+    {
+      "id": "installation-page",
+      "input": { "path": "home/getting-started/installation" },
+      "expect": {
+        "isError": false,
+        "field": {
+          "title": "Installation",
+          "path": "home/getting-started/installation"
+        },
+        "contains": "pnpm"
+      }
+    },
+    {
+      "id": "tabbed-page-lists-sections",
+      "input": { "path": "components/buttons/button" },
+      "expect": {
+        "field": { "title": "Button" },
+        "length": { "path": "sections", "min": 2 },
+        "contains": ["--- overview ---", "--- dev ---"]
+      }
+    },
+    {
+      "id": "single-section-is-smaller-than-all",
+      "input": { "path": "components/buttons/button", "section": "dev" },
+      "expect": {
+        "field": { "title": "Button" },
+        "notContains": "--- overview ---",
+        "maxChars": 30000
+      }
+    },
+    {
+      "id": "leading-and-trailing-slashes-are-normalized",
+      "input": { "path": "/home/getting-started/installation/" },
+      "expect": { "isError": false, "field": { "title": "Installation" } }
+    },
+    {
+      "id": "style-props-landing-page-is-enriched",
+      "input": { "path": "home/style-props" },
+      "expect": {
+        "contains": ["Style Props Index", "home/style-props/spacing", "padding"]
+      }
+    },
+    {
+      "id": "unknown-route-points-to-search-docs",
+      "input": { "path": "home/not/a/page" },
+      "expect": { "isError": true, "contains": "search_docs" }
+    },
+    {
+      "id": "unknown-section-is-an-error",
+      "input": {
+        "path": "components/buttons/button",
+        "section": "nonexistent"
+      },
+      "expect": { "isError": true, "contains": "nonexistent" }
+    }
+  ]
+}

@@ -34,16 +34,10 @@ export interface DocSearchResult {
   description: string;
   /** Route path to the documentation page. */
   path: string;
-  /**
-   * Top-level category of the page (e.g. "Components", "Guides", "Tokens").
-   * Equivalent to `category` on RouteManifestEntry — derived from menu[0].
-   * Omitted when the page has no menu hierarchy.
-   */
-  category?: string;
-  /** Which view the match was found in (e.g. "overview", "dev", "guidelines", "a11y"). */
+  /** Which view the match was found in (e.g. "dev", "guidelines", "a11y"); omitted for "overview". */
   matchedView?: string;
-  /** Content snippet highlighting the match. */
-  snippet: string;
+  /** Excerpt anchored on the query tokens. Omitted when no view content matched. */
+  snippet?: string;
   /** Suggested tool to call for deeper info on this result. */
   toolHint: string;
 }
@@ -319,17 +313,12 @@ export interface ComponentSummary {
 // ---------------------------------------------------------------------------
 
 /** Result of phase-1 candidate filtering in search_docs. */
-export interface CandidateResult {
-  /** Entries that matched in phase 1 (exact or fuzzy on metadata). */
-  matched: SearchIndexEntry[];
-  /** Additional entries added as fallback candidates for deep search. */
-  expanded: SearchIndexEntry[];
-}
-
 /** A view match with content from route data. */
 export interface ViewMatch {
   viewKey: string;
   content: string;
+  /** Number of distinct query tokens found in the view. */
+  hits: number;
 }
 
 // ---------------------------------------------------------------------------
@@ -373,17 +362,13 @@ export interface CachedViewContent {
   lower: string;
 }
 
-/** Cached route view data with pre-computed combined lowered content. */
+/** Cached route views, stripped and lowered, sorted shortest first. */
 export interface CachedRouteViews {
   views: Array<{
     key: string;
     content: string;
     lower: string;
-    /** Truncated lower for matching (content cap). */
-    matchLower: string;
   }>;
-  /** All view content concatenated and lowered — for fast negative filtering. */
-  combinedLower: string;
 }
 
 /** Pre-lowercased relevance fields to avoid repeated toLowerCase() calls. */
@@ -634,4 +619,93 @@ export interface StylePropsSummary {
   categories: StylePropsCategorySummary[];
   /** Human-readable hint for LLMs on how to drill down. */
   hint: string;
+}
+
+// ---------------------------------------------------------------------------
+// Tool evals (evals/)
+// ---------------------------------------------------------------------------
+
+/** Locates an element in an array response: first element whose `field` deep-equals `value`. */
+export interface EvalElementSelector {
+  /** Path to the array; omitted means the response root is the array. */
+  path?: string;
+  field: string;
+  value: unknown;
+}
+
+export interface EvalRankWithin extends EvalElementSelector {
+  /** The element must appear within the first k entries (1-based). */
+  k: number;
+  /** Extra `field: value` deep-equals checks on the matched element. */
+  also?: Record<string, unknown>;
+}
+
+export interface EvalLength {
+  path?: string;
+  min?: number;
+  max?: number;
+}
+
+/** The closed expectation vocabulary. Every key is optional; at least one is required. */
+export interface EvalExpectation {
+  isError?: boolean;
+  contains?: string | string[];
+  notContains?: string | string[];
+  /** JSON path → deep-equal value. Paths use dot segments and `[n]` indexes. */
+  field?: Record<string, unknown>;
+  rankWithin?: EvalRankWithin;
+  absent?: EvalElementSelector;
+  length?: EvalLength;
+  maxChars?: number;
+}
+
+export interface EvalCase {
+  id: string;
+  input: Record<string, unknown>;
+  expect: EvalExpectation;
+}
+
+export interface EvalCaseFile {
+  tool: string;
+  cases: EvalCase[];
+}
+
+/** The text payload and error flag of one tool call, as the matchers see it. */
+export interface EvalToolResponse {
+  text: string;
+  isError?: boolean;
+}
+
+export interface EvalMatcherResult {
+  key: keyof EvalExpectation;
+  ok: boolean;
+  expected: unknown;
+  actual: unknown;
+}
+
+export interface EvalRecord {
+  tool: string;
+  id: string;
+  pass: boolean;
+  chars: number;
+  ms: number;
+}
+
+export interface EvalStat {
+  p50: number;
+  max: number;
+}
+
+export interface EvalToolScorecard {
+  tool: string;
+  passed: number;
+  failed: number;
+  chars: EvalStat;
+  ms: EvalStat;
+}
+
+export interface EvalScorecard {
+  generatedAt: string;
+  totals: { passed: number; failed: number };
+  tools: EvalToolScorecard[];
 }

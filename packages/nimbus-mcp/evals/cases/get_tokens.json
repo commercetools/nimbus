@@ -1,0 +1,76 @@
+{
+  "tool": "get_tokens",
+  "cases": [
+    {
+      "id": "category-list-leads-with-the-common-ones",
+      "input": {},
+      "expect": {
+        "field": {
+          "[0].category": "color",
+          "[1].category": "colorPalettes",
+          "[2].category": "spacing",
+          "[3].category": "fontSize"
+        },
+        "length": { "min": 4 }
+      }
+    },
+    {
+      "id": "spacing-category-is-small-enough-to-return-whole",
+      "input": { "category": "spacing" },
+      "expect": {
+        "field": { "category": "spacing" },
+        "rankWithin": {
+          "path": "tokens",
+          "field": "name",
+          "value": "spacing.400",
+          "k": 30,
+          "also": { "value": "16px" }
+        },
+        "notContains": "\"hint\""
+      }
+    },
+    {
+      "id": "large-category-pages-with-a-hint",
+      "input": { "category": "color" },
+      "expect": {
+        "field": { "category": "color", "showing": 20 },
+        "length": { "path": "tokens", "min": 20, "max": 20 },
+        "contains": "\"hint\""
+      }
+    },
+    {
+      "id": "limit-and-offset-page-through",
+      "input": { "category": "color", "limit": 5, "offset": 5 },
+      "expect": {
+        "field": { "showing": 5 },
+        "length": { "path": "tokens", "min": 5, "max": 5 },
+        "absent": {
+          "path": "tokens",
+          "field": "name",
+          "value": "color.blacks-and-whites.black"
+        }
+      }
+    },
+    {
+      "id": "color-palettes-group-semantic-and-system",
+      "input": { "category": "colorPalettes" },
+      "expect": {
+        "contains": [
+          "\"name\":\"primary\"",
+          "\"name\":\"critical\"",
+          "\"name\":\"amber\""
+        ]
+      }
+    },
+    {
+      "id": "value-reverse-lookup",
+      "input": { "value": "16px" },
+      "expect": { "field": { "value": "16px" }, "contains": "spacing.400" }
+    },
+    {
+      "id": "unknown-category-is-an-error",
+      "input": { "category": "notacategory" },
+      "expect": { "isError": true, "contains": "not found" }
+    }
+  ]
+}

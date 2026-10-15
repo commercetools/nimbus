@@ -1,3 +1,6 @@
 # Copied from apps/docs/src/data/ by prebuild step (scripts/copy-docs-data.mjs).
 # Always regenerated during `pnpm build` — no need to commit.
 data/
+
+# Eval scorecard written by `pnpm eval` (evals/run.eval.spec.ts).
+evals/.report/

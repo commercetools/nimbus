@@ -1,0 +1,75 @@
+{
+  "tool": "search_icons",
+  "cases": [
+    {
+      "id": "broad-query-pages-at-ten",
+      "input": {
+        "query": "arrow"
+      },
+      "expect": {
+        "field": {
+          "importPath": "@commercetools/nimbus-icons",
+          "offset": 0,
+          "pageSize": 10,
+          "hasMore": true
+        },
+        "length": {
+          "path": "results",
+          "min": 10,
+          "max": 10
+        },
+        "contains": "\"hint\""
+      }
+    },
+    {
+      "id": "exact-name-is-found",
+      "input": {
+        "query": "CheckCircle"
+      },
+      "expect": {
+        "rankWithin": {
+          "path": "results",
+          "field": "name",
+          "value": "CheckCircle",
+          "k": 10
+        }
+      }
+    },
+    {
+      "id": "offset-returns-the-next-page",
+      "input": {
+        "query": "arrow",
+        "offset": 10
+      },
+      "expect": {
+        "field": {
+          "offset": 10
+        },
+        "absent": {
+          "path": "results",
+          "field": "name",
+          "value": "ArrowBack"
+        },
+        "length": {
+          "path": "results",
+          "min": 1,
+          "max": 10
+        }
+      }
+    },
+    {
+      "id": "nonsense-query-returns-zero",
+      "input": {
+        "query": "zzzzqqqxx"
+      },
+      "expect": {
+        "field": {
+          "totalResults": 0,
+          "hasMore": false,
+          "results": []
+        },
+        "notContains": "\"hint\""
+      }
+    }
+  ]
+}

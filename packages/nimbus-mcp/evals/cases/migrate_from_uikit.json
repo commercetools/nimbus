@@ -1,0 +1,73 @@
+{
+  "tool": "migrate_from_uikit",
+  "cases": [
+    {
+      "id": "primary-button-maps-to-button-variant",
+      "input": { "componentName": "PrimaryButton" },
+      "expect": {
+        "isError": false,
+        "field": {
+          "uiKitName": "PrimaryButton",
+          "nimbusEquivalent": "Button",
+          "importPath": "@commercetools/nimbus",
+          "mappingType": "variant"
+        },
+        "length": { "path": "breakingChanges", "min": 1 },
+        "contains": "get_component"
+      }
+    },
+    {
+      "id": "spacings-compound-root-lists-sub-components",
+      "input": { "componentName": "Spacings" },
+      "expect": {
+        "field": { "compoundRoot": "Spacings" },
+        "length": { "path": "mappings", "min": 4 },
+        "rankWithin": {
+          "path": "mappings",
+          "field": "uiKitName",
+          "value": "Spacings.Stack",
+          "k": 10,
+          "also": { "nimbusEquivalent": "Stack" }
+        },
+        "contains": ["Spacings.Inline", "Spacings.Inset"]
+      }
+    },
+    {
+      "id": "unknown-name-with-close-match-gets-a-suggestion",
+      "input": { "componentName": "ZylonAccordion" },
+      "expect": {
+        "isError": false,
+        "field": {
+          "uiKitName": "ZylonAccordion",
+          "suggestion": { "name": "Accordion", "confidence": "medium" }
+        },
+        "contains": "get_component"
+      }
+    },
+    {
+      "id": "lookup-is-case-insensitive",
+      "input": { "componentName": "primarybutton" },
+      "expect": {
+        "isError": false,
+        "field": { "uiKitName": "PrimaryButton", "nimbusEquivalent": "Button" }
+      }
+    },
+    {
+      "id": "design-tokens-redirect-to-get-tokens",
+      "input": { "componentName": "customProperties" },
+      "expect": {
+        "field": {
+          "nimbusEquivalent": "Nimbus design tokens",
+          "importPath": "@commercetools/nimbus-tokens",
+          "mappingType": "pattern"
+        },
+        "contains": "get_tokens"
+      }
+    },
+    {
+      "id": "unknown-name-without-match-is-an-error",
+      "input": { "componentName": "NonExistentComponent" },
+      "expect": { "isError": true, "contains": "NonExistentComponent" }
+    }
+  ]
+}

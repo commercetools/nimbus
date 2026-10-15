@@ -7,7 +7,10 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "files": ["dist", "data"],
+  "files": [
+    "dist",
+    "data"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/commercetools/nimbus.git"
@@ -25,7 +28,8 @@
     "build": "pnpm prebuild && tsup",
     "dev": "tsx src/index.ts",
     "mcp-inspector": "mcp-inspector tsx src/index.ts",
-    "mcp-inspector:cli": "mcp-inspector --cli tsx src/index.ts"
+    "mcp-inspector:cli": "mcp-inspector --cli tsx src/index.ts",
+    "eval": "vitest run --config vitest.evals.config.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.31.0",
@@ -41,6 +45,7 @@
     "@types/node": "catalog:utils",
     "tsup": "catalog:tooling",
     "tsx": "catalog:tooling",
-    "typescript": "catalog:tooling"
+    "typescript": "catalog:tooling",
+    "vitest": "catalog:tooling"
   }
 }

@@ -1,0 +1,180 @@
+{
+  "tool": "search_docs",
+  "cases": [
+    {
+      "id": "deep-implementation-term",
+      "input": {
+        "query": "allowFocusWhenDisabled"
+      },
+      "expect": {
+        "rankWithin": {
+          "field": "path",
+          "value": "components/buttons/button",
+          "k": 2,
+          "also": {
+            "matchedView": "dev"
+          }
+        },
+        "contains": "allowFocusWhenDisabled",
+        "maxChars": 4000
+      }
+    },
+    {
+      "id": "late-alphabet-page-tabs",
+      "input": {
+        "query": "tabListAriaLabel"
+      },
+      "expect": {
+        "rankWithin": {
+          "field": "path",
+          "value": "components/navigation/tabs",
+          "k": 3,
+          "also": {
+            "matchedView": "dev"
+          }
+        },
+        "contains": "tabListAriaLabel"
+      }
+    },
+    {
+      "id": "late-alphabet-page-toggle-button",
+      "input": {
+        "query": "activeFillStyle"
+      },
+      "expect": {
+        "rankWithin": {
+          "field": "path",
+          "value": "components/buttons/toggle-button",
+          "k": 2
+        },
+        "contains": "activeFillStyle"
+      }
+    },
+    {
+      "id": "co-occurring-terms-in-one-snippet",
+      "input": {
+        "query": "isLoading setTimeout"
+      },
+      "expect": {
+        "rankWithin": {
+          "field": "path",
+          "value": "components/buttons/button",
+          "k": 3,
+          "also": {
+            "matchedView": "dev"
+          }
+        },
+        "contains": ["isLoading", "setTimeout"]
+      }
+    },
+    {
+      "id": "multi-word-query-lands-on-the-section",
+      "input": {
+        "query": "button loading state"
+      },
+      "expect": {
+        "rankWithin": {
+          "field": "path",
+          "value": "components/buttons/button",
+          "k": 5,
+          "also": {
+            "matchedView": "dev"
+          }
+        },
+        "contains": "oading state"
+      }
+    },
+    {
+      "id": "no-leaked-code-fences",
+      "input": {
+        "query": "Box flex container",
+        "limit": 10
+      },
+      "expect": {
+        "rankWithin": {
+          "field": "path",
+          "value": "components/layout/box",
+          "k": 1
+        },
+        "notContains": ["``jsx", "``tsx", "```"],
+        "maxChars": 4000
+      }
+    },
+    {
+      "id": "response-cap-button",
+      "input": {
+        "query": "button",
+        "limit": 10
+      },
+      "expect": {
+        "maxChars": 4000,
+        "length": {
+          "min": 6,
+          "max": 10
+        }
+      }
+    },
+    {
+      "id": "response-cap-component",
+      "input": {
+        "query": "component",
+        "limit": 10
+      },
+      "expect": {
+        "maxChars": 4000,
+        "length": {
+          "max": 10
+        }
+      }
+    },
+    {
+      "id": "response-cap-accessibility",
+      "input": {
+        "query": "accessibility",
+        "limit": 10
+      },
+      "expect": {
+        "maxChars": 4000,
+        "length": {
+          "max": 10
+        }
+      }
+    },
+    {
+      "id": "default-limit-is-five",
+      "input": {
+        "query": "button"
+      },
+      "expect": {
+        "length": {
+          "min": 1,
+          "max": 5
+        },
+        "notContains": "\"category\""
+      }
+    },
+    {
+      "id": "colors-page-ranks-for-color-tokens",
+      "input": {
+        "query": "color tokens"
+      },
+      "expect": {
+        "rankWithin": {
+          "field": "path",
+          "value": "home/design-tokens/colors",
+          "k": 2
+        }
+      }
+    },
+    {
+      "id": "nonsense-query-returns-no-results",
+      "input": {
+        "query": "xyzzy12345"
+      },
+      "expect": {
+        "contains": "No matching documentation found.",
+        "isError": false
+      }
+    }
+  ]
+}

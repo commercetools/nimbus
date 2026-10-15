@@ -5,21 +5,35 @@ import type {
   SearchIndexEntry,
   RouteData,
   DocSearchResult,
-  CandidateResult,
   ViewMatch,
   LoweredRelevanceFields,
   CachedViewContent,
   CachedRouteViews,
 } from "../types.js";
-import {
-  filterAndRankPreLowered,
-  fuzzyScorePreLowered,
-  scorePreLowered,
-} from "../utils/relevance.js";
+import { fuzzyScorePreLowered, scorePreLowered } from "../utils/relevance.js";
 import { stripMarkdown } from "../utils/markdown.js";
+import {
+  extractSnippet,
+  findBestAnchor,
+  SNIPPET_LENGTH,
+} from "../utils/snippet.js";
 import { routePathToSlug as routeToSlug } from "../utils/route.js";
 
+/** Upper bound on results per call; the `limit` input cannot exceed it. */
 const MAX_RESULTS = 10;
+/** Results returned when the caller does not pass `limit`. */
+const DEFAULT_RESULTS = 5;
+/**
+ * Hard cap on the serialized response. Snippets of lower-ranked results are
+ * shortened, then dropped, then whole results are dropped, until it fits.
+ */
+const OUTPUT_BUDGET_CHARS = 4000;
+/** Snippet size a lower-ranked result is cut to before losing it entirely. */
+const BUDGET_SNIPPET_LENGTH = Math.floor(SNIPPET_LENGTH / 3);
+/** Score bonus for a view containing every query token. */
+const FULL_VIEW_MATCH_BONUS = 1000;
+/** Score bonus scale for a view containing only some query tokens. */
+const PARTIAL_VIEW_MATCH_BONUS = 500;
 
 /** Maps a route to the most useful follow-up tool. */
 function deriveToolHint(route: string): string {
@@ -29,22 +43,6 @@ function deriveToolHint(route: string): string {
   if (route.startsWith("icons")) return "search_icons";
   return "get_docs_page";
 }
-const SNIPPET_LENGTH = 200;
-/** Characters of context shown before the matched token in a snippet. */
-const SNIPPET_LEAD = 80;
-/**
- * Number of candidates passed to phase 2 (deep route-file search).
- * Set higher than MAX_RESULTS so phase 2 has room to find deep-content
- * matches that phase 1's lightweight index missed.
- */
-const PHASE2_CANDIDATE_LIMIT = 30;
-
-/**
- * Minimum number of phase-1 candidates before we expand to all component pages.
- * If the lightweight index returns fewer than this, we broaden the candidate
- * pool so deep-content-only matches aren't missed.
- */
-const MIN_CANDIDATES = 10;
 
 /** Pre-computed lowercased fields for each search index entry. */
 let loweredFieldsCache:
@@ -86,38 +84,6 @@ function getLoweredFields(
   return map;
 }
 
-/**
- * Extracts a content snippet anchored to the earliest occurrence of any query
- * token so the excerpt is as close to the start of the document as possible.
- */
-function extractSnippet(content: string, tokens: string[]): string {
-  const lower = content.toLowerCase();
-
-  let bestIndex = -1;
-  for (const token of tokens) {
-    const idx = lower.indexOf(token);
-    if (idx !== -1 && (bestIndex === -1 || idx < bestIndex)) {
-      bestIndex = idx;
-    }
-  }
-
-  if (bestIndex === -1) {
-    return (
-      content.slice(0, SNIPPET_LENGTH).trim() +
-      (content.length > SNIPPET_LENGTH ? "…" : "")
-    );
-  }
-
-  const start = Math.max(0, bestIndex - SNIPPET_LEAD);
-  const end = Math.min(content.length, start + SNIPPET_LENGTH);
-  let snippet = content.slice(start, end).trim();
-
-  if (start > 0) snippet = "…" + snippet;
-  if (end < content.length) snippet = snippet + "…";
-
-  return snippet;
-}
-
 const viewContentCache = new WeakMap<object, CachedViewContent>();
 
 /** Get cached stripped and lowered content for a view object. */
@@ -132,86 +98,26 @@ function getCachedViewContent(viewObj: { mdx: string }): CachedViewContent {
 }
 
 /**
- * Phase 1: Lightweight search against the in-memory search index.
- * Accepts pre-parsed tokens to avoid redundant tokenisation.
- * Returns matched entries and fallback expansion candidates separately
- * so the caller can distinguish real metadata matches from speculative ones.
+ * Phase 1: metadata relevance from the lightweight index. Exact substring
+ * scoring first; fuzzy (typo-tolerant) scoring only when exact finds nothing
+ * for the entry, so it can never outrank a precise hit.
  */
-function findCandidates(
-  index: SearchIndexEntry[],
-  query: string,
-  tokens: string[],
-  loweredMap: Map<SearchIndexEntry, LoweredRelevanceFields>
-): CandidateResult {
-  // Exact substring match — single-pass filter + rank using pre-lowered fields.
-  const exactMatches = filterAndRankPreLowered(index, tokens, (entry) =>
-    loweredMap.get(entry)!
-  );
-
-  if (exactMatches.length >= MIN_CANDIDATES) {
-    return { matched: exactMatches, expanded: [] };
-  }
-
-  // Partial-match fallback: score entries by how many tokens match in any field.
-  const seen = new Set(exactMatches.map((e) => e.id));
-  const partialScored: Array<{ entry: SearchIndexEntry; score: number }> = [];
-
-  for (const entry of index) {
-    if (seen.has(entry.id)) continue;
-    const fields = loweredMap.get(entry)!;
-    const score = scorePreLowered(fields, tokens);
-    if (score > 0) {
-      partialScored.push({ entry, score });
-    }
-  }
-
-  partialScored.sort((a, b) => b.score - a.score);
-  const matched = [...exactMatches];
-  for (const { entry } of partialScored) {
-    seen.add(entry.id);
-    matched.push(entry);
-  }
-
-  // Fuzzy fallback: if still too few, use edit-distance matching on titles,
-  // descriptions, and tags. This handles typos ("btn", "colours", "a]ccessibility").
-  if (matched.length < MIN_CANDIDATES) {
-    const fuzzyScored: Array<{ entry: SearchIndexEntry; score: number }> = [];
-    for (const entry of index) {
-      if (seen.has(entry.id)) continue;
-      const fields = loweredMap.get(entry)!;
-      const score = fuzzyScorePreLowered(fields, tokens);
-      if (score > 0) {
-        fuzzyScored.push({ entry, score });
-      }
-    }
-    fuzzyScored.sort((a, b) => b.score - a.score);
-    for (const { entry } of fuzzyScored) {
-      seen.add(entry.id);
-      matched.push(entry);
-    }
-  }
-
-  // If still too few, expand to all component-tagged pages as fallback.
-  const expanded: SearchIndexEntry[] = [];
-  if (matched.length < MIN_CANDIDATES) {
-    for (const entry of index) {
-      if (!seen.has(entry.id) && entry.tags.includes("component")) {
-        seen.add(entry.id);
-        expanded.push(entry);
-      }
-    }
-  }
-
-  return { matched, expanded };
+function scoreMetadata(
+  fields: LoweredRelevanceFields,
+  tokens: string[]
+): number {
+  const exact = scorePreLowered(fields, tokens);
+  return exact > 0 ? exact : fuzzyScorePreLowered(fields, tokens);
 }
 
 /**
  * Cache for per-route searchable views, keyed by slug.
  *
- * Lifecycle: grows without eviction. This is safe because the MCP server runs
- * as a short-lived stdio process — one per editor session — so memory is
- * reclaimed when the process exits. If the server is ever adapted for SSE or
- * other long-lived transports, an LRU eviction policy should be added here.
+ * Lifecycle: holds every route for the life of the process (~7 MB for the
+ * current corpus). This is safe because the MCP server runs as a short-lived
+ * stdio process — one per editor session — so memory is reclaimed when the
+ * process exits. If the server is ever adapted for SSE or other long-lived
+ * transports, an LRU eviction policy should be added here.
  */
 const routeViewsCache = new Map<string, CachedRouteViews>();
 
@@ -228,125 +134,133 @@ async function getRouteViews(route: string): Promise<CachedRouteViews> {
   try {
     routeData = await getRouteData(slug);
   } catch {
-    const empty: CachedRouteViews = { views: [], combinedLower: "" };
+    const empty: CachedRouteViews = { views: [] };
     routeViewsCache.set(slug, empty);
     return empty;
   }
 
-  const MATCH_LIMIT = 2048;
-  const rawViews: Array<{
-    key: string;
-    content: string;
-    lower: string;
-    matchLower: string;
-  }> = [];
+  const views: CachedRouteViews["views"] = [];
   if (routeData.views) {
     for (const [key, view] of Object.entries(routeData.views)) {
       if (view.mdx) {
         const { stripped, lower } = getCachedViewContent(view);
-        rawViews.push({
-          key,
-          content: stripped,
-          lower,
-          matchLower:
-            lower.length > MATCH_LIMIT ? lower.slice(0, MATCH_LIMIT) : lower,
-        });
+        views.push({ key, content: stripped, lower });
       }
     }
   } else if (routeData.mdx) {
     const { stripped, lower } = getCachedViewContent({ mdx: routeData.mdx });
-    rawViews.push({
-      key: "overview",
-      content: stripped,
-      lower,
-      matchLower:
-        lower.length > MATCH_LIMIT ? lower.slice(0, MATCH_LIMIT) : lower,
-    });
+    views.push({ key: "overview", content: stripped, lower });
   }
 
-  // Sort by content length (shortest first) for faster early-exit on full matches.
-  rawViews.sort((a, b) => a.matchLower.length - b.matchLower.length);
-  const views = rawViews;
-  const result: CachedRouteViews = {
-    views,
-    combinedLower: views.map((v) => v.lower.slice(0, MATCH_LIMIT)).join(" "),
-  };
+  // Shortest first, so ties between equally good views favour the tighter page.
+  views.sort((a, b) => a.lower.length - b.lower.length);
+  const result: CachedRouteViews = { views };
   routeViewsCache.set(slug, result);
   return result;
 }
 
+let warmAllPromise: Promise<void> | undefined;
+let warmAllIndexRef: SearchIndexEntry[] | undefined;
+
 /**
- * Phase 2: Search across all views for a candidate route.
- * Synchronous when views are cached, async only on first load.
+ * Loads every route's views into the cache once per index. Kicked off in the
+ * background at registration so the first query rarely waits on disk; the
+ * handler awaits the same promise so a query can never race the load.
+ */
+function warmAllRouteViews(index: SearchIndexEntry[]): Promise<void> {
+  if (!warmAllPromise || warmAllIndexRef !== index) {
+    warmAllIndexRef = index;
+    warmAllPromise = Promise.all(index.map((e) => getRouteViews(e.route))).then(
+      () => undefined
+    );
+  }
+  return warmAllPromise;
+}
+
+/**
+ * Phase 2: finds the best view of a route for the query. Views with the most
+ * distinct token hits win; among equals, the view where the tokens co-occur
+ * most tightly, then the shortest. Synchronous — the cache must be warm.
  */
 function searchRouteViewsSync(
   route: string,
   tokens: string[]
 ): ViewMatch | null {
-  const slug = routeToSlug(route);
-  const cached = routeViewsCache.get(slug);
-  if (!cached) return null; // Will be loaded async and retried
-  const { views } = cached;
-  if (views.length === 0) return null;
+  const cached = routeViewsCache.get(routeToSlug(route));
+  if (!cached || cached.views.length === 0) return null;
 
-  const tokenCount = tokens.length;
-  let bestView: (typeof views)[number] | null = null;
-  let bestHits = 0;
-
-  for (const view of views) {
+  let best: ViewMatch | null = null;
+  let bestCooccurrence = 0;
+  for (const view of cached.views) {
     let hits = 0;
-    for (let i = 0; i < tokenCount; i++) {
-      if (view.matchLower.includes(tokens[i])) hits++;
+    for (const token of tokens) {
+      if (view.lower.includes(token)) hits++;
     }
-    if (hits === tokenCount) {
-      return { viewKey: view.key, content: view.content };
-    }
-    if (hits > bestHits) {
-      bestHits = hits;
-      bestView = view;
+    if (hits === 0 || (best && hits < best.hits)) continue;
+
+    // Only break ties on co-occurrence for multi-token queries; for a single
+    // token every hit co-occurs trivially and the shortest view already wins.
+    const cooccurrence =
+      tokens.length > 1 ? findBestAnchor(view.lower, tokens).count : 1;
+    if (!best || hits > best.hits || cooccurrence > bestCooccurrence) {
+      best = { viewKey: view.key, content: view.content, hits };
+      bestCooccurrence = cooccurrence;
     }
   }
-
-  return bestView && bestHits > 0
-    ? { viewKey: bestView.key, content: bestView.content }
-    : null;
+  return best;
 }
 
 /**
- * Eagerly loads all route views for candidates, then searches synchronously.
+ * Shrinks the response until it fits OUTPUT_BUDGET_CHARS. Works from the
+ * lowest-ranked result upward and never touches the top result's snippet:
+ * first shorten snippets, then drop them, then drop whole results.
  */
-async function warmAndSearchViews(
-  candidates: SearchIndexEntry[],
-  tokens: string[]
-): Promise<Map<string, ViewMatch | null>> {
-  // Warm the cache for all candidates in parallel.
-  await Promise.all(candidates.map((e) => getRouteViews(e.route)));
+function enforceOutputBudget(output: DocSearchResult[]): void {
+  const over = () => JSON.stringify(output).length > OUTPUT_BUDGET_CHARS;
 
-  // Now search synchronously from cache.
-  const results = new Map<string, ViewMatch | null>();
-  for (const entry of candidates) {
-    results.set(entry.id, searchRouteViewsSync(entry.route, tokens));
+  for (let i = output.length - 1; i > 0 && over(); i--) {
+    const snippet = output[i].snippet;
+    if (snippet && snippet.length > BUDGET_SNIPPET_LENGTH) {
+      output[i].snippet =
+        snippet.slice(0, BUDGET_SNIPPET_LENGTH).trimEnd() + "…";
+    }
   }
-  return results;
+  for (let i = output.length - 1; i > 0 && over(); i--) {
+    delete output[i].snippet;
+  }
+  while (output.length > 1 && over()) {
+    output.pop();
+  }
 }
 
 /**
  * Registers the `search_docs` tool on the given MCP server.
  *
- * Uses a two-phase search:
- * - Phase 1: Lightweight search against the in-memory index (title, description,
- *   tags, truncated content) to identify candidate pages.
- * - Phase 2: Lazy-loads full route data for candidates and searches across all
- *   views (overview, dev, guidelines, a11y) to find deep content matches.
+ * Two signals are combined for every page in the index:
+ * - Metadata relevance (title, description, tags, index excerpt) from the
+ *   lightweight search index.
+ * - Deep content: every view (overview, dev, guidelines, a11y) of every route
+ *   is searched in full, so a prop name mentioned once in a dev view is found.
+ *
+ * A page is returned if either signal fires; a snippet is emitted only when a
+ * view actually matched, anchored where the query tokens co-occur.
  */
 export function registerSearchDocs(server: McpServer): void {
+  // Start loading route views now so the first query rarely pays for it.
+  getSearchIndex()
+    .then((index) => warmAllRouteViews(index))
+    .catch(() => {
+      // Data unavailable — the handler reports this per call.
+    });
+
   server.registerTool(
     "search_docs",
     {
       title: "Search Docs",
       description:
-        "Search all Nimbus docs (components, patterns, hooks, icons, tokens) including guidelines and accessibility views. " +
-        "Returns matching pages with content snippets. Props are not searchable here — use get_component with section='props' for prop details. " +
+        "Search all Nimbus docs (components, patterns, hooks, icons, tokens) including implementation, guidelines and accessibility views. " +
+        "Returns matching pages; results whose content matched include a snippet anchored on the query terms. " +
+        "Props are not searchable here — use get_component with section='props' for prop details. " +
         "Results include a toolHint field indicating which tool to call for deeper info (e.g. get_component, get_tokens, search_icons, get_docs_page).",
       inputSchema: {
         query: z
@@ -354,88 +268,74 @@ export function registerSearchDocs(server: McpServer): void {
           .describe(
             'Search query to find relevant documentation pages. e.g. "form validation", "color tokens", "accessibility", "onChange".'
           ),
+        limit: z
+          .number()
+          .int()
+          .min(1)
+          .max(MAX_RESULTS)
+          .optional()
+          .describe(`Max results (default ${DEFAULT_RESULTS}).`),
       },
     },
-    async ({ query }) => {
+    async ({ query, limit }) => {
       try {
         const index = await getSearchIndex();
 
         // Tokenise once; pass pre-parsed tokens to all downstream functions.
         const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
-
-        // Pre-compute lowered fields once per index.
-        const loweredMap = getLoweredFields(index);
-
-        // Phase 1: Find candidates from lightweight index.
-        const { matched, expanded } = findCandidates(
-          index,
-          query,
-          tokens,
-          loweredMap
-        );
-
-        // Cap expansion so genuine matches always consume their share of the
-        // phase-2 I/O budget before fallback pages fill the remainder.
-        const matchedCapped = matched.slice(0, PHASE2_CANDIDATE_LIMIT);
-        const expandedCapped = expanded.slice(
-          0,
-          Math.max(0, PHASE2_CANDIDATE_LIMIT - matchedCapped.length)
-        );
-        const allCandidates = [...matchedCapped, ...expandedCapped];
-        const matchedIds = new Set(matched.map((e) => e.id));
-
-        // Pre-compute phase-1 scores synchronously.
-        const phase1Scores = new Map<string, number>();
-        for (const entry of allCandidates) {
-          phase1Scores.set(
-            entry.id,
-            scorePreLowered(loweredMap.get(entry)!, tokens)
-          );
+        const tokenCount = tokens.length;
+        if (tokenCount === 0) {
+          return {
+            content: [
+              {
+                type: "text" as const,
+                text: "No matching documentation found.",
+              },
+            ],
+          };
         }
 
-        // Phase 2: Warm route view caches, then search synchronously.
-        const viewResults = await warmAndSearchViews(allCandidates, tokens);
-        const loaded = allCandidates.map((entry) => ({
-          entry,
-          viewMatch: viewResults.get(entry.id) ?? null,
-          wasMatched: matchedIds.has(entry.id),
-          phase1Score: phase1Scores.get(entry.id)!,
-        }));
+        const loweredMap = getLoweredFields(index);
+        await warmAllRouteViews(index);
 
-        // Keep entries that either matched in phase 1 OR found a deep match
-        // in phase 2. This filters out expanded fallback entries that had
-        // no content match (e.g. nonsense queries).
-        const relevant = loaded.filter(
-          ({ viewMatch, wasMatched }) => wasMatched || viewMatch !== null
-        );
+        const scored: Array<{
+          entry: SearchIndexEntry;
+          viewMatch: ViewMatch | null;
+          score: number;
+        }> = [];
+        for (const entry of index) {
+          const metadataScore = scoreMetadata(loweredMap.get(entry)!, tokens);
+          const viewMatch = searchRouteViewsSync(entry.route, tokens);
+          if (metadataScore === 0 && !viewMatch) continue;
 
-        // Sort: viewMatch presence is the primary signal (gets a large bonus),
-        // phase-1 relevance score breaks ties within each group.
-        relevant.sort((a, b) => {
-          const aScore = (a.viewMatch ? 1000 : 0) + a.phase1Score;
-          const bScore = (b.viewMatch ? 1000 : 0) + b.phase1Score;
-          return bScore - aScore;
-        });
+          // Deep content is the primary signal; metadata breaks ties.
+          const viewScore = !viewMatch
+            ? 0
+            : viewMatch.hits === tokenCount
+              ? FULL_VIEW_MATCH_BONUS
+              : (PARTIAL_VIEW_MATCH_BONUS * viewMatch.hits) / tokenCount;
+          scored.push({ entry, viewMatch, score: viewScore + metadataScore });
+        }
+        scored.sort((a, b) => b.score - a.score);
 
-        const output: DocSearchResult[] = relevant
-          .slice(0, MAX_RESULTS)
+        const output: DocSearchResult[] = scored
+          .slice(0, limit ?? DEFAULT_RESULTS)
           .map(({ entry, viewMatch }) => {
-            const category = entry.menu[0];
-            const toolHint = deriveToolHint(entry.route);
-            return {
+            const result: DocSearchResult = {
               title: entry.title,
               description: entry.description,
               path: entry.route,
-              ...(category ? { category } : {}),
-              ...(viewMatch && viewMatch.viewKey !== "overview"
-                ? { matchedView: viewMatch.viewKey }
-                : {}),
-              snippet: viewMatch
-                ? extractSnippet(viewMatch.content, tokens)
-                : extractSnippet(stripMarkdown(entry.content), tokens),
-              toolHint,
+              toolHint: deriveToolHint(entry.route),
             };
+            if (viewMatch) {
+              if (viewMatch.viewKey !== "overview") {
+                result.matchedView = viewMatch.viewKey;
+              }
+              result.snippet = extractSnippet(viewMatch.content, tokens);
+            }
+            return result;
           });
+        enforceOutputBudget(output);
 
         return {
           content: [
