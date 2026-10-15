@@ -22,14 +22,13 @@ export const radioInputSlotRecipe = defineSlotRecipe({
       flexShrink: 0,
       whiteSpace: "nowrap",
       userSelect: "none",
+      fontWeight: "400",
       position: "relative",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
 
       "& > svg": {
-        width: "500",
-        height: "500",
         color: "neutral.9",
 
         "&:hover": {
@@ -59,23 +58,56 @@ export const radioInputSlotRecipe = defineSlotRecipe({
     },
   },
   variants: {
+    size: {
+      sm: {
+        option: {
+          textStyle: "sm",
+          "& > svg": {
+            width: "400",
+            height: "400",
+          },
+        },
+      },
+      md: {
+        option: {
+          textStyle: "md",
+          "& > svg": {
+            width: "500",
+            height: "500",
+          },
+        },
+      },
+    },
     orientation: {
       horizontal: {
         root: {
           flexDirection: "row",
-          gap: "600",
+          gap: "400",
         },
       },
       vertical: {
         root: {
           flexDirection: "column",
           alignItems: "flex-start",
-          gap: "400",
         },
       },
     },
   },
+  // The gap between stacked options grows with the size
+  compoundVariants: [
+    {
+      orientation: "vertical",
+      size: "sm",
+      css: { root: { gap: "200" } },
+    },
+    {
+      orientation: "vertical",
+      size: "md",
+      css: { root: { gap: "300" } },
+    },
+  ],
   defaultVariants: {
+    size: "md",
     orientation: "vertical",
   },
 });

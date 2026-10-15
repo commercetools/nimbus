@@ -137,7 +137,16 @@ overrides:
   # directory).
   hono: ">=4.13.5"
   esbuild: ">=0.28.1"
-  shell-quote: ">=1.9.0"
+  shell-quote: ">=1.11.0"
+  # >=2.0.8 fixes GHSA-jqcg-44mw-7w3h (IP spoofing via IPv4-mapped IPv6 trust
+  # subnet). express 5.2.1 allows it (^2.0.7) but the lockfile held 2.0.7.
+  proxy-addr: ">=2.0.8"
+  # >=1.2.2 fixes GHSA-68fv-2mgg-jv7q (event-loop DoS via indexed source-map
+  # section offsets). Every parent range (^1.0.1 / ^1.2.1) allows it.
+  source-map-js: ">=1.2.2"
+  # ^0.35.5 fixes GHSA-wq5f-xc86-pv6w (librsvg vulnerability, CVE-2026-96889).
+  # @huggingface/transformers asks for ^0.35.4, which allows it.
+  sharp: "^0.35.5"
   "@babel/core": "catalog:tooling"
   # >=1.19.15 fixes GHSA-frvp-7c67-39w9 (path traversal in serve-static on
   # Windows via encoded backslash). Capped <2 deliberately: 2.x is a major
@@ -207,60 +216,60 @@ catalogs:
     # Move to ^1.11 once those specs have a written Purpose section.
     "@fission-ai/openspec": ~1.10.0
     eslint-plugin-react-hooks: ^7.1.1
-    globals: ^17.12.0
+    globals: ^17.13.0
     glob: ^13.0.6
     typescript: ~5.9.3
-    typescript-eslint: ^8.70.1
+    typescript-eslint: ^8.71.1
     tsup: ^8.5.1
     tsx: ^4.23.15
     "@arethetypeswrong/cli": ^0.18.5
-    publint: ^0.3.24
+    publint: ^0.3.25
     "@commercetools-frontend/ui-kit": ^20.6.7
-    "@modelcontextprotocol/inspector": ^2.8.0
+    "@modelcontextprotocol/inspector": ^2.10.1
     "@babel/core": ^7.29.7
-    "@babel/runtime": ^7.29.7
+    "@babel/runtime": ^7.29.10
     "@babel/preset-typescript": ^7.29.7
     "@eslint/js": ^10.0.1
-    "@react-types/shared": ^3.36.1
-    eslint: ^10.11.0
+    "@react-types/shared": ^3.37.0
+    eslint: ^10.12.0
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.6
     eslint-plugin-react-refresh: ^0.5.7
-    express-rate-limit: ^8.7.0
-    prettier: ^3.9.9
+    express-rate-limit: ^8.7.1
+    prettier: ^3.9.10
     "@preconstruct/cli": ^2.9.0
     # Never below 2.31.1: earlier versions misread npm 12's array-wrapped `npm info --json` and republish live versions.
     "@changesets/cli": 3.0.3
-    "@vitejs/plugin-react": ^6.1.1
+    "@vitejs/plugin-react": ^6.1.2
     "@vitejs/plugin-react-swc": ^4.3.3
-    vite: ^8.3.1
+    vite: ^8.3.4
     webpack: ^5.111.1
     webpack-cli: ^7.2.3
     vite-bundle-analyzer: ^1.3.9
-    vite-plugin-dts: ^5.1.1
-    rollup: ^4.63.5
-    "@vitest/browser": ^5.0.2
-    "@vitest/browser-playwright": ^5.0.2
-    "@vitest/coverage-v8": ^5.0.2
+    vite-plugin-dts: ^5.1.2
+    rollup: ^4.64.5
+    "@vitest/browser": ^5.0.3
+    "@vitest/browser-playwright": ^5.0.3
+    "@vitest/coverage-v8": ^5.0.3
     "@testing-library/dom": 10.4.2
     "@testing-library/jest-dom": ^7.0.1
     "@testing-library/user-event": ^14.6.7
     "@testing-library/react": ^16.3.3
     playwright: 1.62.1
-    vitest: ^5.0.2
-    axe-core: ^4.13.0
-    "@typescript-eslint/types": ^8.70.1
-    "@typescript-eslint/typescript-estree": ^8.70.1
+    vitest: ^5.0.3
+    axe-core: ^4.14.0
+    "@typescript-eslint/types": ^8.71.1
+    "@typescript-eslint/typescript-estree": ^8.71.1
     react-docgen-typescript: ^2.4.0
-    storybook: ^10.6.0
-    eslint-plugin-storybook: ^10.6.0
-    "@storybook/addon-a11y": ^10.6.0
-    "@storybook/addon-docs": ^10.6.0
-    "@storybook/addon-vitest": ^10.6.0
-    "@storybook/react-vite": ^10.6.0
+    storybook: ^10.6.1
+    eslint-plugin-storybook: ^10.6.1
+    "@storybook/addon-a11y": ^10.6.1
+    "@storybook/addon-docs": ^10.6.1
+    "@storybook/addon-vitest": ^10.6.1
+    "@storybook/react-vite": ^10.6.1
     "@vueless/storybook-dark-mode": ^10.0.8
     "@github-ui/storybook-addon-performance-panel": ^1.3.0
-    chromatic: ^18.9.5
+    chromatic: ^18.12.0
     # Held on 30.0.x: jsdom 30.1 moved Blob internals to a private field, which
     # breaks vitest's jsdom URL.createObjectURL shim ("reading '_bytes'").
     # Move to ^30.1 once a vitest release fixes vitest-dev/vitest#11336.
@@ -273,15 +282,15 @@ catalogs:
     react-dom: ^19.0.0
     "@emotion/react": ^11.14.0
     "@emotion/is-prop-valid": ^1.4.0
-    "@chakra-ui/cli": ^3.36.1
-    "@chakra-ui/react": ^3.36.1
+    "@chakra-ui/cli": ^3.37.0
+    "@chakra-ui/react": ^3.37.0
     next-themes: ^0.4.6
     react-aria: 3.52.1
     react-aria-components: 1.21.1
     react-stately: 3.50.0
     "@react-aria/interactions": 3.28.1
     "@react-aria/utils": 3.34.1
-    "@react-aria/optimize-locales-plugin": 2.0.2
+    "@react-aria/optimize-locales-plugin": 2.1.0
     "@internationalized/date": ^3.12.4
     "@internationalized/string": ^3.2.10
     "@internationalized/string-compiler": ^3.4.1
@@ -290,12 +299,12 @@ catalogs:
     use-debounce: ^10.1.1
   utils:
     dequal: ^2.0.3
-    dotenv: ^18.0.4
+    dotenv: ^18.0.7
     dompurify: ^3.4.16
     lodash: ^4.18.1
-    "@types/lodash": ^4.17.25
-    "@types/node": ^26.6.3
-    zod: ^4.6.5
+    "@types/lodash": ^4.17.26
+    "@types/node": ^26.6.5
+    zod: ^4.6.6
     escape-html: ^1.0.3
     "@types/escape-html": ^1.0.4
     gray-matter: ^4.0.3
@@ -312,14 +321,14 @@ catalogs:
   markdown:
     react-markdown: ^10.1.0
     remark-gfm: ^4.0.1
-    remend: ^1.3.1
+    remend: ^1.4.0
     remark: ^15.0.1
     remark-flexible-toc: ^1.2.7
     to-vfile: ^8.0.0
   # Private docs-app pins — not published to npm. Exact versions (no ^ or ~) so
   # Renovate updates are explicit PRs rather than silent range expansion.
   apps:
-    "@huggingface/transformers": 4.3.0
+    "@huggingface/transformers": 4.3.1
     "@mdx-js/mdx": 3.1.1
     "@types/mdx": 2.0.14
     "@types/react-syntax-highlighter": 15.5.13
@@ -332,7 +341,7 @@ catalogs:
     react-live: 4.1.8
     react-router: 8.4.0
     react-router-dom: 7.18.4
-    react-syntax-highlighter: 16.1.1
+    react-syntax-highlighter: 16.1.2
     remark-mark-highlight: 0.1.1
     slug: 12.0.1
     vite-plugin-compression: 0.5.1
