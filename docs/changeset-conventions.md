@@ -84,3 +84,12 @@ Guidelines for the summary body:
 
 When in doubt between `patch` and `minor`, prefer `minor` — it costs the
 consumer nothing and signals the change clearly.
+
+## Publishing a PR canary
+
+To publish a canary build of a PR branch, push a commit to that branch whose
+message contains `[deploy-canary]`. The `Release` workflow publishes
+`@commercetools/nimbus@<version>-canary-<branch>` packages and comments the
+install commands on the branch's open PR; a failed publish is commented too.
+Pushes without the marker run no release jobs. The branch needs at least one
+changeset.
