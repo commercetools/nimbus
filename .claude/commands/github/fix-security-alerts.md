@@ -61,17 +61,25 @@ the exact commands for the user to run manually instead.
 git status --porcelain
 ```
 
-**If dirty**: Stop and instruct user: "You have uncommitted changes. Please
-commit or stash first."
+**If dirty**: Show `git diff --stat` and ask the user how to handle each changed
+file: restore it, commit it separately, or leave it. Tool-generated changes (for
+example `.serena/project.yml`, rewritten by the Serena MCP server on connect)
+are usually "leave it". Files the user leaves are excluded from the security
+commit: stage only the files this command changed, never `git add -A`.
 
 ### 1.3 Check Current Branch
 
 ```bash
 git branch --show-current
+git fetch origin main
+git rev-list --left-right --count origin/main...HEAD
 ```
 
 **If not on `main`**: Warn user: "You're on branch `[branch]`. This command
-works best from `main`. Continue anyway? (y/n)"
+works best from `main`. Continue anyway? (y/n)". When the user continues, report
+how far the branch is behind and ahead of `origin/main`. A branch that is level
+with `origin/main` (`0 0`) is a valid base: create the fix branch from it in
+Phase 5.
 
 ---
 
@@ -123,22 +131,39 @@ Your dependencies are clean. Run this command again after Dependabot detects new
 For each alert, determine if it's **auto-fixable** or **needs manual
 attention**.
 
-### 3.1 Auto-Fixable Criteria (ALL must be true)
+### 3.1 Auto-Fixable Criteria
+
+An alert is auto-fixable when ALL of these are true:
 
 - ✅ A patched version exists (`firstPatchedVersion` is not null)
-- ✅ Direct dependency (listed in root or workspace `package.json`)
-- ✅ Upgrade is patch or minor version (not major)
+- ✅ The upgrade is patch or minor (not major)
 - ✅ No conflicting peer dependency requirements
+- ✅ One of the fix routes below applies
+
+**Fix routes:**
+
+| Route                   | When it applies                                                                                                                 | Change                                                               |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| **Direct bump**         | The package is listed in a root or workspace `package.json`                                                                     | Raise the range in each `package.json`                               |
+| **Transitive override** | The package is transitive. Every parent range already allows the patched version (see 3.3), but the lockfile pins an older one. | Add `<package>: ">=<patched>"` to `overrides` (see 3.4 for the file) |
+
+A security override for a transitive package is a normal fix in this repo. The
+override forces the lockfile to re-resolve and keeps the vulnerable range out
+for later installs. Add a comment above it naming the advisory.
 
 ### 3.2 Needs Manual Attention (ANY of these)
 
-| Condition                      | Reason to Display                                 |
-| ------------------------------ | ------------------------------------------------- |
-| Major version upgrade required | "Major version bump (potential breaking changes)" |
-| No patched version available   | "No fix available yet - monitor CVE"              |
-| Transitive dependency          | "Transitive dep `X` via `Y` - update parent"      |
-| Peer dependency conflict       | "Conflicts with peer requirement from `Z`"        |
-| Multiple versions in lockfile  | "Multiple versions present - complex resolution"  |
+| Condition                                     | Reason to Display                                                |
+| --------------------------------------------- | ---------------------------------------------------------------- |
+| Major version upgrade required                | "Major version bump (potential breaking changes)"                |
+| No patched version available                  | "No fix available yet - monitor CVE"                             |
+| Transitive, a parent range excludes the patch | "Transitive dep `X` via `Y` - parent range excludes `<patched>`" |
+| Peer dependency conflict                      | "Conflicts with peer requirement from `Z`"                       |
+| Multiple versions in lockfile                 | "Multiple versions present - complex resolution"                 |
+
+For a transitive alert whose parent range excludes the patched version, offer
+two routes in the plan: update the parent if a newer release allows the patch,
+or add an override that the user approves.
 
 ### 3.3 Analyze Dependency Tree
 
@@ -150,16 +175,30 @@ Parse `pnpm-lock.yaml` to understand:
 
 ```bash
 # Check if package is direct dependency
-grep -l '"<package-name>"' package.json packages/*/package.json
+grep -l '"<package-name>"' package.json packages/*/package.json apps/*/package.json
 
-# Check current version in lockfile
-pnpm why <package-name>
+# Check current version in lockfile and which parents pull it in
+pnpm why <package-name> -r
 ```
+
+For each transitive alert, compare the patched version with the range each
+parent declares for it. Read the declared range from the registry for the
+installed parent version:
+
+```bash
+pnpm view <parent>@<installed-parent-version> dependencies.<package-name>
+```
+
+If the declared range includes the patched version (for example `^2.0.7`
+includes `2.0.8`), the lockfile pin is the only blocker: use the transitive
+override route from 3.1. If the range excludes the patched version, the alert
+needs manual attention (3.2).
 
 ### 3.4 Audit Existing pnpm Overrides
 
-Read the `pnpm.overrides` object in the root `package.json` and evaluate each
-entry using the appropriate checklist:
+Read the `overrides` map in `pnpm-workspace.yaml` (pnpm 10+). Also check the
+`pnpm.overrides` object in the root `package.json`, which older setups use.
+Evaluate each entry using the appropriate checklist:
 
 **For non-security overrides (catalog pins, compatibility fixes):**
 
@@ -184,7 +223,14 @@ removing.**
 
 **For all overrides, also check:**
 
-- Whether the override target version should be bumped to a newer safe version
+- Whether the override target version should be bumped to a newer safe version.
+  Compare the `firstPatchedVersion` of every open alert with the floor of the
+  override for the same package. If an open alert names a package that already
+  has an override, and the floor is below the patched version, classify the
+  override as **Update** and raise the floor to the patched version.
+- Whether a package with an override has no resolved version only because it is
+  an optional peer dependency. Keep that override: it still applies when a
+  consumer installs the peer.
 
 Classify each override as:
 
@@ -290,9 +336,13 @@ Proceed with auto-fixable updates? (y/n)
 ### 5.1 Create Feature Branch
 
 ```bash
+# From main:
 git checkout main
 git pull origin main
 git checkout -b security/fix-alerts-$(date +%Y-%m-%d)
+
+# When the user chose to continue on another branch that is level with
+# origin/main (see 1.3), skip the first two commands and branch from HEAD.
 ```
 
 **Immediately after branch creation, verify you are on the new branch:**
@@ -318,11 +368,14 @@ Exit without making any changes. Do NOT proceed to update dependencies.
 
 ### 5.2 Update Dependencies
 
-For each auto-fixable alert:
+For each auto-fixable alert, apply its fix route from 3.1:
 
 ```bash
-# Update the specific package to the fixed version
-pnpm update <package-name>@<fixed-version>
+# Direct bump: raise the range in each package.json that lists the package
+# (edit the file, then install in 5.3)
+
+# Transitive override: add the override to pnpm-workspace.yaml `overrides`
+# with a comment naming the advisory, then install in 5.3
 ```
 
 ### 5.3 Install and Verify Lockfile
@@ -331,18 +384,42 @@ pnpm update <package-name>@<fixed-version>
 pnpm install
 ```
 
+Then confirm each fixed package resolves to the patched version or newer:
+
+```bash
+grep -E "^  <package-name>@[0-9]" pnpm-lock.yaml
+```
+
 ### 5.4 Run Validation Suite
 
 ```bash
 # Lint check
 pnpm lint
 
-# Type check
-pnpm typecheck
+# Build tokens and packages first: the strict typecheck resolves the built dist
+pnpm build:tokens
+pnpm build:packages
 
-# Run tests
-pnpm test
+# Type check
+pnpm typecheck:strict
+
+# Run tests (keep the output so a failure can be reported)
+pnpm test > /tmp/security-fix-test.log 2>&1; echo "exit=$?"; tail -25 /tmp/security-fix-test.log
 ```
+
+Some workspaces have no `typecheck` script, so `typecheck:strict` does not cover
+them (for example `packages/nimbus-mcp` and `apps/mcp-eval`). When an alert fix
+touches a package in such a workspace, also build it and run
+`pnpm exec tsc --noEmit` in its directory. Build `pnpm build:docs` first when
+the workspace's build reads docs data. Report errors that name the updated
+package as validation failures. For errors that do not name it, run the same
+check on the base commit to see whether they existed before, and report the
+result.
+
+Build steps rewrite tracked generated files (for example
+`packages/design-token-ts-plugin/src/generated-token-mapping.json`). Run
+`git status --short` before committing and restore generated files with
+`git checkout -- <file>`.
 
 ### 5.5 Handle Validation Failure
 
@@ -381,15 +458,18 @@ pnpm test
 
 ### 6.1 Commit Changes
 
+Stage only the files this command changed (the `package.json` files,
+`pnpm-lock.yaml`, and `pnpm-workspace.yaml`):
+
 ```bash
-git add -A
+git add <changed files>
 git commit -m "$(cat <<'EOF'
 fix(security): resolve dependabot alerts
 
 Addresses the following security vulnerabilities:
 [List CVE IDs]
 
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+Co-Authored-By: [current model name] <noreply@anthropic.com>
 EOF
 )"
 ```
@@ -573,9 +653,12 @@ The PR is ready for review.
 - You MUST ask the user before creating a Pull Request
 - You MUST close superseded Dependabot PRs when creating a new PR
 - You MUST NOT attempt to fix alerts that require major version upgrades
-- You MUST NOT attempt to fix transitive dependency vulnerabilities directly
-- You MUST audit existing `pnpm.overrides` in `package.json` and remove stale
-  entries that no longer resolve any versions in the lockfile
+- You MUST fix transitive dependency vulnerabilities only through an override
+  (3.1) or a parent update, and MUST NOT add a transitive package to a
+  `package.json` as a direct dependency
+- You MUST audit existing overrides (`pnpm-workspace.yaml` `overrides`, and
+  `pnpm.overrides` in `package.json` if present) and remove stale entries that
+  no longer resolve any versions in the lockfile
 - You MUST NOT assume a security override is stale just because the vulnerable
   version is absent from `pnpm-lock.yaml` — the override is why it's absent.
   Always verify by checking if the parent package still declares a vulnerable

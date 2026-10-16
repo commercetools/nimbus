@@ -14,6 +14,12 @@ import type {
 
 type RadioInputRecipeProps = {
   /**
+   * Size of the radio indicator and label text.
+   * `sm` uses 14px text with a 16px indicator, `md` uses 16px text with a 20px indicator.
+   * @default "md"
+   */
+  size?: RecipeProps<"nimbusRadioInput">["size"];
+  /**
    * Layout orientation for radio options
    * @default "vertical"
    */
