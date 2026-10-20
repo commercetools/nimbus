@@ -120,6 +120,12 @@ type MeterDataProps =
        * `colorPalette` is used. The order in the array does not matter.
        */
       thresholds?: MeterThreshold[];
+      /**
+       * Color palette of the fill, below all `thresholds`. Use a semantic
+       * palette (`positive`, `warning`, `critical`) to communicate a state.
+       * @default "primary"
+       */
+      colorPalette?: NimbusColorPalette;
     }
   | {
       value?: never;
@@ -136,6 +142,10 @@ type MeterDataProps =
        */
       minValue?: 0;
       thresholds?: never;
+      /**
+       * Each segment sets its own color with `colorPalette` on the segment
+       */
+      colorPalette?: never;
     };
 
 /**
@@ -158,7 +168,7 @@ export type MeterResolvedSegment = MeterSegment & {
 
 export type MeterRootProps = OmitInternalProps<
   MeterRootSlotProps,
-  "value" | "children" | "minValue"
+  "value" | "children" | "minValue" | "colorPalette"
 > &
   MeterDataProps & {
     /**
@@ -182,13 +192,6 @@ export type MeterRootProps = OmitInternalProps<
      * announced to assistive technology (e.g. "50 of 100 GB")
      */
     valueLabel?: string;
-    /**
-     * Color palette of the fill in single-value mode, below all
-     * `thresholds`. Use a semantic palette (`positive`, `warning`,
-     * `critical`) to communicate a state.
-     * @default "primary"
-     */
-    colorPalette?: NimbusColorPalette;
   };
 
 export type MeterLabelProps = OmitInternalProps<MeterLabelSlotProps> & {
@@ -202,6 +205,12 @@ export type MeterValueProps = OmitInternalProps<
   MeterValueSlotProps,
   "children"
 > & {
+  /**
+   * Visible content in place of the formatted total, for example with
+   * emphasis. Assistive technology announces `valueLabel` of Meter.Root
+   * instead, so set `valueLabel` to the same text.
+   */
+  children?: React.ReactNode;
   /**
    * Ref forwarding to the value text element
    */
@@ -242,6 +251,8 @@ export type MeterContextValue = {
   items: MeterResolvedSegment[];
   /** Formatted total, or `valueLabel` when it is set */
   totalText: string;
+  /** Whether Meter.Root has a `valueLabel` */
+  hasValueLabel: boolean;
   /**
    * Registers a mounted `Meter.Legend`, so Root can warn about segments
    * without a legend. Returns the function that unregisters it.

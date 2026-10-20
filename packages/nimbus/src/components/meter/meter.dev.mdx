@@ -26,6 +26,11 @@ range and the format. The parts inside it show that data:
 Render only the parts you need. The default range is 0 to 100, and the value is
 formatted as a percent.
 
+Each part accepts style props for its own element. The elements that
+`Meter.Track` and `Meter.Legend` render inside them (segments, legend items and
+color swatches) are not part of the API, and their HTML structure can change in
+any release. Style the parts through their own props.
+
 ```jsx live-dev
 const App = () => (
   <Meter.Root value={40}>
@@ -94,8 +99,8 @@ const App = () => (
 The `layout` prop places the parts. Each part has a fixed place, so you can
 write the parts in any order.
 
-- `stacked` (default): label and value on one line above the track, legend
-  below the track
+- `stacked` (default): label and value on one line above the track, legend below
+  the track
 - `inline`: label, track and value on one line, legend below
 
 ```jsx live-dev
@@ -185,14 +190,35 @@ const App = () => (
 );
 ```
 
+To show more than plain text, for example a number with emphasis, pass children
+to `Meter.Value`. Children change only the visible text. Assistive technology
+reads the value from the `aria-valuetext` attribute, which can hold only plain
+text, so set `valueLabel` to the same words. Without `valueLabel`, Meter.Value
+logs a warning in development mode.
+
+```jsx live-dev
+const App = () => (
+  <Meter.Root value={50} formatOptions={{}} valueLabel="50 of 100 GB">
+    <Meter.Label>Storage</Meter.Label>
+    <Meter.Value>
+      <Text as="span" fontWeight="700">
+        50
+      </Text>{" "}
+      of 100 GB
+    </Meter.Value>
+    <Meter.Track />
+  </Meter.Root>
+);
+```
+
 ### Multiple segments
 
 Pass `segments` instead of `value` to show several measured parts inside one
 total. `value` and `segments` cannot both be set — the type is a discriminated
 union that rejects passing both. Each item in `segments` needs a unique `id`, a
-`label`, and a `value` (the amount it contributes).
-`Meter.Track` draws the segments in array order, and `Meter.Root` builds one
-accessible summary for the whole meter.
+`label`, and a `value` (the amount it contributes). `Meter.Track` draws the
+segments in array order, and `Meter.Root` builds one accessible summary for the
+whole meter.
 
 Always render `Meter.Legend` with segments. It shows the name and value of each
 segment next to its color, so the segments are not told apart by color only.
@@ -232,7 +258,9 @@ the legend.
 A segment can set its own `colorPalette`, for example to mark one part as a
 warning. A segment without a `colorPalette` gets the next color from a fixed
 default sequence (`primary`, `orange`, `teal`, `gold`, `pink`, `brown`,
-repeating), so adjacent segments never share a color by default.
+repeating), so adjacent segments never share a color by default. The segments
+set all colors of a segmented meter, so `colorPalette` on `Meter.Root` is
+accepted only together with `value`.
 
 ```jsx live-dev
 const App = () => (
@@ -289,8 +317,7 @@ With a single `value`, `thresholds` changes the fill color when the value
 reaches a threshold. Each threshold has a `from` value and a `colorPalette`. The
 threshold with the highest `from` that the value reaches is used; below all
 thresholds, the fill uses `colorPalette`. The order in the array does not
-matter. Segments have their own colors, so `thresholds` works only with
-`value`.
+matter. Segments have their own colors, so `thresholds` works only with `value`.
 
 ```jsx live-dev
 const App = () => {
@@ -313,8 +340,8 @@ const App = () => {
 };
 ```
 
-The color is a visual hint only. If the state matters, also say it in words,
-for example with `valueLabel="97% – almost full"`.
+The color is a visual hint only. If the state matters, also say it in words, for
+example with `valueLabel="97% – almost full"`.
 
 ## Component requirements
 
@@ -330,11 +357,12 @@ role).
   with `aria-label` / `aria-labelledby` on `Meter.Root`. If none of these is
   provided, React Aria logs a warning in development mode.
 - **Role**: the element has `role="meter"` and exposes `aria-valuemin`,
-  `aria-valuemax`, and `aria-valuenow`. In segment mode, `aria-valuenow` is
-  the sum of the drawn (clamped) segment values, and `aria-valuetext` announces the total followed
-  by every segment's label and value, for example
+  `aria-valuemax`, and `aria-valuenow`. In segment mode, `aria-valuenow` is the
+  sum of the drawn (clamped) segment values, and `aria-valuetext` announces the
+  total followed by every segment's label and value, for example
   `"50 GB (Images: 30 GB, Videos: 20 GB)"`. `Meter.Root` builds this text from
-  its data, so it is the same no matter which parts you render.
+  its data, so it is the same no matter which parts you render. Children of
+  `Meter.Value` are not part of this text; set `valueLabel` to the same words.
 - **Not interactive**: a meter shows a measured value, not a control. It is
   never focusable and does not respond to keyboard input, so it does not need a
   keyboard interaction pattern.

@@ -280,6 +280,73 @@ export const ValueFormatting: Story = {
 };
 
 /**
+ * Children of Meter.Value replace the visible text only; assistive technology
+ * announces valueLabel. Without valueLabel, a development warning is logged.
+ * Not snapshotted: the text styles are covered by `TextStyle`.
+ */
+export const CustomValueContent: Story = {
+  beforeEach: mockConsoleWarn,
+  render: () => (
+    <Stack direction="column" gap="400" alignItems="stretch">
+      <Meter.Root
+        data-testid="with-value-label"
+        value={50}
+        formatOptions={{}}
+        valueLabel="50 of 100 GB"
+      >
+        <Meter.Label>Storage</Meter.Label>
+        <Meter.Value>
+          <strong>50</strong> of 100 GB
+        </Meter.Value>
+        <Meter.Track />
+      </Meter.Root>
+      <Meter.Root data-testid="without-value-label" value={30}>
+        <Meter.Label>Seats</Meter.Label>
+        <Meter.Value>
+          <strong>3</strong> of 10 seats
+        </Meter.Value>
+        <Meter.Track />
+      </Meter.Root>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const valueWarnings = () =>
+      (console.warn as ReturnType<typeof fn>).mock.calls
+        .map(([message]) => String(message))
+        .filter((message) => message.startsWith("Meter.Value:"));
+
+    await step("Children replace the visible value text", async () => {
+      const value = getValueText(canvas.getByTestId("with-value-label"));
+      await expect(value).toHaveTextContent("50 of 100 GB");
+      await expect(value?.querySelector("strong")).toHaveTextContent("50");
+    });
+
+    await step("Assistive technology announces valueLabel", async () => {
+      await expect(canvas.getByTestId("with-value-label")).toHaveAttribute(
+        "aria-valuetext",
+        "50 of 100 GB"
+      );
+    });
+
+    await step(
+      "Without valueLabel, the formatted total is announced",
+      async () => {
+        await expect(canvas.getByTestId("without-value-label")).toHaveAttribute(
+          "aria-valuetext",
+          "30%"
+        );
+      }
+    );
+
+    await step("Children without valueLabel log one warning", async () => {
+      // Only the second meter: the first one has a valueLabel
+      await expect(valueWarnings()).toHaveLength(1);
+    });
+  },
+};
+
+/**
  * Values outside the range are clamped
  */
 export const Clamping: Story = {

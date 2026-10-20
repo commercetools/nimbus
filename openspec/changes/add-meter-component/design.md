@@ -61,8 +61,8 @@ with a source):
 `Meter.Root` takes `value` or `segments` (a discriminated union, so both cannot
 be set), `minValue`, `maxValue`, `formatOptions`, `valueLabel` and
 `colorPalette`. The parts `Meter.Label`, `Meter.Value`, `Meter.Track` and
-`Meter.Legend` hold no values. They read what they show from a context that
-Root fills.
+`Meter.Legend` hold no values. They read what they show from a context that Root
+fills.
 
 - Why data on Root: all values are in one place, so Root computes the one
   correct `aria-valuetext` (D2), no matter which parts are rendered.
@@ -86,11 +86,11 @@ Root fills.
 typed as `0`, so the parts always add up to the total; with a non-zero
 `minValue` the shown total would include it and the parts would not add up.
 `aria-valuetext` = `"<total> (<label>: <value>, <label>: <value>)"`, values
-formatted with `useNumberFormatter(formatOptions)` from `react-aria`, list joined
-with `Intl.ListFormat(locale, { type: "unit" })`. Each segment value is its drawn
-(clamped) amount, so the text matches the bar. Each value is rounded on its own
-(three parts of `33%` give `100%`). React Aria clamps before formatting
-(`useProgressBar`), and Base UI changed its Meter to do the same
+formatted with `useNumberFormatter(formatOptions)` from `react-aria`, list
+joined with `Intl.ListFormat(locale, { type: "unit" })`. Each segment value is
+its drawn (clamped) amount, so the text matches the bar. Each value is rounded
+on its own (three parts of `33%` give `100%`). React Aria clamps before
+formatting (`useProgressBar`), and Base UI changed its Meter to do the same
 (https://github.com/mui/base-ui/pull/5409).
 
 - Why not one role per segment (Primer, Mantine): in ARIA, the children of
@@ -106,8 +106,8 @@ with `Intl.ListFormat(locale, { type: "unit" })`. Each segment value is its draw
 - The summary must go through React Aria's `valueLabel`: `useProgressBar` merges
   its own `aria-valuetext` last, so a consumer-level `aria-valuetext` is
   overwritten (`react-aria/dist/private/progress/useProgressBar.mjs`). Root
-  therefore builds the value text itself and `Meter.Value` shows it. `valueLabel` is
-  typed as `string` because it becomes an ARIA attribute.
+  therefore builds the value text itself and `Meter.Value` shows it.
+  `valueLabel` is typed as `string` because it becomes an ARIA attribute.
 - React Aria renders `role="meter progressbar"`
   (`react-aria/dist/private/meter/useMeter.mjs`, fallback for browsers without
   `meter`). axe's `aria-allowed-attr` rule reads the list as one invalid role,
@@ -120,8 +120,8 @@ Primer's guidance asks for a legend that does not rely on color alone.
 without that, screen readers would read each segment twice.
 
 Because the legend is now a part, a consumer can leave it out. With `segments`
-and no `Meter.Legend`, Root logs a development warning, so segments are not
-told apart by color only. `Meter.Legend` registers itself with Root in a layout
+and no `Meter.Legend`, Root logs a development warning, so segments are not told
+apart by color only. `Meter.Legend` registers itself with Root in a layout
 effect, and Root checks the count in an effect (same pattern as
 `Splitter.Pane`). `Meter.Legend` renders nothing for a single `value`.
 
@@ -144,9 +144,8 @@ Aria's own (`useLabel`), and its text already names `aria-label` and
 
 ### D6: Recipe
 
-Slots:
-`root, label, value, track, segment, legend, legendItem, legendSwatch`. The CSS
-variables follow `ProgressBar` (`--meter-height`, `--meter-radius`, …).
+Slots: `root, label, value, track, segment, legend, legendItem, legendSwatch`.
+The CSS variables follow `ProgressBar` (`--meter-height`, `--meter-radius`, …).
 
 Layout uses fixed grid areas, so the result does not depend on the order in
 which the parts are written. `layout="stacked"` (default) uses the areas
@@ -165,24 +164,23 @@ only the Meter parts have a grid area.
 `md` → `sm`, `lg` → `md`; same pattern as `date-input.recipe.ts`). Consumers
 change the text with the `textStyle` style prop, on Root for all parts or on one
 part. Spacing and legend swatches are in `em`, so they follow the text. Three
-bar sizes follow
-the three uses named in other systems' guidance (GitLab Pajamas: dense layouts
-such as a "table row or narrow sidebar widget", standard content, and the
-"primary focal point"; Spectrum: "Use the small size … in tables or cards").
-Other systems ship 2–4 bar sizes (Spectrum Meter 2, Carbon 2, Primer 3, Spectrum
-2 4). A first prototype with 5 bar sizes and 6 text styles was reduced to 3
-bar sizes, because adding values later is not breaking but removing them is.
-Segment fill:
-`colorPalette.9` (the regular solid step, same as `ProgressBar`), flat, with a
-width transition that is removed under `prefers-reduced-motion`. Step 11 was
-used first to reach 3:1 against the track for every palette; it was changed to
-step 9 so the fill uses the regular solid color, not the dark one. Measured
-against the track, step 9 is below 3:1 for some palettes (for example `warning`
-1.38:1 in light mode, `primary` 2.65:1 in dark mode), so meaning is carried by
-the legend and value text, not by the fill color. Without `Meter.Value`, the
-guidelines ask for the same value as visible text near the meter. Segments may
-not shrink: each segment's width subtracts its share of the gaps (in proportion
-to its width), so the fill ends exactly at the value. Track: same background as the `ProgressBar` track. Gap between segments:
+bar sizes follow the three uses named in other systems' guidance (GitLab
+Pajamas: dense layouts such as a "table row or narrow sidebar widget", standard
+content, and the "primary focal point"; Spectrum: "Use the small size … in
+tables or cards"). Other systems ship 2–4 bar sizes (Spectrum Meter 2, Carbon 2,
+Primer 3, Spectrum 2 4). A first prototype with 5 bar sizes and 6 text styles
+was reduced to 3 bar sizes, because adding values later is not breaking but
+removing them is. Segment fill: `colorPalette.9` (the regular solid step, same
+as `ProgressBar`), flat, with a width transition that is removed under
+`prefers-reduced-motion`. Step 11 was used first to reach 3:1 against the track
+for every palette; it was changed to step 9 so the fill uses the regular solid
+color, not the dark one. Measured against the track, step 9 is below 3:1 for
+some palettes (for example `warning` 1.38:1 in light mode, `primary` 2.65:1 in
+dark mode), so meaning is carried by the legend and value text, not by the fill
+color. Without `Meter.Value`, the guidelines ask for the same value as visible
+text near the meter. Segments may not shrink: each segment's width subtracts its
+share of the gaps (in proportion to its width), so the fill ends exactly at the
+value. Track: same background as the `ProgressBar` track. Gap between segments:
 `{spacing.50}` (2px) using flex `gap`. Each segment sets `colorPalette` through
 a class or `data-` attribute so the recipe can color it. Default segment
 sequence (`constants/meter.constants.ts`): primary, orange, teal, gold, pink,
@@ -193,9 +191,9 @@ possible: the first four colors keep a worst-case distance of 12.8 (the earlier
 order: 6.1). Step 9 is the same in light and dark mode for these palettes.
 Semantic state palettes are left out so a default segment does not look like a
 status, and so are palettes with the same step 9 (`blue` = `info`, `red` =
-`critical`) and palettes below 2:1 against the light track (amber, yellow,
-lime, mint, sky). Datawrapper advises against more than seven colors in one
-chart (https://www.datawrapper.de/academy/what-to-consider-when-choosing-colors-for-data-visualization),
+`critical`) and palettes below 2:1 against the light track (amber, yellow, lime,
+mint, sky). Datawrapper advises against more than seven colors in one chart
+(https://www.datawrapper.de/academy/what-to-consider-when-choosing-colors-for-data-visualization),
 so the sequence has six.
 
 ### D7: Thresholds for a single value
@@ -207,15 +205,16 @@ than or equal to `from`, after clamping); below all thresholds, `colorPalette`
 is used. The order in the array does not matter. The pure util
 `getThresholdPalette` picks the palette.
 
-- Only for a single `value`: the type does not allow `thresholds` together with
-  `segments`, because segments have their own colors.
+- Only for a single `value`: the type does not allow `thresholds` or the Root
+  `colorPalette` together with `segments`, because segments have their own
+  colors.
 - Why not the HTML names `low` / `high` / `optimum`: they only describe three
   regions with fixed meanings, and ARIA has no equivalent
   (https://github.com/w3c/aria/issues/1336), so they would not reach assistive
-  technology anyway. A list of thresholds lets the consumer choose any number
-  of steps and any palette.
-- The color is visual only. The value text carries the meaning, and the
-  consumer can add the state to `valueLabel` (for example "92% – almost full").
+  technology anyway. A list of thresholds lets the consumer choose any number of
+  steps and any palette.
+- The color is visual only. The value text carries the meaning, and the consumer
+  can add the state to `valueLabel` (for example "92% – almost full").
 
 ## Risks / Trade-offs
 
@@ -244,5 +243,5 @@ is used. The order in the array does not matter. The pure util
 
 1. Legend readable vs `aria-hidden` — revisit if screen-reader users report
    problems.
-2. Should designers review the default segment color sequence? It was chosen
-   by computed distance, not by visual review.
+2. Should designers review the default segment color sequence? It was chosen by
+   computed distance, not by visual review.

@@ -93,6 +93,19 @@ current locale, using `formatOptions` on `Meter.Root` (default
 - **WHEN** `valueLabel="50 of 100 GB"` is provided
 - **THEN** the visible value text SHALL be "50 of 100 GB"
 
+#### Scenario: Custom value content
+
+- **WHEN** `Meter.Value` has children and `valueLabel="50 of 100 GB"` is
+  provided
+- **THEN** the visible value text SHALL be the children
+- **AND** `aria-valuetext` SHALL be "50 of 100 GB"
+
+#### Scenario: Custom value content without value label
+
+- **WHEN** `Meter.Value` has children and no `valueLabel` is provided
+- **THEN** `aria-valuetext` SHALL be the formatted value
+- **AND** the component SHALL log one warning in development mode
+
 ### Requirement: Value clamping
 
 The component SHALL clamp the drawn width to the range 0%–100% and SHALL NOT
@@ -159,9 +172,9 @@ visible gap.
 In multi-segment mode the component SHALL expose exactly one `role="meter"`.
 With `segments`, `minValue` SHALL be `0` (enforced by the type), so the parts
 add up to the total. `aria-valuenow` SHALL be the sum of the clamped segment
-amounts, and `aria-valuetext`
-SHALL be the formatted total followed, in parentheses, by each segment's label
-and formatted value, joined with `Intl.ListFormat` (type `unit`, style `short`).
+amounts, and `aria-valuetext` SHALL be the formatted total followed, in
+parentheses, by each segment's label and formatted value, joined with
+`Intl.ListFormat` (type `unit`, style `short`).
 
 #### Scenario: Summary value text
 
@@ -211,11 +224,12 @@ because the segments would then differ by color only.
 ### Requirement: Color
 
 The component SHALL use `colorPalette` (default `primary`) for the fill in
-single-value mode and SHALL allow `colorPalette` per segment. Segments without a
-`colorPalette` SHALL get colors from a fixed default sequence. Fills SHALL be
-flat colors (no gradient) using the palette's solid step (`colorPalette.9`) and
-SHALL NOT animate. Meaning SHALL NOT depend on color alone (the legend and value
-text carry it).
+single-value mode and SHALL allow `colorPalette` per segment. The type SHALL
+accept `colorPalette` on `Meter.Root` only together with `value`, because
+segments set their own colors. Segments without a `colorPalette` SHALL get
+colors from a fixed default sequence. Fills SHALL be flat colors (no gradient)
+using the palette's solid step (`colorPalette.9`) and SHALL NOT animate. Meaning
+SHALL NOT depend on color alone (the legend and value text carry it).
 
 #### Scenario: Semantic color
 
@@ -237,10 +251,10 @@ text carry it).
 
 `Meter.Root` SHALL accept `thresholds` (an array of `{ from, colorPalette }`)
 for a single `value`. The fill SHALL use the `colorPalette` of the threshold
-with the highest `from` that the clamped value reaches (greater than or equal
-to `from`). Below all thresholds, the fill SHALL use `colorPalette` of
-`Meter.Root`. The order of the array SHALL NOT change the result. The type
-SHALL NOT allow `thresholds` together with `segments`.
+with the highest `from` that the clamped value reaches (greater than or equal to
+`from`). Below all thresholds, the fill SHALL use `colorPalette` of
+`Meter.Root`. The order of the array SHALL NOT change the result. The type SHALL
+NOT allow `thresholds` together with `segments`.
 
 #### Scenario: Value reaches a threshold
 

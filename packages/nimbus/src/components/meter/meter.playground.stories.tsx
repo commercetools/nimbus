@@ -857,6 +857,7 @@ export const Configurator: StoryObj<ConfiguratorArgs> = {
     showValue,
     showLegend,
     minValue,
+    colorPalette,
     ...rootProps
   }) => {
     const meter = (
@@ -867,7 +868,7 @@ export const Configurator: StoryObj<ConfiguratorArgs> = {
         formatOptions={formats[format]}
         {...(mode === "segments"
           ? { segments: manySegments.slice(0, segmentCount) }
-          : { value, minValue })}
+          : { value, minValue, colorPalette })}
       >
         {showLabel && <Meter.Label>{label}</Meter.Label>}
         {showValue && <Meter.Value />}

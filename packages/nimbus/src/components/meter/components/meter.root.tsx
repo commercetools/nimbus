@@ -168,9 +168,10 @@ export const MeterRoot = (props: MeterRootProps) => {
     );
   }, [hasSegmentsToShow]);
 
+  const hasValueLabel = valueLabel !== undefined;
   const contextValue: MeterContextValue = useMemo(
-    () => ({ isSegmented, items, totalText, registerLegend }),
-    [isSegmented, items, totalText, registerLegend]
+    () => ({ isSegmented, items, totalText, hasValueLabel, registerLegend }),
+    [isSegmented, items, totalText, hasValueLabel, registerLegend]
   );
 
   return (
