@@ -68,8 +68,8 @@ catalogs:
       specifier: ^15.0.1
       version: 15.0.1
     remark-flexible-toc:
-      specifier: ^1.2.7
-      version: 1.2.7
+      specifier: ^1.3.0
+      version: 1.3.0
     remark-gfm:
       specifier: ^4.0.1
       version: 4.0.1
@@ -299,8 +299,8 @@ catalogs:
       specifier: ^2.0.3
       version: 2.0.3
     dotenv:
-      specifier: ^18.0.7
-      version: 18.0.7
+      specifier: ^18.0.8
+      version: 18.0.8
     escape-html:
       specifier: ^1.0.3
       version: 1.0.3
@@ -320,8 +320,8 @@ catalogs:
       specifier: ^7.1.14
       version: 7.1.14
     zod:
-      specifier: ^4.6.6
-      version: 4.6.6
+      specifier: ^4.6.7
+      version: 4.6.7
 
 overrides:
   rollup: ^4.64.10
@@ -337,7 +337,7 @@ overrides:
   brace-expansion@>=3.0.0 <5.0.12: '>=5.0.12'
   mdast-util-to-hast: ^13.2.1
   js-yaml: ^3.15.2
-  dompurify: ^3.4.16
+  dompurify: ^3.4.17
   qs: '>=6.16.0'
   minimatch@>=3.0.0 <3.1.4: 3.1.5
   svgo: '>=4.1.0'
@@ -403,7 +403,7 @@ importers:
         version: 2.9.0(supports-color@8.1.1)
       dotenv:
         specifier: catalog:utils
-        version: 18.0.7
+        version: 18.0.8
       eslint:
         specifier: catalog:tooling
         version: 10.13.0(supports-color@8.1.1)
@@ -590,7 +590,7 @@ importers:
         version: 16.1.2(react@19.2.0)
       remark-flexible-toc:
         specifier: catalog:markdown
-        version: 1.2.7(unified@11.0.5)
+        version: 1.3.0(unified@11.0.5)
       remark-gfm:
         specifier: catalog:markdown
         version: 4.0.1(supports-color@8.1.1)
@@ -605,7 +605,7 @@ importers:
         version: 10.1.1(react@19.2.0)
       zod:
         specifier: catalog:utils
-        version: 4.6.6
+        version: 4.6.7
     devDependencies:
       '@commercetools/nimbus-design-token-ts-plugin':
         specifier: workspace:^
@@ -676,7 +676,7 @@ importers:
         version: link:../../packages/nimbus-mcp
       '@modelcontextprotocol/sdk':
         specifier: ^1.31.0
-        version: 1.32.1(supports-color@8.1.1)(zod@4.6.6)
+        version: 1.32.1(supports-color@8.1.1)(zod@4.6.7)
       '@types/react':
         specifier: catalog:react
         version: 19.2.18
@@ -905,8 +905,8 @@ importers:
         specifier: catalog:tooling
         version: 18.13.0
       dompurify:
-        specifier: ^3.4.16
-        version: 3.4.16
+        specifier: ^3.4.17
+        version: 3.4.17
       glob:
         specifier: catalog:tooling
         version: 13.0.6
@@ -966,13 +966,13 @@ importers:
         version: 15.0.1(supports-color@8.1.1)
       remark-flexible-toc:
         specifier: catalog:markdown
-        version: 1.2.7(unified@11.0.5)
+        version: 1.3.0(unified@11.0.5)
       to-vfile:
         specifier: catalog:markdown
         version: 8.0.0
       zod:
         specifier: catalog:utils
-        version: 4.6.6
+        version: 4.6.7
     devDependencies:
       '@types/node':
         specifier: catalog:utils
@@ -1013,10 +1013,10 @@ importers:
     dependencies:
       '@modelcontextprotocol/sdk':
         specifier: ^1.31.0
-        version: 1.32.1(supports-color@8.1.1)(zod@4.6.6)
+        version: 1.32.1(supports-color@8.1.1)(zod@4.6.7)
       zod:
         specifier: catalog:utils
-        version: 4.6.6
+        version: 4.6.7
     devDependencies:
       '@commercetools-frontend/ui-kit':
         specifier: catalog:tooling
@@ -5637,8 +5637,8 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
-  dompurify@3.4.16:
-    resolution: {integrity: sha512-sqo+pNp3qRhCIpbgRi1y8Tgk27Bo2Ry7w0dC1NBeNTdZChWjz9Xb/KOoZbRP/R6pQZ80Qw8YhXw13hWWBbMRnQ==}
+  dompurify@3.4.17:
+    resolution: {integrity: sha512-B/pSlYVHQ58kqISD/yDjuJ1yfzI34m1gF4lAod2bwSRhiN4K5Cl3H8Af7hqB2PmTL911tdEudnnXn5FnhRoz0w==}
 
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
@@ -5654,8 +5654,8 @@ packages:
     resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
     engines: {node: '>=12'}
 
-  dotenv@18.0.7:
-    resolution: {integrity: sha512-QEvMEF8ca3GNZJJnAbOgxpj5ULhBvnMcURp+XKrtvqFNPgjBvYoswQ0Jl2cO7JzCjxZjJhr9ZuIEhlrRxMft/Q==}
+  dotenv@18.0.8:
+    resolution: {integrity: sha512-2KDeoFoK/zRtcnbunCDlLG5VWVMcyqeQc6iK65o231nfNAcuGrKoqUQfJFUtBI+QlShk5HKIHxwebBtUl3rEfA==}
     engines: {node: '>=12'}
     hasBin: true
 
@@ -7918,8 +7918,8 @@ packages:
   rehype-recma@1.0.0:
     resolution: {integrity: sha512-lqA4rGUf1JmacCNWWZx0Wv1dHqMwxzsDWYMTowuplHF3xH0N/MmrZ/G3BDZnzAkRmxDadujCjaKM2hqYdCBOGw==}
 
-  remark-flexible-toc@1.2.7:
-    resolution: {integrity: sha512-ZtFQPR4B0CkVztjnaxlm4JCwrionOxR5Q2ulMiYeBuMTprZ+Zbk3S1omTpE07sZ+yrVHGVPl2HXGjpgm1C7fZg==}
+  remark-flexible-toc@1.3.0:
+    resolution: {integrity: sha512-X7EgJ7eWvjHHZ8S4b5YiCKhGs98Xt73zgJ3ARmNKu5hvCVBAntOQRIrexiL44SkS+eXo7/k30ni0bTjsA6Jnmw==}
     peerDependencies:
       unified: ^11
 
@@ -9215,6 +9215,9 @@ packages:
 
   zod@4.6.6:
     resolution: {integrity: sha512-4UmzQUF5fxvfcYHlbjBmejU+w+hbDnWFx4aS8kBx7nPBHcO2SqPbpAG8snbdg+Xse4pRefR98hgjFgIMCI/UhA==}
+
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -10658,7 +10661,7 @@ snapshots:
       '@emotion/react': 11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
       '@types/dompurify': 2.4.0
-      dompurify: 3.4.16
+      dompurify: 3.4.17
       react: 19.2.0
       react-from-dom: 0.7.5(react@19.2.0)
     transitivePeerDependencies:
@@ -11380,7 +11383,7 @@ snapshots:
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
       '@types/dompurify': 2.4.0
       '@types/escape-html': 1.0.4
-      dompurify: 3.4.16
+      dompurify: 3.4.17
       downshift: 9.3.3(react@19.2.0)
       escape-html: 1.0.3
       is-hotkey: 0.2.0
@@ -11867,8 +11870,8 @@ snapshots:
 
   '@commercetools/nimbus-mcp@3.6.0(supports-color@8.1.1)':
     dependencies:
-      '@modelcontextprotocol/sdk': 1.32.1(supports-color@8.1.1)(zod@4.6.5)
-      zod: 4.6.5
+      '@modelcontextprotocol/sdk': 1.32.1(supports-color@8.1.1)(zod@4.6.6)
+      zod: 4.6.6
     transitivePeerDependencies:
       - '@cfworker/json-schema'
       - supports-color
@@ -12832,18 +12835,18 @@ snapshots:
       eventsource-parser: 3.1.1
       jose: 6.1.3
       pkce-challenge: 5.0.1
-      zod: 4.6.6
+      zod: 4.6.7
 
   '@modelcontextprotocol/core@2.3.1':
     dependencies:
-      zod: 4.6.6
+      zod: 4.6.7
 
-  '@modelcontextprotocol/ext-apps@2.0.3(@modelcontextprotocol/client@2.3.1)(@modelcontextprotocol/core@2.3.1)(@modelcontextprotocol/server@2.3.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(zod@4.6.6)':
+  '@modelcontextprotocol/ext-apps@2.0.3(@modelcontextprotocol/client@2.3.1)(@modelcontextprotocol/core@2.3.1)(@modelcontextprotocol/server@2.3.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(zod@4.6.7)':
     dependencies:
       '@modelcontextprotocol/client': 2.3.1
       '@modelcontextprotocol/core': 2.3.1
       '@standard-schema/spec': 1.1.0
-      zod: 4.6.6
+      zod: 4.6.7
     optionalDependencies:
       '@modelcontextprotocol/server': 2.3.1
       react: 19.2.0
@@ -12851,7 +12854,7 @@ snapshots:
 
   '@modelcontextprotocol/ext-tasks@0.2.2(@modelcontextprotocol/client@2.3.1)':
     dependencies:
-      zod: 4.6.6
+      zod: 4.6.7
     optionalDependencies:
       '@modelcontextprotocol/client': 2.3.1
 
@@ -12860,7 +12863,7 @@ snapshots:
       '@hono/node-server': 1.19.17(hono@4.13.11)
       '@modelcontextprotocol/client': 2.3.1
       '@modelcontextprotocol/core': 2.3.1
-      '@modelcontextprotocol/ext-apps': 2.0.3(@modelcontextprotocol/client@2.3.1)(@modelcontextprotocol/core@2.3.1)(@modelcontextprotocol/server@2.3.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(zod@4.6.6)
+      '@modelcontextprotocol/ext-apps': 2.0.3(@modelcontextprotocol/client@2.3.1)(@modelcontextprotocol/core@2.3.1)(@modelcontextprotocol/server@2.3.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(zod@4.6.7)
       '@modelcontextprotocol/ext-tasks': 0.2.2(@modelcontextprotocol/client@2.3.1)
       '@modelcontextprotocol/server': 2.3.1
       '@napi-rs/keyring': 2.1.2
@@ -12878,7 +12881,7 @@ snapshots:
       undici: 7.30.0
       vite: 8.3.4(@types/node@26.6.5)(esbuild@0.28.1)(terser@5.51.2)(tsx@4.23.15)(yaml@2.8.3)
       yaml: 2.8.3
-      zod: 4.6.6
+      zod: 4.6.7
     transitivePeerDependencies:
       - '@rolldown/plugin-babel'
       - '@types/node'
@@ -12899,28 +12902,6 @@ snapshots:
       - terser
       - tsx
       - utf-8-validate
-
-  '@modelcontextprotocol/sdk@1.32.1(supports-color@8.1.1)(zod@4.6.5)':
-    dependencies:
-      '@hono/node-server': 1.19.17(hono@4.13.11)
-      ajv: 8.20.0
-      ajv-formats: 3.0.1(ajv@8.20.0)
-      content-type: 1.0.5
-      cors: 2.8.6
-      cross-spawn: 7.0.6
-      eventsource: 3.0.7
-      eventsource-parser: 3.0.6
-      express: 5.2.1(supports-color@8.1.1)
-      express-rate-limit: 8.3.0(express@5.2.1(supports-color@8.1.1))
-      hono: 4.13.11
-      jose: 6.1.3
-      json-schema-typed: 8.0.2
-      pkce-challenge: 5.0.1
-      raw-body: 3.0.2
-      zod: 4.6.5
-      zod-to-json-schema: 3.25.1(zod@4.6.5)
-    transitivePeerDependencies:
-      - supports-color
 
   '@modelcontextprotocol/sdk@1.32.1(supports-color@8.1.1)(zod@4.6.6)':
     dependencies:
@@ -12944,10 +12925,32 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@modelcontextprotocol/sdk@1.32.1(supports-color@8.1.1)(zod@4.6.7)':
+    dependencies:
+      '@hono/node-server': 1.19.17(hono@4.13.11)
+      ajv: 8.20.0
+      ajv-formats: 3.0.1(ajv@8.20.0)
+      content-type: 1.0.5
+      cors: 2.8.6
+      cross-spawn: 7.0.6
+      eventsource: 3.0.7
+      eventsource-parser: 3.0.6
+      express: 5.2.1(supports-color@8.1.1)
+      express-rate-limit: 8.3.0(express@5.2.1(supports-color@8.1.1))
+      hono: 4.13.11
+      jose: 6.1.3
+      json-schema-typed: 8.0.2
+      pkce-challenge: 5.0.1
+      raw-body: 3.0.2
+      zod: 4.6.7
+      zod-to-json-schema: 3.25.1(zod@4.6.7)
+    transitivePeerDependencies:
+      - supports-color
+
   '@modelcontextprotocol/server@2.3.1':
     dependencies:
       '@modelcontextprotocol/core': 2.3.1
-      zod: 4.6.6
+      zod: 4.6.7
 
   '@napi-rs/keyring-darwin-arm64@2.1.2':
     optional: true
@@ -15809,7 +15812,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  dompurify@3.4.16:
+  dompurify@3.4.17:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -15828,7 +15831,7 @@ snapshots:
 
   dotenv@17.4.2: {}
 
-  dotenv@18.0.7: {}
+  dotenv@18.0.8: {}
 
   dotenv@8.6.0: {}
 
@@ -18510,12 +18513,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  remark-flexible-toc@1.2.7(unified@11.0.5):
+  remark-flexible-toc@1.3.0(unified@11.0.5):
     dependencies:
       '@types/mdast': 4.0.4
+      '@ungap/structured-clone': 1.3.0
       github-slugger: 2.0.0
       mdast-util-to-string: 4.0.0
       unified: 11.0.5
+      unist-util-is: 6.0.1
       unist-util-visit: 5.1.0
 
   remark-gfm@4.0.1(supports-color@8.1.1):
@@ -19889,13 +19894,13 @@ snapshots:
 
   yoga-layout@3.2.1: {}
 
-  zod-to-json-schema@3.25.1(zod@4.6.5):
-    dependencies:
-      zod: 4.6.5
-
   zod-to-json-schema@3.25.1(zod@4.6.6):
     dependencies:
       zod: 4.6.6
+
+  zod-to-json-schema@3.25.1(zod@4.6.7):
+    dependencies:
+      zod: 4.6.7
 
   zod-validation-error@3.5.4(zod@3.25.58):
     dependencies:
@@ -19914,5 +19919,7 @@ snapshots:
   zod@4.6.5: {}
 
   zod@4.6.6: {}
+
+  zod@4.6.7: {}
 
   zwitch@2.0.4: {}
