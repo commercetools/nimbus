@@ -207,6 +207,10 @@ overrides:
   "happy-dom@<20.8.9": ">=20.8.9"
   jsdom: "catalog:tooling"
   "adm-zip": ">=0.6.1"
+  # >=2.31.0 fixes GHSA-4p3w-j4w9-5jqw (path traversal via crafted non-string
+  # locale name). Parents allow it (ui-kit peer `2.x`, moment-timezone ^2.29.4),
+  # but the lockfile held 2.30.1.
+  moment: ">=2.31.0"
 
 catalogs:
   tooling:
