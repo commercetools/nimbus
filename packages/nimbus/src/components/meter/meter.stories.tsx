@@ -403,9 +403,10 @@ export const Segments: Story = {
 
     await step("Renders exactly one meter", async () => {
       await expect(canvas.getAllByRole("meter")).toHaveLength(1);
-      // The meter is the only element with an explicit role
-      const withRole = canvasElement.querySelectorAll("[role]");
-      await expect(Array.from(withRole)).toEqual([meter]);
+      // No element inside the meter has an explicit role. Scoped to the meter
+      // because other stories can leave portaled elements (e.g. toast
+      // regions) in the canvas.
+      await expect(meter.querySelectorAll("[role]")).toHaveLength(0);
     });
 
     await step("aria-valuenow is the sum of the segments", async () => {
