@@ -16,6 +16,8 @@ import {
  * computes one summary for assistive technology. The other parts show that
  * data; render only the parts you need, in any order.
  *
+ * @beta The API can still change in a minor version, with prior notice.
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/meter}
  *
  * @example
@@ -65,7 +67,8 @@ export const Meter = {
    * # Meter.Value
    *
    * Formatted total, using `formatOptions` of Meter.Root, or its `valueLabel`
-   * when it is set.
+   * when it is set. Children replace the visible text only; set `valueLabel`
+   * to the same words for assistive technology.
    *
    * @example
    * ```tsx
