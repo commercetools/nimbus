@@ -64,11 +64,11 @@
     "string": "Contraer"
   },
   "Nimbus.DataTable.comfortable": {
-    "developer_comment": "title for the comfortable togglebutton in the data table manager layout",
+    "developer_comment": "option for the comfortable row density in the data table manager layout",
     "string": "Cómoda"
   },
   "Nimbus.DataTable.compact": {
-    "developer_comment": "title for the compact togglebutton in the data table manager layout",
+    "developer_comment": "option for the compact row density in the data table manager layout",
     "string": "Compacta"
   },
   "Nimbus.DataTable.dataTable": {
@@ -178,6 +178,14 @@
   "Nimbus.DataTable.settingsTabsAriaLabel": {
     "developer_comment": "aria-label for the settings tabs in the data table manager drawer",
     "string": "Pestañas de configuración"
+  },
+  "Nimbus.DataTable.spacious": {
+    "developer_comment": "option for the spacious row density in the data table manager layout",
+    "string": "Espaciosa"
+  },
+  "Nimbus.DataTable.standard": {
+    "developer_comment": "option for the standard row density in the data table manager layout",
+    "string": "Estándar"
   },
   "Nimbus.DataTable.textPreviews": {
     "developer_comment": "title for the text previews section in the data table manager layout",

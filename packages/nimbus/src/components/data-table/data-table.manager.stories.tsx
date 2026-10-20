@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { within, expect, waitFor, userEvent, fn } from "storybook/test";
 import {
   Box,
+  Button,
   Checkbox,
   Flex,
   Heading,
@@ -23,7 +24,11 @@ import {
   managerRows,
   initialHiddenColumns,
 } from "./data-table.test-data";
-import type { DataTableColumnItem, DataTableProps } from "./data-table.types";
+import type {
+  DataTableColumnItem,
+  DataTableProps,
+  DataTableSize,
+} from "./data-table.types";
 import { DataTableWithModals } from "./utils/data-table.test-component";
 import { toggleCheckbox } from "./utils/data-table.test-utils";
 
@@ -44,6 +49,17 @@ export default meta;
  * StoryObj provides type checking for our story configurations
  */
 type Story = StoryObj<DataTableProps>;
+
+/** The row density select in `container`. */
+const getDensitySelect = (container: HTMLElement) =>
+  within(container).getByRole("button", { name: /row density/i });
+
+/** Opens the row density select and returns the names of its options. */
+const openDensityOptions = async (container: HTMLElement) => {
+  await userEvent.click(getDensitySelect(container));
+  const options = await within(document.body).findAllByRole("option");
+  return options.map((option) => option.textContent);
+};
 
 export const ColumnManager: Story = {
   render: (args) => {
@@ -291,13 +307,16 @@ export const WithTableManager: Story = {
       DataTableProps["columns"]
     >(initialVisibleColumns);
     const [isTruncated, setIsTruncated] = useState(false);
-    const [density, setDensity] = useState<"default" | "condensed">("default");
+    const [size, setSize] = useState<DataTableSize>("xl");
 
     const handleColumnsChange = (updatedColumns: DataTableColumnItem[]) => {
       setVisibleColumns(updatedColumns);
     };
 
-    const handleSettingsChange = (action: string | undefined) => {
+    const handleSettingsChange = (
+      action: string | undefined,
+      value?: DataTableSize
+    ) => {
       if (!action) {
         return;
       }
@@ -305,8 +324,8 @@ export const WithTableManager: Story = {
         case UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY:
           setIsTruncated(!isTruncated);
           break;
-        case UPDATE_ACTIONS.TOGGLE_ROW_DENSITY:
-          setDensity(density === "condensed" ? "default" : "condensed");
+        case UPDATE_ACTIONS.CHANGE_SIZE:
+          if (value) setSize(value);
           break;
       }
     };
@@ -323,7 +342,7 @@ export const WithTableManager: Story = {
             visibleColumns={visibleColumns.map((col) => col.id)}
             allowsSorting={true}
             isTruncated={isTruncated}
-            density={density}
+            size={size}
             onColumnsChange={handleColumnsChange}
             onSettingsChange={handleSettingsChange}
           >
@@ -525,75 +544,36 @@ export const WithTableManager: Story = {
       );
     });
 
-    await step("Row density toggles render correctly", async () => {
+    await step("Row density select renders correctly", async () => {
       const dialog = await canvas.getByRole("dialog");
       const tabPanel = within(dialog).getByRole("tab", {
         name: /layout settings/i,
       });
       await userEvent.click(tabPanel);
 
-      const comfortableButton = canvas.getByRole("radio", {
-        name: /comfortable/i,
-      });
-      const compactButton = canvas.getByRole("radio", { name: /compact/i });
-
-      expect(comfortableButton).toBeInTheDocument();
-      expect(compactButton).toBeInTheDocument();
-
-      // Comfortable should be selected by default
-      expect(comfortableButton).toHaveAttribute("data-selected");
-      expect(compactButton).not.toHaveAttribute("data-selected");
+      // The table uses the default `xl`, so all four sizes are offered
+      expect(getDensitySelect(dialog)).toHaveTextContent("Spacious");
+      expect(await openDensityOptions(dialog)).toEqual([
+        "Spacious",
+        "Comfortable",
+        "Standard",
+        "Compact",
+      ]);
+      await userEvent.keyboard("{Escape}");
 
       const rows = canvas.getAllByRole("row");
       expect(rows.length).toBe(6); // Header + 5 data rows
 
-      // Check that rows have default padding/spacing
       const firstDataRow = rows[1];
       const cells = within(firstDataRow).getAllByRole("gridcell");
       expect(cells.length).toBeGreaterThan(0);
 
-      // Store default padding values for comparison
-      const firstCell = cells[0];
-      const defaultStyles = window.getComputedStyle(firstCell);
-      const defaultPadding = {
-        top: defaultStyles.paddingTop,
-        bottom: defaultStyles.paddingBottom,
-        left: defaultStyles.paddingLeft,
-        right: defaultStyles.paddingRight,
-      };
-      // Verify default padding is reasonable (not zero or very small)
-      expect(defaultPadding.top).toBe("16px");
-      expect(defaultPadding.bottom).toBe("16px");
-      expect(defaultPadding.left).toBe("24px");
-      expect(defaultPadding.right).toBe("24px");
-    });
-
-    await step("Row density toggle changes state", async () => {
-      const dialog = canvas.getByRole("dialog");
-      const tabPanel = within(dialog).getByRole("tab", {
-        name: /layout settings/i,
-      });
-      await userEvent.click(tabPanel);
-
-      const compactButton = canvas.getByRole("radio", { name: /compact/i });
-      await userEvent.click(compactButton);
-
-      await waitFor(() => {
-        expect(compactButton).toHaveAttribute("data-selected");
-      });
-
-      const comfortableButton = canvas.getByRole("radio", {
-        name: /comfortable/i,
-      });
-      userEvent.click(comfortableButton);
-
-      // Check that padding has changed (condensed should have smaller padding)
-      const newFirstDataRow = canvas.getAllByRole("row")[1];
-      const newFirstCell = within(newFirstDataRow).getAllByRole("gridcell")[0];
-      const newPadding = window.getComputedStyle(newFirstCell).padding;
-
-      // Condensed mode should have different padding than default
-      expect(newPadding).toBe("12px 24px");
+      // `xl` padding
+      const defaultStyles = window.getComputedStyle(cells[0]);
+      expect(defaultStyles.paddingTop).toBe("16px");
+      expect(defaultStyles.paddingBottom).toBe("16px");
+      expect(defaultStyles.paddingLeft).toBe("24px");
+      expect(defaultStyles.paddingRight).toBe("24px");
     });
 
     await step("Text visibility toggle changes state", async () => {
@@ -642,6 +622,57 @@ export const WithTableManager: Story = {
 };
 
 /**
+ * Picking another size changes the table. The deprecated `xl` stays in the
+ * options, because the table started with it. Kept apart from
+ * `WithTableManager`, so that story opens on `xl`.
+ */
+export const LayoutSettingsSizeChange: Story = {
+  render: WithTableManager.render,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Open the layout settings tab", async () => {
+      await userEvent.click(
+        await canvas.findByRole("button", { name: /table settings/i })
+      );
+      const dialog = await within(document.body).findByRole(
+        "dialog",
+        {},
+        { timeout: 3000 }
+      );
+      await userEvent.click(
+        within(dialog).getByRole("tab", { name: /layout settings/i })
+      );
+    });
+
+    await step("Picking a density changes the size", async () => {
+      const dialog = within(document.body).getByRole("dialog");
+      await userEvent.click(getDensitySelect(dialog));
+      await userEvent.click(
+        await within(document.body).findByRole("option", { name: "Standard" })
+      );
+
+      await waitFor(() => {
+        expect(getDensitySelect(dialog)).toHaveTextContent("Standard");
+        const firstCell = within(
+          within(canvasElement).getAllByRole("row")[1]
+        ).getAllByRole("gridcell")[0];
+        expect(window.getComputedStyle(firstCell).padding).toBe("12px");
+      });
+
+      // The table started with `xl`, so `xl` stays available
+      expect(await openDensityOptions(dialog)).toEqual([
+        "Spacious",
+        "Comfortable",
+        "Standard",
+        "Compact",
+      ]);
+      await userEvent.keyboard("{Escape}");
+    });
+  },
+};
+
+/**
  * Demonstrates the custom settings feature in the DataTable Manager.
  * This story shows how to add a third tab to the settings drawer with custom content.
  * The custom settings panel can include any React component for additional table configurations.
@@ -658,7 +689,10 @@ export const WithTableManager: Story = {
  * } as const;
  *
  * // 2. Create a handler that accepts both built-in and custom actions
- * const handleSettingsChange = (action: string | undefined) => {
+ * const handleSettingsChange = (
+ *   action: string | undefined,
+ *   value?: DataTableSize
+ * ) => {
  *   // Handle built-in actions
  *   if (action === UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY) { ... }
  * };
@@ -685,7 +719,7 @@ export const WithCustomSettings: Story = {
       DataTableProps["columns"]
     >(initialVisibleColumns);
     const [isTruncated, setIsTruncated] = useState(false);
-    const [density, setDensity] = useState<"default" | "condensed">("default");
+    const [size, setSize] = useState<DataTableSize>("xl");
 
     // Custom settings state that affect table appearance
     const [highlightHeaders, setHighlightHeaders] = useState(false);
@@ -719,7 +753,10 @@ export const WithCustomSettings: Story = {
     };
 
     // Dynamic settings handler that supports both built-in and custom actions
-    const handleSettingsChange = (action: string | undefined) => {
+    const handleSettingsChange = (
+      action: string | undefined,
+      value?: DataTableSize
+    ) => {
       if (!action) {
         return;
       }
@@ -729,8 +766,8 @@ export const WithCustomSettings: Story = {
         case UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY:
           setIsTruncated(!isTruncated);
           break;
-        case UPDATE_ACTIONS.TOGGLE_ROW_DENSITY:
-          setDensity(density === "condensed" ? "default" : "condensed");
+        case UPDATE_ACTIONS.CHANGE_SIZE:
+          if (value) setSize(value);
           break;
       }
     };
@@ -863,7 +900,7 @@ export const WithCustomSettings: Story = {
             visibleColumns={visibleColumns.map((col) => col.id)}
             allowsSorting={true}
             isTruncated={isTruncated}
-            density={density}
+            size={size}
             selectionMode="multiple"
             disabledKeys={disabledRowIds}
             onColumnsChange={handleColumnsChange}
@@ -1071,8 +1108,9 @@ export const LayoutSettingsReselect: Story = {
       await userEvent.click(
         within(dialog).getByRole("radio", { name: "Full text" })
       );
+      await userEvent.click(getDensitySelect(dialog));
       await userEvent.click(
-        within(dialog).getByRole("radio", { name: "Comfortable" })
+        await body.findByRole("option", { name: "Spacious" })
       );
       expect(args.onSettingsChange).not.toHaveBeenCalled();
     });
@@ -1086,6 +1124,139 @@ export const LayoutSettingsReselect: Story = {
       expect(args.onSettingsChange).toHaveBeenCalledWith(
         UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY
       );
+    });
+  },
+};
+
+/**
+ * A table that starts with one of the three current sizes does not offer the
+ * deprecated `xl`. Picking a size reports `changeSize` with the size.
+ */
+export const LayoutSettingsSizeOptions: Story = {
+  args: { onSettingsChange: fn() },
+  render: (args) => (
+    <DataTable.Root
+      columns={[...initialVisibleColumns, ...initialHiddenColumns]}
+      rows={managerRows}
+      visibleColumns={initialVisibleColumns.map((col) => col.id)}
+      size="md"
+      onSettingsChange={args.onSettingsChange}
+    >
+      <DataTable.Manager />
+      <DataTable.Table aria-label="Layout settings table">
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+    </DataTable.Root>
+  ),
+  play: async ({ args, canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+
+    await step("Open the layout settings tab", async () => {
+      await userEvent.click(
+        await canvas.findByRole("button", { name: /table settings/i })
+      );
+      const dialog = await body.findByRole("dialog", {}, { timeout: 3000 });
+      await userEvent.click(
+        within(dialog).getByRole("tab", { name: /layout settings/i })
+      );
+    });
+
+    await step("Only the three current sizes are offered", async () => {
+      const dialog = body.getByRole("dialog");
+      expect(getDensitySelect(dialog)).toHaveTextContent("Standard");
+      expect(await openDensityOptions(dialog)).toEqual([
+        "Comfortable",
+        "Standard",
+        "Compact",
+      ]);
+    });
+
+    await step("Picking a size reports it", async () => {
+      await userEvent.click(
+        await body.findByRole("option", { name: "Compact" })
+      );
+      expect(args.onSettingsChange).toHaveBeenCalledTimes(1);
+      expect(args.onSettingsChange).toHaveBeenCalledWith(
+        UPDATE_ACTIONS.CHANGE_SIZE,
+        "sm"
+      );
+    });
+  },
+};
+
+/**
+ * A table that starts on `md` and is later given `xl` (for example when saved
+ * settings arrive after the first render) shows `xl` as the current size, and
+ * keeps offering it after another size is picked.
+ */
+export const LayoutSettingsXlArrivesLate: Story = {
+  render: () => {
+    const [size, setSize] = useState<DataTableSize>("md");
+    return (
+      <>
+        <Button onPress={() => setSize("xl")}>Apply saved size</Button>
+        <DataTable.Root
+          columns={[...initialVisibleColumns, ...initialHiddenColumns]}
+          rows={managerRows}
+          visibleColumns={initialVisibleColumns.map((col) => col.id)}
+          size={size}
+          onSettingsChange={(action, value) => {
+            if (action === UPDATE_ACTIONS.CHANGE_SIZE && value) setSize(value);
+          }}
+        >
+          <DataTable.Manager />
+          <DataTable.Table aria-label="Layout settings table">
+            <DataTable.Header />
+            <DataTable.Body />
+          </DataTable.Table>
+        </DataTable.Root>
+      </>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+
+    await step("Apply the late size and open the settings", async () => {
+      await userEvent.click(
+        await canvas.findByRole("button", { name: /apply saved size/i })
+      );
+      await userEvent.click(
+        await canvas.findByRole("button", { name: /table settings/i })
+      );
+      const dialog = await body.findByRole("dialog", {}, { timeout: 3000 });
+      await userEvent.click(
+        within(dialog).getByRole("tab", { name: /layout settings/i })
+      );
+    });
+
+    await step("The select shows xl and offers it", async () => {
+      const dialog = body.getByRole("dialog");
+      expect(getDensitySelect(dialog)).toHaveTextContent("Spacious");
+      expect(await openDensityOptions(dialog)).toEqual([
+        "Spacious",
+        "Comfortable",
+        "Standard",
+        "Compact",
+      ]);
+    });
+
+    await step("xl stays offered after picking another size", async () => {
+      await userEvent.click(
+        await body.findByRole("option", { name: "Compact" })
+      );
+      const dialog = body.getByRole("dialog");
+      await waitFor(() =>
+        expect(getDensitySelect(dialog)).toHaveTextContent("Compact")
+      );
+      expect(await openDensityOptions(dialog)).toEqual([
+        "Spacious",
+        "Comfortable",
+        "Standard",
+        "Compact",
+      ]);
     });
   },
 };
