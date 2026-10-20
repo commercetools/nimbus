@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@commercetools/nimbus-mcp": "workspace:*",
-    "@modelcontextprotocol/sdk": "^1.27.1",
+    "@modelcontextprotocol/sdk": "^1.31.0",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react-swc": "catalog:tooling",

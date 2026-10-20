@@ -401,6 +401,81 @@ export const Orientation: Story = {
   },
 };
 
+/** `size` variant (sm/md); changes label text style, indicator size and the gap between options, so its own snapshot. */
+export const Sizes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="1000">
+      {(["sm", "md"] as const).map((size) => (
+        <Stack key={size} gap="400" direction="row" alignItems="flex-start">
+          <RadioInput.Root
+            aria-label={`storybook-radio-size-${size}-vertical`}
+            size={size}
+          >
+            <RadioInput.Option value="one">{`${size} one`}</RadioInput.Option>
+            <RadioInput.Option value="two">{`${size} two`}</RadioInput.Option>
+          </RadioInput.Root>
+          <RadioInput.Root
+            aria-label={`storybook-radio-size-${size}-horizontal`}
+            orientation="horizontal"
+            size={size}
+          >
+            <RadioInput.Option value="one">{`${size} three`}</RadioInput.Option>
+            <RadioInput.Option value="two">{`${size} four`}</RadioInput.Option>
+          </RadioInput.Root>
+        </Stack>
+      ))}
+      {/* No `size` prop: falls back to the default */}
+      <RadioInput.Root aria-label="storybook-radio-size-default">
+        <RadioInput.Option value="one">default one</RadioInput.Option>
+      </RadioInput.Root>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    const expected = {
+      sm: { fontSize: "14px", indicator: "16px" },
+      md: { fontSize: "16px", indicator: "20px" },
+    } as const;
+
+    for (const size of ["sm", "md"] as const) {
+      await step(
+        `${size} sets label font size and indicator size`,
+        async () => {
+          const option = canvas
+            .getByLabelText(`${size} one`)
+            .closest("label") as HTMLLabelElement;
+          await expect(getComputedStyle(option).fontSize).toBe(
+            expected[size].fontSize
+          );
+          const indicator = option.querySelector("svg") as SVGElement;
+          await expect(getComputedStyle(indicator).width).toBe(
+            expected[size].indicator
+          );
+          await expect(getComputedStyle(indicator).height).toBe(
+            expected[size].indicator
+          );
+        }
+      );
+    }
+
+    await step("md is the default size", async () => {
+      const option = canvas
+        .getByLabelText("default one")
+        .closest("label") as HTMLLabelElement;
+      await expect(getComputedStyle(option).fontSize).toBe(
+        expected.md.fontSize
+      );
+      const indicator = option.querySelector("svg") as SVGElement;
+      await expect(getComputedStyle(indicator).width).toBe(
+        expected.md.indicator
+      );
+    });
+  },
+};
+
 export const WithFormField: StoryObj = {
   render: () => (
     <FormField.Root>
