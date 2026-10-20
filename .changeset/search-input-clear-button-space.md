@@ -9,6 +9,6 @@ clear button now appears only when the field has a value, after the
 `trailingElement`. The field keeps the same width with or without it. While the
 field is empty, the placeholder can use the clear button's space.
 
-`SearchInput`: in a field narrower than about 190px, the text, the
-`trailingElement` and the clear button no longer extend past the field's edge.
-The text area now gets smaller to fit.
+`SearchInput`: in a field narrower than the input's default width (192px), the
+text, the `trailingElement` and the clear button no longer extend past the
+field's edge. The text area now gets smaller to fit.

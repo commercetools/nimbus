@@ -70,6 +70,9 @@ export const SearchInput = (props: SearchInputProps) => {
             {...recipeProps}
             {...styleProps}
             {...stateProps}
+            // Set on the root as well as on React Aria's own element (which is
+            // `display: contents`): the recipe sets the clear button space
+            // variable on this flex container.
             data-empty={isEmpty ? "true" : undefined}
           >
             {leadingElement && (

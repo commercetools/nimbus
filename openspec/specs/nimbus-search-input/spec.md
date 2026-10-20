@@ -169,7 +169,7 @@ The component SHALL support both controlled and uncontrolled state management pe
 #### Scenario: Empty value handling
 - **WHEN** value is empty string or undefined
 - **THEN** SHALL display placeholder text
-- **AND** SHALL hide clear button
+- **AND** SHALL NOT render the clear button
 - **AND** SHALL allow typing new search query
 
 ### Requirement: Event Handlers

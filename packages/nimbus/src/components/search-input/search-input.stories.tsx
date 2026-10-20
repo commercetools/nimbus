@@ -569,7 +569,9 @@ export const TrailingElementAlignment: Story = {
     const root = canvasElement.querySelector<HTMLElement>(
       ".nimbus-search-input__root"
     )!;
-    const trailingSlot = canvas.getByLabelText("filter results").parentElement!;
+    const trailingSlot = root.querySelector<HTMLElement>(
+      ".nimbus-search-input__trailingElement"
+    )!;
 
     // Right edge of the root's content box (no real border: it is a box-shadow).
     const contentEnd = () =>
