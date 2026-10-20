@@ -690,9 +690,9 @@ export const StableWidth: Story = {
 };
 
 /**
- * Fields narrower than the input's default width (192px, token 4800). The
- * input must shrink so its text, the trailing element and the clear button
- * stay inside the field.
+ * Fields with a set width (192px, token 4800) that is narrower than the
+ * field's natural width. The input must shrink so its text, the trailing
+ * element and the clear button stay inside the field.
  */
 export const NarrowField: Story = {
   tags: ["vrt"],
