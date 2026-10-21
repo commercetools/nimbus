@@ -110,20 +110,35 @@ async function checkWebpackBuild() {
   }
 }
 
+// ESM chunk names: `[format]` renders as `es` today; `esm` is accepted too in
+// case a Vite or Rolldown upgrade changes it.
+const ESM_FILE = /\.esm?\.js$/;
+
 function listEsFiles(dir) {
   const files = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const path = join(dir, entry.name);
     if (entry.isDirectory()) files.push(...listEsFiles(path));
-    else if (entry.name.endsWith(".es.js")) files.push(path);
+    else if (ESM_FILE.test(entry.name)) files.push(path);
   }
   return files;
 }
 
 function checkRequireHelper() {
   process.stdout.write(header("require helper scan"));
+  const files = listEsFiles(NIMBUS_DIST);
+  // Entry files are named by `lib.fileName`, chunks by `[format]`. The
+  // runtime helper lives in a chunk, so fail instead of passing on a scan
+  // that saw no chunks because their naming changed.
+  const chunksDir = join(NIMBUS_DIST, "chunks");
+  if (!files.some((file) => file.startsWith(chunksDir))) {
+    console.log(
+      `${RED}✗ no *.es.js or *.esm.js chunks in ${relative(ROOT, chunksDir)}: the chunk naming changed, update ESM_FILE${RESET}`
+    );
+    return false;
+  }
   const hits = [];
-  for (const file of listEsFiles(NIMBUS_DIST)) {
+  for (const file of files) {
     readFileSync(file, "utf8")
       .split("\n")
       .forEach((line, index) => {
@@ -133,7 +148,9 @@ function checkRequireHelper() {
       });
   }
   if (hits.length === 0) {
-    console.log(`${GREEN}✓ no require helper in the ESM output${RESET}`);
+    console.log(
+      `${GREEN}✓ no require helper in ${files.length} ESM files${RESET}`
+    );
     return true;
   }
   for (const hit of hits) console.log(`  ${hit}`);

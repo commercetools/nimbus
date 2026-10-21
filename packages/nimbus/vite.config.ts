@@ -157,9 +157,10 @@ export default defineConfig(async () => {
         external,
         output: {
           // Keep chunks out of dist/ root so entry points are easier to find.
-          // Vite 8/Rolldown renders `[format]` as `esm`/`cjs` (was `es`/`cjs`
-          // pre-Rolldown). Nothing outside this build depends on the chunk
-          // extension — entry-point filenames are produced by `lib.fileName`.
+          // `[format]` renders as `es`/`cjs` in this lib build, so chunks end
+          // in `.es.js`/`.cjs.js`. `scripts/check-bundler-compat.mjs` scans
+          // the ESM chunks and fails if it finds none, so a naming change
+          // shows up there. Entry-point filenames come from `lib.fileName`.
           chunkFileNames: "chunks/[name]-[hash].[format].js",
         },
         /**

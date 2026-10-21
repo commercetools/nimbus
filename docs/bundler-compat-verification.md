@@ -35,11 +35,13 @@ exist).
    `mc-scripts` where it matters: `mode: "production"`, `target: "web"` and
    `module.strictExportPresence: true`. Errors **and** warnings fail the check,
    because `mc-scripts` treats warnings as errors when `CI` is set.
-2. Scans every `*.es.js` file in `packages/nimbus/dist/` for Rolldown's
-   `require` helper and reports `file:line` for each match. The helper's name is
-   shortened in the output, so the scan matches its error message
-   (``doesn't expose the `require` function``), which Rolldown keeps verbatim.
-   It also matches `__require(`, the helper's unshortened name.
+2. Scans every `*.es.js` and `*.esm.js` file in `packages/nimbus/dist/` for
+   Rolldown's `require` helper and reports `file:line` for each match. The
+   helper's name is shortened in the output, so the scan matches its error
+   message (``doesn't expose the `require` function``), which Rolldown keeps
+   verbatim. It also matches `__require(`, the helper's unshortened name. If
+   `dist/chunks/` has no file with either extension, the scan fails: the chunk
+   naming changed, and `ESM_FILE` in the script needs updating.
 3. Prints a summary and exits non-zero on any finding.
 
 The webpack build takes a few seconds. Its output goes to a temporary directory
