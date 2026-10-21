@@ -181,11 +181,11 @@
   },
   "Nimbus.DataTable.spacious": {
     "developer_comment": "option for the spacious row density in the data table manager layout",
-    "string": "Espaciosa"
+    "string": "Spacious"
   },
   "Nimbus.DataTable.standard": {
     "developer_comment": "option for the standard row density in the data table manager layout",
-    "string": "Estándar"
+    "string": "Standard"
   },
   "Nimbus.DataTable.textPreviews": {
     "developer_comment": "title for the text previews section in the data table manager layout",
