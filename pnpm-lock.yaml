@@ -328,9 +328,9 @@ overrides:
   '@babel/runtime': ^7.29.10
   prismjs: ^1.30.0
   typescript: ~5.9.3
-  react-aria: 3.52.1
-  react-aria-components: 1.21.1
-  react-stately: 3.50.0
+  react-aria: 3.53.1
+  react-aria-components: 1.22.1
+  react-stately: 3.51.0
   '@react-aria/interactions': 3.28.1
   brace-expansion@<2: ^2.1.7
   brace-expansion@2: ^2.1.7
@@ -562,11 +562,11 @@ importers:
         specifier: catalog:react
         version: 19.2.0
       react-aria:
-        specifier: 3.52.1
-        version: 3.52.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 3.53.1
+        version: 3.53.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-aria-components:
-        specifier: 1.21.1
-        version: 1.21.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 1.22.1
+        version: 1.22.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-docgen-typescript:
         specifier: catalog:tooling
         version: 2.4.0(typescript@5.9.3)
@@ -583,8 +583,8 @@ importers:
         specifier: catalog:apps
         version: 7.18.4(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-stately:
-        specifier: 3.50.0
-        version: 3.50.0(react@19.2.0)
+        specifier: 3.51.0
+        version: 3.51.0(react@19.2.0)
       react-syntax-highlighter:
         specifier: catalog:apps
         version: 16.1.2(react@19.2.0)
@@ -796,11 +796,11 @@ importers:
         specifier: catalog:react
         version: 0.4.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-aria:
-        specifier: 3.52.1
-        version: 3.52.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 3.53.1
+        version: 3.53.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-aria-components:
-        specifier: 1.21.1
-        version: 1.21.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 1.22.1
+        version: 1.22.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-hotkeys-hook:
         specifier: catalog:react
         version: 5.3.3(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -808,8 +808,8 @@ importers:
         specifier: catalog:markdown
         version: 10.1.0(@types/react@19.2.18)(react@19.2.0)(supports-color@8.1.1)
       react-stately:
-        specifier: 3.50.0
-        version: 3.50.0(react@19.2.0)
+        specifier: 3.51.0
+        version: 3.51.0(react@19.2.0)
       react-use:
         specifier: catalog:react
         version: 17.6.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -7658,14 +7658,14 @@ packages:
     resolution: {integrity: sha512-K5zQjDllxWkf7Z5xJdV0/B0WTNqx6vxG70zJE4N0kBs4LovmEYWJzQGxC9bS9RAKu3bgM40lrd5zoLJ12MQ5BA==}
     engines: {node: '>= 0.10'}
 
-  react-aria-components@1.21.1:
-    resolution: {integrity: sha512-J88WflYY0z+EhLX0ce+GjFlQ3ag3ubIgfUTjpKSrBQBu92Xtl4Ub9o118HItUddtbk1Ido0jzyPy94/klZy1hg==}
+  react-aria-components@1.22.1:
+    resolution: {integrity: sha512-UTHaYHOaM71bOCjGPF50DcLywlrwAodE63IP64LB4kO+OizatQEL8TesVEOM8+TkBeSgHoflJ45388IlJfa7aw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
-  react-aria@3.52.1:
-    resolution: {integrity: sha512-fdZZruC9/x/joCg0mhKGs5aHpwrXLCSZ4GOJmhhYyiE0ffyEsk9MLFt9LCOCF9tn8ErTD+UDQP4oDUSlZkmpCg==}
+  react-aria@3.53.1:
+    resolution: {integrity: sha512-dikisyOjJd3D2fFrIDWmVWzqiLz5B86GzZv1zxs7xI4dVc0JIz/1Wa52I20gYvVL2WXeFXlygYsle/QcOMhtcg==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
@@ -7813,8 +7813,8 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  react-stately@3.50.0:
-    resolution: {integrity: sha512-TnckvpDQGU0672wEaLZqdzvhuSeXWjgW6vijMWxiKOxc8CosQUfPGISdcZyfHqjX3XMjEtRxj4w9HumvX4h4mw==}
+  react-stately@3.51.0:
+    resolution: {integrity: sha512-YJcmkAXu2XOQP97hO/qz/cC3qv9kni3oVhwBlxWr358BHePJUpY15XwL3YSRMKxYt4EkslPqAz11JRirMfANGw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
@@ -13437,7 +13437,7 @@ snapshots:
       '@react-types/shared': 3.37.0(react@19.2.0)
       '@swc/helpers': 0.5.17
       react: 19.2.0
-      react-aria: 3.52.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-aria: 3.53.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-dom: 19.2.0(react@19.2.0)
 
   '@react-aria/optimize-locales-plugin@2.1.0':
@@ -13448,9 +13448,9 @@ snapshots:
     dependencies:
       '@swc/helpers': 0.5.17
       react: 19.2.0
-      react-aria: 3.52.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-aria: 3.53.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-dom: 19.2.0(react@19.2.0)
-      react-stately: 3.50.0(react@19.2.0)
+      react-stately: 3.51.0(react@19.2.0)
 
   '@react-types/shared@3.37.0(react@19.2.0)':
     dependencies:
@@ -18151,7 +18151,7 @@ snapshots:
       iconv-lite: 0.7.2
       unpipe: 1.0.0
 
-  react-aria-components@1.21.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  react-aria-components@1.22.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@internationalized/date': 3.12.4
       '@internationalized/string': 3.2.10
@@ -18159,11 +18159,12 @@ snapshots:
       '@swc/helpers': 0.5.17
       client-only: 0.0.1
       react: 19.2.0
-      react-aria: 3.52.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-aria: 3.53.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-dom: 19.2.0(react@19.2.0)
-      react-stately: 3.50.0(react@19.2.0)
+      react-stately: 3.51.0(react@19.2.0)
+      use-sync-external-store: 1.6.0(react@19.2.0)
 
-  react-aria@3.52.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  react-aria@3.53.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@internationalized/date': 3.12.4
       '@internationalized/number': 3.6.9
@@ -18174,7 +18175,7 @@ snapshots:
       clsx: 2.1.1
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
-      react-stately: 3.50.0(react@19.2.0)
+      react-stately: 3.51.0(react@19.2.0)
       use-sync-external-store: 1.6.0(react@19.2.0)
 
   react-docgen-typescript@2.4.0(typescript@5.9.3):
@@ -18356,7 +18357,7 @@ snapshots:
       - '@types/react'
       - supports-color
 
-  react-stately@3.50.0(react@19.2.0):
+  react-stately@3.51.0(react@19.2.0):
     dependencies:
       '@internationalized/date': 3.12.4
       '@internationalized/number': 3.6.9

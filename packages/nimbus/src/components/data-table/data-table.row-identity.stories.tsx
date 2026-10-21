@@ -3,7 +3,7 @@
 // under one DataTable entry and the story ids stay the same.
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState, type ReactNode } from "react";
+import { Component, useState, type ReactNode } from "react";
 import { type Selection } from "react-aria-components";
 import { within, expect, waitFor, userEvent } from "storybook/test";
 import { Stack, Text, DataTable } from "@/components";
@@ -637,38 +637,93 @@ export const DefaultRowIdDoesNotWarn: Story = {
 };
 
 /**
- * Duplicate row keys otherwise surface only as React Aria's opaque "Cell count
- * must match column count", which names neither the row nor the cause.
- * `DataTable` warns in development instead.
+ * Two rows with the same `id` make `DataTable` throw while rendering, outside
+ * production. The error names the duplicated id and tells the developer to give
+ * each row a unique `id`; without it React Aria would report only that a key is
+ * duplicated in a collection. An error boundary shows the message here.
  */
-const duplicateKeyWarnings: string[] = [];
+class RowKeyErrorBoundary extends Component<
+  { children: ReactNode },
+  { error: Error | null }
+> {
+  state = { error: null as Error | null };
 
-export const DuplicateRowKeysWarnInDevelopment: Story = {
-  beforeEach: recordWarnings(duplicateKeyWarnings),
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  render() {
+    return this.state.error ? (
+      <div role="alert">{this.state.error.message}</div>
+    ) : (
+      this.props.children
+    );
+  }
+}
+
+export const DuplicateRowKeysThrowInDevelopment: Story = {
+  render: () => (
+    <RowKeyErrorBoundary>
+      <DataTable
+        columns={identityColumns}
+        rows={[
+          { id: "SAME", sku: "A", name: "First" },
+          { id: "SAME", sku: "B", name: "Second" },
+        ]}
+        aria-label="Rows with duplicate ids"
+      />
+    </RowKeyErrorBoundary>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("The error names the duplicated id", async () => {
+      const alert = await canvas.findByRole("alert");
+      expect(alert).toHaveTextContent('"SAME" (2 rows)');
+    });
+
+    await step("The error names the fix", async () => {
+      expect(canvas.getByRole("alert")).toHaveTextContent(
+        "Give each row a unique, non-empty `id`"
+      );
+    });
+
+    await step("No table is rendered", async () => {
+      expect(canvas.queryByRole("grid")).not.toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * An empty `id` only warns: the table still renders, and the warning names the
+ * index of the row.
+ */
+const emptyKeyWarnings: string[] = [];
+
+export const EmptyRowKeysWarnInDevelopment: Story = {
+  beforeEach: recordWarnings(emptyKeyWarnings),
   render: () => (
     <DataTable
       columns={identityColumns}
       rows={[
-        { id: "SAME", sku: "A", name: "First" },
-        { id: "SAME", sku: "B", name: "Second" },
+        { id: "A", sku: "A", name: "First" },
+        { id: "", sku: "B", name: "Second" },
       ]}
-      aria-label="Rows with duplicate ids"
+      aria-label="Rows with an empty id"
     />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("The table still renders", async () => {
-      expect(await canvas.findByText("Second")).toBeInTheDocument();
+      expect(await canvas.findByText("First")).toBeInTheDocument();
     });
 
-    await step("A development warning names the duplicate", async () => {
+    await step("A development warning names the row", async () => {
       await waitFor(() => {
         expect(
-          duplicateKeyWarnings.some(
-            (w) => w.includes("SAME") && w.includes("unique")
-          ),
-          `warnings seen: ${JSON.stringify(duplicateKeyWarnings)}`
+          emptyKeyWarnings.some((w) => w.includes("index 1")),
+          `warnings seen: ${JSON.stringify(emptyKeyWarnings)}`
         ).toBe(true);
       });
     });

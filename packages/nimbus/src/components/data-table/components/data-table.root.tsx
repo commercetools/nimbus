@@ -267,14 +267,28 @@ export const DataTableRoot = function DataTableRoot<
     ]
   );
 
-  // Duplicate or empty keys otherwise surface only as React Aria's opaque
-  // "Cell count must match column count", which names neither the row nor the
-  // cause. Development only.
+  // Row keys are checked outside production only. A duplicate key throws while
+  // rendering, before React Aria's own duplicate check, so the error names the
+  // DataTable `id` to fix. An empty key only warns: React Aria does not throw
+  // for it, and the table still renders.
+  const rowKeyProblems = useMemo(
+    () =>
+      process.env.NODE_ENV === "production"
+        ? []
+        : findRowKeyProblems(rows, getRowKey),
+    [rows, getRowKey]
+  );
+  const duplicateKeyMessage = formatRowKeyProblems(
+    rowKeyProblems.filter((problem) => problem.type === "duplicate")
+  );
+  if (duplicateKeyMessage) throw new Error(duplicateKeyMessage);
+
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
-    const message = formatRowKeyProblems(findRowKeyProblems(rows, getRowKey));
+    const message = formatRowKeyProblems(
+      rowKeyProblems.filter((problem) => problem.type === "missing")
+    );
     if (message) console.warn(message);
-  }, [rows, getRowKey]);
+  }, [rowKeyProblems]);
 
   // The pinned rows on screen, in display order. It comes from `sortedRows`,
   // not from `rows`: a pinned row that the search hides must not count as the
