@@ -1,4 +1,3 @@
 # Files/directories to symlink from the main worktree into new gw worktrees
 .vscode/
-.claude/settings.local.json
 .env

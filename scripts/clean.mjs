@@ -17,7 +17,7 @@
  * generated-but-committed files (`packages/tokens/src/generated` is the only
  * generated tree that is committed), and — by matching specific targets rather
  * than blanket-deleting everything gitignored — it never touches user-owned
- * local config (`.env*`, `.vscode/`, `.idea/`, `.claude/settings.local.json`).
+ * local config (`.env*`, `.vscode/`, `.idea/`).
  *
  * Three tiers, selected by flags:
  *

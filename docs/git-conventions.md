@@ -33,8 +33,6 @@ Use [conventional commits](https://www.conventionalcommits.org/) format:
 <optional body>
 
 <TICKET-KEY>
-
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ```
 
 ### Types
