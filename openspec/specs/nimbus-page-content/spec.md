@@ -1,7 +1,12 @@
 # nimbus-page-content Specification
 
 ## Purpose
-TBD - created by archiving change add-page-content-component. Update Purpose after archive.
+
+PageContent constrains the width of page content and arranges it in one or
+more columns, with an optional sticky column. A `width` variant replaces the
+Merchant Center Application Kit `PageContentWide`, `PageContentNarrow` and
+`PageContentFull` components, and explicit `Column` parts replace their
+implicit splitting of children.
 ## Requirements
 ### Requirement: Namespace Structure
 

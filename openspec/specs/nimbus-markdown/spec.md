@@ -1,7 +1,12 @@
 # nimbus-markdown Specification
 
 ## Purpose
-TBD - created by archiving change add-markdown-component. Update Purpose after archive.
+
+Markdown turns a markdown string into Nimbus-styled, accessible React elements.
+It provides default renderers for every element, per-element overrides, custom
+component tags and GitHub-style alerts. It is safe by default (no raw HTML, no
+unsafe URLs) and supports incremental rendering of streamed LLM output without
+showing half-written syntax.
 
 ## Requirements
 

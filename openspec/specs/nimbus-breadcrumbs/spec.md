@@ -1,7 +1,12 @@
 # nimbus-breadcrumbs Specification
 
 ## Purpose
-TBD - created by archiving change add-breadcrumbs-component. Update Purpose after archive.
+
+Breadcrumbs shows the path from the top of a hierarchy to the current page and
+lets users go back to any level above it (for example catalog → category →
+product). It is a compound component built on React Aria's `Breadcrumbs`, with
+navigation landmark semantics, automatic marking of the current page, and
+token-based styling.
 
 ## Requirements
 

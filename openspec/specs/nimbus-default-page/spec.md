@@ -1,7 +1,13 @@
 # nimbus-default-page Specification
 
 ## Purpose
-TBD - created by archiving change add-default-page-component. Update Purpose after archive.
+
+DefaultPage is the standard page layout for Merchant Center applications: a
+header with title, subtitle, actions and optional tab navigation, a scrollable
+content area, and an optional footer. An optional `BackLink` turns a main page
+into a detail page. It replaces eight Merchant Center Application Kit page
+components (the main and detail variants of the form, info, tabular and custom
+form pages) with one compound component.
 ## Requirements
 ### Requirement: Namespace Structure
 

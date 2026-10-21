@@ -1,7 +1,12 @@
 # nimbus-slider Specification
 
 ## Purpose
-TBD - created by archiving change add-slider-component. Update Purpose after archive.
+
+Slider and RangeSlider let users select a single number or a `[min, max]` range
+by dragging a thumb along a track, for example for opacity, zoom or price
+filters. Both wrap React Aria's `Slider` and support keyboard, pointer, touch
+and right-to-left input, value tooltips, tick marks, and `FormField`
+integration, in line with WCAG 2.1 AA.
 
 ## Requirements
 

@@ -1,7 +1,12 @@
 # tab-nav Specification
 
 ## Purpose
-TBD - created by archiving change add-tab-nav-component. Update Purpose after archive.
+
+TabNav is a row of tab-styled links for navigating between pages, for example
+in the headers of `DefaultPage` and `ModalPage`. Unlike `Tabs`, which switches
+content panels with `role="tablist"` and arrow-key focus, TabNav uses
+navigation semantics: each item is a link that changes the route and is reached
+with the Tab key.
 ## Requirements
 ### Requirement: Namespace Structure
 

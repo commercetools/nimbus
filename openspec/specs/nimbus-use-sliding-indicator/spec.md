@@ -1,7 +1,11 @@
 # nimbus-use-sliding-indicator Specification
 
 ## Purpose
-TBD - created by archiving change add-animated-tab-indicator. Update Purpose after archive.
+
+useSlidingIndicator positions an indicator element over the active item in a
+container and moves it when the active item or the layout changes. `Tabs` and
+`TabNav` use it to show one active marker that slides between items instead of
+jumping between them.
 
 ## Requirements
 

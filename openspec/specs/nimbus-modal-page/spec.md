@@ -1,7 +1,13 @@
 # nimbus-modal-page Specification
 
 ## Purpose
-TBD - created by archiving change add-modal-page-component. Update Purpose after archive.
+
+ModalPage is a fullscreen overlay page with a top bar, header, scrollable
+content and optional footer, used for focused tasks on top of the current page.
+It is controlled only, has dialog accessibility with focus management, and
+offers several ways to dismiss it. It replaces the Merchant Center Application
+Kit `FormModalPage`, `InfoModalPage` and `TabularModalPage` with one compound
+component.
 ## Requirements
 ### Requirement: Namespace Structure
 

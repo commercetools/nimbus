@@ -1,7 +1,13 @@
 # nimbus-item Specification
 
 ## Purpose
-TBD - created by archiving change add-item-component. Update Purpose after archive.
+
+Item is a horizontal content row: leading media, a title and description
+column, and trailing actions. It gives dense product UI (settings rows,
+notification entries, file rows) one consistent layout. The row is a plain
+container and becomes an accessible link only when it has an `href`; it is
+never a button and does not handle selection, which belong to nested buttons
+and to `List` or `Menu`.
 
 ## Requirements
 

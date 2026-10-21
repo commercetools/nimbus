@@ -1,7 +1,12 @@
 # nimbus-chat-message-list Specification
 
 ## Purpose
-TBD - created by archiving change add-chat-message-list. Update Purpose after archive.
+
+ChatMessageList presents a scrollable sequence of chat messages and owns the
+behavior of the whole transcript: autoscroll that sticks to the bottom, a
+scroll-to-bottom control, an empty state, and the single persistent live region
+that announces new and streamed replies. It is a compound of a root and its
+items; each item can hold a `ChatMessage` or any other content.
 
 ## Requirements
 

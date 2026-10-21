@@ -1,7 +1,12 @@
 # nimbus-form-dialog Specification
 
 ## Purpose
-TBD - created by archiving change form-dialog-pattern. Update Purpose after archive.
+
+FormDialog shows an editable form inside a modal dialog. It is a pre-composed
+pattern on top of `Dialog` with a flat props API, localized "Save" and "Cancel"
+footer actions, and a loading state that locks the dialog during an
+asynchronous save. It replaces the Merchant Center Application Kit
+`FormDialog`.
 ## Requirements
 ### Requirement: Component Export
 

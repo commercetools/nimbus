@@ -1,7 +1,12 @@
 # nimbus-confirmation-dialog Specification
 
 ## Purpose
-TBD - created by archiving change confirmation-dialog-pattern. Update Purpose after archive.
+
+ConfirmationDialog asks the user to confirm or cancel an action, most often a
+destructive one. It is a pre-composed pattern on top of `Dialog` with a flat
+props API, localized default button labels, a `default` or `destructive`
+intent, and a loading state that locks the dialog while the confirm action
+runs. It replaces the Merchant Center Application Kit `ConfirmationDialog`.
 ## Requirements
 ### Requirement: Component Export
 

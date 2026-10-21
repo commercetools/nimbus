@@ -1,7 +1,11 @@
 # nimbus-item-group Specification
 
 ## Purpose
-TBD - created by archiving change add-item-component. Update Purpose after archive.
+
+ItemGroup stacks `Item` rows into one visual group and provides a separator to
+place between rows. It gives grouped rows consistent spacing without adding
+list semantics, because the free composition of rows and separators cannot
+guarantee a valid list structure.
 
 ## Requirements
 

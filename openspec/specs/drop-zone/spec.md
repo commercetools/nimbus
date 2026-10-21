@@ -1,7 +1,11 @@
 # drop-zone Specification
 
 ## Purpose
-TBD - created by archiving change add-drop-zone-component. Update Purpose after archive.
+
+DropZone is an accessible drop target for files and other dragged data. It
+wraps React Aria's `DropZone` with Nimbus styling and includes a click-to-upload
+fallback through `FileTrigger`, so keyboard and screen-reader users can add
+files without drag and drop.
 
 ## Requirements
 

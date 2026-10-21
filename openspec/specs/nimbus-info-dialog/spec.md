@@ -1,7 +1,11 @@
 # nimbus-info-dialog Specification
 
 ## Purpose
-TBD - created by archiving change info-dialog-pattern. Update Purpose after archive.
+
+InfoDialog shows read-only information in a modal dialog that the user can
+only close. It is a pre-composed pattern on top of `Dialog` with a flat,
+minimal props API, so consumers do not need to compose the dialog parts
+themselves. It replaces the Merchant Center Application Kit `InfoDialog`.
 ## Requirements
 ### Requirement: Component Export
 
