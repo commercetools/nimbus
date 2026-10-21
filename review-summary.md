@@ -27,7 +27,7 @@ implementation files.
 **Verified: ✅ TRUE** `toast.outlet.tsx:15-16` clearly shows barrel imports,
 while `LoadingSpinner` on line 17 is already imported correctly
 (`../loading-spinner/loading-spinner`). The cross-chunk import rule is
-documented in `packages/nimbus/CLAUDE.md` and
+documented in `packages/nimbus/AGENTS.md` and
 `docs/file-type-guidelines/main-component.md`.
 
 **Recommendation: Fix required.** Change to:

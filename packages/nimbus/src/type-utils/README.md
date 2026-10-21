@@ -105,4 +105,4 @@ import type { MyUtility } from "@/type-utils";
 
 - See `vite.config.ts` for the `vite-plugin-dts` configuration
 - See `src/components/` for examples of `SlotComponent` usage
-- See `CLAUDE.md` for overall project architecture
+- See `AGENTS.md` for overall project architecture
