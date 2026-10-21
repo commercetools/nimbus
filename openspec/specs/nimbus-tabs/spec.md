@@ -355,12 +355,7 @@ selected, forwarding React Aria's `shouldForceMount` prop.
 `Tabs` and `TabNav` SHALL expose the same three variants — `line` (the
 default), `rounded`, and `pill` — and SHALL render the active marker as a single
 indicator that slides between items/tabs as the selection changes, rather than a
-static per-item marker. The indicator SHALL be decorative (`aria-hidden`,
-non-focusable) and SHALL NOT affect the selected state, focus, or keyboard
-navigation. The motion SHALL be disabled under `prefers-reduced-motion: reduce`
-(the indicator snaps). There SHALL be no per-instance prop to toggle the
-animation. The recipe's static marker SHALL remain as the no-JS / pre-hydration
-fallback.
+static per-item marker.
 
 #### Scenario: Active marker slides on selection change
 
@@ -402,3 +397,39 @@ resolved to the new names at runtime, so existing consumers keep working:
 
 - **WHEN** `TabNav.Root` is given `variant="tabs"`
 - **THEN** it renders as `line`
+
+### Requirement: Sliding indicator is decorative
+
+The sliding indicator of `Tabs` and `TabNav` SHALL be decorative (`aria-hidden`,
+non-focusable) and SHALL NOT affect the selected state, focus, or keyboard
+navigation.
+
+#### Scenario: Indicator is hidden from assistive technology and focus
+
+- **WHEN** the indicator is rendered
+- **THEN** it has `aria-hidden` and is not focusable
+- **AND** selection, focus, and keyboard navigation behave the same as without
+  it
+
+### Requirement: Sliding indicator motion
+
+The slide motion of the `Tabs` and `TabNav` indicator SHALL be disabled under
+`prefers-reduced-motion: reduce` (the indicator snaps). There SHALL be no
+per-instance prop to toggle the animation.
+
+#### Scenario: No per-instance animation toggle
+
+- **WHEN** a consumer renders `Tabs` or `TabNav`
+- **THEN** there is no prop to turn the slide animation on or off for one
+  instance; only `prefers-reduced-motion: reduce` disables it
+
+### Requirement: Static marker fallback
+
+The recipe's static marker of `Tabs` and `TabNav` SHALL remain as the no-JS /
+pre-hydration fallback for the sliding indicator.
+
+#### Scenario: Static marker is replaced once the indicator is live
+
+- **WHEN** the sliding indicator becomes active on the client
+- **THEN** the static marker is no longer shown and the sliding indicator marks
+  the active item instead

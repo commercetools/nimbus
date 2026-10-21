@@ -56,14 +56,9 @@ demonstrate this composition as the recommended non-drag fallback.
 ### Requirement: Default state and content
 
 When given no children, DropZone SHALL render a default state — a centered upload
-icon and one localized instruction line (`Nimbus.DropZone.defaultLabel`). The
-visible line is rendered with `slot={null}` (React Aria's documented opt-out
-from the parent's label slot) so it does not get auto-wired into the accessible
-name; instead, a localized `aria-label` is injected on the underlying RAC
-element. When given children, DropZone SHALL render them as-is and the
-default state SHALL NOT appear (all-or-nothing; no per-slot overrides). DropZone
-SHALL NOT expose a `size` variant — sizing is done with Nimbus style props
-(`minH`, `w`, `p`, …).
+icon and one localized instruction line (`Nimbus.DropZone.defaultLabel`). When
+given children, DropZone SHALL render them as-is and the default state SHALL NOT
+appear (all-or-nothing; no per-slot overrides).
 
 #### Scenario: Default state when empty
 
@@ -85,6 +80,15 @@ SHALL NOT expose a `size` variant — sizing is done with Nimbus style props
 - **THEN** the drop zone reflects that content, letting consumers represent the
   filled state themselves
 
+#### Scenario: Default instruction line is not auto-wired as the name
+
+- **WHEN** the default state is rendered
+- **THEN** the visible instruction line uses `slot={null}` (React Aria's
+  documented opt-out from the parent's label slot), so it is not auto-wired into
+  the accessible name
+- **AND** a localized `aria-label` is injected on the underlying RAC element
+  instead
+
 ### Requirement: Visual states
 
 DropZone SHALL style only the interaction states React Aria's `DropZone` exposes
@@ -92,20 +96,8 @@ out of the box, via their data attributes: **idle** (dashed border, neutral
 background), **dragOver** (border and background highlight, driven by
 `data-drop-target`), **focus** (`data-focus-visible`, a visible focus ring), and
 **disabled** (`data-disabled`). It SHALL NOT style plain mouse hover
-(`data-hovered`): the zone is not click-to-upload (default cursor, no press
-action), so a hover affordance would falsely imply it is clickable. It SHALL NOT
-introduce custom error, loading, or invalid states — a drag rejected by
-`getDropOperation` does not set `data-drop-target` and therefore does not
-highlight. State changes SHALL NOT be conveyed by color alone. The dashed border
-and highlight SHALL meet WCAG 1.4.11 non-text contrast (≥3:1) and SHALL remain
-visible in forced-colors mode; drag-over transitions SHALL respect
-`prefers-reduced-motion`.
-
-Text selection SHALL be disabled within the drop target (`user-select: none`) so
-that dragging content over the zone does not accidentally select its text. The
-zone itself is not a click-to-upload target (that role belongs to a composed
-`FileTrigger`), so it SHALL NOT present a pointer cursor; the pointer affordance
-belongs to the composed control.
+(`data-hovered`) and SHALL NOT introduce custom error, loading, or invalid
+states.
 
 #### Scenario: Idle state
 
@@ -145,16 +137,9 @@ belongs to the composed control.
 
 ### Requirement: Accessibility (WCAG 2.1 AA)
 
-DropZone SHALL meet WCAG 2.1 AA. The drop target is keyboard focusable and
-operable via React Aria's built-in keyboard drag-and-drop by default (Enter to
-enter drag mode, Tab between targets, Enter to drop, Escape to cancel). When no
-children are provided and no explicit `aria-label`/`aria-labelledby` is set,
-DropZone SHALL inject a localized `aria-label` from `Nimbus.DropZone.defaultLabel`.
-An explicit `aria-label`/`aria-labelledby` SHALL be forwarded to the underlying
-RAC element and takes precedence over the injected default. Because
-keyboard drag-and-drop cannot cover uploads from the OS, the docs SHALL present a
-composed `FileTrigger` as the recommended alternative for file uploads. Focus
-indication SHALL be visible and meet contrast requirements.
+DropZone SHALL meet WCAG 2.1 AA. The drop target SHALL be keyboard focusable
+and operable via React Aria's built-in keyboard drag-and-drop by default, and
+its focus indication SHALL be visible and meet contrast requirements.
 
 #### Scenario: Keyboard focus and accessible name
 
@@ -175,3 +160,84 @@ indication SHALL be visible and meet contrast requirements.
 - **THEN** the drop target rejects drops and the disabled state is conveyed
   visually and to assistive technology (to disable a composed control, the
   consumer sets `isDisabled` on it too)
+
+#### Scenario: Keyboard drag and drop
+
+- **WHEN** a keyboard user operates the drop target
+- **THEN** Enter enters drag mode, Tab moves between targets, Enter drops, and
+  Escape cancels
+
+### Requirement: Sizing via style props
+
+DropZone SHALL NOT expose a `size` variant. Sizing is done with Nimbus style
+props.
+
+#### Scenario: Consumer sets the size
+
+- **WHEN** a consumer needs a different drop zone size
+- **THEN** they set it with style props such as `minH`, `w`, and `p`
+
+### Requirement: Visual state contrast and motion
+
+DropZone state changes SHALL NOT be conveyed by color alone. The dashed border
+and highlight SHALL meet WCAG 1.4.11 non-text contrast (≥3:1) and SHALL remain
+visible in forced-colors mode; drag-over transitions SHALL respect
+`prefers-reduced-motion`.
+
+#### Scenario: Forced-colors mode
+
+- **WHEN** the drop target is rendered in forced-colors mode
+- **THEN** the dashed border and the drag-over highlight remain visible
+
+#### Scenario: Reduced motion
+
+- **WHEN** the user prefers reduced motion and a drag enters the drop target
+- **THEN** the change to the drag-over treatment is not animated
+
+### Requirement: No text selection or pointer cursor
+
+Text selection SHALL be disabled within the drop target (`user-select: none`) so
+that dragging content over the zone does not accidentally select its text. The
+zone itself is not a click-to-upload target (that role belongs to a composed
+`FileTrigger`), so it SHALL NOT present a pointer cursor; the pointer affordance
+belongs to the composed control.
+
+#### Scenario: Pointer cursor only on the composed control
+
+- **WHEN** a `FileTrigger` button is composed into the DropZone and a pointer
+  moves from the zone onto that button
+- **THEN** the cursor is the default arrow over the zone and the pointer cursor
+  over the button
+
+### Requirement: Default accessible name
+
+When no children are provided and no explicit `aria-label`/`aria-labelledby` is
+set, DropZone SHALL inject a localized `aria-label` from
+`Nimbus.DropZone.defaultLabel`. An explicit `aria-label`/`aria-labelledby` SHALL
+be forwarded to the underlying RAC element and takes precedence over the
+injected default.
+
+#### Scenario: Injected default label
+
+- **WHEN** DropZone is rendered with no children and no `aria-label` or
+  `aria-labelledby`
+- **THEN** the drop target's accessible name is the localized
+  `Nimbus.DropZone.defaultLabel` text
+
+#### Scenario: Explicit label takes precedence
+
+- **WHEN** the consumer sets `aria-label` or `aria-labelledby`
+- **THEN** it is forwarded to the underlying RAC element and the injected
+  default is not used
+
+### Requirement: Documented file-upload alternative
+
+Because keyboard drag-and-drop cannot cover uploads from the OS, the docs SHALL
+present a composed `FileTrigger` as the recommended alternative for file
+uploads.
+
+#### Scenario: Docs recommend a composed FileTrigger
+
+- **WHEN** a consumer reads the DropZone documentation about file uploads
+- **THEN** it recommends composing a `FileTrigger` so that users can select
+  files without dragging

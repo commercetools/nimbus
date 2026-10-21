@@ -131,12 +131,6 @@ and `onCollapsedChange(collapsed)` (notification). Enter on the focused handle
 toggles collapse. Double-click is reserved for restoring the boundary to its
 initial position, not for collapsing.
 
-While the aside is collapsed, resizing the boundary (drag and the arrow / Home /
-End keys) SHALL be disabled. A collapsed aside sits at its `collapsedSize`, below
-its `minSize`, so a resize could only snap straight to `minSize`. It is instead
-reopened via Enter (toggle), double-click (restore defaults), or the controlled
-`collapsed` prop.
-
 #### Scenario: Enter on focused handle toggles collapse
 
 - **GIVEN** aside size `30` with `collapsible: true`
@@ -494,3 +488,18 @@ commit (a layout effect, not a passive one).
 - **THEN** SHALL apply the new size within the commit that renders it, before
   paint
 - **AND** SHALL NOT leave a painted frame showing the previous size
+
+### Requirement: No resizing while collapsed
+
+While the aside is collapsed, resizing the boundary (drag and the arrow / Home /
+End keys) SHALL be disabled. A collapsed aside sits at its `collapsedSize`, below
+its `minSize`, so a resize could only snap straight to `minSize`. It is instead
+reopened via Enter (toggle), double-click (restore defaults), or the controlled
+`collapsed` prop.
+
+#### Scenario: Ways to reopen a collapsed aside
+
+- **GIVEN** a collapsed aside (size === `collapsedSize`) with `collapsible: true`
+- **WHEN** the user presses Enter on the focused handle, double-clicks the
+  handle, or the consumer sets the controlled `collapsed` prop to `false`
+- **THEN** SHALL reopen the aside above its `collapsedSize`
