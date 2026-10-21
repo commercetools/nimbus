@@ -2,10 +2,7 @@
 
 ## Purpose
 
-ItemGroup stacks `Item` rows into one visual group and provides a separator to
-place between rows. It gives grouped rows consistent spacing without adding
-list semantics, because the free composition of rows and separators cannot
-guarantee a valid list structure.
+Groups related item rows into one visual block, with optional separators between the rows.
 
 ## Requirements
 

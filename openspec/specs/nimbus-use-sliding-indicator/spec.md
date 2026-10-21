@@ -2,10 +2,7 @@
 
 ## Purpose
 
-useSlidingIndicator positions an indicator element over the active item in a
-container and moves it when the active item or the layout changes. `Tabs` and
-`TabNav` use it to show one active marker that slides between items instead of
-jumping between them.
+Places an indicator over the active item in a group, such as the selected tab, and moves it when the active item or the layout changes.
 
 ## Requirements
 

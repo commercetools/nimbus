@@ -2,11 +2,7 @@
 
 ## Purpose
 
-Breadcrumbs shows the path from the top of a hierarchy to the current page and
-lets users go back to any level above it (for example catalog → category →
-product). It is a compound component built on React Aria's `Breadcrumbs`, with
-navigation landmark semantics, automatic marking of the current page, and
-token-based styling.
+Shows where the current page is in a hierarchy and lets users go back to any page above it.
 
 ## Requirements
 

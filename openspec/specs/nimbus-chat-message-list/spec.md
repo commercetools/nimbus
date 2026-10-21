@@ -2,11 +2,7 @@
 
 ## Purpose
 
-ChatMessageList presents a scrollable sequence of chat messages and owns the
-behavior of the whole transcript: autoscroll that sticks to the bottom, a
-scroll-to-bottom control, an empty state, and the single persistent live region
-that announces new and streamed replies. It is a compound of a root and its
-items; each item can hold a `ChatMessage` or any other content.
+Shows the messages of a conversation as a scrollable list that follows new messages and announces them to screen reader users.
 
 ## Requirements
 

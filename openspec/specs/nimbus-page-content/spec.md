@@ -2,11 +2,8 @@
 
 ## Purpose
 
-PageContent constrains the width of page content and arranges it in one or
-more columns, with an optional sticky column. A `width` variant replaces the
-Merchant Center Application Kit `PageContentWide`, `PageContentNarrow` and
-`PageContentFull` components, and explicit `Column` parts replace their
-implicit splitting of children.
+Sets the width of a page's content and arranges the content in one or more columns.
+
 ## Requirements
 ### Requirement: Namespace Structure
 

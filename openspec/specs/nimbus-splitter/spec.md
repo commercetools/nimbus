@@ -2,11 +2,7 @@
 
 ## Purpose
 
-Splitter lets users resize two panes by dragging or using the keyboard on the
-boundary between them, following the W3C window splitter pattern. It has one
-configurable `Aside` pane and a `Main` pane that takes the rest, with size
-constraints, optional collapse, and storage-agnostic persistence. Layouts with
-more than two regions are built by nesting a `Splitter` inside a pane.
+Lets users change the size of two neighboring panes by moving the boundary between them.
 
 ## Requirements
 

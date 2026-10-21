@@ -2,11 +2,7 @@
 
 ## Purpose
 
-FileTrigger opens the native file picker when its pressable child (for example
-a `Button`) is activated, and passes the selected files to `onSelect`. It is a
-thin wrapper around React Aria's `FileTrigger` that handles the hidden file
-input, accepted file types, multiple selection, directory selection and camera
-capture. `DropZone` builds on it for click-to-upload.
+Lets users choose files from their device by pressing a button or another pressable element.
 
 ## Requirements
 

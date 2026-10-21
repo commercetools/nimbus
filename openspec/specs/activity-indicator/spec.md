@@ -2,11 +2,7 @@
 
 ## Purpose
 
-ActivityIndicator shows that an agent or background process is working, as
-three animated dots placed inline next to text such as "Thinking…". It is a
-separate component from `LoadingSpinner`: it is decorative by default instead of
-a `role="progressbar"`, and it reuses the spinner's size scale so the two can
-replace each other in icon slots.
+Shows that an agent or a background process is working, as animated dots next to text such as "Thinking…".
 
 ## Requirements
 

@@ -2,12 +2,7 @@
 
 ## Purpose
 
-Region lets a component render content in another part of the layout than
-where the content is written, for example a page filling a toolbar slot or a
-panel rendered into an aside owned by the app shell. It is a small, headless
-primitive: a target registers a DOM node under a name, and `useRegion(name)`
-projects content into that node through a portal. It does not depend on any
-specific component, so any component can host named regions.
+Lets a component render content in a named place elsewhere in the layout, outside its own position in the component tree.
 
 ## Requirements
 

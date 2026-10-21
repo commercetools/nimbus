@@ -2,11 +2,7 @@
 
 ## Purpose
 
-ChatMessage renders one participant's turn in a conversation, with layout for
-avatar, body, metadata and actions. It distinguishes user and agent senders and
-supports a status tone. Streamed message content is rendered by delegating to
-the `Markdown` component. The transcript behavior (scroll and announcements)
-belongs to `ChatMessageList`, not to this component.
+Shows one message in a conversation, from either the user or an agent.
 
 ## Requirements
 

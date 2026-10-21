@@ -2,10 +2,7 @@
 
 ## Purpose
 
-Skeleton is a placeholder that holds space for content while it loads. It
-reduces perceived wait and prevents layout shift when the real content appears.
-It is decorative by default, respects reduced motion, and has `SkeletonText`
-and `SkeletonCircle` helpers for multi-line text and round shapes.
+Holds the place of content while it loads, so that the page does not shift when the content appears.
 
 ## Requirements
 

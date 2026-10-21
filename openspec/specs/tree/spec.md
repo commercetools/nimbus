@@ -2,11 +2,7 @@
 
 ## Purpose
 
-Tree displays hierarchical data, such as nested categories, file structures or
-navigation, with full tree semantics. It wraps React Aria's `Tree` and supports
-keyboard navigation, expand and collapse, single and multiple selection,
-type-ahead and drag and drop, with hierarchical state managed by the `useTree`
-hook.
+Shows hierarchical data, such as nested categories or folders, and lets users expand, collapse, and select its items.
 
 ## Requirements
 

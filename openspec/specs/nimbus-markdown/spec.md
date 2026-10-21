@@ -2,11 +2,7 @@
 
 ## Purpose
 
-Markdown turns a markdown string into Nimbus-styled, accessible React elements.
-It provides default renderers for every element, per-element overrides, custom
-component tags and GitHub-style alerts. It is safe by default (no raw HTML, no
-unsafe URLs) and supports incremental rendering of streamed LLM output without
-showing half-written syntax.
+Turns a markdown string, including text that is still being streamed, into styled and accessible content.
 
 ## Requirements
 

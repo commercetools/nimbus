@@ -2,11 +2,8 @@
 
 ## Purpose
 
-FormDialog shows an editable form inside a modal dialog. It is a pre-composed
-pattern on top of `Dialog` with a flat props API, localized "Save" and "Cancel"
-footer actions, and a loading state that locks the dialog during an
-asynchronous save. It replaces the Merchant Center Application Kit
-`FormDialog`.
+Lets users edit a form in a dialog and then save or cancel their changes.
+
 ## Requirements
 ### Requirement: Component Export
 

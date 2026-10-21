@@ -2,12 +2,8 @@
 
 ## Purpose
 
-DefaultPage is the standard page layout for Merchant Center applications: a
-header with title, subtitle, actions and optional tab navigation, a scrollable
-content area, and an optional footer. An optional `BackLink` turns a main page
-into a detail page. It replaces eight Merchant Center Application Kit page
-components (the main and detail variants of the form, info, tabular and custom
-form pages) with one compound component.
+Gives an application page a standard layout with a header, a scrollable content area, and an optional footer.
+
 ## Requirements
 ### Requirement: Namespace Structure
 

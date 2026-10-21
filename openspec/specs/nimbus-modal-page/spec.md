@@ -2,12 +2,8 @@
 
 ## Purpose
 
-ModalPage is a fullscreen overlay page with a top bar, header, scrollable
-content and optional footer, used for focused tasks on top of the current page.
-It is controlled only, has dialog accessibility with focus management, and
-offers several ways to dismiss it. It replaces the Merchant Center Application
-Kit `FormModalPage`, `InfoModalPage` and `TabularModalPage` with one compound
-component.
+Shows a full-screen page on top of the current page, for a focused task that the user finishes or closes.
+
 ## Requirements
 ### Requirement: Namespace Structure
 

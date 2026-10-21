@@ -2,12 +2,7 @@
 
 ## Purpose
 
-useResponsiveSplitterSizes lets consumers size a `Splitter` aside in pixels,
-design tokens or percentages, with different values per container width band,
-and remembers the size the user chose. The `Splitter` itself only works in
-percentages; this hook converts the configuration into the controlled `size`
-props of the `Splitter` and keeps the responsive, pixel and persistence logic
-out of the component.
+Lets consumers set the size of a `Splitter` side pane in pixels, design tokens, or percentages per container width, and remembers the size the user chose.
 
 ## Requirements
 

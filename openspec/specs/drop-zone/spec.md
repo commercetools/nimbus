@@ -2,10 +2,7 @@
 
 ## Purpose
 
-DropZone is an accessible drop target for files and other dragged data. It
-wraps React Aria's `DropZone` with Nimbus styling and includes a click-to-upload
-fallback through `FileTrigger`, so keyboard and screen-reader users can add
-files without drag and drop.
+Lets users add files or other data by dragging them onto a marked area of the page.
 
 ## Requirements
 
