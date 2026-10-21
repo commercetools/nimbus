@@ -11,6 +11,11 @@ class of bugs that workspace symlinks hide: CJS/ESM interop breakage, missing
 `exports` subpaths, types that don't match the runtime shape, and Node ESM
 resolution errors.
 
+attw and publint check types and `package.json`, not the bundled code. For
+problems inside the bundled code, such as imports a consumer bundler cannot
+resolve, see
+[Bundler Compatibility Verification](./bundler-compat-verification.md).
+
 ## Quick Reference
 
 ```bash
