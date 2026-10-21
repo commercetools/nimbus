@@ -131,6 +131,12 @@ and `onCollapsedChange(collapsed)` (notification). Enter on the focused handle
 toggles collapse. Double-click is reserved for restoring the boundary to its
 initial position, not for collapsing.
 
+While the aside is collapsed, resizing the boundary (drag and the arrow / Home /
+End keys) SHALL be disabled. A collapsed aside sits at its `collapsedSize`, below
+its `minSize`, so a resize could only snap straight to `minSize`. It is instead
+reopened via Enter (toggle), double-click (restore defaults), or the controlled
+`collapsed` prop.
+
 #### Scenario: Enter on focused handle toggles collapse
 
 - **GIVEN** aside size `30` with `collapsible: true`
@@ -163,14 +169,6 @@ initial position, not for collapsing.
 - **WHEN** any operation (Enter toggle, double-click restore, controlled prop)
   increases the aside's size above `collapsedSize`
 - **THEN** SHALL fire `onCollapsedChange(false)` exactly once for that transition
-
-### Requirement: No resizing while collapsed
-
-While the aside is collapsed, resizing the boundary (drag and the arrow / Home /
-End keys) SHALL be disabled. A collapsed aside sits at its `collapsedSize`, below
-its `minSize`, so a resize could only snap straight to `minSize`. The aside is
-instead reopened via Enter (toggle), double-click (restore defaults), or the
-controlled `collapsed` prop.
 
 #### Scenario: Resizing is disabled while the aside is collapsed
 
