@@ -1,0 +1,140 @@
+---
+name: jira-implement-task
+description: Fetch Jira ticket, create branch, implement changes, commit, push, open PR.
+---
+
+# Implement Jira Task
+
+## Input
+
+`<ticket-key>`
+
+You are a software engineer. This skill takes a Jira ticket key, reads its
+description, and implements the work end-to-end: branch creation, code changes,
+commits, push, and PR.
+
+## Argument Parsing
+
+Parse the user's input to extract:
+
+- **Ticket key**: The Jira ticket key (e.g., `NIMBUS-123`). Required.
+
+## Project Configuration
+
+Before starting, read the project's `AGENTS.md` files to determine
+the following project-specific settings. These files are the source of truth for
+how to work in this repo.
+
+| Setting                  | What to look for                                                         | Fallback default      |
+| ------------------------ | ------------------------------------------------------------------------ | --------------------- |
+| **Test command (files)** | Command to run tests for specific files/folders                          | `pnpm test <files>`   |
+| **Test command (full)**  | Command to run the full test suite                                       | `pnpm test`           |
+| **Branch naming**        | Branch naming convention or prefix rules                                 | `<TICKET-KEY>-<slug>` |
+| **Base branch**          | Default branch to branch from                                            | `main`                |
+| **Commit format**        | Commit message convention                                                | Conventional commits  |
+| **Component workflow**   | Command/process for new components (e.g., the `propose-component` skill) | None                  |
+
+If a setting is not found in `AGENTS.md` or `docs/`, ask the user whether they
+want to add it to `AGENTS.md` or `docs/` — or
+use the fallback default for this run only.
+
+## Step 1: Fetch Ticket Details
+
+Use the Atlassian MCP tools to retrieve the ticket:
+
+1. Call the Atlassian MCP `getAccessibleAtlassianResources` tool to get the cloud ID
+2. Call the Atlassian MCP `getJiraIssue` tool with the cloud ID and ticket key
+3. Extract: **Summary**, **Description** (requirements, acceptance criteria,
+   files), and **Issue type**
+
+If the ticket cannot be found, report the error and stop. Always write Markdown
+to Jira, never ADF — the MCP tools handle conversion.
+
+## Step 2: Create a Feature Branch
+
+Determine the branch name using the project's **branch naming** convention and
+the **base branch** from project configuration.
+
+Create a branch from the base branch in the current working tree:
+
+```bash
+git checkout <base-branch>
+git pull
+git checkout -b <branch-name>
+```
+
+If the branch already exists, ask the user whether to check out the existing
+branch or create a new one with a `-v2` suffix.
+
+## Step 3: Implement Changes
+
+### 3a: Understand Scope and Plan
+
+1. **Understand scope**: Read the ticket description carefully. Identify all
+   files to modify/create.
+2. **Read existing files**: Always read files before modifying them.
+3. **Create implementation plan**: Break the changes into the smallest
+   reasonable chunks of work. Save the plan to `plans/<TICKET-KEY>-plan.md`.
+   Each task should be independently testable and committable. Commit
+   the plan so it can be shared for handoff. Delete it before merging or keep
+   it as a record.
+
+### 3b: Implement Each Task (Red/Green TDD)
+
+For each task in the implementation plan:
+
+1. **Write tests first** (red phase): Write or update tests that capture the
+   expected behavior. Tests should fail at this point.
+2. **Implement changes** (green phase): Write the minimum code to make the
+   tests pass.
+3. **Run tests**: Verify all tests pass using the project's **test command
+   (files)**.
+4. **Commit**: Commit the tests and implementation together.
+
+If stuck after 3 attempts on a task, stop and ask the user for guidance.
+
+### 3c: Completion
+
+Once all tasks in the plan are implemented and passing:
+
+1. **Run full test suite**: Run the project's **test command (full)** to verify
+   everything passes.
+2. Ask the user whether to **delete the implementation plan file** or keep it.
+3. Proceed to Step 4 (push and PR creation).
+
+### Guidelines
+
+- Follow the project's conventions from `AGENTS.md`
+- If the ticket is ambiguous, ask the user for clarification before proceeding
+- If the project defines a **component workflow**, use it for new component
+  tickets
+
+## Step 4: Push and Create PR
+
+### Permission check
+
+Run `gh repo view --json viewerPermission --jq '.viewerPermission'`. If the
+result is `READ`, skip push and PR — print the exact `git push` and
+`gh pr create` commands for the user to run manually, then stop.
+
+### Push and create PR
+
+```bash
+git push -u origin <branch-name>
+gh pr create --title "<type>(<scope>): <summary>" --body "$(cat <<'EOF'
+## Summary
+<1-5 bullet points describing the changes>
+
+Closes <TICKET-KEY>
+
+## Test plan
+- [ ] <verification steps>
+EOF
+)"
+```
+
+Return the PR URL to the user when done.
+
+---
+
+**Implement the Jira task the user gave.**

@@ -7,7 +7,7 @@ is how you decide what it should capture.
 This is the _why_ behind the two rule-docs that sit closer to the code: the
 Chromatic section of [`stories.md`](./file-type-guidelines/stories.md) (terse
 rules plus paste-ready snippets) and the
-[`writing-stories` skill](../.claude/skills/writing-stories/SKILL.md) (templates
+[`writing-stories` skill](../.agents/skills/writing-stories/SKILL.md) (templates
 plus a validation checklist). All three group their rules under the same five
 headings used below.
 

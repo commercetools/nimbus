@@ -32,12 +32,12 @@ const config = {
   overrides: [
     {
       /**
-       * Skill files use YAML frontmatter with a `description` field that must
-       * stay on a single line for the Claude skill-file parser to read it.
-       * `proseWrap: "always"` breaks the description across lines, which the
-       * parser interprets as separate YAML keys and raises a diagnostic error.
+       * Skill files (Agent Skills format) use YAML frontmatter with a
+       * `description` field that must stay on a single line. `proseWrap:
+       * "always"` breaks the description across lines, which a skill-file
+       * parser has read as separate YAML keys and reported as an error.
        */
-      files: ".claude/skills/**/SKILL.md",
+      files: ".agents/skills/**/SKILL.md",
       options: {
         proseWrap: "preserve",
       },

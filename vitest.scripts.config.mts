@@ -5,7 +5,7 @@ export default defineConfig({
     name: "scripts",
     include: [
       "scripts/**/*.spec.{ts,mjs}",
-      ".claude/skills/**/*.spec.ts",
+      ".agents/skills/**/*.spec.ts",
       ".github/actions/**/*.spec.{ts,mjs}",
     ],
   },
