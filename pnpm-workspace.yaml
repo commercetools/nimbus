@@ -224,7 +224,7 @@ catalogs:
     glob: ^13.0.6
     typescript: ~5.9.3
     typescript-eslint: ^8.71.2
-    tsup: ^8.5.1
+    tsup: ^9.0.0
     tsx: ^4.23.15
     "@arethetypeswrong/cli": ^0.18.5
     publint: ^0.3.25
