@@ -128,6 +128,13 @@ rules:
       and touch target requirements in specs."
     - "Reference existing specs in openspec/specs/ before writing new
       requirements to avoid duplicating or contradicting established behavior."
+    - "When a delta spec creates a new capability, start it with a `## Purpose`
+      section: one or two sentences (50+ characters) on what this capability is
+      for, written on a single line. OpenSpec uses the first line of the
+      Purpose as the spec's summary. Describe what the capability is for, from
+      the user's or consumer's point of view; keep relationships to other
+      components, implementation, and migration history in the requirements,
+      proposal.md, or design.md."
   tasks:
     - "Every component MUST have Storybook stories. Non-interactive components
       need stories covering all visual permutations. Interactive components
@@ -135,3 +142,12 @@ rules:
       keyboard navigation, and accessibility from multiple angles."
     - "Include recipe registration in theme config as a task when adding new
       components — missing registration means no styles at runtime."
+
+operations:
+  archive:
+    guidance:
+      - "Before archiving a change that creates a new capability, check that its
+        delta spec has a `## Purpose` with one or two sentences (50+ characters)
+        on what this capability is for. Archive copies it into the new main
+        spec; without it the main spec gets a placeholder that fails
+        `openspec validate --all --strict` in CI."
