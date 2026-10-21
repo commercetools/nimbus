@@ -350,22 +350,43 @@ selected, forwarding React Aria's `shouldForceMount` prop.
 - **THEN** SHALL only mount the panel when its corresponding tab is selected
 - **AND** behavior SHALL match existing default
 
-### Requirement: Unified variants with a sliding active indicator
+### Requirement: Unified variants
 
 `Tabs` and `TabNav` SHALL expose the same three variants — `line` (the
-default), `rounded`, and `pill` — and SHALL render the active marker as a single
-indicator that slides between items/tabs as the selection changes, rather than a
-static per-item marker. The indicator SHALL be decorative (`aria-hidden`,
+default), `rounded`, and `pill`.
+
+#### Scenario: Same variant set on both components
+
+- **WHEN** a consumer sets `variant` on `Tabs` or on `TabNav`
+- **THEN** both accept `line`, `rounded`, and `pill`
+- **AND** both use `line` when no variant is set
+
+### Requirement: Sliding active indicator
+
+`Tabs` and `TabNav` SHALL render the active marker as a single indicator that
+slides between items/tabs as the selection changes, rather than a static
+per-item marker. The indicator SHALL be decorative (`aria-hidden`,
 non-focusable) and SHALL NOT affect the selected state, focus, or keyboard
-navigation. The motion SHALL be disabled under `prefers-reduced-motion: reduce`
-(the indicator snaps). There SHALL be no per-instance prop to toggle the
-animation. The recipe's static marker SHALL remain as the no-JS / pre-hydration
-fallback.
+navigation. The recipe's static marker SHALL remain as the no-JS /
+pre-hydration fallback.
 
 #### Scenario: Active marker slides on selection change
 
 - **WHEN** the selected item/tab changes
 - **THEN** the indicator slides from the previous selection to the new one
+
+#### Scenario: Indicator is decorative
+
+- **WHEN** the indicator is rendered
+- **THEN** it has `aria-hidden` and is not focusable
+- **AND** the selected state, focus, and keyboard navigation behave the same as
+  without it
+
+#### Scenario: No per-instance animation toggle
+
+- **WHEN** a consumer renders `Tabs` or `TabNav`
+- **THEN** there is no prop to turn the slide animation on or off for one
+  instance
 
 #### Scenario: Indicator adapts to the variant
 

@@ -59,20 +59,24 @@ demonstrate this composition as the recommended non-drag fallback.
 ### Requirement: Default state and content
 
 When given no children, DropZone SHALL render a default state — a centered upload
-icon and one localized instruction line (`Nimbus.DropZone.defaultLabel`). The
-visible line is rendered with `slot={null}` (React Aria's documented opt-out
-from the parent's label slot) so it does not get auto-wired into the accessible
-name; instead, a localized `aria-label` is injected on the underlying RAC
-element. When given children, DropZone SHALL render them as-is and the
-default state SHALL NOT appear (all-or-nothing; no per-slot overrides). DropZone
-SHALL NOT expose a `size` variant — sizing is done with Nimbus style props
-(`minH`, `w`, `p`, …).
+icon and one localized instruction line (`Nimbus.DropZone.defaultLabel`). When
+given children, DropZone SHALL render them as-is and the default state SHALL NOT
+appear (all-or-nothing; no per-slot overrides).
 
 #### Scenario: Default state when empty
 
 - **WHEN** DropZone is rendered with no children
 - **THEN** the default upload icon and localized instruction line are shown, and
   the zone has an accessible name from that label
+
+#### Scenario: Default instruction line is not auto-wired as the name
+
+- **WHEN** the default state is rendered
+- **THEN** the visible instruction line uses `slot={null}` (React Aria's
+  documented opt-out from the parent's label slot), so it is not auto-wired into
+  the accessible name
+- **AND** a localized `aria-label` is injected on the underlying RAC element
+  instead
 
 #### Scenario: Children replace the default
 
@@ -88,6 +92,16 @@ SHALL NOT expose a `size` variant — sizing is done with Nimbus style props
 - **THEN** the drop zone reflects that content, letting consumers represent the
   filled state themselves
 
+### Requirement: Sizing via style props
+
+DropZone SHALL NOT expose a `size` variant. Consumers size the drop zone with
+Nimbus style props.
+
+#### Scenario: Consumer sets the size
+
+- **WHEN** a consumer needs a different drop zone size
+- **THEN** they set it with style props such as `minH`, `w`, and `p`
+
 ### Requirement: Visual states
 
 DropZone SHALL style only the interaction states React Aria's `DropZone` exposes
@@ -95,20 +109,8 @@ out of the box, via their data attributes: **idle** (dashed border, neutral
 background), **dragOver** (border and background highlight, driven by
 `data-drop-target`), **focus** (`data-focus-visible`, a visible focus ring), and
 **disabled** (`data-disabled`). It SHALL NOT style plain mouse hover
-(`data-hovered`): the zone is not click-to-upload (default cursor, no press
-action), so a hover affordance would falsely imply it is clickable. It SHALL NOT
-introduce custom error, loading, or invalid states — a drag rejected by
-`getDropOperation` does not set `data-drop-target` and therefore does not
-highlight. State changes SHALL NOT be conveyed by color alone. The dashed border
-and highlight SHALL meet WCAG 1.4.11 non-text contrast (≥3:1) and SHALL remain
-visible in forced-colors mode; drag-over transitions SHALL respect
-`prefers-reduced-motion`.
-
-Text selection SHALL be disabled within the drop target (`user-select: none`) so
-that dragging content over the zone does not accidentally select its text. The
-zone itself is not a click-to-upload target (that role belongs to a composed
-`FileTrigger`), so it SHALL NOT present a pointer cursor; the pointer affordance
-belongs to the composed control.
+(`data-hovered`) and SHALL NOT introduce custom error, loading, or invalid
+states.
 
 #### Scenario: Idle state
 
@@ -127,6 +129,38 @@ belongs to the composed control.
 - **THEN** `data-drop-target` is not set and the zone keeps its idle treatment
   (no separate invalid visual is added)
 
+#### Scenario: Plain mouse hover is not styled
+
+- **WHEN** a pointer hovers the drop target and no drag is in progress
+- **THEN** the zone keeps its idle treatment (border and background do not
+  change), since the zone is not click-to-upload and a hover affordance would
+  falsely imply it is clickable
+
+### Requirement: Visual state contrast and motion
+
+DropZone state changes SHALL NOT be conveyed by color alone. The dashed border
+and the drag-over highlight SHALL meet WCAG 1.4.11 non-text contrast (≥3:1) and
+SHALL remain visible in forced-colors mode. Drag-over transitions SHALL respect
+`prefers-reduced-motion`.
+
+#### Scenario: Forced-colors mode
+
+- **WHEN** the drop target is rendered in forced-colors mode
+- **THEN** the dashed border and the drag-over highlight remain visible
+
+#### Scenario: Reduced motion
+
+- **WHEN** the user prefers reduced motion and a drag enters the drop target
+- **THEN** the change to the drag-over treatment is not animated
+
+### Requirement: No text selection or pointer cursor
+
+DropZone SHALL disable text selection within the drop target
+(`user-select: none`), so that dragging content over the zone does not
+accidentally select its text. The zone itself is not a click-to-upload target
+(that role belongs to a composed `FileTrigger`), so it SHALL NOT present a
+pointer cursor.
+
 #### Scenario: Text is not selected while dragging
 
 - **WHEN** a user drags content over the drop target
@@ -139,25 +173,20 @@ belongs to the composed control.
   control
 - **THEN** the cursor is the default arrow, not a pointer/hand (the zone itself
   does not open the file picker on click)
-
-#### Scenario: Plain mouse hover is not styled
-
-- **WHEN** a pointer hovers the drop target and no drag is in progress
-- **THEN** the zone keeps its idle treatment (border and background do not
-  change), since the zone is not clickable
+- **AND** the pointer cursor belongs to the composed control
 
 ### Requirement: Accessibility (WCAG 2.1 AA)
 
-DropZone SHALL meet WCAG 2.1 AA. The drop target is keyboard focusable and
-operable via React Aria's built-in keyboard drag-and-drop by default (Enter to
-enter drag mode, Tab between targets, Enter to drop, Escape to cancel). When no
-children are provided and no explicit `aria-label`/`aria-labelledby` is set,
-DropZone SHALL inject a localized `aria-label` from `Nimbus.DropZone.defaultLabel`.
-An explicit `aria-label`/`aria-labelledby` SHALL be forwarded to the underlying
-RAC element and takes precedence over the injected default. Because
-keyboard drag-and-drop cannot cover uploads from the OS, the docs SHALL present a
-composed `FileTrigger` as the recommended alternative for file uploads. Focus
-indication SHALL be visible and meet contrast requirements.
+DropZone SHALL meet WCAG 2.1 AA. The drop target SHALL be keyboard focusable
+and operable via React Aria's built-in keyboard drag-and-drop, SHALL always have
+an accessible name, and SHALL show a visible focus indicator that meets contrast
+requirements.
+
+#### Scenario: Keyboard drag and drop
+
+- **WHEN** a keyboard user operates the drop target
+- **THEN** Enter enters drag mode, Tab moves between targets, Enter drops, and
+  Escape cancels
 
 #### Scenario: Keyboard focus and accessible name
 
@@ -166,11 +195,27 @@ indication SHALL be visible and meet contrast requirements.
 - **THEN** the drop target receives a visible focus ring and exposes that
   accessible name
 
+#### Scenario: Default accessible name
+
+- **WHEN** no children are provided and no explicit `aria-label` or
+  `aria-labelledby` is set
+- **THEN** DropZone injects a localized `aria-label` from
+  `Nimbus.DropZone.defaultLabel`
+
+#### Scenario: Explicit label takes precedence
+
+- **WHEN** the consumer sets `aria-label` or `aria-labelledby`
+- **THEN** it is forwarded to the underlying RAC element and takes precedence
+  over the injected default
+
 #### Scenario: Non-drag path for assistive technology
 
 - **WHEN** a user cannot perform a pointer drag (keyboard/screen-reader user) and
   a `FileTrigger` is composed into the DropZone
 - **THEN** the FileTrigger button lets them select files without dragging
+- **AND** because keyboard drag-and-drop cannot cover uploads from the OS, the
+  docs present a composed `FileTrigger` as the recommended alternative for file
+  uploads
 
 #### Scenario: Disabled drop target
 

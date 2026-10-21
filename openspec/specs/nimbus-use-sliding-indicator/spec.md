@@ -13,12 +13,17 @@ jumping between them.
 
 The hook SHALL position an absolutely-placed indicator element over the active
 item within a container and keep it in sync as the active item or layout changes.
-The caller SHALL provide the indicator ref, a CSS `activeSelector` identifying
-the active item within the container, the attribute names to watch for
-active-item changes, and a `getGeometry({ container, active })` callback that maps
-the container and active bounding rects to indicator geometry (`x`, `y`, and
-optional `width` / `height`). The container SHALL be the indicator's positioned
-parent element.
+The container SHALL be the indicator's positioned parent element.
+
+#### Scenario: Caller inputs
+
+- **WHEN** a component calls the hook
+- **THEN** it provides the indicator ref, a CSS `activeSelector` identifying the
+  active item within the container, and the attribute names to watch for
+  active-item changes
+- **AND** it provides a `getGeometry({ container, active })` callback that maps
+  the container and active bounding rects to indicator geometry (`x`, `y`, and
+  optional `width` / `height`)
 
 #### Scenario: Indicator measures the active item before paint
 
