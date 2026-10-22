@@ -196,9 +196,10 @@ overrides:
   # GHSA-pmjh-fq2x-6v4x (DoS via orphaned RetryHandler response body),
   # GHSA-8436-99hf-9mmv (caching of unsafe-method responses),
   # GHSA-2gqq-gqf2-x968 (dump interceptor truncation) and GHSA-r53p-7pc4-xj5r
-  # (response splitting via the retry interceptor).
+  # (response splitting via the retry interceptor). >=7.30.1 is the undici
+  # version Node.js ships in its October 2026 security releases (FEC-1458).
   # Capped <8: v8 is a major needing its own PR.
-  undici: ">=7.29.1 <8"
+  undici: ">=7.30.1 <8"
   "picomatch@<2.3.2": ">=2.3.2"
   "picomatch@>=4.0.0 <4.0.4": ">=4.0.4"
   "yaml@1": "1.10.3"
