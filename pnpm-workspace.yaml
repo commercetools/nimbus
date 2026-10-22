@@ -219,7 +219,7 @@ catalogs:
     # Held on 1.10.x: 1.11 adds a "Purpose section is still a placeholder"
     # warning, which fails CI's `openspec validate --all --strict` for 24 specs.
     # Move to ^1.11 once those specs have a written Purpose section.
-    "@fission-ai/openspec": ~1.10.0
+    "@fission-ai/openspec": ~1.14.0
     eslint-plugin-react-hooks: ^7.1.1
     globals: ^17.13.0
     glob: ^13.0.6
@@ -344,7 +344,7 @@ catalogs:
     jotai: 3.0.1
     prism-react-renderer: 2.4.1
     react-live: 4.1.8
-    react-router: 8.4.0
+    react-router: 8.5.0
     react-router-dom: 7.18.4
     react-syntax-highlighter: 16.1.2
     remark-mark-highlight: 0.1.1
