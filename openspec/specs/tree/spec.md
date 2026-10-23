@@ -1,7 +1,8 @@
 # tree Specification
 
 ## Purpose
-TBD - created by archiving change 2026-06-08-add-tree-component. Update Purpose after archive.
+
+Shows hierarchical data, such as nested categories or folders, and lets users expand, collapse, and select its items.
 
 ## Requirements
 

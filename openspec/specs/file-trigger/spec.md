@@ -1,7 +1,8 @@
 # file-trigger Specification
 
 ## Purpose
-TBD - created by archiving change add-file-trigger-component. Update Purpose after archive.
+
+Lets users choose files from their device by pressing a button or another pressable element.
 
 ## Requirements
 

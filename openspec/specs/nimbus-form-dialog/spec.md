@@ -1,7 +1,9 @@
 # nimbus-form-dialog Specification
 
 ## Purpose
-TBD - created by archiving change form-dialog-pattern. Update Purpose after archive.
+
+Lets users edit a form in a dialog and then save or cancel their changes.
+
 ## Requirements
 ### Requirement: Component Export
 

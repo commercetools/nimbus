@@ -1,7 +1,8 @@
 # nimbus-breadcrumbs Specification
 
 ## Purpose
-TBD - created by archiving change add-breadcrumbs-component. Update Purpose after archive.
+
+Shows where the current page is in a hierarchy and lets users go back to any page above it.
 
 ## Requirements
 

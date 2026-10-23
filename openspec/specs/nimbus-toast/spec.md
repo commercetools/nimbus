@@ -1,7 +1,9 @@
 # nimbus-toast Specification
 
 ## Purpose
-TBD - created by archiving change add-toast-notification-system. Update Purpose after archive.
+
+Shows short notifications about the result of an action without interrupting the user's work.
+
 ## Requirements
 ### Requirement: Toast Types
 
