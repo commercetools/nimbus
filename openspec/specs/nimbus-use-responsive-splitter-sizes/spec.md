@@ -24,18 +24,6 @@ in `[0, 100]`.
   and spreading `rootProps` onto `Splitter.Root` drives the controlled
   (settle-only) size channel without remounting it
 
-#### Scenario: A bare number is always pixels
-
-- **WHEN** a size value is the bare `number` `320`
-- **THEN** the hook treats it as `320px` and converts it to a percentage of the
-  measured container — never as `320%`
-
-#### Scenario: A percent string passes through untranslated
-
-- **WHEN** a size value is the string `"30%"`
-- **THEN** the hook resolves the aside to `30` percent directly, without
-  measuring the container
-
 #### Scenario: Forwarded `onCollapsedChange` lets the hook observe collapse
 
 - **WHEN** the aside collapses or expands through the spread `rootProps`
@@ -255,6 +243,18 @@ positive measurement becomes available.
 A size value SHALL be one of: a `number` (interpreted as **pixels**), a size
 **token** string (resolving to pixels), or a `` `${number}%` `` string (a
 percentage passed through untranslated).
+
+#### Scenario: A bare number is always pixels
+
+- **WHEN** a size value is the bare `number` `320`
+- **THEN** the hook treats it as `320px` and converts it to a percentage of the
+  measured container — never as `320%`
+
+#### Scenario: A percent string passes through untranslated
+
+- **WHEN** a size value is the string `"30%"`
+- **THEN** the hook resolves the aside to `30` percent directly, without
+  measuring the container
 
 #### Scenario: A size token resolves to pixels
 

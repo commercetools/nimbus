@@ -116,19 +116,6 @@ states.
 - **THEN** `data-drop-target` is not set and the zone keeps its idle treatment
   (no separate invalid visual is added)
 
-#### Scenario: Text is not selected while dragging
-
-- **WHEN** a user drags content over the drop target
-- **THEN** the zone's text is not selected or highlighted (`user-select` is
-  disabled on the drop target)
-
-#### Scenario: Cursor reflects a non-clickable zone
-
-- **WHEN** a pointer hovers the drop target outside any composed interactive
-  control
-- **THEN** the cursor is the default arrow, not a pointer/hand (the zone itself
-  does not open the file picker on click)
-
 #### Scenario: Plain mouse hover is not styled
 
 - **WHEN** a pointer hovers the drop target and no drag is in progress
@@ -201,6 +188,19 @@ that dragging content over the zone does not accidentally select its text. The
 zone itself is not a click-to-upload target (that role belongs to a composed
 `FileTrigger`), so it SHALL NOT present a pointer cursor; the pointer affordance
 belongs to the composed control.
+
+#### Scenario: Text is not selected while dragging
+
+- **WHEN** a user drags content over the drop target
+- **THEN** the zone's text is not selected or highlighted (`user-select` is
+  disabled on the drop target)
+
+#### Scenario: Cursor reflects a non-clickable zone
+
+- **WHEN** a pointer hovers the drop target outside any composed interactive
+  control
+- **THEN** the cursor is the default arrow, not a pointer/hand (the zone itself
+  does not open the file picker on click)
 
 #### Scenario: Pointer cursor only on the composed control
 

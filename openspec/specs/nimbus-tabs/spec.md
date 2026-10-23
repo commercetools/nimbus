@@ -371,17 +371,6 @@ static per-item marker.
 - **THEN** the indicator is a filled highlight behind the active item (subtly
   rounded for `rounded`, a full capsule for `pill`), themeable via `colorPalette`
 
-#### Scenario: Reduced motion snaps the indicator
-
-- **WHEN** the user requests `prefers-reduced-motion: reduce`
-- **THEN** the indicator repositions without a slide transition
-
-#### Scenario: No-JS fallback
-
-- **WHEN** JavaScript has not yet run (SSR / pre-hydration)
-- **THEN** the recipe's static marker is shown; once the hook activates it is
-  replaced by the sliding indicator before paint
-
 ### Requirement: Deprecated variant aliases
 
 The components SHALL accept the previous variant names as deprecated aliases,
@@ -417,6 +406,11 @@ The slide motion of the `Tabs` and `TabNav` indicator SHALL be disabled under
 `prefers-reduced-motion: reduce` (the indicator snaps). There SHALL be no
 per-instance prop to toggle the animation.
 
+#### Scenario: Reduced motion snaps the indicator
+
+- **WHEN** the user requests `prefers-reduced-motion: reduce`
+- **THEN** the indicator repositions without a slide transition
+
 #### Scenario: No per-instance animation toggle
 
 - **WHEN** a consumer renders `Tabs` or `TabNav`
@@ -427,6 +421,12 @@ per-instance prop to toggle the animation.
 
 The recipe's static marker of `Tabs` and `TabNav` SHALL remain as the no-JS /
 pre-hydration fallback for the sliding indicator.
+
+#### Scenario: No-JS fallback
+
+- **WHEN** JavaScript has not yet run (SSR / pre-hydration)
+- **THEN** the recipe's static marker is shown; once the hook activates it is
+  replaced by the sliding indicator before paint
 
 #### Scenario: Static marker is replaced once the indicator is live
 
