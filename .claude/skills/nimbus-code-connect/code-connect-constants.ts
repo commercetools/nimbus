@@ -157,6 +157,8 @@ export const SELF_CLOSING_COMPONENTS = new Set([
   "loading-spinner",
   "avatar",
   "switch",
+  "activity-indicator",
+  "drop-zone",
 ]);
 
 /** Sub-components that act as containers for nested instances */
@@ -417,9 +419,9 @@ figma.connect(
     // ad-hoc visual props (cardPadding, borderStyle, elevation, backgroundStyle)
     // were collapsed into a single kebab-case `variant` prop covering all
     // eight permutations of three independent axes (outlined × elevated ×
-    // muted-background). Designers expose those axes as three separate Figma
-    // component properties (Outlined / Elevated / Background); we read each
-    // one and compose the variant name in the snippet.
+    // muted-background). The Figma Card exposes only the Outlined and Elevated
+    // axes (as Yes/No variants); we read both and compose the variant name in
+    // the snippet. The muted variants have no Figma counterpart.
     entries: {
       Content: {
         rawProps: {
@@ -449,26 +451,21 @@ figma.connect(
       Root: {
         rawProps: {
           outlined: {
-            code: `figma.boolean("Outlined")`,
+            code: `figma.enum("Outlined", { Yes: true, No: false })`,
             position: "attribute",
           },
           elevated: {
-            code: `figma.boolean("Elevated")`,
-            position: "attribute",
-          },
-          muted: {
-            code: `figma.enum("Background", { Default: false, Muted: true })`,
+            code: `figma.enum("Elevated", { Yes: true, No: false })`,
             position: "attribute",
           },
         },
-        skipFigmaProps: ["Outlined", "Elevated", "Background"],
+        skipFigmaProps: ["Outlined", "Elevated"],
         exampleJsx: `<Card.Root
       variant={
         ((
           [
             props.outlined && "outlined",
             props.elevated && "elevated",
-            props.muted && "muted",
           ].filter(Boolean) as string[]
         ).join("-") || "plain") as CardProps["variant"]
       }
