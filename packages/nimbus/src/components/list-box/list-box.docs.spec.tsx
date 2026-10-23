@@ -191,3 +191,67 @@ describe("ListBox - Async load more", () => {
     expect(screen.getByRole("option", { name: "Date" })).toBeInTheDocument();
   });
 });
+
+/**
+ * @docs-section virtualized
+ * @docs-title Long List (isVirtualized) Tests
+ * @docs-description A virtualized list renders only the options on screen in
+ *   a browser. In JSDOM (Jest, Vitest) virtualization is turned off, so every
+ *   option is in the DOM and tests can reach any option without scrolling.
+ *   Keep test data small: rendering hundreds of options in JSDOM is slow.
+ * @docs-order 7
+ */
+describe("ListBox - Virtualized long list", () => {
+  const projects = Array.from({ length: 100 }, (_, i) => ({
+    id: `project-${i + 1}`,
+    name: `Project ${i + 1}`,
+  }));
+
+  const ProjectList = ({
+    onSelectionChange,
+  }: {
+    onSelectionChange?: (keys: unknown) => void;
+  }) => (
+    <NimbusProvider>
+      <ListBox.Root
+        isVirtualized
+        aria-label="Projects"
+        items={projects}
+        selectionMode="single"
+        onSelectionChange={onSelectionChange}
+        maxHeight="320px"
+      >
+        {(project) => (
+          <ListBox.Item id={project.id} textValue={project.name}>
+            {project.name}
+          </ListBox.Item>
+        )}
+      </ListBox.Root>
+    </NimbusProvider>
+  );
+
+  it("finds options far down the list without scrolling", () => {
+    render(<ProjectList />);
+
+    expect(
+      screen.getByRole("option", { name: "Project 100" })
+    ).toBeInTheDocument();
+  });
+
+  it("selects an option with the keyboard", async () => {
+    const user = userEvent.setup();
+    const onSelectionChange = vi.fn();
+    render(<ProjectList onSelectionChange={onSelectionChange} />);
+
+    await user.tab();
+    await user.keyboard("{End}");
+    expect(screen.getByRole("option", { name: "Project 100" })).toHaveFocus();
+
+    await user.keyboard(" ");
+    expect(screen.getByRole("option", { name: "Project 100" })).toHaveAttribute(
+      "aria-selected",
+      "true"
+    );
+    expect(onSelectionChange).toHaveBeenCalledTimes(1);
+  });
+});
