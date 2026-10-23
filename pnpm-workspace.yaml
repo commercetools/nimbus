@@ -216,7 +216,9 @@ overrides:
 catalogs:
   tooling:
     "@figma/code-connect": ^1.5.3
-    "@fission-ai/openspec": ^1.14.3
+    # Exact pin: even patch releases (1.14.1, 1.14.2) added warnings that fail
+    # CI's `openspec validate --all --strict`. Bump it in its own PR.
+    "@fission-ai/openspec": 1.14.3
     eslint-plugin-react-hooks: ^7.1.1
     globals: ^17.13.0
     glob: ^13.0.6
