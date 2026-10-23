@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Gives an application page a standard layout with a header, a scrollable content area, and an optional footer.
+Gives an application page a standard layout with a header, a content area, and an optional footer.
 
 ## Requirements
 ### Requirement: Namespace Structure

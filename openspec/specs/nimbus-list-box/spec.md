@@ -1,10 +1,8 @@
 # nimbus-list-box Specification
 
 ## Purpose
-Give consumers one selection-list component that is usable both standalone
-(settings/filter lists, pickers, command palettes) and embedded inside an
-overlay, matching Nimbus's established list conventions so it can later back
-Select and ComboBox.
+
+Lets users pick one or more options from a list, either on the page itself or inside an overlay.
 
 ## Requirements
 
