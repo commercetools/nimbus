@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { SearchInput, IconButton, NimbusProvider } from "@commercetools/nimbus";
 import { Tune, Visibility } from "@commercetools/nimbus-icons";
@@ -24,21 +24,14 @@ describe("SearchInput - Basic rendering", () => {
     expect(searchBox).toHaveAttribute("placeholder", "Search...");
   });
 
-  it("renders with clear button (hidden when empty)", () => {
+  it("renders no clear button when empty", () => {
     render(
       <NimbusProvider>
         <SearchInput placeholder="Search..." aria-label="Search" />
       </NimbusProvider>
     );
 
-    // Clear button is always in DOM
-    const clearButton = screen.getByRole("button", { hidden: true });
-    expect(clearButton).toBeInTheDocument();
-
-    // But hidden visually when empty
-    const computedStyle = window.getComputedStyle(clearButton);
-    expect(computedStyle.opacity).toBe("0");
-    expect(computedStyle.pointerEvents).toBe("none");
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 });
 
@@ -93,15 +86,13 @@ describe("SearchInput - Interactions", () => {
     );
 
     const searchBox = screen.getByRole("searchbox");
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+
     await user.type(searchBox, "test");
 
-    const clearButton = screen.getByRole("button");
-
-    await waitFor(() => {
-      const computedStyle = window.getComputedStyle(clearButton);
-      expect(computedStyle.opacity).toBe("1");
-      expect(computedStyle.pointerEvents).toBe("auto");
-    });
+    expect(
+      screen.getByRole("button", { name: "Clear search input" })
+    ).toBeInTheDocument();
   });
 
   it("clears input when clear button is clicked", async () => {
@@ -360,7 +351,7 @@ describe("SearchInput - States", () => {
       </NimbusProvider>
     );
 
-    const clearButton = screen.getByRole("button", { hidden: true });
+    const clearButton = screen.getByRole("button");
     expect(clearButton).toBeDisabled();
   });
 
@@ -461,7 +452,9 @@ describe("SearchInput - Leading and trailing elements", () => {
       </NimbusProvider>
     );
 
-    const field = screen.getByRole("searchbox").closest("div");
+    const field = screen
+      .getByRole("searchbox")
+      .closest(".nimbus-search-input__root");
     expect(
       field?.querySelector(".nimbus-search-input__leadingElement")
     ).toBeInTheDocument();
@@ -487,7 +480,9 @@ describe("SearchInput - Leading and trailing elements", () => {
       </NimbusProvider>
     );
 
-    const field = screen.getByRole("searchbox").closest("div");
+    const field = screen
+      .getByRole("searchbox")
+      .closest(".nimbus-search-input__root");
     expect(
       field?.querySelector(".nimbus-search-input__leadingElement")
     ).not.toBeInTheDocument();
