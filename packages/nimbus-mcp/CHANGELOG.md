@@ -1,5 +1,14 @@
 # @commercetools/nimbus-mcp
 
+## 3.8.0
+
+### Patch Changes
+
+- [#2084](https://github.com/commercetools/nimbus/pull/2084)
+  [`d0853a1`](https://github.com/commercetools/nimbus/commit/d0853a1696a5c10881eb79cf53f6471d14216dce)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Update runtime
+  dependency: zod 4.6.6 → 4.6.7.
+
 ## 3.7.0
 
 ### Patch Changes
