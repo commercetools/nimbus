@@ -493,6 +493,7 @@ export function classifyProps(entry: CodeConnectEntry): ClassifyResult {
   // Add figma.children("*") for compound container sub-components
   if (
     entry.codeMetadata.isCompound &&
+    !override?.omitChildren &&
     (!entry.subComponent || CONTAINER_SUB_COMPONENTS.has(entry.subComponent))
   ) {
     if (!props.some((p) => p.codePropName === "children")) {

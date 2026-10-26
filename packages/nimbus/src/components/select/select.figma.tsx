@@ -21,7 +21,6 @@ figma.connect(
   {
     props: {
       size: figma.enum("Size", { md: "md", sm: "sm" }),
-      children: figma.children("*"),
       variant: figma.enum("Appearance", { Solid: "outline", Ghost: "ghost" }),
     },
     example: (props) => (

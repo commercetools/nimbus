@@ -475,6 +475,38 @@ describe("classifyProps", () => {
       expect(props.some((p) => p.codePropName === "width")).toBe(true);
     });
   });
+
+  describe("figma.children for container sub-components", () => {
+    const compoundMetadata = {
+      ...makeEntry().codeMetadata,
+      isCompound: true,
+      subComponents: ["Root", "Options"],
+    };
+
+    it("adds figma.children to a compound Root", () => {
+      const entry = makeEntry({
+        dirName: "dialog",
+        subComponent: "Root",
+        codeMetadata: compoundMetadata,
+      });
+
+      const { props } = classifyProps(entry);
+      expect(props.some((p) => p.code === 'figma.children("*")')).toBe(true);
+    });
+
+    it("omits figma.children when the override sets omitChildren", () => {
+      // select Root override sets omitChildren: its nested instances are
+      // input parts, not options
+      const entry = makeEntry({
+        dirName: "select",
+        subComponent: "Root",
+        codeMetadata: compoundMetadata,
+      });
+
+      const { props } = classifyProps(entry);
+      expect(props.some((p) => p.codePropName === "children")).toBe(false);
+    });
+  });
 });
 
 // ---------------------------------------------------------------------------

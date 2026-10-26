@@ -7,7 +7,7 @@ figma.connect(
   {
     props: {
       children: figma.children("*"),
-      size: figma.enum("Size", { md: "md" }),
+      size: figma.enum("Size", { sm: "sm", md: "md" }),
     },
     example: (props) => (
       <ToggleButtonGroup.Root size={props.size}>
