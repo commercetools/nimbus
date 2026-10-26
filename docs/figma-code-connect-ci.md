@@ -79,7 +79,7 @@ validates the mappings again and fails if one is invalid.
 | Token type  | Personal access token, created only for CI                                                |
 | Scopes      | Code Connect: Write (`file_code_connect:write`), File content: Read (`file_content:read`) |
 | Lifetime    | At most 90 days (Figma: "Max expiration of 90 days")                                      |
-| **Expires** | **Not recorded yet.** Update this line every time the token is created or renewed.        |
+| **Expires** | **2027-01-24** (created 2026-10-26). Update this line every time the token is renewed.    |
 
 It is a repository secret and not an environment secret, because both jobs need
 it, including the dry run on pull requests. It is a token created only for CI,
