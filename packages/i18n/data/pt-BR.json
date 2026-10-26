@@ -201,7 +201,7 @@
   },
   "Nimbus.DataTable.unpinRow": {
     "developer_comment": "aria-label and tooltip for the pin button of a pinned row",
-    "string": "Desfixar linha"
+    "string": "Desafixar linha"
   },
   "Nimbus.DataTable.visibleColumns": {
     "developer_comment": "title for the visible columns section in the data table manager",
