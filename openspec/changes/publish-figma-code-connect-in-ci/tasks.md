@@ -1,7 +1,7 @@
 ## 1. Preparation
 
-- [ ] 1.1 On a clean checkout (fresh `pnpm install --frozen-lockfile`, no package build), run `pnpm exec figma connect publish --dry-run --exit-on-unreadable-files --skip-update-check` with a valid token. Record whether it passes; if it needs a build, switch Decision 2 in design.md to the shared `.github/actions/ci` action
-- [ ] 1.2 Confirm the token-check request (`GET /v1/files/AvtPX6g7OGGCRvNlatGOIY/nodes?ids=67:549&depth=1`) returns HTTP 200 with a token that has only "Code Connect: Write" and "File content: Read", and record the status and `err` text Figma returns for an expired or invalid token
+- [x] 1.1 On a clean checkout (fresh `pnpm install --frozen-lockfile`, no package build), run `pnpm exec figma connect publish --dry-run --exit-on-unreadable-files --skip-update-check` with a valid token. Record whether it passes; if it needs a build, switch Decision 2 in design.md to the shared `.github/actions/ci` action
+- [x] 1.2 Confirm the token-check request (`GET /v1/files/AvtPX6g7OGGCRvNlatGOIY/nodes?ids=67:549&depth=1`) returns HTTP 200 with a token that has only "Code Connect: Write" and "File content: Read", and record the status and `err` text Figma returns for an expired or invalid token
 - [ ] 1.3 Maintainer: create a personal access token only for CI (scopes: Code Connect: Write, File content: Read), note its expiry date, and add it as the repository secret `FIGMA_ACCESS_TOKEN` (Settings → Secrets and variables → Actions)
 
 ## 2. Workflow

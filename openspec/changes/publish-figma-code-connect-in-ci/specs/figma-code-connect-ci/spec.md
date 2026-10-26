@@ -81,20 +81,28 @@ that explains why the check was skipped.
 ### Requirement: Token check with an actionable error
 
 Before calling the Figma CLI, both jobs SHALL check `FIGMA_ACCESS_TOKEN` with a
-read request to the NIMBUS design system Figma file. If the check fails, the
-job SHALL fail with an error annotation that contains Figma's HTTP status code
-and error text, and SHALL explain how to create a new token and where to store
-it. The token value SHALL NOT appear in the log.
+read request to the NIMBUS design system Figma file. If Figma rejects the
+token, the job SHALL fail with an error annotation that contains Figma's HTTP
+status code and error text, and SHALL explain how to create a new token and
+where to store it. If Figma does not answer, the job SHALL fail without asking
+for a new token. The token value SHALL NOT appear in the log.
 
 #### Scenario: Expired token
 
-- **WHEN** Figma answers the token check with HTTP 401 and the error text
-  "Token has expired"
+- **WHEN** Figma answers the token check with HTTP 403 and the error text
+  "Token expired"
 - **THEN** the job fails with the error "FIGMA_ACCESS_TOKEN was rejected by
-  Figma (HTTP 401: Token has expired). Create a new token in Figma → Settings →
+  Figma (HTTP 403: Token expired). Create a new token in Figma → Settings →
   Security → Personal access tokens (scopes: Code Connect: Write, File content:
   Read) and update the repository secret FIGMA_ACCESS_TOKEN. Long-term: ask a
   Figma admin for a plan access token."
+
+#### Scenario: Figma does not answer
+
+- **WHEN** the token check gets no answer from Figma, or HTTP 429 or a 5xx
+  status
+- **THEN** the job fails with the error "Figma did not answer the token check
+  (HTTP <code>: <err>). This is not a token problem. Re-run the job later."
 
 #### Scenario: Secret not set
 
