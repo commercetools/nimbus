@@ -17,7 +17,7 @@
 - [ ] 3.1 Open a test PR from a branch in this repository that changes a `*.figma.tsx` file: the validate job passes and nothing is published
 - [ ] 3.2 In the same PR, temporarily make a mapping read a property that does not exist: the validate job fails with the CLI error; revert
 - [x] 3.3 Run the workflow once with an invalid token value (for example on a temporary branch with a placeholder secret, or by temporarily changing the secret): the job fails with the token error message and the token value does not appear in the log. Not run: the maintainer decided on 2026-10-26 that the local test of the extracted script (expired, invalid and empty token, no token in the output) is enough
-- [ ] 3.4 Confirm that a PR without `*.figma.tsx` changes does not start the workflow
+- [x] 3.4 Confirm that a PR without `*.figma.tsx` changes does not start the workflow (PR #2110: only Build and Test and Chromatic ran)
 - [ ] 3.5 After merge, run the `publish` job once with `workflow_dispatch` and check in Figma Dev Mode that Card, Steps, Accordion and ChatMessage show the current snippets
 
 ## 4. Documentation
