@@ -110,6 +110,15 @@ token is invalid or expired".
   did not answer the token check (HTTP <code>: <err>). This is not a token
   problem. Re-run the job later." A Figma outage must not make someone replace
   a valid token.
+- If Figma answers HTTP 404: fail with "Figma could not find the file used for
+  the token check (HTTP 404: <err>). Check that the file key in
+  .github/actions/check-figma-token/action.yml is the NIMBUS design system
+  file, and that the owner of FIGMA_ACCESS_TOKEN can open it." Checked with a
+  valid token: a file key that does not exist gets HTTP 404 with `err` "Not
+  found", while a node that does not exist gets HTTP 200 (the node is `null`),
+  so the check passes if the Button node is ever deleted. It is not verified
+  which status a token gets for a file its owner cannot open, so the message
+  names both causes.
 - For any other status that is not 200: read Figma's `err` field from the JSON
   body with `jq`, and fail with:
   "FIGMA_ACCESS_TOKEN was rejected by Figma (HTTP <code>: <err>). Create a new
@@ -118,6 +127,9 @@ token is invalid or expired".
   FIGMA_ACCESS_TOKEN. Long-term: ask a Figma admin for a plan access token."
 - The message is written as a `::error::` annotation, so it appears in the PR
   checks summary.
+- The check is the composite action `.github/actions/check-figma-token`, used
+  by both jobs, so the script, the file key and the node exist only once. Its
+  step uses `shell: bash`, as composite actions require.
 - The token is passed through `env`, never echoed, and only to the token check
   and the CLI step (not to `pnpm install`). curl reads the header from stdin,
   so the token is not in its argument list. GitHub masks secrets in logs. Only
@@ -157,8 +169,16 @@ upgrade changes the wording, the check stops catching rejected mappings; the
 YAML comment and the runbook say to check the lines when upgrading.
 
 The `publish` job uses `concurrency: { group: code-connect-publish,
-cancel-in-progress: false }`, so two merges never publish at the same time and
-the later one always runs last.
+cancel-in-progress: false }`, so two publishes never run at the same time. The
+concurrency group does not fix the order, though: a re-run of a failed run uses
+"the same `GITHUB_SHA` (commit SHA) and `GITHUB_REF` (git ref) of the original
+event"
+(https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs),
+so re-running an old run after a newer one has published would put older
+mappings back. The `publish` job therefore checks out `main` (`ref: main`), not
+the commit that started it: every run publishes the newest state of `main`. The
+cost is that a run's log can show a newer commit than the one that started the
+run. This fits what the job is for: make Figma match `main`.
 
 Permissions: `contents: read` only.
 

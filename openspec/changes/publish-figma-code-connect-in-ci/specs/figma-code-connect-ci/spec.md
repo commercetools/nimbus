@@ -37,6 +37,12 @@ if Figma rejects any mapping. Two publish runs SHALL NOT run at the same time.
 - **THEN** the second run waits until the first has finished, and then
   publishes
 
+#### Scenario: Re-run of an older publish run
+
+- **WHEN** an older publish run is re-run after a newer run has published
+- **THEN** it publishes the current state of `main`, not the commit of the
+  older run
+
 ### Requirement: Manual publish
 
 The publish job SHALL be startable by hand (`workflow_dispatch`) for `main`,
@@ -110,6 +116,13 @@ for a new token. The token value SHALL NOT appear in the log.
   status
 - **THEN** the job fails with the error "Figma did not answer the token check
   (HTTP <code>: <err>). This is not a token problem. Re-run the job later."
+
+#### Scenario: Check file not found
+
+- **WHEN** Figma answers the token check with HTTP 404
+- **THEN** the job fails with the error "Figma could not find the file used
+  for the token check (HTTP 404: <err>)", names the file where the file key is
+  set, and does not ask for a new token
 
 #### Scenario: Secret not set
 

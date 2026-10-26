@@ -27,7 +27,10 @@ here.
 | Manual start on `main` (`workflow_dispatch`)                           | `publish`  | Same as above, whatever files changed                        |
 
 Changes to other files do not start the workflow. The `paths` filter is
-`packages/nimbus/src/components/**/*.figma.tsx` and `figma.config.json`.
+`packages/nimbus/src/components/**/*.figma.tsx` and `figma.config.json`. This
+also leaves out the component files that a mapping imports. Build and Test
+type-checks the mappings (`pnpm typecheck:strict` includes the `*.figma.tsx`
+files), so a change that breaks an import in a mapping fails there.
 
 Both jobs:
 
@@ -41,8 +44,12 @@ Both jobs:
 The CLI validates every mapping against the Figma file before it uploads. If
 validation fails, the job fails and nothing is published.
 
-A publish sends all mappings of the commit, not only the changed ones. Two
-publish runs never run at the same time (concurrency group
+A publish checks out the current `main`, not the commit that started the run,
+and sends all its mappings, not only the changed ones. Without this, a re-run of
+an older failed run would put older mappings back in Figma: a re-run uses "the
+same `GITHUB_SHA` (commit SHA) and `GITHUB_REF` (git ref) of the original event"
+([GitHub docs](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs)).
+Two publish runs never run at the same time (concurrency group
 `code-connect-publish`): a newer run waits until the running one has finished.
 If a third run starts while one is waiting, GitHub cancels the waiting run and
 the newest run takes its place
@@ -92,14 +99,18 @@ is never printed.
 Before the CLI runs, each job sends one read request to the Figma file
 (`GET /v1/files/AvtPX6g7OGGCRvNlatGOIY/nodes?ids=67:549&depth=1`, the Button
 component set). The CLI's validation calls the same endpoint. The job prints
-only the HTTP status and Figma's error text, never the response body.
+only the HTTP status and Figma's error text, never the response body. Both jobs
+use the same check, the composite action
+[`.github/actions/check-figma-token`](../.github/actions/check-figma-token/action.yml),
+which is also where the file key and node are set.
 
-| Error in the job                                                        | Cause                                        | What to do                                               |
-| ----------------------------------------------------------------------- | -------------------------------------------- | -------------------------------------------------------- |
-| `FIGMA_ACCESS_TOKEN is not set. …`                                      | The secret is missing or empty               | Add the secret (see [Renew the token](#renew-the-token)) |
-| `FIGMA_ACCESS_TOKEN was rejected by Figma (HTTP 403: Token expired). …` | The token has expired                        | [Renew the token](#renew-the-token)                      |
-| `FIGMA_ACCESS_TOKEN was rejected by Figma (HTTP 403: Invalid token). …` | The token was revoked, or the value is wrong | [Renew the token](#renew-the-token)                      |
-| `Figma did not answer the token check (HTTP …). …`                      | Network error, HTTP 429 or 5xx               | Re-run the job later. The token is not the problem.      |
+| Error in the job                                                        | Cause                                                            | What to do                                                          |
+| ----------------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `FIGMA_ACCESS_TOKEN is not set. …`                                      | The secret is missing or empty                                   | Add the secret (see [Renew the token](#renew-the-token))            |
+| `FIGMA_ACCESS_TOKEN was rejected by Figma (HTTP 403: Token expired). …` | The token has expired                                            | [Renew the token](#renew-the-token)                                 |
+| `FIGMA_ACCESS_TOKEN was rejected by Figma (HTTP 403: Invalid token). …` | The token was revoked, or the value is wrong                     | [Renew the token](#renew-the-token)                                 |
+| `Figma could not find the file used for the token check (HTTP 404 …`    | The file key is wrong, or the token's owner cannot open the file | Check the file key in the action and the owner's access to the file |
+| `Figma did not answer the token check (HTTP …). …`                      | Network error, HTTP 429 or 5xx                                   | Re-run the job later. The token is not the problem.                 |
 
 ### Renew the token
 
@@ -193,6 +204,8 @@ history). All Nimbus mappings use the label `React`.
 ## Related files
 
 - `.github/workflows/code-connect.yml`: the workflow.
+- `.github/actions/check-figma-token/action.yml`: the token check, used by both
+  jobs.
 - `figma.config.json`: which files the CLI parses (`include`), and how imports
   are written in the snippets (`importPaths`).
 - `packages/nimbus/src/components/**/*.figma.tsx`: the mappings.

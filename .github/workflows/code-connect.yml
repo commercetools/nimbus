@@ -63,40 +63,13 @@ jobs:
         if: env.FROM_FORK == 'false'
         run: pnpm install --frozen-lockfile
 
-      # The token goes only to this step and the CLI step. curl reads the
-      # header from stdin, so the token is not in its argument list. Only the
-      # HTTP status and Figma's `err` text are printed, never the body.
+      # The token goes only to this step and the CLI step, never to
+      # `pnpm install`.
       - name: Check FIGMA_ACCESS_TOKEN
         if: env.FROM_FORK == 'false'
-        env:
-          FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
-        run: |
-          if [ -z "$FIGMA_ACCESS_TOKEN" ]; then
-            echo "::error::FIGMA_ACCESS_TOKEN is not set. Add it as a repository secret (Settings → Secrets and variables → Actions)."
-            exit 1
-          fi
-
-          body="$(mktemp)"
-          status="$(printf 'X-Figma-Token: %s\n' "$FIGMA_ACCESS_TOKEN" |
-            curl --silent --max-time 60 --output "$body" \
-              --write-out '%{http_code}' --header @- \
-              "https://api.figma.com/v1/files/AvtPX6g7OGGCRvNlatGOIY/nodes?ids=67:549&depth=1")" || true
-          err="$(jq -r '.err // empty' "$body" 2>/dev/null | tr -d '\r\n' || true)"
-          rm -f "$body"
-
-          case "$status" in
-            200)
-              echo "Figma accepted FIGMA_ACCESS_TOKEN (HTTP 200)."
-              ;;
-            000 | 429 | 5??)
-              echo "::error::Figma did not answer the token check (HTTP ${status}${err:+: $err}). This is not a token problem. Re-run the job later."
-              exit 1
-              ;;
-            *)
-              echo "::error::FIGMA_ACCESS_TOKEN was rejected by Figma (HTTP ${status}: ${err:-no error text}). Create a new token in Figma → Settings → Security → Personal access tokens (scopes: Code Connect: Write, File content: Read) and update the repository secret FIGMA_ACCESS_TOKEN. Long-term: ask a Figma admin for a plan access token."
-              exit 1
-              ;;
-          esac
+        uses: ./.github/actions/check-figma-token
+        with:
+          token: ${{ secrets.FIGMA_ACCESS_TOKEN }}
 
       - name: Validate Code Connect (dry run)
         if: env.FROM_FORK == 'false'
@@ -117,9 +90,13 @@ jobs:
       group: code-connect-publish
       cancel-in-progress: false
     steps:
+      # Always the current main, not the commit that started the run. A
+      # re-run of an older failed run uses that run's commit, and would put
+      # older mappings back in Figma.
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          ref: main
           persist-credentials: false
 
       - name: Install pnpm
@@ -136,37 +113,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Same as the token check in the validate job; keep both in sync.
       - name: Check FIGMA_ACCESS_TOKEN
-        env:
-          FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
-        run: |
-          if [ -z "$FIGMA_ACCESS_TOKEN" ]; then
-            echo "::error::FIGMA_ACCESS_TOKEN is not set. Add it as a repository secret (Settings → Secrets and variables → Actions)."
-            exit 1
-          fi
-
-          body="$(mktemp)"
-          status="$(printf 'X-Figma-Token: %s\n' "$FIGMA_ACCESS_TOKEN" |
-            curl --silent --max-time 60 --output "$body" \
-              --write-out '%{http_code}' --header @- \
-              "https://api.figma.com/v1/files/AvtPX6g7OGGCRvNlatGOIY/nodes?ids=67:549&depth=1")" || true
-          err="$(jq -r '.err // empty' "$body" 2>/dev/null | tr -d '\r\n' || true)"
-          rm -f "$body"
-
-          case "$status" in
-            200)
-              echo "Figma accepted FIGMA_ACCESS_TOKEN (HTTP 200)."
-              ;;
-            000 | 429 | 5??)
-              echo "::error::Figma did not answer the token check (HTTP ${status}${err:+: $err}). This is not a token problem. Re-run the job later."
-              exit 1
-              ;;
-            *)
-              echo "::error::FIGMA_ACCESS_TOKEN was rejected by Figma (HTTP ${status}: ${err:-no error text}). Create a new token in Figma → Settings → Security → Personal access tokens (scopes: Code Connect: Write, File content: Read) and update the repository secret FIGMA_ACCESS_TOKEN. Long-term: ask a Figma admin for a plan access token."
-              exit 1
-              ;;
-          esac
+        uses: ./.github/actions/check-figma-token
+        with:
+          token: ${{ secrets.FIGMA_ACCESS_TOKEN }}
 
       # The CLI exits with 0 when Figma rejects single mappings, and only logs
       # them (to stderr). The grep fails the step on these log lines, taken

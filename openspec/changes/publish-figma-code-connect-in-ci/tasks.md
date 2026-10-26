@@ -12,6 +12,8 @@
 - [x] 2.4 Add the `validate` job (pull requests only): fork check first (`head.repo.full_name != github.repository` → `::notice::` and successful end), then the token check, then `pnpm exec figma connect publish --dry-run --exit-on-unreadable-files --skip-update-check`
 - [x] 2.5 Add the `publish` job (push to `main` and `workflow_dispatch` on `main`): `concurrency` group `code-connect-publish` with `cancel-in-progress: false`, the token check, then `pnpm exec figma connect publish --exit-on-unreadable-files --skip-update-check`
 - [x] 2.6 Fail the publish step when the CLI log shows mappings that Figma rejected (the CLI exits with 0 in that case): `tee` the CLI output, `grep` for "Failed to upload to Figma" and "already have UI-created Code Connect mappings", and write a `::error::` annotation
+- [x] 2.7 Check out `main` in the `publish` job (`ref: main`), so a re-run of an older run cannot publish older mappings (review of PR #2110)
+- [x] 2.8 Move the token check into the composite action `.github/actions/check-figma-token`, used by both jobs, and give HTTP 404 its own message (review of PR #2110)
 
 ## 3. Verification
 
