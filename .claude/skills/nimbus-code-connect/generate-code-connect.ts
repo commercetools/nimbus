@@ -708,6 +708,66 @@ function generateFile(
   return lines.join("\n");
 }
 
+/**
+ * Build the unformatted .figma.tsx content for one component directory,
+ * applying its OVERRIDES entry.
+ */
+export function generateComponentFile(
+  dirName: string,
+  entries: CodeConnectEntry[]
+): { content: string; connectCount: number } {
+  const exportName = entries[0].codeMetadata.exportName;
+  const override = OVERRIDES[dirName];
+
+  // Build connect specs for each entry
+  const connects: ConnectSpec[] = [];
+
+  for (const entry of entries) {
+    const subComponent = entry.subComponent ?? "";
+    const entryOverride = override?.entries?.[subComponent];
+
+    // Skip entries marked for manual handling
+    if (entryOverride?.skip) continue;
+
+    const { props: classified, fixmes } = classifyProps(entry);
+    const codeComponent = entry.subComponent
+      ? `${exportName}.${entry.subComponent}`
+      : exportName;
+
+    const needsAriaLabel =
+      dirName === "icon-button" || dirName === "icon-toggle-button";
+
+    connects.push({
+      comment:
+        entries.length > 1
+          ? `--- ${entry.figmaName} → ${codeComponent} ---`
+          : undefined,
+      codeComponent,
+      figmaUrl: entry.figmaUrl,
+      props: classified,
+      fixmes,
+      exampleJsx: entryOverride?.exampleJsx,
+      needsAriaLabel,
+      typesProps: entry.codeMetadata.typesProps,
+      dirName: entry.dirName,
+    });
+  }
+
+  // Generate extra connect code
+  const extraConnectsCode = override?.extraConnects?.(entries);
+  const extraImports = override?.extraImports ?? [];
+
+  const content = generateFile(
+    dirName,
+    exportName,
+    connects,
+    extraImports,
+    extraConnectsCode
+  );
+
+  return { content, connectCount: connects.length };
+}
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
@@ -737,53 +797,7 @@ function main() {
   for (const [dirName, entries] of byDir) {
     const exportName = entries[0].codeMetadata.exportName;
     const outputPath = join(ROOT, entries[0].codeMetadata.files.figmaOutput);
-    const override = OVERRIDES[dirName];
-
-    // Build connect specs for each entry
-    const connects: ConnectSpec[] = [];
-
-    for (const entry of entries) {
-      const subComponent = entry.subComponent ?? "";
-      const entryOverride = override?.entries?.[subComponent];
-
-      // Skip entries marked for manual handling
-      if (entryOverride?.skip) continue;
-
-      const { props: classified, fixmes } = classifyProps(entry);
-      const codeComponent = entry.subComponent
-        ? `${exportName}.${entry.subComponent}`
-        : exportName;
-
-      const needsAriaLabel =
-        dirName === "icon-button" || dirName === "icon-toggle-button";
-
-      connects.push({
-        comment:
-          entries.length > 1
-            ? `--- ${entry.figmaName} → ${codeComponent} ---`
-            : undefined,
-        codeComponent,
-        figmaUrl: entry.figmaUrl,
-        props: classified,
-        fixmes,
-        exampleJsx: entryOverride?.exampleJsx,
-        needsAriaLabel,
-        typesProps: entry.codeMetadata.typesProps,
-        dirName: entry.dirName,
-      });
-    }
-
-    // Generate extra connect code
-    const extraConnectsCode = override?.extraConnects?.(entries);
-    const extraImports = override?.extraImports ?? [];
-
-    const content = generateFile(
-      dirName,
-      exportName,
-      connects,
-      extraImports,
-      extraConnectsCode
-    );
+    const { content, connectCount } = generateComponentFile(dirName, entries);
 
     // Write file
     writeFileSync(outputPath, content, "utf-8");
@@ -806,7 +820,7 @@ function main() {
 
     filesWritten++;
     console.log(
-      `  Generated: ${exportName} (${connects.length} connect${connects.length > 1 ? "s" : ""})`
+      `  Generated: ${exportName} (${connectCount} connect${connectCount > 1 ? "s" : ""})`
     );
   }
 
