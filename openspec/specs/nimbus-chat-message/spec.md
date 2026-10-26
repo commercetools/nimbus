@@ -1,7 +1,8 @@
 # nimbus-chat-message Specification
 
 ## Purpose
-TBD - created by archiving change add-chat-message. Update Purpose after archive.
+
+Shows one message in a conversation, from either the user or an agent.
 
 ## Requirements
 
