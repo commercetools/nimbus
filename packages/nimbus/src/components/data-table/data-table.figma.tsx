@@ -5,7 +5,9 @@ import { DataTable } from "./data-table";
 //
 // Figma has no component for the whole table, only for its cells, so the
 // cell is connected to DataTable.Cell. The "Content type" variant has no code
-// counterpart: the consumer renders the content inside the cell.
+// counterpart: the consumer renders the content inside the cell. The cell only
+// works inside a DataTable.Row: React Aria throws an error when a cell is
+// rendered outside a table.
 figma.connect(
   DataTable.Cell,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6041-28672",

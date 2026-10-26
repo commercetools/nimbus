@@ -147,7 +147,6 @@ export type StepsListProps = OmitInternalProps<StepsListSlotProps> & {
 /**
  * Props for the Steps.Item component.
  * Container for a single step (trigger + separator).
- * Items are automatically indexed based on render order.
  */
 export type StepsItemProps = OmitInternalProps<StepsItemSlotProps> & {
   /**

@@ -246,13 +246,16 @@ export const OVERRIDES: Record<string, ComponentOverride> = {
 // One Figma "Accordion" instance is one header + content pair, so the snippet
 // wraps a single Accordion.Item. The nested ".Controls" instance (shown by the
 // "Controls" boolean) is the slot for Accordion.HeaderRightContent.
+// Accordion.Root controls which items are expanded and ignores an item's own
+// defaultExpanded, so "Expanded" maps to defaultExpandedKeys on the root and
+// the item gets the matching value.
 figma.connect(
   Accordion.Root,
   "${rootEntry.figmaUrl}",
   {
     props: {
       size: figma.enum("Size", { md: "md", sm: "sm" }),
-      defaultExpanded: figma.enum("Expanded", { YES: true }),
+      defaultExpandedKeys: figma.enum("Expanded", { YES: ["item-1"] }),
       headline: figma.textContent("Headline"),
       headerRightContent: figma.boolean("Controls", {
         true: <Accordion.HeaderRightContent>Controls</Accordion.HeaderRightContent>,
@@ -260,8 +263,8 @@ figma.connect(
       }),
     },
     example: (props) => (
-      <Accordion.Root size={props.size}>
-        <Accordion.Item defaultExpanded={props.defaultExpanded}>
+      <Accordion.Root size={props.size} defaultExpandedKeys={props.defaultExpandedKeys}>
+        <Accordion.Item value="item-1">
           <Accordion.Header>
             {props.headline}
             {props.headerRightContent}
@@ -508,30 +511,21 @@ figma.connect(
     // axes (as Yes/No variants). Code Connect does not run code in the example,
     // so each combination gets its own connect with a fixed variant value. The
     // muted variants have no Figma counterpart.
+    //
+    // The ".Card content" set (→ Card.Body) is hidden in the Figma library, so
+    // collect-figma-data.ts never returns it. Its connect is written here
+    // with a fixed node ID in the same file as the Card set.
     entries: {
-      Content: {
-        rawProps: {
-          header: {
-            code: `figma.enum("Content type", { "Title + text": <Card.Header>Card Title</Card.Header>, "Leading element + text": <Card.Header>Card Title</Card.Header> })`,
-            position: "child",
-          },
-          leadingElement: {
-            code: `figma.instance("Leading element")`,
-            position: "leading",
-          },
-        },
-        skipFigmaProps: ["Content type", "Leading element"],
-        exampleJsx: `<>
-      {props.leadingElement}
-      {props.header}
-      <Card.Body>{props.children}</Card.Body>
-    </>`,
-      },
       Root: { skip: true },
     },
+    extraImports: [`import { Card } from "./card";`],
     extraConnects: (entries) => {
       const rootEntry = entries.find((e) => e.subComponent === "Root");
       if (!rootEntry) return "";
+      const contentUrl = rootEntry.figmaUrl.replace(
+        /node-id=[^&]+/,
+        "node-id=266-482"
+      );
       const combos: Array<[string, string, string]> = [
         ["No", "No", "plain"],
         ["Yes", "No", "outlined"],
@@ -547,6 +541,29 @@ figma.connect(Card.Root, CARD_URL, {
 });`
       );
       return `
+// --- Card content → Card.Body ---
+figma.connect(
+  Card.Body,
+  "${contentUrl}",
+  {
+    props: {
+      children: figma.children("*"),
+      header: figma.enum("Content type", {
+        "Title + text": <Card.Header>Card Title</Card.Header>,
+        "Leading element + text": <Card.Header>Card Title</Card.Header>,
+      }),
+      leadingElement: figma.instance("Leading element"),
+    },
+    example: (props) => (
+      <>
+        {props.leadingElement}
+        {props.header}
+        <Card.Body>{props.children}</Card.Body>
+      </>
+    ),
+  }
+);
+
 // --- Card → Card.Root ---
 //
 // The Figma Card component exposes two independent Yes/No variant
@@ -619,7 +636,9 @@ figma.connect(
 //
 // Figma has no component for the whole table, only for its cells, so the
 // cell is connected to DataTable.Cell. The "Content type" variant has no code
-// counterpart: the consumer renders the content inside the cell.
+// counterpart: the consumer renders the content inside the cell. The cell only
+// works inside a DataTable.Row: React Aria throws an error when a cell is
+// rendered outside a table.
 figma.connect(
   DataTable.Cell,
   "${cellEntry.figmaUrl}",
@@ -677,7 +696,10 @@ figma.connect(
       Root: { skip: true },
       Item: { skip: true },
     },
-    extraImports: [`import { Steps } from "./steps";`],
+    extraImports: [
+      `import { Steps } from "./steps";`,
+      `import { Box } from "../box/box";`,
+    ],
     extraConnects: (entries) => {
       const rootEntry = entries.find((e) => e.subComponent === "Root");
       const itemEntry = entries.find((e) => e.subComponent === "Item");
@@ -686,8 +708,11 @@ figma.connect(
         blocks.push(`
 // --- Steps → Steps.Root ---
 //
-// Only the "Step" instances become children. The "Separator" instances between
-// them are drawn by Steps.Separator inside each Steps.Item instead.
+// The Figma Steps component always has three steps, and Code Connect cannot
+// give each repeated child snippet its own position. So the snippet writes
+// out three items with their own index and a matching count instead of using
+// figma.children. The titles are placeholders: the designer's titles are on
+// the canvas.
 figma.connect(
   Steps.Root,
   "${rootEntry.figmaUrl}",
@@ -698,11 +723,31 @@ figma.connect(
         Horizontal: "horizontal",
         Vertical: "vertical",
       }),
-      children: figma.children("Step"),
     },
     example: (props) => (
-      <Steps.Root count={0} size={props.size} orientation={props.orientation}>
-        <Steps.List>{props.children}</Steps.List>
+      <Steps.Root count={3} size={props.size} orientation={props.orientation}>
+        <Steps.List>
+          <Steps.Item index={0}>
+            <Steps.Trigger>
+              <Steps.Indicator />
+              <Steps.Title>Step 1</Steps.Title>
+            </Steps.Trigger>
+            <Steps.Separator />
+          </Steps.Item>
+          <Steps.Item index={1}>
+            <Steps.Trigger>
+              <Steps.Indicator />
+              <Steps.Title>Step 2</Steps.Title>
+            </Steps.Trigger>
+            <Steps.Separator />
+          </Steps.Item>
+          <Steps.Item index={2}>
+            <Steps.Trigger>
+              <Steps.Indicator />
+              <Steps.Title>Step 3</Steps.Title>
+            </Steps.Trigger>
+          </Steps.Item>
+        </Steps.List>
       </Steps.Root>
     ),
   }
@@ -711,6 +756,9 @@ figma.connect(
       if (itemEntry) {
         blocks.push(`
 // --- Step → Steps.Item ---
+//
+// A single step does not know its position in the list, so index is a
+// placeholder for the step's zero-based position.
 figma.connect(
   Steps.Item,
   "${itemEntry.figmaUrl}",
@@ -723,11 +771,13 @@ figma.connect(
       }),
     },
     example: (props) => (
-      <Steps.Item index={0}>
+      <Steps.Item index={/* step index */ 0}>
         <Steps.Trigger>
           <Steps.Indicator />
-          <Steps.Title>{props.title}</Steps.Title>
-          {props.description}
+          <Box>
+            <Steps.Title>{props.title}</Steps.Title>
+            {props.description}
+          </Box>
         </Steps.Trigger>
         {/* Omit the separator on the last step */}
         <Steps.Separator />
