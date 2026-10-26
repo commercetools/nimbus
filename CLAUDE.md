@@ -525,6 +525,11 @@ snapshotted and why is in
 triggers, baselines, the manual full-snapshot run and merge gating are in the
 [Chromatic CI Runbook](./docs/chromatic-ci.md).
 
+Figma Code Connect mappings (`*.figma.tsx`) are checked with a dry run on pull
+requests that change them, and published to Figma after merge to `main`.
+Triggers, the `FIGMA_ACCESS_TOKEN` secret and how to renew it, and the manual
+publish are in [Figma Code Connect CI](./docs/figma-code-connect-ci.md).
+
 ### Git Conventions
 
 See [Git Conventions](./docs/git-conventions.md) for branch naming, commit

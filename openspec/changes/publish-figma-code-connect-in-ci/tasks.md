@@ -23,9 +23,9 @@
 ## 4. Documentation
 
 - [ ] 4.1 Add `docs/figma-code-connect-ci.md`: what the workflow does, when it runs, the `FIGMA_ACCESS_TOKEN` repository secret and its scopes, how to renew the token (with the current expiry date), how to publish by hand (`workflow_dispatch`), fork PRs, and how to remove a mapping (`figma connect unpublish --node <url> --label <label>`)
-- [ ] 4.2 Link the new doc from `CLAUDE.md` next to the other CI docs (Chromatic, bundle size, package shape)
-- [ ] 4.3 Update `.claude/skills/nimbus-code-connect/SKILL.md` "Step 8: Publish (optional)": publishing happens in CI after merge; a manual publish is only needed for testing. Also fix the reference in Step 3, which says "Step 7 (Publish)"
-- [ ] 4.4 Run `pnpm openspec validate --all --strict`
+- [x] 4.2 Link the new doc from `CLAUDE.md` next to the other CI docs (Chromatic, bundle size, package shape)
+- [x] 4.3 Update `.claude/skills/nimbus-code-connect/SKILL.md` "Step 8: Publish (optional)": publishing happens in CI after merge; a manual publish is only needed for testing. Also fix the reference in Step 3, which says "Step 7 (Publish)"
+- [x] 4.4 Run `pnpm openspec validate --all --strict`
 
 ## 5. Follow-up
 
