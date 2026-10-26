@@ -1,0 +1,176 @@
+name: Figma Code Connect
+
+# Publishes the Code Connect mappings (*.figma.tsx) to Figma after a merge to
+# main, and checks them with a dry run on pull requests. Runbook (token,
+# renewal, manual publish): docs/figma-code-connect-ci.md
+on:
+  pull_request:
+    paths:
+      - packages/nimbus/src/components/**/*.figma.tsx
+      - figma.config.json
+  push:
+    branches:
+      - main
+    paths:
+      - packages/nimbus/src/components/**/*.figma.tsx
+      - figma.config.json
+  # Manual publish, for example after the token is renewed. Start it on main;
+  # on other branches the publish job is skipped.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # Pull requests from forks get no repository secrets, so every step
+      # below the notice is skipped for them.
+      FROM_FORK:
+        ${{ github.event.pull_request.head.repo.full_name != github.repository
+        }}
+    steps:
+      - name: Skip pull requests from forks
+        if: env.FROM_FORK == 'true'
+        run: |
+          echo "::notice::Code Connect validation skipped: pull requests from forks get no repository secrets. A maintainer can run the check after merge, or re-run it from a branch in this repository."
+
+      - name: Checkout repository
+        if: env.FROM_FORK == 'false'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      # Same pins as .github/actions/ci. No package build: the CLI parses the
+      # TypeScript source.
+      - name: Install pnpm
+        if: env.FROM_FORK == 'false'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+        with:
+          run_install: false
+
+      - name: Setup Node
+        if: env.FROM_FORK == 'false'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        if: env.FROM_FORK == 'false'
+        run: pnpm install --frozen-lockfile
+
+      # The token goes only to this step and the CLI step. curl reads the
+      # header from stdin, so the token is not in its argument list. Only the
+      # HTTP status and Figma's `err` text are printed, never the body.
+      - name: Check FIGMA_ACCESS_TOKEN
+        if: env.FROM_FORK == 'false'
+        env:
+          FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
+        run: |
+          if [ -z "$FIGMA_ACCESS_TOKEN" ]; then
+            echo "::error::FIGMA_ACCESS_TOKEN is not set. Add it as a repository secret (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+
+          body="$(mktemp)"
+          status="$(printf 'X-Figma-Token: %s\n' "$FIGMA_ACCESS_TOKEN" |
+            curl --silent --max-time 60 --output "$body" \
+              --write-out '%{http_code}' --header @- \
+              "https://api.figma.com/v1/files/AvtPX6g7OGGCRvNlatGOIY/nodes?ids=67:549&depth=1")" || true
+          err="$(jq -r '.err // empty' "$body" 2>/dev/null | tr -d '\r\n' || true)"
+          rm -f "$body"
+
+          case "$status" in
+            200)
+              echo "Figma accepted FIGMA_ACCESS_TOKEN (HTTP 200)."
+              ;;
+            000 | 429 | 5??)
+              echo "::error::Figma did not answer the token check (HTTP ${status}${err:+: $err}). This is not a token problem. Re-run the job later."
+              exit 1
+              ;;
+            *)
+              echo "::error::FIGMA_ACCESS_TOKEN was rejected by Figma (HTTP ${status}: ${err:-no error text}). Create a new token in Figma → Settings → Security → Personal access tokens (scopes: Code Connect: Write, File content: Read) and update the repository secret FIGMA_ACCESS_TOKEN. Long-term: ask a Figma admin for a plan access token."
+              exit 1
+              ;;
+          esac
+
+      - name: Validate Code Connect (dry run)
+        if: env.FROM_FORK == 'false'
+        env:
+          FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
+        run:
+          pnpm exec figma connect publish --dry-run --exit-on-unreadable-files
+          --skip-update-check
+
+  publish:
+    # Push to main, or a manual start on main. Only main is ever published.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Never two publishes at the same time: a newer run waits for the running
+    # one instead of cancelling it.
+    concurrency:
+      group: code-connect-publish
+      cancel-in-progress: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+        with:
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Same as the token check in the validate job; keep both in sync.
+      - name: Check FIGMA_ACCESS_TOKEN
+        env:
+          FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
+        run: |
+          if [ -z "$FIGMA_ACCESS_TOKEN" ]; then
+            echo "::error::FIGMA_ACCESS_TOKEN is not set. Add it as a repository secret (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+
+          body="$(mktemp)"
+          status="$(printf 'X-Figma-Token: %s\n' "$FIGMA_ACCESS_TOKEN" |
+            curl --silent --max-time 60 --output "$body" \
+              --write-out '%{http_code}' --header @- \
+              "https://api.figma.com/v1/files/AvtPX6g7OGGCRvNlatGOIY/nodes?ids=67:549&depth=1")" || true
+          err="$(jq -r '.err // empty' "$body" 2>/dev/null | tr -d '\r\n' || true)"
+          rm -f "$body"
+
+          case "$status" in
+            200)
+              echo "Figma accepted FIGMA_ACCESS_TOKEN (HTTP 200)."
+              ;;
+            000 | 429 | 5??)
+              echo "::error::Figma did not answer the token check (HTTP ${status}${err:+: $err}). This is not a token problem. Re-run the job later."
+              exit 1
+              ;;
+            *)
+              echo "::error::FIGMA_ACCESS_TOKEN was rejected by Figma (HTTP ${status}: ${err:-no error text}). Create a new token in Figma → Settings → Security → Personal access tokens (scopes: Code Connect: Write, File content: Read) and update the repository secret FIGMA_ACCESS_TOKEN. Long-term: ask a Figma admin for a plan access token."
+              exit 1
+              ;;
+          esac
+
+      - name: Publish Code Connect
+        env:
+          FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
+        run:
+          pnpm exec figma connect publish --exit-on-unreadable-files
+          --skip-update-check

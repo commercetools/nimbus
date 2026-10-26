@@ -6,11 +6,11 @@
 
 ## 2. Workflow
 
-- [ ] 2.1 Create `.github/workflows/code-connect.yml` with triggers: `pull_request` and `push` to `main`, both with the `paths` filter `packages/nimbus/src/components/**/*.figma.tsx` and `figma.config.json`, plus `workflow_dispatch`; set `permissions: contents: read`
-- [ ] 2.2 Add the shared setup steps (checkout, `pnpm/action-setup`, `actions/setup-node` with Node 24 and pnpm cache, `pnpm install --frozen-lockfile`), pinned to the same commit SHAs as `.github/actions/ci`
-- [ ] 2.3 Add the token-check step: empty secret → "FIGMA_ACCESS_TOKEN is not set…" error; non-200 → "FIGMA_ACCESS_TOKEN was rejected by Figma (HTTP <code>: <err>)…" error as a `::error::` annotation; token passed through `env` only, response body not printed
-- [ ] 2.4 Add the `validate` job (pull requests only): fork check first (`head.repo.full_name != github.repository` → `::notice::` and successful end), then the token check, then `pnpm exec figma connect publish --dry-run --exit-on-unreadable-files --skip-update-check`
-- [ ] 2.5 Add the `publish` job (push to `main` and `workflow_dispatch` on `main`): `concurrency` group `code-connect-publish` with `cancel-in-progress: false`, the token check, then `pnpm exec figma connect publish --exit-on-unreadable-files --skip-update-check`
+- [x] 2.1 Create `.github/workflows/code-connect.yml` with triggers: `pull_request` and `push` to `main`, both with the `paths` filter `packages/nimbus/src/components/**/*.figma.tsx` and `figma.config.json`, plus `workflow_dispatch`; set `permissions: contents: read`
+- [x] 2.2 Add the shared setup steps (checkout, `pnpm/action-setup`, `actions/setup-node` with Node 24 and pnpm cache, `pnpm install --frozen-lockfile`), pinned to the same commit SHAs as `.github/actions/ci`
+- [x] 2.3 Add the token-check step: empty secret → "FIGMA_ACCESS_TOKEN is not set…" error; non-200 → "FIGMA_ACCESS_TOKEN was rejected by Figma (HTTP <code>: <err>)…" error as a `::error::` annotation; token passed through `env` only, response body not printed
+- [x] 2.4 Add the `validate` job (pull requests only): fork check first (`head.repo.full_name != github.repository` → `::notice::` and successful end), then the token check, then `pnpm exec figma connect publish --dry-run --exit-on-unreadable-files --skip-update-check`
+- [x] 2.5 Add the `publish` job (push to `main` and `workflow_dispatch` on `main`): `concurrency` group `code-connect-publish` with `cancel-in-progress: false`, the token check, then `pnpm exec figma connect publish --exit-on-unreadable-files --skip-update-check`
 
 ## 3. Verification
 
