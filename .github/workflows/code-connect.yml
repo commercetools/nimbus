@@ -168,9 +168,19 @@ jobs:
               ;;
           esac
 
+      # The CLI exits with 0 when Figma rejects single mappings, and only logs
+      # them (to stderr). The grep fails the step on these log lines, taken
+      # from @figma/code-connect 1.5.3 dist/connect/upload.js. Check them again
+      # when you upgrade the CLI. `shell: bash` adds pipefail, so tee does not
+      # hide the CLI's own exit code.
       - name: Publish Code Connect
+        shell: bash
         env:
           FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
-        run:
-          pnpm exec figma connect publish --exit-on-unreadable-files
-          --skip-update-check
+        run: |
+          log="$(mktemp)"
+          pnpm exec figma connect publish --exit-on-unreadable-files --skip-update-check 2>&1 | tee "$log"
+          if grep -qE 'Failed to upload to Figma|already have UI-created Code Connect mappings' "$log"; then
+            echo "::error::Figma rejected some Code Connect mappings. See the log above and docs/figma-code-connect-ci.md#when-figma-rejects-a-mapping."
+            exit 1
+          fi

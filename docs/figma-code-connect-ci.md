@@ -159,11 +159,12 @@ workflow by hand on `main` to publish the state of `main` again. It is not
 verified whether this removes mappings that exist only on your branch (see
 [Remove a mapping](#remove-a-mapping)).
 
-## When a publish passes but a mapping is missing
+## When Figma rejects a mapping
 
-The CLI exits with code 0 when Figma accepts the upload request but rejects
-single mappings, so the `publish` job passes. Look in the log of the "Publish
-Code Connect" step for:
+Figma can accept the upload request but reject single mappings. The CLI then
+only logs the rejected mappings and exits with code 0. The "Publish Code
+Connect" step therefore searches the CLI log for these lines and fails with
+"Figma rejected some Code Connect mappings":
 
 - `Failed to upload to Figma, for React:` followed by the rejected mappings and
   the reason.
@@ -171,6 +172,11 @@ Code Connect" step for:
   the component in the Figma UI. The CLI then suggests to "Re-run with --force
   to overwrite the existing UI-created mappings": publish once by hand from
   `main` with `--force`.
+
+The other mappings in the same run are published. The search uses the log text
+of `@figma/code-connect` 1.5.3. When you upgrade the CLI, check that these lines
+still exist in its `dist/connect/upload.js`. If they change, the step passes
+again when Figma rejects a mapping.
 
 ## Remove a mapping
 

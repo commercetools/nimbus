@@ -5,8 +5,8 @@
 The repository SHALL publish the Figma Code Connect mappings to Figma when a
 commit that changes a `packages/nimbus/src/components/**/*.figma.tsx` file or
 `figma.config.json` is pushed to `main`. Publishing SHALL use
-`figma connect publish --exit-on-unreadable-files`. Two publish runs SHALL NOT
-run at the same time.
+`figma connect publish --exit-on-unreadable-files`. The publish job SHALL fail
+if Figma rejects any mapping. Two publish runs SHALL NOT run at the same time.
 
 #### Scenario: Code Connect file changed on main
 
@@ -23,6 +23,13 @@ run at the same time.
 
 - **WHEN** a Code Connect file on `main` cannot be parsed
 - **THEN** the publish job fails and nothing is published
+
+#### Scenario: Figma rejects a mapping
+
+- **WHEN** Figma accepts the publish request but rejects one or more mappings,
+  for example because a mapping created in the Figma UI exists for the node
+- **THEN** the publish job fails with the error "Figma rejected some Code
+  Connect mappings", and the CLI log above it names the rejected mappings
 
 #### Scenario: Two merges in quick succession
 

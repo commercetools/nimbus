@@ -144,6 +144,18 @@ is a misconfiguration and fails (Decision 3).
 `--exit-on-unreadable-files` is what the CLI help recommends "for CI/CD".
 `--skip-update-check` avoids a network call and noise in logs.
 
+`publish` also fails when Figma rejects single mappings. The CLI logs them
+("Failed to upload to Figma, for React:", or "already have UI-created Code
+Connect mappings" for a conflict with a mapping made in the Figma UI) and still
+exits with 0 (`dist/connect/upload.js` in 1.5.3; 2.0.2, the newest version,
+does the same). The step pipes the CLI output through `tee` (`shell: bash`
+adds `pipefail`) and fails with a `::error::` annotation when the log contains
+one of these lines. This reads the CLI's wording, which Decision 3 avoids for
+the token, but here there is no other signal. These lines appear only in the
+CLI's failure branches, so the check cannot fail a good publish. If a CLI
+upgrade changes the wording, the check stops catching rejected mappings; the
+YAML comment and the runbook say to check the lines when upgrading.
+
 The `publish` job uses `concurrency: { group: code-connect-publish,
 cancel-in-progress: false }`, so two merges never publish at the same time and
 the later one always runs last.
@@ -180,6 +192,9 @@ only the secret value does.
 - [Collaborators with write access could read the secret from a branch
   workflow] → Small token scopes; switch to an environment with a branch rule
   if the PR check is ever dropped.
+- [A CLI upgrade changes the log lines for rejected mappings] → The publish
+  step then passes again when Figma rejects a mapping. The YAML comment and the
+  runbook say to check the lines when upgrading (Decision 5).
 - [Publishing does not remove mappings for deleted `.figma.tsx` files] → Not
   verified. The CLI has a separate `unpublish` command. Documented as a manual
   step in the docs (Open Questions).

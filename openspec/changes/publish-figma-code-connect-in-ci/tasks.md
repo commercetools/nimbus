@@ -11,6 +11,7 @@
 - [x] 2.3 Add the token-check step: empty secret → "FIGMA_ACCESS_TOKEN is not set…" error; non-200 → "FIGMA_ACCESS_TOKEN was rejected by Figma (HTTP <code>: <err>)…" error as a `::error::` annotation; token passed through `env` only, response body not printed
 - [x] 2.4 Add the `validate` job (pull requests only): fork check first (`head.repo.full_name != github.repository` → `::notice::` and successful end), then the token check, then `pnpm exec figma connect publish --dry-run --exit-on-unreadable-files --skip-update-check`
 - [x] 2.5 Add the `publish` job (push to `main` and `workflow_dispatch` on `main`): `concurrency` group `code-connect-publish` with `cancel-in-progress: false`, the token check, then `pnpm exec figma connect publish --exit-on-unreadable-files --skip-update-check`
+- [x] 2.6 Fail the publish step when the CLI log shows mappings that Figma rejected (the CLI exits with 0 in that case): `tee` the CLI output, `grep` for "Failed to upload to Figma" and "already have UI-created Code Connect mappings", and write a `::error::` annotation
 
 ## 3. Verification
 
