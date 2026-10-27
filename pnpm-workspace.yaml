@@ -196,9 +196,10 @@ overrides:
   # GHSA-pmjh-fq2x-6v4x (DoS via orphaned RetryHandler response body),
   # GHSA-8436-99hf-9mmv (caching of unsafe-method responses),
   # GHSA-2gqq-gqf2-x968 (dump interceptor truncation) and GHSA-r53p-7pc4-xj5r
-  # (response splitting via the retry interceptor).
+  # (response splitting via the retry interceptor). >=7.30.1 is the undici
+  # version Node.js ships in its October 2026 security releases (FEC-1458).
   # Capped <8: v8 is a major needing its own PR.
-  undici: ">=7.29.1 <8"
+  undici: ">=7.30.1 <8"
   "picomatch@<2.3.2": ">=2.3.2"
   "picomatch@>=4.0.0 <4.0.4": ">=4.0.4"
   "yaml@1": "1.10.3"
@@ -207,33 +208,36 @@ overrides:
   "happy-dom@<20.8.9": ">=20.8.9"
   jsdom: "catalog:tooling"
   "adm-zip": ">=0.6.1"
+  # >=2.31.0 fixes GHSA-4p3w-j4w9-5jqw (path traversal via crafted non-string
+  # locale name). Parents allow it (ui-kit peer `2.x`, moment-timezone ^2.29.4),
+  # but the lockfile held 2.30.1.
+  moment: ">=2.31.0"
 
 catalogs:
   tooling:
     "@figma/code-connect": ^1.5.3
-    # Held on 1.10.x: 1.11 adds a "Purpose section is still a placeholder"
-    # warning, which fails CI's `openspec validate --all --strict` for 24 specs.
-    # Move to ^1.11 once those specs have a written Purpose section.
-    "@fission-ai/openspec": ~1.10.0
+    # Exact pin: even patch releases (1.14.1, 1.14.2) added warnings that fail
+    # CI's `openspec validate --all --strict`. Bump it in its own PR.
+    "@fission-ai/openspec": 1.14.3
     eslint-plugin-react-hooks: ^7.1.1
     globals: ^17.13.0
     glob: ^13.0.6
     typescript: ~5.9.3
-    typescript-eslint: ^8.71.1
+    typescript-eslint: ^8.72.0
     tsup: ^8.5.1
     tsx: ^4.23.15
     "@arethetypeswrong/cli": ^0.18.5
     publint: ^0.3.25
     "@commercetools-frontend/ui-kit": ^20.6.7
-    "@modelcontextprotocol/inspector": ^2.10.1
+    "@modelcontextprotocol/inspector": ^2.12.0
     "@babel/core": ^7.29.7
     "@babel/runtime": ^7.29.10
     "@babel/preset-typescript": ^7.29.7
     "@eslint/js": ^10.0.1
     "@react-types/shared": ^3.37.0
-    eslint: ^10.12.0
+    eslint: ^10.13.0
     eslint-config-prettier: ^10.1.8
-    eslint-plugin-prettier: ^5.5.6
+    eslint-plugin-prettier: ^5.5.7
     eslint-plugin-react-refresh: ^0.5.7
     express-rate-limit: ^8.7.1
     prettier: ^3.9.10
@@ -242,42 +246,42 @@ catalogs:
     "@changesets/cli": 3.0.3
     "@vitejs/plugin-react": ^6.1.2
     "@vitejs/plugin-react-swc": ^4.3.3
-    vite: ^8.3.4
-    webpack: ^5.111.1
+    vite: ^8.3.5
+    webpack: ^5.112.2
     webpack-cli: ^7.2.3
     vite-bundle-analyzer: ^1.3.9
     vite-plugin-dts: ^5.1.2
-    rollup: ^4.64.5
-    "@vitest/browser": ^5.0.3
-    "@vitest/browser-playwright": ^5.0.3
-    "@vitest/coverage-v8": ^5.0.3
+    rollup: ^4.65.0
+    "@vitest/browser": ^5.0.5
+    "@vitest/browser-playwright": ^5.0.5
+    "@vitest/coverage-v8": ^5.0.5
     "@testing-library/dom": 10.4.2
     "@testing-library/jest-dom": ^7.0.1
-    "@testing-library/user-event": ^14.6.7
+    "@testing-library/user-event": ^14.6.8
     "@testing-library/react": ^16.3.3
-    playwright: 1.62.1
-    vitest: ^5.0.3
+    playwright: 1.64.1
+    vitest: ^5.0.5
     axe-core: ^4.14.0
-    "@typescript-eslint/types": ^8.71.1
-    "@typescript-eslint/typescript-estree": ^8.71.1
+    "@typescript-eslint/types": ^8.72.0
+    "@typescript-eslint/typescript-estree": ^8.72.0
     react-docgen-typescript: ^2.4.0
-    storybook: ^10.6.1
-    eslint-plugin-storybook: ^10.6.1
-    "@storybook/addon-a11y": ^10.6.1
-    "@storybook/addon-docs": ^10.6.1
-    "@storybook/addon-vitest": ^10.6.1
-    "@storybook/react-vite": ^10.6.1
+    storybook: ^10.6.3
+    eslint-plugin-storybook: ^10.6.3
+    "@storybook/addon-a11y": ^10.6.3
+    "@storybook/addon-docs": ^10.6.3
+    "@storybook/addon-vitest": ^10.6.3
+    "@storybook/react-vite": ^10.6.3
     "@vueless/storybook-dark-mode": ^10.0.8
-    "@github-ui/storybook-addon-performance-panel": ^1.3.0
-    chromatic: ^18.12.0
+    "@github-ui/storybook-addon-performance-panel": ^1.3.1
+    chromatic: ^18.13.3
     # Held on 30.0.x: jsdom 30.1 moved Blob internals to a private field, which
     # breaks vitest's jsdom URL.createObjectURL shim ("reading '_bytes'").
     # Move to ^30.1 once a vitest release fixes vitest-dev/vitest#11336.
     jsdom: ~30.0.1
     "rollup-plugin-visualizer": ^7.1.1
   react:
-    "@types/react": ^19.2.18
-    "@types/react-dom": ^19.2.4
+    "@types/react": ^19.3.0
+    "@types/react-dom": ^19.3.0
     react: ^19.0.0
     react-dom: ^19.0.0
     "@emotion/react": ^11.14.0
@@ -285,9 +289,9 @@ catalogs:
     "@chakra-ui/cli": ^3.37.0
     "@chakra-ui/react": ^3.37.0
     next-themes: ^0.4.6
-    react-aria: 3.52.1
-    react-aria-components: 1.21.1
-    react-stately: 3.50.0
+    react-aria: 3.53.1
+    react-aria-components: 1.22.1
+    react-stately: 3.51.0
     "@react-aria/interactions": 3.28.1
     "@react-aria/utils": 3.34.1
     "@react-aria/optimize-locales-plugin": 2.1.0
@@ -299,12 +303,12 @@ catalogs:
     use-debounce: ^10.1.1
   utils:
     dequal: ^2.0.3
-    dotenv: ^18.0.7
-    dompurify: ^3.4.16
+    dotenv: ^18.0.9
+    dompurify: ^3.4.17
     lodash: ^4.18.1
-    "@types/lodash": ^4.17.26
+    "@types/lodash": ^4.17.27
     "@types/node": ^26.6.5
-    zod: ^4.6.6
+    zod: ^4.6.7
     escape-html: ^1.0.3
     "@types/escape-html": ^1.0.4
     gray-matter: ^4.0.3
@@ -324,7 +328,7 @@ catalogs:
     remark-gfm: ^4.0.1
     remend: ^1.4.0
     remark: ^15.0.1
-    remark-flexible-toc: ^1.2.7
+    remark-flexible-toc: ^1.3.0
     to-vfile: ^8.0.0
   # Private docs-app pins — not published to npm. Exact versions (no ^ or ~) so
   # Renovate updates are explicit PRs rather than silent range expansion.
@@ -334,7 +338,7 @@ catalogs:
     "@types/mdx": 2.0.14
     "@types/react-syntax-highlighter": 15.5.13
     "@types/slug": 5.0.9
-    chokidar: 5.0.0
+    chokidar: 6.0.0
     fuse.js: 7.5.0
     github-slugger: 2.0.0
     jotai: 3.0.1

@@ -108,7 +108,7 @@ The component SHALL support multiple visual styles.
 - **WHEN** variant="marker" is set (default)
 - **THEN** SHALL display default list markers (bullets or numbers)
 - **AND** SHALL position markers inside content flow
-- **AND** SHALL apply subtle color to markers
+- **AND** markers SHALL inherit the text color of their list item
 - **AND** SHALL use listStylePosition: inside
 
 #### Scenario: Plain variant
@@ -202,8 +202,8 @@ The component SHALL support marker appearance customization.
 
 #### Scenario: Marker color
 - **WHEN** variant="marker" is set
-- **THEN** SHALL apply fg.subtle color to markers
-- **AND** SHALL use _marker pseudo-element selector
+- **THEN** markers SHALL inherit the text color of their list item
+- **AND** SHALL support a custom marker color via the `_marker` style prop
 - **AND** SHALL support design token colors
 
 #### Scenario: Marker position

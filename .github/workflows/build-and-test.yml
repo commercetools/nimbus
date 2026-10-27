@@ -19,7 +19,7 @@ jobs:
       # fails at launch with "Executable doesn't exist at
       # /ms-playwright/chromium_headless_shell-<rev>". Bump both together.
       # https://playwright.dev/docs/docker#pull-the-image
-      image: mcr.microsoft.com/playwright:v1.62.1-noble@sha256:dcc5531e97840b9b5e794f2814476b21571c5124a3fca2267d73041f56e7580e
+      image: mcr.microsoft.com/playwright:v1.64.1-noble@sha256:7852dc5a7d72f5fe458a597d690f6c42fbc8e9e26ddfa95f8e6ef552558d9bbf
 
     steps:
       - name: Checkout repository
@@ -46,6 +46,9 @@ jobs:
 
       - name: Check package shape
         run: pnpm check:package-shape
+
+      - name: Check bundler compatibility
+        run: pnpm check:bundler-compat
 
       - name: Clean temp before tests
         run: rm -rf /tmp/* || true

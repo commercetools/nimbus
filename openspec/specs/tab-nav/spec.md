@@ -1,7 +1,9 @@
 # tab-nav Specification
 
 ## Purpose
-TBD - created by archiving change add-tab-nav-component. Update Purpose after archive.
+
+Lets users move between pages with a row of links that look like tabs.
+
 ## Requirements
 ### Requirement: Namespace Structure
 

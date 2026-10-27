@@ -5,7 +5,9 @@ Define the behavior and API contract of the Nimbus `ScrollArea` component:
 custom-styled overlay scrollbars over native scrolling, with a single-element
 API, keyboard accessibility, visual variants (`solid` / `inset` / `overlay` /
 `glass`), and auto-hide / always-visible visibility modes.
+
 ## Requirements
+
 ### Requirement: Single-element API hides compound internals
 
 The component SHALL present a single `<ScrollArea>` element to consumers,
@@ -220,17 +222,9 @@ and vice versa.
 ### Requirement: Content wrapper sizes to viewport by default
 
 For default and `vertical` orientations, the content wrapper SHALL size its
-width to the viewport (so siblings with `width: 100%` size against the viewport)
-and SHALL fill the viewport height when the content is shorter than it (so
-consumers can vertically center a shorter child with flex/grid + `height: 100%`).
-When the content is taller than the viewport, the wrapper SHALL grow with the
-content rather than staying clamped to the viewport height, so that a change in
-content size is observed and the scrollbar re-measures without a scroll first.
-
-Descendant overflow on either axis SHALL still be surfaced as viewport
-scroll via `scrollHeight` / `scrollWidth`, so scrolling is unaffected.
-
-For `orientation="horizontal"`, the wrapper SHALL instead preserve Zag's
+width to the viewport and SHALL fill the viewport height when the content is
+shorter than it, growing with the content when the content is taller. For
+`orientation="horizontal"`, the wrapper SHALL instead preserve Zag's
 `min-width: fit-content` so a row of items can scroll horizontally.
 
 #### Scenario: `width: 100%` sibling of a wide child
@@ -263,6 +257,18 @@ For `orientation="horizontal"`, the wrapper SHALL instead preserve Zag's
   scroll has occurred
 - **THEN** the scrollbar SHALL reflect the new overflow and thumb size from the
   content resize alone, without requiring a scroll to trigger a re-measure
+
+#### Scenario: Content taller than the viewport
+
+- **WHEN** the content is taller than the viewport
+- **THEN** the content wrapper SHALL grow with the content rather than staying
+  clamped to the viewport height, so that a change in content size is observed
+
+#### Scenario: Descendant overflow still scrolls
+
+- **WHEN** a descendant overflows the content wrapper on either axis
+- **THEN** the overflow SHALL still be surfaced as viewport scroll via
+  `scrollHeight` / `scrollWidth`, so scrolling is unaffected
 
 ### Requirement: Scrollbar paints above viewport content
 
@@ -367,4 +373,3 @@ prop surface at the type level.
 
 - **WHEN** `children` are passed
 - **THEN** SHALL render them inside the scrollable viewport
-

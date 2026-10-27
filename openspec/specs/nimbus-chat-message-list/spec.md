@@ -1,7 +1,8 @@
 # nimbus-chat-message-list Specification
 
 ## Purpose
-TBD - created by archiving change add-chat-message-list. Update Purpose after archive.
+
+Shows the messages of a conversation as a scrollable list that follows new messages and announces them to screen reader users.
 
 ## Requirements
 
