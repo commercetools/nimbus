@@ -1,0 +1,144 @@
+---
+id: TokensUsingInCode
+title: Using Tokens Outside Components
+description:
+  Read design token values in plain JavaScript, inline styles, and non-Nimbus
+  components with the exported `system` object.
+order: 1
+menu:
+  - Home
+  - Design Tokens
+  - Using Tokens Outside Components
+tags:
+  - tokens
+  - system
+  - css variables
+icon: Code
+---
+
+# Using Tokens Outside Components
+
+Nimbus components get their token values through style props and recipes. Some
+code is not a Nimbus component: a chart library, a canvas, an inline `style`
+attribute, or your own plain JavaScript. For this code, read the token values
+from the `system` object.
+
+## The `system` object
+
+`@commercetools/nimbus` exports `system`. It holds the complete Nimbus theme.
+Two functions on it read token values:
+
+| Function                 | Returns                         | Example result                |
+| ------------------------ | ------------------------------- | ----------------------------- |
+| `system.token(path)`     | The resolved value of the token | `"16px"`                      |
+| `system.token.var(path)` | A CSS variable reference        | `"var(--nimbus-spacing-400)"` |
+
+The `path` is the token category and the token name, joined with a dot. For
+example: `"spacing.400"`, `"radii.200"`, or `"colors.primary.9"`.
+
+Both functions are plain functions. You can call them anywhere, not only while a
+component renders. Both return `undefined` when the path is not a token.
+
+```tsx
+import { system } from "@commercetools/nimbus";
+
+system.token("spacing.400"); // "16px"
+system.token.var("spacing.400"); // "var(--nimbus-spacing-400)"
+```
+
+## Resolved values and CSS variables
+
+Use `system.token.var(...)` when the value goes into CSS, for example an inline
+style. The browser resolves the variable at render time. The result follows
+theme changes such as dark mode.
+
+Use `system.token(...)` when you need the literal value in JavaScript, for
+example to calculate with a number or to pass it to a library that does not
+accept CSS variables. The result is a fixed string. It does not change when the
+theme changes.
+
+> [!NOTE]  
+> Color tokens (such as `colors.primary.9`) are semantic tokens. Their value
+> depends on the color mode, so `system.token(...)` returns the CSS variable for
+> them, the same as `system.token.var(...)`:
+>
+> ```tsx
+> system.token("colors.primary.9"); // "var(--nimbus-colors-primary-9)"
+> system.token.var("colors.primary.9"); // "var(--nimbus-colors-primary-9)"
+> ```
+>
+> Tokens with one fixed value, such as `spacing`, `sizes`, `radii`, and
+> `fontSizes`, return the literal value from `system.token(...)`.
+
+## Examples
+
+### Inline styles
+
+```tsx
+import { system } from "@commercetools/nimbus";
+
+export const Callout = ({ children }: { children: React.ReactNode }) => (
+  <div
+    style={{
+      padding: system.token.var("spacing.400"),
+      borderRadius: system.token.var("radii.200"),
+      color: system.token.var("colors.primary.11"),
+      backgroundColor: system.token.var("colors.primary.3"),
+    }}
+  >
+    {children}
+  </div>
+);
+```
+
+This element changes its colors with the color mode, like a Nimbus component.
+
+### A non-Nimbus component
+
+Many libraries accept CSS values as props. CSS variables work for them, as long
+as the library writes the value into CSS. Pass `system.token.var(...)` to keep
+the theme link:
+
+```tsx
+import { system } from "@commercetools/nimbus";
+import { ThirdPartyChart } from "third-party-chart";
+
+export const Chart = () => (
+  <ThirdPartyChart
+    lineColor={system.token.var("colors.primary.9")}
+    gridColor={system.token.var("colors.neutral.6")}
+  />
+);
+```
+
+### A number for a calculation
+
+When a library needs a number, resolve the token with `system.token(...)` and
+parse it:
+
+```tsx
+import { system } from "@commercetools/nimbus";
+
+const gap = Number.parseFloat(system.token("spacing.400")); // 16
+
+const chartHeight = 10 * gap;
+```
+
+### The current color as a literal
+
+Some code, such as a canvas, cannot use a CSS variable. Read the computed value
+from the document instead:
+
+```tsx
+const color = getComputedStyle(document.documentElement)
+  .getPropertyValue("--nimbus-colors-primary-9")
+  .trim();
+```
+
+This value is the color for the current color mode at the time you read it. Read
+it again after the color mode changes.
+
+## Requirements
+
+CSS variables exist in the page only while a `NimbusProvider` is rendered above
+the code that uses them. Outside of it, `var(--nimbus-...)` has no value.
