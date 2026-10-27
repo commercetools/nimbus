@@ -129,11 +129,11 @@
   },
   "Nimbus.DataTable.nestedItemsCount": {
     "developer_comment": "placeholder shown in an expanded row whose nested data is a list, with the number of items",
-    "string": "Nested items: {count}"
+    "string": "Articles imbriqués : {count}"
   },
   "Nimbus.DataTable.noData": {
     "developer_comment": "message shown in the table body when there are no rows",
-    "string": "No Data"
+    "string": "Aucune donnée"
   },
   "Nimbus.DataTable.noHiddenColumns": {
     "developer_comment": "message when there is no hidden columns in the data table manager",
@@ -141,7 +141,7 @@
   },
   "Nimbus.DataTable.pinRow": {
     "developer_comment": "aria-label and tooltip for the pin button of a row that is not pinned",
-    "string": "Pin row"
+    "string": "Épingler la ligne"
   },
   "Nimbus.DataTable.pinRows": {
     "developer_comment": "aria-label for the pin rows column header",
@@ -181,7 +181,7 @@
   },
   "Nimbus.DataTable.spacious": {
     "developer_comment": "option for the spacious row density in the data table manager layout",
-    "string": "Spacious"
+    "string": "Spacieux"
   },
   "Nimbus.DataTable.standard": {
     "developer_comment": "option for the standard row density in the data table manager layout",
@@ -201,7 +201,7 @@
   },
   "Nimbus.DataTable.unpinRow": {
     "developer_comment": "aria-label and tooltip for the pin button of a pinned row",
-    "string": "Unpin row"
+    "string": "Désépingler la ligne"
   },
   "Nimbus.DataTable.visibleColumns": {
     "developer_comment": "title for the visible columns section in the data table manager",
@@ -401,7 +401,7 @@
   },
   "Nimbus.ListBox.emptyState": {
     "developer_comment": "Default message shown when a ListBox has no options to display",
-    "string": "No options available"
+    "string": "Aucune action disponible"
   },
   "Nimbus.LoadingSpinner.default": {
     "developer_comment": "Default loading message for loading spinners",
