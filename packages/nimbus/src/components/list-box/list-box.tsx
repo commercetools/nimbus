@@ -26,6 +26,8 @@ import {
  * ```
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/list-box}
+ *
+ * @experimental This component is experimental and may change or be removed in future versions.
  */
 export const ListBox = {
   /**
