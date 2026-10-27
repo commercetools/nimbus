@@ -224,6 +224,8 @@ export const StyleProps: Story = {
  * an ellipsis, and plain text wraps instead of overflowing.
  */
 export const Truncation: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack gap="400">
       <Box width="240px">
