@@ -2580,6 +2580,37 @@ export const CustomWidth: Story = {
 };
 
 /**
+ * Leading Element
+ * Demonstrates the DatePicker rendering a leading element inside the input
+ */
+export const LeadingElement: Story = {
+  args: {
+    ["aria-label"]: "Select a date",
+  },
+  render: (args) => (
+    <DatePicker
+      {...args}
+      leadingElement={
+        <Text as="span" slot={null}>
+          Due
+        </Text>
+      }
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders the leading element inside the input", async () => {
+      const leadingElement = await canvas.findByText("Due");
+      await expect(leadingElement).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("group", { name: "Select a date" })
+      ).toContainElement(leadingElement);
+    });
+  },
+};
+
+/**
  * Multiple Locales
  * Demonstrates the DatePicker adapting to different locales
  */
