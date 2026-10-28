@@ -22,6 +22,8 @@ import {
  *   <Splitter.Main>Content</Splitter.Main>
  * </Splitter.Root>
  * ```
+ *
+ * @beta This component is in beta and may change in future minor versions.
  */
 export const Splitter = {
   /**
