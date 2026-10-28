@@ -48,7 +48,9 @@ known issues to triage separately.
 ## What Gets Tracked
 
 The list is derived at runtime from `pnpm m ls`: every workspace that is not
-marked `"private": true`. Today that leaves five packages:
+marked `"private": true`. That is the set the changeset bot ships in a release
+(the `fixed` group in `.changeset/config.json`). Today these packages are
+tracked:
 
 - **`@commercetools/nimbus`** — Core component library.
 - **`@commercetools/nimbus-icons`** — SVG icons as React components.

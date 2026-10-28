@@ -13,9 +13,9 @@
  *   - publint: validates package.json correctness against the npm spec.
  *
  * Packages are checked in parallel; per-package output is buffered and printed
- * in declared order after all finish so the log stays readable. Exits non-zero
- * on any finding so CI blocks the merge. Flip REPORT_ONLY to true temporarily
- * if you need the check to surface findings without failing.
+ * in package-name order after all finish so the log stays readable. Exits
+ * non-zero on any finding so CI blocks the merge. Flip REPORT_ONLY to true
+ * temporarily if you need the check to surface findings without failing.
  *
  * Usage:
  *   node scripts/check-package-shape.mjs
