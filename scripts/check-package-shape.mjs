@@ -34,22 +34,6 @@ const ROOT = join(__dirname, "..");
 
 const REPORT_ONLY = false;
 
-// Publishable workspaces that are deliberately not checked yet. Remove an entry
-// once its shape issue is fixed and `pnpm check:package-shape` exits 0 for it.
-//
-// `@commercetools/nimbus-tokens` ships with a pre-existing shape issue tracked
-// in https://github.com/commercetools/nimbus/issues/1509. Two interacting
-// problems were reported there — preconstruct emits `.cjs.js` under a
-// package that declares `"type": "module"`, so the CJS path was broken at
-// runtime; and the `exports` map's `import` condition has no `types`
-// condition, so ESM consumers under node16/bundler resolution get no types.
-// The first (runtime CJS breakage) is fixed by
-// `packages/tokens/scripts/postbuild-cjs-extensions.mjs` and the `require`
-// condition's `types` entry in `packages/tokens/package.json`. The second
-// (missing ESM types) is still open — remove this entry once that's
-// resolved too.
-const EXCLUDED_PACKAGES = new Set(["@commercetools/nimbus-tokens"]);
-
 const DIM = "\x1b[2m";
 const BOLD = "\x1b[1m";
 const RED = "\x1b[31m";
@@ -89,7 +73,7 @@ async function discoverPackages() {
     throw new Error(`pnpm m ls exited ${code}\n${stderr}`);
   }
   return JSON.parse(stdout)
-    .filter((w) => w.private !== true && !EXCLUDED_PACKAGES.has(w.name))
+    .filter((w) => w.private !== true)
     .map((w) => ({ name: w.name, dir: w.path }))
     .sort((a, b) => a.name.localeCompare(b.name));
 }

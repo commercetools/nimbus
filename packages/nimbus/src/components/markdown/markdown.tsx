@@ -32,6 +32,8 @@ import type { ReactMarkdownRenderOptions } from "./markdown.internal-types";
  * @supportsStyleProps
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/content/markdown}
+ *
+ * @beta This component is in beta and may change in future minor versions.
  */
 export const Markdown = (props: MarkdownProps) => {
   const {

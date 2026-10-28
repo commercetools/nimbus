@@ -65,6 +65,8 @@ import {
  *   </Steps.NextTrigger>
  * </Steps.Root>
  * ```
+ *
+ * @beta This component is in beta and may change in future minor versions.
  */
 export const Steps = {
   /**

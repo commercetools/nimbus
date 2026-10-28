@@ -48,26 +48,18 @@ known issues to triage separately.
 ## What Gets Tracked
 
 The list is derived at runtime from `pnpm m ls`: every workspace that is not
-marked `"private": true`, minus the entries in `EXCLUDED_PACKAGES`. Today that
-leaves four packages:
+marked `"private": true`. Today that leaves five packages:
 
 - **`@commercetools/nimbus`** — Core component library.
 - **`@commercetools/nimbus-icons`** — SVG icons as React components.
 - **`@commercetools/nimbus-design-token-ts-plugin`** — TypeScript language
   service plugin.
 - **`@commercetools/nimbus-mcp`** — MCP server.
-
-**Excluded (temporarily):** `@commercetools/nimbus-tokens` is currently excluded
-because the published tarball has pre-existing shape issues (preconstruct emits
-`.cjs.js` under a `"type": "module"` package, breaking CJS resolution at
-runtime; the `exports` map has no `types` condition). Tracked in
-[#1509](https://github.com/commercetools/nimbus/issues/1509) — once that lands,
-the package is removed from `EXCLUDED_PACKAGES`.
+- **`@commercetools/nimbus-tokens`** — Design tokens (CSS, TypeScript and Chakra
+  theme tokens).
 
 To add or remove a tracked package, flip `"private"` in the workspace's
-`package.json` — the script derives the list at runtime from `pnpm m ls`. To
-skip a publishable package temporarily, add it to `EXCLUDED_PACKAGES` at the top
-of `scripts/check-package-shape.mjs` with a link to the tracking issue.
+`package.json` — the script derives the list at runtime from `pnpm m ls`.
 
 ## The Tools
 
