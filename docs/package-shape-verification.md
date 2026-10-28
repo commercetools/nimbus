@@ -47,8 +47,10 @@ known issues to triage separately.
 
 ## What Gets Tracked
 
-The check mirrors the `fixed` group in `.changeset/config.json` — every package
-the changeset bot ships in a release. All five are linted:
+The list is derived at runtime from `pnpm m ls`: every workspace that is not
+marked `"private": true`. That is the set the changeset bot ships in a release
+(the `fixed` group in `.changeset/config.json`). Today these packages are
+tracked:
 
 - **`@commercetools/nimbus`** — Core component library.
 - **`@commercetools/nimbus-icons`** — SVG icons as React components.
@@ -58,8 +60,8 @@ the changeset bot ships in a release. All five are linted:
 - **`@commercetools/nimbus-tokens`** — Design tokens (CSS, TypeScript and Chakra
   theme tokens).
 
-To add or remove a tracked package, edit the `PACKAGES` array at the top of
-`scripts/check-package-shape.mjs`.
+To add or remove a tracked package, flip `"private"` in the workspace's
+`package.json` — the script derives the list at runtime from `pnpm m ls`.
 
 ## The Tools
 
