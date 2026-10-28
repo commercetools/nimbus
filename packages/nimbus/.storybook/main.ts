@@ -96,6 +96,16 @@ const config: StorybookConfig = {
     }
 
     return mergeConfig(config, {
+      define: {
+        // React Stately's virtualizer renders every item when NODE_ENV is
+        // "test", unless `process.env.VIRT_ON` is set
+        // (react-stately/dist/private/virtualizer/Virtualizer.mjs,
+        // `getVisibleLayoutInfos`). Vitest replaces NODE_ENV with "test" but
+        // not VIRT_ON, so the browser evaluates `process` and throws. Defining
+        // it keeps virtualization on, so Virtualizer stories test real
+        // virtualized rendering.
+        "process.env.VIRT_ON": JSON.stringify("true"),
+      },
       resolve: {
         alias: isDevelopment
           ? {

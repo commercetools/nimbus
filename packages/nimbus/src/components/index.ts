@@ -89,3 +89,4 @@ export * from "./splitter";
 export * from "./tree";
 export * from "./drop-zone";
 export * from "./popover";
+export * from "./virtualizer";
