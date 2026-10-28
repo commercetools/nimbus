@@ -73,6 +73,20 @@ Guidelines for the summary body:
 - When a single changeset spans multiple components, group the bullets under
   per-component subheaders.
 
+## Pre-release components
+
+When a component's `lifecycleState` is `Experimental`, `Alpha` or `Beta` (see
+[ADR 0003](../packages/nimbus/src/docs/architecture-decisions/adr-0003-component-lifecycle-states.mdx)),
+write the state in parentheses after the component name:
+
+```md
+`Slider` (Beta): added a `step` prop.
+```
+
+Use the same state name as the `lifecycleState` in the component's `.mdx` file.
+When a component changes state, say so in its own line, for example
+`` `Slider`: promoted from Beta to Stable. ``.
+
 ## Bump type
 
 - **patch** — bug fix only. No API changes, no new behavior, no new exports.
