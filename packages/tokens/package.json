@@ -6,7 +6,10 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/commercetools-nimbus-tokens.esm.js",
+      "import": {
+        "types": "./dist/commercetools-nimbus-tokens.d.mts",
+        "default": "./dist/commercetools-nimbus-tokens.esm.js"
+      },
       "require": {
         "types": "./dist/commercetools-nimbus-tokens.d.cts",
         "default": "./dist/commercetools-nimbus-tokens.cjs"

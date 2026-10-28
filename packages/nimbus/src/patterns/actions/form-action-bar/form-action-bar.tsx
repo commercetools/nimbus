@@ -23,6 +23,8 @@ import type { FormActionBarProps } from "./form-action-bar.types";
  *   isSaveLoading={isSaving}
  * />
  * ```
+ *
+ * @beta This component is in beta and may change in future minor versions.
  */
 export const FormActionBar = ({
   onSave,

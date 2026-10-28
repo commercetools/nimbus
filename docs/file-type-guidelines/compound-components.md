@@ -551,6 +551,9 @@ For comprehensive type patterns and examples for compound components, see:
       function**
 - [ ] **`@supportsStyleProps` JSDoc tag added in implementation files** (e.g.,
       `menu.trigger.tsx`); no barrel tag needed
+- [ ] **Pre-release compound components carry `@experimental`, `@alpha` or
+      `@beta` on the namespace export** (see
+      [Lifecycle State Tag](./main-component.md#lifecycle-state-tag))
 
 ### Standard Patterns
 

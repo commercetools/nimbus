@@ -16,6 +16,8 @@ import type { RangeSliderProps } from "./range-slider.types";
  * anonymous. The control as a whole still needs an accessible name of its
  * own too: provide an `aria-label` (or use inside `FormField`), same as
  * `Slider`.
+ *
+ * @beta This component is in beta and may change in future minor versions.
  */
 export const RangeSlider = (props: RangeSliderProps) => {
   // SliderBaseProps intentionally widens value/onChange to `number | number[]`
