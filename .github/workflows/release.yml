@@ -1,23 +1,29 @@
 name: Release
 
+# Pushes to main release. A push to any other branch publishes a PR canary only
+# when its head commit message contains [publish-preview]; otherwise every job is
+# skipped. npm trusted publishing (OIDC) rejects publishes from issue_comment
+# runs, which is why canaries start from a push instead of a PR comment.
 on:
   push:
     branches:
-      - main
-  issue_comment:
-    types: [created]
+      - "**"
   workflow_dispatch:
 
 permissions:
-  id-token: write
   contents: read
-  pull-requests: write
 
 jobs:
   release:
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if:
+      github.event_name == 'workflow_dispatch' || github.ref ==
+      'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
 
     steps:
       # Get GitHub token via the CT Changesets App
@@ -64,7 +70,8 @@ jobs:
 
       # Keep this action's major version in step with @changesets/cli's: v1
       # cannot read v3's publish output and silently skips tags and releases.
-      - name: Creating release pull request or publishing release to npm registry
+      - name:
+          Creating release pull request or publishing release to npm registry
         id: changesets
         uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
@@ -101,7 +108,8 @@ jobs:
 
       # Publish canary releases only if the packages weren't published already
       - name: Regenerate GitHub token for canary
-        if: steps.changesets.outputs.published != 'true' && github.ref ==
+        if:
+          steps.changesets.outputs.published != 'true' && github.ref ==
           'refs/heads/main'
         id: generate_github_token_canary
         uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
@@ -110,7 +118,8 @@ jobs:
           private_key: ${{ secrets.CT_CHANGESETS_APP_PEM }}
 
       - name: Publishing canary releases to npm registry
-        if: steps.changesets.outputs.published != 'true' && github.ref ==
+        if:
+          steps.changesets.outputs.published != 'true' && github.ref ==
           'refs/heads/main'
         run: |
           set -euo pipefail
@@ -130,44 +139,23 @@ jobs:
 
   canary-from-pr:
     if: >
-      github.event_name == 'issue_comment' &&
-      github.event.issue.pull_request &&
-      contains(github.event.comment.body, '[/deploy-canary]')
+      github.event_name == 'push' && github.ref != 'refs/heads/main' &&
+      contains(github.event.head_commit.message, '[publish-preview]')
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    concurrency:
+      group: canary-${{ github.ref }}
+      cancel-in-progress: false
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
 
     steps:
-      - name: Get PR branch
-        id: pr
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
-        with:
-          script: |
-            const pr = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-            });
-            const branch = pr.data.head.ref;
-            const sanitized = branch.replace(/[^a-zA-Z0-9-]/g, '-').slice(0, 40);
-            core.setOutput('ref', branch);
-            core.setOutput('sha', pr.data.head.sha);
-            core.setOutput('tag', sanitized);
-
-      - name: React to comment
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
-        with:
-          script: |
-            await github.rest.reactions.createForIssueComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              comment_id: context.payload.comment.id,
-              content: 'rocket',
-            });
-
-      - name: Checkout PR branch
+      - name: Checkout pushed commit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          ref: ${{ steps.pr.outputs.ref }}
+          ref: ${{ github.sha }}
 
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
@@ -197,35 +185,53 @@ jobs:
         id: publish
         run: |
           set -euo pipefail
-          SNAPSHOT_TAG="canary-${{ steps.pr.outputs.tag }}"
+          # Branch names reach the shell through env, never through ${{ }}.
+          SNAPSHOT_TAG="canary-$(printf '%s' "$BRANCH" | sed 's/[^a-zA-Z0-9-]/-/g' | cut -c1-40)"
           # v3 exits 1 with no changesets; say why rather than leaking that.
           if [ -z "$(find .changeset -maxdepth 1 -name '*.md' ! -name 'README.md' -print -quit)" ]; then
-            echo "::error::This PR has no changeset, so there is nothing to publish as a canary. Add one with 'pnpm changeset'."
+            echo "::error::This branch has no changeset, so there is nothing to publish as a canary. Add one with 'pnpm changeset'."
             exit 1
           fi
           pnpm changeset version --snapshot "$SNAPSHOT_TAG"
-          pnpm changeset publish --tag canary 2>&1 | tee /tmp/publish-output.txt
+          pnpm changeset publish --tag canary 2>&1 | tee "$RUNNER_TEMP/publish-output.txt"
 
-          VERSION=$(grep -oP '@commercetools/nimbus@\K[^\s]+' /tmp/publish-output.txt | head -1)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          VERSION=$(grep -oP '@commercetools/nimbus@\K[^\s]+' "$RUNNER_TEMP/publish-output.txt" | head -1 || true)
+          if [ -z "$VERSION" ]; then
+            echo "::error::No @commercetools/nimbus version found in the publish output, so no canary was published."
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
         env:
+          BRANCH: ${{ github.ref_name }}
           GITHUB_TOKEN: ${{ steps.generate_github_token.outputs.token }}
 
       - name: Comment with install instructions
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        env:
+          VERSION: ${{ steps.publish.outputs.version }}
         with:
           script: |
-            const version = '${{ steps.publish.outputs.version }}';
-            const sha = '${{ steps.pr.outputs.sha }}'.slice(0, 7);
+            const { owner, repo } = context.repo;
+            const { data: prs } = await github.rest.pulls.list({
+              owner,
+              repo,
+              state: 'open',
+              head: `${owner}:${context.ref.replace('refs/heads/', '')}`,
+            });
+            if (prs.length === 0) {
+              core.warning('Canary published, but no open PR exists for this branch to comment on.');
+              return;
+            }
+            const version = process.env.VERSION;
             await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
+              owner,
+              repo,
+              issue_number: prs[0].number,
               body: [
                 `### 🚀 Canary published`,
                 '',
                 `**Version:** \`${version}\``,
-                `**Commit:** \`${sha}\``,
+                `**Commit:** \`${context.sha.slice(0, 7)}\``,
                 '',
                 '```bash',
                 `pnpm add @commercetools/nimbus@${version}`,
@@ -234,4 +240,25 @@ jobs:
                 `pnpm add @commercetools/nimbus-theme-generator@${version}`,
                 '```',
               ].join('\n'),
+            });
+
+      - name: Comment on failure
+        if: failure()
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const { data: prs } = await github.rest.pulls.list({
+              owner,
+              repo,
+              state: 'open',
+              head: `${owner}:${context.ref.replace('refs/heads/', '')}`,
+            });
+            if (prs.length === 0) return;
+            const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: prs[0].number,
+              body: `### ❌ Canary publish failed\n\nCommit \`${context.sha.slice(0, 7)}\`. See the [workflow run](${runUrl}).`,
             });

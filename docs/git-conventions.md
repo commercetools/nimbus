@@ -55,6 +55,12 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 - Split logically independent changes into separate commits
 - Each commit should be atomic and pass lint/typecheck independently
 
+## Canary Marker
+
+A commit message containing `[publish-preview]` on a pushed non-`main` branch
+publishes a canary build of that branch. See
+[Publishing a PR canary](./changeset-conventions.md#publishing-a-pr-canary).
+
 ## Test Commands
 
 | Command                         | Purpose                                                |

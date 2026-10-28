@@ -408,6 +408,10 @@ pnpm changeset:version-and-format
 pnpm changeset:status
 ```
 
+To publish a canary build of a PR branch, push a commit whose message contains
+`[publish-preview]` (see
+[Publishing a PR canary](./docs/changeset-conventions.md#publishing-a-pr-canary)).
+
 For changeset content (what to write, what to leave out, audience), see
 [Changeset Conventions](./docs/changeset-conventions.md). Changesets are release
 notes for consumers — describe features and bug fixes from the consumer's
