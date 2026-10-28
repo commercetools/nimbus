@@ -35,6 +35,8 @@ import {
  *   </Tree.Item>
  * </Tree.Root>
  * ```
+ *
+ * @beta This component is in beta and may change in future minor versions.
  */
 export const Tree = {
   /**
