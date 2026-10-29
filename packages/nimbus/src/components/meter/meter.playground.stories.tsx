@@ -21,21 +21,6 @@ import {
 const meta: Meta<typeof Meter.Root> = {
   title: "Playground/Meter",
   component: Meter.Root,
-  parameters: {
-    a11y: {
-      config: {
-        rules: [
-          {
-            // Same exception as the main Meter stories: axe reads React
-            // Aria's role="meter progressbar" as one invalid role and then
-            // reports the aria-value* attributes. Skip only the meter element.
-            id: "aria-allowed-attr",
-            selector: ':not([role~="meter"])',
-          },
-        ],
-      },
-    },
-  },
 };
 
 export default meta;

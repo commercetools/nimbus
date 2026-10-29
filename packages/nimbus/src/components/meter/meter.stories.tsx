@@ -96,23 +96,6 @@ const mockConsoleWarn = () => {
 const meta: Meta<typeof Meter.Root> = {
   title: "Components/Meter",
   component: Meter.Root,
-  parameters: {
-    a11y: {
-      config: {
-        rules: [
-          {
-            // React Aria renders role="meter progressbar" (progressbar is a
-            // fallback for browsers without meter support). axe's
-            // aria-allowed-attr rule reads the role list as one invalid role
-            // and then reports the aria-value* attributes as not allowed.
-            // Skip only the meter element; the rule stays on for all others.
-            id: "aria-allowed-attr",
-            selector: ':not([role~="meter"])',
-          },
-        ],
-      },
-    },
-  },
 };
 
 export default meta;
@@ -254,6 +237,12 @@ export const ValueFormatting: Story = {
         label="Custom value label"
         valueLabel="50 of 100 GB"
       />
+      <MeterWithParts
+        data-testid="empty-value-label"
+        value={60}
+        label="Empty value label"
+        valueLabel=""
+      />
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
@@ -276,6 +265,15 @@ export const ValueFormatting: Story = {
       await expect(getValueText(meter)).toHaveTextContent("50 of 100 GB");
       await expect(meter).toHaveAttribute("aria-valuetext", "50 of 100 GB");
     });
+
+    await step(
+      "An empty valueLabel counts as not set: the visible and announced text match",
+      async () => {
+        const meter = canvas.getByTestId("empty-value-label");
+        await expect(getValueText(meter)).toHaveTextContent("60%");
+        await expect(meter).toHaveAttribute("aria-valuetext", "60%");
+      }
+    );
   },
 };
 
@@ -291,7 +289,6 @@ export const CustomValueContent: Story = {
       <Meter.Root
         data-testid="with-value-label"
         value={50}
-        formatOptions={{}}
         valueLabel="50 of 100 GB"
       >
         <Meter.Label>Storage</Meter.Label>
@@ -305,6 +302,11 @@ export const CustomValueContent: Story = {
         <Meter.Value>
           <strong>3</strong> of 10 seats
         </Meter.Value>
+        <Meter.Track />
+      </Meter.Root>
+      <Meter.Root data-testid="empty-children" value={40}>
+        <Meter.Label>Empty children</Meter.Label>
+        <Meter.Value>{false}</Meter.Value>
         <Meter.Track />
       </Meter.Root>
     </Stack>
@@ -339,15 +341,26 @@ export const CustomValueContent: Story = {
       }
     );
 
+    await step(
+      "Children that render nothing leave the formatted total in place",
+      async () => {
+        const meter = canvas.getByTestId("empty-children");
+        await expect(getValueText(meter)).toHaveTextContent("40%");
+        await expect(meter).toHaveAttribute("aria-valuetext", "40%");
+      }
+    );
+
     await step("Children without valueLabel log one warning", async () => {
-      // Only the second meter: the first one has a valueLabel
+      // Only the second meter: the first one has a valueLabel, and the third
+      // one has no children that render anything
       await expect(valueWarnings()).toHaveLength(1);
     });
   },
 };
 
 /**
- * Values outside the range are clamped
+ * Values outside the range are clamped, including `Infinity` (for example
+ * `used / limit` with a limit of 0)
  */
 export const Clamping: Story = {
   render: () => (
@@ -361,6 +374,17 @@ export const Clamping: Story = {
         maxValue={50}
         label="Empty range"
       />
+      <MeterWithParts
+        data-testid="infinity"
+        value={Infinity}
+        label="Infinity"
+      />
+      <MeterWithParts
+        data-testid="negative-infinity"
+        value={-Infinity}
+        label="Negative infinity"
+      />
+      <MeterWithParts data-testid="not-a-number" value={NaN} label="NaN" />
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
@@ -381,6 +405,81 @@ export const Clamping: Story = {
     await step("An empty range fills 0% without errors", async () => {
       const meter = canvas.getByTestId("empty-range");
       await expect(getSegments(meter)).toHaveLength(0);
+    });
+
+    await step("Infinity fills 100%", async () => {
+      const meter = canvas.getByTestId("infinity");
+      await expect(getSegments(meter)[0].style.width).toBe("100%");
+      await expect(meter).toHaveAttribute("aria-valuenow", "100");
+      await expect(getValueText(meter)).toHaveTextContent("100%");
+    });
+
+    await step("-Infinity and NaN fill 0%", async () => {
+      for (const testId of ["negative-infinity", "not-a-number"]) {
+        const meter = canvas.getByTestId(testId);
+        await expect(getSegments(meter)).toHaveLength(0);
+        await expect(meter).toHaveAttribute("aria-valuenow", "0");
+        await expect(getValueText(meter)).toHaveTextContent("0%");
+      }
+    });
+  },
+};
+
+/**
+ * Decimal values keep their exact value: the announced value has no rounding
+ * errors, and a threshold applies at its own value
+ */
+export const DecimalValues: Story = {
+  render: () => (
+    <Stack direction="column" gap="400" alignItems="stretch">
+      <MeterWithParts
+        data-testid="threshold-boundary"
+        label="Value equals the threshold"
+        value={0.1}
+        maxValue={1}
+        formatOptions={{ style: "decimal", maximumFractionDigits: 20 }}
+        thresholds={[{ from: 0.1, colorPalette: "warning" }]}
+      />
+      <MeterWithParts
+        data-testid="decimal-range"
+        label="Decimal range"
+        value={0.3}
+        minValue={0.1}
+        maxValue={0.7}
+        formatOptions={{ style: "decimal", maximumFractionDigits: 20 }}
+      />
+      {/* Zero-size color reference, out of the layout */}
+      <Box
+        data-testid="reference-warning"
+        bg="warning.9"
+        position="absolute"
+        width="0"
+        height="0"
+      />
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("The announced value is the exact value", async () => {
+      const meter = canvas.getByTestId("threshold-boundary");
+      await expect(meter).toHaveAttribute("aria-valuenow", "0.1");
+      await expect(meter).toHaveAttribute("aria-valuetext", "0.1");
+      await expect(getValueText(meter)).toHaveTextContent("0.1");
+    });
+
+    await step("A threshold applies at its own value", async () => {
+      const [segment] = getSegments(canvas.getByTestId("threshold-boundary"));
+      const reference = canvas.getByTestId("reference-warning");
+      await expect(getComputedStyle(segment).backgroundColor).toBe(
+        getComputedStyle(reference).backgroundColor
+      );
+    });
+
+    await step("A decimal range keeps the exact value", async () => {
+      const meter = canvas.getByTestId("decimal-range");
+      await expect(meter).toHaveAttribute("aria-valuenow", "0.3");
+      await expect(getValueText(meter)).toHaveTextContent("0.3");
     });
   },
 };
@@ -548,6 +647,15 @@ export const SegmentEdgeCases: Story = {
         ]}
       />
       <MeterWithParts data-testid="empty" label="Empty" segments={[]} />
+      <MeterWithParts
+        data-testid="exact-fit"
+        label="Exact fit"
+        maxValue={0.3}
+        segments={[
+          { id: "a", label: "A", value: 0.1 },
+          { id: "b", label: "B", value: 0.2 },
+        ]}
+      />
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
@@ -621,6 +729,22 @@ export const SegmentEdgeCases: Story = {
       await expect(getSegments(meter)).toHaveLength(0);
       await expect(meter).toHaveAttribute("aria-valuenow", "0");
     });
+
+    await step(
+      "Floating-point rounding errors are not an overflow",
+      async () => {
+        // 0.1 + 0.2 is 0.30000000000000004. Only the Overflow meter may log
+        // the overflow warning, so it is logged once in total.
+        const meter = canvas.getByTestId("exact-fit");
+        await expect(getSegments(meter)).toHaveLength(2);
+        const messages = (console.warn as ReturnType<typeof fn>).mock.calls.map(
+          ([message]) => String(message)
+        );
+        await expect(
+          messages.filter((message) => message.includes("exceeds the range"))
+        ).toHaveLength(1);
+      }
+    );
   },
 };
 
@@ -664,15 +788,15 @@ export const SemanticColors: Story = {
   },
 };
 
-/**
- * Thresholds: the fill color follows the threshold the value reaches
- */
 const storageThresholds = [
   // Out of order on purpose: the order must not matter
   { from: 95, colorPalette: "critical" as const },
   { from: 80, colorPalette: "warning" as const },
 ];
 
+/**
+ * Thresholds: the fill color follows the threshold the value reaches
+ */
 export const Thresholds: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
@@ -687,11 +811,13 @@ export const Thresholds: Story = {
           thresholds={storageThresholds}
         />
       ))}
+      {/* Zero-size color references, out of the layout so they leave no gap */}
       {(["primary", "warning", "critical"] as const).map((palette) => (
         <Box
           key={palette}
           data-testid={`reference-${palette}`}
           bg={`${palette}.9`}
+          position="absolute"
           width="0"
           height="0"
         />
@@ -1048,9 +1174,9 @@ export const RTLSupport: Story = {
 /**
  * ReducedMotion: the width transition of segments is removed under
  * `prefers-reduced-motion: reduce`. A CSS media query cannot be mocked, so
- * the play function asserts that the compiled stylesheet ships the rule.
- * (The computed style can't be asserted: the test harness disables all
- * transitions globally.) Not snapshotted: a transition has no static visual.
+ * the play function asserts that the compiled stylesheet ships the rule, not
+ * the computed style of the reduced-motion state. Not snapshotted: a
+ * transition has no static visual.
  */
 export const ReducedMotion: Story = {
   render: () => <MeterWithParts value={50} label="Reduced motion" />,
@@ -1129,6 +1255,9 @@ export const Layouts: Story = {
       await expect(box(label).bottom).toBeLessThanOrEqual(
         box(getTrack(meter)).top
       );
+      await expect(box(getValueText(meter)!).bottom).toBeLessThanOrEqual(
+        box(getTrack(meter)).top
+      );
     });
 
     await step("Inline: label, track and value share one line", async () => {
@@ -1138,8 +1267,11 @@ export const Layouts: Story = {
       const value = box(getValueText(meter)!);
       await expect(label.right).toBeLessThanOrEqual(bar.left);
       await expect(bar.right).toBeLessThanOrEqual(value.left);
-      await expect(label.top).toBeLessThan(bar.bottom);
-      await expect(label.bottom).toBeGreaterThan(bar.top);
+      // Each text overlaps the bar vertically, so all three are on one line
+      for (const text of [label, value]) {
+        await expect(text.top).toBeLessThan(bar.bottom);
+        await expect(text.bottom).toBeGreaterThan(bar.top);
+      }
     });
 
     await step("Stacked: the order of the parts does not matter", async () => {
@@ -1190,6 +1322,19 @@ export const Layouts: Story = {
  */
 export const MissingParts: Story = {
   beforeEach: mockConsoleWarn,
+  parameters: {
+    a11y: {
+      // Set in `options`, not in `config.rules`: a story's own `config.rules`
+      // would replace the global rule list (see `.storybook/preview.tsx`)
+      options: {
+        rules: {
+          // The first meter has no name on purpose, to check React Aria's
+          // warning. Every other rule stays on for this story.
+          "aria-meter-name": { enabled: false },
+        },
+      },
+    },
+  },
   render: () => (
     <Stack direction="column" gap="600" alignItems="stretch">
       <Meter.Root value={40}>
