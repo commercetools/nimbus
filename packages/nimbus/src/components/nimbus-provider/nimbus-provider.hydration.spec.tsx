@@ -1,7 +1,7 @@
 import { act } from "react";
-import { hydrateRoot } from "react-dom/client";
+import { hydrateRoot, type Root } from "react-dom/client";
 import { renderToString } from "react-dom/server";
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode-provider";
 
 // NimbusColorModeProvider is rendered directly: the full NimbusProvider
@@ -14,8 +14,27 @@ const tree = (
   </NimbusColorModeProvider>
 );
 
+type ActGlobal = { IS_REACT_ACT_ENVIRONMENT?: boolean };
+
 describe("NimbusColorModeProvider - hydration", () => {
-  afterEach(() => {
+  let root: Root | undefined;
+  let previousActEnvironment: boolean | undefined;
+
+  beforeEach(() => {
+    // Restored in afterEach so the shared (`isolate: false`) test environment
+    // is not changed for other test files.
+    previousActEnvironment = (globalThis as ActGlobal).IS_REACT_ACT_ENVIRONMENT;
+    (globalThis as ActGlobal).IS_REACT_ACT_ENVIRONMENT = true;
+  });
+
+  afterEach(async () => {
+    // Unmount so next-themes removes its `storage` listener from `window`.
+    // Clearing the DOM alone does not run React effect cleanup.
+    await act(async () => {
+      root?.unmount();
+    });
+    root = undefined;
+    (globalThis as ActGlobal).IS_REACT_ACT_ENVIRONMENT = previousActEnvironment;
     vi.restoreAllMocks();
     document.body.innerHTML = "";
   });
@@ -40,12 +59,9 @@ describe("NimbusColorModeProvider - hydration", () => {
       .spyOn(console, "error")
       .mockImplementation(() => {});
     const onRecoverableError = vi.fn();
-    (
-      globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }
-    ).IS_REACT_ACT_ENVIRONMENT = true;
 
     await act(async () => {
-      hydrateRoot(container, tree, { onRecoverableError });
+      root = hydrateRoot(container, tree, { onRecoverableError });
     });
 
     expect(onRecoverableError).not.toHaveBeenCalled();
