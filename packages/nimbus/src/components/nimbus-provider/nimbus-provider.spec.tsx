@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { NimbusProvider } from "./nimbus-provider";
 import { Region, useRegion } from "@/components/region";
 
@@ -64,4 +64,82 @@ describe("NimbusProvider - Ambient Region scope", () => {
     // NimbusProvider supplies the Region scope.
     expect(getByText("projected content")).toBeInTheDocument();
   });
+});
+
+describe("NimbusProvider - theme script", () => {
+  // Restores the console.error spy even when an assertion fails, because
+  // unit tests share one environment (`isolate: false`).
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  // The theme-initialization script that next-themes renders. React 19.3
+  // logs "Encountered a script tag" for it when it is not a data block.
+  const getThemeScript = (container: HTMLElement) =>
+    container.querySelector("script");
+
+  it("renders the theme script as a data block on the client", () => {
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    const { container } = render(
+      <NimbusProvider loadFonts={false}>
+        <div>Test content</div>
+      </NimbusProvider>
+    );
+
+    const script = getThemeScript(container);
+    expect(script).toBeInTheDocument();
+    expect(script).toHaveAttribute("type", "text/plain");
+
+    // Fails on React >= 19.3 when the script is not a data block
+    const scriptWarnings = consoleError.mock.calls.filter((args) =>
+      String(args[0]).includes("Encountered a script tag")
+    );
+    expect(scriptWarnings).toHaveLength(0);
+  });
+
+  it("merges consumer scriptProps and lets a consumer type win", () => {
+    const { container } = render(
+      <NimbusProvider
+        loadFonts={false}
+        scriptProps={{ type: "application/json", "data-custom": "yes" }}
+      >
+        <div>Test content</div>
+      </NimbusProvider>
+    );
+
+    const script = getThemeScript(container);
+    expect(script).toHaveAttribute("type", "application/json");
+    expect(script).toHaveAttribute("data-custom", "yes");
+  });
+
+  it("keeps the data-block type when consumer scriptProps omit type", () => {
+    const { container } = render(
+      <NimbusProvider loadFonts={false} scriptProps={{ "data-custom": "yes" }}>
+        <div>Test content</div>
+      </NimbusProvider>
+    );
+
+    const script = getThemeScript(container);
+    expect(script).toHaveAttribute("type", "text/plain");
+    expect(script).toHaveAttribute("data-custom", "yes");
+  });
+
+  it.each([
+    ["undefined", undefined],
+    ["an empty string", ""],
+  ])(
+    "falls back to the data-block type when consumer type is %s",
+    (_, type) => {
+      const { container } = render(
+        <NimbusProvider loadFonts={false} scriptProps={{ type }}>
+          <div>Test content</div>
+        </NimbusProvider>
+      );
+
+      expect(getThemeScript(container)).toHaveAttribute("type", "text/plain");
+    }
+  );
 });
