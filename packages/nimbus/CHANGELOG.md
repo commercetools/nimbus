@@ -1,5 +1,30 @@
 # @commercetools/nimbus
 
+## 3.8.0
+
+### Minor Changes
+
+- [#2088](https://github.com/commercetools/nimbus/pull/2088)
+  [`e6daed9`](https://github.com/commercetools/nimbus/commit/e6daed929317ce715553d3aa0fd20ed1be1c708e)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `DataTable`: two rows
+  with the same `id` now throw an error outside production builds, instead of
+  logging a warning. The error names the duplicated `id`. This also applies when
+  your tests run, so give every row a unique `id` in test data too. Production
+  builds are not affected. An empty or missing row `id` still logs a development
+  warning.
+
+  Update React Aria packages: `react-aria` 3.52.1 → 3.53.1,
+  `react-aria-components` 1.21.1 → 1.22.1 and `react-stately` 3.50.0 → 3.51.0.
+
+### Patch Changes
+
+- [#2096](https://github.com/commercetools/nimbus/pull/2096)
+  [`a4d7673`](https://github.com/commercetools/nimbus/commit/a4d7673536444038accd098563b3430cd997f50c)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Fix webpack builds that
+  use `strictExportPresence: true` (such as `mc-scripts` for Merchant Center
+  custom applications). Since 3.7.0 they failed with
+  `export 'module.exports' (imported as 'i') was not found in 'react'`.
+
 ## 3.7.0
 
 ### Minor Changes

@@ -139,6 +139,9 @@ const columns: DataTableColumnItem[] = [
 Each row must have a unique `id` property. It is the key for selection,
 `disabledKeys`, expansion and pinning. To identify rows by another property,
 set `id` in the row data, for example `rows.map((v) => ({ ...v, id: v.sku }))`.
+Outside production builds, two rows with the same `id` make `DataTable` throw an
+error that names the duplicated `id`. This also applies when your tests run. A
+row with an empty or missing `id` logs a warning that names the row.
 Additional properties are accessed via column `accessor` functions:
 
 ```tsx

@@ -617,10 +617,33 @@ export const StackedModalPages: Story = {
     });
 
     await step("Close remaining levels via Escape", async () => {
+      // Focus must be restored into an open modal page before pressing Escape,
+      // otherwise the key event lands on <body> and is ignored
+      await waitFor(
+        () => {
+          expect(
+            canvas
+              .getAllByRole("dialog")
+              .some((dialog) => dialog.contains(document.activeElement))
+          ).toBe(true);
+        },
+        { timeout: 3000 }
+      );
       await userEvent.keyboard("{Escape}");
       await waitFor(
         () => {
           expect(canvas.getAllByRole("dialog")).toHaveLength(1);
+        },
+        { timeout: 3000 }
+      );
+
+      // Focus must be restored into the remaining modal page before the next
+      // Escape, otherwise the key event lands on <body> and is ignored
+      await waitFor(
+        () => {
+          expect(canvas.getByRole("dialog")).toContainElement(
+            document.activeElement as HTMLElement
+          );
         },
         { timeout: 3000 }
       );

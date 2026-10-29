@@ -1,12 +1,15 @@
 {
   "name": "@commercetools/nimbus-tokens",
-  "version": "3.7.0",
+  "version": "3.8.0",
   "main": "dist/commercetools-nimbus-tokens.cjs.js",
   "module": "dist/commercetools-nimbus-tokens.esm.js",
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/commercetools-nimbus-tokens.esm.js",
+      "import": {
+        "types": "./dist/commercetools-nimbus-tokens.d.mts",
+        "default": "./dist/commercetools-nimbus-tokens.esm.js"
+      },
       "require": {
         "types": "./dist/commercetools-nimbus-tokens.d.cts",
         "default": "./dist/commercetools-nimbus-tokens.cjs"

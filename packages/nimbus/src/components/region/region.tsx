@@ -27,6 +27,8 @@ import { RegionProvider } from "./region.provider";
  * const { Region: Sidebar } = useRegion("sidebar");
  * return <Sidebar>{content}</Sidebar>;
  * @supportsStyleProps
+ *
+ * @beta This component is in beta and may change in future minor versions.
  */
 export const Region = Object.assign(RegionTarget, {
   /**

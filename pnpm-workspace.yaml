@@ -87,7 +87,6 @@ allowBuilds:
 overrides:
   rollup: "catalog:tooling"
   "@babel/runtime": "catalog:tooling"
-  prismjs: "^1.30.0"
   typescript: "catalog:tooling"
   react-aria: "catalog:react"
   react-aria-components: "catalog:react"
@@ -138,6 +137,11 @@ overrides:
   hono: ">=4.13.5"
   esbuild: ">=0.28.1"
   shell-quote: ">=1.11.0"
+  # >=2.14.2 fixes GHSA-587h-7wmj-h5pm (fs.existsSync() check bypassed on
+  # Windows), GHSA-698v-4r3x-3vcv (escapeCmdArgs() does not escape % on
+  # Windows) and GHSA-r825-w8mm-5pxw (editor CLI flag misread as a command).
+  # @changesets/cli 3.0.3 allows it (^2.14.1) but the lockfile held 2.14.1.
+  launch-editor: ">=2.14.2"
   # >=2.0.8 fixes GHSA-jqcg-44mw-7w3h (IP spoofing via IPv4-mapped IPv6 trust
   # subnet). express 5.2.1 allows it (^2.0.7) but the lockfile held 2.0.7.
   proxy-addr: ">=2.0.8"
@@ -160,13 +164,21 @@ overrides:
   # percent-decoding), GHSA-f65p-4m7j-42xc (malformed IPv6 normalization),
   # GHSA-5jgf-p345-68v8 (skipped IDN canonicalization), GHSA-qw65-cvwx-89v3
   # (unvalidated port in serialize) and GHSA-hrr3-gc8f-f4qj (host case
-  # normalization via percent-encoded octets).
-  fast-uri: ">=4.1.5"
+  # normalization via percent-encoded octets). >=4.2.3 fixes
+  # GHSA-w74x-v6f9-j3xg (scheme spoofing via percent-encoded scheme),
+  # GHSA-wjr9-j795-jxcr (host confusion via WHATWG host canonicalization),
+  # GHSA-xhq7-xmqj-769h (path equivalence in relative reference
+  # normalization) and GHSA-333x-w4r6-6crp (scheme injection via an
+  # unescaped first-segment colon). ajv 8 still asks for ^3.0.1; this
+  # override moves it to 4.x.
+  fast-uri: ">=4.2.3"
   # immutable <4.3.9 — GHSA-xvcm-6775-5m9r / GHSA-v56q-mh7h-f735 (hash-collision
   # algorithmic-complexity DoS in Immutable.Map/Set). Capped <5 to stay within 4.x.
   immutable: ">=4.3.9 <5"
-  # body-parser 2.0.0–2.2.x DoS fixed in 2.3.0 (Dependabot #147). Scoped to 2.x.
-  "body-parser@2": ">=2.3.0"
+  # body-parser 2.0.0–2.2.x DoS fixed in 2.3.0 (Dependabot #147); >=2.4.0
+  # fixes GHSA-27r3-jxmh-p828 (DoS via trailing bytes after a compressed
+  # request body). express 5.2.1 allows it (^2.2.1). Scoped to 2.x.
+  "body-parser@2": ">=2.4.0"
   # >=10.7.1 fixes the SSRF / trust-boundary bypasses GHSA-22jq-vg5j-6vgg
   # (IPv4-mapped/NAT64 misclassification), GHSA-4xrf-jv44-h6hh (CIDR suffix
   # suppresses special-use classification), GHSA-mwp4-54f8-5fhr (leading-zero
@@ -175,7 +187,10 @@ overrides:
   # GHSA-rpw4-54j3-4h4q (isLinkLocal() checks fe80::/64, not fe80::/10) and
   # GHSA-j6r3-76f7-8jcv (isInSubnet() compares across address families), plus
   # GHSA-h3mg-xc3c-68pw (unbounded parse diagnostic stalls on long input).
-  ip-address: ">=10.7.1"
+  # >=10.7.4 fixes GHSA-rxp7-6hxx-x8q5 (Address6 matches a zone identifier
+  # in quadratic time). express-rate-limit 8.3.0 pins 10.1.0 exactly; this
+  # override moves it past that pin.
+  ip-address: ">=10.7.4"
   # >=8.5.23 fixes GHSA-r28c-9q8g-f849 and GHSA-fxqj-rqcc-2cmp — path
   # traversal in previous-source-map auto-loading, where an attacker-controlled
   # sourceMappingURL discloses arbitrary .map files (the latter completes the
@@ -185,7 +200,6 @@ overrides:
   "lodash-es@<4.18.0": ">=4.18.0"
   "ajv@>=8.0.0 <8.18.0": ">=8.18.0"
   "minimatch@>=10.0.0 <10.2.3": ">=10.2.3"
-  flatted: ">=3.4.2"
   # >=7.29.1 clears the 7.x advisory cluster: GHSA-4cwx-7wf7-3272 and
   # GHSA-jr45-8vmc-qm54 (cross-user disclosure via degenerate / whitespaced
   # Cache-Control directives), GHSA-8xcm-r25x-g524 (downstream response
@@ -196,9 +210,10 @@ overrides:
   # GHSA-pmjh-fq2x-6v4x (DoS via orphaned RetryHandler response body),
   # GHSA-8436-99hf-9mmv (caching of unsafe-method responses),
   # GHSA-2gqq-gqf2-x968 (dump interceptor truncation) and GHSA-r53p-7pc4-xj5r
-  # (response splitting via the retry interceptor).
+  # (response splitting via the retry interceptor). >=7.30.1 is the undici
+  # version Node.js ships in its October 2026 security releases (FEC-1458).
   # Capped <8: v8 is a major needing its own PR.
-  undici: ">=7.29.1 <8"
+  undici: ">=7.30.1 <8"
   "picomatch@<2.3.2": ">=2.3.2"
   "picomatch@>=4.0.0 <4.0.4": ">=4.0.4"
   "yaml@1": "1.10.3"
@@ -215,29 +230,28 @@ overrides:
 catalogs:
   tooling:
     "@figma/code-connect": ^1.5.3
-    # Held on 1.10.x: 1.11 adds a "Purpose section is still a placeholder"
-    # warning, which fails CI's `openspec validate --all --strict` for 24 specs.
-    # Move to ^1.11 once those specs have a written Purpose section.
-    "@fission-ai/openspec": ~1.10.0
+    # Exact pin: even patch releases (1.14.1, 1.14.2) added warnings that fail
+    # CI's `openspec validate --all --strict`. Bump it in its own PR.
+    "@fission-ai/openspec": 1.14.3
     eslint-plugin-react-hooks: ^7.1.1
     globals: ^17.13.0
     glob: ^13.0.6
     typescript: ~5.9.3
-    typescript-eslint: ^8.71.1
+    typescript-eslint: ^8.72.0
     tsup: ^8.5.1
     tsx: ^4.23.15
     "@arethetypeswrong/cli": ^0.18.5
     publint: ^0.3.25
     "@commercetools-frontend/ui-kit": ^20.6.7
-    "@modelcontextprotocol/inspector": ^2.10.1
+    "@modelcontextprotocol/inspector": ^2.12.0
     "@babel/core": ^7.29.7
     "@babel/runtime": ^7.29.10
     "@babel/preset-typescript": ^7.29.7
     "@eslint/js": ^10.0.1
     "@react-types/shared": ^3.37.0
-    eslint: ^10.12.0
+    eslint: ^10.13.0
     eslint-config-prettier: ^10.1.8
-    eslint-plugin-prettier: ^5.5.6
+    eslint-plugin-prettier: ^5.5.7
     eslint-plugin-react-refresh: ^0.5.7
     express-rate-limit: ^8.7.1
     prettier: ^3.9.10
@@ -246,42 +260,42 @@ catalogs:
     "@changesets/cli": 3.0.3
     "@vitejs/plugin-react": ^6.1.2
     "@vitejs/plugin-react-swc": ^4.3.3
-    vite: ^8.3.4
-    webpack: ^5.111.1
+    vite: ^8.3.5
+    webpack: ^5.112.2
     webpack-cli: ^7.2.3
     vite-bundle-analyzer: ^1.3.9
     vite-plugin-dts: ^5.1.2
-    rollup: ^4.64.5
-    "@vitest/browser": ^5.0.3
-    "@vitest/browser-playwright": ^5.0.3
-    "@vitest/coverage-v8": ^5.0.3
+    rollup: ^4.65.0
+    "@vitest/browser": ^5.0.5
+    "@vitest/browser-playwright": ^5.0.5
+    "@vitest/coverage-v8": ^5.0.5
     "@testing-library/dom": 10.4.2
     "@testing-library/jest-dom": ^7.0.1
-    "@testing-library/user-event": ^14.6.7
+    "@testing-library/user-event": ^14.6.8
     "@testing-library/react": ^16.3.3
-    playwright: 1.62.1
-    vitest: ^5.0.3
+    playwright: 1.64.1
+    vitest: ^5.0.5
     axe-core: ^4.14.0
-    "@typescript-eslint/types": ^8.71.1
-    "@typescript-eslint/typescript-estree": ^8.71.1
+    "@typescript-eslint/types": ^8.72.0
+    "@typescript-eslint/typescript-estree": ^8.72.0
     react-docgen-typescript: ^2.4.0
-    storybook: ^10.6.1
-    eslint-plugin-storybook: ^10.6.1
-    "@storybook/addon-a11y": ^10.6.1
-    "@storybook/addon-docs": ^10.6.1
-    "@storybook/addon-vitest": ^10.6.1
-    "@storybook/react-vite": ^10.6.1
+    storybook: ^10.6.3
+    eslint-plugin-storybook: ^10.6.3
+    "@storybook/addon-a11y": ^10.6.3
+    "@storybook/addon-docs": ^10.6.3
+    "@storybook/addon-vitest": ^10.6.3
+    "@storybook/react-vite": ^10.6.3
     "@vueless/storybook-dark-mode": ^10.0.8
-    "@github-ui/storybook-addon-performance-panel": ^1.3.0
-    chromatic: ^18.12.0
+    "@github-ui/storybook-addon-performance-panel": ^1.3.1
+    chromatic: ^18.13.3
     # Held on 30.0.x: jsdom 30.1 moved Blob internals to a private field, which
     # breaks vitest's jsdom URL.createObjectURL shim ("reading '_bytes'").
     # Move to ^30.1 once a vitest release fixes vitest-dev/vitest#11336.
     jsdom: ~30.0.1
     "rollup-plugin-visualizer": ^7.1.1
   react:
-    "@types/react": ^19.2.18
-    "@types/react-dom": ^19.2.4
+    "@types/react": ^19.3.0
+    "@types/react-dom": ^19.3.0
     react: ^19.0.0
     react-dom: ^19.0.0
     "@emotion/react": ^11.14.0
@@ -289,9 +303,9 @@ catalogs:
     "@chakra-ui/cli": ^3.37.0
     "@chakra-ui/react": ^3.37.0
     next-themes: ^0.4.6
-    react-aria: 3.52.1
-    react-aria-components: 1.21.1
-    react-stately: 3.50.0
+    react-aria: 3.53.1
+    react-aria-components: 1.22.1
+    react-stately: 3.51.0
     "@react-aria/interactions": 3.28.1
     "@react-aria/utils": 3.34.1
     "@react-aria/optimize-locales-plugin": 2.1.0
@@ -303,12 +317,12 @@ catalogs:
     use-debounce: ^10.1.1
   utils:
     dequal: ^2.0.3
-    dotenv: ^18.0.7
-    dompurify: ^3.4.16
+    dotenv: ^18.0.9
+    dompurify: ^3.4.17
     lodash: ^4.18.1
-    "@types/lodash": ^4.17.26
+    "@types/lodash": ^4.17.27
     "@types/node": ^26.6.5
-    zod: ^4.6.6
+    zod: ^4.6.7
     escape-html: ^1.0.3
     "@types/escape-html": ^1.0.4
     gray-matter: ^4.0.3
@@ -327,7 +341,7 @@ catalogs:
     remark-gfm: ^4.0.1
     remend: ^1.4.0
     remark: ^15.0.1
-    remark-flexible-toc: ^1.2.7
+    remark-flexible-toc: ^1.3.0
     to-vfile: ^8.0.0
   # Private docs-app pins — not published to npm. Exact versions (no ^ or ~) so
   # Renovate updates are explicit PRs rather than silent range expansion.
@@ -337,7 +351,7 @@ catalogs:
     "@types/mdx": 2.0.14
     "@types/react-syntax-highlighter": 15.5.13
     "@types/slug": 5.0.9
-    chokidar: 5.0.0
+    chokidar: 6.0.0
     fuse.js: 7.5.0
     github-slugger: 2.0.0
     jotai: 3.0.1

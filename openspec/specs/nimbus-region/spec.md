@@ -1,7 +1,8 @@
 # nimbus-region Specification
 
 ## Purpose
-TBD - created by archiving change add-region-primitive. Update Purpose after archive.
+
+Lets a component render content in a named place elsewhere in the layout, outside its own position in the component tree.
 
 ## Requirements
 

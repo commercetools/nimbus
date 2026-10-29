@@ -1,7 +1,8 @@
 # nimbus-skeleton Specification
 
 ## Purpose
-TBD - created by archiving change add-skeleton-component. Update Purpose after archive.
+
+Holds the place of content while it loads, so that the page does not shift when the content appears.
 
 ## Requirements
 
