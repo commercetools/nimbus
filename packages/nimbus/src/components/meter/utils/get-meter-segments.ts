@@ -1,10 +1,19 @@
 /**
+ * Relative size of floating-point rounding errors that do not count as an
+ * overflow: `0.1 + 0.2` is `0.30000000000000004`, which is not more than `0.3`
+ */
+const OVERFLOW_TOLERANCE = 1e-9;
+
+/**
  * Result of {@link getMeterSegments}.
  */
 export type MeterSegmentsGeometry<T> = {
   /** Sum of all clamped segment amounts (never larger than the range) */
   total: number;
-  /** Whether the segment amounts add up to more than the range */
+  /**
+   * Whether the segment amounts add up to more than the range. Rounding
+   * errors of floating-point numbers are not an overflow.
+   */
   hasOverflow: boolean;
   /** Whether at least one segment has a negative amount */
   hasNegative: boolean;
@@ -21,9 +30,10 @@ export type MeterSegmentsGeometry<T> = {
  * Calculates how segments of a meter are drawn inside its track.
  *
  * Each segment value is an amount counted from `minValue`. Segments are placed
- * one after another; negative or non-finite amounts count as `0`, and the
- * segments are cut once the range between `minValue` and `maxValue` is full.
- * An empty or inverted range draws nothing.
+ * one after another. Negative amounts (including `-Infinity`) and `NaN` count
+ * as `0`, `+Infinity` fills the rest of the range, and the segments are cut
+ * once the range between `minValue` and `maxValue` is full. An empty or
+ * inverted range draws nothing.
  *
  * The track puts a gap between drawn segments. So that the fill still ends at
  * the total, each drawn segment gives up `gapShare` gaps of its width, in
@@ -49,10 +59,10 @@ export const getMeterSegments = <T extends { value: number }>(
   let hasNegative = false;
 
   const clamped = segments.map((segment) => {
-    if (segment.value < 0) hasNegative = true;
-    const amount = Number.isFinite(segment.value)
-      ? Math.max(0, segment.value)
-      : 0;
+    const { value } = segment;
+    if (value < 0) hasNegative = true;
+    // NaN and negative values are not greater than 0, so they count as 0
+    const amount = value > 0 ? value : 0;
     requested += amount;
 
     const clampedValue = Math.min(amount, remaining);
@@ -77,7 +87,7 @@ export const getMeterSegments = <T extends { value: number }>(
 
   return {
     total,
-    hasOverflow: range > 0 && requested > range,
+    hasOverflow: range > 0 && requested > range * (1 + OVERFLOW_TOLERANCE),
     hasNegative,
     items,
   };

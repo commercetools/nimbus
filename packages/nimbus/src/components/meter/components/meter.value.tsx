@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { Children, useEffect, useRef } from "react";
 import { MeterValueSlot } from "../meter.slots";
 import type { MeterValueProps } from "../meter.types";
 import { useMeterContext } from "./meter.context";
@@ -14,7 +14,9 @@ import { useMeterContext } from "./meter.context";
 export const MeterValue = (props: MeterValueProps) => {
   const { ref, children, ...restProps } = props;
   const { totalText, hasValueLabel } = useMeterContext();
-  const hasChildren = children !== undefined && children !== null;
+  // Children that render nothing (`false`, `null`, `undefined`, an empty
+  // string) leave the formatted total in place
+  const hasChildren = Children.toArray(children).some((child) => child !== "");
 
   // Logged once per Meter.Value, also when StrictMode runs the effect twice
   const hasWarnedRef = useRef(false);

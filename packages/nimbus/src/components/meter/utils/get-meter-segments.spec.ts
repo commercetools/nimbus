@@ -30,10 +30,33 @@ describe("getMeterSegments", () => {
     expect(result.hasNegative).toBe(true);
   });
 
-  it("treats non-finite values as 0", () => {
+  it("treats NaN as 0", () => {
     const result = getMeterSegments([{ value: NaN }, { value: 10 }], 0, 100);
     expect(widths(result)).toEqual([0, 10]);
     expect(result.total).toBe(10);
+    expect(result.hasNegative).toBe(false);
+  });
+
+  it("lets +Infinity fill the rest of the range and reports overflow", () => {
+    const result = getMeterSegments(
+      [{ value: 20 }, { value: Infinity }, { value: 10 }],
+      0,
+      100
+    );
+    expect(widths(result)).toEqual([20, 80, 0]);
+    expect(result.total).toBe(100);
+    expect(result.hasOverflow).toBe(true);
+  });
+
+  it("treats -Infinity as a negative value", () => {
+    const result = getMeterSegments(
+      [{ value: -Infinity }, { value: 10 }],
+      0,
+      100
+    );
+    expect(widths(result)).toEqual([0, 10]);
+    expect(result.total).toBe(10);
+    expect(result.hasNegative).toBe(true);
   });
 
   it("cuts segments at the maximum and reports overflow", () => {
@@ -52,6 +75,23 @@ describe("getMeterSegments", () => {
     const result = getMeterSegments([{ value: 50 }, { value: 50 }], 0, 100);
     expect(result.hasOverflow).toBe(false);
     expect(result.hasNegative).toBe(false);
+  });
+
+  it("does not report overflow for floating-point rounding errors", () => {
+    // 0.1 + 0.2 is 0.30000000000000004 in floating-point arithmetic
+    expect(
+      getMeterSegments([{ value: 0.1 }, { value: 0.2 }], 0, 0.3).hasOverflow
+    ).toBe(false);
+    expect(
+      getMeterSegments([{ value: 0.1 }, { value: 0.2 }, { value: 0.7 }], 0, 1)
+        .hasOverflow
+    ).toBe(false);
+  });
+
+  it("still reports an overflow that is larger than rounding errors", () => {
+    expect(
+      getMeterSegments([{ value: 0.1 }, { value: 0.21 }], 0, 0.3).hasOverflow
+    ).toBe(true);
   });
 
   it("returns 0% without dividing by zero when minValue equals maxValue", () => {

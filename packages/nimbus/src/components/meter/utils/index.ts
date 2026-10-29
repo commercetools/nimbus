@@ -1,3 +1,4 @@
+export { clampToRange } from "./clamp-to-range";
 export {
   getMeterSegments,
   type MeterSegmentsGeometry,

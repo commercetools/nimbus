@@ -1,18 +1,18 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { Meter as RaMeter } from "react-aria-components";
 import { useLocale, useNumberFormatter, useObjectRef } from "react-aria";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { extractStyleProps } from "@/utils";
 import { MeterRootSlot } from "../meter.slots";
 import { METER_SEGMENT_PALETTES } from "../constants";
-import { getMeterSegments, getThresholdPalette } from "../utils";
-import type {
-  MeterContextValue,
-  MeterResolvedSegment,
-  MeterRootProps,
-  MeterSegment,
-} from "../meter.types";
-import { MeterContext } from "./meter.context";
+import { useMeterDevWarnings } from "../hooks";
+import { clampToRange, getMeterSegments, getThresholdPalette } from "../utils";
+import type { MeterRootProps, MeterSegment } from "../meter.types";
+import {
+  MeterContext,
+  type MeterContextValue,
+  type MeterResolvedSegment,
+} from "./meter.context";
 
 // Module constant, so the number formatter is not rebuilt on every render
 const defaultFormatOptions: Intl.NumberFormatOptions = { style: "percent" };
@@ -35,13 +35,17 @@ export const MeterRoot = (props: MeterRootProps) => {
     minValue = 0,
     maxValue = 100,
     formatOptions = defaultFormatOptions,
-    valueLabel,
+    valueLabel: valueLabelProp,
     colorPalette = "primary",
     thresholds,
     layout = "stacked",
     size = "md",
     ...rest
   } = props;
+
+  // An empty valueLabel counts as not set. React Aria ignores it too, so the
+  // visible text and the announced text stay the same
+  const valueLabel = valueLabelProp === "" ? undefined : valueLabelProp;
 
   const recipe = useSlotRecipe({ key: "nimbusMeter" });
   const [recipeProps, restWithoutRecipeProps] = recipe.splitVariantProps({
@@ -71,6 +75,12 @@ export const MeterRoot = (props: MeterRootProps) => {
         { id: "value", label: "", value: value - minValue },
       ];
       const geometry = getMeterSegments(source, minValue, maxValue);
+      // A single value is clamped directly. Rebuilding it from the segment
+      // amounts would add rounding errors (0.1 would become
+      // 0.09999999999999998) and thresholds would miss their own value
+      const meterValue = segments
+        ? minValue + geometry.total
+        : clampToRange(value, minValue, maxValue);
       const range = maxValue - minValue;
       /** Formats an amount counted from `minValue` */
       const formatAmount = (amount: number) =>
@@ -79,8 +89,8 @@ export const MeterRoot = (props: MeterRootProps) => {
       const total =
         valueLabel ??
         (isPercent
-          ? formatAmount(geometry.total)
-          : formatter.format(minValue + geometry.total));
+          ? formatAmount(meterValue - minValue)
+          : formatter.format(meterValue));
       // Segments show the drawn (clamped) amount, so the text matches the bar
       const resolved: MeterResolvedSegment[] = geometry.items.map(
         (item, index) => ({
@@ -95,7 +105,7 @@ export const MeterRoot = (props: MeterRootProps) => {
 
       return {
         items: resolved,
-        meterValue: minValue + geometry.total,
+        meterValue,
         hasOverflow: geometry.hasOverflow,
         hasNegative: geometry.hasNegative,
         totalText: total,
@@ -122,51 +132,14 @@ export const MeterRoot = (props: MeterRootProps) => {
     ? colorPalette
     : getThresholdPalette(meterValue, thresholds, colorPalette);
 
-  // Meter.Legend registers in a layout effect, so the count is final when
-  // the effects below run
-  const legendCountRef = useRef(0);
-  const registerLegend = useCallback(() => {
-    legendCountRef.current += 1;
-    return () => {
-      legendCountRef.current -= 1;
-    };
-  }, []);
-
-  // Each development warning is logged once per meter, also when StrictMode
-  // runs the effects twice or the values change
-  const hasWarnedOverflowRef = useRef(false);
-  const hasWarnedNegativeRef = useRef(false);
-  useEffect(() => {
-    if (process.env.NODE_ENV === "production" || !isSegmented) return;
-    if (hasOverflow && !hasWarnedOverflowRef.current) {
-      hasWarnedOverflowRef.current = true;
-      console.warn(
-        `Meter.Root: the sum of segment values exceeds the range (${minValue} to ${maxValue}). Segments are cut at maxValue.`
-      );
-    }
-    if (hasNegative && !hasWarnedNegativeRef.current) {
-      hasWarnedNegativeRef.current = true;
-      console.warn(
-        "Meter.Root: segment values must not be negative. Negative values are treated as 0."
-      );
-    }
-  }, [isSegmented, hasOverflow, hasNegative, minValue, maxValue]);
-
-  const hasWarnedMissingLegendRef = useRef(false);
-  useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
-    if (
-      !hasSegmentsToShow ||
-      legendCountRef.current > 0 ||
-      hasWarnedMissingLegendRef.current
-    ) {
-      return;
-    }
-    hasWarnedMissingLegendRef.current = true;
-    console.warn(
-      "Meter.Root: segments are told apart by color only. Add <Meter.Legend> so each segment shows its name and value."
-    );
-  }, [hasSegmentsToShow]);
+  const { registerLegend } = useMeterDevWarnings({
+    isSegmented,
+    hasSegmentsToShow,
+    hasOverflow,
+    hasNegative,
+    minValue,
+    maxValue,
+  });
 
   const hasValueLabel = valueLabel !== undefined;
   const contextValue: MeterContextValue = useMemo(

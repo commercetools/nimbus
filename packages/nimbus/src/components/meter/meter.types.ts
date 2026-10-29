@@ -103,10 +103,14 @@ type MeterDataProps =
   | {
       /**
        * The measured value. A value outside `minValue`–`maxValue` is clamped
-       * to the range, like the native `<meter>` element.
+       * to the range, like the native `<meter>` element. `Infinity` fills the
+       * bar; `-Infinity` and `NaN` count as `minValue`.
        * @default 0
        */
       value?: number;
+      /**
+       * Cannot be combined with `value`.
+       */
       segments?: never;
       /**
        * Lower bound of the range
@@ -128,6 +132,9 @@ type MeterDataProps =
       colorPalette?: NimbusColorPalette;
     }
   | {
+      /**
+       * Cannot be combined with `segments`.
+       */
       value?: never;
       /**
        * Several measured parts of one total, drawn in array order inside
@@ -141,26 +148,15 @@ type MeterDataProps =
        * @default 0
        */
       minValue?: 0;
+      /**
+       * Cannot be combined with `segments`.
+       */
       thresholds?: never;
       /**
        * Each segment sets its own color with `colorPalette` on the segment
        */
       colorPalette?: never;
     };
-
-/**
- * A segment as `Meter.Track` and `Meter.Legend` draw it.
- */
-export type MeterResolvedSegment = MeterSegment & {
-  /** Amount that is drawn, after negative values and overflow are cut */
-  clampedValue: number;
-  /** Width in percent of the track */
-  widthPercent: number;
-  /** Number of segment gaps this segment gives up, so the fill ends at the value */
-  gapShare: number;
-  /** Formatted `clampedValue`, as shown in the legend */
-  formattedValue: string;
-};
 
 // ============================================================
 // MAIN PROPS
@@ -189,7 +185,8 @@ export type MeterRootProps = OmitInternalProps<
     formatOptions?: Intl.NumberFormatOptions;
     /**
      * Replaces the formatted total in `Meter.Value` and in the text
-     * announced to assistive technology (e.g. "50 of 100 GB")
+     * announced to assistive technology (e.g. "50 of 100 GB"). An empty
+     * string counts as not set.
      */
     valueLabel?: string;
   };
@@ -235,27 +232,4 @@ export type MeterLegendProps = OmitInternalProps<
    * Ref forwarding to the legend list element
    */
   ref?: React.Ref<HTMLUListElement>;
-};
-
-// ============================================================
-// CONTEXT TYPES
-// ============================================================
-
-/**
- * Values that `Meter.Root` computes and the parts show
- */
-export type MeterContextValue = {
-  /** Whether the meter shows `segments` (not a single `value`) */
-  isSegmented: boolean;
-  /** Segments to draw; a single value is one segment without a palette */
-  items: MeterResolvedSegment[];
-  /** Formatted total, or `valueLabel` when it is set */
-  totalText: string;
-  /** Whether Meter.Root has a `valueLabel` */
-  hasValueLabel: boolean;
-  /**
-   * Registers a mounted `Meter.Legend`, so Root can warn about segments
-   * without a legend. Returns the function that unregisters it.
-   */
-  registerLegend: () => () => void;
 };
