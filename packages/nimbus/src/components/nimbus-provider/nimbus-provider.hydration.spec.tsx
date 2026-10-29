@@ -2,21 +2,17 @@ import { act } from "react";
 import { hydrateRoot, type Root } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode-provider";
-
-// NimbusColorModeProvider is rendered directly: the full NimbusProvider
-// cannot be server-rendered yet because ToastOutlet's useSyncExternalStore
-// has no getServerSnapshot.
+import { NimbusProvider } from "./nimbus-provider";
 
 const tree = (
-  <NimbusColorModeProvider>
+  <NimbusProvider loadFonts={false}>
     <div>Test content</div>
-  </NimbusColorModeProvider>
+  </NimbusProvider>
 );
 
 type ActGlobal = { IS_REACT_ACT_ENVIRONMENT?: boolean };
 
-describe("NimbusColorModeProvider - hydration", () => {
+describe("NimbusProvider - hydration", () => {
   let root: Root | undefined;
   let previousActEnvironment: boolean | undefined;
 
@@ -42,8 +38,8 @@ describe("NimbusColorModeProvider - hydration", () => {
   it("hydrates server-rendered HTML without errors or warnings", async () => {
     // Server markup differs from client markup in the script `type` and the
     // next-themes `nonce` ("" on the client, absent or real on the server);
-    // both are covered by `suppressHydrationWarning`.
-    // (see nimbus-provider.ssr.spec.tsx, which checks real server output).
+    // both are covered by `suppressHydrationWarning`. The real server output is
+    // checked in nimbus-provider.ssr.spec.tsx.
     // `window` cannot be removed here because next-themes needs it, so the
     // server markup is derived from the client markup.
     const serverHtml = renderToString(tree).replace(
