@@ -9,6 +9,8 @@ import type { SliderBaseProps, SliderProps } from "./slider.types";
  * tooltip on the handle while hovering, focusing, or dragging. Provide an
  * `aria-label` (or use inside `FormField`) for the accessible name.
  * @supportsStyleProps
+ *
+ * @beta This component is in beta and may change in future minor versions.
  */
 export const Slider = (props: SliderProps) => {
   // SliderBaseProps intentionally widens value/onChange to `number | number[]`

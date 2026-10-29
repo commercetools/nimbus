@@ -294,6 +294,10 @@ guideline references.
       component accepts Chakra UI style props (extends `HTMLChakraProps`,
       `RecipeVariantProps`, or forwards props to a styled component).
       For compound components, only tag the implementation files.
+- [ ] **Lifecycle tag**: When the `.mdx` has `lifecycleState` Experimental,
+      Alpha or Beta, the main export JSDoc has the matching `@experimental`,
+      `@alpha` or `@beta` tag (see `docs/file-type-guidelines/main-component.md`
+      "Lifecycle State Tag")
 - [ ] **Compound parts JSDoc**: For compound components, EACH part has JSDoc in
       main file (NOT implementation files)
 - [ ] **Part heading**: Each compound part's JSDoc includes heading:

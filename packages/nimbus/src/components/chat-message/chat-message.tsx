@@ -41,6 +41,8 @@ import {
  *   </ChatMessage.Meta>
  * </ChatMessage.Root>
  * ```
+ *
+ * @experimental This component is experimental and may change or be removed in future versions.
  */
 export const ChatMessage = {
   /**
