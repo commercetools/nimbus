@@ -88,6 +88,172 @@ const productColumns: DataTableColumnItem<Product>[] = [
 // BUILDING BLOCKS
 // ============================================================
 
+/** Counts every change of `data-compact` on the page root. */
+const countCompactFlips = (root: HTMLElement) => {
+  let flips = 0;
+  const observer = new MutationObserver((records) => {
+    flips += records.length;
+  });
+  observer.observe(root, {
+    attributes: true,
+    attributeFilter: ["data-compact"],
+  });
+  return {
+    flips: () => {
+      flips += observer.takeRecords().length;
+      return flips;
+    },
+    stop: () => observer.disconnect(),
+  };
+};
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const nextFrame = () =>
+  new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+
+const scrollToTop = async (scroller: HTMLElement, top: number) => {
+  scroller.scrollTop = top;
+  await nextFrame();
+};
+
+const isCompact = (root: HTMLElement) =>
+  root.getAttribute("data-compact") === "true";
+
+/** Distance from the top of the scroller's content to the top of the page. */
+const pageOffset = (root: HTMLElement, scroller: HTMLElement) =>
+  root.getBoundingClientRect().top -
+  scroller.getBoundingClientRect().top -
+  scroller.clientTop +
+  scroller.scrollTop;
+
+type CompactPageProps = {
+  /** Adds a back link and a subtitle to the header. */
+  rich?: boolean;
+  /** Adds the tab row from the compact frame. */
+  tabs?: boolean;
+  /** Number of content rows. */
+  rows?: number;
+};
+
+const CompactPage = ({
+  rich = false,
+  tabs = false,
+  rows = 40,
+}: CompactPageProps) => (
+  <DefaultPage.Root layout="flexible" stickyHeader="compact-on-scroll">
+    <DefaultPage.Header>
+      {rich && (
+        <DefaultPage.BackLink href="/discounts">
+          Cart discounts
+        </DefaultPage.BackLink>
+      )}
+      <DefaultPage.Title>Spring sale</DefaultPage.Title>
+      {rich && <DefaultPage.Subtitle>Valid until 30 June</DefaultPage.Subtitle>}
+      <DefaultPage.Actions>
+        <Button colorPalette="primary" variant="solid">
+          Save changes
+        </Button>
+      </DefaultPage.Actions>
+      {tabs && (
+        <DefaultPage.TabNav>
+          <TabNav.Root aria-label="Discount sections">
+            <TabNav.Item href="#general" isCurrent>
+              General
+            </TabNav.Item>
+            <TabNav.Item href="#custom-fields">Custom Fields</TabNav.Item>
+          </TabNav.Root>
+        </DefaultPage.TabNav>
+      )}
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Stack gap="400">
+        {Array.from({ length: rows }, (_, i) => (
+          <Text key={i}>Content row {i + 1}</Text>
+        ))}
+      </Stack>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+);
+
+const CompactScroller = ({
+  children,
+  width,
+  style,
+}: {
+  children: React.ReactNode;
+  width?: string;
+  style?: React.CSSProperties;
+}) => (
+  <Box
+    data-testid="scroll-container"
+    height="500px"
+    width={width}
+    overflow="auto"
+    borderRadius="200"
+    style={style}
+  >
+    {children}
+  </Box>
+);
+
+/**
+ * Compacts at the edge of the header, holds at half the header height and
+ * restores at the top. Shared by the geometry stories.
+ */
+const runCompactScenario = async ({
+  canvasElement,
+  scroller,
+  step,
+}: {
+  canvasElement: HTMLElement;
+  scroller: HTMLElement;
+  step: (name: string, fn: () => Promise<void> | void) => unknown;
+}) => {
+  const header = canvasElement.querySelector("header")!;
+  const root = header.parentElement!;
+  const expandedHeight = header.getBoundingClientRect().height;
+  const offset = pageOffset(root, scroller);
+  const recorder = countCompactFlips(root);
+
+  try {
+    await step("Header is expanded at the top", async () => {
+      await expect(isCompact(root)).toBe(false);
+    });
+
+    await step("Compacts once, one pixel past the header", async () => {
+      await scrollToTop(scroller, offset + expandedHeight + 1);
+      await waitFor(() => expect(isCompact(root)).toBe(true));
+      await wait(300);
+      await expect(recorder.flips()).toBe(1);
+      await expect(header.getBoundingClientRect().height).toBeLessThan(
+        expandedHeight
+      );
+    });
+
+    await step("Stays compact at half the header height", async () => {
+      await scrollToTop(scroller, offset + expandedHeight / 2);
+      await wait(300);
+      await expect(isCompact(root)).toBe(true);
+      await expect(recorder.flips()).toBe(1);
+    });
+
+    await step("Restores at the top", async () => {
+      await scrollToTop(scroller, 0);
+      await waitFor(() => expect(isCompact(root)).toBe(false));
+      await wait(300);
+      await expect(recorder.flips()).toBe(2);
+      await waitFor(() =>
+        expect(
+          Math.abs(header.getBoundingClientRect().height - expandedHeight)
+        ).toBeLessThan(0.5)
+      );
+    });
+  } finally {
+    recorder.stop();
+  }
+};
+
 // ============================================================
 // 1. BASE — Minimal main-page layout
 // ============================================================
@@ -1395,6 +1561,301 @@ export const WithSteps: Story = {
 
     await step("First step content is visible", async () => {
       await expect(canvas.getByText("Product name")).toBeInTheDocument();
+    });
+  },
+};
+
+// ============================================================
+// 16. COMPACT ON SCROLL — Header shrinks while the page is scrolled
+// ============================================================
+
+/**
+ * `stickyHeader="compact-on-scroll"` pins the header and shrinks it once the
+ * page has scrolled past it. It restores when the page is back at the top.
+ * The scroll container is an ancestor outside DefaultPage, which is how
+ * Merchant Center renders flexible pages.
+ *
+ * The play function scrolls to sample positions inside the expanded header
+ * (no change), then past it (compacts once and stays compact even though the
+ * shrink moves the scroll position), then back to the top (restores).
+ */
+export const FlexibleCompactOnScroll: Story = {
+  // VRT: the compacted header is a new visual state, reached by the play scroll.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <CompactScroller>
+      <CompactPage />
+    </CompactScroller>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const scroller = canvas.getByTestId("scroll-container");
+    const header = canvasElement.querySelector("header")!;
+    const root = header.parentElement!;
+    const expandedHeight = header.getBoundingClientRect().height;
+    const recorder = countCompactFlips(root);
+
+    try {
+      await step("Header is expanded and taller than 60px", async () => {
+        await expect(expandedHeight).toBeGreaterThan(60);
+        await expect(isCompact(root)).toBe(false);
+      });
+
+      await step(
+        "Stays expanded while scrolled inside the header",
+        async () => {
+          for (const top of [5, 30, 60]) {
+            await scrollToTop(scroller, top);
+            await wait(300);
+            await expect(isCompact(root)).toBe(false);
+            await expect(recorder.flips()).toBe(0);
+          }
+        }
+      );
+
+      await step("Compacts once past the header and stays", async () => {
+        const save = canvas.getByRole("button", { name: "Save changes" });
+        save.focus();
+        await scrollToTop(scroller, expandedHeight + 16);
+        await waitFor(() => expect(isCompact(root)).toBe(true));
+        await wait(600);
+        await expect(recorder.flips()).toBe(1);
+        await expect(scroller.scrollTop).toBeGreaterThan(0);
+        await expect(header.getBoundingClientRect().height).toBeLessThan(
+          expandedHeight
+        );
+        await expect(save).toHaveFocus();
+      });
+
+      await step("Stays compact at half the header height", async () => {
+        await scrollToTop(scroller, expandedHeight / 2);
+        await wait(300);
+        await expect(isCompact(root)).toBe(true);
+        await expect(recorder.flips()).toBe(1);
+      });
+
+      await step("Restores at the top", async () => {
+        await scrollToTop(scroller, 0);
+        await waitFor(() => expect(isCompact(root)).toBe(false));
+        await wait(300);
+        await expect(recorder.flips()).toBe(2);
+        await expect(
+          canvas.getByRole("heading", { level: 1, name: "Spring sale" })
+        ).toBeInTheDocument();
+      });
+    } finally {
+      recorder.stop();
+    }
+  },
+};
+
+/**
+ * Safari does not adjust the scroll position when the page gets shorter.
+ * The header must still compact once and stay compact.
+ */
+export const CompactOnScrollNoAnchoring: Story = {
+  render: () => (
+    <CompactScroller style={{ overflowAnchor: "none" }}>
+      <CompactPage />
+    </CompactScroller>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const scroller = within(canvasElement).getByTestId("scroll-container");
+    await runCompactScenario({ canvasElement, scroller, step });
+  },
+};
+
+/**
+ * The scroll range is barely larger than the header, so the browser clamps the
+ * scroll position when the header shrinks. The header must not flip back.
+ */
+export const CompactOnScrollShortPage: Story = {
+  render: () => (
+    <CompactScroller>
+      <DefaultPage.Root layout="flexible" stickyHeader="compact-on-scroll">
+        <DefaultPage.Header>
+          <DefaultPage.Title>Spring sale</DefaultPage.Title>
+          <DefaultPage.Actions>
+            <Button colorPalette="primary" variant="solid">
+              Save changes
+            </Button>
+          </DefaultPage.Actions>
+        </DefaultPage.Header>
+        <DefaultPage.Content>
+          <Box data-testid="spacer" height="600px" />
+        </DefaultPage.Content>
+      </DefaultPage.Root>
+    </CompactScroller>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const scroller = canvas.getByTestId("scroll-container");
+    const spacer = canvas.getByTestId("spacer");
+    const expandedHeight = canvasElement
+      .querySelector("header")!
+      .getBoundingClientRect().height;
+
+    const range = () => scroller.scrollHeight - scroller.clientHeight;
+    const target = expandedHeight + 20;
+    spacer.style.height = `${spacer.offsetHeight + target - range()}px`;
+    await waitFor(() => expect(range()).toBeCloseTo(target, 0));
+
+    await runCompactScenario({ canvasElement, scroller, step });
+  },
+};
+
+/**
+ * A 320px wide container, which is what a 200% zoom leaves on a laptop screen.
+ * The header wraps, so the compact header must still be shorter and keep every
+ * action inside the scroll container.
+ */
+export const CompactOnScrollNarrow: Story = {
+  render: () => (
+    <CompactScroller width="320px">
+      <CompactPage rich tabs />
+    </CompactScroller>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const scroller = canvas.getByTestId("scroll-container");
+    const header = canvasElement.querySelector("header")!;
+    const root = header.parentElement!;
+    const expandedHeight = header.getBoundingClientRect().height;
+    const offset = pageOffset(root, scroller);
+
+    await step(
+      "Compact header is shorter and keeps the action in view",
+      async () => {
+        await scrollToTop(scroller, offset + expandedHeight + 16);
+        await waitFor(() => expect(isCompact(root)).toBe(true));
+        await wait(300);
+
+        const compactHeight = header.getBoundingClientRect().height;
+        await expect(compactHeight).toBeLessThan(expandedHeight);
+        await expect(compactHeight).toBeGreaterThan(expandedHeight * 0.1);
+
+        const headerStyle = getComputedStyle(header);
+        const title = canvas.getByRole("heading", { name: "Spring sale" });
+        const titleStyle = getComputedStyle(title);
+        await expect(headerStyle.paddingTop).toBe("12px");
+        await expect(headerStyle.paddingBottom).toBe("12px");
+        await expect(titleStyle.fontSize).toBe("16px");
+        await expect(titleStyle.lineHeight).toBe("22px");
+
+        const subtitle = canvas.getByText("Valid until 30 June");
+        await expect(subtitle.getBoundingClientRect().height).toBe(0);
+        const tabNav = canvas.getByRole("navigation", {
+          name: "Discount sections",
+        });
+        await expect(getComputedStyle(tabNav.parentElement!).marginTop).toBe(
+          "0px"
+        );
+
+        const bounds = scroller.getBoundingClientRect();
+        const save = canvas
+          .getByRole("button", { name: "Save changes" })
+          .getBoundingClientRect();
+        await expect(save.left).toBeGreaterThanOrEqual(bounds.left);
+        await expect(save.right).toBeLessThanOrEqual(bounds.right);
+        await expect(save.top).toBeGreaterThanOrEqual(bounds.top);
+        await expect(save.bottom).toBeLessThanOrEqual(bounds.bottom);
+      }
+    );
+
+    await step("Focused back link shows its label without restoring", async () => {
+      const backLink = canvas.getByRole("link", { name: "Cart discounts" });
+      const title = canvas.getByRole("heading", { name: "Spring sale" });
+      const icon = backLink.querySelector("svg");
+      const linkBox = backLink.getBoundingClientRect();
+      const titleBox = title.getBoundingClientRect();
+
+      await expect(icon).not.toBeNull();
+      await expect(icon!.getBoundingClientRect().height).toBeGreaterThan(0);
+      await expect(linkBox.width).toBeLessThan(24);
+      await expect(linkBox.top).toBeLessThan(titleBox.bottom);
+      await expect(linkBox.bottom).toBeGreaterThan(titleBox.top);
+
+      backLink.focus();
+      await waitFor(() =>
+        expect(backLink.getBoundingClientRect().width).toBeGreaterThan(
+          linkBox.width + 20
+        )
+      );
+      await expect(isCompact(root)).toBe(true);
+    });
+  },
+};
+
+/**
+ * The document is the scroll container. DefaultPage does not need to know
+ * which element scrolls.
+ */
+export const CompactOnScrollWindow: Story = {
+  render: () => <CompactPage rows={80} />,
+  play: async ({ canvasElement, step }) => {
+    const scroller = document.scrollingElement as HTMLElement;
+    try {
+      await runCompactScenario({ canvasElement, scroller, step });
+    } finally {
+      scroller.scrollTop = 0;
+    }
+  },
+};
+
+/**
+ * With `prefers-reduced-motion`, the header still compacts but without a
+ * transition. The media query cannot be switched from a story, so the play
+ * function reads the compact header rule from the stylesheet.
+ */
+export const CompactOnScrollReducedMotion: Story = {
+  render: () => (
+    <CompactScroller>
+      <CompactPage rich />
+    </CompactScroller>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const scroller = within(canvasElement).getByTestId("scroll-container");
+    const header = canvasElement.querySelector("header")!;
+    const root = header.parentElement!;
+    const expandedHeight = header.getBoundingClientRect().height;
+
+    await step("Header has a transition while idle", async () => {
+      await waitFor(() =>
+        expect(getComputedStyle(header).transitionDuration).not.toBe("0s")
+      );
+    });
+
+    await step("Compact header rule disables the transition", async () => {
+      await scrollToTop(scroller, expandedHeight + 16);
+      await waitFor(() => expect(isCompact(root)).toBe(true));
+
+      const hashed = Array.from(header.classList).filter((c) =>
+        c.startsWith("css-")
+      );
+      await expect(hashed.length).toBeGreaterThan(0);
+
+      const reducedMotionRules = Array.from(document.styleSheets).flatMap(
+        (sheet) => {
+          let rules: CSSRule[];
+          try {
+            rules = Array.from(sheet.cssRules);
+          } catch {
+            return [];
+          }
+          return rules.filter(
+            (rule) =>
+              rule.cssText.includes("prefers-reduced-motion") &&
+              hashed.some((name) => rule.cssText.includes(`.${name}`))
+          );
+        }
+      );
+      await expect(reducedMotionRules.length).toBeGreaterThan(0);
+      await expect(
+        reducedMotionRules.some((rule) =>
+          /transition-duration:\s*0s/.test(rule.cssText)
+        )
+      ).toBe(true);
     });
   },
 };
