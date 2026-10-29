@@ -157,7 +157,7 @@ overrides:
   # (raises the Node floor to >=20), and an open floor WOULD reach it —
   # 1.19.13 only survived because pnpm leaves a locked version alone while
   # it still satisfies its spec, so changing the floor forces re-resolution.
-  "@hono/node-server": ">=1.19.15 <2"
+  "@hono/node-server": "<3"
   # >=4.1.5 fixes the 4.x host-confusion / SSRF cluster: GHSA-7p8r-x3mc-p8w7
   # (backslash authority introducer), GHSA-jqff-g426-hqxp (percent-encoded
   # scheme normalization), GHSA-fph4-wmhf-6fwf (repeated hostname
@@ -369,3 +369,5 @@ minimumReleaseAgeExclude:
   - vitest@4.1.11
   # Renovate security update: adm-zip@0.6.1
   - adm-zip@0.6.1
+  # Renovate security update: @hono/node-server@2.1.5
+  - "@hono/node-server@2.1.5"
