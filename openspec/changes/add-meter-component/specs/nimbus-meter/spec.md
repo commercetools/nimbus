@@ -196,9 +196,7 @@ In multi-segment mode `Meter.Legend` SHALL render a visible legend with one item
 per segment, showing a color swatch, the segment label and the formatted value.
 The legend SHALL be hidden from assistive technology (`aria-hidden="true"`)
 because `aria-valuetext` already carries the same information. In single-value
-mode `Meter.Legend` SHALL render nothing. When `segments` are given and no
-`Meter.Legend` is rendered, `Meter.Root` SHALL log a development warning,
-because the segments would then differ by color only.
+mode `Meter.Legend` SHALL render nothing.
 
 #### Scenario: Legend items
 
@@ -216,6 +214,11 @@ because the segments would then differ by color only.
 - **WHEN** only `value` is provided and `Meter.Legend` is rendered
 - **THEN** no legend SHALL be rendered
 
+### Requirement: Legend for segments
+
+When `segments` are given and no `Meter.Legend` is rendered, `Meter.Root` SHALL
+log a development warning, because the segments would then differ by color only.
+
 #### Scenario: Segments without legend
 
 - **WHEN** `segments` are provided and no `Meter.Legend` is rendered
@@ -227,9 +230,7 @@ The component SHALL use `colorPalette` (default `primary`) for the fill in
 single-value mode and SHALL allow `colorPalette` per segment. The type SHALL
 accept `colorPalette` on `Meter.Root` only together with `value`, because
 segments set their own colors. Segments without a `colorPalette` SHALL get
-colors from a fixed default sequence. Fills SHALL be flat colors (no gradient)
-using the palette's solid step (`colorPalette.9`) and SHALL NOT animate. Meaning
-SHALL NOT depend on color alone (the legend and value text carry it).
+colors from a fixed default sequence.
 
 #### Scenario: Semantic color
 
@@ -246,6 +247,18 @@ SHALL NOT depend on color alone (the legend and value text carry it).
 - **WHEN** segments have no `colorPalette`
 - **THEN** each segment SHALL get the next color of the default sequence, and
   adjacent segments SHALL NOT share the same color
+
+### Requirement: Fill appearance
+
+Fills SHALL be flat colors (no gradient) using the palette's solid step
+(`colorPalette.9`) and SHALL NOT animate. Meaning SHALL NOT depend on color alone
+(the legend and value text carry it).
+
+#### Scenario: Flat fill
+
+- **WHEN** a meter is rendered with any `colorPalette`
+- **THEN** the fill SHALL be a flat color from the palette's solid step, with no
+  gradient and no animation
 
 ### Requirement: Thresholds
 
@@ -272,17 +285,12 @@ NOT allow `thresholds` together with `segments`.
 - **WHEN** `value={50}` with the same thresholds and no `colorPalette`
 - **THEN** the fill SHALL use the `primary` palette
 
-### Requirement: Sizes and layouts
+### Requirement: Sizes
 
 `Meter.Root` SHALL support `size` (`sm` | `md` | `lg`, default `md`), which sets
 the bar thickness (4px, 8px, 12px) and a matching text style for label, value
 and legend (`sm` → `xs`, `md` → `sm`, `lg` → `md`). The `textStyle` style prop
 SHALL change the text, on `Meter.Root` for all parts or on one part only.
-
-`Meter.Root` SHALL support `layout` (`stacked` | `inline`, default `stacked`),
-which places each part in a fixed area. The result SHALL NOT depend on the order
-in which the parts are written. A part that is left out SHALL leave no empty
-space.
 
 #### Scenario: Default text style follows size
 
@@ -300,6 +308,13 @@ space.
 - **WHEN** `textStyle="xl"` is set on `Meter.Value` only
 - **THEN** the value text SHALL use text style `xl` and the label SHALL keep the
   default text style
+
+### Requirement: Layouts
+
+`Meter.Root` SHALL support `layout` (`stacked` | `inline`, default `stacked`),
+which places each part in a fixed area. The result SHALL NOT depend on the order
+in which the parts are written. A part that is left out SHALL leave no empty
+space.
 
 #### Scenario: Stacked layout
 
