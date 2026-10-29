@@ -8,12 +8,16 @@ measured value.
 A survey of 25+ design systems was done before this change. Key findings (each
 with a source):
 
-- APG separates the roles: "The meter role should not be used to indicate
-  progress" (https://www.w3.org/WAI/ARIA/apg/patterns/meter/).
+- APG separates the roles: "The meter should not be used to indicate progress,
+  such as loading or percent completion of a task"
+  (https://www.w3.org/WAI/ARIA/apg/patterns/meter/).
 - `role="meter"` and HTML `<meter>` are single-value. ARIA has no equivalent of
   HTML `low` / `high` / `optimum` (https://github.com/w3c/aria/issues/1336).
-- No standard covers multi-value meters. The W3C question about it has had no
-  answer since 2021 (https://github.com/w3c/aria-practices/issues/1791).
+- No standard covers multi-value meters. The nearest W3C question is about a
+  progress bar with several values
+  (https://github.com/w3c/aria-practices/issues/1791). It was closed the day it
+  was opened. The advice was to give the role one value in `aria-valuenow` and
+  to put both values in `aria-valuetext`, which is what D2 does.
 - Systems with a real Meter use the same `value` / `min` / `max` API: React Aria
   Components, Spectrum S2
   (`variant: informative | positive | notice | negative`), MUI Base UI, Twilio
@@ -87,11 +91,11 @@ typed as `0`, so the parts always add up to the total; with a non-zero
 `minValue` the shown total would include it and the parts would not add up.
 `aria-valuetext` = `"<total> (<label>: <value>, <label>: <value>)"`, values
 formatted with `useNumberFormatter(formatOptions)` from `react-aria`, list
-joined with `Intl.ListFormat(locale, { type: "unit" })`. Each segment value is
-its drawn (clamped) amount, so the text matches the bar. Each value is rounded
-on its own (three parts of `33%` give `100%`). React Aria clamps before
-formatting (`useProgressBar`), and Base UI changed its Meter to do the same
-(https://github.com/mui/base-ui/pull/5409).
+joined with `Intl.ListFormat(locale, { type: "unit", style: "short" })`. Each
+segment value is its drawn (clamped) amount, so the text matches the bar. Each
+value is rounded on its own (three parts of `33%` give `100%`). React Aria
+clamps before formatting (`useProgressBar`), and Base UI changed its Meter to do
+the same (https://github.com/mui/base-ui/pull/5409).
 
 - Why not one role per segment (Primer, Mantine): in ARIA, the children of
   `meter` are presentational, so nested meters would be hidden from assistive
@@ -108,10 +112,11 @@ formatting (`useProgressBar`), and Base UI changed its Meter to do the same
   overwritten (`react-aria/dist/private/progress/useProgressBar.mjs`). Root
   therefore builds the value text itself and `Meter.Value` shows it.
   `valueLabel` is typed as `string` because it becomes an ARIA attribute.
-- React Aria renders `role="meter progressbar"`
-  (`react-aria/dist/private/meter/useMeter.mjs`, fallback for browsers without
-  `meter`). axe's `aria-allowed-attr` rule reads the list as one invalid role,
-  so the stories skip only `[role~="meter"]` for that rule.
+- React Aria renders `role="meter"`
+  (`react-aria/dist/private/meter/useMeter.mjs`), so axe checks the name
+  (`aria-meter-name`) and the `aria-value*` attributes of the meter without
+  exceptions. A story that renders a meter without a name on purpose turns off
+  `aria-meter-name` for that story only.
 
 ### D3: Legend is a part, `aria-hidden`, and expected with segments
 
@@ -122,25 +127,38 @@ without that, screen readers would read each segment twice.
 Because the legend is now a part, a consumer can leave it out. With `segments`
 and no `Meter.Legend`, Root logs a development warning, so segments are not told
 apart by color only. `Meter.Legend` registers itself with Root in a layout
-effect, and Root checks the count in an effect (same pattern as
-`Splitter.Pane`). `Meter.Legend` renders nothing for a single `value`.
+effect, and `Meter.Root` checks the count in an effect (the
+`useMeterDevWarnings` hook, same pattern as `Splitter.Pane`). `Meter.Legend`
+renders nothing for a single `value`.
 
 ### D4: One render path
 
 A single `value` is turned into one internal segment
-(`{ id: "value", value, colorPalette }`), so `Meter.Track` has one drawing code
-path. `Meter.Legend` renders only when `segments` is given.
+(`{ id: "value", label: "", value: value - minValue }`) without a palette of its
+own, so `Meter.Track` has one drawing code path. Root colors that segment from
+`colorPalette` or `thresholds` (D7). `Meter.Legend` renders only when `segments`
+is given.
 
 ### D5: Pure util for geometry
 
 `getMeterSegments(segments, minValue, maxValue)` in
 `utils/get-meter-segments.ts` (project convention for component utils) returns
-`{ total, hasOverflow, hasNegative, items: [{ …segment, clampedValue, widthPercent }] }`.
+`{ total, hasOverflow, hasNegative, items: [{ …segment, clampedValue, widthPercent, gapShare }] }`.
 It clamps negatives to 0, cuts at `maxValue`, and returns 0% when
-`minValue === maxValue`. Dev warnings are logged in `Meter.Root`, not the util,
-so the util stays pure and easy to unit test. The missing-name warning is React
-Aria's own (`useLabel`), and its text already names `aria-label` and
-`aria-labelledby`, so Root does not add a second one.
+`minValue === maxValue`. `NaN` counts as 0, `-Infinity` is a negative value, and
+`+Infinity` fills the rest of the range (for example `used / limit` with a limit
+of 0 shows a full bar). A sum that is larger than the range only by
+floating-point rounding (a relative `1e-9`) is not an overflow. Dev warnings are
+logged by the `useMeterDevWarnings` hook of `Meter.Root`, not the util, so the
+util stays pure and easy to unit test. The missing-name warning is React Aria's
+own (`useLabel`), and its text already names `aria-label` and `aria-labelledby`,
+so Root does not add a second one.
+
+A single `value` is not read back from the segment arithmetic. Root clamps it
+with `clampToRange`, which returns a value inside the range as it is. The
+arithmetic (`range - remaining`) adds floating-point rounding errors: `0.1`
+would become `0.09999999999999998`, announced as such, and a threshold with
+`from: 0.1` would miss its own value.
 
 ### D6: Recipe
 
@@ -175,14 +193,15 @@ as `ProgressBar`), flat, with a width transition that is removed under
 `prefers-reduced-motion`. Step 11 was used first to reach 3:1 against the track
 for every palette; it was changed to step 9 so the fill uses the regular solid
 color, not the dark one. Measured against the track, step 9 is below 3:1 for
-some palettes (for example `warning` 1.38:1 in light mode, `primary` 2.65:1 in
+some palettes (for example `warning` 1.38:1 in light mode, `primary` 2.64:1 in
 dark mode), so meaning is carried by the legend and value text, not by the fill
 color. Without `Meter.Value`, the guidelines ask for the same value as visible
 text near the meter. Segments may not shrink: each segment's width subtracts its
 share of the gaps (in proportion to its width), so the fill ends exactly at the
 value. Track: same background as the `ProgressBar` track. Gap between segments:
-`{spacing.50}` (2px) using flex `gap`. Each segment sets `colorPalette` through
-a class or `data-` attribute so the recipe can color it. Default segment
+`{spacing.25}` (1px) at `sm` and `{spacing.50}` (2px) at `md` and `lg`
+(`--meter-segment-gap`), using flex `gap`. Each segment sets `colorPalette`
+through a class or `data-` attribute so the recipe can color it. Default segment
 sequence (`constants/meter.constants.ts`): primary, orange, teal, gold, pink,
 brown, repeated. It was chosen by computing CIEDE2000 distances between the
 step-9 colors, under normal vision and simulated protanopia, deuteranopia and
@@ -222,9 +241,6 @@ is used. The order in the array does not matter. The pure util
   `aria-valuetext` is reported to be read poorly, make the legend readable and
   drop segment detail from `aria-valuetext`.
 - [JAWS may speak the parentheses in `aria-valuetext`] → See D2.
-- [React Aria renders `role="meter progressbar"`, so older assistive technology
-  may announce a progress bar] → Accepted: this is React Aria's fallback for
-  browsers without `meter` support.
 - [React Aria `<Meter>` DOM output is not verified from docs] → The first story
   test asserts `role`, `aria-valuemin/max/now/valuetext`.
 - [A consumer leaves out `Meter.Legend` with segments, so segments differ by
@@ -234,7 +250,7 @@ is used. The order in the array does not matter. The pure util
 - [Long `aria-valuetext` with many segments] → Document a recommended maximum
   (about 5 segments) in the guidelines.
 - [Some sequence colors are below 3:1 against the track (orange 2.57 and teal
-  2.69 in light mode, primary 2.63 in dark mode)] → Meaning is carried by the
+  2.69 in light mode, primary 2.64 in dark mode)] → Meaning is carried by the
   legend and value text (see the fill color note above).
 - [The user has general reservations about the design] → Treat this as a first
   version; revise after review.

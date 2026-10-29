@@ -137,8 +137,8 @@ places in a UI:
 - **Stacked** (default): label and value on one line above the bar.
 - **Inline**: label, bar and value on one line.
 
-To show only the bar, leave out the label and the value, and set `aria-label`
-on `Meter.Root` so the meter still has a name.
+To show only the bar, leave out the label and the value, and set `aria-label` on
+`Meter.Root` so the meter still has a name.
 
 ```jsx live
 const App = () => (
@@ -165,7 +165,8 @@ const App = () => (
 Use `colorPalette` to give the fill a meaning. Use a semantic palette, such as
 `positive`, `warning`, or `critical`, to show a state. With `thresholds`, the
 fill changes color when the value reaches a threshold, for example `warning`
-from 80% and `critical` from 95%. Segments can also each have their own
+from 80 and `critical` from 95 (in the unit of `value`, so 80% and 95% with the
+default range of 0 to 100). Segments can also each have their own
 `colorPalette`; a segment without one gets a color from a fixed default
 sequence.
 

@@ -22,17 +22,14 @@ const App = () => (
 
 ### Roles and states
 
-- `Meter.Root` renders the element with `role="meter"`. React Aria adds a second, fallback
-  role token in the DOM (`role="meter progressbar"`) for browsers that do not
-  support the `meter` role; assistive technology treats this as the `meter`
-  role.
+- `Meter.Root` renders the element with `role="meter"`.
 - The element exposes `aria-valuemin`, `aria-valuemax`, and `aria-valuenow`.
-- In segment mode, `aria-valuenow` is the sum of the clamped
-  segment values, and `aria-valuetext` announces a full summary: the formatted
-  total, followed in parentheses by every segment's label and formatted value,
-  in order, joined the way a list is normally read out (for example, "50 GB
-  (Images: 30 GB, Videos: 20 GB)"). `Meter.Root` builds this text from its
-  data, so it is the same no matter which parts are rendered.
+- In segment mode, `aria-valuenow` is the sum of the clamped segment values, and
+  `aria-valuetext` announces a full summary: the formatted total, followed in
+  parentheses by every segment's label and formatted value, in order, joined the
+  way a list is normally read out (for example, "50 GB (Images: 30 GB, Videos:
+  20 GB)"). `Meter.Root` builds this text from its data, so it is the same no
+  matter which parts are rendered.
 - The meter itself is the only element with an explicit ARIA role. Segments and
   the legend do not carry their own role, because ARIA treats the children of a
   `meter` as presentational; giving a segment its own role would make it
@@ -72,10 +69,11 @@ interaction:
 In segment mode, `Meter.Legend` renders a visible legend below the track, with
 one item per segment (a color swatch, the label, and the formatted value).
 Always render it with segments; `Meter.Root` logs a warning in development mode
-when segments have no legend. The legend is marked `aria-hidden="true"`, because the same information is already announced
-through `aria-valuetext` on the meter itself. Without `aria-hidden`, a screen
-reader would announce every segment twice: once from the meter's summary, and
-once from reading the legend's own text.
+when segments have no legend. The legend is marked `aria-hidden="true"`, because
+the same information is already announced through `aria-valuetext` on the meter
+itself. Without `aria-hidden`, a screen reader would announce every segment
+twice: once from the meter's summary, and once from reading the legend's own
+text.
 
 The legend is not hidden visually. It stays on screen for sighted users, so the
 meaning of each segment's color does not depend on color alone (WCAG 2.1 success
@@ -83,8 +81,8 @@ criterion 1.4.1, Use of Color).
 
 ### Color
 
-- Fills are flat colors; they do not use a gradient and do not animate. A
-  transition may play when the width of a segment changes, and it is removed
+- Fills are flat colors without a gradient. The width of a segment that is
+  already shown changes with a short transition, and the transition is removed
   under `prefers-reduced-motion: reduce`.
 - Some fill colors have less than 3:1 contrast with the track, so the fill is
   not the only way to read the value. `Meter.Value` and, in segment mode,

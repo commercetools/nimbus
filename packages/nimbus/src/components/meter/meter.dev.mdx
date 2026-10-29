@@ -144,7 +144,9 @@ const App = () => (
 ### Custom range
 
 Use `minValue` and `maxValue` to measure against a range other than 0-100. The
-filled part is always relative to this range.
+filled part is always relative to this range. A `value` outside the range is
+clamped to it: `Infinity` fills the bar, and `-Infinity` and `NaN` draw an empty
+bar.
 
 ```jsx live-dev
 const App = () => (
@@ -166,7 +168,12 @@ const App = () => (
 Use `formatOptions` on `Meter.Root` to control how the value is displayed. This
 accepts a standard `Intl.NumberFormatOptions` object. The default is
 `{ style: "percent" }`. Use `valueLabel` to replace the formatted text with a
-fully custom string, for example to show a fraction instead of a percent.
+fully custom string, for example to show a fraction instead of a percent. An
+empty `valueLabel` counts as not set.
+
+Pass the same `formatOptions` object on every render when you can, for example a
+constant outside the component. A new object on every render makes Meter build
+its number formatter again each time. The result stays correct.
 
 ```jsx live-dev
 const App = () => (
@@ -198,7 +205,7 @@ logs a warning in development mode.
 
 ```jsx live-dev
 const App = () => (
-  <Meter.Root value={50} formatOptions={{}} valueLabel="50 of 100 GB">
+  <Meter.Root value={50} valueLabel="50 of 100 GB">
     <Meter.Label>Storage</Meter.Label>
     <Meter.Value>
       <Text as="span" fontWeight="700">
@@ -348,10 +355,8 @@ example with `valueLabel="97% – almost full"`.
 ### Accessibility
 
 The Meter component handles most accessibility requirements internally, using
-React Aria Components' `<Meter>`. `Meter.Root` renders `role="meter"` in the DOM
-(React Aria adds a second, fallback role token, `progressbar`, for browsers that
-do not support the `meter` role; assistive technology reads this as the `meter`
-role).
+React Aria Components' `<Meter>`. `Meter.Root` renders the element with
+`role="meter"`.
 
 - **Labeling**: give the meter an accessible name, either with `Meter.Label` or
   with `aria-label` / `aria-labelledby` on `Meter.Root`. If none of these is
@@ -417,7 +422,7 @@ const App = () => {
         <Meter.Track />
         <Meter.Legend />
       </Meter.Root>
-      <Text fontSize="sm" color="neutral.11">
+      <Text textStyle="sm" color="neutral.11">
         {total} GB of 100 GB used
       </Text>
     </Stack>

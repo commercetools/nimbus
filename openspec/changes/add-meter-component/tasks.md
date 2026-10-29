@@ -20,13 +20,13 @@
 - [x] 2.2 Write story play functions in `meter.stories.tsx` covering every
       scenario in `specs/nimbus-meter/spec.md`: role + min/max/now, custom range
       width, not focusable (Tab skips it), visible label + `aria-labelledby`,
-      `aria-label` in `minimal`, percent / unit / `valueLabel` text, clamping,
-      segments widths, total > max, negative, zero segment in legend, empty
-      segments, exactly one `role="meter"`, summary `aria-valuetext`, no nested
-      meter/progressbar roles, legend item count + order + `aria-hidden`, no
-      legend for single value, `colorPalette` on meter and segment, default
-      colors differ between adjacent segments, stacked / inline / minimal
-      layouts, ref points to the meter element. **Done when:**
+      `aria-label` with only the track, percent / unit / `valueLabel` text,
+      clamping, segments widths, total > max, negative, zero segment in legend,
+      empty segments, exactly one `role="meter"`, summary `aria-valuetext`, no
+      nested meter/progressbar roles, legend item count + order + `aria-hidden`,
+      no legend for single value, `colorPalette` on meter and segment, default
+      colors differ between adjacent segments, stacked / inline layouts, ref
+      points to the meter element. **Done when:**
       `pnpm test:storybook:dev packages/nimbus/src/components/meter/meter.stories.tsx`
       runs and the tests fail for the expected reason (missing implementation,
       not syntax errors).
@@ -34,17 +34,17 @@
 ## 3. Implementation
 
 - [x] 3.1 Implement `meter.types.ts` (skill: `writing-types`): recipe props
-      (`size`, `layout`), slot props, `MeterSegment`, and public `MeterProps` as
-      a discriminated union (`value` XOR `segments`), `aria-label` required when
-      `label` is absent. JSDoc on every public prop with defaults. **Done
-      when:** a story that passes both `value` and `segments` is a type error,
-      and `typecheck:dev` passes.
+      (`size`, `layout`), slot props, `MeterSegment`, and public
+      `MeterRootProps` as a discriminated union (`value` XOR `segments`). JSDoc
+      on every public prop with defaults. **Done when:** a story that passes
+      both `value` and `segments` is a type error, and `typecheck:dev` passes.
 - [x] 3.2 Implement `meter.recipe.ts` (skill: `writing-recipes`): slots
-      `root, label, value, track, segment, legend, legendItem,     legendSwatch`;
-      sizes `2xs` / `md` and layouts matching `ProgressBar`; flat
-      `colorPalette.9` fill; 2px gap between segments; width transition disabled
-      under `prefers-reduced-motion`; default segment color sequence. **Done
-      when:** no gradients or keyframe animations are used.
+      `root, label, value, track, segment, legend, legendItem, legendSwatch`;
+      sizes `sm` / `md` / `lg` and layouts `stacked` / `inline`; flat
+      `colorPalette.9` fill; gap between segments (1px at `sm`, 2px at `md` and
+      `lg`); width transition disabled under `prefers-reduced-motion`; default
+      segment color sequence. **Done when:** no gradients or keyframe animations
+      are used.
 - [x] 3.3 Implement `meter.slots.tsx` (skill: `writing-slots`) with
       `createSlotRecipeContext({ key: "nimbusMeter" })`. **Done when:** one slot
       component per recipe slot, typed with the slot props.
@@ -53,9 +53,10 @@
 - [x] 3.5 Implement `meter.tsx` (skill: `writing-main-component`) on React Aria
       Components `<Meter>`: single value as one internal segment, summary
       `aria-valuetext` via `useNumberFormatter` + `Intl.ListFormat`, legend only
-      in segment mode with `aria-hidden="true"`, dev warnings for missing name /
-      overflow / negative values, `extractStyleProps`, ref forwarding. Modular
-      Chakra imports only. **Done when:** all play functions from 2.2 pass.
+      in segment mode with `aria-hidden="true"`, dev warnings for overflow /
+      negative values / missing legend (the missing-name warning is React Aria's
+      own), `extractStyleProps`, ref forwarding. Modular Chakra imports only.
+      **Done when:** all play functions from 2.2 pass.
 - [x] 3.6 Export from `packages/nimbus/src/components/index.ts`. **Done when:**
       `import { Meter } from "@commercetools/nimbus"` works in the stories.
 - [x] 3.7 Developer documentation (skill: `writing-developer-documentation`):
@@ -82,7 +83,8 @@
       from the **recipe** (sizes, layouts, colorPalette, segment mode, legend),
       not from story names. **Done when:** - Every state the recipe paints
       differently is visible in some snapshotted frame: a `SmokeTest` matrix of
-      size × layout × colorPalette, and a `Segments` showcase with 1, 2 and 4
+      layout × mode (single value / segments), showcases for `Sizes`,
+      `ColorPalettes` and `TextStyle`, and a `SegmentShowcase` with 1, 2 and 4
       segments (including a zero-value segment and an overflow case). - States a
       matrix cannot hold have their own snapshotted story (none expected for
       focus or overlays, because Meter is not interactive — state this in the
@@ -119,11 +121,12 @@
       `Meter.Legend`, React Aria's missing-name warning, `Meter.Legend` with a
       single value, `textStyle` on Root and on one part. **Done when:** the new
       tests fail against the flat component.
-- [x] 6.3 Implement `components/meter.{context,root,label,value,track,legend}.tsx`,
-      make `meter.tsx` exports only, update types, slots (no `header`) and
-      recipe (grid areas, `stacked` | `inline`, text style from `size`, no
-      `textStyle` variant). **Done when:** `pnpm test:dev
-      packages/nimbus/src/components/meter/` and
+- [x] 6.3 Implement
+      `components/meter.{context,root,label,value,track,legend}.tsx`, make
+      `meter.tsx` exports only, update types, slots (no `header`) and recipe
+      (grid areas, `stacked` | `inline`, text style from `size`, no `textStyle`
+      variant). **Done when:**
+      `pnpm test:dev     packages/nimbus/src/components/meter/` and
       `pnpm --filter @commercetools/nimbus typecheck:dev` pass.
 - [x] 6.4 Convert `.mdx`, `.dev.mdx`, `.guidelines.mdx`, `.a11y.mdx`, the
       playground stories and the changeset. **Done when:** no flat-API usage is
@@ -141,3 +144,22 @@
       the value (`SegmentGeometry` story).
 - [x] 7.5 Development warnings are logged once per meter.
 - [x] 7.6 Export only public types from the barrel.
+
+## 8. Fixes from the second review
+
+- [x] 8.1 React Aria renders `role="meter"`, so the `aria-allowed-attr`
+      exception is removed from the stories, `MissingParts` turns off
+      `aria-meter-name` for that story only, and the role text is corrected in
+      the docs, the spec and the design.
+- [x] 8.2 A single `value` is clamped directly (`clampToRange`), so
+      `aria-valuenow`, the value text and thresholds see the exact value
+      (`DecimalValues` story).
+- [x] 8.3 `Infinity` fills the bar, `-Infinity` and `NaN` draw an empty bar
+      (`Clamping` story, unit tests).
+- [x] 8.4 An empty `valueLabel` counts as not set, and `Meter.Value` children
+      that render nothing leave the formatted total in place.
+- [x] 8.5 Floating-point rounding errors are not reported as an overflow.
+- [x] 8.6 The development warnings move to the `useMeterDevWarnings` hook, and
+      the internal context types move to `components/meter.context.tsx`.
+- [x] 8.7 Docs corrections: the APG quote, the W3C issue, the segment gap, the
+      animation wording and the threshold units.

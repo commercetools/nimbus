@@ -16,8 +16,6 @@ import {
  * computes one summary for assistive technology. The other parts show that
  * data; render only the parts you need, in any order.
  *
- * @beta The API can still change in a minor version, with prior notice.
- *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/meter}
  *
  * @example
@@ -28,6 +26,8 @@ import {
  *   <Meter.Track />
  * </Meter.Root>
  * ```
+ *
+ * @beta This component is in beta and may change in future minor versions.
  */
 export const Meter = {
   /**

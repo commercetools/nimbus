@@ -2,9 +2,10 @@
 
 Nimbus has no component to show a measured value within a known range (storage
 used, quota consumed, a rate limit, a score). Teams use `ProgressBar` for this,
-but the WAI-ARIA Authoring Practices say "The meter role should not be used to
-indicate progress" (https://www.w3.org/WAI/ARIA/apg/patterns/meter/), so the
-progress semantics are wrong for screen reader users. Teams also need to show
+but the WAI-ARIA Authoring Practices say "The meter should not be used to
+indicate progress, such as loading or percent completion of a task"
+(https://www.w3.org/WAI/ARIA/apg/patterns/meter/), so the progress semantics
+are wrong for screen reader users. Teams also need to show
 several measurements that share one total (for example "Images 30 GB + Videos 20
 GB of 100 GB"), which no Nimbus component supports today.
 
@@ -16,8 +17,10 @@ GB of 100 GB"), which no Nimbus component supports today.
   which parts to render and style each part.
 - `Meter.Root` props: `value` / `minValue` / `maxValue`, `formatOptions`,
   `valueLabel`, `size` (`sm` | `md` | `lg`), `layout` (`stacked` | `inline`),
-  `colorPalette`. Visual shape matches `ProgressBar`, but uses a flat fill (no
-  gradient, no animation).
+  `colorPalette`. The track color and the `stacked` and `inline` layouts follow
+  `ProgressBar`. The bars are thinner (4, 8 and 12 px, against 12 and 24 px) and
+  the fill is flat (no gradient). Its width changes with a short transition that
+  is removed under `prefers-reduced-motion`.
 - Multi-segment mode: a `segments` array (`{ id, label, value, colorPalette? }`)
   on `Meter.Root` draws several parts inside one track, with a visible legend
   from `Meter.Legend`. One `role="meter"` whose `aria-valuenow` is the sum of

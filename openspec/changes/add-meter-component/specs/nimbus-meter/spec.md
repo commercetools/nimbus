@@ -24,10 +24,9 @@ values and SHALL read what they show from `Meter.Root`. Each part except
 ### Requirement: Meter semantics
 
 `Meter.Root` SHALL render a single element with `role="meter"` using React Aria
-Components `<Meter>` (React Aria renders `role="meter progressbar"`; the second
-token is a fallback for browsers without `meter` support), and SHALL expose
-`aria-valuemin`, `aria-valuemax` and `aria-valuenow`. The component SHALL NOT be
-focusable and SHALL NOT respond to keyboard input.
+Components `<Meter>`, and SHALL expose `aria-valuemin`, `aria-valuemax` and
+`aria-valuenow`. The component SHALL NOT be focusable and SHALL NOT respond to
+keyboard input.
 
 #### Scenario: Default range
 
@@ -106,10 +105,25 @@ current locale, using `formatOptions` on `Meter.Root` (default
 - **THEN** `aria-valuetext` SHALL be the formatted value
 - **AND** the component SHALL log one warning in development mode
 
+#### Scenario: Empty value label
+
+- **WHEN** `valueLabel=""` is provided
+- **THEN** it SHALL count as not set
+- **AND** the visible value text and `aria-valuetext` SHALL both be the
+  formatted value
+
+#### Scenario: Custom value content that renders nothing
+
+- **WHEN** `Meter.Value` has only children that render nothing (for example
+  `false`)
+- **THEN** the visible value text SHALL be the formatted value
+- **AND** the component SHALL NOT log a warning
+
 ### Requirement: Value clamping
 
 The component SHALL clamp the drawn width to the range 0%–100% and SHALL NOT
-divide by zero.
+divide by zero. A single `value` inside the range SHALL be used as it is for
+`aria-valuenow`, the value text and `thresholds`, without rounding errors.
 
 #### Scenario: Value above maximum
 
@@ -125,6 +139,25 @@ divide by zero.
 
 - **WHEN** `minValue` equals `maxValue`
 - **THEN** the filled part SHALL cover 0% and no error SHALL be thrown
+
+#### Scenario: Infinite value
+
+- **WHEN** `value={Infinity}`
+- **THEN** the filled part SHALL cover 100% and `aria-valuenow` SHALL be
+  `maxValue`
+
+#### Scenario: Negative infinite or non-numeric value
+
+- **WHEN** `value={-Infinity}` or `value={NaN}`
+- **THEN** the filled part SHALL cover 0% and `aria-valuenow` SHALL be
+  `minValue`
+
+#### Scenario: Decimal value
+
+- **WHEN** `value={0.1}`, `maxValue={1}` and `thresholds` with `warning` from
+  `0.1` are provided
+- **THEN** `aria-valuenow` SHALL be `0.1`
+- **AND** the fill SHALL use the `warning` palette
 
 ### Requirement: Multiple segments
 
@@ -155,6 +188,18 @@ visible gap.
 - **THEN** it SHALL be treated as `0`, including in the legend and
   `aria-valuetext`
 - **AND** the component SHALL log a warning in development mode
+
+#### Scenario: Non-finite segment value
+
+- **WHEN** a segment has value `Infinity`
+- **THEN** it SHALL fill the rest of the range, and the component SHALL log a
+  warning in development mode
+- **AND** a segment with value `NaN` SHALL be treated as `0`
+
+#### Scenario: Rounding errors are not an overflow
+
+- **WHEN** the segments `0.1` and `0.2` are provided with `maxValue={0.3}`
+- **THEN** the component SHALL NOT log an overflow warning
 
 #### Scenario: Zero segment
 
@@ -251,14 +296,20 @@ colors from a fixed default sequence.
 ### Requirement: Fill appearance
 
 Fills SHALL be flat colors (no gradient) using the palette's solid step
-(`colorPalette.9`) and SHALL NOT animate. Meaning SHALL NOT depend on color alone
-(the legend and value text carry it).
+(`colorPalette.9`). The width of a segment SHALL change with a transition that
+is removed under `prefers-reduced-motion: reduce`. Meaning SHALL NOT depend on
+color alone (the legend and value text carry it).
 
 #### Scenario: Flat fill
 
 - **WHEN** a meter is rendered with any `colorPalette`
 - **THEN** the fill SHALL be a flat color from the palette's solid step, with no
-  gradient and no animation
+  gradient
+
+#### Scenario: Reduced motion
+
+- **WHEN** the user prefers reduced motion
+- **THEN** the width transition of the segments SHALL be removed
 
 ### Requirement: Thresholds
 

@@ -5,10 +5,13 @@ import type { NimbusColorPalette } from "@/type-utils";
  * repeated when there are more segments than colors.
  *
  * The order keeps the first colors as far apart as possible, also for color
- * vision deficiencies (CIEDE2000 on step 9; see `design.md` D6). Palettes
- * that look like a status are left out: the semantic ones (positive, warning,
- * critical, info) and those with the same step 9 (blue = info, red =
- * critical, green = positive).
+ * vision deficiencies: it was chosen by CIEDE2000 distance between the step 9
+ * colors, under normal vision and simulated protanopia, deuteranopia and
+ * tritanopia. The first four colors keep a worst-case distance of 12.8 (the
+ * earlier order: 6.1). The reasoning is in decision D6 of the OpenSpec change
+ * `add-meter-component`. Palettes that look like a status are left out: the
+ * semantic ones (positive, warning, critical, info) and those with the same
+ * step 9 (blue = info, red = critical, grass = positive).
  */
 export const METER_SEGMENT_PALETTES = [
   "primary",
