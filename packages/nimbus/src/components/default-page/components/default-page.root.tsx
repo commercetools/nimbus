@@ -29,7 +29,6 @@ export const DefaultPageRoot = ({
   const [recipeProps, restProps] = recipe.splitVariantProps({
     ...props,
     stickyHeader: sticky,
-    compactHeader: compactOnScroll ? phase : undefined,
   });
 
   return (
@@ -37,6 +36,7 @@ export const DefaultPageRoot = ({
       ref={ref}
       data-compact={compactOnScroll && phase === "compact" ? "true" : undefined}
       {...recipeProps}
+      compactHeader={compactOnScroll ? phase : undefined}
       {...restProps}
     >
       {compactOnScroll && (

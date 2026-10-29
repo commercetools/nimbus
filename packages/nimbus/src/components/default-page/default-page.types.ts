@@ -1,6 +1,5 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
-  ConditionalValue,
   HTMLChakraProps,
   UnstyledProp,
 } from "@chakra-ui/react/styled-system";
@@ -15,7 +14,7 @@ import type {
 export type DefaultPageCompactHeader = "idle" | "compact";
 
 export type DefaultPageRecipeProps = UnstyledProp & {
-  compactHeader?: ConditionalValue<DefaultPageCompactHeader>;
+  compactHeader?: DefaultPageCompactHeader;
 };
 
 // ============================================================
