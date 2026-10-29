@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { ThemeProvider } from "next-themes";
 import type { ColorModeProviderProps } from "../nimbus-provider.types";
 
@@ -28,17 +29,28 @@ export const NimbusColorModeProvider = ({
   // `type` difference does not cause a hydration warning.
   const isClient = typeof window !== "undefined";
 
+  // Stable identity, so next-themes' memoized script component can skip
+  // re-renders when the consumer's `scriptProps` do not change.
+  const mergedScriptProps = useMemo(
+    () =>
+      isClient
+        ? {
+            ...scriptProps,
+            // A consumer-provided `type` takes priority over the default.
+            // An empty or undefined `type` makes the script executable again,
+            // so it falls back to the data-block type.
+            type: scriptProps?.type || DATA_BLOCK_SCRIPT_TYPE,
+          }
+        : scriptProps,
+    [isClient, scriptProps]
+  );
+
   return (
     <ThemeProvider
       attribute="class"
       disableTransitionOnChange
       {...props}
-      // A consumer-provided `type` takes priority over the default.
-      scriptProps={
-        isClient
-          ? { type: DATA_BLOCK_SCRIPT_TYPE, ...scriptProps }
-          : scriptProps
-      }
+      scriptProps={mergedScriptProps}
     />
   );
 };

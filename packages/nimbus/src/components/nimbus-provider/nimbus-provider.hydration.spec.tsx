@@ -40,16 +40,20 @@ describe("NimbusColorModeProvider - hydration", () => {
   });
 
   it("hydrates server-rendered HTML without errors or warnings", async () => {
-    // Server markup differs from client markup only in the script `type`
+    // Server markup differs from client markup in the script `type` and the
+    // next-themes `nonce` ("" on the client, absent or real on the server);
+    // both are covered by `suppressHydrationWarning`.
     // (see nimbus-provider.ssr.spec.tsx, which checks real server output).
     // `window` cannot be removed here because next-themes needs it, so the
     // server markup is derived from the client markup.
     const serverHtml = renderToString(tree).replace(
-      /(<script\b[^>]*?) type="text\/plain"/,
+      /(<script\b[^>]*?) type="text\/plain"( nonce="")?/,
       "$1"
     );
 
-    expect(serverHtml.match(/<script\b[^>]*>/)?.[0]).not.toMatch(/\btype=/);
+    expect(serverHtml.match(/<script\b[^>]*>/)?.[0]).not.toMatch(
+      /\b(type|nonce)=/
+    );
 
     const container = document.createElement("div");
     container.innerHTML = serverHtml;
