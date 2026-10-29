@@ -1763,27 +1763,30 @@ export const CompactOnScrollNarrow: Story = {
       }
     );
 
-    await step("Focused back link shows its label without restoring", async () => {
-      const backLink = canvas.getByRole("link", { name: "Cart discounts" });
-      const title = canvas.getByRole("heading", { name: "Spring sale" });
-      const icon = backLink.querySelector("svg");
-      const linkBox = backLink.getBoundingClientRect();
-      const titleBox = title.getBoundingClientRect();
+    await step(
+      "Focused back link shows its label without restoring",
+      async () => {
+        const backLink = canvas.getByRole("link", { name: "Cart discounts" });
+        const title = canvas.getByRole("heading", { name: "Spring sale" });
+        const icon = backLink.querySelector("svg");
+        const linkBox = backLink.getBoundingClientRect();
+        const titleBox = title.getBoundingClientRect();
 
-      await expect(icon).not.toBeNull();
-      await expect(icon!.getBoundingClientRect().height).toBeGreaterThan(0);
-      await expect(linkBox.width).toBeLessThan(24);
-      await expect(linkBox.top).toBeLessThan(titleBox.bottom);
-      await expect(linkBox.bottom).toBeGreaterThan(titleBox.top);
+        await expect(icon).not.toBeNull();
+        await expect(icon!.getBoundingClientRect().height).toBeGreaterThan(0);
+        await expect(linkBox.width).toBeLessThan(24);
+        await expect(linkBox.top).toBeLessThan(titleBox.bottom);
+        await expect(linkBox.bottom).toBeGreaterThan(titleBox.top);
 
-      backLink.focus();
-      await waitFor(() =>
-        expect(backLink.getBoundingClientRect().width).toBeGreaterThan(
-          linkBox.width + 20
-        )
-      );
-      await expect(isCompact(root)).toBe(true);
-    });
+        backLink.focus();
+        await waitFor(() =>
+          expect(backLink.getBoundingClientRect().width).toBeGreaterThan(
+            linkBox.width + 20
+          )
+        );
+        await expect(isCompact(root)).toBe(true);
+      }
+    );
   },
 };
 
