@@ -10,3 +10,7 @@ that render Nimbus components wrapped in their own `NimbusProvider`.
 Server rendering is unchanged: the theme script is still output as executable
 JavaScript, so server-rendered pages keep setting the correct theme before first
 paint. A `type` passed in `scriptProps` is still used as given.
+
+`NimbusProvider`: can now be rendered on the server (for example with
+`renderToString`). Before, it threw "Missing getServerSnapshot" while rendering
+the toast outlet.

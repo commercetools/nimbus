@@ -2,10 +2,20 @@
 import { renderToString } from "react-dom/server";
 import { describe, it, expect } from "vitest";
 import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode-provider";
+import { NimbusProvider } from "./nimbus-provider";
 
-// NimbusColorModeProvider is rendered directly: the full NimbusProvider
-// cannot be server-rendered yet because ToastOutlet's useSyncExternalStore
-// has no getServerSnapshot.
+describe("NimbusProvider - server rendering", () => {
+  it("renders children and an executable theme script on the server", () => {
+    const html = renderToString(
+      <NimbusProvider loadFonts={false}>
+        <div>Test content</div>
+      </NimbusProvider>
+    );
+
+    expect(html).toContain("Test content");
+    expect(html.match(/<script\b[^>]*>/)?.[0]).not.toMatch(/\btype=/);
+  });
+});
 
 describe("NimbusColorModeProvider - server rendering", () => {
   it("renders an executable theme script on the server", () => {
