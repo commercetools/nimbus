@@ -24,6 +24,11 @@ export const AccordionTriggerSlot = withContext<
   HTMLChakraProps<"button">
 >("button", "trigger");
 
+export const AccordionIndicatorSlot = withContext<
+  SVGSVGElement,
+  HTMLChakraProps<"svg">
+>("svg", "indicator");
+
 export const AccordionPanelSlot = withContext<
   HTMLDivElement,
   HTMLChakraProps<"div">
