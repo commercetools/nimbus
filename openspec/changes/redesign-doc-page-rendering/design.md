@@ -72,12 +72,13 @@ The `githubLink` value is derived from the component folder:
 The remote `https://github.com/commercetools/nimbus.git` was confirmed with
 `git remote get-url origin`.
 
-The `storybookLink` host is `https://nimbus-storybook.vercel.app/`
-(`docs/engineering-docs-template-guide.md`). The path format of one story is
-not confirmed yet. Task 1.2 reads the `title` fields of the stories and the
-Storybook build output to find the exact path before any MDX file is edited.
-If a component has no stories, it sets no `storybookLink` and the requirement
-"Component pages have links" is checked per component by a script.
+The `storybookLink` is `https://nimbus-storybook.vercel.app/?path=/story/<id>`.
+`<id>` is the `title` of the component stories (`Components/Buttons/Button`),
+in lower case with every run of other characters replaced by one `-`
+(`components-buttons-button`). A real browser check showed that this component
+id opens the component page in the published Storybook. The script checks each
+id against the published `index.json`. Components without a stories file (Code,
+Flex, Heading, Image, Kbd, List, Table, Text) get no `storybookLink`.
 
 Alternative considered: compute both links in the build and add no fields.
 Rejected by the maintainer: explicit fields can be overridden per page.

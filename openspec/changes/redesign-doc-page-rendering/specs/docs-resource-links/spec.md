@@ -33,7 +33,8 @@ Storybook, GitHub.
 - **THEN** the header SHALL NOT show an empty link row
 
 ### Requirement: Component pages have links
-Every component page SHALL set `githubLink` and `storybookLink`.
+Every component page SHALL set `githubLink`. Every component page whose component
+has stories SHALL also set `storybookLink`.
 
 #### Scenario: GitHub link
 - **WHEN** a component page is built
@@ -41,6 +42,11 @@ Every component page SHALL set `githubLink` and `storybookLink`.
   `commercetools/nimbus` repository
 
 #### Scenario: Storybook link
-- **WHEN** a component page is built
+- **WHEN** a component page is built and its component has stories
 - **THEN** its `storybookLink` SHALL point to the stories of that component in
   the published Storybook
+
+#### Scenario: Component without stories
+- **WHEN** a component has no stories (Code, Flex, Heading, Image, Kbd, List,
+  Table and Text at the time of writing)
+- **THEN** its page SHALL NOT set `storybookLink`

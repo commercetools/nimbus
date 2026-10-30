@@ -67,6 +67,10 @@ export const mdxDocumentSchema = z.object({
     icon: z.string().optional(),
     /** a link to a figma-design or -node */
     figmaLink: z.string().url().optional(),
+    /** a link to the stories of this component in the published Storybook */
+    storybookLink: z.string().url().optional(),
+    /** a link to the source of this component in the GitHub repository */
+    githubLink: z.string().url().optional(),
     /**
      * `id`s of documents related to this one. The docs app shows them as cards
      * at the end of the Overview tab. Links are two-way: a document that is
