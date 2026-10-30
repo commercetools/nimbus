@@ -8,8 +8,12 @@ import {
   hasIllustration,
 } from "@/components/component-illustration";
 
-/** Size of the illustration tile at the start of a result row. */
-const ILLUSTRATION_SIZE = "56px";
+/**
+ * Height of the three text lines (title, description, breadcrumb, measured), so
+ * the tile at the start of a row is as tall as the text. Keep in sync with
+ * `RESULT_ROW_HEIGHT` in app-nav-bar-search.tsx (this plus the row padding).
+ */
+const TILE_SIZE = "76px";
 
 export const SearchResultItem = ({ item, ...props }: SearchResultItemProps) => {
   const { routeManifest } = useManifest();
@@ -27,24 +31,26 @@ export const SearchResultItem = ({ item, ...props }: SearchResultItemProps) => {
     icons.Description;
   return (
     <Flex py="300" cursor="pointer" minWidth="0" maxWidth="100%">
-      {illustration ? (
-        <Box
-          colorPalette="primary"
-          boxSize={ILLUSTRATION_SIZE}
-          flexShrink={0}
-          mr="400"
-          borderRadius="200"
-          overflow="hidden"
-          bg="colorPalette.2"
-          css={{ "--illustration-gradient-start": "transparent" }}
-        >
+      <Flex
+        colorPalette="primary"
+        boxSize={TILE_SIZE}
+        flexShrink={0}
+        mr="400"
+        align="center"
+        justify="center"
+        borderRadius="200"
+        overflow="hidden"
+        bg="colorPalette.3"
+        color="colorPalette.11"
+        textStyle="4xl"
+        css={{ "--illustration-gradient-start": "transparent" }}
+      >
+        {illustration ? (
           <ComponentIllustration name={illustration} />
-        </Box>
-      ) : (
-        <Box pr="400" pt="100">
-          <IconComponent size="1.5em" />
-        </Box>
-      )}
+        ) : (
+          <IconComponent />
+        )}
+      </Flex>
       <Box minWidth="0" display="flex" flexDir="column" gap="0" {...props}>
         <Heading size="lg" truncate>
           {item.title}{" "}
