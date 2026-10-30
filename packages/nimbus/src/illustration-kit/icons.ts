@@ -34,10 +34,10 @@ export const icons = {
       `M${num(cx - 2 * s)},${num(cy - 2 * s)} l${num(4 * s)},${num(4 * s)} m${num(-4 * s)},0 l${num(4 * s)},${num(-4 * s)}`,
       at(cx, cy, 2 * s, 2 * s)
     ),
-  plus: (cx: number, cy: number): Path =>
+  plus: (cx: number, cy: number, s = 1): Path =>
     shape(
-      `M${num(cx - 2)},${num(cy)} h4 M${num(cx)},${num(cy - 2)} v4`,
-      at(cx, cy, 2, 2)
+      `M${num(cx - 2 * s)},${num(cy)} h${num(4 * s)} M${num(cx)},${num(cy - 2 * s)} v${num(4 * s)}`,
+      at(cx, cy, 2 * s, 2 * s)
     ),
   /** Calendar, 10 wide and 8 high. */
   calendar: (cx: number, cy: number): Path => {
