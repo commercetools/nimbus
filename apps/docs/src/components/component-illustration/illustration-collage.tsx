@@ -6,8 +6,8 @@ import { ComponentIllustration } from "./component-illustration";
  * Tile size and horizontal step between the two tiles, in `cqh` (percent of
  * the band height), so the pair fits the 16:10 band.
  */
-const SIZE = 70;
-const STEP = 54;
+const SIZE = 66;
+const STEP = 62;
 
 /**
  * Shows one or two illustrations. One is a centered square. Two overlap as a
