@@ -11,6 +11,19 @@ import { DocMetadata } from "@/components/doc-metadata";
 import type { TabMetadata } from "@/types";
 import { useManifest } from "@/contexts/manifest-context";
 import { RelatedDocuments } from "./components/related-documents";
+import { ViewLabelContext } from "./view-label-context";
+
+const visuallyHiddenStyle = {
+  position: "absolute",
+  width: "1px",
+  height: "1px",
+  margin: "-1px",
+  padding: 0,
+  border: 0,
+  overflow: "hidden",
+  clip: "rect(0, 0, 0, 0)",
+  whiteSpace: "nowrap",
+} as const;
 
 // Constant empty array to prevent creating new references on every render
 const EMPTY_TABS: TabMetadata[] = [];
@@ -44,8 +57,15 @@ const DocumentRendererComponent = () => {
     return activeDoc.mdx;
   }, [activeDoc, activeView, tabs]);
 
+  const activeViewKey = activeView ?? tabs[0]?.key ?? "overview";
+
   // Related documents show at the end of the Overview tab only
-  const isOverview = (activeView ?? tabs[0]?.key ?? "overview") === "overview";
+  const isOverview = activeViewKey === "overview";
+
+  // The tab label tells the `h2` tag which heading only repeats the tab.
+  const viewLabel = hasMultipleViews
+    ? tabs.find((tab) => tab.key === activeViewKey)?.title
+    : undefined;
 
   const lifecycleState = meta?.lifecycleState;
   // The header (title, description, links, illustration) is shown on every
@@ -116,8 +136,19 @@ const DocumentRendererComponent = () => {
           {/* Show tabs if multiple views are available */}
           {hasMultipleViews && <ViewTabs tabs={tabs} />}
 
-          <Box pb="2400">
-            <MdxStringRenderer content={content} />
+          <Box
+            pb="2400"
+            css={{
+              // The first `h2` that repeats the tab label stays in the page
+              // for screen readers and anchors but is not shown.
+              "& > h2[data-view-title]:first-of-type": visuallyHiddenStyle,
+              // Keep the space the heading gave to the content below it.
+              "& > h2[data-view-title]:first-of-type + *": { mt: "600" },
+            }}
+          >
+            <ViewLabelContext.Provider value={viewLabel}>
+              <MdxStringRenderer content={content} />
+            </ViewLabelContext.Provider>
             {isOverview && <RelatedDocuments />}
           </Box>
         </Stack>

@@ -1,8 +1,15 @@
 import { IconButton, Heading, Box } from "@commercetools/nimbus";
-import { DetailedHTMLProps, HTMLAttributes, ReactNode } from "react";
+import {
+  DetailedHTMLProps,
+  HTMLAttributes,
+  ReactNode,
+  useContext,
+} from "react";
 import GithubSlugger from "github-slugger";
 import { Link as LinkIcon } from "@commercetools/nimbus-icons";
 import { useCopyToClipboard } from "@commercetools/nimbus";
+import { ViewLabelContext } from "@/components/document-renderer/view-label-context";
+import { headingText, matchesViewLabel } from "@/utils/view-heading";
 /**
  * Generates a slug from React children.
  *
@@ -103,6 +110,10 @@ export const H1 = ({ children, ...props }: HeadingProps) => {
 
 export const H2 = ({ children, ...props }: HeadingProps) => {
   const id = sluggifyChildren(children);
+  const viewLabel = useContext(ViewLabelContext);
+  // Marks a heading that only repeats the active tab label. The content wrapper
+  // in `document-renderer.tsx` hides the first such heading visually.
+  const repeatsViewLabel = matchesViewLabel(headingText(children), viewLabel);
   return (
     <Heading
       {...commonProps({ children, ...props })}
@@ -112,7 +123,7 @@ export const H2 = ({ children, ...props }: HeadingProps) => {
       borderBottom="1px solid"
       borderColor="neutral.6"
     >
-      <h2 {...props}>
+      <h2 data-view-title={repeatsViewLabel ? "" : undefined} {...props}>
         {children} <CopyLink id={id} />
       </h2>
     </Heading>

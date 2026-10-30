@@ -5,6 +5,7 @@ import { useToc } from "@/hooks/useToc";
 import { useClosestHeading } from "./hooks/use-closest-heading.ts";
 import { useMainViewport } from "@/contexts/scroll-container-context";
 import { scrollToAnchor } from "@/utils/scroll-to-anchor";
+import { getVisibleTocItems } from "./toc-items";
 
 /**
  * Table of Contents (TOC) component
@@ -13,7 +14,8 @@ import { scrollToAnchor } from "@/utils/scroll-to-anchor";
  * Design: a single continuous hairline rail runs down the left of the list; the
  * active section is marked by a colored segment of that rail plus a bolder,
  * accented label. Nesting is conveyed by indentation alone (no connector
- * glyphs), and depth is capped at H3 to keep the list scannable. This mirrors
+ * glyphs). Only the H2 entries and the H3 entries of the active section are
+ * shown, to keep the list scannable. This mirrors
  * the convention used by Stripe, Vercel, Docusaurus, and other modern docs
  * sites.
  */
@@ -66,8 +68,9 @@ export const Toc = () => {
     return null;
   }
 
-  // Cap depth at H3 — deeper headings make the list long and hard to scan.
-  const items = (activeToc as TocItem[]).filter((item) => item.depth <= 3);
+  // Show the H1/H2 entries, plus the H3 entries of the section that contains
+  // the active heading. Deeper headings make the list long and hard to scan.
+  const items = getVisibleTocItems(activeToc as TocItem[], closestHeadingId);
 
   if (items.length === 0) {
     return null;

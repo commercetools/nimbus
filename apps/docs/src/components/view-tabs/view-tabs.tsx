@@ -107,10 +107,8 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
       width="full"
       id="floating-nav"
       bg="bg"
-      borderRadius="full"
-      border="1px solid"
+      borderBottom="1px solid"
       borderColor="neutral.6"
-      p="100"
       position="sticky"
       top="800"
       zIndex="2"
@@ -118,9 +116,10 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
         transform: isVisible ? "translateY(0)" : "translateY(-100%)",
         opacity: isVisible ? 1 : 0,
         transition: "all 0.3s ease-in-out, opacity 0.3s ease-in-out",
+        "@media (prefers-reduced-motion: reduce)": { transition: "none" },
       }}
     >
-      <Tabs.Root selectedKey={activeView} variant="pills">
+      <Tabs.Root selectedKey={activeView} variant="line">
         <Tabs.List>
           {tabs.map((tab) => {
             const isOverviewTab = tab.key === "overview";
@@ -128,7 +127,7 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
               ? `/${baseRoute}`
               : `/${baseRoute}/${tab.key}`;
             return (
-              <Tabs.Tab flexGrow="1" href={href} key={tab.key} id={tab.key}>
+              <Tabs.Tab href={href} key={tab.key} id={tab.key}>
                 {tab.title}
               </Tabs.Tab>
             );
