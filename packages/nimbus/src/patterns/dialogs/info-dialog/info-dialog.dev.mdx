@@ -7,7 +7,6 @@ tab-order: 3
 ## Comparison: InfoDialog vs manual Dialog composition
 
 **With InfoDialog:**
-
 ```tsx
 <InfoDialog
   title="Shipping restrictions"
@@ -19,9 +18,12 @@ tab-order: 3
 ```
 
 **Manual composition:**
-
 ```tsx
-<Dialog.Root isOpen={isOpen} onOpenChange={setIsOpen} isDismissable>
+<Dialog.Root
+  isOpen={isOpen}
+  onOpenChange={setIsOpen}
+  isDismissable
+>
   <Dialog.Content>
     <Dialog.Header>
       <Dialog.Title>Shipping restrictions</Dialog.Title>
@@ -37,13 +39,11 @@ tab-order: 3
 ### When to use which
 
 **Use InfoDialog when:**
-
 - You need a read-only informational dialog with no footer actions
 - The default dialog size and dismiss behaviour are appropriate
 - You want a flat four-prop API instead of composing six nested elements
 
 **Use Dialog directly when:**
-
 - You need a non-default size
 - You need to override dismissability (disable overlay click, disable Escape)
 - Your dialog has footer actions (Cancel/Confirm, destructive action, etc.)
@@ -53,7 +53,7 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { InfoDialog, type InfoDialogProps } from "@commercetools/nimbus";
+import { InfoDialog, type InfoDialogProps } from '@commercetools/nimbus';
 ```
 
 ### Basic usage
@@ -79,15 +79,14 @@ const App = () => {
       </InfoDialog>
     </>
   );
-};
+}
 ```
 
 ## Usage examples
 
 ### ReactNode title
 
-The `title` prop accepts any ReactNode, so you can compose a heading with inline
-elements like a badge or icon:
+The `title` prop accepts any ReactNode, so you can compose a heading with inline elements like a badge or icon:
 
 ```jsx live-dev
 const App = () => {
@@ -112,11 +111,10 @@ const App = () => {
       </InfoDialog>
     </>
   );
-};
+}
 ```
 
-When the `title` is not a plain string, pass an explicit `aria-label` if the
-composed markup does not form a meaningful accessible name on its own:
+When the `title` is not a plain string, pass an explicit `aria-label` if the composed markup does not form a meaningful accessible name on its own:
 
 ```tsx
 <InfoDialog
@@ -136,8 +134,7 @@ composed markup does not form a meaningful accessible name on its own:
 
 ### Long, scrollable content
 
-Content that exceeds the available dialog height scrolls within the body; the
-header with the title and close button stays pinned at the top.
+Content that exceeds the available dialog height scrolls within the body; the header with the title and close button stays pinned at the top.
 
 ```jsx live-dev
 const App = () => {
@@ -163,13 +160,12 @@ const App = () => {
       </InfoDialog>
     </>
   );
-};
+}
 ```
 
 ## Close affordances
 
-Because InfoDialog has no footer actions, the underlying Dialog is always
-rendered with `isDismissable` enabled so the user has multiple ways to close it:
+Because InfoDialog has no footer actions, the underlying Dialog is always rendered with `isDismissable` enabled so the user has multiple ways to close it:
 
 - The X button in the header
 - The Escape key
@@ -179,22 +175,18 @@ All three routes invoke `onOpenChange(false)`.
 
 ## Accessibility
 
-InfoDialog inherits its accessibility guarantees from the Nimbus `Dialog`
-primitive:
+InfoDialog inherits its accessibility guarantees from the Nimbus `Dialog` primitive:
 
 - `role="dialog"` is exposed to assistive technology while open
 - Focus moves into the dialog on open and is trapped within it
 - Focus is restored to the triggering element on close
-- When `title` is a string, the dialog's accessible name is derived from it
-  automatically — no extra `aria-label` is required
+- When `title` is a string, the dialog's accessible name is derived from it automatically — no extra `aria-label` is required
 
-If the `title` is a composed ReactNode, pass an explicit `aria-label` to
-InfoDialog so the dialog has a meaningful accessible name.
+If the `title` is a composed ReactNode, pass an explicit `aria-label` to InfoDialog so the dialog has a meaningful accessible name.
 
 ## Escape hatch
 
-If you need a non-default size or a custom dismiss behaviour, drop down to
-composing `Dialog` directly. The equivalent manual composition is:
+If you need a non-default size or a custom dismiss behaviour, drop down to composing `Dialog` directly. The equivalent manual composition is:
 
 ```jsx live-dev
 const App = () => {
@@ -215,13 +207,15 @@ const App = () => {
             <Dialog.CloseTrigger />
           </Dialog.Header>
           <Dialog.Body>
-            <Text>Some goods cannot be shipped to the selected region.</Text>
+            <Text>
+              Some goods cannot be shipped to the selected region.
+            </Text>
           </Dialog.Body>
         </Dialog.Content>
       </Dialog.Root>
     </>
   );
-};
+}
 ```
 
 ## API reference
@@ -230,8 +224,6 @@ const App = () => {
 
 ## Testing your implementation
 
-These examples demonstrate how to test your implementation when using InfoDialog
-within your application. The component's internal behaviour is already covered
-by Nimbus — these tests help you verify your integration.
+These examples demonstrate how to test your implementation when using InfoDialog within your application. The component's internal behaviour is already covered by Nimbus — these tests help you verify your integration.
 
 {{docs-tests: info-dialog.docs.spec.tsx}}
