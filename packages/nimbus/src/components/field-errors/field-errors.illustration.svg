@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <defs>
+    <linearGradient id="il-field-errors-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--illustration-gradient-start, light-dark(var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%)), var(--nimbus-colors-color-palette-2, hsl(233, 41%, 9%))))"/>
+      <stop offset="1" stop-color="var(--illustration-gradient-end, var(--illustration-gradient-start, light-dark(var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%)), var(--nimbus-colors-color-palette-2, hsl(233, 41%, 9%)))))"/>
+    </linearGradient>
+    <filter id="il-field-errors-shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="1.6" stdDeviation="2.4" flood-color="light-dark(hsla(0, 0%, 0%, 0.1), hsla(0, 0%, 0%, 0.5))"/>
+    </filter>
+  </defs>
+  <rect width="96" height="96" fill="url(#il-field-errors-bg)"/>
+  <rect x="16" y="28" width="64" height="16" rx="2" fill="light-dark(var(--nimbus-colors-color-palette-1, hsl(240, 100%, 100%)), var(--nimbus-colors-color-palette-3, hsl(236, 45%, 19%)))" stroke="var(--nimbus-colors-color-palette-6, hsl(229, 100%, 88%))" stroke-width="0.5" filter="url(#il-field-errors-shadow)"/>
+  <rect x="21" y="34.5" width="26" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))"/>
+  <path d="M24,50 L28.5,58 H19.5 Z M24,53 v2 M24,56.4 h0.01" fill="none" stroke="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="32" y="52.5" width="36" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))"/>
+  <path d="M24,60 L28.5,68 H19.5 Z M24,63 v2 M24,66.4 h0.01" fill="none" stroke="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="32" y="62.5" width="28" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))"/>
+</svg>
