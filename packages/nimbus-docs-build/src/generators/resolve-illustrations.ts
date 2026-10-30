@@ -13,7 +13,7 @@
  */
 
 /** Most illustrations a category card shows. */
-export const MAX_COLLAGE = 3;
+export const MAX_COLLAGE = 2;
 
 type Resolvable = {
   title: string;

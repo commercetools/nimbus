@@ -3,19 +3,16 @@ import { Box } from "@commercetools/nimbus";
 import { ComponentIllustration } from "./component-illustration";
 
 /**
- * Tile size and horizontal step between tiles, in `cqh` (percent of the band
- * height), by number of tiles. More tiles are smaller and overlap more, so the
- * group always fits the 16:10 band.
+ * Tile size and horizontal step between the two tiles, in `cqh` (percent of
+ * the band height), so the pair fits the 16:10 band.
  */
-const LAYOUT: Record<number, { size: number; step: number }> = {
-  2: { size: 70, step: 54 },
-  3: { size: 60, step: 46 },
-};
+const SIZE = 70;
+const STEP = 54;
 
 /**
- * Shows one or several illustrations. One illustration is a centered square.
- * Several overlap as a small fan, the middle one on top. The parent must be a
- * size container (`container-type: size`), because tiles use `cqh` and `cqw`.
+ * Shows one or two illustrations. One is a centered square. Two overlap as a
+ * small pair, tilted away from each other. The parent must be a size container
+ * (`container-type: size`), because tiles use `cqh` and `cqw`.
  */
 export const IllustrationCollage: FC<{ names: string[] }> = ({ names }) => {
   if (names.length === 1) {
@@ -26,8 +23,7 @@ export const IllustrationCollage: FC<{ names: string[] }> = ({ names }) => {
     );
   }
 
-  const count = Math.min(names.length, 3);
-  const { size, step } = LAYOUT[count];
+  const count = Math.min(names.length, 2);
 
   return (
     <Box position="relative" width="full" height="full">
@@ -38,9 +34,9 @@ export const IllustrationCollage: FC<{ names: string[] }> = ({ names }) => {
             key={name}
             position="absolute"
             top="50%"
-            left={`calc(50% + ${offset * step}cqh)`}
-            width={`${size}cqh`}
-            height={`${size}cqh`}
+            left={`calc(50% + ${offset * STEP}cqh)`}
+            width={`${SIZE}cqh`}
+            height={`${SIZE}cqh`}
             borderRadius="300"
             overflow="hidden"
             boxShadow="3"
