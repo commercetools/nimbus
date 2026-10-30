@@ -1,0 +1,51 @@
+## 1. Resource link fields
+
+- [ ] 1.1 Add `storybookLink` and `githubLink` (`z.string().url().optional()`, with JSDoc) to `packages/nimbus-docs-build/src/schemas/mdx-document.ts` and `apps/docs/src/schemas/mdx-document.ts`
+- [ ] 1.2 Find the Storybook story path format from the story `title` fields and the Storybook build output, and write the rule down in `design.md`
+- [ ] 1.3 Write a unit test that both schema copies accept valid URLs, reject invalid values, and default to unset
+- [ ] 1.4 Write a script that derives `githubLink` and `storybookLink` for each component MDX file, checks that every URL matches a real folder or story id, and writes the fields into the front matter
+- [ ] 1.5 Run the script, review the diff, and run the docs build
+
+## 2. Page header
+
+- [ ] 2.1 Audit single-view `app-frame` pages for a body heading that repeats the title, and remove those body headings
+- [ ] 2.2 Write failing unit tests for the header: illustration present or absent, link order, no empty link row, no tags
+- [ ] 2.3 Rebuild `doc-metadata` as the page header (title, lifecycle badge, description, link buttons, illustration from `hasIllustration`)
+- [ ] 2.4 Render the header for every `app-frame` page in `document-renderer.tsx` and remove the separate badge row
+- [ ] 2.5 Hide the illustration below the `md` breakpoint and mark it `aria-hidden`
+- [ ] 2.6 Remove the commented-out Figma link block and its TODO from `doc-metadata.tsx`
+
+## 3. View tabs and duplicate heading
+
+- [ ] 3.1 Restyle `view-tabs.tsx` as left-aligned underline tabs and keep the sticky, hide-on-scroll and URL logic
+- [ ] 3.2 Add the sliding indicator and turn off its transition for `prefers-reduced-motion`
+- [ ] 3.3 Write failing tests for the duplicate heading rule (match, no match, case difference)
+- [ ] 3.4 Hide the matching first `h2` visually in the `H2` base tag and keep the id
+- [ ] 3.5 Apply the same rule in `useToc`: drop the entry and promote its `h3` children
+
+## 4. Example frame
+
+- [ ] 4.1 Write failing Storybook or unit tests: closed by default, open with "Default view" = Code, toggle `aria-expanded`, keyboard use, error shown while closed
+- [ ] 4.2 Replace the `Tabs` in `live-code-editor.tsx` with the frame, the preview surface and the toggle button
+- [ ] 4.3 Drive the initial state from the "Default view" atoms and make `defaultActiveTab` work as the fallback
+- [ ] 4.4 Move `LiveError` outside the collapsible area and add the open and close transition with a reduced-motion switch
+- [ ] 4.5 Search `apps/docs` and `packages` for tests or docs that use the "Preview" and "Code" tab labels and update them
+
+## 5. Type hierarchy and table of contents
+
+- [ ] 5.1 Update `H2`, `H3`, `H4` and `Paragraph` in `base-tags` (sizes, spacing, rule on `h2` only, body 16px and line height 1.6) using tokens
+- [ ] 5.2 Filter `toc.tsx` to `h2` entries plus the `h3` entries of the active section
+- [ ] 5.3 Write unit tests for the TOC filter (active `h3`, active `h2` with children, no active heading)
+
+## 6. Verify in the browser
+
+- [ ] 6.1 Check Button, a compound component, a single-view page and a `wide` page with Playwright at 1440px and 390px, in light and dark color mode
+- [ ] 6.2 Check keyboard use of the tabs, the code toggle and the link buttons, and check reduced motion
+- [ ] 6.3 Run `pnpm --filter docs` type check, lint and unit tests
+
+## 7. Keep docs and tooling in sync
+
+- [ ] 7.1 Document `storybookLink` and `githubLink` in `docs/file-type-guidelines/documentation.md` and describe the new header
+- [ ] 7.2 Update `.claude/skills/writing-developer-documentation/SKILL.md`, `.claude/skills/writing-designer-documentation/SKILL.md` and `.claude/commands/mdx-from-wireframe.md`
+- [ ] 7.3 Check `docs/file-review-protocol.md` and `docs/engineering-docs-template-guide.md` for front matter lists and the Preview/Code wording
+- [ ] 7.4 Confirm that no changeset is needed (no published package change); see `docs/changeset-conventions.md`
