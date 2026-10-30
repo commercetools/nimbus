@@ -9,7 +9,7 @@ import type { SkeletonCircleProps } from "./skeleton-circle.types";
  * stand in for an `Avatar`, or with a `boxSize` style prop for a custom
  * dimension. Defaults to a `1em` circle, useful inline.
  *
- * @see {@link https://nimbus-documentation.vercel.app/components/feedback/skeletoncircle}
+ * @see {@link https://nimbus-documentation.vercel.app/components/feedback/skeleton-circle}
  *
  * @supportsStyleProps
  */
