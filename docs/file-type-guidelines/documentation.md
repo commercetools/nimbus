@@ -93,11 +93,24 @@ lifecycleState: Experimental|Alpha|Beta|Stable|Deprecated|EOL
 # @experimental, @alpha or @beta JSDoc tag on the main export, and their
 # changesets mark the state. See main-component.md "Lifecycle State Tag".
 
-# Design resources (when available)
+# Design and code resources (when available)
 figmaLink: >-
   https://www.figma.com/design/...
+storybookLink: https://nimbus-storybook.vercel.app/?path=/story/components-buttons-button
+githubLink: https://github.com/commercetools/nimbus/tree/main/packages/nimbus/src/components/button
 ---
 ```
+
+The page header shows one link button for each of `figmaLink`, `storybookLink`
+and `githubLink` that is set, in this order: Figma, Storybook, GitHub.
+
+- `githubLink` points to the component folder in the `commercetools/nimbus`
+  repository. Every component page sets it.
+- `storybookLink` is the Storybook URL with `?path=/story/<id>`. The `<id>` is
+  the `title` of the component stories in lower case, with every run of other
+  characters replaced by one `-`: `Components/Buttons/Button` becomes
+  `components-buttons-button`. A component without stories sets no
+  `storybookLink`.
 
 `related` lists the `id` of other documents, for example the other parts of a
 component family. The page shows them as cards in a "Related components" section
@@ -125,9 +138,10 @@ related:
 
 Based on analysis of existing component MDX files, follow this structure:
 
-The component title and description are rendered automatically from the
-frontmatter `title` and `description` fields. Do not duplicate them in the body
-content.
+The page header renders the title, description, lifecycle badge, resource links
+and the component illustration from the front matter. The body starts with the
+first section. A first `## Overview` section is hidden visually because the
+Overview tab already names it; it stays in the page for screen readers.
 
 ```markdown
 ## Overview
@@ -466,6 +480,8 @@ tags:
   - interactive
 figmaLink: >-
   https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m
+storybookLink: https://nimbus-storybook.vercel.app/?path=/story/components-dialog
+githubLink: https://github.com/commercetools/nimbus/tree/main/packages/nimbus/src/components/dialog
 ---
 ```
 

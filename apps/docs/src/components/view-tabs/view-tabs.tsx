@@ -117,6 +117,9 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
         opacity: isVisible ? 1 : 0,
         transition: "all 0.3s ease-in-out, opacity 0.3s ease-in-out",
         "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+        // On narrow screens the tabs scroll sideways instead of shrinking
+        overflowX: "auto",
+        "& [role=tab]": { flexShrink: 0, whiteSpace: "nowrap" },
       }}
     >
       <Tabs.Root selectedKey={activeView} variant="line">

@@ -87,6 +87,8 @@ tags:
   - relevant-keywords
 figmaLink: >-
   https://www.figma.com/design/...
+storybookLink: https://nimbus-storybook.vercel.app/?path=/story/components-category-componentname # Link button in the page header
+githubLink: https://github.com/commercetools/nimbus/tree/main/packages/nimbus/src/components/component-name # Link button in the page header
 related: # Optional: ids of related documents, shown as cards at the end of the Overview tab (links are two-way)
   - Components-RelatedComponentName
 ---

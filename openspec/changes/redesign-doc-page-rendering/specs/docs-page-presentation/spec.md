@@ -68,6 +68,7 @@ for assistive technology and keep its anchor.
 - **WHEN** the first `h2` is hidden by this rule
 - **THEN** the table of contents SHALL NOT list it
 - **AND** SHALL list its `h3` children at the top level
+- **AND** SHALL move deeper entries below it up by one level
 
 ### Requirement: Example frame
 The docs app SHALL render each live code example as one frame with a preview

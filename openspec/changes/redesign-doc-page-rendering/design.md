@@ -45,8 +45,9 @@ Findings from the running docs app and the code (Button page, 1440px wide):
 
 ### 1. One header component for all `app-frame` pages
 
-`DocMetadata` becomes the page header and renders for every `app-frame` page,
-not only multi-view pages. The lifecycle badge moves into it, so the separate
+`DocMetadata` becomes the page header and renders for every `app-frame` page and
+for any page with several views. `wide` and `no-sidebar` pages with a single view
+keep their current heading. The lifecycle badge moves into it, so the separate
 badge row in `document-renderer.tsx` is removed.
 
 Layout: a two-column grid (text, illustration) from the `md` breakpoint up. The
@@ -101,9 +102,14 @@ visually hidden when its text equals the active tab label (case-insensitive).
 The DOM node, id and anchor stay, so the heading outline for screen readers and
 existing links keep working.
 
-The table of contents drops the matching entry and treats its `h3` children as
-top-level entries. This is done in `useToc`, not in the visible TOC component,
-so there is one place for the rule.
+The table of contents drops the matching entry and moves the entries below it
+(up to the next `h2`) up one level, so its `h3` children become top-level
+entries. This is done in `useToc` (`promoteViewHeading`), not in the visible TOC
+component, so there is one place for the rule.
+
+The "first `h2` that matches" rule needs no counter. The `H2` tag sets
+`data-view-title` when its text equals the tab label (read from a context), and a
+CSS rule on the content wrapper hides only `h2[data-view-title]:first-of-type`.
 
 Alternative considered: remove the `## Overview` lines from MDX files. Rejected:
 they would break anchors and the guidelines, and 90 files change for a style
@@ -120,9 +126,10 @@ transition. Both are disabled under reduced motion.
 
 The initial state comes from the existing "Default view" atoms: Preview means
 closed, Code means open. The settings menu stays and keeps its labels.
-`defaultActiveTab` is kept as a prop. This change makes the component read it as
-the initial state when the reader has not saved a setting, which makes the
-existing call in `base-tags/code.tsx` work as intended.
+The `defaultActiveTab` prop is declared but never read today; `base-tags/code.tsx`
+passes `"editor"` for `live-dev` blocks in the dev environment. This change does
+not make the component read it, because that would open every example in
+development builds only. The prop is left as it is.
 
 `LiveError` is rendered outside the collapsible area so that errors show when the
 editor is closed.
@@ -152,12 +159,10 @@ is added for the list change.
 - [`storybookLink` path format is wrong for some components] → Task 1.2 finds
   the format from real stories, and a script checks that each generated URL
   matches a story id before the files are written.
-- [Closed examples hide code that readers need] → The toggle has a clear name,
-  the existing "Default view" setting lets a reader start with code open, and
-  `docs.spec.tsx`-style tests are not affected because they test the consumer
-  examples, not this UI.
-- [Playwright tests or docs tests look for the Preview/Code tabs] → Task 4.5
-  searches `apps/docs` and `packages` for those labels and updates them.
+- [Closed examples hide code that readers need] → The toggle has a clear name and
+  the existing "Default view" setting lets a reader start with code open.
+- [Tests or docs look for the Preview/Code tabs] → Task 4.5 searches `apps/docs`
+  and `packages` for those labels and updates them.
 - [Open change `use-nimbus-components-in-docs-app` edits nearby docs app files] →
   Keep commits separate and rebase before merging.
 - [Hiding the first `h2` makes the page look as if the first section has no
