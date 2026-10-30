@@ -232,7 +232,7 @@ catalogs:
     "@figma/code-connect": ^1.5.3
     # Exact pin: even patch releases (1.14.1, 1.14.2) added warnings that fail
     # CI's `openspec validate --all --strict`. Bump it in its own PR.
-    "@fission-ai/openspec": 1.14.3
+    "@fission-ai/openspec": 1.15.0
     eslint-plugin-react-hooks: ^7.1.1
     globals: ^17.13.0
     glob: ^13.0.6
@@ -357,7 +357,7 @@ catalogs:
     jotai: 3.0.1
     prism-react-renderer: 2.4.1
     react-live: 4.1.8
-    react-router: 8.4.0
+    react-router: 8.5.0
     react-router-dom: 7.18.4
     react-syntax-highlighter: 16.1.2
     remark-mark-highlight: 0.1.1
