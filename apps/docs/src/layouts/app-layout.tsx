@@ -23,6 +23,7 @@ import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
 import { useSidebarScrollRestoration } from "@/hooks/use-sidebar-scroll-restoration";
 import { useHashNavigation } from "@/hooks/use-hash-navigation";
 import { useRouteInfo } from "@/hooks/use-route-info";
+import { useActiveDoc } from "@/hooks/useActiveDoc";
 
 function AppFrameBodyInner() {
   const mainViewportRef = useMainViewport();
@@ -44,8 +45,19 @@ function AppFrameBodyInner() {
   // nav's own 1280px max width). Every other doc keeps the reading measure.
   const isHome = baseRoute === "" || baseRoute === "home";
 
+  // `layout: wide` pages (overviews with a card grid) have no use for a table
+  // of contents, so they drop the aside and widen the column. `activeDoc` is
+  // undefined while the next route loads; keep the last value so the column
+  // does not jump between widths on every navigation.
+  const { doc: activeDoc } = useActiveDoc();
+  const wideRef = useRef(false);
+  if (activeDoc) {
+    wideRef.current = activeDoc.meta.layout === "wide";
+  }
+  const isWide = wideRef.current;
+
   return (
-    <AppFrame.Root hideAside={isHome}>
+    <AppFrame.Root hideAside={isHome || isWide}>
       {/* Left Navigation */}
       <AppFrame.LeftNav viewportRef={sidebarViewportRef}>
         <Suspense fallback={<LoadingSpinner />}>
@@ -56,7 +68,7 @@ function AppFrameBodyInner() {
       {/* Main Content */}
       <AppFrame.MainContent
         viewportRef={mainViewportRef}
-        contentMaxWidth={isHome ? "1280px" : "80ch"}
+        contentMaxWidth={isHome || isWide ? "1280px" : "80ch"}
       >
         <Suspense fallback={<LoadingSpinner />}>
           {/* Animated wrapper that re-renders on route change */}
