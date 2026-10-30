@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import orderBy from "lodash/orderBy";
-import { sluggify } from "../utils/sluggify";
+import { sluggify } from "@commercetools/nimbus-docs-build/sluggify";
 
 type MenuItem = {
   id: string;
