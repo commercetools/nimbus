@@ -163,7 +163,11 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
 
   return (
     <Box my="600">
-      <SimpleGrid minChildWidth="260px" gap="400">
+      <SimpleGrid
+        // auto-fill keeps a lone card at column width instead of stretching it
+        gridTemplateColumns="repeat(auto-fill, minmax(260px, 1fr))"
+        gap="400"
+      >
         {sortedDocs.map((doc) => {
           const illustrations = illustrationsOf(doc);
           const count = countBelow(doc);
