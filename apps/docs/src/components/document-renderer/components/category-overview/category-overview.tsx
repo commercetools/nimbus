@@ -91,8 +91,8 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
   };
 
   /** Illustrations of an entry that exist as files. */
-  const illustrationsOf = (doc: { illustrations: string[] }) =>
-    doc.illustrations.filter(hasIllustration);
+  const illustrationsOf = (doc: { illustrations?: string[] }) =>
+    (doc.illustrations ?? []).filter(hasIllustration);
 
   if (variant === "list") {
     return (
