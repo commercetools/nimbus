@@ -78,6 +78,7 @@ is to orchestrate these skills, not replace them.
 | `*.slots.*` (usually `.tsx`)    | **writing-slots**                   | ALL slot component work                                    |
 | `*.stories.tsx`                 | **writing-stories**                 | ALL story creation/updates                                 |
 | `*.i18n.ts`                     | **writing-i18n**                    | When component has default aria-labels or user-facing text |
+| `*.illustration.ts`             | **writing-illustrations**           | EVERY component with a main doc page (SVG is generated)    |
 | `utils/*.ts` + `constants/*.ts` | **writing-utils-and-constants**     | ALL pure helper / constant work in a component             |
 | `*.dev.mdx` + `*.docs.spec.tsx` | **writing-developer-documentation** | ALL developer documentation                                |
 | `*.mdx` (designer)              | **writing-designer-documentation**  | ALL designer documentation                                 |

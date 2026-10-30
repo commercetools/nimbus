@@ -32,6 +32,9 @@ detailed guidelines:
   Component documentation
 - **[i18n ({component}.i18n.ts)](./file-type-guidelines/i18n.md)** -
   Internationalization and translations (when needed)
+- **[Illustration ({component}.illustration.ts)](./file-type-guidelines/illustrations.md)** -
+  Component illustration shown on docs overview cards (required for every
+  component with a main doc page)
 
 ### Testing Files
 
@@ -202,6 +205,8 @@ component-name/
 ├── component-name.slots.tsx       # Slot components (if needed)
 ├── component-name.recipe.ts       # Styling recipes (if needed)
 ├── component-name.i18n.ts         # i18n messages (if needed)
+├── component-name.illustration.ts # Illustration source (required)
+├── component-name.illustration.svg # Generated illustration (required, committed)
 ├── component-name.stories.tsx     # Storybook stories (required)
 ├── component-name.mdx            # Designer documentation (required)
 ├── component-name.dev.mdx        # Engineering documentation (required)
@@ -246,6 +251,7 @@ component-name/
 | Props               | `{ComponentName}Props`                | `ButtonProps`               |
 | Hooks               | `use{Functionality}`                  | `useButton`                 |
 | i18n                | `{component-name}.i18n.ts`            | `button.i18n.ts`            |
+| Illustration        | `{component-name}.illustration.ts`    | `button.illustration.ts`    |
 | Stories             | `{component-name}.stories.tsx`        | `button.stories.tsx`        |
 | Documentation       | `{component-name}.mdx`                | `button.mdx`                |
 | Engineering Docs    | `{component-name}.dev.mdx`            | `button.dev.mdx`            |

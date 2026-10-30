@@ -45,6 +45,7 @@ docs/
 │   ├── stories.md
 │   ├── documentation.md
 │   ├── i18n.md
+│   ├── illustrations.md
 │   ├── recipes.md
 │   ├── slots.md
 │   ├── compound-components.md

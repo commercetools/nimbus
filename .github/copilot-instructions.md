@@ -28,6 +28,9 @@ Each component in the `nimbus` package follows this file structure:
 - `component-name.stories.tsx`: Storybook stories + tests (MANDATORY for all
   components)
 - `component-name.mdx`: Documentation in MDX format
+- `component-name.illustration.ts`: Illustration source (drawing kit); the
+  `component-name.illustration.svg` next to it is generated
+  (`pnpm illustrations:generate`) and committed
 - `index.ts`: Exports from the component
 
 #### Folders

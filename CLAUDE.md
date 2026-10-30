@@ -123,6 +123,8 @@ expand what the library accepts as valid input.
 - `writing-developer-documentation` - Engineering docs
 - `writing-designer-documentation` - Designer docs
 - `writing-i18n` - Internationalization files
+- `writing-illustrations` - Component illustrations (SVG generated from a
+  kit-based source)
 - `brainstorm` - Design exploration
 
 **When to invoke directly:**
