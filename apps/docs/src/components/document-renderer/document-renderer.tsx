@@ -9,6 +9,7 @@ import { useActiveView } from "@/hooks/use-active-view";
 import { ViewTabs } from "@/components/view-tabs";
 import { DocMetadata } from "@/components/doc-metadata";
 import type { TabMetadata } from "@/types";
+import { useManifest } from "@/contexts/manifest-context";
 import { RelatedDocuments } from "./components/related-documents";
 
 // Constant empty array to prevent creating new references on every render
@@ -18,6 +19,7 @@ const DocumentRendererComponent = () => {
   const brandName = useAtomValue(brandNameAtom);
   const { doc: activeDoc, isLoading, error } = useActiveDoc();
   const activeView = useActiveView();
+  const { routeManifest } = useManifest();
 
   const meta = activeDoc?.meta;
   const tabs = meta?.tabs || EMPTY_TABS;
@@ -46,6 +48,14 @@ const DocumentRendererComponent = () => {
   const isOverview = (activeView ?? tabs[0]?.key ?? "overview") === "overview";
 
   const lifecycleState = meta?.lifecycleState;
+  // The header (title, description, links, illustration) is shown on every
+  // `app-frame` page. `wide` and `no-sidebar` pages keep their own heading and
+  // only get it when they have several views.
+  const showHeader = meta?.layout === "app-frame" || hasMultipleViews;
+  const illustration = routeManifest?.routes.find(
+    (route) => route.id === meta?.id
+  )?.illustrations[0];
+
   const lifecycleInfo = lifecycleState
     ? lifecycleStateDescriptions[lifecycleState]
     : null;
@@ -83,7 +93,7 @@ const DocumentRendererComponent = () => {
         }
       >
         <Stack gap="400">
-          {!hasMultipleViews && lifecycleInfo && (
+          {!showHeader && lifecycleInfo && (
             <Flex alignItems="center" justifyContent="flex-end">
               <Badge size="xs" colorPalette={lifecycleInfo.colorPalette}>
                 {lifecycleInfo.label}
@@ -91,14 +101,15 @@ const DocumentRendererComponent = () => {
             </Flex>
           )}
 
-          {/* Show metadata introduction if multiple views are available */}
-          {hasMultipleViews && (
+          {showHeader && (
             <DocMetadata
               title={meta.title}
               description={meta.description}
-              tags={meta.tags}
               lifecycleState={meta.lifecycleState}
               figmaLink={meta.figmaLink}
+              storybookLink={meta.storybookLink}
+              githubLink={meta.githubLink}
+              illustration={illustration}
             />
           )}
 
