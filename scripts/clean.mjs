@@ -74,6 +74,8 @@ const CACHE_PATTERNS = [
   "**/*.tsbuildinfo",
   "**/.eslintcache",
   "**/.stylelintcache",
+  // pnpm illustrations:sheet output
+  "**/.illustration-sheets",
 ];
 
 // Generated artifacts — removed by --all. Comment notes what regenerates each.

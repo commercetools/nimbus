@@ -225,6 +225,10 @@ export default defineConfig(async () => {
           "src/**/*.stories.*",
           "src/**/*.spec.*",
           "src/**/*.test-*.*",
+          // Illustrations are docs-only assets: the drawing kit and the
+          // sources are never published.
+          "src/illustration-kit/**",
+          "src/**/*.illustration.ts",
           "src/test/unit-test-setup.ts",
           "src/test/utils.tsx",
           "src/test/jest-dom-vitest-shim.d.ts",

@@ -201,3 +201,6 @@ packages/nimbus/src/components/**/*.messages.ts
 
 # Superpowers Claude Plugin
 .superpowers
+
+# Illustration contact sheets (pnpm illustrations:sheet)
+packages/nimbus/.illustration-sheets/

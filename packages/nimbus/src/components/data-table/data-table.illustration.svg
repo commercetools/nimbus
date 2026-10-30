@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <defs>
+    <linearGradient id="il-data-table-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--illustration-gradient-start, light-dark(var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%)), var(--nimbus-colors-color-palette-2, hsl(233, 41%, 9%))))"/>
+      <stop offset="1" stop-color="var(--illustration-gradient-end, var(--illustration-gradient-start, light-dark(var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%)), var(--nimbus-colors-color-palette-2, hsl(233, 41%, 9%)))))"/>
+    </linearGradient>
+    <filter id="il-data-table-shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="1.6" stdDeviation="2.4" flood-color="light-dark(hsla(0, 0%, 0%, 0.1), hsla(0, 0%, 0%, 0.5))"/>
+    </filter>
+  </defs>
+  <rect width="96" height="96" fill="url(#il-data-table-bg)"/>
+  <rect x="12" y="18" width="72" height="60" rx="2" fill="light-dark(var(--nimbus-colors-color-palette-1, hsl(240, 100%, 100%)), var(--nimbus-colors-color-palette-3, hsl(236, 45%, 19%)))" stroke="var(--nimbus-colors-color-palette-6, hsl(229, 100%, 88%))" stroke-width="0.5" filter="url(#il-data-table-shadow)"/>
+  <rect x="28" y="22.75" width="14" height="2.5" rx="1.25" fill="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))"/>
+  <path d="M44,23 l2,2 l2,-2" fill="none" stroke="light-dark(var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%)), var(--nimbus-colors-color-palette-11, hsl(231, 100%, 81%)))" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="52" y="22.75" width="10" height="2.5" rx="1.25" fill="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))"/>
+  <rect x="68" y="22.75" width="8" height="2.5" rx="1.25" fill="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))"/>
+  <line x1="12" y1="30" x2="84" y2="30" stroke="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))" stroke-width="0.5"/>
+  <rect x="18" y="33.5" width="5" height="5" rx="0.5" fill="none" stroke="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))" stroke-width="0.6"/>
+  <rect x="28" y="34.5" width="20" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))"/>
+  <rect x="52" y="34.5" width="12" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))"/>
+  <rect x="68" y="34.5" width="10" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))"/>
+  <rect x="12.25" y="42" width="71.5" height="12" fill="var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%))"/>
+  <line x1="12" y1="42" x2="84" y2="42" stroke="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))" stroke-width="0.5"/>
+  <rect x="18" y="45.5" width="5" height="5" rx="0.5" fill="var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%))"/>
+  <path d="M19.3,48 l0.84,0.84 l1.56,-1.68" fill="none" stroke="var(--nimbus-colors-color-palette-contrast, hsl(0, 0%, 100%))" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="28" y="46.5" width="16" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))"/>
+  <rect x="52" y="46.5" width="10" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))"/>
+  <rect x="68" y="46.5" width="8" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))"/>
+  <line x1="12" y1="54" x2="84" y2="54" stroke="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))" stroke-width="0.5"/>
+  <rect x="18" y="57.5" width="5" height="5" rx="0.5" fill="none" stroke="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))" stroke-width="0.6"/>
+  <rect x="28" y="58.5" width="18" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))"/>
+  <rect x="52" y="58.5" width="12" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))"/>
+  <rect x="68" y="58.5" width="6" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))"/>
+  <line x1="12" y1="66" x2="84" y2="66" stroke="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))" stroke-width="0.5"/>
+  <rect x="18" y="69.5" width="5" height="5" rx="0.5" fill="none" stroke="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))" stroke-width="0.6"/>
+  <rect x="28" y="70.5" width="14" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))"/>
+  <rect x="52" y="70.5" width="8" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))"/>
+  <rect x="68" y="70.5" width="10" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))"/>
+</svg>
