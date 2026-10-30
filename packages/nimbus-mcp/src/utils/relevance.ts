@@ -21,13 +21,21 @@ export const WEIGHTS = {
 } as const;
 
 /**
+ * Lowercases a title and puts a space between the words of a PascalCase name,
+ * so the title "TextInput" is searched as "text input".
+ */
+export function lowerTitle(title: string): string {
+  return title.replace(/([a-z0-9])([A-Z])/g, "$1 $2").toLowerCase();
+}
+
+/**
  * Builds pre-lowercased relevance fields for a route manifest entry,
  * including pre-split words and no-spaces variants for fuzzy matching.
  */
 export function toLoweredRouteFields(
   r: RouteManifestEntry
 ): LoweredRelevanceFields {
-  const title = r.title.toLowerCase();
+  const title = lowerTitle(r.title);
   const description = r.description.toLowerCase();
   const tags = [...r.tags, r.exportName ?? ""].join(" ").toLowerCase();
   return {

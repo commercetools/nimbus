@@ -27,7 +27,10 @@ export async function buildSearchIndex(outDir?: string) {
 
   for (const entry of index) {
     if (entry._lower) continue;
-    const title = entry.title.toLowerCase();
+    // PascalCase titles ("TextInput") are searched as words ("text input")
+    const title = entry.title
+      .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+      .toLowerCase();
     const description = entry.description.toLowerCase();
     const tags = entry.tags.join(" ").toLowerCase();
     const content = (entry.content ?? "").toLowerCase();
