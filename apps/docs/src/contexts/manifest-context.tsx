@@ -23,8 +23,8 @@ export type RouteManifest = {
     order: number;
     chunkName: string;
     icon?: string;
-    /** name of the component illustration, if it has one */
-    illustration?: string;
+    /** names of the illustrations for this entry's card, possibly none */
+    illustrations: string[];
   }>;
   categories: Array<{
     id: string;

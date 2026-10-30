@@ -105,8 +105,11 @@ export const routeInfoSchema = z.object({
   order: z.number(),
   chunkName: z.string(),
   icon: z.string().optional(),
-  /** name of the `<name>.illustration.svg` shown on overview cards */
-  illustration: z.string().optional(),
+  /**
+   * names of the `<name>.illustration.svg` files shown on overview cards: the
+   * document's own, or those of the documents below it in the menu
+   */
+  illustrations: z.array(z.string()).default([]),
   tabs: z.array(TabMetadataSchema).default([]),
 });
 

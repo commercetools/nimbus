@@ -14,6 +14,7 @@ import * as Icons from "@commercetools/nimbus-icons";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
 import {
   ComponentIllustration,
+  IllustrationCollage,
   hasIllustration,
 } from "@/components/component-illustration";
 
@@ -89,6 +90,10 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
     return <Ic />;
   };
 
+  /** Illustrations of an entry that exist as files. */
+  const illustrationsOf = (doc: { illustrations: string[] }) =>
+    doc.illustrations.filter(hasIllustration);
+
   if (variant === "list") {
     return (
       <Box>
@@ -104,7 +109,7 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
                 >
                   <Card.Body>
                     <Flex>
-                      {hasIllustration(doc.illustration) ? (
+                      {illustrationsOf(doc).length > 0 ? (
                         <Box
                           boxSize="48px"
                           flexShrink={0}
@@ -112,7 +117,9 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
                           borderRadius="200"
                           overflow="hidden"
                         >
-                          <ComponentIllustration name={doc.illustration} />
+                          <ComponentIllustration
+                            name={illustrationsOf(doc)[0]}
+                          />
                         </Box>
                       ) : (
                         <Box color="primary.11" textStyle="2xl" mr="400">
@@ -163,7 +170,7 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
               width="full"
               height="full"
             >
-              {hasIllustration(doc.illustration) && (
+              {illustrationsOf(doc).length > 0 && (
                 <Flex
                   colorPalette="primary"
                   width="full"
@@ -173,15 +180,15 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
                   borderTopRadius="300"
                   bg="colorPalette.4"
                   _dark={{ bg: "colorPalette.2" }}
+                  // illustrations inside size themselves from the band height
+                  css={{ containerType: "size" }}
                 >
-                  <Box height="full" aspectRatio="1">
-                    <ComponentIllustration name={doc.illustration} />
-                  </Box>
+                  <IllustrationCollage names={illustrationsOf(doc)} />
                 </Flex>
               )}
               <Card.Body>
                 <Stack>
-                  {!hasIllustration(doc.illustration) && (
+                  {illustrationsOf(doc).length === 0 && (
                     <Box color="primary.11" textStyle="5xl" mb="200">
                       <IconComponent id={doc.icon} fallback="Layers" />
                     </Box>

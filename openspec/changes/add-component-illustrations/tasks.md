@@ -22,6 +22,7 @@
 
 - [x] 4.1 Add the `illustration` route field in docs-build and both zod schemas and verify the field reaches the docs route data
 - [x] 4.2 Add `ComponentIllustration` and update `CategoryOverview` (grid and list) and verify with screenshots in light and dark mode
+- [x] 4.4 Resolve illustrations for category pages from their children in the route manifest, show them as a small group, and verify with the resolver unit test and screenshots of `/components`
 - [x] 4.3 Add a docs test for the id rewrite (same illustration twice) and verify it passes
 
 ## 5. Remaining illustrations (after Checkpoint 1 approval)

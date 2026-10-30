@@ -49,6 +49,14 @@ refuses files outside the app root, docs-build copies the SVGs into
 **Card band uses the illustration's default background color**, so band and
 SVG look like one surface.
 
+**The route manifest lists illustration names per document**
+(`illustrations: string[]`), resolved at build time: a document's own file
+first, otherwise the first three illustrations of the documents below it in the
+menu (a category page), otherwise none. The card component only renders the
+list: one name is a square, several overlap as a small fan. Alternatives: pick
+one hero component per category (misrepresents the category) or draw one
+illustration per category (more art to keep in sync).
+
 ### Metaphors for abstract components
 
 | Component            | Metaphor                                                                 |
