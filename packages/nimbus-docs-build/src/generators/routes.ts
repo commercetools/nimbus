@@ -14,6 +14,33 @@ import type {
 import { routeManifestSchema } from "../schemas/mdx-document.js";
 import { flog } from "../utils/logger.js";
 import { validateFilePath } from "../utils/validate-file-path.js";
+import { findMonorepoRoot } from "../utils/file-utils.js";
+import { resolveChildIllustrations } from "./resolve-illustrations.js";
+
+/**
+ * Name of the illustration for a main doc page, when the source
+ * `<name>.illustration.ts` exists next to `<name>.mdx`. The docs build renders
+ * the SVG from it.
+ */
+async function findIllustration(
+  monorepoRoot: string | null,
+  repoPath: string
+): Promise<string[]> {
+  const name = path.basename(repoPath, ".mdx");
+  const isMainPage = path.basename(repoPath) === `${name}.mdx`;
+  if (!monorepoRoot || !isMainPage || name.includes(".")) return [];
+  const source = path.join(
+    monorepoRoot,
+    path.dirname(repoPath),
+    `${name}.illustration.ts`
+  );
+  try {
+    await fs.access(source);
+    return [name];
+  } catch {
+    return [];
+  }
+}
 
 /**
  * Generate route manifest from parsed documents
@@ -24,6 +51,7 @@ export async function generateRouteManifest(
 ): Promise<RouteManifest> {
   const routes: RouteInfo[] = [];
   const categoriesMap = new Map<string, CategoryInfo>();
+  const monorepoRoot = await findMonorepoRoot(process.cwd());
 
   // Process each document
   for (const [, doc] of docs) {
@@ -45,6 +73,7 @@ export async function generateRouteManifest(
       order: meta.order || 999,
       chunkName: `route-${meta.route.replace(/\//g, "-")}`,
       icon: meta.icon,
+      illustrations: await findIllustration(monorepoRoot, meta.repoPath),
       tabs: meta.tabs || [],
     };
 
@@ -62,6 +91,9 @@ export async function generateRouteManifest(
 
     categoriesMap.get(category)!.items.push(route);
   }
+
+  // Category pages show the illustrations of the documents below them
+  resolveChildIllustrations(routes);
 
   // Convert categories map to array and sort
   const categories = Array.from(categoriesMap.values()).sort(

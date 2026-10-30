@@ -69,10 +69,14 @@ const DocumentRendererComponent = () => {
   return (
     <>
       <title>{pageTitle}</title>
-      {/* Full-bleed for no-sidebar pages (e.g. Icons); readable prose width elsewhere. */}
+      {/* Full-bleed for no-sidebar and wide pages (e.g. Icons, overviews); readable prose width elsewhere. */}
       <Box
         width="full"
-        maxWidth={meta.layout === "no-sidebar" ? "full" : "4xl"}
+        maxWidth={
+          meta.layout === "no-sidebar" || meta.layout === "wide"
+            ? "full"
+            : "4xl"
+        }
       >
         <Stack gap="400">
           {!hasMultipleViews && lifecycleInfo && (

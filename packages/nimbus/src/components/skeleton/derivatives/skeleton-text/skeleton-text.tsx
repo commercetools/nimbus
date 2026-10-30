@@ -9,7 +9,7 @@ import type { SkeletonTextProps } from "./skeleton-text.types";
  * content loads. The last line is narrower by default to mimic a real paragraph
  * ending. Composed of `Skeleton` lines; does not use its own recipe.
  *
- * @see {@link https://nimbus-documentation.vercel.app/components/feedback/skeletontext}
+ * @see {@link https://nimbus-documentation.vercel.app/components/feedback/skeleton-text}
  *
  * @supportsStyleProps
  */

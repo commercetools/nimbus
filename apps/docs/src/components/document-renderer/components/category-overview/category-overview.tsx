@@ -12,6 +12,11 @@ import {
 } from "@commercetools/nimbus";
 import * as Icons from "@commercetools/nimbus-icons";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
+import {
+  ComponentIllustration,
+  IllustrationCollage,
+  hasIllustration,
+} from "@/components/component-illustration";
 
 /**
  * Component that displays an overview of all documents in the current menu category.
@@ -19,7 +24,19 @@ import { useActiveDoc } from "@/hooks/useActiveDoc";
  *
  * This component uses the route manifest to list documents in the same category.
  */
-const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
+type CategoryOverviewProps = {
+  variant?: string;
+  /**
+   * How many illustrations a card in the grid variant shows. The first one is
+   * visible; the rest appear when the card is hovered or focused.
+   */
+  illustrationCount?: number;
+};
+
+const CategoryOverviewContent: FC<CategoryOverviewProps> = ({
+  variant,
+  illustrationCount = 2,
+}) => {
   const { routeManifest } = useManifest();
   const { doc: activeDoc } = useActiveDoc();
 
@@ -85,6 +102,10 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
     return <Ic />;
   };
 
+  /** Illustrations of an entry that exist as files. */
+  const illustrationsOf = (doc: { illustrations?: string[] }) =>
+    (doc.illustrations ?? []).filter(hasIllustration);
+
   if (variant === "list") {
     return (
       <Box>
@@ -100,9 +121,26 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
                 >
                   <Card.Body>
                     <Flex>
-                      <Box color="primary.11" textStyle="2xl" mr="400">
-                        <IconComponent id={doc.icon} fallback="ArrowForward" />
-                      </Box>
+                      {illustrationsOf(doc).length > 0 ? (
+                        <Box
+                          boxSize="48px"
+                          flexShrink={0}
+                          mr="400"
+                          borderRadius="200"
+                          overflow="hidden"
+                        >
+                          <ComponentIllustration
+                            name={illustrationsOf(doc)[0]}
+                          />
+                        </Box>
+                      ) : (
+                        <Box color="primary.11" textStyle="2xl" mr="400">
+                          <IconComponent
+                            id={doc.icon}
+                            fallback="ArrowForward"
+                          />
+                        </Box>
+                      )}
                       <Box>
                         <Heading
                           color="neutral.12"
@@ -127,38 +165,93 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
     );
   }
 
+  /** Number of documents below a category page, 0 for a single document. */
+  const countBelow = (doc: { menu: string[] }) =>
+    routeManifest.routes.filter(
+      (route) =>
+        route.menu.length > doc.menu.length &&
+        doc.menu.every((item, index) => route.menu[index] === item)
+    ).length;
+
   return (
     <Box my="600">
-      <SimpleGrid columns={3} gap="200">
-        {sortedDocs.map((doc) => (
-          <Link key={doc.path} textDecoration="none" href={doc.path}>
-            <Card.Root
-              _hover={{ bg: "colorPalette.2" }}
-              variant="plain"
-              width="full"
+      <SimpleGrid
+        // auto-fill keeps a lone card at column width instead of stretching it
+        gridTemplateColumns="repeat(auto-fill, minmax(260px, 1fr))"
+        gap="400"
+      >
+        {sortedDocs.map((doc) => {
+          const illustrations = illustrationsOf(doc).slice(
+            0,
+            illustrationCount
+          );
+          const count = countBelow(doc);
+          return (
+            <Link
+              key={doc.path}
+              textDecoration="none"
+              href={doc.path}
+              display="block"
+              height="full"
             >
-              <Card.Body>
-                <Stack>
-                  <Box color="primary.11" textStyle="5xl" mb="200">
-                    <IconComponent id={doc.icon} fallback="Layers" />
-                  </Box>
-                  <Heading
-                    color="neutral.12"
-                    textDecoration="none"
-                    size="lg"
-                    truncate
-                  >
-                    {doc.title}
-                  </Heading>
-
-                  <Text color="neutral.11" lineClamp={4}>
-                    {doc.description}
-                  </Text>
-                </Stack>
-              </Card.Body>
-            </Card.Root>
-          </Link>
-        ))}
+              <Card.Root
+                variant="outlined"
+                width="full"
+                height="full"
+                _hover={{ borderColor: "primary.7" }}
+              >
+                <Card.Body>
+                  <Stack gap="400">
+                    {illustrations.length > 0 && (
+                      <Flex
+                        colorPalette="primary"
+                        width="full"
+                        aspectRatio="16 / 10"
+                        justify="center"
+                        overflow="hidden"
+                        borderRadius="200"
+                        bg="colorPalette.2"
+                        // illustrations inside size themselves from the band
+                        // height and draw no background of their own
+                        css={{
+                          containerType: "size",
+                          "--illustration-gradient-start": "transparent",
+                        }}
+                      >
+                        <IllustrationCollage names={illustrations} />
+                      </Flex>
+                    )}
+                    <Stack gap="100">
+                      {illustrations.length === 0 && (
+                        <Box color="primary.11" textStyle="5xl" mb="200">
+                          <IconComponent id={doc.icon} fallback="Layers" />
+                        </Box>
+                      )}
+                      <Heading
+                        color="neutral.12"
+                        textDecoration="none"
+                        size="lg"
+                        truncate
+                      >
+                        {doc.title}
+                      </Heading>
+                      <Text color="neutral.11" lineClamp={3}>
+                        {doc.description}
+                      </Text>
+                    </Stack>
+                  </Stack>
+                </Card.Body>
+                {count > 0 && (
+                  <Card.Footer>
+                    <Text color="neutral.11" textStyle="sm">
+                      {count} {count === 1 ? "page" : "pages"}
+                    </Text>
+                  </Card.Footer>
+                )}
+              </Card.Root>
+            </Link>
+          );
+        })}
       </SimpleGrid>
     </Box>
   );
@@ -169,7 +262,7 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
  * This ensures the component properly handles the async nature of the data
  * and provides a loading state while data is being fetched.
  */
-export const CategoryOverview: FC<{ variant?: string }> = (props) => {
+export const CategoryOverview: FC<CategoryOverviewProps> = (props) => {
   return (
     <Suspense fallback={<Box>Loading categories...</Box>}>
       <CategoryOverviewContent {...props} />

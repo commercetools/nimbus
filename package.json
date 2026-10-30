@@ -17,6 +17,8 @@
     "openspec": "openspec",
     "changeset:version-and-format": "changeset version && prettier --write --parser json '**/package.json' && pnpm install --lockfile-only",
     "changeset:status": "changeset status --verbose",
+    "illustrations:generate": "pnpm --filter @commercetools/nimbus illustrations:generate",
+    "illustrations:sheet": "pnpm --filter @commercetools/nimbus illustrations:sheet",
     "extract-intl": "tsx packages/i18n/scripts/extract-messages.ts && pnpm --filter @commercetools/nimbus-i18n build",
     "generate:tokens": "pnpm --filter @commercetools/nimbus-tokens run build",
     "lint": "eslint .",

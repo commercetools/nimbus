@@ -13,7 +13,7 @@ export const TocItemSchema = z.object({
 });
 
 /** Available layout types for MDX documents */
-export const layoutTypes = ["app-frame", "no-sidebar"] as const;
+export const layoutTypes = ["app-frame", "no-sidebar", "wide"] as const;
 
 /** Schema for tab metadata describing available views for a document */
 export const TabMetadataSchema = z.object({
@@ -67,7 +67,11 @@ export const mdxDocumentSchema = z.object({
     icon: z.string().optional(),
     /** a link to a figma-design or -node */
     figmaLink: z.string().url().optional(),
-    /** layout type - defaults to 'app-frame' if not specified */
+    /**
+     * layout type - defaults to 'app-frame' if not specified. `wide` keeps the
+     * left navigation but drops the table of contents and widens the content
+     * column (overview pages with a card grid).
+     */
     layout: z.enum(layoutTypes).optional().default("app-frame"),
     /** array of available tabs/views for this document */
     tabs: z.array(TabMetadataSchema).default([]),
@@ -105,6 +109,11 @@ export const routeInfoSchema = z.object({
   order: z.number(),
   chunkName: z.string(),
   icon: z.string().optional(),
+  /**
+   * names of the illustrations shown on overview cards: the
+   * document's own, or those of the documents below it in the menu
+   */
+  illustrations: z.array(z.string()).default([]),
   tabs: z.array(TabMetadataSchema).default([]),
 });
 

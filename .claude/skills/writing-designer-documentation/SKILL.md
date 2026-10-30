@@ -65,7 +65,7 @@ packages/nimbus/src/components/{component}/{component}.mdx
 ```yaml
 ---
 id: Components-ComponentName
-title: Component Name
+title: ComponentName # Same as exportName
 exportName: ComponentName
 description: Brief one-line description
 lifecycleState: Stable # Experimental|Alpha|Beta|Stable|Deprecated
@@ -73,7 +73,7 @@ order: 999
 menu:
   - Components
   - Category Name # Inputs, Data Display, Navigation, Feedback, Overlay, Layout, Typography
-  - Component Name
+  - ComponentName # Same as exportName
 tags:
   - component
   - relevant-keywords
@@ -236,6 +236,8 @@ links, clearer explanations.
 - [ ] All required frontmatter fields present: id, title, exportName, description, order, menu, tags (MUST exist)
 - [ ] ID follows pattern: `Components-{ComponentName}` (MUST match, breaks
       search/routing if wrong)
+- [ ] `title` and the last `menu` item equal `exportName` (the URL is built from
+      `menu`; PascalCase words become dashes)
 - [ ] Menu hierarchy includes proper category (MUST have)
 - [ ] Tags array present (MUST have)
 - [ ] Figma link present (SHOULD have if available)

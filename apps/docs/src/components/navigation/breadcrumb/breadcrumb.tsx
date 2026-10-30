@@ -6,7 +6,7 @@ import {
   Link as LinkIcon,
   CheckCircle,
 } from "@commercetools/nimbus-icons";
-import { menuToPath } from "../../../utils/sluggify";
+import { menuToPath } from "@commercetools/nimbus-docs-build/sluggify";
 import { BreadcrumbItem } from "./breadcrumb.types";
 import { useActiveDoc } from "../../../hooks/useActiveDoc";
 import { useBreadcrumbContext } from "../../../contexts/breadcrumb-context";

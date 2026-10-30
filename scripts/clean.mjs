@@ -74,6 +74,8 @@ const CACHE_PATTERNS = [
   "**/*.tsbuildinfo",
   "**/.eslintcache",
   "**/.stylelintcache",
+  // pnpm illustrations:sheet output
+  "**/.illustration-sheets",
 ];
 
 // Generated artifacts — removed by --all. Comment notes what regenerates each.
@@ -85,6 +87,7 @@ const GENERATED_PATTERNS = [
   "packages/nimbus-icons/src/material-icons", // icons build:icons
   "apps/docs/src/data/routes", // pnpm build:docs
   "apps/docs/src/data/types", // pnpm build:docs
+  "apps/docs/src/data/illustrations", // pnpm build:docs
   "apps/docs/src/data/route-manifest.json", // pnpm build:docs
   "apps/docs/src/data/search-index.json", // pnpm build:docs
   "packages/nimbus-mcp/data", // pnpm build:mcp

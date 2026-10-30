@@ -67,15 +67,15 @@ const SearchResultOption = memo(function SearchResultOption({
       borderBottom="1px solid"
       borderBottomColor="neutral.6"
       css={{
-        // Mouse hover — a subtle cue, distinct from the strong keyboard-focus
-        // highlight below so the two don't compete when both are present.
+        // Mouse hover — the lightest tint.
         "&[data-hovered]": {
-          backgroundColor: "primary.3",
+          backgroundColor: "primary.2",
         },
-        // Keyboard virtual focus (arrow keys move aria-activedescendant here).
+        // Keyboard virtual focus (arrow keys move aria-activedescendant here):
+        // one step darker than hover, so the two stay distinguishable without
+        // a filled, high-contrast row.
         "&[data-focused]": {
-          backgroundColor: "primary.9",
-          color: "primary.contrast",
+          backgroundColor: "primary.4",
         },
       }}
     >

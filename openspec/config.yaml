@@ -111,6 +111,7 @@ context: |
   ├── {name}.recipe.ts        # Styling variants
   ├── {name}.slots.tsx         # Slot components
   ├── {name}.i18n.ts           # Translations
+  ├── {name}.illustration.ts   # Illustration source (SVG is rendered by the docs build)
   ├── {name}.stories.tsx       # Storybook stories (required)
   ├── {name}.mdx               # Documentation (required)
   ├── {name}.dev.mdx           # Engineering guide
@@ -140,6 +141,9 @@ rules:
       need stories covering all visual permutations. Interactive components
       additionally need play functions that thoroughly test user interactions,
       keyboard navigation, and accessibility from multiple angles."
+    - "Every component with a main doc page MUST get an illustration
+      ({name}.illustration.ts). Include it as a task and verify it with
+      pnpm illustrations:sheet and the illustration unit test."
     - "Include recipe registration in theme config as a task when adding new
       components — missing registration means no styles at runtime."
 

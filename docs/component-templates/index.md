@@ -97,6 +97,7 @@ tooltip/
 ├── tooltip.tsx              # Implementation
 ├── tooltip.types.ts         # Props interface
 ├── tooltip.i18n.ts         # Translations (if needed)
+├── tooltip.illustration.ts  # Illustration source
 ├── tooltip.recipe.ts        # Styling
 ├── tooltip.slots.tsx        # Slot component
 ├── tooltip.stories.tsx      # Stories
@@ -123,6 +124,7 @@ menu/
 │   └── menu.item.tsx
 ├── menu.types.ts
 ├── menu.i18n.ts           # Translations (if needed)
+├── menu.illustration.ts   # Illustration source
 ├── menu.recipe.tsx
 ├── menu.slots.tsx
 ├── menu.stories.tsx

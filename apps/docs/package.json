@@ -22,7 +22,6 @@
     "@mdx-js/mdx": "catalog:apps",
     "@types/mdx": "catalog:apps",
     "@types/react-syntax-highlighter": "catalog:apps",
-    "@types/slug": "catalog:apps",
     "chokidar": "catalog:apps",
     "fuse.js": "catalog:apps",
     "github-slugger": "catalog:apps",
@@ -43,7 +42,6 @@
     "remark-flexible-toc": "catalog:markdown",
     "remark-gfm": "catalog:markdown",
     "remark-mark-highlight": "catalog:apps",
-    "slug": "catalog:apps",
     "use-debounce": "catalog:react",
     "zod": "catalog:utils"
   },

@@ -18,9 +18,6 @@ catalogs:
     '@types/react-syntax-highlighter':
       specifier: 15.5.13
       version: 15.5.13
-    '@types/slug':
-      specifier: 5.0.9
-      version: 5.0.9
     chokidar:
       specifier: 6.0.0
       version: 6.0.0
@@ -54,9 +51,6 @@ catalogs:
     remark-mark-highlight:
       specifier: 0.1.1
       version: 0.1.1
-    slug:
-      specifier: 12.0.1
-      version: 12.0.1
     vite-plugin-compression:
       specifier: 0.5.1
       version: 0.5.1
@@ -536,9 +530,6 @@ importers:
       '@types/react-syntax-highlighter':
         specifier: catalog:apps
         version: 15.5.13
-      '@types/slug':
-        specifier: catalog:apps
-        version: 5.0.9
       chokidar:
         specifier: catalog:apps
         version: 6.0.0
@@ -599,9 +590,6 @@ importers:
       remark-mark-highlight:
         specifier: catalog:apps
         version: 0.1.1
-      slug:
-        specifier: catalog:apps
-        version: 12.0.1
       use-debounce:
         specifier: catalog:react
         version: 10.1.1(react@19.2.0)
@@ -4467,9 +4455,6 @@ packages:
 
   '@types/resolve@1.20.6':
     resolution: {integrity: sha512-A4STmOXPhMUtHH+S6ymgE2GiBSMqf4oTvcQZMcHzokuTLVYzXTB8ttjcgxOVaAp2lGwEdzZ0J+cRbbeevQj1UQ==}
-
-  '@types/slug@5.0.9':
-    resolution: {integrity: sha512-6Yp8BSplP35Esa/wOG1wLNKiqXevpQTEF/RcL/NV6BBQaMmZh4YlDwCgrrFSoUE4xAGvnKd5c+lkQJmPrBAzfQ==}
 
   '@types/trusted-types@2.0.7':
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
@@ -8344,10 +8329,6 @@ packages:
   slice-ansi@8.0.0:
     resolution: {integrity: sha512-stxByr12oeeOyY2BlviTNQlYV5xOj47GirPr4yA1hE9JCtxfQN0+tVbkxwCtYDQWhEKWFHsEK48ORg5jrouCAg==}
     engines: {node: '>=20'}
-
-  slug@12.0.1:
-    resolution: {integrity: sha512-p8lJZLw/5GDmxXO3FKjiOYjiBMFGDc+/8DgutoXKqjn8KX7buzbkX1unEavO7T+GHGLTOyeb7VjWTRWpb8wmuQ==}
-    hasBin: true
 
   snake-case@3.0.4:
     resolution: {integrity: sha512-LAOh4z89bGQvl9pFfNF8V146i7o7/CqFPbqzYgP+yYzDIDeS9HaNFtXABamRW+AQzEVODcvE79ljJ+8a9YSdMg==}
@@ -14326,8 +14307,6 @@ snapshots:
 
   '@types/resolve@1.20.6': {}
 
-  '@types/slug@5.0.9': {}
-
   '@types/trusted-types@2.0.7': {}
 
   '@types/unist@2.0.11': {}
@@ -19106,8 +19085,6 @@ snapshots:
     dependencies:
       ansi-styles: 6.2.3
       is-fullwidth-code-point: 5.1.0
-
-  slug@12.0.1: {}
 
   snake-case@3.0.4:
     dependencies:

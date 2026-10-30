@@ -18,10 +18,16 @@ export const sluggify = (str: string): string => {
 };
 
 /**
- * Transforms a menu from an mdx-file's frontmatter to a path
+ * Transforms a menu from an mdx-file's frontmatter to a path. The words of a
+ * PascalCase label are separated, so the label "IconButton" gives the same
+ * path segment as "Icon button": `icon-button`.
  * @param menu - The menu array from the frontmatter
  * @returns The path created by joining the slugified menu items
  */
 export const menuToPath = (menu: string[]): string => {
-  return menu.map((item: string) => sluggify(item)).join("/");
+  return menu
+    .map((item: string) =>
+      sluggify(item.replace(/([a-z0-9])([A-Z])/g, "$1 $2"))
+    )
+    .join("/");
 };
