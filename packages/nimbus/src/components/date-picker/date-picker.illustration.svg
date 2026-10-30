@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <defs>
+    <linearGradient id="il-date-picker-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--illustration-gradient-start, light-dark(var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%)), var(--nimbus-colors-color-palette-2, hsl(233, 41%, 9%))))"/>
+      <stop offset="1" stop-color="var(--illustration-gradient-end, var(--illustration-gradient-start, light-dark(var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%)), var(--nimbus-colors-color-palette-2, hsl(233, 41%, 9%)))))"/>
+    </linearGradient>
+    <filter id="il-date-picker-shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="1.6" stdDeviation="2.4" flood-color="light-dark(hsla(0, 0%, 0%, 0.1), hsla(0, 0%, 0%, 0.5))"/>
+    </filter>
+  </defs>
+  <rect width="96" height="96" fill="url(#il-date-picker-bg)"/>
+  <rect x="20" y="20" width="56" height="12" rx="2" fill="light-dark(var(--nimbus-colors-color-palette-1, hsl(240, 100%, 100%)), var(--nimbus-colors-color-palette-3, hsl(236, 45%, 19%)))" stroke="var(--nimbus-colors-color-palette-6, hsl(229, 100%, 88%))" stroke-width="0.5" filter="url(#il-date-picker-shadow)"/>
+  <rect x="26" y="24.5" width="20" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))"/>
+  <path d="M64.5,23.75 h7 a1,1 0 0 1 1,1 v5.5 a1,1 0 0 1 -1,1 h-7 a1,1 0 0 1 -1,-1 v-5.5 a1,1 0 0 1 1,-1 Z M63.5,26.25 h9 M66,22.5 v2.5 M70,22.5 v2.5" fill="none" stroke="light-dark(var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%)), var(--nimbus-colors-color-palette-11, hsl(231, 100%, 81%)))" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="20" y="36" width="56" height="40" rx="3" fill="light-dark(var(--nimbus-colors-color-palette-1, hsl(240, 100%, 100%)), var(--nimbus-colors-color-palette-3, hsl(236, 45%, 19%)))" stroke="var(--nimbus-colors-color-palette-6, hsl(229, 100%, 88%))" stroke-width="0.5" filter="url(#il-date-picker-shadow)"/>
+  <path d="M29,41 l-2,2 l2,2" fill="none" stroke="light-dark(var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%)), var(--nimbus-colors-color-palette-11, hsl(231, 100%, 81%)))" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="40" y="41.5" width="16" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))"/>
+  <path d="M67,41 l2,2 l-2,2" fill="none" stroke="light-dark(var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%)), var(--nimbus-colors-color-palette-11, hsl(231, 100%, 81%)))" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="28" cy="52" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="34.67" cy="52" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="41.34" cy="52" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="48.01" cy="52" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="54.68" cy="52" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="61.35" cy="52" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="68.02" cy="52" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="28" cy="60" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="34.67" cy="60" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="41.34" cy="60" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="48.01" cy="60" r="3.2" fill="var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%))"/>
+  <circle cx="54.68" cy="60" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="61.35" cy="60" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="68.02" cy="60" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="28" cy="68" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="34.67" cy="68" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="41.34" cy="68" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="48.01" cy="68" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="54.68" cy="68" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="61.35" cy="68" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+  <circle cx="68.02" cy="68" r="1.8" fill="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))"/>
+</svg>
