@@ -28,6 +28,7 @@ import { localizedFieldSlotRecipe } from "@/components/localized-field/localized
 import { menuSlotRecipe } from "@/components/menu/menu.recipe";
 import { modalPageSlotRecipe } from "@/components/modal-page/modal-page.recipe";
 import { pageContentRecipe } from "@/components/page-content/page-content.recipe";
+import { meterSlotRecipe } from "@/components/meter/meter.recipe";
 import { moneyInputRecipe } from "@/components/money-input/money-input.recipe";
 import { multilineTextInputRecipe } from "@/components/multiline-text-input/multiline-text-input.recipe";
 import { numberInputRecipe } from "@/components/number-input/number-input.recipe";
@@ -108,6 +109,7 @@ export const slotRecipes = {
   nimbusListBox: listBoxSlotRecipe,
   nimbusLocalizedField: localizedFieldSlotRecipe,
   nimbusMenu: menuSlotRecipe,
+  nimbusMeter: meterSlotRecipe,
   nimbusModalPage: modalPageSlotRecipe,
   nimbusMoneyInput: moneyInputRecipe,
   nimbusMultilineTextInput: multilineTextInputRecipe,
