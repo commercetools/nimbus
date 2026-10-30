@@ -74,13 +74,14 @@ Before writing examples, check the actual component implementation:
 ```yaml
 ---
 id: Components-ComponentName
-title: Component Name
+title: ComponentName # Same as exportName
+exportName: ComponentName
 description: Brief one-line description
 order: 999
 menu:
   - Components
   - Category Name # Data Display, Navigation, Inputs, Feedback, etc.
-  - Component Name
+  - ComponentName # Same as exportName
 tags:
   - component
   - relevant-keywords

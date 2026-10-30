@@ -60,19 +60,25 @@ frontmatter fields:
 ```yaml
 ---
 id: Components-ComponentName # Required: Unique identifier (Components-{ComponentName})
-title: Component Name # Required: Display name
+title: ComponentName # Required: Same as exportName
 exportName: ComponentName # Required: PascalCased name as exported from @commercetools/nimbus
 description: Brief description of the component # Required: One-line component description
 order: 999 # Required: Menu display order (use 999 as default)
 menu: # Required: Menu hierarchy array
   - Components
   - Category Name # Data Display, Navigation, Inputs, Feedback, etc.
-  - Component Name
+  - ComponentName # Same as exportName
 tags: # Required: Search tags array (always include 'component')
   - component
   - relevant-keywords
 ---
 ```
+
+`title` and the last `menu` item are the component's `exportName`, for example
+`IconButton`. The title appears on cards and in search, the menu item in the
+sidebar, the breadcrumb and the browser tab. The page URL is generated from
+`menu`, and the words of a PascalCase label are separated by dashes, so
+`IconButton` gives `/components/buttons/icon-button`.
 
 ### Optional Frontmatter Fields
 
