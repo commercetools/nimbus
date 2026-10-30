@@ -23,11 +23,14 @@ removes `style`. See proposal.md for motivation.
 
 ## Decisions
 
-**Source is TypeScript, SVG is generated and committed.** Sources use only
-kit primitives that take role names (`tone: "strong"`), so a source cannot
-contain raw colors. Generated SVGs are committed so docs can import them with
-`?raw` and the freshness test can compare bytes. Alternative: hand-written
-SVG. Rejected because the look could not be changed in one place.
+**Only the TypeScript source is committed.** Sources use only kit primitives
+that take role names (`tone: "strong"`), so a source cannot contain raw colors.
+The docs build and dev server render each source to an SVG in a gitignored
+folder (`apps/docs/src/data/illustrations`), and the unit test renders from
+source in memory. This halves the number of files in the repository and removes
+a "forgot to generate" failure. Alternatives: commit the SVGs too (rejected:
+duplicate files that can drift), or hand-written SVG (rejected: the look could
+not be changed in one place).
 
 **Primitives return a branded `Fragment` type.** A raw markup string fails the
 typecheck. The kit is built per illustration with its own id prefix, so there
@@ -41,10 +44,8 @@ is no global state.
 no workflow change. Every component with a main doc page must have an
 illustration from the day it is added.
 
-**Docs read SVGs with `import.meta.glob(..., { query: "?raw" })`.** Ids are
-rewritten with a `useId()` prefix so the same picture can appear twice. If Vite
-refuses files outside the app root, docs-build copies the SVGs into
-`apps/docs/src/data/illustrations/`.
+**Docs read the rendered SVGs with `import.meta.glob(..., { query: "?raw" })`.**
+Ids are rewritten with a `useId()` prefix so the same picture can appear twice.
 
 **Card band uses the illustration's default background color**, so band and
 SVG look like one surface.

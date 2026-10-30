@@ -4,7 +4,7 @@
 
 - [x] 1.1 Add `src/illustration-kit/` (tokens, roles, primitives, icons, render, discover) and verify `illustration-kit.spec.ts` passes (radii, shadow, fallbacks, determinism)
 - [x] 1.2 Add `scripts/illustrations/generate.ts` and `contact-sheet.ts` with root proxies and verify `pnpm illustrations:generate` and `pnpm illustrations:sheet` run
-- [x] 1.3 Add `illustrations.spec.ts` (coverage, freshness, purity, structure, sanitizer parity, geometry) and verify `pnpm --filter @commercetools/nimbus test:unit` passes
+- [x] 1.3 Add `illustrations.spec.ts` (coverage, purity, structure, sanitizer parity, geometry) and verify `pnpm --filter @commercetools/nimbus test:unit` passes
 - [x] 1.4 Add config edits (vite dts exclude, `.gitignore`, `scripts/clean.mjs`, `.gitattributes`) and verify `pnpm build` output has no `*illustration*` file
 - [x] 1.5 Draw the 6 prototype illustrations (button, switch, data-table, date-range-picker, tooltip, visually-hidden) and verify the contact sheet in light and dark mode
 
@@ -22,6 +22,7 @@
 
 - [x] 4.1 Add the `illustration` route field in docs-build and both zod schemas and verify the field reaches the docs route data
 - [x] 4.2 Add `ComponentIllustration` and update `CategoryOverview` (grid and list) and verify with screenshots in light and dark mode
+- [x] 4.5 Render illustrations from sources in the docs build and dev server instead of committing SVGs, and verify `pnpm build:docs` creates one SVG per source and the unit test rejects a committed SVG
 - [x] 4.4 Resolve illustrations for category pages from their children in the route manifest, show them as a small group, and verify with the resolver unit test and screenshots of `/components`
 - [x] 4.3 Add a docs test for the id rewrite (same illustration twice) and verify it passes
 
@@ -32,4 +33,4 @@
 
 ## 6. Final verification
 
-- [ ] 6.1 Run `pnpm lint`, `pnpm typecheck:strict`, `pnpm check:package-shape`, `pnpm build`, `pnpm illustrations:generate` (no git diff) and `pnpm openspec validate --all --strict`
+- [ ] 6.1 Run `pnpm lint`, `pnpm typecheck:strict`, `pnpm check:package-shape`, `pnpm build`, `pnpm illustrations:generate` (renders into the gitignored docs data folder) and `pnpm openspec validate --all --strict`

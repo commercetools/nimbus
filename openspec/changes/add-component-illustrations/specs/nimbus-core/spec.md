@@ -12,8 +12,7 @@ All components SHALL follow standardized file organization.
 - **THEN** SHALL have directory: src/components/{component-name}/
 - **AND** SHALL include: index.ts (exports), {component}.tsx (implementation),
   {component}.types.ts (types), {component}.stories.tsx (tests),
-  {component}.illustration.ts (illustration source) and
-  {component}.illustration.svg (generated illustration)
+  {component}.illustration.ts (illustration source)
 - **AND** MAY include: {component}.recipe.ts, {component}.slots.tsx,
   {component}.i18n.ts, {component}.mdx
 - **AND** Compound components SHALL have components/ subdirectory

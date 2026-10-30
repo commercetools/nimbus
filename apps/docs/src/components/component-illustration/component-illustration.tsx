@@ -3,19 +3,18 @@ import { Box, InlineSvg } from "@commercetools/nimbus";
 import { scopeIllustrationIds } from "./scope-illustration-ids";
 
 /**
- * The illustration files live next to their components in the nimbus package.
- * They load lazily, so a page only fetches the ones it shows.
+ * The SVGs are rendered from the `*.illustration.ts` sources in the nimbus
+ * package into `src/data/illustrations` by `pnpm illustrations:generate`, which
+ * the docs build and the dev server run. They load lazily, so a page only
+ * fetches the ones it shows.
  */
 const loaders = Object.fromEntries(
   Object.entries(
-    import.meta.glob<string>(
-      "../../../../../packages/nimbus/src/**/*.illustration.svg",
-      { query: "?raw", import: "default" }
-    )
-  ).map(([file, load]) => [
-    file.split("/").pop()!.replace(".illustration.svg", ""),
-    load,
-  ])
+    import.meta.glob<string>("../../data/illustrations/*.svg", {
+      query: "?raw",
+      import: "default",
+    })
+  ).map(([file, load]) => [file.split("/").pop()!.replace(".svg", ""), load])
 );
 
 /** Whether an illustration file exists for this component name. */

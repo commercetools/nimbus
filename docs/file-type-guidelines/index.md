@@ -77,7 +77,7 @@ Every component must have these files:
 3. Storybook stories (with play functions for interactive components)
 4. Documentation (MDX)
 5. Barrel export (index)
-6. Illustration (`.illustration.ts` and the generated `.illustration.svg`)
+6. Illustration (`.illustration.ts`)
 
 ### Conditionally Required
 

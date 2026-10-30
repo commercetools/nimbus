@@ -27,8 +27,8 @@ const definitions = new Map(
 
 const sourcePath = (item: { name: string; dir: string }) =>
   join(item.dir, `${item.name}.illustration.ts`);
-const svgPath = (item: { name: string; dir: string }) =>
-  join(item.dir, `${item.name}.illustration.svg`);
+/** The SVG the docs build renders from the source. */
+const svgOf = (name: string) => renderIllustration(definitions.get(name)!);
 
 const drawn = required;
 
@@ -73,16 +73,12 @@ describe("illustration coverage", () => {
     expect(requiredNames.size).toBe(required.length);
   });
 
-  it.each(drawn)(
-    "$name has an illustration source and a generated SVG",
-    (item) => {
-      expect(existsSync(sourcePath(item)), `missing ${sourcePath(item)}`).toBe(
-        true
-      );
-      expect(existsSync(svgPath(item)), `missing ${svgPath(item)}`).toBe(true);
-      expect(definitions.get(item.name)?.name).toBe(item.name);
-    }
-  );
+  it.each(drawn)("$name has an illustration source", (item) => {
+    expect(existsSync(sourcePath(item)), `missing ${sourcePath(item)}`).toBe(
+      true
+    );
+    expect(definitions.get(item.name)?.name).toBe(item.name);
+  });
 
   it("has no orphan illustration files", () => {
     const found: string[] = [];
@@ -95,20 +91,9 @@ describe("illustration coverage", () => {
     };
     walk(join(SRC_DIR, "components"));
     walk(join(SRC_DIR, "patterns"));
-    const allowed = new Set(
-      required.flatMap((item) => [sourcePath(item), svgPath(item)])
-    );
+    // SVGs are build output in apps/docs/src/data/illustrations, never committed
+    const allowed = new Set(required.map(sourcePath));
     expect(found.filter((path) => !allowed.has(path))).toEqual([]);
-  });
-});
-
-describe("illustration freshness", () => {
-  it.each(drawn)("$name.illustration.svg is up to date", (item) => {
-    const rendered = renderIllustration(definitions.get(item.name)!);
-    expect(
-      readFileSync(svgPath(item), "utf8") === rendered,
-      "Out of date: run `pnpm illustrations:generate`"
-    ).toBe(true);
   });
 });
 
@@ -170,7 +155,7 @@ describe("kit isolation", () => {
 
 describe("illustration output", () => {
   it.each(drawn)("$name has the allowed structure", (item) => {
-    const svg = readFileSync(svgPath(item), "utf8");
+    const svg = svgOf(item.name);
     const root = parse(svg).documentElement;
     expect(root.getAttribute("viewBox")).toBe("0 0 96 96");
     expect(root.getAttribute("width")).toBe("96");
@@ -211,7 +196,7 @@ describe("illustration output", () => {
   });
 
   it.each(drawn)("$name survives the InlineSvg sanitizer unchanged", (item) => {
-    const svg = readFileSync(svgPath(item), "utf8");
+    const svg = svgOf(item.name);
     const clean = sanitizeSvg(svg);
     expect(clean).not.toBeNull();
     const before = parse(svg).documentElement;
@@ -237,6 +222,6 @@ describe("illustration geometry", () => {
       expect(w % 2, `panel width ${w}`).toBe(0);
       expect(h % 2, `panel height ${h}`).toBe(0);
     }
-    expect(statSync(svgPath(item)).size).toBeLessThanOrEqual(8 * 1024);
+    expect(Buffer.byteLength(svgOf(item.name))).toBeLessThanOrEqual(8 * 1024);
   });
 });

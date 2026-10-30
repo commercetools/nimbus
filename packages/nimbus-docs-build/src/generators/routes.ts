@@ -18,8 +18,9 @@ import { findMonorepoRoot } from "../utils/file-utils.js";
 import { resolveChildIllustrations } from "./resolve-illustrations.js";
 
 /**
- * Name of the illustration for a main doc page, when
- * `<name>.illustration.svg` exists next to `<name>.mdx`.
+ * Name of the illustration for a main doc page, when the source
+ * `<name>.illustration.ts` exists next to `<name>.mdx`. The docs build renders
+ * the SVG from it.
  */
 async function findIllustration(
   monorepoRoot: string | null,
@@ -28,13 +29,13 @@ async function findIllustration(
   const name = path.basename(repoPath, ".mdx");
   const isMainPage = path.basename(repoPath) === `${name}.mdx`;
   if (!monorepoRoot || !isMainPage || name.includes(".")) return [];
-  const svg = path.join(
+  const source = path.join(
     monorepoRoot,
     path.dirname(repoPath),
-    `${name}.illustration.svg`
+    `${name}.illustration.ts`
   );
   try {
-    await fs.access(svg);
+    await fs.access(source);
     return [name];
   } catch {
     return [];

@@ -4,7 +4,7 @@
  * Each document gets an ordered list of illustration names for its overview
  * card. The first rule that matches wins:
  *
- * 1. Own file: `<doc>.illustration.svg` exists next to the mdx (set by the
+ * 1. Own source: `<doc>.illustration.ts` exists next to the mdx (set by the
  *    caller as the route's initial `illustrations`).
  * 2. Children: a document without its own illustration (for example a
  *    category page) shows the first few illustrations of the documents below

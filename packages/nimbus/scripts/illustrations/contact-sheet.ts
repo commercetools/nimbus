@@ -7,11 +7,15 @@
  *   pnpm illustrations:sheet [--category Inputs] [--only a,b]
  *                            [--mode light|dark] [--palette primary|ctteal]
  */
-import { existsSync, mkdirSync, readFileSync, realpathSync } from "node:fs";
+import { existsSync, mkdirSync, realpathSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "playwright";
 import { discover } from "../../src/illustration-kit/discover";
+import {
+  renderIllustration,
+  type IllustrationDefinition,
+} from "../../src/illustration-kit";
 import { system } from "../../src/theme";
 
 const PACKAGE_DIR = join(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -59,14 +63,22 @@ const purifyPath = join(
   "dist/purify.js"
 );
 
-const items = discover()
-  .filter((item) => !category || item.category === category)
-  .filter((item) => !only || only.includes(item.name))
-  .map((item) => ({
-    ...item,
-    file: join(item.dir, `${item.name}.illustration.svg`),
-  }))
-  .filter((item) => existsSync(item.file));
+const items = await Promise.all(
+  discover()
+    .filter((item) => !category || item.category === category)
+    .filter((item) => !only || only.includes(item.name))
+    .map((item) => ({
+      ...item,
+      source: join(item.dir, `${item.name}.illustration.ts`),
+    }))
+    .filter((item) => existsSync(item.source))
+    .map(async (item) => {
+      const module = (await import(pathToFileURL(item.source).href)) as {
+        default: IllustrationDefinition;
+      };
+      return { ...item, svg: renderIllustration(module.default) };
+    })
+);
 
 if (items.length === 0) {
   console.log("No illustrations found for this filter.");
@@ -138,7 +150,7 @@ for (const mode of modes) {
         title: `${name} · ${mode} · ${palette}`,
         cards: group.map((item) => ({
           name: item.name,
-          markup: readFileSync(item.file, "utf8"),
+          markup: item.svg,
         })),
       }
     );

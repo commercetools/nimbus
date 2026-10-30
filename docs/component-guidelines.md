@@ -206,7 +206,6 @@ component-name/
 ├── component-name.recipe.ts       # Styling recipes (if needed)
 ├── component-name.i18n.ts         # i18n messages (if needed)
 ├── component-name.illustration.ts # Illustration source (required)
-├── component-name.illustration.svg # Generated illustration (required, committed)
 ├── component-name.stories.tsx     # Storybook stories (required)
 ├── component-name.mdx            # Designer documentation (required)
 ├── component-name.dev.mdx        # Engineering documentation (required)

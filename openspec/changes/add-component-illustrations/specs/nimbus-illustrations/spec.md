@@ -8,12 +8,12 @@ Gives every Nimbus component, derivative and pattern one consistent SVG illustra
 
 ### Requirement: Illustration Coverage
 
-Every folder under `packages/nimbus/src/components` and `packages/nimbus/src/patterns` that has a main doc page `<dir>/<dir-name>.mdx` SHALL have an illustration source and a generated SVG.
+Every folder under `packages/nimbus/src/components` and `packages/nimbus/src/patterns` that has a main doc page `<dir>/<dir-name>.mdx` SHALL have an illustration source.
 
-#### Scenario: Required folder has both files
+#### Scenario: Required folder has a source
 
 - **WHEN** a folder has a main doc page
-- **THEN** it SHALL contain `<name>.illustration.ts` and `<name>.illustration.svg`
+- **THEN** it SHALL contain `<name>.illustration.ts`
 - **AND** the illustration's `name` SHALL equal the folder name
 
 #### Scenario: Orphan files
@@ -58,11 +58,11 @@ Illustrations SHALL take every color from the Nimbus color palette in scope thro
 
 ### Requirement: Sanitizer-Safe Output
 
-Generated SVGs SHALL survive the `InlineSvg` sanitizer without change.
+Rendered SVGs SHALL survive the `InlineSvg` sanitizer without change.
 
 #### Scenario: Restricted markup
 
-- **WHEN** an SVG is generated
+- **WHEN** an SVG is rendered from a source
 - **THEN** it SHALL use only `svg`, `defs`, `linearGradient`, `stop`, `filter`, `feDropShadow`, `g`, `rect`, `circle`, `line` and `path`
 - **AND** it SHALL NOT contain `style`, `class` or external `href`
 - **AND** every id SHALL be unique and start with `il-<name>-`
@@ -72,14 +72,24 @@ Generated SVGs SHALL survive the `InlineSvg` sanitizer without change.
 - **WHEN** the SVG is passed through the `InlineSvg` sanitizer
 - **THEN** the resulting tree SHALL equal the input tree
 
-### Requirement: Generated Freshness
+### Requirement: Source Only
 
-The committed SVG SHALL equal the output of rendering its source.
+Only the illustration source SHALL be committed. The docs build and the docs dev server SHALL render the SVGs from the sources into a gitignored folder.
 
-#### Scenario: Out-of-date SVG
+#### Scenario: Committed SVG
 
-- **WHEN** the committed SVG differs from the rendered output
-- **THEN** the unit test SHALL fail and tell the author to run `pnpm illustrations:generate`
+- **WHEN** an `*.illustration.svg` file exists in a component or pattern folder
+- **THEN** the unit test SHALL fail
+
+#### Scenario: Docs build
+
+- **WHEN** the docs are built
+- **THEN** one SVG per illustration source SHALL be rendered before the route manifest is used
+- **AND** SVGs of removed components SHALL be deleted
+
+### Requirement: Source Purity
+
+Illustration sources SHALL use only the drawing kit and role names.
 
 #### Scenario: Source purity
 

@@ -1,15 +1,13 @@
 ---
-description:
-  Create, update, or validate component illustrations (`.illustration.ts` and
-  the generated `.illustration.svg`)
+description: Create, update, or validate component illustrations (`.illustration.ts`)
 argument-hint: create|update|validate ComponentName [details]
 ---
 
 # Writing Illustrations Skill
 
 You are a Nimbus illustration specialist. This skill creates, updates or
-validates `{component}.illustration.ts` (source) and its generated
-`{component}.illustration.svg`.
+validates `{component}.illustration.ts`. The docs build renders the SVG from it,
+so the source is the only file you commit.
 
 **Note**: If you are creating a NEW component, consider `/propose-component`.
 This skill is for adding or changing a single illustration, or when it is
@@ -64,17 +62,16 @@ If no mode is given, default to **create**.
 1. Choose the metaphor: the one idea that tells this component apart.
 2. Write `{component}.illustration.ts` from the template in the guideline. Use
    only kit primitives and role names. Take the radius from the recipe.
-3. Generate: `pnpm illustrations:generate --only {component}`
-4. Render the contact sheet and LOOK at the PNG in light and dark mode:
+3. Render the contact sheet and LOOK at the PNG in light and dark mode:
    `pnpm illustrations:sheet --only {component}` then read
    `packages/nimbus/.illustration-sheets/*.png`. Do not finish before you have
    looked at it.
-5. Run `pnpm --filter @commercetools/nimbus test:unit`.
+4. Run `pnpm --filter @commercetools/nimbus test:unit`.
 
 ## Update Mode
 
-Change the source, run `pnpm illustrations:generate --only {component}`, look at
-the new sheet, run the unit test. Never edit the `.svg` by hand.
+Change the source, render the sheet with
+`pnpm illustrations:sheet --only {component}`, look at it, run the unit test.
 
 ## Validate Mode
 
@@ -88,5 +85,5 @@ can check that.
   Use `.map` and `.flatMap` for repeated shapes.
 - Panel and bubble sizes are multiples of 2. The drawing stays inside 8–88 and
   is centered on 48.
-- A kit change re-renders every SVG. Run `pnpm illustrations:generate` and
-  review the whole sheet.
+- A kit change re-renders every illustration. Render the whole sheet
+  (`pnpm illustrations:sheet`) and review it.

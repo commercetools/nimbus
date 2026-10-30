@@ -7,11 +7,10 @@ Every component, derivative and pattern that has a main doc page
 
 ## Files
 
-| File                      | Role                                           |
-| ------------------------- | ---------------------------------------------- |
-| `{name}.illustration.ts`  | Source. Written by hand with the drawing kit.  |
-| `{name}.illustration.svg` | Generated and committed. Never edited by hand. |
-| `src/illustration-kit/`   | The drawing kit. Not published.                |
+| File                     | Role                                          |
+| ------------------------ | --------------------------------------------- |
+| `{name}.illustration.ts` | Source. Written by hand with the drawing kit. |
+| `src/illustration-kit/`  | The drawing kit. Not published.               |
 
 `{name}` is the folder name, for example `button` or `date-range-picker`.
 
@@ -78,21 +77,20 @@ Roles: `surface`, `surfaceStroke`, `strong`, `onStrong`, `text`, `textStrong`,
 ## Workflow
 
 1. Write `{name}.illustration.ts`.
-2. Run `pnpm illustrations:generate --only {name}`.
-3. Run `pnpm illustrations:sheet --category "<Category>"`.
-4. Open the PNGs in `packages/nimbus/.illustration-sheets/` (light and dark) and
+2. Run `pnpm illustrations:sheet --only {name}` (or `--category "<Category>"`).
+3. Open the PNGs in `packages/nimbus/.illustration-sheets/` (light and dark) and
    look at them. Fix and repeat.
-5. Run `pnpm --filter @commercetools/nimbus test:unit` (or
+4. Run `pnpm --filter @commercetools/nimbus test:unit` (or
    `pnpm test:dev packages/nimbus/src/illustration-kit`).
 
-The unit test (`illustrations.spec.ts`) checks coverage, freshness, source
-purity, output structure, sanitizer parity and geometry (inside 8–88, centered
-within 2 units of 48, panel sizes in multiples of 2, at most 8 KB).
+The unit test (`illustrations.spec.ts`) checks coverage, source purity, output
+structure, sanitizer parity and geometry (inside 8–88, centered within 2 units
+of 48, panel sizes in multiples of 2, at most 8 KB).
 
 ## Validation Checklist
 
-- [ ] `{name}.illustration.ts` and `{name}.illustration.svg` exist in the
-      component folder
+- [ ] `{name}.illustration.ts` exists in the component folder and no
+      `.illustration.svg` is committed
 - [ ] `name` equals the folder name
 - [ ] The source has one import from `@/illustration-kit` and one
       `export default defineIllustration(`
@@ -101,8 +99,14 @@ within 2 units of 48, panel sizes in multiples of 2, at most 8 KB).
 - [ ] Text is drawn as round-ended bars
 - [ ] The contact sheet was rendered and looked at in light and dark mode
 - [ ] The illustration is distinct from its look-alikes
-- [ ] The SVG is up to date (`pnpm illustrations:generate` gives no git diff)
 - [ ] `pnpm --filter @commercetools/nimbus test:unit` passes
+
+## Where the SVG Comes From
+
+The SVG is build output, not a committed file. `pnpm illustrations:generate`
+renders every source into `apps/docs/src/data/illustrations/<name>.svg`
+(gitignored). The docs build and the docs dev server run it, and the dev server
+renders again when a source changes.
 
 ## Using the SVG
 

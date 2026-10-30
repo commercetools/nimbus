@@ -97,7 +97,7 @@ The task list MUST include these file creation steps in this order:
    - `component.recipe.ts` (Chakra UI v3 recipe)
    - `component.slots.ts` (slot definitions, if applicable)
    - `component.stories.tsx` (story file with play functions)
-   - `component.illustration.ts` (illustration source; the SVG is generated)
+   - `component.illustration.ts` (illustration source)
    - `index.ts` (barrel export)
 
 2. **Create failing Storybook tests** - You MUST write play functions that test:
@@ -117,7 +117,7 @@ The task list MUST include these file creation steps in this order:
    - Create/update design guidelines using the `/writing-designer-documentation`
      skill
    - Create the illustration using the `/writing-illustrations` skill, then run
-     `pnpm illustrations:generate` and look at the contact sheet
+     `pnpm illustrations:sheet` and look at the contact sheet
    - Ensure Storybook tests pass
    - Run linting and TypeScript checks (violations block shipping)
    - Run the full test suite

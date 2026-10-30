@@ -293,8 +293,7 @@ packages/nimbus/
 │   │   │   ├── button.spec.tsx      # Unit tests (if needed)
 │   │   │   ├── button.recipe.ts     # Chakra UI recipe
 │   │   │   ├── button.i18n.ts       # i18n messages
-│   │   │   ├── button.illustration.ts  # Illustration source
-│   │   │   ├── button.illustration.svg # Generated illustration
+│   │   │   ├── button.illustration.ts  # Illustration source (SVG is rendered by the docs build)
 │   │   │   ├── button.mdx           # Documentation
 │   │   │   └── index.ts             # Barrel export
 │   │   └── ...
