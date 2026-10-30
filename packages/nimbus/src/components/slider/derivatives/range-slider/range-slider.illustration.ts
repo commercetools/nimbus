@@ -2,7 +2,7 @@ import { defineIllustration } from "@/illustration-kit";
 
 export default defineIllustration({
   name: "range-slider",
-  draw: ({ bubble, pill, circle, stroke }) => [
+  draw: ({ bubble, pill, circle }) => [
     bubble({ x: 24, y: 28, w: 16, h: 10, radius: "100" }),
     bubble({ x: 54, y: 28, w: 16, h: 10, radius: "100" }),
     pill({ x: 28, y: 31.5, w: 8, fill: "onStrong" }),
