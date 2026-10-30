@@ -14,7 +14,7 @@ type ParagraphProps = DetailedHTMLProps<
 export const Paragraph = (props: ParagraphProps) => {
   const { children, ...rest } = props;
   return (
-    <Text mb="400" asChild {...rest}>
+    <Text textStyle="md" lineHeight="650" mb="400" asChild {...rest}>
       <p>
         {Children.map(children, (child) => {
           // Check if the child is a React element and if its type is 'kbd'

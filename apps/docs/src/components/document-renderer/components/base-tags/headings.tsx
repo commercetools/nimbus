@@ -118,6 +118,7 @@ export const H2 = ({ children, ...props }: HeadingProps) => {
     <Heading
       {...commonProps({ children, ...props })}
       size="2xl"
+      mt="1200"
       pb="200"
       asChild
       borderBottom="1px solid"
@@ -133,7 +134,12 @@ export const H2 = ({ children, ...props }: HeadingProps) => {
 export const H3 = ({ children, ...props }: HeadingProps) => {
   const id = sluggifyChildren(children);
   return (
-    <Heading {...commonProps({ children, ...props })} size="xl" asChild>
+    <Heading
+      {...commonProps({ children, ...props })}
+      size="xl"
+      mt="800"
+      asChild
+    >
       <h3 {...props}>
         {children} <CopyLink id={id} />
       </h3>
@@ -143,7 +149,12 @@ export const H3 = ({ children, ...props }: HeadingProps) => {
 export const H4 = ({ children, ...props }: HeadingProps) => {
   const id = sluggifyChildren(children);
   return (
-    <Heading {...commonProps({ children, ...props })} size="lg" asChild>
+    <Heading
+      {...commonProps({ children, ...props })}
+      size="lg"
+      mt="600"
+      asChild
+    >
       <h4 {...props}>
         {children} <CopyLink id={id} />
       </h4>

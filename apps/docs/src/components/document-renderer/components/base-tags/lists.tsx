@@ -28,6 +28,8 @@ export const ListItem = (props: ComponentProps<typeof List.Item>) => {
   return (
     <List.Item
       pl="100"
+      textStyle="md"
+      lineHeight="650"
       css={{
         "& + li": {
           mt: "100",

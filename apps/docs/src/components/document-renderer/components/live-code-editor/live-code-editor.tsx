@@ -1,15 +1,15 @@
 import * as NimbusUi from "@commercetools/nimbus";
 import * as icons from "@commercetools/nimbus-icons";
+import { Box, Menu, IconButton, Icon, Tooltip } from "@commercetools/nimbus";
+import { Settings, Check, Code as CodeIcon } from "@commercetools/nimbus-icons";
 import {
-  Box,
-  Menu,
-  IconButton,
-  Icon,
-  Tooltip,
-  Tabs,
-} from "@commercetools/nimbus";
-import { Settings, Check } from "@commercetools/nimbus-icons";
-import { useState, useEffect, useCallback, useMemo, ReactNode } from "react";
+  useState,
+  useEffect,
+  useCallback,
+  useId,
+  useMemo,
+  ReactNode,
+} from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 import { themes } from "prism-react-renderer";
 import {
@@ -111,30 +111,30 @@ export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
   const atom = isDevVariant ? defaultLiveDevViewAtom : defaultLiveViewAtom;
   const [defaultView, setDefaultView] = useAtom(atom);
 
+  const editorId = useId();
   const [menuOpen, setMenuOpen] = useState(false);
   const [code, setCode] = useState(props.children);
-  const [activeTab, setActiveTab] = useState<"preview" | "editor">(defaultView);
+  // The "Default view" setting decides if the code is open when the page loads.
+  const [isCodeOpen, setIsCodeOpen] = useState(defaultView === "editor");
 
   useEffect(() => {
     setCode(props.children);
   }, [props.children]);
 
   useEffect(() => {
-    setActiveTab(defaultView);
+    setIsCodeOpen(defaultView === "editor");
   }, [defaultView]);
+
+  const toggleLabel = isCodeOpen ? "Hide code" : "Show code";
 
   return (
     <Box mb="400" fontFamily="body" className="group" position="relative">
-      <Tabs.Root
-        selectedKey={activeTab}
-        onSelectionChange={(key) => setActiveTab(key as "preview" | "editor")}
+      <Box
+        border="solid-25"
+        borderColor="neutral.6"
+        borderRadius="300"
+        overflow="hidden"
       >
-        <Tabs.List>
-          <Tabs.Tab id="preview">Preview</Tabs.Tab>
-          <Tabs.Tab id="editor">Code</Tabs.Tab>
-        </Tabs.List>
-      </Tabs.Root>
-      <Box border="solid-25" borderColor="neutral.3">
         <LiveProvider
           transformCode={removeImportStatements}
           code={typeof code === "string" ? code : ""}
@@ -142,40 +142,73 @@ export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
           noInline
         >
           <Box
-            display={activeTab === "editor" ? "block" : "none"}
-            fontSize="350"
-            fontFamily="mono"
-          >
-            <LiveEditor
-              theme={themes.oneDark}
-              onChange={(value) => setCode(value)}
-            />
-          </Box>
-          <Box
-            display={activeTab === "preview" ? "block" : "none"}
             whiteSpace="pre-wrap"
-            p="400"
+            bg="neutral.2"
+            // Keeps the preview clear of the buttons in the corner
+            pl="400"
+            pr="1600"
+            py="400"
           >
             <LivePreview />
+          </Box>
+          <Box
+            id={editorId}
+            display="grid"
+            gridTemplateRows={isCodeOpen ? "1fr" : "0fr"}
+            visibility={isCodeOpen ? "visible" : "hidden"}
+            transition="grid-template-rows 0.2s ease, visibility 0.2s"
+            css={{
+              "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+            }}
+          >
+            <Box
+              minHeight="0"
+              overflow="hidden"
+              fontSize="350"
+              fontFamily="mono"
+            >
+              <LiveEditor
+                theme={themes.oneDark}
+                onChange={(value) => setCode(value)}
+              />
+            </Box>
           </Box>
           <LiveError />
         </LiveProvider>
       </Box>
       <Box
         position="absolute"
-        top="0"
-        right="0"
+        top="200"
+        right="200"
         display="flex"
         alignItems="center"
-        opacity={menuOpen ? "1" : "0"}
-        transition="opacity 0.15s"
-        _groupHover={{ opacity: "1" }}
+        gap="100"
       >
-        <DefaultViewMenu
-          defaultView={defaultView}
-          setDefaultView={setDefaultView}
-          onOpenChange={setMenuOpen}
-        />
+        <Box
+          opacity={menuOpen ? "1" : "0"}
+          transition="opacity 0.15s"
+          _groupHover={{ opacity: "1" }}
+          _focusWithin={{ opacity: "1" }}
+        >
+          <DefaultViewMenu
+            defaultView={defaultView}
+            setDefaultView={setDefaultView}
+            onOpenChange={setMenuOpen}
+          />
+        </Box>
+        <Tooltip.Root>
+          <IconButton
+            aria-label={toggleLabel}
+            aria-expanded={isCodeOpen}
+            aria-controls={editorId}
+            size="xs"
+            variant="ghost"
+            onPress={() => setIsCodeOpen((open) => !open)}
+          >
+            <Icon as={CodeIcon} slot="icon" />
+          </IconButton>
+          <Tooltip.Content placement="bottom">{toggleLabel}</Tooltip.Content>
+        </Tooltip.Root>
       </Box>
     </Box>
   );
