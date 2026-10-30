@@ -106,7 +106,7 @@ of 48, panel sizes in multiples of 2, at most 8 KB).
 The SVG is build output, not a committed file. `pnpm illustrations:generate`
 renders every source into `apps/docs/src/data/illustrations/<name>.svg`
 (gitignored). The docs build and the docs dev server run it, and the dev server
-renders again when a source changes.
+renders again when a source or a kit file changes.
 
 ## Using the SVG
 

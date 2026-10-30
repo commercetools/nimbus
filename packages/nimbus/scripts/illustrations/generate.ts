@@ -6,8 +6,11 @@
  *   pnpm illustrations:generate [--only button,switch] [--out <dir>] [--watch]
  *
  * `--out` defaults to `apps/docs/src/data/illustrations`. `--watch` renders
- * again when an illustration source changes.
+ * again when an illustration source changes, and renders everything again in
+ * a fresh process when the drawing kit changes (the running process keeps the
+ * kit it loaded at start).
  */
+import { spawnSync } from "node:child_process";
 import {
   existsSync,
   mkdirSync,
@@ -97,7 +100,26 @@ if (process.argv.includes("--watch")) {
   const byFile = new Map(
     discover().map((item) => [`${item.name}.illustration.ts`, item])
   );
+  let kitTimer: ReturnType<typeof setTimeout> | undefined;
   watch(SRC_DIR, { recursive: true }, async (_event, file) => {
+    if (file && /(^|\/)illustration-kit\/(?!.*\.spec\.)[^/]+\.ts$/.test(file)) {
+      // one save can fire several events: render once, after they settle
+      clearTimeout(kitTimer);
+      kitTimer = setTimeout(() => {
+        console.log("Drawing kit changed, rendering all illustrations...");
+        spawnSync(
+          process.execPath,
+          [
+            ...process.execArgv,
+            fileURLToPath(import.meta.url),
+            "--out",
+            outDir,
+          ],
+          { stdio: "inherit" }
+        );
+      }, 150);
+      return;
+    }
     const item = file && byFile.get(file.split("/").pop()!);
     if (!item) return;
     try {
