@@ -7,6 +7,7 @@ tab-order: 3
 ## Comparison: field pattern vs manual composition
 
 **With MultilineTextInputField:**
+
 ```tsx
 <MultilineTextInputField
   label="Project Description"
@@ -21,6 +22,7 @@ tab-order: 3
 ```
 
 **Manual composition:**
+
 ```tsx
 <FormField.Root isInvalid={!!(errors && touched)} isRequired>
   <FormField.Label>Project Description</FormField.Label>
@@ -32,9 +34,7 @@ tab-order: 3
       autoGrow
     />
   </FormField.Input>
-  <FormField.Description>
-    Enter a detailed description
-  </FormField.Description>
+  <FormField.Description>Enter a detailed description</FormField.Description>
   {touched && errors && (
     <FormField.Error>
       <FieldErrors errors={errors} />
@@ -46,12 +46,14 @@ tab-order: 3
 ### When to use which
 
 **Use MultilineTextInputField when:**
+
 - Building standard forms with typical field layouts
 - You want consistent field patterns across your app
 - You need built-in error handling with FieldErrors
 - You want to minimize boilerplate code
 
 **Use MultilineTextInput with manual FormField composition when:**
+
 - You need custom field layouts
 - You're building complex, non-standard forms
 - You need granular control over FormField sub-components
@@ -62,7 +64,10 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { MultilineTextInputField, type MultilineTextInputFieldProps } from '@commercetools/nimbus';
+import {
+  MultilineTextInputField,
+  type MultilineTextInputFieldProps,
+} from "@commercetools/nimbus";
 ```
 
 ### Basic usage
@@ -71,7 +76,7 @@ The simplest implementation with a label and controlled state:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState < string > "";
 
   return (
     <MultilineTextInputField
@@ -80,7 +85,7 @@ const App = () => {
       onChange={setValue}
     />
   );
-}
+};
 ```
 
 ## Usage examples
@@ -91,8 +96,8 @@ The `sm` and `md` size variants are available to match your interface density:
 
 ```jsx live-dev
 const App = () => {
-  const [valueSmall, setValueSmall] = useState<string>('');
-  const [valueMedium, setValueMedium] = useState<string>('');
+  const [valueSmall, setValueSmall] = useState < string > "";
+  const [valueMedium, setValueMedium] = useState < string > "";
 
   return (
     <Stack direction="column" gap="400">
@@ -112,7 +117,7 @@ const App = () => {
       />
     </Stack>
   );
-}
+};
 ```
 
 ### Visual variants
@@ -121,8 +126,8 @@ Choose between `solid` and `ghost` variants to match your design context:
 
 ```jsx live-dev
 const App = () => {
-  const [valueSolid, setValueSolid] = useState<string>('');
-  const [valueGhost, setValueGhost] = useState<string>('');
+  const [valueSolid, setValueSolid] = useState < string > "";
+  const [valueGhost, setValueGhost] = useState < string > "";
 
   return (
     <Stack direction="column" gap="400">
@@ -142,7 +147,7 @@ const App = () => {
       />
     </Stack>
   );
-}
+};
 ```
 
 ### Auto-growing input
@@ -151,7 +156,7 @@ Enable `autoGrow` to let the input expand vertically as the user types:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState < string > "";
 
   return (
     <MultilineTextInputField
@@ -163,7 +168,7 @@ const App = () => {
       placeholder="Type multiple lines to see me grow..."
     />
   );
-}
+};
 ```
 
 ### Fixed rows
@@ -172,7 +177,7 @@ Set a specific number of visible rows using the `rows` prop:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState < string > "";
 
   return (
     <MultilineTextInputField
@@ -184,7 +189,7 @@ const App = () => {
       placeholder="Enter your notes here..."
     />
   );
-}
+};
 ```
 
 ### With description
@@ -193,7 +198,7 @@ Add helper text below the input to provide context:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState < string > "";
 
   return (
     <MultilineTextInputField
@@ -204,7 +209,7 @@ const App = () => {
       placeholder="Enter description..."
     />
   );
-}
+};
 ```
 
 ### With validation errors
@@ -213,8 +218,8 @@ Show error messages when the field is touched and has validation errors:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('');
-  const [touched, setTouched] = useState<boolean>(false);
+  const [value, setValue] = useState < string > "";
+  const [touched, setTouched] = useState < boolean > false;
 
   // Simulate validation: require at least 10 characters
   const errors = touched && value.length < 10 ? { missing: true } : undefined;
@@ -232,10 +237,11 @@ const App = () => {
       placeholder="Write your review..."
     />
   );
-}
+};
 ```
 
-**Note**: Errors only display when both `touched={true}` and `errors` exist. This prevents showing errors before the user interacts with the field.
+**Note**: Errors only display when both `touched={true}` and `errors` exist.
+This prevents showing errors before the user interacts with the field.
 
 ### With info popover
 
@@ -243,7 +249,7 @@ Provide additional context through an info button and popover:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState < string > "";
 
   return (
     <MultilineTextInputField
@@ -256,7 +262,7 @@ const App = () => {
       placeholder="{}"
     />
   );
-}
+};
 ```
 
 ### Required field
@@ -265,7 +271,7 @@ Mark fields as required with the `isRequired` prop:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState < string > "";
 
   return (
     <MultilineTextInputField
@@ -277,7 +283,7 @@ const App = () => {
       placeholder="Explanation..."
     />
   );
-}
+};
 ```
 
 ### Disabled state
@@ -286,7 +292,7 @@ Prevent user interaction with the `isDisabled` prop:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('This content cannot be edited');
+  const [value, setValue] = useState < string > "This content cannot be edited";
 
   return (
     <MultilineTextInputField
@@ -297,7 +303,7 @@ const App = () => {
       isDisabled
     />
   );
-}
+};
 ```
 
 ### Read-only state
@@ -306,7 +312,8 @@ Display a non-editable value with the `isReadOnly` prop:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('Generated description content...');
+  const [value, setValue] =
+    useState < string > "Generated description content...";
 
   return (
     <MultilineTextInputField
@@ -318,7 +325,7 @@ const App = () => {
       rows={3}
     />
   );
-}
+};
 ```
 
 ### With leading element
@@ -327,7 +334,7 @@ Add icons or other elements to the start of the input area:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState < string > "";
 
   return (
     <MultilineTextInputField
@@ -338,16 +345,20 @@ const App = () => {
       leadingElement={<Icons.Edit />}
     />
   );
-}
+};
 ```
 
 ## Component requirements
 
 ### Error handling
 
-MultilineTextInputField uses the `FieldErrors` component to display validation errors with built-in localized messages. For custom error messages, use the `renderError` prop (see [Custom error rendering](#custom-error-rendering) below).
+MultilineTextInputField uses the `FieldErrors` component to display validation
+errors with built-in localized messages. For custom error messages, use the
+`renderError` prop (see [Custom error rendering](#custom-error-rendering)
+below).
 
 **Error object format** (`FieldErrorsData`):
+
 ```tsx
 type FieldErrorsData = {
   [key: string]: boolean | string | ReactNode;
@@ -355,24 +366,27 @@ type FieldErrorsData = {
 
 // Examples:
 const errors = {
-  missing: true,              // Built-in message: "This field is required"
-  invalidFormat: true,        // Built-in message: "Please enter a valid format"
-  custom: "Custom error text" // Custom message
+  missing: true, // Built-in message: "This field is required"
+  invalidFormat: true, // Built-in message: "Please enter a valid format"
+  custom: "Custom error text", // Custom message
 };
 ```
 
 ## Accessibility
 
-MultilineTextInputField provides comprehensive accessibility through [FormField](components/inputs/formfield):
+MultilineTextInputField provides comprehensive accessibility through
+[FormField](components/inputs/formfield):
 
 **Automatic ARIA relationships:**
+
 - Labels connected via `aria-labelledby`
 - Descriptions connected via `aria-describedby`
 - Error messages connected via `aria-describedby`
 - Required fields indicated with `aria-required`
 - Invalid state indicated with `aria-invalid`
 
-If your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:
+If your use case requires tracking and analytics for this component, add a
+**persistent**, **unique** id:
 
 ```tsx
 const PERSISTENT_ID = "feedback-input";
@@ -390,6 +404,7 @@ export const Example = () => (
 #### Keyboard navigation
 
 The component supports standard textarea keyboard interaction:
+
 - `Tab` / `Shift+Tab`: Move focus to/from the input
 - `Arrow keys`: Navigate within the text
 - `Ctrl+A` / `Cmd+A`: Select all text
@@ -399,14 +414,14 @@ The component supports standard textarea keyboard interaction:
 MultilineTextInputField integrates seamlessly with Formik:
 
 ```tsx
-import { useFormik } from 'formik';
-import { MultilineTextInputField, Button, Stack } from '@commercetools/nimbus';
+import { useFormik } from "formik";
+import { MultilineTextInputField, Button, Stack } from "@commercetools/nimbus";
 
 const MyForm = () => {
   const formik = useFormik({
     initialValues: {
-      description: '',
-      notes: '',
+      description: "",
+      notes: "",
     },
     validate: (values) => {
       const errors = {};
@@ -420,7 +435,7 @@ const MyForm = () => {
       return errors;
     },
     onSubmit: (values) => {
-      console.log('Submitted:', values);
+      console.log("Submitted:", values);
     },
   });
 
@@ -432,8 +447,8 @@ const MyForm = () => {
           label="Description"
           description="Enter a detailed description (min 20 chars)"
           value={formik.values.description}
-          onChange={(value) => formik.setFieldValue('description', value)}
-          onBlur={() => formik.setFieldTouched('description', true)}
+          onChange={(value) => formik.setFieldValue("description", value)}
+          onBlur={() => formik.setFieldTouched("description", true)}
           errors={formik.errors.description}
           touched={formik.touched.description}
           isRequired
@@ -444,8 +459,8 @@ const MyForm = () => {
           label="Internal Notes"
           description="Optional notes for the team"
           value={formik.values.notes}
-          onChange={(value) => formik.setFieldValue('notes', value)}
-          onBlur={() => formik.setFieldTouched('notes', true)}
+          onChange={(value) => formik.setFieldValue("notes", value)}
+          onBlur={() => formik.setFieldTouched("notes", true)}
           errors={formik.errors.notes}
           touched={formik.touched.notes}
           rows={3}
@@ -458,9 +473,11 @@ const MyForm = () => {
 ```
 
 **Key integration points:**
+
 - **Value/OnChange**: Connect Formik values with `value` and `setFieldValue`
 - **OnBlur**: Mark field as touched on blur
-- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or strings)
+- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or
+  strings)
 - **Touched**: Pass `touched.fieldName` to control error visibility
 
 ## API reference
@@ -480,10 +497,10 @@ Use the `renderError` prop to customize how specific error keys are displayed:
   touched={true}
   renderError={(key) => {
     switch (key) {
-      case 'tooShort':
-        return 'Description must be at least 20 characters long';
-      case 'invalidContent':
-        return 'Content contains prohibited words';
+      case "tooShort":
+        return "Description must be at least 20 characters long";
+      case "invalidContent":
+        return "Content contains prohibited words";
       default:
         return null; // Fall back to FieldErrors built-in messages
     }
@@ -493,18 +510,21 @@ Use the `renderError` prop to customize how specific error keys are displayed:
 
 ## Testing your implementation
 
-These examples demonstrate how to test your implementation when using MultilineTextInputField within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+These examples demonstrate how to test your implementation when using
+MultilineTextInputField within your application. As the component's internal
+functionality is already tested by Nimbus, these patterns help you verify your
+integration and application-specific logic.
 
 ### Basic rendering tests
 
 Verify the component renders with expected elements:
 
 ```tsx
-import { render, screen } from '@testing-library/react';
-import { MultilineTextInputField } from '@commercetools/nimbus';
+import { render, screen } from "@testing-library/react";
+import { MultilineTextInputField } from "@commercetools/nimbus";
 
-describe('MultilineTextInputField', () => {
-  it('renders label and textarea', () => {
+describe("MultilineTextInputField", () => {
+  it("renders label and textarea", () => {
     render(
       <MultilineTextInputField
         label="Description"
@@ -514,14 +534,16 @@ describe('MultilineTextInputField', () => {
     );
 
     // Verify label is rendered
-    expect(screen.getByText('Description')).toBeInTheDocument();
+    expect(screen.getByText("Description")).toBeInTheDocument();
 
     // Verify textarea is rendered
-    expect(screen.getByRole('textbox', { name: /description/i })).toBeInTheDocument();
-    expect(screen.getByRole('textbox').tagName).toBe('TEXTAREA');
+    expect(
+      screen.getByRole("textbox", { name: /description/i })
+    ).toBeInTheDocument();
+    expect(screen.getByRole("textbox").tagName).toBe("TEXTAREA");
   });
 
-  it('renders description text', () => {
+  it("renders description text", () => {
     render(
       <MultilineTextInputField
         label="Notes"
@@ -531,10 +553,10 @@ describe('MultilineTextInputField', () => {
       />
     );
 
-    expect(screen.getByText('Enter your notes')).toBeInTheDocument();
+    expect(screen.getByText("Enter your notes")).toBeInTheDocument();
   });
 
-  it('shows required indicator', () => {
+  it("shows required indicator", () => {
     render(
       <MultilineTextInputField
         label="Required field"
@@ -545,8 +567,8 @@ describe('MultilineTextInputField', () => {
     );
 
     // Check for required indicator
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveAttribute('aria-required', 'true');
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveAttribute("aria-required", "true");
   });
 });
 ```
@@ -556,12 +578,12 @@ describe('MultilineTextInputField', () => {
 Test user interactions with the component:
 
 ```tsx
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { MultilineTextInputField } from '@commercetools/nimbus';
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { MultilineTextInputField } from "@commercetools/nimbus";
 
-describe('MultilineTextInputField interactions', () => {
-  it('calls onChange when user types', async () => {
+describe("MultilineTextInputField interactions", () => {
+  it("calls onChange when user types", async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
 
@@ -573,14 +595,16 @@ describe('MultilineTextInputField interactions', () => {
       />
     );
 
-    const input = screen.getByRole('textbox', { name: /description/i });
-    await user.type(input, 'hello world');
+    const input = screen.getByRole("textbox", { name: /description/i });
+    await user.type(input, "hello world");
 
     expect(handleChange).toHaveBeenCalled();
-    expect(handleChange).toHaveBeenLastCalledWith(expect.stringContaining('hello world'));
+    expect(handleChange).toHaveBeenLastCalledWith(
+      expect.stringContaining("hello world")
+    );
   });
 
-  it('calls onBlur when input loses focus', async () => {
+  it("calls onBlur when input loses focus", async () => {
     const user = userEvent.setup();
     const handleBlur = jest.fn();
 
@@ -593,14 +617,14 @@ describe('MultilineTextInputField interactions', () => {
       />
     );
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole("textbox");
     await user.click(input);
     await user.tab(); // Move focus away
 
     expect(handleBlur).toHaveBeenCalledTimes(1);
   });
 
-  it('does not call onChange when disabled', async () => {
+  it("does not call onChange when disabled", async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
 
@@ -613,11 +637,11 @@ describe('MultilineTextInputField interactions', () => {
       />
     );
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole("textbox");
     expect(input).toBeDisabled();
 
     // Attempt to type (should not work)
-    await user.type(input, 'test');
+    await user.type(input, "test");
     expect(handleChange).not.toHaveBeenCalled();
   });
 });
@@ -628,11 +652,11 @@ describe('MultilineTextInputField interactions', () => {
 Test error handling and validation behavior:
 
 ```tsx
-import { render, screen } from '@testing-library/react';
-import { MultilineTextInputField } from '@commercetools/nimbus';
+import { render, screen } from "@testing-library/react";
+import { MultilineTextInputField } from "@commercetools/nimbus";
 
-describe('MultilineTextInputField validation', () => {
-  it('does not show errors when untouched', () => {
+describe("MultilineTextInputField validation", () => {
+  it("does not show errors when untouched", () => {
     render(
       <MultilineTextInputField
         label="Notes"
@@ -647,7 +671,7 @@ describe('MultilineTextInputField validation', () => {
     expect(screen.queryByText(/required/i)).not.toBeInTheDocument();
   });
 
-  it('shows errors when touched', () => {
+  it("shows errors when touched", () => {
     render(
       <MultilineTextInputField
         label="Notes"
@@ -662,7 +686,7 @@ describe('MultilineTextInputField validation', () => {
     expect(screen.getByText(/required/i)).toBeInTheDocument();
   });
 
-  it('applies invalid styling when isInvalid is true', () => {
+  it("applies invalid styling when isInvalid is true", () => {
     render(
       <MultilineTextInputField
         label="Notes"
@@ -672,8 +696,8 @@ describe('MultilineTextInputField validation', () => {
       />
     );
 
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveAttribute('data-invalid', 'true');
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveAttribute("data-invalid", "true");
   });
 });
 ```

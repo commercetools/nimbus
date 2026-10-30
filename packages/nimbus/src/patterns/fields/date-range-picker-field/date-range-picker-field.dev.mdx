@@ -4,36 +4,33 @@ tab-title: Implementation
 tab-order: 3
 ---
 
-
 ## Comparison: field pattern vs manual composition
 
 **With DateRangePickerField:**
+
 ```tsx
 <DateRangePickerField
   label="Event Date Range"
   description="Select start and end dates"
   value={dateRange}
   onChange={setDateRange}
-  onBlur={() => formik.setFieldTouched('dateRange', true)}
+  onBlur={() => formik.setFieldTouched("dateRange", true)}
   errors={formik.errors.dateRange}
   touched={formik.touched.dateRange}
 />
 ```
 
 **Manual composition:**
+
 ```tsx
-<FormField.Root isInvalid={!!(formik.errors.dateRange && formik.touched.dateRange)}>
+<FormField.Root
+  isInvalid={!!(formik.errors.dateRange && formik.touched.dateRange)}
+>
   <FormField.Label>Event Date Range</FormField.Label>
   <FormField.Input>
-    <DateRangePicker
-      value={dateRange}
-      onChange={setDateRange}
-      width="full"
-    />
+    <DateRangePicker value={dateRange} onChange={setDateRange} width="full" />
   </FormField.Input>
-  <FormField.Description>
-    Select start and end dates
-  </FormField.Description>
+  <FormField.Description>Select start and end dates</FormField.Description>
   {formik.touched.dateRange && formik.errors.dateRange && (
     <FormField.Error>{formik.errors.dateRange}</FormField.Error>
   )}
@@ -43,12 +40,14 @@ tab-order: 3
 ### When to use which
 
 **Use DateRangePickerField when:**
+
 - Building standard forms with typical field layouts
 - You want consistent field patterns across your app
 - You need built-in error handling with FieldErrors
 - You want to minimize boilerplate code
 
 **Use DateRangePicker with manual FormField composition when:**
+
 - You need custom field layouts
 - You're building complex, non-standard forms
 - You need granular control over FormField sub-components
@@ -59,7 +58,10 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { DateRangePickerField, type DateRangePickerFieldProps } from '@commercetools/nimbus';
+import {
+  DateRangePickerField,
+  type DateRangePickerFieldProps,
+} from "@commercetools/nimbus";
 ```
 
 ### Basic usage
@@ -68,7 +70,7 @@ The simplest implementation with a label and controlled state:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+  const [value, setValue] = useState < DateRangePickerProps["value"] > null;
 
   return (
     <DateRangePickerField
@@ -77,12 +79,13 @@ const App = () => {
       onChange={setValue}
     />
   );
-}
+};
 ```
 
 ### Working with date values
 
-DateRangePickerField uses the same `@internationalized/date` library as DateRangePicker.
+DateRangePickerField uses the same `@internationalized/date` library as
+DateRangePicker.
 
 ## Usage examples
 
@@ -92,8 +95,10 @@ The `sm` and `md` size variants are available to match your interface density:
 
 ```jsx live-dev
 const App = () => {
-  const [valueSmall, setValueSmall] = useState<DateRangePickerProps["value"]>(null);
-  const [valueMedium, setValueMedium] = useState<DateRangePickerProps["value"]>(null);
+  const [valueSmall, setValueSmall] =
+    useState < DateRangePickerProps["value"] > null;
+  const [valueMedium, setValueMedium] =
+    useState < DateRangePickerProps["value"] > null;
 
   return (
     <Stack direction="column" gap="400">
@@ -111,7 +116,7 @@ const App = () => {
       />
     </Stack>
   );
-}
+};
 ```
 
 ### Visual variants
@@ -120,8 +125,10 @@ Choose between `solid` and `ghost` variants to match your design context:
 
 ```jsx live-dev
 const App = () => {
-  const [valueSolid, setValueSolid] = useState<DateRangePickerProps["value"]>(null);
-  const [valueGhost, setValueGhost] = useState<DateRangePickerProps["value"]>(null);
+  const [valueSolid, setValueSolid] =
+    useState < DateRangePickerProps["value"] > null;
+  const [valueGhost, setValueGhost] =
+    useState < DateRangePickerProps["value"] > null;
 
   return (
     <Stack direction="column" gap="400">
@@ -139,7 +146,7 @@ const App = () => {
       />
     </Stack>
   );
-}
+};
 ```
 
 ### With description
@@ -148,7 +155,7 @@ Add helper text below the input to provide context:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+  const [value, setValue] = useState < DateRangePickerProps["value"] > null;
 
   return (
     <DateRangePickerField
@@ -158,7 +165,7 @@ const App = () => {
       onChange={setValue}
     />
   );
-}
+};
 ```
 
 ### With validation errors
@@ -167,8 +174,8 @@ Show error messages when the field is touched and has validation errors:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
-  const [touched, setTouched] = useState<boolean>(false);
+  const [value, setValue] = useState < DateRangePickerProps["value"] > null;
+  const [touched, setTouched] = useState < boolean > false;
 
   // Simulate validation errors
   const errors = !value && touched ? { missing: true } : undefined;
@@ -185,10 +192,11 @@ const App = () => {
       isRequired
     />
   );
-}
+};
 ```
 
-**Note**: Errors only display when both `touched={true}` and `errors` exist. This prevents showing errors before the user interacts with the field.
+**Note**: Errors only display when both `touched={true}` and `errors` exist.
+This prevents showing errors before the user interacts with the field.
 
 ### With info popover
 
@@ -196,7 +204,7 @@ Provide additional context through an info button and popover:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+  const [value, setValue] = useState < DateRangePickerProps["value"] > null;
 
   return (
     <DateRangePickerField
@@ -207,7 +215,7 @@ const App = () => {
       onChange={setValue}
     />
   );
-}
+};
 ```
 
 ### Required field
@@ -216,7 +224,7 @@ Mark fields as required with the `isRequired` prop:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+  const [value, setValue] = useState < DateRangePickerProps["value"] > null;
 
   return (
     <DateRangePickerField
@@ -227,7 +235,7 @@ const App = () => {
       isRequired
     />
   );
-}
+};
 ```
 
 ### Disabled state
@@ -236,7 +244,7 @@ Prevent user interaction with the `isDisabled` prop:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+  const [value, setValue] = useState < DateRangePickerProps["value"] > null;
 
   return (
     <DateRangePickerField
@@ -247,7 +255,7 @@ const App = () => {
       isDisabled
     />
   );
-}
+};
 ```
 
 ### Read-only state
@@ -256,7 +264,7 @@ Display a non-editable value with the `isReadOnly` prop:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+  const [value, setValue] = useState < DateRangePickerProps["value"] > null;
 
   return (
     <DateRangePickerField
@@ -267,7 +275,7 @@ const App = () => {
       isReadOnly
     />
   );
-}
+};
 ```
 
 ### With time selection
@@ -276,7 +284,7 @@ Include time selection by setting the granularity prop:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<DateRangePickerProps["value"]>(null);
+  const [value, setValue] = useState < DateRangePickerProps["value"] > null;
 
   return (
     <DateRangePickerField
@@ -287,18 +295,23 @@ const App = () => {
       onChange={setValue}
     />
   );
-}
+};
 ```
 
-When `granularity="minute"` (or other time values), the calendar remains open after date selection to allow time input.
+When `granularity="minute"` (or other time values), the calendar remains open
+after date selection to allow time input.
 
 ## Component requirements
 
 ### Error handling
 
-DateRangePickerField uses the `FieldErrors` component to display validation errors with built-in localized messages. For custom error messages, use the `renderError` prop (see [Custom error rendering](#custom-error-rendering) below).
+DateRangePickerField uses the `FieldErrors` component to display validation
+errors with built-in localized messages. For custom error messages, use the
+`renderError` prop (see [Custom error rendering](#custom-error-rendering)
+below).
 
 **Error object format** (`FieldErrorsData`):
+
 ```tsx
 type FieldErrorsData = {
   [key: string]: boolean | string | ReactNode;
@@ -306,24 +319,27 @@ type FieldErrorsData = {
 
 // Examples:
 const errors = {
-  missing: true,              // Built-in message: "This field is required"
-  format: true,               // Built-in message: "Please enter a valid format"
-  custom: "Custom error text" // Custom message
+  missing: true, // Built-in message: "This field is required"
+  format: true, // Built-in message: "Please enter a valid format"
+  custom: "Custom error text", // Custom message
 };
 ```
 
 ## Accessibility
 
-DateRangePickerField provides comprehensive accessibility through [FormField](components/inputs/formfield):
+DateRangePickerField provides comprehensive accessibility through
+[FormField](components/inputs/formfield):
 
 **Automatic ARIA relationships:**
+
 - Labels connected via `aria-labelledby`
 - Descriptions connected via `aria-describedby`
 - Error messages connected via `aria-describedby`
 - Required fields indicated with `aria-required`
 - Invalid state indicated with `aria-invalid`
 
-If your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:
+If your use case requires tracking and analytics for this component, add a
+**persistent**, **unique** id:
 
 ```tsx
 const PERSISTENT_ID = "report-date-range-picker";
@@ -343,11 +359,13 @@ export const Example = () => {
 };
 ```
 
-**Note:** The `label` prop already provides an accessible name, so `aria-label` is not needed.
+**Note:** The `label` prop already provides an accessible name, so `aria-label`
+is not needed.
 
 #### Keyboard navigation
 
 The component supports keyboard interaction inherited from DateRangePicker:
+
 - `Tab` / `Shift+Tab`: Navigate between segments and buttons
 - `Arrow keys`: Increment/decrement date segments
 - `Enter` / `Space`: Open calendar
@@ -358,8 +376,8 @@ The component supports keyboard interaction inherited from DateRangePicker:
 DateRangePickerField integrates seamlessly with Formik:
 
 ```tsx
-import { useFormik } from 'formik';
-import { DateRangePickerField } from '@commercetools/nimbus';
+import { useFormik } from "formik";
+import { DateRangePickerField } from "@commercetools/nimbus";
 
 const MyForm = () => {
   const formik = useFormik({
@@ -374,7 +392,7 @@ const MyForm = () => {
       return errors;
     },
     onSubmit: (values) => {
-      console.log('Submitted:', values);
+      console.log("Submitted:", values);
     },
   });
 
@@ -385,8 +403,8 @@ const MyForm = () => {
         label="Event Dates"
         description="Select your event dates"
         value={formik.values.dateRange}
-        onChange={(value) => formik.setFieldValue('dateRange', value)}
-        onBlur={() => formik.setFieldTouched('dateRange', true)}
+        onChange={(value) => formik.setFieldValue("dateRange", value)}
+        onBlur={() => formik.setFieldTouched("dateRange", true)}
         errors={formik.errors.dateRange}
         touched={formik.touched.dateRange}
         isRequired
@@ -398,9 +416,11 @@ const MyForm = () => {
 ```
 
 **Key integration points:**
+
 - **Value/OnChange**: Connect Formik values with `value` and `setFieldValue`
 - **OnBlur**: Mark field as touched on blur
-- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or strings)
+- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or
+  strings)
 - **Touched**: Pass `touched.fieldName` to control error visibility
 
 ## API reference
@@ -420,10 +440,10 @@ Use the `renderError` prop to customize how specific error keys are displayed:
   touched={true}
   renderError={(key) => {
     switch (key) {
-      case 'tooLong':
-        return 'Date range cannot exceed 90 days';
-      case 'overlap':
-        return 'This date range overlaps with an existing booking';
+      case "tooLong":
+        return "Date range cannot exceed 90 days";
+      case "overlap":
+        return "This date range overlaps with an existing booking";
       default:
         return null; // Fall back to FieldErrors built-in messages
     }
@@ -433,18 +453,21 @@ Use the `renderError` prop to customize how specific error keys are displayed:
 
 ## Testing your implementation
 
-These examples demonstrate how to test your implementation when using DateRangePickerField in your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+These examples demonstrate how to test your implementation when using
+DateRangePickerField in your application. As the component's internal
+functionality is already tested by Nimbus, these patterns help you verify your
+integration and application-specific logic.
 
 ### Basic rendering tests
 
 Verify the component renders with expected elements:
 
 ```tsx
-import { render, screen } from '@testing-library/react';
-import { DateRangePickerField } from '@commercetools/nimbus';
+import { render, screen } from "@testing-library/react";
+import { DateRangePickerField } from "@commercetools/nimbus";
 
-describe('DateRangePickerField', () => {
-  it('renders label and description', () => {
+describe("DateRangePickerField", () => {
+  it("renders label and description", () => {
     render(
       <DateRangePickerField
         label="Event Dates"
@@ -452,22 +475,22 @@ describe('DateRangePickerField', () => {
       />
     );
 
-    expect(screen.getByText('Event Dates')).toBeInTheDocument();
-    expect(screen.getByText('Select your event dates')).toBeInTheDocument();
+    expect(screen.getByText("Event Dates")).toBeInTheDocument();
+    expect(screen.getByText("Select your event dates")).toBeInTheDocument();
   });
 
-  it('renders DateRangePicker with date segments', () => {
+  it("renders DateRangePicker with date segments", () => {
     render(<DateRangePickerField label="Dates" />);
 
     // 6 segments: start (month, day, year) + end (month, day, year)
-    const segments = screen.getAllByRole('spinbutton');
+    const segments = screen.getAllByRole("spinbutton");
     expect(segments).toHaveLength(6);
   });
 
-  it('shows required indicator when isRequired', () => {
+  it("shows required indicator when isRequired", () => {
     render(<DateRangePickerField label="Required Field" isRequired />);
 
-    expect(screen.getByText('*')).toBeInTheDocument();
+    expect(screen.getByText("*")).toBeInTheDocument();
   });
 });
 ```
@@ -477,12 +500,12 @@ describe('DateRangePickerField', () => {
 Test user interactions with the component:
 
 ```tsx
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { DateRangePickerField } from '@commercetools/nimbus';
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { DateRangePickerField } from "@commercetools/nimbus";
 
-describe('DateRangePickerField interactions', () => {
-  it('opens calendar when trigger button is clicked', async () => {
+describe("DateRangePickerField interactions", () => {
+  it("opens calendar when trigger button is clicked", async () => {
     const user = userEvent.setup();
 
     render(
@@ -493,15 +516,15 @@ describe('DateRangePickerField interactions', () => {
       />
     );
 
-    const calendarButton = screen.getByRole('button', { name: /calendar/i });
+    const calendarButton = screen.getByRole("button", { name: /calendar/i });
     await user.click(calendarButton);
 
     await waitFor(() => {
-      expect(screen.getByRole('dialog')).toBeInTheDocument();
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
   });
 
-  it('allows keyboard navigation through date segments', async () => {
+  it("allows keyboard navigation through date segments", async () => {
     const user = userEvent.setup();
 
     render(
@@ -513,18 +536,18 @@ describe('DateRangePickerField interactions', () => {
     );
 
     // Get first date segment (start date month)
-    const segments = screen.getAllByRole('spinbutton');
+    const segments = screen.getAllByRole("spinbutton");
     const firstSegment = segments[0];
 
     await user.click(firstSegment);
     expect(firstSegment).toHaveFocus();
 
     // Navigate to next segment with arrow key
-    await user.keyboard('{ArrowRight}');
+    await user.keyboard("{ArrowRight}");
     expect(segments[1]).toHaveFocus();
   });
 
-  it('calls onChange when date is selected from calendar', async () => {
+  it("calls onChange when date is selected from calendar", async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
 
@@ -537,17 +560,17 @@ describe('DateRangePickerField interactions', () => {
     );
 
     // Open calendar
-    const calendarButton = screen.getByRole('button', { name: /calendar/i });
+    const calendarButton = screen.getByRole("button", { name: /calendar/i });
     await user.click(calendarButton);
 
     await waitFor(() => {
-      expect(screen.getByRole('dialog')).toBeInTheDocument();
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
 
     // Select a date (this will vary based on current month)
-    const dateButtons = screen.getAllByRole('button');
-    const selectableDate = dateButtons.find(btn =>
-      btn.getAttribute('data-focused') === 'true'
+    const dateButtons = screen.getAllByRole("button");
+    const selectableDate = dateButtons.find(
+      (btn) => btn.getAttribute("data-focused") === "true"
     );
 
     if (selectableDate) {
@@ -556,7 +579,7 @@ describe('DateRangePickerField interactions', () => {
     }
   });
 
-  it('calls onBlur when focus leaves the field', async () => {
+  it("calls onBlur when focus leaves the field", async () => {
     const user = userEvent.setup();
     const handleBlur = jest.fn();
 
@@ -569,14 +592,14 @@ describe('DateRangePickerField interactions', () => {
       />
     );
 
-    const segments = screen.getAllByRole('spinbutton');
+    const segments = screen.getAllByRole("spinbutton");
     await user.click(segments[0]);
     await user.tab(); // Move focus away from all segments
 
     expect(handleBlur).toHaveBeenCalled();
   });
 
-  it('does not allow interaction when disabled', async () => {
+  it("does not allow interaction when disabled", async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
 
@@ -589,12 +612,12 @@ describe('DateRangePickerField interactions', () => {
       />
     );
 
-    const calendarButton = screen.getByRole('button', { name: /calendar/i });
+    const calendarButton = screen.getByRole("button", { name: /calendar/i });
     expect(calendarButton).toBeDisabled();
 
     // Attempt to open calendar (should not work)
     await user.click(calendarButton);
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(handleChange).not.toHaveBeenCalled();
   });
 });
@@ -605,11 +628,11 @@ describe('DateRangePickerField interactions', () => {
 Test error handling and validation behavior:
 
 ```tsx
-import { render, screen } from '@testing-library/react';
-import { DateRangePickerField } from '@commercetools/nimbus';
+import { render, screen } from "@testing-library/react";
+import { DateRangePickerField } from "@commercetools/nimbus";
 
-describe('DateRangePickerField error handling', () => {
-  it('does not show errors when field is not touched', () => {
+describe("DateRangePickerField error handling", () => {
+  it("does not show errors when field is not touched", () => {
     render(
       <DateRangePickerField
         label="Dates"
@@ -618,10 +641,10 @@ describe('DateRangePickerField error handling', () => {
       />
     );
 
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
-  it('shows errors when field is touched and has errors', () => {
+  it("shows errors when field is touched and has errors", () => {
     render(
       <DateRangePickerField
         label="Dates"
@@ -630,11 +653,11 @@ describe('DateRangePickerField error handling', () => {
       />
     );
 
-    expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(screen.getByRole("alert")).toBeInTheDocument();
     expect(screen.getByText(/field is required/i)).toBeInTheDocument();
   });
 
-  it('displays custom error messages', () => {
+  it("displays custom error messages", () => {
     render(
       <DateRangePickerField
         label="Dates"
@@ -643,7 +666,9 @@ describe('DateRangePickerField error handling', () => {
       />
     );
 
-    expect(screen.getByText("Date range cannot exceed 30 days")).toBeInTheDocument();
+    expect(
+      screen.getByText("Date range cannot exceed 30 days")
+    ).toBeInTheDocument();
   });
 });
 ```

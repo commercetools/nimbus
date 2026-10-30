@@ -7,6 +7,7 @@ tab-order: 3
 ## Comparison: field pattern vs manual composition
 
 **With MoneyInputField:**
+
 ```tsx
 <MoneyInputField
   label="Product Price"
@@ -21,6 +22,7 @@ tab-order: 3
 ```
 
 **Manual composition:**
+
 ```tsx
 <FormField.Root isInvalid={!!(errors && touched)} isRequired>
   <FormField.Label>Product Price</FormField.Label>
@@ -31,9 +33,7 @@ tab-order: 3
       onValueChange={setValue}
     />
   </FormField.Input>
-  <FormField.Description>
-    Enter price with currency
-  </FormField.Description>
+  <FormField.Description>Enter price with currency</FormField.Description>
   {touched && errors && (
     <FormField.Error>
       <FieldErrors errors={errors} />
@@ -45,12 +45,14 @@ tab-order: 3
 ### When to use which
 
 **Use MoneyInputField when:**
+
 - Building standard forms with typical field layouts
 - You want consistent field patterns across your app
 - You need built-in error handling with FieldErrors
 - You want to minimize boilerplate code
 
 **Use MoneyInput with manual FormField composition when:**
+
 - You need custom field layouts
 - You're building complex, non-standard forms
 - You need granular control over FormField sub-components
@@ -61,7 +63,11 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { MoneyInputField, type MoneyInputFieldProps, type MoneyInputValue } from '@commercetools/nimbus';
+import {
+  MoneyInputField,
+  type MoneyInputFieldProps,
+  type MoneyInputValue,
+} from "@commercetools/nimbus";
 ```
 
 ### Basic usage
@@ -70,10 +76,13 @@ The simplest implementation with a label and controlled state:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<MoneyInputValue>({
-    amount: "",
-    currencyCode: "USD"
-  });
+  const [value, setValue] =
+    useState <
+    MoneyInputValue >
+    {
+      amount: "",
+      currencyCode: "USD",
+    };
 
   return (
     <MoneyInputField
@@ -83,7 +92,7 @@ const App = () => {
       onValueChange={setValue}
     />
   );
-}
+};
 ```
 
 ## Usage examples
@@ -94,14 +103,20 @@ The `sm` and `md` size variants are available to match your interface density:
 
 ```jsx live-dev
 const App = () => {
-  const [valueSmall, setValueSmall] = useState<MoneyInputValue>({
-    amount: "",
-    currencyCode: "USD"
-  });
-  const [valueMedium, setValueMedium] = useState<MoneyInputValue>({
-    amount: "",
-    currencyCode: "USD"
-  });
+  const [valueSmall, setValueSmall] =
+    useState <
+    MoneyInputValue >
+    {
+      amount: "",
+      currencyCode: "USD",
+    };
+  const [valueMedium, setValueMedium] =
+    useState <
+    MoneyInputValue >
+    {
+      amount: "",
+      currencyCode: "USD",
+    };
 
   return (
     <Stack direction="column" gap="400">
@@ -123,7 +138,7 @@ const App = () => {
       />
     </Stack>
   );
-}
+};
 ```
 
 ### With description
@@ -132,10 +147,13 @@ Add helper text below the input to provide context:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<MoneyInputValue>({
-    amount: "",
-    currencyCode: "USD"
-  });
+  const [value, setValue] =
+    useState <
+    MoneyInputValue >
+    {
+      amount: "",
+      currencyCode: "USD",
+    };
 
   return (
     <MoneyInputField
@@ -147,7 +165,7 @@ const App = () => {
       placeholder="0.00"
     />
   );
-}
+};
 ```
 
 ### With validation errors
@@ -156,11 +174,14 @@ Show error messages when the field is touched and has validation errors:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<MoneyInputValue>({
-    amount: "",
-    currencyCode: "USD"
-  });
-  const [touched, setTouched] = useState<boolean>(false);
+  const [value, setValue] =
+    useState <
+    MoneyInputValue >
+    {
+      amount: "",
+      currencyCode: "USD",
+    };
+  const [touched, setTouched] = useState < boolean > false;
 
   // Simulate validation: require amount
   const errors = touched && !value.amount ? { missing: true } : undefined;
@@ -179,10 +200,11 @@ const App = () => {
       placeholder="0.00"
     />
   );
-}
+};
 ```
 
-**Note**: Errors only display when both `touched={true}` and `errors` exist. This prevents showing errors before the user interacts with the field.
+**Note**: Errors only display when both `touched={true}` and `errors` exist.
+This prevents showing errors before the user interacts with the field.
 
 ### With info popover
 
@@ -190,10 +212,13 @@ Provide additional context through an info button and popover:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<MoneyInputValue>({
-    amount: "",
-    currencyCode: "USD"
-  });
+  const [value, setValue] =
+    useState <
+    MoneyInputValue >
+    {
+      amount: "",
+      currencyCode: "USD",
+    };
 
   return (
     <MoneyInputField
@@ -206,7 +231,7 @@ const App = () => {
       placeholder="0.00"
     />
   );
-}
+};
 ```
 
 ### Required field
@@ -215,10 +240,13 @@ Mark fields as required with the `isRequired` prop:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<MoneyInputValue>({
-    amount: "",
-    currencyCode: "USD"
-  });
+  const [value, setValue] =
+    useState <
+    MoneyInputValue >
+    {
+      amount: "",
+      currencyCode: "USD",
+    };
 
   return (
     <MoneyInputField
@@ -231,7 +259,7 @@ const App = () => {
       placeholder="0.00"
     />
   );
-}
+};
 ```
 
 ### Disabled state
@@ -240,10 +268,13 @@ Prevent user interaction with the `isDisabled` prop:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<MoneyInputValue>({
-    amount: "99.99",
-    currencyCode: "USD"
-  });
+  const [value, setValue] =
+    useState <
+    MoneyInputValue >
+    {
+      amount: "99.99",
+      currencyCode: "USD",
+    };
 
   return (
     <MoneyInputField
@@ -255,7 +286,7 @@ const App = () => {
       isDisabled
     />
   );
-}
+};
 ```
 
 ### Read-only state
@@ -264,10 +295,13 @@ Display a non-editable value with the `isReadOnly` prop:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<MoneyInputValue>({
-    amount: "199.99",
-    currencyCode: "EUR"
-  });
+  const [value, setValue] =
+    useState <
+    MoneyInputValue >
+    {
+      amount: "199.99",
+      currencyCode: "EUR",
+    };
 
   return (
     <MoneyInputField
@@ -279,19 +313,24 @@ const App = () => {
       isReadOnly
     />
   );
-}
+};
 ```
 
 ### With high precision amounts
 
-MoneyInput automatically detects when an amount has more decimal places than the currency standard and displays a badge. The badge is shown by default but can be disabled:
+MoneyInput automatically detects when an amount has more decimal places than the
+currency standard and displays a badge. The badge is shown by default but can be
+disabled:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<MoneyInputValue>({
-    amount: "99.99999",
-    currencyCode: "USD"
-  });
+  const [value, setValue] =
+    useState <
+    MoneyInputValue >
+    {
+      amount: "99.99999",
+      currencyCode: "USD",
+    };
 
   return (
     <MoneyInputField
@@ -302,10 +341,13 @@ const App = () => {
       onValueChange={setValue}
     />
   );
-}
+};
 ```
 
-The high precision badge appears automatically when the amount has more decimal places than the currency standard (e.g., USD typically uses 2 decimals, so "99.999" triggers the badge). Use `hasHighPrecisionBadge={false}` to disable the badge if needed.
+The high precision badge appears automatically when the amount has more decimal
+places than the currency standard (e.g., USD typically uses 2 decimals, so
+"99.999" triggers the badge). Use `hasHighPrecisionBadge={false}` to disable the
+badge if needed.
 
 ### With currency selector disabled
 
@@ -313,10 +355,13 @@ Keep the currency fixed while allowing amount changes:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<MoneyInputValue>({
-    amount: "",
-    currencyCode: "USD"
-  });
+  const [value, setValue] =
+    useState <
+    MoneyInputValue >
+    {
+      amount: "",
+      currencyCode: "USD",
+    };
 
   return (
     <MoneyInputField
@@ -329,7 +374,7 @@ const App = () => {
       placeholder="0.00"
     />
   );
-}
+};
 ```
 
 ### Different currency standards
@@ -338,18 +383,27 @@ MoneyInput automatically formats amounts based on the selected currency:
 
 ```jsx live-dev
 const App = () => {
-  const [usd, setUsd] = useState<MoneyInputValue>({
-    amount: "99.99",
-    currencyCode: "USD"
-  });
-  const [jpy, setJpy] = useState<MoneyInputValue>({
-    amount: "9999",
-    currencyCode: "JPY"
-  });
-  const [kwd, setKwd] = useState<MoneyInputValue>({
-    amount: "99.999",
-    currencyCode: "KWD"
-  });
+  const [usd, setUsd] =
+    useState <
+    MoneyInputValue >
+    {
+      amount: "99.99",
+      currencyCode: "USD",
+    };
+  const [jpy, setJpy] =
+    useState <
+    MoneyInputValue >
+    {
+      amount: "9999",
+      currencyCode: "JPY",
+    };
+  const [kwd, setKwd] =
+    useState <
+    MoneyInputValue >
+    {
+      amount: "99.999",
+      currencyCode: "KWD",
+    };
 
   return (
     <Stack direction="column" gap="400">
@@ -376,7 +430,7 @@ const App = () => {
       />
     </Stack>
   );
-}
+};
 ```
 
 ## Component requirements
@@ -387,9 +441,9 @@ MoneyInputField uses the `MoneyInputValue` type:
 
 ```tsx
 type MoneyInputValue = {
-  amount: string;           // String representation with decimal (e.g., "123.45")
-  currencyCode: CurrencyCode | "";  // ISO currency code or empty string
-}
+  amount: string; // String representation with decimal (e.g., "123.45")
+  currencyCode: CurrencyCode | ""; // ISO currency code or empty string
+};
 
 // CurrencyCode supports 221 ISO 4217 currency codes including:
 // "USD", "EUR", "GBP", "JPY", "CNY", "INR", "AUD", "CAD", "CHF", "KWD", etc.
@@ -397,27 +451,35 @@ type CurrencyCode = keyof typeof currencies;
 ```
 
 **Important**:
+
 - The `amount` is always a string, not a number
 - Use a dot (`.`) as the decimal separator
 - Empty amount should be `""` (empty string)
 - The component handles currency-specific formatting automatically
-- Supported currencies are defined in `@commercetools/nimbus/src/components/money-input/utils/currencies.ts`
+- Supported currencies are defined in
+  `@commercetools/nimbus/src/components/money-input/utils/currencies.ts`
 
 ### Dual input nature
 
 MoneyInputField contains **two focusable inputs**:
+
 1. **Currency selector** (combobox) - For choosing the currency
 2. **Amount input** (spinbutton) - For entering the monetary value
 
 Both inputs receive separate IDs based on the field's `id` or `name` prop:
+
 - Amount: `${id}.amount` or `${name}.amount`
 - Currency: `${id}.currencyCode` or `${name}.currencyCode`
 
 ### Error handling
 
-MoneyInputField uses the `FieldErrors` component to display validation errors with built-in localized messages. For custom error messages, use the `renderError` prop (see [Custom error rendering](#custom-error-rendering) below).
+MoneyInputField uses the `FieldErrors` component to display validation errors
+with built-in localized messages. For custom error messages, use the
+`renderError` prop (see [Custom error rendering](#custom-error-rendering)
+below).
 
 **Error object format** (`FieldErrorsData`):
+
 ```tsx
 type FieldErrorsData = {
   [key: string]: boolean | string | ReactNode;
@@ -425,24 +487,27 @@ type FieldErrorsData = {
 
 // Examples:
 const errors = {
-  missing: true,              // Built-in message: "This field is required"
-  invalidFormat: true,        // Built-in message: "Please enter a valid format"
-  custom: "Custom error text" // Custom message
+  missing: true, // Built-in message: "This field is required"
+  invalidFormat: true, // Built-in message: "Please enter a valid format"
+  custom: "Custom error text", // Custom message
 };
 ```
 
 ## Accessibility
 
-MoneyInputField provides comprehensive accessibility through [FormField](components/inputs/formfield):
+MoneyInputField provides comprehensive accessibility through
+[FormField](components/inputs/formfield):
 
 **Automatic ARIA relationships:**
+
 - Labels connected via `aria-labelledby`
 - Descriptions connected via `aria-describedby`
 - Error messages connected via `aria-describedby`
 - Required fields indicated with `aria-required`
 - Invalid state indicated with `aria-invalid`
 
-If your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:
+If your use case requires tracking and analytics for this component, add a
+**persistent**, **unique** id:
 
 ```tsx
 const PERSISTENT_ID = "product-price-input";
@@ -461,6 +526,7 @@ export const Example = () => (
 #### Keyboard navigation
 
 The component supports keyboard interaction for both inputs:
+
 - `Tab` / `Shift+Tab`: Move focus between currency selector and amount input
 - **Currency selector**: Arrow keys navigate options, Enter/Space to select
 - **Amount input**: Arrow up/down to increment/decrement, number keys to type
@@ -472,9 +538,9 @@ The component supports keyboard interaction for both inputs:
 MoneyInputField integrates seamlessly with Formik:
 
 ```tsx
-import { useFormik } from 'formik';
-import { MoneyInputField, Button, Stack } from '@commercetools/nimbus';
-import type { MoneyInputValue } from '@commercetools/nimbus';
+import { useFormik } from "formik";
+import { MoneyInputField, Button, Stack } from "@commercetools/nimbus";
+import type { MoneyInputValue } from "@commercetools/nimbus";
 
 const MyForm = () => {
   const formik = useFormik({
@@ -496,7 +562,7 @@ const MyForm = () => {
       return errors;
     },
     onSubmit: (values) => {
-      console.log('Submitted:', values);
+      console.log("Submitted:", values);
     },
   });
 
@@ -509,8 +575,8 @@ const MyForm = () => {
           description="Enter the product price with currency"
           currencies={["USD", "EUR", "GBP", "JPY"]}
           value={formik.values.price}
-          onValueChange={(value) => formik.setFieldValue('price', value)}
-          onBlur={() => formik.setFieldTouched('price', true)}
+          onValueChange={(value) => formik.setFieldValue("price", value)}
+          onBlur={() => formik.setFieldTouched("price", true)}
           errors={formik.errors.price}
           touched={formik.touched.price}
           isRequired
@@ -524,9 +590,11 @@ const MyForm = () => {
 ```
 
 **Key integration points:**
+
 - **Value/OnChange**: Connect Formik values with `value` and `setFieldValue`
 - **OnBlur**: Mark field as touched on blur
-- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or strings)
+- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or
+  strings)
 - **Touched**: Pass `touched.fieldName` to control error visibility
 
 ## API reference
@@ -547,10 +615,10 @@ Use the `renderError` prop to customize how specific error keys are displayed:
   touched={true}
   renderError={(key) => {
     switch (key) {
-      case 'tooLow':
-        return 'Price must be at least $10.00';
-      case 'invalidAmount':
-        return 'Please enter a valid monetary amount';
+      case "tooLow":
+        return "Price must be at least $10.00";
+      case "invalidAmount":
+        return "Please enter a valid monetary amount";
       default:
         return null; // Fall back to FieldErrors built-in messages
     }
@@ -560,18 +628,21 @@ Use the `renderError` prop to customize how specific error keys are displayed:
 
 ## Testing your implementation
 
-These examples demonstrate how to test your implementation when using MoneyInputField within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+These examples demonstrate how to test your implementation when using
+MoneyInputField within your application. As the component's internal
+functionality is already tested by Nimbus, these patterns help you verify your
+integration and application-specific logic.
 
 ### Basic rendering tests
 
 Verify the component renders with expected elements:
 
 ```tsx
-import { render, screen } from '@testing-library/react';
-import { MoneyInputField } from '@commercetools/nimbus';
+import { render, screen } from "@testing-library/react";
+import { MoneyInputField } from "@commercetools/nimbus";
 
-describe('MoneyInputField', () => {
-  it('renders label and both inputs', () => {
+describe("MoneyInputField", () => {
+  it("renders label and both inputs", () => {
     render(
       <MoneyInputField
         label="Product Price"
@@ -582,16 +653,16 @@ describe('MoneyInputField', () => {
     );
 
     // Verify label is rendered
-    expect(screen.getByText('Product Price')).toBeInTheDocument();
+    expect(screen.getByText("Product Price")).toBeInTheDocument();
 
     // Verify currency selector is rendered
-    expect(screen.getByRole('combobox')).toBeInTheDocument();
+    expect(screen.getByRole("combobox")).toBeInTheDocument();
 
     // Verify amount input is rendered
-    expect(screen.getByRole('spinbutton')).toBeInTheDocument();
+    expect(screen.getByRole("spinbutton")).toBeInTheDocument();
   });
 
-  it('renders description text', () => {
+  it("renders description text", () => {
     render(
       <MoneyInputField
         label="Price"
@@ -602,10 +673,10 @@ describe('MoneyInputField', () => {
       />
     );
 
-    expect(screen.getByText('Enter product price')).toBeInTheDocument();
+    expect(screen.getByText("Enter product price")).toBeInTheDocument();
   });
 
-  it('shows required indicator', () => {
+  it("shows required indicator", () => {
     render(
       <MoneyInputField
         label="Required price"
@@ -616,8 +687,8 @@ describe('MoneyInputField', () => {
       />
     );
 
-    const amountInput = screen.getByRole('spinbutton');
-    expect(amountInput).toHaveAttribute('aria-required', 'true');
+    const amountInput = screen.getByRole("spinbutton");
+    expect(amountInput).toHaveAttribute("aria-required", "true");
   });
 });
 ```
@@ -627,12 +698,12 @@ describe('MoneyInputField', () => {
 Test user interactions with both inputs:
 
 ```tsx
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { MoneyInputField } from '@commercetools/nimbus';
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { MoneyInputField } from "@commercetools/nimbus";
 
-describe('MoneyInputField interactions', () => {
-  it('calls onValueChange when user types amount', async () => {
+describe("MoneyInputField interactions", () => {
+  it("calls onValueChange when user types amount", async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
 
@@ -645,16 +716,16 @@ describe('MoneyInputField interactions', () => {
       />
     );
 
-    const amountInput = screen.getByRole('spinbutton');
-    await user.type(amountInput, '99.99');
+    const amountInput = screen.getByRole("spinbutton");
+    await user.type(amountInput, "99.99");
 
     expect(handleChange).toHaveBeenCalled();
     expect(handleChange).toHaveBeenLastCalledWith(
-      expect.objectContaining({ amount: expect.stringContaining('99.99') })
+      expect.objectContaining({ amount: expect.stringContaining("99.99") })
     );
   });
 
-  it('calls onValueChange when user changes currency', async () => {
+  it("calls onValueChange when user changes currency", async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
 
@@ -667,23 +738,23 @@ describe('MoneyInputField interactions', () => {
       />
     );
 
-    const currencySelect = screen.getByRole('combobox');
+    const currencySelect = screen.getByRole("combobox");
     await user.click(currencySelect);
 
     // Wait for listbox and select EUR
     await waitFor(() => {
-      expect(screen.getByRole('listbox')).toBeInTheDocument();
+      expect(screen.getByRole("listbox")).toBeInTheDocument();
     });
 
-    const eurOption = screen.getByRole('option', { name: /EUR/ });
+    const eurOption = screen.getByRole("option", { name: /EUR/ });
     await user.click(eurOption);
 
     expect(handleChange).toHaveBeenCalledWith(
-      expect.objectContaining({ currencyCode: 'EUR' })
+      expect.objectContaining({ currencyCode: "EUR" })
     );
   });
 
-  it('does not call onValueChange when disabled', async () => {
+  it("does not call onValueChange when disabled", async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
 
@@ -697,10 +768,10 @@ describe('MoneyInputField interactions', () => {
       />
     );
 
-    const amountInput = screen.getByRole('spinbutton');
+    const amountInput = screen.getByRole("spinbutton");
     expect(amountInput).toBeDisabled();
 
-    await user.type(amountInput, '99.99');
+    await user.type(amountInput, "99.99");
     expect(handleChange).not.toHaveBeenCalled();
   });
 });
@@ -711,11 +782,11 @@ describe('MoneyInputField interactions', () => {
 Test error handling and validation behavior:
 
 ```tsx
-import { render, screen } from '@testing-library/react';
-import { MoneyInputField } from '@commercetools/nimbus';
+import { render, screen } from "@testing-library/react";
+import { MoneyInputField } from "@commercetools/nimbus";
 
-describe('MoneyInputField validation', () => {
-  it('does not show errors when untouched', () => {
+describe("MoneyInputField validation", () => {
+  it("does not show errors when untouched", () => {
     render(
       <MoneyInputField
         label="Price"
@@ -730,7 +801,7 @@ describe('MoneyInputField validation', () => {
     expect(screen.queryByText(/required/i)).not.toBeInTheDocument();
   });
 
-  it('shows errors when touched', () => {
+  it("shows errors when touched", () => {
     render(
       <MoneyInputField
         label="Price"
@@ -745,7 +816,7 @@ describe('MoneyInputField validation', () => {
     expect(screen.getByText(/required/i)).toBeInTheDocument();
   });
 
-  it('applies invalid styling when isInvalid is true', () => {
+  it("applies invalid styling when isInvalid is true", () => {
     render(
       <MoneyInputField
         label="Price"
@@ -756,8 +827,8 @@ describe('MoneyInputField validation', () => {
       />
     );
 
-    const amountInput = screen.getByRole('spinbutton');
-    expect(amountInput).toHaveAttribute('data-invalid', 'true');
+    const amountInput = screen.getByRole("spinbutton");
+    expect(amountInput).toHaveAttribute("data-invalid", "true");
   });
 });
 ```

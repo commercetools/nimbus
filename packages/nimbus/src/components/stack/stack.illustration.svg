@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <defs>
+    <linearGradient id="il-stack-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--illustration-gradient-start, light-dark(var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%)), var(--nimbus-colors-color-palette-2, hsl(233, 41%, 9%))))"/>
+      <stop offset="1" stop-color="var(--illustration-gradient-end, var(--illustration-gradient-start, light-dark(var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%)), var(--nimbus-colors-color-palette-2, hsl(233, 41%, 9%)))))"/>
+    </linearGradient>
+    <filter id="il-stack-shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="1.6" stdDeviation="2.4" flood-color="light-dark(hsla(0, 0%, 0%, 0.1), hsla(0, 0%, 0%, 0.5))"/>
+    </filter>
+  </defs>
+  <rect width="96" height="96" fill="url(#il-stack-bg)"/>
+  <rect x="16" y="22" width="64" height="12" rx="2" fill="var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%))" filter="url(#il-stack-shadow)"/>
+  <rect x="24" y="26.5" width="12" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-contrast, hsl(0, 0%, 100%))"/>
+  <rect x="16" y="42" width="64" height="12" rx="2" fill="light-dark(var(--nimbus-colors-color-palette-1, hsl(240, 100%, 100%)), var(--nimbus-colors-color-palette-3, hsl(236, 45%, 19%)))" stroke="var(--nimbus-colors-color-palette-6, hsl(229, 100%, 88%))" stroke-width="0.5" filter="url(#il-stack-shadow)"/>
+  <rect x="24" y="46.5" width="20" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))"/>
+  <rect x="16" y="62" width="64" height="12" rx="2" fill="light-dark(var(--nimbus-colors-color-palette-1, hsl(240, 100%, 100%)), var(--nimbus-colors-color-palette-3, hsl(236, 45%, 19%)))" stroke="var(--nimbus-colors-color-palette-6, hsl(229, 100%, 88%))" stroke-width="0.5" filter="url(#il-stack-shadow)"/>
+  <rect x="24" y="66.5" width="28" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))"/>
+  <path d="M72,34 V42 M69.5,34 h5 M69.5,42 h5" fill="none" stroke="light-dark(var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%)), var(--nimbus-colors-color-palette-11, hsl(231, 100%, 81%)))" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M72,54 V62 M69.5,54 h5 M69.5,62 h5" fill="none" stroke="light-dark(var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%)), var(--nimbus-colors-color-palette-11, hsl(231, 100%, 81%)))" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

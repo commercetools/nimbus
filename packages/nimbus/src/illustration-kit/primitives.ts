@@ -123,7 +123,7 @@ export const createPrimitives = (prefix: string) => {
   }): Fragment => {
     const h = props.h ?? 3;
     return createFragment(
-      `<rect x="${num(props.x)}" y="${num(props.y)}" width="${num(props.w)}" height="${num(h)}" rx="${num(h / 2)}" fill="${paint(props.fill)}"/>`,
+      `<rect x="${num(props.x)}" y="${num(props.y)}" width="${num(props.w)}" height="${num(h)}" rx="${num(Math.min(props.w, h) / 2)}" fill="${paint(props.fill)}"/>`,
       rectBox({ ...props, h })
     );
   };

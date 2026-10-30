@@ -2,7 +2,9 @@
 id: Patterns-FormActionBar
 title: Form action bar
 exportName: FormActionBar
-description: This pattern component provides standard save/cancel/delete action buttons for form footers, working inside any footer slot.
+description:
+  This pattern component provides standard save/cancel/delete action buttons for
+  form footers, working inside any footer slot.
 documentState: InitialDraft
 lifecycleState: Beta
 order: 999
@@ -23,10 +25,10 @@ related-components:
 
 ## Overview
 
-FormActionBar is a pattern component that composes a `Group` of action
-`Button`s for form footers. It replaces the need for separate form-page
-wrappers — one `FormActionBar` works in any footer slot:
-`DefaultPage.Footer`, `ModalPage.Footer`, `Drawer.Footer`, `Dialog.Footer`.
+FormActionBar is a pattern component that composes a `Group` of action `Button`s
+for form footers. It replaces the need for separate form-page wrappers — one
+`FormActionBar` works in any footer slot: `DefaultPage.Footer`,
+`ModalPage.Footer`, `Drawer.Footer`, `Dialog.Footer`.
 
 ## Anatomy
 
@@ -47,8 +49,7 @@ furthest from the primary action to reduce mis-clicks.
 
 - Any form footer where the user commits or discards pending edits.
 - Detail and full-page create/edit flows (`DefaultPage.Footer`).
-- Modal and drawer forms (`ModalPage.Footer`, `Dialog.Footer`,
-  `Drawer.Footer`).
+- Modal and drawer forms (`ModalPage.Footer`, `Dialog.Footer`, `Drawer.Footer`).
 
 ### When not to use
 
@@ -70,13 +71,13 @@ furthest from the primary action to reduce mis-clicks.
 
 ### Don't
 
-- Don't render custom action buttons alongside FormActionBar in the same
-  footer — keep the action set predictable.
+- Don't render custom action buttons alongside FormActionBar in the same footer
+  — keep the action set predictable.
 - Don't reorder the buttons; delete → cancel → save is load-bearing for muscle
   memory and accessibility.
-- Don't drive `isSaveDisabled` and `isSaveLoading` from the same piece of
-  state — they are independent flags representing different UX intents (form
-  is invalid / pristine vs. submit is in-flight). Both can be `true`
+- Don't drive `isSaveDisabled` and `isSaveLoading` from the same piece of state
+  — they are independent flags representing different UX intents (form is
+  invalid / pristine vs. submit is in-flight). Both can be `true`
   simultaneously, but they should come from distinct sources.
 
 ### Resources

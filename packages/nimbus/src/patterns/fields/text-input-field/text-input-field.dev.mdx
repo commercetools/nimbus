@@ -7,6 +7,7 @@ tab-order: 3
 ## Comparison: field pattern vs manual composition
 
 **With TextInputField:**
+
 ```tsx
 <TextInputField
   label="Project name"
@@ -20,19 +21,14 @@ tab-order: 3
 ```
 
 **Manual composition:**
+
 ```tsx
 <FormField.Root isInvalid={!!(errors && touched)} isRequired>
   <FormField.Label>Project name</FormField.Label>
   <FormField.Input>
-    <TextInput
-      value={value}
-      onChange={setValue}
-      width="full"
-    />
+    <TextInput value={value} onChange={setValue} width="full" />
   </FormField.Input>
-  <FormField.Description>
-    Enter a descriptive name
-  </FormField.Description>
+  <FormField.Description>Enter a descriptive name</FormField.Description>
   {touched && errors && (
     <FormField.Error>
       <FieldErrors errors={errors} />
@@ -44,12 +40,14 @@ tab-order: 3
 ### When to use which
 
 **Use TextInputField when:**
+
 - Building standard forms with typical field layouts
 - You want consistent field patterns across your app
 - You need built-in error handling with FieldErrors
 - You want to minimize boilerplate code
 
 **Use TextInput with manual FormField composition when:**
+
 - You need custom field layouts
 - You're building complex, non-standard forms
 - You need granular control over FormField sub-components
@@ -60,7 +58,10 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { TextInputField, type TextInputFieldProps } from '@commercetools/nimbus';
+import {
+  TextInputField,
+  type TextInputFieldProps,
+} from "@commercetools/nimbus";
 ```
 
 ### Basic usage
@@ -69,16 +70,10 @@ The simplest implementation with a label and controlled state:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState < string > "";
 
-  return (
-    <TextInputField
-      label="Username"
-      value={value}
-      onChange={setValue}
-    />
-  );
-}
+  return <TextInputField label="Username" value={value} onChange={setValue} />;
+};
 ```
 
 ## Usage examples
@@ -89,8 +84,8 @@ The `sm` and `md` size variants are available to match your interface density:
 
 ```jsx live-dev
 const App = () => {
-  const [valueSmall, setValueSmall] = useState<string>('');
-  const [valueMedium, setValueMedium] = useState<string>('');
+  const [valueSmall, setValueSmall] = useState < string > "";
+  const [valueMedium, setValueMedium] = useState < string > "";
 
   return (
     <Stack direction="column" gap="400">
@@ -110,7 +105,7 @@ const App = () => {
       />
     </Stack>
   );
-}
+};
 ```
 
 ### Visual variants
@@ -119,8 +114,8 @@ Choose between `solid` and `ghost` variants to match your design context:
 
 ```jsx live-dev
 const App = () => {
-  const [valueSolid, setValueSolid] = useState<string>('');
-  const [valueGhost, setValueGhost] = useState<string>('');
+  const [valueSolid, setValueSolid] = useState < string > "";
+  const [valueGhost, setValueGhost] = useState < string > "";
 
   return (
     <Stack direction="column" gap="400">
@@ -140,7 +135,7 @@ const App = () => {
       />
     </Stack>
   );
-}
+};
 ```
 
 ### With description
@@ -149,7 +144,7 @@ Add helper text below the input to provide context:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState < string > "";
 
   return (
     <TextInputField
@@ -160,7 +155,7 @@ const App = () => {
       placeholder="My Awesome Project"
     />
   );
-}
+};
 ```
 
 ### With validation errors
@@ -169,8 +164,8 @@ Show error messages when the field is touched and has validation errors:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('');
-  const [touched, setTouched] = useState<boolean>(false);
+  const [value, setValue] = useState < string > "";
+  const [touched, setTouched] = useState < boolean > false;
 
   // Simulate validation: require at least 3 characters
   const errors = touched && value.length < 3 ? { missing: true } : undefined;
@@ -188,10 +183,11 @@ const App = () => {
       placeholder="johndoe"
     />
   );
-}
+};
 ```
 
-**Note**: Errors only display when both `touched={true}` and `errors` exist. This prevents showing errors before the user interacts with the field.
+**Note**: Errors only display when both `touched={true}` and `errors` exist.
+This prevents showing errors before the user interacts with the field.
 
 ### With info popover
 
@@ -199,7 +195,7 @@ Provide additional context through an info button and popover:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState < string > "";
 
   return (
     <TextInputField
@@ -211,7 +207,7 @@ const App = () => {
       type="password"
     />
   );
-}
+};
 ```
 
 ### Required field
@@ -220,7 +216,7 @@ Mark fields as required with the `isRequired` prop:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('');
+  const [value, setValue] = useState < string > "";
 
   return (
     <TextInputField
@@ -232,7 +228,7 @@ const App = () => {
       placeholder="user@example.com"
     />
   );
-}
+};
 ```
 
 ### Disabled state
@@ -241,7 +237,7 @@ Prevent user interaction with the `isDisabled` prop:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('Cannot edit this');
+  const [value, setValue] = useState < string > "Cannot edit this";
 
   return (
     <TextInputField
@@ -252,7 +248,7 @@ const App = () => {
       isDisabled
     />
   );
-}
+};
 ```
 
 ### Read-only state
@@ -261,7 +257,7 @@ Display a non-editable value with the `isReadOnly` prop:
 
 ```jsx live-dev
 const App = () => {
-  const [value, setValue] = useState<string>('Read-only value');
+  const [value, setValue] = useState < string > "Read-only value";
 
   return (
     <TextInputField
@@ -272,7 +268,7 @@ const App = () => {
       isReadOnly
     />
   );
-}
+};
 ```
 
 ### Different input types
@@ -281,9 +277,9 @@ Use the `type` prop to specify the HTML input type:
 
 ```jsx live-dev
 const App = () => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [search, setSearch] = useState<string>('');
+  const [email, setEmail] = useState < string > "";
+  const [password, setPassword] = useState < string > "";
+  const [search, setSearch] = useState < string > "";
 
   return (
     <Stack direction="column" gap="400">
@@ -310,17 +306,18 @@ const App = () => {
       />
     </Stack>
   );
-}
+};
 ```
 
 ### With leading and trailing elements
 
-Add icons or other elements to the input using `leadingElement` and `trailingElement`:
+Add icons or other elements to the input using `leadingElement` and
+`trailingElement`:
 
 ```jsx live-dev
 const App = () => {
-  const [search, setSearch] = useState<string>('');
-  const [url, setUrl] = useState<string>('');
+  const [search, setSearch] = useState < string > "";
+  const [url, setUrl] = useState < string > "";
 
   return (
     <Stack direction="column" gap="400">
@@ -336,20 +333,28 @@ const App = () => {
         value={url}
         onChange={setUrl}
         placeholder="example.com"
-        leadingElement={<Text fontSize="sm" color="neutral.11">https://</Text>}
+        leadingElement={
+          <Text fontSize="sm" color="neutral.11">
+            https://
+          </Text>
+        }
       />
     </Stack>
   );
-}
+};
 ```
 
 ## Component requirements
 
 ### Error handling
 
-TextInputField uses the `FieldErrors` component to display validation errors with built-in localized messages. For custom error messages, use the `renderError` prop (see [Custom error rendering](#custom-error-rendering) below).
+TextInputField uses the `FieldErrors` component to display validation errors
+with built-in localized messages. For custom error messages, use the
+`renderError` prop (see [Custom error rendering](#custom-error-rendering)
+below).
 
 **Error object format** (`FieldErrorsData`):
+
 ```tsx
 type FieldErrorsData = {
   [key: string]: boolean | string | ReactNode;
@@ -357,24 +362,27 @@ type FieldErrorsData = {
 
 // Examples:
 const errors = {
-  missing: true,              // Built-in message: "This field is required"
-  invalidFormat: true,        // Built-in message: "Please enter a valid format"
-  custom: "Custom error text" // Custom message
+  missing: true, // Built-in message: "This field is required"
+  invalidFormat: true, // Built-in message: "Please enter a valid format"
+  custom: "Custom error text", // Custom message
 };
 ```
 
 ## Accessibility
 
-TextInputField provides comprehensive accessibility through [FormField](components/inputs/formfield):
+TextInputField provides comprehensive accessibility through
+[FormField](components/inputs/formfield):
 
 **Automatic ARIA relationships:**
+
 - Labels connected via `aria-labelledby`
 - Descriptions connected via `aria-describedby`
 - Error messages connected via `aria-describedby`
 - Required fields indicated with `aria-required`
 - Invalid state indicated with `aria-invalid`
 
-If your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:
+If your use case requires tracking and analytics for this component, add a
+**persistent**, **unique** id:
 
 ```tsx
 const PERSISTENT_ID = "example-text-input";
@@ -392,6 +400,7 @@ export const Example = () => (
 #### Keyboard navigation
 
 The component supports standard text input keyboard interaction:
+
 - `Tab` / `Shift+Tab`: Move focus to/from the input
 - `Arrow keys`: Navigate within the text
 - `Home` / `End`: Move to start/end of text
@@ -402,14 +411,14 @@ The component supports standard text input keyboard interaction:
 TextInputField integrates seamlessly with Formik:
 
 ```tsx
-import { useFormik } from 'formik';
-import { TextInputField, Button, Stack } from '@commercetools/nimbus';
+import { useFormik } from "formik";
+import { TextInputField, Button, Stack } from "@commercetools/nimbus";
 
 const MyForm = () => {
   const formik = useFormik({
     initialValues: {
-      username: '',
-      email: '',
+      username: "",
+      email: "",
     },
     validate: (values) => {
       const errors = {};
@@ -429,7 +438,7 @@ const MyForm = () => {
       return errors;
     },
     onSubmit: (values) => {
-      console.log('Submitted:', values);
+      console.log("Submitted:", values);
     },
   });
 
@@ -441,8 +450,8 @@ const MyForm = () => {
           label="Username"
           description="Choose a unique username"
           value={formik.values.username}
-          onChange={(value) => formik.setFieldValue('username', value)}
-          onBlur={() => formik.setFieldTouched('username', true)}
+          onChange={(value) => formik.setFieldValue("username", value)}
+          onBlur={() => formik.setFieldTouched("username", true)}
           errors={formik.errors.username}
           touched={formik.touched.username}
           isRequired
@@ -453,8 +462,8 @@ const MyForm = () => {
           label="Email address"
           description="We'll use this to contact you"
           value={formik.values.email}
-          onChange={(value) => formik.setFieldValue('email', value)}
-          onBlur={() => formik.setFieldTouched('email', true)}
+          onChange={(value) => formik.setFieldValue("email", value)}
+          onBlur={() => formik.setFieldTouched("email", true)}
           errors={formik.errors.email}
           touched={formik.touched.email}
           isRequired
@@ -467,9 +476,11 @@ const MyForm = () => {
 ```
 
 **Key integration points:**
+
 - **Value/OnChange**: Connect Formik values with `value` and `setFieldValue`
 - **OnBlur**: Mark field as touched on blur
-- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or strings)
+- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or
+  strings)
 - **Touched**: Pass `touched.fieldName` to control error visibility
 
 ## API reference
@@ -489,10 +500,10 @@ Use the `renderError` prop to customize how specific error keys are displayed:
   touched={true}
   renderError={(key) => {
     switch (key) {
-      case 'invalidEmail':
-        return 'Please enter a valid email address (e.g., user@example.com)';
-      case 'tooShort':
-        return 'Email must be at least 5 characters long';
+      case "invalidEmail":
+        return "Please enter a valid email address (e.g., user@example.com)";
+      case "tooShort":
+        return "Email must be at least 5 characters long";
       default:
         return null; // Fall back to FieldErrors built-in messages
     }
@@ -502,34 +513,33 @@ Use the `renderError` prop to customize how specific error keys are displayed:
 
 ## Testing your implementation
 
-These examples demonstrate how to test your implementation when using TextInputField within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+These examples demonstrate how to test your implementation when using
+TextInputField within your application. As the component's internal
+functionality is already tested by Nimbus, these patterns help you verify your
+integration and application-specific logic.
 
 ### Basic rendering tests
 
 Verify the component renders with expected elements:
 
 ```tsx
-import { render, screen } from '@testing-library/react';
-import { TextInputField } from '@commercetools/nimbus';
+import { render, screen } from "@testing-library/react";
+import { TextInputField } from "@commercetools/nimbus";
 
-describe('TextInputField', () => {
-  it('renders label and input', () => {
-    render(
-      <TextInputField
-        label="Username"
-        value=""
-        onChange={() => {}}
-      />
-    );
+describe("TextInputField", () => {
+  it("renders label and input", () => {
+    render(<TextInputField label="Username" value="" onChange={() => {}} />);
 
     // Verify label is rendered
-    expect(screen.getByText('Username')).toBeInTheDocument();
+    expect(screen.getByText("Username")).toBeInTheDocument();
 
     // Verify input is rendered
-    expect(screen.getByRole('textbox', { name: /username/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("textbox", { name: /username/i })
+    ).toBeInTheDocument();
   });
 
-  it('renders description text', () => {
+  it("renders description text", () => {
     render(
       <TextInputField
         label="Email"
@@ -539,10 +549,10 @@ describe('TextInputField', () => {
       />
     );
 
-    expect(screen.getByText('Enter your email address')).toBeInTheDocument();
+    expect(screen.getByText("Enter your email address")).toBeInTheDocument();
   });
 
-  it('shows required indicator', () => {
+  it("shows required indicator", () => {
     render(
       <TextInputField
         label="Required field"
@@ -553,8 +563,8 @@ describe('TextInputField', () => {
     );
 
     // Check for required indicator (typically an asterisk or aria-required)
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveAttribute('aria-required', 'true');
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveAttribute("aria-required", "true");
   });
 });
 ```
@@ -564,31 +574,27 @@ describe('TextInputField', () => {
 Test user interactions with the component:
 
 ```tsx
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { TextInputField } from '@commercetools/nimbus';
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { TextInputField } from "@commercetools/nimbus";
 
-describe('TextInputField interactions', () => {
-  it('calls onChange when user types', async () => {
+describe("TextInputField interactions", () => {
+  it("calls onChange when user types", async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
 
     render(
-      <TextInputField
-        label="Username"
-        value=""
-        onChange={handleChange}
-      />
+      <TextInputField label="Username" value="" onChange={handleChange} />
     );
 
-    const input = screen.getByRole('textbox', { name: /username/i });
-    await user.type(input, 'johndoe');
+    const input = screen.getByRole("textbox", { name: /username/i });
+    await user.type(input, "johndoe");
 
     expect(handleChange).toHaveBeenCalledTimes(7); // Once per character
-    expect(handleChange).toHaveBeenLastCalledWith('johndoe');
+    expect(handleChange).toHaveBeenLastCalledWith("johndoe");
   });
 
-  it('calls onBlur when input loses focus', async () => {
+  it("calls onBlur when input loses focus", async () => {
     const user = userEvent.setup();
     const handleBlur = jest.fn();
 
@@ -601,14 +607,14 @@ describe('TextInputField interactions', () => {
       />
     );
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole("textbox");
     await user.click(input);
     await user.tab(); // Move focus away
 
     expect(handleBlur).toHaveBeenCalledTimes(1);
   });
 
-  it('does not call onChange when disabled', async () => {
+  it("does not call onChange when disabled", async () => {
     const user = userEvent.setup();
     const handleChange = jest.fn();
 
@@ -621,11 +627,11 @@ describe('TextInputField interactions', () => {
       />
     );
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole("textbox");
     expect(input).toBeDisabled();
 
     // Attempt to type (should not work)
-    await user.type(input, 'test');
+    await user.type(input, "test");
     expect(handleChange).not.toHaveBeenCalled();
   });
 });
@@ -636,12 +642,12 @@ describe('TextInputField interactions', () => {
 Test error handling and validation behavior:
 
 ```tsx
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { TextInputField } from '@commercetools/nimbus';
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { TextInputField } from "@commercetools/nimbus";
 
-describe('TextInputField validation', () => {
-  it('does not show errors when untouched', () => {
+describe("TextInputField validation", () => {
+  it("does not show errors when untouched", () => {
     render(
       <TextInputField
         label="Username"
@@ -656,7 +662,7 @@ describe('TextInputField validation', () => {
     expect(screen.queryByText(/required/i)).not.toBeInTheDocument();
   });
 
-  it('shows errors when touched', () => {
+  it("shows errors when touched", () => {
     render(
       <TextInputField
         label="Username"
@@ -671,7 +677,7 @@ describe('TextInputField validation', () => {
     expect(screen.getByText(/required/i)).toBeInTheDocument();
   });
 
-  it('shows custom error messages', () => {
+  it("shows custom error messages", () => {
     render(
       <TextInputField
         label="Email"
@@ -680,27 +686,22 @@ describe('TextInputField validation', () => {
         errors={{ invalidFormat: true }}
         touched={true}
         renderError={(key) => {
-          if (key === 'invalidFormat') return 'Please enter a valid email';
+          if (key === "invalidFormat") return "Please enter a valid email";
           return null;
         }}
       />
     );
 
-    expect(screen.getByText('Please enter a valid email')).toBeInTheDocument();
+    expect(screen.getByText("Please enter a valid email")).toBeInTheDocument();
   });
 
-  it('applies invalid styling when isInvalid is true', () => {
+  it("applies invalid styling when isInvalid is true", () => {
     render(
-      <TextInputField
-        label="Username"
-        value=""
-        onChange={() => {}}
-        isInvalid
-      />
+      <TextInputField label="Username" value="" onChange={() => {}} isInvalid />
     );
 
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveAttribute('aria-invalid', 'true');
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveAttribute("aria-invalid", "true");
   });
 });
 ```
@@ -710,25 +711,20 @@ describe('TextInputField validation', () => {
 Test specific input type behavior:
 
 ```tsx
-import { render, screen } from '@testing-library/react';
-import { TextInputField } from '@commercetools/nimbus';
+import { render, screen } from "@testing-library/react";
+import { TextInputField } from "@commercetools/nimbus";
 
-describe('TextInputField input types', () => {
-  it('renders email input type', () => {
+describe("TextInputField input types", () => {
+  it("renders email input type", () => {
     render(
-      <TextInputField
-        type="email"
-        label="Email"
-        value=""
-        onChange={() => {}}
-      />
+      <TextInputField type="email" label="Email" value="" onChange={() => {}} />
     );
 
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveAttribute('type', 'email');
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveAttribute("type", "email");
   });
 
-  it('renders password input type', () => {
+  it("renders password input type", () => {
     render(
       <TextInputField
         type="password"
@@ -739,10 +735,10 @@ describe('TextInputField input types', () => {
     );
 
     const input = screen.getByLabelText(/password/i);
-    expect(input).toHaveAttribute('type', 'password');
+    expect(input).toHaveAttribute("type", "password");
   });
 
-  it('renders search input type', () => {
+  it("renders search input type", () => {
     render(
       <TextInputField
         type="search"
@@ -752,8 +748,8 @@ describe('TextInputField input types', () => {
       />
     );
 
-    const input = screen.getByRole('searchbox');
-    expect(input).toHaveAttribute('type', 'search');
+    const input = screen.getByRole("searchbox");
+    expect(input).toHaveAttribute("type", "search");
   });
 });
 ```

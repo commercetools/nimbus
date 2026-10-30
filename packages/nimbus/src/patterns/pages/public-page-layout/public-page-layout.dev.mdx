@@ -9,7 +9,10 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { PublicPageLayout, type PublicPageLayoutProps } from "@commercetools/nimbus";
+import {
+  PublicPageLayout,
+  type PublicPageLayoutProps,
+} from "@commercetools/nimbus";
 ```
 
 ### Basic usage
@@ -31,7 +34,11 @@ const App = () => (
 ```jsx live-dev
 const App = () => (
   <PublicPageLayout
-    logo={<Text fontWeight="bold" fontSize="xl">Brand</Text>}
+    logo={
+      <Text fontWeight="bold" fontSize="xl">
+        Brand
+      </Text>
+    }
     welcomeMessage="Welcome to the Merchant Center"
   >
     <Text>Login form</Text>
@@ -47,7 +54,11 @@ example a two-column registration form.
 ```jsx live-dev
 const App = () => (
   <PublicPageLayout
-    logo={<Text fontWeight="bold" fontSize="xl">Brand</Text>}
+    logo={
+      <Text fontWeight="bold" fontSize="xl">
+        Brand
+      </Text>
+    }
     welcomeMessage="Create your account"
     contentWidth="wide"
   >
@@ -68,7 +79,11 @@ const App = () => (
 ```jsx live-dev
 const App = () => (
   <PublicPageLayout
-    logo={<Text fontWeight="bold" fontSize="xl">Brand</Text>}
+    logo={
+      <Text fontWeight="bold" fontSize="xl">
+        Brand
+      </Text>
+    }
     welcomeMessage="Sign in"
     legalMessage={
       <Text fontSize="xs" color="neutral.11">
@@ -83,15 +98,12 @@ const App = () => (
 
 ### With background style
 
-Style props are forwarded to the outer `<main>` wrapper, so you can
-customize the background.
+Style props are forwarded to the outer `<main>` wrapper, so you can customize
+the background.
 
 ```jsx live-dev
 const App = () => (
-  <PublicPageLayout
-    welcomeMessage="Welcome"
-    bg="neutral.2"
-  >
+  <PublicPageLayout welcomeMessage="Welcome" bg="neutral.2">
     <Text>Content on a tinted background</Text>
   </PublicPageLayout>
 );
@@ -101,14 +113,18 @@ const App = () => (
 
 If you need a layout structure that PublicPageLayout doesn't support (e.g.,
 side-by-side panels, custom spacing), consider using
-[PageContent](/components/layout/page-content) for a more flexible
-column-based layout, or compose Flex and Stack directly for full control.
+[PageContent](/components/layout/page-content) for a more flexible column-based
+layout, or compose Flex and Stack directly for full control.
 
 **With PublicPageLayout:**
 
 ```tsx
 <PublicPageLayout
-  logo={<Icon size="xl"><Storefront /></Icon>}
+  logo={
+    <Icon size="xl">
+      <Storefront />
+    </Icon>
+  }
   welcomeMessage="Welcome to the Merchant Center"
   legalMessage={<Text fontSize="xs">© 2026 commercetools</Text>}
 >
@@ -119,10 +135,19 @@ column-based layout, or compose Flex and Stack directly for full control.
 **Manual composition:**
 
 ```tsx
-<Flex as="main" aria-label="Login page" width="100%" minHeight="100vh" paddingY="600" justify="center">
+<Flex
+  as="main"
+  aria-label="Login page"
+  width="100%"
+  minHeight="100vh"
+  paddingY="600"
+  justify="center"
+>
   <Stack gap="600" alignItems="center" width="100%">
     <Flex justify="center">
-      <Icon size="xl"><Storefront /></Icon>
+      <Icon size="xl">
+        <Storefront />
+      </Icon>
     </Flex>
     <Heading as="h2" textAlign="center">
       Welcome to the Merchant Center
@@ -152,8 +177,8 @@ column-based layout, or compose Flex and Stack directly for full control.
 
 ## Testing your implementation
 
-These examples demonstrate how to test your integration of PublicPageLayout.
-The component's own behavior is already tested by Nimbus.
+These examples demonstrate how to test your integration of PublicPageLayout. The
+component's own behavior is already tested by Nimbus.
 
 ### Verify layout renders
 
@@ -163,10 +188,7 @@ import { PublicPageLayout } from "@commercetools/nimbus";
 
 it("renders the login page layout", () => {
   render(
-    <PublicPageLayout
-      welcomeMessage="Welcome"
-      aria-label="Login page"
-    >
+    <PublicPageLayout welcomeMessage="Welcome" aria-label="Login page">
       <form>...</form>
     </PublicPageLayout>
   );
