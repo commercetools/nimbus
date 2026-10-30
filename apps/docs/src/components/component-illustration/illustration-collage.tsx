@@ -44,7 +44,7 @@ export const IllustrationCollage: FC<{ names: string[] }> = ({ names }) => {
             css={{
               // lighter than the band, so overlapping tiles stay apart
               "--illustration-gradient-start":
-                "var(--nimbus-colors-color-palette-3)",
+                "light-dark(var(--nimbus-colors-color-palette-1), var(--nimbus-colors-color-palette-3))",
               transform: `translate(-50%, calc(-50% + ${Math.abs(offset) * 3}cqh)) rotate(${offset * 4}deg)`,
             }}
           >

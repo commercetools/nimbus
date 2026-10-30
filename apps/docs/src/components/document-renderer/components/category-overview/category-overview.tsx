@@ -195,10 +195,13 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
                         justify="center"
                         overflow="hidden"
                         borderRadius="200"
-                        bg="colorPalette.4"
-                        _dark={{ bg: "colorPalette.2" }}
-                        // illustrations inside size themselves from the band height
-                        css={{ containerType: "size" }}
+                        bg="colorPalette.2"
+                        // illustrations inside size themselves from the band
+                        // height and draw no background of their own
+                        css={{
+                          containerType: "size",
+                          "--illustration-gradient-start": "transparent",
+                        }}
                       >
                         <IllustrationCollage names={illustrations} />
                       </Flex>
