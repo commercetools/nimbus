@@ -8,7 +8,14 @@ import type {
 // RECIPE PROPS
 // ============================================================
 
-export type DefaultPageRecipeProps = UnstyledProp;
+/**
+ * Root-private recipe variant. Absent means the compact header is off.
+ */
+export type DefaultPageCompactHeader = "idle" | "compact";
+
+export type DefaultPageRecipeProps = UnstyledProp & {
+  compactHeader?: DefaultPageCompactHeader;
+};
 
 // ============================================================
 // SLOT PROPS
@@ -18,6 +25,8 @@ export type DefaultPageRootSlotProps = HTMLChakraProps<
   "div",
   DefaultPageRecipeProps
 >;
+
+export type DefaultPageScrollSentinelSlotProps = HTMLChakraProps<"div">;
 
 export type DefaultPageHeaderSlotProps = HTMLChakraProps<"header">;
 
@@ -42,7 +51,10 @@ export type DefaultPageFooterSlotProps = HTMLChakraProps<"footer">;
 /**
  * Shared base props for DefaultPage.Root, common to both layout modes.
  */
-type DefaultPageBaseProps = OmitInternalProps<DefaultPageRootSlotProps> & {
+type DefaultPageBaseProps = OmitInternalProps<
+  DefaultPageRootSlotProps,
+  "compactHeader"
+> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
 };
@@ -85,9 +97,11 @@ type DefaultPageFlexibleProps = DefaultPageBaseProps & {
   layout: "flexible";
   /**
    * Pin the header at the top of the scroll container while the page scrolls.
+   * Pass `"compact-on-scroll"` to also shrink the pinned header while the page
+   * is scrolled and restore it when the page is back at the top.
    * Only available with `layout="flexible"`.
    */
-  stickyHeader?: boolean;
+  stickyHeader?: boolean | "compact-on-scroll";
   /**
    * Pin the footer at the bottom of the scroll container while the page scrolls.
    * Only available with `layout="flexible"`.

@@ -2,6 +2,7 @@ import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import type { SlotComponent } from "../../type-utils/slot-types";
 import type {
   DefaultPageRootSlotProps,
+  DefaultPageScrollSentinelSlotProps,
   DefaultPageHeaderSlotProps,
   DefaultPageActionsSlotProps,
   DefaultPageBackLinkSlotProps,
@@ -23,6 +24,14 @@ export const DefaultPageRootSlot: SlotComponent<
   HTMLDivElement,
   DefaultPageRootSlotProps
 > = withProvider<HTMLDivElement, DefaultPageRootSlotProps>("div", "root");
+
+export const DefaultPageScrollSentinelSlot: SlotComponent<
+  HTMLDivElement,
+  DefaultPageScrollSentinelSlotProps
+> = withContext<HTMLDivElement, DefaultPageScrollSentinelSlotProps>(
+  "div",
+  "scrollSentinel"
+);
 
 export const DefaultPageHeaderSlot: SlotComponent<
   HTMLElement,
