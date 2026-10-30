@@ -65,6 +65,12 @@ export const mdxDocumentSchema = z.object({
     /** a link to a figma-design or -node */
     figmaLink: z.string().url().optional(),
     /**
+     * `id`s of documents related to this one. The docs app shows them as cards
+     * at the end of the Overview tab. Links are two-way: a document that is
+     * listed here also shows this one.
+     */
+    related: z.array(z.string()).optional().default([]),
+    /**
      * layout type - defaults to 'app-frame' if not specified. `wide` keeps the
      * left navigation but drops the table of contents and widens the content
      * column (overview pages with a card grid).

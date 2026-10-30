@@ -25,6 +25,8 @@ export type RouteManifest = {
     icon?: string;
     /** names of the illustrations for this entry's card, possibly none */
     illustrations: string[];
+    /** ids of related documents: own list first, then documents listing this one */
+    related: string[];
   }>;
   categories: Array<{
     id: string;

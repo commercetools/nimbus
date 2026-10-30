@@ -99,6 +99,28 @@ figmaLink: >-
 ---
 ```
 
+`related` lists the `id` of other documents, for example the other parts of a
+component family. The page shows them as cards in a "Related components" section
+at the end of the Overview tab.
+
+```yaml
+---
+related:
+  - Components-SkeletonText
+  - Components-SkeletonCircle
+---
+```
+
+- Each value is the `id` of an existing document. The docs build fails for an id
+  that does not exist.
+- Links are two-way. If `Skeleton` lists `SkeletonText`, the `SkeletonText` page
+  also shows `Skeleton`, so one side is enough. List both sides when you want to
+  control the order on each page.
+- The list order is kept. Documents that only link back are added after it,
+  sorted by title.
+- Keep the list short: only components a reader would pick instead of, or
+  together with, this one.
+
 ### Standard Content Structure
 
 Based on analysis of existing component MDX files, follow this structure:

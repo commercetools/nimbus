@@ -9,6 +9,7 @@ import { useActiveView } from "@/hooks/use-active-view";
 import { ViewTabs } from "@/components/view-tabs";
 import { DocMetadata } from "@/components/doc-metadata";
 import type { TabMetadata } from "@/types";
+import { RelatedDocuments } from "./components/related-documents";
 
 // Constant empty array to prevent creating new references on every render
 const EMPTY_TABS: TabMetadata[] = [];
@@ -40,6 +41,9 @@ const DocumentRendererComponent = () => {
     // Final fallback to main mdx content
     return activeDoc.mdx;
   }, [activeDoc, activeView, tabs]);
+
+  // Related documents show at the end of the Overview tab only
+  const isOverview = (activeView ?? tabs[0]?.key ?? "overview") === "overview";
 
   const lifecycleState = meta?.lifecycleState;
   const lifecycleInfo = lifecycleState
@@ -103,6 +107,7 @@ const DocumentRendererComponent = () => {
 
           <Box pb="2400">
             <MdxStringRenderer content={content} />
+            {isOverview && <RelatedDocuments />}
           </Box>
         </Stack>
       </Box>

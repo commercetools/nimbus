@@ -87,6 +87,8 @@ tags:
   - relevant-keywords
 figmaLink: >-
   https://www.figma.com/design/...
+related: # Optional: ids of related documents, shown as cards at the end of the Overview tab (links are two-way)
+  - Components-RelatedComponentName
 ---
 ```
 

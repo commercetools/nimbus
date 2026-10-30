@@ -5,6 +5,7 @@
  */
 import { performance } from "perf_hooks";
 import { validateContent } from "../validation/validate-content.js";
+import { findUnknownRelatedIds } from "../generators/resolve-related.js";
 import { optimizeAssets } from "../assets/optimize-assets.js";
 import { buildMdx } from "./mdx-builder.js";
 import { buildTypes } from "./types-builder.js";
@@ -36,6 +37,18 @@ export async function build(config: DocsBuilderConfig): Promise<BuildResult> {
 
       if (errorCount > 0 && config.validation?.strict) {
         throw new Error("Content validation failed");
+      }
+
+      // Unknown related ids stop the build, also when validation is not strict
+      const unknownRelated = findUnknownRelatedIds(
+        [...docs].map(([file, doc]) => ({ file, meta: doc.meta }))
+      );
+      if (unknownRelated.length > 0) {
+        throw new Error(
+          `Unknown ids in related: ${unknownRelated
+            .map(({ file, id }) => `${id} (${file})`)
+            .join(", ")}`
+        );
       }
     }
 

@@ -16,6 +16,7 @@ import { flog } from "../utils/logger.js";
 import { validateFilePath } from "../utils/validate-file-path.js";
 import { findMonorepoRoot } from "../utils/file-utils.js";
 import { resolveChildIllustrations } from "./resolve-illustrations.js";
+import { resolveRelated } from "./resolve-related.js";
 
 /**
  * Name of the illustration for a main doc page, when the source
@@ -74,6 +75,7 @@ export async function generateRouteManifest(
       chunkName: `route-${meta.route.replace(/\//g, "-")}`,
       icon: meta.icon,
       illustrations: await findIllustration(monorepoRoot, meta.repoPath),
+      related: meta.related || [],
       tabs: meta.tabs || [],
     };
 
@@ -94,6 +96,12 @@ export async function generateRouteManifest(
 
   // Category pages show the illustrations of the documents below them
   resolveChildIllustrations(routes);
+
+  // Related links are two-way: add the documents that list a document
+  const related = resolveRelated(routes);
+  for (const route of routes) {
+    route.related = related.get(route.id) ?? [];
+  }
 
   // Convert categories map to array and sort
   const categories = Array.from(categoriesMap.values()).sort(

@@ -6,6 +6,7 @@
 import type { MdxDocument } from "../types/mdx.js";
 import type { ValidationError } from "../types/config.js";
 import { flog } from "../utils/logger.js";
+import { findUnknownRelatedIds } from "../generators/resolve-related.js";
 
 /**
  * Validate all documentation content
@@ -86,6 +87,18 @@ export function validateContent(
         }
       }
     }
+  }
+
+  // Validate related ids: each must be the id of an existing document
+  const unknownRelated = findUnknownRelatedIds(
+    [...docs].map(([file, doc]) => ({ file, meta: doc.meta }))
+  );
+  for (const { file, id } of unknownRelated) {
+    errors.push({
+      file,
+      message: `Unknown id in related: "${id}" is not the id of any document`,
+      severity: "error",
+    });
   }
 
   // Report validation results

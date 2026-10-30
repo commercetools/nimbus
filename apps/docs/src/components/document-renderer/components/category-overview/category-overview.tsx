@@ -14,9 +14,9 @@ import * as Icons from "@commercetools/nimbus-icons";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
 import {
   ComponentIllustration,
-  IllustrationCollage,
   hasIllustration,
 } from "@/components/component-illustration";
+import { DocumentCard } from "@/components/document-card";
 
 /**
  * Component that displays an overview of all documents in the current menu category.
@@ -180,78 +180,14 @@ const CategoryOverviewContent: FC<CategoryOverviewProps> = ({
         gridTemplateColumns="repeat(auto-fill, minmax(260px, 1fr))"
         gap="400"
       >
-        {sortedDocs.map((doc) => {
-          const illustrations = illustrationsOf(doc).slice(
-            0,
-            illustrationCount
-          );
-          const count = countBelow(doc);
-          return (
-            <Link
-              key={doc.path}
-              textDecoration="none"
-              href={doc.path}
-              display="block"
-              height="full"
-            >
-              <Card.Root
-                variant="outlined"
-                width="full"
-                height="full"
-                _hover={{ borderColor: "primary.7" }}
-              >
-                <Card.Body>
-                  <Stack gap="400">
-                    {illustrations.length > 0 && (
-                      <Flex
-                        colorPalette="primary"
-                        width="full"
-                        aspectRatio="16 / 10"
-                        justify="center"
-                        overflow="hidden"
-                        borderRadius="200"
-                        bg="colorPalette.2"
-                        // illustrations inside size themselves from the band
-                        // height and draw no background of their own
-                        css={{
-                          containerType: "size",
-                          "--illustration-gradient-start": "transparent",
-                        }}
-                      >
-                        <IllustrationCollage names={illustrations} />
-                      </Flex>
-                    )}
-                    <Stack gap="100">
-                      {illustrations.length === 0 && (
-                        <Box color="primary.11" textStyle="5xl" mb="200">
-                          <IconComponent id={doc.icon} fallback="Layers" />
-                        </Box>
-                      )}
-                      <Heading
-                        color="neutral.12"
-                        textDecoration="none"
-                        size="lg"
-                        truncate
-                      >
-                        {doc.title}
-                      </Heading>
-                      <Text color="neutral.11" lineClamp={3}>
-                        {doc.description}
-                      </Text>
-                    </Stack>
-                  </Stack>
-                </Card.Body>
-                {count > 0 && (
-                  <Card.Footer>
-                    <Text color="neutral.11" textStyle="sm">
-                      {count} {count === 1 ? "page" : "pages"}
-                    </Text>
-                  </Card.Footer>
-                )}
-              </Card.Root>
-            </Link>
-          );
-        })}
+        {sortedDocs.map((doc) => (
+          <DocumentCard
+            key={doc.path}
+            doc={doc}
+            illustrationCount={illustrationCount}
+            pageCount={countBelow(doc)}
+          />
+        ))}
       </SimpleGrid>
     </Box>
   );
