@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <defs>
+    <linearGradient id="il-link-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--illustration-gradient-start, light-dark(var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%)), var(--nimbus-colors-color-palette-2, hsl(233, 41%, 9%))))"/>
+      <stop offset="1" stop-color="var(--illustration-gradient-end, var(--illustration-gradient-start, light-dark(var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%)), var(--nimbus-colors-color-palette-2, hsl(233, 41%, 9%)))))"/>
+    </linearGradient>
+    <filter id="il-link-shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="1.6" stdDeviation="2.4" flood-color="light-dark(hsla(0, 0%, 0%, 0.1), hsla(0, 0%, 0%, 0.5))"/>
+    </filter>
+  </defs>
+  <rect width="96" height="96" fill="url(#il-link-bg)"/>
+  <rect x="16" y="32" width="64" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))"/>
+  <rect x="16" y="44" width="28" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%))"/>
+  <path d="M16,49.5 H44" fill="none" stroke="var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%))" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M49,45.5 h6 M53,43 l2.5,2.5 l-2.5,2.5" fill="none" stroke="var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%))" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="16" y="60" width="48" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))"/>
+  <path d="M36,48 v12 l3,-2.75 l2.25,5 l2,-0.9 l-2.25,-4.85 h4.25 Z" fill="light-dark(var(--nimbus-colors-color-palette-1, hsl(240, 100%, 100%)), var(--nimbus-colors-color-palette-12, hsl(229, 100%, 93%)))" stroke="light-dark(var(--nimbus-colors-color-palette-12, hsl(237, 47%, 27%)), var(--nimbus-colors-color-palette-1, hsl(0, 0%, 0%)))" stroke-width="0.6" stroke-linejoin="round" filter="url(#il-link-shadow)"/>
+</svg>

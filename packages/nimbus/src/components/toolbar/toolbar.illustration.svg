@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <defs>
+    <linearGradient id="il-toolbar-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--illustration-gradient-start, light-dark(var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%)), var(--nimbus-colors-color-palette-2, hsl(233, 41%, 9%))))"/>
+      <stop offset="1" stop-color="var(--illustration-gradient-end, var(--illustration-gradient-start, light-dark(var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%)), var(--nimbus-colors-color-palette-2, hsl(233, 41%, 9%)))))"/>
+    </linearGradient>
+    <filter id="il-toolbar-shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="1.6" stdDeviation="2.4" flood-color="light-dark(hsla(0, 0%, 0%, 0.1), hsla(0, 0%, 0%, 0.5))"/>
+    </filter>
+  </defs>
+  <rect width="96" height="96" fill="url(#il-toolbar-bg)"/>
+  <rect x="12" y="38" width="72" height="20" rx="2" fill="light-dark(var(--nimbus-colors-color-palette-1, hsl(240, 100%, 100%)), var(--nimbus-colors-color-palette-3, hsl(236, 45%, 19%)))" stroke="var(--nimbus-colors-color-palette-6, hsl(229, 100%, 88%))" stroke-width="0.5" filter="url(#il-toolbar-shadow)"/>
+  <rect x="27" y="42" width="10" height="12" rx="1" fill="var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%))"/>
+  <path d="M20,48 h4 M22,46 v4" fill="none" stroke="light-dark(var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%)), var(--nimbus-colors-color-palette-11, hsl(231, 100%, 81%)))" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M32,43.5 L33.12,46.46 L36.28,46.61 L33.81,48.59 L34.65,51.64 L32,49.9 L29.35,51.64 L30.19,48.59 L27.72,46.61 L30.88,46.46 Z" fill="none" stroke="light-dark(var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%)), var(--nimbus-colors-color-palette-11, hsl(231, 100%, 81%)))" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M39,47 a3,3 0 1 0 6,0 a3,3 0 1 0 -6,0 Z M44.2,49.2 l2.8,2.8" fill="none" stroke="light-dark(var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%)), var(--nimbus-colors-color-palette-11, hsl(231, 100%, 81%)))" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="50" y1="43" x2="50" y2="53" stroke="var(--nimbus-colors-color-palette-5, hsl(229, 100%, 92%))" stroke-width="0.5"/>
+  <path d="M53.5,48 a4.5,4.5 0 1 0 9,0 a4.5,4.5 0 1 0 -9,0 Z M58,45.5 V48 h2" fill="none" stroke="light-dark(var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%)), var(--nimbus-colors-color-palette-11, hsl(231, 100%, 81%)))" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M66,48 l1.4,1.4 l2.6,-2.8" fill="none" stroke="light-dark(var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%)), var(--nimbus-colors-color-palette-11, hsl(231, 100%, 81%)))" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M75,47 l2,2 l2,-2" fill="none" stroke="light-dark(var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%)), var(--nimbus-colors-color-palette-11, hsl(231, 100%, 81%)))" stroke-width="0.85" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

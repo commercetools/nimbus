@@ -38,8 +38,8 @@ is no global state.
 `colorPalette="primary"`; the fallback covers `<img>` use.
 
 **Test in the existing jsdom `unit` project.** `pnpm test` and CI run it with
-no workflow change. A temporary `PENDING` set lets the work land in batches.
-It can only shrink, and a new component is never in it.
+no workflow change. Every component with a main doc page must have an
+illustration from the day it is added.
 
 **Docs read SVGs with `import.meta.glob(..., { query: "?raw" })`.** Ids are
 rewritten with a `useId()` prefix so the same picture can appear twice. If Vite
@@ -85,4 +85,3 @@ each get one distinguishing glyph and are compared side by side on the sheet.
 - [A kit change re-renders every SVG] → Expected. Review the full contact sheet after any kit change.
 - [`<img src>` cannot inherit variables] → Shows the ctviolet light fallback.
 - [Recipe radius cannot be checked by a test] → It is on the reviewer checklist.
-- [Draft state: `PENDING` allows missing illustrations] → The test fails if a pending name already has one, and the last commit deletes `PENDING`.

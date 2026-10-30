@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <defs>
+    <linearGradient id="il-info-dialog-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="var(--illustration-gradient-start, light-dark(var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%)), var(--nimbus-colors-color-palette-2, hsl(233, 41%, 9%))))"/>
+      <stop offset="1" stop-color="var(--illustration-gradient-end, var(--illustration-gradient-start, light-dark(var(--nimbus-colors-color-palette-4, hsl(228, 100%, 94%)), var(--nimbus-colors-color-palette-2, hsl(233, 41%, 9%)))))"/>
+    </linearGradient>
+    <filter id="il-info-dialog-shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="1.6" stdDeviation="2.4" flood-color="light-dark(hsla(0, 0%, 0%, 0.1), hsla(0, 0%, 0%, 0.5))"/>
+    </filter>
+  </defs>
+  <rect width="96" height="96" fill="url(#il-info-dialog-bg)"/>
+  <rect x="12" y="16" width="72" height="64" rx="3" fill="var(--nimbus-colors-color-palette-6, hsl(229, 100%, 88%))"/>
+  <rect x="22" y="28" width="52" height="40" rx="3" fill="light-dark(var(--nimbus-colors-color-palette-1, hsl(240, 100%, 100%)), var(--nimbus-colors-color-palette-3, hsl(236, 45%, 19%)))" stroke="var(--nimbus-colors-color-palette-6, hsl(229, 100%, 88%))" stroke-width="0.5" filter="url(#il-info-dialog-shadow)"/>
+  <path d="M27.5,38 a4.5,4.5 0 1 0 9,0 a4.5,4.5 0 1 0 -9,0 Z M32,38 v2.5 M32,35.8 h0.01" fill="none" stroke="var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%))" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="42" y="36.5" width="20" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-8, hsl(232, 88%, 77%))"/>
+  <rect x="28" y="46" width="36" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-7, hsl(231, 100%, 84%))"/>
+  <rect x="56" y="56" width="14" height="8" rx="1" fill="var(--nimbus-colors-color-palette-9, hsl(240, 64%, 58%))"/>
+  <rect x="59" y="59.5" width="8" height="3" rx="1.5" fill="var(--nimbus-colors-color-palette-contrast, hsl(0, 0%, 100%))"/>
+</svg>

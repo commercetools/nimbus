@@ -7,12 +7,11 @@ Every component, derivative and pattern that has a main doc page
 
 ## Files
 
-| File                              | Role                                             |
-| --------------------------------- | ------------------------------------------------ |
-| `{name}.illustration.ts`          | Source. Written by hand with the drawing kit.    |
-| `{name}.illustration.svg`         | Generated and committed. Never edited by hand.   |
-| `src/illustration-kit/`           | The drawing kit. Not published.                  |
-| `src/illustration-kit/pending.ts` | Names not drawn yet. This set only gets smaller. |
+| File                      | Role                                           |
+| ------------------------- | ---------------------------------------------- |
+| `{name}.illustration.ts`  | Source. Written by hand with the drawing kit.  |
+| `{name}.illustration.svg` | Generated and committed. Never edited by hand. |
+| `src/illustration-kit/`   | The drawing kit. Not published.                |
 
 `{name}` is the folder name, for example `button` or `date-range-picker`.
 
@@ -83,9 +82,7 @@ Roles: `surface`, `surfaceStroke`, `strong`, `onStrong`, `text`, `textStrong`,
 3. Run `pnpm illustrations:sheet --category "<Category>"`.
 4. Open the PNGs in `packages/nimbus/.illustration-sheets/` (light and dark) and
    look at them. Fix and repeat.
-5. Remove `{name}` from `PENDING` in `src/illustration-kit/pending.ts` if it is
-   listed.
-6. Run `pnpm --filter @commercetools/nimbus test:unit` (or
+5. Run `pnpm --filter @commercetools/nimbus test:unit` (or
    `pnpm test:dev packages/nimbus/src/illustration-kit`).
 
 The unit test (`illustrations.spec.ts`) checks coverage, freshness, source
@@ -105,7 +102,6 @@ within 2 units of 48, panel sizes in multiples of 2, at most 8 KB).
 - [ ] The contact sheet was rendered and looked at in light and dark mode
 - [ ] The illustration is distinct from its look-alikes
 - [ ] The SVG is up to date (`pnpm illustrations:generate` gives no git diff)
-- [ ] The name is not in `PENDING`
 - [ ] `pnpm --filter @commercetools/nimbus test:unit` passes
 
 ## Using the SVG

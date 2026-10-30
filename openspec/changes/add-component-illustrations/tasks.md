@@ -4,7 +4,7 @@
 
 - [x] 1.1 Add `src/illustration-kit/` (tokens, roles, primitives, icons, render, discover) and verify `illustration-kit.spec.ts` passes (radii, shadow, fallbacks, determinism)
 - [x] 1.2 Add `scripts/illustrations/generate.ts` and `contact-sheet.ts` with root proxies and verify `pnpm illustrations:generate` and `pnpm illustrations:sheet` run
-- [x] 1.3 Add `illustrations.spec.ts` with the `PENDING` set and verify `pnpm --filter @commercetools/nimbus test:unit` passes
+- [x] 1.3 Add `illustrations.spec.ts` (coverage, freshness, purity, structure, sanitizer parity, geometry) and verify `pnpm --filter @commercetools/nimbus test:unit` passes
 - [x] 1.4 Add config edits (vite dts exclude, `.gitignore`, `scripts/clean.mjs`, `.gitattributes`) and verify `pnpm build` output has no `*illustration*` file
 - [x] 1.5 Draw the 6 prototype illustrations (button, switch, data-table, date-range-picker, tooltip, visually-hidden) and verify the contact sheet in light and dark mode
 
@@ -16,7 +16,7 @@
 ## 3. Batch 1 illustrations (22)
 
 - [x] 3.1 Draw layout, utility and abstract components from the design table and verify the light and dark contact sheet by eye
-- [x] 3.2 Remove the drawn names from `PENDING` and verify the unit test passes
+- [x] 3.2 Verify the unit test passes for every batch-1 illustration
 
 ## 4. Docs cards
 
@@ -26,8 +26,8 @@
 
 ## 5. Remaining illustrations (after Checkpoint 1 approval)
 
-- [ ] 5.1 Draw the remaining batches by category (Buttons, Inputs, Forms, Feedback, Data Display, Navigation, other, Patterns) and verify the contact sheet after each batch
-- [ ] 5.2 Delete `PENDING` and verify the unit test passes
+- [x] 5.1 Draw the remaining batches by category (Buttons, Inputs, Forms, Feedback, Data Display, Navigation, other, Patterns) and verify the contact sheet after each batch
+- [x] 5.2 Remove the temporary pending list and verify the unit test passes
 
 ## 6. Final verification
 

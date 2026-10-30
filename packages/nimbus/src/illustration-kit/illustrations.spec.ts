@@ -10,7 +10,6 @@ import {
   type IllustrationDefinition,
 } from "./index";
 import { discover, SRC_DIR } from "./discover";
-import { PENDING } from "./pending";
 
 const required = discover();
 const requiredNames = new Set(required.map((item) => item.name));
@@ -31,7 +30,7 @@ const sourcePath = (item: { name: string; dir: string }) =>
 const svgPath = (item: { name: string; dir: string }) =>
   join(item.dir, `${item.name}.illustration.svg`);
 
-const drawn = required.filter((item) => !PENDING.has(item.name));
+const drawn = required;
 
 const ALLOWED_TAGS = new Set([
   "svg",
@@ -73,20 +72,6 @@ describe("illustration coverage", () => {
     expect(required.length).toBeGreaterThan(100);
     expect(requiredNames.size).toBe(required.length);
   });
-
-  it("only lists real components as pending", () => {
-    for (const name of PENDING) expect(requiredNames).toContain(name);
-  });
-
-  it.each(required.filter((item) => PENDING.has(item.name)))(
-    "$name is pending and must not have an illustration yet",
-    (item) => {
-      expect(
-        existsSync(sourcePath(item)) || existsSync(svgPath(item)),
-        `${item.name} has an illustration: remove it from PENDING in pending.ts`
-      ).toBe(false);
-    }
-  );
 
   it.each(drawn)(
     "$name has an illustration source and a generated SVG",

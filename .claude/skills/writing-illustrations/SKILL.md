@@ -69,9 +69,7 @@ If no mode is given, default to **create**.
    `pnpm illustrations:sheet --only {component}` then read
    `packages/nimbus/.illustration-sheets/*.png`. Do not finish before you have
    looked at it.
-5. Remove `{component}` from `PENDING` in
-   `packages/nimbus/src/illustration-kit/pending.ts` if it is listed.
-6. Run `pnpm --filter @commercetools/nimbus test:unit`.
+5. Run `pnpm --filter @commercetools/nimbus test:unit`.
 
 ## Update Mode
 
