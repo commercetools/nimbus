@@ -1,6 +1,6 @@
 import {
-  Box,
   Flex,
+  Slider,
   Stack,
   Text,
   ToggleButtonGroup,
@@ -42,7 +42,7 @@ export const IconDisplayControls = () => {
         Display
       </Text>
 
-      {/* Icon size — a plain range input, full-width for the narrow rail, with
+      {/* Icon size — a slider, full-width for the narrow rail, with
           the current value shown alongside the label. Resizes every previewed
           glyph live via the grid's --icon-preview-size custom property. */}
       <Stack gap="100">
@@ -58,24 +58,14 @@ export const IconDisplayControls = () => {
             {size}px
           </Text>
         </Flex>
-        <Box
-          asChild
-          css={{
-            width: "100%",
-            cursor: "pointer",
-            accentColor: "{colors.primary.9}",
-          }}
-        >
-          <input
-            type="range"
-            min={ICON_SIZE_MIN}
-            max={ICON_SIZE_MAX}
-            step={ICON_SIZE_STEP}
-            value={size}
-            aria-label="Icon preview size"
-            onChange={(e) => setSize(Number(e.target.value))}
-          />
-        </Box>
+        <Slider
+          aria-label="Icon preview size"
+          minValue={ICON_SIZE_MIN}
+          maxValue={ICON_SIZE_MAX}
+          step={ICON_SIZE_STEP}
+          value={size}
+          onChange={setSize}
+        />
       </Stack>
 
       {/* Surface — a single-select segmented toggle. Each option previews every

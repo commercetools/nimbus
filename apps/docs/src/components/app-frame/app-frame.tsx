@@ -41,7 +41,9 @@ export interface AppFrameRightAsideProps {
 }
 
 /**
- * Root component - 3-column grid (left nav · main · right aside).
+ * Root component - 3-column grid (left nav · main · right aside) from the `lg`
+ * breakpoint up. Below it, only the main column shows; the sidebar moves into a
+ * drawer (`MobileNav`) and the table of contents is hidden.
  *
  * Designed to be a flex child of the layout shell: it grows to fill the space
  * left under the breadcrumb/top bars (`flex: 1`) and clips its own overflow so
@@ -50,12 +52,16 @@ export interface AppFrameRightAsideProps {
 function AppFrameRoot({ children, hideAside = false }: AppFrameRootProps) {
   return (
     <Grid
-      gridTemplateAreas={hideAside ? `"nav main"` : `"nav main aside"`}
-      gridTemplateColumns={
-        hideAside
+      gridTemplateAreas={{
+        base: `"main"`,
+        lg: hideAside ? `"nav main"` : `"nav main aside"`,
+      }}
+      gridTemplateColumns={{
+        base: "minmax(0, 1fr)",
+        lg: hideAside
           ? "minmax(200px, 256px) minmax(0, 1fr)"
-          : "minmax(200px, 256px) minmax(80ch, 1fr) minmax(200px, 400px)"
-      }
+          : "minmax(200px, 256px) minmax(80ch, 1fr) minmax(200px, 400px)",
+      }}
       flex="1"
       minHeight="0"
       width="full"
@@ -76,6 +82,7 @@ function AppFrameLeftNav({ children, viewportRef }: AppFrameLeftNavProps) {
       id="app-frame-left-nav"
       viewportRef={viewportRef}
       gridArea="nav"
+      display={{ base: "none", lg: "block" }}
       borderRight="solid-25"
       borderColor="neutral.3"
       bg="bg"
@@ -117,7 +124,14 @@ function AppFrameMainContent({
  */
 function AppFrameRightAside({ children }: AppFrameRightAsideProps) {
   return (
-    <ScrollArea as="aside" gridArea="aside" bg="bg" variant="always" size="sm">
+    <ScrollArea
+      as="aside"
+      gridArea="aside"
+      display={{ base: "none", lg: "block" }}
+      bg="bg"
+      variant="always"
+      size="sm"
+    >
       <Box px="800" py="400">
         {children}
       </Box>

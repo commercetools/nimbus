@@ -9,6 +9,7 @@ import {
   TextInput,
   Text,
   Kbd,
+  ProgressBar,
   Switch,
   toast,
 } from "@commercetools/nimbus";
@@ -379,6 +380,19 @@ export const AppNavBarSearch = () => {
                       {semanticStatusLabel}
                     </Text>
                   )}
+                  {(semanticStatus === "loading-model" ||
+                    semanticStatus === "indexing") &&
+                    semanticStatusLabel && (
+                      <Box width="2400">
+                        <ProgressBar
+                          layout="minimal"
+                          size="2xs"
+                          aria-label={semanticStatusLabel}
+                          value={semanticDownloadPercent}
+                          isIndeterminate={semanticStatus === "indexing"}
+                        />
+                      </Box>
+                    )}
                   <Switch
                     isSelected={semanticEnabled}
                     onChange={setSemanticEnabled}

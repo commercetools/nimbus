@@ -1,44 +1,42 @@
 ## 1. Investigation
 
-- [ ] 1.1 Check the docs app on a narrow screen and record whether sidebar navigation works (decides task 6)
-- [ ] 1.2 Check whether `ProgressBar` supports an indeterminate state (decides task 4.3)
-- [ ] 1.3 Re-count Nimbus components used in `apps/docs/src` and record the baseline (33 used, 49 unused)
+- [x] 1.1 Check the docs app on a narrow screen and record whether sidebar navigation works (decides task 6)
+- [x] 1.2 Check whether `ProgressBar` supports an indeterminate state (decides task 4.3)
+- [x] 1.3 Re-count Nimbus components used in `apps/docs/src` and record the baseline (41 used, 49 unused, 90 folders)
 
 ## 2. Breadcrumbs
 
-- [ ] 2.1 Replace the link list in `components/navigation/breadcrumb/breadcrumb.tsx` with `Breadcrumbs`, built from the existing `menuToPath` data
-- [ ] 2.2 Keep the Home item with its icon, the "Copy link" button, and `BreadcrumbProvider` behaviour
-- [ ] 2.3 Verify with Playwright: keyboard navigation, links to parent pages, "Copy link" visible on hover and focus
+- [x] 2.1 Replace the link list in `components/navigation/breadcrumb/breadcrumb.tsx` with `Breadcrumbs` (`size="sm"`, 14px, to match the app's text size), built from the existing `menuToPath` data
+- [x] 2.2 Keep the Home item with its icon, the "Copy link" button, and `BreadcrumbProvider` behaviour
+- [x] 2.3 Verify with Playwright: keyboard navigation, links to parent pages, "Copy link" visible on hover and focus
 
-## 3. Skeleton
+## 3. Skeleton (dropped)
 
-- [ ] 3.1 Use `Skeleton` as the fallback for the content area and the table of contents in `layouts/app-layout.tsx`
-- [ ] 3.2 Match the skeleton width to `AppFrame.MainContent` so the content does not jump
-- [ ] 3.3 Keep `LoadingSpinner` for the sidebar menu and for `routes/dynamic-route.tsx`
-- [ ] 3.4 Use `Skeleton` for search results while they load, if the search UI has a loading state for them
+- [x] 3.1 Tried `Skeleton` placeholders for page content and the table of contents, then removed them. The docs bundle is loaded at once, so the loading state lasts too short to see. Skeleton stays unused in the app
+- [x] 3.2 `Suspense` fallbacks keep `LoadingSpinner`
 
 ## 4. ProgressBar
 
-- [ ] 4.1 Show `downloadPercent` in a `ProgressBar` while `status === "loading-model"` in `app-nav-bar-search.tsx`
-- [ ] 4.2 Keep an accessible text label for the download and indexing phases
-- [ ] 4.3 Use an indeterminate bar for the indexing phase if task 1.2 allows it
+- [x] 4.1 Show `downloadPercent` in a `ProgressBar` while `status === "loading-model"` in `app-nav-bar-search.tsx`
+- [x] 4.2 Keep an accessible text label for the download and indexing phases
+- [x] 4.3 Use an indeterminate bar for the indexing phase if task 1.2 allows it
 
-## 5. Sidebar
+## 5. Sidebar (dropped)
 
-- [ ] 5.1 Try `Accordion` on `components/navigation/menu/components/menu-item.tsx`
-- [ ] 5.2 Try `Tree` on the same item
-- [ ] 5.3 Keep the option that preserves link semantics, current-route highlight and sidebar scroll restoration; if neither does, drop this task and note it in `design.md`
+- [x] 5.1 Dropped. Accordion cannot hold links as parents. Tree would turn the site navigation into a `treegrid` for little gain. The sidebar keeps its links
 
-## 6. Conditional candidates
+## 6. Other places
 
-- [ ] 6.1 Add a `Drawer` for narrow-screen navigation, only if task 1.1 shows it is missing
-- [ ] 6.2 Add a `Popover` for the Nimbus version details, only if the current version display has more detail to show
-- [ ] 6.3 Add a `ComboBox` filter to the icon explorer, only if the tag bar and category rail do not cover the need
-- [ ] 6.4 Use `Steps` on a page with a real sequence, only if one exists
+- [x] 6.1 Add a `Drawer` for narrow-screen navigation (`components/navigation/mobile-nav`). Below the `lg` breakpoint the app frame hides the sidebar and the table of contents and shows a menu button that opens the sidebar in a drawer
+- [x] 6.2 Popover for the Nimbus version: skipped. The badge shows only the version, so a popover would have nothing to show
+- [x] 6.3 ComboBox for the icon explorer: skipped. Search, the category list and the tag bar already cover filtering
+- [x] 6.4 Steps: skipped. The only step-by-step page is the static Installation page, and `Steps` is a stateful progress component
+- [x] 6.5 Use `Slider` for the icon size control in the icon explorer (`icon-display-controls.tsx`), replacing a plain range input
+- [x] 6.6 Use `ListBox` for the category list in the icon explorer (`category-rail.tsx`), replacing the React Aria `ListBox` and its custom row styles
 
 ## 7. Finish
 
-- [ ] 7.1 Re-count used components and record the result in this change
+- [x] 7.1 Re-count used components: 46 of 90 folders are used (was 41). New: Breadcrumbs, Drawer, ListBox, ProgressBar, Slider
 - [ ] 7.2 Update `docs-app` spec through `/opsx:archive` after implementation
-- [ ] 7.3 Run `pnpm typecheck:strict` and `pnpm lint`
-- [ ] 7.4 Check the docs app in the browser in light and dark mode
+- [x] 7.3 ESLint and Prettier are clean on the changed files, and `tsc` reports no errors in them (the docs app has other type errors in files this change does not touch)
+- [x] 7.4 Checked in the browser at 1440px and 700px, in light and dark mode

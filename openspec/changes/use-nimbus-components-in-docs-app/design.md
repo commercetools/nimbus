@@ -1,6 +1,6 @@
 ## Context
 
-`apps/docs/src` imports 33 Nimbus components. 49 component folders are unused
+`apps/docs/src` imports 41 Nimbus components. 49 component folders are unused
 (see the proposal). Only the app's own code counts. The live code editor
 (`live-code-editor.tsx`) and the props table (`props-table.tsx`) use
 `import * as`, so they can render any component, but they do not show the
@@ -34,7 +34,7 @@ Current state of the places this change touches:
 - Replace hand-built UI with the matching Nimbus component where the result is
   simpler or equal in behaviour.
 - Use each of these components at least once in the app's own code: Breadcrumbs,
-  Skeleton, ProgressBar, and one of Accordion or Tree.
+  ProgressBar, and one of Accordion or Tree.
 - Keep behaviour users rely on: keyboard navigation, the "Copy link" button,
   sidebar scroll restoration, and the route-change fade.
 
@@ -49,19 +49,21 @@ Current state of the places this change touches:
 
 ## Decisions
 
-### 1. Two tiers: committed and conditional
+### 1. Use a component only where the code shows a real need
 
-Breadcrumbs, Skeleton and ProgressBar replace code that already exists, so they
-are committed. Drawer, Popover, ComboBox, Steps, and the Accordion or Tree
-choice are conditional. Each one needs a real need first, found in the code. If
-there is none, the task is dropped and the component stays unused.
+Each candidate was checked against the code before it was built. Breadcrumbs,
+ProgressBar, Drawer, Slider and ListBox replace or add something the app needs.
+Skeleton, Accordion/Tree, Popover, ComboBox and Steps were dropped, because the
+code showed no natural place for them (see decisions 3, 5 and 7).
 
-Alternative: commit to all eight. Rejected, because it forces components into
-places where they do not help the reader.
+Alternative: commit to all eight first candidates. Rejected, because it forces
+components into places where they do not help the reader.
 
 ### 2. Breadcrumbs wraps, it does not replace, the surrounding behaviour
 
-Use `Breadcrumbs` with `items` built from the same `menuToPath` data as today.
+Use `Breadcrumbs` with `items` built from the same `menuToPath` data as today,
+at `size="sm"` (14px). The default `md` is 16px and looks too large next to the
+app's 14px text.
 Keep the `BreadcrumbProvider` and the hover-revealed "Copy link" button as they
 are, next to the new component. Only the list of links changes.
 
@@ -71,17 +73,13 @@ Open point: the Home item has an icon today. `BreadcrumbItem.label` accepts
 Alternative: move "Copy link" inside the breadcrumb. Rejected: it is not part of
 the Breadcrumbs API, and it would change focus order.
 
-### 3. Skeleton replaces spinners only where the layout is known
+### 3. Skeleton: tried and dropped
 
-A spinner suits an unknown wait. A skeleton suits a known shape. Use `Skeleton`
-for the table of contents fallback and the content fallback in `app-layout.tsx`,
-where the column width is fixed by `AppFrame.MainContent`. Keep `LoadingSpinner`
-for the sidebar `Menu` and for `dynamic-route.tsx`, where there is no fixed
-shape.
-
-Alternative: replace all spinners. Rejected: a skeleton with the wrong shape
-causes a visible jump when the content arrives. This is the same jump that
-`app-layout.tsx` already avoids with `wideRef`.
+Skeleton placeholders were built for the content column and the table of
+contents, where `DocumentRenderer` and `Toc` return `null` while a page loads.
+They were removed: the docs bundle is loaded at once, so the loading state is
+too short for anyone to see. The `Suspense` fallbacks keep `LoadingSpinner`.
+Skeleton stays unused in the app until a place with a visible wait exists.
 
 ### 4. ProgressBar shows the existing percentage
 
@@ -90,18 +88,42 @@ Keep the text label for screen readers and for the "indexing" phase, where there
 is no percentage. When the percentage is not known, show an indeterminate bar
 if `ProgressBar` supports it. This is checked during implementation.
 
-### 5. Sidebar: Accordion or Tree, decided by a short spike
+### 5. Sidebar: dropped
 
-The sidebar is a tree of links, where the parent is also a link. `Accordion`
-expects a trigger that only toggles. `Tree` models parent-and-child rows but
-has its own selection and keyboard model. Try both on the existing
-`MenuItem` and keep the one that preserves: link semantics, the highlighted
-current route, and scroll restoration. If neither does, drop this candidate.
+The sidebar is a tree of links where the parent is also a link, and it opens
+by route only (`MenuItem` has no toggle). `Accordion` triggers only toggle, so
+parents could not stay links. `Tree` supports `href` rows, but it would make the
+site navigation a `treegrid` with its own keyboard model, and the scroll
+restoration and current-route highlight would need rework. That is a large
+change on every page only to use one more component. The sidebar is unchanged.
 
-### 6. Drawer only if narrow screens are unsupported today
+### 6. Drawer below the `lg` breakpoint
 
-If the app has no narrow-screen navigation, add a menu button in the top bar that
-opens the sidebar in a `Drawer`. If the sidebar already adapts, skip it.
+`AppFrameRoot` was a fixed three-column grid that needs about 1,100px (256px
+sidebar, an 80ch main column and the table of contents), so it overflowed on
+narrow screens. Below `lg` (1024px) the grid now has one column, the sidebar and
+the table of contents are hidden, and `MobileNav` shows a menu button in the main
+column. The button opens the same `Menu` in a left `Drawer`, which closes when
+the route changes. The top bar itself is still cut off at narrow widths. That is
+not part of this change.
+
+Alternative: a breakpoint at `md` (768px). Rejected, because the grid is already
+too wide at that size.
+
+### 7. Icon explorer: Slider and ListBox, and no ComboBox
+
+The icon explorer used a plain `<input type="range">` for the icon size and a
+React Aria `ListBox` with hand-written row styles for categories. These are
+exactly what Nimbus `Slider` and `ListBox` (`variant="plain"`, `size="sm"`)
+provide, and they remove the custom styles. A `ComboBox` filter was not added:
+search, the category list and the tag bar already cover filtering. `ListBox` is
+marked experimental in Nimbus, so its API may change.
+
+### 8. Popover and Steps: not used
+
+The version badge shows only the version number, so a popover would have no
+content. The only step-by-step page is the static Installation page, and `Steps`
+is a stateful progress component, so it does not fit.
 
 ## Risks / Trade-offs
 
@@ -110,8 +132,6 @@ opens the sidebar in a `Drawer`. If the sidebar already adapts, skip it.
 - [Sidebar scroll restoration breaks when the markup changes] →
   `useSidebarScrollRestoration` reads `sidebarViewportRef`. Keep the viewport
   element unchanged. Only the item markup changes.
-- [Skeleton shape mismatch causes layout shift] → Use the same width and spacing
-  as the final content (decision 3).
 - [The docs app and the Nimbus build drift] → The docs app resolves
   `@commercetools/nimbus` from the workspace, so a missing or changed prop shows
   up in `pnpm typecheck:strict`.
@@ -121,5 +141,9 @@ opens the sidebar in a `Drawer`. If the sidebar already adapts, skip it.
 - The current spec says breadcrumbs display "deepest → root order". The code
   renders root first (Home, then each parent, then the page). The delta spec
   uses root first to match the code. Confirm this is intended.
-- Is there a narrow-screen layout for the docs app? (decision 6)
-- Does `ProgressBar` support an indeterminate state? (decision 4)
+- ~~Is there a narrow-screen layout for the docs app?~~ Resolved: no.
+  `AppFrameRoot` uses a fixed grid (`minmax(200px, 256px) minmax(80ch, 1fr) ...`)
+  with no breakpoints, so the sidebar is always visible. Decision 6 applies
+  (checked in code, not yet in a browser).
+- ~~Does `ProgressBar` support an indeterminate state?~~ Resolved: yes, through
+  the `isIndeterminate` prop (`progress-bar.types.ts:29`).

@@ -1,5 +1,5 @@
-import { Box, Stack, Text } from "@commercetools/nimbus";
-import { ListBox, ListBoxItem, type Selection } from "react-aria-components";
+import { ListBox, Stack, Text } from "@commercetools/nimbus";
+import type { Selection } from "react-aria-components";
 import { useMemo } from "react";
 import { ALL_CATEGORIES, slugifyCategory, titleCase } from "./use-icon-data";
 import { useIconRouteState } from "./use-icon-route-state";
@@ -13,7 +13,7 @@ type CategoryOption = { id: string; label: string; count: number };
  * category comes from the URL — `ALL_CATEGORIES` ("all") on the `/icons` root,
  * which highlights the "All" option.
  *
- * Rendered as a single-select React Aria `ListBox` so the rail is one Tab stop:
+ * Rendered as a single-select Nimbus `ListBox` so the rail is one Tab stop:
  * Tab moves focus in/out, Up/Down (+ Home/End + typeahead) move between
  * categories, and Enter/Space selects. The selected option is the active
  * category; selecting one updates the URL.
@@ -54,53 +54,30 @@ export const CategoryRail = ({
       <Text textStyle="sm" fontWeight="600" color="neutral.11">
         Categories
       </Text>
-      <ListBox
+      <ListBox.Root
         aria-label="Filter icons by category"
+        variant="plain"
+        size="sm"
         selectionMode="single"
         disallowEmptySelection
         selectedKeys={[category]}
         onSelectionChange={handleSelectionChange}
         items={items}
       >
-        {(item) => <CategoryItem item={item} />}
-      </ListBox>
+        {(item) => (
+          <ListBox.Item
+            id={item.id}
+            textValue={item.label}
+            trailing={
+              <Text textStyle="xs" color="neutral.10">
+                {item.count}
+              </Text>
+            }
+          >
+            {item.label}
+          </ListBox.Item>
+        )}
+      </ListBox.Root>
     </Stack>
   );
 };
-
-/** A single selectable row in the category filter rail. */
-const CategoryItem = ({ item }: { item: CategoryOption }) => (
-  <Box
-    asChild
-    display="flex"
-    width="100%"
-    justifyContent="space-between"
-    alignItems="center"
-    gap="200"
-    px="300"
-    py="200"
-    borderRadius="200"
-    cursor="pointer"
-    textAlign="left"
-    outline="none"
-    color="neutral.11"
-    css={{
-      "&[data-hovered]:not([data-selected])": { backgroundColor: "neutral.2" },
-      "&[data-selected]": {
-        backgroundColor: "primary.3",
-        color: "primary.11",
-        fontWeight: "600",
-      },
-      "&[data-focus-visible]": { layerStyle: "focusRing" },
-    }}
-  >
-    <ListBoxItem id={item.id} textValue={item.label}>
-      <Text textStyle="sm" truncate>
-        {item.label}
-      </Text>
-      <Text textStyle="xs" color="neutral.10">
-        {item.count}
-      </Text>
-    </ListBoxItem>
-  </Box>
-);

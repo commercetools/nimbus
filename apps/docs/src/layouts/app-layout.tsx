@@ -13,6 +13,7 @@ import { Stack, LoadingSpinner, Box } from "@commercetools/nimbus";
 import { AppFrame } from "@/components/app-frame";
 import { Menu } from "@/components/navigation/menu";
 import { Toc } from "@/components/navigation/toc";
+import { MobileNav } from "@/components/navigation/mobile-nav";
 import {
   ScrollContainerProvider,
   useMainViewport,
@@ -71,6 +72,7 @@ function AppFrameBodyInner() {
         contentMaxWidth={isHome || isWide ? "1280px" : "80ch"}
       >
         <Suspense fallback={<LoadingSpinner />}>
+          <MobileNav />
           {/* Animated wrapper that re-renders on route change */}
           <Box key={baseRoute} animationName="fade-in" animationDuration="slow">
             <Outlet />
