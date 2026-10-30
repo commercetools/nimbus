@@ -78,9 +78,9 @@ function AppFrameBodyInner() {
         </Suspense>
       </AppFrame.MainContent>
 
-      {/* Right Aside (TOC only - Settings disabled). Omitted on the home route,
-          which has no TOC and uses the full-bleed width instead. */}
-      {!isHome && (
+      {/* Right Aside (TOC only - Settings disabled). Omitted on the home route
+          and on wide pages, which have no TOC and use the full width instead. */}
+      {!isHome && !isWide && (
         <AppFrame.RightAside>
           <Stack gap="800">
             <Suspense fallback={<LoadingSpinner />}>
