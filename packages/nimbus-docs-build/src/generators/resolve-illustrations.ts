@@ -12,8 +12,11 @@
  * 3. None: an empty list. The card keeps its icon.
  */
 
-/** Most illustrations a category card shows. */
-export const MAX_COLLAGE = 2;
+/**
+ * Most illustrations a category card can show. The docs UI shows as many as
+ * the page asks for (`<CategoryOverview illustrationCount={n} />`, default 2).
+ */
+export const MAX_COLLAGE = 4;
 
 type Resolvable = {
   title: string;

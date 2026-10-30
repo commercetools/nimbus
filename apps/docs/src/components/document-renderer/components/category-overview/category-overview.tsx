@@ -24,7 +24,19 @@ import {
  *
  * This component uses the route manifest to list documents in the same category.
  */
-const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
+type CategoryOverviewProps = {
+  variant?: string;
+  /**
+   * How many illustrations a card in the grid variant shows. The first one is
+   * visible; the rest appear when the card is hovered or focused.
+   */
+  illustrationCount?: number;
+};
+
+const CategoryOverviewContent: FC<CategoryOverviewProps> = ({
+  variant,
+  illustrationCount = 2,
+}) => {
   const { routeManifest } = useManifest();
   const { doc: activeDoc } = useActiveDoc();
 
@@ -169,7 +181,10 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
         gap="400"
       >
         {sortedDocs.map((doc) => {
-          const illustrations = illustrationsOf(doc);
+          const illustrations = illustrationsOf(doc).slice(
+            0,
+            illustrationCount
+          );
           const count = countBelow(doc);
           return (
             <Link
@@ -247,7 +262,7 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
  * This ensures the component properly handles the async nature of the data
  * and provides a loading state while data is being fetched.
  */
-export const CategoryOverview: FC<{ variant?: string }> = (props) => {
+export const CategoryOverview: FC<CategoryOverviewProps> = (props) => {
   return (
     <Suspense fallback={<Box>Loading categories...</Box>}>
       <CategoryOverviewContent {...props} />

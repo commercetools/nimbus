@@ -47,7 +47,7 @@ describe("resolveChildIllustrations", () => {
       ),
     ];
     resolveChildIllustrations(routes);
-    expect(routes[0].illustrations).toEqual(["a", "b"]);
+    expect(routes[0].illustrations).toEqual(["a", "b", "c", "d"]);
   });
 
   it("leaves a document without illustrations below it empty", () => {
