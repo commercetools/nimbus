@@ -14,6 +14,31 @@ import type {
 import { routeManifestSchema } from "../schemas/mdx-document.js";
 import { flog } from "../utils/logger.js";
 import { validateFilePath } from "../utils/validate-file-path.js";
+import { findMonorepoRoot } from "../utils/file-utils.js";
+
+/**
+ * Name of the illustration for a main doc page, when
+ * `<name>.illustration.svg` exists next to `<name>.mdx`.
+ */
+async function findIllustration(
+  monorepoRoot: string | null,
+  repoPath: string
+): Promise<string | undefined> {
+  const name = path.basename(repoPath, ".mdx");
+  const isMainPage = path.basename(repoPath) === `${name}.mdx`;
+  if (!monorepoRoot || !isMainPage || name.includes(".")) return undefined;
+  const svg = path.join(
+    monorepoRoot,
+    path.dirname(repoPath),
+    `${name}.illustration.svg`
+  );
+  try {
+    await fs.access(svg);
+    return name;
+  } catch {
+    return undefined;
+  }
+}
 
 /**
  * Generate route manifest from parsed documents
@@ -24,6 +49,7 @@ export async function generateRouteManifest(
 ): Promise<RouteManifest> {
   const routes: RouteInfo[] = [];
   const categoriesMap = new Map<string, CategoryInfo>();
+  const monorepoRoot = await findMonorepoRoot(process.cwd());
 
   // Process each document
   for (const [, doc] of docs) {
@@ -45,6 +71,7 @@ export async function generateRouteManifest(
       order: meta.order || 999,
       chunkName: `route-${meta.route.replace(/\//g, "-")}`,
       icon: meta.icon,
+      illustration: await findIllustration(monorepoRoot, meta.repoPath),
       tabs: meta.tabs || [],
     };
 

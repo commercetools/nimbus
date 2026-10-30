@@ -12,6 +12,10 @@ import {
 } from "@commercetools/nimbus";
 import * as Icons from "@commercetools/nimbus-icons";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
+import {
+  ComponentIllustration,
+  hasIllustration,
+} from "@/components/component-illustration";
 
 /**
  * Component that displays an overview of all documents in the current menu category.
@@ -100,9 +104,24 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
                 >
                   <Card.Body>
                     <Flex>
-                      <Box color="primary.11" textStyle="2xl" mr="400">
-                        <IconComponent id={doc.icon} fallback="ArrowForward" />
-                      </Box>
+                      {hasIllustration(doc.illustration) ? (
+                        <Box
+                          boxSize="48px"
+                          flexShrink={0}
+                          mr="400"
+                          borderRadius="200"
+                          overflow="hidden"
+                        >
+                          <ComponentIllustration name={doc.illustration} />
+                        </Box>
+                      ) : (
+                        <Box color="primary.11" textStyle="2xl" mr="400">
+                          <IconComponent
+                            id={doc.icon}
+                            fallback="ArrowForward"
+                          />
+                        </Box>
+                      )}
                       <Box>
                         <Heading
                           color="neutral.12"
@@ -131,17 +150,42 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
     <Box my="600">
       <SimpleGrid columns={3} gap="200">
         {sortedDocs.map((doc) => (
-          <Link key={doc.path} textDecoration="none" href={doc.path}>
+          <Link
+            key={doc.path}
+            textDecoration="none"
+            href={doc.path}
+            display="block"
+            height="full"
+          >
             <Card.Root
               _hover={{ bg: "colorPalette.2" }}
               variant="plain"
               width="full"
+              height="full"
             >
+              {hasIllustration(doc.illustration) && (
+                <Flex
+                  colorPalette="primary"
+                  width="full"
+                  aspectRatio="16 / 10"
+                  justify="center"
+                  overflow="hidden"
+                  borderTopRadius="300"
+                  bg="colorPalette.4"
+                  _dark={{ bg: "colorPalette.2" }}
+                >
+                  <Box height="full" aspectRatio="1">
+                    <ComponentIllustration name={doc.illustration} />
+                  </Box>
+                </Flex>
+              )}
               <Card.Body>
                 <Stack>
-                  <Box color="primary.11" textStyle="5xl" mb="200">
-                    <IconComponent id={doc.icon} fallback="Layers" />
-                  </Box>
+                  {!hasIllustration(doc.illustration) && (
+                    <Box color="primary.11" textStyle="5xl" mb="200">
+                      <IconComponent id={doc.icon} fallback="Layers" />
+                    </Box>
+                  )}
                   <Heading
                     color="neutral.12"
                     textDecoration="none"
