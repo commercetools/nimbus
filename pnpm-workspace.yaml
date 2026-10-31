@@ -121,7 +121,7 @@ overrides:
   # @modelcontextprotocol/inspector) and other transitive <9 consumers expect.
   # 10.2.6 broke `pnpm --filter @commercetools/nimbus-mcp inspector` with
   # "TypeError: minimatch is not a function" — see git history on this line.
-  "minimatch@>=3.0.0 <3.1.4": "3.1.5"
+  "minimatch@>=3.0.0 <3.1.4": "11.0.1"
   # >=4.1.0 fixes GHSA-w27v-7q3p-w38r and GHSA-4vpr-x523-8j87 — removeScripts
   # let executable content through (namespace / control-character bypasses in
   # links, and HTML inside foreignObject elements).
@@ -371,3 +371,5 @@ minimumReleaseAgeExclude:
   - adm-zip@0.6.1
   # Renovate security update: @hono/node-server@2.1.5
   - "@hono/node-server@2.1.5"
+  # Renovate security update: minimatch@11.0.1
+  - minimatch@11.0.1
