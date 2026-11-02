@@ -1,95 +1,103 @@
-import { Box, Code, Flex, Stack, Table, Text } from "@commercetools/nimbus";
-import { useAtomValue } from "jotai";
-import { useState } from "react";
-import { themeSpacingTokensAtom } from "@/atoms/spacing-tokens.ts";
-import { CopyButton } from "../copy-button";
+import { Box, Button, Code, Flex, Stack, Text } from "@commercetools/nimbus";
+import { useState, type ReactNode } from "react";
+import { tokensOf } from "../theme-tokens";
 import { TokenPicker } from "../token-picker";
-import { useCopy } from "../use-copy";
+import { TokenTable } from "../token-table";
 
 const DEFAULT_TOKEN = "400";
 
-/** Root font size that rem values are shown for. */
-const ROOT_FONT_SIZE = 16;
+type SampleProps = {
+  /** What the sample shows, such as "Padding". */
+  label: string;
+  /** The style prop with the token, such as `p="400"`. */
+  code: string;
+  children: ReactNode;
+};
 
-const formatRem = (px: number) =>
-  `${parseFloat((px / ROOT_FONT_SIZE).toFixed(4))}rem`;
+/** One use of the token: a label with the code, and a drawing below it. */
+const Sample = ({ label, code, children }: SampleProps) => (
+  <Stack gap="200" minWidth="0" maxWidth="full">
+    <Flex align="baseline" gap="200" textStyle="sm">
+      <Text fontWeight="600">{label}</Text>
+      <Code variant="subtle">{code}</Code>
+    </Flex>
+    {/*
+     * The drawing is decorative: the label says the same. On a narrow screen,
+     * a large token scrolls sideways instead of squeezing the content.
+     */}
+    <Box overflowX="auto" aria-hidden>
+      {children}
+    </Box>
+  </Stack>
+);
 
 type PreviewProps = {
   token: string;
-  px: number;
+  value: string;
 };
 
 /**
- * The selected token at its real size, as padding around a row of items and as
- * the gap between them.
+ * The selected token at its real size, in two common uses: the padding of a
+ * card and the gap between two buttons.
  */
-const Preview = ({ token, px }: PreviewProps) => (
-  <Stack gap="300">
+const Preview = ({ token, value }: PreviewProps) => (
+  <Stack gap="500">
     <Flex align="baseline" gap="300" wrap="wrap" aria-live="polite">
       <Text textStyle="2xl" fontWeight="600">
         {token}
       </Text>
-      <Text color="neutral.11">
-        {px}px · {formatRem(px)}
-      </Text>
+      <Text color="neutral.11">{value}</Text>
     </Flex>
 
-    {/* The picture is decorative: the values above say the same. */}
-    <Box overflowX="auto" aria-hidden>
-      <Box
-        // Padding: the space inside the container.
-        bg="primary.3"
-        borderRadius="200"
-        p={token}
-        width="fit-content"
-      >
-        <Flex
-          // Gap: the space between the items.
-          bg="primary.6"
-          gap={token}
-          borderRadius="100"
+    <Flex gap="800" rowGap="600" wrap="wrap" align="flex-start">
+      <Sample label="Padding" code={`p="${token}"`}>
+        <Box
+          // A card with the token as its padding. The dashed line marks the
+          // content, so the space between it and the border is the padding.
+          width="fit-content"
+          p={token}
+          bg="bg"
+          border="solid-25"
+          borderColor="neutral.7"
+          borderRadius="200"
         >
-          {[0, 1, 2].map((item) => (
-            <Box
-              key={item}
-              width="1400"
-              height="800"
-              flexShrink={0}
-              bg="bg"
-              border="1px solid"
-              borderColor="primary.7"
-              borderRadius="100"
-            />
-          ))}
-        </Flex>
-      </Box>
-    </Box>
+          <Stack
+            gap="50"
+            outline="1px dashed"
+            outlineColor="primary.8"
+            textStyle="sm"
+            whiteSpace="nowrap"
+          >
+            <Text fontWeight="600">Order 1042</Text>
+            <Text color="neutral.11">Shipped on 2 November</Text>
+          </Stack>
+        </Box>
+      </Sample>
 
-    <Flex gap="500" wrap="wrap" textStyle="sm" color="neutral.11">
-      <Flex align="center" gap="150">
-        <Box boxSize="300" borderRadius="50" bg="primary.3" />
-        <Text>
-          Padding <Code variant="subtle">p="{token}"</Code>
-        </Text>
-      </Flex>
-      <Flex align="center" gap="150">
-        <Box boxSize="300" borderRadius="50" bg="primary.6" />
-        <Text>
-          Gap <Code variant="subtle">gap="{token}"</Code>
-        </Text>
-      </Flex>
+      <Sample label="Gap" code={`gap="${token}"`}>
+        {/* `inert`: the buttons are part of the picture, not controls. */}
+        <Flex gap={token} inert>
+          <Button size="xs" variant="outline">
+            Cancel
+          </Button>
+          <Button size="xs" variant="solid" colorPalette="primary">
+            Save
+          </Button>
+        </Flex>
+      </Sample>
     </Flex>
   </Stack>
 );
 
 /**
  * The spacing scale: a preview of the selected token, and a table of every
- * token with its size in px and rem, a bar at the real size, and a copy button.
+ * token with its size in px, a bar at the real size and a copy button.
  */
 export const SpacingScale = () => {
-  const tokens = useAtomValue(themeSpacingTokensAtom);
+  // The negative tokens mirror the positive ones; the page explains them.
+  const tokens = tokensOf("spacing").filter((item) => !item.id.startsWith("-"));
   const [selected, setSelected] = useState(DEFAULT_TOKEN);
-  const { copied, copy } = useCopy();
+
   const current = tokens.find((item) => item.id === selected) ?? tokens[0];
   if (!current) return null;
 
@@ -97,7 +105,7 @@ export const SpacingScale = () => {
     <Stack gap="500" my="600">
       <Stack
         gap="500"
-        border="1px solid"
+        border="solid-25"
         borderColor="neutral.6"
         borderRadius="300"
         p="500"
@@ -108,56 +116,31 @@ export const SpacingScale = () => {
           value={current.id}
           onChange={setSelected}
         />
-        <Preview
-          token={current.id}
-          px={parseFloat(current.value.originalValue)}
-        />
+        <Preview token={current.id} value={current.value} />
       </Stack>
 
-      <Table.Root size="sm">
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeader>Token</Table.ColumnHeader>
-            <Table.ColumnHeader textAlign="right">px</Table.ColumnHeader>
-            <Table.ColumnHeader textAlign="right">rem</Table.ColumnHeader>
-            <Table.ColumnHeader>Size</Table.ColumnHeader>
-            <Table.ColumnHeader>
-              <Box srOnly>Copy</Box>
-            </Table.ColumnHeader>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {tokens.map((item) => {
-            const px = parseFloat(item.value.originalValue);
-            const isSelected = item.id === current.id;
-            return (
-              <Table.Row
-                key={item.id}
-                bg={isSelected ? "primary.3" : undefined}
-              >
-                <Table.Cell>
-                  <Code variant="subtle">{item.id}</Code>
-                </Table.Cell>
-                <Table.Cell textAlign="right">{px}px</Table.Cell>
-                <Table.Cell textAlign="right">{formatRem(px)}</Table.Cell>
-                <Table.Cell>
-                  {/* The bar is as wide as the token: it uses the token. */}
-                  <Box
-                    width={item.id}
-                    height="300"
-                    bg="primary.9"
-                    borderRadius="50"
-                    aria-hidden
-                  />
-                </Table.Cell>
-                <Table.Cell textAlign="right">
-                  <CopyButton token={item.id} copied={copied} onCopy={copy} />
-                </Table.Cell>
-              </Table.Row>
-            );
-          })}
-        </Table.Body>
-      </Table.Root>
+      <TokenTable
+        columns={[
+          { header: "px", width: "10ch", align: "right" },
+          { header: "Sample" },
+        ]}
+        rows={tokens.map((item) => ({
+          id: item.id,
+          highlight: item.id === current.id,
+          cells: [
+            item.value,
+            // The bar is as wide as the token: it uses the token.
+            <Box
+              key="sample"
+              width={item.id}
+              height="300"
+              bg="primary.9"
+              borderRadius="50"
+              aria-hidden
+            />,
+          ],
+        }))}
+      />
     </Stack>
   );
 };

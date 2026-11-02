@@ -1,109 +1,118 @@
-import { Box, Code, Table } from "@commercetools/nimbus";
+import { Box, Code } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
 import orderBy from "lodash/orderBy";
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { themeSizeTokensAtom } from "@/atoms/theme-size-tokens.ts";
-import { CopyButton } from "../copy-button";
-import { useCopy } from "../use-copy";
+import { TokenTable, type TokenTableColumn } from "../token-table";
 
-/** Root font size that rem values are shown for. */
-const ROOT_FONT_SIZE = 16;
-
-type SizeGroup = "regular" | "fraction" | "large" | "breakpoint" | "other";
+type SizeGroup =
+  "regular" | "large" | "breakpoint" | "fraction" | "content" | "viewport";
 
 interface SizeToken {
   id: string;
-  label: string;
+  /** The group of the theme atom. `other` holds content and viewport sizes. */
   group: string;
   value: {
     originalValue: string;
   };
 }
 
-/** The order of the content and viewport tokens. */
-const OTHER_ORDER = [
-  "full",
-  "fit",
-  "min",
-  "max",
-  "prose",
-  "vw",
-  "vh",
-  "svw",
-  "svh",
-  "lvw",
-  "lvh",
-  "dvw",
-  "dvh",
-];
+/** The viewport tokens, in the order of the table. */
+const VIEWPORT_ORDER = ["vw", "vh", "svw", "svh", "lvw", "lvh", "dvw", "dvh"];
 
-/** What the content and viewport tokens mean. */
-const MEANING: Record<string, string> = {
-  max: "The intrinsic preferred width of the content.",
-  min: "The intrinsic minimum width of the content.",
-  fit: "The available space, but not more than max-content.",
-  prose: "60 characters wide, measured with the ch unit.",
+/** The content tokens, in the order of the table. */
+const CONTENT_ORDER = ["full", "fit", "min", "max", "prose"];
+
+/**
+ * What the content and viewport tokens mean, after the MDN pages for
+ * `min-content`, `max-content`, `fit-content` and `ch`, and the definitions of
+ * the viewport units in CSS Values and Units Level 4.
+ */
+const MEANING: Record<string, ReactNode> = {
   full: "100% of the parent.",
-  vw: "100% of the viewport width.",
-  vh: "100% of the viewport height.",
-  svw: "100% of the small viewport width.",
-  svh: "100% of the small viewport height.",
-  lvw: "100% of the large viewport width.",
-  lvh: "100% of the large viewport height.",
-  dvw: "100% of the dynamic viewport width. Not stable, even when the viewport is unchanged.",
-  dvh: "100% of the dynamic viewport height. Not stable, even when the viewport is unchanged.",
+  fit: (
+    <>
+      The available space, but not more than <Code variant="subtle">max</Code>{" "}
+      and not less than <Code variant="subtle">min</Code>.
+    </>
+  ),
+  min: "As narrow as the content allows. Text wraps at every space, so the element is as wide as the longest word.",
+  max: "As wide as the content needs. Text does not wrap, even if it overflows.",
+  prose: "60 times the width of the character 0 in the current font.",
+  vw: (
+    <>
+      The viewport width. The same as <Code variant="subtle">lvw</Code>.
+    </>
+  ),
+  vh: (
+    <>
+      The viewport height. The same as <Code variant="subtle">lvh</Code>.
+    </>
+  ),
+  svw: "The viewport width when the browser interface is shown.",
+  svh: "The viewport height when the browser interface is shown.",
+  lvw: "The viewport width when the browser interface is hidden.",
+  lvh: "The viewport height when the browser interface is hidden.",
+  dvw: "The current viewport width. It changes when the browser interface shows or hides.",
+  dvh: "The current viewport height. It changes when the browser interface shows or hides.",
 };
 
-const formatRem = (px: number) =>
-  `${parseFloat((px / ROOT_FONT_SIZE).toFixed(4))}rem`;
+/** The group of a token on this page: content and viewport are apart. */
+const groupOf = (item: SizeToken): SizeGroup => {
+  if (item.group !== "other") return item.group as SizeGroup;
+  return VIEWPORT_ORDER.includes(item.id) ? "viewport" : "content";
+};
 
-/** `33.333333%` as `33.33%`. */
-const formatPercent = (value: string) =>
-  `${parseFloat(parseFloat(value).toFixed(2))}%`;
+/** The position of a token in a fixed order; unknown tokens go last. */
+const positionIn = (order: string[], id: string) => {
+  const index = order.indexOf(id);
+  return index === -1 ? order.length : index;
+};
 
 /** Sorts the tokens of one group the way a reader expects. */
 const sortGroup = (tokens: SizeToken[], group: SizeGroup): SizeToken[] => {
   switch (group) {
     case "fraction":
+      // By the denominator, then by the share: 1/2, 1/3, 2/3, 1/4 …
       return orderBy(
         tokens,
         [
           (item) => parseInt(item.id.split("/")[1]),
-          (item) => {
-            const [a, b] = item.id.split("/");
-            return parseFloat(a) / parseFloat(b);
-          },
+          (item) => parseFloat(item.value.originalValue),
         ],
         ["asc", "asc"]
       );
-    case "other":
-      // The parent and the content first, then text, then the viewport.
-      return orderBy(tokens, (item) => {
-        const index = OTHER_ORDER.indexOf(item.id);
-        return index === -1 ? OTHER_ORDER.length : index;
-      });
+    case "content":
+      return orderBy(tokens, (item) => positionIn(CONTENT_ORDER, item.id));
+    case "viewport":
+      return orderBy(tokens, (item) => positionIn(VIEWPORT_ORDER, item.id));
     default:
       return orderBy(tokens, (item) => parseFloat(item.value.originalValue));
   }
 };
 
-type CopyCellProps = {
-  token: string;
-  copied: string | null;
-  onCopy: (token: string) => void;
+/** `33.333333%` as `33.33%`. */
+const formatPercent = (value: string) =>
+  `${parseFloat(parseFloat(value).toFixed(2))}%`;
+
+/** A bar of the given width, or a share of a track for a fraction. */
+const Bar = ({ width, track }: { width: string; track?: boolean }) => {
+  const bar = (
+    <Box width={width} height="300" bg="primary.9" borderRadius="50" />
+  );
+  return (
+    <Box aria-hidden>
+      {track ? (
+        // The track is the parent, the bar is the share of it.
+        <Box bg="primary.3" borderRadius="50">
+          {bar}
+        </Box>
+      ) : (
+        bar
+      )}
+    </Box>
+  );
 };
-
-const CopyCell = ({ token, copied, onCopy }: CopyCellProps) => (
-  <Table.Cell textAlign="right">
-    <CopyButton token={token} copied={copied} onCopy={onCopy} />
-  </Table.Cell>
-);
-
-const CopyHeader = () => (
-  <Table.ColumnHeader>
-    <Box srOnly>Copy</Box>
-  </Table.ColumnHeader>
-);
 
 interface SizesScaleProps {
   /** Which group of size tokens to show. */
@@ -119,107 +128,67 @@ interface SizesScaleProps {
  */
 export const SizesScale = ({ group }: SizesScaleProps): ReactElement | null => {
   const sizeTokens = useAtomValue(themeSizeTokensAtom) as SizeToken[] | null;
-  const { copied, copy } = useCopy();
-
   if (!sizeTokens) return null;
 
   const tokens = sortGroup(
-    sizeTokens.filter((item) => item.group === group),
+    sizeTokens.filter((item) => groupOf(item) === group),
     group
   );
   if (tokens.length === 0) return null;
 
-  const px = (item: SizeToken) => parseFloat(item.value.originalValue);
+  const value = (item: SizeToken) => item.value.originalValue;
+  const px = (item: SizeToken) => parseFloat(value(item));
   const widest = Math.max(...tokens.map(px));
 
-  return (
+  const table = (
+    columns: TokenTableColumn[],
+    cells: (item: SizeToken) => ReactNode[],
+    options: { tokenWidth?: string; minWidth?: string } = {}
+  ) => (
     <Box mb="800" mt="400">
-      <Table.Root size="sm" tableLayout="fixed">
-        <Table.ColumnGroup>
-          <Table.Column width={group === "regular" ? "10ch" : "20ch"} />
-          {group === "regular" && <Table.Column width="10ch" />}
-          <Table.Column width={group === "other" ? "16ch" : "12ch"} />
-          <Table.Column />
-          <Table.Column width="1200" />
-        </Table.ColumnGroup>
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeader>Token</Table.ColumnHeader>
-            {group === "regular" && (
-              <Table.ColumnHeader textAlign="right">px</Table.ColumnHeader>
-            )}
-            <Table.ColumnHeader
-              textAlign={group === "other" ? "left" : "right"}
-            >
-              {group === "regular"
-                ? "rem"
-                : group === "fraction"
-                  ? "Share"
-                  : group === "other"
-                    ? "CSS value"
-                    : "px"}
-            </Table.ColumnHeader>
-            <Table.ColumnHeader>
-              {group === "other" ? "Meaning" : "Size"}
-            </Table.ColumnHeader>
-            <CopyHeader />
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {tokens.map((item) => (
-            <Table.Row key={item.id}>
-              <Table.Cell>
-                <Code variant="subtle">{item.label}</Code>
-              </Table.Cell>
-              {group === "regular" && (
-                <Table.Cell textAlign="right">{px(item)}px</Table.Cell>
-              )}
-              <Table.Cell textAlign={group === "other" ? "left" : "right"}>
-                {group === "regular"
-                  ? formatRem(px(item))
-                  : group === "fraction"
-                    ? formatPercent(item.value.originalValue)
-                    : group === "other"
-                      ? item.value.originalValue
-                      : `${px(item)}px`}
-              </Table.Cell>
-              <Table.Cell>
-                {group === "other" ? (
-                  (MEANING[item.id] ?? "")
-                ) : (
-                  <Box aria-hidden>
-                    {group === "fraction" ? (
-                      // The track is the parent, the bar is the share of it.
-                      <Box bg="primary.3" borderRadius="50">
-                        <Box
-                          width={item.id}
-                          height="300"
-                          bg="primary.9"
-                          borderRadius="50"
-                        />
-                      </Box>
-                    ) : (
-                      <Box
-                        // Numeric sizes are at their real size. Named and
-                        // breakpoint sizes are scaled to the widest one.
-                        width={
-                          group === "regular"
-                            ? item.id
-                            : `${(px(item) / widest) * 100}%`
-                        }
-                        height="300"
-                        bg="primary.9"
-                        borderRadius="50"
-                      />
-                    )}
-                  </Box>
-                )}
-              </Table.Cell>
-              <CopyCell token={item.id} copied={copied} onCopy={copy} />
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table.Root>
+      <TokenTable
+        columns={columns}
+        rows={tokens.map((item) => ({ id: item.id, cells: cells(item) }))}
+        {...options}
+      />
     </Box>
   );
+
+  switch (group) {
+    case "regular":
+      // The bars are at their real size, up to 384px: the table is wide
+      // enough for the largest bar and scrolls on a narrow screen.
+      return table(
+        [{ header: "px", width: "10ch", align: "right" }, { header: "Sample" }],
+        (item) => [value(item), <Bar key="bar" width={item.id} />],
+        { minWidth: "2xl" }
+      );
+    case "fraction":
+      return table(
+        [
+          { header: "Share", width: "12ch", align: "right" },
+          { header: "Sample" },
+        ],
+        (item) => [
+          formatPercent(value(item)),
+          <Bar key="bar" width={item.id} track />,
+        ]
+      );
+    case "content":
+    case "viewport":
+      return table(
+        [{ header: "CSS value", width: "16ch" }, { header: "Meaning" }],
+        (item) => [value(item), MEANING[item.id] ?? ""]
+      );
+    default:
+      // Named and breakpoint sizes are scaled to the widest one.
+      return table(
+        [{ header: "px", width: "10ch", align: "right" }, { header: "Sample" }],
+        (item) => [
+          value(item),
+          <Bar key="bar" width={`${(px(item) / widest) * 100}%`} />,
+        ],
+        group === "breakpoint" ? { tokenWidth: "18ch" } : {}
+      );
+  }
 };

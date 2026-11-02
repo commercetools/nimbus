@@ -21,31 +21,26 @@ Spacing tokens set the space inside and between elements. The scale grows from
 values, so that spacing stays consistent across your layouts.
 
 > [!IMPORTANT]\
-> Looking for `width` or `height`? Those use the [sizes](/home/design-tokens/sizes)
-> tokens, a separate scale with the same numbers. Spacing tokens are for
-> `padding`, `margin`, `gap` and position.
+> Looking for `width` or `height`? Use the
+> [size tokens](/home/design-tokens/sizes). The style prop decides which scale
+> applies. Up to `3200`, both scales have the same numeric tokens, so `p="400"`
+> and `w="400"` are both 16px. Other size tokens, such as `md` or `1/2`, do not
+> work for spacing.
 
 ## Spacing scale
 
-Select a token to see it at its real size, as padding and as a gap. Use the copy
-button to copy the token name.
-
 <SpacingScale />
-
-To calculate the pixel value of a token, divide the token by 25: `1000 / 25` is
-40px. The rem column shows the pixel value divided by 16, the default root font
-size.
 
 ## Use spacing in code
 
 Spacing tokens work on the style props for padding, margin, gap and position.
 
-| You set                  | Props                                                | Example                                |
-| ------------------------ | ---------------------------------------------------- | -------------------------------------- |
-| Space inside an element  | `p`, `px`, `py`, `pt`, `pr`, `pb`, `pl`              | `<Box p="400" />`                      |
-| Space around an element  | `m`, `mx`, `my`, `mt`, `mr`, `mb`, `ml`              | `<Box mb="200" />`                     |
-| Space between children   | `gap`, `rowGap`, `columnGap`                         | `<Flex gap="200" />`                   |
-| Position of an element   | `top`, `right`, `bottom`, `left`, `inset`            | `<Box position="absolute" top="100" />` |
+| You set                 | Props                                     | Example                                 |
+| ----------------------- | ----------------------------------------- | --------------------------------------- |
+| Space inside an element | `p`, `px`, `py`, `pt`, `pr`, `pb`, `pl`   | `<Box p="400" />`                       |
+| Space around an element | `m`, `mx`, `my`, `mt`, `mr`, `mb`, `ml`   | `<Box mb="200" />`                      |
+| Space between children  | `gap`, `rowGap`, `columnGap`              | `<Flex gap="200" />`                    |
+| Position of an element  | `top`, `right`, `bottom`, `left`, `inset` | `<Box position="absolute" top="100" />` |
 
 ```tsx
 <Flex direction="column" gap="400" p="600">
@@ -80,16 +75,14 @@ for how to set it up.
 
 ## Choose how to add space
 
-For simple vertical or horizontal stacking with consistent spacing, Stack is
-often simpler than Flex. Use Stack's `gap` or Box's `margin` for fixed spacing,
-and Spacer only when the space should fill what is left.
+For a simple row or column with even space, Stack is often simpler than Flex.
 
-| You want                                  | Use                                                              |
-| ----------------------------------------- | ---------------------------------------------------------------- |
+| You want                                    | Use                                                                             |
+| ------------------------------------------- | ------------------------------------------------------------------------------- |
 | Even space between items in a row or column | [Stack](/components/layout/stack) or [Flex](/components/layout/flex) with `gap` |
-| Space inside a container                  | `padding` on [Box](/components/layout/box)                       |
-| Fixed space around one element            | `margin` on [Box](/components/layout/box)                        |
-| Push items to opposite ends               | [Spacer](/components/layout/spacer) in a flex layout             |
+| Space inside a container                    | `padding` on [Box](/components/layout/box)                                      |
+| Fixed space around one element              | `margin` on [Box](/components/layout/box)                                       |
+| Push items to opposite ends                 | [Spacer](/components/layout/spacer) in a flex layout                            |
 
 ### Values that Nimbus components use
 
