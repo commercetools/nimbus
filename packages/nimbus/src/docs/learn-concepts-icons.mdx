@@ -1,0 +1,118 @@
+---
+id: Learn-Concepts-Icons
+title: Icons
+description:
+  Import icons by name from @commercetools/nimbus-icons, put them inside a
+  component such as Button, or wrap them in Icon to set size and color.
+icon: EmojiSymbols
+illustration:
+  - icons
+  - icon
+order: 7
+menu:
+  - Learn
+  - Concepts
+  - Icons
+tags:
+  - learn
+  - icons
+  - icon
+  - svg
+  - nimbus-icons
+  - import icon
+---
+
+Nimbus icons come from the package `@commercetools/nimbus-icons`. Import an
+icon by its name, such as `Edit` or `CheckCircle`. Inside a component such as
+`Button`, put the icon in as it is: the component sets its size and color. On
+its own, wrap the icon in `Icon` to set the size and color with tokens.
+
+## Find and import an icon
+
+Search for an icon on the [Icons](/icons) page. The import name is the icon
+name in PascalCase, without a prefix: `Edit`, `CheckCircle`, `ArrowForward`.
+Names that start with a digit get the prefix `Svg`, for example `Svg10k`.
+
+## An icon inside a component
+
+Components such as `Button` size and color the icons inside them. Put the icon
+next to the text.
+
+```jsx live-dev
+import { Button, Stack } from "@commercetools/nimbus";
+import { Add, ArrowForward } from "@commercetools/nimbus-icons";
+
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Button>
+      <Add />
+      Add item
+    </Button>
+    <Button variant="outline">
+      Next
+      <ArrowForward />
+    </Button>
+  </Stack>
+);
+```
+
+## An icon on its own
+
+On its own, an icon has no size and no color from a component. Wrap it in
+`Icon`, and set `size` (`2xs` to `xl`) and `color` with a color token.
+
+```jsx live-dev
+import { Icon, Stack } from "@commercetools/nimbus";
+import { CheckCircle, Delete } from "@commercetools/nimbus-icons";
+
+const App = () => (
+  <Stack direction="row" gap="400" align="center">
+    <Icon as={CheckCircle} size="sm" color="positive.11" />
+    <Icon as={Delete} size="md" color="critical.11" />
+  </Stack>
+);
+```
+
+## Common mistakes
+
+- **An icon name that is also a component name.** The icons `Badge`, `Code`,
+  `Group`, `Image`, `Link`, `List` and `Menu` have the same names as Nimbus
+  components. Import the icon with another name:
+
+```jsx live-dev
+import { Button, Menu } from "@commercetools/nimbus";
+import { Menu as MenuIcon } from "@commercetools/nimbus-icons";
+
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger asChild>
+      <Button variant="ghost">
+        <MenuIcon />
+        Actions
+      </Button>
+    </Menu.Trigger>
+    <Menu.Content>
+      <Menu.Item id="edit">Edit</Menu.Item>
+      <Menu.Item id="delete">Delete</Menu.Item>
+    </Menu.Content>
+  </Menu.Root>
+);
+```
+
+## When nothing fits
+
+If no icon fits, put your own SVG inside `Icon` and mark it as a
+[one-off](/learn/rules). `Icon` gives it the size and the color.
+
+```jsx live-dev
+import { Icon } from "@commercetools/nimbus";
+
+const App = () => (
+  <Icon size="lg" color="primary.11">
+    {/* nimbus-one-off: the partner logo is not a Nimbus icon */}
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="12" cy="12" r="10" />
+    </svg>
+  </Icon>
+);
+```
