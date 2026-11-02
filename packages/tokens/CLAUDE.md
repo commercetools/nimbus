@@ -119,10 +119,11 @@ const primaryColor = colors.primary;
 ### CSS Custom Properties
 
 ```css
-/* Tokens are available as CSS variables */
+/* Inside NimbusProvider, tokens are available as CSS variables:
+   --nimbus-<category>-<path>, with plural category names */
 .my-component {
-  color: var(--nimbus-color-primary);
-  padding: var(--nimbus-spacing-md);
+  color: var(--nimbus-colors-primary-9);
+  padding: var(--nimbus-spacing-400);
 }
 ```
 
