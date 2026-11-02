@@ -676,6 +676,73 @@ Supported in the Nimbus documentation site:
 - [ ] Consistent formatting throughout file
 - [ ] No references to non-existent components or patterns
 
+## Learn Pages
+
+The Learn section (`packages/nimbus/src/docs/learn*.mdx`) explains how Nimbus
+works. It is written for developers and for AI agents that read the docs through
+the Nimbus MCP server. It has three groups:
+
+- **Rules** (`learn-rules.mdx`): the rules that every screen follows.
+- **Concepts** (`learn-concepts-*.mdx`, menu `Learn` > `Concepts` > label): one
+  page per concept, explaining how it works.
+- **How do I…** (`learn-how-do-i-*.mdx`, menu `Learn` > `How do I…` > label):
+  one page per problem, with one example.
+
+The group pages (`learn.mdx`, `learn-concepts.mdx`, `learn-how-do-i.mdx`) show
+their pages with `<CategoryOverview variant="list" />`.
+
+### Front matter
+
+Search ranks the title highest, then the description and the tags.
+
+- `title`: the words people search for, including API names, such as
+  `Read the value in onChange`. The sidebar label comes from `menu`, so it can
+  be shorter.
+- `description`: the answer in one line, with the exact API names.
+- `tags`: `learn`, synonyms, and the wrong names people start from, such as
+  `onClick` or `event.target.value`.
+- `related`: on How do I pages only. List the concept page and the component
+  pages; links work in both directions.
+- `order`: 1 or more on every page.
+- Quote a description that contains a colon followed by a space, or rephrase it.
+  Invalid YAML drops the page from the build.
+
+### Concept page
+
+1. A first paragraph in plain Markdown: what the concept is and when you need
+   it. Search reads the first 500 characters.
+2. Sections that explain how it works, each with a live example.
+3. `## Common mistakes`: only mistakes that people make, each with the fix or a
+   link to the How do I page.
+4. `## What you cannot change`: only when it is true and useful.
+5. `## When nothing fits`: the one-off for this concept, if there is one.
+
+### How do I page
+
+1. A first paragraph: what the reader sees, and the answer.
+2. One live example, or a plain `tsx` block when the code needs a router or the
+   app root.
+3. `## Why it works`: two or three sentences and a link to the concept page.
+4. `## When nothing fits`: the one-off, if there is one.
+
+### Writing rules
+
+- Code blocks are `jsx live-dev` blocks with real import lines and an `App`
+  component.
+- In prose, write component and part names without angle brackets
+  (`Card.Header`). The MCP server removes text that looks like a JSX tag.
+- Nimbus props are described as Nimbus props, without naming the libraries
+  behind them.
+- Use only tokens that exist. A raw value appears only in a marked one-off: a
+  comment that starts with `nimbus-one-off:` and gives the reason
+  (`{/* nimbus-one-off: reason */}` in JSX).
+- A fix with code lives on its How do I page. A concept page gives one sentence
+  and a link.
+- Link to reference pages for lists that are built from tokens, such as the
+  z-index tokens.
+- Write in plain English for readers whose first language is not English: short
+  sentences and words that mean what they say.
+
 ---
 
 [← Back to Index](../component-guidelines.md) |
