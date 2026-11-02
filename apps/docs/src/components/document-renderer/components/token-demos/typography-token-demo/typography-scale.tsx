@@ -10,7 +10,14 @@ const ROOT_FONT_SIZE = 16;
 /** Text below this size, in px, is marked as deprecated. */
 const MIN_FONT_SIZE = 12;
 
-const SAMPLE = "Sphinx of black quartz, judge my vow";
+/** Shows all letters: for fonts, weights and letter spacings. */
+const PANGRAM = "Sphinx of black quartz, judge my vow";
+
+/** Short text from a commerce UI: for text styles. */
+const UI_TEXT = "Order details";
+
+/** Text styles that are older names for styles of the main scale. */
+const OLDER_TEXT_STYLES = ["caption", "detail", "body"];
 
 type TypographyKind =
   | "textStyles"
@@ -27,6 +34,8 @@ interface Row {
   sample: ReactNode;
   /** The size in px, to mark sizes that are too small. */
   fontSizePx?: number;
+  /** Rows with a group are shown last, under a heading with the group name. */
+  group?: string;
 }
 
 interface Config {
@@ -34,8 +43,40 @@ interface Config {
   headers: string[];
   /** Widths of the value columns. */
   widths: string[];
+  /**
+   * The narrowest width of the table, as a size token. On a narrower screen
+   * the table scrolls sideways, so that the sample column does not get too
+   * narrow.
+   */
+  minWidth: string;
   rows: () => Row[];
 }
+
+type TextStyle = { value: { fontSize: string; lineHeight: string } };
+
+const textStyles = () =>
+  Object.entries(
+    (system._config.theme?.textStyles ?? {}) as Record<string, TextStyle>
+  );
+
+/** The text styles that use a value, such as all styles with a 16px size. */
+const TextStylesWith = ({
+  property,
+  value,
+}: {
+  property: keyof TextStyle["value"];
+  value: string;
+}) => {
+  const ids = textStyles()
+    .filter(([, style]) => style.value[property] === value)
+    .map(([id]) => id);
+  if (ids.length === 0) return null;
+  return (
+    <Text fontFamily="mono" textStyle="sm" color="neutral.11">
+      {ids.join(", ")}
+    </Text>
+  );
+};
 
 const formatRem = (px: number) =>
   `${parseFloat((px / ROOT_FONT_SIZE).toFixed(4))}rem`;
@@ -52,28 +93,26 @@ const Sample = ({ children, ...props }: ComponentProps<typeof Text>) => (
 const CONFIGS: Record<TypographyKind, Config> = {
   textStyles: {
     headers: ["Font size", "Line height"],
-    widths: ["12ch", "12ch"],
-    rows: () => {
-      const styles = (system._config.theme?.textStyles ?? {}) as Record<
-        string,
-        { value: { fontSize: string; lineHeight: string } }
-      >;
-      return Object.entries(styles).map(([id, style]) => ({
+    widths: ["11ch", "11ch"],
+    minWidth: "2xl",
+    rows: () =>
+      textStyles().map(([id, style]) => ({
         id,
         fontSizePx: parseFloat(style.value.fontSize),
         values: [style.value.fontSize, style.value.lineHeight],
+        group: OLDER_TEXT_STYLES.includes(id) ? "Older names" : undefined,
         // Large styles wrap, so that the sample is not cut off.
         sample: (
           <Box aria-hidden>
-            <Text textStyle={id}>{SAMPLE}</Text>
+            <Text textStyle={id}>{UI_TEXT}</Text>
           </Box>
         ),
-      }));
-    },
+      })),
   },
   fonts: {
     headers: ["Font stack"],
     widths: ["28ch"],
+    minWidth: "xl",
     rows: () =>
       tokensOf("fonts").map(({ id, value }) => ({
         id,
@@ -82,21 +121,29 @@ const CONFIGS: Record<TypographyKind, Config> = {
             {value}
           </Text>,
         ],
+        // The font stack is several lines high, so the sample can wrap.
         sample: (
-          <Sample fontFamily={id} fontSize="600" lineHeight="1.2">
-            {SAMPLE}
-          </Sample>
+          <Box aria-hidden>
+            <Text fontFamily={id} fontSize="500" lineHeight="1.3">
+              {PANGRAM}
+            </Text>
+          </Box>
         ),
       })),
   },
   fontSizes: {
-    headers: ["px", "rem"],
-    widths: ["8ch", "10ch"],
+    headers: ["px", "rem", "Text style"],
+    widths: ["8ch", "10ch", "17ch"],
+    minWidth: "xl",
     rows: () =>
       tokensOf("fontSizes").map(({ id, value }) => ({
         id,
         fontSizePx: parseFloat(value),
-        values: [value, formatRem(parseFloat(value))],
+        values: [
+          value,
+          formatRem(parseFloat(value)),
+          <TextStylesWith key="t" property="fontSize" value={value} />,
+        ],
         sample: (
           <Sample fontSize={id} lineHeight="1.2">
             Ag
@@ -107,13 +154,14 @@ const CONFIGS: Record<TypographyKind, Config> = {
   fontWeights: {
     headers: ["Weight"],
     widths: ["8ch"],
+    minWidth: "lg",
     rows: () =>
       tokensOf("fontWeights").map(({ id, value }) => ({
         id,
         values: [value],
         sample: (
           <Sample fontWeight={id} fontSize="500">
-            {SAMPLE}
+            {PANGRAM}
           </Sample>
         ),
       })),
@@ -121,28 +169,35 @@ const CONFIGS: Record<TypographyKind, Config> = {
   letterSpacings: {
     headers: ["Value"],
     widths: ["10ch"],
+    minWidth: "lg",
     rows: () =>
       tokensOf("letterSpacings").map(({ id, value }) => ({
         id,
         values: [value],
         sample: (
           <Sample letterSpacing={id} fontSize="500">
-            {SAMPLE}
+            {PANGRAM}
           </Sample>
         ),
       })),
   },
   lineHeights: {
-    headers: ["px", "rem"],
-    widths: ["8ch", "10ch"],
+    headers: ["px", "rem", "Text style"],
+    widths: ["8ch", "10ch", "17ch"],
+    minWidth: "xl",
     rows: () =>
       tokensOf("lineHeights").map(({ id, value }) => ({
         id,
-        values: [value, formatRem(parseFloat(value))],
-        // The colored band is the height of one line.
+        values: [
+          value,
+          formatRem(parseFloat(value)),
+          <TextStylesWith key="t" property="lineHeight" value={value} />,
+        ],
+        // The colored band is the height of one line. The text is not clipped,
+        // so a line that is lower than the text shows the text sticking out.
         sample: (
-          <Box bg="primary.3" borderRadius="100" overflow="hidden" aria-hidden>
-            <Text lineHeight={id} fontSize="400" truncate>
+          <Box bg="primary.3" borderRadius="100" px="200" aria-hidden>
+            <Text lineHeight={id} fontSize="400" whiteSpace="nowrap">
               One line of text
             </Text>
           </Box>
@@ -168,60 +223,79 @@ export const TypographyScale = ({
   const rows = config.rows();
   if (rows.length === 0) return null;
 
+  // Rows without a group first, then one body for each group.
+  const groups = [...new Set([undefined, ...rows.map((row) => row.group)])];
+  const columnCount = config.headers.length + 3;
+
+  const renderRow = (row: Row) => {
+    const deprecated =
+      row.fontSizePx !== undefined && row.fontSizePx < MIN_FONT_SIZE;
+    return (
+      <Table.Row key={row.id} bg={deprecated ? "warning.3" : undefined}>
+        <Table.Cell>
+          <Code variant="subtle">{row.id}</Code>
+          {deprecated && (
+            <Text textStyle="xs" fontWeight="600" color="warning.11" mt="100">
+              Deprecated
+            </Text>
+          )}
+        </Table.Cell>
+        {row.values.map((value, index) => (
+          <Table.Cell key={index}>{value}</Table.Cell>
+        ))}
+        <Table.Cell>{row.sample}</Table.Cell>
+        <Table.Cell textAlign="right">
+          <CopyButton token={row.id} copied={copied} onCopy={copy} />
+        </Table.Cell>
+      </Table.Row>
+    );
+  };
+
   return (
     <Box mb="800" mt="400">
-      <Table.Root size="sm" tableLayout="fixed">
-        <Table.ColumnGroup>
-          <Table.Column width="14ch" />
-          {config.widths.map((width, index) => (
-            <Table.Column key={index} width={width} />
-          ))}
-          <Table.Column />
-          <Table.Column width="1200" />
-        </Table.ColumnGroup>
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeader>Token</Table.ColumnHeader>
-            {config.headers.map((header) => (
-              <Table.ColumnHeader key={header}>{header}</Table.ColumnHeader>
+      <Table.ScrollArea maxWidth="full">
+        <Table.Root size="sm" tableLayout="fixed" minWidth={config.minWidth}>
+          <Table.ColumnGroup>
+            <Table.Column width="14ch" />
+            {config.widths.map((width, index) => (
+              <Table.Column key={index} width={width} />
             ))}
-            <Table.ColumnHeader>Sample</Table.ColumnHeader>
-            <Table.ColumnHeader>
-              <Box srOnly>Copy</Box>
-            </Table.ColumnHeader>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {rows.map((row) => {
-            const small =
-              row.fontSizePx !== undefined && row.fontSizePx < MIN_FONT_SIZE;
-            return (
-              <Table.Row key={row.id} bg={small ? "warning.3" : undefined}>
-                <Table.Cell>
-                  <Code variant="subtle">{row.id}</Code>
-                  {small && (
-                    <Text
-                      textStyle="xs"
-                      fontWeight="600"
-                      color="warning.11"
-                      mt="100"
-                    >
-                      Deprecated
-                    </Text>
-                  )}
-                </Table.Cell>
-                {row.values.map((value, index) => (
-                  <Table.Cell key={index}>{value}</Table.Cell>
-                ))}
-                <Table.Cell>{row.sample}</Table.Cell>
-                <Table.Cell textAlign="right">
-                  <CopyButton token={row.id} copied={copied} onCopy={copy} />
-                </Table.Cell>
-              </Table.Row>
-            );
-          })}
-        </Table.Body>
-      </Table.Root>
+            <Table.Column />
+            <Table.Column width="1200" />
+          </Table.ColumnGroup>
+          <Table.Header>
+            <Table.Row>
+              <Table.ColumnHeader>Token</Table.ColumnHeader>
+              {config.headers.map((header) => (
+                <Table.ColumnHeader key={header}>{header}</Table.ColumnHeader>
+              ))}
+              <Table.ColumnHeader>Sample</Table.ColumnHeader>
+              <Table.ColumnHeader>
+                <Box srOnly>Copy</Box>
+              </Table.ColumnHeader>
+            </Table.Row>
+          </Table.Header>
+          {groups.map((group) => (
+            <Table.Body key={group ?? ""}>
+              {group && (
+                <Table.Row>
+                  <Table.ColumnHeader
+                    colSpan={columnCount}
+                    scope="rowgroup"
+                    pt="600"
+                    textStyle="xs"
+                    fontWeight="600"
+                    color="neutral.11"
+                  >
+                    {group}
+                  </Table.ColumnHeader>
+                </Table.Row>
+              )}
+              {rows.filter((row) => row.group === group).map(renderRow)}
+            </Table.Body>
+          ))}
+        </Table.Root>
+      </Table.ScrollArea>
     </Box>
   );
 };
