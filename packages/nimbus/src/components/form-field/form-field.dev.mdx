@@ -122,7 +122,7 @@ const App = () => {
           <TextInput
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={setEmail}
             onBlur={() => setTouched(true)}
             placeholder="your@email.com"
           />
@@ -409,7 +409,7 @@ const App = () => {
         <FormField.Error>{errors.password}</FormField.Error>
       </FormField.Root>
 
-      <Button onClick={handleSubmit}>Log In</Button>
+      <Button onPress={handleSubmit}>Log In</Button>
 
       <Text fontSize="300" color="neutral.11">
         Email: {formData.email || '(empty)'} | Password length: {formData.password.length}
@@ -577,14 +577,14 @@ const App = () => {
 
       <Stack direction="row" gap="300">
         {step !== 'personal' && (
-          <Button variant="outline" onClick={handleBack}>
+          <Button variant="outline" onPress={handleBack}>
             Back
           </Button>
         )}
         {step !== 'preferences' ? (
-          <Button onClick={handleNext}>Next</Button>
+          <Button onPress={handleNext}>Next</Button>
         ) : (
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button onPress={handleSubmit}>Submit</Button>
         )}
       </Stack>
     </Stack>
