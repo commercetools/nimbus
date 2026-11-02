@@ -17,11 +17,9 @@ tags:
   - line
 icon: BorderStyle
 ---
-Border tokens set the width and the style of a border in one value. There are
-four, from `solid-25` (1px) to `solid-100` (4px). As with the
-[spacing](/home/design-tokens/spacing) tokens, the number is the pixel value
-times 25. A border token does not set a color, so always set `borderColor` with
-it.
+There are four border tokens, from `solid-25` (1px) to `solid-100` (4px). As
+with the [spacing](/home/design-tokens/spacing) tokens, the number is the pixel
+value times 25.
 
 > [!IMPORTANT]\
 > Looking for rounded corners? Those use the [radii](/home/design-tokens/radii)
@@ -29,44 +27,46 @@ it.
 
 ## Border tokens
 
-The samples use `borderColor="border"`. Use the copy button to copy a token name.
+> [!WARNING]\
+> Always set `borderColor` next to a border token. A border token sets the CSS
+> `border` shorthand. Its value has no color, so the shorthand sets the color to
+> the text color
+> ([MDN: border](https://developer.mozilla.org/en-US/docs/Web/CSS/border)).
+> `<Box border="solid-25" />` draws a line in the text color. Write
+> `<Box border="solid-25" borderColor="border" />`.
+
+The samples use `borderColor="border.emphasized"`.
 
 <BordersScale kind="tokens" />
 
 ## Border colors
 
-A border token sets the CSS `border` property. That property is a shorthand: it
-sets the width, the style and the color together, and a part that the value does
-not name gets its initial value
-([MDN: border](https://developer.mozilla.org/en-US/docs/Web/CSS/border)). For
-the color, that is the text color. So set `borderColor` next to every border
-token.
-
-> [!WARNING]\
-> `<Box border="solid-25" />` draws a line in the text color, not in the border
-> color. Write `<Box border="solid-25" borderColor="border" />`.
-
-The color `border` is the default border color of Nimbus. It applies when an
-element has a border width but no border token, because Nimbus sets it on every
-element (`--global-color-border` in
-`packages/nimbus/src/theme/global-css.ts`).
+The color `border` is the default border color of Nimbus. Nimbus sets it on
+every element (`--global-color-border` in
+`packages/nimbus/src/theme/global-css.ts`), so it applies when an element has a
+border width but no border token.
 
 Each border color points to a step of a palette, as the table shows. Steps 6 to
 8 of every palette are the border steps, so you can also use a step of another
 palette, such as `primary.7`. See [Steps](/home/design-tokens/colors#steps) on
 the Colors page.
 
+The samples use `border="solid-25"`.
+
 <BordersScale kind="colors" />
+
+`border.subtle` and `border.muted` are not weaker than `border`: `border.subtle`
+is the same color, and `border.muted` is one step stronger.
 
 ## Choose a border
 
-| You want                                              | Use                                  | Example                                                 |
-| ----------------------------------------------------- | ------------------------------------ | ------------------------------------------------------- |
-| A thin line around an element, such as a card         | `solid-25` and `border`              | `<Box border="solid-25" borderColor="border" />`        |
-| A line on one side, for example between rows          | `solid-25` on one side               | `<Box borderBottom="solid-25" borderColor="border" />`  |
-| A stronger line                                       | A stronger border color              | `<Box border="solid-25" borderColor="border.emphasized" />` |
-| A line that shows a status                            | A status border color                | `<Box border="solid-25" borderColor="border.critical" />`   |
-| A thicker line, for a small control that must stand out | `solid-50`                         | `<Box border="solid-50" borderColor="border.emphasized" />` |
+| You want                                                | Use                                       | Example                                                     |
+| ------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------------------- |
+| A thin line around an element, such as a card           | `solid-25` and `border`                   | `<Box border="solid-25" borderColor="border" />`            |
+| A line on one side, for example between rows            | `solid-25` on one side                    | `<Box borderBottom="solid-25" borderColor="border" />`      |
+| A stronger line                                         | `border.emphasized`                       | `<Box border="solid-25" borderColor="border.emphasized" />` |
+| A line that shows a status                              | A status color, such as `border.critical` | `<Box border="solid-25" borderColor="border.critical" />`   |
+| A thicker line, for a small control that must stand out | `solid-50`                                | `<Box border="solid-50" borderColor="border.emphasized" />` |
 
 ## Use borders in code
 
@@ -143,5 +143,5 @@ for how to set it up.
 
 In the recipes of Nimbus components, `solid-25` is the most common border token
 (19 times). Calendar, Select, ComboBox and ListBox, for example, use it on one
-side only, with `borderBottom`. `solid-50` is used 7 times, for Checkbox, Switch, Slider,
-Kbd, Steps and ListBox. `solid-75` and `solid-100` are not used.
+side only, with `borderBottom`. `solid-50` is used 7 times, for Checkbox,
+Switch, Slider, Kbd, Steps and ListBox. `solid-75` and `solid-100` are not used.
