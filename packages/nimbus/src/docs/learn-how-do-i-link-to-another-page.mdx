@@ -48,9 +48,15 @@ const App = () => (
 
 ## Connect your router
 
-Pass the `navigate` function of your router to the `router` prop. This example
-uses React Router. The [NimbusProvider](/components/utilities/nimbus-provider)
-page shows other routers.
+In a Merchant Center application, the application shell already gives its
+router to `NimbusProvider`, so `Link` with `href` works without any setup.
+
+In other apps, pass the `navigate` function of your router to the `router` prop.
+This example uses React Router 6. For React Router 5, use
+`router={{ navigate: history.push }}` with `useHistory`, as shown on
+[Provider and layers](/learn/concepts/provider-and-layers). The
+[NimbusProvider](/components/utilities/nimbus-provider) page shows other
+routers.
 
 ```tsx
 import type { ReactNode } from "react";
@@ -80,8 +86,8 @@ import { Link as RouterLink } from "react-router-dom";
 </Button>;
 ```
 
-The element keeps the role of a button, so screen readers announce a button.
-When the element only goes to another page, use `Link`.
+Use this only when the design needs the look of a button. Screen readers then
+announce a button, not a link. In all other cases, use `Link`.
 
 ## Why it works
 

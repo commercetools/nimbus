@@ -115,17 +115,26 @@ look and behavior to its only child instead. `Button`, `Link` and trigger parts
 such as `Menu.Trigger` take `asChild`. Most parts of compound components do not
 take `as` or `asChild`.
 
+A common use is a trigger part: `Menu.Trigger` with `asChild` gives its
+behavior to your `Button`, so the menu opens from a button with the Nimbus look.
+
 ```jsx live-dev
-import { Button } from "@commercetools/nimbus";
+import { Button, Menu } from "@commercetools/nimbus";
 
 const App = () => (
-  <Button variant="outline" asChild>
-    <a href="#component-structure">Back to the top</a>
-  </Button>
+  <Menu.Root>
+    <Menu.Trigger asChild>
+      <Button variant="outline">Actions</Button>
+    </Menu.Trigger>
+    <Menu.Content>
+      <Menu.Item id="duplicate">Duplicate</Menu.Item>
+      <Menu.Item id="archive">Archive</Menu.Item>
+    </Menu.Content>
+  </Menu.Root>
 );
 ```
 
-The most common use is a link from your router. See
+To give the look of a button to a link from your router, see
 [Link to another page](/learn/how-do-i/link-to-another-page).
 
 ## When nothing fits
