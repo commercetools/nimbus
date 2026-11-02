@@ -9,6 +9,9 @@ const ROOT_FONT_SIZE = 16;
 /** The right end of the ruler, in px. Wider windows sit at the end. */
 const RULER_END = 1800;
 
+/** From this part of the ruler on, the marker label sits left of the marker. */
+const LABEL_FLIP = 0.94;
+
 interface Range {
   /** The breakpoint, or `base` for the widths below the first breakpoint. */
   id: string;
@@ -61,10 +64,16 @@ const activeRange = (ranges: Range[]) =>
           .matches
     ) ?? ranges[0];
 
+/** The rest of the sentence that starts with the active range. */
+const summaryOf = (active: Range, width: number, first?: Range) =>
+  active.id === "base" && first
+    ? `applies: your browser window is ${width}px wide, narrower than ${first.id}.`
+    : `is the largest breakpoint that matches your browser window, which is ${width}px wide.`;
+
 /**
  * The breakpoints on a ruler, with a marker at the width of the browser window
- * and the active breakpoint, and a table of the tokens with their range and
- * media query.
+ * and the active breakpoint, and a table of the tokens with their minimum
+ * width and media query.
  */
 export const BreakpointsScale = () => {
   const width = useWindowWidth();
@@ -77,6 +86,8 @@ export const BreakpointsScale = () => {
 
   const position = (px: number) =>
     `${(Math.min(px, RULER_END) / RULER_END) * 100}%`;
+  // Near the right end, the label sits left of the marker, inside the frame.
+  const labelLeft = Math.min(width, RULER_END) / RULER_END > LABEL_FLIP;
 
   return (
     <Stack gap="500" my="600">
@@ -87,16 +98,25 @@ export const BreakpointsScale = () => {
         borderRadius="300"
         p="500"
       >
-        <Flex align="baseline" gap="300" wrap="wrap" aria-live="polite">
-          <Text textStyle="2xl" fontWeight="600">
-            {active ? active.id : "–"}
-          </Text>
-          <Text color="neutral.11">
-            {active
-              ? `Your browser window is ${width}px wide.`
-              : "The width of your browser window is not known."}
-          </Text>
-        </Flex>
+        {/* One sentence that starts with the active range in large text. */}
+        <Text color="neutral.11" aria-live="polite">
+          {active ? (
+            <>
+              <Text
+                as="span"
+                textStyle="2xl"
+                fontWeight="600"
+                color="fg"
+                me="100"
+              >
+                {active.id}
+              </Text>{" "}
+              {summaryOf(active, width, ranges[1])}
+            </>
+          ) : (
+            "The width of your browser window is not known."
+          )}
+        </Text>
 
         {/* The ruler is decorative: the text above and the table say the same. */}
         <Box position="relative" pt="800" aria-hidden>
@@ -104,7 +124,8 @@ export const BreakpointsScale = () => {
             <Box
               position="absolute"
               top="0"
-              bottom="0"
+              // Ends just below the bar, so that it does not cover a number.
+              bottom="600"
               left={position(width)}
               width="0"
               borderLeft="solid-50"
@@ -114,7 +135,7 @@ export const BreakpointsScale = () => {
               <Text
                 position="absolute"
                 top="0"
-                transform="translateX(-50%)"
+                transform={labelLeft ? "translateX(-100%)" : "translateX(-50%)"}
                 textStyle="xs"
                 fontWeight="600"
                 whiteSpace="nowrap"
@@ -125,7 +146,13 @@ export const BreakpointsScale = () => {
               </Text>
             </Box>
           )}
-          <Flex height="1200" borderRadius="200" overflow="hidden">
+          <Flex
+            height="1200"
+            borderRadius="200"
+            overflow="hidden"
+            // The last range has no end: the ruler fades out to the right.
+            maskImage="linear-gradient(to right, black 96%, transparent)"
+          >
             {ranges.map((range) => {
               const isActive = range.id === active?.id;
               const end = range.to ?? RULER_END;
@@ -167,10 +194,10 @@ export const BreakpointsScale = () => {
       </Stack>
 
       <TokenTable
-        minWidth="2xl"
+        tokenWidth="8ch"
+        minWidth="xl"
         columns={[
-          { header: "From", width: "10ch", align: "right" },
-          { header: "Up to", width: "10ch", align: "right" },
+          { header: "Min width", width: "12ch", align: "right" },
           { header: "Media query" },
         ]}
         rows={ranges.slice(1).map((range) => ({
@@ -178,7 +205,6 @@ export const BreakpointsScale = () => {
           highlight: range.id === active?.id,
           cells: [
             `${range.from}px`,
-            range.to === null ? "—" : `${range.to - 1}px`,
             <Code key="query" variant="subtle">
               {`@media screen and (min-width: ${toRem(range.from)})`}
             </Code>,
