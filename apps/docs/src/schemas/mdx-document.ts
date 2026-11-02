@@ -72,8 +72,8 @@ export const mdxDocumentSchema = z.object({
      * Name of the illustration for this page, for pages that are not a
      * component or pattern (for example `design-tokens`). The name is the file
      * name of any `<name>.illustration.ts` source in `packages/nimbus/src`.
-     * A list of names shows a carousel in the page header; the first name is
-     * the one on overview cards.
+     * With a list of names, the first name is the one in the page header and
+     * on overview cards.
      * Without it, a main doc page uses the source next to its `.mdx` file.
      */
     illustration: z

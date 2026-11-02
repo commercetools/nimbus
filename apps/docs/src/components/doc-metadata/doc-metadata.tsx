@@ -9,11 +9,7 @@ import {
   VisuallyHidden,
 } from "@commercetools/nimbus";
 import { OpenInNew } from "@commercetools/nimbus-icons";
-import {
-  Illustration,
-  IllustrationCarousel,
-  hasIllustration,
-} from "@/components/illustration";
+import { Illustration, hasIllustration } from "@/components/illustration";
 import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
 import { getResourceLinks } from "./get-resource-links";
 import type { DocMetadataProps } from "./doc-metadata.types";
@@ -33,15 +29,12 @@ export const DocMetadata = ({
   storybookLink,
   githubLink,
   illustration,
-  illustrations,
 }: DocMetadataProps) => {
   const lifecycleInfo = lifecycleState
     ? lifecycleStateDescriptions[lifecycleState]
     : null;
   const links = getResourceLinks({ figmaLink, storybookLink, githubLink });
-  const slides = (illustrations ?? []).filter(hasIllustration);
-  const showCarousel = slides.length > 1;
-  const showIllustration = showCarousel || hasIllustration(illustration);
+  const showIllustration = hasIllustration(illustration);
 
   if (!title && !description && links.length === 0) {
     return null;
@@ -117,21 +110,13 @@ export const DocMetadata = ({
         )}
       </Flex>
 
-      {showCarousel ? (
-        <IllustrationCarousel
-          names={slides}
+      {hasIllustration(illustration) && (
+        <Illustration
+          name={illustration}
           display={{ base: "none", md: "block" }}
           width="200px"
+          height="150px"
         />
-      ) : (
-        hasIllustration(illustration) && (
-          <Illustration
-            name={illustration}
-            display={{ base: "none", md: "block" }}
-            width="200px"
-            height="150px"
-          />
-        )
       )}
     </Grid>
   );
