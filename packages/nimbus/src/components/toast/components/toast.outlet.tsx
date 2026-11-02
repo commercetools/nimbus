@@ -93,7 +93,13 @@ function subscribeToActivation(onStoreChange: () => void) {
  * @internal
  */
 export function ToastOutlet() {
-  const active = useSyncExternalStore(subscribeToActivation, isToastersActive);
+  // Toasts can only be created in the browser, so the server (and the
+  // hydration pass) always render the inactive state.
+  const active = useSyncExternalStore(
+    subscribeToActivation,
+    isToastersActive,
+    () => false
+  );
 
   // Supplement zag-js hotkeys with numpad support.
   // Zag only matches `Digit*` codes; this listener handles `Numpad*` equivalents.

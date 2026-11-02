@@ -31,6 +31,9 @@ import type { ComponentNameProps } from "./component-name.types";
  *   Content
  * </ComponentName>
  * ```
+ *
+ * // Pre-release only (lifecycleState: Experimental | Alpha | Beta in the .mdx):
+ * // @beta This component is in beta and may change in future minor versions.
  */
 export const ComponentName = (props: ComponentNameProps) => {
   const {
