@@ -54,7 +54,7 @@ export function DynamicLayout() {
         width="full"
       >
         <Suspense fallback={<LoadingSpinner />}>
-          <AppNavBar />
+          <AppNavBar showMobileNav={!isNoSidebar} />
         </Suspense>
       </Box>
 

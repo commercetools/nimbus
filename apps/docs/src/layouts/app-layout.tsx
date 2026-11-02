@@ -15,7 +15,6 @@ import { AppFrame } from "@/components/app-frame";
 import { Menu } from "@/components/navigation/menu";
 import { BreadcrumbNav } from "@/components/navigation/breadcrumb";
 import { Toc } from "@/components/navigation/toc";
-import { MobileNav } from "@/components/navigation/mobile-nav";
 import {
   ScrollContainerProvider,
   useMainViewport,
@@ -85,22 +84,14 @@ function AppFrameBodyInner() {
         }
       >
         <Suspense fallback={<LoadingSpinner />}>
-          {/* The menu button (narrow screens only) and the breadcrumb share a
-              row. The home page has no breadcrumb, so on wide screens the row
-              is empty there and is not rendered. */}
-          <Flex
-            display={isHome ? { base: "flex", lg: "none" } : "flex"}
-            alignItems="center"
-            gap="200"
-            mb="600"
-          >
-            <MobileNav />
-            {!isHome && (
+          {/* The home page has no breadcrumb. */}
+          {!isHome && (
+            <Flex alignItems="center" gap="200" mb="600">
               <Suspense fallback={null}>
                 <BreadcrumbNav />
               </Suspense>
-            )}
-          </Flex>
+            </Flex>
+          )}
           {/* Animated wrapper that re-renders on route change */}
           <Box key={baseRoute} animationName="fade-in" animationDuration="slow">
             <Outlet />

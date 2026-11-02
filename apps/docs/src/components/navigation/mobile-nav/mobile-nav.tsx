@@ -6,8 +6,8 @@ import { useRouteInfo } from "@/hooks/use-route-info";
 
 /**
  * Navigation for narrow screens. Below the `lg` breakpoint the app frame hides
- * the sidebar, so this shows a menu button that opens the same menu in a
- * drawer. The drawer closes when the route changes.
+ * the sidebar, so this shows a menu button in the top bar that opens the same
+ * menu in a drawer. The drawer closes when the route changes.
  */
 export const MobileNav = () => {
   const [isOpen, setIsOpen] = useState(false);
