@@ -50,14 +50,18 @@ afterEach(() => {
 // JSDOM's CSSOM parser cannot handle modern CSS syntax (nesting, layers, etc.)
 // used by Emotion/Chakra. When replaceSync throws, JSDOM emits the error
 // directly to stderr via virtualConsole, bypassing console.error filtering.
-const originalReplaceSync = CSSStyleSheet.prototype.replaceSync;
-CSSStyleSheet.prototype.replaceSync = function (text: string) {
-  try {
-    originalReplaceSync.call(this, text);
-  } catch {
-    // Silently swallow CSS parse errors — non-actionable in JSDOM
-  }
-};
+// Skipped in node-environment specs (e.g. server-rendering tests), which have
+// no CSSOM.
+if (typeof CSSStyleSheet !== "undefined") {
+  const originalReplaceSync = CSSStyleSheet.prototype.replaceSync;
+  CSSStyleSheet.prototype.replaceSync = function (text: string) {
+    try {
+      originalReplaceSync.call(this, text);
+    } catch {
+      // Silently swallow CSS parse errors — non-actionable in JSDOM
+    }
+  };
+}
 
 function isCssParseNoise(args: unknown[]): boolean {
   return (

@@ -18,6 +18,8 @@ import { ItemGroupRoot, ItemGroupSeparator } from "./components";
  *   <Item.Root>…</Item.Root>
  * </ItemGroup.Root>
  * ```
+ *
+ * @beta This component is in beta and may change in future minor versions.
  */
 export const ItemGroup = {
   /**

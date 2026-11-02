@@ -34,6 +34,8 @@ import type { DropZoneProps } from "./drop-zone.types";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/dropzone}
  * @supportsStyleProps
+ *
+ * @beta This component is in beta and may change in future minor versions.
  */
 export const DropZone = (props: DropZoneProps) => {
   const { ref: forwardedRef, children, ...rest } = props;
