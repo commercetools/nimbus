@@ -61,9 +61,13 @@ const CategoryOverviewContent: FC<CategoryOverviewProps> = ({
       return false;
     }
 
-    // If we're in a subcategory page, only show documents with the same first and second level
+    // On a page below the top level, show the documents that sit under the
+    // whole menu path of this page, not only under its second level.
     if (subcategory && activeDoc.meta.menu.length > 1) {
-      return route.menu.length > 1 && route.menu[1] === subcategory;
+      return (
+        route.menu.length > 1 &&
+        activeDoc.meta.menu.every((item, i) => route.menu[i] === item)
+      );
     }
 
     // If we're at the category root, only show direct subcategories
