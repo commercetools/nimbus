@@ -350,6 +350,7 @@ catalogs:
     "@mdx-js/mdx": 3.1.1
     "@types/mdx": 2.0.14
     "@types/react-syntax-highlighter": 15.5.13
+    agentation: 3.1.2
     chokidar: 6.0.0
     fuse.js: 7.5.0
     github-slugger: 2.0.0

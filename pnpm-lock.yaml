@@ -18,6 +18,9 @@ catalogs:
     '@types/react-syntax-highlighter':
       specifier: 15.5.13
       version: 15.5.13
+    agentation:
+      specifier: 3.1.2
+      version: 3.1.2
     chokidar:
       specifier: 6.0.0
       version: 6.0.0
@@ -615,6 +618,9 @@ importers:
       '@vitejs/plugin-react-swc':
         specifier: catalog:tooling
         version: 4.3.3(@swc/helpers@0.5.17)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.1)(terser@5.51.2)(tsx@4.23.15)(yaml@2.8.3))
+      agentation:
+        specifier: catalog:apps
+        version: 3.1.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       eslint:
         specifier: catalog:tooling
         version: 10.13.0(supports-color@8.1.1)
@@ -4993,6 +4999,17 @@ packages:
   adm-zip@0.6.1:
     resolution: {integrity: sha512-Xwrja8nx9e5o2N1my4DsKCeKpdrnACyr1wtbPxBDgGzKzKyE9kRtBFA8mWldI+RVlD7CBZNWY/wQ2+ydwOR6kQ==}
     engines: {node: '>=14.0'}
+
+  agentation@3.1.2:
+    resolution: {integrity: sha512-ZZr6PRgX3ussGbvC9NVh5vFfKKFkQyHL6KuxOfBAAM/mJS3bM2XyhZ7wLPakDwU3pqkzq7u6vEfLikFsCOu5+Q==}
+    peerDependencies:
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
 
   ajv-draft-04@1.0.0:
     resolution: {integrity: sha512-mv00Te6nmYbRp5DCwclxtt7yV/joXJPGS7nM+97GdxvuttCOfgI3K4U25zboyeX0O+myI8ERluxQe5wljMmVIw==}
@@ -15276,6 +15293,11 @@ snapshots:
   acorn@8.16.0: {}
 
   adm-zip@0.6.1: {}
+
+  agentation@3.1.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+    optionalDependencies:
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
 
   ajv-draft-04@1.0.0(ajv@8.20.0):
     optionalDependencies:
