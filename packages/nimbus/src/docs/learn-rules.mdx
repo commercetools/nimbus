@@ -17,10 +17,13 @@ tags:
   - best practices
   - guidelines
   - one-off
+  - nimbus-one-off
 ---
 
-If you follow these eight rules, your screen looks and works like other Nimbus
-screens. Each rule links to the concept behind it. To set up Nimbus first, see
+These are the conventions and best practices for every Nimbus screen. If you
+follow these eight rules, your screen looks and works like other Nimbus screens.
+Each rule links to the concept behind it. Rule 8 shows how to mark a one-off
+with a `nimbus-one-off:` comment. To set up Nimbus first, see
 the [installation](/home/getting-started/installation).
 
 ## 1. Wrap your app in NimbusProvider
@@ -159,4 +162,8 @@ const App = () => {
 };
 ```
 
-In JSX, write the comment as `{/* nimbus-one-off: reason */}`.
+Inside JSX, write the same comment in braces:
+
+```jsx
+{/* nimbus-one-off: reason */}
+```
