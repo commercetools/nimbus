@@ -1,37 +1,47 @@
-import { Box, Flex } from "@commercetools/nimbus";
+import { Box, Flex, SimpleGrid, Stack, Text } from "@commercetools/nimbus";
+import { CopyButton } from "../copy-button";
 import { tokensOf } from "../theme-tokens";
-import { TokenTable } from "../token-table";
+import { useCopy } from "../use-copy";
 
-/** Three colored dots: something sharp to blur. */
-const Pattern = () => (
-  <Flex gap="200" align="center" justify="center" width="3200" height="1200">
-    <Box boxSize="800" borderRadius="full" bg="primary.9" />
-    <Box boxSize="800" borderRadius="full" bg="critical.9" />
-    <Box boxSize="800" borderRadius="full" bg="positive.9" />
-  </Flex>
+/**
+ * Colored dots and two lines of text: sharp edges that show how strong a blur
+ * is.
+ */
+const Content = () => (
+  <Stack flex="1" minWidth="0" gap="150" p="300" whiteSpace="nowrap">
+    <Flex gap="150">
+      <Box boxSize="600" borderRadius="full" bg="primary.9" />
+      <Box boxSize="600" borderRadius="full" bg="critical.9" />
+      <Box boxSize="600" borderRadius="full" bg="positive.9" />
+    </Flex>
+    <Text fontWeight="600" color="neutral.12">
+      Order 1024
+    </Text>
+    <Text textStyle="sm" color="neutral.11">
+      Ships on Friday
+    </Text>
+  </Stack>
 );
 
 /**
- * The pattern, blurred with the CSS `filter` property. The frame clips the
- * blur, so that a strong blur stays inside its row.
+ * The same content twice, side by side. A panel over the right copy blurs what
+ * is behind it with the CSS `backdrop-filter` property; the left copy stays
+ * sharp for comparison. The panel has no background, so that the blur is easy
+ * to see. The `backdropBlur` prop is not used: it has no effect in Nimbus
+ * (https://github.com/commercetools/nimbus/issues/2143).
  */
-const BlurSample = ({ token }: { token: string }) => (
-  <Box overflow="hidden" width="fit-content" aria-hidden>
-    <Box filter={`blur({blurs.${token}})`}>
-      <Pattern />
-    </Box>
-  </Box>
-);
-
-/**
- * The pattern with a panel over its right half. The panel blurs what is behind
- * it with the CSS `backdrop-filter` property, and the left half stays sharp for
- * comparison. The `backdropBlur` prop is not used: it has no effect in Nimbus,
- * because the global styles reset `--backdrop-blur` with `!important`.
- */
-const BackdropSample = ({ token }: { token: string }) => (
-  <Box position="relative" width="fit-content" aria-hidden>
-    <Pattern />
+const Sample = ({ token }: { token: string }) => (
+  <Flex
+    position="relative"
+    overflow="hidden"
+    bg="bg"
+    border="solid-25"
+    borderColor="border"
+    borderRadius="200"
+    aria-hidden
+  >
+    <Content />
+    <Content />
     <Box
       position="absolute"
       top="0"
@@ -42,29 +52,35 @@ const BackdropSample = ({ token }: { token: string }) => (
       borderLeft="solid-25"
       borderColor="border"
     />
-  </Box>
+  </Flex>
 );
 
-/**
- * The blur tokens with their value, a sample for `filter` and a sample for
- * `backdropFilter`, and a copy button.
- */
-export const BlursScale = () => (
-  <Box my="600">
-    <TokenTable
-      columns={[
-        { header: "px", width: "8ch", align: "right" },
-        { header: "filter", width: "1/3" },
-        { header: "backdropFilter" },
-      ]}
-      rows={tokensOf("blurs").map((item) => ({
-        id: item.id,
-        cells: [
-          item.value,
-          <BlurSample key="blur" token={item.id} />,
-          <BackdropSample key="backdrop" token={item.id} />,
-        ],
-      }))}
-    />
-  </Box>
-);
+/** Every blur token on a sample, with its value and a copy button. */
+export const BlursScale = () => {
+  const tokens = tokensOf("blurs");
+  const { copied, copy } = useCopy();
+
+  return (
+    <SimpleGrid
+      my="600"
+      columns={{ base: 1, md: 2 }}
+      columnGap="600"
+      rowGap="600"
+    >
+      {tokens.map((item) => (
+        <Stack key={item.id} gap="200">
+          <Sample token={item.id} />
+          <Flex align="center" gap="200">
+            <Text fontFamily="mono" textStyle="sm" fontWeight="600">
+              {item.id}
+            </Text>
+            <Text textStyle="xs" color="neutral.11">
+              {item.value}
+            </Text>
+            <CopyButton token={item.id} copied={copied} onCopy={copy} />
+          </Flex>
+        </Stack>
+      ))}
+    </SimpleGrid>
+  );
+};
