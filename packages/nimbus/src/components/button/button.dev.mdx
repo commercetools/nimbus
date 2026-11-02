@@ -59,7 +59,7 @@ const App = () => (
 
 ### Color palette options
 
-The Button component supports all semantic color palettes to convey meaning and hierarchy. The `primary` color palette is the default.
+The Button component supports all semantic color palettes to convey meaning and hierarchy. Without a `colorPalette`, a button uses `neutral`.
 
 ```jsx live-dev
 const App = () => (
@@ -181,7 +181,7 @@ const App = () => {
 The Button component handles most accessibility requirements internally via React Aria.
 
 - **Labeling**: Ensure the button has a visible label (children) or an `aria-label` if it contains only an icon.
-- **Role**: Renders as `button` by default, or `link` (a tag) when using `as="a"`.
+- **Role**: Renders a `button` element by default. With `as="a"` or `asChild`, it renders the other element and keeps the `button` role. For an element that only navigates, use `Link`.
 
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
 
