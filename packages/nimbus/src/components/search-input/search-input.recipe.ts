@@ -5,7 +5,7 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * Defines the styling variants and base styles using Chakra UI's slot recipe system.
  */
 export const searchInputSlotRecipe = defineSlotRecipe({
-  slots: ["root", "leadingElement", "trailingElement", "input"],
+  slots: ["root", "leadingElement", "trailingElement", "inputWrapper", "input"],
   // Unique class name prefix for the component
   className: "nimbus-search-input",
 
@@ -50,10 +50,23 @@ export const searchInputSlotRecipe = defineSlotRecipe({
       color: "neutral.11",
     },
 
+    inputWrapper: {
+      flexGrow: 1,
+      // Let the field shrink below the input's default width, so in a narrow
+      // field the adornments and the clear button stay inside it.
+      minWidth: 0,
+      // While empty, hold the clear button's space, so the field keeps the
+      // width it has with the button.
+      paddingInlineEnd: "var(--search-input-clear-button-space, 0px)",
+    },
+
     input: {
       cursor: "inherit",
       display: "block",
-      flexGrow: 1,
+      // Reach into the wrapper's padding, so a placeholder can use the clear
+      // button's space. A cyclic percentage counts as `auto` for the field's
+      // natural width, which stays the input's default width plus the padding.
+      width: "calc(100% + var(--search-input-clear-button-space, 0px))",
       bg: "transparent",
       outline: "none",
       fontSize: "inherit",
@@ -80,6 +93,11 @@ export const searchInputSlotRecipe = defineSlotRecipe({
           px: "300",
           gap: "100",
           textStyle: "sm",
+          // The clear button (2xs IconButton) and the gap before it.
+          "&[data-empty='true']": {
+            "--search-input-clear-button-space":
+              "calc({sizes.600} + {spacing.100})",
+          },
         },
         leadingElement: {
           "& > svg": {
@@ -98,6 +116,11 @@ export const searchInputSlotRecipe = defineSlotRecipe({
           px: "400",
           gap: "200",
           textStyle: "md",
+          // The clear button (2xs IconButton) and the gap before it.
+          "&[data-empty='true']": {
+            "--search-input-clear-button-space":
+              "calc({sizes.600} + {spacing.200})",
+          },
         },
         leadingElement: {
           "& > svg": {
