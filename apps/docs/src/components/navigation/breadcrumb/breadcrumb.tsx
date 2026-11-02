@@ -9,15 +9,22 @@ import { menuToPath } from "@commercetools/nimbus-docs-build/sluggify";
 import { BreadcrumbItem } from "./breadcrumb.types";
 import { useActiveDoc } from "../../../hooks/useActiveDoc";
 import { useBreadcrumbContext } from "../../../contexts/breadcrumb-context";
+import { useManifest } from "../../../contexts/manifest-context";
 
 /**
  * BreadcrumbNav component renders the breadcrumb navigation based on the active document.
  */
 export const BreadcrumbNav = () => {
   const { doc: activeDoc } = useActiveDoc();
+  const { routeManifest } = useManifest();
   const { previousParts, setPreviousParts } = useBreadcrumbContext();
   const [isHovered, setIsHovered] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+
+  const pagePaths = useMemo(
+    () => new Set(routeManifest?.routes.map((route) => route.path)),
+    [routeManifest]
+  );
 
   // Memoize the breadcrumb parts to avoid unnecessary recalculations
   const parts: BreadcrumbItem[] = useMemo(() => {
@@ -25,11 +32,13 @@ export const BreadcrumbNav = () => {
 
     const { menu } = activeDoc.meta;
 
-    return menu.map((item, idx) => ({
-      label: item,
-      href: menuToPath(menu.slice(0, idx + 1)),
-    }));
-  }, [activeDoc, previousParts]);
+    return menu.map((item, idx) => {
+      const path = `/${menuToPath(menu.slice(0, idx + 1))}`;
+      // A group without a page of its own (such as "Getting Started") is
+      // shown as text, not as a link.
+      return { label: item, href: pagePaths.has(path) ? path : undefined };
+    });
+  }, [activeDoc, previousParts, pagePaths]);
 
   // Update the previous parts in context when we have valid data
   useEffect(() => {
@@ -58,8 +67,8 @@ export const BreadcrumbNav = () => {
           </>
         ),
       },
-      ...filteredParts.map((item) => ({
-        id: item.href,
+      ...filteredParts.map((item, idx) => ({
+        id: item.href ?? `${idx}-${item.label}`,
         href: item.href,
         label: item.label,
       })),

@@ -1,0 +1,46 @@
+---
+id: Styling
+title: Styling
+description:
+  How to style Nimbus components, and where to find the tokens and props behind
+  them.
+icon: Palette
+order: 2
+menu:
+  - Styling
+tags:
+  - styling
+  - tokens
+  - theming
+---
+
+Every Nimbus component gets its look from **design tokens**: named values for
+colors, spacing, type and more. You use these tokens in two ways: through
+**theming props** that a component offers, and through **style props** that
+accept a token as a value.
+
+## Choose your approach
+
+Start with the first row. Move down only when it does not fit.
+
+| You want to...                                  | Use                                                          |
+| ----------------------------------------------- | ------------------------------------------------------------ |
+| Use the standard look of a component            | Theming props such as `variant`, `size` and `colorPalette`   |
+| Change one detail on one component              | A style prop with a token value, such as `padding="400"`     |
+| Change a value for different screen sizes       | An object value, such as `padding={{ base: "400", lg: "600" }}` |
+
+[Choosing an approach](/styling/guides/choosing-an-approach) explains each row with an example.
+
+## Explore
+
+- **Guides**: how to pick an approach and use it.
+  - [Choosing an approach](/styling/guides/choosing-an-approach): which way of
+    styling fits which task.
+  - [Theming](/styling/guides/theming): theming props apply the standard look
+    of Nimbus.
+  - [Responsive styling](/styling/guides/responsive-styling): change styles by
+    screen size.
+- [**Design Tokens**](/home/design-tokens): all colors, spacing, sizes and type
+  styles.
+- [**Style Props**](/home/style-props): every style prop, grouped by the CSS it
+  controls.

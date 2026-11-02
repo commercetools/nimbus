@@ -1,0 +1,61 @@
+---
+id: Styling-Theming
+title: Theming
+description:
+  Theming props apply the standard look of Nimbus to a component.
+icon: ColorLens
+order: 2
+menu:
+  - Styling
+  - Guides
+  - Theming
+tags:
+  - styling
+  - document
+---
+
+Nimbus components derive their appearance from the
+[Design Tokens](/home/design-tokens). Beyond direct styling with
+[Style Props](/home/style-props), components offer dedicated **theming props**
+to apply common, pre-defined visual treatments.
+
+These theming props are the primary way to align components with the
+established Nimbus design language and ensure a consistent look and feel. They
+encapsulate sets of styles related to a component's variants, sizes, or
+semantic `colorPalette`s.
+
+Common theming props include:
+
+- `variant`: Often dictates the overall style of a component (e.g., `solid`,
+  `outline`, `ghost`).
+- `size`: Controls the dimensions of the component (e.g., `sm`, `md`, `lg`).
+- `textStyle`: Specifically for text-based components like `Text` or `Heading`,
+  this prop applies a predefined typographic style (which includes font size,
+  weight, line height, etc.) like `body`, `caption`, `h1`, etc.
+- `colorPalette`: This prop is used to apply a specific color scheme to a
+  component when the color isn't necessarily tied to a semantic meaning (like
+  `success` or `warning`). Instead, it offers a way to achieve visual variation
+  or categorization. For example, a `Badge` component might use `colorPalette`
+  to offer various background and text color combinations (e.g., "blue",
+  "green", "purple", "orange") for purely aesthetic purposes or to group items
+  by a non-semantic color.
+
+```tsx
+import { Button, Text, Card, Badge } from "@commercetools/nimbus";
+
+function ThemedComponents() {
+  return (
+    <>
+      <Text textStyle="caption">I look like a caption</Text>
+      <Button variant="solid" colorPalette="primary" size="lg">
+        Large Primary Button
+      </Button>
+      <Button variant="outline" colorPalette="critical" size="xs">
+        xSmall Critical Outline
+      </Button>
+      <Badge colorPalette="blue">Blue Badge</Badge>
+      <Badge colorPalette="purple">Purple Badge</Badge>
+    </>
+  );
+}
+```

@@ -18,7 +18,7 @@ export const MobileNav = () => {
   }, [baseRoute]);
 
   return (
-    <Box display={{ base: "block", lg: "none" }} mb="400">
+    <Box display={{ base: "block", lg: "none" }}>
       <IconButton
         aria-label="Open navigation"
         size="xs"

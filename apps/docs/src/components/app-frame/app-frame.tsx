@@ -2,9 +2,9 @@
  * AppFrame - Holy Grail Layout Component
  *
  * Implements the body of the app-frame layout: the left nav and the main scroll
- * area, which holds the content and the right aside. The breadcrumb bar and top bar are owned by the persistent layout
- * shell (`dynamic-layout.tsx`) so they survive layout swaps; this grid only
- * fills the remaining space below them.
+ * area, which holds the content and the right aside. The top bar is owned by
+ * the persistent layout shell (`dynamic-layout.tsx`) so it survives layout
+ * swaps; this grid only fills the remaining space below it.
  */
 
 import type { ReactNode, RefObject } from "react";
@@ -47,7 +47,7 @@ export interface AppFrameRightAsideProps {
  * into a drawer (`MobileNav`) and the table of contents is hidden.
  *
  * Designed to be a flex child of the layout shell: it grows to fill the space
- * left under the breadcrumb/top bars (`flex: 1`) and clips its own overflow so
+ * left under the top bar (`flex: 1`) and clips its own overflow so
  * the navigation and the main column scroll independently.
  */
 function AppFrameRoot({ children }: AppFrameRootProps) {

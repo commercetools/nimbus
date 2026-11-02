@@ -182,7 +182,7 @@ function CustomTextInBox() {
 
 While Style Props offer great flexibility, it's generally recommended to use
 standard theming props (discussed in the
-[Theming and Styling](#6-theming-and-styling) section) for common styling
+[Theming](#6-theming) section) for common styling
 scenarios. Reserve Style Props for situations requiring specific, low-level
 control, always pairing them with Design Tokens to maintain consistency.
 
@@ -230,82 +230,33 @@ behavior. This is primarily achieved through the `as` or `asChild` props.
 
 ### 6. Theming
 
-Nimbus components derive their appearance from the underlying
+Nimbus components derive their appearance from the
 [Design Tokens](#3-design-tokens). Beyond direct styling with
-[Style Props](#4-style-props), components offer dedicated **theming props** to
-apply common, pre-defined visual treatments.
-
-These theming props are the primary way to align components with the established
-Nimbus design language and ensure a consistent look and feel. They encapsulate
-sets of styles related to a component's variants, sizes, or semantic `colorPalette`s.
-
-Common theming props include:
-
-- `variant`: Often dictates the overall style of a component (e.g., `solid`,
-  `outline`, `ghost`).
-- `size`: Controls the dimensions of the component (e.g., `sm`, `md`, `lg`).
-- `textStyle`: Specifically for text-based components like `Text` or `Heading`,
-  this prop applies a predefined typographic style (which includes font size,
-  weight, line height, etc.) like `body`, `caption`, `h1`, etc.
-- `colorPalette`: This prop is used to apply a specific color scheme to a
-  component when the color isn't necessarily tied to a semantic meaning (like
-  `success` or `warning`). Instead, it offers a way to achieve visual variation
-  or categorization. For example, a `Badge` component might use `colorPalette`
-  to offer various background and text color combinations (e.g., "blue",
-  "green", "purple", "orange") for purely aesthetic purposes or to group items
-  by a non-semantic color.
+[Style Props](#4-style-props), components offer **theming props** such as
+`variant`, `size`, `textStyle` and `colorPalette` to apply common, pre-defined
+visual treatments. They are the primary way to align components with the Nimbus
+design language.
 
 ```tsx
-import { Button, Text, Card, Badge } from "@commercetools/nimbus";
-
-function ThemedComponents() {
-  return (
-    <>
-      <Text textStyle="caption">I look like a caption</Text>
-      <Button variant="solid" colorPalette="primary" size="lg">
-        Large Primary Button
-      </Button>
-      <Button variant="outline" colorPalette="critical" size="xs">
-        xSmall Critical Outline
-      </Button>
-      <Badge colorPalette="blue">Blue Badge</Badge>
-      <Badge colorPalette="purple">Purple Badge</Badge>
-    </>
-  );
-}
+<Button variant="solid" colorPalette="primary" size="lg">
+  Large Primary Button
+</Button>
 ```
+
+See [Theming](/styling/guides/theming) for all theming props.
 
 ### 7. Responsive Styling
 
-Nimbus components are designed to be responsive, allowing you to adapt their
-styles for different screen sizes. This is typically achieved by providing an an
-object to [Style Props](#4-style-props) or some theming props.
-
-The [breakpoints](/tokens/other/breakpoints) (e.g., `sm`, `md`, `lg`, `xl`,
-`2xl`) used for responsive styling are defined within the theme provided by
-`NimbusProvider`.
-
-The `base` key is the default value that applies if no screen size matches.
+Pass an object to [Style Props](#4-style-props) or some theming props to adapt
+styles to different screen sizes. The `base` key is the default value.
 
 ```tsx
-import { Stack, Text } from "@commercetools/nimbus";
-
-function ResponsiveStack() {
-  return (
-    <Stack
-      direction={{ base: "column", md: "row" }} // Column on mobile, row on medium screens and up
-      padding={{ base: "400", lg: "600" }} // Different padding for small vs large screens
-      gap="400"
-    >
-      <Text>Item 1</Text>
-      <Text>Item 2</Text>
-    </Stack>
-  );
-}
+<Stack direction={{ base: "column", md: "row" }} gap="400" />
 ```
 
-This approach allows for intuitive and declarative responsive design directly
-within your component's props.
+See [Responsive styling](/styling/guides/responsive-styling) for the breakpoints and more
+examples. For help choosing between the approaches, read
+[Styling](/styling).
 
 ### 8. Using Icons
 

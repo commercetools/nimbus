@@ -1,6 +1,10 @@
 import { atom } from "jotai";
-import orderBy from "lodash/orderBy";
 import { sluggify } from "@commercetools/nimbus-docs-build/sluggify";
+import {
+  compareByOrderAndLabel,
+  shapeNavigation,
+} from "@/components/navigation/menu/shape-navigation";
+import { navigationConfig } from "@/components/navigation/menu/navigation-config";
 
 type MenuItem = {
   id: string;
@@ -176,24 +180,22 @@ function orderMenuItems(root: MenuItem[]): MenuItem[] {
    * @returns Ordered array of menu items.
    */
   function orderChildren(items: MenuItem[]): MenuItem[] {
-    return orderBy(
-      items.map((item) => ({
+    return items
+      .map((item) => ({
         ...item,
         order: item.order !== undefined ? item.order : 999,
         children: item.children ? orderChildren(item.children) : [],
-      })),
-      ["order", "label"]
-    );
+      }))
+      .sort(compareByOrderAndLabel);
   }
 
-  return orderBy(
-    withPropagatedOrders.map((item) => ({
+  return withPropagatedOrders
+    .map((item) => ({
       ...item,
       order: item.order !== undefined ? item.order : 999,
       children: item.children ? orderChildren(item.children) : [],
-    })),
-    ["order", "label"]
-  );
+    }))
+    .sort(compareByOrderAndLabel);
 }
 
 /**
@@ -205,11 +207,19 @@ const routeManifestAtom = atom<Promise<RouteManifest>>(async () => {
 });
 
 /**
- * Atom to manage the menu state.
+ * Atom with the navigation: the top-level sections of the top bar, each with
+ * the rows of its sidebar. Built from the route manifest and shaped by
+ * `navigationConfig`.
  * Async since it derives from the async routeManifestAtom.
  */
 export const menuAtom = atom(async (get) => {
   const manifest = await get(routeManifestAtom);
-  const menu = buildMenu(manifest.routes);
-  return menu;
+  const pageRoutes = new Set(
+    manifest.routes.map((route) => route.path.slice(1)) // Remove leading slash
+  );
+  return shapeNavigation(
+    buildMenu(manifest.routes),
+    pageRoutes,
+    navigationConfig
+  );
 });

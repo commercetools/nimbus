@@ -2,16 +2,18 @@
  * App Frame Body
  *
  * The 3-column body (left nav · main · right aside) of the app-frame layout.
- * The breadcrumb bar and top bar live in the persistent shell
- * (`dynamic-layout.tsx`); this component is the part that swaps in/out when the
- * active document switches between the `app-frame` and `no-sidebar` layouts.
+ * The top bar lives in the persistent shell (`dynamic-layout.tsx`); this
+ * component is the part that swaps in/out when the active document switches
+ * between the `app-frame` and `no-sidebar` layouts. The breadcrumb sits at the
+ * top of the content column, above the page title.
  */
 
 import { Suspense, useRef } from "react";
 import { Outlet } from "react-router-dom";
-import { LoadingSpinner, Box } from "@commercetools/nimbus";
+import { LoadingSpinner, Box, Flex } from "@commercetools/nimbus";
 import { AppFrame } from "@/components/app-frame";
 import { Menu } from "@/components/navigation/menu";
+import { BreadcrumbNav } from "@/components/navigation/breadcrumb";
 import { Toc } from "@/components/navigation/toc";
 import { MobileNav } from "@/components/navigation/mobile-nav";
 import {
@@ -83,7 +85,22 @@ function AppFrameBodyInner() {
         }
       >
         <Suspense fallback={<LoadingSpinner />}>
-          <MobileNav />
+          {/* The menu button (narrow screens only) and the breadcrumb share a
+              row. The home page has no breadcrumb, so on wide screens the row
+              is empty there and is not rendered. */}
+          <Flex
+            display={isHome ? { base: "flex", lg: "none" } : "flex"}
+            alignItems="center"
+            gap="200"
+            mb="600"
+          >
+            <MobileNav />
+            {!isHome && (
+              <Suspense fallback={null}>
+                <BreadcrumbNav />
+              </Suspense>
+            )}
+          </Flex>
           {/* Animated wrapper that re-renders on route change */}
           <Box key={baseRoute} animationName="fade-in" animationDuration="slow">
             <Outlet />
