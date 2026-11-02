@@ -36,7 +36,7 @@ export const RelatedDocuments: FC = () => {
             href={doc.path}
             textDecoration="none"
             display="block"
-            width="320px"
+            width="360px"
           >
             <Flex
               alignItems="center"
