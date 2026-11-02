@@ -40,8 +40,8 @@ export const RelatedDocuments: FC = () => {
           >
             <Flex
               alignItems="center"
-              gap="300"
-              p="200"
+              gap="400"
+              p="300"
               border="1px solid"
               borderColor="neutral.6"
               borderRadius="300"
