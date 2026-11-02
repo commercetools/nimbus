@@ -2,7 +2,9 @@
 id: TokensAspectRatios
 title: Aspect Ratios
 illustration: token-aspect-ratios
-description: The list of available aspect ratio tokens
+description:
+  Aspect ratio tokens keep the width and the height of an element in a fixed
+  relation, for images, videos and their placeholders.
 order: 999
 menu:
   - Home
@@ -11,8 +13,70 @@ menu:
 tags:
   - aspect ratio
   - ratios
+  - image
+  - video
+  - square
 icon: ImageAspectRatio
 ---
-The list of available aspect ratio tokens:
+Aspect ratio tokens keep the width and the height of an element in a fixed
+relation. Set one size, such as the width, and the browser computes the other
+size from the ratio. This is useful for images, videos and the placeholders that
+stand in for them while they load.
 
-<GenericTokenTableDemo category="aspectRatios" demoProperty="aspectRatio" />
+## Aspect ratio tokens
+
+The samples are 64px high, and their width follows the ratio. The ratio is the
+width to the height: `16 : 9` is 16 parts wide and 9 parts high. Use the copy
+button to copy a token name.
+
+<AspectRatiosScale />
+
+## Choose an aspect ratio
+
+| You show                                    | Use         | Ratio       |
+| ------------------------------------------- | ----------- | ----------- |
+| A square, such as a thumbnail               | `square`    | 1 : 1       |
+| A wide photo                                | `landscape` | 4 : 3       |
+| A tall photo                                | `portrait`  | 3 : 4       |
+| Wide content, such as a video               | `wide`      | 16 : 9      |
+| A very wide strip, such as a banner         | `ultrawide` | 3.6 : 1     |
+| A rectangle in the golden ratio             | `golden`    | 1.618 : 1   |
+
+## Use aspect ratios in code
+
+Aspect ratio tokens work on the `aspectRatio` style prop. The ratio only has an
+effect when the width or the height of the element is not set
+([MDN: aspect-ratio](https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio)).
+Set one of them, and leave the other one to the ratio.
+
+```tsx
+// A box that keeps 16 : 9 at any width
+<Box width="full" aspectRatio="wide" />
+
+// An image that fills a square and cuts off what does not fit
+<Image src={src} alt={alt} width="full" aspectRatio="square" fit="cover" />
+```
+
+The `fit` prop of [Image](/components/media/image) sets the CSS `object-fit`
+property. With `cover`, the image fills the whole box and keeps its own ratio,
+so the parts that do not fit are cut off
+([MDN: object-fit](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit)).
+
+For the full list of props, see [Style props: Layout](/home/style-props/layout).
+
+### CSS variables
+
+Every token is also a CSS variable, such as `var(--nimbus-aspect-ratios-wide)`,
+for styles that you write yourself.
+
+### Editor support
+
+With the design token TypeScript plugin, autocomplete shows the value next to
+the token. See
+[Installation](/home/getting-started/installation#design-token-autocomplete-optional)
+for how to set it up.
+
+## Values that Nimbus components use
+
+The recipes of Nimbus components do not use the aspect ratio tokens. The circle
+shape of Skeleton sets `aspectRatio: "1 / 1"`, the same ratio as `square`.
