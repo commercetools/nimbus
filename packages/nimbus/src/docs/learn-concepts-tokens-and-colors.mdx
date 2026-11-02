@@ -1,0 +1,156 @@
+---
+id: Learn-Concepts-Tokens and colors
+title: Design tokens and colors
+description:
+  Tokens are named values for color, space, size and text. Colors are a palette
+  and a step, such as primary.3, with one value per color mode.
+icon: Palette
+illustration:
+  - token-colors
+  - design-tokens
+order: 1
+menu:
+  - Learn
+  - Concepts
+  - Tokens and colors
+tags:
+  - learn
+  - tokens
+  - design tokens
+  - colors
+  - palette
+  - color mode
+  - dark mode
+  - semantic colors
+---
+
+A design token is a named value, such as `400` for a space or `primary.3` for a
+color. Every Nimbus component is built from tokens. Use tokens in your own
+styles too: then your screen stays consistent with the rest of the system, and
+its colors follow the color mode.
+
+## Token groups
+
+Each group of tokens works with the style props of that kind. For example,
+spacing tokens work with `padding`, `margin` and `gap`, and size tokens work
+with `width` and `height`.
+
+| Group      | Example token  | Used by                         | Reference                                         |
+| ---------- | -------------- | ------------------------------- | ------------------------------------------------- |
+| Colors     | `primary.9`    | `color`, `backgroundColor`      | [Colors](/home/design-tokens/colors)              |
+| Spacing    | `400`          | `padding`, `margin`, `gap`      | [Spacing](/home/design-tokens/spacing)            |
+| Sizes      | `full`, `1/2`  | `width`, `height`, `maxWidth`   | [Sizes](/home/design-tokens/sizes)                |
+| Typography | `md`, `body`   | `fontSize`, `textStyle`         | [Typography](/home/design-tokens/typography)      |
+| Radii      | `200`          | `borderRadius`                  | [Radii](/home/design-tokens/radii)                |
+| Shadows    | `2`            | `boxShadow`                     | [Shadows](/home/design-tokens/shadows)            |
+| Z-indices  | `sticky`       | `zIndex`                        | [Z-Indices](/home/design-tokens/other/z-indices)  |
+
+```jsx live-dev
+import { Box, Text } from "@commercetools/nimbus";
+
+const App = () => (
+  <Box
+    padding="400"
+    backgroundColor="primary.2"
+    borderRadius="200"
+    boxShadow="2"
+  >
+    <Text textStyle="body" color="primary.11">
+      Padding, color, radius and shadow all come from tokens.
+    </Text>
+  </Box>
+);
+```
+
+To use a token outside a style prop, for example in your own CSS, see
+[Use tokens in your code](/learn/how-do-i/use-tokens-in-your-code).
+
+## Colors: a palette and a step
+
+A color token is a palette and a step, such as `primary.3` or `critical.9`.
+Each palette has 12 steps. Low steps are for backgrounds, middle steps for
+borders and solid fills, and high steps for text. The
+[Colors](/home/design-tokens/colors) page shows what each step is for. The
+`contrast` step, such as `primary.contrast`, is a text color that is readable
+on step 9.
+
+There are three kinds of palettes:
+
+- **Semantic palettes** have a meaning: `primary`, `neutral`, `info`,
+  `positive`, `warning` and `critical`. Use them when the color says something,
+  for example `critical` for an error. Components take them in the
+  `colorPalette` prop.
+- **System palettes** are colors without a meaning, such as `blue`, `grass` or
+  `tomato`. Use them when the color only tells things apart, for example in a
+  chart.
+- **Semantic tokens** name a role: `fg` and `fg.subtle` for text, `bg` for the
+  page background, and `border` with variants such as `border.subtle`.
+
+```jsx live-dev
+import { Button, Stack, Text } from "@commercetools/nimbus";
+
+const App = () => (
+  <Stack gap="300" align="start">
+    <Text color="fg">Main text</Text>
+    <Text color="fg.subtle">Secondary text</Text>
+    <Button variant="solid" colorPalette="critical">
+      Delete
+    </Button>
+  </Stack>
+);
+```
+
+## Color mode
+
+Every color token has two values: one for the light color mode and one for the
+dark color mode. The token name stays the same. So your styles follow the color
+mode, and you do not need a second design for dark mode. For a gray that
+follows the mode, use `neutral`. Only `black`, `white`, `blackAlpha` and
+`whiteAlpha` keep the same value in both modes.
+
+`NimbusProvider` sets the color mode. It starts in the light mode; set
+`defaultTheme="dark"` to start in the dark mode. To let people switch, use the
+`useColorMode` hook. It is marked experimental, so it can change in a future
+release.
+
+```jsx live-dev
+import { Button, useColorMode } from "@commercetools/nimbus";
+
+const App = () => {
+  const { colorMode, toggleColorMode } = useColorMode();
+
+  return <Button onPress={toggleColorMode}>Color mode: {colorMode}</Button>;
+};
+```
+
+## Common mistakes
+
+- **A token name that does not exist.** Nimbus shows no error, and TypeScript
+  accepts any string in a style prop. The browser ignores the value, so the
+  style has no effect. See
+  [Fix a color with no effect](/learn/how-do-i/fix-a-color-with-no-effect).
+- **Raw values.** A value such as `#6359ff` or `16px` does not follow the color
+  mode or later changes to the design system. Use the token with the same
+  purpose.
+
+## What you cannot change
+
+The system palettes, their 12 steps, and the semantic palettes and tokens are
+the same in every app. All palettes follow the same lightness pattern in both
+color modes, so that text and backgrounds keep an accessible contrast.
+
+## When nothing fits
+
+If no token fits, use a raw value in a style prop, and mark it as a
+[one-off](/learn/rules):
+
+```jsx live-dev
+import { Box } from "@commercetools/nimbus";
+
+const App = () => {
+  // nimbus-one-off: the campaign color is defined by marketing, not by a token
+  const campaignColor = "#ff6f3c";
+
+  return <Box height="400" width="1/2" backgroundColor={campaignColor} />;
+};
+```
