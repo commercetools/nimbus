@@ -1,11 +1,9 @@
 import { Box, Flex, Stack, Text } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useColorScaleMode } from "@/atoms/color-scale-mode";
+import type { ColorScaleMode } from "@/atoms/color-scale-mode";
 import { themeColorScalesAtom } from "@/atoms/theme-color-scales.ts";
-
-/** A step of a scale: 1 to 12, or the `contrast` step. */
-type StepName = number | "contrast";
+import { STEP_USE, type StepName } from "./color-steps.tsx";
+import { useCopy } from "./use-copy";
 
 /**
  * The steps of a scale, grouped by role. `from` and `to` are 1-based grid
@@ -21,26 +19,11 @@ const GROUPS = [
 
 const NUMBERED_STEPS = Array.from({ length: 12 }, (_, i) => i + 1);
 
-/** Use of each step, shown as the tooltip of the step. */
-const STEP_USE: Record<StepName, string> = {
-  1: "App background",
-  2: "Subtle background",
-  3: "UI element background",
-  4: "Hovered UI element background",
-  5: "Active or selected UI element background",
-  6: "Subtle borders and separators",
-  7: "UI element border and focus rings",
-  8: "Hovered UI element border",
-  9: "Solid background",
-  10: "Hovered solid background",
-  11: "Low-contrast text",
-  12: "High-contrast text",
-  contrast: "Text on solid backgrounds, steps 9 and 10",
-};
-
 type ColorScaleProps = {
   /** Name of the palette, for example `primary`. */
   id: string;
+  /** The color mode to draw the palette in. */
+  mode: ColorScaleMode;
 };
 
 type StepProps = {
@@ -59,7 +42,7 @@ const Samples = ({
 }: Pick<StepProps, "id" | "step" | "hasContrast">) => {
   if (typeof step === "number" && step <= 5) {
     return (
-      <Flex gap="200" textStyle="sm" fontWeight="600" aria-hidden>
+      <Flex gap="150" textStyle="sm" fontWeight="600" aria-hidden>
         <Text color={`${id}.11`}>Aa</Text>
         <Text color={`${id}.12`}>Aa</Text>
       </Flex>
@@ -143,36 +126,14 @@ const Step = ({ id, step, hasContrast, copied, onCopy }: StepProps) => {
 };
 
 /**
- * Black and white palettes do not change with the color mode. They are drawn on
- * the opposite mode, so that every step can be seen.
+ * A palette drawn as one strip in one color mode: steps grouped by role, text
+ * samples that show the recommended pairings, and a click on a step copies its
+ * token name.
  */
-const ALPHA_BACKDROP: Record<string, "light" | "dark"> = {
-  blackAlpha: "light",
-  whiteAlpha: "dark",
-};
-
-/** One palette in one color mode. */
-const ScaleRow = ({
-  id,
-  mode,
-}: ColorScaleProps & { mode: "light" | "dark" }) => {
+export const ColorScale = ({ id, mode }: ColorScaleProps) => {
   const themeColorScales = useAtomValue(themeColorScalesAtom);
   const hasContrast = Boolean(themeColorScales?.get(`${id}.contrast`));
-  const [copiedToken, setCopiedToken] = useState<string | null>(null);
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  useEffect(() => () => clearTimeout(timer.current), []);
-
-  const copy = useCallback(async (token: string) => {
-    try {
-      await navigator.clipboard.writeText(token);
-    } catch {
-      return;
-    }
-    setCopiedToken(token);
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setCopiedToken(null), 1500);
-  }, []);
+  const { copied, copy } = useCopy();
 
   // `contrast` is the thirteenth step, when the palette has one.
   const steps: StepName[] = hasContrast
@@ -182,58 +143,55 @@ const ScaleRow = ({
   const groups = GROUPS.filter((group) => group.from <= steps.length);
 
   return (
-    // `light` and `dark` force the color mode for everything inside.
+    // `light` and `dark` force the color mode for everything inside. The text
+    // uses a palette step: `fg` keeps the value of the mode of the site.
     <Box
       className={mode}
       bg="bg"
-      color="fg"
+      color="neutral.12"
       border="1px solid"
       borderColor="neutral.6"
       borderRadius="200"
       p="300"
+      // On a narrow screen the scale scrolls sideways, so that labels and
+      // samples are not cut off.
+      overflowX="auto"
     >
-      <Box
-        display="grid"
-        gridTemplateColumns={columns}
-        columnGap="100"
-        mb="100"
-      >
-        {groups.map((group) => (
-          <Box
-            key={group.label}
-            gridColumn={`${group.from} / ${group.to}`}
-            borderTop="2px solid"
-            borderColor="neutral.6"
-            pt="100"
-          >
-            <Text textStyle="xs" color="neutral.11" truncate>
-              {group.label}
-            </Text>
-          </Box>
-        ))}
-      </Box>
-      <Box display="grid" gridTemplateColumns={columns} columnGap="100">
-        {steps.map((step) => (
-          <Step
-            key={step}
-            id={id}
-            step={step}
-            hasContrast={hasContrast}
-            copied={copiedToken === `${id}.${step}`}
-            onCopy={copy}
-          />
-        ))}
+      {/* 13 steps of at least 45px, so that two text samples fit in a step. */}
+      <Box minWidth="640px">
+        <Box
+          display="grid"
+          gridTemplateColumns={columns}
+          columnGap="100"
+          mb="100"
+        >
+          {groups.map((group) => (
+            <Box
+              key={group.label}
+              gridColumn={`${group.from} / ${group.to}`}
+              borderTop="2px solid"
+              borderColor="neutral.6"
+              pt="100"
+            >
+              <Text textStyle="xs" color="neutral.11" truncate>
+                {group.label}
+              </Text>
+            </Box>
+          ))}
+        </Box>
+        <Box display="grid" gridTemplateColumns={columns} columnGap="100">
+          {steps.map((step) => (
+            <Step
+              key={step}
+              id={id}
+              step={step}
+              hasContrast={hasContrast}
+              copied={copied === `${id}.${step}`}
+              onCopy={copy}
+            />
+          ))}
+        </Box>
       </Box>
     </Box>
   );
-};
-
-/**
- * A palette drawn as one strip: steps grouped by role, text samples that show
- * the recommended pairings, and a click on a step copies its token name.
- */
-export const ColorScale = ({ id }: ColorScaleProps) => {
-  const [mode] = useColorScaleMode();
-
-  return <ScaleRow id={id} mode={ALPHA_BACKDROP[id] ?? mode} />;
 };

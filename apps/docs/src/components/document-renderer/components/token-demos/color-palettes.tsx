@@ -1,6 +1,5 @@
 import {
   Box,
-  Code,
   Flex,
   Stack,
   Text,
@@ -16,28 +15,33 @@ import {
 import { ColorScale } from "./color-scale.tsx";
 
 /**
- * The palettes, in three groups. A group with `labels` shows the name of each
+ * The palettes, in groups. A group with `labels` shows the name of each
  * palette. The system group shows only the colors, because there are many.
+ * `item` names the group of the selected palette.
  */
 const GROUPS = [
   {
     id: "semantic",
     label: "Semantic colors",
-    description: "Colors with meaning, used to communicate status or state.",
+    item: "Semantic color",
+    description: "Colors with a meaning, such as a status or a state.",
     labels: true,
     palettes: ["primary", "neutral", "info", "positive", "warning", "critical"],
   },
   {
     id: "brand",
     label: "Brand colors",
-    description: "Custom colors, tailored to the brand.",
+    item: "Brand color",
+    description: "The commercetools brand colors.",
     labels: true,
     palettes: ["ctviolet", "ctteal", "ctyellow"],
   },
   {
     id: "system",
     label: "System colors",
-    description: "Colors available for decoration or reference.",
+    item: "System color",
+    description:
+      "The full range of hues, for decoration or to tell items apart.",
     labels: false,
     palettes: [
       "tomato",
@@ -65,9 +69,15 @@ const GROUPS = [
       "lime",
       "mint",
       "sky",
-      "blackAlpha",
-      "whiteAlpha",
     ],
+  },
+  {
+    id: "black-and-white",
+    label: "Black and white",
+    item: "Black and white",
+    description: "Black or white with opacity, the same in both color modes.",
+    labels: true,
+    palettes: ["blackAlpha", "whiteAlpha"],
   },
 ] as const;
 
@@ -76,31 +86,42 @@ const ALL_PALETTES: readonly string[] = GROUPS.flatMap(
   (group) => group.palettes
 );
 
+/**
+ * Width of the palettes of a group: 9 dots of 40px, or 3 named palettes of
+ * 144px, with 12px between them. So every group ends on the same line.
+ */
+const PALETTES_WIDTH = "456px";
+const SWATCH_COLUMNS = 9;
+const SWATCH_SIZE = "40px";
+/** Smallest width of a named palette, so that the longest name fits. */
+const LABEL_MIN_WIDTH = "120px";
+/**
+ * Width of the picker from which a group shows its name next to its palettes,
+ * not above them: 200px for the name, 24px of space and 416px for 3 palettes.
+ */
+const TWO_COLUMNS = "@container (min-width: 640px)";
+
 const DEFAULT_PALETTE = "primary";
 const PARAM = "palette";
 
-/** Palettes that need a word of explanation. */
-const NOTES: Record<string, string> = {
-  blackAlpha:
-    "Black and white scales do not adapt to the color mode: black is always black. It is shown on a light background. Use `neutral` for a gray that follows the current background.",
-  whiteAlpha:
-    "Black and white scales do not adapt to the color mode: white is always white. It is shown on a dark background. Use `neutral` for a gray that follows the current background.",
+/**
+ * Black and white palettes do not change with the color mode. The scale draws
+ * them on the opposite background, so that every step can be seen, and the
+ * header says why.
+ */
+const FIXED_PALETTES: Record<
+  string,
+  { backdrop: ColorScaleMode; note: string }
+> = {
+  blackAlpha: {
+    backdrop: "light",
+    note: "Always black, shown on a light background",
+  },
+  whiteAlpha: {
+    backdrop: "dark",
+    note: "Always white, shown on a dark background",
+  },
 };
-
-/** Text with `code` parts drawn as code. */
-const WithCode = ({ text }: { text: string }) => (
-  <>
-    {text.split("`").map((part, i) =>
-      i % 2 === 1 ? (
-        <Code key={i} variant="subtle">
-          {part}
-        </Code>
-      ) : (
-        part
-      )
-    )}
-  </>
-);
 
 const FOCUS_RING = {
   outline: "2px solid",
@@ -142,7 +163,8 @@ const PaletteButton = ({
     return (
       <Box
         {...common}
-        display="inline-flex"
+        display="flex"
+        width="full"
         alignItems="center"
         gap="150"
         px="300"
@@ -171,7 +193,8 @@ const PaletteButton = ({
   return (
     <Box
       {...common}
-      boxSize="800"
+      width="full"
+      aspectRatio={1}
       borderRadius="full"
       bg={`${id}.9`}
       border="1px solid"
@@ -187,7 +210,7 @@ const PaletteButton = ({
 };
 
 /**
- * Shows the scale of one palette, and below it all palettes in three groups to
+ * Shows the scale of one palette, and below it all palettes in four groups to
  * pick from. The palette is kept in the URL (`?palette=red`), so a view can be
  * shared.
  */
@@ -241,7 +264,8 @@ export const ColorPalettes = () => {
     buttons.current[next]?.focus();
   };
 
-  const note = NOTES[palette];
+  const fixed = FIXED_PALETTES[palette];
+  const shownMode = fixed?.backdrop ?? mode;
   const selectedGroup =
     GROUPS.find((group) =>
       (group.palettes as readonly string[]).includes(palette)
@@ -266,7 +290,9 @@ export const ColorPalettes = () => {
                 {palette}
               </Text>
               <Text textStyle="sm" color="neutral.11">
-                {selectedGroup.label.replace(/s$/, "")}
+                {fixed
+                  ? `${selectedGroup.item} · ${fixed.note}`
+                  : selectedGroup.item}
               </Text>
             </Box>
           </Flex>
@@ -274,7 +300,9 @@ export const ColorPalettes = () => {
             size="sm"
             colorPalette="primary"
             disallowEmptySelection
-            selectedKeys={[mode]}
+            // A black or white palette looks the same in both modes.
+            isDisabled={Boolean(fixed)}
+            selectedKeys={[shownMode]}
             onSelectionChange={(keys) => {
               const key = [...keys][0];
               if (key != null) setMode(key as ColorScaleMode);
@@ -288,13 +316,7 @@ export const ColorPalettes = () => {
           </ToggleButtonGroup.Root>
         </Flex>
 
-        <ColorScale id={palette} />
-
-        {note && (
-          <Text color="neutral.11">
-            <WithCode text={note} />
-          </Text>
-        )}
+        <ColorScale id={palette} mode={shownMode} />
       </Stack>
 
       <Stack
@@ -302,16 +324,22 @@ export const ColorPalettes = () => {
         role="radiogroup"
         aria-label="Color palette"
         onKeyDown={onKeyDown}
+        // The layout of a group depends on the width of the picker, not of the
+        // window: the page can have a navigation and a table of contents.
+        css={{ containerType: "inline-size" }}
       >
         {GROUPS.map((group) => (
           <Box
             key={group.id}
             display="grid"
-            // Name and description on the left, the palettes on the right.
-            gridTemplateColumns={{ base: "1fr", md: "200px minmax(0, 1fr)" }}
+            gridTemplateColumns="minmax(0, 1fr)"
             columnGap="600"
             rowGap="300"
             alignItems="start"
+            // Name and description on the left, the palettes on the right.
+            css={{
+              [TWO_COLUMNS]: { gridTemplateColumns: "200px minmax(0, 1fr)" },
+            }}
           >
             <Box>
               <Text textStyle="xl" fontWeight="600">
@@ -321,7 +349,21 @@ export const ColorPalettes = () => {
                 {group.description}
               </Text>
             </Box>
-            <Flex wrap="wrap" gap={group.labels ? "200" : "300"}>
+            <Box
+              display="grid"
+              // Every group is a block of the same width, not a row that
+              // wraps unevenly. On a narrow screen the dots get smaller and
+              // the named palettes use fewer columns.
+              maxWidth={PALETTES_WIDTH}
+              gridTemplateColumns={
+                group.labels
+                  ? `repeat(auto-fill, minmax(${LABEL_MIN_WIDTH}, 1fr))`
+                  : `repeat(${SWATCH_COLUMNS}, minmax(0, ${SWATCH_SIZE}))`
+              }
+              justifyContent="space-between"
+              columnGap={group.labels ? "300" : "200"}
+              rowGap="300"
+            >
               {group.palettes.map((id) => (
                 <PaletteButton
                   key={id}
@@ -334,7 +376,7 @@ export const ColorPalettes = () => {
                   }}
                 />
               ))}
-            </Flex>
+            </Box>
           </Box>
         ))}
       </Stack>

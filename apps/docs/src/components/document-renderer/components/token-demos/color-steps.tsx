@@ -1,73 +1,47 @@
 import { Box, Code, Flex, Table, Text } from "@commercetools/nimbus";
 
 /** A step of a scale: 1 to 12, or the `contrast` step. */
-type StepName = number | "contrast";
+export type StepName = number | "contrast";
+
+/** What each step is for. The palette browser shows it as the tooltip of a step. */
+export const STEP_USE: Record<StepName, string> = {
+  1: "App background",
+  2: "Subtle background",
+  3: "UI element background",
+  4: "Hovered UI element background",
+  5: "Active or selected UI element background",
+  6: "Subtle borders and separators",
+  7: "UI element border and focus rings",
+  8: "Hovered UI element border",
+  9: "Solid background",
+  10: "Hovered solid background",
+  11: "Low-contrast text",
+  12: "High-contrast text",
+  contrast: "Text on solid backgrounds",
+};
 
 type StepInfo = {
   step: StepName;
-  /** What the step is for. */
-  use: string;
-  /** Steps that are text colors, and the steps they are placed on. */
-  pairing: { text: StepName; on: StepName }[];
+  /** For a background step: the text steps that go on it, shown as samples. */
+  text?: StepName[];
+  /** For a text step: the steps it goes on. */
+  on?: string;
 };
 
-const textOn = (text: StepName, steps: StepName[]) =>
-  steps.map((on) => ({ text, on }));
-
 const STEPS: StepInfo[] = [
-  {
-    step: 1,
-    use: "App background",
-    pairing: [...textOn(11, [1]), ...textOn(12, [1])],
-  },
-  {
-    step: 2,
-    use: "Subtle background",
-    pairing: [...textOn(11, [2]), ...textOn(12, [2])],
-  },
-  {
-    step: 3,
-    use: "UI element background",
-    pairing: [...textOn(11, [3]), ...textOn(12, [3])],
-  },
-  {
-    step: 4,
-    use: "Hovered UI element background",
-    pairing: [...textOn(11, [4]), ...textOn(12, [4])],
-  },
-  {
-    step: 5,
-    use: "Active / Selected UI element background",
-    pairing: [...textOn(11, [5]), ...textOn(12, [5])],
-  },
-  { step: 6, use: "Subtle borders and separators", pairing: [] },
-  { step: 7, use: "UI element border and focus rings", pairing: [] },
-  { step: 8, use: "Hovered UI element border", pairing: [] },
-  {
-    step: 9,
-    use: "Solid backgrounds",
-    pairing: textOn("contrast", [9]),
-  },
-  {
-    step: 10,
-    use: "Hovered solid backgrounds",
-    pairing: textOn("contrast", [10]),
-  },
-  {
-    step: 11,
-    use: "Low-contrast text",
-    pairing: textOn(11, [1, 2, 3, 4, 5]),
-  },
-  {
-    step: 12,
-    use: "High-contrast text",
-    pairing: textOn(12, [1, 2, 3, 4, 5]),
-  },
-  {
-    step: "contrast",
-    use: "High-contrast text on solid backgrounds",
-    pairing: textOn("contrast", [9, 10]),
-  },
+  { step: 1, text: [11, 12] },
+  { step: 2, text: [11, 12] },
+  { step: 3, text: [11, 12] },
+  { step: 4, text: [11, 12] },
+  { step: 5, text: [11, 12] },
+  { step: 6 },
+  { step: 7 },
+  { step: 8 },
+  { step: 9, text: ["contrast"] },
+  { step: 10, text: ["contrast"] },
+  { step: 11, on: "Steps 1–5" },
+  { step: 12, on: "Steps 1–5" },
+  { step: "contrast", on: "Steps 9 and 10" },
 ];
 
 const isText = (step: StepName) => step === "contrast" || step >= 11;
@@ -82,6 +56,7 @@ const Tile = ({ palette, step }: { palette: string; step: StepName }) => {
       justifyContent={isText(step) ? "flex-start" : "center"}
       width="1400"
       height="800"
+      flexShrink={0}
       borderRadius="100"
       border="1px solid"
       borderColor="neutral.6"
@@ -109,7 +84,7 @@ const Tile = ({ palette, step }: { palette: string; step: StepName }) => {
   );
 };
 
-/** Text of one step on the background of another. */
+/** Text of one step on the background of another, and the text step name. */
 const Sample = ({
   palette,
   text,
@@ -134,52 +109,56 @@ const Sample = ({
       </Text>
     </Box>
     <Text textStyle="xs" color="neutral.11" fontFamily="mono">
-      {text === "contrast" ? "contrast" : text} on {on}
+      {text}
     </Text>
   </Flex>
 );
 
 /**
- * The steps of a color scale, with what each step is for and which text colors
- * work on it. The colors come from one palette, `primary` by default.
+ * The steps of a color scale, with what each step is for and the steps it
+ * pairs with: the text steps that go on a background, or the backgrounds that
+ * a text step goes on. The colors come from one palette, `primary` by default.
  */
 export const ColorSteps = ({ palette = "primary" }: { palette?: string }) => (
-  <Table.Root>
-    <Table.Header>
-      <Table.Row>
-        <Table.ColumnHeader>Step</Table.ColumnHeader>
-        <Table.ColumnHeader>Use case</Table.ColumnHeader>
-        <Table.ColumnHeader>WCAG AA text pairing</Table.ColumnHeader>
-      </Table.Row>
-    </Table.Header>
-    <Table.Body>
-      {STEPS.map(({ step, use, pairing }) => (
-        <Table.Row key={step}>
-          <Table.Cell>
-            <Flex alignItems="center" gap="300">
-              <Tile palette={palette} step={step} />
-              <Code variant="subtle">{step}</Code>
-            </Flex>
-          </Table.Cell>
-          <Table.Cell>{use}</Table.Cell>
-          <Table.Cell>
-            {pairing.length === 0 ? (
-              "—"
-            ) : (
-              <Flex wrap="wrap" gap="300">
-                {pairing.map(({ text, on }) => (
-                  <Sample
-                    key={`${text}-${on}`}
-                    palette={palette}
-                    text={text}
-                    on={on}
-                  />
-                ))}
-              </Flex>
-            )}
-          </Table.Cell>
+  // On a narrow screen the table scrolls sideways, not the page.
+  <Table.ScrollArea maxWidth="full">
+    <Table.Root size="sm" minWidth="md">
+      <Table.Header>
+        <Table.Row>
+          <Table.ColumnHeader>Step</Table.ColumnHeader>
+          <Table.ColumnHeader>Use case</Table.ColumnHeader>
+          <Table.ColumnHeader>Pairs with</Table.ColumnHeader>
         </Table.Row>
-      ))}
-    </Table.Body>
-  </Table.Root>
+      </Table.Header>
+      <Table.Body>
+        {STEPS.map(({ step, text, on }) => (
+          <Table.Row key={step}>
+            <Table.Cell>
+              <Flex alignItems="center" gap="300">
+                <Tile palette={palette} step={step} />
+                <Code variant="subtle">{step}</Code>
+              </Flex>
+            </Table.Cell>
+            <Table.Cell>{STEP_USE[step]}</Table.Cell>
+            <Table.Cell>
+              {text ? (
+                <Flex wrap="wrap" gap="300">
+                  {text.map((item) => (
+                    <Sample
+                      key={item}
+                      palette={palette}
+                      text={item}
+                      on={step}
+                    />
+                  ))}
+                </Flex>
+              ) : (
+                (on ?? "—")
+              )}
+            </Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table.Root>
+  </Table.ScrollArea>
 );
