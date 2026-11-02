@@ -1,13 +1,7 @@
-import {
-  Box,
-  Code,
-  IconButton,
-  system,
-  Table,
-  Text,
-} from "@commercetools/nimbus";
-import { Check, ContentCopy } from "@commercetools/nimbus-icons";
+import { Box, Code, system, Table, Text } from "@commercetools/nimbus";
 import type { ComponentProps, ReactElement, ReactNode } from "react";
+import { CopyButton } from "../copy-button";
+import { tokensOf } from "../theme-tokens";
 import { useCopy } from "../use-copy";
 
 /** Root font size that rem values are shown for. */
@@ -45,13 +39,6 @@ interface Config {
 
 const formatRem = (px: number) =>
   `${parseFloat((px / ROOT_FONT_SIZE).toFixed(4))}rem`;
-
-/** The tokens of one category, in the order of the theme. */
-const tokensOf = (category: string) =>
-  Array.from(system.tokens.categoryMap.get(category) ?? [], ([id, token]) => ({
-    id,
-    value: String(token.value),
-  }));
 
 /** A sample line that stays on one line. */
 const Sample = ({ children, ...props }: ComponentProps<typeof Text>) => (
@@ -228,14 +215,7 @@ export const TypographyScale = ({
                 ))}
                 <Table.Cell>{row.sample}</Table.Cell>
                 <Table.Cell textAlign="right">
-                  <IconButton
-                    size="2xs"
-                    variant="ghost"
-                    aria-label={`Copy token ${row.id}`}
-                    onClick={() => copy(row.id)}
-                  >
-                    {copied === row.id ? <Check /> : <ContentCopy />}
-                  </IconButton>
+                  <CopyButton token={row.id} copied={copied} onCopy={copy} />
                 </Table.Cell>
               </Table.Row>
             );

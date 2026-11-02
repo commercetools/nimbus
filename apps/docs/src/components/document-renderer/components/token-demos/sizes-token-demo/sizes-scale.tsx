@@ -1,9 +1,9 @@
-import { Box, Code, IconButton, Table } from "@commercetools/nimbus";
-import { Check, ContentCopy } from "@commercetools/nimbus-icons";
+import { Box, Code, Table } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
 import orderBy from "lodash/orderBy";
 import type { ReactElement } from "react";
 import { themeSizeTokensAtom } from "@/atoms/theme-size-tokens.ts";
+import { CopyButton } from "../copy-button";
 import { useCopy } from "../use-copy";
 
 /** Root font size that rem values are shown for. */
@@ -95,14 +95,7 @@ type CopyCellProps = {
 
 const CopyCell = ({ token, copied, onCopy }: CopyCellProps) => (
   <Table.Cell textAlign="right">
-    <IconButton
-      size="2xs"
-      variant="ghost"
-      aria-label={`Copy token ${token}`}
-      onClick={() => onCopy(token)}
-    >
-      {copied === token ? <Check /> : <ContentCopy />}
-    </IconButton>
+    <CopyButton token={token} copied={copied} onCopy={onCopy} />
   </Table.Cell>
 );
 

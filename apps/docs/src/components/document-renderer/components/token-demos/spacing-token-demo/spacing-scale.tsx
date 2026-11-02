@@ -1,16 +1,9 @@
-import {
-  Box,
-  Code,
-  Flex,
-  IconButton,
-  Stack,
-  Table,
-  Text,
-} from "@commercetools/nimbus";
-import { Check, ContentCopy } from "@commercetools/nimbus-icons";
+import { Box, Code, Flex, Stack, Table, Text } from "@commercetools/nimbus";
 import { useAtomValue } from "jotai";
-import { useRef, useState, type KeyboardEvent } from "react";
+import { useState } from "react";
 import { themeSpacingTokensAtom } from "@/atoms/spacing-tokens.ts";
+import { CopyButton } from "../copy-button";
+import { TokenPicker } from "../token-picker";
 import { useCopy } from "../use-copy";
 
 const DEFAULT_TOKEN = "400";
@@ -97,34 +90,8 @@ export const SpacingScale = () => {
   const tokens = useAtomValue(themeSpacingTokensAtom);
   const [selected, setSelected] = useState(DEFAULT_TOKEN);
   const { copied, copy } = useCopy();
-  const chips = useRef<(HTMLElement | null)[]>([]);
-
   const current = tokens.find((item) => item.id === selected) ?? tokens[0];
   if (!current) return null;
-
-  // Arrow keys move between the tokens, as in a radio group.
-  const onKeyDown = (event: KeyboardEvent) => {
-    const last = tokens.length - 1;
-    const index = tokens.findIndex((item) => item.id === current.id);
-    const next =
-      event.key === "ArrowRight" || event.key === "ArrowDown"
-        ? index === last
-          ? 0
-          : index + 1
-        : event.key === "ArrowLeft" || event.key === "ArrowUp"
-          ? index === 0
-            ? last
-            : index - 1
-          : event.key === "Home"
-            ? 0
-            : event.key === "End"
-              ? last
-              : -1;
-    if (next < 0) return;
-    event.preventDefault();
-    setSelected(tokens[next].id);
-    chips.current[next]?.focus();
-  };
 
   return (
     <Stack gap="500" my="600">
@@ -135,47 +102,12 @@ export const SpacingScale = () => {
         borderRadius="300"
         p="500"
       >
-        <Flex
-          role="radiogroup"
-          aria-label="Spacing token"
-          wrap="wrap"
-          gap="150"
-          onKeyDown={onKeyDown}
-        >
-          {tokens.map((item, index) => {
-            const isSelected = item.id === current.id;
-            return (
-              <Box
-                as="button"
-                role="radio"
-                key={item.id}
-                aria-checked={isSelected}
-                tabIndex={isSelected ? 0 : -1}
-                ref={(element: HTMLDivElement | null) => {
-                  chips.current[index] = element;
-                }}
-                onClick={() => setSelected(item.id)}
-                px="200"
-                py="50"
-                borderRadius="200"
-                border="1px solid"
-                borderColor={isSelected ? "primary.9" : "neutral.6"}
-                bg={isSelected ? "primary.3" : "transparent"}
-                fontFamily="mono"
-                textStyle="sm"
-                cursor="pointer"
-                _hover={{ bg: isSelected ? "primary.3" : "neutral.2" }}
-                _focusVisible={{
-                  outline: "2px solid",
-                  outlineColor: "primary.9",
-                  outlineOffset: "2px",
-                }}
-              >
-                {item.id}
-              </Box>
-            );
-          })}
-        </Flex>
+        <TokenPicker
+          label="Spacing token"
+          tokens={tokens.map((item) => item.id)}
+          value={current.id}
+          onChange={setSelected}
+        />
         <Preview
           token={current.id}
           px={parseFloat(current.value.originalValue)}
@@ -219,14 +151,7 @@ export const SpacingScale = () => {
                   />
                 </Table.Cell>
                 <Table.Cell textAlign="right">
-                  <IconButton
-                    size="2xs"
-                    variant="ghost"
-                    aria-label={`Copy token ${item.id}`}
-                    onClick={() => copy(item.id)}
-                  >
-                    {copied === item.id ? <Check /> : <ContentCopy />}
-                  </IconButton>
+                  <CopyButton token={item.id} copied={copied} onCopy={copy} />
                 </Table.Cell>
               </Table.Row>
             );
