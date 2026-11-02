@@ -281,7 +281,15 @@ export const ColorPalettes = () => {
         onKeyDown={onKeyDown}
       >
         {GROUPS.map((group) => (
-          <Stack key={group.id} gap="300">
+          <Box
+            key={group.id}
+            display="grid"
+            // Name and description on the left, the palettes on the right.
+            gridTemplateColumns={{ base: "1fr", md: "200px minmax(0, 1fr)" }}
+            columnGap="600"
+            rowGap="300"
+            alignItems="start"
+          >
             <Box>
               <Text fontWeight="600">{group.label}</Text>
               <Text textStyle="sm" color="neutral.11">
@@ -302,7 +310,7 @@ export const ColorPalettes = () => {
                 />
               ))}
             </Flex>
-          </Stack>
+          </Box>
         ))}
       </Stack>
     </Stack>

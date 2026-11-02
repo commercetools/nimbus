@@ -23,6 +23,15 @@ const flavorPalette = {
 
 type QuoteMarker = keyof typeof flavorPalette;
 
+/** Default title shown for each GitHub-flavored quote. */
+const flavorTitle: Record<QuoteMarker, string> = {
+  "[!NOTE]": "Note",
+  "[!TIP]": "Tip",
+  "[!IMPORTANT]": "Important",
+  "[!WARNING]": "Warning",
+  "[!CAUTION]": "Caution",
+};
+
 const isQuoteMarker = (value: string): value is QuoteMarker =>
   value in flavorPalette;
 
@@ -75,14 +84,18 @@ export const Blockquote = (props: BlockquoteProps) => {
 
   return (
     <Alert.Root
-      variant="outlined"
+      variant="accent-start"
       colorPalette={marker ? flavorPalette[marker] : "neutral"}
       hideIcon={!marker}
       mb="400"
     >
+      {marker && <Alert.Title>{flavorTitle[marker]}</Alert.Title>}
       <Alert.Description
         as="div"
         css={{
+          // Paragraph sets its own font size and line height. Inherit the
+          // Alert's, so the text lines up with the icon and the title.
+          "& > p": { fontSize: "inherit", lineHeight: "inherit", mb: "200" },
           "& > :last-child": { mb: "0" },
         }}
       >
