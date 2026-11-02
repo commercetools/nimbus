@@ -1,7 +1,8 @@
+import { useState } from "react";
 import {
+  Box,
   Flex,
   Slider,
-  Stack,
   Text,
   ToggleButtonGroup,
 } from "@commercetools/nimbus";
@@ -26,78 +27,85 @@ export const ICON_SIZE_DEFAULT = 48;
 export const DEFAULT_SURFACE: Surface = "none";
 
 /**
- * View controls for the icon grid, rendered pinned at the top of the Icons
- * sidebar (above the scrollable category rail). Reads and writes the `size` and
- * `surface` display preferences straight from the URL (`useIconRouteState`), so
- * they stay in sync with the grid (`IconBrowse`) and survive reload/share.
- * Styled to match the rail's `CategoryRail` section (same padding + heading
- * treatment) so the aside reads as one panel.
+ * Display controls of the icon grid, in one row next to the search field:
+ * the preview size and the shape drawn behind each icon. Both are URL
+ * parameters (`?size=`, `?surface=`), so a shared link shows the same grid.
+ *
+ * While the slider moves, only this component renders and `onPreviewSize`
+ * lets the grid change its CSS custom properties directly. The URL is written
+ * once, when the slider is released, so the grid does not render again for
+ * every step.
  */
-export const IconDisplayControls = () => {
+export const IconDisplayControls = ({
+  onPreviewSize,
+}: {
+  /** Called with the size (px) on every slider step, before the URL changes. */
+  onPreviewSize?: (size: number) => void;
+}) => {
   const { size, setSize, surface, setSurface } = useIconRouteState();
+  // The size while the slider is moving. `null` means the URL value is shown.
+  const [draft, setDraft] = useState<number | null>(null);
+  const shownSize = draft ?? size;
 
   return (
-    <Stack gap="400" p="400">
-      <Text textStyle="sm" fontWeight="600" color="neutral.11">
-        Display
-      </Text>
-
-      {/* Icon size — a slider, full-width for the narrow rail, with
-          the current value shown alongside the label. Resizes every previewed
-          glyph live via the grid's --icon-preview-size custom property. */}
-      <Stack gap="100">
-        <Flex justify="space-between" align="baseline">
-          <Text textStyle="sm" color="neutral.11">
-            Size
-          </Text>
-          <Text
-            textStyle="xs"
-            color="neutral.10"
-            css={{ fontVariantNumeric: "tabular-nums" }}
-          >
-            {size}px
-          </Text>
-        </Flex>
-        <Slider
-          aria-label="Icon preview size"
-          minValue={ICON_SIZE_MIN}
-          maxValue={ICON_SIZE_MAX}
-          step={ICON_SIZE_STEP}
-          value={size}
-          onChange={setSize}
-        />
-      </Stack>
-
-      {/* Surface — a single-select segmented toggle. Each option previews every
-          glyph against the shape it most often sits inside: nothing, a
-          rounded-square chip, or a circular chip. */}
-      <Stack gap="100">
+    <Flex align="center" gap="400" flexShrink={0}>
+      {/* The size resizes every glyph through the grid's
+          --icon-preview-size custom property (see `onPreviewSize`). */}
+      <Flex align="center" gap="200">
         <Text textStyle="sm" color="neutral.11">
-          Surface
+          Size
         </Text>
-        <ToggleButtonGroup.Root
-          size="xs"
-          colorPalette="primary"
-          disallowEmptySelection
-          selectedKeys={[surface]}
-          onSelectionChange={(keys) => {
-            const key = [...keys][0];
-            if (key != null) setSurface(key as Surface);
-          }}
-          aria-label="Icon surface"
+        <Box width="120px">
+          <Slider
+            aria-label="Icon preview size"
+            minValue={ICON_SIZE_MIN}
+            maxValue={ICON_SIZE_MAX}
+            step={ICON_SIZE_STEP}
+            value={shownSize}
+            onChange={(value) => {
+              setDraft(value);
+              onPreviewSize?.(value);
+            }}
+            onChangeEnd={(value) => {
+              setSize(value);
+              setDraft(null);
+            }}
+          />
+        </Box>
+        <Text
+          textStyle="xs"
+          color="neutral.10"
+          minWidth="4ch"
+          css={{ fontVariantNumeric: "tabular-nums" }}
         >
-          <ToggleButtonGroup.Button id="none" aria-label="No surface">
-            <HideSource />
-          </ToggleButtonGroup.Button>
-          <ToggleButtonGroup.Button id="square" aria-label="Square surface">
-            <CropSquare />
-          </ToggleButtonGroup.Button>
-          <ToggleButtonGroup.Button id="circle" aria-label="Circle surface">
-            <PanoramaFishEye />
-          </ToggleButtonGroup.Button>
-        </ToggleButtonGroup.Root>
-      </Stack>
-    </Stack>
+          {shownSize}px
+        </Text>
+      </Flex>
+
+      {/* Nothing, a rounded square or a circle behind each glyph: the shapes
+          an icon most often sits inside. */}
+      <ToggleButtonGroup.Root
+        size="xs"
+        colorPalette="primary"
+        disallowEmptySelection
+        selectedKeys={[surface]}
+        onSelectionChange={(keys) => {
+          const key = [...keys][0];
+          if (key != null) setSurface(key as Surface);
+        }}
+        aria-label="Icon surface"
+      >
+        <ToggleButtonGroup.Button id="none" aria-label="No surface">
+          <HideSource />
+        </ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="square" aria-label="Square surface">
+          <CropSquare />
+        </ToggleButtonGroup.Button>
+        <ToggleButtonGroup.Button id="circle" aria-label="Circle surface">
+          <PanoramaFishEye />
+        </ToggleButtonGroup.Button>
+      </ToggleButtonGroup.Root>
+    </Flex>
   );
 };
 
