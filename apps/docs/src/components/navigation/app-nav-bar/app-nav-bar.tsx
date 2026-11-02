@@ -15,6 +15,7 @@ export const AppNavBar = () => {
       justifyContent="space-between"
       px="400"
       py="100"
+      minHeight="1400"
       // TODO: Remove this once we have a proper layout
       maxWidth="1280px"
     >
