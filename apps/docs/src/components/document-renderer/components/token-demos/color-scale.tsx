@@ -235,22 +235,5 @@ const ScaleRow = ({
 export const ColorScale = ({ id }: ColorScaleProps) => {
   const [mode] = useColorScaleMode();
 
-  return (
-    <Stack gap="200">
-      <div>
-        <Text
-          fontWeight="600"
-          fontFamily="mono"
-          bg={id}
-          px="200"
-          py="100"
-          display="inline-block"
-          color={`${id}.contrast`}
-        >
-          {id}
-        </Text>
-      </div>
-      <ScaleRow id={id} mode={ALPHA_BACKDROP[id] ?? mode} />
-    </Stack>
-  );
+  return <ScaleRow id={id} mode={ALPHA_BACKDROP[id] ?? mode} />;
 };

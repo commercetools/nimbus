@@ -242,11 +242,34 @@ export const ColorPalettes = () => {
   };
 
   const note = NOTES[palette];
+  const selectedGroup =
+    GROUPS.find((group) =>
+      (group.palettes as readonly string[]).includes(palette)
+    ) ?? GROUPS[0];
 
   return (
     <Stack gap="600" my="600">
       <Stack gap="400">
-        <Flex justify="flex-end">
+        <Flex justify="space-between" align="center" wrap="wrap" gap="300">
+          {/* The selected palette: its color, its name and its group. */}
+          <Flex align="center" gap="300" aria-live="polite">
+            <Box
+              boxSize="1000"
+              borderRadius="full"
+              bg={`${palette}.9`}
+              border="1px solid"
+              borderColor="neutral.6"
+              flexShrink={0}
+            />
+            <Box>
+              <Text textStyle="2xl" fontWeight="600" lineHeight="1.1">
+                {palette}
+              </Text>
+              <Text textStyle="sm" color="neutral.11">
+                {selectedGroup.label.replace(/s$/, "")}
+              </Text>
+            </Box>
+          </Flex>
           <ToggleButtonGroup.Root
             size="sm"
             colorPalette="primary"
