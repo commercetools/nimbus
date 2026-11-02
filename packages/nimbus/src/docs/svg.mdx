@@ -12,14 +12,17 @@ tags:
 ---
 JSX style props for SVG elements.
 
+Color values are color tokens, such as `primary.9`. For all tokens, see
+[Colors](/home/design-tokens/colors).
+
 ## Fill
 
 Use the `fill` prop to set the fill color of an SVG element.
 
 ```jsx
-<chakra.svg fill="blue.500">
+<Box as="svg" fill="primary.9">
   <path d="..." />
-</chakra.svg>
+</Box>
 ```
 
 | Prop   | CSS Property | Token Category |
@@ -31,9 +34,9 @@ Use the `fill` prop to set the fill color of an SVG element.
 Use the `stroke` prop to set the stroke color of an SVG element.
 
 ```jsx
-<chakra.svg stroke="blue.500">
+<Box as="svg" stroke="primary.9">
   <path d="..." />
-</chakra.svg>
+</Box>
 ```
 
 | Prop     | CSS Property | Token Category |
@@ -45,11 +48,11 @@ Use the `stroke` prop to set the stroke color of an SVG element.
 Use the `strokeWidth` prop to set the stroke width of an SVG element.
 
 ```jsx
-<chakra.svg strokeWidth="1px">
+<Box as="svg" strokeWidth="1px">
   <path d="..." />
-</chakra.svg>
+</Box>
 ```
 
 | Prop          | CSS Property   | Token Category |
 | ------------- | -------------- | -------------- |
-| `strokeWidth` | `stroke-width` | `borderWidths` |
+| `strokeWidth` | `stroke-width` | -              |

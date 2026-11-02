@@ -25,6 +25,9 @@ Use the `aspectRatio` prop to set the desired aspect ratio of an element.
 <Box aspectRatio="square" />
 ```
 
+The aspect ratio tokens are `square`, `landscape`, `portrait`, `wide`,
+`ultrawide` and `golden`. See [Aspect Ratios](/home/design-tokens/aspect-ratios).
+
 | Prop          | CSS Property   | Token Category |
 | ------------- | -------------- | -------------- |
 | `aspectRatio` | `aspect-ratio` | `aspectRatios` |
@@ -86,7 +89,7 @@ the box breaks across multiple lines, columns, or pages.
 
 ```jsx /boxDecorationBreak/
 <Box bgImage="linear-gradient(red, blue)" boxDecorationBreak="clone">
-  Chakra is <br /> great!
+  This text <br /> breaks
 </Box>
 ```
 
@@ -99,7 +102,7 @@ the box breaks across multiple lines, columns, or pages.
 Use the `boxSizing` prop to set the box sizing of an element.
 
 ```jsx /boxSizing/
-<Box boxSizing="border-box" padding="4" width="8" height="8" />
+<Box boxSizing="border-box" padding="400" width="1600" height="1600" />
 ```
 
 | Prop        | CSS Property | Token Category |
@@ -161,7 +164,7 @@ new stacking context.
 
 ```jsx
 <Box isolation="isolate">
-  <Box bg="red.500" width="10" height="10" />
+  <Box bg="primary.9" width="1000" height="1000" />
 </Box>
 ```
 
@@ -175,7 +178,7 @@ Use the `objectFit` prop to set how an image or video should be resized to fit
 its container.
 
 ```jsx
-<Image src="..." objectFit="cover" width="10" height="10" />
+<Image src="..." objectFit="cover" width="1600" height="1600" />
 ```
 
 | Prop        | CSS Property | Token Category |
@@ -188,7 +191,7 @@ Use the `objectPosition` prop to set how an element should be positioned within
 its container.
 
 ```jsx
-<Image src="..." objectPosition="center" width="10" height="10" />
+<Image src="..." objectPosition="center" width="1600" height="1600" />
 ```
 
 | Prop             | CSS Property      | Token Category |
@@ -245,11 +248,13 @@ element.
 <Box position="absolute" top="0" left="0" />
 
 // using spacing tokens
-<Box position="absolute" top="4" />
+<Box position="absolute" top="400" />
 
 // using hardcoded values
 <Box position="absolute" top="100px" />
 ```
+
+The spacing tokens are listed on [Spacing](/home/design-tokens/spacing).
 
 Use the logical equivalents of `inset{Start|End}` utilities to set the position
 of an element based on the writing mode.
@@ -264,10 +269,10 @@ of an element based on the writing mode.
 | `right`                                   | `right`              | `spacing`      |
 | `bottom`                                  | `bottom`             | `spacing`      |
 | `left`                                    | `left`               | `spacing`      |
-| `start`, `insetStart`, `insetInlineStart` | `inset-inline-start` | `spacing`      |
-| `end` , `insetEnd`, `insetInlineEnd`      | `inset-inline-end`   | `spacing`      |
+| `insetStart`, `insetInlineStart`          | `inset-inline-start` | `spacing`      |
+| `insetEnd`, `insetInlineEnd`              | `inset-inline-end`   | `spacing`      |
 | `insetX`, `insetInline`                   | `inset-inline`       | `spacing`      |
-| `insetY`, `insetBlock`                    | `inset-inline`       | `spacing`      |
+| `insetY`, `insetBlock`                    | `inset-block`        | `spacing`      |
 
 ## Visibility
 
@@ -293,6 +298,8 @@ Use the `zIndex` prop to set the z-index of an element.
 <Box zIndex="overlay" />
 ```
 
+For all tokens, see [Z-Indices](/home/design-tokens/other/z-indices).
+
 | Prop     | CSS Property | Token Category |
 | -------- | ------------ | -------------- |
-| `zIndex` | `z-index`    | `zIndices`     |
+| `zIndex` | `z-index`    | `zIndex`       |

@@ -20,14 +20,21 @@ user-interface controls.
 ```jsx
 // hardcoded
 <label>
-  <chakra.input type="checkbox" accentColor="#3b82f6" />
+  <Box asChild accentColor="#3b82f6">
+    <input type="checkbox" />
+  </Box>
 </label>
 
 // token value
 <label>
-  <chakra.input type="checkbox" accentColor="blue.500" />
+  <Box asChild accentColor="primary.9">
+    <input type="checkbox" />
+  </Box>
 </label>
 ```
+
+Color values are color tokens, such as `primary.9`. For all tokens, see
+[Colors](/home/design-tokens/colors).
 
 | Prop          | CSS Property   | Token Category |
 | ------------- | -------------- | -------------- |
@@ -38,11 +45,11 @@ user-interface controls.
 Use the `appearance` prop to set the appearance of an element.
 
 ```jsx
-<chakra.select appearance="none">
+<Box as="select" appearance="none">
   <option value="1">Option 1</option>
   <option value="2">Option 2</option>
   <option value="3">Option 3</option>
-</chakra.select>
+</Box>
 ```
 
 | Prop         | CSS Property | Token Category |
@@ -56,10 +63,10 @@ input or textarea
 
 ```jsx
 // hardcoded
-<chakra.input caretColor="#3b82f6" />
+<Box as="input" caretColor="#3b82f6" />
 
 // token value
-<chakra.input caretColor="blue.500" />
+<Box as="input" caretColor="primary.9" />
 ```
 
 | Prop         | CSS Property  | Token Category |
@@ -72,12 +79,19 @@ Use the `cursor` prop to set the mouse cursor image to show when the mouse
 pointer is over an element.
 
 ```jsx
+// hardcoded
 <Box cursor="pointer" />
+
+// token value
+<Box cursor="button" />
 ```
+
+The cursor tokens name the cursor for a kind of control, such as `button` or
+`disabled`. For all tokens, see [Cursors](/home/design-tokens/other/cursors).
 
 | Prop     | CSS Property | Token Category |
 | -------- | ------------ | -------------- |
-| `cursor` | `cursor`     | -              |
+| `cursor` | `cursor`     | `cursor`       |
 
 ## Pointer Events
 
@@ -98,9 +112,9 @@ Use the `resize` prop to control whether an element is resizable, and if so, in
 which directions.
 
 ```jsx
-<chakra.textarea resize="both" />
-<chakra.textarea resize="horizontal" />
-<chakra.textarea resize="vertical" />
+<Box as="textarea" resize="both" />
+<Box as="textarea" resize="horizontal" />
+<Box as="textarea" resize="vertical" />
 ```
 
 | Prop     | CSS Property | Token Category |
@@ -137,19 +151,21 @@ scrolling is triggered by the navigation or JavaScript code.
 Use the `scrollMargin*` prop to set margins around scroll containers.
 
 ```jsx
-<Box maxH="100px" overflowY="auto" scrollMarginY="2">
+<Box maxH="100px" overflowY="auto" scrollMarginY="200">
   Scrollbar Container with block padding
 </Box>
 ```
 
-| Prop                                  | CSS Property                 | Token Category |
-| ------------------------------------- | ---------------------------- | -------------- |
-| `scrollMarginX` ,`scrollMarginInline` | `scroll-margin-inline`       | `spacing`      |
-| `scrollMarginInlineStart`             | `scroll-margin-inline-start` | `spacing`      |
-| `scrollMarginInlineEnd`               | `scroll-margin-inline-end`   | `spacing`      |
-| `scrollMarginY` , `scrollMarginBlock` | `scroll-margin-block`        | `spacing`      |
-| `scrollMarginBlockStart`              | `scroll-margin-block-start`  | `spacing`      |
-| `scrollMarginBlockEnd`                | `scroll-margin-block-end`    | `spacing`      |
+| Prop                      | CSS Property                                 | Token Category |
+| ------------------------- | -------------------------------------------- | -------------- |
+| `scrollMarginX`           | `scroll-margin-left`, `scroll-margin-right`  | `spacing`      |
+| `scrollMarginInline`      | `scroll-margin-inline`                       | -              |
+| `scrollMarginInlineStart` | `scroll-margin-inline-start`                 | -              |
+| `scrollMarginInlineEnd`   | `scroll-margin-inline-end`                   | -              |
+| `scrollMarginY`           | `scroll-margin-top`, `scroll-margin-bottom`  | `spacing`      |
+| `scrollMarginBlock`       | `scroll-margin-block`                        | -              |
+| `scrollMarginBlockStart`  | `scroll-margin-block-start`                  | -              |
+| `scrollMarginBlockEnd`    | `scroll-margin-block-end`                    | -              |
 | `scrollMarginLeft`                    | `scroll-margin-left`         | `spacing`      |
 | `scrollMarginRight`                   | `scroll-margin-right`        | `spacing`      |
 | `scrollMarginTop`                     | `scroll-margin-top`          | `spacing`      |
@@ -160,7 +176,7 @@ Use the `scrollMargin*` prop to set margins around scroll containers.
 Use the `scrollPadding*` prop to set padding inside scroll containers.
 
 ```jsx
-<Box maxH="100px" overflowY="auto" scrollPaddingY="2">
+<Box maxH="100px" overflowY="auto" scrollPaddingY="200">
   Scrollbar Container with block padding
 </Box>
 ```
@@ -168,11 +184,11 @@ Use the `scrollPadding*` prop to set padding inside scroll containers.
 | Prop                                     | CSS Property                  | Token Category |
 | ---------------------------------------- | ----------------------------- | -------------- |
 | `scrollPaddingX` , `scrollPaddingInline` | `scroll-padding-inline`       | `spacing`      |
-| `scrollPaddingInlineStart`               | `scroll-padding-inline-start` | `spacing`      |
-| `scrollPaddingInlineEnd`                 | `scroll-padding-inline-end`   | `spacing`      |
+| `scrollPaddingInlineStart`               | `scroll-padding-inline-start` | -              |
+| `scrollPaddingInlineEnd`                 | `scroll-padding-inline-end`   | -              |
 | `scrollPaddingY` , `scrollPaddingBlock`  | `scroll-padding-block`        | `spacing`      |
-| `scrollPaddingBlockStart`                | `scroll-padding-block-start`  | `spacing`      |
-| `scrollPaddingBlockEnd`                  | `scroll-padding-block-end`    | `spacing`      |
+| `scrollPaddingBlockStart`                | `scroll-padding-block-start`  | -              |
+| `scrollPaddingBlockEnd`                  | `scroll-padding-block-end`    | -              |
 | `scrollPaddingLeft`                      | `scroll-padding-left`         | `spacing`      |
 | `scrollPaddingRight`                     | `scroll-padding-right`        | `spacing`      |
 | `scrollPaddingTop`                       | `scroll-padding-top`          | `spacing`      |
@@ -183,18 +199,18 @@ Use the `scrollPadding*` prop to set padding inside scroll containers.
 Use the `scrollSnapMargin*` prop to set margins around scroll containers.
 
 ```jsx
-<Box maxH="100px" overflowY="auto" scrollSnapMarginY="2">
+<Box maxH="100px" overflowY="auto" scrollSnapMarginTop="200">
   Scrollbar Container with block padding
 </Box>
 ```
 
 | Prop                     | CSS Property           | Token Category |
 | ------------------------ | ---------------------- | -------------- |
-| `scrollSnapMargin`       | `scroll-margin`        | `spacing`      |
-| `scrollSnapMarginTop`    | `scroll-margin-top`    | `spacing`      |
-| `scrollSnapMarginBottom` | `scroll-margin-bottom` | `spacing`      |
-| `scrollSnapMarginLeft`   | `scroll-margin-left`   | `spacing`      |
-| `scrollSnapMarginRight`  | `scroll-margin-right`  | `spacing`      |
+| `scrollSnapMargin`       | `scroll-snap-margin`        | `spacing`      |
+| `scrollSnapMarginTop`    | `scroll-snap-margin-top`    | `spacing`      |
+| `scrollSnapMarginBottom` | `scroll-snap-margin-bottom` | `spacing`      |
+| `scrollSnapMarginLeft`   | `scroll-snap-margin-left`   | `spacing`      |
+| `scrollSnapMarginRight`  | `scroll-snap-margin-right`  | `spacing`      |
 
 ## Scroll Snap Type
 
