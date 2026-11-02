@@ -1,0 +1,103 @@
+---
+id: Learn-How do I-Read a changed value
+title: Read the value in onChange
+description:
+  Nimbus inputs call onChange with the new value, not with an event. TextInput
+  gives a string, NumberInput a number, Checkbox and Switch a boolean.
+icon: Input
+illustration: text-input
+order: 5
+menu:
+  - Learn
+  - How do I…
+  - Read a changed value
+tags:
+  - learn
+  - onChange
+  - value
+  - event.target.value
+  - event
+  - controlled input
+  - form
+  - form library
+  - Formik
+  - setFieldValue
+related:
+  - Learn-Concepts-Interaction props
+  - Components-TextInput
+  - Components-NumberInput
+  - Components-Checkbox
+  - Components-Switch
+---
+
+You read `event.target.value` in `onChange`, and it is `undefined`. Nimbus
+inputs call `onChange` with the new value itself, not with an event. Pass the
+value to your state, or give the state setter directly to `onChange`.
+
+```jsx live-dev
+import {
+  Checkbox,
+  NumberInput,
+  Stack,
+  Text,
+  TextInput,
+} from "@commercetools/nimbus";
+import { useState } from "react";
+
+function App() {
+  const [name, setName] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [isGift, setIsGift] = useState(false);
+
+  return (
+    <Stack gap="400" maxWidth="sm">
+      <TextInput aria-label="Name" value={name} onChange={setName} />
+      <NumberInput
+        aria-label="Quantity"
+        value={quantity}
+        onChange={setQuantity}
+      />
+      <Checkbox isSelected={isGift} onChange={setIsGift}>
+        Gift wrap
+      </Checkbox>
+      <Text>
+        Name: {name}, quantity: {String(quantity)}, gift wrap: {String(isGift)}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+| Component            | `onChange` gets                    |
+| -------------------- | ---------------------------------- |
+| `TextInput`          | the text, a string                 |
+| `NumberInput`        | a number                           |
+| `Checkbox`, `Switch` | `true` or `false` (`isSelected`)   |
+| `DateInput`          | a date value, or `null` when empty |
+
+Some components have a different handler. Check the props table of the
+component:
+
+- `LocalizedField`: `onChange` gets an event object for the changed locale.
+- `MoneyInput`: use `onValueChange`. It gets the amount and the currency.
+- `ScopedSearchInput`: use `onValueChange`. It gets the text and the selected
+  option.
+
+## With a form library
+
+Form libraries have a function that sets the value of one field, for example
+`setFieldValue` in Formik. Call it with the value:
+
+```tsx
+<TextInput
+  name="email"
+  value={values.email}
+  onChange={(value) => setFieldValue("email", value)}
+/>
+```
+
+## Why it works
+
+Each input reports the value in its own type. A number field gives you a number,
+so you do not need to convert text. See
+[Interaction props](/learn/concepts/interaction-props).
