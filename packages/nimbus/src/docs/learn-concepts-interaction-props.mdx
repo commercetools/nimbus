@@ -34,7 +34,7 @@ props. Use `onPress` instead of `onClick`, and `isDisabled` instead of
 Most components use the same names. When you know them, you know how most
 components react.
 
-## Pressing: onPress
+## Press: onPress
 
 `onPress` runs when someone activates an element with a mouse, a touch or the
 keyboard. With `onClick`, you would have to handle each of these yourself.
@@ -113,7 +113,7 @@ has the table of all of them.
 Use `value` and `onChange` together when your code keeps the value (controlled).
 Use `defaultValue` when the input keeps the value itself (uncontrolled).
 
-## Open and closed: isOpen, defaultOpen, onOpenChange
+## Open state: isOpen, defaultOpen, onOpenChange
 
 Components that open and close, such as `Dialog`, `Drawer`, `Popover`, `Menu`,
 `Tooltip`, `Select` and `ComboBox`, use the same three props. `defaultOpen`
@@ -146,7 +146,7 @@ const App = () => {
 };
 ```
 
-## Selection: selectedKeys and onSelectionChange
+## Selection: selectedKeys, onSelectionChange
 
 Components that select items, such as `Menu`, `ListBox`, `TagGroup` and
 `DataTable`, use `selectedKeys`, `defaultSelectedKeys` and
