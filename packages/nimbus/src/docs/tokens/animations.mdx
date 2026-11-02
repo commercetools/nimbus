@@ -2,7 +2,9 @@
 id: TokensAnimations
 title: Animations
 illustration: token-animations
-description: The list of available animation tokens
+description:
+  Durations, easings, keyframes and animations that make elements move the same
+  way across Nimbus, and how to respect reduced motion.
 order: 999
 menu:
   - Home
@@ -12,55 +14,177 @@ menu:
 tags:
   - animation
   - transition
+  - motion
+  - duration
+  - easing
+  - keyframes
+  - reduced motion
 icon: RotateRight
 ---
-This page provides a list of tokens for applying ready made animations
-(shorthands) or creating custom animations or transitions by combining keyframe
-animations with durations and easings.
 
-## Shorthands
+Motion tokens make elements move the same way across Nimbus. There are four
+kinds. **Durations** set how long a motion takes. **Easings** set how its speed
+changes over that time. **Keyframes** set what changes, such as the opacity or
+the position. **Animations** combine a keyframe, a duration and an easing in one
+value.
 
-The following list of shorthand tokens can be used as `animation` property
-value, they combine a keyframe animation with duration and easing for a reusable
-animation definition.
+## Try a motion
 
-<GenericTokenTableDemo category="animations" demoProperty="animation" />
+Pick a keyframe, a duration and an easing. The motion plays when you pick a
+token, or when you press Play. Use the copy button to copy the style props.
 
-## Keyframe Animations
+<MotionPlayground />
 
-CSS keyframe animations define animations as a sequence of steps, each with its
-own set of properties. They allow for more complex, multi-step animations that
-can be controlled with keyframes and timing functions.
+## Choose how to animate
 
-<KeyframeTokenDemo />
+| You want                                                           | Use                                                   | Example                                                                                 |
+| ------------------------------------------------------------------ | ----------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| An element that enters or leaves, such as an overlay               | Keyframes and a duration                              | [Animate an element that enters and leaves](#animate-an-element-that-enters-and-leaves) |
+| A smooth change of a color, a size or a position, such as on hover | A transition with a duration and an easing            | [Animate a change](#animate-a-change)                                                   |
+| A motion that repeats, such as a pulse                             | An animation token                                    | `<Box animation="pulse" />`                                                             |
+| A loading indicator                                                | [LoadingSpinner](/components/feedback/loading-spinner) | `<LoadingSpinner />`                                                                    |
 
 ## Durations
 
-Durations define **how long** an animation takes to complete one cycle, directly
-impacting the perception of speed and fluidity.
+A duration sets how long a motion takes. Nimbus uses `fast` (150ms) and `faster`
+(100ms) most: Popover and Menu enter in `fast` and leave in `faster`. Press Play
+to see each duration.
 
-Short durations create snappy, quick interactions that feel responsive but can
-risk appearing abrupt. Longer durations allow for smoother, more deliberate
-motion but can feel sluggish if overused.
-
-Finding the right balance is key—durations should match the context and intent
-of the interaction. They’re measured in seconds or milliseconds and are often
-paired with easings to create harmonious, intentional animations.
-
-<DurationTokenDemo />
+<AnimationsScale kind="durations" />
 
 ## Easings
 
-_Easings_ determine **the rate of change** of an animation over time,
-essentially defining how an animation transitions between its start and end
-states.
+An easing sets how the speed changes during a motion. `linear` keeps the same
+speed. `ease-in` starts slow, `ease-out` ends slow, and `ease-in-out` does both.
+`ease-in-smooth` starts fast and slows down to a soft stop. The curve shows the
+progress, from the bottom up, over the time, from left to right. Press Play to
+see each easing in `1s`.
 
-Instead of moving linearly, animations can accelerate, decelerate, or follow
-complex curves, making the motion feel more dynamic and natural.
+<AnimationsScale kind="easings" />
 
-This is achieved through mathematical easing functions, like linear
-interpolation or bezier curves, which map progress over time to the visible
-change in animation properties. It controls the "rhythm" of the animation,
-ensuring it feels fluid or deliberate depending on the desired effect.
+## Keyframes
 
-<EasingTokenDemo />
+Keyframes set what changes during a motion. They are not tokens with a CSS
+variable: set them by name with `animationName`. Select a tile to play its
+keyframes once, in `1s` with `ease-in-out`, or press Play all.
+
+<AnimationsScale kind="keyframes" />
+
+Some keyframes are made for one component: `activity-bounce` for
+ActivityIndicator, `skeleton-wave` for Skeleton, and `progress-indeterminate`
+and `gradient-shimmer` for ProgressBar. The `slide-*-full` keyframes move an
+element by its own size, as Drawer does. The other `slide-*` keyframes move it
+by 0.5rem.
+
+## Animations
+
+An animation token combines keyframes, a duration and an easing in one value,
+and it repeats without end. Set it with the `animation` prop. Press Play to
+start the samples and Pause to stop them.
+
+<AnimationsScale kind="animations" />
+
+## Animation styles
+
+An animation style sets the keyframes for an element that opens next to a
+trigger, such as a popover. The `slide-*` styles pick the keyframes from the
+`data-placement` attribute of the element, so that the element moves away from
+its trigger. Set a style with the `animationStyle` prop, and a duration with
+`animationDuration`.
+
+<AnimationsScale kind="animationStyles" />
+
+The recipes of Nimbus components do not use the animation styles: they set the
+keyframes directly, as in
+[Animate an element that enters and leaves](#animate-an-element-that-enters-and-leaves).
+
+## Use motion in code
+
+| You set                                        | Props                                                                  | Values                                                                     |
+| ---------------------------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| What changes                                   | `animationName`                                                        | [Keyframes](#keyframes); several names with commas                         |
+| How long the motion takes, or waits            | `animationDuration`, `animationDelay`                                  | [Durations](#durations)                                                    |
+| How the speed changes                          | `animationTimingFunction`                                              | [Easings](#easings)                                                        |
+| A whole animation in one value                 | `animation`                                                            | [Animations](#animations)                                                  |
+| The keyframes for an element next to a trigger | `animationStyle`                                                       | [Animation styles](#animation-styles)                                      |
+| A transition                                   | `transitionProperty`, `transitionDuration`, `transitionTimingFunction` | `common`, `colors`, `size`, `position` or `background`; durations; easings |
+
+For the full list of props, see
+[Style props: Transitions](/home/style-props/transitions).
+
+### Animate an element that enters and leaves
+
+React Aria sets `data-entering` on an overlay while it opens and `data-exiting`
+while it closes. It waits for the exit animation to end before it removes the
+element
+([React Aria: Animation](https://react-spectrum.adobe.com/react-aria/styling.html#animation)).
+Nimbus recipes use this for Popover, Menu and Dialog:
+
+```tsx
+// In a recipe, from the Popover recipe
+base: {
+  "&[data-entering]": {
+    animationName: "fade-in, scale-in",
+    animationDuration: "fast",
+  },
+  "&[data-exiting]": {
+    animationName: "fade-out, scale-out",
+    animationDuration: "faster",
+  },
+}
+```
+
+### Animate a change
+
+A transition animates a change of a property, for example when the pointer moves
+over an element. `transitionProperty` takes a group of properties: `colors` is
+`background-color`, `border-color`, `color`, `fill` and `stroke`.
+
+```tsx
+<Box
+  bg="neutral.2"
+  _hover={{ bg: "neutral.3" }}
+  transitionProperty="colors"
+  transitionDuration="fast"
+  transitionTimingFunction="ease-in-out"
+/>
+```
+
+### CSS variables
+
+Durations, easings and animations are also CSS variables, such as
+`var(--nimbus-durations-fast)`, `var(--nimbus-easings-ease-in-smooth)` or
+`var(--nimbus-animations-spin)`, for styles that you write yourself.
+
+### Editor support
+
+With the design token TypeScript plugin, autocomplete shows the value next to
+the token. See
+[Installation](/home/getting-started/installation#design-token-autocomplete-optional)
+for how to set it up.
+
+## Reduced motion
+
+Some people turn off motion in the settings of their system, because motion can
+make them feel sick or distract them. The browser reports this setting as
+`prefers-reduced-motion`
+([MDN: prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)).
+Motion that a user action starts should be possible to turn off, unless the
+motion is essential, as WCAG asks at level AAA
+([WCAG 2.3.3 Animation from Interactions](https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html)).
+
+Nimbus components with larger motion reduce it under this setting:
+ActivityIndicator, DropZone, Skeleton, Tabs and TabNav. For your own motion, use
+the `_motionReduce` condition:
+
+```tsx
+<Box animation="pulse" _motionReduce={{ animation: "none" }} />
+```
+
+## Values that Nimbus components use
+
+In the recipes of Nimbus components, the most common durations are `fast` (7
+times), `faster` (6 times) and `moderate` (5 times). The most common easings are
+`ease-in-smooth` (6 times) and `ease-in-out` (3 times). The most common
+keyframes are `fade-in` and `fade-out` (6 times each), and `scale-in` and
+`scale-out` (5 times each).

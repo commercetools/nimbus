@@ -12,16 +12,14 @@ import { CursorsScale } from "./token-demos/cursors-token-demo";
 import { ZIndexScale } from "./token-demos/z-index-token-demo";
 import { AspectRatiosScale } from "./token-demos/aspect-ratios-token-demo";
 import { BreakpointsScale } from "./token-demos/breakpoints-token-demo";
-import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
+import {
+  AnimationsScale,
+  MotionPlayground,
+} from "./token-demos/animations-token-demo";
 import { TypographyScale } from "./token-demos/typography-token-demo";
 import * as icons from "@commercetools/nimbus-icons";
 import { CategoryOverview } from "./category-overview/category-overview";
 import { MDXComponents } from "mdx/types";
-import {
-  EasingTokenDemo,
-  DurationTokenDemo,
-  KeyframeTokenDemo,
-} from "./token-demos/animation";
 import { NimbusExportsList } from "@/components/document-renderer/components/nimbus-exports-list";
 
 import {
@@ -96,10 +94,8 @@ export const components: MDXComponents = {
   ZIndexScale,
   AspectRatiosScale,
   BreakpointsScale,
-  GenericTokenTableDemo,
-  EasingTokenDemo,
-  DurationTokenDemo,
-  KeyframeTokenDemo,
+  AnimationsScale,
+  MotionPlayground,
   TypographyScale,
   Icon: ({ id, ...props }) => {
     const Component = icons[id as keyof typeof icons];
