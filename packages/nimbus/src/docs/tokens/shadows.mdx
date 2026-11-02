@@ -2,7 +2,9 @@
 id: TokensShadows
 title: Shadows
 illustration: token-shadows
-description: The list of available shadow tokens
+description:
+  Shadow tokens make an element look raised above the page, from a light shadow
+  for cards to a large shadow for dialogs.
 order: 999
 menu:
   - Home
@@ -10,10 +12,79 @@ menu:
   - Shadows
 tags:
   - shadows
+  - box-shadow
+  - elevation
+  - depth
 icon: Texture
 ---
-The list of available shadow tokens
+Shadow tokens make an element look raised above the page. The tokens `1` to `6`
+cast a shadow below the element, and a higher number casts a larger shadow.
+`left` and `right` cast a shadow to one side. All shadows are black with an
+opacity of 5% to 15%.
 
-## Tokens
+## Shadow scale
 
-<GenericTokenTableDemo category="shadows" demoProperty="boxShadow" />
+Each shadow has one value for both color modes. Use the switch to see the
+shadows on a light and on a dark background, and the copy button to copy a
+token name.
+
+<ShadowsScale />
+
+## Choose a shadow
+
+To match the components next to your element, use the shadow that Nimbus uses
+for elements of the same kind.
+
+| Your element                                           | Use              | Nimbus components that use it                                                              |
+| ------------------------------------------------------ | ---------------- | ------------------------------------------------------------------------------------------ |
+| Sits on the page, such as a card, a tooltip or a toast | `1`              | The elevated variants of Card, Tooltip, Toast, the toolbar of RichTextInput, the thumb of Slider |
+| A calendar that opens from a date field                | `4`              | DatePicker, DateRangePicker                                                                |
+| A menu or a list that opens from a trigger             | `5`              | Menu, Select, ComboBox, ListBox, Popover                                                   |
+| A dialog or a drawer                                   | `6`              | Dialog, Drawer, the info popover of FormField                                              |
+| The edge of a frozen column in a scrolled table        | `right`, `left`  | DataTable                                                                                  |
+
+The tokens `2` and `3` are not used in the recipes of Nimbus components. For a
+card, use the `elevated` variant of [Card](/components/data-display/card)
+instead of a shadow of your own.
+
+## Use shadows in code
+
+Shadow tokens work on the `boxShadow` style prop, or its short name `shadow`.
+
+```tsx
+// A raised element
+<Box bg="bg" borderRadius="300" boxShadow="1" />
+
+// A shadow and an inner line together
+<Box boxShadow="inset 0 0 0 1px {colors.border}, {shadows.1}" />
+
+// In a recipe
+base: {
+  boxShadow: "5",
+}
+```
+
+To combine a shadow with another shadow, write the token as `{shadows.1}` in a
+list of shadows, as in the second example. Nimbus resolves the name to the CSS
+variable of the token. The Toast recipe uses this to draw a line and a shadow
+together.
+
+For the full list of props, see [Style props: Effects](/home/style-props/effects).
+
+### CSS variables
+
+Every token is also a CSS variable, such as `var(--nimbus-shadows-1)`, for
+styles that you write yourself.
+
+### Editor support
+
+With the design token TypeScript plugin, autocomplete shows the value next to
+the token. See
+[Installation](/home/getting-started/installation#design-token-autocomplete-optional)
+for how to set it up.
+
+## Values that Nimbus components use
+
+In the recipes of Nimbus components, `1` is the most common shadow (10 times).
+Then come `5` (6 times), `6` (3 times), `4` (2 times), and `left` and `right`
+(2 times each).
