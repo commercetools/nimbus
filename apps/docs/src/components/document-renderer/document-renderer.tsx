@@ -126,8 +126,8 @@ const DocumentRendererComponent = () => {
             />
           )}
 
-          {/* Related components come before the tabs, so a reader sees similar
-              components before starting with this one. */}
+          {/* Related content comes before the tabs, so a reader sees similar
+              pages before starting with this one. */}
           {showHeader && <RelatedDocuments />}
 
           {/* Show tabs if multiple views are available */}

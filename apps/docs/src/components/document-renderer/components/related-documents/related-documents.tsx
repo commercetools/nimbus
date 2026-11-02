@@ -10,7 +10,7 @@ import { getRelatedRoutes } from "./get-related-routes";
 const TEXT_HEIGHT = "calc({lineHeights.600} * 3)";
 
 /**
- * "Related components" carousel for the top of a page, below the header. Each
+ * "Related content" carousel for the top of a page, below the header. Each
  * card has an illustration, a one-line title and a description of up to two
  * lines. It shows the documents listed in the `related` list of the route
  * manifest, in that order, so a reader sees similar components before choosing
@@ -27,7 +27,7 @@ export const RelatedDocuments: FC = () => {
   if (related.length === 0) return null;
 
   return (
-    <Carousel label="Related components">
+    <Carousel label="Related content">
       {related.map((doc) => {
         const illustration = doc.illustrations?.find(hasIllustration);
         return (
