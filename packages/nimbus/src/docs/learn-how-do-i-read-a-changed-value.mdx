@@ -30,7 +30,8 @@ related:
   - Components-Switch
 ---
 
-You read `event.target.value` in `onChange`, and it is `undefined`. Most Nimbus
+You read `event.target.value` in `onChange`, and get an error, because
+`event.target` is `undefined`. Most Nimbus
 inputs call `onChange` with the new value itself, not with an event. Pass the
 value to your state, or give the state setter directly to `onChange`.
 

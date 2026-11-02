@@ -79,8 +79,9 @@ const App = () => (
 
 ## Flex and Box
 
-`Flex` is a flex container with props such as `grow`, `shrink` and `basis`. Use
-it when each child needs to grow or shrink in its own way. `Box` is a plain
+`Flex` is a flex container with props such as `direction`, `align` and `wrap`.
+Use it when each child needs to grow or shrink in its own way: each child sets
+this with its own style props `flexGrow`, `flexShrink` and `flexBasis`. `Box` is a plain
 element that takes all style props. Use it for one element that needs
 padding, a size or a color.
 

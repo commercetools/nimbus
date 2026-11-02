@@ -2,9 +2,9 @@
 id: Learn-How do I-Use the full width
 title: Make a component use the full width
 description:
-  Set width="full" on the component. Inputs in a Stack or FormField stretch
-  already; components that size to their content, such as Button, need
-  width="full".
+  Set width="full" on the component. A column Stack or a FormField stretches
+  its children already; elsewhere, components that size to their content, such
+  as Button, need width="full".
 icon: WidthFull
 illustration: token-sizes
 order: 3
@@ -48,13 +48,14 @@ const App = () => (
 
 ## Why it works
 
-Some components size to their content, for example `Button` and
-`LocalizedField`. They need `width="full"` to fill their parent.
+A column `Stack` and a `FormField` stretch their children, so inputs such as
+`TextInput` and also a `Button` fill the width there. A `Stack` stops doing
+this when you set `align`, as `align="start"` does in the example. Then, and in
+parents that do not stretch, such as a `Box`, a `Button` keeps the width of its
+content and needs `width="full"`.
 
-Inputs such as `TextInput` and `SearchInput` stretch when their container
-stretches them, for example a `Stack` or a `FormField`. A `Stack` stretches its
-children unless you set `align` or the child sets its own width. In the example,
-`align="start"` lets each button keep its own width.
+`LocalizedField` always keeps the width of its content, so it needs
+`width="full"` in every parent.
 
 See [Layout](/learn/concepts/layout) and the
 [size tokens](/home/design-tokens/sizes).

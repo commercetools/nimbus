@@ -35,8 +35,9 @@ CSS variable. In JavaScript, `system.token` returns the token.
 ## In CSS
 
 The variable name is `--nimbus-`, then the token group, then the token name,
-with dashes instead of dots. The token groups have plural names, such as
-`colors`, `radii` and `sizes`.
+with dashes instead of dots. Most token groups have plural names, such as
+`colors`, `radii` and `sizes`. A group name in camelCase is written with dashes:
+`fontSizes` becomes `font-sizes`, and `zIndex` becomes `z-index`.
 
 | Token              | CSS variable                     |
 | ------------------ | -------------------------------- |
@@ -74,9 +75,10 @@ const App = () => (
 );
 ```
 
-- For a token with one value, such as spacing, you get the value: `16px`.
-- For a color, you get the CSS variable, because the value depends on the color
-  mode.
+- For a plain token, such as spacing, sizes, radii, font sizes, z-index, `black`
+  or `white`, you get the value: `16px`.
+- For a semantic token, such as a palette color, `fg`, `bg`, `border` or a
+  shadow, you get the CSS variable, because the value depends on the color mode.
 - For a name that does not exist, you get `undefined`.
 
 `system.token.var("spacing.400")` always returns the CSS variable.

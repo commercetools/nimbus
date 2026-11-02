@@ -77,12 +77,15 @@ borders and solid fills, and high steps for text. The
 `contrast` step, such as `primary.contrast`, is a text color that is readable
 on step 9.
 
-There are three kinds of color tokens:
+There are four kinds of color tokens:
 
 - **Semantic palettes** have a meaning: `primary`, `neutral`, `info`,
   `positive`, `warning` and `critical`. Use them when the color says something,
   for example `critical` for an error. Components take them in the
   `colorPalette` prop.
+- **Brand palettes** hold the commercetools brand colors. The semantic
+  palettes use them, for example `primary`, so use the semantic palette when
+  the color has a meaning.
 - **System palettes** are colors without a meaning, such as `blue`, `grass` or
   `tomato`. Use them when the color only tells things apart, for example in a
   chart.
