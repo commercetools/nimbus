@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Box, Flex, Link, Text } from "@commercetools/nimbus";
+import { Box, Flex, Link, Stack, Text } from "@commercetools/nimbus";
 import { useManifest } from "@/contexts/manifest-context";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
 import { Carousel } from "@/components/carousel";
@@ -7,10 +7,11 @@ import { Illustration, hasIllustration } from "@/components/illustration";
 import { getRelatedRoutes } from "./get-related-routes";
 
 /**
- * "Related components" carousel for the top of a page, below the header. It
- * shows the documents listed in the `related` list of the route manifest, in
- * that order, so a reader sees similar components before choosing one. Renders
- * nothing when the active document has no related documents.
+ * "Related components" carousel for the top of a page, below the header. Each
+ * card has an illustration, a one-line title and a description of up to two
+ * lines. It shows the documents listed in the `related` list of the route
+ * manifest, in that order, so a reader sees similar components before choosing
+ * one. Renders nothing when the active document has no related documents.
  */
 export const RelatedDocuments: FC = () => {
   const { routeManifest } = useManifest();
@@ -32,7 +33,7 @@ export const RelatedDocuments: FC = () => {
             href={doc.path}
             textDecoration="none"
             display="block"
-            width="220px"
+            width="320px"
           >
             <Flex
               alignItems="center"
@@ -44,10 +45,12 @@ export const RelatedDocuments: FC = () => {
               bg="bg"
               _hover={{ borderColor: "primary.7", bg: "primary.2" }}
             >
+              {/* As tall as the text: one title line (24px, line height
+                  `600`) plus two description lines (2 × 20px, line height
+                  `500`) is 64px, the `1600` size. */}
               <Box
                 flexShrink="0"
-                width="48px"
-                height="48px"
+                boxSize="1600"
                 borderRadius="200"
                 bg="primary.2"
                 overflow="hidden"
@@ -55,9 +58,26 @@ export const RelatedDocuments: FC = () => {
               >
                 {illustration && <Illustration name={illustration} />}
               </Box>
-              <Text color="neutral.12" fontWeight="500" truncate>
-                {doc.title}
-              </Text>
+              <Stack gap="0" minWidth="0" minHeight="1600" justify="center">
+                <Text
+                  color="neutral.12"
+                  fontWeight="500"
+                  lineHeight="600"
+                  truncate
+                >
+                  {doc.title}
+                </Text>
+                {doc.description && (
+                  <Text
+                    color="neutral.11"
+                    textStyle="sm"
+                    lineHeight="500"
+                    lineClamp={2}
+                  >
+                    {doc.description}
+                  </Text>
+                )}
+              </Stack>
             </Flex>
           </Link>
         );
