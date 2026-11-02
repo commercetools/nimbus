@@ -6,6 +6,9 @@ import { Carousel } from "@/components/carousel";
 import { Illustration, hasIllustration } from "@/components/illustration";
 import { getRelatedRoutes } from "./get-related-routes";
 
+/** One title line and two description lines, each as high as line height `600`. */
+const TEXT_HEIGHT = "calc({lineHeights.600} * 3)";
+
 /**
  * "Related components" carousel for the top of a page, below the header. Each
  * card has an illustration, a one-line title and a description of up to two
@@ -45,12 +48,11 @@ export const RelatedDocuments: FC = () => {
               bg="bg"
               _hover={{ borderColor: "primary.7", bg: "primary.2" }}
             >
-              {/* As tall as the text: one title line (24px, line height
-                  `600`) plus two description lines (2 × 20px, line height
-                  `500`) is 64px, the `1600` size. */}
+              {/* As tall as the text: one title line plus two description
+                  lines, each with the `600` line height (24px), so 72px. */}
               <Box
                 flexShrink="0"
-                boxSize="1600"
+                boxSize={TEXT_HEIGHT}
                 borderRadius="200"
                 bg="primary.2"
                 overflow="hidden"
@@ -58,10 +60,15 @@ export const RelatedDocuments: FC = () => {
               >
                 {illustration && <Illustration name={illustration} />}
               </Box>
-              <Stack gap="0" minWidth="0" minHeight="1600" justify="center">
+              <Stack
+                gap="0"
+                minWidth="0"
+                minHeight={TEXT_HEIGHT}
+                justify="center"
+              >
                 <Heading
                   as="h3"
-                  size="md"
+                  size="lg"
                   color="neutral.12"
                   lineHeight="600"
                   truncate
@@ -71,8 +78,8 @@ export const RelatedDocuments: FC = () => {
                 {doc.description && (
                   <Text
                     color="neutral.11"
-                    textStyle="sm"
-                    lineHeight="500"
+                    textStyle="md"
+                    lineHeight="600"
                     lineClamp={2}
                   >
                     {doc.description}
