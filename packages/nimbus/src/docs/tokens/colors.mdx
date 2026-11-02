@@ -2,7 +2,7 @@
 id: Colors
 title: Colors
 illustration: token-colors
-description: Color palettes, how their steps are used, and how to use them in code.
+description: How Nimbus handles color, and how to use colors in code.
 order: 999
 menu:
   - Home
@@ -13,13 +13,13 @@ tags:
 icon: Palette
 ---
 
-Nimbus colors are built on [Radix Colors](https://www.radix-ui.com/colors).
-Every color is a **palette** of 12 steps plus a `contrast` step, and each step
-has one job: a background, a border or a text color. Palettes work in light and
-dark mode without extra work.
+Nimbus uses one color system for every component. Each color is a **palette**:
+12 steps of one hue, plus a `contrast` step. Each step has one job, such as a
+background, a border or a text color. And each step has a value for light mode
+and a value for dark mode, so a design works in both modes without extra work.
 
-Find a color below, then see [how to use it in code](#use-colors-in-code) or
-[how a scale works](#how-a-scale-works).
+Browse the palettes below, learn [how colors work](#how-colors-work), or go
+straight to [using colors in code](#use-colors-in-code).
 
 ## Browse palettes
 
@@ -28,11 +28,79 @@ example `primary.9`.
 
 <ColorPalettes />
 
+## How colors work
+
+### Steps
+
+A palette orders one hue by **contrast**, from subtle backgrounds to
+high-contrast text. The steps fall into four groups, which the palette browser
+above also shows:
+
+- **Backgrounds (1–5):** from the app background to selected elements.
+- **Borders (6–8):** separators, element borders and focus rings.
+- **Solid (9–10):** solid backgrounds and their hover state.
+- **Text (11–12):** low-contrast and high-contrast text.
+
+The table lists each step with its use case and the text colors that work on it.
+The colors are from the `primary` palette.
+
+<ColorSteps />
+
+Text steps 11 and 12 pair with background steps 1–5. Text on a solid background
+(steps 9 and 10) uses the `contrast` step.
+
+### The contrast step
+
+The `contrast` step is black or white, chosen for readability on steps 9 and 10
+of its palette. Most palettes use white; a light palette such as `warning` uses
+black. Use it for text on a solid background, for example the label of a solid
+button.
+
+### Three kinds of palettes
+
+The palette browser shows the palettes in three groups:
+
+- **Semantic palettes** have a meaning. They communicate a status or a state,
+  for example an error or a success. Use them when a color has a meaning.
+- **Brand palettes** are the commercetools brand colors.
+- **System palettes** cover the full range of hues. Use them for decoration or
+  to tell items apart, for example tags in different colors.
+
+A semantic palette has no colors of its own. It points to a brand or a system
+palette, so `primary.9` and `ctviolet.9` are the same color. Use the semantic
+name: if Nimbus changes the palette it points to, your UI changes with it.
+
+| **Semantic palette** | **Meaning**                                              | **Points to** |
+| -------------------- | -------------------------------------------------------- | ------------- |
+| `primary`            | The main color; the default of components such as Button | `ctviolet`    |
+| `neutral`            | No status; the gray of text, borders and surfaces        | `gray`        |
+| `info`               | Information                                              | `blue`        |
+| `positive`           | Success or a positive state                              | `grass`       |
+| `warning`            | A warning                                                | `amber`       |
+| `critical`           | An error, a critical state or a destructive action       | `red`         |
+
+### Light and dark mode
+
+Every step has two values: one for light mode and one for dark mode. The token
+name stays the same, so `primary.3` is a light violet in light mode and a dark
+violet in dark mode. Components and your own styles follow the color mode, so
+you do not need a separate design for dark mode.
+
+Use the **Light** and **Dark** buttons in the palette browser to compare both
+values. `blackAlpha` and `whiteAlpha` are the exception: they keep the same
+value in both modes.
+
+### Swap palettes
+
+All palettes use the same steps for the same jobs. So you can replace one
+palette with another, for example `primary` with `critical`, and the design
+keeps its contrast levels and its visual hierarchy. This is why a component can
+take any palette with the `colorPalette` prop.
+
 ## Use colors in code
 
 Refer to a color by its palette and step. Components take a palette with the
-`colorPalette` prop and choose the steps themselves. Because the scales are
-interchangeable, you can swap the palette without losing contrast.
+`colorPalette` prop and choose the steps themselves.
 
 ```tsx
 // A palette and a step
@@ -52,41 +120,12 @@ base: {
 }
 ```
 
-## How a scale works
-
-A scale organizes one hue by **contrast** level, from subtle backgrounds to
-high-contrast text. The steps fall into four groups, which the palette browser
-above also shows:
-
-- **Backgrounds (1–5):** from the app background to selected elements.
-- **Borders (6–8):** separators, element borders and focus rings.
-- **Solid (9–10):** solid backgrounds and their hover state.
-- **Text (11–12):** low-contrast and high-contrast text.
-
-The scales are _interchangeable_: a color like red can be swapped with green
-without losing the intended contrast levels, so designs stay adaptable and keep
-their visual hierarchy. The same contrast levels also make a separate "dark
-mode" design unnecessary, because every scale supports both light and dark
-environments.
-
-The table lists each step with its use case and the text colors that work on it.
-The colors are from the `primary` palette.
-
-<ColorSteps />
-
-Text steps 11 and 12 pair with background steps 1–5. For text on solid
-backgrounds (steps 9 and 10), use the special `contrast` step, which is a black
-or white value chosen for readability.
-
-For more details on how the scale is designed, see the
-[Radix color scale documentation](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale).
-
 ## Accessibility and contrast
 
-Radix builds its palettes to be accessible. It uses
+The palettes are built to be accessible. Their contrast levels are based on
 [APCA (Accessible Perceptual Contrast Algorithm)](https://github.com/Myndex/APCA),
-a more advanced method for calculating perceived contrast that accounts for
-human visual perception more accurately than the traditional WCAG 2.x formula.
+a method for calculating perceived contrast that accounts for human visual
+perception more accurately than the traditional WCAG 2.x formula.
 
 > [!NOTE]\
 > Some automated accessibility tools still use the older WCAG 2.x synthetic
@@ -94,3 +133,15 @@ human visual perception more accurately than the traditional WCAG 2.x formula.
 > certain color combinations that APCA considers accessible. If your tooling
 > flags contrast issues with these pairings, verify the results against an
 > APCA-based checker before making changes.
+
+## Where the colors come from
+
+The system palettes and the use case of each step come from
+[Radix Colors](https://www.radix-ui.com/colors). Nimbus adds:
+
+- the brand palettes: commercetools colors in the same 12-step form,
+- the semantic palettes, which point to a brand or a system palette,
+- the `contrast` step, which Nimbus calculates for each palette.
+
+To learn how Radix designs each step, see the
+[Radix color scale documentation](https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale).

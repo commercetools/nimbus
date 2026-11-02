@@ -31,6 +31,15 @@ To calculate the pixel value of a token, divide the token by 25: `1000 / 25` is
 40px. The rem column shows the pixel value divided by 16, the default root font
 size.
 
+> [!IMPORTANT]\
+> Spacing and [sizes](/home/design-tokens/sizes) are two different scales, even
+> though they use the same numbers. Spacing tokens set the space inside and
+> between elements (`padding`, `margin`, `gap` and position). Sizes tokens set
+> the dimensions of an element (`width`, `height`). They also include larger
+> values, names like `md`, and fractions like `1/2`, and they have no negative
+> values. For example, `p="400"` takes a spacing token and `width="400"` takes a
+> sizes token, and both are 16px.
+
 ## Use spacing in code
 
 Spacing tokens work on the style props for padding, margin, gap and position.
@@ -60,12 +69,6 @@ element toward its neighbor.
 ```tsx
 <Box mt="-100" />
 ```
-
-### Width and height
-
-The `width` and `height` props use the [sizes tokens](/home/design-tokens/sizes),
-not the spacing tokens. The sizes reuse the same numbers, so `width="400"` is 16px
-as well.
 
 ### CSS variables
 
