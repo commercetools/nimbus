@@ -41,15 +41,12 @@ const STEP_USE: Record<StepName, string> = {
 type ColorScaleProps = {
   /** Name of the palette, for example `primary`. */
   id: string;
-  /** Only the steps, without text samples and group names. */
-  compact?: boolean;
 };
 
 type StepProps = {
   id: string;
   step: StepName;
   hasContrast: boolean;
-  compact: boolean;
   copied: boolean;
   onCopy: (token: string) => void;
 };
@@ -83,18 +80,11 @@ const Samples = ({
   return null;
 };
 
-const Step = ({
-  id,
-  step,
-  hasContrast,
-  compact,
-  copied,
-  onCopy,
-}: StepProps) => {
+const Step = ({ id, step, hasContrast, copied, onCopy }: StepProps) => {
   const token = `${id}.${step}`;
   // Text steps and `contrast` are text colors. They show as text on the
   // background they pair with: steps 11 and 12 on step 2, `contrast` on step 9.
-  const isTextStep = (step === "contrast" || step >= 11) && !compact;
+  const isTextStep = step === "contrast" || step >= 11;
   const pairedBackground = step === "contrast" ? `${id}.9` : `${id}.2`;
 
   return (
@@ -109,7 +99,7 @@ const Step = ({
         flexDirection="column"
         justifyContent={isTextStep ? "flex-start" : "center"}
         alignItems="center"
-        height={compact ? "400" : "1600"}
+        height="1600"
         overflow="hidden"
         borderRadius="100"
         border="1px solid"
@@ -133,7 +123,7 @@ const Step = ({
             <Box alignSelf="stretch" height="200" bg={token} />
           </>
         ) : (
-          !compact && <Samples id={id} step={step} hasContrast={hasContrast} />
+          <Samples id={id} step={step} hasContrast={hasContrast} />
         )}
       </Box>
       <Text
@@ -152,11 +142,19 @@ const Step = ({
   );
 };
 
+/**
+ * Black and white palettes do not change with the color mode. They are drawn on
+ * the opposite mode, so that every step can be seen.
+ */
+const ALPHA_BACKDROP: Record<string, "light" | "dark"> = {
+  blackAlpha: "light",
+  whiteAlpha: "dark",
+};
+
 /** One palette in one color mode. */
 const ScaleRow = ({
   id,
   mode,
-  compact,
 }: ColorScaleProps & { mode: "light" | "dark" }) => {
   const themeColorScales = useAtomValue(themeColorScalesAtom);
   const hasContrast = Boolean(themeColorScales?.get(`${id}.contrast`));
@@ -194,28 +192,26 @@ const ScaleRow = ({
       borderRadius="200"
       p="300"
     >
-      {!compact && (
-        <Box
-          display="grid"
-          gridTemplateColumns={columns}
-          columnGap="100"
-          mb="100"
-        >
-          {groups.map((group) => (
-            <Box
-              key={group.label}
-              gridColumn={`${group.from} / ${group.to}`}
-              borderTop="2px solid"
-              borderColor="neutral.6"
-              pt="100"
-            >
-              <Text textStyle="xs" color="neutral.11" truncate>
-                {group.label}
-              </Text>
-            </Box>
-          ))}
-        </Box>
-      )}
+      <Box
+        display="grid"
+        gridTemplateColumns={columns}
+        columnGap="100"
+        mb="100"
+      >
+        {groups.map((group) => (
+          <Box
+            key={group.label}
+            gridColumn={`${group.from} / ${group.to}`}
+            borderTop="2px solid"
+            borderColor="neutral.6"
+            pt="100"
+          >
+            <Text textStyle="xs" color="neutral.11" truncate>
+              {group.label}
+            </Text>
+          </Box>
+        ))}
+      </Box>
       <Box display="grid" gridTemplateColumns={columns} columnGap="100">
         {steps.map((step) => (
           <Step
@@ -223,7 +219,6 @@ const ScaleRow = ({
             id={id}
             step={step}
             hasContrast={hasContrast}
-            compact={Boolean(compact)}
             copied={copiedToken === `${id}.${step}`}
             onCopy={copy}
           />
@@ -237,7 +232,7 @@ const ScaleRow = ({
  * A palette drawn as one strip: steps grouped by role, text samples that show
  * the recommended pairings, and a click on a step copies its token name.
  */
-export const ColorScale = ({ id, compact }: ColorScaleProps) => {
+export const ColorScale = ({ id }: ColorScaleProps) => {
   const [mode] = useColorScaleMode();
 
   return (
@@ -255,7 +250,7 @@ export const ColorScale = ({ id, compact }: ColorScaleProps) => {
           {id}
         </Text>
       </div>
-      <ScaleRow id={id} mode={mode} compact={compact} />
+      <ScaleRow id={id} mode={ALPHA_BACKDROP[id] ?? mode} />
     </Stack>
   );
 };
