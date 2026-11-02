@@ -109,9 +109,7 @@ Detailed explanation of purpose and behavior.
 
 ### Resources
 
-Deep dive into implementation details and access the Nimbus design library.
-
-[Figma library](figmaLink) [React Aria Docs](reactAriaLink) # If applicable
+[React Aria Docs](reactAriaLink) # If applicable
 
 ## Variables
 

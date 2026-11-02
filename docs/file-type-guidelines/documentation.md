@@ -27,7 +27,8 @@ Required documentation for designers that:
 - Documents design variants and visual options (using `<PropsTable>` component)
 - Provides accessibility information from a user perspective (keyboard
   navigation, screen reader support, WCAG compliance)
-- Links to design resources (Figma, ARIA patterns when applicable)
+- Links to design resources: Figma through the `figmaLink` front matter field,
+  ARIA patterns (when applicable) in a Resources section
 
 **Note**: Internal utility components or non-exported components don't require
 MDX documentation.
@@ -176,9 +177,10 @@ cases.
 
 ### Resources
 
-Deep dive into implementation details and access the Nimbus design library.
+Add this section only for links that are not front matter fields. The Figma,
+Storybook and GitHub links are front matter fields.
 
-[Figma library](figmaLink) [React ARIA Docs](reactAriaLink) # If applicable
+[React ARIA Docs](reactAriaLink) # If applicable
 [ARIA Pattern](ariaPatternLink) # If applicable
 
 ## Variables (or Examples)
@@ -630,7 +632,8 @@ Supported in the Nimbus documentation site:
 
 - [ ] **Interactive examples using `jsx live` blocks only**
 - [ ] **NO Storybook-specific imports**
-- [ ] Resources section with relevant external links
+- [ ] Resources section (only when needed) with external links that are not
+      front matter fields
 - [ ] Variables/Examples section showing component variations
 - [ ] **Sizes demonstrated in a single code block** (not separate blocks per
       size)

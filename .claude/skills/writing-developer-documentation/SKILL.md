@@ -392,10 +392,13 @@ These examples demonstrate how to test your implementation when using [Component
 
 ### 10. Resources
 
+Optional. The Storybook, Figma and GitHub links are front matter fields of the
+main `.mdx` file (`storybookLink`, `figmaLink`, `githubLink`) and show in the page
+header. The Resources section lists other links:
+
 ```markdown
 ## Resources
 
-- [Storybook examples](link-tbd)
 - [React Aria Documentation](https://react-spectrum.adobe.com/react-aria/)
 - [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
 - [Related Component](/components/category/component) (if applicable)
@@ -734,8 +737,8 @@ Create the documentation file:
      Labeling, Keyboard), include "Persistent ID" tracking text
    - **Testing**: Include mandatory disclaimer paragraph +
      `{{docs-tests: {component-name}.docs.spec.tsx}}` injection token
-   - **Resources**: Link to Storybook (use "link-tbd" placeholder), internal
-     links must start with '/'
+   - **Resources**: Links to React Aria and ARIA docs, internal links must start
+     with '/'. The Storybook link is the `storybookLink` front matter field
 
 7. **Remove all HTML comments**: Clean up template guidance comments
 
@@ -863,7 +866,7 @@ You MUST validate against these requirements:
 - [ ] API reference with PropsTable
 - [ ] Common patterns section (recommended)
 - [ ] Testing your implementation section with injection token
-- [ ] Resources section
+- [ ] Resources section (only for links that are not front matter fields)
 
 #### Code Examples
 

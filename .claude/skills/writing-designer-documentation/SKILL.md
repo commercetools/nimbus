@@ -101,8 +101,7 @@ rationale.
 
 ### Resources
 
-[Figma library](figmaLink) [Related ARIA Pattern](ariaPatternLink) # If
-applicable
+[Related ARIA Pattern](ariaPatternLink) # If applicable
 ```
 
 ### 2. Design Hierarchy (if applicable)
@@ -250,7 +249,8 @@ links, clearer explanations.
 
 - [ ] No duplicate `# Component Name` heading in body (title comes from frontmatter)
 - [ ] Overview section explaining design purpose (design rationale)
-- [ ] Resources section with links (reference materials)
+- [ ] Resources section with links that are not front matter fields (reference
+      materials)
 - [ ] Variables section with jsx live examples (shows options)
 - [ ] Guidelines section (helps designers decide when to use)
 
