@@ -59,9 +59,6 @@ const DocumentRendererComponent = () => {
 
   const activeViewKey = activeView ?? tabs[0]?.key ?? "overview";
 
-  // Related documents show at the end of the Overview tab only
-  const isOverview = activeViewKey === "overview";
-
   // The tab label tells the `h2` tag which heading only repeats the tab.
   const viewLabel = hasMultipleViews
     ? tabs.find((tab) => tab.key === activeViewKey)?.title
@@ -103,15 +100,8 @@ const DocumentRendererComponent = () => {
   return (
     <>
       <title>{pageTitle}</title>
-      {/* Full-bleed for no-sidebar and wide pages (e.g. Icons, overviews); readable prose width elsewhere. */}
-      <Box
-        width="full"
-        maxWidth={
-          meta.layout === "no-sidebar" || meta.layout === "wide"
-            ? "full"
-            : "4xl"
-        }
-      >
+      {/* The page fills its column. Paragraphs and lists limit their own width. */}
+      <Box width="full">
         <Stack gap="400">
           {!showHeader && lifecycleInfo && (
             <Flex alignItems="center" justifyContent="flex-end">
@@ -133,6 +123,10 @@ const DocumentRendererComponent = () => {
             />
           )}
 
+          {/* Related components come before the tabs, so a reader sees similar
+              components before starting with this one. */}
+          {showHeader && <RelatedDocuments />}
+
           {/* Show tabs if multiple views are available */}
           {hasMultipleViews && <ViewTabs tabs={tabs} />}
 
@@ -149,7 +143,6 @@ const DocumentRendererComponent = () => {
             <ViewLabelContext.Provider value={viewLabel}>
               <MdxStringRenderer content={content} />
             </ViewLabelContext.Provider>
-            {isOverview && <RelatedDocuments />}
           </Box>
         </Stack>
       </Box>

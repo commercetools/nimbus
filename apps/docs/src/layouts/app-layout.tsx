@@ -9,7 +9,7 @@
 
 import { Suspense, useRef } from "react";
 import { Outlet } from "react-router-dom";
-import { Stack, LoadingSpinner, Box } from "@commercetools/nimbus";
+import { LoadingSpinner, Box } from "@commercetools/nimbus";
 import { AppFrame } from "@/components/app-frame";
 import { Menu } from "@/components/navigation/menu";
 import { Toc } from "@/components/navigation/toc";
@@ -41,9 +41,9 @@ function AppFrameBodyInner() {
 
   const { baseRoute } = useRouteInfo();
 
-  // The home route uses a full-bleed editorial layout, so it opts out of the
-  // 80ch reading column and spans the wider content area (matching the top
-  // nav's own 1280px max width). Every other doc keeps the reading measure.
+  // The home route uses a full-bleed editorial layout and spans the wider
+  // content area (matching the top nav's own 1280px max width). Other docs fill
+  // the column; only their prose is limited to a reading measure.
   const isHome = baseRoute === "" || baseRoute === "home";
 
   // `layout: wide` pages (overviews with a card grid) have no use for a table
@@ -58,7 +58,7 @@ function AppFrameBodyInner() {
   const isWide = wideRef.current;
 
   return (
-    <AppFrame.Root hideAside={isHome || isWide}>
+    <AppFrame.Root>
       {/* Left Navigation */}
       <AppFrame.LeftNav viewportRef={sidebarViewportRef}>
         <Suspense fallback={<LoadingSpinner />}>
@@ -66,10 +66,21 @@ function AppFrameBodyInner() {
         </Suspense>
       </AppFrame.LeftNav>
 
-      {/* Main Content */}
+      {/* Main Content. The table of contents is the aside of the scroll area.
+          It is left out on the home route and on wide pages, which have no TOC
+          and use the full width instead. */}
       <AppFrame.MainContent
         viewportRef={mainViewportRef}
-        contentMaxWidth={isHome || isWide ? "1280px" : "80ch"}
+        contentMaxWidth={isHome || isWide ? "1280px" : undefined}
+        aside={
+          !isHome && !isWide ? (
+            <AppFrame.RightAside>
+              <Suspense fallback={<LoadingSpinner />}>
+                <Toc />
+              </Suspense>
+            </AppFrame.RightAside>
+          ) : undefined
+        }
       >
         <Suspense fallback={<LoadingSpinner />}>
           <MobileNav />
@@ -79,18 +90,6 @@ function AppFrameBodyInner() {
           </Box>
         </Suspense>
       </AppFrame.MainContent>
-
-      {/* Right Aside (TOC only - Settings disabled). Omitted on the home route
-          and on wide pages, which have no TOC and use the full width instead. */}
-      {!isHome && !isWide && (
-        <AppFrame.RightAside>
-          <Stack gap="800">
-            <Suspense fallback={<LoadingSpinner />}>
-              <Toc />
-            </Suspense>
-          </Stack>
-        </AppFrame.RightAside>
-      )}
     </AppFrame.Root>
   );
 }

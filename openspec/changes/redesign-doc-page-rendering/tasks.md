@@ -23,13 +23,13 @@
 - [x] 3.4 Hide the matching first `h2` visually in the `H2` base tag and keep the id
 - [x] 3.5 Apply the same rule in `useToc`: drop the entry and promote its `h3` children
 
-## 4. Example frame
+## 4. Layout revision
 
-- [x] 4.1 Check the frame in the browser with Playwright (the docs app has no component render tests): closed by default, toggle `aria-expanded`, Enter and Space, live editing, error shown while closed
-- [x] 4.2 Replace the `Tabs` in `live-code-editor.tsx` with the frame, the preview surface and the toggle button
-- [x] 4.3 Drive the initial state from the "Default view" atoms (`defaultActiveTab` stays unused, see design)
-- [x] 4.4 Move `LiveError` outside the collapsible area and add the open and close transition with a reduced-motion switch
-- [x] 4.5 Search `apps/docs` and `packages` for tests or docs that use the "Preview" and "Code" tab labels and update them
+- [x] 4.1 Restore the Preview/Code tabs in `live-code-editor.tsx`
+- [x] 4.2 Move the aside into the scroll area and make it sticky
+- [x] 4.3 Set the view tabs to `top: 0` and `size="lg"`
+- [x] 4.4 Limit paragraphs and lists to `80ch` and remove the column cap
+- [x] 4.5 Add the `Carousel` and show the related components under the header
 
 ## 5. Type hierarchy and table of contents
 
@@ -40,7 +40,7 @@
 ## 6. Verify in the browser
 
 - [x] 6.1 Check Button, a single-view page (Radii) and a `wide` page (Accessibility) with Playwright at 1440px, Button at 390px, and Button in dark color mode (a compound component was not checked separately)
-- [x] 6.2 Check keyboard use of the tabs, the code toggle and the link buttons, and check reduced motion
+- [x] 6.2 Check keyboard use of the tabs, the carousel and the link buttons, and check reduced motion
 - [x] 6.3 Run `pnpm --filter docs` type check, lint and unit tests
 
 ## 7. Keep docs and tooling in sync

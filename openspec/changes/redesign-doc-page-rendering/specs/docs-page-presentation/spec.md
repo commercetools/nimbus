@@ -70,34 +70,31 @@ for assistive technology and keep its anchor.
 - **AND** SHALL list its `h3` children at the top level
 - **AND** SHALL move deeper entries below it up by one level
 
-### Requirement: Example frame
-The docs app SHALL render each live code example as one frame with a preview
-area and a code toggle. The frame SHALL replace the Preview and Code tabs.
+### Requirement: Related components carousel
+The docs app SHALL show the related components of a page as a carousel between
+the header and the view tabs, on every view.
 
-#### Scenario: Closed by default
-- **WHEN** the reader's "Default view" setting is Preview
-- **THEN** the frame SHALL show the preview only
-- **AND** the toggle SHALL have `aria-expanded="false"`
+#### Scenario: Position
+- **WHEN** a page has related components
+- **THEN** the carousel SHALL appear below the header and above the view tabs
+- **AND** SHALL NOT appear when the page has none
 
-#### Scenario: Open by default
-- **WHEN** the reader's "Default view" setting is Code
-- **THEN** the frame SHALL show the preview and the open code editor
-- **AND** the toggle SHALL have `aria-expanded="true"`
+#### Scenario: Scrolling
+- **WHEN** the cards are wider than the page
+- **THEN** the reader SHALL be able to scroll sideways, with previous and next buttons
+- **AND** each button SHALL be disabled at its end of the list
+- **AND** scrolling SHALL NOT animate when the user prefers reduced motion
 
-#### Scenario: Toggle
-- **WHEN** the reader activates the toggle
-- **THEN** the code editor SHALL open or close below the preview
-- **AND** the toggle SHALL have an accessible name that says what it does
-- **AND** the toggle SHALL be reachable and operable with the keyboard
-- **AND** the open and close SHALL NOT animate when the user prefers reduced motion
+### Requirement: One scroll area
+The content and the table of contents SHALL scroll together in one scroll area.
+The table of contents SHALL stay in view while the page scrolls.
 
-#### Scenario: Editing keeps working
-- **WHEN** the reader changes the code in the open editor
-- **THEN** the preview SHALL update in the same way as today
+#### Scenario: View tabs position
+- **WHEN** the view tabs are stuck
+- **THEN** they SHALL sit directly under the top bars, with no gap above them
 
-#### Scenario: Errors are visible
-- **WHEN** the code of an example fails to compile or run
-- **THEN** the error SHALL be visible even when the editor is closed
+### Requirement: Content width
+The page SHALL fill its column. Paragraphs and lists SHALL be limited to `80ch`.
 
 ### Requirement: Type hierarchy
 The docs app SHALL render the headings and text of a page with a clear size

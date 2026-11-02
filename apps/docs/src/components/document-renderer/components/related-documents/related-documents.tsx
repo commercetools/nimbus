@@ -1,14 +1,16 @@
 import { FC } from "react";
-import { Box, Heading, SimpleGrid } from "@commercetools/nimbus";
+import { Box, Flex, Link, Text } from "@commercetools/nimbus";
 import { useManifest } from "@/contexts/manifest-context";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
-import { DocumentCard } from "@/components/document-card";
+import { Carousel } from "@/components/carousel";
+import { Illustration, hasIllustration } from "@/components/illustration";
 import { getRelatedRoutes } from "./get-related-routes";
 
 /**
- * "Related components" section for the end of the Overview tab. It shows the
- * documents listed in the `related` list of the route manifest, in that order.
- * Renders nothing when the active document has no related documents.
+ * "Related components" carousel for the top of a page, below the header. It
+ * shows the documents listed in the `related` list of the route manifest, in
+ * that order, so a reader sees similar components before choosing one. Renders
+ * nothing when the active document has no related documents.
  */
 export const RelatedDocuments: FC = () => {
   const { routeManifest } = useManifest();
@@ -21,19 +23,45 @@ export const RelatedDocuments: FC = () => {
   if (related.length === 0) return null;
 
   return (
-    <Box as="section" aria-labelledby="related-components-heading" mt="800">
-      <Heading as="h2" id="related-components-heading" size="xl" mb="400">
-        Related components
-      </Heading>
-      <SimpleGrid
-        // auto-fill keeps a lone card at column width instead of stretching it
-        gridTemplateColumns="repeat(auto-fill, minmax(260px, 1fr))"
-        gap="400"
-      >
-        {related.map((doc) => (
-          <DocumentCard key={doc.id} doc={doc} />
-        ))}
-      </SimpleGrid>
-    </Box>
+    <Carousel label="Related components">
+      {related.map((doc) => {
+        const illustration = doc.illustrations?.find(hasIllustration);
+        return (
+          <Link
+            key={doc.id}
+            href={doc.path}
+            textDecoration="none"
+            display="block"
+            width="220px"
+          >
+            <Flex
+              alignItems="center"
+              gap="300"
+              p="200"
+              border="1px solid"
+              borderColor="neutral.6"
+              borderRadius="300"
+              bg="bg"
+              _hover={{ borderColor: "primary.7", bg: "primary.2" }}
+            >
+              <Box
+                flexShrink="0"
+                width="48px"
+                height="48px"
+                borderRadius="200"
+                bg="primary.2"
+                overflow="hidden"
+                aria-hidden="true"
+              >
+                {illustration && <Illustration name={illustration} />}
+              </Box>
+              <Text color="neutral.12" fontWeight="500" truncate>
+                {doc.title}
+              </Text>
+            </Flex>
+          </Link>
+        );
+      })}
+    </Carousel>
   );
 };

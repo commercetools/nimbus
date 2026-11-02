@@ -1,5 +1,4 @@
 import { Box, Link, Text } from "@commercetools/nimbus";
-import { useEffect, useRef } from "react";
 import type { TocItem } from "@/types";
 import { useToc } from "@/hooks/useToc";
 import { useClosestHeading } from "./hooks/use-closest-heading.ts";
@@ -23,7 +22,6 @@ export const Toc = () => {
   const activeToc = useToc();
   const closestHeadingId = useClosestHeading();
   const mainViewportRef = useMainViewport();
-  const activeItemRef = useRef<HTMLDivElement>(null);
 
   // Left padding per heading depth, applied to the label (not the rail, which
   // stays flush). H1/H2 sit against the gutter; H3 gets one extra indent step.
@@ -32,19 +30,6 @@ export const Toc = () => {
     2: "300",
     3: "600",
   };
-
-  // Keep the active item visible when the TOC is taller than its scroll area.
-  useEffect(() => {
-    const el = activeItemRef.current;
-    if (!el) return;
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    el.scrollIntoView({
-      block: "nearest",
-      behavior: prefersReducedMotion ? "auto" : "smooth",
-    });
-  }, [closestHeadingId]);
 
   // Handle TOC link clicks
   const handleLinkClick = (e: React.MouseEvent<Element>, headingId: string) => {
@@ -93,7 +78,6 @@ export const Toc = () => {
             return (
               <Box
                 key={item.href}
-                ref={isActive ? activeItemRef : undefined}
                 colorPalette={isActive ? "primary" : "neutral"}
                 borderLeftWidth="2px"
                 borderLeftStyle="solid"

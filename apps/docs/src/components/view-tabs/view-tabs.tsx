@@ -110,7 +110,7 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
       borderBottom="1px solid"
       borderColor="neutral.6"
       position="sticky"
-      top="800"
+      top="0"
       zIndex="2"
       css={{
         transform: isVisible ? "translateY(0)" : "translateY(-100%)",
@@ -122,7 +122,7 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
         "& [role=tab]": { flexShrink: 0, whiteSpace: "nowrap" },
       }}
     >
-      <Tabs.Root selectedKey={activeView} variant="line">
+      <Tabs.Root selectedKey={activeView} variant="line" size="lg">
         <Tabs.List>
           {tabs.map((tab) => {
             const isOverviewTab = tab.key === "overview";

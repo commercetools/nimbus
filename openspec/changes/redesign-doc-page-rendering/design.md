@@ -115,34 +115,18 @@ Alternative considered: remove the `## Overview` lines from MDX files. Rejected:
 they would break anchors and the guidelines, and 90 files change for a style
 rule.
 
-### 5. Example frame: toggle plus disclosure, driven by the existing setting
+### 5. Live examples are not changed
 
-`LiveCodeEditor` drops `Tabs`. The frame is one bordered container with the
-preview area on a slightly tinted surface. A ghost `IconButton` with a code icon
-sits in the top-right corner. It has `aria-expanded`, `aria-controls` and an
-accessible name ("Show code" / "Hide code"). The editor area below uses the
-existing `CollapsibleMotion` component if it fits, otherwise a CSS height
-transition. Both are disabled under reduced motion.
-
-The initial state comes from the existing "Default view" atoms: Preview means
-closed, Code means open. The settings menu stays and keeps its labels.
-The `defaultActiveTab` prop is declared but never read today; `base-tags/code.tsx`
-passes `"editor"` for `live-dev` blocks in the dev environment. This change does
-not make the component read it, because that would open every example in
-development builds only. The prop is left as it is.
-
-`LiveError` is rendered outside the collapsible area so that errors show when the
-editor is closed.
-
-Alternative considered: keep tabs and only restyle. Rejected by the maintainer.
+The first version replaced the Preview/Code tabs with a code toggle. Readers
+preferred the tabs, so `live-code-editor.tsx` keeps them.
 
 ### 6. Type hierarchy in the base tags
 
 Change `H2`, `H3`, `H4` and `Paragraph` in `base-tags` using Nimbus text styles
 and spacing tokens only (no raw pixel values except where the spec names 16px
 and 1.6, which map to existing tokens). `h2` keeps its rule; `h3` and `h4` have
-none. The content column keeps its `4xl` max width, which gives about 80
-characters per line at 16px.
+none. Paragraphs and lists have a `maxWidth` of `80ch`; the column itself has no
+cap, so examples and tables can use the full width.
 
 ### 7. Short table of contents
 
@@ -159,10 +143,6 @@ is added for the list change.
 - [`storybookLink` path format is wrong for some components] → Task 1.2 finds
   the format from real stories, and a script checks that each generated URL
   matches a story id before the files are written.
-- [Closed examples hide code that readers need] → The toggle has a clear name and
-  the existing "Default view" setting lets a reader start with code open.
-- [Tests or docs look for the Preview/Code tabs] → Task 4.5 searches `apps/docs`
-  and `packages` for those labels and updates them.
 - [Open change `use-nimbus-components-in-docs-app` edits nearby docs app files] →
   Keep commits separate and rebase before merging.
 - [Hiding the first `h2` makes the page look as if the first section has no
@@ -177,3 +157,12 @@ is added for the list change.
    diff and the docs build output.
 4. Rollback: revert the commits. The new front matter fields are optional and
    can stay.
+
+### 8. Layout: one scroll area, sticky aside, carousel
+
+`AppFrame.MainContent` is the only scroll area of the page and renders the
+aside next to the content. The aside is `position: sticky`; it scrolls on its
+own only when it is taller than the screen. The view tabs use `top: 0`, so they
+sit flush under the top bars. The related components are a `Carousel` (CSS
+scroll snap, previous and next buttons) of small cards between the header and
+the tabs.
