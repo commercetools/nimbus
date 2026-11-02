@@ -129,27 +129,33 @@ export const WithHeaderItemsToRight: Story = {
  */
 export const WithSvgInHeader: Story = {
   // No VRT: the play asserts computed size and rotation, the chevron pixels are covered by Sizes/SmokeTest.
+  // `sm` makes the chevron (20px) differ from the spinner's own size (24px).
   render: () => (
-    <Accordion.Root>
-      <Accordion.Item value="a">
-        <Accordion.Header>
-          First Item
-          <svg
-            data-testid="header-icon"
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            aria-hidden="true"
-          >
-            <circle cx="6" cy="6" r="6" fill="currentColor" />
-          </svg>
-          <Badge>
-            <LoadingSpinner size="2xs" data-testid="header-spinner" />1
-          </Badge>
-        </Accordion.Header>
-        <Accordion.Content>First item content</Accordion.Content>
-      </Accordion.Item>
-    </Accordion.Root>
+    <Stack gap="400">
+      <Badge alignSelf="start">
+        <LoadingSpinner size="2xs" data-testid="reference-spinner" />1
+      </Badge>
+      <Accordion.Root size="sm">
+        <Accordion.Item value="a">
+          <Accordion.Header>
+            First Item
+            <svg
+              data-testid="header-icon"
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              aria-hidden="true"
+            >
+              <circle cx="6" cy="6" r="6" fill="currentColor" />
+            </svg>
+            <Badge>
+              <LoadingSpinner size="2xs" data-testid="header-spinner" />1
+            </Badge>
+          </Accordion.Header>
+          <Accordion.Content>First item content</Accordion.Content>
+        </Accordion.Item>
+      </Accordion.Root>
+    </Stack>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -160,23 +166,31 @@ export const WithSvgInHeader: Story = {
       .getByTestId("header-spinner")
       .querySelector("svg")!;
 
+    // Same spinner rendered outside the accordion: its standalone size.
+    const referenceSvg = canvas
+      .getByTestId("reference-spinner")
+      .querySelector("svg")!;
+    const size = (el: Element) => {
+      const { width, height } = getComputedStyle(el);
+      return { width, height };
+    };
+
     const rotate = (el: Element) => getComputedStyle(el).rotate;
     const isUnrotated = (el: Element) =>
       expect(rotate(el)).toMatch(/^(none|0deg)$/);
 
     await step("The chevron has the chevron size", async () => {
       await expect(chevron.tagName.toLowerCase()).toBe("svg");
-      await expect(getComputedStyle(chevron).width).toBe("24px");
+      await expect(getComputedStyle(chevron).width).toBe("20px");
     });
 
     await step("Other svgs keep their own size", async () => {
       await expect(getComputedStyle(icon).width).toBe("12px");
       await expect(getComputedStyle(icon).height).toBe("12px");
-      // Intrinsic size of the spinner's 24x24 viewBox, not the chevron variable.
-      await expect(spinnerSvg.getAttribute("width")).toBeNull();
-      await expect(
-        spinnerSvg.closest(".nimbus-accordion__indicator")
-      ).toBeNull();
+      await expect(size(spinnerSvg)).toEqual(size(referenceSvg));
+      await expect(size(spinnerSvg).width).not.toBe(
+        getComputedStyle(chevron).width
+      );
     });
 
     await step("Expanding rotates the chevron only", async () => {
@@ -185,6 +199,7 @@ export const WithSvgInHeader: Story = {
       await isUnrotated(icon);
       await isUnrotated(spinnerSvg);
       await expect(getComputedStyle(icon).width).toBe("12px");
+      await expect(size(spinnerSvg)).toEqual(size(referenceSvg));
     });
 
     await step("Collapsing rotates the chevron back", async () => {
