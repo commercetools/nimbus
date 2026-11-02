@@ -1030,6 +1030,36 @@ export const ComponentName = {
 };
 ````
 
+### Lifecycle State Tag
+
+Components whose `.mdx` frontmatter sets `lifecycleState` to `Experimental`,
+`Alpha` or `Beta` **must** carry the matching JSDoc tag on the main export, as
+required by
+[ADR 0003](../../packages/nimbus/src/docs/architecture-decisions/adr-0003-component-lifecycle-states.mdx).
+Place it last in the JSDoc block, after a blank ` *` line:
+
+```typescript
+/**
+ * # ComponentName
+ *
+ * Brief description
+ *
+ * @beta This component is in beta and may change in future minor versions.
+ */
+export const ComponentName = (props: ComponentNameProps) => {
+```
+
+| `lifecycleState` | Tag             | Text                                                                            |
+| ---------------- | --------------- | ------------------------------------------------------------------------------- |
+| `Experimental`   | `@experimental` | This component is experimental and may change or be removed in future versions. |
+| `Alpha`          | `@alpha`        | This component is in alpha and may change in future versions.                   |
+| `Beta`           | `@beta`         | This component is in beta and may change in future minor versions.              |
+
+For compound components, tag the namespace export (`export const Menu = {...}`);
+sub-parts need no tag. When the component reaches `Stable`, remove the tag and
+set `lifecycleState: Stable`. Changesets for pre-release components also mark
+the state; see [Changeset Conventions](../changeset-conventions.md).
+
 ### Style Props Support Tag
 
 Components that accept Chakra UI style props (margin, padding, color, etc.)
@@ -1154,6 +1184,9 @@ export const CustomButton = (props: CustomButtonProps) => {
 ### JSDoc Documentation
 
 - [ ] Main component has JSDoc with description and example
+- [ ] **Pre-release components (`lifecycleState` Experimental, Alpha or Beta)
+      have the matching `@experimental`, `@alpha` or `@beta` tag on the main
+      export**
 - [ ] **Main component JSDoc includes `@see` link to live documentation site**
 - [ ] **`@see` link uses `{@link URL}` format**
 - [ ] **`@see` link placed before `@example` block**

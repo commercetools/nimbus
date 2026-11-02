@@ -35,6 +35,8 @@ import { ChatMessageListRoot, ChatMessageListItem } from "./components";
  *   </ChatMessageList.Item>
  * </ChatMessageList.Root>
  * ```
+ *
+ * @experimental This component is experimental and may change or be removed in future versions.
  */
 export const ChatMessageList = {
   /**
