@@ -103,6 +103,11 @@ export const Blockquote = (props: BlockquoteProps) => {
       variant="accent-start"
       colorPalette={marker ? flavorPalette[marker] : "neutral"}
       hideIcon={!marker}
+      // The page around the alert is smaller than the body text. Use the text
+      // size of Paragraph and the lists, so the alert matches the text next
+      // to it. Title and description inherit it.
+      textStyle="md"
+      lineHeight="650"
       mb="400"
     >
       {marker && (
