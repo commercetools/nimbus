@@ -5,7 +5,7 @@ import { IconSearch } from "./token-demos/icon-search";
 import { SpacingScale } from "./token-demos/spacing-token-demo";
 import { SizesScale } from "./token-demos/sizes-token-demo";
 import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
-import { TextStylesDemo } from "./token-demos/text-styles-demo";
+import { TypographyScale } from "./token-demos/typography-token-demo";
 import * as icons from "@commercetools/nimbus-icons";
 import { CategoryOverview } from "./category-overview/category-overview";
 import { MDXComponents } from "mdx/types";
@@ -83,7 +83,7 @@ export const components: MDXComponents = {
   EasingTokenDemo,
   DurationTokenDemo,
   KeyframeTokenDemo,
-  TextStylesDemo,
+  TypographyScale,
   Icon: ({ id, ...props }) => {
     const Component = icons[id as keyof typeof icons];
     return (
