@@ -191,42 +191,38 @@ const ScaleRow = ({
       borderColor="neutral.6"
       borderRadius="200"
       p="300"
-      // On a narrow screen the scale scrolls sideways, not squeezes.
-      overflowX="auto"
     >
-      <Box minWidth="560px">
-        <Box
-          display="grid"
-          gridTemplateColumns={columns}
-          columnGap="100"
-          mb="100"
-        >
-          {groups.map((group) => (
-            <Box
-              key={group.label}
-              gridColumn={`${group.from} / ${group.to}`}
-              borderTop="2px solid"
-              borderColor="neutral.6"
-              pt="100"
-            >
-              <Text textStyle="xs" color="neutral.11" truncate>
-                {group.label}
-              </Text>
-            </Box>
-          ))}
-        </Box>
-        <Box display="grid" gridTemplateColumns={columns} columnGap="100">
-          {steps.map((step) => (
-            <Step
-              key={step}
-              id={id}
-              step={step}
-              hasContrast={hasContrast}
-              copied={copiedToken === `${id}.${step}`}
-              onCopy={copy}
-            />
-          ))}
-        </Box>
+      <Box
+        display="grid"
+        gridTemplateColumns={columns}
+        columnGap="100"
+        mb="100"
+      >
+        {groups.map((group) => (
+          <Box
+            key={group.label}
+            gridColumn={`${group.from} / ${group.to}`}
+            borderTop="2px solid"
+            borderColor="neutral.6"
+            pt="100"
+          >
+            <Text textStyle="xs" color="neutral.11" truncate>
+              {group.label}
+            </Text>
+          </Box>
+        ))}
+      </Box>
+      <Box display="grid" gridTemplateColumns={columns} columnGap="100">
+        {steps.map((step) => (
+          <Step
+            key={step}
+            id={id}
+            step={step}
+            hasContrast={hasContrast}
+            copied={copiedToken === `${id}.${step}`}
+            onCopy={copy}
+          />
+        ))}
       </Box>
     </Box>
   );
