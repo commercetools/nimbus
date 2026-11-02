@@ -76,6 +76,16 @@ const ALL_PALETTES: readonly string[] = GROUPS.flatMap(
   (group) => group.palettes
 );
 
+/**
+ * The system palettes are 27: 9 columns make 3 even rows. The named palettes use
+ * 3 columns. Both blocks are 456px wide (9 x 40 + 8 x 12 = 3 x 144 + 2 x 12), so
+ * every group ends on the same line.
+ */
+const SWATCH_COLUMNS = 9;
+const SWATCH_SIZE = "40px";
+const LABEL_COLUMNS = 3;
+const LABEL_WIDTH = "144px";
+
 const DEFAULT_PALETTE = "primary";
 const PARAM = "palette";
 
@@ -142,7 +152,8 @@ const PaletteButton = ({
     return (
       <Box
         {...common}
-        display="inline-flex"
+        display="flex"
+        width="full"
         alignItems="center"
         gap="150"
         px="300"
@@ -171,7 +182,8 @@ const PaletteButton = ({
   return (
     <Box
       {...common}
-      boxSize="800"
+      width="full"
+      aspectRatio={1}
       borderRadius="full"
       bg={`${id}.9`}
       border="1px solid"
@@ -321,7 +333,17 @@ export const ColorPalettes = () => {
                 {group.description}
               </Text>
             </Box>
-            <Flex wrap="wrap" gap={group.labels ? "200" : "300"}>
+            <Box
+              display="grid"
+              // Both kinds of group are blocks of the same width, not rows
+              // that wrap unevenly.
+              gridTemplateColumns={
+                group.labels
+                  ? `repeat(${LABEL_COLUMNS}, minmax(0, ${LABEL_WIDTH}))`
+                  : `repeat(${SWATCH_COLUMNS}, minmax(0, ${SWATCH_SIZE}))`
+              }
+              gap="300"
+            >
               {group.palettes.map((id) => (
                 <PaletteButton
                   key={id}
@@ -334,7 +356,7 @@ export const ColorPalettes = () => {
                   }}
                 />
               ))}
-            </Flex>
+            </Box>
           </Box>
         ))}
       </Stack>
