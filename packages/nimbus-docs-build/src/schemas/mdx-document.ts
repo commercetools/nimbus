@@ -75,9 +75,13 @@ export const mdxDocumentSchema = z.object({
      * Name of the illustration for this page, for pages that are not a
      * component or pattern (for example `design-tokens`). The name is the file
      * name of any `<name>.illustration.ts` source in `packages/nimbus/src`.
+     * A list of names shows a carousel in the page header; the first name is
+     * the one on overview cards.
      * Without it, a main doc page uses the source next to its `.mdx` file.
      */
-    illustration: z.string().min(1).optional(),
+    illustration: z
+      .union([z.string().min(1), z.array(z.string().min(1)).min(1)])
+      .optional(),
     /**
      * `id`s of documents related to this one. The docs app shows them as cards
      * at the end of the Overview tab. Links are two-way: a document that is
@@ -87,7 +91,9 @@ export const mdxDocumentSchema = z.object({
     /**
      * layout type - defaults to 'app-frame' if not specified. `wide` keeps the
      * left navigation but drops the table of contents and widens the content
-     * column (overview pages with a card grid).
+     * column (overview pages with a card grid). `no-sidebar` leaves the whole
+     * body below the top bar to the page, which draws its own frame (the Icons
+     * page).
      */
     layout: z.enum(layoutTypes).optional().default("app-frame"),
     /** array of available tabs/views for this document */

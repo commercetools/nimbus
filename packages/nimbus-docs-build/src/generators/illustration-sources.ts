@@ -34,15 +34,27 @@ export async function listIllustrationNames(dir: string): Promise<Set<string>> {
   }
 }
 
+/** The names in an `illustration` front matter value: one name or a list. */
+export const illustrationNames = (
+  illustration: string | string[] | undefined
+): string[] =>
+  illustration === undefined
+    ? []
+    : Array.isArray(illustration)
+      ? illustration
+      : [illustration];
+
 /** `illustration` front matter values that match no illustration source. */
-export function findUnknownIllustrations<T extends { illustration?: string }>(
+export function findUnknownIllustrations<
+  T extends { illustration?: string | string[] },
+>(
   docs: Array<{ file: string; meta: T }>,
   known: Set<string>
 ): Array<{ file: string; name: string }> {
   return docs.flatMap(({ file, meta }) =>
-    meta.illustration && !known.has(meta.illustration)
-      ? [{ file, name: meta.illustration }]
-      : []
+    illustrationNames(meta.illustration)
+      .filter((name) => !known.has(name))
+      .map((name) => ({ file, name }))
   );
 }
 
@@ -63,11 +75,12 @@ export function formatUnknownIllustrations(
  */
 export async function findIllustration(
   monorepoRoot: string | null,
-  meta: { illustration?: string; repoPath: string },
+  meta: { illustration?: string | string[]; repoPath: string },
   known: Set<string>
 ): Promise<string[]> {
-  if (meta.illustration) {
-    return known.has(meta.illustration) ? [meta.illustration] : [];
+  const named = illustrationNames(meta.illustration);
+  if (named.length > 0) {
+    return named.filter((name) => known.has(name));
   }
   const { repoPath } = meta;
   const name = path.basename(repoPath, ".mdx");

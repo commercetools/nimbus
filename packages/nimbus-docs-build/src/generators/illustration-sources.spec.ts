@@ -68,6 +68,19 @@ describe("findUnknownIllustrations", () => {
     const docs = [{ file: "a.mdx", meta: { illustration: "button" } }];
     expect(findUnknownIllustrations(docs, known)).toEqual([]);
   });
+
+  it("checks every name in a list", () => {
+    const docs = [
+      {
+        file: "tokens.mdx",
+        meta: { illustration: ["design-tokens", "colour", "button", "size"] },
+      },
+    ];
+    expect(findUnknownIllustrations(docs, known)).toEqual([
+      { file: "tokens.mdx", name: "colour" },
+      { file: "tokens.mdx", name: "size" },
+    ]);
+  });
 });
 
 describe("formatUnknownIllustrations", () => {
@@ -112,6 +125,17 @@ describe("findIllustration", () => {
     const meta = { repoPath: "docs/tokens.mdx", illustration: "design-tokens" };
     expect(await findIllustration(root, meta, known)).toEqual([
       "design-tokens",
+    ]);
+  });
+
+  it("returns every known name of a list, in order", async () => {
+    const meta = {
+      repoPath: "docs/tokens.mdx",
+      illustration: ["design-tokens", "nope", "button"],
+    };
+    expect(await findIllustration(root, meta, known)).toEqual([
+      "design-tokens",
+      "button",
     ]);
   });
 

@@ -39,4 +39,10 @@ export type DocMetadataProps = {
    * name is not set or no illustration exists for it.
    */
   illustration?: string;
+
+  /**
+   * Names of several illustrations. With two or more, the header shows them as
+   * a carousel instead of the single `illustration`.
+   */
+  illustrations?: string[];
 };

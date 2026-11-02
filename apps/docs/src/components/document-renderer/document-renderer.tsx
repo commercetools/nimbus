@@ -120,6 +120,9 @@ const DocumentRendererComponent = () => {
               storybookLink={meta.storybookLink}
               githubLink={meta.githubLink}
               illustration={illustration}
+              illustrations={
+                Array.isArray(meta.illustration) ? meta.illustration : undefined
+              }
             />
           )}
 
