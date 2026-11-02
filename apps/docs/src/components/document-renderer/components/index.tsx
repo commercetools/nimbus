@@ -35,6 +35,7 @@ import {
   Strong,
 } from "./base-tags";
 import { Frontpage } from "./frontpage";
+import { FoundationSections } from "./foundation-sections";
 import { PropsTable } from "./props-table";
 
 export const components: MDXComponents = {
@@ -96,5 +97,6 @@ export const components: MDXComponents = {
   Icons: icons,
   Frontpage,
   CategoryOverview,
+  FoundationSections,
   NimbusExportsList,
 };
