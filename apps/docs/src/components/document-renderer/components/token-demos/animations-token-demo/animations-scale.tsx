@@ -3,52 +3,27 @@ import {
   Button,
   Code,
   Flex,
-  IconButton,
-  SimpleGrid,
   Stack,
   system,
   Text,
   ToggleButton,
 } from "@commercetools/nimbus";
-import {
-  Check,
-  ContentCopy,
-  Pause,
-  PlayArrow,
-} from "@commercetools/nimbus-icons";
-import { useState, type ComponentProps, type ReactNode } from "react";
-import { CopyButton } from "../copy-button";
+import { Pause, PlayArrow } from "@commercetools/nimbus-icons";
+import { useState, type ReactNode } from "react";
 import { tokensOf } from "../theme-tokens";
-import { TokenPicker } from "../token-picker";
 import { TokenTable } from "../token-table";
-import { useCopy } from "../use-copy";
+import { COMPONENT_OF, describeKeyframes, keyframeGroups } from "./keyframes";
+import { RepeatSample } from "./motion-samples";
 
 type MotionKind =
   "durations" | "easings" | "keyframes" | "animations" | "animationStyles";
 
-type BoxProps = ComponentProps<typeof Box>;
-
-/** The duration and easing of samples that show something else. */
+/** The duration of the easing samples. */
 const SAMPLE_DURATION = "1s";
-const SAMPLE_EASING = "ease-in-out";
 
-/** The names of the keyframes of the theme, in the order of the theme. */
-const keyframeNames = () => Object.keys(system._config.theme?.keyframes ?? {});
-
-/**
- * Keyframes that animate something other than the position, the size or the
- * opacity need a sample with that property.
- */
-const KEYFRAME_SAMPLE: Record<string, BoxProps> = {
-  "gradient-shimmer": {
-    width: "full",
-    bgImage:
-      "linear-gradient(90deg, {colors.primary.3}, {colors.primary.9}, {colors.primary.3})",
-    bgSize: "200% 100%",
-  },
-  "progress-indeterminate": { width: "1/3" },
-  "skeleton-wave": { width: "full" },
-};
+/** `150ms` or `1s` in milliseconds. */
+const toMs = (value: string) =>
+  value.endsWith("ms") ? parseFloat(value) : parseFloat(value) * 1000;
 
 /** `cubic-bezier(0.42, 0, 1, 1)` as `[0.42, 0, 1, 1]`. */
 const parseBezier = (value: string) => {
@@ -57,16 +32,10 @@ const parseBezier = (value: string) => {
 };
 
 /** A button that plays the samples of one section. */
-const PlayButton = ({
-  onPress,
-  children = "Play",
-}: {
-  onPress: () => void;
-  children?: ReactNode;
-}) => (
+const PlayButton = ({ onPress }: { onPress: () => void }) => (
   <Button size="xs" variant="outline" onPress={onPress}>
     <PlayArrow />
-    {children}
+    Play
   </Button>
 );
 
@@ -116,9 +85,14 @@ const Curve = ({ value }: { value: string }) => {
   );
 };
 
-/** Durations: a bar that fills its track in the time of the token. */
+/**
+ * Durations: a bar for each token, on one time scale from 0 to the longest
+ * duration. Play fills the bars in real time.
+ */
 const Durations = () => {
   const [run, setRun] = useState(0);
+  const tokens = tokensOf("durations");
+  const longest = Math.max(...tokens.map((item) => toMs(item.value)));
   return (
     <>
       <Toolbar>
@@ -129,12 +103,13 @@ const Durations = () => {
           { header: "Value", width: "10ch", align: "right" },
           { header: "Sample" },
         ]}
-        rows={tokensOf("durations").map((item) => ({
+        rows={tokens.map((item) => ({
           id: item.id,
           cells: [
             item.value,
             <Track key={`${item.id}-${run}`}>
               <Box
+                width={`${(toMs(item.value) / longest) * 100}%`}
                 height="full"
                 bg="primary.9"
                 borderRadius="full"
@@ -161,6 +136,8 @@ const Easings = () => {
       </Toolbar>
       <TokenTable
         tokenWidth="18ch"
+        // Wide enough on a phone that the sample column keeps room for its track.
+        minWidth="2xl"
         columns={[
           { header: "Curve", width: "1600" },
           { header: "Value", width: "26ch" },
@@ -193,88 +170,59 @@ const Easings = () => {
   );
 };
 
-/** One keyframe: a stage that plays it, the name and a copy button. */
-const KeyframeTile = ({
-  name,
-  runAll,
-  copied,
-  onCopy,
-}: {
-  name: string;
-  runAll: number;
-  copied: string | null;
-  onCopy: (name: string) => void;
-}) => {
-  const [run, setRun] = useState(0);
-  const played = run + runAll > 0;
-  return (
-    <Stack
-      gap="200"
-      border="solid-25"
-      borderColor="border"
-      borderRadius="200"
-      p="300"
-    >
-      <Flex
-        as="button"
-        aria-label={`Play ${name}`}
-        onClick={() => setRun(run + 1)}
-        align="center"
-        justify="center"
-        height="1600"
-        bg="neutral.2"
-        borderRadius="100"
-        overflow="hidden"
-        cursor="button"
-        _hover={{ bg: "neutral.3" }}
-        _focusVisible={{
-          outline: "2px solid",
-          outlineColor: "primary.9",
-          outlineOffset: "2px",
-        }}
-      >
-        <Box
-          key={`${runAll}-${run}`}
-          boxSize="800"
-          bg="primary.9"
-          borderRadius="100"
-          animationName={played ? name : undefined}
-          animationDuration={SAMPLE_DURATION}
-          animationTimingFunction={SAMPLE_EASING}
-          {...KEYFRAME_SAMPLE[name]}
-        />
-      </Flex>
-      <Flex justify="space-between" align="center" gap="100">
-        <Code variant="subtle">{name}</Code>
-        <CopyButton token={name} copied={copied} onCopy={onCopy} />
-      </Flex>
-    </Stack>
-  );
-};
+/** What a keyframe changes: one line, or one line for each offset. */
+const KeyframeChanges = ({ name }: { name: string }) => (
+  <Stack gap="50">
+    {describeKeyframes(name).map((line) => (
+      <Text key={line.stop ?? "all"} textStyle="sm" color="neutral.11">
+        {line.stop && (
+          <Text as="span" color="neutral.12" fontWeight="500">
+            {line.stop}{" "}
+          </Text>
+        )}
+        {line.text}
+      </Text>
+    ))}
+  </Stack>
+);
 
-/** Keyframes: a grid of tiles. Select a tile to play it, or play all. */
-const Keyframes = () => {
-  const [runAll, setRunAll] = useState(0);
-  const { copied, copy } = useCopy();
-  return (
-    <>
-      <Toolbar>
-        <PlayButton onPress={() => setRunAll(runAll + 1)}>Play all</PlayButton>
-      </Toolbar>
-      <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} gap="300">
-        {keyframeNames().map((name) => (
-          <KeyframeTile
-            key={name}
-            name={name}
-            runAll={runAll}
-            copied={copied}
-            onCopy={copy}
-          />
-        ))}
-      </SimpleGrid>
-    </>
-  );
-};
+/**
+ * Keyframes: one table for each group (enter, leave, repeat, made for one
+ * component), with what each keyframe changes.
+ */
+const Keyframes = () => (
+  <Stack gap="600">
+    {keyframeGroups().map((group) => (
+      <Stack key={group.id} gap="200">
+        <Text textStyle="md" fontWeight="600">
+          {group.label}
+        </Text>
+        <TokenTable
+          tokenWidth="6000"
+          // Wide enough on a phone that the changes do not wrap on every word.
+          minWidth={group.id === "component" ? "2xl" : "xl"}
+          columns={
+            group.id === "component"
+              ? [{ header: "Used by", width: "18ch" }, { header: "Changes" }]
+              : [{ header: "Changes" }]
+          }
+          rows={group.names.map((name) => ({
+            id: name,
+            cells:
+              group.id === "component"
+                ? [
+                    <Text key="component" textStyle="sm">
+                      {COMPONENT_OF[name]}
+                    </Text>,
+                    <KeyframeChanges key="changes" name={name} />,
+                  ]
+                : [<KeyframeChanges key="changes" name={name} />],
+          }))}
+        />
+      </Stack>
+    ))}
+  </Stack>
+);
 
 /**
  * Animations: the samples repeat without end, so they only move while the
@@ -291,6 +239,8 @@ const Animations = () => {
         </ToggleButton>
       </Toolbar>
       <TokenTable
+        // Wide enough on a phone that the sample column keeps room.
+        minWidth="2xl"
         columns={[{ header: "Value", width: "40ch" }, { header: "Sample" }]}
         rows={tokensOf("animations").map((item) => ({
           id: item.id,
@@ -298,14 +248,11 @@ const Animations = () => {
             <Text key="value" textStyle="sm" color="neutral.11">
               {item.value}
             </Text>,
-            <Flex key="sample" height="1200" align="center" aria-hidden>
-              <Box
-                boxSize="600"
-                bg="primary.9"
-                borderRadius="100"
-                animation={playing ? item.id : undefined}
-              />
-            </Flex>,
+            <RepeatSample
+              key="sample"
+              token={item.id}
+              animation={playing ? item.id : undefined}
+            />,
           ],
         }))}
       />
@@ -381,131 +328,5 @@ export const AnimationsScale = ({ kind }: AnimationsScaleProps) => {
     <Box my="600">
       <Kind />
     </Box>
-  );
-};
-
-/**
- * Pick a keyframe, a duration and an easing, see them together, and copy the
- * style props. A change of a pick plays the motion again.
- */
-export const MotionPlayground = () => {
-  const keyframes = keyframeNames();
-  const durations = tokensOf("durations").map((item) => item.id);
-  const easings = tokensOf("easings").map((item) => item.id);
-  const [keyframe, setKeyframe] = useState("fade-in");
-  const [duration, setDuration] = useState("moderate");
-  const [easing, setEasing] = useState("ease-in-smooth");
-  const [run, setRun] = useState(0);
-  const { copied, copy } = useCopy();
-
-  const replay = () => setRun((value) => value + 1);
-  const pick = (set: (value: string) => void) => (value: string) => {
-    set(value);
-    replay();
-  };
-
-  const code = [
-    "<Box",
-    `  animationName="${keyframe}"`,
-    `  animationDuration="${duration}"`,
-    `  animationTimingFunction="${easing}"`,
-    "/>",
-  ].join("\n");
-
-  const pickers = [
-    {
-      label: "Keyframes",
-      tokens: keyframes,
-      value: keyframe,
-      onChange: pick(setKeyframe),
-    },
-    {
-      label: "Duration",
-      tokens: durations,
-      value: duration,
-      onChange: pick(setDuration),
-    },
-    {
-      label: "Easing",
-      tokens: easings,
-      value: easing,
-      onChange: pick(setEasing),
-    },
-  ];
-
-  return (
-    <Stack
-      gap="500"
-      my="600"
-      border="solid-25"
-      borderColor="border"
-      borderRadius="300"
-      p="500"
-    >
-      {pickers.map((picker) => (
-        <Stack key={picker.label} gap="200">
-          <Text textStyle="sm" fontWeight="600">
-            {picker.label}
-          </Text>
-          <TokenPicker
-            label={picker.label}
-            tokens={picker.tokens}
-            value={picker.value}
-            onChange={picker.onChange}
-          />
-        </Stack>
-      ))}
-
-      <Flex gap="400" align="stretch" wrap="wrap">
-        <Flex
-          flex="1"
-          minWidth="4800"
-          height="2400"
-          align="center"
-          justify="center"
-          bg="neutral.2"
-          borderRadius="200"
-          overflow="hidden"
-          aria-hidden
-        >
-          <Box
-            key={run}
-            boxSize="1200"
-            bg="primary.9"
-            borderRadius="200"
-            animationName={run > 0 ? keyframe : undefined}
-            animationDuration={duration}
-            animationTimingFunction={easing}
-            {...KEYFRAME_SAMPLE[keyframe]}
-          />
-        </Flex>
-        <Stack flex="1" minWidth="4800" gap="200">
-          <Flex justify="space-between" align="center">
-            <PlayButton onPress={replay} />
-            <IconButton
-              size="2xs"
-              variant="ghost"
-              aria-label="Copy code"
-              onClick={() => copy(code)}
-            >
-              {copied === code ? <Check /> : <ContentCopy />}
-            </IconButton>
-          </Flex>
-          <Box
-            as="pre"
-            flex="1"
-            m="0"
-            p="300"
-            bg="neutral.2"
-            borderRadius="200"
-            fontFamily="mono"
-            textStyle="sm"
-            overflowX="auto"
-          >
-            {code}
-          </Box>
-        </Stack>
-      </Flex>
-    </Stack>
   );
 };

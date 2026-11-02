@@ -28,13 +28,6 @@ changes over that time. **Keyframes** set what changes, such as the opacity or
 the position. **Animations** combine a keyframe, a duration and an easing in one
 value.
 
-## Try a motion
-
-Pick a keyframe, a duration and an easing. The motion plays when you pick a
-token, or when you press Play. Use the copy button to copy the style props.
-
-<MotionPlayground />
-
 ## Choose how to animate
 
 | You want                                                           | Use                                                   | Example                                                                                 |
@@ -44,11 +37,18 @@ token, or when you press Play. Use the copy button to copy the style props.
 | A motion that repeats, such as a pulse                             | An animation token                                    | `<Box animation="pulse" />`                                                             |
 | A loading indicator                                                | [LoadingSpinner](/components/feedback/loading-spinner) | `<LoadingSpinner />`                                                                    |
 
+## Try a motion
+
+See how an element, such as a menu, enters or leaves with the keyframes, the
+duration and the easing that you pick.
+
+<MotionPlayground />
+
 ## Durations
 
 A duration sets how long a motion takes. Nimbus uses `fast` (150ms) and `faster`
-(100ms) most: Popover and Menu enter in `fast` and leave in `faster`. Press Play
-to see each duration.
+(100ms) most: Popover and Menu enter in `fast` and leave in `faster`. The
+animation tokens use `1s` and `2s` for motion that repeats.
 
 <AnimationsScale kind="durations" />
 
@@ -57,30 +57,24 @@ to see each duration.
 An easing sets how the speed changes during a motion. `linear` keeps the same
 speed. `ease-in` starts slow, `ease-out` ends slow, and `ease-in-out` does both.
 `ease-in-smooth` starts fast and slows down to a soft stop. The curve shows the
-progress, from the bottom up, over the time, from left to right. Press Play to
-see each easing in `1s`.
+progress, from the bottom up, over the time, from left to right. Each sample
+takes one second.
 
 <AnimationsScale kind="easings" />
 
 ## Keyframes
 
 Keyframes set what changes during a motion. They are not tokens with a CSS
-variable: set them by name with `animationName`. Select a tile to play its
-keyframes once, in `1s` with `ease-in-out`, or press Play all.
+variable: set them by name with `animationName`. The `slide-*-full` keyframes
+move an element by its own size (`100%`), as Drawer does. The other `slide-*`
+keyframes move it by 0.5rem.
 
 <AnimationsScale kind="keyframes" />
-
-Some keyframes are made for one component: `activity-bounce` for
-ActivityIndicator, `skeleton-wave` for Skeleton, and `progress-indeterminate`
-and `gradient-shimmer` for ProgressBar. The `slide-*-full` keyframes move an
-element by its own size, as Drawer does. The other `slide-*` keyframes move it
-by 0.5rem.
 
 ## Animations
 
 An animation token combines keyframes, a duration and an easing in one value,
-and it repeats without end. Set it with the `animation` prop. Press Play to
-start the samples and Pause to stop them.
+and it repeats without end. Set it with the `animation` prop.
 
 <AnimationsScale kind="animations" />
 
@@ -174,8 +168,8 @@ motion is essential, as WCAG asks at level AAA
 ([WCAG 2.3.3 Animation from Interactions](https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html)).
 
 Nimbus components with larger motion reduce it under this setting:
-ActivityIndicator, DropZone, Skeleton, Tabs and TabNav. For your own motion, use
-the `_motionReduce` condition:
+ActivityIndicator, ChatMessageList, DropZone, Skeleton, Tabs and TabNav. For
+your own motion, use the `_motionReduce` condition:
 
 ```tsx
 <Box animation="pulse" _motionReduce={{ animation: "none" }} />
