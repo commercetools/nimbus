@@ -22,21 +22,21 @@ import { ColorScale } from "./color-scale.tsx";
 const GROUPS = [
   {
     id: "semantic",
-    label: "Semantic",
+    label: "Semantic colors",
     description: "Colors with meaning, used to communicate status or state.",
     labels: true,
     palettes: ["primary", "neutral", "info", "positive", "warning", "critical"],
   },
   {
     id: "brand",
-    label: "Brand",
+    label: "Brand colors",
     description: "Custom colors, tailored to the brand.",
     labels: true,
     palettes: ["ctviolet", "ctteal", "ctyellow"],
   },
   {
     id: "system",
-    label: "System",
+    label: "System colors",
     description: "Colors available for decoration or reference.",
     labels: false,
     palettes: [
