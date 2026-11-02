@@ -98,3 +98,27 @@ When a component changes state, say so in its own line, for example
 
 When in doubt between `patch` and `minor`, prefer `minor` — it costs the
 consumer nothing and signals the change clearly.
+
+## Publishing a PR canary
+
+To publish a canary build of a PR branch, push a commit to that branch whose
+message contains `[publish-preview]` (the same marker
+merchant-center-application-kit uses):
+
+```bash
+git commit --allow-empty -m "chore: publish canary [publish-preview]"
+git push
+```
+
+The `Release` workflow publishes
+`@commercetools/nimbus@<version>-canary-<branch>` packages and comments the
+install commands on the branch's open PR; a failed publish is commented too.
+
+- Only the head commit of the push is checked, so the marker must be in the
+  latest commit. Drop the empty commit before merging.
+- The branch needs at least one changeset.
+- A push run uses the workflow file from the pushed commit, so branches that
+  predate this workflow need a rebase onto `main`.
+- Pushes without the marker start a `Release` run in which every job is skipped.
+- The canary starts from a push because npm trusted publishing (OIDC) rejects
+  publishes from `issue_comment` runs.
