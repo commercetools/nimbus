@@ -3,7 +3,8 @@
 /**
  * Package shape check for Nimbus.
  *
- * For each publishable package: runs `pnpm pack` to produce a tarball that
+ * For each publishable workspace (discovered from `pnpm m ls`, see
+ * `discoverPackages`): runs `pnpm pack` to produce a tarball that
  * matches what npm would publish, then runs two linters against it:
  *
  *   - @arethetypeswrong/cli (attw): validates types resolve correctly across
@@ -12,9 +13,9 @@
  *   - publint: validates package.json correctness against the npm spec.
  *
  * Packages are checked in parallel; per-package output is buffered and printed
- * in declared order after all finish so the log stays readable. Exits non-zero
- * on any finding so CI blocks the merge. Flip REPORT_ONLY to true temporarily
- * if you need the check to surface findings without failing.
+ * in package-name order after all finish so the log stays readable. Exits
+ * non-zero on any finding so CI blocks the merge. Flip REPORT_ONLY to true
+ * temporarily if you need the check to surface findings without failing.
  *
  * Usage:
  *   node scripts/check-package-shape.mjs
@@ -23,7 +24,7 @@
  */
 
 import { spawn } from "node:child_process";
-import { mkdtempSync, rmSync, existsSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -32,34 +33,6 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const ROOT = join(__dirname, "..");
 
 const REPORT_ONLY = false;
-
-// Mirror of the `fixed` group in .changeset/config.json — every publishable
-// package the changeset bot ships should be linted here.
-//
-// `@commercetools/nimbus-tokens` is intentionally excluded: it ships with a
-// pre-existing shape issue tracked in
-// https://github.com/commercetools/nimbus/issues/1509. Two interacting
-// problems were reported there — preconstruct emits `.cjs.js` under a
-// package that declares `"type": "module"`, so the CJS path was broken at
-// runtime; and the `exports` map's `import` condition has no `types`
-// condition, so ESM consumers under node16/bundler resolution get no types.
-// The first (runtime CJS breakage) is fixed by
-// `packages/tokens/scripts/postbuild-cjs-extensions.mjs` and the `require`
-// condition's `types` entry in `packages/tokens/package.json`. The second
-// (missing ESM types) is still open — re-add this entry once that's
-// resolved too and `pnpm check:package-shape` exits 0 for this package.
-const PACKAGES = [
-  { name: "@commercetools/nimbus", dir: join(ROOT, "packages/nimbus") },
-  {
-    name: "@commercetools/nimbus-icons",
-    dir: join(ROOT, "packages/nimbus-icons"),
-  },
-  {
-    name: "@commercetools/nimbus-design-token-ts-plugin",
-    dir: join(ROOT, "packages/design-token-ts-plugin"),
-  },
-  { name: "@commercetools/nimbus-mcp", dir: join(ROOT, "packages/nimbus-mcp") },
-];
 
 const DIM = "\x1b[2m";
 const BOLD = "\x1b[1m";
@@ -87,6 +60,22 @@ function runCommand(cmd, args, { cwd }) {
     child.on("error", reject);
     child.on("close", (code) => resolve({ code, stdout, stderr }));
   });
+}
+
+// Every workspace without `"private": true` is published, so it is checked.
+async function discoverPackages() {
+  const { code, stdout, stderr } = await runCommand(
+    "pnpm",
+    ["m", "ls", "--json", "--depth", "-1"],
+    { cwd: ROOT }
+  );
+  if (code !== 0) {
+    throw new Error(`pnpm m ls exited ${code}\n${stderr}`);
+  }
+  return JSON.parse(stdout)
+    .filter((w) => w.private !== true)
+    .map((w) => ({ name: w.name, dir: w.path }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 async function packTarball(pkg, destDir) {
@@ -127,11 +116,6 @@ async function checkPackage(pkg, workDir) {
 
   log(header(pkg.name));
 
-  if (!existsSync(pkg.dir)) {
-    log(`${YELLOW}⚠ Skipping — ${pkg.dir} not found${RESET}\n`);
-    return { buffer, failures };
-  }
-
   let tarball;
   try {
     tarball = await packTarball(pkg, workDir);
@@ -143,19 +127,8 @@ async function checkPackage(pkg, workDir) {
     return { buffer, failures };
   }
 
-  // Wrap each tool run so a spawn failure (binary missing from PATH, etc.)
-  // doesn't reject out of Promise.all and bypass the structured summary.
-  const safeRun = async (label, bin) => {
-    try {
-      return await runTool(label, bin, [tarball], log);
-    } catch (err) {
-      log(`${RED}✗ ${label} failed to run: ${err.message}${RESET}\n`);
-      return false;
-    }
-  };
-
-  const attwOk = await safeRun("attw", "attw");
-  const publintOk = await safeRun("publint", "publint");
+  const attwOk = await runTool("attw", "attw", [tarball], log);
+  const publintOk = await runTool("publint", "publint", [tarball], log);
 
   if (!attwOk) failures.push({ pkg: pkg.name, tool: "attw" });
   if (!publintOk) failures.push({ pkg: pkg.name, tool: "publint" });
@@ -168,8 +141,9 @@ async function main() {
   const failures = [];
 
   try {
+    const packages = await discoverPackages();
     const results = await Promise.all(
-      PACKAGES.map((pkg) => checkPackage(pkg, workDir))
+      packages.map((pkg) => checkPackage(pkg, workDir))
     );
     for (const { buffer, failures: pkgFailures } of results) {
       for (const chunk of buffer) process.stdout.write(chunk);
@@ -199,4 +173,7 @@ async function main() {
   process.exit(1);
 }
 
-main();
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

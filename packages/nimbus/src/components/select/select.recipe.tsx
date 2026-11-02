@@ -247,7 +247,7 @@ export const selectSlotRecipe = defineSlotRecipe({
     variant: {
       outline: {
         root: {
-          bg: "primary.1",
+          bg: "neutral.1",
           "&:hover": {
             bg: "primary.2",
           },
