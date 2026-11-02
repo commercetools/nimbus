@@ -8,7 +8,7 @@ import {
   cloneElement,
   isValidElement,
 } from "react";
-import { Alert } from "@commercetools/nimbus";
+import { Alert, Box } from "@commercetools/nimbus";
 import { ListItem, UlList } from "./index";
 import { Paragraph } from "./index";
 
@@ -83,47 +83,57 @@ export const Blockquote = (props: BlockquoteProps) => {
     .find((value) => value !== undefined);
 
   return (
-    <Alert.Root
-      variant="accent-start"
-      colorPalette={marker ? flavorPalette[marker] : "neutral"}
-      hideIcon={!marker}
+    <Box
       mb="400"
+      css={{
+        // Alert does not accept `css`, so a wrapper sets the icon size.
+        // Slightly larger than the Alert default (1.25em).
+        "& .nimbus-alert__icon svg": { width: "1.5em", height: "1.5em" },
+      }}
     >
-      {marker && <Alert.Title>{flavorTitle[marker]}</Alert.Title>}
-      <Alert.Description
-        as="div"
-        css={{
-          // Paragraph sets its own font size and line height. Inherit the
-          // Alert's, so the text lines up with the icon and the title.
-          "& > p": { fontSize: "inherit", lineHeight: "inherit", mb: "200" },
-          "& > :last-child": { mb: "0" },
-        }}
+      <Alert.Root
+        variant="accent-start"
+        colorPalette={marker ? flavorPalette[marker] : "neutral"}
+        hideIcon={!marker}
       >
-        {Children.map(children, (child, idx) => {
-          if (getMarker(child)) {
-            // Remove the marker and the line break that follows it.
-            const paragraph = child as ReactElement<{ children: ReactNode[] }>;
-            return cloneElement(paragraph, {
-              children: Children.toArray(paragraph.props.children.slice(2)),
-            });
-          }
+        {marker && <Alert.Title>{flavorTitle[marker]}</Alert.Title>}
+        <Alert.Description
+          as="div"
+          css={{
+            // Paragraph sets its own font size and line height. Inherit the
+            // Alert's, so the text lines up with the icon and the title.
+            "& > p": { fontSize: "inherit", lineHeight: "inherit", mb: "200" },
+            "& > :last-child": { mb: "0" },
+          }}
+        >
+          {Children.map(children, (child, idx) => {
+            if (getMarker(child)) {
+              // Remove the marker and the line break that follows it.
+              const paragraph = child as ReactElement<{
+                children: ReactNode[];
+              }>;
+              return cloneElement(paragraph, {
+                children: Children.toArray(paragraph.props.children.slice(2)),
+              });
+            }
 
-          // Drop a trailing list that has no list items.
-          if (
-            isValidElement(child) &&
-            child.type === UlList &&
-            lastListElementIndex === idx &&
-            countChildrenByDisplayName(
-              (child as ReactElement<{ children: ReactNode }>).props.children,
-              ListItem
-            ) < 1
-          ) {
-            return null;
-          }
+            // Drop a trailing list that has no list items.
+            if (
+              isValidElement(child) &&
+              child.type === UlList &&
+              lastListElementIndex === idx &&
+              countChildrenByDisplayName(
+                (child as ReactElement<{ children: ReactNode }>).props.children,
+                ListItem
+              ) < 1
+            ) {
+              return null;
+            }
 
-          return child;
-        })}
-      </Alert.Description>
-    </Alert.Root>
+            return child;
+          })}
+        </Alert.Description>
+      </Alert.Root>
+    </Box>
   );
 };
