@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Box, Flex, Link, Stack, Text } from "@commercetools/nimbus";
+import { Box, Flex, Heading, Link, Stack, Text } from "@commercetools/nimbus";
 import { useManifest } from "@/contexts/manifest-context";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
 import { Carousel } from "@/components/carousel";
@@ -59,14 +59,15 @@ export const RelatedDocuments: FC = () => {
                 {illustration && <Illustration name={illustration} />}
               </Box>
               <Stack gap="0" minWidth="0" minHeight="1600" justify="center">
-                <Text
+                <Heading
+                  as="h3"
+                  size="md"
                   color="neutral.12"
-                  fontWeight="500"
                   lineHeight="600"
                   truncate
                 >
                   {doc.title}
-                </Text>
+                </Heading>
                 {doc.description && (
                   <Text
                     color="neutral.11"

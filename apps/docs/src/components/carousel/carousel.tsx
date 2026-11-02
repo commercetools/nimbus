@@ -17,6 +17,9 @@ type CarouselProps = {
   children: ReactNode;
 };
 
+/** Width of the fade at a side of the row that has more slides behind it. */
+const FADE_WIDTH = "48px";
+
 /**
  * Row of slides that scrolls sideways and snaps to the start of a slide.
  * Previous and next buttons scroll by one view; they are disabled at the ends
@@ -58,17 +61,25 @@ export const Carousel: FC<CarouselProps> = ({ label, children }) => {
 
   const hasOverflow = canScrollBack || canScrollForward;
 
+  // Opaque in the middle. A side fades to transparent only when slides are
+  // hidden behind it, so the first slide is not faded at the start.
+  const fadeMask = `linear-gradient(to right, ${
+    canScrollBack ? `transparent 0, black ${FADE_WIDTH}` : "black 0"
+  }, ${
+    canScrollForward ? `black calc(100% - ${FADE_WIDTH}), transparent` : "black"
+  })`;
+
   return (
     <Box as="section" aria-label={label}>
       <Flex alignItems="center" justifyContent="space-between" mb="200">
-        <Text textStyle="sm" fontWeight="600" color="neutral.11">
+        <Text textStyle="md" fontWeight="600" color="neutral.11">
           {label}
         </Text>
         {hasOverflow && (
           <Flex gap="100">
             <IconButton
               aria-label="Previous"
-              size="2xs"
+              size="xs"
               variant="ghost"
               isDisabled={!canScrollBack}
               onPress={() => scrollByView(-1)}
@@ -77,7 +88,7 @@ export const Carousel: FC<CarouselProps> = ({ label, children }) => {
             </IconButton>
             <IconButton
               aria-label="Next"
-              size="2xs"
+              size="xs"
               variant="ghost"
               isDisabled={!canScrollForward}
               onPress={() => scrollByView(1)}
@@ -100,6 +111,11 @@ export const Carousel: FC<CarouselProps> = ({ label, children }) => {
         overflowX="auto"
         css={{
           scrollSnapType: "x proximity",
+          // Fade out the edge that has more slides behind it
+          ...(hasOverflow && {
+            maskImage: fadeMask,
+            WebkitMaskImage: fadeMask,
+          }),
           scrollbarWidth: "none",
           "&::-webkit-scrollbar": { display: "none" },
           "@media (prefers-reduced-motion: no-preference)": {
