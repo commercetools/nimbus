@@ -1,0 +1,72 @@
+---
+id: Learn-Styling basics
+title: Styling basics
+description: Change how elements look with theming props, style props and tokens.
+icon: ColorLens
+order: 3
+menu:
+  - Learn
+  - Styling basics
+tags:
+  - learn
+  - styling
+---
+
+There are two ways to change how a component looks. Try the first one first.
+
+## 1. Theming props
+
+Components offer props that apply a ready-made look from the Nimbus design
+language:
+
+- `variant`: the overall style, such as `solid`, `outline` or `ghost`.
+- `size`: the dimensions, such as `sm`, `md` or `lg`.
+- `colorPalette`: the color. Semantic palettes are `primary`, `neutral`, `info`,
+  `positive`, `warning` and `critical`.
+- `textStyle`: a ready-made text style for `Text` and `Heading`, such as `body`
+  or `caption`.
+
+```tsx
+import { Button, Text } from "@commercetools/nimbus";
+
+<>
+  <Button variant="solid" colorPalette="primary" size="lg">
+    Save
+  </Button>
+  <Button variant="outline" colorPalette="critical" size="xs">
+    Delete
+  </Button>
+  <Text textStyle="caption">A caption</Text>
+</>;
+```
+
+Which values a component accepts is listed on the page of that component.
+
+## 2. Style props with tokens
+
+When no theming prop fits, set a style prop on that one element. Style props are
+named after CSS properties, such as `padding`, `backgroundColor` and
+`borderRadius`. Give them a [design token](/home/design-tokens) instead of a raw
+value.
+
+```tsx
+import { Box } from "@commercetools/nimbus";
+
+<Box padding="400" backgroundColor="primary.2" borderRadius="full" />;
+```
+
+Here `400` is a spacing token and `primary.2` is a color token: the palette
+`primary`, step 2. A token keeps your change consistent with the rest of the
+design system. If Nimbus changes a token, your screen changes with it.
+
+All style props are listed in [Style Props](/home/style-props).
+
+## Which one to use
+
+| You want to...                                  | Use                                                    |
+| ----------------------------------------------- | ------------------------------------------------------ |
+| Use the standard look of a component            | Theming props such as `variant` and `colorPalette`     |
+| Change one detail on one element                | A style prop with a token, such as `padding="400"`     |
+| Change a value for different screen sizes       | An object value. See [Responsive design](/learn/responsive-design). |
+
+Next: [Responsive design](/learn/responsive-design).

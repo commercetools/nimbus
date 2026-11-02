@@ -1,0 +1,85 @@
+---
+id: Learn-Layout basics
+title: Layout basics
+description: Place and space elements with Stack, Flex and the grids.
+icon: ViewComfy
+order: 2
+menu:
+  - Learn
+  - Layout basics
+tags:
+  - learn
+  - layout
+---
+
+Start with `Stack`. It fits most layouts.
+
+## Stack: items in one direction
+
+`Stack` arranges its children in one direction. By default the direction is
+vertical, with no space between the items. Use `gap` to add space, and
+`direction` to change the direction.
+
+```tsx
+import { Stack, Box } from "@commercetools/nimbus";
+
+<Stack direction="row" gap="400" align="center">
+  <Box p="400" bg="primary.7" borderRadius="200">Item 1</Box>
+  <Box p="400" bg="primary.7" borderRadius="200">Item 2</Box>
+  <Box p="400" bg="primary.7" borderRadius="200">Item 3</Box>
+</Stack>;
+```
+
+- `gap` takes a [spacing token](/home/design-tokens/spacing).
+- `align` sets the alignment across the direction, and `justify` along it.
+- `wrap` lets items move to a new line when there is no room.
+
+See [Stack](/components/layout/stack) for more examples.
+
+## SimpleGrid: equal columns
+
+Use `SimpleGrid` when the items form columns of equal width.
+
+```tsx
+import { SimpleGrid, Box } from "@commercetools/nimbus";
+
+<SimpleGrid columns={2} gap="400">
+  <Box p="600" bg="info.7" borderRadius="200">Item 1</Box>
+  <Box p="600" bg="info.7" borderRadius="200">Item 2</Box>
+  <Box p="600" bg="info.7" borderRadius="200">Item 3</Box>
+  <Box p="600" bg="info.7" borderRadius="200">Item 4</Box>
+</SimpleGrid>;
+```
+
+With `minChildWidth` the number of columns follows the available space.
+
+```tsx
+<SimpleGrid minChildWidth="200px" gap="400">
+  {/* children */}
+</SimpleGrid>
+```
+
+See [SimpleGrid](/components/layout/simple-grid).
+
+## Grid: items that span rows and columns
+
+Use `Grid` with `Grid.Item` when items need to span several rows or columns, or
+when you want to name areas. See [Grid](/components/layout/grid).
+
+## Flex and Box
+
+`Flex` is a flex container with more control over each item. `Box` is a plain
+element that takes style props, so it can also be a flex or grid container. See
+[Flex](/components/layout/flex) and [Box](/components/layout/box).
+
+## Which one to use
+
+| You want...                                      | Use          |
+| ------------------------------------------------ | ------------ |
+| Items in a row or a column with equal space      | `Stack`      |
+| Equal columns                                    | `SimpleGrid` |
+| Items that span rows or columns                  | `Grid`       |
+| Control over how each item grows or shrinks      | `Flex`       |
+| One element that needs padding, size or a color  | `Box`        |
+
+Next: [Styling basics](/learn/styling-basics).

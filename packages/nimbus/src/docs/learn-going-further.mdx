@@ -1,0 +1,48 @@
+---
+id: Learn-Going further
+title: Going further
+description: CSS variables, the parts of a component, and what you cannot change.
+icon: Explore
+order: 6
+menu:
+  - Learn
+  - Going further
+tags:
+  - learn
+  - styling
+---
+
+## Tokens as CSS variables
+
+Every token is also a CSS variable with the prefix `--nimbus-`, for example
+`var(--nimbus-spacing-400)`. Use them in styles that you write yourself, such as
+a CSS file or an element that is not a Nimbus component.
+
+```css
+.my-element {
+  padding: var(--nimbus-spacing-400);
+}
+```
+
+## The parts of a component
+
+Some components are made of several parts, for example `Card.Root`,
+`Card.Header`, `Card.Body` and `Card.Footer`. Each part is its own component,
+so you can set style props on one part and leave the others as they are.
+
+```tsx
+import { Card } from "@commercetools/nimbus";
+
+<Card.Root>
+  <Card.Header backgroundColor="primary.2">Title</Card.Header>
+  <Card.Body>Content</Card.Body>
+</Card.Root>;
+```
+
+## What you cannot change
+
+`NimbusProvider` does not take a theme. The tokens, the palettes and the text
+styles are the same in every app that uses Nimbus. Use the approaches in
+[Styling basics](/learn/styling-basics) to adjust single elements.
+
+Previous: [Colors and dark mode](/learn/colors-and-dark-mode).

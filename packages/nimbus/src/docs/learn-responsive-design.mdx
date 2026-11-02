@@ -1,0 +1,53 @@
+---
+id: Learn-Responsive design
+title: Responsive design
+description: Change layout and styling by screen size.
+icon: DevicesOther
+order: 4
+menu:
+  - Learn
+  - Responsive design
+tags:
+  - learn
+  - responsive
+---
+
+To change a value by screen size, pass an object instead of a single value. This
+works for style props and for layout props such as `direction` and `gap`.
+
+```tsx
+import { Stack, Text } from "@commercetools/nimbus";
+
+<Stack
+  direction={{ base: "column", md: "row" }}
+  gap={{ base: "300", md: "600" }}
+  padding={{ base: "400", lg: "600" }}
+>
+  <Text>Item 1</Text>
+  <Text>Item 2</Text>
+</Stack>;
+```
+
+The keys are [breakpoints](/home/design-tokens/other/breakpoints). The `base` key
+is the value for every screen size where no other key applies.
+
+## How breakpoints work
+
+Each breakpoint is a minimum width. A value for `md` applies to screens at least
+as wide as `md`, and stays active until the next breakpoint, such as `lg`, takes
+over. So write the smallest screen first as `base`, and add changes for larger
+screens.
+
+## Columns without breakpoints
+
+`SimpleGrid` can adapt without any breakpoint. With `minChildWidth`, it adds or
+removes columns based on the available space.
+
+```tsx
+<SimpleGrid minChildWidth="200px" gap="400">
+  {/* children */}
+</SimpleGrid>
+```
+
+Previous: [Styling basics](/learn/styling-basics). Next:
+[Colors and dark mode](/learn/colors-and-dark-mode).

@@ -15,15 +15,12 @@ export const navigationConfig: NavigationConfig = {
     "components/inputs/range-slider": "RangeSlider",
   },
   // Design tokens and style props are reference material, not part of
-  // getting started, so they get their own section in the top bar. The
-  // Styling page is the entry of the section; its guides come before the
-  // reference pages.
+  // getting started, so they get their own section in the top bar.
   sections: [
     {
-      id: "styling",
-      label: "Styling",
+      id: "reference",
+      label: "Reference",
       order: 2,
-      page: "styling",
       groups: ["home/design-tokens", "home/style-props"],
     },
   ],
