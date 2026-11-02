@@ -1,0 +1,88 @@
+---
+id: Learn-How do I-Place above other elements
+title: Place an element above others with z-index
+description:
+  Give the element a position and set zIndex to a z-index token such as docked,
+  sticky or overlay, not to a number.
+icon: FlipToFront
+illustration: token-z-indices
+order: 7
+menu:
+  - Learn
+  - How do I…
+  - Place above other elements
+tags:
+  - learn
+  - z-index
+  - zIndex
+  - layer
+  - stacking order
+  - sticky
+  - overlay
+  - on top
+  - covered
+  - hidden behind
+related:
+  - Learn-Concepts-Provider and layers
+  - Components-Box
+---
+
+An element is hidden behind another element, for example a sticky header behind
+the rows of a list. In Nimbus, give the element a position and set `zIndex` to a
+z-index token, such as `sticky`. The tokens put all elements in one fixed order.
+
+```jsx live-dev
+import { Box, Text } from "@commercetools/nimbus";
+
+const rows = ["Shirts", "Shoes", "Bags", "Hats", "Socks", "Belts", "Scarves"];
+
+const App = () => (
+  <Box height="4800" overflowY="auto" border="solid-25" borderColor="border">
+    <Box
+      position="sticky"
+      top="0"
+      zIndex="sticky"
+      backgroundColor="bg"
+      padding="300"
+      borderBottom="solid-25"
+      borderColor="border"
+    >
+      <Text fontWeight="600">Categories</Text>
+    </Box>
+    {rows.map((row) => (
+      <Box key={row} position="relative" padding="300">
+        <Text>{row}</Text>
+      </Box>
+    ))}
+  </Box>
+);
+```
+
+Scroll the list. The header stays above the rows. Remove `zIndex="sticky"` and
+scroll again: the rows cover the header.
+
+## Why it works
+
+Elements with a position and no z-index appear in the order of the page, so
+later rows cover the header. A z-index token places the header above them. Each
+token has a fixed place in the order. Dialogs and drawers use the `modal` token.
+The [z-index tokens](/home/design-tokens/other/z-indices) page lists all tokens.
+See [Provider and layers](/learn/concepts/provider-and-layers).
+
+## When nothing fits
+
+Some widgets from other vendors set their own z-index number. To place an
+element above such a widget, use a number, and mark it as a one-off.
+
+```jsx live-dev
+import { Box, Text } from "@commercetools/nimbus";
+
+const App = () => (
+  <Box position="relative" height="4800">
+    {/* nimbus-one-off: the chat widget of our vendor uses z-index 2000 */}
+    <Box position="absolute" bottom="400" right="400" zIndex="2001">
+      <Text>Above the chat widget</Text>
+    </Box>
+  </Box>
+);
+```
