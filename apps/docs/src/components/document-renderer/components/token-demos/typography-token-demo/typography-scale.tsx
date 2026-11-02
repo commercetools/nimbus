@@ -13,7 +13,7 @@ import { useCopy } from "../use-copy";
 /** Root font size that rem values are shown for. */
 const ROOT_FONT_SIZE = 16;
 
-/** Text below this size, in px, is marked as not recommended. */
+/** Text below this size, in px, is marked as deprecated. */
 const MIN_FONT_SIZE = 12;
 
 const SAMPLE = "Sphinx of black quartz, judge my vow";
@@ -219,7 +219,7 @@ export const TypographyScale = ({
                       color="warning.11"
                       mt="100"
                     >
-                      Not recommended
+                      Deprecated
                     </Text>
                   )}
                 </Table.Cell>

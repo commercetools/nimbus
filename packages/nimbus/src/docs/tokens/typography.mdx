@@ -60,11 +60,10 @@ A text style does not set a font weight, a font family or a letter spacing. Set
 those with the tokens below.
 
 > [!WARNING]\
-> Do not set text smaller than 12px in new designs. The `2xs` text style (10px)
-> is below this minimum, so it is marked in the table. It stays in the scale
-> because components still use it: `Code` with size `xs` and `Avatar` with size
-> `2xs`. Use `xs` (12px) or larger. Smaller text is harder to read, especially
-> with low contrast.
+> The `2xs` text style (10px) is deprecated. Text should not be smaller than
+> 12px, because small text is harder to read, especially with low contrast. The
+> style is only kept for legacy reasons. Do not use it in new designs. Use `xs`
+> (12px) or larger.
 
 <TypographyScale kind="textStyles" />
 
@@ -103,8 +102,8 @@ negative. The values use `em`, so they scale with the font size.
 
 Use a font size token when no text style has the size you need. The token names
 are numbers, and the values are in `px`. Divide by 16 for `rem`, when the root
-font size is the browser default. The token `250` (10px) is below the 12px
-minimum and is marked in the table.
+font size is the browser default. The token `250` (10px) is deprecated
+and is marked in the table.
 
 <TypographyScale kind="fontSizes" />
 
