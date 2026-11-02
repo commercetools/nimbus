@@ -1,0 +1,60 @@
+---
+id: Learn-How do I-Use the full width
+title: Make a component use the full width
+description:
+  Set width="full" on the component. Inputs in a Stack or FormField stretch
+  already; components that size to their content, such as Button, need
+  width="full".
+icon: WidthFull
+illustration: token-sizes
+order: 3
+menu:
+  - Learn
+  - How do I…
+  - Use the full width
+tags:
+  - learn
+  - width
+  - full width
+  - 100%
+  - stretch
+  - fill
+  - layout
+  - Button
+  - LocalizedField
+related:
+  - Learn-Concepts-Layout
+  - Components-Stack
+  - Components-Button
+  - Components-LocalizedField
+---
+
+A component is narrower than its container, and you want it to fill the whole
+width. In Nimbus, set `width="full"` on the component. `full` is a size token,
+and it means 100% of the parent.
+
+```jsx live-dev
+import { Button, Stack } from "@commercetools/nimbus";
+
+const App = () => (
+  <Stack align="start" gap="400" maxWidth="md">
+    <Button variant="outline">Sized to its content</Button>
+    <Button variant="outline" width="full">
+      Uses the full width
+    </Button>
+  </Stack>
+);
+```
+
+## Why it works
+
+Some components size to their content, for example `Button` and
+`LocalizedField`. They need `width="full"` to fill their parent.
+
+Inputs such as `TextInput` and `SearchInput` stretch when their container
+stretches them, for example a `Stack` or a `FormField`. A `Stack` stretches its
+children unless you set `align` or the child sets its own width. In the example,
+`align="start"` lets each button keep its own width.
+
+See [Layout](/learn/concepts/layout) and the
+[size tokens](/home/design-tokens/sizes).
