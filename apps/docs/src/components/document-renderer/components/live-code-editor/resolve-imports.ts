@@ -13,11 +13,21 @@ export type LiveModules = Record<string, object>;
 
 /**
  * One import statement. The clause between `import` and `from` can span
- * several lines. A statement without a clause (`import "x";`) only has a
- * module name.
+ * several lines and contain comments. A statement without a clause
+ * (`import "x";`) only has a module name. A comment can follow the statement.
  */
 const IMPORT_STATEMENT =
-  /^[ \t]*import\s+(?:([\w$*{}\s,]+?)\s+from\s+)?["']([^"']+)["'][ \t]*;?[ \t]*$/gm;
+  /^[ \t]*import\s+(?:((?:[\w$*{}\s,]|\/\/[^\n]*\n|\/\*[\s\S]*?\*\/)+?)\s+from\s+)?["']([^"']+)["'][ \t]*;?[ \t]*(?:\/\/[^\n]*|\/\*.*?\*\/[ \t]*)?$/gm;
+
+/** A line that still starts with `import` after all statements were read. */
+const LEFTOVER_IMPORT = /^[ \t]*import\s/m;
+
+/** All lines that still start with `import`, to remove them. */
+const LEFTOVER_LINES = /^[ \t]*import\s[^\n]*$/gm;
+
+/** Removes line and block comments from an import clause. */
+const removeComments = (clause: string) =>
+  clause.replace(/\/\/[^\n]*/g, "").replace(/\/\*[\s\S]*?\*\//g, "");
 
 type ImportClause = {
   defaultName?: string;
@@ -30,7 +40,7 @@ type ImportClause = {
  * @returns undefined for type-only imports, which have no value at runtime
  */
 const parseImportClause = (clause: string): ImportClause | undefined => {
-  let rest = clause.trim();
+  let rest = removeComments(clause).trim();
   if (/^type\s/.test(rest)) return undefined;
 
   const result: ImportClause = { named: [] };
@@ -84,6 +94,11 @@ const toDeclarations = (
     lines.push(`const ${parsed.namespaceName} = ${source};`);
   }
   if (parsed.named.length > 0) {
+    const names = JSON.stringify(parsed.named.map(({ imported }) => imported));
+    const message = `The live editor cannot import these names from "${moduleName}": `;
+    lines.push(
+      `{ const missing = ${names}.filter((name) => !(name in ${source})); if (missing.length > 0) throw new Error(${JSON.stringify(message)} + missing.join(", ")); }`
+    );
     const bindings = parsed.named
       .map(({ imported, local }) =>
         imported === local ? imported : `${imported}: ${local}`
@@ -104,13 +119,23 @@ const toDeclarations = (
  */
 export const resolveImports = (code: string, modules: LiveModules): string => {
   const declarations: string[] = [];
-  const body = code.replace(
+  let body = code.replace(
     IMPORT_STATEMENT,
     (_statement, clause: string | undefined, moduleName: string) => {
       declarations.push(toDeclarations(clause, moduleName, modules));
       return "";
     }
   );
+
+  // An import line that the pattern cannot read would make the whole example
+  // fail with a syntax error. Remove it and explain the problem instead.
+  const leftover = body.match(LEFTOVER_IMPORT);
+  if (leftover) {
+    const line = body.slice(leftover.index).split("\n")[0];
+    const message = `The live editor cannot read this import line: ${line.trim()}`;
+    declarations.unshift(`throw new Error(${JSON.stringify(message)});`);
+    body = body.replace(LEFTOVER_LINES, "");
+  }
 
   return [
     "{",

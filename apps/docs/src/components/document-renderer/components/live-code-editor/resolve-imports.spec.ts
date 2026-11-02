@@ -31,15 +31,50 @@ const run = (code: string, scope: Record<string, unknown>) => {
 describe("resolveImports", () => {
   it("replaces a named import with a lookup in the modules", () => {
     const code = `import { Button } from "@commercetools/nimbus";\nconst App = () => Button;`;
+    const resolved = resolveImports(code, modules);
 
-    expect(resolveImports(code, modules)).toBe(
-      [
-        "{",
-        `const { Button } = ${LIVE_MODULES_KEY}["@commercetools/nimbus"];`,
-        "\nconst App = () => Button;",
-        "render(<App />);",
-        "}",
-      ].join("\n")
+    expect(resolved).toContain(
+      `const { Button } = ${LIVE_MODULES_KEY}["@commercetools/nimbus"];`
+    );
+    expect(resolved).not.toMatch(/^\s*import\s/m);
+    expect(resolved.endsWith("render(<App />);\n}")).toBe(true);
+  });
+
+  it("reads an import with a comment after it or inside it", () => {
+    const code = [
+      `import { Button } from "@commercetools/nimbus"; // the button`,
+      "import {",
+      "  // icons for the menu",
+      "  Edit,",
+      `} from "@commercetools/nimbus-icons";`,
+      "const App = () => [Button, Edit];",
+    ].join("\n");
+
+    expect(run(code, { [LIVE_MODULES_KEY]: modules })).toEqual([
+      "NimbusButton",
+      "EditIcon",
+    ]);
+  });
+
+  it("throws a clear error for a name that the module does not have", () => {
+    const code = [
+      `import { Button, Toast } from "@commercetools/nimbus";`,
+      "const App = () => Button;",
+    ].join("\n");
+
+    expect(() => run(code, { [LIVE_MODULES_KEY]: modules })).toThrow(
+      'The live editor cannot import these names from "@commercetools/nimbus": Toast'
+    );
+  });
+
+  it("throws a clear error for an import line that it cannot read", () => {
+    const code = [
+      "import { Button } from someModule;",
+      "const App = () => 1;",
+    ].join("\n");
+
+    expect(() => run(code, { [LIVE_MODULES_KEY]: modules })).toThrow(
+      "The live editor cannot read this import line: import { Button } from someModule;"
     );
   });
 

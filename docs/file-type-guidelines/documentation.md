@@ -114,8 +114,8 @@ and `githubLink` that is set, in this order: Figma, Storybook, GitHub.
   `storybookLink`.
 
 `related` lists the `id` of other documents, for example the other parts of a
-component family. The page shows them as cards in a "Related components" section
-at the end of the Overview tab.
+component family. The page shows them as cards in a "Related content" carousel
+below the page header.
 
 ```yaml
 ---
@@ -296,11 +296,12 @@ render live, interactive React components in the documentation site.
 
 - All Nimbus components and `Icons` are available globally, so import lines are
   optional
-- Import lines work as in an app, also over several lines and with `as` aliases.
-  The editor resolves imports from `@commercetools/nimbus`,
-  `@commercetools/nimbus-icons`, `react`, `@internationalized/date`,
-  `react-stately` and `use-debounce`. An import from any other module shows an
-  error, so code that needs a router is a plain `tsx` block
+- Import lines work as in an app, also over several lines, with comments and
+  with `as` aliases. The editor resolves them from the modules in `liveModules`
+  (`apps/docs/src/components/document-renderer/components/live-code-editor/live-code-editor.tsx`),
+  such as `@commercetools/nimbus`, `@commercetools/nimbus-icons` and `react`. An
+  import from any other module, or of a name that the module does not have,
+  shows an error, so code that needs a router is a plain `tsx` block
 - Each jsx live block should define an `App` component
 - The code executes in the browser and renders as a live component
 - Use regular markdown code blocks (with language tags like `jsx` or `tsx`) only
@@ -723,8 +724,11 @@ Search ranks the title highest, then the description and the tags.
 1. A first paragraph: what the reader sees, and the answer.
 2. One live example, or a plain `tsx` block when the code needs a router or the
    app root.
-3. `## Why it works`: two or three sentences and a link to the concept page.
-4. `## When nothing fits`: the one-off, if there is one.
+3. Optional: one `##` section for each second case that readers often have, such
+   as a router setup, or CSS instead of JavaScript. Each section has one
+   example.
+4. `## Why it works`: two or three sentences and a link to the concept page.
+5. `## When nothing fits`: the one-off, if there is one.
 
 ### Writing rules
 
