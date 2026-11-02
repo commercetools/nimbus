@@ -1,0 +1,173 @@
+---
+id: Learn-Concepts-Interaction props
+title: "Interaction props: onPress, isDisabled and onChange"
+description:
+  Nimbus components use onPress instead of onClick, is… props such as
+  isDisabled for states, and onChange that gets the new value, not an event.
+icon: TouchApp
+illustration: button
+order: 5
+menu:
+  - Learn
+  - Concepts
+  - Interaction props
+tags:
+  - learn
+  - events
+  - onPress
+  - onClick
+  - isDisabled
+  - disabled
+  - onChange
+  - event.target.value
+  - controlled
+  - isOpen
+  - onSelectionChange
+---
+
+Nimbus components use their own props for events and states, not the plain HTML
+props. Use `onPress` instead of `onClick`, and `isDisabled` instead of
+`disabled`. Most inputs call `onChange` with the new value, not with an event.
+The same names work across all components, so once you know them, you know how
+every component reacts.
+
+## Pressing: onPress
+
+`onPress` runs when someone activates an element with a mouse, a touch or the
+keyboard. With `onClick`, you would have to handle each of these yourself.
+`onPressStart`, `onPressEnd` and `onPressChange` tell you when a press starts
+and ends.
+
+```jsx live-dev
+import { useState } from "react";
+import { Button, Stack, Text } from "@commercetools/nimbus";
+
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <Stack gap="200" align="start">
+      <Button onPress={() => setCount(count + 1)}>Add one</Button>
+      <Text>Pressed {count} times</Text>
+    </Stack>
+  );
+};
+```
+
+## States: isDisabled, isReadOnly, isRequired, isInvalid
+
+State props start with `is`. They change the look, the behavior and what
+screen readers announce, all at once.
+
+- `isDisabled`: the element cannot be used.
+- `isReadOnly`: the value can be read and copied, but not changed.
+- `isRequired`: the field must have a value.
+- `isInvalid`: the value is wrong.
+
+In a form, set `isRequired` and `isInvalid` on `FormField.Root`. Then the
+label, the input and the error message all get the state.
+
+```jsx live-dev
+import { FormField, TextInput } from "@commercetools/nimbus";
+
+const App = () => (
+  <FormField.Root isRequired isInvalid>
+    <FormField.Label>Email address</FormField.Label>
+    <FormField.Input>
+      <TextInput type="email" defaultValue="name@" />
+    </FormField.Input>
+    <FormField.Error>Enter a complete email address.</FormField.Error>
+  </FormField.Root>
+);
+```
+
+A disabled element does not get focus, so a tooltip on it does not open. To
+explain why a button is disabled, add `allowFocusWhenDisabled`:
+
+```jsx live-dev
+import { Button, Tooltip } from "@commercetools/nimbus";
+
+const App = () => (
+  <Tooltip.Root>
+    <Button isDisabled allowFocusWhenDisabled>
+      Publish
+    </Button>
+    <Tooltip.Content>
+      Complete all required fields before publishing.
+    </Tooltip.Content>
+  </Tooltip.Root>
+);
+```
+
+## Values: onChange
+
+Inputs call `onChange` with the new value. The type of the value depends on the
+input:
+
+| Component            | Value props                         | Change prop         | Gets                    |
+| -------------------- | ----------------------------------- | ------------------- | ----------------------- |
+| `TextInput`          | `value`, `defaultValue`             | `onChange`          | a string                |
+| `NumberInput`        | `value`, `defaultValue`             | `onChange`          | a number                |
+| `Checkbox`, `Switch` | `isSelected`, `defaultSelected`     | `onChange`          | a boolean               |
+| `Select`             | `selectedKey`, `defaultSelectedKey` | `onSelectionChange` | the key of the option   |
+| `DateInput`          | `value`, `defaultValue`             | `onChange`          | a date value, or `null` |
+
+A few components work differently. `LocalizedField` calls `onChange` with an
+event object, and `MoneyInput` and `ScopedSearchInput` use `onValueChange`. The
+props table on each component page has the exact names.
+
+Use `value` and `onChange` together when your code keeps the value (controlled).
+Use `defaultValue` when the input keeps the value itself (uncontrolled). For
+examples, see [Read a changed value](/learn/how-do-i/read-a-changed-value).
+
+## Open and closed: isOpen, defaultOpen, onOpenChange
+
+Components that open and close, such as `Dialog`, `Drawer`, `Popover`, `Menu`,
+`Tooltip`, `Select` and `ComboBox`, use the same three props. `defaultOpen`
+sets the first state. `isOpen` and `onOpenChange` let your code control the
+state.
+
+```jsx live-dev
+import { useState } from "react";
+import { Button, Dialog, Stack, Text } from "@commercetools/nimbus";
+
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <Stack gap="200" align="start">
+      <Button onPress={() => setIsOpen(true)}>Open the dialog</Button>
+      <Dialog.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Saved</Dialog.Title>
+            <Dialog.CloseTrigger />
+          </Dialog.Header>
+          <Dialog.Body>
+            <Text>Your changes are saved.</Text>
+          </Dialog.Body>
+        </Dialog.Content>
+      </Dialog.Root>
+    </Stack>
+  );
+};
+```
+
+## Selection: selectedKeys and onSelectionChange
+
+Components that select items, such as `Menu`, `ListBox`, `TagGroup` and
+`DataTable`, use `selectedKeys`, `defaultSelectedKeys` and
+`onSelectionChange`. Components that select one item, such as `Tabs`, use
+`selectedKey`, `defaultSelectedKey` and `onSelectionChange`. Each item has an
+`id`, and the selection is a set of these ids. When someone selects all items,
+for example with the checkbox in a `DataTable` header, `onSelectionChange` can
+get the string `"all"` instead of a set. Handle both cases.
+
+## Common mistakes
+
+- **`onClick` on a Button.** It is deprecated. Use `onPress`, which also works
+  with the keyboard and touch.
+- **`disabled` on a Button.** It is deprecated. Use `isDisabled`.
+- **Reading `event.target.value`.** Most inputs do not pass an event to
+  `onChange`, so `event.target` is undefined. Use the value directly:
+  `onChange={(value) => setName(value)}`.
