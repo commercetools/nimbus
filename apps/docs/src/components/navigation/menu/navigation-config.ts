@@ -15,13 +15,13 @@ export const navigationConfig: NavigationConfig = {
     "components/inputs/range-slider": "RangeSlider",
   },
   // Learn, design tokens and style props make up one section in the top bar.
-  // Learn comes first, so the tab opens it; tokens and props are the
-  // reference material after it.
+  // The Foundations page is the entry of the section and links to the three.
   sections: [
     {
       id: "foundations",
       label: "Foundations",
       order: 2,
+      page: "foundations",
       groups: ["learn", "home/design-tokens", "home/style-props"],
     },
   ],

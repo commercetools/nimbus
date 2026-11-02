@@ -25,6 +25,12 @@ import { countPagesBelow } from "@/utils/count-pages-below";
 type CategoryOverviewProps = {
   variant?: string;
   /**
+   * Paths of the documents to show, in this order, instead of the documents of
+   * the current menu category. Use it to link to pages that live elsewhere in
+   * the menu.
+   */
+  paths?: string[];
+  /**
    * How many illustrations a card in the grid variant shows. The first one is
    * visible; the rest appear when the card is hovered or focused.
    */
@@ -33,6 +39,7 @@ type CategoryOverviewProps = {
 
 const CategoryOverviewContent: FC<CategoryOverviewProps> = ({
   variant,
+  paths,
   illustrationCount = 2,
 }) => {
   const { routeManifest } = useManifest();
@@ -51,33 +58,42 @@ const CategoryOverviewContent: FC<CategoryOverviewProps> = ({
     activeDoc.meta.menu.length > 1 ? activeDoc.meta.menu[1] : null;
 
   // Find all documents that are in the same category from the manifest
-  const categoryDocs = routeManifest.routes.filter((route) => {
-    // Make sure we're in the same top-level category
-    if (route.menu[0] !== currentCategory) {
-      return false;
-    }
-    // Don't include currently active document
-    if (route.path === `/${activeDoc.meta.route}`) {
-      return false;
-    }
+  const categoryDocs = paths
+    ? paths.flatMap((path) =>
+        routeManifest.routes.filter((r) => r.path === path)
+      )
+    : routeManifest.routes.filter((route) => {
+        // Make sure we're in the same top-level category
+        if (route.menu[0] !== currentCategory) {
+          return false;
+        }
+        // Don't include currently active document
+        if (route.path === `/${activeDoc.meta.route}`) {
+          return false;
+        }
 
-    // On a page below the top level, show the documents that sit under the
-    // whole menu path of this page, not only under its second level.
-    if (subcategory && activeDoc.meta.menu.length > 1) {
-      return (
-        route.menu.length > 1 &&
-        activeDoc.meta.menu.every((item, i) => route.menu[i] === item)
-      );
-    }
+        // On a page below the top level, show the documents that sit under the
+        // whole menu path of this page, not only under its second level.
+        if (subcategory && activeDoc.meta.menu.length > 1) {
+          return (
+            route.menu.length > 1 &&
+            activeDoc.meta.menu.every((item, i) => route.menu[i] === item)
+          );
+        }
 
-    // If we're at the category root, only show direct subcategories
-    return route.menu.length === 2 && route.path !== `/${activeDoc.meta.route}`;
-  });
+        // If we're at the category root, only show direct subcategories
+        return (
+          route.menu.length === 2 && route.path !== `/${activeDoc.meta.route}`
+        );
+      });
 
   // Sort the documents by their order property
-  const sortedDocs = [...categoryDocs].sort((a, b) => {
-    return (a.order || 999) - (b.order || 999);
-  });
+  // (Documents chosen with `paths` keep the order of `paths`.)
+  const sortedDocs = paths
+    ? categoryDocs
+    : [...categoryDocs].sort((a, b) => {
+        return (a.order || 999) - (b.order || 999);
+      });
 
   if (sortedDocs.length === 0) {
     return (

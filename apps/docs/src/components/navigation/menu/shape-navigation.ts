@@ -40,6 +40,11 @@ export type NavigationSection = {
   order: number;
   /** Routes of the groups to move into this section, in display order. */
   groups: string[];
+  /**
+   * Route of a page that becomes the section's own page (its overview). The
+   * pages below it come first in the sidebar, followed by `groups`.
+   */
+  page?: string;
 };
 
 export type NavigationConfig = {
@@ -170,23 +175,33 @@ export const shapeNavigation = (
 
   for (const section of config.sections) {
     const groups: NavigationItem[] = [];
+    let overview: NavigationItem | undefined;
+    if (section.page) {
+      const result = takeItem(sections, section.page);
+      sections = result.items;
+      overview = result.taken;
+    }
     for (const route of section.groups) {
       const result = takeItem(sections, route);
       sections = result.items;
       if (result.taken) groups.push(result.taken);
     }
-    if (groups.length === 0) continue;
+    if (groups.length === 0 && !overview) continue;
     sections.push({
       id: section.id,
       label: section.label,
-      route: groups[0].route,
-      hasPage: false,
+      route: overview?.route ?? groups[0].route,
+      hasPage: overview?.hasPage ?? false,
       order: section.order,
-      // The groups keep the configured order; only their pages are sorted.
-      children: groups.map((group) => ({
-        ...group,
-        children: sortTree(group.children),
-      })),
+      children: [
+        // The overview's own pages are sorted; the groups keep the
+        // configured order, and only their pages are sorted.
+        ...sortTree(overview?.children ?? []),
+        ...groups.map((group) => ({
+          ...group,
+          children: sortTree(group.children),
+        })),
+      ],
     });
   }
 
