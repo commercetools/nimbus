@@ -143,19 +143,19 @@ export default function App() {
 **Common color mode props:**
 - `defaultTheme`: `"light" | "dark" | "system"` - Initial theme (default: `"light"`)
 - `enableSystem`: `boolean` - Respect system color preference (default: `false`)
-- `disableTransitionOnChange`: `boolean` - Disable CSS transitions when changing themes (default: `false`)
+- `disableTransitionOnChange`: `boolean` - Disable CSS transitions when changing themes (default: `true`)
 - `storageKey`: `string` - LocalStorage key for persisting theme preference (default: `"theme"`)
 
-To toggle color mode in your application, use the `useColorMode` hook from Chakra UI:
+To toggle color mode in your application, use the `useColorMode` hook. It is marked experimental, so it can change in a future release:
 
 ```tsx
-import { useColorMode } from '@chakra-ui/react';
+import { Button, useColorMode } from '@commercetools/nimbus';
 
 function ThemeToggle() {
   const { colorMode, toggleColorMode } = useColorMode();
 
   return (
-    <Button onClick={toggleColorMode}>
+    <Button onPress={toggleColorMode}>
       Switch to {colorMode === 'light' ? 'dark' : 'light'} mode
     </Button>
   );
@@ -164,7 +164,7 @@ function ThemeToggle() {
 
 ## Framework integration
 
-NimbusProvider's `router` prop enables client-side navigation for all Nimbus components with `href` props (Link, Button with href, Menu items, etc.). Configure it to match your routing framework.
+NimbusProvider's `router` prop enables client-side navigation for Nimbus components with `href` props (Link, Menu items, etc.). Configure it to match your routing framework.
 
 ### React Router (v6)
 
