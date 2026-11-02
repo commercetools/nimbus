@@ -167,6 +167,7 @@ export const BreakpointsScale = () => {
       </Stack>
 
       <TokenTable
+        minWidth="2xl"
         columns={[
           { header: "From", width: "10ch", align: "right" },
           { header: "Up to", width: "10ch", align: "right" },

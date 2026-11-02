@@ -25,6 +25,11 @@ type TokenTableProps = {
   rows: TokenTableRow[];
   /** Width of the token column. */
   tokenWidth?: string;
+  /**
+   * The narrowest width of the table, as a size token. On a narrower screen
+   * the table scrolls sideways, so that no column gets too narrow.
+   */
+  minWidth?: string;
 };
 
 /**
@@ -35,48 +40,54 @@ export const TokenTable = ({
   columns,
   rows,
   tokenWidth = "14ch",
+  minWidth = "lg",
 }: TokenTableProps) => {
   const { copied, copy } = useCopy();
 
   return (
-    <Table.Root size="sm" tableLayout="fixed">
-      <Table.ColumnGroup>
-        <Table.Column width={tokenWidth} />
-        {columns.map((column) => (
-          <Table.Column key={column.header} width={column.width} />
-        ))}
-        <Table.Column width="1200" />
-      </Table.ColumnGroup>
-      <Table.Header>
-        <Table.Row>
-          <Table.ColumnHeader>Token</Table.ColumnHeader>
+    <Table.ScrollArea maxWidth="full">
+      <Table.Root size="sm" tableLayout="fixed" minWidth={minWidth}>
+        <Table.ColumnGroup>
+          <Table.Column width={tokenWidth} />
           {columns.map((column) => (
-            <Table.ColumnHeader key={column.header} textAlign={column.align}>
-              {column.header}
-            </Table.ColumnHeader>
+            <Table.Column key={column.header} width={column.width} />
           ))}
-          <Table.ColumnHeader>
-            <Box srOnly>Copy</Box>
-          </Table.ColumnHeader>
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>
-        {rows.map((row) => (
-          <Table.Row key={row.id} bg={row.highlight ? "primary.3" : undefined}>
-            <Table.Cell>
-              <Code variant="subtle">{row.id}</Code>
-            </Table.Cell>
-            {row.cells.map((cell, index) => (
-              <Table.Cell key={index} textAlign={columns[index]?.align}>
-                {cell}
-              </Table.Cell>
+          <Table.Column width="1200" />
+        </Table.ColumnGroup>
+        <Table.Header>
+          <Table.Row>
+            <Table.ColumnHeader>Token</Table.ColumnHeader>
+            {columns.map((column) => (
+              <Table.ColumnHeader key={column.header} textAlign={column.align}>
+                {column.header}
+              </Table.ColumnHeader>
             ))}
-            <Table.Cell textAlign="right">
-              <CopyButton token={row.id} copied={copied} onCopy={copy} />
-            </Table.Cell>
+            <Table.ColumnHeader>
+              <Box srOnly>Copy</Box>
+            </Table.ColumnHeader>
           </Table.Row>
-        ))}
-      </Table.Body>
-    </Table.Root>
+        </Table.Header>
+        <Table.Body>
+          {rows.map((row) => (
+            <Table.Row
+              key={row.id}
+              bg={row.highlight ? "primary.3" : undefined}
+            >
+              <Table.Cell>
+                <Code variant="subtle">{row.id}</Code>
+              </Table.Cell>
+              {row.cells.map((cell, index) => (
+                <Table.Cell key={index} textAlign={columns[index]?.align}>
+                  {cell}
+                </Table.Cell>
+              ))}
+              <Table.Cell textAlign="right">
+                <CopyButton token={row.id} copied={copied} onCopy={copy} />
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table.Root>
+    </Table.ScrollArea>
   );
 };
