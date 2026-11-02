@@ -3,7 +3,7 @@ id: Learn-Concepts-Interaction props
 title: "Interaction props: onPress, isDisabled and onChange"
 description:
   Nimbus components use onPress instead of onClick, is… props such as
-  isDisabled for states, and onChange that gets the new value, not an event.
+  isDisabled for states, and onChange that gets the new value in most inputs.
 icon: TouchApp
 illustration: button
 order: 5
@@ -23,13 +23,16 @@ tags:
   - controlled
   - isOpen
   - onSelectionChange
+  - onOpenChange
+  - selectedKeys
+  - allowFocusWhenDisabled
 ---
 
 Nimbus components use their own props for events and states, not the plain HTML
 props. Use `onPress` instead of `onClick`, and `isDisabled` instead of
 `disabled`. Most inputs call `onChange` with the new value, not with an event.
-The same names work across all components, so once you know them, you know how
-every component reacts.
+Most components use the same names. When you know them, you know how most
+components react.
 
 ## Pressing: onPress
 
@@ -101,24 +104,14 @@ const App = () => (
 
 ## Values: onChange
 
-Inputs call `onChange` with the new value. The type of the value depends on the
-input:
-
-| Component            | Value props                         | Change prop         | Gets                    |
-| -------------------- | ----------------------------------- | ------------------- | ----------------------- |
-| `TextInput`          | `value`, `defaultValue`             | `onChange`          | a string                |
-| `NumberInput`        | `value`, `defaultValue`             | `onChange`          | a number                |
-| `Checkbox`, `Switch` | `isSelected`, `defaultSelected`     | `onChange`          | a boolean               |
-| `Select`             | `selectedKey`, `defaultSelectedKey` | `onSelectionChange` | the key of the option   |
-| `DateInput`          | `value`, `defaultValue`             | `onChange`          | a date value, or `null` |
-
-A few components work differently. `LocalizedField` calls `onChange` with an
-event object, and `MoneyInput` and `ScopedSearchInput` use `onValueChange`. The
-props table on each component page has the exact names.
+Most inputs call `onChange` with the new value, in the type that fits the
+input: a string for `TextInput`, a number for `NumberInput`, a boolean for
+`Checkbox` and `Switch`, the key of the option for `Select`. A few components
+work differently. [Read a changed value](/learn/how-do-i/read-a-changed-value)
+has the table of all of them.
 
 Use `value` and `onChange` together when your code keeps the value (controlled).
-Use `defaultValue` when the input keeps the value itself (uncontrolled). For
-examples, see [Read a changed value](/learn/how-do-i/read-a-changed-value).
+Use `defaultValue` when the input keeps the value itself (uncontrolled).
 
 ## Open and closed: isOpen, defaultOpen, onOpenChange
 

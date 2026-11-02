@@ -22,6 +22,9 @@ tags:
   - color mode
   - dark mode
   - semantic colors
+  - useColorMode
+  - toggleColorMode
+  - defaultTheme
 ---
 
 A design token is a named value, such as `400` for a space or `primary.3` for a
@@ -40,7 +43,7 @@ with `width` and `height`.
 | Colors     | `primary.9`    | `color`, `backgroundColor`      | [Colors](/home/design-tokens/colors)              |
 | Spacing    | `400`          | `padding`, `margin`, `gap`      | [Spacing](/home/design-tokens/spacing)            |
 | Sizes      | `full`, `1/2`  | `width`, `height`, `maxWidth`   | [Sizes](/home/design-tokens/sizes)                |
-| Typography | `md`, `body`   | `fontSize`, `textStyle`         | [Typography](/home/design-tokens/typography)      |
+| Typography | `400`, `body`  | `fontSize`, `textStyle`         | [Typography](/home/design-tokens/typography)      |
 | Radii      | `200`          | `borderRadius`                  | [Radii](/home/design-tokens/radii)                |
 | Shadows    | `2`            | `boxShadow`                     | [Shadows](/home/design-tokens/shadows)            |
 | Z-indices  | `sticky`       | `zIndex`                        | [Z-Indices](/home/design-tokens/other/z-indices)  |
@@ -67,14 +70,14 @@ To use a token outside a style prop, for example in your own CSS, see
 
 ## Colors: a palette and a step
 
-A color token is a palette and a step, such as `primary.3` or `critical.9`.
+Most color tokens are a palette and a step, such as `primary.3` or `critical.9`.
 Each palette has 12 steps. Low steps are for backgrounds, middle steps for
 borders and solid fills, and high steps for text. The
 [Colors](/home/design-tokens/colors) page shows what each step is for. The
 `contrast` step, such as `primary.contrast`, is a text color that is readable
 on step 9.
 
-There are three kinds of palettes:
+There are three kinds of color tokens:
 
 - **Semantic palettes** have a meaning: `primary`, `neutral`, `info`,
   `positive`, `warning` and `critical`. Use them when the color says something,
@@ -105,11 +108,11 @@ const App = () => (
 Every color token has two values: one for the light color mode and one for the
 dark color mode. The token name stays the same. So your styles follow the color
 mode, and you do not need a second design for the dark color mode. For a gray that
-follows the mode, use `neutral`. Only `black`, `white`, `blackAlpha` and
-`whiteAlpha` keep the same value in both modes.
+follows the color mode, use `neutral`. Only `black`, `white`, `blackAlpha` and
+`whiteAlpha` keep the same value in both color modes.
 
-`NimbusProvider` sets the color mode. It starts in the light mode; set
-`defaultTheme="dark"` to start in the dark mode. To let people switch, use the
+`NimbusProvider` sets the color mode. It starts in the light color mode;
+set `defaultTheme="dark"` to start in the dark color mode. To let people switch, use the
 `useColorMode` hook. It is marked experimental, so it can change in a future
 release.
 

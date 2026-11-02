@@ -2,7 +2,7 @@
 id: Learn-How do I-Read a changed value
 title: Read the value in onChange
 description:
-  Nimbus inputs call onChange with the new value, not with an event. TextInput
+  Most Nimbus inputs call onChange with the new value, not with an event. TextInput
   gives a string, NumberInput a number, Checkbox and Switch a boolean.
 icon: Input
 illustration: text-input
@@ -30,7 +30,7 @@ related:
   - Components-Switch
 ---
 
-You read `event.target.value` in `onChange`, and it is `undefined`. Nimbus
+You read `event.target.value` in `onChange`, and it is `undefined`. Most Nimbus
 inputs call `onChange` with the new value itself, not with an event. Pass the
 value to your state, or give the state setter directly to `onChange`.
 
@@ -68,12 +68,16 @@ function App() {
 }
 ```
 
-| Component            | `onChange` gets                    |
-| -------------------- | ---------------------------------- |
-| `TextInput`          | the text, a string                 |
-| `NumberInput`        | a number                           |
-| `Checkbox`, `Switch` | `true` or `false` (`isSelected`)   |
-| `DateInput`          | a date value, or `null` when empty |
+| Component            | Value props                     | `onChange` gets                    |
+| -------------------- | ------------------------------- | ---------------------------------- |
+| `TextInput`          | `value`, `defaultValue`         | the text, a string                 |
+| `NumberInput`        | `value`, `defaultValue`         | a number                           |
+| `Checkbox`, `Switch` | `isSelected`, `defaultSelected` | `true` or `false`                  |
+| `Select`             | `value`, `defaultValue`         | the key of the option, or `null`   |
+| `DateInput`          | `value`, `defaultValue`         | a date value, or `null` when empty |
+
+On `Select`, the older props `selectedKey` and `onSelectionChange` still work,
+but they are deprecated. Use `value` and `onChange`.
 
 Some components have a different handler. Check the props table of the
 component:
