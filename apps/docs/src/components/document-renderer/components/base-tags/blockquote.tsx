@@ -83,19 +83,18 @@ export const Blockquote = (props: BlockquoteProps) => {
     .find((value) => value !== undefined);
 
   return (
-    <Box
-      mb="400"
-      css={{
-        // Alert does not accept `css`, so a wrapper sets the icon size.
-        // Slightly larger than the Alert default (1.25em).
-        "& .nimbus-alert__icon svg": { width: "1.5em", height: "1.5em" },
-      }}
-    >
+    <Box mb="400">
       <Alert.Root
         variant="accent-start"
         colorPalette={marker ? flavorPalette[marker] : "neutral"}
         hideIcon={!marker}
       >
+        {marker && (
+          // Same icons as the Alert default, a bit larger (default is 1.25em).
+          <Alert.Icon css={{ "& svg": { width: "1.5em", height: "1.5em" } }}>
+            {flavorIcon[marker]}
+          </Alert.Icon>
+        )}
         {marker && <Alert.Title>{flavorTitle[marker]}</Alert.Title>}
         <Alert.Description
           as="div"
