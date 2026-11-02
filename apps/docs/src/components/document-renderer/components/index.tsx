@@ -4,6 +4,7 @@ import { ColorSteps } from "@/components/document-renderer/components/token-demo
 import { IconSearch } from "./token-demos/icon-search";
 import { SpacingScale } from "./token-demos/spacing-token-demo";
 import { SizesScale } from "./token-demos/sizes-token-demo";
+import { RadiiScale } from "./token-demos/radii-token-demo";
 import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
 import { TypographyScale } from "./token-demos/typography-token-demo";
 import * as icons from "@commercetools/nimbus-icons";
@@ -80,6 +81,7 @@ export const components: MDXComponents = {
   IconSearch,
   SpacingScale,
   SizesScale,
+  RadiiScale,
   GenericTokenTableDemo,
   EasingTokenDemo,
   DurationTokenDemo,
