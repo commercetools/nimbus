@@ -21,6 +21,14 @@ import { useRouteInfo } from "@/hooks/use-route-info";
 import { normalizeRoute } from "@/utils/normalize-route";
 
 /**
+ * Pages that were removed, and the page that covers their content now. An old
+ * link to a removed page opens the new page.
+ */
+const REMOVED_PAGES: Record<string, string> = {
+  "home/getting-started/core-concepts": "/learn",
+};
+
+/**
  * Old links: PascalCase labels used to give one word ("/defaultpage"), now
  * they give separate words ("/default-page"). Comparing without dashes finds
  * the page; a tab suffix such as "/dev" is kept.
@@ -61,6 +69,11 @@ export default function DynamicRoute() {
   // Show loading only while the manifest itself is loading.
   if (isLoading || !routeManifest) {
     return <LoadingSpinner />;
+  }
+
+  const replacement = REMOVED_PAGES[normalizedPath];
+  if (replacement) {
+    return <Navigate to={replacement} replace />;
   }
 
   const movedTo = findMovedPath(routeManifest.routes, normalizedPath);
