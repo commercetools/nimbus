@@ -12,11 +12,9 @@ import {
 } from "@commercetools/nimbus";
 import * as Icons from "@commercetools/nimbus-icons";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
-import {
-  ComponentIllustration,
-  hasIllustration,
-} from "@/components/component-illustration";
+import { Illustration, hasIllustration } from "@/components/illustration";
 import { DocumentCard } from "@/components/document-card";
+import { countPagesBelow } from "@/utils/count-pages-below";
 
 /**
  * Component that displays an overview of all documents in the current menu category.
@@ -122,17 +120,14 @@ const CategoryOverviewContent: FC<CategoryOverviewProps> = ({
                   <Card.Body>
                     <Flex>
                       {illustrationsOf(doc).length > 0 ? (
-                        <Box
+                        <Illustration
+                          name={illustrationsOf(doc)[0]}
                           boxSize="48px"
                           flexShrink={0}
                           mr="400"
                           borderRadius="200"
                           overflow="hidden"
-                        >
-                          <ComponentIllustration
-                            name={illustrationsOf(doc)[0]}
-                          />
-                        </Box>
+                        />
                       ) : (
                         <Box color="primary.11" textStyle="2xl" mr="400">
                           <IconComponent
@@ -165,14 +160,6 @@ const CategoryOverviewContent: FC<CategoryOverviewProps> = ({
     );
   }
 
-  /** Number of documents below a category page, 0 for a single document. */
-  const countBelow = (doc: { menu: string[] }) =>
-    routeManifest.routes.filter(
-      (route) =>
-        route.menu.length > doc.menu.length &&
-        doc.menu.every((item, index) => route.menu[index] === item)
-    ).length;
-
   return (
     <Box my="600">
       <SimpleGrid
@@ -185,7 +172,7 @@ const CategoryOverviewContent: FC<CategoryOverviewProps> = ({
             key={doc.path}
             doc={doc}
             illustrationCount={illustrationCount}
-            pageCount={countBelow(doc)}
+            pageCount={countPagesBelow(routeManifest.routes, doc)}
           />
         ))}
       </SimpleGrid>

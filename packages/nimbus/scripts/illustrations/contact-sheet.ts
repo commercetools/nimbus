@@ -11,7 +11,7 @@ import { existsSync, mkdirSync, realpathSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "playwright";
-import { discover } from "../../src/illustration-kit/discover";
+import { discoverAll } from "../../src/illustration-kit/discover";
 import {
   renderIllustration,
   type IllustrationDefinition,
@@ -64,7 +64,7 @@ const purifyPath = join(
 );
 
 const items = await Promise.all(
-  discover()
+  discoverAll()
     .filter((item) => !category || item.category === category)
     .filter((item) => !only || only.includes(item.name))
     .map((item) => ({

@@ -19,6 +19,12 @@ Every folder in `packages/nimbus/src/{components,patterns}/**` with a main doc
 page `<dir>/<dir-name>.mdx` MUST have an illustration. The unit test
 `src/illustration-kit/illustrations.spec.ts` fails if it does not.
 
+A docs page that is not a component or pattern (for example Design Tokens) MAY
+have one. Its source is `packages/nimbus/src/docs/illustrations/{name}.illustration.ts`,
+and the page names it with `illustration: {name}` in its front matter. There
+is no recipe: use radius `"200"` by default. Illustration names are unique across all
+sources.
+
 ## Mode Detection
 
 - **create** - Write a new illustration source, generate the SVG, look at it
@@ -43,7 +49,8 @@ If no mode is given, default to **create**.
    ```
 
 3. **Read** the component's recipe to get its `borderRadius` token, and the
-   main doc page to learn what the component is:
+   main doc page to learn what the component is (for a docs page, read only
+   the page):
 
    ```bash
    cat packages/nimbus/src/components/{component}/{component}.recipe.ts
@@ -81,7 +88,8 @@ can check that.
 
 ## Common Pitfalls
 
-- The source text may not contain `<`, `style`, `id=`, `var(` or raw colors.
+- The source text may not contain `<`, `style` (except `style-` in a
+  kebab-case name such as `style-props`), `id=`, `var(` or raw colors.
   Use `.map` and `.flatMap` for repeated shapes.
 - Panel and bubble sizes are multiples of 2. The drawing stays inside 8–88 and
   is centered on 48.

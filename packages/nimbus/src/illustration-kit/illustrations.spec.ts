@@ -1,5 +1,14 @@
 /// <reference types="vite/client" />
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import {
+  existsSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
 import { sanitizeSvg } from "@/components/inline-svg/utils";
@@ -9,7 +18,15 @@ import {
   renderIllustration,
   type IllustrationDefinition,
 } from "./index";
-import { discover, SRC_DIR } from "./discover";
+import {
+  assertUniqueNames,
+  DOCS_CATEGORY,
+  DOCS_ILLUSTRATIONS_DIR,
+  discover,
+  discoverAll,
+  discoverDocsIllustrations,
+  SRC_DIR,
+} from "./discover";
 
 const required = discover();
 const requiredNames = new Set(required.map((item) => item.name));
@@ -30,7 +47,8 @@ const sourcePath = (item: { name: string; dir: string }) =>
 /** The SVG the docs build renders from the source. */
 const svgOf = (name: string) => renderIllustration(definitions.get(name)!);
 
-const drawn = required;
+/** Components, patterns and docs pages: every source gets the same checks. */
+const drawn = discoverAll();
 
 const ALLOWED_TAGS = new Set([
   "svg",
@@ -91,9 +109,49 @@ describe("illustration coverage", () => {
     };
     walk(join(SRC_DIR, "components"));
     walk(join(SRC_DIR, "patterns"));
+    if (existsSync(DOCS_ILLUSTRATIONS_DIR)) walk(DOCS_ILLUSTRATIONS_DIR);
     // SVGs are build output in apps/docs/src/data/illustrations, never committed
-    const allowed = new Set(required.map(sourcePath));
+    const allowed = new Set(drawn.map(sourcePath));
     expect(found.filter((path) => !allowed.has(path))).toEqual([]);
+  });
+});
+
+describe("docs page illustrations", () => {
+  it("finds every source in a folder, sorted by name", () => {
+    const dir = mkdtempSync(join(tmpdir(), "docs-illustrations-"));
+    try {
+      writeFileSync(join(dir, "icons.illustration.ts"), "");
+      writeFileSync(join(dir, "hooks.illustration.ts"), "");
+      writeFileSync(join(dir, "notes.md"), "");
+      expect(discoverDocsIllustrations(dir)).toEqual([
+        { name: "hooks", dir, category: DOCS_CATEGORY },
+        { name: "icons", dir, category: DOCS_CATEGORY },
+      ]);
+    } finally {
+      rmSync(dir, { recursive: true });
+    }
+  });
+
+  it("finds nothing when the folder does not exist", () => {
+    expect(discoverDocsIllustrations(join(tmpdir(), "no-such-folder"))).toEqual(
+      []
+    );
+  });
+
+  it("rejects a name that is used twice", () => {
+    const item = { name: "button", dir: "/a", category: "Buttons" };
+    expect(() =>
+      assertUniqueNames([item, { ...item, dir: "/b", category: DOCS_CATEGORY }])
+    ).toThrow("Used more than once: button");
+  });
+
+  it("accepts unique names", () => {
+    expect(() =>
+      assertUniqueNames([
+        { name: "button", dir: "/a", category: "Buttons" },
+        { name: "hooks", dir: "/b", category: DOCS_CATEGORY },
+      ])
+    ).not.toThrow();
   });
 });
 
@@ -107,7 +165,8 @@ describe("illustration source purity", () => {
     /light-dark\(/,
     /color-mix\(/,
     /</,
-    /style/,
+    // also `styles` and `stylesheet`; a kebab-case name like `style-props` is fine
+    /style(?!-)/,
     /id=/,
     /url\(#/,
   ];

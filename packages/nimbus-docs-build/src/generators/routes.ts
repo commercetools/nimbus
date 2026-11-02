@@ -16,32 +16,14 @@ import { flog } from "../utils/logger.js";
 import { validateFilePath } from "../utils/validate-file-path.js";
 import { findMonorepoRoot } from "../utils/file-utils.js";
 import { resolveChildIllustrations } from "./resolve-illustrations.js";
+import {
+  ILLUSTRATION_SOURCES_DIR,
+  findIllustration,
+  findUnknownIllustrations,
+  formatUnknownIllustrations,
+  listIllustrationNames,
+} from "./illustration-sources.js";
 import { resolveRelated } from "./resolve-related.js";
-
-/**
- * Name of the illustration for a main doc page, when the source
- * `<name>.illustration.ts` exists next to `<name>.mdx`. The docs build renders
- * the SVG from it.
- */
-async function findIllustration(
-  monorepoRoot: string | null,
-  repoPath: string
-): Promise<string[]> {
-  const name = path.basename(repoPath, ".mdx");
-  const isMainPage = path.basename(repoPath) === `${name}.mdx`;
-  if (!monorepoRoot || !isMainPage || name.includes(".")) return [];
-  const source = path.join(
-    monorepoRoot,
-    path.dirname(repoPath),
-    `${name}.illustration.ts`
-  );
-  try {
-    await fs.access(source);
-    return [name];
-  } catch {
-    return [];
-  }
-}
 
 /**
  * Generate route manifest from parsed documents
@@ -53,6 +35,20 @@ export async function generateRouteManifest(
   const routes: RouteInfo[] = [];
   const categoriesMap = new Map<string, CategoryInfo>();
   const monorepoRoot = await findMonorepoRoot(process.cwd());
+  const knownIllustrations = monorepoRoot
+    ? await listIllustrationNames(
+        path.join(monorepoRoot, ILLUSTRATION_SOURCES_DIR)
+      )
+    : new Set<string>();
+
+  // The build stops on unknown names (see `build`); the dev watcher only warns
+  const unknownIllustrations = findUnknownIllustrations(
+    [...docs].map(([file, doc]) => ({ file, meta: doc.meta })),
+    knownIllustrations
+  );
+  if (monorepoRoot && unknownIllustrations.length > 0) {
+    console.warn(formatUnknownIllustrations(unknownIllustrations));
+  }
 
   // Process each document
   for (const [, doc] of docs) {
@@ -74,7 +70,11 @@ export async function generateRouteManifest(
       order: meta.order || 999,
       chunkName: `route-${meta.route.replace(/\//g, "-")}`,
       icon: meta.icon,
-      illustrations: await findIllustration(monorepoRoot, meta.repoPath),
+      illustrations: await findIllustration(
+        monorepoRoot,
+        meta,
+        knownIllustrations
+      ),
       related: meta.related || [],
       tabs: meta.tabs || [],
     };

@@ -3,10 +3,7 @@ import * as icons from "@commercetools/nimbus-icons";
 import { Box, Flex, Heading, Text } from "@commercetools/nimbus";
 import { SearchResultItemProps } from "../app-nav-bar-search";
 import { useManifest } from "@/contexts/manifest-context";
-import {
-  ComponentIllustration,
-  hasIllustration,
-} from "@/components/component-illustration";
+import { Illustration, hasIllustration } from "@/components/illustration";
 
 /**
  * Height of the three text lines (title, description, breadcrumb, measured), so
@@ -46,7 +43,7 @@ export const SearchResultItem = ({ item, ...props }: SearchResultItemProps) => {
         css={{ "--illustration-gradient-start": "transparent" }}
       >
         {illustration ? (
-          <ComponentIllustration name={illustration} />
+          <Illustration name={illustration} />
         ) : (
           <IconComponent />
         )}

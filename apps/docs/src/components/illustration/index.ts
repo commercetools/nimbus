@@ -1,5 +1,6 @@
 export {
-  ComponentIllustration,
+  Illustration,
   hasIllustration,
-} from "./component-illustration";
+  type IllustrationProps,
+} from "./illustration";
 export { IllustrationCollage } from "./illustration-collage";

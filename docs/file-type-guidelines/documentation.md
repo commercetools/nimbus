@@ -134,6 +134,25 @@ related:
 - Keep the list short: only components a reader would pick instead of, or
   together with, this one.
 
+`illustration` names the illustration of a page that is not a component or
+pattern, for example a section page such as Design Tokens. The docs show it
+where they show the illustration of a component: in the page header, on overview
+cards, in search results and on the start page.
+
+```yaml
+---
+illustration: design-tokens
+---
+```
+
+- The value is the file name of an illustration source without
+  `.illustration.ts`. Sources for pages that are not a component or pattern are
+  in `packages/nimbus/src/docs/illustrations/`. The name of a component or
+  pattern illustration, such as `button`, also works.
+- The docs build fails for a name that has no source.
+- Component and pattern pages leave the field out. They show the illustration
+  next to their `.mdx` file (see [Illustration Guidelines](./illustrations.md)).
+
 ### Standard Content Structure
 
 Based on analysis of existing component MDX files, follow this structure:

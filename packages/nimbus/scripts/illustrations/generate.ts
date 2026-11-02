@@ -1,7 +1,9 @@
 /**
- * Renders every `<name>.illustration.ts` to an SVG for the docs app. The SVGs
- * are build output (gitignored), written as `<name>.svg` into one folder. Only
- * files whose content changed are written. Names without a source are listed.
+ * Renders every `<name>.illustration.ts` to an SVG for the docs app: one per
+ * component and pattern, plus the docs page illustrations in
+ * `src/docs/illustrations/`. The SVGs are build output (gitignored), written as
+ * `<name>.svg` into one folder. Only files whose content changed are written.
+ * Components and patterns without a source are listed.
  *
  *   pnpm illustrations:generate [--only button,switch] [--out <dir>] [--watch]
  *
@@ -22,7 +24,7 @@ import {
 } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { discover, SRC_DIR } from "../../src/illustration-kit/discover";
+import { discoverAll, SRC_DIR } from "../../src/illustration-kit/discover";
 import {
   renderIllustration,
   type IllustrationDefinition,
@@ -57,7 +59,7 @@ const write = (name: string, svg: string) => {
 
 const generate = async () => {
   mkdirSync(outDir, { recursive: true });
-  const required = discover();
+  const required = discoverAll();
   const missing: string[] = [];
   let written = 0;
   let unchanged = 0;
@@ -76,7 +78,7 @@ const generate = async () => {
     }
   }
 
-  // Remove SVGs of components that no longer exist
+  // Remove SVGs whose source no longer exists
   if (!only) {
     const known = new Set(required.map((item) => `${item.name}.svg`));
     for (const file of readdirSync(outDir)) {
@@ -98,7 +100,7 @@ await generate();
 if (process.argv.includes("--watch")) {
   console.log("Watching illustration sources...");
   const byFile = new Map(
-    discover().map((item) => [`${item.name}.illustration.ts`, item])
+    discoverAll().map((item) => [`${item.name}.illustration.ts`, item])
   );
   let kitTimer: ReturnType<typeof setTimeout> | undefined;
   watch(SRC_DIR, { recursive: true }, async (_event, file) => {

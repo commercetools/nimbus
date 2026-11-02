@@ -9,10 +9,7 @@ import {
   VisuallyHidden,
 } from "@commercetools/nimbus";
 import { OpenInNew } from "@commercetools/nimbus-icons";
-import {
-  ComponentIllustration,
-  hasIllustration,
-} from "@/components/component-illustration";
+import { Illustration, hasIllustration } from "@/components/illustration";
 import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
 import { getResourceLinks } from "./get-resource-links";
 import type { DocMetadataProps } from "./doc-metadata.types";
@@ -114,14 +111,12 @@ export const DocMetadata = ({
       </Flex>
 
       {showIllustration && (
-        <Box
+        <Illustration
+          name={illustration}
           display={{ base: "none", md: "block" }}
-          aria-hidden="true"
           width="200px"
           height="150px"
-        >
-          <ComponentIllustration name={illustration} />
-        </Box>
+        />
       )}
     </Grid>
   );

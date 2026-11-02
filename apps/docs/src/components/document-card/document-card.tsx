@@ -12,7 +12,7 @@ import * as Icons from "@commercetools/nimbus-icons";
 import {
   IllustrationCollage,
   hasIllustration,
-} from "@/components/component-illustration";
+} from "@/components/illustration";
 import type { RouteManifest } from "@/contexts/manifest-context";
 
 type DocumentCardProps = {

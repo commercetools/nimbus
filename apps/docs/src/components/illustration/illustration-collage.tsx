@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { Box } from "@commercetools/nimbus";
-import { ComponentIllustration } from "./component-illustration";
+import { Illustration } from "./illustration";
 
 /** Tile size (`cqh`, percent of the band height) when the tiles are spread. */
 const SIZE = 66;
@@ -20,22 +20,39 @@ const TRANSITION = TRANSITION_PROPS.map((prop) => `${prop} 320ms ease`).join(
   ", "
 );
 
+type IllustrationCollageProps = {
+  /** Names of the illustrations; the first one is in front. */
+  names: string[];
+  /**
+   * Keep the tiles spread out all the time, without the hover. Used where the
+   * collage is not inside a link, such as the start page hero.
+   */
+  open?: boolean;
+};
+
 /**
  * Shows one illustration, or a stack that spreads out on hover. At rest only
  * the first one is visible, centered and as large as a single illustration.
  * While the surrounding link is hovered or focused, the others appear and all
- * tiles move apart into a small, tilted row.
+ * tiles move apart into a small, tilted row. With `open`, the tiles are always
+ * spread.
  *
  * One variable, `--reveal` (0 or 1), drives every property, so the transition
  * is plain CSS. The parent must be a size container (`container-type: size`),
  * because tiles use `cqh`.
  */
-export const IllustrationCollage: FC<{ names: string[] }> = ({ names }) => {
+export const IllustrationCollage: FC<IllustrationCollageProps> = ({
+  names,
+  open = false,
+}) => {
   if (names.length === 1) {
     return (
-      <Box height="full" aspectRatio="1">
-        <ComponentIllustration name={names[0]} />
-      </Box>
+      <Illustration
+        name={names[0]}
+        width="auto"
+        height="full"
+        aspectRatio="1"
+      />
     );
   }
 
@@ -48,7 +65,7 @@ export const IllustrationCollage: FC<{ names: string[] }> = ({ names }) => {
       width="full"
       height="full"
       css={{
-        "--reveal": 0,
+        "--reveal": open ? 1 : 0,
         "a:hover &, a:focus-visible &": { "--reveal": 1 },
       }}
     >
@@ -80,7 +97,7 @@ export const IllustrationCollage: FC<{ names: string[] }> = ({ names }) => {
               },
             }}
           >
-            <ComponentIllustration name={name} />
+            <Illustration name={name} />
           </Box>
         );
       })}

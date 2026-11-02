@@ -69,6 +69,13 @@ export const mdxDocumentSchema = z.object({
     /** a link to the source of this component in the GitHub repository */
     githubLink: z.string().url().optional(),
     /**
+     * Name of the illustration for this page, for pages that are not a
+     * component or pattern (for example `design-tokens`). The name is the file
+     * name of any `<name>.illustration.ts` source in `packages/nimbus/src`.
+     * Without it, a main doc page uses the source next to its `.mdx` file.
+     */
+    illustration: z.string().min(1).optional(),
+    /**
      * `id`s of documents related to this one. The docs app shows them as cards
      * at the end of the Overview tab. Links are two-way: a document that is
      * listed here also shows this one.
