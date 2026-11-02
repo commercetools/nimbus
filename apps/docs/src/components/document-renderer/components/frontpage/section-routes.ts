@@ -1,12 +1,14 @@
 /**
  * The sections the start page links to, in card order. Each one is the route
- * path of a page in the route manifest.
+ * path of a page in the route manifest. Learn comes first, because it is where
+ * new readers start; the other cards follow the top navigation. Design tokens
+ * and style props are reached through Foundations.
  */
 export const SECTION_PATHS = [
+  "/learn",
+  "/foundations",
   "/components",
   "/patterns",
-  "/home/design-tokens",
-  "/home/style-props",
   "/icons",
   "/hooks",
 ] as const;
