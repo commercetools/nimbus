@@ -14,14 +14,15 @@ export const navigationConfig: NavigationConfig = {
     "components/inputs/select-input": "Select",
     "components/inputs/range-slider": "RangeSlider",
   },
-  // Design tokens and style props are reference material, not part of
-  // getting started, so they get their own section in the top bar.
+  // Learn, design tokens and style props make up one section in the top bar.
+  // Learn comes first, so the tab opens it; tokens and props are the
+  // reference material after it.
   sections: [
     {
-      id: "reference",
-      label: "Reference",
+      id: "foundations",
+      label: "Foundations",
       order: 2,
-      groups: ["home/design-tokens", "home/style-props"],
+      groups: ["learn", "home/design-tokens", "home/style-props"],
     },
   ],
 };

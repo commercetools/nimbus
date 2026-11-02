@@ -1,0 +1,60 @@
+---
+id: Learn-Build your first screen
+title: Build your first screen
+description: Put components together into a small screen.
+icon: Dashboard
+order: 1
+menu:
+  - Learn
+  - Build your first screen
+tags:
+  - learn
+---
+
+A screen in Nimbus is built from components. Some components show content, such
+as `Text` and `Button`. Some arrange other components, such as `Stack`. This
+example puts both kinds together in a card.
+
+```tsx
+import { Card, Stack, Text, Button } from "@commercetools/nimbus";
+
+function ProjectCard() {
+  return (
+    <Card.Root>
+      <Card.Header>Project settings</Card.Header>
+      <Card.Body>
+        <Stack gap="200">
+          <Text>Your project is live.</Text>
+          <Text textStyle="caption">Last changed yesterday</Text>
+        </Stack>
+      </Card.Body>
+      <Card.Footer>
+        <Stack direction="row" gap="200" justify="end">
+          <Button variant="outline">Cancel</Button>
+          <Button variant="solid" colorPalette="primary">
+            Save
+          </Button>
+        </Stack>
+      </Card.Footer>
+    </Card.Root>
+  );
+}
+```
+
+Look at the code in two ways.
+
+**Where things go.** The two `Stack` components decide this. The first stacks
+the texts in a column. The second puts the buttons in a row. The `gap` is the
+space between the items. This is _layout_. See [Arrange content](/learn/arrange-content).
+
+**How things look.** The `variant` and `colorPalette` props on the buttons and
+the `textStyle` on the second text decide this. This is _styling_. See
+[Adjust the look](/learn/adjust-the-look).
+
+Both use the same values: [design tokens](/home/design-tokens). A token such as
+`200` always means the same space, and `primary` always means the same color.
+That is why every screen built with Nimbus looks consistent.
+
+The next pages take this screen apart one topic at a time.
+
+Next: [Arrange content](/learn/arrange-content).
