@@ -8,6 +8,7 @@ import { RadiiScale } from "./token-demos/radii-token-demo";
 import { BordersScale } from "./token-demos/borders-token-demo";
 import { ShadowsScale } from "./token-demos/shadows-token-demo";
 import { BlursScale } from "./token-demos/blurs-token-demo";
+import { CursorsScale } from "./token-demos/cursors-token-demo";
 import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
 import { TypographyScale } from "./token-demos/typography-token-demo";
 import * as icons from "@commercetools/nimbus-icons";
@@ -88,6 +89,7 @@ export const components: MDXComponents = {
   BordersScale,
   ShadowsScale,
   BlursScale,
+  CursorsScale,
   GenericTokenTableDemo,
   EasingTokenDemo,
   DurationTokenDemo,
