@@ -710,7 +710,8 @@ Search ranks the title highest, then the description and the tags.
 ### Concept page
 
 1. A first paragraph in plain Markdown: what the concept is and when you need
-   it. Search reads the first 500 characters.
+   it. The first pass of the MCP search reads only the title, the description,
+   the tags and the first 500 characters of the text.
 2. Sections that explain how it works, each with a live example.
 3. `## Common mistakes`: only mistakes that people make, each with the fix or a
    link to the How do I page.
