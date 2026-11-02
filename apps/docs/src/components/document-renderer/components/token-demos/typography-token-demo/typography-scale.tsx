@@ -1,4 +1,4 @@
-import { Box, Code, system, Table, Text } from "@commercetools/nimbus";
+import { Box, Code, Flex, system, Table, Text } from "@commercetools/nimbus";
 import type { ComponentProps, ReactElement, ReactNode } from "react";
 import { CopyButton } from "../copy-button";
 import { tokensOf } from "../theme-tokens";
@@ -225,7 +225,7 @@ export const TypographyScale = ({
 
   // Rows without a group first, then one body for each group.
   const groups = [...new Set([undefined, ...rows.map((row) => row.group)])];
-  const columnCount = config.headers.length + 3;
+  const columnCount = config.headers.length + 2;
 
   const renderRow = (row: Row) => {
     const deprecated =
@@ -233,7 +233,10 @@ export const TypographyScale = ({
     return (
       <Table.Row key={row.id} bg={deprecated ? "warning.3" : undefined}>
         <Table.Cell>
-          <Code variant="subtle">{row.id}</Code>
+          <Flex align="center" gap="100">
+            <Code variant="subtle">{row.id}</Code>
+            <CopyButton token={row.id} copied={copied} onCopy={copy} />
+          </Flex>
           {deprecated && (
             <Text textStyle="xs" fontWeight="600" color="warning.11" mt="100">
               Deprecated
@@ -244,9 +247,6 @@ export const TypographyScale = ({
           <Table.Cell key={index}>{value}</Table.Cell>
         ))}
         <Table.Cell>{row.sample}</Table.Cell>
-        <Table.Cell textAlign="right">
-          <CopyButton token={row.id} copied={copied} onCopy={copy} />
-        </Table.Cell>
       </Table.Row>
     );
   };
@@ -256,12 +256,11 @@ export const TypographyScale = ({
       <Table.ScrollArea maxWidth="full">
         <Table.Root size="sm" tableLayout="fixed" minWidth={config.minWidth}>
           <Table.ColumnGroup>
-            <Table.Column width="14ch" />
+            <Table.Column width="calc(14ch + 2rem)" />
             {config.widths.map((width, index) => (
               <Table.Column key={index} width={width} />
             ))}
             <Table.Column />
-            <Table.Column width="1200" />
           </Table.ColumnGroup>
           <Table.Header>
             <Table.Row>
@@ -270,9 +269,6 @@ export const TypographyScale = ({
                 <Table.ColumnHeader key={header}>{header}</Table.ColumnHeader>
               ))}
               <Table.ColumnHeader>Sample</Table.ColumnHeader>
-              <Table.ColumnHeader>
-                <Box srOnly>Copy</Box>
-              </Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
           {groups.map((group) => (

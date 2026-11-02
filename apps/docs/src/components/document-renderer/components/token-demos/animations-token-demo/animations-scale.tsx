@@ -198,7 +198,8 @@ const Keyframes = () => (
           {group.label}
         </Text>
         <TokenTable
-          tokenWidth="6000"
+          tokenWidth="240px"
+          tokenHeader="Keyframes"
           // Wide enough on a phone that the changes do not wrap on every word.
           minWidth={group.id === "component" ? "2xl" : "xl"}
           columns={

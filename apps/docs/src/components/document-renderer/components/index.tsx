@@ -44,6 +44,9 @@ import { Frontpage } from "./frontpage";
 import { FoundationSections } from "./foundation-sections";
 import { PropsTable } from "./props-table";
 
+/** The narrowest width of a Markdown table cell, below the `md` breakpoint. */
+const MD_CELL_MIN_WIDTH = { base: "8rem", md: "0" };
+
 export const components: MDXComponents = {
   h1: H1,
   h2: H2,
@@ -65,15 +68,24 @@ export const components: MDXComponents = {
   img: Image,
   table: (props) => {
     return (
-      <Table.ScrollArea border="solid-25" borderColor="neutral.6" maxW="100%">
+      <Table.ScrollArea
+        border="solid-25"
+        borderColor="neutral.6"
+        maxW="100%"
+        mb="400"
+      >
         <Table.Root variant="outline" {...props} />
       </Table.ScrollArea>
     );
   },
   thead: Table.Header,
-  th: Table.ColumnHeader,
+  // On a narrow screen, a table with three or more columns scrolls sideways
+  // instead of putting one or two words on each line.
+  th: (props) => <Table.ColumnHeader minW={MD_CELL_MIN_WIDTH} {...props} />,
   tbody: Table.Body,
-  td: (props) => <Table.Cell whiteSpace="normal" {...props} />,
+  td: (props) => (
+    <Table.Cell whiteSpace="normal" minW={MD_CELL_MIN_WIDTH} {...props} />
+  ),
   tr: Table.Row,
   /** layout components */
   Box: (props) => <Box {...props} />,

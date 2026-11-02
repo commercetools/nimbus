@@ -1,7 +1,10 @@
-import { Box, Code, Table } from "@commercetools/nimbus";
+import { Code, Flex, Table } from "@commercetools/nimbus";
 import type { ReactNode } from "react";
 import { CopyButton } from "./copy-button";
 import { useCopy } from "./use-copy";
+
+/** Room for the copy button next to the token name. */
+const COPY_BUTTON_SPACE = "2rem";
 
 export interface TokenTableColumn {
   header: string;
@@ -20,10 +23,12 @@ export interface TokenTableRow {
 }
 
 type TokenTableProps = {
-  /** The columns between the token name and the copy button. */
+  /** The columns after the token name. */
   columns: TokenTableColumn[];
   rows: TokenTableRow[];
-  /** Width of the token column. */
+  /** Header of the first column. */
+  tokenHeader?: string;
+  /** Width of the token name, such as `14ch`, without the copy button. */
   tokenWidth?: string;
   /**
    * The narrowest width of the table, as a size token. On a narrower screen
@@ -33,12 +38,14 @@ type TokenTableProps = {
 };
 
 /**
- * A table of tokens: the token name, the columns of the caller, and a button
- * that copies the token name.
+ * A table of tokens: the token name with a button that copies it, and the
+ * columns of the caller. The copy button sits next to the name, so that it
+ * stays visible when the table scrolls sideways on a narrow screen.
  */
 export const TokenTable = ({
   columns,
   rows,
+  tokenHeader = "Token",
   tokenWidth = "14ch",
   minWidth = "lg",
 }: TokenTableProps) => {
@@ -48,23 +55,19 @@ export const TokenTable = ({
     <Table.ScrollArea maxWidth="full">
       <Table.Root size="sm" tableLayout="fixed" minWidth={minWidth}>
         <Table.ColumnGroup>
-          <Table.Column width={tokenWidth} />
+          <Table.Column width={`calc(${tokenWidth} + ${COPY_BUTTON_SPACE})`} />
           {columns.map((column) => (
             <Table.Column key={column.header} width={column.width} />
           ))}
-          <Table.Column width="1200" />
         </Table.ColumnGroup>
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeader>Token</Table.ColumnHeader>
+            <Table.ColumnHeader>{tokenHeader}</Table.ColumnHeader>
             {columns.map((column) => (
               <Table.ColumnHeader key={column.header} textAlign={column.align}>
                 {column.header}
               </Table.ColumnHeader>
             ))}
-            <Table.ColumnHeader>
-              <Box srOnly>Copy</Box>
-            </Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -74,16 +77,16 @@ export const TokenTable = ({
               bg={row.highlight ? "primary.3" : undefined}
             >
               <Table.Cell>
-                <Code variant="subtle">{row.id}</Code>
+                <Flex align="center" gap="100">
+                  <Code variant="subtle">{row.id}</Code>
+                  <CopyButton token={row.id} copied={copied} onCopy={copy} />
+                </Flex>
               </Table.Cell>
               {row.cells.map((cell, index) => (
                 <Table.Cell key={index} textAlign={columns[index]?.align}>
                   {cell}
                 </Table.Cell>
               ))}
-              <Table.Cell textAlign="right">
-                <CopyButton token={row.id} copied={copied} onCopy={copy} />
-              </Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
