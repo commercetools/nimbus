@@ -61,11 +61,12 @@ const CategoryOverviewContent: FC<CategoryOverviewProps> = ({
       return false;
     }
 
-    // On a page below the top level, show the documents that sit under the
-    // whole menu path of this page, not only under its second level.
+    // On a page below the top level, show the direct children of this page:
+    // one menu level deeper, under its whole menu path. Deeper pages have
+    // their own overview, such as Design Tokens > Other.
     if (subcategory && activeDoc.meta.menu.length > 1) {
       return (
-        route.menu.length > 1 &&
+        route.menu.length === activeDoc.meta.menu.length + 1 &&
         activeDoc.meta.menu.every((item, i) => route.menu[i] === item)
       );
     }
