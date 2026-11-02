@@ -291,7 +291,9 @@ export const ColorPalettes = () => {
             alignItems="start"
           >
             <Box>
-              <Text fontWeight="600">{group.label}</Text>
+              <Text textStyle="xl" fontWeight="600">
+                {group.label}
+              </Text>
               <Text textStyle="sm" color="neutral.11">
                 {group.description}
               </Text>
