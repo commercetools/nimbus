@@ -294,8 +294,13 @@ render live, interactive React components in the documentation site.
 
 **Key points**:
 
-- All Nimbus components (Button, Stack, Icons, etc.) are available globally - no
-  imports needed
+- All Nimbus components and `Icons` are available globally, so import lines are
+  optional
+- Import lines work as in an app, also over several lines and with `as` aliases.
+  The editor resolves imports from `@commercetools/nimbus`,
+  `@commercetools/nimbus-icons`, `react`, `@internationalized/date`,
+  `react-stately` and `use-debounce`. An import from any other module shows an
+  error, so code that needs a router is a plain `tsx` block
 - Each jsx live block should define an `App` component
 - The code executes in the browser and renders as a live component
 - Use regular markdown code blocks (with language tags like `jsx` or `tsx`) only
