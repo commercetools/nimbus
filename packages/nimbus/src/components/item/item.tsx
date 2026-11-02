@@ -38,6 +38,8 @@ import {
  *   <Item.Root>…</Item.Root>
  * </ItemGroup>
  * ```
+ *
+ * @beta This component is in beta and may change in future minor versions.
  */
 export const Item = {
   /**

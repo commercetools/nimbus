@@ -1041,6 +1041,17 @@ export const NestedDialogs: Story = {
         { timeout: 3000 }
       );
 
+      // Focus must be restored into the remaining dialog before the next
+      // Escape, otherwise the key event lands on <body> and is ignored
+      await waitFor(
+        () => {
+          expect(canvas.getByRole("dialog")).toContainElement(
+            document.activeElement as HTMLElement
+          );
+        },
+        { timeout: 3000 }
+      );
+
       // Another Escape should close the remaining dialog
       await userEvent.keyboard("{Escape}");
 

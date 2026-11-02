@@ -1,7 +1,8 @@
 # nimbus-item Specification
 
 ## Purpose
-TBD - created by archiving change add-item-component. Update Purpose after archive.
+
+Shows one horizontal row of content, with optional media, a title and description, and actions.
 
 ## Requirements
 

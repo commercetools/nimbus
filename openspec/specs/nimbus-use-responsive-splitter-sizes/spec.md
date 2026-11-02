@@ -1,7 +1,8 @@
 # nimbus-use-responsive-splitter-sizes Specification
 
 ## Purpose
-TBD - created by archiving change add-responsive-splitter-sizes-hook. Update Purpose after archive.
+
+Lets consumers set the size of a `Splitter` side pane in pixels, design tokens, or percentages per container width, and remembers the size the user chose.
 
 ## Requirements
 
@@ -11,13 +12,9 @@ The hook SHALL accept a `size` config for the aside expressed as a single value
 or a per-threshold map, plus an optional `orientation`, and SHALL return a
 `rootProps` object containing `size`, `minSize`, `maxSize`,
 `collapsedSize`, `onSizeChangeEnd`, `onCollapsedChange`, `ref`, and
-`orientation`, intended to be spread onto `Splitter.Root`. The forwarded
-`onCollapsedChange` lets the hook observe collapse so it can suppress
-persistence while collapsed. A size value SHALL be one of: a `number`
-(interpreted as **pixels**), a size **token** string (resolving to pixels), or a
-`` `${number}%` `` string (a percentage passed through untranslated). The
-returned `rootProps.size` SHALL always be a valid controlled value: a single
-percentage in `[0, 100]`.
+`orientation`, intended to be spread onto `Splitter.Root`. The returned
+`rootProps.size` SHALL always be a valid controlled value: a single percentage
+in `[0, 100]`.
 
 #### Scenario: Config resolves to a controlled size
 
@@ -27,17 +24,11 @@ percentage in `[0, 100]`.
   and spreading `rootProps` onto `Splitter.Root` drives the controlled
   (settle-only) size channel without remounting it
 
-#### Scenario: A bare number is always pixels
+#### Scenario: Forwarded `onCollapsedChange` lets the hook observe collapse
 
-- **WHEN** a size value is the bare `number` `320`
-- **THEN** the hook treats it as `320px` and converts it to a percentage of the
-  measured container — never as `320%`
-
-#### Scenario: A percent string passes through untranslated
-
-- **WHEN** a size value is the string `"30%"`
-- **THEN** the hook resolves the aside to `30` percent directly, without
-  measuring the container
+- **WHEN** the aside collapses or expands through the spread `rootProps`
+- **THEN** the forwarded `onCollapsedChange` informs the hook, so it can
+  suppress persistence while the aside is collapsed
 
 ### Requirement: Convert pixel and token values to percentages against the container
 
@@ -72,14 +63,12 @@ Pixel conversion SHALL always measure the splitter's own container. The
 
 ### Requirement: Resolve the active band against the container by min-width threshold
 
-The hook SHALL always resolve the active band against the splitter's own
-container (there is no resolution-axis option). It SHALL observe the referenced
-`Splitter.Root` element with a `ResizeObserver` and select the band whose
-**min-width threshold** the element's measured size satisfies. Thresholds SHALL
-be expressed as pixel numbers or size tokens (never percentages). The active
-band SHALL be the largest threshold less than or equal to the measured size; the
-smallest configured entry SHALL also apply below its threshold. The hook SHALL
-re-resolve when the active band changes.
+The hook SHALL resolve the active band against the splitter's own container,
+which it observes on the referenced `Splitter.Root` element with a
+`ResizeObserver`. The active band SHALL be the largest **min-width threshold**
+less than or equal to the measured size; the smallest configured entry SHALL
+also apply below its threshold. The hook SHALL re-resolve when the active band
+changes.
 
 #### Scenario: Container width selects the band
 
@@ -105,6 +94,17 @@ re-resolve when the active band changes.
   sub-pixel deltas
 - **THEN** the hook applies hysteresis so the active band does not flap between
   values frame to frame
+
+#### Scenario: Only the container is used for resolution
+
+- **WHEN** a consumer configures the hook
+- **THEN** there is no option to resolve bands against another axis; the
+  splitter's own container is always used
+
+#### Scenario: Thresholds are pixels or tokens
+
+- **WHEN** a threshold map is configured
+- **THEN** each threshold is a pixel number or a size token, never a percentage
 
 ### Requirement: Apply a pixel facade over the aside constraints and clamp the size
 
@@ -135,9 +135,7 @@ through an injectable `storage` (a `localStorage`-like get/set interface)
 defaulting to `localStorage`, under a consumer-provided `persistKey`. The stored
 payload SHALL be versioned and keyed by the resolved pixel threshold. Pixel/token
 bands SHALL persist a pixel value (re-derived from the settled percentage and the
-measured container); percent bands SHALL persist a percentage. Resolution SHALL
-follow `stored[activeBand] ?? configDefault[activeBand]`. A restored value SHALL
-be clamped into `[minSize, maxSize]` like any other resolved value.
+measured container); percent bands SHALL persist a percentage.
 
 #### Scenario: A settled drag is persisted in pixels under the active band
 
@@ -166,6 +164,11 @@ be clamped into `[minSize, maxSize]` like any other resolved value.
   corrupt/old data
 - **THEN** the hook does not throw and resolves from the configured defaults,
   using the payload version to migrate where possible
+
+#### Scenario: A percent band persists a percentage
+
+- **WHEN** a resize settles in a percent band
+- **THEN** the hook writes the settled percentage under that band
 
 ### Requirement: Never persist the collapsed size
 
@@ -234,3 +237,38 @@ positive measurement becomes available.
 - **WHEN** the container measures `0` or a non-finite size (e.g. `display:none`)
 - **THEN** the hook does not divide by zero, does not emit a non-finite size, and
   re-resolves once a positive measurement is observed
+
+### Requirement: Accept pixel, token, and percent size values
+
+A size value SHALL be one of: a `number` (interpreted as **pixels**), a size
+**token** string (resolving to pixels), or a `` `${number}%` `` string (a
+percentage passed through untranslated).
+
+#### Scenario: A bare number is always pixels
+
+- **WHEN** a size value is the bare `number` `320`
+- **THEN** the hook treats it as `320px` and converts it to a percentage of the
+  measured container — never as `320%`
+
+#### Scenario: A percent string passes through untranslated
+
+- **WHEN** a size value is the string `"30%"`
+- **THEN** the hook resolves the aside to `30` percent directly, without
+  measuring the container
+
+#### Scenario: A size token resolves to pixels
+
+- **WHEN** a size value is a size token string
+- **THEN** the hook resolves the token to its pixel value and converts it to a
+  percentage of the measured container
+
+### Requirement: Restore the persisted size
+
+Resolution SHALL follow `stored[activeBand] ?? configDefault[activeBand]`. A
+restored value SHALL be clamped into `[minSize, maxSize]` like any other
+resolved value.
+
+#### Scenario: A restored value is clamped
+
+- **WHEN** a stored value is outside the current `[minSize, maxSize]`
+- **THEN** the hook clamps it into that range before using it

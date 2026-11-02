@@ -1,7 +1,9 @@
 # nimbus-page-content Specification
 
 ## Purpose
-TBD - created by archiving change add-page-content-component. Update Purpose after archive.
+
+Sets the width of a page's content and arranges the content in one or more columns.
+
 ## Requirements
 ### Requirement: Namespace Structure
 

@@ -11,6 +11,11 @@ class of bugs that workspace symlinks hide: CJS/ESM interop breakage, missing
 `exports` subpaths, types that don't match the runtime shape, and Node ESM
 resolution errors.
 
+attw and publint check types and `package.json`, not the bundled code. For
+problems inside the bundled code, such as imports a consumer bundler cannot
+resolve, see
+[Bundler Compatibility Verification](./bundler-compat-verification.md).
+
 ## Quick Reference
 
 ```bash
@@ -42,24 +47,21 @@ known issues to triage separately.
 
 ## What Gets Tracked
 
-The check mirrors the `fixed` group in `.changeset/config.json` — every package
-the changeset bot ships in a release. Four of the five are linted:
+The list is derived at runtime from `pnpm m ls`: every workspace that is not
+marked `"private": true`. That is the set the changeset bot ships in a release
+(the `fixed` group in `.changeset/config.json`). Today these packages are
+tracked:
 
 - **`@commercetools/nimbus`** — Core component library.
 - **`@commercetools/nimbus-icons`** — SVG icons as React components.
 - **`@commercetools/nimbus-design-token-ts-plugin`** — TypeScript language
   service plugin.
 - **`@commercetools/nimbus-mcp`** — MCP server.
+- **`@commercetools/nimbus-tokens`** — Design tokens (CSS, TypeScript and Chakra
+  theme tokens).
 
-**Excluded (temporarily):** `@commercetools/nimbus-tokens` is currently excluded
-because the published tarball has pre-existing shape issues (preconstruct emits
-`.cjs.js` under a `"type": "module"` package, breaking CJS resolution at
-runtime; the `exports` map has no `types` condition). Tracked in
-[#1509](https://github.com/commercetools/nimbus/issues/1509) — once that lands,
-the package gets re-added to `PACKAGES`.
-
-To add or remove a tracked package, edit the `PACKAGES` array at the top of
-`scripts/check-package-shape.mjs`.
+To add or remove a tracked package, flip `"private"` in the workspace's
+`package.json` — the script derives the list at runtime from `pnpm m ls`.
 
 ## The Tools
 

@@ -183,16 +183,28 @@ export const messages = {
       "aria-label for the row density section in the data table manager layout",
     defaultMessage: "Row density section",
   },
+  spacious: {
+    id: "Nimbus.DataTable.spacious",
+    description:
+      "option for the spacious row density in the data table manager layout",
+    defaultMessage: "Spacious",
+  },
   comfortable: {
     id: "Nimbus.DataTable.comfortable",
     description:
-      "title for the comfortable togglebutton in the data table manager layout",
+      "option for the comfortable row density in the data table manager layout",
     defaultMessage: "Comfortable",
+  },
+  standard: {
+    id: "Nimbus.DataTable.standard",
+    description:
+      "option for the standard row density in the data table manager layout",
+    defaultMessage: "Standard",
   },
   compact: {
     id: "Nimbus.DataTable.compact",
     description:
-      "title for the compact togglebutton in the data table manager layout",
+      "option for the compact row density in the data table manager layout",
     defaultMessage: "Compact",
   },
   searchHiddenColumns: {

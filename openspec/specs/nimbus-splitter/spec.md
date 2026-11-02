@@ -1,7 +1,8 @@
 # nimbus-splitter Specification
 
 ## Purpose
-TBD - created by archiving change add-splitter-component. Update Purpose after archive.
+
+Lets users change the size of two neighboring panes by moving the boundary between them.
 
 ## Requirements
 
@@ -130,12 +131,6 @@ and `onCollapsedChange(collapsed)` (notification). Enter on the focused handle
 toggles collapse. Double-click is reserved for restoring the boundary to its
 initial position, not for collapsing.
 
-While the aside is collapsed, resizing the boundary (drag and the arrow / Home /
-End keys) SHALL be disabled. A collapsed aside sits at its `collapsedSize`, below
-its `minSize`, so a resize could only snap straight to `minSize`. It is instead
-reopened via Enter (toggle), double-click (restore defaults), or the controlled
-`collapsed` prop.
-
 #### Scenario: Enter on focused handle toggles collapse
 
 - **GIVEN** aside size `30` with `collapsible: true`
@@ -168,13 +163,6 @@ reopened via Enter (toggle), double-click (restore defaults), or the controlled
 - **WHEN** any operation (Enter toggle, double-click restore, controlled prop)
   increases the aside's size above `collapsedSize`
 - **THEN** SHALL fire `onCollapsedChange(false)` exactly once for that transition
-
-#### Scenario: Resizing is disabled while the aside is collapsed
-
-- **GIVEN** a collapsed aside (size === `collapsedSize`)
-- **WHEN** the user drags the handle or presses an arrow / Home / End key
-- **THEN** SHALL NOT change the size
-- **AND** SHALL keep the aside collapsed (no `onCollapsedChange`)
 
 ### Requirement: Double-click restores defaults
 
@@ -493,3 +481,25 @@ commit (a layout effect, not a passive one).
 - **THEN** SHALL apply the new size within the commit that renders it, before
   paint
 - **AND** SHALL NOT leave a painted frame showing the previous size
+
+### Requirement: No resizing while collapsed
+
+While the aside is collapsed, resizing the boundary (drag and the arrow / Home /
+End keys) SHALL be disabled. A collapsed aside sits at its `collapsedSize`, below
+its `minSize`, so a resize could only snap straight to `minSize`. It is instead
+reopened via Enter (toggle), double-click (restore defaults), or the controlled
+`collapsed` prop.
+
+#### Scenario: Resizing is disabled while the aside is collapsed
+
+- **GIVEN** a collapsed aside (size === `collapsedSize`)
+- **WHEN** the user drags the handle or presses an arrow / Home / End key
+- **THEN** SHALL NOT change the size
+- **AND** SHALL keep the aside collapsed (no `onCollapsedChange`)
+
+#### Scenario: Ways to reopen a collapsed aside
+
+- **GIVEN** a collapsed aside (size === `collapsedSize`) with `collapsible: true`
+- **WHEN** the user presses Enter on the focused handle, double-clicks the
+  handle, or the consumer sets the controlled `collapsed` prop to `false`
+- **THEN** SHALL reopen the aside above its `collapsedSize`

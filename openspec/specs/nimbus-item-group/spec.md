@@ -1,7 +1,8 @@
 # nimbus-item-group Specification
 
 ## Purpose
-TBD - created by archiving change add-item-component. Update Purpose after archive.
+
+Groups related item rows into one visual block, with optional separators between the rows.
 
 ## Requirements
 

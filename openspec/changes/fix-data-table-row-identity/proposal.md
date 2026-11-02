@@ -44,9 +44,9 @@ drop on `DataTable`.
 - A row's identity comes from its data. To identify rows by another property,
   consumers set `id` in the row data. A different `id` set on `DataTable.Row`
   from a custom `DataTable.Body` is unsupported and warns in development.
-- Duplicate or empty row ids warn in development, naming the offending id,
-  instead of failing later as React Aria's opaque "Cell count must match column
-  count".
+- A duplicate row id throws in development, naming the offending id and the
+  fix, before React Aria's own duplicate-key error. An empty or missing row id
+  warns in development, naming the row. Neither check runs in production.
 - `createArrayHandlers` keeps its `item.key ?? item.id` default, but a key
   mismatch now logs a development warning that names the cause and the fix.
 - Released as **minor**: `docs/changeset-conventions.md:78` excludes "new

@@ -1,7 +1,8 @@
 # nimbus-slider Specification
 
 ## Purpose
-TBD - created by archiving change add-slider-component. Update Purpose after archive.
+
+Lets users choose a number, or a range between two numbers, by moving a handle along a track.
 
 ## Requirements
 

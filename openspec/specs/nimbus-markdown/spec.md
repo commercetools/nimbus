@@ -1,7 +1,8 @@
 # nimbus-markdown Specification
 
 ## Purpose
-TBD - created by archiving change add-markdown-component. Update Purpose after archive.
+
+Turns a markdown string, including text that is still being streamed, into styled and accessible content.
 
 ## Requirements
 

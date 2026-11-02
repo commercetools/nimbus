@@ -1,7 +1,9 @@
 # nimbus-default-page Specification
 
 ## Purpose
-TBD - created by archiving change add-default-page-component. Update Purpose after archive.
+
+Gives an application page a standard layout with a header, a content area, and an optional footer.
+
 ## Requirements
 ### Requirement: Namespace Structure
 

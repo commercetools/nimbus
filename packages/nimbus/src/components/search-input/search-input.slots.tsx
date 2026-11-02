@@ -4,6 +4,7 @@ import type {
   SearchInputRootSlotProps,
   SearchInputLeadingElementSlotProps,
   SearchInputTrailingElementSlotProps,
+  SearchInputInputWrapperSlotProps,
   SearchInputInputSlotProps,
 } from "./search-input.types";
 
@@ -30,6 +31,14 @@ export const SearchInputTrailingElementSlot: SlotComponent<
 > = withContext<HTMLDivElement, SearchInputTrailingElementSlotProps>(
   "div",
   "trailingElement"
+);
+
+export const SearchInputInputWrapperSlot: SlotComponent<
+  HTMLDivElement,
+  SearchInputInputWrapperSlotProps
+> = withContext<HTMLDivElement, SearchInputInputWrapperSlotProps>(
+  "div",
+  "inputWrapper"
 );
 
 export const SearchInputInputSlot: SlotComponent<
