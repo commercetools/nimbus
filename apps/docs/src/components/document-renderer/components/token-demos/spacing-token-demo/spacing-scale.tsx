@@ -9,14 +9,9 @@ import {
 } from "@commercetools/nimbus";
 import { Check, ContentCopy } from "@commercetools/nimbus-icons";
 import { useAtomValue } from "jotai";
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type KeyboardEvent,
-} from "react";
+import { useRef, useState, type KeyboardEvent } from "react";
 import { themeSpacingTokensAtom } from "@/atoms/spacing-tokens.ts";
+import { useCopy } from "../use-copy";
 
 const DEFAULT_TOKEN = "400";
 
@@ -101,22 +96,7 @@ const Preview = ({ token, px }: PreviewProps) => (
 export const SpacingScale = () => {
   const tokens = useAtomValue(themeSpacingTokensAtom);
   const [selected, setSelected] = useState(DEFAULT_TOKEN);
-  const [copied, setCopied] = useState<string | null>(null);
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  useEffect(() => () => clearTimeout(timer.current), []);
-
-  const copy = useCallback(async (token: string) => {
-    try {
-      await navigator.clipboard.writeText(token);
-    } catch {
-      return;
-    }
-    setCopied(token);
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setCopied(null), 1500);
-  }, []);
-
+  const { copied, copy } = useCopy();
   const chips = useRef<(HTMLElement | null)[]>([]);
 
   const current = tokens.find((item) => item.id === selected) ?? tokens[0];

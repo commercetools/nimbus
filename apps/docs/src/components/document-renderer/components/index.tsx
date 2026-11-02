@@ -3,7 +3,7 @@ import { ColorPalettes } from "@/components/document-renderer/components/token-d
 import { ColorSteps } from "@/components/document-renderer/components/token-demos/color-steps.tsx";
 import { IconSearch } from "./token-demos/icon-search";
 import { SpacingScale } from "./token-demos/spacing-token-demo";
-import { SizesTokenDemo } from "./token-demos/sizes-token-demo";
+import { SizesScale } from "./token-demos/sizes-token-demo";
 import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
 import { TextStylesDemo } from "./token-demos/text-styles-demo";
 import * as icons from "@commercetools/nimbus-icons";
@@ -78,7 +78,7 @@ export const components: MDXComponents = {
   ColorSteps: ColorSteps,
   IconSearch,
   SpacingScale,
-  SizesTokenDemo,
+  SizesScale,
   GenericTokenTableDemo,
   EasingTokenDemo,
   DurationTokenDemo,
