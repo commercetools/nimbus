@@ -2,7 +2,9 @@
 id: ZIndex
 title: Z-Indices
 illustration: token-z-indices
-description: The list of available z-index tokens
+description:
+  Z-index tokens put the layers of an app in one fixed order, from hide (-1) to
+  max, so that the right element appears in front.
 order: 999
 menu:
   - Home
@@ -11,11 +13,81 @@ menu:
   - Z-Indices
 tags:
   - z-index
+  - zIndex
   - layer
   - stacking
+  - stacking order
   - context
 icon: Layers
 ---
-The list of available z-index tokens.
+Z-index tokens set the stacking order: which element appears in front when
+elements overlap. The tokens put the layers of an app in one fixed order, from
+`hide` (-1) to `max`. Use a token instead of a number, so that your element fits
+into the same order as the Nimbus components.
 
-<GenericTokenTableDemo category="zIndex" />
+A z-index only works on an element that has a `position` other than `static`, or
+on a flex or grid item
+([MDN: z-index](https://developer.mozilla.org/en-US/docs/Web/CSS/z-index)).
+
+> [!WARNING]\
+> The token for popovers is named `popver`, without the second "o".
+> `zIndex="popover"` is not a token: Nimbus passes it to CSS as it is, and the
+> browser ignores it.
+
+## Stacking order
+
+Each card below sets `zIndex` to its token, so a card with a higher token covers
+the cards with lower tokens. Use the copy button to copy a token name.
+
+<ZIndexScale />
+
+## Choose a z-index
+
+| Your element                                                 | Use      | See                                                                          |
+| ------------------------------------------------------------ | -------- | ---------------------------------------------------------------------------- |
+| A header or a toolbar that stays at the top while you scroll | `sticky` | [Place above other elements](/learn/how-do-i/place-above-other-elements)     |
+| A floating action button                                     | `fab`    | [FloatingActionButton](/patterns/buttons/floating-action-button)             |
+| A dialog or a drawer                                         | `modal`  | [Dialog](/components/feedback/dialog), [Drawer](/components/feedback/drawer) |
+
+The other tokens are named after the layer that they are for, such as `banner`,
+`overlay`, `toast` and `tooltip`. Menus, popovers, toasts and tooltips of Nimbus
+are placed above the page by Nimbus itself, so you do not set a z-index for
+them. See [Provider and layers](/learn/concepts/provider-and-layers).
+
+## Use z-indices in code
+
+Z-index tokens work on the `zIndex` style prop. Give the element a position too.
+
+```tsx
+// A header that stays above the content while you scroll
+<Box position="sticky" top="0" zIndex="sticky" bg="bg" />
+
+// In a recipe
+base: {
+  position: "relative",
+  zIndex: "docked",
+},
+```
+
+For a full example, see
+[Place above other elements](/learn/how-do-i/place-above-other-elements). For
+the full list of props, see [Style props: Layout](/home/style-props/layout).
+
+### CSS variables
+
+Every token is also a CSS variable, such as `var(--nimbus-z-index-modal)`, for
+styles that you write yourself.
+
+### Editor support
+
+With the design token TypeScript plugin, autocomplete shows the value next to
+the token. See
+[Installation](/home/getting-started/installation#design-token-autocomplete-optional)
+for how to set it up.
+
+## Values that Nimbus components use
+
+Dialog and Drawer use `modal`, and FloatingActionButton uses `fab`. Inside a
+component, the recipes use small numbers such as `1` and `2` to order the parts
+of that one component, for example in SplitButton, MoneyInput and
+ScopedSearchInput.
