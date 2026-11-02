@@ -11,6 +11,7 @@ import { BlursScale } from "./token-demos/blurs-token-demo";
 import { CursorsScale } from "./token-demos/cursors-token-demo";
 import { ZIndexScale } from "./token-demos/z-index-token-demo";
 import { AspectRatiosScale } from "./token-demos/aspect-ratios-token-demo";
+import { BreakpointsScale } from "./token-demos/breakpoints-token-demo";
 import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
 import { TypographyScale } from "./token-demos/typography-token-demo";
 import * as icons from "@commercetools/nimbus-icons";
@@ -94,6 +95,7 @@ export const components: MDXComponents = {
   CursorsScale,
   ZIndexScale,
   AspectRatiosScale,
+  BreakpointsScale,
   GenericTokenTableDemo,
   EasingTokenDemo,
   DurationTokenDemo,
