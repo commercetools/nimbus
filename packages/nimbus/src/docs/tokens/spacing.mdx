@@ -20,6 +20,11 @@ Spacing tokens set the space inside and between elements. The scale grows from
 25, so `100` is 4px and `400` is 16px. Use the tokens instead of raw pixel
 values, so that spacing stays consistent across your layouts.
 
+> [!IMPORTANT]\
+> Looking for `width` or `height`? Those use the [sizes](/home/design-tokens/sizes)
+> tokens, a separate scale with the same numbers. Spacing tokens are for
+> `padding`, `margin`, `gap` and position.
+
 ## Spacing scale
 
 Select a token to see it at its real size, as padding and as a gap. Use the copy
@@ -30,15 +35,6 @@ button to copy the token name.
 To calculate the pixel value of a token, divide the token by 25: `1000 / 25` is
 40px. The rem column shows the pixel value divided by 16, the default root font
 size.
-
-> [!IMPORTANT]\
-> Spacing and [sizes](/home/design-tokens/sizes) are two different scales, even
-> though they use the same numbers. Spacing tokens set the space inside and
-> between elements (`padding`, `margin`, `gap` and position). Sizes tokens set
-> the dimensions of an element (`width`, `height`). They also include larger
-> values, names like `md`, and fractions like `1/2`, and they have no negative
-> values. For example, `p="400"` takes a spacing token and `width="400"` takes a
-> sizes token, and both are 16px.
 
 ## Use spacing in code
 

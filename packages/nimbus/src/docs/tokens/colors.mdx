@@ -87,15 +87,29 @@ violet in dark mode. Components and your own styles follow the color mode, so
 you do not need a separate design for dark mode.
 
 Use the **Light** and **Dark** buttons in the palette browser to compare both
-values. `blackAlpha` and `whiteAlpha` are the exception: they keep the same
-value in both modes.
+values. Only the [black and white palettes](#black-and-white-palettes) keep the
+same value in both modes.
 
 ### Swap palettes
 
-All palettes use the same steps for the same jobs. So you can replace one
-palette with another, for example `primary` with `critical`, and the design
-keeps its contrast levels and its visual hierarchy. This is why a component can
-take any palette with the `colorPalette` prop.
+All palettes work the same way, the brand palettes included: each step has the
+same job in every palette. So you can replace one palette with another, for
+example `primary` with `critical`, and the design keeps its contrast levels and
+its visual hierarchy. This is why a component can take any palette with the
+`colorPalette` prop. The only exceptions are the
+[black and white palettes](#black-and-white-palettes).
+
+### Black and white palettes
+
+`blackAlpha` and `whiteAlpha` work differently from all other palettes. Their
+steps are black or white with more opacity at each step, from 5% at step 1 to
+95% at step 12. These two palettes:
+
+- do not change with the color mode: black is always black,
+- have no `contrast` step,
+- cannot be swapped with other palettes.
+
+For a gray that follows the color mode, use `neutral`.
 
 ## Use colors in code
 
