@@ -13,6 +13,9 @@ import { useCopy } from "../use-copy";
 /** Root font size that rem values are shown for. */
 const ROOT_FONT_SIZE = 16;
 
+/** Text below this size, in px, is marked as not recommended. */
+const MIN_FONT_SIZE = 12;
+
 const SAMPLE = "Sphinx of black quartz, judge my vow";
 
 type TypographyKind =
@@ -28,6 +31,8 @@ interface Row {
   /** The cells between the token name and the sample. */
   values: ReactNode[];
   sample: ReactNode;
+  /** The size in px, to mark sizes that are too small. */
+  fontSizePx?: number;
 }
 
 interface Config {
@@ -68,6 +73,7 @@ const CONFIGS: Record<TypographyKind, Config> = {
       >;
       return Object.entries(styles).map(([id, style]) => ({
         id,
+        fontSizePx: parseFloat(style.value.fontSize),
         values: [style.value.fontSize, style.value.lineHeight],
         // Large styles wrap, so that the sample is not cut off.
         sample: (
@@ -102,6 +108,7 @@ const CONFIGS: Record<TypographyKind, Config> = {
     rows: () =>
       tokensOf("fontSizes").map(({ id, value }) => ({
         id,
+        fontSizePx: parseFloat(value),
         values: [value, formatRem(parseFloat(value))],
         sample: (
           <Sample fontSize={id} lineHeight="1.2">
@@ -198,27 +205,41 @@ export const TypographyScale = ({
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {rows.map((row) => (
-            <Table.Row key={row.id}>
-              <Table.Cell>
-                <Code variant="subtle">{row.id}</Code>
-              </Table.Cell>
-              {row.values.map((value, index) => (
-                <Table.Cell key={index}>{value}</Table.Cell>
-              ))}
-              <Table.Cell>{row.sample}</Table.Cell>
-              <Table.Cell textAlign="right">
-                <IconButton
-                  size="2xs"
-                  variant="ghost"
-                  aria-label={`Copy token ${row.id}`}
-                  onClick={() => copy(row.id)}
-                >
-                  {copied === row.id ? <Check /> : <ContentCopy />}
-                </IconButton>
-              </Table.Cell>
-            </Table.Row>
-          ))}
+          {rows.map((row) => {
+            const small =
+              row.fontSizePx !== undefined && row.fontSizePx < MIN_FONT_SIZE;
+            return (
+              <Table.Row key={row.id} bg={small ? "warning.3" : undefined}>
+                <Table.Cell>
+                  <Code variant="subtle">{row.id}</Code>
+                  {small && (
+                    <Text
+                      textStyle="xs"
+                      fontWeight="600"
+                      color="warning.11"
+                      mt="100"
+                    >
+                      Not recommended
+                    </Text>
+                  )}
+                </Table.Cell>
+                {row.values.map((value, index) => (
+                  <Table.Cell key={index}>{value}</Table.Cell>
+                ))}
+                <Table.Cell>{row.sample}</Table.Cell>
+                <Table.Cell textAlign="right">
+                  <IconButton
+                    size="2xs"
+                    variant="ghost"
+                    aria-label={`Copy token ${row.id}`}
+                    onClick={() => copy(row.id)}
+                  >
+                    {copied === row.id ? <Check /> : <ContentCopy />}
+                  </IconButton>
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
         </Table.Body>
       </Table.Root>
     </Box>
