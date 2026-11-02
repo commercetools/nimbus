@@ -26,24 +26,17 @@ There are eight tokens, and each one sets one of three CSS cursors: `pointer`,
 
 ## Cursor tokens
 
-Move the mouse pointer over an area to see its cursor. Use the copy button to
-copy a token name.
-
 <CursorsScale />
 
 ## Choose a cursor
 
 Use the token that names your element, such as `cursor="switch"` for an element
-that works as a switch. The value is set in one place, so all elements of the
-same kind show the same cursor.
+that works as a switch. The value is set in one place, so all elements that use
+the same token show the same cursor.
 
-| Your element                                    | Use                                    |
-| ----------------------------------------------- | -------------------------------------- |
-| Works as a button                               | `button`                               |
-| Works as a switch                               | `switch`                               |
-| Works as a checkbox, a radio button or a slider | `checkbox`, `radio` or `slider`        |
-| Is an item in a menu or an option in a list     | `menuitem` or `option`                 |
-| Is disabled                                     | The layer style `disabled`, see below  |
+> [!NOTE]\
+> Menu and Slider do not use these tokens. Menu items and the track of Slider
+> set `pointer`, but the tokens `menuitem` and `slider` set `default`.
 
 ### Disabled elements
 
@@ -64,11 +57,11 @@ _disabled: {
 There are no tokens for other cursors, such as the cursor for text or for
 dragging. The recipes of Nimbus components set the CSS value for them:
 
-| Cursor                | Nimbus components that use it    |
-| --------------------- | -------------------------------- |
-| `grab` and `grabbing` | DataTable, DraggableList, Tree   |
-| `text`                | TextInput, SearchInput, ComboBox |
-| `col-resize`          | DataTable, Splitter              |
+| Cursor                        | Nimbus components that use it    |
+| ----------------------------- | -------------------------------- |
+| `grab` and `grabbing`         | DataTable, DraggableList, Tree   |
+| `text`                        | TextInput, SearchInput, ComboBox |
+| `col-resize` and `row-resize` | DataTable, Splitter              |
 
 For all CSS cursors, see
 [MDN: cursor](https://developer.mozilla.org/en-US/docs/Web/CSS/cursor).
