@@ -55,7 +55,7 @@ const menu: MenuTreeItem[] = [
         "home/style-props",
         "Style Props",
         [
-          item("home/style-props/border", "Border"),
+          item("home/style-props/svg", "SVG"),
           item("home/style-props/sizing", "Sizing"),
         ],
         5
