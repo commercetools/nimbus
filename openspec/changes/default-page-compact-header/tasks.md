@@ -2,10 +2,10 @@
 
 ## 1. Types and warning
 
-- [ ] 1.1 Add `collapseHeaderOnScroll?: boolean` with JSDoc to both branches of
+- [x] 1.1 Add `collapseHeaderOnScroll?: boolean` with JSDoc to both branches of
       `DefaultPageProps`. Verify with
       `pnpm --filter @commercetools/nimbus typecheck:dev`.
-- [ ] 1.2 Add compile checks for consumer patterns that must keep working: a
+- [x] 1.2 Add compile checks for consumer patterns that must keep working: a
       `layout` value typed as `"constrained" | "flexible"`, an
       `Omit<DefaultPageProps, "children">` wrapper that spreads into Root,
       `({ layout, ...rest }) => <Root layout={layout} {...rest} />`, and
@@ -13,20 +13,20 @@
       inside an `it()` block in `default-page.types.spec.ts` (a file with only
       type checks fails with "No test suite found"), or in the stories as in
       `grid.stories.tsx`. Verify with `typecheck:dev` and the unit run.
-- [ ] 1.3 Log a warning in development builds when `collapseHeaderOnScroll` is
+- [x] 1.3 Log a warning in development builds when `collapseHeaderOnScroll` is
       true with `layout="flexible"` and no `stickyHeader`. Verify with a unit
       test that spies on `console.warn` and checks that production builds do
       not warn.
 
 ## 2. Scroll distance and header state
 
-- [ ] 2.1 Write a pure function for the next header form: collapsed at a
+- [x] 2.1 Write a pure function for the next header form: collapsed at a
       distance of at least the space given back plus 8 CSS pixels, full below 1
       CSS pixel, unchanged in between, and full when nothing could be measured
       or the header height is 0. Verify with a unit spec that covers both
       points, the range in between, scrolling up within that range, and missing
       or zero measurements.
-- [ ] 2.2 Write the hook (in `default-page/hooks/`) that measures the scroll
+- [x] 2.2 Write the hook (in `default-page/hooks/`) that measures the scroll
       distance with `content.scrollTop + max(0, header.bottom − content.top)`.
       It listens to `scroll` in the capture phase on the document and on every
       shadow root along the flat tree (`assignedSlot`, `host`), ignores
@@ -38,17 +38,17 @@
       option is off. Verify with a unit spec using fake timers: listeners only
       when enabled, unrelated targets ignored, no change before the pause, the
       pointer hold, everything removed on unmount.
-- [ ] 2.3 Measure the collapsed height on a hidden copy of the header (decision
+- [x] 2.3 Measure the collapsed height on a hidden copy of the header (decision
       4) on mount and when the full header changes size. Verify with a story
       that measures the real full and collapsed heights, derives the space given
       back S, and checks that a distance of S + 7 keeps the full form and S + 9
       collapses after the pause. Also verify that measuring on a short page
       scrolled to the bottom does not move the content.
-- [ ] 2.4 Write a story first, with the flexible layout + `stickyHeader` and a
+- [x] 2.4 Write a story first, with the flexible layout + `stickyHeader` and a
       scroll container that starts 200px below the top of the window. It
       scrolls 10px per frame, stops, and expects the header to collapse after
       the pause. Verify that it fails before 2.5 and passes after.
-- [ ] 2.5 Connect Root and Header through a context file
+- [x] 2.5 Connect Root and Header through a context file
       (`default-page.context.ts`): Header and Content register their elements,
       Root runs the hook, Header writes `data-collapsed="true"` in its collapsed
       form, and Root sets `--default-page-header-height` in pixels after the

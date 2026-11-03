@@ -1,3 +1,5 @@
+import { mergeRefs } from "@/utils";
+import { useDefaultPageContext } from "../default-page.context";
 import { DefaultPageContentSlot } from "../default-page.slots";
 import type { DefaultPageContentProps } from "../default-page.types";
 
@@ -11,8 +13,14 @@ export const DefaultPageContent = ({
   children,
   ...props
 }: DefaultPageContentProps) => {
+  const { registerContent } = useDefaultPageContext();
+
   return (
-    <DefaultPageContentSlot ref={ref} tabIndex={0} {...props}>
+    <DefaultPageContentSlot
+      ref={mergeRefs(ref, registerContent)}
+      tabIndex={0}
+      {...props}
+    >
       {children}
     </DefaultPageContentSlot>
   );

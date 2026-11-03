@@ -2,6 +2,11 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect, userEvent, waitFor } from "storybook/test";
 import { useState } from "react";
 import {
+  COLLAPSE_HEADER_PAUSE_MS,
+  useCollapseHeaderOnScroll,
+} from "./hooks/use-collapse-header-on-scroll";
+import { measureCollapsedHeaderHeight } from "./utils/measure-collapsed-header-height";
+import {
   Badge,
   Box,
   Button,
@@ -1396,5 +1401,272 @@ export const WithSteps: Story = {
     await step("First step content is visible", async () => {
       await expect(canvas.getByText("Product name")).toBeInTheDocument();
     });
+  },
+};
+
+// ============================================================
+// COLLAPSE HEADER — Hidden-copy measurement (task 2.3)
+// ============================================================
+
+const waitForPause = () =>
+  new Promise((resolve) => {
+    window.setTimeout(resolve, COLLAPSE_HEADER_PAUSE_MS + 30);
+  });
+
+const CollapseHeaderMeasurementFixture = () => {
+  const [root, setRoot] = useState<HTMLDivElement | null>(null);
+  const [header, setHeader] = useState<HTMLElement | null>(null);
+  const [content, setContent] = useState<HTMLElement | null>(null);
+  const { form } = useCollapseHeaderOnScroll({
+    enabled: true,
+    header,
+    content,
+    root,
+  });
+
+  return (
+    <Box>
+      <style>
+        {`
+          .nimbus-collapse-header-measurement__header {
+            padding: 40px 24px;
+            background: Canvas;
+          }
+          .nimbus-collapse-header-measurement__header[data-collapsed="true"] {
+            padding: 8px 24px;
+          }
+        `}
+      </style>
+      <Box
+        ref={setRoot}
+        border="solid-25"
+        borderColor="neutral.6"
+        borderRadius="200"
+        position="relative"
+      >
+        <Box
+          ref={setHeader}
+          className="nimbus-collapse-header-measurement__header"
+          data-collapsed={form === "collapsed" ? "true" : undefined}
+        >
+          <Text fontSize="500" fontWeight="600">
+            Measurement page
+          </Text>
+          <Text>Subtitle that disappears in the collapsed form</Text>
+        </Box>
+        <Box
+          ref={setContent}
+          data-measurement-content=""
+          height="240px"
+          overflow="auto"
+          p="400"
+          tabIndex={0}
+        >
+          <Box height="800px">
+            <Text>Long content used to produce a scroll distance.</Text>
+          </Box>
+        </Box>
+      </Box>
+      <Box
+        data-short-page=""
+        mt="400"
+        height="160px"
+        overflow="auto"
+        border="solid-25"
+        borderColor="neutral.6"
+        position="relative"
+        tabIndex={0}
+      >
+        <Box data-short-header="" p="800">
+          <Text>Short page header</Text>
+        </Box>
+        <Box data-short-content="" height="80px" overflow="auto" tabIndex={0}>
+          <Box height="120px">
+            <Text>Short page content</Text>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
+/**
+ * Measures the collapsed height on a hidden copy and checks the collapse
+ * thresholds derived from the space given back.
+ */
+export const CollapseHeaderMeasurement: Story = {
+  render: () => <CollapseHeaderMeasurementFixture />,
+  play: async ({ canvasElement, step }) => {
+    const root = canvasElement.querySelector(
+      ".nimbus-collapse-header-measurement__header"
+    )?.parentElement as HTMLElement;
+    const header = canvasElement.querySelector(
+      ".nimbus-collapse-header-measurement__header"
+    ) as HTMLElement;
+    const content = root.querySelector(
+      "[data-measurement-content]"
+    ) as HTMLElement;
+
+    const fullHeight = header.getBoundingClientRect().height;
+    const collapsedHeight = measureCollapsedHeaderHeight(header, root);
+    const spaceGivenBack = fullHeight - collapsedHeight;
+
+    await step("Hidden copy is shorter than the live header", async () => {
+      await expect(spaceGivenBack).toBeGreaterThan(0);
+    });
+
+    await step("A distance of S + 7 keeps the full form", async () => {
+      content.scrollTop = spaceGivenBack + 7;
+      content.dispatchEvent(new Event("scroll", { bubbles: true }));
+      await waitFor(() =>
+        expect(content.scrollTop).toBe(spaceGivenBack + 7)
+      );
+      await waitForPause();
+      await expect(header).not.toHaveAttribute("data-collapsed");
+    });
+
+    await step("A distance of S + 9 collapses after the pause", async () => {
+      content.scrollTop = spaceGivenBack + 9;
+      content.dispatchEvent(new Event("scroll", { bubbles: true }));
+      await waitFor(() =>
+        expect(content.scrollTop).toBe(spaceGivenBack + 9)
+      );
+      await expect(header).not.toHaveAttribute("data-collapsed");
+      await waitForPause();
+      await expect(header).toHaveAttribute("data-collapsed", "true");
+    });
+
+    await step(
+      "Measuring on a short page scrolled to the bottom does not move the content",
+      async () => {
+        const shortRoot = canvasElement.querySelector(
+          "[data-short-page]"
+        ) as HTMLElement;
+        const shortHeader = shortRoot.querySelector(
+          "[data-short-header]"
+        ) as HTMLElement;
+        const shortContent = shortRoot.querySelector(
+          "[data-short-content]"
+        ) as HTMLElement;
+        shortContent.scrollTop = shortContent.scrollHeight;
+        const scrollTopBefore = shortContent.scrollTop;
+        measureCollapsedHeaderHeight(shortHeader, shortRoot);
+        await expect(shortContent.scrollTop).toBe(scrollTopBefore);
+      }
+    );
+
+    content.scrollTop = 0;
+  },
+};
+
+const scrollByFrames = (
+  scroller: HTMLElement,
+  distance: number,
+  stepPx = 10
+) =>
+  new Promise<void>((resolve) => {
+    const tick = () => {
+      const remaining = distance - scroller.scrollTop;
+      if (remaining <= 0) {
+        resolve();
+        return;
+      }
+      scroller.scrollTop += Math.min(stepPx, remaining);
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+
+/**
+ * Flexible layout + stickyHeader, with the scroll container 200px below the
+ * top of the window. Scrolls 10px per frame and expects the header to
+ * collapse only after the pause.
+ */
+export const CollapseHeaderFlexibleOffset: Story = {
+  render: () => (
+    <Box>
+      <Box height="200px" p="400">
+        <Text>App bar above the page</Text>
+      </Box>
+      <Box
+        data-testid="scroll-container"
+        height="400px"
+        overflow="auto"
+        border="solid-25"
+        borderColor="neutral.6"
+        borderRadius="200"
+      >
+        <DefaultPage.Root
+          layout="flexible"
+          stickyHeader
+          collapseHeaderOnScroll
+        >
+          <DefaultPage.Header>
+            <DefaultPage.Title>Offset scroll page</DefaultPage.Title>
+            <DefaultPage.Subtitle>
+              Header should collapse after scrolling pauses
+            </DefaultPage.Subtitle>
+            <DefaultPage.Actions>
+              <Button colorPalette="primary" variant="solid">
+                Save
+              </Button>
+            </DefaultPage.Actions>
+          </DefaultPage.Header>
+          <DefaultPage.Content>
+            <Stack gap="600">
+              {Array.from({ length: 20 }, (_, index) => (
+                <Text key={index}>Row {index + 1}</Text>
+              ))}
+            </Stack>
+          </DefaultPage.Content>
+        </DefaultPage.Root>
+      </Box>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const scroller = canvas.getByTestId("scroll-container");
+    const header = canvasElement.querySelector("header");
+
+    const publishedHeaderHeight = () =>
+      getComputedStyle(header!.parentElement as HTMLElement)
+        .getPropertyValue("--default-page-header-height")
+        .trim();
+
+    await step("Scroll container starts 200px below the window top", async () => {
+      await expect(header).toBeInTheDocument();
+      await expect(Math.round(scroller.getBoundingClientRect().top)).toBe(200);
+    });
+
+    await step("Variable matches the full header height", async () => {
+      await expect(publishedHeaderHeight()).toBe(
+        `${header!.getBoundingClientRect().height}px`
+      );
+    });
+
+    await step("Header stays full while scrolling 10px per frame", async () => {
+      await scrollByFrames(scroller, 120);
+      await expect(header).not.toHaveAttribute("data-collapsed");
+    });
+
+    await step("Header collapses after the pause", async () => {
+      await waitForPause();
+      await expect(header).toHaveAttribute("data-collapsed", "true");
+    });
+
+    await step(
+      "Root publishes the current header height after the first measurement",
+      async () => {
+        const pageRoot = header!.parentElement as HTMLElement;
+        const published = getComputedStyle(pageRoot)
+          .getPropertyValue("--default-page-header-height")
+          .trim();
+        await expect(published).toBe(
+          `${header.getBoundingClientRect().height}px`
+        );
+      }
+    );
+
+    scroller.scrollTop = 0;
   },
 };

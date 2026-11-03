@@ -1,3 +1,5 @@
+import { mergeRefs } from "@/utils";
+import { useDefaultPageContext } from "../default-page.context";
 import { DefaultPageHeaderSlot } from "../default-page.slots";
 import type { DefaultPageHeaderProps } from "../default-page.types";
 
@@ -11,8 +13,14 @@ export const DefaultPageHeader = ({
   children,
   ...props
 }: DefaultPageHeaderProps) => {
+  const { form, registerHeader } = useDefaultPageContext();
+
   return (
-    <DefaultPageHeaderSlot ref={ref} {...props}>
+    <DefaultPageHeaderSlot
+      ref={mergeRefs(ref, registerHeader)}
+      data-collapsed={form === "collapsed" ? "true" : undefined}
+      {...props}
+    >
       {children}
     </DefaultPageHeaderSlot>
   );
