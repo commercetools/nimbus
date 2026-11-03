@@ -115,7 +115,7 @@ and `githubLink` that is set, in this order: Figma, Storybook, GitHub.
 
 `related` lists the `id` of other documents, for example the other parts of a
 component family. The page shows them as cards in a "Related content" carousel
-below the page header.
+at the end of the page.
 
 ```yaml
 ---

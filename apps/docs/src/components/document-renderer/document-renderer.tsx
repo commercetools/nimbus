@@ -123,15 +123,10 @@ const DocumentRendererComponent = () => {
             />
           )}
 
-          {/* Related content comes before the tabs, so a reader sees similar
-              pages before starting with this one. */}
-          {showHeader && <RelatedDocuments />}
-
           {/* Show tabs if multiple views are available */}
           {hasMultipleViews && <ViewTabs tabs={tabs} />}
 
           <Box
-            pb="2400"
             css={{
               // The first `h2` that repeats the tab label stays in the page
               // for screen readers and anchors but is not shown.
@@ -144,6 +139,21 @@ const DocumentRendererComponent = () => {
               <MdxStringRenderer content={content} />
             </ViewLabelContext.Provider>
           </Box>
+
+          {/* Related content comes after the page, so it does not interrupt
+              the text. */}
+          {showHeader && (
+            <Box
+              mt="2400"
+              pt="800"
+              borderTop="1px solid"
+              borderColor="neutral.6"
+            >
+              <RelatedDocuments />
+            </Box>
+          )}
+
+          <Box pb="2400" />
         </Stack>
       </Box>
     </>
