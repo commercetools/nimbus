@@ -16,8 +16,8 @@ import {
   Info,
   WarningAmber,
 } from "@commercetools/nimbus-icons";
-import { ListItem, UlList } from "./index";
-import { Paragraph } from "./index";
+import { ListItem, UlList } from "./lists";
+import { Paragraph } from "./paragraph";
 
 /** Maps a GitHub-flavored quote marker to the Alert color palette. */
 const flavorPalette = {
@@ -72,16 +72,47 @@ const countChildrenByDisplayName = (
     (child) => isValidElement(child) && child.type === component
   ).length;
 
-/** Returns the quote marker at the start of a paragraph, if there is one. */
+/** A marker at the start of a text, followed by a line break or the end. */
+const MARKER_AT_START = /^(\[![A-Z]+\])(?=[ \t]*(?:\r?\n|$))/;
+
+/**
+ * Returns the quote marker at the start of a paragraph, if there is one.
+ *
+ * The text after the marker can start on the next line with two trailing
+ * spaces (a hard line break) or with just a line break.
+ */
 const getMarker = (child: ReactNode): QuoteMarker | undefined => {
   if (!isValidElement(child) || child.type !== Paragraph) return undefined;
 
-  const firstChild = (child as ReactElement<{ children?: ReactNode[] }>).props
-    .children?.[0];
-  if (typeof firstChild !== "string") return undefined;
+  const [first] = Children.toArray(
+    (child as ReactElement<{ children?: ReactNode }>).props.children
+  );
+  if (typeof first !== "string") return undefined;
 
-  const marker = firstChild.trim();
-  return isQuoteMarker(marker) ? marker : undefined;
+  const marker = MARKER_AT_START.exec(first)?.[1];
+  return marker && isQuoteMarker(marker) ? marker : undefined;
+};
+
+/**
+ * Returns the paragraph without the marker and the line break after it, or
+ * null when nothing is left.
+ */
+const removeMarker = (paragraph: ReactElement<{ children?: ReactNode }>) => {
+  const [first, ...rest] = Children.toArray(paragraph.props.children);
+  // `getMarker` has checked that the first child is a string with a marker.
+  const text = (first as string)
+    .replace(MARKER_AT_START, "")
+    .replace(/^[ \t]*\r?\n/, "");
+
+  const [next, ...afterNext] = rest;
+  // A hard line break is its own element after the marker.
+  const remaining =
+    text === "" && isValidElement(next) && next.type === "br"
+      ? afterNext
+      : rest;
+  const children = text === "" ? remaining : [text, ...rest];
+
+  return children.length > 0 ? cloneElement(paragraph, { children }) : null;
 };
 
 type BlockquoteProps = DetailedHTMLProps<
@@ -128,13 +159,9 @@ export const Blockquote = (props: BlockquoteProps) => {
       >
         {Children.map(children, (child, idx) => {
           if (getMarker(child)) {
-            // Remove the marker and the line break that follows it.
-            const paragraph = child as ReactElement<{
-              children: ReactNode[];
-            }>;
-            return cloneElement(paragraph, {
-              children: Children.toArray(paragraph.props.children.slice(2)),
-            });
+            return removeMarker(
+              child as ReactElement<{ children?: ReactNode }>
+            );
           }
 
           // Drop a trailing list that has no list items.
