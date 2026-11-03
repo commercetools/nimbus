@@ -40,13 +40,13 @@ with `width` and `height`.
 
 | Group      | Example token  | Used by                         | Reference                                         |
 | ---------- | -------------- | ------------------------------- | ------------------------------------------------- |
-| Colors     | `primary.9`    | `color`, `backgroundColor`      | [Colors](/home/design-tokens/colors)              |
-| Spacing    | `400`          | `padding`, `margin`, `gap`      | [Spacing](/home/design-tokens/spacing)            |
-| Sizes      | `full`, `1/2`  | `width`, `height`, `maxWidth`   | [Sizes](/home/design-tokens/sizes)                |
-| Typography | `400`, `body`  | `fontSize`, `textStyle`         | [Typography](/home/design-tokens/typography)      |
-| Radii      | `200`          | `borderRadius`                  | [Radii](/home/design-tokens/radii)                |
-| Shadows    | `2`            | `boxShadow`                     | [Shadows](/home/design-tokens/shadows)            |
-| Z-indices  | `sticky`       | `zIndex`                        | [Z-Indices](/home/design-tokens/other/z-indices)  |
+| Colors     | `primary.9`    | `color`, `backgroundColor`      | [Colors](/foundations/design-tokens/colors)              |
+| Spacing    | `400`          | `padding`, `margin`, `gap`      | [Spacing](/foundations/design-tokens/spacing)            |
+| Sizes      | `full`, `1/2`  | `width`, `height`, `maxWidth`   | [Sizes](/foundations/design-tokens/sizes)                |
+| Typography | `400`, `body`  | `fontSize`, `textStyle`         | [Typography](/foundations/design-tokens/typography)      |
+| Radii      | `200`          | `borderRadius`                  | [Radii](/foundations/design-tokens/radii)                |
+| Shadows    | `2`            | `boxShadow`                     | [Shadows](/foundations/design-tokens/shadows)            |
+| Z-indices  | `sticky`       | `zIndex`                        | [Z-Indices](/foundations/design-tokens/other/z-indices)  |
 
 ```jsx live-dev
 import { Box, Text } from "@commercetools/nimbus";
@@ -73,7 +73,7 @@ To use a token outside a style prop, for example in your own CSS, see
 Most color tokens are a palette and a step, such as `primary.3` or `critical.9`.
 Each palette has 12 steps. Low steps are for backgrounds, middle steps for
 borders and solid fills, and high steps for text. The
-[Colors](/home/design-tokens/colors) page shows what each step is for. The
+[Colors](/foundations/design-tokens/colors) page shows what each step is for. The
 `contrast` step, such as `primary.contrast`, is a text color that is readable
 on step 9.
 

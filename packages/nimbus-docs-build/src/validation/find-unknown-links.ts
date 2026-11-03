@@ -2,7 +2,7 @@
  * Internal links in the documentation text.
  *
  * Authors link to other pages with Markdown links such as
- * `[Colors](/home/design-tokens/colors)`. The build does not check the text of
+ * `[Colors](/foundations/design-tokens/colors)`. The build does not check the text of
  * these links, so a renamed or removed page leaves links that lead nowhere.
  */
 

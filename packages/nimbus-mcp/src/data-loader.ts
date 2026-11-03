@@ -142,7 +142,7 @@ export const getDocsManifest = lazyJson<DocsManifest>("docs/docs.json");
 // ---------------------------------------------------------------------------
 
 /**
- * Returns docs entries whose route starts with `home/design-tokens`.
+ * Returns docs entries whose route starts with `foundations/design-tokens`.
  */
 export async function getTokenData(): Promise<DocEntry[]> {
   const docs = await getDocsManifest();

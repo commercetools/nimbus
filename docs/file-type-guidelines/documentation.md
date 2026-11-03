@@ -728,6 +728,35 @@ the Nimbus MCP server. It has three groups:
 The group pages (`learn.mdx`, `learn-concepts.mdx`, `learn-how-do-i.mdx`) show
 their pages with `<CategoryOverview variant="list" />`.
 
+The Learn pages explain the details of styling and layout. The three
+customization steps (component props, a few one-off style props, and a layout
+built with `Box`, `Flex` or `Stack`) and the rule for moving between them are
+owned by one page: `customize-in-three-steps.mdx` in Foundations. A Learn page
+that mentions a step links to that page and does not repeat the steps.
+
+## Foundations Pages
+
+The Foundations section describes the styling system. Its menu is `Foundations`
+and it has three parts:
+
+- **Customize in three steps** (`customize-in-three-steps.mdx`): the owner of
+  the three customization steps, the decision rule, and the "For designers"
+  section. It uses the same step names that designer pages use.
+- **Design Tokens** (`tokens.mdx`, `tokens/*.mdx`, menu `Foundations` >
+  `Design Tokens` > label): one page per token group.
+- **Style Props** (`style-props.mdx` and the style prop pages, menu
+  `Foundations` > `Style Props` > label): one page per topic.
+
+A new page in these parts starts its `menu` with `Foundations`, so that its URL,
+its breadcrumb and its search category agree.
+
+### Decision rule
+
+The page states the rule in two parts. A step 3 layout is needed when one
+element needs more than 3 style props, or when it needs a layout prop
+(`display`, `position`, `flexDirection` or `gridTemplate*`). The page calls the
+number 3 a team rule. Interactive parts stay Nimbus components in every step.
+
 ### Front matter
 
 Search ranks the title highest, then the description and the tags.

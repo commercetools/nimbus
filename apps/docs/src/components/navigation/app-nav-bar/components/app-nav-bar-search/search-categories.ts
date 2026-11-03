@@ -40,9 +40,9 @@ export const CATEGORY_ORDER: SearchCategoryKey[] = [
 
 /**
  * Map a search item to its concrete category from the `menu` breadcrumb. The
- * top-level category is `menu[0]`; the `Home` bucket is split further on
- * `menu[1]`. Everything that isn't a named category (Getting Started,
- * Contribute, Playground, Icons, …) falls back to `"docs"`.
+ * top-level category is `menu[0]`; the `Foundations` bucket is split further on
+ * `menu[1]`. Everything that isn't a named category (Learn, Getting Started,
+ * Contribute, Icons, …) falls back to `"docs"`.
  */
 export function getItemCategory(
   item: SearchableDocItem
@@ -51,8 +51,8 @@ export function getItemCategory(
   if (top === "Components") return "components";
   if (top === "Patterns") return "patterns";
   if (top === "Hooks") return "hooks";
-  if (top === "Home" && sub === "Design Tokens") return "design-tokens";
-  if (top === "Home" && sub === "Style Props") return "style-props";
+  if (top === "Foundations" && sub === "Design Tokens") return "design-tokens";
+  if (top === "Foundations" && sub === "Style Props") return "style-props";
   return "docs";
 }
 

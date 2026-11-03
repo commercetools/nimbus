@@ -137,23 +137,29 @@ describe("get_docs_page — error handling", () => {
 describe("get_docs_page — style props landing page enrichment", () => {
   it("returns compact prop index for the style-props landing page", async () => {
     const { result } = await callGetDocsPage({
-      path: "home/style-props",
+      path: "foundations/style-props",
     });
     expect(result).toBeDefined();
     // The enriched content should include category names and prop names
     expect(result!.content).toContain("Spacing");
     expect(result!.content).toContain("padding");
     // Should include drill-down paths
-    expect(result!.content).toContain("home/style-props/spacing");
+    expect(result!.content).toContain("foundations/style-props/spacing");
+  });
+
+  it("accepts the old route of the style-props landing page", async () => {
+    const { result } = await callGetDocsPage({ path: "home/style-props" });
+    expect(result).toBeDefined();
+    expect(result!.path).toBe("foundations/style-props");
   });
 
   it("sub-pages are not enriched (only the landing page)", async () => {
     const { result } = await callGetDocsPage({
-      path: "home/style-props/spacing",
+      path: "foundations/style-props/spacing",
     });
     expect(result).toBeDefined();
     // Should NOT contain the prop index from the summary — just normal page content
-    expect(result!.content).not.toContain("home/style-props/typography");
+    expect(result!.content).not.toContain("foundations/style-props/typography");
   });
 });
 

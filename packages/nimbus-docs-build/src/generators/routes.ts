@@ -23,6 +23,7 @@ import {
   formatUnknownIllustrations,
   listIllustrationNames,
 } from "./illustration-sources.js";
+import { resolveSourceFiles } from "./resolve-source-files.js";
 import { resolveRelated } from "./resolve-related.js";
 
 /**
@@ -51,7 +52,7 @@ export async function generateRouteManifest(
   }
 
   // Process each document
-  for (const [, doc] of docs) {
+  for (const [docFile, doc] of docs) {
     const { meta } = doc;
     const category = meta.menu[0] || "Uncategorized";
     const routePath = `/${meta.route}`;
@@ -77,6 +78,9 @@ export async function generateRouteManifest(
       ),
       related: meta.related || [],
       tabs: meta.tabs || [],
+      files: monorepoRoot
+        ? await resolveSourceFiles(path.join(monorepoRoot, docFile))
+        : [],
     };
 
     routes.push(route);

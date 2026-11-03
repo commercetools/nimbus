@@ -1,6 +1,7 @@
 import { useRef, useState, type KeyboardEvent } from "react";
 import { Box, Link, Text } from "@commercetools/nimbus";
 import { ChevronRight } from "@commercetools/nimbus-icons";
+import { nextIndex } from "./nav-keys";
 import type { FlyoutGroup } from "@/components/navigation/menu/flyout";
 
 /** Width of the group column, in px. */
@@ -28,6 +29,12 @@ type AppNavBarFlyoutProps = {
   groups: FlyoutGroup[];
   /** Number of page columns, from `flyoutPageColumns`. */
   columns: number;
+  /** Id of the panel element, for `aria-controls` on the tab. */
+  id: string;
+  /** Close the panel and move focus to the tab. */
+  onReturn: () => void;
+  /** Close the panel because Tab was pressed inside it. */
+  onTab: (shiftKey: boolean) => void;
   /** Route of the current page, with a leading slash. */
   currentHref: string;
   /** Position on the screen, in px. */
@@ -54,10 +61,14 @@ const rowStyle = {
  * Panel with two columns: the groups of a section and the pages of the
  * selected group. All entries are real links.
  *
- * Arrow keys: up and down move in a column, right goes to the pages, left goes
- * back to the groups.
+ * Keys: up, down, Home and End move in a column. Right goes from the groups to
+ * the pages. Left goes from the pages to the groups, and from the groups back
+ * to the tab. Tab closes the panel and does not trap focus.
  */
 export const AppNavBarFlyout = ({
+  id,
+  onReturn,
+  onTab,
   label,
   groups,
   columns,
@@ -74,40 +85,49 @@ export const AppNavBarFlyout = ({
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement;
+    if (event.key === "Tab") {
+      // Tab leaves the panel. Shift+Tab goes back to the tab, Tab goes on in
+      // page order.
+      if (event.shiftKey) event.preventDefault();
+      onTab(event.shiftKey);
+      return;
+    }
     const column = target.closest<HTMLElement>("[data-column]");
     if (!column) return;
+    const isGroups = column.dataset.column === "groups";
     const links = Array.from(column.querySelectorAll<HTMLElement>("a"));
-    const index = links.indexOf(target);
-    const focusAt = (next: HTMLElement | undefined) => {
-      if (!next) return;
+    const focusLink = (link: HTMLElement | null | undefined) => {
+      if (!link) return;
       event.preventDefault();
-      next.focus();
+      link.focus();
     };
-    switch (event.key) {
-      case "ArrowDown":
-        focusAt(links[Math.min(index + 1, links.length - 1)]);
-        break;
-      case "ArrowUp":
-        focusAt(links[Math.max(index - 1, 0)]);
-        break;
-      case "ArrowRight":
-        if (column.dataset.column === "groups") {
-          focusAt(
-            event.currentTarget.querySelector<HTMLElement>(
-              "[data-column=pages] a"
-            ) ?? undefined
-          );
-        }
-        break;
-      case "ArrowLeft":
-        if (column.dataset.column === "pages") {
-          focusAt(
-            event.currentTarget.querySelector<HTMLElement>(
-              `[data-group="${selectedId}"]`
-            ) ?? undefined
-          );
-        }
-        break;
+    // The order of the links in the DOM is the order of the pages, also when
+    // the list shows several columns.
+    if (["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) {
+      const next = nextIndex(
+        links.indexOf(target),
+        event.key,
+        links.length,
+        false
+      );
+      if (next !== null) focusLink(links[next]);
+      return;
+    }
+    if (event.key === "ArrowRight" && isGroups) {
+      focusLink(
+        event.currentTarget.querySelector<HTMLElement>("[data-column=pages] a")
+      );
+    } else if (event.key === "ArrowLeft") {
+      if (isGroups) {
+        event.preventDefault();
+        onReturn();
+      } else {
+        focusLink(
+          event.currentTarget.querySelector<HTMLElement>(
+            `[data-group="${selectedId}"]`
+          )
+        );
+      }
     }
   };
 
@@ -115,6 +135,7 @@ export const AppNavBarFlyout = ({
     // The outer box is transparent and keeps the pointer inside the panel
     // while it moves from the tab to the surface.
     <Box
+      id={id}
       position="fixed"
       zIndex="1000"
       pt="100"

@@ -1,0 +1,176 @@
+---
+id: Foundations-Customize in three steps
+title: Customize in three steps
+description:
+  Choose the lowest step that works. Step 1 is the component and its props,
+  step 2 is a few one-off style props, and step 3 is a layout built with Box,
+  Flex or Stack.
+icon: Tune
+illustration:
+  - card
+  - stack
+  - box
+order: 1
+menu:
+  - Foundations
+  - Customize in three steps
+tags:
+  - foundations
+  - customize
+  - variant
+  - theming props
+  - style props
+  - one-off
+  - nimbus-one-off
+  - Box
+  - Flex
+  - Stack
+  - too many style props
+related:
+  - Learn-Rules
+  - Learn-Concepts-Styling
+  - Learn-Concepts-Layout
+  - Learn-How do I-Style one part
+---
+
+A design sometimes needs more than a component gives you. Nimbus has three steps
+for this. Always use the lowest step that works. A higher step gives you more
+freedom, and it gives you more to maintain.
+
+| Step | What you use                                                 | What you get                              |
+| ---- | ------------------------------------------------------------ | ----------------------------------------- |
+| 1    | The component and its props, such as `variant` and `size`    | The Nimbus look, kept up to date for you  |
+| 2    | A few style props with tokens on one element                 | One small change, marked as a one-off     |
+| 3    | A layout built with `Box`, `Flex` or `Stack`                 | A new composition that you own            |
+
+## Choose the step
+
+Ask these questions in this order.
+
+1. **Does a component, a variant, a size or a `colorPalette` give what you
+   need?** Then use it. This is step 1.
+2. **Does the element need more than 3 style props, or any layout prop?** The
+   layout props are `display`, `position`, `flexDirection` and
+   `gridTemplate*`. If the answer is yes, go to step 3. If the answer is no,
+   use step 2.
+3. **Is the part interactive?** A button, a link, a field or a menu stays a
+   Nimbus component, also in step 3. Use `Box`, `Flex` and `Stack` only for
+   layout and surfaces around it.
+
+The number 3 is a rule of the Nimbus team. It is not a measured value. It
+helps you to see when a one-off has become a new design.
+
+## Step 1: use the component and its props
+
+Look at the component page first. Theming props such as `variant`, `size` and
+`colorPalette` change the look for every use, and Nimbus keeps them correct in
+light and dark mode. Parts such as `Card.Header` are components too. See
+[Styling](/learn/concepts/styling).
+
+```jsx live-dev
+import { Badge, Card, Text } from "@commercetools/nimbus";
+
+const App = () => (
+  <Card.Root variant="outlined">
+    <Card.Header>Spring campaign</Card.Header>
+    <Card.Body>
+      <Badge colorPalette="warning">Archived</Badge>
+      <Text>This campaign ended on 31 March.</Text>
+    </Card.Body>
+  </Card.Root>
+);
+```
+
+## Step 2: add a few one-off style props
+
+If no prop fits, set style props with tokens on the one element that needs
+them. Use at most 3. Mark each one-off with a comment that starts with
+`nimbus-one-off:` and gives the reason, so that your team can find it later.
+See [Rules](/learn/rules) and
+[Style one part of a component](/learn/how-do-i/style-one-part).
+
+```jsx live-dev
+import { Badge, Card, Text } from "@commercetools/nimbus";
+
+const App = () => (
+  <Card.Root variant="outlined">
+    {/* nimbus-one-off: an archived campaign must show a warning header */}
+    <Card.Header backgroundColor="warning.3" color="warning.11">
+      Spring campaign
+    </Card.Header>
+    <Card.Body>
+      <Badge colorPalette="warning">Archived</Badge>
+      <Text>This campaign ended on 31 March.</Text>
+    </Card.Body>
+  </Card.Root>
+);
+```
+
+## Step 3: build the layout with Box, Flex or Stack
+
+Now the design wants the title and the badge in one row, a row of numbers, and
+a button. That is a new layout, and it needs layout props. Build it with `Flex`
+and `Stack`. The button stays a Nimbus `Button`. See
+[Layout](/learn/concepts/layout).
+
+```jsx live-dev
+import {
+  Badge,
+  Button,
+  Card,
+  Flex,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
+
+const App = () => (
+  <Card.Root variant="outlined">
+    <Card.Header>
+      <Flex justify="space-between" align="center">
+        <Text textStyle="lg">Spring campaign</Text>
+        <Badge colorPalette="warning">Archived</Badge>
+      </Flex>
+    </Card.Header>
+    <Card.Body>
+      <Stack direction="row" gap="400">
+        <Text>1,204 views</Text>
+        <Text>38 orders</Text>
+      </Stack>
+    </Card.Body>
+    <Card.Footer>
+      <Button variant="outline" onPress={() => console.log("restore")}>
+        Restore
+      </Button>
+    </Card.Footer>
+  </Card.Root>
+);
+```
+
+## What you lose in step 3
+
+`Box`, `Flex` and `Stack` are plain layout elements. They have no keyboard
+behavior, no focus handling and no ARIA roles. Nimbus components such as
+`Button`, `Link` and `Menu` have these built in. A `Box` that you make clickable
+must do all of that again. So keep every interactive part a Nimbus component.
+
+Also look for a component first. Use `Stack` for items in one direction,
+`Button` or `Link` for actions, and `Card` for a card.
+
+## Move down again
+
+A one-off is temporary. When Nimbus offers a prop for it, remove the one-off
+and use the prop. Search your code for `nimbus-one-off` to find them.
+
+## For designers
+
+The same three steps tell you how much work a design costs.
+
+| Step | In a design file                                            | Who owns it              |
+| ---- | ----------------------------------------------------------- | ------------------------ |
+| 1    | Use the Nimbus component as it is in the Figma library      | Nimbus                   |
+| 2    | A small change. Write it in the design file as a one-off    | Your product team        |
+| 3    | A new composition built from Nimbus parts                   | Your product team        |
+
+Prefer step 1. If your design needs step 2 or step 3 often, tell the Nimbus
+team, because Nimbus may need a new variant. For the rules about
+collaboration, see [Collaboration](/contribute/collaboration).

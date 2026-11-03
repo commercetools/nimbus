@@ -27,6 +27,10 @@ export type RouteManifest = {
     illustrations: string[];
     /** ids of related documents: own list first, then documents listing this one */
     related: string[];
+    /** pages of this entry, e.g. overview, guidelines, dev, a11y */
+    tabs?: Array<{ key: string; title: string; order: number }>;
+    /** kinds of source files next to the doc: types, stories, recipe, ... */
+    files?: string[];
   }>;
   categories: Array<{
     id: string;

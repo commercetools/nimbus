@@ -28,7 +28,7 @@ const App = () => (
 
 ### Size options
 
-Button supports three size variants to match different interface densities. The `md` size is the default.
+Button supports five sizes to match different interface densities: `2xs`, `xs`, `sm`, `md` and `xl`. The `md` size is the default.
 
 ```jsx live-dev
 const App = () => (
@@ -37,6 +37,7 @@ const App = () => (
     <Button size="xs">XS Button</Button>
     <Button size="sm">SM Button</Button>
     <Button size="md">MD Button (Default)</Button>
+    <Button size="xl">XL Button</Button>
   </Stack>
 )
 ```
@@ -78,13 +79,14 @@ const App = () => (
 )
 ```
 
-You can also override the color palette using Chakra UI style props for one-off customizations:
+Use the `colorPalette` prop to give a button a system palette, such as `purple`, when the color only separates one item from another. Use a semantic palette such as `critical` when the color has a meaning.
 
 ```jsx live-dev
 const App = () => (
-  <Button backgroundColor="purple.9" color="purple.contrast" _hover={{ backgroundColor: "purple.10" }}>
-    Custom Purple Button
-  </Button>
+  <Stack direction="row" gap="400" alignItems="center">
+    <Button colorPalette="purple">Purple Button</Button>
+    <Button variant="outline" colorPalette="purple">Purple Outline</Button>
+  </Stack>
 )
 ```
 

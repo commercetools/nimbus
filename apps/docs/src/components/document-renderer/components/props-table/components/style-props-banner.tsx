@@ -23,7 +23,7 @@ export const StylePropsSupportBanner = () => {
           </Text>
           <Text fontSize="350" mt="100" color="colorPalette.11">
             This component accepts{" "}
-            <Link href="/home/style-props">style props</Link>{" "}
+            <Link href="/foundations/style-props">style props</Link>{" "}
           </Text>
         </Box>
       </Stack>

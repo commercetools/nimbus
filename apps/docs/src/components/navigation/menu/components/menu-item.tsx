@@ -1,8 +1,7 @@
+import { memo } from "react";
 import { type MenuItemProps } from "../menu.types";
 import { Box, Link, Text } from "@commercetools/nimbus";
 import { MenuList } from "./menu-list";
-import { isRouteWithin } from "../shape-navigation";
-import { useRouteInfo } from "@/hooks/use-route-info";
 import { useSidebarViewport } from "@/contexts/scroll-container-context";
 
 /**
@@ -14,14 +13,14 @@ import { useSidebarViewport } from "@/contexts/scroll-container-context";
  *
  * @param {MenuItemProps} props - The props for the MenuItem component
  */
-export const MenuItem = ({ item, level }: MenuItemProps) => {
-  const { baseRoute } = useRouteInfo();
+export const MenuItem = memo(function MenuItem({
+  item,
+  level,
+  isCurrent,
+  showChildren,
+}: MenuItemProps) {
   const sidebarViewportRef = useSidebarViewport();
-  const hasChildren = item.children.length > 0;
-  const isGroupTitle = level === 0 && hasChildren;
-  const isCurrent = item.hasPage && baseRoute === item.route;
-  const showChildren =
-    hasChildren && (level === 0 || isRouteWithin(baseRoute, item.route));
+  const isGroupTitle = level === 0 && item.children.length > 0;
 
   // Preserve sidebar scroll position on click
   const handleClick = () => {
@@ -78,4 +77,4 @@ export const MenuItem = ({ item, level }: MenuItemProps) => {
       {showChildren && <MenuList items={item.children} level={level + 1} />}
     </Box>
   );
-};
+});

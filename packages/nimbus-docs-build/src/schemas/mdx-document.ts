@@ -140,6 +140,8 @@ export const routeInfoSchema = z.object({
   /** ids of the related documents: own list first, then reverse links */
   related: z.array(z.string()).default([]),
   tabs: z.array(TabMetadataSchema).default([]),
+  /** kinds of source files next to the document, e.g. types, stories, recipe */
+  files: z.array(z.string()).default([]),
 });
 
 export const categoryInfoSchema = z.object({

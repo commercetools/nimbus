@@ -93,10 +93,13 @@ padding, a size or a color.
 | Control over how each item grows or shrinks   | `Flex`       |
 | One element with padding, a size or a color   | `Box`        |
 
+To decide when to build a layout with these components instead of using a
+component of Nimbus, see [Customize in three steps](/foundations/customize-in-three-steps).
+
 ## Sizes
 
 Set `width`, `height`, `minWidth` and `maxWidth` with
-[size tokens](/home/design-tokens/sizes): numbers such as `400`, names such as
+[size tokens](/foundations/design-tokens/sizes): numbers such as `400`, names such as
 `md` or `prose`, fractions such as `1/2`, and `full` for the whole width. See
 [Use the full width](/learn/how-do-i/use-the-full-width). To cut off text that
 is too long, see [Truncate text](/learn/how-do-i/truncate-text).
@@ -121,7 +124,7 @@ const App = () => (
 );
 ```
 
-The keys are [breakpoints](/home/design-tokens/other/breakpoints): `sm`
+The keys are [breakpoints](/foundations/design-tokens/other/breakpoints): `sm`
 (480px), `md` (768px), `lg` (1024px), `xl` (1280px) and `2xl` (1536px). Each
 breakpoint is a minimum width: a value for `md` applies from 768px up, until a
 larger key takes over. `base` applies to every width where no other key

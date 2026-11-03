@@ -1,7 +1,7 @@
 /**
  * Style Props Summary Builder
  *
- * Reads all `data/docs/routes/home-style-props-*.json` sub-page files, parses
+ * Reads all `data/docs/routes/foundations-style-props-*.json` sub-page files, parses
  * the MDX table rows to extract prop names, and writes a compact summary to
  * `data/style-props-summary.json`. This summary is served through MCP tool
  * responses to inform consuming LLMs which style props are available.
@@ -81,9 +81,9 @@ export async function buildStylePropsSummary(outDir?: string) {
   // Find all style-props sub-page route files (exclude the landing page itself)
   const files = readdirSync(ROUTES_DIR).filter(
     (f) =>
-      f.startsWith("home-style-props-") &&
+      f.startsWith("foundations-style-props-") &&
       f.endsWith(".json") &&
-      f !== "home-style-props.json"
+      f !== "foundations-style-props.json"
   );
 
   const categories: StylePropsCategorySummary[] = [];

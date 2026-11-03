@@ -1,4 +1,5 @@
 import { useAtom } from "jotai";
+import { flushSync } from "react-dom";
 import {
   Suspense,
   useEffect,
@@ -6,6 +7,7 @@ import {
   useRef,
   useState,
   type FocusEvent,
+  useId,
   type KeyboardEvent,
   type MouseEvent,
   type PointerEvent,
@@ -18,6 +20,7 @@ import {
   firstPageRoute,
 } from "@/components/navigation/menu/shape-navigation";
 import { useRouteInfo } from "@/hooks/use-route-info";
+import { nextIndex } from "./nav-keys";
 import {
   AppNavBarFlyout,
   FLYOUT_GROUP_COLUMN_PX,
@@ -47,7 +50,11 @@ export const AppNavBarMenu = () => {
   const { baseRoute } = useRouteInfo();
   const [open, setOpen] = useState<OpenFlyout | null>(null);
   const timer = useRef<number | undefined>(undefined);
-  const skipFocusOpen = useRef(false);
+  // The link that is in the Tab order (roving tabindex), once one got focus.
+  const [focusedId, setFocusedId] = useState<string | null>(null);
+  // Where focus goes in the panel after a key opened it.
+  const pendingFocus = useRef<"first" | "last" | null>(null);
+  const idPrefix = useId();
   // After a click the pointer may still rest on the tab. The panel stays
   // closed until the pointer has left.
   const skipHoverOpen = useRef<string | null>(null);
@@ -72,14 +79,36 @@ export const AppNavBarMenu = () => {
 
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
+  // A key opened the panel: move focus into its group column.
+  useEffect(() => {
+    if (!open || !pendingFocus.current) return;
+    const groups = anchors.current
+      .get(open.id)
+      ?.closest("li")
+      ?.querySelectorAll<HTMLElement>("[data-column=groups] a");
+    if (groups?.length) {
+      groups[pendingFocus.current === "first" ? 0 : groups.length - 1].focus();
+    }
+    pendingFocus.current = null;
+  }, [open]);
+
+  // A section can hold pages from another URL path (Styling holds
+  // `/foundations/design-tokens`), so the active tab comes from the navigation tree,
+  // not from the first part of the URL.
+  const activeSection = menu ? findActiveSection(menu, baseRoute) : undefined;
+
+  // Roving tabindex: only one top-level link is in the Tab order. This is set
+  // on the elements because the link component sets its own `tabIndex`.
+  const tabStopId = focusedId ?? activeSection?.id ?? menu?.[0]?.id;
+  useEffect(() => {
+    anchors.current.forEach((anchor, id) => {
+      anchor.tabIndex = id === tabStopId ? 0 : -1;
+    });
+  });
+
   if (!menu || menu.length === 0) {
     return null;
   }
-
-  // A section can hold pages from another URL path (Styling holds
-  // `/home/design-tokens`), so the active tab comes from the navigation tree,
-  // not from the first part of the URL.
-  const activeSection = findActiveSection(menu, baseRoute);
 
   const openFlyout = (id: string) => {
     const anchor = anchors.current.get(id);
@@ -119,30 +148,65 @@ export const AppNavBarMenu = () => {
     timer.current = window.setTimeout(() => setOpen(null), CLOSE_DELAY_MS);
   };
 
-  // Keyboard focus opens the panel. A click or tap also focuses the link, but
-  // that focus does not match `:focus-visible`.
-  const handleFocus = (id: string) => (event: FocusEvent<HTMLElement>) => {
-    if (skipFocusOpen.current) {
-      skipFocusOpen.current = false;
-      return;
-    }
-    if (event.target.matches(":focus-visible")) {
-      window.clearTimeout(timer.current);
-      openFlyout(id);
-    }
-  };
-
   const handleBlur = (event: FocusEvent<HTMLElement>) => {
     if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
       setOpen(null);
     }
   };
 
+  // Escape closes the panel and puts focus back on the tab.
   const handleKeyDown = (id: string) => (event: KeyboardEvent) => {
     if (event.key !== "Escape" || open?.id !== id) return;
+    returnToTab(id);
+  };
+
+  const returnToTab = (id: string) => {
     setOpen(null);
-    skipFocusOpen.current = true;
     anchors.current.get(id)?.focus();
+  };
+
+  // Tab in the panel: focus the tab, remove the panel, then the browser moves
+  // on from the tab. Other tabs are not in the Tab order.
+  const leaveWithTab = (id: string) => (shiftKey: boolean) => {
+    anchors.current.get(id)?.focus();
+    if (shiftKey) {
+      setOpen(null);
+    } else {
+      flushSync(() => setOpen(null));
+    }
+  };
+
+  // Keys on a top-level link: arrows move between the links, up and down open
+  // the panel.
+  const handleLinkKeyDown =
+    (index: number, id: string, hasFlyout: boolean) =>
+    (event: KeyboardEvent) => {
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
+      if (["ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)) {
+        const next = nextIndex(index, event.key, menu.length, true);
+        if (next === null) return;
+        event.preventDefault();
+        window.clearTimeout(timer.current);
+        setOpen(null);
+        anchors.current.get(menu[next].id)?.focus();
+      } else if (
+        hasFlyout &&
+        (event.key === "ArrowDown" || event.key === "ArrowUp")
+      ) {
+        event.preventDefault();
+        window.clearTimeout(timer.current);
+        pendingFocus.current = event.key === "ArrowDown" ? "first" : "last";
+        openFlyout(id);
+      }
+    };
+
+  // Enter on a link in the panel follows it and closes the panel.
+  const handleKeyUp = (id: string) => (event: KeyboardEvent) => {
+    const target = event.target as HTMLElement;
+    if (event.key === "Enter" && target.closest("[data-column]")) {
+      skipHoverOpen.current = id;
+      setOpen(null);
+    }
   };
 
   // Choosing a link closes the panel.
@@ -156,10 +220,13 @@ export const AppNavBarMenu = () => {
   return (
     <Box as="nav" aria-label="Main navigation" width="auto" position="relative">
       <Box as="ul" display="flex" gap="100" listStyle="none" m="0" p="0">
-        {menu.map((item) => {
+        {menu.map((item, index) => {
           const href = `/${firstPageRoute(item) ?? item.route}`;
           const isCurrent = item.id === activeSection?.id;
           const groups = flyouts.get(item.id) ?? [];
+          const hasFlyout = groups.length > 0;
+          const flyoutId = `${idPrefix}-flyout-${index}`;
+          const isOpen = open?.id === item.id;
           const link = (
             <Link
               unstyled
@@ -169,6 +236,12 @@ export const AppNavBarMenu = () => {
               }}
               href={href}
               aria-current={isCurrent ? "page" : undefined}
+              // Disclosure pattern: a link can carry aria-expanded. The
+              // panel is not a menu, so aria-haspopup is not used.
+              aria-expanded={hasFlyout ? isOpen : undefined}
+              aria-controls={hasFlyout && isOpen ? flyoutId : undefined}
+              onFocus={() => setFocusedId(item.id)}
+              onKeyDown={handleLinkKeyDown(index, item.id, hasFlyout)}
               display="flex"
               alignItems="center"
               px="400"
@@ -187,7 +260,7 @@ export const AppNavBarMenu = () => {
             </Link>
           );
 
-          if (groups.length === 0) {
+          if (!hasFlyout) {
             return <li key={item.id}>{link}</li>;
           }
 
@@ -196,15 +269,18 @@ export const AppNavBarMenu = () => {
               key={item.id}
               onPointerEnter={handlePointerEnter(item.id)}
               onPointerLeave={handlePointerLeave}
-              onFocus={handleFocus(item.id)}
               onBlur={handleBlur}
               onKeyDown={handleKeyDown(item.id)}
+              onKeyUp={handleKeyUp(item.id)}
               onClick={handleClick(item.id)}
             >
               {link}
-              {open?.id === item.id && (
+              {isOpen && open && (
                 <AppNavBarFlyout
                   key={item.id}
+                  id={flyoutId}
+                  onReturn={() => returnToTab(item.id)}
+                  onTab={leaveWithTab(item.id)}
                   label={item.label}
                   groups={groups}
                   columns={flyoutPageColumns(groups)}

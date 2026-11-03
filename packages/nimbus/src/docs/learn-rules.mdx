@@ -78,8 +78,8 @@ See [Tokens and colors](/learn/concepts/tokens-and-colors).
 ## 4. Try theming props first
 
 Theming props, such as `variant`, `size` and `colorPalette`, give a component a
-look that the design system defines. When no theming prop fits, set a style
-prop on that one element.
+look that the design system defines. When no theming prop fits, choose the next
+step in [Customize in three steps](/foundations/customize-in-three-steps).
 
 ```jsx live-dev
 import { Button, Stack } from "@commercetools/nimbus";
@@ -146,7 +146,8 @@ A one-off is a value or a style that Nimbus does not offer, used in one place.
 Sometimes a screen must go to production before Nimbus offers what it needs.
 Then write the one-off, and mark it with a comment that starts with
 `nimbus-one-off:` and gives the reason. Your team can then search the code for
-`nimbus-one-off` and replace each one-off when Nimbus offers a way.
+`nimbus-one-off` and replace each one-off when Nimbus offers a way. To decide
+whether you need a one-off at all, see [Customize in three steps](/foundations/customize-in-three-steps).
 
 ```jsx live-dev
 import { Box, Text } from "@commercetools/nimbus";

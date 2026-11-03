@@ -25,9 +25,10 @@ tags:
   - css
 ---
 
-To change how a Nimbus component looks, go in this order. First try its
-theming props, such as `variant` or `colorPalette`. If none fits, set style
-props with tokens on the component, or on one of its parts.
+To change how a Nimbus component looks, use the lowest step of [Customize in three steps](/foundations/customize-in-three-steps)
+that works. This page explains the first two steps: theming props, such as
+`variant` or `colorPalette`, and style props with tokens on the component or on
+one of its parts.
 
 ## Theming props
 
@@ -68,7 +69,7 @@ Each component page lists the values that the component accepts.
 When no theming prop fits, set a style prop on that one element. Style props
 are named after CSS properties, such as `padding`, `backgroundColor` and
 `borderRadius`. Give them a [token](/learn/concepts/tokens-and-colors), not a
-raw value. All style props are listed in [Style props](/home/style-props).
+raw value. All style props are listed in [Style props](/foundations/style-props).
 
 ```jsx live-dev
 import { Box, Text } from "@commercetools/nimbus";

@@ -6,7 +6,7 @@
  */
 
 import { Suspense } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import {
   Box,
   LoadingSpinner,
@@ -19,6 +19,7 @@ import { DocumentRenderer } from "@/components/document-renderer";
 import { useManifest } from "@/contexts/manifest-context";
 import { useRouteInfo } from "@/hooks/use-route-info";
 import { normalizeRoute } from "@/utils/normalize-route";
+import { findMovedSectionPath } from "@/utils/moved-sections";
 
 /**
  * Pages that were removed, and the page that covers their content now. An old
@@ -65,6 +66,7 @@ const findMovedPath = (
 export default function DynamicRoute() {
   const { routeManifest, isLoading } = useManifest();
   const { baseRoute, normalizedPath } = useRouteInfo();
+  const { search, hash } = useLocation();
 
   // Show loading only while the manifest itself is loading.
   if (isLoading || !routeManifest) {
@@ -74,6 +76,11 @@ export default function DynamicRoute() {
   const replacement = REMOVED_PAGES[normalizedPath];
   if (replacement) {
     return <Navigate to={replacement} replace />;
+  }
+
+  const movedSection = findMovedSectionPath(normalizedPath);
+  if (movedSection) {
+    return <Navigate to={`${movedSection}${search}${hash}`} replace />;
   }
 
   const movedTo = findMovedPath(routeManifest.routes, normalizedPath);
