@@ -36,7 +36,9 @@ export const DatePicker = (props: DatePickerProps) => {
     hourCycle,
   } = props;
   const recipe = useSlotRecipe({ recipe: datePickerSlotRecipe });
-  const [recipeProps, remainingProps] = recipe.splitVariantProps(props);
+  // leadingElement belongs to the inner DateInput, not to ReactAriaDatePicker
+  const { leadingElement, ...restProps } = props;
+  const [recipeProps, remainingProps] = recipe.splitVariantProps(restProps);
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
 
   // the size of the buttons overlaying the input
@@ -62,6 +64,7 @@ export const DatePicker = (props: DatePickerProps) => {
                 width="full"
                 hideTimeZone={hideTimeZone}
                 hourCycle={hourCycle}
+                leadingElement={leadingElement}
                 trailingElement={
                   <Box>
                     <IconButton

@@ -124,6 +124,19 @@ const App = () => (
 - `variant="solid"`: Outlined input with background, suitable for forms
 - `variant="ghost"`: Subtle background on hover, suitable for inline editing
 
+### Leading element
+
+Use `leadingElement` to show an icon or other element at the start of the input:
+
+```jsx live-dev
+const App = () => (
+  <DatePicker
+    aria-label="Event date"
+    leadingElement={<Icons.Event />}
+  />
+)
+```
+
 ### Granularity control
 
 The `granularity` prop controls which date/time segments are displayed and whether the calendar popover automatically closes on selection:

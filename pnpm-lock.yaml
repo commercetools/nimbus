@@ -22,8 +22,8 @@ catalogs:
       specifier: 5.0.9
       version: 5.0.9
     chokidar:
-      specifier: 5.0.0
-      version: 5.0.0
+      specifier: 6.0.0
+      version: 6.0.0
     fuse.js:
       specifier: 7.5.0
       version: 7.5.0
@@ -43,11 +43,11 @@ catalogs:
       specifier: 4.1.8
       version: 4.1.8
     react-router:
-      specifier: 8.4.0
-      version: 8.4.0
+      specifier: 8.5.1
+      version: 8.5.1
     react-router-dom:
-      specifier: 7.18.4
-      version: 7.18.4
+      specifier: 7.18.5
+      version: 7.18.5
     react-syntax-highlighter:
       specifier: 16.1.2
       version: 16.1.2
@@ -151,8 +151,8 @@ catalogs:
       specifier: ^1.5.3
       version: 1.5.3
     '@fission-ai/openspec':
-      specifier: 1.14.3
-      version: 1.14.3
+      specifier: 1.15.0
+      version: 1.15.0
     '@github-ui/storybook-addon-performance-panel':
       specifier: ^1.3.1
       version: 1.3.1
@@ -326,7 +326,6 @@ catalogs:
 overrides:
   rollup: ^4.65.0
   '@babel/runtime': ^7.29.10
-  prismjs: ^1.30.0
   typescript: ~5.9.3
   react-aria: 3.53.1
   react-aria-components: 1.22.1
@@ -338,27 +337,27 @@ overrides:
   mdast-util-to-hast: ^13.2.1
   js-yaml: ^3.15.2
   dompurify: ^3.4.17
-  qs: '>=6.16.0'
+  qs: '>=6.16.1'
   minimatch@>=3.0.0 <3.1.4: 3.1.5
   svgo: '>=4.1.0'
   hono: '>=4.13.5'
   esbuild: '>=0.28.1'
   shell-quote: '>=1.11.0'
+  launch-editor: '>=2.14.2'
   proxy-addr: '>=2.0.8'
   source-map-js: '>=1.2.2'
   sharp: ^0.35.5
   '@babel/core': ^7.29.7
-  '@hono/node-server': '>=1.19.15 <2'
-  fast-uri: '>=4.1.5'
+  '@hono/node-server': <3
+  fast-uri: '>=4.2.3'
   immutable: '>=4.3.9 <5'
-  body-parser@2: '>=2.3.0'
-  ip-address: '>=10.7.1'
+  body-parser@2: '>=2.4.0'
+  ip-address: '>=10.7.4'
   postcss: '>=8.5.23'
   lodash@<4.18.0: '>=4.18.0'
   lodash-es@<4.18.0: '>=4.18.0'
   ajv@>=8.0.0 <8.18.0: '>=8.18.0'
   minimatch@>=10.0.0 <10.2.3: '>=10.2.3'
-  flatted: '>=3.4.2'
   undici: '>=7.30.1 <8'
   picomatch@<2.3.2: '>=2.3.2'
   picomatch@>=4.0.0 <4.0.4: '>=4.0.4'
@@ -397,7 +396,7 @@ importers:
         version: 1.5.3
       '@fission-ai/openspec':
         specifier: catalog:tooling
-        version: 1.14.3(@types/node@26.6.5)
+        version: 1.15.0(@types/node@26.6.5)
       '@preconstruct/cli':
         specifier: catalog:tooling
         version: 2.9.0(supports-color@8.1.1)
@@ -542,7 +541,7 @@ importers:
         version: 5.0.9
       chokidar:
         specifier: catalog:apps
-        version: 5.0.0
+        version: 6.0.0
       fuse.js:
         specifier: catalog:apps
         version: 7.5.0
@@ -581,10 +580,10 @@ importers:
         version: 4.1.8(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-router:
         specifier: catalog:apps
-        version: 8.4.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 8.5.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-router-dom:
         specifier: catalog:apps
-        version: 7.18.4(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 7.18.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-stately:
         specifier: 3.51.0
         version: 3.51.0(react@19.2.0)
@@ -926,17 +925,17 @@ importers:
         specifier: catalog:react
         version: 19.2.0(react@19.2.0)
       slate:
-        specifier: ^0.126.0
-        version: 0.126.2
+        specifier: ^0.147.0
+        version: 0.147.4
       slate-history:
-        specifier: ^0.115.0
-        version: 0.115.0(slate@0.126.2)
+        specifier: ^0.144.0
+        version: 0.144.0(slate@0.147.4)
       slate-hyperscript:
-        specifier: ^0.127.0
-        version: 0.127.0(slate@0.126.2)
+        specifier: ^0.138.0
+        version: 0.138.3(slate@0.147.4)
       slate-react:
-        specifier: ^0.126.0
-        version: 0.126.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate-dom@0.123.0(slate@0.126.2))(slate@0.126.2)
+        specifier: ^0.147.0
+        version: 0.147.5(@types/lodash@4.17.27)(@types/react@19.3.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate-dom@0.147.3(slate@0.147.4))(slate@0.147.4)
       storybook:
         specifier: catalog:tooling
         version: 10.6.3(@types/react@19.3.0)(prettier@3.9.10)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -2268,8 +2267,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@fission-ai/openspec@1.14.3':
-    resolution: {integrity: sha512-ALFW1d5bSm6t27Kmcle93SDFuqUc8fLwy5ZdBfIiNffo0Yk9AEOJxw6xDqBv38eMM7l7TeOZBB/7C08luxYGfg==}
+  '@fission-ai/openspec@1.15.0':
+    resolution: {integrity: sha512-lG/EPEiL22bB70yKJhWWSPk1UQGLnwO7Dp+hNc/jUmBwb0qxPLzHCUkXEfkny4iYDOsgnsNQmc39/g9QcvnBnA==}
     engines: {node: '>=20.19.0'}
     hasBin: true
 
@@ -5157,8 +5156,8 @@ packages:
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
 
-  body-parser@2.3.0:
-    resolution: {integrity: sha512-2cGmJupaNgg+QUwVLAucDuWuoMZ6EX9iHDRswZ5lsNYEmwPaRknMPCLZz07yTzVq/83p4o/wzbDZbBrTvGGTIw==}
+  body-parser@2.4.0:
+    resolution: {integrity: sha512-Ifk1KcLrxaGt1occQagQNFNNOqRt1LFuehEnHHzB8Z6cRgIxRU1TBaiIsUiCdA+gy5PL7Y1IX31DNKkRmxtXjQ==}
     engines: {node: '>=18'}
 
   boolbase@1.0.0:
@@ -5297,6 +5296,10 @@ packages:
   chokidar@5.0.0:
     resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
     engines: {node: '>= 20.19.0'}
+
+  chokidar@6.0.0:
+    resolution: {integrity: sha512-Ec2Z7wpcKBiMpR7DxteoqS/sq5G5d2A4fpxzPv6+fD7xNNdrTghn7L11YwV5EN1B3i72Erc3XVT5FkWIDx90+A==}
+    engines: {node: '>= 22.22'}
 
   chroma-js@3.1.2:
     resolution: {integrity: sha512-IJnETTalXbsLx1eKEgx19d5L6SRM7cH4vINw/99p/M11HCuXGRWL+6YmCm7FWFGIo6dtWuQoQi1dc5yQ7ESIHg==}
@@ -5492,6 +5495,10 @@ packages:
 
   content-type@2.0.0:
     resolution: {integrity: sha512-j/O/d7GcZCyNl7/hwZAb606rzqkyvaDctLmckbxLzHvFBzTJHuGEdodATcP3yIRoDrLHkIATJuvzbFlp/ki2cQ==}
+    engines: {node: '>=18'}
+
+  content-type@2.1.0:
+    resolution: {integrity: sha512-mj7UPXE0jaqaOsukNZRUEfEi2AcL7C/vwmwcHV0O97eO1E1pxBZuyjlZrx5seTaNBg1U6+o35wpa35Qfcc+7ag==}
     engines: {node: '>=18'}
 
   convert-source-map@1.9.0:
@@ -6053,8 +6060,8 @@ packages:
   fast-string-width@3.0.2:
     resolution: {integrity: sha512-gX8LrtNEI5hq8DVUfRQMbr5lpaS4nMIWV+7XEbXk2b8kiQIizgnlr12B4dA3ZEx3308ze0O4Q1R+cHts8kyUJg==}
 
-  fast-uri@4.2.1:
-    resolution: {integrity: sha512-TmHQgewjHtMq1E5QKA0tOE0yeYGQs25KZC/ziJpubRtWI15W92e6vPFydWOeZBVROSHBYw/QhD9d5OefdD6LDg==}
+  fast-uri@4.2.3:
+    resolution: {integrity: sha512-I1PXwP5eAhlNlcdpjt9CgB59op2ZvZfxw+BkqGFVIUOgNpCVTcTqp3HhTX7brxj5vsip+nSY4nTvff+eIA76hg==}
 
   fast-wrap-ansi@0.2.2:
     resolution: {integrity: sha512-7F2Fl+TjRSenLqlU3UjSH0iyqopqoZIu7eZVpEirP2g1GtWa2G/ecEmBdgz31+Mxr+ELclgg6sokpSFIQiZ02Q==}
@@ -6117,6 +6124,9 @@ packages:
 
   flatted@3.4.2:
     resolution: {integrity: sha512-PjDse7RzhcPkIJwy5t7KPWQSZ9cAbzQXcafsetQoD7sOJRQlGikNbx7yZp2OotDnJyrDcbyRq3Ttb18iYOqkxA==}
+
+  flatted@3.4.4:
+    resolution: {integrity: sha512-5+ybhBZANEJxaH3X5evAFatUxLfEHSr7n6kYJ+1Qd0mUqr4eu9gIf6GDbWHf8RJijHrjjO8G+la14SlL2SeS1Q==}
 
   for-each@0.3.5:
     resolution: {integrity: sha512-dKx12eRCVIzqCxFGplyFKJMPvLEWgmNtUrpTiJIR5u97zEhRG8ySrtboPHZXx7daLxQVrl643cTzbab2tkQjxg==}
@@ -6377,6 +6387,10 @@ packages:
     resolution: {integrity: sha512-im9DjEDQ55s9fL4EYzOAv0yMqmMBSZp6G0VvFyTMPKWxiSBHUj9NW/qqLmXUwXrrM7AvqSlTCfvqRb0cM8yYqw==}
     engines: {node: '>=0.10.0'}
 
+  iconv-lite@0.7.3:
+    resolution: {integrity: sha512-IKXpvIzjnC9XTAUbVBcMfGS0EPaIXtW6v+zr+RRp+hqULEpo0owZax6wyRwPOJbWbzjYspQwusTsfVr0ifh4uQ==}
+    engines: {node: '>=0.10.0'}
+
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
 
@@ -6464,8 +6478,8 @@ packages:
   intl-messageformat@10.7.18:
     resolution: {integrity: sha512-m3Ofv/X/tV8Y3tHXLohcuVuhWKo7BBq62cqY15etqmLxg2DZ34AGGgQDeR+SCta2+zICb1NX83af0GJmbQ1++g==}
 
-  ip-address@10.7.2:
-    resolution: {integrity: sha512-7H/2gFSIitxc0hG3nOI1glS8QLo/EHBFFLk8vEUjXY/xu0AdL8jZ9U1IzO2PUm0d2D/ofQcAifb0g6OBkt8U7w==}
+  ip-address@10.7.5:
+    resolution: {integrity: sha512-t2v0rkILYv9WXmSL7TpAaU3HXgaFYOPUcH3QHgwQ++gpJuH3bqyMy4Fvt/DJCTKwzH3Cf+bAp5W/mFL39KPLzA==}
     engines: {node: '>= 12'}
 
   ipaddr.js@1.9.1:
@@ -6747,8 +6761,8 @@ packages:
   kolorist@1.8.0:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
 
-  launch-editor@2.14.1:
-    resolution: {integrity: sha512-QWBrQsMpH7gPr965dsKD/3cKWiNoTjpATQf++Xq63N6sKRGMwlVXz41O1IZTMfZQgBctD/K5Zt06+/I6pP6+HA==}
+  launch-editor@2.14.2:
+    resolution: {integrity: sha512-NHJEb30MGBCkmZXLZwz25t37QR4aY03ZzPYUJXOJaOa92uWwExI9SBQUuIznBYc1xkD7cJNGX7oc3Nl3sq2kQQ==}
 
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -7714,8 +7728,8 @@ packages:
     resolution: {integrity: sha512-+Owyggi9IxT1ePKGafcI87ubSmxol6smwJ+RAHDQlx9+9cPwFWDiKFFCPuWhr9ignlGpZ9vDQLw67N4dcTVFEA==}
     engines: {node: '>=20'}
 
-  qs@6.16.0:
-    resolution: {integrity: sha512-h6fhOIaRrID2CbEY2fqs+7t+UXZo+MLAnU5gRIq85uFtdiUPCdsApMlHhXogKVM4HM2DVbIjGNTTYH2OcmP1vA==}
+  qs@6.17.1:
+    resolution: {integrity: sha512-jd3COkaKVgGUW+ZHyEHCG9bH7RoaaiWuMgzsIBjUMVjLAaWGWpoUAVwljVvBHxRu/2qEHnadLGZrkutYUBPQJA==}
     engines: {node: '>=0.6'}
 
   quansync@0.2.11:
@@ -7859,8 +7873,8 @@ packages:
     peerDependencies:
       react: '>=15'
 
-  react-router-dom@7.18.4:
-    resolution: {integrity: sha512-yrfmJHIpDG7taCpqKjT1G5B6q3O2K+RN8/fgNf0lTjCwiPbQ0ei6vXX9ZjQR+7ld8Tr7Z5xmyMnZ8YJrphWQUw==}
+  react-router-dom@7.18.5:
+    resolution: {integrity: sha512-9HcfDMU6JJ/fp6gJZYGwNE6RknVGS4kBjH1HkNw959mCJi70TVwdipQWv2FEol9uGpi+SZTFtVpJPtEQfayeOw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: '>=18'
@@ -7871,8 +7885,8 @@ packages:
     peerDependencies:
       react: '>=15'
 
-  react-router@7.18.4:
-    resolution: {integrity: sha512-PUPQcMhMGRAslLcvtlPz/kmzBEWPhLdgLFrL7pLNepBL6dX0lWj4WD2cUYVgYCuT3jxvghYFg81cDTj44DhetQ==}
+  react-router@7.18.5:
+    resolution: {integrity: sha512-dTgvcXDOrLPrlLHrcZAqWveiK1hMSqN+rGAJzegP8HtmNkfRxOoshGWBNX3ZJ0cZjOHkRdlUJtaIhZMLLyGyPw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: '>=18'
@@ -7881,13 +7895,19 @@ packages:
       react-dom:
         optional: true
 
-  react-router@8.4.0:
-    resolution: {integrity: sha512-JtydAkBvU9UTEe5qNC+POhu+ZBNM7rlKY2IegwXc7Idj7xfRG16x5RZrw3mju+XlqBxfvb2ky9P3jUp9WyWC1g==}
+  react-router@8.5.1:
+    resolution: {integrity: sha512-5u1eQ46QjuXjNfEnLwzrnou1Bm5dquO3xjVYkkMYCudtkicD2AQHtx+fvXzPATtPJx8TW6DR1x1TDRqsfHyZBw==}
     engines: {node: '>=22.22.0'}
     peerDependencies:
+      '@types/react': '>=19.2.0'
+      '@types/react-dom': '>=19.2.0'
       react: '>=19.2.7'
       react-dom: '>=19.2.7'
     peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
       react-dom:
         optional: true
 
@@ -7956,6 +7976,10 @@ packages:
 
   readdirp@5.0.0:
     resolution: {integrity: sha512-9u/XQ1pvrQtYyMpZe7DXKv2p5CNvyVwzUB6uhLAnQwHMSgKMBR62lc7AHljaeteeHXn11XTAaLLUVZYVZyuRBQ==}
+    engines: {node: '>= 20.19.0'}
+
+  readdirp@5.1.1:
+    resolution: {integrity: sha512-Kko+Y5XQ6fM+Ce3dq3m9YGxnacYZYl9cA1wZjaF3Vbry2L3i1qVg8+CAgNPsXRArPMUMCaOR7oa9Nqntc43JKA==}
     engines: {node: '>= 20.19.0'}
 
   real-require@0.2.0:
@@ -8277,8 +8301,8 @@ packages:
     resolution: {integrity: sha512-ZA6oR3T/pEyuqwMgAKT0/hAv8oAXckzbkmR0UkUosQ+Mc4RxGoJkRmwHgHufaenlyAgE1Mxgpdcrf75y6XcnDg==}
     engines: {node: '>=14.16'}
 
-  slate-dom@0.123.0:
-    resolution: {integrity: sha512-OUinp4tvSrAlt64JL9y20Xin08jgnnj1gJmIuPdGvU5MELKXRNZh17a7EKKNOS6OZPAE8Dk9NI1MAIS/Qz0YBw==}
+  slate-dom@0.147.3:
+    resolution: {integrity: sha512-dG5m3NSXh2hs5dY7DT7HHetsOFEbJbcJG+rHXvgrEFMEkUiGd0RxFIPVekGg8B+5rX9h4l7ct603QCGKc9R/Ig==}
     peerDependencies:
       slate: '>=0.121.0'
 
@@ -8287,8 +8311,8 @@ packages:
     peerDependencies:
       slate: '>=0.65.3'
 
-  slate-history@0.115.0:
-    resolution: {integrity: sha512-QdUm9aVyQFz6JG4a84Z6Um+tJpZJmsh9bjXwTVTvYiN4rdKbqL6+/4HT94on1WYxe10Q4vY6mA6BCpoYxgF3tQ==}
+  slate-history@0.144.0:
+    resolution: {integrity: sha512-+ZTjXWyXTSxvzkCC4UW0xd6PTlsP8ZUPEkJXTt9M1SK2HjDisBrgQZbFFk8XxbpLaWZaL5DZIG3/WGPPj3muNg==}
     peerDependencies:
       slate: '>=0.114.3'
 
@@ -8297,18 +8321,25 @@ packages:
     peerDependencies:
       slate: '>=0.65.3'
 
-  slate-hyperscript@0.127.0:
-    resolution: {integrity: sha512-siQu4q4irgKKIpPcFz4xuzLTxzfdQ00MfPAg+NFOEBwUcz2ybvlRgozd+J3CqonZgpzPR2VID3LsQyqJ0GgQpQ==}
+  slate-hyperscript@0.138.3:
+    resolution: {integrity: sha512-rsKTeNQ+eu99nxo7a3eBOW0mhG0v3yYCMDwyURNXl+wmS0xv+SIci0un1j2DTcjWJ184ubCEF7d3ySIJB40KFw==}
     peerDependencies:
       slate: '>=0.114.3'
 
-  slate-react@0.126.0:
-    resolution: {integrity: sha512-pQEu2X25mj539jWK/GpwNEdfE/gwqRccDwQaf4UeoABX3+cLaDls8CIyT8lASGRHyphqkgGW7pUxWOCBGC2hqA==}
+  slate-react@0.147.5:
+    resolution: {integrity: sha512-XTMz12tMWOi/hRs8PtH9FFEndPt5ZGiPmWcRLmcXACngPo8qtufiBwd7PYG0xRhYo0AsR0g5Ps9NtnBIq8s6lg==}
     peerDependencies:
+      '@types/lodash': ^4.14.0
+      '@types/react': '>=18.0.0'
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
       slate: '>=0.121.0'
-      slate-dom: '>=0.119.1'
+      slate-dom: '>=0.141.0'
+    peerDependenciesMeta:
+      '@types/lodash':
+        optional: true
+      '@types/react':
+        optional: true
 
   slate-react@0.75.0:
     resolution: {integrity: sha512-zo2+n+BQ+/Q33JU2r6Yyb+NEo7kOfZ5deMm8bFQrp5gw++Mq2OOz+W+v7lwRD7rZDp+SREXBMMGCYhQ0shWZmw==}
@@ -8317,8 +8348,8 @@ packages:
       react-dom: '>=16.8.0'
       slate: '>=0.65.3'
 
-  slate@0.126.2:
-    resolution: {integrity: sha512-38C8GU9awiEbroZm+DzXEFUWKptb1QV9xcgcUjseas4PtqQdBnEPITocosYzFHXEVrlkafjZEv8KH8pjhe0esQ==}
+  slate@0.147.4:
+    resolution: {integrity: sha512-AaoMVtj+6AUhMAvMubk9OZn7cdA5MsZLWbt+jx5RvHimd3lDRhQhKVgLy6uegwT2lEYB8lDKqWGcN6vU8W2V9w==}
 
   slate@0.75.0:
     resolution: {integrity: sha512-ZLejJN1S9VXZPj1Si4BIoiJSwYS6rMwSyOTHVQQGiASLvstLZFS4jPrk3cx+MrHRYXvt72TlYMTd/U3Mgn7Uhw==}
@@ -9792,7 +9823,7 @@ snapshots:
       '@pnpm/deps.graph-sequencer': 1100.0.1
       cac: 7.0.0
       import-meta-resolve: 4.2.0
-      launch-editor: 2.14.1
+      launch-editor: 2.14.2
       package-manager-detector: 1.8.0
       semver: 7.8.5
       tinyexec: 1.3.1
@@ -12279,7 +12310,7 @@ snapshots:
       - '@noble/hashes'
       - canvas
 
-  '@fission-ai/openspec@1.14.3(@types/node@26.6.5)':
+  '@fission-ai/openspec@1.15.0(@types/node@26.6.5)':
     dependencies:
       '@inquirer/core': 12.0.3(@types/node@26.6.5)
       '@inquirer/prompts': 8.7.2(@types/node@26.6.5)
@@ -12557,7 +12588,7 @@ snapshots:
   '@inquirer/external-editor@3.0.5(@types/node@26.6.5)':
     dependencies:
       chardet: 2.1.1
-      iconv-lite: 0.7.2
+      iconv-lite: 0.7.3
     optionalDependencies:
       '@types/node': 26.6.5
 
@@ -14568,7 +14599,7 @@ snapshots:
     dependencies:
       '@vitest/utils': 5.0.5
       fflate: 0.8.3
-      flatted: 3.4.2
+      flatted: 3.4.4
       pathe: 2.0.3
       sirv: 3.0.2
       tinyrainbow: 3.2.0
@@ -15304,7 +15335,7 @@ snapshots:
   ajv@8.20.0:
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-uri: 4.2.1
+      fast-uri: 4.2.3
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
@@ -15415,15 +15446,15 @@ snapshots:
       inherits: 2.0.4
       readable-stream: 3.6.2
 
-  body-parser@2.3.0(supports-color@8.1.1):
+  body-parser@2.4.0(supports-color@8.1.1):
     dependencies:
       bytes: 3.1.2
-      content-type: 2.0.0
+      content-type: 2.1.0
       debug: 4.4.3(supports-color@8.1.1)
       http-errors: 2.0.1
-      iconv-lite: 0.7.2
+      iconv-lite: 0.7.3
       on-finished: 2.4.1
-      qs: 6.16.0
+      qs: 6.17.1
       raw-body: 3.0.2
       type-is: 2.1.0
     transitivePeerDependencies:
@@ -15565,6 +15596,10 @@ snapshots:
     dependencies:
       readdirp: 5.0.0
 
+  chokidar@6.0.0:
+    dependencies:
+      readdirp: 5.1.1
+
   chroma-js@3.1.2: {}
 
   chromatic@18.13.3:
@@ -15700,6 +15735,8 @@ snapshots:
   content-type@1.0.5: {}
 
   content-type@2.0.0: {}
+
+  content-type@2.1.0: {}
 
   convert-source-map@1.9.0: {}
 
@@ -16210,12 +16247,12 @@ snapshots:
   express-rate-limit@8.3.0(express@5.2.1(supports-color@8.1.1)):
     dependencies:
       express: 5.2.1(supports-color@8.1.1)
-      ip-address: 10.7.2
+      ip-address: 10.7.5
 
   express@5.2.1(supports-color@8.1.1):
     dependencies:
       accepts: 2.0.0
-      body-parser: 2.3.0(supports-color@8.1.1)
+      body-parser: 2.4.0(supports-color@8.1.1)
       content-disposition: 1.0.1
       content-type: 1.0.5
       cookie: 0.7.2
@@ -16234,7 +16271,7 @@ snapshots:
       once: 1.4.0
       parseurl: 1.3.3
       proxy-addr: 2.0.8
-      qs: 6.16.0
+      qs: 6.17.1
       range-parser: 1.2.1
       router: 2.2.0(supports-color@8.1.1)
       send: 1.2.1(supports-color@8.1.1)
@@ -16283,7 +16320,7 @@ snapshots:
     dependencies:
       fast-string-truncated-width: 3.0.3
 
-  fast-uri@4.2.1: {}
+  fast-uri@4.2.3: {}
 
   fast-wrap-ansi@0.2.2:
     dependencies:
@@ -16353,6 +16390,8 @@ snapshots:
   flatbuffers@25.9.23: {}
 
   flatted@3.4.2: {}
+
+  flatted@3.4.4: {}
 
   for-each@0.3.5:
     dependencies:
@@ -16683,6 +16722,10 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
+  iconv-lite@0.7.3:
+    dependencies:
+      safer-buffer: 2.1.2
+
   ieee754@1.2.1: {}
 
   ignore-walk@3.0.4:
@@ -16778,7 +16821,7 @@ snapshots:
       '@formatjs/icu-messageformat-parser': 2.11.4
       tslib: 2.8.1
 
-  ip-address@10.7.2: {}
+  ip-address@10.7.5: {}
 
   ipaddr.js@1.9.1: {}
 
@@ -17014,7 +17057,7 @@ snapshots:
 
   kolorist@1.8.0: {}
 
-  launch-editor@2.14.1:
+  launch-editor@2.14.2:
     dependencies:
       picocolors: 1.1.1
       shell-quote: 1.12.0
@@ -18229,7 +18272,7 @@ snapshots:
     dependencies:
       hookified: 2.2.0
 
-  qs@6.16.0:
+  qs@6.17.1:
     dependencies:
       es-define-property: 1.0.1
       side-channel: 1.1.1
@@ -18407,11 +18450,11 @@ snapshots:
       tiny-invariant: 1.3.3
       tiny-warning: 1.0.3
 
-  react-router-dom@7.18.4(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  react-router-dom@7.18.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
-      react-router: 7.18.4(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-router: 7.18.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
   react-router@5.3.4(react@19.2.0):
     dependencies:
@@ -18426,7 +18469,7 @@ snapshots:
       tiny-invariant: 1.3.3
       tiny-warning: 1.0.3
 
-  react-router@7.18.4(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  react-router@7.18.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       cookie: 1.1.1
       react: 19.2.0
@@ -18434,12 +18477,14 @@ snapshots:
     optionalDependencies:
       react-dom: 19.2.0(react@19.2.0)
 
-  react-router@8.4.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  react-router@8.5.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@remix-run/route-pattern': 0.22.1
       cookie-es: 3.1.1
       react: 19.2.0
     optionalDependencies:
+      '@types/react': 19.3.0
+      '@types/react-dom': 19.3.0(@types/react@19.3.0)
       react-dom: 19.2.0(react@19.2.0)
 
   react-select@5.10.2(@types/react@19.3.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(supports-color@8.1.1):
@@ -18540,6 +18585,8 @@ snapshots:
   readdirp@4.1.2: {}
 
   readdirp@5.0.0: {}
+
+  readdirp@5.1.1: {}
 
   real-require@0.2.0: {}
 
@@ -19006,7 +19053,7 @@ snapshots:
 
   slash@5.1.0: {}
 
-  slate-dom@0.123.0(slate@0.126.2):
+  slate-dom@0.147.3(slate@0.147.4):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
@@ -19014,7 +19061,7 @@ snapshots:
       is-plain-object: 5.0.0
       lodash: 4.18.1
       scroll-into-view-if-needed: 3.1.0
-      slate: 0.126.2
+      slate: 0.147.4
       tiny-invariant: 1.3.1
 
   slate-history@0.113.1(slate@0.75.0):
@@ -19022,20 +19069,20 @@ snapshots:
       is-plain-object: 5.0.0
       slate: 0.75.0
 
-  slate-history@0.115.0(slate@0.126.2):
+  slate-history@0.144.0(slate@0.147.4):
     dependencies:
-      slate: 0.126.2
+      slate: 0.147.4
 
   slate-hyperscript@0.100.0(slate@0.75.0):
     dependencies:
       is-plain-object: 5.0.0
       slate: 0.75.0
 
-  slate-hyperscript@0.127.0(slate@0.126.2):
+  slate-hyperscript@0.138.3(slate@0.147.4):
     dependencies:
-      slate: 0.126.2
+      slate: 0.147.4
 
-  slate-react@0.126.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate-dom@0.123.0(slate@0.126.2))(slate@0.126.2):
+  slate-react@0.147.5(@types/lodash@4.17.27)(@types/react@19.3.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate-dom@0.147.3(slate@0.147.4))(slate@0.147.4):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
@@ -19044,9 +19091,12 @@ snapshots:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
       scroll-into-view-if-needed: 3.1.0
-      slate: 0.126.2
-      slate-dom: 0.123.0(slate@0.126.2)
+      slate: 0.147.4
+      slate-dom: 0.147.3(slate@0.147.4)
       tiny-invariant: 1.3.1
+    optionalDependencies:
+      '@types/lodash': 4.17.27
+      '@types/react': 19.3.0
 
   slate-react@0.75.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate@0.75.0):
     dependencies:
@@ -19062,7 +19112,7 @@ snapshots:
       slate: 0.75.0
       tiny-invariant: 1.0.6
 
-  slate@0.126.2: {}
+  slate@0.147.4: {}
 
   slate@0.75.0:
     dependencies:
@@ -19603,7 +19653,7 @@ snapshots:
   url@0.11.4:
     dependencies:
       punycode: 1.4.1
-      qs: 6.16.0
+      qs: 6.17.1
 
   use-callback-ref@1.3.3(@types/react@19.3.0)(react@19.2.0):
     dependencies:
