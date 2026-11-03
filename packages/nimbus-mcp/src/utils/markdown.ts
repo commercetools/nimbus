@@ -1,3 +1,6 @@
+/** Finds `tab="Label"`, `tab='Label'` or `tab=Label` in a fence info string. */
+const TAB_LABEL = /(?:^|\s)tab=(?:"([^"]*)"|'([^']*)'|(\S+))/;
+
 /**
  * Strips MDX/Markdown content for MCP tool responses to reduce context bloat.
  *
@@ -12,6 +15,8 @@
  * - Frontmatter regex has no /m flag so ^ anchors to the true start of the
  *   string only — mid-document --- separators are left intact.
  * - Inline code backtick markers are preserved for searchability.
+ * - A fenced block with a `tab="Label"` keeps its label as a `[Label]` line
+ *   before the code, so alternatives such as install commands stay labeled.
  */
 export function stripMarkdown(text: string): string {
   // --- Step 1: Extract fenced code blocks into placeholders ---
@@ -19,9 +24,18 @@ export function stripMarkdown(text: string): string {
   // The null-byte delimiter (\uE000) is safe because MDX source never contains it.
   const codeBlocks: string[] = [];
   const withPlaceholders = text.replace(
-    /^```[^\n]*\n([\s\S]*?)^```[ \t]*$/gm,
-    (_, content: string) => {
-      codeBlocks.push(content.trimEnd());
+    /^```([^\n]*)\n([\s\S]*?)^```[ \t]*$/gm,
+    (_, info: string, content: string) => {
+      // A block with a `tab="Label"` is one of several alternatives (for
+      // example one command for each package manager). Keep the label so the
+      // reader can tell which alternative is which.
+      const label = TAB_LABEL.exec(info);
+      const name = label ? (label[1] ?? label[2] ?? label[3]) : undefined;
+      codeBlocks.push(
+        name === undefined
+          ? content.trimEnd()
+          : `[${name}]\n${content.trimEnd()}`
+      );
       return `\uE000CODE${codeBlocks.length - 1}\uE000`;
     }
   );
