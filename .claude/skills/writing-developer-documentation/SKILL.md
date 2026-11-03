@@ -409,6 +409,31 @@ header. The Resources section lists other links:
 **IMPORTANT**: Internal component links MUST start with '/' (e.g.,
 `/components/inputs/searchinput`) to ensure absolute paths from root.
 
+## Alternative Commands (Code Tabs)
+
+When the reader needs one of several alternatives of the same code, such as an
+install command for each package manager, add `tab="Label"` to the opening line
+of each block and write the blocks directly one after the other:
+
+````markdown
+```bash tab="pnpm"
+pnpm add @commercetools/nimbus
+```
+
+```bash tab="npm"
+npm install @commercetools/nimbus
+```
+
+```bash tab="yarn"
+yarn add @commercetools/nimbus
+```
+````
+
+Blocks that follow each other with only blank lines between them form one tab
+group, and the reader sees one block at a time. Write every alternative in full,
+and use the same label order in every group. See
+`docs/file-type-guidelines/documentation.md` ("Code Tabs").
+
 ## Code Examples (jsx live-dev Blocks)
 
 ### Requirements

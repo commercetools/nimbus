@@ -43,6 +43,7 @@ import {
 import { Frontpage } from "./frontpage";
 import { FoundationSections } from "./foundation-sections";
 import { PropsTable } from "./props-table";
+import { CodeTabs } from "./code-tabs";
 
 /** The narrowest width of a Markdown table cell, below the `md` breakpoint. */
 const MD_CELL_MIN_WIDTH = { base: "8rem", md: "0" };
@@ -123,4 +124,5 @@ export const components: MDXComponents = {
   CategoryOverview,
   FoundationSections,
   NimbusExportsList,
+  CodeTabs,
 };

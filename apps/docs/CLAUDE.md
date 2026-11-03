@@ -145,6 +145,26 @@ the editor resolves them from the modules listed in
 `components/document-renderer/components/live-code-editor/live-code-editor.tsx`
 (`liveModules`). An import from any other module shows an error.
 
+### Code Tabs
+
+Code blocks that follow each other and have a `tab="Label"` on the opening line
+form one tab group. The group shows one block at a time, for example one install
+command for each package manager:
+
+````mdx
+```bash tab="pnpm"
+pnpm add @commercetools/nimbus
+```
+
+```bash tab="npm"
+npm install @commercetools/nimbus
+```
+````
+
+The `remarkCodeTabs` plugin (`components/document-renderer/plugins`) builds the
+group, and the `CodeTabs` component renders it. The tab that the reader chose is
+saved, and every group with a tab of the same label follows it.
+
 ### Engineering Documentation
 
 Engineering docs (like this file) live in `docs/` at repo root:

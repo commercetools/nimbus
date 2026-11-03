@@ -310,6 +310,42 @@ render live, interactive React components in the documentation site.
 **Note**: MDX files are for documentation. Use `.stories.tsx` files for
 Storybook content.
 
+### Code Tabs
+
+Use code tabs when the reader needs one of several alternatives of the same code
+and one alternative at a time is enough. The main case is an install command for
+each package manager. Add `tab="Label"` to the opening line of each code block,
+and write the blocks directly one after the other:
+
+````markdown
+```bash tab="pnpm"
+pnpm add @commercetools/nimbus
+```
+
+```bash tab="npm"
+npm install @commercetools/nimbus
+```
+
+```bash tab="yarn"
+yarn add @commercetools/nimbus
+```
+````
+
+**Key points**:
+
+- Blocks with a `tab="Label"` that follow each other, with only blank lines
+  between them, form one group. Text, a heading or any other element ends the
+  group
+- The label is the tab text. The docs app does not know what a label means, so
+  the author writes every alternative in full
+- The docs app saves the tab that the reader chose and shows the tab with the
+  same label in every group on every page. A group without that label shows its
+  first tab
+- A single block with a `tab` label is shown as a normal code block
+- The MCP server returns every block, each with its label as a `[Label]` line
+  before the code
+- Write the labels in the same order in every group, for example pnpm, npm, yarn
+
 ### Code Example Patterns
 
 #### Simple Component Example
