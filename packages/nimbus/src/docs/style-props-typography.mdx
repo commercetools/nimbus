@@ -1,7 +1,8 @@
 ---
 id: Style Props-Typography
 title: Typography
-description: JSX style props for styling text
+illustration: token-typography
+description: JSX style props for styling text, lists, and tables
 order: 999
 menu:
   - Home
@@ -9,6 +10,8 @@ menu:
   - Typography
 tags:
   - document
+  - list
+  - table
 ---
 JSX style props for styling text
 
@@ -373,3 +376,158 @@ Use the `hyphens` prop to set whether hyphens are used in the text.
 | Prop      | CSS Property | Token Category |
 | --------- | ------------ | -------------- |
 | `hyphens` | `hyphens`    | -              |
+
+## List
+
+### List Style Type
+
+Use the `listStyleType` property to set the type of the list marker.
+
+```jsx
+<Box as="ul" listStyleType="circle">
+  <li>Item 1</li>
+  <li>Item 2</li>
+  <li>Item 3</li>
+</Box>
+```
+
+| Prop            | CSS Property      | Token Category |
+| --------------- | ----------------- | -------------- |
+| `listStyleType` | `list-style-type` | -              |
+
+### List Style Position
+
+Use the `listStylePosition` property to set the position of the list marker.
+
+```jsx
+<Box as="ul" listStylePosition="inside">
+  <li>Item 1</li>
+  <li>Item 2</li>
+  <li>Item 3</li>
+</Box>
+```
+
+| Prop                | CSS Property          | Token Category |
+| ------------------- | --------------------- | -------------- |
+| `listStylePosition` | `list-style-position` | -              |
+
+### List Style Image
+
+Use the `listStyleImage` property to set the image of the list marker.
+
+```jsx
+<Box as="ul" listStyleImage="url(...)">
+  <li>Item 1</li>
+  <li>Item 2</li>
+  <li>Item 3</li>
+</Box>
+```
+
+| Prop             | CSS Property       | Token Category |
+| ---------------- | ------------------ | -------------- |
+| `listStyleImage` | `list-style-image` | -              |
+
+### Markers
+
+Use the `_marker` property to set the marker of a list item. Marker colors are
+color tokens; see [Colors](/home/design-tokens/colors).
+
+```jsx /_marker/
+<ul>
+  <Box as="li" _marker={{ color: "red" }}>
+    Item 1
+  </Box>
+  <Box as="li" _marker={{ color: "blue" }}>
+    Item 2
+  </Box>
+  <Box as="li" _marker={{ color: "green" }}>
+    Item 3
+  </Box>
+</ul>
+```
+
+## Tables
+
+Border spacing values are spacing tokens, such as `200` (8px). For all tokens,
+see [Spacing](/home/design-tokens/spacing).
+
+### Border Spacing
+
+Control the border-spacing property of a table.
+
+```jsx
+<Box as="table" borderSpacing="200">
+  <tbody>
+    <tr>
+      <td>Cell 1</td>
+      <td>Cell 2</td>
+    </tr>
+  </tbody>
+</Box>
+```
+
+| Prop            | CSS Property     | Token Category |
+| --------------- | ---------------- | -------------- |
+| `borderSpacing` | `border-spacing` | `spacing`      |
+
+### Border Spacing X
+
+Use the `borderSpacingX` prop to set the horizontal border-spacing property of a
+table.
+
+```jsx
+<Box as="table" borderSpacingX="200">
+  <tbody>
+    <tr>
+      <td>Cell 1</td>
+      <td>Cell 2</td>
+    </tr>
+  </tbody>
+</Box>
+```
+
+| Prop             | CSS Property     | Token Category |
+| ---------------- | ---------------- | -------------- |
+| `borderSpacingX` | `border-spacing` | `spacing`      |
+
+### Border Spacing Y
+
+Use the `borderSpacingY` prop to set the vertical border-spacing property of a
+table.
+
+```jsx
+<Box as="table" borderSpacingY="200">
+  <tbody>
+    <tr>
+      <td>Cell 1</td>
+      <td>Cell 2</td>
+    </tr>
+  </tbody>
+</Box>
+```
+
+| Prop             | CSS Property     | Token Category |
+| ---------------- | ---------------- | -------------- |
+| `borderSpacingY` | `border-spacing` | `spacing`      |
+
+### Caption Side
+
+Use the `captionSide` prop to set the side of the caption of a table.
+
+```jsx
+<table>
+  <Box as="caption" captionSide="bottom">
+    This is a caption
+  </Box>
+  <tbody>
+    <tr>
+      <td>Cell 1</td>
+      <td>Cell 2</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+| Prop          | CSS Property   | Token Category |
+| ------------- | -------------- | -------------- |
+| `captionSide` | `caption-side` | -              |
