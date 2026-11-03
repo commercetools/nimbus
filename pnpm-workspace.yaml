@@ -113,8 +113,8 @@ overrides:
   dompurify: "catalog:utils"
   # >=6.16.0 fixes GHSA-x5fp-wj9c-mxmx (arrayLimit bypass via bracket-key
   # comma parsing) and GHSA-4mjr-xmp4-gh2g (DoS via attacker-controlled
-  # isBuffer).
-  qs: ">=6.16.0"
+  # isBuffer). >=6.16.1 fixes CVE-2026-110816 (Dependabot #254).
+  qs: ">=6.16.1"
   # Pinned to the 3.x line, not the current v10 major: v10's CJS entry is a
   # named-exports object ({ minimatch, match, ... }), not the callable
   # `require('minimatch')(path, pattern)` default that serve-handler (via
