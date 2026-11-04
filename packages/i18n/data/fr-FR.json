@@ -399,6 +399,10 @@
     "developer_comment": "default label for the save button in a form dialog",
     "string": "Enregistrer"
   },
+  "Nimbus.GridList.emptyMessage": {
+    "developer_comment": "Default message shown when a GridList has no items to display",
+    "string": "No items available"
+  },
   "Nimbus.ListBox.emptyState": {
     "developer_comment": "Default message shown when a ListBox has no options to display",
     "string": "No options available"

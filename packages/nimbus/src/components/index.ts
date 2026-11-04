@@ -17,6 +17,7 @@ export * from "./heading";
 export * from "./nimbus-i18n-provider";
 export * from "./icon-button";
 export * from "./icon-toggle-button";
+export * from "./grid-list";
 export * from "./image";
 export * from "./kbd";
 export * from "./link";
