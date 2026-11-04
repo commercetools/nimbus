@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Checkbox, Stack } from "@commercetools/nimbus";
+import { Box, Checkbox, Stack } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 
 // As of react-aria 3.49 the press/pointer handling on the (visually hidden)
@@ -215,6 +215,66 @@ export const StyleProps: Story = {
       await expect(
         getComputedStyle(htmlLabel).getPropertyValue("margin-inline")
       ).toBe("40px");
+    });
+  },
+};
+
+/**
+ * Long labels shrink with their container: a `truncate` child is clipped with
+ * an ellipsis, and plain text wraps instead of overflowing.
+ */
+export const Truncation: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="400">
+      <Box width="240px">
+        <Checkbox width="100%">
+          <Box truncate>
+            @commercetools-frontend-extensions-very-long-package-name
+          </Box>
+        </Checkbox>
+      </Box>
+      <Box width="240px">
+        <Checkbox width="100%">
+          @commercetools-frontend-extensions very long package name that wraps
+        </Checkbox>
+      </Box>
+    </Stack>
+  ),
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const [truncating, wrapping] = canvas.getAllByRole("checkbox");
+    const truncatingRoot =
+      truncating.closest<HTMLElement>('[data-slot="root"]')!;
+    const wrappingRoot = wrapping.closest<HTMLElement>('[data-slot="root"]')!;
+    const truncatedText = canvas.getByText(/very-long-package-name/);
+
+    await step("Truncating label stays within the container", async () => {
+      await expect(
+        truncatingRoot.getBoundingClientRect().width
+      ).toBeLessThanOrEqual(240);
+      // The text is clipped, not merely fitting.
+      await expect(truncatedText.scrollWidth).toBeGreaterThan(
+        truncatedText.clientWidth
+      );
+      await expect(getComputedStyle(truncatedText).textOverflow).toBe(
+        "ellipsis"
+      );
+    });
+
+    await step("Plain label wraps within the container", async () => {
+      await expect(
+        wrappingRoot.getBoundingClientRect().width
+      ).toBeLessThanOrEqual(240);
+      const label = wrappingRoot.querySelector<HTMLElement>(
+        '[data-slot="label"]'
+      )!;
+      // More than one line of text means it wrapped.
+      await expect(label.getBoundingClientRect().height).toBeGreaterThan(
+        parseFloat(getComputedStyle(label).lineHeight) * 1.5
+      );
     });
   },
 };
