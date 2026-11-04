@@ -29,6 +29,8 @@ export const menuSlotRecipe = defineSlotRecipe({
     },
     popover: {
       bg: "bg",
+      border: "solid-25",
+      borderColor: "border",
       borderRadius: "200",
       boxShadow: "5",
       overflow: "auto",
