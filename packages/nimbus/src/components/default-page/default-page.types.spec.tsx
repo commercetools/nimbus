@@ -79,6 +79,19 @@ describe("DefaultPageProps", () => {
       </>
     );
 
+    // Header children as a function of the header state.
+    const HeaderFunction = () => (
+      <DefaultPage.Root collapseHeaderOnScroll>
+        <DefaultPage.Header>
+          {({ isCollapsed }) => (
+            <DefaultPage.Title>
+              {isCollapsed ? "Collapsed" : "Full"}
+            </DefaultPage.Title>
+          )}
+        </DefaultPage.Header>
+      </DefaultPage.Root>
+    );
+
     // Invalid combinations stay compile errors.
     const Invalid = () => (
       <>
@@ -100,7 +113,8 @@ describe("DefaultPageProps", () => {
       Forwarding,
       StickyFromBoolean,
       BothLayouts,
+      HeaderFunction,
       Invalid,
-    ]).toHaveLength(7);
+    ]).toHaveLength(8);
   });
 });

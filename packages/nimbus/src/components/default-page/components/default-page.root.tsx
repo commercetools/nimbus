@@ -48,20 +48,21 @@ export const DefaultPageRoot = ({
     [isCollapseEnabled, forwardedRef]
   );
 
-  // EXPERIMENT ("scroll-driven", not public API): the sticky header follows
-  // the scroll position. Without browser support or with reduced motion, the
-  // regular behavior applies.
+  // EXPERIMENT ("scroll-driven", not public API): the header follows the
+  // scroll position, in both layouts. Without browser support or with reduced
+  // motion, the regular behavior applies.
   const isScrollDriven =
     isCollapseEnabled &&
-    layout === "flexible" &&
     (props as Record<string, unknown>)["data-header-collapse-mode"] ===
       "scroll-driven" &&
     supportsScrollDrivenHeader(typeof window === "undefined" ? null : window);
 
-  const { isPinned } = useScrollDrivenHeader({
+  const { state: scrollDrivenState } = useScrollDrivenHeader({
     isEnabled: isScrollDriven,
     containerElement: rootElement,
     headerElement,
+    contentElement,
+    layout: layout === "flexible" ? "flexible" : "constrained",
   });
 
   const { isCollapsed } = useCollapseHeaderOnScroll({
@@ -84,12 +85,17 @@ export const DefaultPageRoot = ({
   const context = useMemo(
     () => ({
       isCollapseEnabled,
-      isHeaderCollapsed: isScrollDriven ? isPinned : isCollapsed,
+      isHeaderCollapsed: isScrollDriven
+        ? scrollDrivenState === "pinned"
+        : isCollapsed,
+      isHeaderCollapseStarted: isScrollDriven
+        ? scrollDrivenState !== "full"
+        : isCollapsed,
       isScrollDriven,
       registerHeader: setHeaderElement,
       registerContent: setContentElement,
     }),
-    [isCollapseEnabled, isCollapsed, isScrollDriven, isPinned]
+    [isCollapseEnabled, isCollapsed, isScrollDriven, scrollDrivenState]
   );
 
   return (

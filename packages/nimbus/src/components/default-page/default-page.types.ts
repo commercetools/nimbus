@@ -129,11 +129,33 @@ type DefaultPageFlexibleProps = DefaultPageBaseProps & {
 export type DefaultPageProps =
   DefaultPageConstrainedProps | DefaultPageFlexibleProps;
 
-export type DefaultPageHeaderProps =
-  OmitInternalProps<DefaultPageHeaderSlotProps> & {
-    children?: React.ReactNode;
-    ref?: React.Ref<HTMLElement>;
-  };
+/**
+ * State that `DefaultPage.Header` passes to a function as its children.
+ */
+export type DefaultPageHeaderRenderProps = {
+  /**
+   * `true` once the header has started to collapse
+   * (`collapseHeaderOnScroll` on `DefaultPage.Root`), and until it is back in
+   * its full form. Always `false` when the header cannot collapse.
+   */
+  isCollapsed: boolean;
+};
+
+export type DefaultPageHeaderProps = Omit<
+  OmitInternalProps<DefaultPageHeaderSlotProps>,
+  "children"
+> & {
+  /**
+   * The header parts. Pass a function to adapt page-owned header content to
+   * the header state, for example to hide a note while the header is
+   * collapsed. Content that changes its size when the state changes makes
+   * the header measure itself again.
+   */
+  children?:
+    | React.ReactNode
+    | ((renderProps: DefaultPageHeaderRenderProps) => React.ReactNode);
+  ref?: React.Ref<HTMLElement>;
+};
 
 export type DefaultPageActionsProps =
   OmitInternalProps<DefaultPageActionsSlotProps> & {

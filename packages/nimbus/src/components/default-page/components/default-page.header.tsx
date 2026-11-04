@@ -7,8 +7,9 @@ import type { DefaultPageHeaderProps } from "../default-page.types";
 /**
  * DefaultPage.Header - The header section containing back link, title, and subtitle
  *
- * Has `data-collapsed="true"` while it shows its collapsed form
- * (`collapseHeaderOnScroll` on `DefaultPage.Root`).
+ * With `collapseHeaderOnScroll` on `DefaultPage.Root`, the children can be a
+ * function that receives `{ isCollapsed }`, to adapt page-owned header
+ * content to the header state.
  *
  * @supportsStyleProps
  */
@@ -45,7 +46,9 @@ export const DefaultPageHeader = ({
           : undefined
       }
     >
-      {children}
+      {typeof children === "function"
+        ? children({ isCollapsed: context?.isHeaderCollapseStarted ?? false })
+        : children}
     </DefaultPageHeaderSlot>
   );
 };

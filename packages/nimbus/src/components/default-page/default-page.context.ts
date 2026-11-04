@@ -12,6 +12,13 @@ export type DefaultPageContextValue = {
   /** `true` while the header shows its collapsed form. */
   isHeaderCollapsed: boolean;
   /**
+   * `true` once the header has started to collapse, until it is back in its
+   * full form. Passed to a function as `DefaultPage.Header` children. Equal
+   * to `isHeaderCollapsed`, except in the scroll-driven collapse, where it
+   * turns `true` with the first scrolled pixel.
+   */
+  isHeaderCollapseStarted: boolean;
+  /**
    * EXPERIMENT ("scroll-driven"): the header follows the scroll position, so
    * it does not switch its layout with `data-collapsed`. It marks the pinned
    * collapsed form with `data-scroll-collapsed` instead.

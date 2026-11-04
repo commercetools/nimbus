@@ -33,11 +33,32 @@ const SELECTORS = {
   tabNav: ".nimbus-default-page__tabNav",
 } as const;
 
+/** Inline styles that the header parts get while the header rests. */
+const REST_STYLE_PROPERTIES = [
+  "transform",
+  "transformOrigin",
+  "opacity",
+  "pointerEvents",
+] as const;
+
 /**
  * Set on the header while it is pinned in its collapsed form. The recipe then
  * turns the back link into its compact form.
  */
 export const SCROLL_COLLAPSED_ATTRIBUTE = "data-scroll-collapsed";
+
+/**
+ * CSS custom property on Root (constrained layout): the collapse distance,
+ * by which the header's top margin goes down and the content area's top
+ * padding grows. For information and tests; no style reads it.
+ */
+export const COLLAPSE_DISTANCE_VARIABLE = "--default-page-collapse-distance";
+
+/**
+ * Set on Root while the scroll-driven header runs, with the layout as value
+ * (`"flexible"` or `"constrained"`).
+ */
+export const SCROLL_DRIVEN_ATTRIBUTE = "data-scroll-driven";
 
 /**
  * CSS custom property on the header: the inline-start margin of the compact
@@ -80,18 +101,35 @@ type ScrollDrivenTiming = KeyframeAnimationOptions & {
   rangeEnd?: string;
 };
 
-const getViewTimeline = (
-  win: Window | null
-): ViewTimelineConstructor | undefined =>
-  (win as (Window & { ViewTimeline?: ViewTimelineConstructor }) | null)
-    ?.ViewTimeline;
+/** `ScrollTimeline` is not in the TypeScript DOM types yet. */
+type ScrollTimelineConstructor = new (options: {
+  source: Element;
+  axis?: "block" | "inline" | "x" | "y";
+}) => AnimationTimeline;
+
+type WindowWithTimelines = Window & {
+  ViewTimeline?: ViewTimelineConstructor;
+  ScrollTimeline?: ScrollTimelineConstructor;
+};
+
+const getViewTimeline = (win: Window | null) =>
+  (win as WindowWithTimelines | null)?.ViewTimeline;
+
+const getScrollTimeline = (win: Window | null) =>
+  (win as WindowWithTimelines | null)?.ScrollTimeline;
 
 /**
- * Whether the browser can run the scroll-driven header: view timelines exist
- * and the user does not prefer reduced motion.
+ * Whether the browser can run the scroll-driven header: view and scroll
+ * timelines exist and the user does not prefer reduced motion.
  */
 export const supportsScrollDrivenHeader = (win: Window | null): boolean => {
-  if (!win || typeof getViewTimeline(win) !== "function") return false;
+  if (
+    !win ||
+    typeof getViewTimeline(win) !== "function" ||
+    typeof getScrollTimeline(win) !== "function"
+  ) {
+    return false;
+  }
   return !win.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 };
 
@@ -131,6 +169,13 @@ export const measureHeaderForm = (
   if (collapsed) copy.setAttribute("data-collapsed", "true");
   else copy.removeAttribute("data-collapsed");
   copy.removeAttribute(SCROLL_COLLAPSED_ATTRIBUTE);
+  // The live parts can carry their fixed end look (pinned header).
+  for (const property of REST_STYLE_PROPERTIES) copy.style[property] = "";
+  copy
+    .querySelectorAll<HTMLElement>(Object.values(SELECTORS).join(","))
+    .forEach((part) => {
+      for (const property of REST_STYLE_PROPERTIES) part.style[property] = "";
+    });
   copy.setAttribute("aria-hidden", "true");
   copy.setAttribute("inert", "");
   const { width } = header.getBoundingClientRect();
@@ -230,52 +275,157 @@ export const planScrollDrivenHeader = (
   };
 };
 
-export type CreateScrollDrivenHeaderOptions = {
+export type PlanHeaderPartMotionsOptions = {
   header: HTMLElement;
-  /** `DefaultPage.Root`: the subject of the view timeline. */
+  /**
+   * `DefaultPage.Root`. Flexible layout: the subject of the view timeline;
+   * the sticky header moves up by itself through normal scrolling.
+   */
   root: HTMLElement;
+  /**
+   * Constrained layout: the content area, which scrolls. The header moves up
+   * with its scroll position (its top margin), and Root clips it.
+   */
+  scroller?: HTMLElement;
+  /**
+   * Constrained layout: the page's own top margin of the header and top
+   * padding of the content area, in CSS pixels, read before the drivers run.
+   * The drivers add to them, so styles a page sets stay in effect.
+   */
+  baseOffsets?: { headerMarginTop: number; scrollerPaddingTop: number };
   full: HeaderFormLayout;
   collapsed: HeaderFormLayout;
   plan: ScrollDrivenHeaderPlan;
+};
+
+/** The inline styles a part has when the header rests in its pinned form. */
+type RestStyle = Partial<
+  Record<"transform" | "transformOrigin" | "opacity" | "pointerEvents", string>
+>;
+
+/** How one header part changes over the collapse distance. */
+export type HeaderPartMotion = {
+  element: HTMLElement;
+  keyframes: Keyframe[];
+  /**
+   * The part's end look as fixed inline styles, with moves rounded to whole
+   * device pixels. Used while the header rests in its pinned form.
+   */
+  endStyle: RestStyle;
+};
+
+/** How the header parts change over the collapse distance. */
+export type HeaderMotion = {
+  /** Shared timing: the scroll-driven timeline and the collapse range. */
+  timing: KeyframeAnimationOptions;
+  /** The parts inside the header. They rest with fixed styles when pinned. */
+  parts: HeaderPartMotion[];
+  /**
+   * Constrained layout: what moves the header itself, always running. The
+   * header's top margin goes down by the collapse distance (the header moves
+   * up and its grid row gets shorter), and the content area's top padding
+   * grows by the same amount, so the content moves exactly with the scroll.
+   * Layout properties, not transforms: the browser draws the text at its
+   * real size. They also keep the header moving, which is what tells the
+   * pinned state.
+   */
+  drivers: Pick<HeaderPartMotion, "element" | "keyframes">[];
 };
 
 /** Below this, a move or a scale is not animated. */
 const MIN_CHANGE = 0.5;
 
 /**
- * Creates the scroll-driven animations of the header parts. They run from
- * the moment the top of Root reaches the top of the scroll area, over the
- * next `plan.distance` pixels of scrolling. Returns the animations.
+ * Plans how the header parts change from the full to the collapsed form, over
+ * the collapse distance. Flexible layout: the distance starts when the top of
+ * Root reaches the top of the scroll area. Constrained layout: it starts at
+ * the top of the content area, and the header itself moves up by the same
+ * amount. Returns `null` when there is nothing to animate or the browser has
+ * no scroll-driven timelines.
  */
-export const createScrollDrivenHeaderAnimations = ({
+export const planHeaderPartMotions = ({
   header,
   root,
+  scroller,
+  baseOffsets = { headerMarginTop: 0, scrollerPaddingTop: 0 },
   full,
   collapsed,
   plan,
-}: CreateScrollDrivenHeaderOptions): Animation[] => {
-  const ViewTimeline = getViewTimeline(header.ownerDocument.defaultView);
+}: PlanHeaderPartMotionsOptions): HeaderMotion | null => {
+  const win = header.ownerDocument.defaultView;
   const { distance, titleScale: scale, extraRowHeight } = plan;
-  if (!ViewTimeline || distance < 1) return [];
+  if (distance < 1) return null;
+  let range: Pick<ScrollDrivenTiming, "timeline" | "rangeStart" | "rangeEnd">;
+  if (scroller) {
+    const ScrollTimeline = getScrollTimeline(win);
+    if (!ScrollTimeline) return null;
+    range = {
+      timeline: new ScrollTimeline({ source: scroller, axis: "block" }),
+      rangeStart: "0px",
+      rangeEnd: `${distance}px`,
+    };
+  } else {
+    const ViewTimeline = getViewTimeline(win);
+    if (!ViewTimeline) return null;
+    range = {
+      timeline: new ViewTimeline({ subject: root, axis: "block" }),
+      rangeStart: "exit-crossing 0px",
+      rangeEnd: `exit-crossing ${distance}px`,
+    };
+  }
 
   const timing: ScrollDrivenTiming = {
-    timeline: new ViewTimeline({ subject: root, axis: "block" }),
-    rangeStart: "exit-crossing 0px",
-    rangeEnd: `exit-crossing ${distance}px`,
+    ...range,
     fill: "both",
     easing: "linear",
   };
   const isRtl = getComputedStyle(header).direction === "rtl";
   const transformOrigin = isRtl ? "top right" : "top left";
-  const animations: Animation[] = [];
+  const devicePixelRatio = win?.devicePixelRatio || 1;
+  const toDevicePixels = (value: number) =>
+    Math.round(value * devicePixelRatio) / devicePixelRatio;
+  const parts: HeaderPartMotion[] = [];
 
-  const animate = (selector: string, keyframes: Keyframe[]) => {
+  const add = (
+    selector: string,
+    keyframes: Keyframe[],
+    endStyle: RestStyle
+  ) => {
     const element = header.querySelector<HTMLElement>(selector);
-    if (element) animations.push(element.animate(keyframes, timing));
+    if (element) parts.push({ element, keyframes, endStyle });
+  };
+  /** A move (and scale): exact for the animation, rounded for the end look. */
+  const move = (dx: number, dy: number, scale?: number) => {
+    const scalePart = scale === undefined ? "" : ` scale(${scale})`;
+    return {
+      exact: `translate(${dx}px, ${dy}px)${scalePart}`,
+      rounded: `translate(${toDevicePixels(dx)}px, ${toDevicePixels(dy)}px)${scalePart}`,
+    };
   };
 
   const isChange = (dx: number, dy: number, isScaled = false) =>
     Math.abs(dx) >= MIN_CHANGE || Math.abs(dy) >= MIN_CHANGE || isScaled;
+
+  // Constrained layout: the header is not in the scrolling area, so it moves
+  // up itself, with the scroll position of the content area.
+  const drivers: HeaderMotion["drivers"] = scroller
+    ? [
+        {
+          element: header,
+          keyframes: [
+            { marginTop: `${baseOffsets.headerMarginTop}px` },
+            { marginTop: `${baseOffsets.headerMarginTop - distance}px` },
+          ],
+        },
+        {
+          element: scroller,
+          keyframes: [
+            { paddingTop: `${baseOffsets.scrollerPaddingTop}px` },
+            { paddingTop: `${baseOffsets.scrollerPaddingTop + distance}px` },
+          ],
+        },
+      ]
+    : [];
 
   // The header moves up by `distance` while the parts move, so every end
   // position below adds it back. End positions are in the collapsed form,
@@ -296,30 +446,37 @@ export const createScrollDrivenHeaderAnimations = ({
     const dy = titleTop + distance - full.title.top;
     titleMove = { dx, dy };
     if (isChange(dx, dy, Math.abs(scale - 1) >= 0.01)) {
-      animate(SELECTORS.title, [
-        { transformOrigin, transform: "none" },
-        {
-          transformOrigin,
-          transform: `translate(${dx}px, ${dy}px) scale(${scale})`,
-        },
-      ]);
+      const end = move(dx, dy, scale);
+      add(
+        SELECTORS.title,
+        [
+          { transformOrigin, transform: "none" },
+          { transformOrigin, transform: end.exact },
+        ],
+        { transformOrigin, transform: end.rounded }
+      );
     }
   }
 
   // Subtitle: stays below the title while it fades out in the first half.
   // Once hidden, it lets clicks through to the parts below it (tabs).
-  const halfway = `translate(${titleMove.dx / 2}px, ${titleMove.dy / 2}px)`;
-  animate(SELECTORS.subtitle, [
-    { offset: 0, opacity: 1, transform: "none", pointerEvents: "auto" },
-    { offset: 0.5, opacity: 0, transform: halfway, pointerEvents: "auto" },
-    { offset: 0.5, opacity: 0, transform: halfway, pointerEvents: "none" },
-    {
-      offset: 1,
-      opacity: 0,
-      transform: `translate(${titleMove.dx}px, ${titleMove.dy}px)`,
-      pointerEvents: "none",
-    },
-  ]);
+  const halfway = move(titleMove.dx / 2, titleMove.dy / 2).exact;
+  const subtitleEnd = move(titleMove.dx, titleMove.dy);
+  add(
+    SELECTORS.subtitle,
+    [
+      { offset: 0, opacity: 1, transform: "none", pointerEvents: "auto" },
+      { offset: 0.5, opacity: 0, transform: halfway, pointerEvents: "auto" },
+      { offset: 0.5, opacity: 0, transform: halfway, pointerEvents: "none" },
+      {
+        offset: 1,
+        opacity: 0,
+        transform: subtitleEnd.exact,
+        pointerEvents: "none",
+      },
+    ],
+    { opacity: "0", transform: subtitleEnd.rounded, pointerEvents: "none" }
+  );
 
   // Back link: the icon moves before the first line of the title; the label
   // fades out in the first half.
@@ -328,17 +485,23 @@ export const createScrollDrivenHeaderAnimations = ({
     const targetY = firstLineCenter ?? centerY(collapsed.backIcon);
     const dy = targetY + distance - centerY(full.backIcon);
     if (isChange(dx, dy)) {
-      animate(SELECTORS.backLink, [
-        { transform: "none" },
-        { transform: `translate(${dx}px, ${dy}px)` },
-      ]);
+      const end = move(dx, dy);
+      add(
+        SELECTORS.backLink,
+        [{ transform: "none" }, { transform: end.exact }],
+        { transform: end.rounded }
+      );
     }
   }
-  animate(SELECTORS.backLinkLabel, [
-    { offset: 0, opacity: 1 },
-    { offset: 0.5, opacity: 0 },
-    { offset: 1, opacity: 0 },
-  ]);
+  add(
+    SELECTORS.backLinkLabel,
+    [
+      { offset: 0, opacity: 1 },
+      { offset: 0.5, opacity: 0 },
+      { offset: 1, opacity: 0 },
+    ],
+    { opacity: "0" }
+  );
 
   // Actions: centered in the title row. Aligned at their end edge.
   if (full.actions && collapsed.actions) {
@@ -347,10 +510,12 @@ export const createScrollDrivenHeaderAnimations = ({
       : collapsed.actions.right - full.actions.right;
     const dy = rowCenter + distance - centerY(full.actions);
     if (isChange(dx, dy)) {
-      animate(SELECTORS.actions, [
-        { transform: "none" },
-        { transform: `translate(${dx}px, ${dy}px)` },
-      ]);
+      const end = move(dx, dy);
+      add(
+        SELECTORS.actions,
+        [{ transform: "none" }, { transform: end.exact }],
+        { transform: end.rounded }
+      );
     }
   }
 
@@ -360,12 +525,36 @@ export const createScrollDrivenHeaderAnimations = ({
     const dy =
       collapsed.tabNav.top + extraRowHeight + distance - full.tabNav.top;
     if (isChange(0, dy)) {
-      animate(SELECTORS.tabNav, [
-        { transform: "none" },
-        { transform: `translateY(${dy}px)` },
-      ]);
+      const end = move(0, dy);
+      add(SELECTORS.tabNav, [{ transform: "none" }, { transform: end.exact }], {
+        transform: end.rounded,
+      });
     }
   }
 
-  return animations;
+  return { timing, parts, drivers };
+};
+
+/** Starts the scroll-driven animations of the header parts. */
+export const startHeaderPartAnimations = (motion: HeaderMotion): Animation[] =>
+  motion.parts.map((part) =>
+    part.element.animate(part.keyframes, motion.timing)
+  );
+
+/**
+ * Gives the header parts a fixed look while no animation runs: `"start"` is
+ * the full form (no inline styles), `"end"` the pinned form. Fixed styles
+ * instead of an animation at rest let the browser draw the text at its real
+ * size, so it is sharp.
+ */
+export const setHeaderPartsAtRest = (
+  motion: HeaderMotion,
+  at: "start" | "end"
+) => {
+  for (const part of motion.parts) {
+    for (const property of REST_STYLE_PROPERTIES) {
+      part.element.style[property] =
+        at === "end" ? (part.endStyle[property] ?? "") : "";
+    }
+  }
 };

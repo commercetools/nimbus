@@ -161,6 +161,14 @@ export const defaultPageSlotRecipe = defineSlotRecipe({
      */
     collapseHeaderOnScroll: {
       true: {
+        // EXPERIMENT ("scroll-driven", constrained layout): the header moves
+        // up with the scroll position of the content area (its top margin),
+        // and Root clips it at its top edge.
+        root: {
+          "&[data-scroll-driven='constrained']": {
+            overflowY: "clip",
+          },
+        },
         header: {
           // Parts that appear when the header returns to its full form fade
           // in. The collapsed rules below set `transition: none`, so parts
