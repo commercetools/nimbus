@@ -25,6 +25,8 @@ export type DefaultPageActionsSlotProps = HTMLChakraProps<"div">;
 
 export type DefaultPageBackLinkSlotProps = HTMLChakraProps<"a">;
 
+export type DefaultPageBackLinkLabelSlotProps = HTMLChakraProps<"span">;
+
 export type DefaultPageTitleSlotProps = HTMLChakraProps<"h1">;
 
 export type DefaultPageSubtitleSlotProps = HTMLChakraProps<"p">;
@@ -45,6 +47,29 @@ export type DefaultPageFooterSlotProps = HTMLChakraProps<"footer">;
 type DefaultPageBaseProps = OmitInternalProps<DefaultPageRootSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
+  /**
+   * Show a shorter header while the content is scrolled away from the top.
+   *
+   * The collapsed header hides the subtitle visually, shows the back link as
+   * an icon with a tooltip, and shows the title smaller on one line. Actions,
+   * tab navigation and other header content stay visible.
+   *
+   * - The header collapses after the content has scrolled a little more than
+   *   the height the header gives back. It returns to its full form only when
+   *   the content is back at the top.
+   * - The header changes form only after scrolling has paused, and not while
+   *   the mouse pointer is over the header.
+   * - `DefaultPage.Header` has `data-collapsed="true"` while it is collapsed.
+   * - Root sets the CSS variable `--default-page-header-height` to the current
+   *   header height.
+   *
+   * Has an effect only when the header is pinned: with `layout="constrained"`,
+   * or with `layout="flexible"` and `stickyHeader`. Otherwise development
+   * builds log a warning.
+   *
+   * @default false
+   */
+  collapseHeaderOnScroll?: boolean;
 };
 
 /**
