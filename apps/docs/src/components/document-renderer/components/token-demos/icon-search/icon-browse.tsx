@@ -2,85 +2,75 @@ import {
   Box,
   Button,
   Flex,
-  Stack,
-  Text,
-  SearchInput,
-  Pagination,
-  useCopyToClipboard,
   IconButton,
   LoadingSpinner,
+  Pagination,
+  SearchInput,
+  Stack,
+  TagGroup,
+  Text,
   toast,
+  useCopyToClipboard,
 } from "@commercetools/nimbus";
 import { GridList, GridListItem } from "react-aria-components";
 import {
   memo,
   useCallback,
-  useDeferredValue,
   useEffect,
   useMemo,
   useRef,
   useState,
   type CSSProperties,
 } from "react";
-import Fuse from "fuse.js";
-import { useAtomValue } from "jotai";
-
-import { semanticEnabledAtom } from "@/atoms/semantic-search";
-import { useSemanticSearch } from "@/semantic-search/use-semantic-search";
 
 import * as icons from "@commercetools/nimbus-icons";
 import { ContentCopy, SearchOff } from "@commercetools/nimbus-icons";
 
+import { ALL_CATEGORIES, ALL_ICON_NAMES, titleCase } from "./use-icon-data";
 import {
-  ALL_CATEGORIES,
-  ALL_ICON_NAMES,
-  slugifyCategory,
-  type IconEntry,
-} from "./use-icon-data";
-import { TagBar } from "./tag-bar";
-import {
+  IconDisplayControls,
   SURFACE_PAD,
   SURFACE_STYLE,
   type Surface,
 } from "./icon-display-controls";
 import { useIconRouteState } from "./use-icon-route-state";
+import type { IconSearchState } from "./use-icon-search";
+import { toWords, type IconMatch } from "./search-icons";
 
 /**
- * Icons per page. Highly composite (÷ 2,3,4,5,6,8,10,12…) so a page stays full
- * across the range of auto-fill column counts the size slider produces.
+ * Icons per page. Divisible by 2, 3, 4, 5, 6, 8, 10 and 12, so the last row of
+ * a page is full for most column counts the size slider produces.
  */
 const PAGE_SIZE = 120;
 
 /**
- * Max keyword chips shown in the TagBar. Each chip is a React Aria collection
- * item (roving focus + selection), so an uncapped list (the "all" set has many
- * hundreds of distinct keywords) makes every filter click a multi-hundred-item
- * synchronous re-render that blocks the page. Cap to the most frequent few; the
- * bar scrolls, so this is still plenty to browse.
- */
-const MAX_TAG_FACETS = 40;
-
-/**
- * Extra width (px) added to the icon size to get a card's minimum column width.
- * The name label lives under the glyph, so a card needs room beyond the glyph
- * itself; this keeps the label legible at small icon sizes and lets bigger
- * icons claim proportionally wider columns (fewer per row) as the slider moves.
+ * Width (px) added to the icon size to get the smallest column width. The
+ * name is shown below the glyph and needs room at small icon sizes.
  */
 const CARD_LABEL_ROOM = 72;
 
+const numberFormat = new Intl.NumberFormat("en-US");
+
 /**
- * One icon cell. Memoized so typing in the search box (which re-renders the
- * parent and rebuilds the results array) doesn't re-render every tile — only
- * tiles whose `iconId`/`onCopy` actually change. The copy button is mounted
- * lazily, only while the tile is hovered or focused, so the idle grid isn't
- * carrying a few hundred always-mounted buttons.
+ * One icon card. Memoized, so typing in the search field does not render
+ * every card again. The copy button is only mounted while the card is
+ * hovered, so the grid does not hold a few hundred buttons.
  */
 const IconTile = memo(function IconTile({
   iconId,
+  matchedTag,
+  showMatchLine,
   onCopy,
   surface,
 }: {
   iconId: string;
+  /** The keyword that made the icon match, shown below the name. */
+  matchedTag: string | null;
+  /**
+   * Keeps a second line on every card while a search is active, so all cards
+   * have the same height, also those that match by name.
+   */
+  showMatchLine: boolean;
   onCopy: (iconId: string) => void;
   surface: Surface;
 }) {
@@ -89,15 +79,9 @@ const IconTile = memo(function IconTile({
   const surfaceStyle = SURFACE_STYLE[surface];
   const hasSurface = surface !== "none";
 
-  // The card IS the focusable React Aria GridListItem: arrow keys move between
-  // cards, Enter/click fires the GridList's `onAction` (opens the detail). The
-  // full export name is always readable as the label below the glyph, and the
-  // native `title` surfaces it in full on hover when the label is truncated (no
-  // React Aria Tooltip — those can't wrap a collection item, and a focusable
-  // child inside one re-triggers the warm-open anchoring bug). Borderless with
-  // a soft rounded hover tint — a gallery card, not a spreadsheet cell. The copy
-  // button mounts lazily on hover; it's a child of the card, so hovering it
-  // keeps the card hovered (no flicker).
+  // The card is the focusable GridListItem: arrow keys move between cards,
+  // Enter or a click opens the detail dialog (the GridList's `onAction`). The
+  // native `title` shows the full name when the label is cut off.
   return (
     <Box
       asChild
@@ -105,16 +89,18 @@ const IconTile = memo(function IconTile({
       borderRadius="300"
       cursor="pointer"
       outline="none"
-      title={iconId}
-      // With a surface active, the chip behind the glyph is neutral.3 — so the
-      // hover tint drops to neutral.2 to stay one step lighter and keep the chip
-      // legible. Bare glyphs keep the original neutral.3 hover.
+      title={matchedTag ? `${iconId} (keyword: ${matchedTag})` : iconId}
+      // With a surface, the shape behind the glyph is neutral.3, so the hover
+      // color is one step lighter to keep the shape visible.
       _hover={{ bg: hasSurface ? "neutral.2" : "neutral.3" }}
       css={{ "&[data-focus-visible]": { layerStyle: "focusRing" } }}
       onMouseEnter={() => setActive(true)}
       onMouseLeave={() => setActive(false)}
     >
-      <GridListItem id={iconId} textValue={iconId}>
+      <GridListItem
+        id={iconId}
+        textValue={matchedTag ? `${iconId}, keyword ${matchedTag}` : iconId}
+      >
         <Flex
           direction="column"
           align="center"
@@ -125,17 +111,10 @@ const IconTile = memo(function IconTile({
           width="full"
           minW="0"
         >
-          {/* Icons are 1em SVGs, so font-size drives their box. The size lives
-              in the --icon-preview-size custom property (set on the grid
-              container, default 48px = the "1200" token) so every glyph resizes
-              via CSS when the slider moves — no per-card re-render. The size +
-              color sit on this centering flex (not a <Text>) so no line-height
-              inflates the box and the glyph stays dead-centered above its
-              label. The flex is ALWAYS a fixed square of glyph + SURFACE_PAD (a
-              constant, even for "none") so toggling the surface only paints a
-              fill/radius inside this reserved box — the card and glyph never
-              resize (no layout shift). Fill/radius mirror the detail dialog's
-              SIZE_SURFACES treatment. */}
+          {/* Icons are 1em SVGs, so the font size sets their size. It comes
+              from --icon-preview-size on the grid, so the slider resizes every
+              glyph through CSS. The box is always glyph + SURFACE_PAD, also
+              without a surface, so switching the surface never moves a card. */}
           <Flex
             align="center"
             justify="center"
@@ -151,18 +130,30 @@ const IconTile = memo(function IconTile({
           >
             <Component />
           </Flex>
-          {/* The export name — what you actually import — shown verbatim and
-              truncated to one line so every card stays the same height. */}
-          <Text
-            textStyle="xs"
-            color="neutral.10"
-            width="full"
-            maxWidth="full"
-            textAlign="center"
-            truncate
-          >
-            {iconId}
-          </Text>
+          <Stack gap="0" width="full" minW="0" align="center">
+            {/* The export name, which is what you import. */}
+            <Text
+              textStyle="xs"
+              color="neutral.11"
+              width="full"
+              textAlign="center"
+              truncate
+            >
+              {iconId}
+            </Text>
+            {showMatchLine && (
+              <Text
+                textStyle="xs"
+                color="neutral.10"
+                width="full"
+                textAlign="center"
+                truncate
+                aria-hidden={matchedTag ? undefined : true}
+              >
+                {matchedTag ? `“${matchedTag}”` : " "}
+              </Text>
+            )}
+          </Stack>
         </Flex>
 
         {active && (
@@ -185,302 +176,49 @@ const IconTile = memo(function IconTile({
   );
 });
 
+/** One active filter, shown as a removable tag above the grid. */
+type ActiveFilter = { id: string; label: string; remove: () => void };
+
 /**
- * The search + grid surface, rendered inside the Splitter's main pane. It is
- * the same content for the `/icons` root and every `/icons/category/:slug`
- * page — the active category is driven entirely by `categorySlug` (from the
- * URL). Clicking an icon navigates to its detail page (which keeps the rail and
- * splitter mounted); a hover-only button still copies the import inline.
+ * The search and results of the Icons page, in the content column below the
+ * page header: a sticky search row with the display controls, keywords that
+ * narrow the results, a result line with the active filters, the grid, and
+ * the pages.
  */
 export const IconBrowse = ({
-  entries,
+  search,
   loading,
-  scrollToTop,
+  onPageChange,
 }: {
-  entries: IconEntry[];
+  search: IconSearchState;
   /**
-   * True until the icon metadata chunk resolves. Until then every entry has
-   * `popularity: 0`, so the empty-query browse would render the first page in
-   * export order and then visibly re-sort to the most-popular set once metadata
-   * lands. We render a spinner instead to avoid that flash.
+   * True until the icon metadata has loaded. Until then the icons have no
+   * popularity, so the grid would show them in export order and then sort
+   * again. A spinner is shown instead.
    */
   loading: boolean;
-  /**
-   * Scrolls the surrounding scroll pane back to the top. Called on a pagination
-   * page change so the new page starts at its first icons instead of leaving
-   * you parked next to the (bottom) paginator.
-   */
-  scrollToTop?: () => void;
+  /** Called after the page changes, to scroll the results into view. */
+  onPageChange?: () => void;
 }) => {
-  // All browsing state is URL-backed (category/tag/search/size/surface as query
-  // params; the open icon as the `/icons/:name` segment).
   const {
     category,
     tag,
-    search,
     size,
     surface,
     setTag,
-    setSearch,
     openIcon,
     goToCategory,
+    clearFilters,
   } = useIconRouteState();
+  const { query, setQuery, isStale, appliedQuery, results, keywords, isFuzzy } =
+    search;
 
   const [, copyToClipboard] = useCopyToClipboard();
-  // Stabilize the identity so `onCopyRequest` (and therefore every memoized
-  // `IconTile`) doesn't re-render when `useCopyToClipboard` returns a new ref.
+  // A stable callback, so the memoized cards do not render again when
+  // `useCopyToClipboard` returns a new function.
   const copyRef = useRef(copyToClipboard);
   copyRef.current = copyToClipboard;
 
-  // Search text is URL-backed, but the input keeps a snappy local buffer:
-  // binding the field straight to the param would round-trip every keystroke
-  // through the router before the value settles, risking dropped keystrokes.
-  // The input drives local `q`, the grid reads `useDeferredValue(q)` (React
-  // keeps prior results painted and does the heavy Fuse work at interruptible
-  // priority), and we mirror that deferred value into the URL below.
-  const [q, setQ] = useState<string>(() => search);
-  const deferredQ = useDeferredValue(q);
-  // True while the grid is still reflecting an older query than what's typed.
-  const isStale = q !== deferredQ;
-
-  // Local→URL: push the settled (deferred) query into the URL. Every value we
-  // write is tracked in `ownWrites` so the URL→local effect can tell our echoes
-  // apart from genuine external navigations. We track *all* pending values (not
-  // just the last) because `setParams` is async and multiple writes can be
-  // in-flight simultaneously during fast typing.
-  const ownWrites = useRef(new Set<string>());
-  useEffect(() => {
-    if (deferredQ !== search) {
-      ownWrites.current.add(deferredQ);
-      setSearch(deferredQ);
-    }
-  }, [deferredQ, search, setSearch]);
-
-  // URL→local: pull the URL value into the local buffer ONLY when the URL
-  // changed due to an external navigation (Back/Forward, deep link, programmatic
-  // goToCategory). Our own writes land in `ownWrites` and are consumed here
-  // without touching `q`, so the user's in-flight typing is never clobbered.
-  useEffect(() => {
-    if (ownWrites.current.has(search)) {
-      ownWrites.current.delete(search);
-      return;
-    }
-    setQ(search);
-  }, [search]);
-
-  // --- Semantic search -------------------------------------------------------
-  // When the global "Semantic search (beta)" toggle is on (the same switch the
-  // nav-bar search uses), rank icons by embedding similarity so a conceptual
-  // query ("delete", "shopping", "happy") finds icons whose *meaning* matches,
-  // not just their spelling. When it's off, still warming up, or errored, the
-  // Fuse index below takes over — a silent, seamless fallback (no status UI).
-  const semanticEnabled = useAtomValue(semanticEnabledAtom);
-
-  // Only build the (heavy, ~2,100-icon) semantic index once the user actually
-  // searches — visitors who just browse never pay to index it. Latches true on
-  // the first non-empty query and never resets, so clearing the box doesn't tear
-  // the worker down and force a re-index.
-  const [hasSearched, setHasSearched] = useState(false);
-  useEffect(() => {
-    if (deferredQ.trim()) setHasSearched(true);
-  }, [deferredQ]);
-
-  // The semantic corpus is EVERY icon (not the category-scoped subset) so the
-  // index and its cache key stay stable as you switch categories — category
-  // filtering is applied to the results afterward. Built only once the metadata
-  // (tags + categories) has loaded, so we don't embed a name-only corpus and
-  // then re-embed when the richer text arrives. Each item is an EmbeddableDoc.
-  const iconDocs = useMemo(
-    () =>
-      loading
-        ? []
-        : entries.map((e) => ({
-            id: e.name,
-            title: e.name,
-            tags: [...e.tags, ...e.categories],
-          })),
-    [entries, loading]
-  );
-
-  // Shares the nav search's embedding engine; the "icons" namespace keeps this
-  // index in its own IndexedDB database so it and the docs index don't evict
-  // each other.
-  const semantic = useSemanticSearch(
-    semanticEnabled && hasSearched,
-    iconDocs,
-    deferredQ,
-    "icons"
-  );
-
-  // Minimum card column width: glyph, the name-label room, and the surface
-  // chip's reserved padding (both sides) — the padding is always included, the
-  // same in every surface state, so switching surfaces never reflows the grid.
-  // `auto-fill` packs as many of these as fit, then `1fr` stretches them to fill
-  // the row flush to both edges (no floating, center-detached block).
-  const cardWidth = size + CARD_LABEL_ROOM + SURFACE_PAD * 2;
-
-  // Icons in the active category (or all of them). Compared by slug so a
-  // category whose name contains spaces ("common actions") still matches.
-  const scoped = useMemo(
-    () =>
-      category === ALL_CATEGORIES
-        ? entries
-        : entries.filter((e) =>
-            e.categories.some((c) => slugifyCategory(c) === category)
-          ),
-    [entries, category]
-  );
-
-  // Name -> entry lookup, so the ranked result names (from Fuse / browse sort)
-  // can be mapped back to their tags for facet building and tag filtering.
-  const entryByName = useMemo(() => {
-    const map = new Map<string, IconEntry>();
-    for (const e of entries) map.set(e.name, e);
-    return map;
-  }, [entries]);
-
-  const fuse = useMemo(
-    () =>
-      new Fuse(scoped, {
-        isCaseSensitive: false,
-        ignoreLocation: true,
-        ignoreFieldNorm: true,
-        shouldSort: true,
-        minMatchCharLength: 1,
-        threshold: 0.3,
-        keys: [
-          { name: "name", weight: 4 },
-          { name: "tags", weight: 2 },
-          { name: "categories", weight: 1 },
-        ],
-      }),
-    [scoped]
-  );
-
-  // Strict, name-only matcher for the "lexical rescue" in semantic mode: exact
-  // or prefix name typing (e.g. "delete" → DeleteForever) should always surface
-  // the obvious icon first, even when the embedding model ranks a synonym above
-  // it. Mirrors the nav search's nameFuse (use-search.ts).
-  const nameFuse = useMemo(
-    () =>
-      new Fuse(scoped, {
-        isCaseSensitive: false,
-        ignoreLocation: true,
-        threshold: 0.3,
-        minMatchCharLength: 2,
-        keys: [{ name: "name", weight: 1 }],
-      }),
-    [scoped]
-  );
-
-  // Names in the active category, used to restrict full-corpus semantic hits to
-  // the current category filter after ranking.
-  const scopedNames = useMemo(
-    () => new Set(scoped.map((e) => e.name)),
-    [scoped]
-  );
-
-  // Rank by semantic similarity only when it's on, the index is ready, and
-  // there's a query; otherwise the fuzzy path below runs (silent fallback).
-  const useSemantic =
-    semanticEnabled &&
-    semantic.status === "ready" &&
-    deferredQ.trim().length > 0;
-
-  // The full ranked result set (no cap). Browse (empty query) is
-  // popularity-sorted. A query is either semantically ranked (hybrid: strict
-  // name matches first, then embedding hits in similarity order, both scoped to
-  // the active category and deduped by name) or, in the fallback path,
-  // Fuse-ranked. Pagination then slices this into pages.
-  const full = useMemo<string[]>(() => {
-    if (!deferredQ.trim()) {
-      return [...scoped]
-        .sort((a, b) => b.popularity - a.popularity)
-        .map((e) => e.name);
-    }
-    if (useSemantic) {
-      const ordered = [
-        ...nameFuse.search(deferredQ).map((r) => r.item.name),
-        ...semantic.results
-          .map((d) => d.id)
-          .filter((name) => scopedNames.has(name)),
-      ];
-      return [...new Set(ordered)];
-    }
-    return fuse.search(deferredQ).map((r) => r.item.name);
-  }, [
-    deferredQ,
-    scoped,
-    fuse,
-    nameFuse,
-    useSemantic,
-    semantic.results,
-    scopedNames,
-  ]);
-
-  // Distinct keyword tags across the current (category + search) result set,
-  // ordered by frequency. Built from `full` — i.e. *before* the tag filter —
-  // so sibling tags stay visible and selectable while one is active.
-  const tagFacets = useMemo(() => {
-    const counts = new Map<string, number>();
-    for (const name of full) {
-      const entry = entryByName.get(name);
-      if (!entry) continue;
-      for (const tag of entry.tags) {
-        counts.set(tag, (counts.get(tag) ?? 0) + 1);
-      }
-    }
-    return [...counts.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, MAX_TAG_FACETS)
-      .map(([tag]) => tag);
-  }, [full, entryByName]);
-
-  // The TagBar highlight tracks `selectedTag` immediately (snappy click), but
-  // the expensive grid re-filter reads a deferred copy so a click never blocks.
-  const deferredTag = useDeferredValue(tag);
-
-  // Apply the active keyword facet (if any) on top of the ranked result set.
-  const filtered = useMemo(() => {
-    if (!deferredTag) return full;
-    return full.filter((name) =>
-      entryByName.get(name)?.tags.includes(deferredTag)
-    );
-  }, [full, deferredTag, entryByName]);
-
-  // 1-based current page. Reset to the first page whenever the result set
-  // changes (new query or category) so you're never stranded on an empty page.
-  const [page, setPage] = useState(1);
-  useEffect(() => {
-    setPage(1);
-  }, [deferredQ, category, deferredTag]);
-
-  // The keyword facet is never auto-cleared: it composes with the search term
-  // and the category as an independent AND filter and persists across changes to
-  // both, until the user clears it (by clicking the selected tag again or via a
-  // no-results action).
-  //
-  // Keeping it *visible* the whole time it's active takes two cooperating rules,
-  // split so a plain click never relocates a tag:
-  //   1. While the selected tag is present in the facet list, the TagBar leaves
-  //      it exactly where it sits and only toggles its highlight — so clicking a
-  //      tag never yanks it to the front.
-  //   2. When a category change (or a narrowing search) drops the selected tag
-  //      out of the frequency-ranked, capped facet list, it would otherwise just
-  //      vanish while still constraining the grid. So we prepend it here — the
-  //      one case where the active tag leads the bar, because it has nowhere else
-  //      to be shown.
-  const tagBarItems = useMemo(
-    () => (tag && !tagFacets.includes(tag) ? [tag, ...tagFacets] : tagFacets),
-    [tagFacets, tag]
-  );
-
-  const pageItems = useMemo(
-    () => filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
-    [filtered, page]
-  );
-
-  /** Copies the import statement for an icon and confirms via a toast. */
   const onCopyRequest = useCallback((iconId: string) => {
     copyRef.current(`import { ${iconId} } from '@commercetools/nimbus-icons';`);
     toast.success({
@@ -489,54 +227,209 @@ export const IconBrowse = ({
     });
   }, []);
 
+  // Back to the first page when the results change.
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    setPage(1);
+  }, [appliedQuery, category, tag]);
+
+  const pageItems = useMemo<IconMatch[]>(
+    () => results.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [results, page]
+  );
+
+  const hasQuery = appliedQuery.trim() !== "";
+
+  // The keyword is only worth showing when it differs from the query: for
+  // "trash" every keyword match is "trash", but for "shop" the card shows
+  // "shopping", and for "arrow left" it shows "left".
+  const queryPhrase = toWords(appliedQuery).join(" ");
+  const shownTag = useCallback(
+    (match: IconMatch) =>
+      match.matchedTag && match.matchedTag.toLowerCase() !== queryPhrase
+        ? match.matchedTag
+        : null,
+    [queryPhrase]
+  );
+  const showMatchLine = hasQuery && results.some((match) => shownTag(match));
+
+  const activeFilters: ActiveFilter[] = [
+    ...(hasQuery
+      ? [
+          {
+            id: "search",
+            label: `Search: ${appliedQuery.trim()}`,
+            remove: () => setQuery(""),
+          },
+        ]
+      : []),
+    ...(category !== ALL_CATEGORIES
+      ? [
+          {
+            id: "category",
+            label: `Category: ${titleCase(category.replace(/-/g, " "))}`,
+            remove: () => goToCategory(ALL_CATEGORIES),
+          },
+        ]
+      : []),
+    ...(tag
+      ? [{ id: "tag", label: `Keyword: ${tag}`, remove: () => setTag(null) }]
+      : []),
+  ];
+
+  const clearAll = () => {
+    setQuery("");
+    clearFilters();
+  };
+
+  // Both custom properties come from the size. The grid reads the column
+  // width and every card reads the glyph size.
+  const cardWidth = size + CARD_LABEL_ROOM + SURFACE_PAD * 2;
+
+  // While the slider moves, the properties are set on the element directly.
+  // React does not render the grid for these steps; it only writes the style
+  // again when the size in the URL changes after the slider is released.
+  const previewRef = useRef<HTMLDivElement>(null);
+  const setPreviewSize = useCallback((px: number) => {
+    const el = previewRef.current;
+    if (!el) return;
+    el.style.setProperty("--icon-preview-size", `${px}px`);
+    el.style.setProperty(
+      "--card-w",
+      `${px + CARD_LABEL_ROOM + SURFACE_PAD * 2}px`
+    );
+  }, []);
+
   return (
     <Box minW="0">
-      {/* Sticky search header. The translucent background + backdrop blur let
-          the grid stay visible-but-frosted as it scrolls underneath. */}
-      <Box
+      {/* Search row. Sticky at the top of the scroll area, like the page tabs
+          on other pages, so the search stays in reach while scrolling. */}
+      <Flex
         position="sticky"
         top="0"
-        zIndex={1}
-        px="400"
-        py="400"
-        bg="bg/75"
-        backdropFilter="blur(8px)"
+        zIndex={2}
+        bg="bg"
+        py="300"
+        gap="400"
+        align="center"
+        wrap="wrap"
+        // The divider reaches the edges of the scroll area while the row keeps
+        // its width. The shadow spreads the line sideways and the clip keeps
+        // it one line high. A shadow adds no scrollable overflow, so there is
+        // no horizontal scrollbar.
+        _after={{
+          content: '""',
+          position: "absolute",
+          insetInline: "0",
+          bottom: "0",
+          height: "1px",
+          bg: "neutral.3",
+          boxShadow: "0 0 0 100vmax {colors.neutral.3}",
+          clipPath: "inset(0 -100vmax)",
+          pointerEvents: "none",
+        }}
       >
-        {/* Just the search field now — the size + surface controls live in the
-            sidebar (IconDisplayControls). */}
-        <SearchInput
-          width="full"
-          aria-label="Search icons"
-          placeholder={`Search through ${
-            category === ALL_CATEGORIES ? ALL_ICON_NAMES.length : scoped.length
-          } icons ...`}
-          value={q}
-          onChange={(value) => setQ(value)}
-        />
+        <Box flex="1" minW="240px">
+          <SearchInput
+            width="full"
+            aria-label="Search icons"
+            placeholder={`Search ${numberFormat.format(
+              ALL_ICON_NAMES.length
+            )} icons by name or keyword`}
+            value={query}
+            onChange={setQuery}
+          />
+        </Box>
+        <IconDisplayControls onPreviewSize={setPreviewSize} />
+      </Flex>
 
-        {/* Keyword facet filter — always shown (once keywords are available),
-            refining whatever the current result set is. */}
-        {tagBarItems.length > 0 && (
-          <Box mt="300">
-            <TagBar
-              size="sm"
-              aria-label="Filter by keyword"
-              items={tagBarItems}
-              selectedKey={tag}
-              onSelectionChange={setTag}
-            />
-          </Box>
-        )}
-      </Box>
+      {/* Keywords that narrow the current results. */}
+      {!loading && keywords.length > 0 && (
+        <Flex mt="400" gap="300" align="baseline">
+          <Text
+            id="icon-keywords-label"
+            textStyle="sm"
+            color="neutral.11"
+            flexShrink={0}
+          >
+            Keywords
+          </Text>
+          <TagGroup.Root
+            size="sm"
+            aria-labelledby="icon-keywords-label"
+            selectionMode="single"
+            selectedKeys={tag ? [tag] : []}
+            onSelectionChange={(keys) => {
+              const next = keys === "all" ? null : [...keys][0];
+              setTag(next == null ? null : String(next));
+            }}
+          >
+            <TagGroup.TagList items={keywords}>
+              {(item) => (
+                <TagGroup.Tag
+                  id={item.tag}
+                  textValue={`${item.tag}, ${item.count} icons`}
+                  cursor="pointer"
+                >
+                  {item.tag}
+                  <Box as="span" color="neutral.10" ms="100">
+                    {item.count}
+                  </Box>
+                </TagGroup.Tag>
+              )}
+            </TagGroup.TagList>
+          </TagGroup.Root>
+        </Flex>
+      )}
+
+      {/* Result line: how many icons, and which filters are active. */}
+      {!loading && (
+        <Flex mt="400" mb="200" gap="300" align="center" wrap="wrap">
+          <Text textStyle="sm" fontWeight="600" aria-live="polite">
+            {numberFormat.format(results.length)}{" "}
+            {results.length === 1 ? "icon" : "icons"}
+          </Text>
+          {activeFilters.length > 0 && (
+            <>
+              <TagGroup.Root
+                size="sm"
+                aria-label="Active filters"
+                onRemove={(keys) => {
+                  for (const key of keys) {
+                    activeFilters.find((f) => f.id === key)?.remove();
+                  }
+                }}
+              >
+                <TagGroup.TagList items={activeFilters}>
+                  {(filter) => (
+                    <TagGroup.Tag id={filter.id} textValue={filter.label}>
+                      {filter.label}
+                    </TagGroup.Tag>
+                  )}
+                </TagGroup.TagList>
+              </TagGroup.Root>
+              {activeFilters.length > 1 && (
+                <Button size="2xs" variant="ghost" onPress={clearAll}>
+                  Clear all
+                </Button>
+              )}
+            </>
+          )}
+        </Flex>
+      )}
+
+      {!loading && isFuzzy && (
+        <Text textStyle="sm" color="neutral.11" mb="200">
+          No icon name or keyword matches “{appliedQuery.trim()}”. These icons
+          have a similar spelling.
+        </Text>
+      )}
+
       <Box
-        px="400"
-        pb="400"
-        // Dim the results while a newer query is still being applied, so the
-        // stale grid reads as "updating" rather than as the final result.
+        ref={previewRef}
+        // Dim the results while a newer query is being applied.
         opacity={isStale ? 0.6 : 1}
         transition="opacity 120ms ease"
-        // The size slider writes both custom properties here; they cascade to
-        // the grid (minimum card column width) and every card (glyph font-size).
         style={
           {
             "--icon-preview-size": `${size}px`,
@@ -548,10 +441,9 @@ export const IconBrowse = ({
           <Flex justify="center" py="800">
             <LoadingSpinner />
           </Flex>
-        ) : filtered.length === 0 ? (
-          // Search, category and keyword filters are combined with AND, so an
-          // over-constrained set yields nothing. Name the situation and offer a
-          // one-click way to drop each active filter and widen the results.
+        ) : results.length === 0 ? (
+          // The filters are combined, so too many of them can leave nothing.
+          // Offer to remove each one.
           <Flex
             direction="column"
             align="center"
@@ -569,43 +461,27 @@ export const IconBrowse = ({
                 No icons match all your filters
               </Text>
               <Text textStyle="sm" color="neutral.11">
-                Search, category and keyword filters are combined — an icon has
-                to match every one. Drop a filter to widen the results.
+                An icon has to match the search, the category and the keyword.
+                Remove a filter to see more icons.
               </Text>
             </Stack>
             <Flex gap="200" wrap="wrap" justify="center">
-              {q.trim() !== "" && (
-                <Button size="xs" variant="outline" onPress={() => setQ("")}>
-                  Clear search “{q.trim()}”
-                </Button>
-              )}
-              {tag && (
+              {activeFilters.map((filter) => (
                 <Button
+                  key={filter.id}
                   size="xs"
                   variant="outline"
-                  onPress={() => setTag(null)}
+                  onPress={filter.remove}
                 >
-                  Remove keyword “{tag}”
+                  Remove {filter.label.toLowerCase()}
                 </Button>
-              )}
-              {category !== ALL_CATEGORIES && (
-                <Button
-                  size="xs"
-                  variant="outline"
-                  onPress={() => goToCategory(ALL_CATEGORIES)}
-                >
-                  Browse all categories
-                </Button>
-              )}
+              ))}
             </Flex>
           </Flex>
         ) : (
-          // A Box (asChild) supplies `display:grid`. Columns auto-fill at the
-          // --card-w minimum then stretch (`1fr`) to fill the row, so the block
-          // spans the full content column flush to both edges (no detached,
-          // centered island) and reflows as cards grow/shrink with the slider.
-          // GridList reads that geometry for 2D arrow-key navigation and fires
-          // `onAction` (click/Enter) with the focused icon's id.
+          // Columns fill the row at the --card-w minimum and stretch to the
+          // edges. GridList reads the layout for arrow-key navigation in two
+          // directions and calls `onAction` with the icon id.
           <Box
             asChild
             display="grid"
@@ -621,10 +497,12 @@ export const IconBrowse = ({
               selectionMode="none"
               onAction={(key) => openIcon(String(key))}
             >
-              {pageItems.map((iconId) => (
+              {pageItems.map((match) => (
                 <IconTile
-                  key={iconId}
-                  iconId={iconId}
+                  key={match.name}
+                  iconId={match.name}
+                  matchedTag={shownTag(match)}
+                  showMatchLine={showMatchLine}
                   onCopy={onCopyRequest}
                   surface={surface}
                 />
@@ -634,26 +512,15 @@ export const IconBrowse = ({
         )}
       </Box>
 
-      {/* Sticky paginator, mirroring the frosted header. Hidden when everything
-          fits on one page. */}
-      {!loading && filtered.length > PAGE_SIZE && (
-        <Flex
-          position="sticky"
-          bottom="0"
-          zIndex={1}
-          justify="center"
-          px="400"
-          py="300"
-          bg="bg/75"
-          backdropFilter="blur(8px)"
-        >
+      {!loading && results.length > PAGE_SIZE && (
+        <Flex justify="center" mt="600">
           <Pagination
-            totalItems={filtered.length}
+            totalItems={results.length}
             pageSize={PAGE_SIZE}
             currentPage={page}
             onPageChange={(next) => {
               setPage(next);
-              scrollToTop?.();
+              onPageChange?.();
             }}
             enablePageSizeSelector={false}
             aria-label="Icon pages"

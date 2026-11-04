@@ -3,6 +3,7 @@
 ## App Overview
 
 The `docs` app is a React SPA (Vite-based) providing:
+
 - Interactive component documentation with live examples
 - Auto-generated API references from TypeScript types
 - Engineering documentation and guidelines
@@ -89,64 +90,60 @@ Example: `packages/nimbus/src/components/button/button.mdx`
 
 ### MDX Format
 
-Component documentation uses MDX with frontmatter:
+A documentation page is an MDX file with front matter. The schema is in
+`packages/nimbus-docs-build/src/schemas/mdx-document.ts`.
 
-```mdx
+````mdx
 ---
+id: Components-Button
 title: Button
-description: A button component for user interactions
-category: Actions
+description: Buttons let people start an action.
+order: 1
+menu:
+  - Components
+  - Buttons
+  - Button
+tags:
+  - component
 ---
 
-# Button
+The Button component starts an action.
 
-The Button component provides accessible, interactive buttons with multiple variants and sizes.
-
-## Usage
-
-```tsx
-import { Button } from '@commercetools/nimbus'
-
-function App() {
-  return <Button variant="primary">Click me</Button>
-}
+```jsx live-dev
+const App = () => <Button variant="solid">Save</Button>;
 ```
-
-## Props
-
-[Props table is auto-generated from TypeScript types]
-
-## Examples
-
-### Primary Button
-
-<LivePreview>
-  <Button variant="primary">Primary Action</Button>
-</LivePreview>
-```
+````
 
 ### Frontmatter Fields
 
 Required fields:
-- `title` - Component name (e.g., "Button")
-- `description` - Brief component description
-- `category` - Component category (e.g., "Actions", "Forms", "Layout")
 
-Optional fields:
-- `status` - Component status ("stable", "beta", "experimental")
-- `since` - Version when introduced (e.g., "2.0.0")
+- `id` - Unique id of the page; `related` refers to pages by id
+- `title` - Page title; search gives it the most weight
+- `description` - One sentence; shown in search results and overview cards
+- `menu` - Path in the navigation; the route is the slug of this path
+- `tags` - Search words
+
+Optional fields (selection):
+
+- `order` - Position among its siblings; a missing or `0` order becomes 999
+- `illustration` - Name (or list of names) of `<name>.illustration.ts` files; an
+  unknown name fails the build
+- `related` - Ids of related pages; links work in both directions, and an
+  unknown id fails the build
+- `layout` - `app-frame` (default), `wide` or `no-sidebar`
 
 ### Live Code Examples
 
-Use `<LivePreview>` for interactive examples:
+Use a `jsx live` or `jsx live-dev` code block for interactive examples. The
+block defines an `App` component, and the editor renders it with react-live.
+`live-dev` blocks have a switch between the preview and the code.
 
-```mdx
-<LivePreview>
-  <Button variant="primary">Example</Button>
-</LivePreview>
-```
-
-This renders an editable code playground using react-live.
+All Nimbus exports and `Icons` are in scope, so import lines are optional.
+Import lines work as in an app, also over several lines and with `as` aliases:
+the editor resolves them from the modules listed in
+`components/document-renderer/components/live-code-editor/live-code-editor.tsx`
+(`liveModules`). An import from any other module shows an error.
 
 ### Engineering Documentation
 
@@ -157,11 +154,13 @@ Engineering docs (like this file) live in `docs/` at repo root:
 - `docs/component-templates/*.tsx` - Boilerplate templates
 - `docs/file-review-protocol.md` - Review checklist
 
-These are NOT processed by the docs site build - they're reference material for developers and AI assistants.
+These are NOT processed by the docs site build - they're reference material for
+developers and AI assistants.
 
 ## Dependencies
 
 This app depends on ALL nimbus packages:
+
 - `@commercetools/nimbus` - Components to document
 - `@commercetools/nimbus-docs-build` - Documentation generation tooling
 - `@commercetools/nimbus-icons` - Icons for doc site UI
@@ -183,6 +182,11 @@ pnpm start:docs
 ```
 
 The dev server watches for changes and hot-reloads automatically.
+
+The dev server also shows the [Agentation](https://www.agentation.com/) toolbar
+(button at the bottom right). Use it to click on page elements, add notes, and
+copy the result as context for an AI agent. It is loaded in `src/main.tsx` only
+when `import.meta.env.DEV` is true, so production builds do not include it.
 
 ### 2. Add/Edit Documentation
 
@@ -215,6 +219,7 @@ Verify build output in `apps/docs/dist/`.
 ## Search Functionality
 
 Search uses Fuse.js for fuzzy searching across:
+
 - Component names and descriptions
 - Documentation content
 - API references and prop types
@@ -239,13 +244,14 @@ Props are auto-extracted from TypeScript types:
 3. Props table updates automatically
 
 Example:
+
 ```typescript
 export interface ButtonProps {
   /**
    * The button variant style
    * @default "secondary"
    */
-  variant?: 'primary' | 'secondary' | 'danger'
+  variant?: "primary" | "secondary" | "danger";
 }
 ```
 
@@ -272,6 +278,7 @@ npx serve dist
 ## Deployment
 
 Docs are deployed via Vercel:
+
 - **Production**: Deploys from `main` branch
 - **Preview**: Deploys from pull requests
 

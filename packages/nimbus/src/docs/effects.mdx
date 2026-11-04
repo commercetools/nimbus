@@ -10,10 +10,10 @@ menu:
 tags:
   - document
 ---
-
-# Effects
-
 JSX style props for styling box shadows, opacity, and more
+
+Shadow values are shadow tokens, such as `2`. For all tokens, see
+[Shadows](/home/design-tokens/shadows).
 
 ## Box Shadow
 
@@ -24,12 +24,12 @@ Use the `shadow` or `boxShadow` prop to apply a box shadow to an element.
 <Box shadow="12px 12px 2px 1px rgba(0, 0, 255, .2)" />
 
 // token values
-<Box shadow="lg" />
+<Box shadow="2" />
 ```
 
 | Prop                   | CSS Property     | Token Category |
 | ---------------------- | ---------------- | -------------- |
-| `shadows`, `boxShadow` | `box-shadow`     | `shadows`      |
+| `shadow`, `boxShadow`  | `box-shadow`     | `shadows`      |
 | `shadowColor`          | `--shadow-color` | `colors`       |
 
 ## Box Shadow Color
@@ -55,7 +55,7 @@ Use the `opacity` prop to set the opacity of an element.
 
 | Prop      | CSS Property | Token Category |
 | --------- | ------------ | -------------- |
-| `opacity` | `opacity`    | `opacity`      |
+| `opacity` | `opacity`    | -              |
 
 ## Mix Blend Mode
 
@@ -63,7 +63,7 @@ Use the `mixBlendMode` prop to control how an element's content should be
 blended with the background.
 
 ```jsx
-<Box bg="red.400">
+<Box bg="primary.9">
   <Image src="..." mixBlendMode="hard-light" />
 </Box>
 ```

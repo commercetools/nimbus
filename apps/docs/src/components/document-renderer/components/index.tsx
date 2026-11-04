@@ -1,10 +1,13 @@
 import { Table, Box, Flex, Grid } from "@commercetools/nimbus";
-import { ColorScales } from "@/components/document-renderer/components/token-demos/color-scales.tsx";
+import { ColorPalettes } from "@/components/document-renderer/components/token-demos/color-palettes.tsx";
+import { ColorSteps } from "@/components/document-renderer/components/token-demos/color-steps.tsx";
 import { IconSearch } from "./token-demos/icon-search";
-import { SpacingTokenDemo } from "./token-demos/spacing-token-demo";
-import { SizesTokenDemo } from "./token-demos/sizes-token-demo";
+import { SpacingScale } from "./token-demos/spacing-token-demo";
+import { SizesScale } from "./token-demos/sizes-token-demo";
+import { RadiiScale } from "./token-demos/radii-token-demo";
+import { BordersScale } from "./token-demos/borders-token-demo";
 import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
-import { TextStylesDemo } from "./token-demos/text-styles-demo";
+import { TypographyScale } from "./token-demos/typography-token-demo";
 import * as icons from "@commercetools/nimbus-icons";
 import { CategoryOverview } from "./category-overview/category-overview";
 import { MDXComponents } from "mdx/types";
@@ -34,6 +37,7 @@ import {
   Strong,
 } from "./base-tags";
 import { Frontpage } from "./frontpage";
+import { FoundationSections } from "./foundation-sections";
 import { PropsTable } from "./props-table";
 
 export const components: MDXComponents = {
@@ -73,15 +77,18 @@ export const components: MDXComponents = {
   Grid: (props) => <Grid {...props} />,
   /** custom elements */
   PropsTable: PropsTable,
-  ColorScales: ColorScales,
+  ColorPalettes: ColorPalettes,
+  ColorSteps: ColorSteps,
   IconSearch,
-  SpacingTokenDemo,
-  SizesTokenDemo,
+  SpacingScale,
+  SizesScale,
+  RadiiScale,
+  BordersScale,
   GenericTokenTableDemo,
   EasingTokenDemo,
   DurationTokenDemo,
   KeyframeTokenDemo,
-  TextStylesDemo,
+  TypographyScale,
   Icon: ({ id, ...props }) => {
     const Component = icons[id as keyof typeof icons];
     return (
@@ -94,5 +101,6 @@ export const components: MDXComponents = {
   Icons: icons,
   Frontpage,
   CategoryOverview,
+  FoundationSections,
   NimbusExportsList,
 };

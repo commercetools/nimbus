@@ -10,10 +10,12 @@ menu:
 tags:
   - document
 ---
-
-# Typography
-
 JSX style props for styling text
+
+The token values are typography tokens: fonts such as `mono`, font sizes such
+as `350`, font weights such as `600`, letter spacings such as `wide`, line
+heights such as `600`, and text styles such as `md`. For all tokens, see
+[Typography](/home/design-tokens/typography).
 
 ## Font Family
 
@@ -37,14 +39,14 @@ Use the `fontSize` prop to set the font size of a text element.
 <Text fontSize="10rem">Hello World</Text>
 
 // token values
-<Text fontSize="xs">Hello World</Text>
-<Text fontSize="4xl">Hello World</Text>
-<Text fontSize="5xl">Hello World</Text>
+<Text fontSize="300">Hello World</Text>
+<Text fontSize="750">Hello World</Text>
+<Text fontSize="1200">Hello World</Text>
 ```
 
 | Prop       | CSS Property | Token Category |
 | ---------- | ------------ | -------------- |
-| `fontSize` | `font-size`  | `fonts`        |
+| `fontSize` | `font-size`  | `fontSizes`    |
 
 ## Text Styles
 
@@ -77,7 +79,7 @@ Use the `fontStyle` prop to set the font style of a text element.
 
 | Prop        | CSS Property | Token Category |
 | ----------- | ------------ | -------------- |
-| `fontStyle` | `font-style` | none           |
+| `fontStyle` | `font-style` | -              |
 
 ## Font Weight
 
@@ -85,10 +87,10 @@ Use the `fontWeight` prop to set the font weight of a text element.
 
 ```jsx
 // hardcoded values
-<Text fontWeight="600">Hello World</Text>
+<Text fontWeight="bold">Hello World</Text>
 
 // token values
-<Text fontWeight="semibold">Hello World</Text>
+<Text fontWeight="600">Hello World</Text>
 ```
 
 | Prop         | CSS Property  | Token Category |
@@ -106,7 +108,7 @@ element.
 
 | Prop                 | CSS Property           | Token Category |
 | -------------------- | ---------------------- | -------------- |
-| `fontVariantNumeric` | `font-variant-numeric` | none           |
+| `fontVariantNumeric` | `font-variant-numeric` | -              |
 
 ## Letter Spacing
 
@@ -137,7 +139,7 @@ Use the `truncate` prop to truncate text.
 
 | Prop       | CSS Property    | Token Category |
 | ---------- | --------------- | -------------- |
-| `truncate` | `text-overflow` | none           |
+| `truncate` | `text-overflow` | -              |
 
 ## Line Clamp
 
@@ -153,7 +155,7 @@ to disable truncation.
 
 | Prop        | CSS Property        | Token Category |
 | ----------- | ------------------- | -------------- |
-| `lineClamp` | `webkit-line-clamp` | none           |
+| `lineClamp` | `webkit-line-clamp` | -              |
 
 ## Line Height
 
@@ -164,7 +166,7 @@ Use the `lineHeight` prop to set the line height of a text element.
 <Text lineHeight="1.5">Hello World</Text>
 
 // token values
-<Text lineHeight="tall">Hello World</Text>
+<Text lineHeight="600">Hello World</Text>
 ```
 
 | Prop         | CSS Property  | Token Category |
@@ -184,7 +186,7 @@ Use the `textAlign` prop to set the text alignment of a text element.
 
 | Prop        | CSS Property | Token Category |
 | ----------- | ------------ | -------------- |
-| `textAlign` | `text-align` | none           |
+| `textAlign` | `text-align` | -              |
 
 ## Text Color
 
@@ -209,7 +211,7 @@ text element.
 
 | Prop                          | CSS Property      | Token Category |
 | ----------------------------- | ----------------- | -------------- |
-| `textDecor`, `textDecoration` | `text-decoration` | none           |
+| `textDecor`, `textDecoration` | `text-decoration` | -              |
 
 ## Text Decoration Color
 
@@ -239,7 +241,7 @@ element.
 
 | Prop                  | CSS Property            | Token Category |
 | --------------------- | ----------------------- | -------------- |
-| `textDecorationStyle` | `text-decoration-style` | none           |
+| `textDecorationStyle` | `text-decoration-style` | -              |
 
 ## Text Decoration Thickness
 
@@ -254,7 +256,7 @@ text element.
 
 | Prop                      | CSS Property                | Token Category |
 | ------------------------- | --------------------------- | -------------- |
-| `textDecorationThickness` | `text-decoration-thickness` | none           |
+| `textDecorationThickness` | `text-decoration-thickness` | -              |
 
 ## Text Underline Offset
 
@@ -269,7 +271,7 @@ element.
 
 | Prop                  | CSS Property            | Token Category |
 | --------------------- | ----------------------- | -------------- |
-| `textUnderlineOffset` | `text-underline-offset` | none           |
+| `textUnderlineOffset` | `text-underline-offset` | -              |
 
 ## Text Transform
 
@@ -281,7 +283,7 @@ Use the `textTransform` prop to set the text transform of a text element.
 
 | Prop            | CSS Property     | Token Category |
 | --------------- | ---------------- | -------------- |
-| `textTransform` | `text-transform` | none           |
+| `textTransform` | `text-transform` | -              |
 
 ## Text Overflow
 
@@ -293,7 +295,7 @@ Use the `textOverflow` prop to set the text overflow of a text element.
 
 | Prop           | CSS Property    | Token Category |
 | -------------- | --------------- | -------------- |
-| `textOverflow` | `text-overflow` | none           |
+| `textOverflow` | `text-overflow` | -              |
 
 ## Text Shadow
 
@@ -316,7 +318,7 @@ Use the `textIndent` prop to set the text indent of a text element.
 <Text textIndent="1rem">Hello World</Text>
 
 // token values
-<Text textIndent="3">Hello World</Text>
+<Text textIndent="300">Hello World</Text>
 ```
 
 | Prop         | CSS Property  | Token Category |
@@ -333,7 +335,7 @@ Use the `verticalAlign` prop to set the vertical alignment of a text element.
 
 | Prop            | CSS Property     | Token Category |
 | --------------- | ---------------- | -------------- |
-| `verticalAlign` | `vertical-align` | none           |
+| `verticalAlign` | `vertical-align` | -              |
 
 ## White Space
 
@@ -345,7 +347,7 @@ Use the `whiteSpace` prop to set the white space of a text element.
 
 | Prop         | CSS Property  | Token Category |
 | ------------ | ------------- | -------------- |
-| `whiteSpace` | `white-space` | none           |
+| `whiteSpace` | `white-space` | -              |
 
 ## Word Break
 
@@ -358,7 +360,7 @@ would otherwise overflow its content box.
 
 | Prop        | CSS Property | Token Category |
 | ----------- | ------------ | -------------- |
-| `wordBreak` | `word-break` | none           |
+| `wordBreak` | `word-break` | -              |
 
 ## Hyphens
 
@@ -370,4 +372,4 @@ Use the `hyphens` prop to set whether hyphens are used in the text.
 
 | Prop      | CSS Property | Token Category |
 | --------- | ------------ | -------------- |
-| `hyphens` | `hyphens`    | none           |
+| `hyphens` | `hyphens`    | -              |

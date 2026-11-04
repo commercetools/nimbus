@@ -1,7 +1,10 @@
 ---
 id: TokensTypography
 title: Typography
-description: everything typography related
+illustration: token-typography
+description:
+  Text styles and typography tokens for font family, font size, font weight,
+  letter spacing and line height.
 order: 999
 menu:
   - Home
@@ -17,45 +20,159 @@ tags:
 icon: FormatSize
 ---
 
-# Typography
+Typography in Nimbus has two levels. A **text style** sets the font size and the
+line height together, and it is the normal way to size text. The **typography
+tokens** set one property each: font family, font size, font weight, letter
+spacing and line height. Use them when a text style does not cover what you
+need.
 
-Below you'll find the raw tokens to change typography styles on a text-element.
+> [!IMPORTANT]\
+> Looking for `fontSize="sm"`? `sm` is a text style, not a font size token. Font
+> size tokens are numbers, such as `350`. Set `textStyle="sm"`, or
+> `fontSize="350"`.
 
-## Text Styles
+## Choose how to set type
 
-Text styles are collections of multiple typography rules (such as `font-size`,
-`line-height`, `letter-spacing` etc.) that create a specific, reusable style.
+| You want                                   | Use                  | Example                        |
+| ------------------------------------------ | -------------------- | ------------------------------ |
+| Text of a normal size                      | A text style         | `<Text textStyle="sm">`        |
+| A heading                                  | `Heading` and `size` | `<Heading size="2xl">`         |
+| Bold or light text                         | A font weight        | `<Text fontWeight="600">`      |
+| Code or other monospace text               | The `mono` font      | `<Text fontFamily="mono">`     |
+| Spaced out capital letters, such as labels | A letter spacing     | `<Text letterSpacing="wider">` |
+| A font size that no text style has         | A font size token    | `<Text fontSize="750">`        |
+| A taller or tighter line                   | A line height token  | `<Text lineHeight="600">`      |
 
-> [!NOTE]  
-> I added `caption`, `detail` & `body` from our existing styles, but they are
-> essentially just combinations of font-size & line-height and can be mapped to
-> `xs`, `sm` & `md`. The `headline` looks can be achieved by using the
-> textStyles on the `<Heading/>` component.
+## Text styles
 
-```jsx
-<Text textStyle="nameOfDesiredTextStyle">Heading 1</Text>
+A text style sets `fontSize` and `lineHeight` together, so the two always fit.
+Set it with the `textStyle` prop:
+
+```tsx
+<Text textStyle="sm">Secondary text</Text>
 ```
 
-### Available Text Styles
+The styles from `2xs` to `7xl` are the main scale. `caption`, `detail` and
+`body` are older names. `caption` and `detail` have the same values as `xs` and
+`sm`, and `body` is the size of `md` with a taller line (26px instead of 22px).
 
-<TextStylesDemo />
+A text style does not set a font weight, a font family or a letter spacing. Set
+those with the tokens below.
+
+> [!WARNING]\
+> The `2xs` text style (10px) is deprecated. Text should not be smaller than
+> 12px, because small text is harder to read, especially with low contrast. The
+> style is only kept for legacy reasons. Do not use it in new designs. Use `xs`
+> (12px) or larger.
+
+<TypographyScale kind="textStyles" />
+
+### Headings
+
+The `Heading` component sets the font family `heading` and the font weight
+`600`, and its `size` prop picks the text style of the same name, from `xs` to
+`7xl`. The default size is `xl`. See [Heading](/components/typography/heading)
+and [Text](/components/typography/text) for the components.
 
 ## Fonts
 
-<GenericTokenTableDemo category="fonts" demoProperty="fontFamily" />
+Nimbus has three font tokens: `heading`, `body` and `mono`. `heading` and `body`
+have the same font stack today.
 
-## Font Sizes
+<TypographyScale kind="fonts" />
 
-<GenericTokenTableDemo category="fontSizes" demoProperty="fontSize" />
+## Font weights
 
-## Font Weights
+The font weight tokens are the numbers 100 to 900. A value of `400` is regular
+text and `700` is bold, as in
+[the CSS `font-weight` property](https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight).
+Whether a weight looks different depends on the font. Check that the font has
+the weight you choose.
 
-<GenericTokenTableDemo category="fontWeights" demoProperty="fontWeight" />
+<TypographyScale kind="fontWeights" />
 
-## Letter Spacings
+## Letter spacings
 
-<GenericTokenTableDemo category="letterSpacings" demoProperty="letterSpacing" />
+A letter spacing adds space between letters, or removes it when the value is
+negative. The values use `em`, so they scale with the font size.
 
-## Line Heights
+<TypographyScale kind="letterSpacings" />
 
-<GenericTokenTableDemo category="lineHeights" demoProperty="lineHeight" />
+## Font sizes
+
+Use a font size token when no text style has the size you need. The token names
+are numbers, and the values are in `px`. Divide by 16 for `rem`, when the root
+font size is the browser default. The token `250` (10px) is deprecated
+and is marked in the table.
+
+<TypographyScale kind="fontSizes" />
+
+## Line heights
+
+The line height is the height of one line of text. The colored band in each
+sample is one line. A text style already sets a line height. Set a line height
+token only to change it, for example for text that must be taller or tighter.
+
+<TypographyScale kind="lineHeights" />
+
+## Use typography in code
+
+Typography tokens work on the typography style props.
+
+| You set        | Prop            | Tokens                              |
+| -------------- | --------------- | ----------------------------------- |
+| Size and line  | `textStyle`     | [Text styles](#text-styles)         |
+| Font family    | `fontFamily`    | [Fonts](#fonts)                     |
+| Font size      | `fontSize`      | [Font sizes](#font-sizes)           |
+| Font weight    | `fontWeight`    | [Font weights](#font-weights)       |
+| Letter spacing | `letterSpacing` | [Letter spacings](#letter-spacings) |
+| Line height    | `lineHeight`    | [Line heights](#line-heights)       |
+
+```tsx
+// A text style, with a weight
+<Text textStyle="md" fontWeight="600">
+  Order total
+</Text>
+
+// A label with spaced out capital letters
+<Text textStyle="xs" letterSpacing="wider" textTransform="uppercase">
+  Status
+</Text>
+
+// In a recipe
+base: {
+  textStyle: "sm",
+  fontWeight: "500",
+}
+```
+
+For the full list of props, see
+[Style props: Typography](/home/style-props/typography).
+
+### Use tokens, not other values
+
+Only the names in the tables above are tokens. Another value, such as
+`fontSize="sm"`, `fontWeight="medium"` or `letterSpacing="25"`, is passed to CSS
+as it is. CSS then ignores a value that it does not know. The `font-weight`
+property, for example, accepts `normal`, `bold`, `lighter`, `bolder` or a number
+([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight)), so
+`medium` has no effect.
+
+### CSS variables
+
+Every token is also a CSS variable, such as `var(--nimbus-font-sizes-350)`,
+`var(--nimbus-fonts-mono)` or `var(--nimbus-letter-spacings-wide)`, for styles
+that you write yourself.
+
+### Editor support
+
+With the design token TypeScript plugin, autocomplete shows the value next to
+the token. See
+[Installation](/home/getting-started/installation#design-token-autocomplete-optional)
+for how to set it up.
+
+## Values that Nimbus components use
+
+In the recipes of Nimbus components, the text styles `sm` (31 times), `md` (20
+times) and `xs` (10 times) are the most common. The most common font weights are
+`500` (22 times), `600` (9 times) and `400` (6 times).

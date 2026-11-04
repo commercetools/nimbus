@@ -1,7 +1,10 @@
 ---
 id: TokensRadii
 title: Radii
-description: The list of available radius tokens
+illustration: token-radii
+description:
+  Radius tokens round the corners of an element, from 2px to the fully round
+  ends of a pill or a circle.
 order: 999
 menu:
   - Home
@@ -11,13 +14,96 @@ tags:
   - radius
   - radii
   - border-radius
+  - rounded
+  - corners
 icon: Architecture
 ---
 
-# Radii
+Radius tokens round the corners of an element. The scale goes from `50` (2px) to
+`600` (24px), and `full` makes the ends fully round. As with the
+[spacing](/home/design-tokens/spacing) tokens, a token is its pixel value times
+25, so `200` is 8px. Most Nimbus components use `200`.
 
-The list of available radius tokens
+## Radius scale
 
-## Tokens
+Select a token to see it on a tag, a button, a square and a card. The same
+radius looks rounder on a smaller element. Use the copy button to copy the token
+name.
 
-<GenericTokenTableDemo category="radii" demoProperty="borderRadius" />
+<RadiiScale />
+
+`full` is 900px. When the radii of an element are larger than the element, the
+browser makes them smaller until the corners fit
+([CSS Backgrounds and Borders, Overlapping Curves](https://www.w3.org/TR/css-backgrounds-3/#corner-overlap)).
+So `full` makes the short sides of an element fully round: a pill on a wide
+element, and a circle on a square.
+
+## Choose a radius
+
+To match the components next to your element, use the radius that Nimbus uses
+for elements of the same kind.
+
+| You round                                                         | Use          | Nimbus components that use it                                                          |
+| ----------------------------------------------------------------- | ------------ | -------------------------------------------------------------------------------------- |
+| Small parts inside a control, such as a checkbox                  | `50` (2px)   | Checkbox, TimeInput                                                                    |
+| Small elements, such as code, keys and tooltips                   | `100` (4px)  | Code, Kbd, Tooltip, Toast, DateInput                                                   |
+| Controls and overlays, such as buttons, inputs, menus and dialogs | `200` (8px)  | Button, TextInput, Select, Menu, Popover, Dialog, Drawer, Badge, Alert and most others |
+| Larger surfaces, such as cards and calendars                      | `300` (12px) | Card, DatePicker, DateRangePicker, DropZone, ChatMessage, Toolbar                      |
+| Round ends and circles                                            | `full`       | Avatar, Switch, Slider, Steps, Skeleton                                                |
+
+The tokens `150`, `400`, `500` and `600` are not used in the recipes of Nimbus
+components.
+
+## Use radii in code
+
+Radius tokens work on the style props for border radius. Each prop has a shorter
+name that starts with `rounded`.
+
+| You round                                     | Prop                  | Short name       |
+| --------------------------------------------- | --------------------- | ---------------- |
+| All corners                                   | `borderRadius`        | `rounded`        |
+| The two corners of one side                   | `borderTopRadius`     | `roundedTop`     |
+| One corner                                    | `borderTopLeftRadius` | `roundedTopLeft` |
+| The two corners at the start of the text line | `borderStartRadius`   | `roundedStart`   |
+
+The same props exist for the other sides and corners, with `Right`, `Bottom`,
+`Left` and `End` in the name, for example `roundedBottomRight` or `roundedEnd`.
+Start and end follow the direction of the text: in a right-to-left language, the
+start is on the right
+([MDN: CSS logical properties](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_logical_properties_and_values)).
+
+```tsx
+// All corners
+<Box borderRadius="200" />
+
+// A pill
+<Box rounded="full" px="400" />
+
+// Only the top corners, for example for the header of a card
+<Box roundedTop="300" />
+
+// In a recipe
+base: {
+  borderRadius: "200",
+}
+```
+
+For the full list of props, see [Style props: Border](/home/style-props/border).
+
+### CSS variables
+
+Every token is also a CSS variable, such as `var(--nimbus-radii-200)`, for
+styles that you write yourself.
+
+### Editor support
+
+With the design token TypeScript plugin, autocomplete shows the value next to
+the token. See
+[Installation](/home/getting-started/installation#design-token-autocomplete-optional)
+for how to set it up.
+
+## Values that Nimbus components use
+
+In the recipes of Nimbus components, `200` is the most common radius (55 times).
+Then come `full` (18 times), `300` (7 times), `100` (7 times) and `50` (2
+times).

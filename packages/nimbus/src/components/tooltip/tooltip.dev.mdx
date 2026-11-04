@@ -385,7 +385,7 @@ const App = () => {
       <TextInput
         id="username-input"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={setValue}
         placeholder="Enter username"
       />
     </Stack>
@@ -494,6 +494,5 @@ These examples demonstrate how to test your implementation when using Tooltip wi
 
 ## Resources
 
-- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-tooltip-tooltip--docs)
 - [React Aria Tooltip](https://react-spectrum.adobe.com/react-aria/Tooltip.html)
 - [ARIA Tooltip Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/)

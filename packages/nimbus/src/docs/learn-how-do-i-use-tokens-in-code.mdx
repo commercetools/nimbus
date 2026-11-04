@@ -1,0 +1,90 @@
+---
+id: Learn-How do I-Use tokens in your code
+title: Use a token as a CSS variable or in JavaScript
+description:
+  In CSS, use a variable such as var(--nimbus-spacing-400) or
+  var(--nimbus-colors-primary-9). In JavaScript, use system.token("spacing.400")
+  from @commercetools/nimbus.
+icon: DataObject
+illustration: design-tokens
+order: 2
+menu:
+  - Learn
+  - How do I…
+  - Use tokens in your code
+tags:
+  - learn
+  - tokens
+  - css variable
+  - custom properties
+  - var(--nimbus
+  - custom css
+  - scss
+  - system.token
+  - token value
+  - javascript
+  - outside components
+related:
+  - Learn-Concepts-Tokens and colors
+---
+
+You write CSS yourself, or you need a token value in JavaScript, for example for
+a chart or for a component from another library. Every Nimbus token is also a
+CSS variable. In JavaScript, `system.token` returns the token.
+
+## In CSS
+
+The variable name is `--nimbus-`, then the token group, then the token name,
+with dashes instead of dots. Most token groups have plural names, such as
+`colors`, `radii` and `sizes`. A group name in camelCase is written with dashes:
+`fontSizes` becomes `font-sizes`, and `zIndex` becomes `z-index`.
+
+| Token              | CSS variable                     |
+| ------------------ | -------------------------------- |
+| `spacing.400`      | `var(--nimbus-spacing-400)`      |
+| `colors.primary.9` | `var(--nimbus-colors-primary-9)` |
+| `colors.fg.subtle` | `var(--nimbus-colors-fg-subtle)` |
+| `radii.200`        | `var(--nimbus-radii-200)`        |
+| `fontSizes.350`    | `var(--nimbus-font-sizes-350)`   |
+| `zIndex.sticky`    | `var(--nimbus-z-index-sticky)`   |
+
+```css
+.campaign-banner {
+  padding: var(--nimbus-spacing-400);
+  border-radius: var(--nimbus-radii-200);
+  background-color: var(--nimbus-colors-primary-3);
+}
+```
+
+The color variables follow the color mode, like the colors of the components.
+
+## In JavaScript
+
+`system` is exported from `@commercetools/nimbus`. Call `system.token` with the
+token group and the token name.
+
+```jsx live-dev
+import { Stack, Text, system } from "@commercetools/nimbus";
+
+const App = () => (
+  <Stack gap="200">
+    <Text>spacing.400: {system.token("spacing.400")}</Text>
+    <Text>colors.primary.9: {system.token("colors.primary.9")}</Text>
+    <Text>colors.fg.muted: {String(system.token("colors.fg.muted"))}</Text>
+  </Stack>
+);
+```
+
+- For a plain token, such as spacing, sizes, radii, font sizes, z-index, `black`
+  or `white`, you get the value: `16px`.
+- For a semantic token, such as a palette color, `fg`, `bg`, `border` or a
+  shadow, you get the CSS variable, because the value depends on the color mode.
+- For a name that does not exist, you get `undefined`.
+
+`system.token.var("spacing.400")` always returns the CSS variable.
+
+## Why it works
+
+Style props use the same CSS variables. So your own CSS and the Nimbus
+components show the same values, also after a token changes. See
+[Tokens and colors](/learn/concepts/tokens-and-colors).

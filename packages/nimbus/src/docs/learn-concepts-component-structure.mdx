@@ -1,0 +1,165 @@
+---
+id: Learn-Concepts-Component structure
+title: "Component structure: parts, as and asChild"
+description:
+  Single components such as Button, compound components with parts such as
+  Card.Root and Card.Header, and the as and asChild props that render another
+  element.
+icon: AccountTree
+illustration: card
+order: 4
+menu:
+  - Learn
+  - Concepts
+  - Component structure
+tags:
+  - learn
+  - compound components
+  - parts
+  - Card.Root
+  - as
+  - asChild
+  - polymorphism
+  - primitive components
+---
+
+Nimbus has two kinds of components. A single component, such as `Button`,
+`Text` or `Box`, is one element. A compound component, such as `Card`, is made
+of several parts, such as `Card.Root` and `Card.Header`, that you put together.
+Before you build a part of a screen yourself, look for it in the
+[components](/components).
+
+## Single components
+
+A single component is one element with its own props. You use it as it is, or
+put several of them together.
+
+```jsx live-dev
+import { Button, Heading, Stack, Text } from "@commercetools/nimbus";
+
+const App = () => (
+  <Stack gap="300" align="start">
+    <Heading>Project settings</Heading>
+    <Text>Your project is live.</Text>
+    <Button variant="solid" colorPalette="primary">
+      Save
+    </Button>
+  </Stack>
+);
+```
+
+## Compound components
+
+A compound component is an object with one component for each part. You import
+the object once, for example `Card`, and use its parts: `Card.Root` holds the
+other parts, and takes the props that apply to all of them, such as `variant`
+and `size`.
+
+```jsx live-dev
+import { Button, Card, Text } from "@commercetools/nimbus";
+
+const App = () => (
+  <Card.Root variant="outlined" size="md">
+    <Card.Header>Project settings</Card.Header>
+    <Card.Body>
+      <Text>Your project is live.</Text>
+    </Card.Body>
+    <Card.Footer>
+      <Button variant="solid" colorPalette="primary">
+        Save
+      </Button>
+    </Card.Footer>
+  </Card.Root>
+);
+```
+
+Other compound components work the same way:
+
+- `Dialog`: `Dialog.Root`, `Dialog.Trigger`, `Dialog.Content`,
+  `Dialog.Header`, `Dialog.Title`, `Dialog.Body`, `Dialog.Footer` and
+  `Dialog.CloseTrigger`.
+- `Menu`: `Menu.Root`, `Menu.Trigger`, `Menu.Content`, `Menu.Item` and
+  `Menu.Section`.
+
+Each part takes style props, so you can change one part and leave the others
+as they are. See [Style one part](/learn/how-do-i/style-one-part). Each
+component page lists its parts and their props.
+
+Everything that you can use is exported from `@commercetools/nimbus`, and the
+parts are reached through their component, such as `Card.Header`.
+
+## Another element: as
+
+Some components take an `as` prop, which changes the HTML element that they
+render. The look and the behavior stay the same. For example, `Text` renders a
+`p` element, and `as="span"` makes it a `span` element inside a line of text.
+
+```jsx live-dev
+import { Text } from "@commercetools/nimbus";
+
+const App = () => (
+  <Text>
+    The order is{" "}
+    <Text as="span" fontWeight="600" color="positive.11">
+      shipped
+    </Text>
+    .
+  </Text>
+);
+```
+
+## The look for a child: asChild
+
+With `asChild`, a component does not render its own element. It passes its
+look and behavior to its only child instead. `Button`, `Link` and trigger parts
+such as `Menu.Trigger` take `asChild`. Most parts of compound components do not
+take `as` or `asChild`.
+
+A common use is a trigger part: `Menu.Trigger` with `asChild` gives its
+behavior to your `Button`, so the menu opens from a button with the Nimbus look.
+
+```jsx live-dev
+import { Button, Menu } from "@commercetools/nimbus";
+
+const App = () => (
+  <Menu.Root>
+    <Menu.Trigger asChild>
+      <Button variant="outline">Actions</Button>
+    </Menu.Trigger>
+    <Menu.Content>
+      <Menu.Item id="duplicate">Duplicate</Menu.Item>
+      <Menu.Item id="archive">Archive</Menu.Item>
+    </Menu.Content>
+  </Menu.Root>
+);
+```
+
+To give the look of a button to a link from your router, see
+[Link to another page](/learn/how-do-i/link-to-another-page).
+
+## When nothing fits
+
+If Nimbus has no component for what you need, build it from Nimbus components,
+style props and tokens. Mark it as a [one-off](/learn/rules), so that your team
+can replace it when Nimbus offers the component.
+
+```jsx live-dev
+import { Box, Stack, Text } from "@commercetools/nimbus";
+
+// nimbus-one-off: Nimbus has no key-value list yet
+const KeyValue = ({ label, value }) => (
+  <Stack direction="row" gap="200">
+    <Text color="fg.subtle" minWidth="1600">
+      {label}
+    </Text>
+    <Text>{value}</Text>
+  </Stack>
+);
+
+const App = () => (
+  <Box>
+    <KeyValue label="SKU" value="A-1042" />
+    <KeyValue label="Price" value="24.90 EUR" />
+  </Box>
+);
+```

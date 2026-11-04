@@ -28,3 +28,6 @@ dist-ssr
 # component docs & their ts-types
 # These files are generated from MDX files and TypeScript definitions during build
 src/data/**/*.json
+
+# Component illustrations rendered from packages/nimbus sources (pnpm illustrations:generate)
+src/data/illustrations/

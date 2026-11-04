@@ -11,10 +11,11 @@ menu:
 tags:
   - document
 ---
-
-# Transitions
-
 JSX style props for controlling an element's transition and animation.
+
+The token values are animation, duration and easing tokens, such as `bounce`,
+`fast` or `ease-in-out`. For all tokens, see
+[Animations](/home/design-tokens/other/animations).
 
 ## Transition
 
@@ -22,12 +23,12 @@ Use the `transition` prop to control the transition of an element.
 
 ```jsx
 // hardcoded value
-<Box bg="red.400" _hover={{ bg: "red.500" }} transition="background 0.2s ease-in-out">
+<Box bg="primary.9" _hover={{ bg: "primary.10" }} transition="background 0.2s ease-in-out">
   Hover me
 </Box>
 
 // shortcut value
-<Box bg="red.400" _hover={{ bg: "red.500" }} transition="backgrounds">
+<Box bg="primary.9" _hover={{ bg: "primary.10" }} transition="backgrounds">
   Hover me
 </Box>
 ```
@@ -43,8 +44,8 @@ transition.
 
 ```jsx
 <Box
-  bg="red.400"
-  _hover={{ bg: "red.500" }}
+  bg="primary.9"
+  _hover={{ bg: "primary.10" }}
   transition="backgrounds"
   transitionTimingFunction="ease-in-out"
 >
@@ -62,8 +63,8 @@ Use the `transitionDuration` prop to control the duration of a transition.
 
 ```jsx
 <Box
-  bg="red.400"
-  _hover={{ bg: "red.500" }}
+  bg="primary.9"
+  _hover={{ bg: "primary.10" }}
   transition="backgrounds"
   transitionDuration="fast"
 >
@@ -81,10 +82,10 @@ Use the `transitionDelay` prop to control the delay of a transition.
 
 ```jsx
 <Box
-  bg="red.400"
-  _hover={{ bg: "red.500" }}
+  bg="primary.9"
+  _hover={{ bg: "primary.10" }}
   transition="backgrounds"
-  transitionDelay="fast"
+  transitionDelay="{durations.fast}"
 >
   Hover me
 </Box>
@@ -92,7 +93,10 @@ Use the `transitionDelay` prop to control the delay of a transition.
 
 | Prop              | CSS Property       | Token Category |
 | ----------------- | ------------------ | -------------- |
-| `transitionDelay` | `transition-delay` | `durations`    |
+| `transitionDelay` | `transition-delay` | -              |
+
+The `transitionDelay` prop does not read duration tokens by name. Use a raw
+value, such as `150ms`, or a token reference, such as `{durations.fast}`.
 
 ## Animation
 
@@ -104,7 +108,7 @@ Use the `animation` prop to control the animation of an element.
 
 | Prop        | CSS Property     | Token Category |
 | ----------- | ---------------- | -------------- |
-| `animation` | `animation-name	` | `animations`   |
+| `animation` | `animation`      | `animations`   |
 
 ## Animation Name
 
@@ -113,8 +117,9 @@ multiple animation names to create complex animations.
 
 :::info
 
-The value of the `animation` prop points to a global keyframe animation. Use the
-`theme.keyframes` object to define the animation.
+The value of the `animationName` prop is the name of a keyframe animation of the
+Nimbus theme, such as `bounce` or `fade-in`. The Animations token page shows all
+keyframes.
 
 :::
 
@@ -124,7 +129,7 @@ The value of the `animation` prop points to a global keyframe animation. Use the
 
 | Prop            | CSS Property     | Token Category |
 | --------------- | ---------------- | -------------- |
-| `animationName` | `animation-name` | `animations`   |
+| `animationName` | `animation-name` | -              |
 
 ## Animation Timing Function
 

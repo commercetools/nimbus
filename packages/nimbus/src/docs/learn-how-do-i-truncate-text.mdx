@@ -1,0 +1,62 @@
+---
+id: Learn-How do I-Truncate text
+title: Truncate text with an ellipsis
+description:
+  Set truncate on Text to cut it off after one line with an ellipsis, or
+  lineClamp={2} to allow two lines. The text needs a limited width.
+icon: ShortText
+illustration: text
+order: 4
+menu:
+  - Learn
+  - How do I…
+  - Truncate text
+tags:
+  - learn
+  - truncate
+  - ellipsis
+  - lineClamp
+  - line clamp
+  - overflow
+  - text-overflow
+  - long text
+  - cut off
+related:
+  - Learn-Concepts-Layout
+  - Components-Text
+---
+
+Long text breaks the layout, for example a product name in a narrow card. In
+Nimbus, set `truncate` on `Text`: the text stays on one line and ends with an
+ellipsis (…). To allow more lines, set `lineClamp` to the number of lines.
+
+```jsx live-dev
+import { Stack, Text } from "@commercetools/nimbus";
+
+const name = "Organic cotton T-shirt with a very long product name";
+
+const App = () => (
+  <Stack gap="400" maxWidth="2xs">
+    <Text truncate title={name}>
+      {name}
+    </Text>
+    <Text lineClamp={2}>
+      This description has more words than fit on two lines. After the second
+      line, it ends with an ellipsis.
+    </Text>
+  </Stack>
+);
+```
+
+## Why it works
+
+`truncate` and `lineClamp` are style props. They hide the text that does not fit
+and add the ellipsis. They only cut the text when its width is limited: by the
+parent, as with `maxWidth="2xs"` in the example, or by a width on the text
+itself. Use a size token for that width.
+
+The `title` attribute shows the full text when the pointer rests on it.
+
+Because they are style props, `truncate` and `lineClamp` also work on `Heading`
+and `Box`. See [Layout](/learn/concepts/layout) and
+[typography style props](/home/style-props/typography).

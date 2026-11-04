@@ -1,23 +1,11 @@
-export type TMenuItem = {
-  id: string;
-  label: string;
-  slug: string;
-  route: string; // The actual route from docs.json
-  icon?: string;
-  children?: TMenuItem[];
-};
+import type { NavigationItem } from "./shape-navigation";
 
 export type MenuProps = {
-  items: TMenuItem[];
+  items: NavigationItem[];
   level: number;
 };
 
 export type MenuItemProps = {
-  item: TMenuItem;
+  item: NavigationItem;
   level: number;
-};
-
-export type MenuIconProps = {
-  /** icon identifier */
-  id: string;
 };

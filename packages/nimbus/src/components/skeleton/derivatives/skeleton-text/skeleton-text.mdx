@@ -5,6 +5,9 @@ exportName: SkeletonText
 description: A stack of placeholder lines that approximates a paragraph of text while content loads.
 lifecycleState: Stable
 order: 999
+related:
+  - Components-Skeleton
+  - Components-SkeletonCircle
 menu:
   - Components
   - Feedback
@@ -16,6 +19,8 @@ tags:
   - placeholder
   - feedback
   - text
+storybookLink: https://nimbus-storybook.vercel.app/?path=/docs/components-skeleton--docs
+figmaLink: https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system
 ---
 
 ## Overview
@@ -29,13 +34,7 @@ smooth.
 `SkeletonText` is part of the Skeleton family, built from
 [Skeleton](/components/feedback/skeleton) lines. For single blocks, images, or
 custom shapes use `Skeleton` directly; for avatars and icons use
-[SkeletonCircle](/components/feedback/skeletoncircle).
-
-### Resources
-
-Deep dive into implementation details and access the Nimbus design library.
-
-[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system)
+[SkeletonCircle](/components/feedback/skeleton-circle).
 
 ## Variables
 
@@ -111,4 +110,4 @@ const App = () => (
 - For a single line, heading, or non-text block — use
   [Skeleton](/components/feedback/skeleton) instead
 - For circular content such as avatars — use
-  [SkeletonCircle](/components/feedback/skeletoncircle)
+  [SkeletonCircle](/components/feedback/skeleton-circle)

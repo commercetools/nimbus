@@ -10,10 +10,10 @@ menu:
 tags:
   - document
 ---
-
-# Filters
-
 JSX style props for applying various filters to elements.
+
+Blur values are blur tokens, such as `100` (4px). For all tokens, see
+[Blurs](/home/design-tokens/other/blurs).
 
 ## Filter
 
@@ -39,7 +39,7 @@ this prop is to set the `filter` prop to `auto`.
 <Box filter="auto" blur="5px" />
 
 // token value
-<Box filter="auto" blur="sm" />
+<Box filter="auto" blur="100" />
 ```
 
 | Prop   | CSS Property | Token Category |
@@ -162,7 +162,7 @@ element. The requirement for this prop is to set the `backdropFilter` prop to
 <Box backdropFilter="auto" backdropBlur="5px" />
 
 // token value
-<Box backdropFilter="auto" backdropBlur="sm" />
+<Box backdropFilter="auto" backdropBlur="100" />
 ```
 
 | Prop           | CSS Property      | Token Category |

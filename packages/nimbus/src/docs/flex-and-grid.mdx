@@ -10,10 +10,11 @@ menu:
 tags:
   - document
 ---
-
-# Flex and Grid
-
 JSX style props to control flex and grid layouts
+
+Gap values are spacing tokens, such as `400` (16px); see
+[Spacing](/home/design-tokens/spacing). Flex basis values can be size tokens,
+such as `1/2`; see [Sizes](/home/design-tokens/sizes).
 
 ## Flex Basis
 
@@ -29,7 +30,7 @@ Use the `flexBasis` prop to set the initial main size of a flex item.
 
 | Prop        | CSS Property | Token Category |
 | ----------- | ------------ | -------------- |
-| `flexBasis` | `flex-basis` | -              |
+| `flexBasis` | `flex-basis` | `sizes`        |
 
 ## Flex Direction
 
@@ -150,7 +151,7 @@ Use the `order` prop to set the order of a flex item.
 Use the `gap` prop to set the gap between items in a flex or grid container.
 
 ```jsx
-<Flex>
+<Flex gap="400">
   <Box>Item 1</Box>
   <Box>Item 2</Box>
   <Box>Item 3</Box>
@@ -184,10 +185,10 @@ When using `Grid` component, the `templateColumns` prop is aliased to
 </Grid>
 ```
 
-## Grid Template Start/End
+## Grid Column Start/End
 
-Use the `gridTemplateStart` and `gridTemplateEnd` props to define the start and
-end of a grid container.
+Use the `gridColumn`, `gridColumnStart` and `gridColumnEnd` props to define
+where a grid item starts and ends.
 
 ```jsx
 <Box display="grid" gridTemplateColumns="repeat(3, minmax(0, 1fr))">
@@ -197,10 +198,11 @@ end of a grid container.
 </Box>
 ```
 
-| Prop                | CSS Property          | Token Category |
-| ------------------- | --------------------- | -------------- |
-| `gridTemplateStart` | `grid-template-start` | -              |
-| `gridTemplateEnd`   | `grid-template-end`   | -              |
+| Prop              | CSS Property        | Token Category |
+| ----------------- | ------------------- | -------------- |
+| `gridColumn`      | `grid-column`       | -              |
+| `gridColumnStart` | `grid-column-start` | -              |
+| `gridColumnEnd`   | `grid-column-end`   | -              |
 
 ## Grid Template Rows
 
@@ -347,16 +349,6 @@ flex container when there's extra space.
 </Box>
 ```
 
-When using the `Flex` component, the `align` prop is aliased to `alignContent`.
-
-```jsx
-<Flex align="center">
-  <Box>Item 1</Box>
-  <Box>Item 2</Box>
-  <Box>Item 3</Box>
-</Flex>
-```
-
 | Prop           | CSS Property    | Token Category |
 | -------------- | --------------- | -------------- |
 | `alignContent` | `align-content` | -              |
@@ -372,6 +364,16 @@ scope.
   <Box>Item 2</Box>
   <Box>Item 3</Box>
 </Box>
+```
+
+When using the `Flex` component, the `align` prop is aliased to `alignItems`.
+
+```jsx
+<Flex align="center">
+  <Box>Item 1</Box>
+  <Box>Item 2</Box>
+  <Box>Item 3</Box>
+</Flex>
 ```
 
 ## Align Self

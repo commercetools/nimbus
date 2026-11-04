@@ -14,6 +14,16 @@ import type {
 import { routeManifestSchema } from "../schemas/mdx-document.js";
 import { flog } from "../utils/logger.js";
 import { validateFilePath } from "../utils/validate-file-path.js";
+import { findMonorepoRoot } from "../utils/file-utils.js";
+import { resolveChildIllustrations } from "./resolve-illustrations.js";
+import {
+  ILLUSTRATION_SOURCES_DIR,
+  findIllustration,
+  findUnknownIllustrations,
+  formatUnknownIllustrations,
+  listIllustrationNames,
+} from "./illustration-sources.js";
+import { resolveRelated } from "./resolve-related.js";
 
 /**
  * Generate route manifest from parsed documents
@@ -24,6 +34,21 @@ export async function generateRouteManifest(
 ): Promise<RouteManifest> {
   const routes: RouteInfo[] = [];
   const categoriesMap = new Map<string, CategoryInfo>();
+  const monorepoRoot = await findMonorepoRoot(process.cwd());
+  const knownIllustrations = monorepoRoot
+    ? await listIllustrationNames(
+        path.join(monorepoRoot, ILLUSTRATION_SOURCES_DIR)
+      )
+    : new Set<string>();
+
+  // The build stops on unknown names (see `build`); the dev watcher only warns
+  const unknownIllustrations = findUnknownIllustrations(
+    [...docs].map(([file, doc]) => ({ file, meta: doc.meta })),
+    knownIllustrations
+  );
+  if (monorepoRoot && unknownIllustrations.length > 0) {
+    console.warn(formatUnknownIllustrations(unknownIllustrations));
+  }
 
   // Process each document
   for (const [, doc] of docs) {
@@ -45,6 +70,12 @@ export async function generateRouteManifest(
       order: meta.order || 999,
       chunkName: `route-${meta.route.replace(/\//g, "-")}`,
       icon: meta.icon,
+      illustrations: await findIllustration(
+        monorepoRoot,
+        meta,
+        knownIllustrations
+      ),
+      related: meta.related || [],
       tabs: meta.tabs || [],
     };
 
@@ -61,6 +92,15 @@ export async function generateRouteManifest(
     }
 
     categoriesMap.get(category)!.items.push(route);
+  }
+
+  // Category pages show the illustrations of the documents below them
+  resolveChildIllustrations(routes);
+
+  // Related links are two-way: add the documents that list a document
+  const related = resolveRelated(routes);
+  for (const route of routes) {
+    route.related = related.get(route.id) ?? [];
   }
 
   // Convert categories map to array and sort

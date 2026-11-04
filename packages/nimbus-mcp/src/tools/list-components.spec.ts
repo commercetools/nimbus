@@ -115,8 +115,8 @@ describe("list_components — category filter", () => {
     const components = await callListComponents(client, { category: "Inputs" });
     const titles = components.map((c) => c.title);
     expect(titles).toContain("Select");
-    expect(titles).toContain("Combo box");
-    expect(titles).toContain("Text input");
+    expect(titles).toContain("ComboBox");
+    expect(titles).toContain("TextInput");
   });
 });
 
@@ -141,7 +141,7 @@ describe("list_components — query search", () => {
   it("includes Combo box for 'dropdown' (its description contains the word)", async () => {
     const components = await callListComponents(client, { query: "dropdown" });
     const titles = components.map((c) => c.title);
-    expect(titles).toContain("Combo box");
+    expect(titles).toContain("ComboBox");
   });
 
   it("returns results for a component name query", async () => {
@@ -176,7 +176,9 @@ describe("list_components — relevance ordering", () => {
     // that only match one token (e.g. "Text area" matches "text" but not "input")
     const results = await callListComponents(client, { query: "text input" });
     expect(results.length).toBeGreaterThan(0);
-    expect(results[0].title.toLowerCase()).toContain("text input");
+    expect(
+      results[0].title.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase()
+    ).toContain("text input");
   });
 
   it("ranks the exact title match first for a single-word query", async () => {

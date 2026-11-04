@@ -3,8 +3,17 @@
  *
  * Coordinates the entire documentation build process with optional caching
  */
+import path from "path";
 import { performance } from "perf_hooks";
 import { validateContent } from "../validation/validate-content.js";
+import { findUnknownRelatedIds } from "../generators/resolve-related.js";
+import {
+  ILLUSTRATION_SOURCES_DIR,
+  findUnknownIllustrations,
+  formatUnknownIllustrations,
+  listIllustrationNames,
+} from "../generators/illustration-sources.js";
+import { findMonorepoRoot } from "../utils/file-utils.js";
 import { optimizeAssets } from "../assets/optimize-assets.js";
 import { buildMdx } from "./mdx-builder.js";
 import { buildTypes } from "./types-builder.js";
@@ -36,6 +45,33 @@ export async function build(config: DocsBuilderConfig): Promise<BuildResult> {
 
       if (errorCount > 0 && config.validation?.strict) {
         throw new Error("Content validation failed");
+      }
+
+      // Unknown related ids stop the build, also when validation is not strict
+      const unknownRelated = findUnknownRelatedIds(
+        [...docs].map(([file, doc]) => ({ file, meta: doc.meta }))
+      );
+      if (unknownRelated.length > 0) {
+        throw new Error(
+          `Unknown ids in related: ${unknownRelated
+            .map(({ file, id }) => `${id} (${file})`)
+            .join(", ")}`
+        );
+      }
+
+      // Unknown illustration names stop the build too. Outside the monorepo
+      // the sources cannot be listed, so the check is skipped.
+      const monorepoRoot = await findMonorepoRoot(process.cwd());
+      if (monorepoRoot) {
+        const unknownIllustrations = findUnknownIllustrations(
+          [...docs].map(([file, doc]) => ({ file, meta: doc.meta })),
+          await listIllustrationNames(
+            path.join(monorepoRoot, ILLUSTRATION_SOURCES_DIR)
+          )
+        );
+        if (unknownIllustrations.length > 0) {
+          throw new Error(formatUnknownIllustrations(unknownIllustrations));
+        }
       }
     }
 

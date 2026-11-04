@@ -1,0 +1,127 @@
+---
+id: Learn-Concepts-Provider and layers
+title: NimbusProvider and z-index layers
+description:
+  NimbusProvider must wrap every Nimbus component and sets the locale, the
+  router and the fonts. Dialogs and drawers use the z-index token modal; your
+  own elements use z-index tokens too.
+icon: Layers
+illustration: token-z-indices
+order: 6
+menu:
+  - Learn
+  - Concepts
+  - Provider and layers
+tags:
+  - learn
+  - NimbusProvider
+  - provider
+  - setup
+  - locale
+  - router
+  - loadFonts
+  - Merchant Center
+  - z-index
+  - zIndex
+  - layers
+  - overlay
+---
+
+`NimbusProvider` must be above every Nimbus component in your app. It gives the
+components what they need to work: the tokens, the color mode, the locale and
+the router. Overlays, such as dialogs, menus, toasts and tooltips, appear above
+the page, and z-index tokens put your own elements in the right order.
+
+## What NimbusProvider gives
+
+Put `NimbusProvider` once, at the root of your app. It provides:
+
+- the tokens and styles of all components,
+- the color mode (see [Tokens and colors](/learn/concepts/tokens-and-colors)),
+- the locale for dates, numbers and the texts inside components (`locale`; the
+  default is the locale of the browser),
+- client-side navigation for links with `href` (`router`),
+- one place where toasts appear,
+- the Inter font (`loadFonts`; the default is `true`).
+
+This example uses React Router 6:
+
+```tsx
+import { NimbusProvider } from "@commercetools/nimbus";
+import { useNavigate } from "react-router-dom";
+
+export function Root() {
+  const navigate = useNavigate();
+
+  return (
+    <NimbusProvider locale="en-US" router={{ navigate }}>
+      <App />
+    </NimbusProvider>
+  );
+}
+```
+
+## Inside the Merchant Center
+
+In a Merchant Center application, the application shell renders
+`NimbusProvider` for you when `@commercetools/nimbus` is installed. It sets the
+locale of the user, the router of the application and `loadFonts={false}`,
+because the Merchant Center already loads the Inter font. You do not need your
+own provider.
+
+If your application renders its own `NimbusProvider`, for example in tests,
+use the same values. The Merchant Center uses React Router 5, so the router
+comes from `useHistory`:
+
+```tsx
+import type { ReactNode } from "react";
+import { NimbusProvider } from "@commercetools/nimbus";
+import { useIntl } from "react-intl";
+import { useHistory } from "react-router-dom";
+
+export function Providers({ children }: { children: ReactNode }) {
+  const history = useHistory();
+  const { locale } = useIntl();
+
+  return (
+    <NimbusProvider
+      locale={locale}
+      router={{ navigate: history.push }}
+      loadFonts={false}
+    >
+      {children}
+    </NimbusProvider>
+  );
+}
+```
+
+## Layers
+
+Nimbus places overlays above the page. Dialogs and drawers use the
+[z-index token](/home/design-tokens/other/z-indices) `modal`. Toasts, menus,
+popovers and tooltips use fixed numbers that are above every z-index token, so
+they appear above all other elements.
+
+When your own element must be above or below other elements, give `zIndex` a
+z-index token, not a number, such as `zIndex="sticky"` for a sticky header. Then
+it fits into the same order as the other elements and the dialogs. For an
+example, see
+[Place above other elements](/learn/how-do-i/place-above-other-elements).
+
+## Common mistakes
+
+- **A Nimbus component outside NimbusProvider.** It cannot find its tokens and
+  styles. Make sure that every part of the app that uses Nimbus is inside the
+  provider, also parts such as a navigation bar that are easy to forget.
+
+## What you cannot change
+
+The order of the z-index tokens is the same in every app. For example, a dialog
+(`modal`) is always above a sticky header (`sticky`). Toasts, menus and tooltips
+are always above all z-index tokens.
+
+## When nothing fits
+
+If no z-index token gives the order that you need, use a number and mark it as
+a [one-off](/learn/rules). See
+[Place above other elements](/learn/how-do-i/place-above-other-elements).

@@ -11,10 +11,10 @@ menu:
 tags:
   - document
 ---
-
-# Background
-
 JSX style props for styling background colors, gradients, and images.
+
+Color values are color tokens, such as `primary.3` or `neutral.2`. For all
+tokens, see [Colors](/home/design-tokens/colors).
 
 ## Background Attachment
 
@@ -31,10 +31,10 @@ Use `bgAttachment` to control the attachment of a background image.
 ## Background Blend Mode
 
 Use `bgBlendMode` prop to control how an element's background image should blend
-with the its background color.
+with its background color.
 
 ```jsx
-<Box bgBlendMode="multiply" bgColor="red.200" bgImage="url(...)" />
+<Box bgBlendMode="multiply" bgColor="primary.3" bgImage="url(...)" />
 ```
 
 ## Background Clip
@@ -55,12 +55,12 @@ Use `bg`, `bgColor`, or `backgroundColor` props to set the background color of
 an element.
 
 ```jsx
-<Box bg="red.200" />
-<Box bgColor="red.200" />
+<Box bg="primary.3" />
+<Box bgColor="primary.3" />
 
 // with opacity modifier
-<Box bg="blue.200/30" />
-<Box bgColor="blue.200/30" />
+<Box bg="primary.9/30" />
+<Box bgColor="primary.9/30" />
 ```
 
 | Prop                         | CSS Property       | Token Category |
@@ -70,30 +70,29 @@ an element.
 
 ## Background Origin
 
-Use `bgOrigin` or `backgroundOrigin` to control the origin of a background
-image.
+Use `backgroundOrigin` to control the origin of a background image.
 
 ```jsx
-<Box bgOrigin="border-box" bgImage="url(...)" />
+<Box backgroundOrigin="border-box" bgImage="url(...)" />
 ```
 
-| Prop                           | CSS Property        | Token Category |
-| ------------------------------ | ------------------- | -------------- |
-| `bgOrigin`, `backgroundOrigin` | `background-origin` | -              |
+| Prop               | CSS Property        | Token Category |
+| ------------------ | ------------------- | -------------- |
+| `backgroundOrigin` | `background-origin` | -              |
 
 ## Background Position
 
 Properties for controlling the src and position of a background image.
 
 ```jsx
-<Box bgImage="url(...)" bgPosition="center" />
+<Box bgImage="url(...)" bgPos="center" />
 ```
 
-| Prop                                 | CSS Property       | Token Category |
-| ------------------------------------ | ------------------ | -------------- |
-| `bgPosition`, `backgroundPosition`   | `background-image` | -              |
-| `bgPositionX`, `backgroundPositionX` | `background-image` | -              |
-| `bgPositionY`, `backgroundPositionY` | `background-image` | -              |
+| Prop                          | CSS Property            | Token Category |
+| ----------------------------- | ----------------------- | -------------- |
+| `bgPos`, `backgroundPosition` | `background-position`   | -              |
+| `backgroundPositionX`         | `background-position-x` | -              |
+| `backgroundPositionY`         | `background-position-y` | -              |
 
 ## Background Repeat
 
@@ -130,25 +129,24 @@ Use `bgImage` or `backgroundImage` to set the background image of an element.
 <Box bgImage="linear-gradient(black, white)" />
 
 // with token reference
-<Box bgImage="linear-gradient({colors.red.200}, {colors.blue.200})" />
+<Box bgImage="linear-gradient({colors.primary.3}, {colors.info.3})" />
 ```
 
 | Prop                         | CSS Property       | Token Category |
 | ---------------------------- | ------------------ | -------------- |
-| `bgImage`, `backgroundImage` | `background-image` | assets         |
+| `bgImage`, `backgroundImage` | `background-image` | -              |
 
 ## Background Gradient
 
 Properties to create a background gradient based on color stops.
 
 ```jsx
-<Box bgGradient="to-r" gradientFrom="red.200" gradientTo="blue.200" />
+<Box bgGradient="to-r" gradientFrom="primary.3" gradientTo="info.3" />
 ```
 
 | Prop           | CSS Property       | Token Category |
 | -------------- | ------------------ | -------------- |
-| `bgGradient`   | `background-image` | `gradients`    |
-| `textGradient` | `background-image` | `gradients`    |
+| `bgGradient`   | `background-image` | -              |
 | `gradientFrom` | `--gradient-from`  | `colors`       |
 | `gradientTo`   | `--gradient-to`    | `colors`       |
 | `gradientVia`  | `--gradient-via`   | `colors`       |

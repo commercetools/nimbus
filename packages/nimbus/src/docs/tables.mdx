@@ -10,24 +10,24 @@ menu:
 tags:
   - document
 ---
-
-# Tables
-
 JSX style props for styling table elements.
+
+Border spacing values are spacing tokens, such as `200` (8px). For all tokens,
+see [Spacing](/home/design-tokens/spacing).
 
 ## Border Spacing
 
 Control the border-spacing property of a table.
 
 ```jsx
-<chakra.table borderSpacing="2">
+<Box as="table" borderSpacing="200">
   <tbody>
     <tr>
       <td>Cell 1</td>
       <td>Cell 2</td>
     </tr>
   </tbody>
-</chakra.table>
+</Box>
 ```
 
 | Prop            | CSS Property     | Token Category |
@@ -40,14 +40,14 @@ Use the `borderSpacingX` prop to set the horizontal border-spacing property of a
 table.
 
 ```jsx
-<chakra.table borderSpacingX="2">
+<Box as="table" borderSpacingX="200">
   <tbody>
     <tr>
       <td>Cell 1</td>
       <td>Cell 2</td>
     </tr>
   </tbody>
-</chakra.table>
+</Box>
 ```
 
 | Prop             | CSS Property     | Token Category |
@@ -60,14 +60,14 @@ Use the `borderSpacingY` prop to set the vertical border-spacing property of a
 table.
 
 ```jsx
-<chakra.table borderSpacingY="2">
+<Box as="table" borderSpacingY="200">
   <tbody>
     <tr>
       <td>Cell 1</td>
       <td>Cell 2</td>
     </tr>
   </tbody>
-</chakra.table>
+</Box>
 ```
 
 | Prop             | CSS Property     | Token Category |
@@ -80,7 +80,9 @@ Use the `captionSide` prop to set the side of the caption of a table.
 
 ```jsx
 <table>
-  <chakra.caption captionSide="bottom">This is a caption</chakra.caption>
+  <Box as="caption" captionSide="bottom">
+    This is a caption
+  </Box>
   <tbody>
     <tr>
       <td>Cell 1</td>

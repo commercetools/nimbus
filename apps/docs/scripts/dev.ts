@@ -1,4 +1,5 @@
-import { spawn } from "child_process";
+import { execFileSync, spawn } from "child_process";
+import path from "path";
 
 // Header width — kept in sync with the watcher's progress-bar line so the
 // rounded box and the progress bar share the same right edge (see
@@ -64,6 +65,19 @@ console.log(rainbow("╰" + "─".repeat(inner) + "╯"));
 // is deterministic rather than racing the child processes' output.
 console.log("\x1b[2m%s\x1b[0m", `\n  Vite dev server + MDX route watcher\n`);
 
+// Render the illustrations before Vite starts, then keep them up to date
+const illustrationsArgs = [
+  "--filter",
+  "@commercetools/nimbus",
+  "illustrations:generate",
+  "--out",
+  path.resolve("./src/data/illustrations"),
+];
+execFileSync("pnpm", illustrationsArgs, { stdio: "ignore" });
+const illustrationWatcher = spawn("pnpm", [...illustrationsArgs, "--watch"], {
+  stdio: "ignore",
+});
+
 const viteProcess = spawn(
   "pnpm",
   ["vite", "--clearScreen", "false", "--logLevel", "warning"],
@@ -79,6 +93,7 @@ const mdxWatcher = spawn("pnpm", ["tsx", "./scripts/watcher.ts"], {
 function cleanup() {
   viteProcess.kill();
   mdxWatcher.kill();
+  illustrationWatcher.kill();
   process.exit();
 }
 
