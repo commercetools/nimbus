@@ -9,6 +9,7 @@ export const defaultPageSlotRecipe = defineSlotRecipe({
     "root",
     "header",
     "backLink",
+    "backLinkLabel",
     "title",
     "subtitle",
     "actions",
@@ -145,6 +146,84 @@ export const defaultPageSlotRecipe = defineSlotRecipe({
           bottom: 0,
           zIndex: 1,
           bg: "bg",
+        },
+      },
+    },
+    /**
+     * Collapse header on scroll. `DefaultPage.Root` sets this variant only
+     * when the header is pinned. The collapsed styles apply while the header
+     * has `data-collapsed="true"`, which the Root writes. Pages without the
+     * option get none of these styles.
+     *
+     * Values from the compact header design: 12px vertical padding, title at
+     * font size 400 / line height 550 on one line, back link as a 24px icon
+     * 4px before the title.
+     */
+    collapseHeaderOnScroll: {
+      true: {
+        header: {
+          // Parts that appear when the header returns to its full form fade
+          // in. The collapsed rules below set `transition: none`, so parts
+          // that disappear are hidden at once.
+          "& .nimbus-default-page__subtitle, & .nimbus-default-page__backLinkLabel":
+            {
+              transitionProperty: "opacity",
+              transitionDuration: "fast",
+              transitionTimingFunction: "ease-out",
+              _motionReduce: {
+                transition: "none",
+              },
+            },
+          "&[data-collapsed='true']": {
+            paddingTop: "300",
+            paddingBottom: "300",
+            // `minmax(0, …)` lets the one-line title shrink and end with an
+            // ellipsis. The number of columns stays the same, so page-owned
+            // content keeps its grid column.
+            gridTemplateColumns: "minmax(0, 1fr) auto",
+            "& .nimbus-default-page__subtitle, & .nimbus-default-page__backLinkLabel":
+              {
+                // Hidden visually, kept in the accessibility tree.
+                srOnly: true,
+                opacity: 0,
+                transition: "none",
+              },
+            "& .nimbus-default-page__backLink": {
+              gridColumn: "1",
+              gridRow: "1",
+              alignSelf: "center",
+              justifyContent: "center",
+              minWidth: "600",
+              minHeight: "600",
+              mb: "0",
+            },
+            "& .nimbus-default-page__title": {
+              gridRow: "1",
+              minWidth: "0",
+              fontSize: "400",
+              lineHeight: "550",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            },
+            // The back link shares the title's grid cell. A margin (not a
+            // padding) keeps the title box off the link, so the link stays
+            // clickable.
+            "&:has(.nimbus-default-page__backLink) .nimbus-default-page__title":
+              {
+                marginInlineStart: "calc({sizes.600} + {spacing.100})",
+              },
+            "& .nimbus-default-page__actions, &:has(.nimbus-default-page__backLink) .nimbus-default-page__actions":
+              {
+                gridRow: "1",
+              },
+            "&:has(.nimbus-default-page__tabNav)": {
+              paddingBottom: "0",
+              "& .nimbus-default-page__tabNav": {
+                mt: "300",
+              },
+            },
+          },
         },
       },
     },
