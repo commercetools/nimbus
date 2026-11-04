@@ -324,3 +324,43 @@ describe("With tab navigation", () => {
     ).toBeInTheDocument();
   });
 });
+
+/**
+ * @docs-section collapse-header-on-scroll
+ * @docs-order 6
+ * @docs-title Collapse header on scroll
+ * @docs-description JSDOM has no layout, so the header always shows its full form. Find the back link by role and name; test the collapse itself in a real browser through `data-collapsed`.
+ */
+describe("Collapse header on scroll", () => {
+  it("renders the full header form in JSDOM, with the back link named by its label", () => {
+    render(
+      <NimbusProvider>
+        <DefaultPage.Root collapseHeaderOnScroll>
+          <DefaultPage.Header>
+            <DefaultPage.BackLink href="/products">
+              Back to Products
+            </DefaultPage.BackLink>
+            <DefaultPage.Title>Winter Jacket</DefaultPage.Title>
+            <DefaultPage.Subtitle>SKU: JACKET-001</DefaultPage.Subtitle>
+          </DefaultPage.Header>
+          <DefaultPage.Content>
+            <Text>Product details.</Text>
+          </DefaultPage.Content>
+        </DefaultPage.Root>
+      </NimbusProvider>
+    );
+
+    // The header is a `banner` landmark. It has no `data-collapsed` in JSDOM.
+    expect(screen.getByRole("banner")).not.toHaveAttribute("data-collapsed");
+
+    // Find the back link by role and name: `getByText` returns the label
+    // element inside the link.
+    const backLink = screen.getByRole("link", { name: "Back to Products" });
+    expect(backLink).toHaveAttribute("href", "/products");
+
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Winter Jacket" })
+    ).toBeInTheDocument();
+    expect(screen.getByText("SKU: JACKET-001")).toBeInTheDocument();
+  });
+});
