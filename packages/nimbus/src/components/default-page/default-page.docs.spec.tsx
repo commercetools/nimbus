@@ -324,3 +324,38 @@ describe("With tab navigation", () => {
     ).toBeInTheDocument();
   });
 });
+
+/**
+ * @docs-section collapse-header-on-scroll
+ * @docs-order 6
+ * @docs-title Collapse header on scroll
+ */
+describe("Collapse header on scroll", () => {
+  it("renders a pinned page with collapseHeaderOnScroll and a back link label", () => {
+    render(
+      <NimbusProvider>
+        <Box height="400px">
+          <DefaultPage.Root collapseHeaderOnScroll>
+            <DefaultPage.Header>
+              <DefaultPage.BackLink href="/products">
+                Back to products
+              </DefaultPage.BackLink>
+              <DefaultPage.Title>Product details</DefaultPage.Title>
+              <DefaultPage.Subtitle>SKU-001</DefaultPage.Subtitle>
+            </DefaultPage.Header>
+            <DefaultPage.Content>
+              <Text>Scrollable page content.</Text>
+            </DefaultPage.Content>
+          </DefaultPage.Root>
+        </Box>
+      </NimbusProvider>
+    );
+
+    expect(
+      screen.getByRole("link", { name: "Back to products" })
+    ).toBeInTheDocument();
+    expect(screen.getByText("Back to products")).toBeInTheDocument();
+    expect(screen.getByText("Product details")).toBeInTheDocument();
+    expect(screen.getByText("Scrollable page content.")).toBeInTheDocument();
+  });
+});

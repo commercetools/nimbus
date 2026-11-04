@@ -45,6 +45,16 @@ export type DefaultPageFooterSlotProps = HTMLChakraProps<"footer">;
 type DefaultPageBaseProps = OmitInternalProps<DefaultPageRootSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
+  /**
+   * Collapse the pinned header to a shorter form after the page content
+   * has scrolled away from the top.
+   *
+   * Has an effect wherever the header is pinned: with
+   * `layout="constrained"` (the default) and with `layout="flexible"` plus
+   * `stickyHeader`. With `layout="flexible"` and no `stickyHeader` it has
+   * no effect, and development builds log a warning.
+   */
+  collapseHeaderOnScroll?: boolean;
 };
 
 /**
