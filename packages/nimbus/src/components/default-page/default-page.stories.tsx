@@ -1512,6 +1512,27 @@ const waitForPinned = (header: HTMLElement, pinned: boolean) =>
   );
 
 /**
+ * Scroll-driven collapse: waits until the header parts are at rest (no part
+ * animation runs; the header's own animation in the constrained layout always
+ * runs). At the top, this takes a short pause. Stories call it at the end, so
+ * the accessibility check and the visual snapshot see a stable header and not
+ * a frame in between two states.
+ */
+const waitForRest = (header: HTMLElement) =>
+  waitFor(
+    () =>
+      expect(
+        header
+          .getAnimations({ subtree: true })
+          .filter(
+            (animation) =>
+              (animation.effect as KeyframeEffect | null)?.target !== header
+          )
+      ).toHaveLength(0),
+    { timeout: 2000 }
+  );
+
+/**
  * Scrolls an element to `target` in steps of `stepPx` CSS pixels, one step per
  * frame, and checks after every frame that the header has not changed form.
  */
@@ -1633,6 +1654,7 @@ export const CollapseHeaderScrollContainerOffset: Story = {
       scroller.scrollTop = 0;
       await waitForPinned(header, false);
       await waitFor(() => expect(top()).toBe(0));
+      await waitForRest(header);
     });
   },
 };
@@ -1781,15 +1803,18 @@ const runCollapseChecks = async ({
 const CollapsingHeader = ({
   withTabs = true,
   title = "Classic T-Shirt, organic cotton, crew neck",
+  truncateTitle = false,
 }: {
   withTabs?: boolean;
   title?: string;
+  /** Truncates the title with the `truncate` style prop. */
+  truncateTitle?: boolean;
 }) => (
   <DefaultPage.Header>
     <DefaultPage.BackLink href="/products">
       Back to products
     </DefaultPage.BackLink>
-    <DefaultPage.Title>{title}</DefaultPage.Title>
+    <DefaultPage.Title truncate={truncateTitle}>{title}</DefaultPage.Title>
     <DefaultPage.Subtitle>SKU-12345 · Last modified today</DefaultPage.Subtitle>
     <DefaultPage.Actions>
       <Button variant="ghost">Duplicate</Button>
@@ -1843,7 +1868,8 @@ export const CollapsedHeader: Story = {
       );
       content.scrollTop = 400;
       await waitForPinned(header, true);
-      await waitFor(() => expect(title.getAnimations()).toHaveLength(0));
+      await waitForRest(header);
+      await expect(title.getAnimations()).toHaveLength(0);
     });
   },
 };
@@ -2055,6 +2081,7 @@ export const CollapseHeaderFlexibleSticky: Story = {
       await scrollTo(0);
       await expect(top(header)).toBe(0);
       await expect(getComputedStyle(subtitle).opacity).toBe("1");
+      await waitForRest(header);
     });
   },
 };
@@ -2201,14 +2228,16 @@ export const CollapseHeaderConstrained: Story = {
       await expect(parseFloat(getComputedStyle(content).paddingTop)).toBe(
         ownPadding
       );
+      await waitForRest(header);
     });
   },
 };
 
 /**
- * A title that wraps in the full form (a 640px wide page). The title keeps its lines in the collapsed form,
- * at the smaller size, and the title row grows to fit them. For one line,
- * truncate the title (`<DefaultPage.Title truncate>`).
+ * A title that wraps in the full form (a 640px wide page). The title keeps
+ * its lines in the collapsed form, at the smaller size, and the title row
+ * grows to fit them. For one line, truncate the title
+ * (`<DefaultPage.Title truncate>`).
  */
 export const CollapseHeaderLongTitle: Story = {
   render: () => (
@@ -2289,8 +2318,69 @@ export const CollapseHeaderLongTitle: Story = {
           actions.getBoundingClientRect().left
         );
         scroller.scrollTop = 0;
+        await waitForPinned(header, false);
+        await waitForRest(header);
       }
     );
+  },
+};
+
+/**
+ * A page that wants the title on one line truncates it with a style prop
+ * (`<DefaultPage.Title truncate>`). The title is then on one line in both
+ * forms.
+ */
+export const CollapseHeaderTruncatedTitle: Story = {
+  render: () => (
+    <Box
+      data-testid="scroll-container"
+      width="640px"
+      height="500px"
+      overflow="auto"
+    >
+      <DefaultPage.Root layout="flexible" stickyHeader collapseHeaderOnScroll>
+        <CollapsingHeader
+          truncateTitle
+          title="Classic T-Shirt, organic cotton, crew neck, relaxed fit, heather grey with contrast stitching"
+        />
+        <DefaultPage.Content>
+          <LongFormContent fields={16} />
+        </DefaultPage.Content>
+      </DefaultPage.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const header = getHeader(canvasElement);
+    const title = canvas.getByRole("heading", { level: 1 });
+    const scroller = canvas.getByTestId("scroll-container");
+    const lineHeight = parseFloat(getComputedStyle(title).lineHeight);
+
+    await step("The title is on one line in the full form", async () => {
+      await waitFor(() => expect(header.style.top).toMatch(/^-\d/));
+      await expect(title.getBoundingClientRect().height).toBeLessThan(
+        lineHeight * 1.5
+      );
+      await expect(title.scrollWidth).toBeGreaterThan(title.clientWidth);
+    });
+
+    await step("Pinned, the title stays on one line", async () => {
+      const distance = -parseFloat(header.style.top);
+      scroller.scrollTop = distance + 60;
+      await waitForPinned(header, true);
+      await waitForRest(header);
+      const titleRect = title.getBoundingClientRect();
+      // The title is scaled: compare with its scaled line height.
+      const scale = titleRect.height / title.offsetHeight;
+      await expect(scale).toBeLessThan(1);
+      await expect(titleRect.height).toBeLessThan(lineHeight * scale * 1.5);
+    });
+
+    await step("Returns to the full form at the top", async () => {
+      scroller.scrollTop = 0;
+      await waitForPinned(header, false);
+      await waitForRest(header);
+    });
   },
 };
 
@@ -2398,6 +2488,7 @@ export const CollapseHeaderTabClick: Story = {
         await expect(
           canvas.getByText("Variants", { selector: "p" })
         ).toBeVisible();
+        await waitForRest(header);
       }
     );
   },
@@ -2468,6 +2559,7 @@ export const CollapseHeaderState: Story = {
     await step("Back at the top, isCollapsed is false again", async () => {
       scroller.scrollTop = 0;
       await waitFor(() => expect(badge).toBeVisible());
+      await waitForRest(header);
     });
   },
 };
@@ -2514,6 +2606,7 @@ export const CollapseHeaderDocumentScroll: Story = {
       await step("Returns to the full form at the top", async () => {
         scroller.scrollTop = 0;
         await waitForPinned(header, false);
+        await waitForRest(header);
       });
     } finally {
       scroller.scrollTop = 0;
@@ -2574,6 +2667,7 @@ export const CollapseHeaderNarrow: Story = {
 
         content.scrollTop = 0;
         await waitForPinned(header, false);
+        await waitForRest(header);
       }
     );
   },
@@ -2690,6 +2784,7 @@ export const CollapseHeaderCustomContent: Story = {
       content.scrollTop = 0;
       await waitForPinned(header, false);
       await waitFor(() => expect(note).toBeVisible());
+      await waitForRest(header);
     });
   },
 };
@@ -2758,7 +2853,8 @@ export const CollapseHeaderShortContent: Story = {
         header.style.marginInlineEnd = "";
         content.scrollTop = 0;
         canvas.getByTestId("short-content").style.height = "";
-        await nextFrame();
+        await waitForPinned(header, false);
+        await waitForRest(header);
       }
     );
   },
@@ -2835,6 +2931,7 @@ export const CollapseHeaderSwitchedOff: Story = {
       await waitForPinned(header, true);
       content.scrollTop = 0;
       await waitForPinned(header, false);
+      await waitForRest(header);
     });
   },
 };
@@ -3011,6 +3108,7 @@ export const CollapseHeaderBackLinkTooltip: Story = {
       await wait(400);
       await expect(getTooltip()).toBeNull();
       getBackLink().blur();
+      await waitForRest(header);
     });
   },
 };
@@ -3073,6 +3171,7 @@ export const CollapseHeaderScrollIntoView: Story = {
       await expect(Math.abs(gapBelowHeader())).toBeLessThanOrEqual(1);
       scroller.scrollTop = 0;
       await waitForPinned(header, false);
+      await waitForRest(header);
     });
   },
 };
@@ -3156,6 +3255,7 @@ export const CollapseHeaderContentAbove: Story = {
             header.getBoundingClientRect().top
         ).toBeCloseTo(fullHeight, 0);
         scroller.scrollTop = 0;
+        await waitForRest(header);
       }
     );
   },
@@ -3471,6 +3571,19 @@ export const CollapseHeaderFallbackLongTitle: Story = {
         parseFloat(style.lineHeight) * 1.5
       );
       await expect(title.scrollWidth).toBeLessThanOrEqual(title.clientWidth);
+    });
+
+    await step("The back link icon is centered on the title row", async () => {
+      const backLink = canvas.getByRole("link", { name: "Back to products" });
+      const linkRect = backLink.getBoundingClientRect();
+      const titleRect = title.getBoundingClientRect();
+      await expect(
+        Math.abs(
+          linkRect.top +
+            linkRect.height / 2 -
+            (titleRect.top + titleRect.height / 2)
+        )
+      ).toBeLessThanOrEqual(2);
     });
 
     await step("Returns to the full form at the top", async () => {
