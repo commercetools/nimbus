@@ -1,0 +1,136 @@
+name: Figma Code Connect
+
+# Publishes the Code Connect mappings (*.figma.tsx) to Figma after a merge to
+# main, and checks them with a dry run on pull requests. Runbook (token,
+# renewal, manual publish): docs/figma-code-connect-ci.md
+on:
+  pull_request:
+    paths:
+      - packages/nimbus/src/components/**/*.figma.tsx
+      - figma.config.json
+  push:
+    branches:
+      - main
+    paths:
+      - packages/nimbus/src/components/**/*.figma.tsx
+      - figma.config.json
+  # Manual publish, for example after the token is renewed. Start it on main;
+  # on other branches the publish job is skipped.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # Pull requests from forks get no repository secrets, so every step
+      # below the notice is skipped for them.
+      FROM_FORK:
+        ${{ github.event.pull_request.head.repo.full_name != github.repository
+        }}
+    steps:
+      - name: Skip pull requests from forks
+        if: env.FROM_FORK == 'true'
+        run: |
+          echo "::notice::Code Connect validation skipped: pull requests from forks get no repository secrets. A maintainer can run the check after merge, or re-run it from a branch in this repository."
+
+      - name: Checkout repository
+        if: env.FROM_FORK == 'false'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      # Same pins as .github/actions/ci. No package build: the CLI parses the
+      # TypeScript source.
+      - name: Install pnpm
+        if: env.FROM_FORK == 'false'
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+        with:
+          run_install: false
+
+      - name: Setup Node
+        if: env.FROM_FORK == 'false'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        if: env.FROM_FORK == 'false'
+        run: pnpm install --frozen-lockfile
+
+      # The token goes only to this step and the CLI step, never to
+      # `pnpm install`.
+      - name: Check FIGMA_ACCESS_TOKEN
+        if: env.FROM_FORK == 'false'
+        uses: ./.github/actions/check-figma-token
+        with:
+          token: ${{ secrets.FIGMA_ACCESS_TOKEN }}
+
+      - name: Validate Code Connect (dry run)
+        if: env.FROM_FORK == 'false'
+        env:
+          FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
+        run:
+          pnpm exec figma connect publish --dry-run --exit-on-unreadable-files
+          --skip-update-check
+
+  publish:
+    # Push to main, or a manual start on main. Only main is ever published.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Never two publishes at the same time: a newer run waits for the running
+    # one instead of cancelling it.
+    concurrency:
+      group: code-connect-publish
+      cancel-in-progress: false
+    steps:
+      # Always the current main, not the commit that started the run. A
+      # re-run of an older failed run uses that run's commit, and would put
+      # older mappings back in Figma.
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v4.4.0
+        with:
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check FIGMA_ACCESS_TOKEN
+        uses: ./.github/actions/check-figma-token
+        with:
+          token: ${{ secrets.FIGMA_ACCESS_TOKEN }}
+
+      # The CLI exits with 0 when Figma rejects single mappings, and only logs
+      # them (to stderr). The grep fails the step on these log lines, taken
+      # from @figma/code-connect 1.5.3 dist/connect/upload.js. Check them again
+      # when you upgrade the CLI. `shell: bash` adds pipefail, so tee does not
+      # hide the CLI's own exit code.
+      - name: Publish Code Connect
+        shell: bash
+        env:
+          FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
+        run: |
+          log="$(mktemp)"
+          pnpm exec figma connect publish --exit-on-unreadable-files --skip-update-check 2>&1 | tee "$log"
+          if grep -qE 'Failed to upload to Figma|already have UI-created Code Connect mappings' "$log"; then
+            echo "::error::Figma rejected some Code Connect mappings. See the log above and docs/figma-code-connect-ci.md#when-figma-rejects-a-mapping."
+            exit 1
+          fi
