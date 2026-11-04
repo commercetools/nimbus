@@ -98,6 +98,7 @@ const App = () => (
 | `layout="flexible" stickyHeader` | Flexible scroll with header pinned at top |
 | `layout="flexible" stickyFooter` | Flexible scroll with footer pinned at bottom |
 | `layout="flexible" stickyHeader stickyFooter` | Flexible scroll with both zones pinned |
+| `layout="flexible" stickyHeader="compact-on-scroll"` | Flexible scroll with header pinned, shrinking while the page is scrolled |
 
 > [!TIP]\
 > In **constrained** mode, header and footer are always pinned — you don't need
@@ -107,6 +108,51 @@ const App = () => (
 > [!NOTE]\
 > `stickyHeader` and `stickyFooter` are only accepted when `layout="flexible"`.
 > TypeScript will produce a compile error if you use them without it.
+
+### Compact header on scroll
+
+Pass `stickyHeader="compact-on-scroll"` to pin the header and shrink it once
+the page has scrolled past it. The header returns to full size when the page is
+back at the top. The title gets smaller, the header padding drops, the back
+link keeps its icon beside the title and hides its label, and the subtitle
+collapses. Actions and tab navigation stay visible.
+
+```jsx live-dev
+const App = () => (
+  <Box height="400px" overflow="auto" borderRadius="200">
+    <DefaultPage.Root layout="flexible" stickyHeader="compact-on-scroll">
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/products">Back to products</DefaultPage.BackLink>
+        <DefaultPage.Title>Edit: Classic T-Shirt</DefaultPage.Title>
+        <DefaultPage.Subtitle>SKU-001</DefaultPage.Subtitle>
+        <DefaultPage.Actions>
+          <Button colorPalette="primary" variant="solid">Save changes</Button>
+        </DefaultPage.Actions>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          {Array.from({ length: 30 }, (_, i) => (
+            <Text key={i}>{`Content row ${i + 1}`}</Text>
+          ))}
+        </Stack>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+- Works with any scrolling ancestor, including the document. You do not pass a
+  scroll container.
+- The header shrinks after the page has scrolled by the height of the header,
+  and restores only when the page is back near the top. Scrolling up halfway
+  keeps it compact.
+- Nothing is removed from the page. The `h1`, the actions and their state stay
+  mounted. Keyboard focus shows the back link label again, and shows the
+  subtitle again, while the header stays compact.
+- `prefers-reduced-motion` turns the size transition off.
+- While the header is compact, `DefaultPage.Root` has `data-compact="true"`.
+- `"compact-on-scroll"` is only accepted with `layout="flexible"`. Without it,
+  the header is not sticky.
 
 ### Flexible layout with sticky footer only
 
@@ -565,7 +611,7 @@ const App = () => (
 
 | Part | Description |
 |------|-------------|
-| `DefaultPage.Root` | Page container providing layout context. Accepts `layout` (`"constrained"` \| `"flexible"`), and `stickyHeader`/`stickyFooter` (flexible mode only) |
+| `DefaultPage.Root` | Page container providing layout context. Accepts `layout` (`"constrained"` \| `"flexible"`), and `stickyHeader` (`boolean` \| `"compact-on-scroll"`) and `stickyFooter` (flexible mode only) |
 | `DefaultPage.Header` | Header section; two-column grid for title area (left) and actions (right) |
 | `DefaultPage.BackLink` | Optional back navigation link (requires `href`); omit for main pages |
 | `DefaultPage.Title` | Page title (renders as `h1`) |
