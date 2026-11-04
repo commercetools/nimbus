@@ -3,22 +3,18 @@ import { ActivityIndicator } from "./activity-indicator";
 
 figma.connect(
   ActivityIndicator,
-  "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=10603-16574",
+  "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=12468-78126",
   {
     props: {
-      size: figma.enum("Size", {
-        lg: "lg",
-        md: "md",
-        sm: "sm",
-        xs: "xs",
+      size: figma.enum("size", {
+        inherit: "inherit",
         "2xs": "2xs",
+        xs: "xs",
+        sm: "sm",
+        md: "md",
+        lg: "lg",
       }),
-      // Figma's "white" color (dots on a solid surface) maps to the `contrast`
-      // variant; "primary" is the default and needs no prop.
-      variant: figma.enum("Color", { white: "contrast" }),
     },
-    example: (props) => (
-      <ActivityIndicator size={props.size} variant={props.variant} />
-    ),
+    example: (props) => <ActivityIndicator size={props.size} />,
   }
 );

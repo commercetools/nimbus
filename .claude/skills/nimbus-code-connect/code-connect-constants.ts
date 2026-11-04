@@ -26,6 +26,8 @@ export interface EntryOverride {
   exampleJsx?: string;
   /** Skip this entry entirely (use manual connects instead) */
   skip?: boolean;
+  /** Do not add figma.children("*") to a container sub-component */
+  omitChildren?: boolean;
 }
 
 export interface ComponentOverride {
@@ -157,6 +159,8 @@ export const SELF_CLOSING_COMPONENTS = new Set([
   "loading-spinner",
   "avatar",
   "switch",
+  "activity-indicator",
+  "drop-zone",
 ]);
 
 /** Sub-components that act as containers for nested instances */
@@ -228,12 +232,96 @@ export const OVERRIDES: Record<string, ComponentOverride> = {
     },
   },
 
+  accordion: {
+    entries: {
+      Root: { skip: true },
+    },
+    extraImports: [`import { Accordion } from "./accordion";`],
+    extraConnects: (entries) => {
+      const rootEntry = entries.find((e) => e.subComponent === "Root");
+      if (!rootEntry) return "";
+      return `
+// --- Accordion → Accordion.Root ---
+//
+// One Figma "Accordion" instance is one header + content pair, so the snippet
+// wraps a single Accordion.Item. The nested ".Controls" instance (shown by the
+// "Controls" boolean) is the slot for Accordion.HeaderRightContent.
+// Accordion.Root controls which items are expanded and ignores an item's own
+// defaultExpanded, so "Expanded" maps to defaultExpandedKeys on the root and
+// the item gets the matching value.
+figma.connect(
+  Accordion.Root,
+  "${rootEntry.figmaUrl}",
+  {
+    props: {
+      size: figma.enum("Size", { md: "md", sm: "sm" }),
+      defaultExpandedKeys: figma.enum("Expanded", { YES: ["item-1"] }),
+      headline: figma.textContent("Headline"),
+      headerRightContent: figma.boolean("Controls", {
+        true: <Accordion.HeaderRightContent>Controls</Accordion.HeaderRightContent>,
+        false: undefined,
+      }),
+    },
+    example: (props) => (
+      <Accordion.Root size={props.size} defaultExpandedKeys={props.defaultExpandedKeys}>
+        <Accordion.Item value="item-1">
+          <Accordion.Header>
+            {props.headline}
+            {props.headerRightContent}
+          </Accordion.Header>
+          <Accordion.Content>Content</Accordion.Content>
+        </Accordion.Item>
+      </Accordion.Root>
+    ),
+  }
+);`;
+    },
+  },
+
+  "chat-message": {
+    entries: {
+      Root: { skip: true },
+    },
+    extraImports: [`import { ChatMessage } from "./chat-message";`],
+    extraConnects: (entries) => {
+      const rootEntry = entries.find((e) => e.subComponent === "Root");
+      if (!rootEntry) return "";
+      return `
+// --- chat-message → ChatMessage.Root ---
+//
+// The Figma component exposes \`Sender\` (User | Agent) and \`Tone\`
+// (neutral | error), which map onto the \`sender\` and \`tone\` props. The
+// message text, actions and feedback are authored by the consumer, so the
+// snippet leaves the body content to the developer.
+figma.connect(
+  ChatMessage.Root,
+  "${rootEntry.figmaUrl}",
+  {
+    props: {
+      sender: figma.enum("Sender", {
+        User: "user",
+        Agent: "agent",
+      }),
+      // \`neutral\` is the default tone and needs no prop.
+      tone: figma.enum("Tone", { error: "error" }),
+    },
+    example: (props) => (
+      <ChatMessage.Root sender={props.sender} tone={props.tone}>
+        <ChatMessage.Avatar />
+        <ChatMessage.Body>Message content</ChatMessage.Body>
+      </ChatMessage.Root>
+    ),
+  }
+);`;
+    },
+  },
+
   "toggle-button-group": {
     entries: {
       Root: {
         rawProps: {
           size: {
-            code: `figma.enum("Size", { md: "md" })`,
+            code: `figma.enum("Size", { sm: "sm", md: "md" })`,
             position: "attribute",
           },
         },
@@ -286,6 +374,8 @@ export const OVERRIDES: Record<string, ComponentOverride> = {
           },
         },
         skipFigmaProps: ["Appearance", "Clear button", "State"],
+        // The nested instances are input parts, not options.
+        omitChildren: true,
         exampleJsx: `<Select.Root
       variant={props.variant}
       size={props.size}
@@ -364,7 +454,7 @@ export const OVERRIDES: Record<string, ComponentOverride> = {
             position: "attribute",
           },
           direction: {
-            code: `figma.enum("Label placement", { Top: "column", Left: "row" })`,
+            code: `figma.enum("Label placement", { Top: "column", left: "row" })`,
             position: "attribute",
           },
           infoBox: {
@@ -417,73 +507,82 @@ figma.connect(
     // ad-hoc visual props (cardPadding, borderStyle, elevation, backgroundStyle)
     // were collapsed into a single kebab-case `variant` prop covering all
     // eight permutations of three independent axes (outlined × elevated ×
-    // muted-background). Designers expose those axes as three separate Figma
-    // component properties (Outlined / Elevated / Background); we read each
-    // one and compose the variant name in the snippet.
+    // muted-background). The Figma Card exposes only the Outlined and Elevated
+    // axes (as Yes/No variants). Code Connect does not run code in the example,
+    // so each combination gets its own connect with a fixed variant value. The
+    // muted variants have no Figma counterpart.
+    //
+    // The ".Card content" set (→ Card.Body) is hidden in the Figma library, so
+    // collect-figma-data.ts never returns it. Its connect is written here
+    // with a fixed node ID in the same file as the Card set.
     entries: {
-      Content: {
-        rawProps: {
-          header: {
-            code: `figma.enum("Content type", { "Title + text": <Card.Header>Card Title</Card.Header>, "Leading element + text": <Card.Header>Card Title</Card.Header> })`,
-            position: "child",
-          },
-          leadingElement: {
-            code: `figma.instance("Leading element")`,
-            position: "leading",
-          },
-          instance: {
-            code: `figma.instance("→ Instance")`,
-            position: "child",
-          },
-        },
-        skipFigmaProps: ["Content type", "→ Instance", "Leading element"],
-        exampleJsx: `<>
-      {props.leadingElement}
-      {props.header}
-      <Card.Body>
-        {props.instance}
-        {props.children}
-      </Card.Body>
-    </>`,
-      },
-      Root: {
-        rawProps: {
-          outlined: {
-            code: `figma.boolean("Outlined")`,
-            position: "attribute",
-          },
-          elevated: {
-            code: `figma.boolean("Elevated")`,
-            position: "attribute",
-          },
-          muted: {
-            code: `figma.enum("Background", { Default: false, Muted: true })`,
-            position: "attribute",
-          },
-        },
-        skipFigmaProps: ["Outlined", "Elevated", "Background"],
-        exampleJsx: `<Card.Root
-      variant={
-        ((
-          [
-            props.outlined && "outlined",
-            props.elevated && "elevated",
-            props.muted && "muted",
-          ].filter(Boolean) as string[]
-        ).join("-") || "plain") as CardProps["variant"]
-      }
-    >
-      {props.children}
-    </Card.Root>`,
-      },
+      Root: { skip: true },
     },
-    extraImports: [`import type { CardProps } from "./card.types";`],
+    extraImports: [`import { Card } from "./card";`],
+    extraConnects: (entries) => {
+      const rootEntry = entries.find((e) => e.subComponent === "Root");
+      if (!rootEntry) return "";
+      const contentUrl = rootEntry.figmaUrl.replace(
+        /node-id=[^&]+/,
+        "node-id=266-482"
+      );
+      const combos: Array<[string, string, string]> = [
+        ["No", "No", "plain"],
+        ["Yes", "No", "outlined"],
+        ["No", "Yes", "elevated"],
+        ["Yes", "Yes", "outlined-elevated"],
+      ];
+      const blocks = combos.map(
+        ([outlined, elevated, variant]) => `
+figma.connect(Card.Root, CARD_URL, {
+  variant: { Outlined: "${outlined}", Elevated: "${elevated}" },
+  props: { children: figma.children("*") },
+  example: (props) => <Card.Root variant="${variant}">{props.children}</Card.Root>,
+});`
+      );
+      return `
+// --- Card content → Card.Body ---
+figma.connect(
+  Card.Body,
+  "${contentUrl}",
+  {
+    props: {
+      children: figma.children("*"),
+      header: figma.enum("Content type", {
+        "Title + text": <Card.Header>Card Title</Card.Header>,
+        "Leading element + text": <Card.Header>Card Title</Card.Header>,
+      }),
+      leadingElement: figma.instance("Leading element"),
+    },
+    example: (props) => (
+      <>
+        {props.leadingElement}
+        {props.header}
+        <Card.Body>{props.children}</Card.Body>
+      </>
+    ),
+  }
+);
+
+// --- Card → Card.Root ---
+//
+// The Figma Card component exposes two independent Yes/No variant
+// properties (Outlined, Elevated). Code Connect does not run code in the
+// example, so each of the four combinations gets its own connect with a
+// fixed kebab-case \`variant\` value. The muted variants have no Figma
+// counterpart. Property names below match the labels designers use in the
+// Figma component-property panel — adjust here if those labels are renamed.
+const CARD_URL =
+  "${rootEntry.figmaUrl}";
+${blocks.join("\n")}`;
+    },
   },
 
   combobox: {
     entries: {
       Trigger: {
-        skipFigmaProps: ["Appearance", "Size"],
+        // State (isInvalid, isDisabled) is a ComboBox.Root prop, not a Trigger prop.
+        skipFigmaProps: ["Appearance", "Size", "State"],
         exampleJsx: `<ComboBox.Trigger />`,
       },
     },
@@ -526,12 +625,30 @@ figma.connect(
 
   "data-table": {
     entries: {
-      "": {
-        exampleJsx: `<DataTable
-      columns={[]}
-      rows={[]}
-    />`,
-      },
+      Cell: { skip: true },
+    },
+    extraImports: [`import { DataTable } from "./data-table";`],
+    extraConnects: (entries) => {
+      const cellEntry = entries.find((e) => e.subComponent === "Cell");
+      if (!cellEntry) return "";
+      return `
+// --- Table cell → DataTable.Cell ---
+//
+// Figma has no component for the whole table, only for its cells, so the
+// cell is connected to DataTable.Cell. The "Content type" variant has no code
+// counterpart: the consumer renders the content inside the cell. The cell only
+// works inside a DataTable.Row: React Aria throws an error when a cell is
+// rendered outside a table.
+figma.connect(
+  DataTable.Cell,
+  "${cellEntry.figmaUrl}",
+  {
+    props: {
+      children: figma.string("Text"),
+    },
+    example: (props) => <DataTable.Cell>{props.children}</DataTable.Cell>,
+  }
+);`;
     },
   },
 
@@ -576,11 +693,100 @@ figma.connect(
 
   steps: {
     entries: {
-      Root: {
-        exampleJsx: `<Steps.Root count={0} size={props.size}>
-        {props.children}
-      </Steps.Root>`,
-      },
+      Root: { skip: true },
+      Item: { skip: true },
+    },
+    extraImports: [
+      `import { Steps } from "./steps";`,
+      `import { Box } from "../box/box";`,
+    ],
+    extraConnects: (entries) => {
+      const rootEntry = entries.find((e) => e.subComponent === "Root");
+      const itemEntry = entries.find((e) => e.subComponent === "Item");
+      const blocks: string[] = [];
+      if (rootEntry) {
+        blocks.push(`
+// --- Steps → Steps.Root ---
+//
+// The Figma Steps component always has three steps, and Code Connect cannot
+// give each repeated child snippet its own position. So the snippet writes
+// out three items with their own index and a matching count instead of using
+// figma.children. The titles are placeholders: the designer's titles are on
+// the canvas.
+figma.connect(
+  Steps.Root,
+  "${rootEntry.figmaUrl}",
+  {
+    props: {
+      size: figma.enum("size", { xs: "xs", sm: "sm", md: "md" }),
+      orientation: figma.enum("orientation", {
+        Horizontal: "horizontal",
+        Vertical: "vertical",
+      }),
+    },
+    example: (props) => (
+      <Steps.Root count={3} size={props.size} orientation={props.orientation}>
+        <Steps.List>
+          <Steps.Item index={0}>
+            <Steps.Trigger>
+              <Steps.Indicator />
+              <Steps.Title>Step 1</Steps.Title>
+            </Steps.Trigger>
+            <Steps.Separator />
+          </Steps.Item>
+          <Steps.Item index={1}>
+            <Steps.Trigger>
+              <Steps.Indicator />
+              <Steps.Title>Step 2</Steps.Title>
+            </Steps.Trigger>
+            <Steps.Separator />
+          </Steps.Item>
+          <Steps.Item index={2}>
+            <Steps.Trigger>
+              <Steps.Indicator />
+              <Steps.Title>Step 3</Steps.Title>
+            </Steps.Trigger>
+          </Steps.Item>
+        </Steps.List>
+      </Steps.Root>
+    ),
+  }
+);`);
+      }
+      if (itemEntry) {
+        blocks.push(`
+// --- Step → Steps.Item ---
+//
+// A single step does not know its position in the list, so index is a
+// placeholder for the step's zero-based position.
+figma.connect(
+  Steps.Item,
+  "${itemEntry.figmaUrl}",
+  {
+    props: {
+      title: figma.textContent("Step 1"),
+      description: figma.boolean("Hint text", {
+        true: <Steps.Description>Description</Steps.Description>,
+        false: undefined,
+      }),
+    },
+    example: (props) => (
+      <Steps.Item index={/* step index */ 0}>
+        <Steps.Trigger>
+          <Steps.Indicator />
+          <Box>
+            <Steps.Title>{props.title}</Steps.Title>
+            {props.description}
+          </Box>
+        </Steps.Trigger>
+        {/* Omit the separator on the last step */}
+        <Steps.Separator />
+      </Steps.Item>
+    ),
+  }
+);`);
+      }
+      return blocks.join("\n");
     },
   },
 
