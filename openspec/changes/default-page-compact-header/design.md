@@ -11,45 +11,57 @@ the approach.
 - **The header is pinned in two ways.**
   - `layout="constrained"` (default): Root is a grid that fills its parent. The
     header is pinned by the grid, and the content scrolls inside
-    `DefaultPage.Content`.
+    `DefaultPage.Content`. The header is not inside the element that scrolls.
   - `layout="flexible"` + `stickyHeader`: Root grows with its content. The
-    header uses `position: sticky`. The element that scrolls is outside
-    Nimbus. It can be the document or any ancestor, also across shadow DOM
-    boundaries, and it can start anywhere on the screen.
+    header uses `position: sticky` inside the element that scrolls. That element
+    is outside Nimbus. It can be the document or any ancestor, also across
+    shadow DOM boundaries, and it can start anywhere on the screen.
 - **Host CSS can change the layout.** Recipe styles are emitted in a CSS layer,
-  and unlayered host CSS overrides them. A host can, for example, stop
-  `DefaultPage.Content` from scrolling, so that an outer element scrolls
-  instead.
+  and unlayered host CSS overrides them. Pages also set style props, for example
+  a top padding on `DefaultPage.Content`.
 - **Other code writes the scroll position too:** the user, smooth scrolls
-  (`scrollIntoView`, `scroll-behavior: smooth`), `#hash` links and the
-  browser's scroll restoration.
+  (`scrollIntoView`, `scroll-behavior: smooth`), `#hash` links and the browser's
+  scroll restoration.
 - **Header parts.** `BackLink`, `Title`, `Subtitle`, `Actions` and `TabNav` are
-  laid out by a grid on `DefaultPage.Header` (`1fr auto`). Pages can also put
-  their own content into the header, placed by grid column
-  (`default-page.dev.mdx`, "Custom elements in the header").
+  laid out by a grid on `DefaultPage.Header` (`1fr auto`).
+- **Scroll-driven animations.** Animations whose progress follows a scroll
+  position instead of time, through view and scroll timelines, with `rangeStart`
+  and `rangeEnd`. Supported in Chrome and Edge 115, Safari 26 and Firefox 159
+  (released October 27, 2026). The current Firefox ESR is 153, and the calendar
+  lists 175 as the next ESR. Safari 26.0 to 26.3 run them on the main thread;
+  Safari 26.4 moved them to a separate thread. Sources:
+  https://caniuse.com/mdn-css_properties_animation-timeline,
+  https://caniuse.com/mdn-api_element_animate_options_rangestart_parameter,
+  https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Releases/159,
+  https://firefox-admin-docs.mozilla.org/release-notes/,
+  https://whattrainisitnow.com/release/?version=esr,
+  https://webkit.org/blog/17862/webkit-features-for-safari-26-4/.
 - **Constraint.** WCAG 2.1 AA.
 
 ## Goals / Non-Goals
 
 **Goals:**
 
-- One behavior for both ways of pinning the header, and for hosts that change
-  which element scrolls.
-- No layout movement the user did not cause: no flicker between the forms, no
-  content jump when the header collapses, no controls moving under the pointer,
-  and no interruption of the user's scrolling or of smooth scrolls.
-- A single source of truth for the collapsed state, used by Nimbus styles and
-  by page-owned header content.
+- One behavior for consumers in both layouts, whatever technique each layout
+  needs.
+- The header follows the user's scrolling directly.
+- No layout shift the user did not cause: the content moves only with the
+  scroll, never by itself.
+- Sharp text whenever the header rests.
+- No scroll listeners and no script work on every frame in the main path.
 - Existing consumer code keeps compiling.
 
 **Non-Goals:**
 
 - Showing the full header on demand (hover, focus or tap) while the content is
-  scrolled. The full header returns at the top. See decision 3.
+  scrolled. The full header returns at the top.
+- Holding the header in place while the mouse pointer is over it. The header
+  follows the scroll position (see Risks, tab clicks). The one-step fallback
+  keeps its hold.
 - Changing the default layout, or unpinning the header on very short screens.
 - A controlled API for the state (`collapsed` / `onCollapsedChange`).
-- `ModalPage`. The API was checked against it (decision 11). It adopts the hook
-  in a later change.
+- `ModalPage`. The approach was checked against it (decision 15). It adopts the
+  hooks in a later change.
 - Focus that scrolls under a sticky header in the flexible layout (WCAG 2.4.7).
   This exists without this change and is handled separately.
 - The existing `tabIndex={0}` on `DefaultPage.Content`, which is fixed
@@ -67,15 +79,17 @@ layout.
   across two parts.
 - **Alternative: a value on `stickyHeader`.** Rejected. `stickyHeader` exists
   only with `layout="flexible"`, so the default layout could not use it.
-- **Alternative: `collapsibleHeader`.** Rejected. In Nimbus, `collapsible`
-  means the user collapses something: `Splitter` collapses "via Enter on the
-  focused handle or the controlled `collapsed` prop" (`splitter.types.ts`). This
-  header collapses because of scrolling, and the name says so.
+- **Alternative: `collapsibleHeader`.** Rejected. In Nimbus, `collapsible` means
+  the user collapses something: `Splitter` collapses "via Enter on the focused
+  handle or the controlled `collapsed` prop" (`splitter.types.ts`). This header
+  collapses because of scrolling, and the name says so.
+- **Alternative: a prop to choose the technique.** Rejected. Consumers get one
+  behavior; Nimbus chooses the technique (decision 12).
 
 ### 2. Types: a plain boolean in every branch, with a development warning
 
-`collapseHeaderOnScroll?: boolean` is added to both branches of the union.
-When the header is not pinned (`layout="flexible"` without `stickyHeader`), the
+`collapseHeaderOnScroll?: boolean` is added to both branches of the union. When
+the header is not pinned (`layout="flexible"` without `stickyHeader`), the
 option has no effect, and development builds log a warning.
 
 **Alternative: allow it only where the header is pinned (compile error
@@ -91,326 +105,345 @@ that compiles today:
 
 The change would no longer be additive.
 
-### 3. When the header changes form
+`DefaultPage.Header` children may also be a function (decision 11).
 
-- **Collapse** when the scroll distance is at least the space given back plus 8
-  CSS pixels.
-- **Full form** when the scroll distance is less than 1 CSS pixel.
-- **In between**, keep the current form.
-- **Only when scrolling has paused**: a form change is applied once no scroll
-  event has happened for 150 milliseconds. Each scroll event restarts the
-  timer. The `scrollend` event is not used, because I don't know its support in
-  Safari.
-- **Not while the mouse pointer is over the header.** The change waits until the
-  pointer leaves the header, or until the user scrolls with the wheel over the
-  header. Touch has no hover, so this hold does not apply there.
+### 3. The header follows the scroll position
 
-**Why expand only at the top.** The collapsed form keeps every work part
-(actions, tabs). Expanding again would only bring back orientation information,
-and it would take room at the moment the user scrolls back to re-read
-something. Nielsen Norman Group warns that headers that reappear on scroll up
-"assume that any scroll up is an indication that the user wants to access the
-header … the user may simply want to reread a previous paragraph"
-(https://www.nngroup.com/articles/sticky-headers/). Material's
-`exitUntilCollapsed` behavior expands only "when the content is pulled all the
-way down" (https://developer.android.com/develop/ui/compose/components/app-bars).
-
-**Why the space given back plus a margin.** After a collapse, the scroll
-distance drops by the space given back (decision 6), so it stays at least 8 CSS
-pixels and the header cannot flip back by itself. The 8 pixels absorb rounding.
-With the full header height as threshold, the header would collapse very late
-at 400% zoom, where the visible area can be about 236 CSS pixels tall.
-
-**Why wait for a pause.** Changing the form during a scroll means writing the
-scroll position during a scroll (decision 6). Tests showed two problems:
-
-- A scroll write stops a smooth scroll. The CSSOM View spec says that to
-  perform a scroll, the browser must first "Abort any ongoing smooth scroll". In
-  a test, `scrollIntoView({ behavior: "smooth" })` stopped after about 11 pixels
-  instead of 4000.
-- React applies a state change one frame later. If the user scrolls in that
-  frame, the correction scrolls against them (tested in Chromium and WebKit).
-
-Waiting for a pause avoids both problems. The cost: the header changes just
-after the user stops scrolling, not during the scroll.
-
-**Why hold while the pointer is over the header.** A tab click often resets the
-scroll position to the top. Without the hold, the header would expand right
-after the click, and the tab row would move down by the space given back under
-the pointer. A quick second click would then hit the title.
+- **Collapse distance.** The full header height minus the pinned height
+  (decision 8), rounded to whole pixels, so the pinned header sits on the pixel
+  grid.
+- **Where it runs.**
+  - Flexible layout: a view timeline of Root, from `exit-crossing 0px` to
+    `exit-crossing <distance>px`. The change starts when the top of Root reaches
+    the top of the scrolling area, so content above Root in the same scroller
+    does not count.
+  - Constrained layout: a scroll timeline of `DefaultPage.Content`, from `0px`
+    to `<distance>px` of its scroll position.
+- **Continuous.** Every scroll position in the range has its own in-between
+  form. Scrolling back plays it backwards. If the user stops in between, the
+  header stays in between.
+- **No scroll writes.** Nothing outside the header changes size or position
+  except with the user's scroll (decision 4), so the component never writes the
+  scroll position, needs no pause and does not interrupt smooth scrolls.
 
 Alternatives:
 
-- **Expand on scroll up.** Rejected, see above.
-- **Shrink the header continuously with the scroll** (also with CSS
-  scroll-driven animations). Rejected. Hiding the subtitle and moving the back
-  link are on/off changes, and a continuous shrink changes the layout on every
-  frame.
-- **Change the form during the scroll, with safeguards.** Rejected. Smooth and
-  programmatic scrolls cannot be detected reliably, so the correction would
-  still interrupt some of them.
-- **Show the full header on hover, focus or tap.** Rejected. To reach an action
-  or a tab, the pointer crosses the header, and the full form would move those
-  controls down while the user aims at them. It would also bring the WCAG 1.4.13
-  duties. The back link tooltip (decision 7) covers the label.
+- **One-step change after scrolling pauses.** The first implementation of this
+  change. A collapse that gives space back must correct the scroll position, and
+  writing it during a scroll stops smooth scrolls (the CSSOM View spec:
+  performing a scroll must first "Abort any ongoing smooth scroll"; in a test,
+  `scrollIntoView({ behavior: "smooth" })` stopped after about 11 pixels). So
+  the change had to wait for a 150 millisecond pause and could not follow the
+  scroll. It stays as the fallback (decision 12).
+- **A timed animation of the one-step change.** Prototyped ("keep the space",
+  200 milliseconds). Rejected: it still waits for the pause and is not tied to
+  the scroll. Deleted.
+- **View transitions.** Tested in Chromium and WebKit: during a transition the
+  page did not receive clicks, and a second document-level transition cancelled
+  the first, including transitions of the app. Rejected.
+- **One scroll listener that writes a progress value.** Rejected. It runs script
+  on the main thread on every frame, and all three engines now support
+  scroll-driven animations.
 
-### 4. Measuring the space given back with a hidden copy
+### 4. No layout shift: how the header gets shorter
 
-The collapsed height is measured on a copy of the header:
+- **Flexible layout.** The header keeps its full height in the page. Its sticky
+  `top` is minus the collapse distance, so normal scrolling moves it up until
+  only the pinned height is visible. Nothing after the header moves.
+- **Constrained layout.** Two scroll-driven animations of layout properties,
+  always running:
+  - the header's top margin goes down by the collapse distance: the header moves
+    up, and its grid row gets shorter. Root has `overflow-y: clip`, so the
+    header is cut off at Root's top edge;
+  - the content area's top padding grows by the same amount, so the content
+    moves exactly with the scroll.
 
-1. Clone the header element (`cloneNode(true)`), set `data-collapsed="true"`,
-   `aria-hidden="true"` and `inert` on the copy.
+  Both start from the values the page sets itself, read before the animations
+  run, so a page's own padding or margin stays in effect. The content area, with
+  its scrollbar, always starts at the bottom of the header. In the range, the
+  browser lays out the header and the content area on each frame; past the range
+  the values stay the same. Measured in Chromium, scrolling 2 pixels per frame
+  through the range and back: median 16.7 milliseconds per frame, slowest 17.7
+  milliseconds (runs 2 and 3; run 1 after load had one 50 millisecond frame,
+  cause unknown). Tested in Chromium and WebKit: the growing padding did not
+  move the scroll position by itself.
+
+Alternatives:
+
+- **Constrained: move the header with a transform, and let the content area
+  reach up under it.** Prototyped and rejected: the content area's scrollbar
+  started behind the header, a page's own top padding replaced the compensation,
+  and the header moved with a transform (decision 5 on soft text).
+- **Shrink the header height and let the content area grow, without
+  compensation.** Rejected: the content would move twice as fast as the scroll
+  in the range.
+
+### 5. Header parts move with transforms, and rest without animations
+
+- **Motions.**
+  - Title: moves to its collapsed place and scales to the collapsed font size.
+    It keeps its lines (decision 7).
+  - Back link: the icon moves before the first line of the title. The label
+    fades out in the first half.
+  - Subtitle: stays below the title and fades out in the first half. In the
+    second half it lets clicks through to the parts below it.
+  - Actions: move to the middle of the title row.
+  - Tab navigation: stays at the bottom of the header.
+- **Created once, run by the browser.** Script measures the two forms
+  (decision 9) and creates Web Animations with the scroll-driven timeline. No
+  script runs while scrolling.
+- **Rest.** While an animation moves or scales an element, the browser draws
+  that element from a picture, and its text looked soft (reported on a 1x
+  display; it could not be reproduced in headless Chromium). So at rest the
+  parts have no animations:
+  - pinned: their end look as fixed styles, with moves rounded to whole device
+    pixels;
+  - at the top: no animations and no styles, 500 milliseconds after the header
+    returned to its full form.
+- **Leaving a rest.** A new animation takes effect one frame later.
+  - Leaving the pinned form, the fixed styles stay until the animations take
+    effect.
+  - At the top, input that usually comes before scrolling (wheel, touch, scroll
+    keys, pointer down) starts the animations ahead of the scroll.
+  - Measured in Chromium at 15 pixels per frame: a scroll without such input is
+    off by 4.9 and 9.9 pixels for two frames; leaving the pinned form is off by
+    4.9 pixels for one frame (constrained: two frames). With a wheel, one frame.
+
+Alternatives:
+
+- **Keep the animations at rest.** Rejected: soft text.
+- **Fill only backwards, with the end look as a fixed style.** Rejected after a
+  test: Chrome keeps the animation active past the end of the range.
+- **Layout properties for the parts** (position offsets, font size). Rejected:
+  the title's line breaks would change on every frame, and the parts would
+  depend on the main thread.
+
+### 6. The state comes from an `IntersectionObserver`
+
+- The header is observed with two thresholds: all of it visible (minus half a
+  pixel) means **full**; no more than the pinned height visible (plus half a
+  pixel) means **pinned**; anything in between means **collapsing**.
+- This works because in both layouts the visible part of the header changes with
+  the scroll position: in the flexible layout through sticky positioning, in the
+  constrained layout through the top margin and Root's clip. In the constrained
+  layout the layout animations therefore always run.
+- Only the ratio is used. Chrome reports `isIntersecting: false` below the first
+  threshold, even when part of the header is visible (tested).
+- A ratio of 0 (the header scrolled away with an outer scroller) keeps the
+  current state.
+- **Alternative: scroll listeners.** Rejected: script on every scroll event.
+
+### 7. Long titles keep their lines
+
+- The title is scaled, not cut. When the scaled title is taller than the
+  collapsed title row, the row grows by the difference, and the pinned height
+  includes it. The text keeps the normal space above and below it.
+- Pages that want one line truncate the title themselves: `DefaultPage.Title`
+  takes style props, so `truncate` or `lineClamp` work. The header measures
+  itself again when the title changes size.
+- The one-step fallback keeps the lines too, so long titles look the same in
+  both techniques. This differs from the design value "one line" (Open
+  Questions): multi-line titles were supported before, and the component must
+  not take them away.
+- **Trade-off.** Because the title is scaled, its collapsed line spacing is the
+  full line height times the scale (25.6 pixels in the stories), not the
+  collapsed design value (22 pixels).
+- **Alternatives:** a crossfade to a one-line copy with an ellipsis, and showing
+  only the first line. Rejected: both cut the title.
+
+### 8. Pinned state: compact back link and tooltip
+
+- When the header is pinned, Nimbus marks the header with an internal attribute.
+  The recipe then hides the back link label visually and makes the link a 24 by
+  24 pixel box around its icon. Negative margins keep the link's outer size and
+  the icon's place, so nothing else moves.
+- The back link tooltip turns on (decision 13).
+- The pinned height is the collapsed form's height plus the extra title row
+  height (decision 7).
+
+### 9. Measuring both forms with hidden copies
+
+Both forms are measured on copies of the header:
+
+1. Clone the header (`cloneNode(true)`), set or remove the collapsed styling
+   attribute, set `aria-hidden="true"` and `inert`, and remove the fixed rest
+   styles of the live parts from the copy.
 2. Place it inside Root at the top, absolutely positioned, with the header's
-   current width and `visibility: hidden`, so it cannot change the layout or
-   the scrollable area.
-3. Read its height and remove it, all in the same task, before paint.
+   current width and `visibility: hidden`, so it cannot change the layout or the
+   scrollable area.
+3. Read the header height and the boxes of the parts (title with font size and
+   line height, back link and its icon, actions, tab navigation), and remove the
+   copy, all in the same task, before paint.
 
-This runs on mount and when the full header changes size. The live header and
-the scroll position are never touched.
+This runs on mount and when the header changes size. The live header and the
+scroll position are never touched.
 
 - **Alternative: set the collapsed style on the live header for a moment.**
   Rejected. On a short page scrolled to the bottom, the browser clamps the
   scroll position while the header is briefly shorter. In a test the content
   jumped 47 pixels (constrained) and 79 pixels (flexible).
-- **Alternative: add up the parts that disappear** (back link row, subtitle,
-  padding and line-height differences). Rejected. It is wrong when the actions
-  are taller than the collapsed title line.
-- **Alternative: compute it from the design tokens.** Rejected. Page-owned
-  header content and the page width change the real height.
+- **Alternative: compute it from the design tokens.** Rejected. The page width,
+  the title length and the actions change the real sizes.
 
-### 5. One measurement of the scroll distance for both layouts
+### 10. One header state, internal attributes
 
-`distance = content.scrollTop + max(0, header.bottom − content.top)`, with both
-edges from `getBoundingClientRect()`.
+The header state (full, collapsing, pinned) lives in the hook and the context.
+Nimbus writes internal attributes on the header for its own styles: the
+collapsed form of the one-step fallback, and the pinned state of the
+scroll-driven change. They are not documented and not public API.
 
-- In the constrained layout, `header.bottom` equals `content.top`, so the
-  distance is `content.scrollTop`.
-- In the flexible layout, `content.scrollTop` is 0. Once the header is stuck,
-  the content moves under it and `header.bottom − content.top` grows.
-- If host CSS changes which element scrolls, the formula still applies. If host
-  CSS unpins the header, the distance stays 0 and the header keeps its full
+- The recipe gets a boolean `collapseHeaderOnScroll` variant, like
+  `stickyHeader`. Pages without the option get none of these styles.
+- **Alternative: document the attribute for page styles.** Rejected. Pages would
+  target Nimbus internals (decision 11).
+
+### 11. Header state for page content: a function as children
+
+`DefaultPage.Header` accepts a function as children that receives
+`{ isCollapsed }`.
+
+- Scroll-driven: `isCollapsed` turns `true` with the first scrolled pixels, as
+  soon as the header starts to collapse, and `false` when it is back in its full
   form.
-- Tests confirmed the formula with the scroll container 200 pixels down, an
-  app bar above Root, a sticky footer and padding on Content.
+- One-step fallback: `isCollapsed` is `true` while the header shows its
+  collapsed form.
+- Page content does not get the transitions of the Nimbus parts. Content that
+  changes its size when the state changes makes the header measure itself again,
+  and the page content can move.
+- When the header cannot collapse, `isCollapsed` is always `false`.
 
-When to measure:
+### 12. One-step fallback
 
-- On `scroll` events, through listeners in the capture phase
-  (`{ capture: true, passive: true }`) on the document and on every shadow root
-  between Root and the document. The walk follows the flat tree
-  (`assignedSlot`, then the shadow root's `host`), because `getRootNode()` and
-  `Node.contains()` do not cross shadow boundaries. Events whose target is not
-  the document, `DefaultPage.Content` or a flat-tree ancestor of Root are
-  ignored, so nested scroll areas inside the content (for example the DataTable)
-  do not count.
-- When the header or the content changes size: `ResizeObserver` with
-  `{ box: "border-box" }`, because padding-only changes are not reported with
-  the default content box.
-- A form change is never applied synchronously inside the `ResizeObserver`
-  callback. It goes through the pause timer. Header and content are at the same
-  depth in the tree, so a synchronous change there causes the "ResizeObserver
-  loop completed with undelivered notifications" error.
+Used when the browser has no view or scroll timelines, or when
+`prefers-reduced-motion: reduce` matches. Motion that follows the user's
+scrolling is motion triggered by interaction (WCAG 2.3.3,
+https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html).
 
-Alternatives:
+The fallback is the first implementation of this change:
 
-- **Measure per layout** (`scrollTop` in constrained, edge positions in
-  flexible). Rejected. In a host that changes which element scrolls, the header
-  would silently never collapse.
-- **`IntersectionObserver` with the viewport as root.** Rejected. Its edges are
-  those of the browser window, not of the scroll container, and it stops
-  reporting once the observed element is fully hidden by the scroll container.
-- **Find the nearest scrollable ancestor at mount.** Rejected. It breaks when
-  the layout or overflow styles change after mount.
+- **When.** Collapse once the scroll distance reaches a threshold, return to the
+  full form when it is below 1 CSS pixel, keep the form in between. Apply a
+  change only after no scroll event happened for 150 milliseconds, and not while
+  the mouse pointer is over the header (released when the pointer leaves or the
+  wheel is used over the header).
+- **Scroll distance.** `content.scrollTop + max(0, header.bottom − content.top)`
+  with edges from `getBoundingClientRect()`, measured on `scroll` events in the
+  capture phase on the document and on every shadow root between Root and the
+  document (flat tree), ignoring unrelated targets. `ResizeObserver` with
+  `{ box: "border-box" }` on header and content; form changes never apply
+  synchronously in its callback.
+- **Constrained layout.** The header gives its space back. The threshold is the
+  space given back plus 8 CSS pixels. A collapse after a scroll corrects the
+  scroll position by the space given back, in the same task, with
+  `behavior: "instant"`, so the content stays still. No correction after a jump
+  or on the first measurement. At the top, the scroll offset of the scrolling
+  element is saved and restored around the change (Chromium scroll anchoring).
+- **Flexible layout.** The collapsed header keeps its full height in the page
+  with a bottom margin, so nothing after it moves and no correction is needed.
+  The threshold is 8 CSS pixels after the content reaches the space the header
+  keeps.
+- **Motion.** The height changes at once. Parts that appear fade in (150
+  milliseconds, `ease-out`); `_motionReduce` removes the fade.
 
-### 6. Keep the content still when the header collapses
-
-When the pause timer applies a collapse, it does everything in one task, before
-paint:
-
-1. Read the reference point `content.top − content.scrollTop`, the screen
-   position of the start of the content.
-2. Write `data-collapsed` on the header directly, and sync the React state.
-3. Read the reference point again and scroll by the difference with
-   `scrollBy({ top, behavior: "instant" })`. The element to scroll is
-   `DefaultPage.Content` when it is the element that scrolls. Otherwise it is
-   the target of the last scroll event.
-
-`behavior: "instant"` keeps a host's `scroll-behavior: smooth` from animating
-the correction. Because the correction runs only after a pause, it never
-interrupts the user's scrolling or a smooth scroll.
-
-No correction in these cases:
-
-- **After a jump.** If the scroll position changed in one step by more than the
-  space given back (scroll restoration, a `#hash` link), the collapse happens
-  without a correction. The target then ends directly below the collapsed
-  header, instead of the space given back further down.
-- **On the first measurement.** The collapse happens without a correction and
-  without a fade.
-- **When returning to the full form at the top.** The content then starts
-  directly below the full header. In Chromium, scroll anchoring can still move
-  the scrolling element when content sits above Root in the same scroller.
-  So the scroll offset of that element is saved before the change and set back
-  after it.
-
-Tests found no double correction. Hiding the subtitle takes it out of the flow,
-and the scroll anchoring spec suppresses adjustment when an element "becomes or
-stops being absolutely positioned". So the browser does not correct, and the
-correction in this decision does the work in every engine.
-
-**Alternative: let the content jump.** Rejected. The visible text would move up
-by the space given back, under the user's eyes.
-
-### 7. Collapsed form: hide orientation, keep work in place
+### 13. Collapsed form
 
 - `Subtitle`: hidden visually with a technique that keeps it in the
   accessibility tree. No `display: none` or `visibility: hidden`.
-- `BackLink`: the icon only, inside grid column 1 on the title row, so the
-  columns of the header grid do not change. The label is hidden visually in the
-  same way as the subtitle, and stays the accessible name. The pointer target is
-  at least 24 by 24 CSS pixels (the WCAG 2.2 AA minimum, 2.5.8).
-- **Back link tooltip.** In the collapsed form, a Nimbus `Tooltip` shows the
-  label on hover and keyboard focus. The tooltip accepts links as triggers
-  (`tooltip.dev.mdx`). The tooltip text is the label, so tooltip text, visible
-  label and accessible name are the same.
-  - The tooltip must not add an `aria-describedby` to the link. React Aria sets
-    one while the tooltip is open, which would make screen readers read the
-    label twice. The tooltip content is `aria-hidden`.
+- `BackLink`: the icon only, on the title row, inside grid column 1, so the
+  columns of the header grid do not change. The label is hidden visually and
+  stays the accessible name. The pointer target is at least 24 by 24 CSS pixels
+  (WCAG 2.2, 2.5.8).
+- **Back link tooltip.** In the collapsed form (pinned, in the scroll-driven
+  change), a Nimbus `Tooltip` shows the label on hover and keyboard focus. The
+  tooltip text is the label.
+  - The tooltip must not add an `aria-describedby` to the link. The tooltip
+    content is `aria-hidden`.
   - In the full form the tooltip is disabled.
-  - Tooltips do not open on touch. On touch devices the collapsed back link
-    shows only its icon, and its name stays available to assistive technology.
-    This is documented.
-- `Title`: smaller font size and line height, one line, ellipsis for text
-  titles that do not fit (see Risks).
-- `Actions`: stay on the title row. With a back link, the full form places
-  Actions in grid rows 2–3, so the collapsed form moves them to row 1, where the
-  title is.
-- `TabNav` and page-owned header content: unchanged, in the same grid column.
+  - Tooltips do not open on touch. This is documented.
+- `Title`: the collapsed font size, all lines (decision 7).
+- `Actions`: on the title row.
+- `TabNav`: below the title row.
 - Header padding gets smaller.
-- The back link label is wrapped in its own element on every page. This is
-  simpler than rendering the wrapper only when the option is on.
+- The back link label is wrapped in its own element on every page.
 - **BackLink docs.** `default-page.dev.mdx` currently tells pages to set an
-  `aria-label` on the back link, but the code renders the label as text. A page
-  that follows the docs would get a screen reader name that differs from the
-  tooltip. The docs are corrected in this change: pass the label as children.
+  `aria-label` on the back link, but the code renders the label as text. The
+  docs are corrected: pass the label as children.
 
-### 8. One state attribute, used by Nimbus styles and by pages
-
-`DefaultPage.Header` gets `data-collapsed="true"` while it shows its collapsed
-form. It is public and documented.
-
-- The recipe gets a boolean `collapseHeaderOnScroll` variant, like
-  `stickyHeader`. It holds the collapsed styles under
-  `&[data-collapsed="true"]` and the fade. Pages without the option get none of
-  these styles. There is precedent for attribute selectors in recipes
-  (`localized-field.recipe.ts` uses `&[data-expanded="true"]`).
-- The docs show a scoped selector, `.nimbus-default-page__header[data-collapsed]`.
-  A bare `[data-collapsed] &` would also match other ancestors that have the
-  attribute.
-- **Alternative: a private recipe variant for the state.** Rejected. The state
-  would exist twice, and the variant would leak into the public slot types.
-
-### 9. The header height as a CSS variable
+### 14. The header height as a CSS variable
 
 While the option is on and the header has been measured, Root sets
-`--default-page-header-height` to the current header height in pixels (for
-example `92px`). It is updated with the form change and from the
-`ResizeObserver`.
+`--default-page-header-height`:
 
-Documented uses, in the flexible layout with a sticky header, where the header
-covers the top of the scrolling area:
+- scroll-driven: the pinned height, a fixed value;
+- one-step fallback: the current header height, updated with each change.
 
-- `top` for sticky elements inside the page;
-- `scroll-margin-top` on anchor targets inside the page, so a `#hash` link does
-  not hide its target under the header.
+Documented uses, in the flexible layout with a sticky header: `top` for sticky
+elements inside the page, and `scroll-margin-top` on anchor targets. Rules in
+the docs: always with a fallback (`var(--default-page-header-height, 0px)`); not
+for `scroll-padding-top` (the scrolling element is outside Root); not in the
+constrained layout (the header does not cover the content); not for sizes.
 
-Rules in the docs:
-
-- Always with a fallback: `var(--default-page-header-height, 0px)`. Without the
-  option, before the first measurement and during server rendering, the
-  variable is not set.
-- Not for `scroll-padding-top`. That property belongs on the scrolling element,
-  which is outside Root in the flexible layout, and custom properties are only
-  inherited downwards.
-- Not in the constrained layout. There the header does not cover the content,
-  so an offset would leave a gap.
-- Not for sizes such as `min-height` or `height`. A size that depends on the
-  header height can cause a `ResizeObserver` loop error.
+- **Alternative: the visible height on every frame.** Rejected: it changes on
+  every scrolled frame while the header collapses, which costs main-thread work.
+  Trade-off: a jump target that ends within the first collapse distance of the
+  page can be partly covered.
 
 The name follows the component prefix used elsewhere (`--accordion-height` in
 `accordion.recipe.ts`).
 
-### 10. Motion
+### 15. Built for reuse, and checked against ModalPage
 
-- The height changes in one step. Parts that appear fade in (opacity only).
-  Parts that disappear are hidden at once. A visually hidden part leaves the
-  layout right away, so it could not fade out while the height changes in one
-  step.
-- Nielsen Norman Group: "In general, it's best to not use animation at all and
-  simply keep the header in place as the user scrolls", but a shrinking header
-  "should not disappear, jump, or otherwise startle the user". An opacity fade
-  avoids layout work on every frame.
-- `_motionReduce` removes the fade.
-- No fade on the first measurement.
+The hooks take the header, content and container elements and the layout, and
+make no other assumptions about DefaultPage. `ModalPage` can adopt them in its
+own change; the hooks then move to `packages/nimbus/src/hooks/`.
 
-### 11. Built for reuse, and checked against ModalPage
-
-The hook takes the header and content elements and makes no other assumptions
-about DefaultPage. `ModalPage` can adopt it in its own change. The hook then
-moves to `packages/nimbus/src/hooks/`.
-
-The API was also checked against `ModalPage`, and it fits without changes:
-
-- **Same problem.** ModalPage always pins its top bar, header and footer
+- ModalPage always pins its top bar, header and footer, and its content scrolls
   (`modal-page.recipe.ts`: grid rows `auto auto 1fr auto`, content
-  `overflow: auto`).
-- **Same parts.** Its header has `Title`, `Subtitle`, `Actions` and `TabNav`,
-  and they follow the same rules as here.
-- **Same API.** `collapseHeaderOnScroll` on `ModalPage.Root` and
-  `data-collapsed` on `ModalPage.Header`. Its Root has no `layout` prop, so the
-  prop is a plain optional boolean there too.
-- **Differences to handle in that change:**
-  - The back link tooltip is DefaultPage-only. ModalPage's back navigation
-    lives in `ModalPage.TopBar`, which is not part of the header and does not
-    collapse.
-  - The CSS variable follows the component prefix:
-    `--modal-page-header-height`.
-  - `ModalPage.Title` is a `div` around an `h2` heading, so the collapsed styles
-    target the inner heading, and the "same heading element" rule applies to the
-    `h2`.
-  - `ModalPage.Root` does not call `splitVariantProps`, so the recipe variant is
-    passed to its slot directly.
+  `overflow: auto`). That is the constrained technique (decision 4).
+- Its header has `Title`, `Subtitle`, `Actions` and `TabNav`.
+- Differences for that change: no back link in the header (it lives in
+  `ModalPage.TopBar`); the variable is `--modal-page-header-height`;
+  `ModalPage.Title` is a `div` around an `h2`; `ModalPage.Root` does not call
+  `splitVariantProps`.
 
 ## Risks / Trade-offs
 
-- [A title cut off with an ellipsis can fail WCAG failure F69 (1.4.4 Resize
-  Text, level AA) when text is enlarged; the worst case is 400% zoom, where only
-  a few characters remain next to the actions] → Accepted trade-off (decision of
-  2026-10-30, confirmed after the second review). The full title shows at the
-  top, and the `h1` text stays complete for assistive technology. Revisit if an
-  audit flags it. The docs advise putting the part of the title that tells
-  records apart first.
-- [The header changes form about 150 milliseconds after scrolling stops, not
-  during the scroll] → By design (decision 3).
-- [While the pointer rests over the header, the header keeps its form] → By
-  design (decision 3). It changes when the pointer leaves.
-- [The hidden copy duplicates element IDs for a moment] → It is never painted,
-  is `aria-hidden` and `inert`, and is removed in the same task.
-- [Capturing listeners run for every scroll on the page] → They are added only
-  when the option is on. Unrelated targets are ignored, and each check reads two
-  rectangles.
-- [A full-height scroll area inside the content (for example a Splitter or a
-  ScrollArea) is ignored, so the header never collapses] → Documented.
-- [In JSDOM every rectangle is 0, so the header always shows its full form in
-  consumer unit tests] → Documented: test the collapse in a real browser through
-  `data-collapsed`.
-- [The development warning appears only in development builds] → The docs
-  state the pinned-header requirement.
+- [A tab click that scrolls the page to the top returns the header to its full
+  form at once, so the tabs move down under the pointer] → Accepted (decision of
+  2026-11-04) and documented. The one-step fallback keeps its pointer hold.
+- [When scrolling starts without input that comes before it (a `#hash` link, a
+  script), the parts are off for one or two frames; leaving the pinned form, for
+  one frame (constrained: two)] → Measured (decision 5) and accepted.
+- [If the user stops scrolling in the range, the header stays half collapsed] →
+  By design (decision 3).
+- [Firefox ESR 153 and Safari before 26 get the one-step change] → Same result,
+  without the transition (decision 12).
+- [The speed in Firefox and in Safari 26.0 to 26.3 was not measured] → Checked
+  by hand (tasks).
+- [The collapsed line spacing of a scaled multi-line title differs from the
+  design value] → Accepted (decision 7).
+- [In the constrained layout, Root clips its content at its top and bottom edge,
+  for example a focus ring that touches the edge] → Accepted (decision of
+  2026-11-04).
+- [Page content in the header that changes size with `isCollapsed` makes the
+  page content move] → Documented (decision 11).
+- [A jump target within the first collapse distance can be partly covered] →
+  Accepted (decision 14).
+- [The hidden copies duplicate element IDs for a moment] → They are never
+  painted, are `aria-hidden` and `inert`, and are removed in the same task.
+- [A full-height scroll area inside the content (for example a Splitter) in the
+  constrained layout is not the element that scrolls, so the header does not
+  collapse] → Documented.
+- [In JSDOM there are no scroll timelines and every rectangle is 0, so the
+  header always shows its full form in consumer unit tests] → Documented: test
+  the collapse in a real browser.
+- [The development warning appears only in development builds] → The docs state
+  the pinned-header requirement.
 - [Snapshot tests of pages with a back link change, and `getByText` on the back
   link returns the wrapper element] → Mentioned in the changeset, with
   `getByRole("link", { name })` as the recommended query.
-- [The Nimbus Tooltip has no border, so it loses its edge in forced colors
-  mode] → A Tooltip issue, outside this change.
+- [The Nimbus Tooltip has no border, so it loses its edge in forced colors mode]
+  → A Tooltip issue, outside this change.
 
 ## Migration Plan
 
@@ -419,22 +452,18 @@ pages. Rollback: remove the prop.
 
 ## Open Questions
 
-- **Resolved (2026-11-04): exact collapsed values.** Source: the compact
-  header frame in Figma, file key `tfXVZi7JOixYEhZqjg954I`, node `2603:7737`
-  ("Header Detail Page", 88 pixels high), and its design note, node
-  `678:14220` ("Header — Compact scroll state").
-  - Header padding: 12 pixels top and bottom (`spacing.300`). With a TabNav,
-    0 at the bottom and 12 pixels (`spacing.300`) above the TabNav.
-    Horizontal padding does not change. Design note: "Row 1, 56 high, 12 ·
-    spacing/300 top and bottom".
+- **Resolved (2026-11-04): exact collapsed values.** Source: the compact header
+  frame in Figma, file key `tfXVZi7JOixYEhZqjg954I`, node `2603:7737` ("Header
+  Detail Page", 88 pixels high), and its design note, node `678:14220` ("Header
+  — Compact scroll state").
+  - Header padding: 12 pixels top and bottom (`spacing.300`). With a TabNav, 0
+    at the bottom and 12 pixels (`spacing.300`) above the TabNav. Horizontal
+    padding does not change.
   - Title: font size 16 pixels (`fontSizes.400`), line height 22 pixels
-    (`lineHeights.550`), weight unchanged. The frame binds the text style
-    "Heading/md" (`font-size/400`, `line-height/550`). The note's text says
-    "16/20"; the bound text style is used.
+    (`lineHeights.550`), weight unchanged. The design shows one line; decision 7
+    keeps all lines.
   - Back link: a 24 by 24 pixel icon (`sizes.600`), 4 pixels (`spacing.100`)
-    before the title. In the frame, the icon button is 24 by 24 and the
-    title starts at x = 28.
-  - Fade timing: 150 milliseconds (`durations.fast`), `ease-out`, removed by
-    `_motionReduce`. The design note says "State changes are instant", which
-    differs from decision 10. Decision 10 is kept until the design owner
-    decides; setting the duration to 0 removes the fade.
+    before the title.
+  - Fade timing (one-step fallback): 150 milliseconds (`durations.fast`),
+    `ease-out`, removed by `_motionReduce`. The design note says "State changes
+    are instant"; the design owner has not decided yet.

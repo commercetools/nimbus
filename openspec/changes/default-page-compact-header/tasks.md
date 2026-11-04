@@ -1,5 +1,9 @@
 # Tasks
 
+Sections 1 to 5 built the one-step change, which is now the fallback (design.md,
+decision 12). Notes mark what a later decision changed. Section 6 builds the
+scroll-driven change.
+
 ## 1. Types and warning
 
 - [x] 1.1 Add `collapseHeaderOnScroll?: boolean` with JSDoc to both branches of
@@ -26,6 +30,8 @@
       or the header height is 0. Verify with a unit spec that covers both
       points, the range in between, scrolling up within that range, and missing
       or zero measurements.
+      - Changed by 6.4: in the flexible layout the threshold is 8 CSS pixels
+        past the space the header keeps.
 - [x] 2.2 Write the hook (in `default-page/hooks/`) that measures the scroll
       distance with `content.scrollTop + max(0, header.bottom − content.top)`.
       It listens to `scroll` in the capture phase on the document and on every
@@ -38,8 +44,9 @@
       option is off. Verify with a unit spec using fake timers: listeners only
       when enabled, unrelated targets ignored, no change before the pause, the
       pointer hold, everything removed on unmount.
-- [x] 2.3 Measure the collapsed height on a hidden copy of the header (decision
-      4) on mount and when the full header changes size. Verify with a story
+      - Now the one-step fallback only (design.md, decision 12).
+- [x] 2.3 Measure the collapsed height on a hidden copy of the header (design.md,
+      decision 9) on mount and when the full header changes size. Verify with a story
       that measures the real full and collapsed heights, derives the space given
       back S, and checks that a distance of S + 7 keeps the full form and S + 9
       collapses after the pause. Also verify that measuring on a short page
@@ -81,8 +88,9 @@
       theme typings (`pnpm --filter @commercetools/nimbus build-theme-typings`);
       the DefaultPage recipe is already registered. Verify with the stories in
       3.5.
+      - Changed by 6.5: the collapsed title keeps all its lines.
 - [x] 3.4 Keep the content still when the header collapses after a scroll
-      (decision 6), in both layouts: read, write and correct in one task with
+      (design.md, decision 12), in both layouts: read, write and correct in one task with
       `behavior: "instant"`; no correction after a jump or on the first
       measurement; save and restore the scroller offset when returning to the
       full form at the top. Verify with stories:
@@ -92,6 +100,8 @@
       - after a jump, the target ends directly below the collapsed header;
       - at the top, the content starts directly below the full header, also
         with content above Root in the same scroller.
+      - Changed by 6.4: in the flexible layout the header keeps its space, so
+        there is no correction there.
 - [x] 3.5 Add stories with play functions for: constrained layout; flexible +
       `stickyHeader` with the scroll container at the top of the window;
       document scroll; content that only just overflows; a narrow container with
@@ -119,6 +129,8 @@
       - the corrected BackLink section and Accessibility section (label as
         children, not `aria-label`);
       - the Root row in "Component parts".
+      - Changed by 6.7: the `data-collapsed` selector is no longer documented;
+        pages use the function as Header children.
 
       Add the designer view to `default-page.mdx` and a consumer example to
       `default-page.docs.spec.tsx`. Verify that the docs spec passes and the
@@ -141,6 +153,7 @@
       compiled `_motionReduce` rule for the fade, and check that the header
       still changes form. Verify with `pnpm test:storybook:dev` on the stories
       file.
+      - Changed by 6.3: with reduced motion the one-step change runs.
 
 ## 5. Integration checks
 
@@ -157,12 +170,63 @@
         (source and built bundle), Playwright WebKit 31/31. Playwright
         Firefox did not start on this machine ("Could not find profile
         folder"). Playwright WebKit is not Safari 26 or 27.
+      - Replaced by 6.8.
 - [x] 5.4 Search the new and changed content of this change for product names
       and ticket keys, and verify that none appear. Existing text outside this
       change is not part of the check.
 - [x] 5.5 Run
       `pnpm exec openspec validate default-page-compact-header --type change --strict`
       without errors.
+
+## 6. Scroll-driven change
+
+- [x] 6.1 Prototype the scroll-driven change behind an experiment attribute,
+      in both layouts: measuring both forms on copies, the plan (collapse
+      distance, pinned height, title row for several lines), the part motions,
+      the `IntersectionObserver` states, rest without animations at the top
+      and when pinned, the start ahead of the scroll on input, the compact back
+      link and the tooltip when pinned, and in the constrained layout the
+      margin and padding animations. Verified with the experiment stories in
+      Chromium and WebKit, and by measuring frame times and part positions per
+      frame in Chromium (design.md, decisions 4 and 5).
+- [x] 6.2 Accept a function as `DefaultPage.Header` children that receives
+      `{ isCollapsed }`. Verified with the custom-content story, the
+      header-state story and a compile check in `default-page.types.spec.tsx`.
+- [ ] 6.3 Make the scroll-driven change the default: remove the experiment
+      attribute; Root uses the scroll-driven change when view and scroll
+      timelines exist and reduced motion is not requested, decided after
+      mount so server and client render the same markup; otherwise the
+      one-step change. Turn the experiment stories into regular stories.
+      Verify with `pnpm test:storybook:dev` on the stories file.
+- [ ] 6.4 One-step fallback in the flexible layout: the header keeps its space
+      and changes at once. Delete `utils/animate-keep-space-header.ts` and the
+      animation code in `use-collapse-header-on-scroll.ts`. Verify with stories
+      that hide `ViewTimeline` and `ScrollTimeline` in a `beforeEach` and
+      restore them afterwards.
+- [ ] 6.5 The collapsed form of the one-step fallback keeps all title lines
+      (no one-line ellipsis), with the back link icon on the first title line.
+      Verify with the long-title story in the fallback.
+- [ ] 6.6 Unit tests for `planScrollDrivenHeader` (pure: distance, pinned
+      height, title row for several lines, rounding) and for the state logic
+      with a mocked `IntersectionObserver` (thresholds, a ratio of 0 keeps the
+      state). Verify with `pnpm test:unit`.
+- [ ] 6.7 Docs: in `default-page.dev.mdx`, describe both changes, browser
+      support, the function as Header children, the height variable (pinned
+      height), long titles and truncation, the tab-click behavior, reduced
+      motion, and in the constrained layout Root's clip and the kept padding;
+      remove the `data-collapsed` section. Update `default-page.mdx`, add a
+      function-children example to `default-page.docs.spec.tsx`, and update the
+      changeset. Verify that the docs spec passes and the examples render.
+- [ ] 6.8 Check by hand in Chrome, Firefox 159 or later, Safari 26 and 27
+      (speed and look), and Firefox ESR 153 (one-step fallback): mouse wheel,
+      trackpad, Space and Page Down, a `#hash` link, a tab click, the back
+      link tooltip, a long title, right-to-left text, a narrow page, and a 1x
+      and a 2x display. Record the results here.
+- [ ] 6.9 Run `pnpm --filter @commercetools/nimbus typecheck:dev`, `pnpm lint`,
+      `pnpm test:dev packages/nimbus/src/components/default-page/`, the stories
+      in WebKit, and
+      `pnpm exec openspec validate default-page-compact-header --type change --strict`,
+      all without errors.
 
 ## Workflow follow-up
 
@@ -171,7 +235,7 @@
   style.
 - Separate topic: focus that scrolls under a sticky header in the flexible
   layout (WCAG 2.4.7, technique C43).
-- `ModalPage` adopts the hook in its own change (design.md, decision 11).
+- `ModalPage` adopts the hooks in its own change (design.md, decision 15).
 - Decide when to publish: push the branch and open a pull request. Until then,
   the branch stays local.
 - Archive the change after the project's review requirements are satisfied.

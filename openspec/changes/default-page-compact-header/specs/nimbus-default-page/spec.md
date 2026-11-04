@@ -7,108 +7,9 @@
 When `collapseHeaderOnScroll` is set and the header is pinned, the header SHALL
 show a collapsed form while the content is scrolled away from the top, and its
 full form at the top. The header is pinned with `layout="constrained"`, or with
-`layout="flexible"` and `stickyHeader`. The scroll distance is the scroll
-position of DefaultPage.Content plus how far its top edge is above the bottom
-edge of the header. The space given back is the full height minus the collapsed
-height.
-
-#### Scenario: Header collapses after scrolling past the space it gives back
-
-- **WHEN** `collapseHeaderOnScroll` is true and the header is pinned
-- **AND** the scroll distance is at least the space given back plus 8 CSS
-  pixels
-- **AND** no scroll event has happened for 150 milliseconds
-- **AND** the mouse pointer is not over the header
-- **THEN** the header SHALL show its collapsed form
-- **AND** DefaultPage.Header SHALL have `data-collapsed="true"`
-
-#### Scenario: Header is full at the top
-
-- **WHEN** `collapseHeaderOnScroll` is true
-- **AND** the scroll distance is less than 1 CSS pixel
-- **AND** no scroll event has happened for 150 milliseconds
-- **AND** the mouse pointer is not over the header
-- **THEN** the header SHALL show its full form
-- **AND** DefaultPage.Header SHALL NOT have `data-collapsed`
-
-#### Scenario: Header keeps its form between the two points
-
-- **WHEN** `collapseHeaderOnScroll` is true
-- **AND** the scroll distance is at least 1 CSS pixel and less than the space
-  given back plus 8 CSS pixels
-- **THEN** the header SHALL keep the form it currently shows
-
-#### Scenario: Scrolling up does not expand the header
-
-- **WHEN** the header shows its collapsed form
-- **AND** the user scrolls up but the scroll distance stays at least 1 CSS pixel
-- **THEN** the header SHALL keep its collapsed form
-
-#### Scenario: No form change while scrolling
-
-- **WHEN** scroll events happen less than 150 milliseconds apart
-- **THEN** the header SHALL keep the form it currently shows
-- **AND** the component SHALL NOT change the scroll position
-
-#### Scenario: Smooth scrolls reach their target
-
-- **WHEN** a smooth scroll runs, for example `scrollIntoView` with
-  `behavior: "smooth"` or a `#hash` link under `scroll-behavior: smooth`
-- **THEN** the scroll SHALL reach its target as without this requirement
-
-#### Scenario: Pointer over the header holds the form
-
-- **WHEN** the mouse pointer is over the header
-- **AND** the scroll distance calls for the other form
-- **THEN** the header SHALL keep its current form
-- **AND** SHALL change form when the pointer leaves the header, or when the user
-  scrolls with the mouse wheel while the pointer is over the header
-
-#### Scenario: A form change does not cause the opposite change
-
-- **WHEN** the header changes from one form to the other
-- **AND** the user does not scroll
-- **THEN** the header SHALL NOT change back
-
-#### Scenario: Content stays still when the header collapses after scrolling
-
-- **WHEN** the header changes to its collapsed form after the user scrolled
-- **THEN** the content SHALL stay at the same position on the screen, within 1
-  CSS pixel
-
-#### Scenario: Collapse after a jump
-
-- **WHEN** the scroll position changed in one step by more than the space given
-  back, for example by scroll restoration or a `#hash` link
-- **AND** the header changes to its collapsed form
-- **THEN** the component SHALL NOT change the scroll position
-
-#### Scenario: Full header at the top pushes the content down
-
-- **WHEN** the header returns to its full form at the top
-- **THEN** the content SHALL start directly below the full header
-- **AND** content above DefaultPage.Root in the same scrolling element SHALL
-  NOT move
-
-#### Scenario: First render
-
-- **WHEN** the page renders for the first time
-- **THEN** the header SHALL show its full form
-- **AND** DefaultPage.Header SHALL NOT have `data-collapsed`
-
-#### Scenario: Header that cannot be measured
-
-- **WHEN** the header or the content cannot be measured, or the header height
-  is 0
-- **THEN** the header SHALL show its full form
-- **AND** DefaultPage.Header SHALL NOT have `data-collapsed`
-
-#### Scenario: First measurement calls for the collapsed form
-
-- **WHEN** the first measurement after the first render calls for the collapsed
-  form
-- **THEN** the header SHALL show it without a fade
-- **AND** the component SHALL NOT change the scroll position
+`layout="flexible"` and `stickyHeader`. The component SHALL use the
+scroll-driven change where the browser supports view and scroll timelines and
+the user does not prefer reduced motion, and the one-step change otherwise.
 
 #### Scenario: Constrained layout
 
@@ -123,15 +24,28 @@ height.
   `collapseHeaderOnScroll` is true
 - **THEN** the header SHALL collapse and return to its full form as the page
   scrolls
+- **AND** the element that scrolls the page MAY be the document or any ancestor
+  of DefaultPage.Root, including across shadow DOM boundaries, at any position
+  on the screen
 
-#### Scenario: Any scrolling element at any position
+#### Scenario: Scroll-driven change where supported
 
-- **WHEN** the header is pinned
-- **AND** the element that scrolls the page is the document or any ancestor of
-  DefaultPage.Root, including across shadow DOM boundaries
-- **AND** that element starts at any position on the screen
-- **THEN** the header SHALL collapse and return to its full form as described
-  in this requirement
+- **WHEN** the browser supports view and scroll timelines
+- **AND** `prefers-reduced-motion: reduce` does not match
+- **THEN** the header SHALL change as described in "Scroll-Driven Header
+  Collapse"
+
+#### Scenario: One-step change otherwise
+
+- **WHEN** the browser does not support view or scroll timelines
+- **OR** `prefers-reduced-motion: reduce` matches
+- **THEN** the header SHALL change as described in "One-Step Header Collapse"
+
+#### Scenario: First render
+
+- **WHEN** the page renders for the first time, including during server
+  rendering
+- **THEN** the header SHALL show its full form
 
 #### Scenario: Header not pinned
 
@@ -144,18 +58,175 @@ height.
 
 - **WHEN** `collapseHeaderOnScroll` changes from true to false
 - **THEN** the header SHALL show its full form
-- **AND** DefaultPage.Header SHALL NOT have `data-collapsed`
+- **AND** the component SHALL remove every style it set on the page
 
 #### Scenario: Option not set
 
 - **WHEN** `collapseHeaderOnScroll` is not set or is false
-- **THEN** the header SHALL look and behave as without this requirement
-- **AND** DefaultPage.Header SHALL NOT have `data-collapsed`
+- **THEN** the page SHALL look and behave as without this requirement
+
+### Requirement: Scroll-Driven Header Collapse
+
+In the scroll-driven change, the header SHALL follow the scroll position: over
+the collapse distance it SHALL change continuously from its full form to its
+collapsed form. The collapse distance is the full header height minus the pinned
+height, in whole CSS pixels. The pinned height is the height of the collapsed
+form, plus the extra height of a title with several lines.
+
+#### Scenario: Header follows the scroll position
+
+- **WHEN** the scroll position moves through the collapse distance
+- **THEN** each scroll position SHALL show its own in-between form
+- **AND** the header SHALL reach its collapsed form at the end of the distance
+- **AND** scrolling back SHALL show the same forms backwards
+
+#### Scenario: Where the distance starts
+
+- **WHEN** the layout is flexible
+- **THEN** the collapse distance SHALL start when the top of DefaultPage.Root
+  reaches the top of the scrolling area
+- **WHEN** the layout is constrained
+- **THEN** the collapse distance SHALL start at the top of DefaultPage.Content
+
+#### Scenario: Stopping in between
+
+- **WHEN** the user stops scrolling inside the collapse distance
+- **THEN** the header SHALL keep the in-between form of that scroll position
+
+#### Scenario: Content moves only with the scroll
+
+- **WHEN** the header changes form
+- **THEN** the content SHALL move exactly as far as the scroll position changes
+- **AND** the component SHALL NOT change the scroll position
+
+#### Scenario: Flexible layout keeps the header space
+
+- **WHEN** the layout is flexible
+- **THEN** the header SHALL keep its full height in the page in every form
+- **AND** content after the header SHALL NOT move when the header changes form
+
+#### Scenario: Constrained layout gives the space to the content area
+
+- **WHEN** the layout is constrained
+- **THEN** DefaultPage.Content SHALL start at the bottom edge of the header at
+  every scroll position
+- **AND** a top padding the page sets on DefaultPage.Content, and a top margin
+  it sets on DefaultPage.Header, SHALL stay in effect
+- **AND** the header SHALL NOT be moved with a transform
+
+#### Scenario: Smooth scrolls reach their target
+
+- **WHEN** a smooth scroll runs, for example `scrollIntoView` with
+  `behavior: "smooth"`
+- **THEN** the scroll SHALL reach its target as without this requirement
+
+#### Scenario: Pinned form
+
+- **WHEN** the scroll position is at or beyond the end of the collapse distance
+- **THEN** the header SHALL be pinned in its collapsed form
+- **AND** the visible header height SHALL be the pinned height
+- **AND** DefaultPage.BackLink SHALL show only its icon, with a pointer target
+  of 24 by 24 CSS pixels, without changing the size of anything around it
+
+#### Scenario: Sharp text at rest
+
+- **WHEN** the header is pinned
+- **OR** the header has shown its full form at the top for 500 milliseconds
+- **THEN** the header parts SHALL have no running animations
+
+#### Scenario: Ready before the scroll
+
+- **WHEN** the header rests at the top
+- **AND** wheel, touch, a scroll key or a pointer press happens
+- **THEN** the animations of the header parts SHALL start before the page
+  scrolls
+
+#### Scenario: No scroll listeners
+
+- **WHEN** the scroll-driven change runs
+- **THEN** the component SHALL NOT add `scroll` event listeners
+
+#### Scenario: Scroll to the top
+
+- **WHEN** the page scrolls to the top, for example after a tab click
+- **THEN** the header SHALL show its full form at once, also while the mouse
+  pointer is over the header
+
+### Requirement: One-Step Header Collapse
+
+In the one-step change, the header SHALL switch between its full and its
+collapsed form at once, after scrolling pauses. The scroll distance is the
+scroll position of DefaultPage.Content plus how far its top edge is above the
+bottom edge of the header.
+
+#### Scenario: Header collapses after scrolling past the threshold
+
+- **WHEN** the scroll distance is at least the threshold
+- **AND** no scroll event has happened for 150 milliseconds
+- **AND** the mouse pointer is not over the header
+- **THEN** the header SHALL show its collapsed form at once
+- **AND** the threshold SHALL be the space the header gives back plus 8 CSS
+  pixels in the constrained layout, and 8 CSS pixels past the space the header
+  keeps in the flexible layout
+
+#### Scenario: Header is full at the top
+
+- **WHEN** the scroll distance is less than 1 CSS pixel
+- **AND** no scroll event has happened for 150 milliseconds
+- **AND** the mouse pointer is not over the header
+- **THEN** the header SHALL show its full form
+
+#### Scenario: Header keeps its form in between
+
+- **WHEN** the scroll distance is at least 1 CSS pixel and below the threshold
+- **THEN** the header SHALL keep the form it currently shows
+
+#### Scenario: No form change while scrolling
+
+- **WHEN** scroll events happen less than 150 milliseconds apart
+- **THEN** the header SHALL keep the form it currently shows
+- **AND** the component SHALL NOT change the scroll position
+
+#### Scenario: Pointer over the header holds the form
+
+- **WHEN** the mouse pointer is over the header
+- **AND** the scroll distance calls for the other form
+- **THEN** the header SHALL keep its current form
+- **AND** SHALL change form when the pointer leaves the header, or when the user
+  scrolls with the mouse wheel while the pointer is over the header
+
+#### Scenario: Content stays still in the constrained layout
+
+- **WHEN** the layout is constrained
+- **AND** the header changes to its collapsed form after the user scrolled
+- **THEN** the content SHALL stay at the same position on the screen, within 1
+  CSS pixel
+
+#### Scenario: Flexible layout keeps the header space
+
+- **WHEN** the layout is flexible
+- **AND** the header changes form
+- **THEN** the header SHALL keep its full height in the page
+- **AND** content after the header SHALL NOT move
+
+#### Scenario: Collapse after a jump
+
+- **WHEN** the scroll position changed in one step by more than the space given
+  back, for example by scroll restoration or a `#hash` link
+- **AND** the header changes to its collapsed form
+- **THEN** the component SHALL NOT change the scroll position
+
+#### Scenario: Appearing parts fade in
+
+- **WHEN** the header returns to its full form
+- **AND** `prefers-reduced-motion: reduce` does not match
+- **THEN** parts that appear SHALL fade in
+- **AND** the header height SHALL change at once
 
 ### Requirement: Collapsed Header Form
 
 The collapsed form SHALL hide the parts that orient the user and keep the parts
-the user works with, in their places.
+the user works with.
 
 #### Scenario: Subtitle is hidden
 
@@ -165,9 +236,9 @@ the user works with, in their places.
 #### Scenario: Back link shows its icon with a tooltip
 
 - **WHEN** the header shows its collapsed form
-- **THEN** DefaultPage.BackLink SHALL show its icon only, on the title row
-- **AND** when the back link receives pointer hover or keyboard focus, a
-  tooltip SHALL show its label
+- **THEN** DefaultPage.BackLink SHALL show its icon only, before the title
+- **AND** when the back link receives pointer hover or keyboard focus, a tooltip
+  SHALL show its label
 - **AND** the tooltip text SHALL be the same as the back link label
 
 #### Scenario: No back link tooltip in the full form
@@ -176,46 +247,86 @@ the user works with, in their places.
 - **THEN** DefaultPage.BackLink SHALL show its label as text
 - **AND** SHALL NOT show a tooltip
 
-#### Scenario: Title stays smaller on one line
+#### Scenario: Title gets smaller and keeps its lines
 
 - **WHEN** the header shows its collapsed form
-- **THEN** DefaultPage.Title SHALL use a smaller font size and line height than
-  in the full form
-- **AND** the title SHALL stay on one line
-- **AND** a text title that does not fit SHALL end with an ellipsis
+- **THEN** DefaultPage.Title SHALL use the collapsed font size
+- **AND** a title with several lines SHALL keep all of them
+- **AND** the title row SHALL be tall enough for the title, with the collapsed
+  padding above and below
 
-#### Scenario: Work parts stay in place
+#### Scenario: Page truncates the title
+
+- **WHEN** the page truncates DefaultPage.Title with style props, for example
+  `truncate`
+- **THEN** the collapsed title SHALL stay on one line
+
+#### Scenario: Work parts stay
 
 - **WHEN** the header shows its collapsed form
 - **THEN** DefaultPage.Actions and DefaultPage.TabNav SHALL stay visible and
   operable
-- **AND** DefaultPage.Actions SHALL stay on the title row
+- **AND** DefaultPage.Actions SHALL be on the title row
 
-#### Scenario: Other header content stays in place
+#### Scenario: Hidden parts let clicks through
 
-- **WHEN** the header contains content that is not a DefaultPage part
-- **AND** the header shows its collapsed form
-- **THEN** that content SHALL stay visible
-- **AND** SHALL stay in the header grid column it has in the full form
+- **WHEN** the header shows its collapsed form
+- **THEN** a pointer press on a visible part SHALL reach that part, not a hidden
+  part
 
 #### Scenario: Header gets shorter
 
 - **WHEN** the header shows its collapsed form
-- **THEN** the header SHALL be shorter than in its full form
+- **THEN** the visible header SHALL be shorter than in its full form
 - **AND** the header SHALL have less vertical padding than in its full form
+
+### Requirement: Header State For Page Content
+
+DefaultPage.Header SHALL accept a function as children that receives
+`{ isCollapsed }`, so pages can adapt their own header content.
+
+#### Scenario: Function children
+
+- **WHEN** the children of DefaultPage.Header are a function
+- **THEN** DefaultPage.Header SHALL render what the function returns
+- **AND** SHALL call it with `{ isCollapsed }`
+
+#### Scenario: State in the scroll-driven change
+
+- **WHEN** the scroll-driven change runs
+- **THEN** `isCollapsed` SHALL be true from the moment the header starts to
+  collapse
+- **AND** SHALL be false once the header is back in its full form
+
+#### Scenario: State in the one-step change
+
+- **WHEN** the one-step change runs
+- **THEN** `isCollapsed` SHALL be true while the header shows its collapsed form
+
+#### Scenario: Header that cannot collapse
+
+- **WHEN** `collapseHeaderOnScroll` is not set, or the header is not pinned
+- **THEN** `isCollapsed` SHALL be false
 
 ### Requirement: Header Height Variable
 
-When `collapseHeaderOnScroll` is set, DefaultPage.Root SHALL publish the current
-height of the header as the CSS custom property `--default-page-header-height`.
+When `collapseHeaderOnScroll` is set, DefaultPage.Root SHALL publish a header
+height as the CSS custom property `--default-page-header-height`.
 
-#### Scenario: Variable follows the header
+#### Scenario: Pinned height in the scroll-driven change
 
-- **WHEN** `collapseHeaderOnScroll` is true
+- **WHEN** the scroll-driven change runs
 - **AND** the header has been measured
 - **THEN** DefaultPage.Root SHALL set `--default-page-header-height` to the
-  current height of DefaultPage.Header as a length in CSS pixels (for example
-  `92px`)
+  pinned height as a length in CSS pixels
+- **AND** SHALL update it when the header changes size
+
+#### Scenario: Current height in the one-step change
+
+- **WHEN** the one-step change runs
+- **AND** the header has been measured
+- **THEN** DefaultPage.Root SHALL set `--default-page-header-height` to the
+  current header height as a length in CSS pixels
 - **AND** SHALL update it when the header changes form or size
 
 #### Scenario: Variable before the first measurement
@@ -250,7 +361,7 @@ the focus and the operability of every header element.
 
 #### Scenario: Collapsed back link keeps its name and size
 
-- **WHEN** the header shows its collapsed form, with or without reduced motion
+- **WHEN** the header shows its collapsed form
 - **THEN** DefaultPage.BackLink SHALL keep its label as its accessible name
 - **AND** its pointer target SHALL be at least 24 by 24 CSS pixels
 
@@ -266,19 +377,12 @@ the focus and the operability of every header element.
 - **THEN** the text of DefaultPage.Subtitle SHALL stay available to assistive
   technology
 
-#### Scenario: Height changes in one step, appearing parts fade in
-
-- **WHEN** the header changes form
-- **AND** the user has not asked for reduced motion
-- **THEN** the header height SHALL change in one step
-- **AND** parts that appear SHALL fade in
-- **AND** parts that disappear SHALL be hidden at once
-
 #### Scenario: Reduced motion
 
 - **WHEN** `prefers-reduced-motion: reduce` matches
-- **THEN** the header SHALL change form without a fade
-- **AND** the header SHALL still collapse and return to its full form
+- **THEN** the header SHALL use the one-step change
+- **AND** SHALL change form without a fade
+- **AND** SHALL still collapse and return to its full form
 
 ## MODIFIED Requirements
 
@@ -426,6 +530,13 @@ union enforcement.
   including a `layout` value typed as `"constrained" | "flexible"`, wrappers
   built with `Omit<DefaultPageProps, ...>`, and props spread into Root
 - **THEN** that code SHALL still compile
+
+#### Scenario: Header children type
+
+- **WHEN** DefaultPageHeaderProps type is defined
+- **THEN** its children SHALL accept React nodes
+- **AND** SHALL accept a function that receives `DefaultPageHeaderRenderProps`
+  (`{ isCollapsed: boolean }`) and returns React nodes
 
 #### Scenario: BackLink props type
 
