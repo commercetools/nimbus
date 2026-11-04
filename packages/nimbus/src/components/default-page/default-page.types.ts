@@ -25,6 +25,8 @@ export type DefaultPageActionsSlotProps = HTMLChakraProps<"div">;
 
 export type DefaultPageBackLinkSlotProps = HTMLChakraProps<"a">;
 
+export type DefaultPageBackLinkLabelSlotProps = HTMLChakraProps<"span">;
+
 export type DefaultPageTitleSlotProps = HTMLChakraProps<"h1">;
 
 export type DefaultPageSubtitleSlotProps = HTMLChakraProps<"p">;
@@ -45,6 +47,34 @@ export type DefaultPageFooterSlotProps = HTMLChakraProps<"footer">;
 type DefaultPageBaseProps = OmitInternalProps<DefaultPageRootSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
+  /**
+   * Show a shorter header while the content is scrolled away from the top.
+   *
+   * The collapsed header hides the subtitle visually, shows the back link as
+   * an icon with a tooltip, and shows the title smaller. A title with several
+   * lines keeps all of them. Actions, tab navigation and other header content
+   * stay visible.
+   *
+   * - In browsers that support scroll-driven animations, the header follows
+   *   the scroll position: it changes step by step over the height it gives
+   *   back, and is full again at the top.
+   * - In other browsers, and when the user prefers reduced motion, the header
+   *   changes in one step after scrolling has paused, and not while the mouse
+   *   pointer is over the header. It returns to its full form only when the
+   *   content is back at the top.
+   * - `DefaultPage.Header` accepts a function as children that receives
+   *   `{ isCollapsed }`.
+   * - Root sets the CSS variable `--default-page-header-height`: the height of
+   *   the collapsed header when the header follows the scroll position, and
+   *   the current header height in the one-step change.
+   *
+   * Has an effect only when the header is pinned: with `layout="constrained"`,
+   * or with `layout="flexible"` and `stickyHeader`. Otherwise development
+   * builds log a warning.
+   *
+   * @default false
+   */
+  collapseHeaderOnScroll?: boolean;
 };
 
 /**
@@ -104,11 +134,33 @@ type DefaultPageFlexibleProps = DefaultPageBaseProps & {
 export type DefaultPageProps =
   DefaultPageConstrainedProps | DefaultPageFlexibleProps;
 
-export type DefaultPageHeaderProps =
-  OmitInternalProps<DefaultPageHeaderSlotProps> & {
-    children?: React.ReactNode;
-    ref?: React.Ref<HTMLElement>;
-  };
+/**
+ * State that `DefaultPage.Header` passes to a function as its children.
+ */
+export type DefaultPageHeaderRenderProps = {
+  /**
+   * `true` once the header has started to collapse
+   * (`collapseHeaderOnScroll` on `DefaultPage.Root`), and until it is back in
+   * its full form. Always `false` when the header cannot collapse.
+   */
+  isCollapsed: boolean;
+};
+
+export type DefaultPageHeaderProps = Omit<
+  OmitInternalProps<DefaultPageHeaderSlotProps>,
+  "children"
+> & {
+  /**
+   * The header parts. Pass a function to adapt page-owned header content to
+   * the header state, for example to hide a note while the header is
+   * collapsed. Content that changes its size when the state changes makes
+   * the header measure itself again.
+   */
+  children?:
+    | React.ReactNode
+    | ((renderProps: DefaultPageHeaderRenderProps) => React.ReactNode);
+  ref?: React.Ref<HTMLElement>;
+};
 
 export type DefaultPageActionsProps =
   OmitInternalProps<DefaultPageActionsSlotProps> & {

@@ -5,6 +5,7 @@ import type {
   DefaultPageHeaderSlotProps,
   DefaultPageActionsSlotProps,
   DefaultPageBackLinkSlotProps,
+  DefaultPageBackLinkLabelSlotProps,
   DefaultPageTitleSlotProps,
   DefaultPageSubtitleSlotProps,
   DefaultPageTabNavSlotProps,
@@ -40,6 +41,18 @@ export const DefaultPageBackLinkSlot: SlotComponent<
 > = withContext<HTMLAnchorElement, DefaultPageBackLinkSlotProps>(
   "a",
   "backLink"
+);
+
+/**
+ * Wraps the back link label, so the collapsed header can hide it visually and
+ * keep it as the link's accessible name.
+ */
+export const DefaultPageBackLinkLabelSlot: SlotComponent<
+  HTMLSpanElement,
+  DefaultPageBackLinkLabelSlotProps
+> = withContext<HTMLSpanElement, DefaultPageBackLinkLabelSlotProps>(
+  "span",
+  "backLinkLabel"
 );
 
 export const DefaultPageTitleSlot: SlotComponent<
