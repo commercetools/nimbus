@@ -329,7 +329,7 @@ describe("With tab navigation", () => {
  * @docs-section collapse-header-on-scroll
  * @docs-order 6
  * @docs-title Collapse header on scroll
- * @docs-description JSDOM has no layout, so the header always shows its full form. Find the back link by role and name; test the collapse itself in a real browser through `data-collapsed`.
+ * @docs-description JSDOM has no layout and no scroll-driven animations, so the header always shows its full form, and `isCollapsed` is `false`. Find the back link by role and name; test the collapse itself in a real browser.
  */
 describe("Collapse header on scroll", () => {
   it("renders the full header form in JSDOM, with the back link named by its label", () => {
@@ -350,8 +350,8 @@ describe("Collapse header on scroll", () => {
       </NimbusProvider>
     );
 
-    // The header is a `banner` landmark. It has no `data-collapsed` in JSDOM.
-    expect(screen.getByRole("banner")).not.toHaveAttribute("data-collapsed");
+    // The header is a `banner` landmark.
+    expect(screen.getByRole("banner")).toBeInTheDocument();
 
     // Find the back link by role and name: `getByText` returns the label
     // element inside the link.
@@ -362,5 +362,37 @@ describe("Collapse header on scroll", () => {
       screen.getByRole("heading", { level: 1, name: "Winter Jacket" })
     ).toBeInTheDocument();
     expect(screen.getByText("SKU: JACKET-001")).toBeInTheDocument();
+  });
+
+  it("passes the header state to function children", () => {
+    render(
+      <NimbusProvider>
+        <DefaultPage.Root collapseHeaderOnScroll>
+          <DefaultPage.Header>
+            {({ isCollapsed }) => (
+              <>
+                <DefaultPage.Title>Spring campaign</DefaultPage.Title>
+                <Text
+                  gridColumn="1"
+                  opacity={isCollapsed ? 0 : 1}
+                  data-testid="draft-note"
+                >
+                  {isCollapsed ? "Collapsed" : "Full"}
+                </Text>
+              </>
+            )}
+          </DefaultPage.Header>
+          <DefaultPage.Content>
+            <Text>Campaign details.</Text>
+          </DefaultPage.Content>
+        </DefaultPage.Root>
+      </NimbusProvider>
+    );
+
+    // In JSDOM, the header always shows its full form.
+    expect(screen.getByTestId("draft-note")).toHaveTextContent("Full");
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Spring campaign" })
+    ).toBeInTheDocument();
   });
 });

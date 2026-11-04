@@ -51,17 +51,22 @@ type DefaultPageBaseProps = OmitInternalProps<DefaultPageRootSlotProps> & {
    * Show a shorter header while the content is scrolled away from the top.
    *
    * The collapsed header hides the subtitle visually, shows the back link as
-   * an icon with a tooltip, and shows the title smaller on one line. Actions,
-   * tab navigation and other header content stay visible.
+   * an icon with a tooltip, and shows the title smaller. A title with several
+   * lines keeps all of them. Actions, tab navigation and other header content
+   * stay visible.
    *
-   * - The header collapses after the content has scrolled a little more than
-   *   the height the header gives back. It returns to its full form only when
-   *   the content is back at the top.
-   * - The header changes form only after scrolling has paused, and not while
-   *   the mouse pointer is over the header.
-   * - `DefaultPage.Header` has `data-collapsed="true"` while it is collapsed.
-   * - Root sets the CSS variable `--default-page-header-height` to the current
-   *   header height.
+   * - In browsers that support scroll-driven animations, the header follows
+   *   the scroll position: it changes step by step over the height it gives
+   *   back, and is full again at the top.
+   * - In other browsers, and when the user prefers reduced motion, the header
+   *   changes in one step after scrolling has paused, and not while the mouse
+   *   pointer is over the header. It returns to its full form only when the
+   *   content is back at the top.
+   * - `DefaultPage.Header` accepts a function as children that receives
+   *   `{ isCollapsed }`.
+   * - Root sets the CSS variable `--default-page-header-height`: the height of
+   *   the collapsed header when the header follows the scroll position, and
+   *   the current header height in the one-step change.
    *
    * Has an effect only when the header is pinned: with `layout="constrained"`,
    * or with `layout="flexible"` and `stickyHeader`. Otherwise development

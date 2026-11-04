@@ -234,15 +234,18 @@ room from the content, most of all on short screens and at high browser zoom.
 With `collapseHeaderOnScroll`, the header gives that room back while the user
 works in the content:
 
-- It keeps what the user works with: actions, tabs and the title (smaller, on
-  one line).
+- It keeps what the user works with: actions, tabs and the title (smaller; a
+  title with several lines keeps them).
 - It hides what only orients the user: the subtitle and the back link label.
   The back link shows its icon, and a tooltip shows the label on hover and
   keyboard focus.
-- It collapses once scrolling pauses, and returns to its full form only at the
-  top of the page. Scrolling up to re-read something does not expand it.
-- It does not change while the mouse pointer is over it, so controls do not
-  move under the pointer.
+- It follows the scroll: it gets shorter step by step as the content scrolls,
+  and is full again at the top. When the user stops in between, it keeps the
+  form of that scroll position.
+- In browsers without this support, and when the user prefers reduced motion,
+  it collapses in one step once scrolling pauses. It then returns to its full
+  form only at the top of the page, and does not change while the mouse
+  pointer is over it.
 
 Scroll inside the example to see the collapsed header.
 
@@ -282,7 +285,9 @@ const App = () => (
 
 Use it on long pages where the user works down the content, such as long
 forms and detail pages. Put the part of the title that tells records apart
-first: a long title ends with an ellipsis in the collapsed header.
+first. A title with several lines keeps all of them in the collapsed header,
+so the header gives less room back; pages that keep the title on one line show
+only its beginning.
 
 ## Accessibility
 
@@ -303,5 +308,5 @@ readers.
 
 In the collapsed header, screen readers still read the full title, the
 subtitle and the back link label. The back link stays at least 24 by 24
-pixels, and the header changes without a fade when the user prefers reduced
-motion.
+pixels. When the user prefers reduced motion, the header changes in one step,
+without movement.

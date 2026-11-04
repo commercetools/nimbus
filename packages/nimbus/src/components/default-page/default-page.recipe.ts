@@ -151,9 +151,10 @@ export const defaultPageSlotRecipe = defineSlotRecipe({
     },
     /**
      * Collapse header on scroll. `DefaultPage.Root` sets this variant only
-     * when the header is pinned. The collapsed styles apply while the header
-     * has `data-collapsed="true"`, which the Root writes. Pages without the
-     * option get none of these styles.
+     * when the header is pinned. The one-step change marks the collapsed
+     * header with `data-collapsed="true"`; the scroll-driven change marks the
+     * pinned header with `data-scroll-collapsed="true"`. Both attributes are
+     * internal. Pages without the option get none of these styles.
      *
      * Values from the compact header design: 12px vertical padding, title at
      * font size 400 / line height 550 (all lines stay), back link as a 24px icon
