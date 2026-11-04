@@ -1,5 +1,27 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
+const visuallyHidden = {
+  border: "0",
+  clip: "rect(0, 0, 0, 0)",
+  clipPath: "inset(50%)",
+  height: "1px",
+  width: "1px",
+  margin: "-1px",
+  overflow: "hidden",
+  padding: "0",
+  position: "absolute",
+  whiteSpace: "nowrap",
+};
+
+const appearFade = {
+  transitionProperty: "opacity",
+  transitionDuration: "fast",
+  transitionTimingFunction: "ease-in-smooth",
+  _motionReduce: {
+    transitionDuration: "0s",
+  },
+};
+
 /**
  * Recipe configuration for the DefaultPage component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -145,6 +167,65 @@ export const defaultPageSlotRecipe = defineSlotRecipe({
           bottom: 0,
           zIndex: 1,
           bg: "bg",
+        },
+      },
+    },
+    /**
+     * Collapsed header styles. Applied only when the option is on. The
+     * collapsed form is selected with `&[data-collapsed="true"]` on the
+     * header; the fade runs only after the first measurement.
+     */
+    collapseHeaderOnScroll: {
+      true: {
+        header: {
+          "&[data-measured]:not([data-collapsed='true'])": {
+            "& .nimbus-default-page__subtitle": appearFade,
+            "& .nimbus-default-page__backLinkLabel": appearFade,
+          },
+          "&[data-collapsed='true']": {
+            paddingTop: "300",
+            paddingBottom: "300",
+            "&:has(.nimbus-default-page__tabNav)": {
+              paddingBottom: "300",
+            },
+            "&:has(.nimbus-default-page__backLink)": {
+              gridTemplateColumns: "auto minmax(0, 1fr) auto",
+              columnGap: "200",
+              "& .nimbus-default-page__backLink": {
+                gridColumn: "1",
+                gridRow: "1",
+                mb: "0",
+                gap: "0",
+                boxSize: "600",
+                justifyContent: "center",
+              },
+              "& .nimbus-default-page__title": {
+                gridColumn: "2",
+                gridRow: "1",
+              },
+              "& .nimbus-default-page__actions": {
+                gridColumn: "3",
+                gridRow: "1",
+              },
+            },
+            "& .nimbus-default-page__title": {
+              fontSize: "400",
+              lineHeight: "550",
+              minWidth: "0",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            },
+            "& .nimbus-default-page__subtitle": {
+              ...visuallyHidden,
+              opacity: "0",
+              mt: "0",
+            },
+            "& .nimbus-default-page__backLinkLabel": {
+              ...visuallyHidden,
+              opacity: "0",
+            },
+          },
         },
       },
     },

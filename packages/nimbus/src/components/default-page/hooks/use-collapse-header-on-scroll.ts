@@ -3,9 +3,13 @@ import {
   getShadowRootsAlongFlatTree,
   isRelatedScrollTarget,
 } from "../utils/flat-tree";
-import { getNextHeaderForm, type HeaderForm } from "../utils/get-next-header-form";
+import {
+  getNextHeaderForm,
+  type HeaderForm,
+} from "../utils/get-next-header-form";
 import { getScrollDistance } from "../utils/get-scroll-distance";
 import { measureCollapsedHeaderHeight } from "../utils/measure-collapsed-header-height";
+import { applyHeaderFormChange } from "../utils/scroll-correction";
 
 export const COLLAPSE_HEADER_PAUSE_MS = 150;
 
@@ -68,20 +72,40 @@ export const useCollapseHeaderOnScroll = ({
     let pauseTimer: ReturnType<typeof setTimeout> | undefined;
     let measuredCollapsedHeight =
       collapsedHeight ?? measureCollapsedHeaderHeight(header, root);
+    let lastDistance: number | null = null;
+    let lastChangeWasJump = false;
+    let lastScrollTarget: EventTarget | null = null;
+    const loadedCollapsed =
+      getNextHeaderForm({
+        currentForm: "full",
+        distance: getScrollDistance(header, content),
+        fullHeight: header.getBoundingClientRect().height,
+        collapsedHeight: measuredCollapsedHeight,
+      }) === "collapsed";
 
     const publishHeight = () => {
       setHeaderHeight(header.getBoundingClientRect().height);
     };
 
     const applyForm = () => {
+      const fullHeight = header.getBoundingClientRect().height;
+      const distance = getScrollDistance(header, content);
       const next = getNextHeaderForm({
         currentForm,
-        distance: getScrollDistance(header, content),
-        fullHeight: header.getBoundingClientRect().height,
+        distance,
+        fullHeight,
         collapsedHeight: measuredCollapsedHeight,
       });
 
       if (next !== currentForm) {
+        applyHeaderFormChange({
+          header,
+          content,
+          lastScrollTarget,
+          next,
+          lastChangeWasJump,
+          isFirstMeasurement: loadedCollapsed && currentForm === "full",
+        });
         currentForm = next;
         setForm(next);
       }
@@ -107,6 +131,15 @@ export const useCollapseHeaderOnScroll = ({
       if (!isRelatedScrollTarget(event.target, root, content)) {
         return;
       }
+      lastScrollTarget = event.target;
+      const distance = getScrollDistance(header, content);
+      const spaceGivenBack =
+        header.getBoundingClientRect().height - measuredCollapsedHeight;
+      lastChangeWasJump =
+        lastDistance != null &&
+        Number.isFinite(spaceGivenBack) &&
+        Math.abs(distance - lastDistance) > spaceGivenBack;
+      lastDistance = distance;
       scheduleApply();
     };
 

@@ -59,11 +59,11 @@
 
 ## 3. Collapsed form
 
-- [ ] 3.1 Get the collapsed values (padding, title font size and line height,
+- [x] 3.1 Get the collapsed values (padding, title font size and line height,
       fade timing) from the Nimbus design, and record them in design.md under
       "Open Questions" as resolved. Verify that design.md lists the values and
       their source.
-- [ ] 3.2 Wrap the back link label in its own element, and show a Nimbus
+- [x] 3.2 Wrap the back link label in its own element, and show a Nimbus
       `Tooltip` with the label in the collapsed form only. The tooltip must not
       add an `aria-describedby` to the link, and its content is `aria-hidden`.
       Verify with stories: the tooltip appears on hover and keyboard focus in
@@ -71,7 +71,7 @@
       label, the link has no accessible description from the tooltip, the
       accessible name is unchanged, and the existing DefaultPage stories and
       `default-page.docs.spec.tsx` pass.
-- [ ] 3.3 Add the `collapseHeaderOnScroll` recipe variant, with collapsed styles
+- [x] 3.3 Add the `collapseHeaderOnScroll` recipe variant, with collapsed styles
       under `&[data-collapsed="true"]`: header padding; title on one line with
       ellipsis; back link icon inside grid column 1 on the title row with a 24
       by 24 CSS pixel target; Actions on the title row; page-owned content in
@@ -81,7 +81,7 @@
       theme typings (`pnpm --filter @commercetools/nimbus build-theme-typings`);
       the DefaultPage recipe is already registered. Verify with the stories in
       3.5.
-- [ ] 3.4 Keep the content still when the header collapses after a scroll
+- [x] 3.4 Keep the content still when the header collapses after a scroll
       (decision 6), in both layouts: read, write and correct in one task with
       `behavior: "instant"`; no correction after a jump or on the first
       measurement; save and restore the scroller offset when returning to the
@@ -92,7 +92,7 @@
       - after a jump, the target ends directly below the collapsed header;
       - at the top, the content starts directly below the full header, also
         with content above Root in the same scroller.
-- [ ] 3.5 Add stories with play functions for: constrained layout; flexible +
+- [x] 3.5 Add stories with play functions for: constrained layout; flexible +
       `stickyHeader` with the scroll container at the top of the window;
       document scroll; content that only just overflows; a narrow container with
       every header part; page-owned header content keeping its position; a tab
@@ -106,7 +106,7 @@
       position at the end of a story. Mark the collapsed state for a VRT
       snapshot as described in `docs/file-type-guidelines/stories.md`. Verify
       with `pnpm test:storybook:dev` on the stories file.
-- [ ] 3.6 Update `default-page.dev.mdx`:
+- [x] 3.6 Update `default-page.dev.mdx`:
       - the layout modes table and a new "Collapse header on scroll" section
         (threshold, pause, pointer hold, the warning without a pinned header);
       - the scoped `data-collapsed` selector in "Custom elements in the header";
@@ -123,20 +123,20 @@
       Add the designer view to `default-page.mdx` and a consumer example to
       `default-page.docs.spec.tsx`. Verify that the docs spec passes and the
       live examples render in `pnpm start:docs`.
-- [ ] 3.7 Add a minor changeset for `@commercetools/nimbus` that starts with
+- [x] 3.7 Add a minor changeset for `@commercetools/nimbus` that starts with
       "`DefaultPage` (Beta):", following `docs/changeset-conventions.md`. Include
       the note on snapshot tests and `getByText` for the back link. Verify with
       `pnpm changeset:status`.
 
 ## 4. Accessibility and motion
 
-- [ ] 4.1 Add play steps that check: the same `h1` element in both forms; the
+- [x] 4.1 Add play steps that check: the same `h1` element in both forms; the
       back link, subtitle, actions and tab navigation still in the document;
       focus kept on a header element when the form changes; the back link's
       accessible name after the fade and with reduced motion; its 24 by 24 CSS
       pixel target; and the subtitle text in the accessibility tree. Verify with
       `pnpm test:storybook:dev` and the a11y test tag.
-- [ ] 4.2 Check reduced motion as `docs/file-type-guidelines/stories.md`
+- [x] 4.2 Check reduced motion as `docs/file-type-guidelines/stories.md`
       describes: a play function cannot fake the media query, so assert the
       compiled `_motionReduce` rule for the fade, and check that the header
       still changes form. Verify with `pnpm test:storybook:dev` on the stories
@@ -144,18 +144,18 @@
 
 ## 5. Integration checks
 
-- [ ] 5.1 Run `pnpm --filter @commercetools/nimbus typecheck:dev` and
+- [x] 5.1 Run `pnpm --filter @commercetools/nimbus typecheck:dev` and
       `pnpm lint`, both without errors.
-- [ ] 5.2 Run the full DefaultPage story suite and unit specs with
+- [x] 5.2 Run the full DefaultPage story suite and unit specs with
       `pnpm test:dev packages/nimbus/src/components/default-page/`, all green.
 - [ ] 5.3 Check both layouts by hand in Chrome, Firefox, Safari 26 (no scroll
       anchoring) and Safari 27: mouse wheel, trackpad fling, Space and Page Down,
       a smooth `#hash` link, the content staying still, the tab-click hold, and
       the back link tooltip. Record the results in this file.
-- [ ] 5.4 Search the new and changed content of this change for product names
+- [x] 5.4 Search the new and changed content of this change for product names
       and ticket keys, and verify that none appear. Existing text outside this
       change is not part of the check.
-- [ ] 5.5 Run
+- [x] 5.5 Run
       `pnpm exec openspec validate default-page-compact-header --type change --strict`
       without errors.
 

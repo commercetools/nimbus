@@ -13,12 +13,13 @@ export const DefaultPageHeader = ({
   children,
   ...props
 }: DefaultPageHeaderProps) => {
-  const { form, registerHeader } = useDefaultPageContext();
+  const { form, isMeasured, registerHeader } = useDefaultPageContext();
 
   return (
     <DefaultPageHeaderSlot
       ref={mergeRefs(ref, registerHeader)}
       data-collapsed={form === "collapsed" ? "true" : undefined}
+      data-measured={isMeasured ? "true" : undefined}
       {...props}
     >
       {children}

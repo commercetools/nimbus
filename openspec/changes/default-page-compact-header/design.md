@@ -420,4 +420,17 @@ pages. Rollback: remove the prop.
 ## Open Questions
 
 - Exact collapsed values (padding, title font size and line height) and the
-  fade timing. These come from the Nimbus design and do not change the approach.
+  fade timing. **Resolved.** Taken from the compact header styles in
+  commercetools/nimbus#2133 (`default-page.recipe.ts`), which match the Nimbus
+  compact-header frame:
+
+  | Token | Recipe value | Computed |
+  | --- | --- | --- |
+  | Header padding (top and bottom) | `spacing.300` | 12px |
+  | Title font size | `fontSize.400` | 16px |
+  | Title line height | `lineHeight.550` | 22px |
+  | Fade duration | `durations.fast` | 150ms |
+  | Fade easing | `easings.ease-in-smooth` | `cubic-bezier(0.32, 0.72, 0, 1)` |
+
+  The height still changes in one step (decision 10). Only parts that appear
+  use this fade (opacity). `_motionReduce` sets the duration to `0`.

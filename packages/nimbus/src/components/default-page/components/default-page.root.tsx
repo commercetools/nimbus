@@ -21,7 +21,10 @@ export const DefaultPageRoot = ({
   ...props
 }: DefaultPageProps) => {
   const recipe = useSlotRecipe({ key: "nimbusDefaultPage" });
-  const [recipeProps, restProps] = recipe.splitVariantProps(props);
+  const [recipeProps, restProps] = recipe.splitVariantProps({
+    ...props,
+    collapseHeaderOnScroll,
+  });
   const [rootEl, setRootEl] = useState<HTMLDivElement | null>(null);
   const [headerEl, setHeaderEl] = useState<HTMLElement | null>(null);
   const [contentEl, setContentEl] = useState<HTMLElement | null>(null);
@@ -57,10 +60,11 @@ export const DefaultPageRoot = ({
   const context = useMemo(
     () => ({
       form,
+      isMeasured: headerHeight != null,
       registerHeader: setHeaderEl,
       registerContent: setContentEl,
     }),
-    [form]
+    [form, headerHeight]
   );
 
   return (
