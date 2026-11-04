@@ -419,5 +419,22 @@ pages. Rollback: remove the prop.
 
 ## Open Questions
 
-- Exact collapsed values (padding, title font size and line height) and the
-  fade timing. These come from the Nimbus design and do not change the approach.
+- **Resolved (2026-11-04): exact collapsed values.** Source: the compact
+  header frame in Figma, file key `tfXVZi7JOixYEhZqjg954I`, node `2603:7737`
+  ("Header Detail Page", 88 pixels high), and its design note, node
+  `678:14220` ("Header — Compact scroll state").
+  - Header padding: 12 pixels top and bottom (`spacing.300`). With a TabNav,
+    0 at the bottom and 12 pixels (`spacing.300`) above the TabNav.
+    Horizontal padding does not change. Design note: "Row 1, 56 high, 12 ·
+    spacing/300 top and bottom".
+  - Title: font size 16 pixels (`fontSizes.400`), line height 22 pixels
+    (`lineHeights.550`), weight unchanged. The frame binds the text style
+    "Heading/md" (`font-size/400`, `line-height/550`). The note's text says
+    "16/20"; the bound text style is used.
+  - Back link: a 24 by 24 pixel icon (`sizes.600`), 4 pixels (`spacing.100`)
+    before the title. In the frame, the icon button is 24 by 24 and the
+    title starts at x = 28.
+  - Fade timing: 150 milliseconds (`durations.fast`), `ease-out`, removed by
+    `_motionReduce`. The design note says "State changes are instant", which
+    differs from decision 10. Decision 10 is kept until the design owner
+    decides; setting the duration to 0 removes the fade.
