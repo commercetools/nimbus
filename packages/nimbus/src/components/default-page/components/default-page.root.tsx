@@ -6,9 +6,9 @@ import { DefaultPageContext } from "../default-page.context";
 import {
   useCollapseHeaderOnScroll,
   useScrollDrivenHeader,
+  useScrollDrivenSupport,
   useUnpinnedCollapseWarning,
 } from "../hooks";
-import { supportsScrollDrivenHeader } from "../utils";
 import type { DefaultPageProps } from "../default-page.types";
 
 /**
@@ -48,14 +48,11 @@ export const DefaultPageRoot = ({
     [isCollapseEnabled, forwardedRef]
   );
 
-  // EXPERIMENT ("scroll-driven", not public API): the header follows the
-  // scroll position, in both layouts. Without browser support or with reduced
-  // motion, the regular behavior applies.
-  const isScrollDriven =
-    isCollapseEnabled &&
-    (props as Record<string, unknown>)["data-header-collapse-mode"] ===
-      "scroll-driven" &&
-    supportsScrollDrivenHeader(typeof window === "undefined" ? null : window);
+  // The header follows the scroll position where the browser supports
+  // scroll-driven animations and the user does not prefer reduced motion.
+  // Otherwise it changes in one step.
+  const canScrollDrive = useScrollDrivenSupport();
+  const isScrollDriven = isCollapseEnabled && canScrollDrive;
 
   const { state: scrollDrivenState } = useScrollDrivenHeader({
     isEnabled: isScrollDriven,
@@ -70,9 +67,8 @@ export const DefaultPageRoot = ({
     containerElement: rootElement,
     headerElement,
     contentElement,
-    // The sticky header keeps its space, so nothing after it moves and the
-    // change can be animated. In the constrained layout, the content area
-    // gets the space back.
+    // The sticky header keeps its space, so nothing after it moves. In the
+    // constrained layout, the content area gets the space back.
     keepSpace: layout === "flexible",
   });
 

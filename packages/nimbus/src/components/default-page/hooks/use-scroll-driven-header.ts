@@ -4,12 +4,15 @@ import {
   BACK_ICON_INSET_VARIABLE,
   COLLAPSE_DISTANCE_VARIABLE,
   SCROLL_DRIVEN_ATTRIBUTE,
+  getScrollDrivenHeaderState,
+  getScrollDrivenHeaderThresholds,
   measureHeaderForm,
   planHeaderPartMotions,
   planScrollDrivenHeader,
   setHeaderPartsAtRest,
   startHeaderPartAnimations,
   type HeaderMotion,
+  type ScrollDrivenHeaderState,
 } from "../utils";
 
 export type UseScrollDrivenHeaderOptions = {
@@ -34,12 +37,7 @@ export type UseScrollDrivenHeaderOptions = {
   heightVariable?: string;
 };
 
-/**
- * Where the header is on its way from the full to the collapsed form:
- * `"full"` at rest at the start, `"collapsing"` in between, `"pinned"` at
- * rest at the end.
- */
-export type ScrollDrivenHeaderState = "full" | "collapsing" | "pinned";
+export type { ScrollDrivenHeaderState };
 
 export type UseScrollDrivenHeaderResult = {
   state: ScrollDrivenHeaderState;
@@ -60,8 +58,8 @@ const SCROLL_KEYS = new Set([
 ]);
 
 /**
- * EXPERIMENT ("scroll-driven"): the sticky header follows the scroll
- * position. See `utils/scroll-driven-header.ts`.
+ * Scroll-driven collapse: the header follows the scroll position. See
+ * `utils/scroll-driven-header.ts`.
  *
  * Measures the full and the collapsed form, and plans how the header parts
  * change. Flexible layout: sets the header's sticky `top` to minus the
@@ -248,25 +246,20 @@ export function useScrollDrivenHeader({
       // start, only the pinned height at the end (half a pixel of tolerance
       // each). Only the ratio is used: Chrome reports `isIntersecting: false`
       // below the first threshold even when part of the header is visible.
-      const fullThreshold = (full.height - 0.5) / full.height;
-      const pinnedThreshold = Math.min(
-        fullThreshold,
-        (plan.pinnedHeight + 0.5) / full.height
+      const thresholds = getScrollDrivenHeaderThresholds(
+        full.height,
+        plan.pinnedHeight
       );
       stateObserver = new IntersectionObserver(
         ([entry]) => {
-          const ratio = entry.intersectionRatio;
-          // Not visible at all (scrolled away with an outer scroller): keep.
-          if (ratio <= 0) return;
-          const next =
-            ratio >= fullThreshold
-              ? "full"
-              : ratio < pinnedThreshold
-                ? "pinned"
-                : "collapsing";
+          const next = getScrollDrivenHeaderState(
+            entry.intersectionRatio,
+            thresholds,
+            current
+          );
           if (next !== current) show(next);
         },
-        { threshold: [pinnedThreshold, fullThreshold] }
+        { threshold: [thresholds.pinned, thresholds.full] }
       );
       // The first report applies the state again on the new measurements.
       current = "full";

@@ -19,9 +19,10 @@ export type DefaultPageContextValue = {
    */
   isHeaderCollapseStarted: boolean;
   /**
-   * EXPERIMENT ("scroll-driven"): the header follows the scroll position, so
-   * it does not switch its layout with `data-collapsed`. It marks the pinned
-   * collapsed form with `data-scroll-collapsed` instead.
+   * `true` while the header follows the scroll position (scroll-driven
+   * collapse). It then keeps its full layout, so it does not get
+   * `data-collapsed`; it marks the pinned collapsed form with the internal
+   * `data-scroll-collapsed` instead.
    */
   isScrollDriven?: boolean;
   /** Callback ref for `DefaultPage.Header`. */

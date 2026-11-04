@@ -39,7 +39,7 @@ export const DefaultPageHeader = ({
           ? "true"
           : undefined
       }
-      // EXPERIMENT ("scroll-driven"): the pinned collapsed form.
+      // Scroll-driven collapse: the pinned collapsed form (internal).
       data-scroll-collapsed={
         context?.isHeaderCollapsed && context.isScrollDriven
           ? "true"

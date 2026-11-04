@@ -156,14 +156,14 @@ export const defaultPageSlotRecipe = defineSlotRecipe({
      * option get none of these styles.
      *
      * Values from the compact header design: 12px vertical padding, title at
-     * font size 400 / line height 550 on one line, back link as a 24px icon
+     * font size 400 / line height 550 (all lines stay), back link as a 24px icon
      * 4px before the title.
      */
     collapseHeaderOnScroll: {
       true: {
-        // EXPERIMENT ("scroll-driven", constrained layout): the header moves
-        // up with the scroll position of the content area (its top margin),
-        // and Root clips it at its top edge.
+        // Scroll-driven collapse, constrained layout: the header moves up
+        // with the scroll position of the content area (its top margin), and
+        // Root clips it at its top edge.
         root: {
           "&[data-scroll-driven='constrained']": {
             overflowY: "clip",
@@ -185,8 +185,8 @@ export const defaultPageSlotRecipe = defineSlotRecipe({
           "&[data-collapsed='true']": {
             paddingTop: "300",
             paddingBottom: "300",
-            // `minmax(0, …)` lets the one-line title shrink and end with an
-            // ellipsis. The number of columns stays the same, so page-owned
+            // `minmax(0, …)` lets the title column shrink, also for a title a
+            // page truncates. The number of columns stays the same, so page-owned
             // content keeps its grid column.
             gridTemplateColumns: "minmax(0, 1fr) auto",
             "& .nimbus-default-page__subtitle, & .nimbus-default-page__backLinkLabel":
@@ -208,11 +208,9 @@ export const defaultPageSlotRecipe = defineSlotRecipe({
             "& .nimbus-default-page__title": {
               gridRow: "1",
               minWidth: "0",
+              // All lines stay. Pages that want one line truncate the title.
               fontSize: "400",
               lineHeight: "550",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
             },
             // The back link shares the title's grid cell. A margin (not a
             // padding) keeps the title box off the link, so the link stays
@@ -232,7 +230,7 @@ export const defaultPageSlotRecipe = defineSlotRecipe({
               },
             },
           },
-          // EXPERIMENT ("scroll-driven"): the pinned collapsed form. The
+          // Scroll-driven collapse: the pinned collapsed form. The
           // header keeps its full layout (its parts are moved with
           // transforms), so only the back link changes: its icon in a 24px
           // box, the label hidden visually. The negative margins keep the

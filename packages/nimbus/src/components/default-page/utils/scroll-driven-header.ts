@@ -1,25 +1,26 @@
 /**
- * EXPERIMENT ("scroll-driven"): the header follows the scroll position.
+ * Scroll-driven collapse: the header follows the scroll position. Used where
+ * the browser supports view and scroll timelines and the user does not prefer
+ * reduced motion; otherwise the header changes in one step
+ * (`use-collapse-header-on-scroll.ts`).
  *
- * Turned on per page with `data-header-collapse-mode="scroll-driven"` on
- * `DefaultPage.Root`, for `layout="flexible"` with `stickyHeader`. Not public
- * API; remove or promote after the evaluation.
- *
- * The header keeps its full height in the page, and its sticky `top` is minus
- * the scroll distance over which it collapses. Over that distance, normal
- * scrolling moves the header up, so only its bottom part, as tall as the
- * collapsed form, stays visible. Meanwhile the parts inside the header move
- * to their places in the collapsed form with `transform`, and the parts the
- * collapsed form hides fade out. Scrolling back plays the same animations
- * backwards.
+ * Over the collapse distance, the header moves up until only its pinned
+ * height is visible: in the flexible layout through its sticky `top` (minus
+ * the distance) and normal scrolling, in the constrained layout through its
+ * top margin, while the content area's top padding grows by the same amount.
+ * Meanwhile the parts inside the header move to their places in the collapsed
+ * form with `transform`, and the parts the collapsed form hides fade out.
+ * Scrolling back plays the same animations backwards.
  *
  * The title keeps its lines: it is only scaled to the collapsed font size. A
  * title with several lines makes the collapsed title row taller, so the text
  * keeps the normal space above and below it. Consumers who want one line can
  * truncate the title themselves.
  *
- * The animations use a view timeline of Root, so the browser drives them from
- * the scroll position; no script runs while scrolling. Scripts only measure
+ * The animations use a scroll-driven timeline (a view timeline of Root, or in
+ * the constrained layout a scroll timeline of the content area), so the
+ * browser drives them from the scroll position; no script runs while
+ * scrolling. Scripts only measure
  * the two forms (on hidden copies) and create the animations, on mount and
  * when the header changes size.
  */
@@ -273,6 +274,45 @@ export const planScrollDrivenHeader = (
         ? -(collapsed.backLink.width - full.backIcon.width) / 2
         : 0,
   };
+};
+
+/**
+ * Where the header is on its way from the full to the collapsed form:
+ * `"full"` at rest at the start, `"collapsing"` in between, `"pinned"` at
+ * rest at the end.
+ */
+export type ScrollDrivenHeaderState = "full" | "collapsing" | "pinned";
+
+/** Visible ratios of the header that separate the states. */
+export type ScrollDrivenHeaderThresholds = {
+  /** At or above: the whole header is visible (half a pixel of tolerance). */
+  full: number;
+  /** Below: no more than the pinned height is visible (half a pixel). */
+  pinned: number;
+};
+
+/** The visible ratios of the header that separate the states. */
+export const getScrollDrivenHeaderThresholds = (
+  fullHeight: number,
+  pinnedHeight: number
+): ScrollDrivenHeaderThresholds => {
+  const full = (fullHeight - 0.5) / fullHeight;
+  return { full, pinned: Math.min(full, (pinnedHeight + 0.5) / fullHeight) };
+};
+
+/**
+ * The header state for the visible ratio of the header. A ratio of 0 (the
+ * header scrolled away with an outer scroller) keeps the current state.
+ */
+export const getScrollDrivenHeaderState = (
+  ratio: number,
+  thresholds: ScrollDrivenHeaderThresholds,
+  current: ScrollDrivenHeaderState
+): ScrollDrivenHeaderState => {
+  if (ratio <= 0) return current;
+  if (ratio >= thresholds.full) return "full";
+  if (ratio < thresholds.pinned) return "pinned";
+  return "collapsing";
 };
 
 export type PlanHeaderPartMotionsOptions = {
