@@ -192,25 +192,28 @@ scroll-driven change.
 - [x] 6.2 Accept a function as `DefaultPage.Header` children that receives
       `{ isCollapsed }`. Verified with the custom-content story, the
       header-state story and a compile check in `default-page.types.spec.tsx`.
-- [ ] 6.3 Make the scroll-driven change the default: remove the experiment
+- [x] 6.3 Make the scroll-driven change the default: remove the experiment
       attribute; Root uses the scroll-driven change when view and scroll
-      timelines exist and reduced motion is not requested, decided after
-      mount so server and client render the same markup; otherwise the
-      one-step change. Turn the experiment stories into regular stories.
-      Verify with `pnpm test:storybook:dev` on the stories file.
-- [ ] 6.4 One-step fallback in the flexible layout: the header keeps its space
+      timelines exist and reduced motion is not requested; otherwise the
+      one-step change. The decision comes from `useSyncExternalStore` with a
+      server snapshot of "not supported", so server rendering and hydration
+      use the one-step change; the first render's markup is the same in both
+      techniques. Turn the experiment stories into regular stories. Verify
+      with `pnpm test:storybook:dev` on the stories file.
+- [x] 6.4 One-step fallback in the flexible layout: the header keeps its space
       and changes at once. Delete `utils/animate-keep-space-header.ts` and the
       animation code in `use-collapse-header-on-scroll.ts`. Verify with stories
       that hide `ViewTimeline` and `ScrollTimeline` in a `beforeEach` and
       restore them afterwards.
-- [ ] 6.5 The collapsed form of the one-step fallback keeps all title lines
-      (no one-line ellipsis), with the back link icon on the first title line.
-      Verify with the long-title story in the fallback.
-- [ ] 6.6 Unit tests for `planScrollDrivenHeader` (pure: distance, pinned
+- [x] 6.5 The collapsed form of the one-step fallback keeps all title lines
+      (no one-line ellipsis), with the back link icon centered on the title
+      row (design.md, decision 7). Verify with the long-title story in the
+      fallback.
+- [x] 6.6 Unit tests for `planScrollDrivenHeader` (pure: distance, pinned
       height, title row for several lines, rounding) and for the state logic
-      with a mocked `IntersectionObserver` (thresholds, a ratio of 0 keeps the
-      state). Verify with `pnpm test:unit`.
-- [ ] 6.7 Docs: in `default-page.dev.mdx`, describe both changes, browser
+      as pure functions (thresholds, a ratio of 0 keeps the state). Verify
+      with `pnpm test:unit`.
+- [x] 6.7 Docs: in `default-page.dev.mdx`, describe both changes, browser
       support, the function as Header children, the height variable (pinned
       height), long titles and truncation, the tab-click behavior, reduced
       motion, and in the constrained layout Root's clip and the kept padding;
@@ -222,7 +225,7 @@ scroll-driven change.
       trackpad, Space and Page Down, a `#hash` link, a tab click, the back
       link tooltip, a long title, right-to-left text, a narrow page, and a 1x
       and a 2x display. Record the results here.
-- [ ] 6.9 Run `pnpm --filter @commercetools/nimbus typecheck:dev`, `pnpm lint`,
+- [x] 6.9 Run `pnpm --filter @commercetools/nimbus typecheck:dev`, `pnpm lint`,
       `pnpm test:dev packages/nimbus/src/components/default-page/`, the stories
       in WebKit, and
       `pnpm exec openspec validate default-page-compact-header --type change --strict`,

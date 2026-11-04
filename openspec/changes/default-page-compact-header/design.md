@@ -245,6 +245,12 @@ Alternatives:
   both techniques. This differs from the design value "one line" (Open
   Questions): multi-line titles were supported before, and the component must
   not take them away.
+- **Back link icon.** In the scroll-driven change, script places the icon on the
+  first title line. In the one-step fallback, the icon shares the title's grid
+  cell and is centered on the title row, so beside a title with several lines it
+  is centered on the whole title. CSS alone cannot put it on the first line in
+  every case: a one-line title next to taller actions is centered in the row,
+  and an icon aligned to the top of the row would then sit above the title.
 - **Trade-off.** Because the title is scaled, its collapsed line spacing is the
   full line height times the scale (25.6 pixels in the stories), not the
   collapsed design value (22 pixels).

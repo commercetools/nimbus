@@ -255,6 +255,15 @@ the user works with.
 - **AND** the title row SHALL be tall enough for the title, with the collapsed
   padding above and below
 
+#### Scenario: Back link icon beside a title with several lines
+
+- **WHEN** the header shows its collapsed form
+- **AND** DefaultPage.Title has several lines
+- **THEN** in the scroll-driven change, the back link icon SHALL be centered on
+  the first title line
+- **AND** in the one-step change, the back link icon SHALL be centered on the
+  title row
+
 #### Scenario: Page truncates the title
 
 - **WHEN** the page truncates DefaultPage.Title with style props, for example
