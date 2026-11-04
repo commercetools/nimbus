@@ -33,7 +33,17 @@ export const DefaultPageHeader = ({
     <DefaultPageHeaderSlot
       ref={ref}
       {...props}
-      data-collapsed={context?.isHeaderCollapsed ? "true" : undefined}
+      data-collapsed={
+        context?.isHeaderCollapsed && !context.isScrollDriven
+          ? "true"
+          : undefined
+      }
+      // EXPERIMENT ("scroll-driven"): the pinned collapsed form.
+      data-scroll-collapsed={
+        context?.isHeaderCollapsed && context.isScrollDriven
+          ? "true"
+          : undefined
+      }
     >
       {children}
     </DefaultPageHeaderSlot>

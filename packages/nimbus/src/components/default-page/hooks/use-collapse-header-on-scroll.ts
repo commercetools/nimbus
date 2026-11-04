@@ -1,6 +1,13 @@
 import { useLayoutEffect, useState } from "react";
 import { HEADER_HEIGHT_VARIABLE, SCROLL_PAUSE_MS } from "../constants";
-import { getNextHeaderForm, type HeaderForm } from "../utils";
+import {
+  animateKeepSpaceHeader,
+  canAnimateHeaderChange,
+  readHeaderParts,
+  suspendSubtitleFade,
+  getNextHeaderForm,
+  type HeaderForm,
+} from "../utils";
 
 export type UseCollapseHeaderOnScrollOptions = {
   /**
@@ -17,6 +24,16 @@ export type UseCollapseHeaderOnScrollOptions = {
   headerElement: HTMLElement | null;
   /** The content area that scrolls under the header. */
   contentElement: HTMLElement | null;
+  /**
+   * Keeps the full header height in the page when the header collapses: a
+   * bottom margin fills the space the header gives back, so nothing after the
+   * header moves, and the change is animated. Use it for a header that is
+   * pinned with `position: sticky` inside the scrolling element. When `false`,
+   * the header gives the space back in one step and the scroll position is
+   * corrected instead.
+   * @default false
+   */
+  keepSpace?: boolean;
   /**
    * Name of the CSS custom property that receives the header height.
    * @default "--default-page-header-height"
@@ -120,25 +137,30 @@ const measureCopyHeight = (
  * - The scroll distance is `content.scrollTop` plus how far the top edge of
  *   the content is above the bottom edge of the header. This covers a content
  *   area that scrolls, a sticky header in an outer scrolling element, and host
- *   CSS that changes which element scrolls.
+ *   CSS that changes which element scrolls. With `keepSpace`, the bottom edge
+ *   is that of the space the header keeps (its full height).
  * - The header collapses at a distance of at least the space it gives back
- *   plus 8px, and returns to its full form below 1px (`getNextHeaderForm`).
+ *   plus 8px (with `keepSpace`: 8px, as it gives no space back), and returns
+ *   to its full form below 1px (`getNextHeaderForm`).
  * - A form change waits until no scroll event has happened for 150ms, and
  *   until the mouse pointer leaves the header (or the wheel is used over it).
- * - When the header collapses after a scroll, the content is scrolled by the
- *   space given back, so the text the user reads stays still.
+ * - Without `keepSpace`, the content is scrolled by the space given back when
+ *   the header collapses after a scroll, so the text the user reads stays
+ *   still. With `keepSpace`, nothing after the header moves, so no correction
+ *   is needed, and the change is animated (not with reduced motion).
  * - The current header height is published as a CSS custom property on the
  *   container.
  *
  * The hook writes `data-collapsed="true"` on the header directly, so the
- * layout changes in the same task as the scroll correction. Render the same
- * attribute from `isCollapsed` so React keeps it.
+ * layout changes in the same task as the scroll correction or the margin.
+ * Render the same attribute from `isCollapsed` so React keeps it.
  */
 export function useCollapseHeaderOnScroll({
   isEnabled,
   containerElement,
   headerElement,
   contentElement,
+  keepSpace = false,
   heightVariable = HEADER_HEIGHT_VARIABLE,
 }: UseCollapseHeaderOnScrollOptions): UseCollapseHeaderOnScrollResult {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -161,15 +183,36 @@ export function useCollapseHeaderOnScroll({
     let jumped = false;
     let isPointerOver = false;
     let isHoldReleased = false;
+    // Keep the space: the bottom margin of the collapsed header.
+    let reservedSpace = 0;
+    let runningAnimations: Animation[] = [];
+    let isAnimating = false;
+    let restoreSubtitleFade: (() => void) | null = null;
 
     const readDistance = (): number | null => {
       const headerRect = header.getBoundingClientRect();
       if (headerRect.height <= 0) return null;
       const contentRect = content.getBoundingClientRect();
-      return (
-        content.scrollTop + Math.max(0, headerRect.bottom - contentRect.top)
-      );
+      // Keep the space: measure against the space the header keeps (its full
+      // height), so the header expands only when the page is back at the top.
+      const headerBottom = keepSpace
+        ? headerRect.top + (heights?.full ?? headerRect.height)
+        : headerRect.bottom;
+      return content.scrollTop + Math.max(0, headerBottom - contentRect.top);
     };
+
+    /** The next form for a distance. */
+    const nextFormFor = (distance: number | null) =>
+      getNextHeaderForm({
+        current: form,
+        distance,
+        fullHeight: heights?.full ?? null,
+        // Keep the space: collapsing gives no space back to the layout, so
+        // the header collapses 8px after the content scrolls under it.
+        collapsedHeight: keepSpace
+          ? (heights?.full ?? null)
+          : (heights?.collapsed ?? null),
+      });
 
     const spaceGivenBack = () =>
       heights ? Math.max(0, heights.full - heights.collapsed) : 0;
@@ -206,7 +249,82 @@ export function useCollapseHeaderOnScroll({
       return toScrollingElement(lastScrollTarget);
     };
 
+    /** Keep the space: change the form with no layout effect outside the header. */
+    const applyKeepingSpace = (next: HeaderForm, animate: boolean) => {
+      const fromHeight = header.getBoundingClientRect().height;
+      const fromMargin = reservedSpace;
+      const willAnimate = animate && canAnimateHeaderChange(doc);
+      const before = willAnimate ? readHeaderParts(header) : {};
+      for (const animation of runningAnimations) animation.cancel();
+      runningAnimations = [];
+      // Before the form changes, so the CSS fade does not start.
+      if (willAnimate && !restoreSubtitleFade) {
+        restoreSubtitleFade = suspendSubtitleFade(header);
+      }
+
+      const fullHeight =
+        next === "collapsed" ? (heights?.full ?? fromHeight) : fromHeight;
+      // Write the form and the margin together, from the measured heights,
+      // with no layout read in between: a read while the page is briefly
+      // shorter lets scroll anchoring move the scroller.
+      reservedSpace =
+        next === "collapsed" && heights
+          ? Math.max(0, fullHeight - heights.collapsed)
+          : 0;
+      if (next === "collapsed") {
+        header.setAttribute(COLLAPSED_ATTRIBUTE, "true");
+      } else {
+        header.removeAttribute(COLLAPSED_ATTRIBUTE);
+      }
+      header.style.marginBottom = reservedSpace ? `${reservedSpace}px` : "";
+      const toHeight = header.getBoundingClientRect().height;
+      // Correct a small difference between the copy and the live header.
+      if (next === "collapsed") {
+        const exact = Math.max(0, fullHeight - toHeight);
+        if (Math.abs(exact - reservedSpace) > 0.5) {
+          reservedSpace = exact;
+          header.style.marginBottom = `${reservedSpace}px`;
+        }
+      }
+
+      if (willAnimate) {
+        isAnimating = true;
+        const animations = animateKeepSpaceHeader({
+          header,
+          fromHeight,
+          toHeight,
+          fromMargin,
+          toMargin: reservedSpace,
+          before,
+        });
+        runningAnimations = animations;
+        void Promise.all(animations.map((a) => a.finished)).then(
+          () => {
+            if (runningAnimations !== animations) return;
+            runningAnimations = [];
+            isAnimating = false;
+            restoreSubtitleFade?.();
+            restoreSubtitleFade = null;
+            measureHeights();
+            publishHeight();
+          },
+          () => {
+            // Cancelled by a newer change.
+          }
+        );
+      }
+
+      form = next;
+      setIsCollapsed(next === "collapsed");
+      publishHeight();
+      lastDistance = readDistance();
+    };
+
     const apply = (next: HeaderForm, correct: boolean) => {
+      if (keepSpace) {
+        applyKeepingSpace(next, correct);
+        return;
+      }
       const scroller = getScroller();
       if (next === "collapsed") {
         const before = readReferencePoint();
@@ -239,16 +357,14 @@ export function useCollapseHeaderOnScroll({
     const evaluate = () => {
       timer = null;
       if (isPointerOver && !isHoldReleased) return;
-      const next = getNextHeaderForm({
-        current: form,
-        distance: readDistance(),
-        fullHeight: heights?.full ?? null,
-        collapsedHeight: heights?.collapsed ?? null,
-      });
+      const next = nextFormFor(readDistance());
       if (next !== form) {
         apply(
           next,
-          next === "collapsed" && !jumped && lastScrollTarget !== null
+          // Keep the space: there is no scroll correction; the flag turns on
+          // the animation instead.
+          keepSpace ||
+            (next === "collapsed" && !jumped && lastScrollTarget !== null)
         );
       }
       jumped = false;
@@ -308,9 +424,15 @@ export function useCollapseHeaderOnScroll({
     };
 
     const resizeObserver = new ResizeObserver((entries) => {
+      // The header changes size on every frame of its own animation.
+      if (isAnimating) return;
       if (entries.some((entry) => entry.target === header)) {
         measureHeights();
         publishHeight();
+        if (keepSpace && form === "collapsed" && heights) {
+          reservedSpace = Math.max(0, heights.full - heights.collapsed);
+          header.style.marginBottom = `${reservedSpace}px`;
+        }
       }
       // Never change the form here: a change resizes the observed elements
       // again in the same frame. Go through the pause timer instead.
@@ -327,12 +449,7 @@ export function useCollapseHeaderOnScroll({
     measureHeights();
     publishHeight();
     lastDistance = readDistance();
-    const initial = getNextHeaderForm({
-      current: form,
-      distance: lastDistance,
-      fullHeight: heights?.full ?? null,
-      collapsedHeight: heights?.collapsed ?? null,
-    });
+    const initial = nextFormFor(lastDistance);
     if (initial !== form) apply(initial, false);
 
     for (const target of scrollListenerTargets) {
@@ -346,6 +463,9 @@ export function useCollapseHeaderOnScroll({
 
     return () => {
       if (timer !== null) clearTimeout(timer);
+      for (const animation of runningAnimations) animation.cancel();
+      restoreSubtitleFade?.();
+      if (keepSpace) header.style.marginBottom = "";
       for (const target of scrollListenerTargets) {
         target.removeEventListener("scroll", handleScroll, listenerOptions);
       }
@@ -362,6 +482,7 @@ export function useCollapseHeaderOnScroll({
     containerElement,
     headerElement,
     contentElement,
+    keepSpace,
     heightVariable,
   ]);
 

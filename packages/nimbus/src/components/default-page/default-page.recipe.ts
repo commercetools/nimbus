@@ -224,6 +224,24 @@ export const defaultPageSlotRecipe = defineSlotRecipe({
               },
             },
           },
+          // EXPERIMENT ("scroll-driven"): the pinned collapsed form. The
+          // header keeps its full layout (its parts are moved with
+          // transforms), so only the back link changes: its icon in a 24px
+          // box, the label hidden visually. The negative margins keep the
+          // link's outer size and its icon's place, so nothing else moves.
+          "&[data-scroll-collapsed='true']": {
+            "& .nimbus-default-page__backLinkLabel": {
+              srOnly: true,
+            },
+            "& .nimbus-default-page__backLink": {
+              justifyContent: "center",
+              width: "600",
+              height: "600",
+              marginTop: "calc((1lh - {sizes.600}) / 2)",
+              marginBottom: "calc({spacing.400} + (1lh - {sizes.600}) / 2)",
+              marginInlineStart: "var(--default-page-back-icon-inset, 0px)",
+            },
+          },
         },
       },
     },

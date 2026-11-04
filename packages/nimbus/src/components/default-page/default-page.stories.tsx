@@ -1424,15 +1424,50 @@ const getRoot = (canvasElement: HTMLElement) =>
 const getHeightVariable = (root: HTMLElement) =>
   root.style.getPropertyValue("--default-page-header-height");
 
-/** Waits until the header shows the given form. */
-const waitForForm = (header: HTMLElement, collapsed: boolean) =>
-  waitFor(
+/** Whether the header or a part inside it is still animating. */
+const isHeaderAnimating = (header: HTMLElement) =>
+  header.getAnimations({ subtree: true }).length > 0;
+
+/**
+ * Waits until the header shows the given form and its change animation (if
+ * any) has finished.
+ */
+const waitForForm = async (header: HTMLElement, collapsed: boolean) => {
+  await waitFor(
     () =>
       collapsed
         ? expect(header).toHaveAttribute("data-collapsed", "true")
         : expect(header).not.toHaveAttribute("data-collapsed"),
     { timeout: 2000 }
   );
+  await waitFor(() => expect(isHeaderAnimating(header)).toBe(false), {
+    timeout: 2000,
+  });
+};
+
+/**
+ * Waits until the header shows the given form and has finished animating,
+ * and checks on every frame until then that `reference` does not move.
+ */
+const expectStillUntilForm = async (
+  reference: HTMLElement,
+  header: HTMLElement,
+  collapsed: boolean
+) => {
+  const top = reference.getBoundingClientRect().top;
+  const deadline = performance.now() + 2000;
+  while (
+    header.hasAttribute("data-collapsed") !== collapsed ||
+    isHeaderAnimating(header)
+  ) {
+    if (performance.now() > deadline) break;
+    await nextFrame();
+    await expect(
+      Math.abs(reference.getBoundingClientRect().top - top)
+    ).toBeLessThanOrEqual(1);
+  }
+  await expect(header.hasAttribute("data-collapsed")).toBe(collapsed);
+};
 
 /** Waits well past the pause and checks that the header kept its form. */
 const expectFormKept = async (header: HTMLElement, collapsed: boolean) => {
@@ -1567,15 +1602,23 @@ type CollapseCheckOptions = {
   scroller: HTMLElement;
   /** An element in the content whose screen position must stay still. */
   reference: HTMLElement;
+  /**
+   * The header keeps its full height in the page (flexible layout). The
+   * threshold is then 8px instead of the space given back plus 8px, nothing
+   * after the header moves, and the scroll position is never corrected.
+   */
+  keepsSpace?: boolean;
 };
 
 /**
  * The checks every scrolling story runs. They measure the real full and
- * collapsed heights, derive the space given back S, and check:
- * the full form at 0; S + 7 keeps the full form and S + 9 collapses after the
- * pause; no change while scrolling; the content stays still when collapsing;
- * the collapsed form is kept while scrolling up; the full form at the top;
- * and the header height variable in both forms. It ends at scroll position 0.
+ * collapsed heights, derive the threshold T (the space given back S, or 0
+ * when the header keeps its space), and check: the full form at 0; T + 7
+ * keeps the full form and T + 9 collapses after the pause; no change while
+ * scrolling; the content stays still on every frame while the header changes
+ * form; the collapsed form is kept while scrolling up; the full form at the
+ * top; and the header height variable in both forms. It ends at scroll
+ * position 0.
  */
 const runCollapseChecks = async ({
   step,
@@ -1583,6 +1626,7 @@ const runCollapseChecks = async ({
   header,
   scroller,
   reference,
+  keepsSpace = false,
 }: CollapseCheckOptions) => {
   // Scroll position at which the header starts to cover the content: 0 when
   // Root is at the top of the scroller.
@@ -1622,30 +1666,39 @@ const runCollapseChecks = async ({
     await waitForForm(header, false);
   });
 
-  const spaceGivenBack = () => fullHeight - collapsedHeight;
+  const threshold = () => (keepsSpace ? 0 : fullHeight - collapsedHeight);
 
-  await step("Keeps the full form at S + 7", async () => {
+  /** The space the header takes in the page: where the content starts. */
+  const content = root.querySelector<HTMLElement>("main")!;
+  const headerSpace = () =>
+    content.getBoundingClientRect().top - root.getBoundingClientRect().top;
+
+  await step("Keeps the full form at T + 7", async () => {
     await scrollInFrames(
       scroller,
-      toScrollTop(Math.floor(spaceGivenBack() + 7)),
+      toScrollTop(Math.floor(threshold() + 7)),
       header
     );
     await expectFormKept(header, false);
   });
 
   await step(
-    "Collapses after the pause at S + 9, and the content stays still",
+    "Collapses after the pause at T + 9, and the content stays still",
     async () => {
       await scrollInFrames(
         scroller,
-        toScrollTop(Math.ceil(spaceGivenBack() + 9)),
+        toScrollTop(Math.ceil(threshold() + 9)),
         header
       );
-      const before = reference.getBoundingClientRect().top;
-      await waitForForm(header, true);
-      await nextFrame();
-      const after = reference.getBoundingClientRect().top;
-      await expect(Math.abs(after - before)).toBeLessThanOrEqual(1);
+      const scrollTop = scroller.scrollTop;
+      await expectStillUntilForm(reference, header, true);
+      if (keepsSpace) {
+        // No scroll correction, and the header still takes its full space.
+        await expect(scroller.scrollTop).toBe(scrollTop);
+        await expect(Math.abs(headerSpace() - fullHeight)).toBeLessThanOrEqual(
+          1
+        );
+      }
     }
   );
 
@@ -1654,7 +1707,7 @@ const runCollapseChecks = async ({
     async () => {
       await scrollInFrames(
         scroller,
-        toScrollTop(spaceGivenBack() + 150),
+        toScrollTop(threshold() + 150),
         header,
         20
       );
@@ -1665,7 +1718,13 @@ const runCollapseChecks = async ({
 
   await step("Returns to the full form at the top", async () => {
     await scrollInFrames(scroller, 0, header);
-    await waitForForm(header, false);
+    if (keepsSpace) {
+      // Nothing after the header moves while it expands.
+      await expectStillUntilForm(reference, header, false);
+      await expect(Math.abs(headerSpace() - fullHeight)).toBeLessThanOrEqual(1);
+    } else {
+      await waitForForm(header, false);
+    }
     await waitFor(() =>
       expect(getHeightVariable(root)).toBe(`${fullHeight}px`)
     );
@@ -1674,14 +1733,18 @@ const runCollapseChecks = async ({
 };
 
 /** A header with every DefaultPage part. */
-const CollapsingHeader = ({ withTabs = true }: { withTabs?: boolean }) => (
+const CollapsingHeader = ({
+  withTabs = true,
+  title = "Classic T-Shirt, organic cotton, crew neck",
+}: {
+  withTabs?: boolean;
+  title?: string;
+}) => (
   <DefaultPage.Header>
     <DefaultPage.BackLink href="/products">
       Back to products
     </DefaultPage.BackLink>
-    <DefaultPage.Title>
-      Classic T-Shirt, organic cotton, crew neck
-    </DefaultPage.Title>
+    <DefaultPage.Title>{title}</DefaultPage.Title>
     <DefaultPage.Subtitle>SKU-12345 · Last modified today</DefaultPage.Subtitle>
     <DefaultPage.Actions>
       <Button variant="ghost">Duplicate</Button>
@@ -1888,7 +1951,10 @@ export const CollapsedHeader: Story = {
 
 /**
  * Flexible layout with `stickyHeader` and `collapseHeaderOnScroll`, with the
- * scroll container at the top of the window.
+ * scroll container at the top of the window. The collapsed header keeps its
+ * full height in the page (a bottom margin fills the rest), so nothing after
+ * the header moves when it changes form. The header height and the parts
+ * inside it animate over 200ms.
  */
 export const CollapseHeaderFlexibleSticky: Story = {
   render: () => (
@@ -1903,13 +1969,449 @@ export const CollapseHeaderFlexibleSticky: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    const header = getHeader(canvasElement);
+    const scroller = canvas.getByTestId("scroll-container");
+
     await runCollapseChecks({
       step,
       root: getRoot(canvasElement),
-      header: getHeader(canvasElement),
-      scroller: canvas.getByTestId("scroll-container"),
+      header,
+      scroller,
       reference: canvas.getByLabelText("Field 8"),
+      keepsSpace: true,
     });
+
+    await step(
+      "The subtitle slides in with the title and fades in",
+      async () => {
+        const subtitle = canvas.getByText("SKU-12345 · Last modified today");
+        await scrollInFrames(scroller, 120, header);
+        await waitForForm(header, true);
+
+        await scrollInFrames(scroller, 0, header);
+        await waitFor(
+          () => expect(header).not.toHaveAttribute("data-collapsed"),
+          { interval: 5 }
+        );
+        const fade = subtitle
+          .getAnimations()
+          .find((animation) =>
+            (animation.effect as KeyframeEffect)
+              .getKeyframes()
+              .some(
+                (keyframe) => keyframe.opacity === "0" || keyframe.opacity === 0
+              )
+          );
+        await expect(fade).toBeDefined();
+        // The CSS fade is off while the animation runs.
+        await expect(subtitle.style.transition).toBe("none");
+
+        await fade!.finished;
+        await nextFrame();
+        await expect(getComputedStyle(subtitle).opacity).toBe("1");
+        // The CSS fade is on again after the animation.
+        await expect(subtitle.style.transition).toBe("");
+      }
+    );
+  },
+};
+
+/**
+ * EXPERIMENT. Flexible layout with `stickyHeader`, where the header follows
+ * the scroll position (`data-header-collapse-mode="scroll-driven"`, not
+ * public API). Over the first scroll pixels (as many as the collapsed form
+ * gives back), the header slides up and its parts move to their collapsed
+ * places; scrolling back plays it backwards. The browser drives the
+ * animations from the scroll position (scroll-driven animations); no script
+ * runs while scrolling. Compare with `CollapseHeaderFlexibleSticky`.
+ */
+export const ExperimentScrollDrivenFlexibleSticky: Story = {
+  render: () => (
+    <Box data-testid="scroll-container" height="500px" overflow="auto">
+      <DefaultPage.Root
+        layout="flexible"
+        stickyHeader
+        collapseHeaderOnScroll
+        data-header-collapse-mode="scroll-driven"
+      >
+        <CollapsingHeader />
+        <DefaultPage.Content>
+          <LongFormContent fields={16} />
+        </DefaultPage.Content>
+      </DefaultPage.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const root = getRoot(canvasElement);
+    const header = getHeader(canvasElement);
+    const scroller = canvas.getByTestId("scroll-container");
+    const content = canvas.getByRole("main");
+    const title = canvas.getByRole("heading", { level: 1 });
+    const subtitle = canvas.getByText("SKU-12345 · Last modified today");
+    const backLink = canvas.getByRole("link", { name: "Back to products" });
+    const backIcon = backLink.querySelector("svg")!;
+    const actions = header.querySelector<HTMLElement>(
+      ".nimbus-default-page__actions"
+    )!;
+    const getTooltip = () =>
+      canvasElement.ownerDocument.querySelector<HTMLElement>(
+        "[role='tooltip']"
+      );
+
+    /** Screen position relative to the top of the scroll container. */
+    const top = (element: Element) =>
+      element.getBoundingClientRect().top -
+      scroller.getBoundingClientRect().top;
+    const centerY = (element: Element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.top + rect.height / 2;
+    };
+    /** Where the content starts, relative to Root: never changes. */
+    const headerSpace = () =>
+      content.getBoundingClientRect().top - root.getBoundingClientRect().top;
+    const scrollTo = async (position: number) => {
+      scroller.scrollTop = position;
+      await nextFrame();
+      await nextFrame();
+    };
+
+    let fullHeight = 0;
+    let distance = 0;
+    let titleTopHalfway = 0;
+
+    await step("Uses scroll-driven animations", async () => {
+      await waitFor(() =>
+        expect(scroller.scrollHeight).toBeGreaterThan(scroller.clientHeight)
+      );
+      await waitFor(() => expect(header.style.top).toMatch(/^-\d/));
+      distance = -parseFloat(header.style.top);
+      fullHeight = header.getBoundingClientRect().height;
+      const ViewTimelineClass = (
+        window as Window & { ViewTimeline?: new () => AnimationTimeline }
+      ).ViewTimeline!;
+      const [titleAnimation] = title.getAnimations();
+      await expect(titleAnimation.timeline).toBeInstanceOf(ViewTimelineClass);
+      // No form change through the attribute: the parts move instead.
+      await expect(header).not.toHaveAttribute("data-collapsed");
+    });
+
+    await step("Starts in the full form", async () => {
+      await scrollTo(0);
+      await expect(top(header)).toBe(0);
+      await expect(getComputedStyle(subtitle).opacity).toBe("1");
+      await expect(headerSpace()).toBeCloseTo(fullHeight, 0);
+    });
+
+    await step("Halfway, the header follows the scroll position", async () => {
+      await scrollTo(distance / 2);
+      // The header has moved up by the scroll distance, nothing else.
+      await expect(top(header)).toBeCloseTo(-distance / 2, 0);
+      await expect(headerSpace()).toBeCloseTo(fullHeight, 0);
+      // The hidden parts have faded out in the first half.
+      await expect(Number(getComputedStyle(subtitle).opacity)).toBeLessThan(
+        0.05
+      );
+      titleTopHalfway = top(title);
+    });
+
+    await step(
+      "After the full distance, it shows the collapsed form",
+      async () => {
+        await scrollTo(distance + 100);
+        await expect(header.getBoundingClientRect().bottom).toBeCloseTo(
+          scroller.getBoundingClientRect().top + fullHeight - distance,
+          0
+        );
+        await expect(headerSpace()).toBeCloseTo(fullHeight, 0);
+        // Back icon, title and actions share one row.
+        await expect(
+          Math.abs(centerY(backIcon) - centerY(title))
+        ).toBeLessThanOrEqual(1.5);
+        await expect(
+          Math.abs(centerY(actions) - centerY(title))
+        ).toBeLessThanOrEqual(1.5);
+        await expect(backIcon.getBoundingClientRect().right).toBeLessThan(
+          title.getBoundingClientRect().left
+        );
+      }
+    );
+
+    await step(
+      "Hidden parts stay accessible and let clicks through",
+      async () => {
+        await expect(subtitle).toBeInTheDocument();
+        await expect(backLink).toHaveAccessibleName("Back to products");
+        const tab = canvas.getByRole("link", { name: "Variants" });
+        const tabRect = tab.getBoundingClientRect();
+        const hit = canvasElement.ownerDocument.elementFromPoint(
+          tabRect.left + tabRect.width / 2,
+          tabRect.top + tabRect.height / 2
+        );
+        await expect(tab.contains(hit)).toBe(true);
+        const iconRect = backIcon.getBoundingClientRect();
+        const iconHit = canvasElement.ownerDocument.elementFromPoint(
+          iconRect.left + iconRect.width / 2,
+          iconRect.top + iconRect.height / 2
+        );
+        await expect(backLink.contains(iconHit)).toBe(true);
+      }
+    );
+
+    await step(
+      "Once pinned, the back link is a 24px icon with a tooltip",
+      async () => {
+        await waitFor(() =>
+          expect(header).toHaveAttribute("data-scroll-collapsed", "true")
+        );
+        const linkRect = backLink.getBoundingClientRect();
+        await expect(linkRect.width).toBeCloseTo(24, 0);
+        await expect(linkRect.height).toBeCloseTo(24, 0);
+        await expect(linkRect.right).toBeLessThanOrEqual(
+          title.getBoundingClientRect().left
+        );
+        // The compact link keeps its outer size: the header does not change.
+        await expect(header.getBoundingClientRect().height).toBeCloseTo(
+          fullHeight,
+          0
+        );
+        await expect(backLink).toHaveAccessibleName("Back to products");
+
+        // React Aria opens a tooltip on hover only after a mouse move: move
+        // over the content first, as a real mouse would.
+        await userEvent.hover(content);
+        await userEvent.hover(backLink);
+        await waitFor(() => expect(getTooltip()).not.toBeNull());
+        await expect(getTooltip()!.textContent?.trim()).toBe(
+          "Back to products"
+        );
+        await userEvent.unhover(backLink);
+        await userEvent.hover(content);
+        await waitFor(() => expect(getTooltip()).toBeNull());
+      }
+    );
+
+    await step("Scrolling back plays it backwards", async () => {
+      await scrollTo(distance / 2);
+      await waitFor(() =>
+        expect(header).not.toHaveAttribute("data-scroll-collapsed")
+      );
+      await expect(top(title)).toBeCloseTo(titleTopHalfway, 0);
+      await expect(backLink.getBoundingClientRect().width).toBeGreaterThan(24);
+      await scrollTo(0);
+      await expect(top(header)).toBe(0);
+      await expect(getComputedStyle(subtitle).opacity).toBe("1");
+    });
+  },
+};
+
+/**
+ * EXPERIMENT. The scroll-driven header with a title that wraps in the full
+ * form (a 640px wide page). The title keeps its lines in the collapsed form,
+ * at the smaller size, and the title row grows to fit them. For one line,
+ * truncate the title (`<DefaultPage.Title truncate>`).
+ */
+export const ExperimentScrollDrivenLongTitle: Story = {
+  render: () => (
+    <Box
+      data-testid="scroll-container"
+      width="640px"
+      height="500px"
+      overflow="auto"
+      borderInlineEnd="solid-25"
+      borderColor="neutral.6"
+    >
+      <DefaultPage.Root
+        layout="flexible"
+        stickyHeader
+        collapseHeaderOnScroll
+        data-header-collapse-mode="scroll-driven"
+      >
+        <CollapsingHeader title="Classic T-Shirt, organic cotton, crew neck, relaxed fit, heather grey with contrast stitching" />
+        <DefaultPage.Content>
+          <LongFormContent fields={16} />
+        </DefaultPage.Content>
+      </DefaultPage.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const header = getHeader(canvasElement);
+    const title = canvas.getByRole("heading", { level: 1 });
+    const scroller = canvas.getByTestId("scroll-container");
+    const backIcon = canvas
+      .getByRole("link", { name: "Back to products" })
+      .querySelector("svg")!;
+    const actions = header.querySelector<HTMLElement>(
+      ".nimbus-default-page__actions"
+    )!;
+    const tabNav = header.querySelector<HTMLElement>(
+      ".nimbus-default-page__tabNav"
+    )!;
+    const lineHeight = parseFloat(getComputedStyle(title).lineHeight);
+    const centerY = (rect: DOMRect) => rect.top + rect.height / 2;
+
+    await step("The title wraps in the full form", async () => {
+      await waitFor(() => expect(header.style.top).toMatch(/^-\d/));
+      await expect(title.getBoundingClientRect().height).toBeGreaterThan(
+        lineHeight * 1.5
+      );
+    });
+
+    await step(
+      "Once collapsed, the title keeps its lines and fits in the header",
+      async () => {
+        const distance = -parseFloat(header.style.top);
+        scroller.scrollTop = distance + 60;
+        await nextFrame();
+        await nextFrame();
+        const titleRect = title.getBoundingClientRect();
+        // The title is scaled, not cut: its lines are all there.
+        const scale = titleRect.height / title.offsetHeight;
+        await expect(scale).toBeLessThan(1);
+        await expect(titleRect.height).toBeGreaterThan(
+          lineHeight * scale * 1.5
+        );
+        // Space above the title, and between the title and the tabs.
+        await expect(titleRect.top).toBeGreaterThanOrEqual(
+          scroller.getBoundingClientRect().top + 8
+        );
+        await expect(titleRect.bottom).toBeLessThanOrEqual(
+          tabNav.getBoundingClientRect().top - 8
+        );
+        // The back icon sits on the first line; the actions are centered.
+        await expect(
+          Math.abs(
+            centerY(backIcon.getBoundingClientRect()) -
+              (titleRect.top + (lineHeight * scale) / 2)
+          )
+        ).toBeLessThanOrEqual(1.5);
+        await expect(
+          Math.abs(
+            centerY(actions.getBoundingClientRect()) - centerY(titleRect)
+          )
+        ).toBeLessThanOrEqual(1.5);
+        await expect(titleRect.right).toBeLessThanOrEqual(
+          actions.getBoundingClientRect().left
+        );
+        scroller.scrollTop = 0;
+      }
+    );
+  },
+};
+
+/**
+ * EXPERIMENT. A tab click in the scroll-driven header that scrolls the page
+ * back to the top, as many apps do when they show another tab. The header
+ * follows the scroll position, so it returns to its full form at once and the
+ * tabs move down under the mouse pointer. (The regular behavior keeps the
+ * collapsed form while the pointer is over the header; compare with
+ * `CollapseHeaderTabClick`.)
+ */
+export const ExperimentScrollDrivenTabClick: Story = {
+  render: function Render() {
+    const [current, setCurrent] = useState("general");
+    const scrollerRef = useRef<HTMLDivElement>(null);
+    const select = (id: string) => (event: React.MouseEvent) => {
+      event.preventDefault();
+      setCurrent(id);
+      scrollerRef.current?.scrollTo({ top: 0 });
+    };
+    return (
+      <Box
+        ref={scrollerRef}
+        data-testid="scroll-container"
+        height="500px"
+        overflow="auto"
+      >
+        <DefaultPage.Root
+          layout="flexible"
+          stickyHeader
+          collapseHeaderOnScroll
+          data-header-collapse-mode="scroll-driven"
+        >
+          <DefaultPage.Header>
+            <DefaultPage.BackLink href="/products">
+              Back to products
+            </DefaultPage.BackLink>
+            <DefaultPage.Title>Classic T-Shirt</DefaultPage.Title>
+            <DefaultPage.Subtitle>SKU-12345</DefaultPage.Subtitle>
+            <DefaultPage.TabNav>
+              <TabNav.Root aria-label="Product sections">
+                <TabNav.Item
+                  href="#general"
+                  isCurrent={current === "general"}
+                  onClick={select("general")}
+                >
+                  General
+                </TabNav.Item>
+                <TabNav.Item
+                  href="#variants"
+                  isCurrent={current === "variants"}
+                  onClick={select("variants")}
+                >
+                  Variants
+                </TabNav.Item>
+              </TabNav.Root>
+            </DefaultPage.TabNav>
+          </DefaultPage.Header>
+          <DefaultPage.Content>
+            <Text textStyle="lg" marginBottom="600">
+              {current === "general" ? "General" : "Variants"}
+            </Text>
+            <LongFormContent fields={16} />
+          </DefaultPage.Content>
+        </DefaultPage.Root>
+      </Box>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const header = getHeader(canvasElement);
+    const scroller = canvas.getByTestId("scroll-container");
+
+    await step("Collapses after scrolling", async () => {
+      await waitFor(() =>
+        expect(scroller.scrollHeight).toBeGreaterThan(scroller.clientHeight)
+      );
+      scroller.scrollTop = 400;
+      await waitFor(() =>
+        expect(header).toHaveAttribute("data-scroll-collapsed", "true")
+      );
+    });
+
+    await step(
+      "After the tab click, the tabs move down under the pointer",
+      async () => {
+        const tab = canvas.getByRole("link", { name: "Variants" });
+        const before = tab.getBoundingClientRect();
+        const pointer = {
+          x: before.left + before.width / 2,
+          y: before.top + before.height / 2,
+        };
+        await userEvent.click(tab);
+        await waitFor(() => expect(scroller.scrollTop).toBe(0));
+        await nextFrame();
+        await nextFrame();
+
+        // The header is back in its full form at once.
+        await expect(header).not.toHaveAttribute("data-scroll-collapsed");
+        const distance = -parseFloat(header.style.top);
+        await expect(tab.getBoundingClientRect().top - before.top).toBeCloseTo(
+          distance,
+          0
+        );
+        // The pointer is no longer over the tab it clicked.
+        const under = canvasElement.ownerDocument.elementFromPoint(
+          pointer.x,
+          pointer.y
+        );
+        await expect(tab.contains(under)).toBe(false);
+        await expect(
+          canvas.getByText("Variants", { selector: "p" })
+        ).toBeVisible();
+      }
+    );
   },
 };
 
@@ -1937,6 +2439,7 @@ export const CollapseHeaderDocumentScroll: Story = {
         header: getHeader(canvasElement),
         scroller,
         reference: canvas.getByLabelText("Field 8"),
+        keepsSpace: true,
       });
     } finally {
       scroller.scrollTop = 0;
@@ -2491,9 +2994,10 @@ export const CollapseHeaderBackLinkTooltip: Story = {
 };
 
 /**
- * Smooth scrolls reach their target, and a jump collapses the header without
- * a correction. The target field uses the header height variable as
- * `scroll-margin-top`, so it stops below the sticky header.
+ * Smooth scrolls reach their target. When the header collapses after a jump,
+ * the target stays where the jump put it, because the header keeps its space.
+ * The target uses the header height variable as `scroll-margin-top`, so it
+ * stops below the sticky header in either form.
  */
 export const CollapseHeaderScrollIntoView: Story = {
   render: () => (
@@ -2558,12 +3062,32 @@ export const CollapseHeaderScrollIntoView: Story = {
     });
 
     await step(
-      "After a jump, the target ends directly below the collapsed header",
+      "After a jump, the target stays where the jump put it",
       async () => {
         scroller.scrollTop = 0;
         await waitForForm(header, false);
+        const fullHeight = header.getBoundingClientRect().height;
         target.scrollIntoView({ block: "start" });
-        await waitForForm(header, true);
+        // The jump stops the target below the full header.
+        const targetTop = target.getBoundingClientRect().top;
+        await expect(
+          Math.abs(
+            targetTop - scroller.getBoundingClientRect().top - fullHeight
+          )
+        ).toBeLessThanOrEqual(1);
+        await expectStillUntilForm(target, header, true);
+        await expect(header.getBoundingClientRect().bottom).toBeLessThanOrEqual(
+          targetTop + 1
+        );
+      }
+    );
+
+    await step(
+      "A jump while collapsed ends directly below the collapsed header",
+      async () => {
+        scroller.scrollBy({ top: -100, behavior: "instant" });
+        await expectFormKept(header, true);
+        target.scrollIntoView({ block: "start" });
         await nextFrame();
         await expect(
           Math.abs(

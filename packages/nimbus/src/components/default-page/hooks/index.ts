@@ -4,3 +4,8 @@ export type {
   UseCollapseHeaderOnScrollResult,
 } from "./use-collapse-header-on-scroll";
 export { useUnpinnedCollapseWarning } from "./use-unpinned-collapse-warning";
+export { useScrollDrivenHeader } from "./use-scroll-driven-header";
+export type {
+  UseScrollDrivenHeaderOptions,
+  UseScrollDrivenHeaderResult,
+} from "./use-scroll-driven-header";

@@ -11,6 +11,12 @@ export type DefaultPageContextValue = {
   isCollapseEnabled: boolean;
   /** `true` while the header shows its collapsed form. */
   isHeaderCollapsed: boolean;
+  /**
+   * EXPERIMENT ("scroll-driven"): the header follows the scroll position, so
+   * it does not switch its layout with `data-collapsed`. It marks the pinned
+   * collapsed form with `data-scroll-collapsed` instead.
+   */
+  isScrollDriven?: boolean;
   /** Callback ref for `DefaultPage.Header`. */
   registerHeader: (element: HTMLElement | null) => void;
   /** Callback ref for `DefaultPage.Content`. */
