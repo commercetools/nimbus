@@ -27,6 +27,8 @@ export type AccordionRootSlotProps = HTMLChakraProps<
   AccordionRecipeProps
 >;
 
+export type AccordionIndicatorSlotProps = HTMLChakraProps<"svg">;
+
 // ============================================================
 // MAIN PROPS
 // ============================================================

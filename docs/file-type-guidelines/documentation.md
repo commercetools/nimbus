@@ -83,6 +83,10 @@ These fields appear in some components but are not required:
 # Lifecycle indicators (when applicable)
 lifecycleState: Experimental|Alpha|Beta|Stable|Deprecated|EOL
 
+# Pre-release states (Experimental, Alpha, Beta) also need the matching
+# @experimental, @alpha or @beta JSDoc tag on the main export, and their
+# changesets mark the state. See main-component.md "Lifecycle State Tag".
+
 # Design resources (when available)
 figmaLink: >-
   https://www.figma.com/design/...

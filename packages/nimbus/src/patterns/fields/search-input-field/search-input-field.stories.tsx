@@ -366,7 +366,7 @@ export const WithClearButton: Story = {
 
     await step("Clear button is visible when input has value", async () => {
       await expect(input).toHaveValue("laptop");
-      // The clear button should be visible (opacity 1) when there's a value
+      // The clear button is rendered when there is a value
       const clearButton = canvas.getByLabelText(/clear/i);
       await expect(clearButton).toBeInTheDocument();
     });
@@ -377,16 +377,8 @@ export const WithClearButton: Story = {
       await expect(input).toHaveValue("");
     });
 
-    await step("Clear button is hidden when input is empty", async () => {
-      // After clearing, the button should still exist in DOM but be hidden
-      const clearButton = canvas.queryByLabelText(/clear/i);
-      // Button exists but should have opacity 0 or pointer-events none
-      if (clearButton) {
-        const styles = window.getComputedStyle(clearButton);
-        await expect(
-          styles.opacity === "0" || styles.pointerEvents === "none"
-        ).toBe(true);
-      }
+    await step("Clear button is not rendered when input is empty", async () => {
+      await expect(canvas.queryByLabelText(/clear/i)).not.toBeInTheDocument();
     });
   },
 };

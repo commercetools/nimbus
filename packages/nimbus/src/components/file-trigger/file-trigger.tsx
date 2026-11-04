@@ -10,6 +10,8 @@ import type { FileTriggerProps } from "./file-trigger.types";
  * visual styling of its own — the child provides the visual treatment.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/filetrigger}
+ *
+ * @experimental This component is experimental and may change or be removed in future versions.
  */
 export const FileTrigger = (props: FileTriggerProps) => {
   const { ref, ...restProps } = props;

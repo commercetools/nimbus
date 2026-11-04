@@ -86,7 +86,7 @@ Pagination SHALL support optional page size selection dropdown.
 - **AND** SHALL render "items per page" text label from i18n message
 
 #### Scenario: Page size selector disabled
-- **WHEN** enablePageSizeSelector is false (default)
+- **WHEN** enablePageSizeSelector is false
 - **THEN** SHALL NOT render Select component
 - **AND** SHALL NOT display page size options
 - **AND** SHALL use default pageSize value
@@ -125,7 +125,7 @@ Pagination SHALL support optional direct page number input.
 - **AND** SHALL set aria-current="page" for screen readers
 
 #### Scenario: Page input disabled
-- **WHEN** enablePageInput is false (default)
+- **WHEN** enablePageInput is false
 - **THEN** SHALL render current page as Text component
 - **AND** SHALL NOT allow direct page input
 - **AND** SHALL display page number with aria-current="page"

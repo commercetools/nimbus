@@ -35,6 +35,8 @@ export type SearchInputLeadingElementSlotProps = HTMLChakraProps<"div">;
 
 export type SearchInputTrailingElementSlotProps = HTMLChakraProps<"div">;
 
+export type SearchInputInputWrapperSlotProps = HTMLChakraProps<"div">;
+
 export type SearchInputInputSlotProps = HTMLChakraProps<"input">;
 
 // ============================================================
