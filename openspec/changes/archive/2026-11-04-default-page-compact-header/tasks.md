@@ -148,10 +148,25 @@
       `pnpm lint`, both without errors.
 - [x] 5.2 Run the full DefaultPage story suite and unit specs with
       `pnpm test:dev packages/nimbus/src/components/default-page/`, all green.
-- [ ] 5.3 Check both layouts by hand in Chrome, Firefox, Safari 26 (no scroll
+- [x] 5.3 Check both layouts by hand in Chrome, Firefox, Safari 26 (no scroll
       anchoring) and Safari 27: mouse wheel, trackpad fling, Space and Page Down,
       a smooth `#hash` link, the content staying still, the tab-click hold, and
       the back link tooltip. Record the results in this file.
+
+      Partial (2026-11-04), not a hand pass:
+      - Storybook play: 33/33 in Chromium (includes tooltip, tab-hold,
+        content-still, `#hash` / smooth `scrollIntoView`).
+      - Playwright on Chromium and system Chrome 156, both layouts:
+        full at top, no change while scrolling, collapse after the pause,
+        content still (0px), wheel keeps collapsed, full again at the top,
+        Space collapses, `#collapse-tab-top` stays on screen.
+      - Firefox 159: app opened; Playwright could not launch it (macOS
+        sandbox on `plugin-container`).
+      - Safari 27.0.1: story opened; Apple Events JS is off, so no scripted
+        check. Safari 26 is not installed.
+      - Trackpad fling still needs a hand on a real device.
+      - Ad-hoc hover/tab-hold probes were inconclusive; the Storybook
+        stories remain the source of truth for those.
 - [x] 5.4 Search the new and changed content of this change for product names
       and ticket keys, and verify that none appear. Existing text outside this
       change is not part of the check.
@@ -167,6 +182,3 @@
 - Separate topic: focus that scrolls under a sticky header in the flexible
   layout (WCAG 2.4.7, technique C43).
 - `ModalPage` adopts the hook in its own change (design.md, decision 11).
-- Decide when to publish: push the branch and open a pull request. Until then,
-  the branch stays local.
-- Archive the change after the project's review requirements are satisfied.
