@@ -193,7 +193,7 @@ export const use{ComponentName}Styles = withContext
 
 ### Registration (CRITICAL)
 
-You MUST register the recipe in `packages/nimbus/src/theme/recipes.ts`:
+You MUST register the recipe in the theme. Find the registration with `rg -il "<recipe-name>" packages/nimbus/src/theme`:
 
 **For standard recipes:**
 
@@ -296,7 +296,7 @@ You MUST validate against these requirements:
 
 #### Registration (CRITICAL)
 
-- [ ] Recipe MUST be exported from `packages/nimbus/src/theme/recipes.ts`
+- [ ] Recipe MUST be registered in the theme (find it with `rg -il "<recipe-name>" packages/nimbus/src/theme`)
 - [ ] Recipe MUST be in theme's `recipes` or `slotRecipes` object
 - [ ] Generated types MUST exist in `styled-system/recipes/`
 
