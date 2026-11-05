@@ -47,7 +47,7 @@ Do not read whole guideline files. Read only the sections listed here. To find a
    cat packages/nimbus/src/components/menu/menu.types.ts      # Compound
    ```
 
-5. **Check** the component tier: read `docs/file-type-guidelines/types.md`, section `## Component Tiers`, and the tier decision in `reference/component-tiers.md`.
+5. **Check** the component tier: read `docs/file-type-guidelines/types.md`, section `## Component Tiers`, then the matching tier in `reference/component-tiers.md`.
 
 6. **Review** recipe and slot files if they exist:
    ```bash
@@ -101,7 +101,7 @@ scratch.
 
 ## Component Tier Decision Matrix
 
-Choose the tier using the decision flow in `reference/component-tiers.md`. List its tier headings with `rg -n '^###' .claude/skills/writing-types/reference/component-tiers.md`.
+Choose the tier by reading `docs/file-type-guidelines/types.md`, section `## Component Tiers`. Then read the matching tier in `reference/component-tiers.md`. List its tier headings with `rg -n '^###' .claude/skills/writing-types/reference/component-tiers.md`.
 
 ## File Structure Requirements
 
