@@ -4,6 +4,8 @@
 
 You SHOULD reference these slot files:
 
+These files show structure. Button's files have known gaps, so check every item in the checklist instead of copying a file.
+
 - **Standard**: `packages/nimbus/src/components/button/button.slots.tsx`
 - **Multi-slot**: `packages/nimbus/src/components/menu/menu.slots.tsx`
 - **Complex**: `packages/nimbus/src/components/text-input/text-input.slots.tsx`

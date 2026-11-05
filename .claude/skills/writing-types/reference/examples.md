@@ -4,6 +4,8 @@
 
 You SHOULD reference these type files:
 
+These files show structure. Button's files have known gaps, so check every item in the checklist instead of copying a file.
+
 - **Tier 1**: `packages/nimbus/src/components/button/button.types.ts`
 - **Tier 2**: `packages/nimbus/src/components/text-input/text-input.types.ts`
 - **Tier 3**: `packages/nimbus/src/components/menu/menu.types.ts`
