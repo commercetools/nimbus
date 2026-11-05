@@ -30,18 +30,20 @@ When validation completes, you MUST provide a report in this format:
 
 ---
 
-### ✅ Compliant (X/64)
+### ✅ Compliant (X of N)
 
-**Category 1: File Structure & Architecture (X/7)**
+N is the item count from `reference/validation-checklist.md`, counted as described in its last section.
 
-- [✓] Item description
-- [✓] Item description
-
-**Category 2: Component Type & Pattern (X/7)**
+**Category 1: File Structure & Architecture**
 
 - [✓] Item description
+- [✓] Item description
 
-[Continue for all 10 categories]
+**Category 2: Component Type & Pattern**
+
+- [✓] Item description
+
+[Continue for every category in the checklist]
 
 ---
 

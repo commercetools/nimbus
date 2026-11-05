@@ -144,7 +144,7 @@ Use this matrix to determine component type:
 
 ### Validation Checklist
 
-Run every item in `reference/validation-checklist.md` (64 items across 10 categories). Record each violation with its file and line number. Write the report in the format given in `reference/validation-report.md`.
+Run every item in `reference/validation-checklist.md`. Record each violation with its file and line number. Write the report in the format given in `reference/validation-report.md`.
 
 ---
 
