@@ -69,24 +69,15 @@ Examples:
 
 ## Required Research (All Modes)
 
-Before implementation, you MUST research in parallel:
+Do not read whole guideline files. Read only the sections listed here. To find a section, run `rg -n '^## ' <file>` for its line numbers, then use the Read tool with `offset` and `limit`.
 
-1. **Read** documentation guidelines:
+**Before implementation, read these sections:**
 
-   ```bash
-   cat docs/file-type-guidelines/documentation.md
-   ```
+1. `docs/file-type-guidelines/documentation.md`, section `## Overview`
+2. `docs/file-type-guidelines/documentation.md`, section `## Code Examples`
+3. `docs/jsdoc-standards.md`, section `## Documentation Test Tags (for .docs.spec.tsx files)`. Pay special attention to @docs-section, @docs-title, @docs-description, @docs-order tags.
 
-2. **Read** JSDoc standards for test sections:
-
-   ```bash
-   cat docs/jsdoc-standards.md
-   ```
-
-   Pay special attention to @docs-section, @docs-title, @docs-description,
-   @docs-order tags
-
-3. **Review** component implementation files for API understanding:
+4. **Review** component implementation files for API understanding:
    - `{component-name}.tsx` - Main component implementation
    - `{component-name}.types.ts` - Props and types
    - `{component-name}.recipe.ts` - Visual variants (if exists)
@@ -94,7 +85,7 @@ Before implementation, you MUST research in parallel:
    - `components/` directory - Compound component parts (if exists)
    - `{component-name}.stories.tsx` - Existing usage examples
 
-4. **Check** similar documentation:
+5. **Check** similar documentation:
 
    ```bash
    ls packages/nimbus/src/components/*/*.dev.mdx
@@ -104,10 +95,23 @@ Before implementation, you MUST research in parallel:
    (for base components, or `ls packages/nimbus/src/patterns/fields/*/*` for
    field patterns)
 
-5. **Also read** for comprehensive reference:
-   - `@docs/engineering-docs-template.mdx` for base template structure
-   - `@docs/engineering-docs-template-guide.md` for detailed usage instructions
-   - `@docs/engineering-docs-validation.md` for validation criteria
+**Read these sections only when the task needs them:**
+
+| Task | Section to read |
+| --- | --- |
+| Props tables | `docs/file-type-guidelines/documentation.md`, `## Props Documentation` |
+| Accessibility section | `docs/file-type-guidelines/documentation.md`, `## Accessibility Documentation` |
+| Example patterns | `docs/file-type-guidelines/documentation.md`, `## Common Patterns from Nimbus Components` |
+| Validating a file | `docs/file-type-guidelines/documentation.md`, `## Validation Checklist` |
+| JSDoc on component props | `docs/jsdoc-standards.md`, `## Component Props JSDoc (Required)` |
+
+**When you create a new file, also read:**
+
+- `@docs/engineering-docs-template.mdx` for base template structure
+- `@docs/engineering-docs-template-guide.md` for detailed usage instructions
+- `@docs/engineering-docs-validation.md` for validation criteria
+
+---
 
 ## File Structure
 
