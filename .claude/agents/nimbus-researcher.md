@@ -6,7 +6,7 @@ effort: medium
 ---
 
 **Note**: This agent is typically invoked automatically as the first phase of
-the agent-driven workflow described in CLAUDE.md, or when gathering technical
+the agent-driven workflow described in docs/agent-workflow.md, or when gathering technical
 patterns and documentation before implementation. Direct agent invocation is
 useful when you need focused research without full implementation.
 

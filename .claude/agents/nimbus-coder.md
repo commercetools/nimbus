@@ -6,7 +6,7 @@ effort: high
 ---
 
 **Note**: This agent is typically invoked by commands like `/propose-component`
-or by the agent-driven workflow described in CLAUDE.md. Direct agent invocation
+or by the agent-driven workflow described in docs/agent-workflow.md. Direct agent invocation
 is useful for custom workflows or when you need focused implementation work
 outside the standard component creation flow.
 
