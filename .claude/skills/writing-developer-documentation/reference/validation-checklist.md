@@ -76,6 +76,7 @@ You MUST validate against these requirements:
 - [ ] Accessibility section includes standard boilerplate
 - [ ] Accessibility includes PERSISTENT_ID tracking pattern
 - [ ] Accessibility includes Keyboard navigation subsection
+- [ ] ARIA attribute list present in Accessibility (required)
 
 #### Technical Focus
 

@@ -126,6 +126,7 @@ The ComponentName component handles most accessibility requirements internally v
 - **Labeling**: Ensure the component has proper labels or aria-label
 - **Role**: Explains ARIA role and semantic meaning
 - **Focus management**: How focus is handled
+- **ARIA attributes (required)**: The ARIA attributes and roles the component sets, and any the consumer must set.
 
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id:
 
