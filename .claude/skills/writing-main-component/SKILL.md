@@ -371,12 +371,7 @@ When updating an existing main component:
 
 ### Common Update Scenarios
 
-Find the scenario that matches the request, then read only that section of `reference/update-scenarios.md`:
-
-- Scenario 1: Adding New Props
-- Scenario 2: Adding i18n Support
-- Scenario 3: Adding React Aria Integration
-- Scenario 4: Converting Single to Compound
+Find the scenario that matches the request, then read only that section of `reference/update-scenarios.md`. List the sections with `rg -n '^#' .claude/skills/writing-main-component/reference/update-scenarios.md`.
 
 ### Post-Update Verification
 
@@ -400,27 +395,13 @@ pnpm test:dev packages/nimbus/src/components/{component}/{component}.stories.tsx
 If validation fails or you encounter errors, systematically check these common
 issues:
 
-Find the matching error below, then read only its section in `reference/error-recovery.md`:
-
-- Error 1: Ref Forwarding Issues
-- Error 2: Props Spreading Order
-- Error 3: React Aria Import Conflicts
-- Error 4: Cross-Component Import Cycles
-- Error 5: Missing DisplayName
-- Error 6: Missing @see Link
-- Error 7: Compound Component Root Not First
-- Error 8: Style Props Not Working
+Find the matching error, then read only its section in `reference/error-recovery.md`. List the sections with `rg -n '^###' .claude/skills/writing-main-component/reference/error-recovery.md`.
 
 ---
 
 ## Decision Flows
 
-Use the flows in `reference/decision-flows.md` to choose patterns for your component:
-
-- Flow 1: Component Architecture Decision
-- Flow 2: Ref Forwarding Pattern Decision
-- Flow 3: React Aria Integration Decision
-- Flow 4: Import Strategy Decision
+Use the flows in `reference/decision-flows.md` to choose patterns for your component. List the flows with `rg -n '^###' .claude/skills/writing-main-component/reference/decision-flows.md`.
 
 ---
 
