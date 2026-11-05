@@ -36,22 +36,12 @@ If no mode is specified, default to **create**.
 
 ## Required Research (All Modes)
 
-Before implementation, you MUST research in parallel:
+Do not read whole guideline files. Read only the sections listed here. To find a section, run `rg -n '^## ' <file>` for its line numbers, then use the Read tool with `offset` and `limit`.
 
-1. **Read** i18n guidelines:
+**Before implementation, read these sections:**
 
-   ```bash
-   cat docs/file-type-guidelines/i18n.md
-   ```
-
-2. **Read** naming conventions for message IDs:
-
-   ```bash
-   cat docs/naming-conventions.md
-   ```
-
-   Message ID pattern: Nimbus.{ComponentName}.{messageKey}
-
+1. `docs/file-type-guidelines/i18n.md`, sections `## Message ID Convention` and `## Message Properties`
+2. `docs/naming-conventions.md`, section `## i18n Message IDs`. Message ID pattern: Nimbus.{ComponentName}.{messageKey}
 3. **Review** component implementation to identify translatable text:
 
    ```bash
@@ -62,6 +52,18 @@ Before implementation, you MUST research in parallel:
    ```bash
    ls packages/nimbus/src/components/*/*.i18n.ts
    ```
+
+**Read these sections only when the task needs them:**
+
+| Task | Section to read |
+| --- | --- |
+| Component integration and usage | `docs/file-type-guidelines/i18n.md`, `## Component Integration` |
+| Components with several parts | `docs/file-type-guidelines/i18n.md`, `## Components with Multiple Parts` |
+| React Aria labels | `docs/file-type-guidelines/i18n.md`, `## React Aria Integration` |
+| Supported locales | `docs/file-type-guidelines/i18n.md`, `## Supported Locales` |
+| Message wording by use case | `reference/message-patterns.md` |
+
+---
 
 ## When i18n Is Needed (Decision Flow)
 
@@ -239,91 +241,7 @@ defaultMessage: "Increment value";
 
 ## Message Patterns by Use Case
 
-### Accessibility Labels
-
-```typescript
-export const messages = {
-  increment: {
-    id: "Nimbus.NumberInput.increment",
-    description: "aria-label for increment button in number input",
-    defaultMessage: "Increment",
-  },
-  decrement: {
-    id: "Nimbus.NumberInput.decrement",
-    description: "aria-label for decrement button in number input",
-    defaultMessage: "Decrement",
-  },
-});
-```
-
-### Button Labels
-
-```typescript
-export const messages = {
-  dismiss: {
-    id: "Nimbus.Alert.dismiss",
-    description: "Label for dismiss button in alert component",
-    defaultMessage: "Dismiss",
-  },
-  close: {
-    id: "Nimbus.Dialog.close",
-    description: "Label for close button in dialog header",
-    defaultMessage: "Close",
-  },
-});
-```
-
-### Placeholder Text
-
-```typescript
-export const messages = {
-  selectDate: {
-    id: "Nimbus.DatePicker.selectDate",
-    description: "Placeholder text for date input field",
-    defaultMessage: "Select date",
-  },
-  enterText: {
-    id: "Nimbus.TextInput.enterText",
-    description: "Default placeholder for text input field",
-    defaultMessage: "Enter text",
-  },
-});
-```
-
-### State Indicators
-
-```typescript
-export const messages = {
-  showPassword: {
-    id: "Nimbus.PasswordInput.show",
-    description: "Button label to reveal password text",
-    defaultMessage: "Show password",
-  },
-  hidePassword: {
-    id: "Nimbus.PasswordInput.hide",
-    description: "Button label to conceal password text",
-    defaultMessage: "Hide password",
-  },
-});
-```
-
-### Dynamic Messages (with values)
-
-```typescript
-export const messages = {
-  itemsSelected: {
-    id: "Nimbus.Select.itemsSelected",
-    description: "Announces number of selected items to screen readers",
-    defaultMessage:
-      "{count, plural, one {# item selected} other {# items selected}}",
-  },
-  pageIndicator: {
-    id: "Nimbus.Pagination.pageIndicator",
-    description: "Current page indicator for pagination",
-    defaultMessage: "Page {current} of {total}",
-  },
-});
-```
+Choose the pattern that matches the text in `reference/message-patterns.md`. List its sections with `rg -n '^###' .claude/skills/writing-i18n/reference/message-patterns.md`.
 
 ## Component Integration
 
@@ -573,135 +491,11 @@ const msg = useLocalizedStringFormatter({componentName}MessagesStrings);
 
 ### Validation Checklist
 
-You MUST validate against these requirements:
-
-#### File Structure
-
-- [ ] i18n file exists with `.ts` extension
-- [ ] Named export: `export const messages = {...})`
-- [ ] Correct location: `{component}/{component}.i18n.ts`
-
-#### Message IDs
-
-- [ ] All IDs follow pattern: `Nimbus.{Component}.{key}`
-- [ ] ComponentName is PascalCase
-- [ ] messageKey is camelCase
-- [ ] IDs are unique within file
-- [ ] IDs match component name exactly
-
-#### Message Properties
-
-- [ ] All messages have `id`, `description`, `defaultMessage`
-- [ ] Descriptions explain context for translators
-- [ ] Default messages use proper grammar
-- [ ] Default messages are user-friendly
-- [ ] No technical jargon in default messages
-
-#### Component Assessment
-
-- [ ] Component assessed for i18n need
-- [ ] Has default labels/aria-labels (if yes, needs i18n)
-- [ ] Component imports messages correctly
-- [ ] All user-facing text is internationalized
-- [ ] No hardcoded strings in component
-
-#### Integration
-
-- [ ] Component imports `useLocalizedStringFormatter` from "@/hooks"
-- [ ] Component imports compiled message strings from `*.messages.ts`
-- [ ] Messages used with `msg.format(key)` or `msg.format(key, variables)`
-- [ ] Dynamic values passed correctly as second parameter
-
-### Validation Report Format
-
-```markdown
-## i18n Validation: {ComponentName}
-
-### Status: [✅ PASS | ❌ FAIL | ⚠️ WARNING]
-
-### i18n Assessment: [Required | Not Required]
-
-### Files Reviewed
-
-- i18n file: `{component}.i18n.ts`
-- Component: `{component}.tsx`
-
-### ✅ Compliant
-
-[List passing checks]
-
-### ❌ Violations (MUST FIX)
-
-- [Violation with guideline reference and line number]
-
-### ⚠️ Warnings (SHOULD FIX)
-
-- [Non-critical improvements]
-
-### Messages Found
-
-- [List message IDs with their purpose]
-
-### Missing i18n
-
-- [List hardcoded strings that should be internationalized]
-
-### Description Quality
-
-- [Assess description clarity and completeness]
-
-### Recommendations
-
-- [Specific improvements needed]
-```
+Run every item in `reference/validation-checklist.md`. Record each violation with its file and line. Write the report using `reference/validation-report.md`.
 
 ## Best Practices
 
-### ✅ DO
-
-- Use i18n for ALL user-facing text
-- Keep messages concise and clear
-- Provide meaningful descriptions
-- Use proper grammar and punctuation
-- Test with different locales
-- Use plural forms for counts
-- Design layouts for text length variation
-
-### ❌ DON'T
-
-- Concatenate translated strings
-- Use i18n for debug/internal messages
-- Hardcode strings that should be translatable
-- Omit descriptions
-- Use technical jargon in default messages
-- Assume text length stays constant
-
-### Common Patterns
-
-**Conditional messages:**
-
-```typescript
-const message = isVisible
-  ? messages.hide
-  : messages.show;
-
-return <button aria-label={msg.format(message)} />;
-```
-
-**Pluralization:**
-
-```typescript
-defaultMessage: "{count, plural, one {# item} other {# items}}";
-```
-
-**With variables:**
-
-```typescript
-defaultMessage: "Page {current} of {total}";
-
-// Usage
-msg.format("pageInfo", { current: 1, total: 10 });
-```
+Follow the DO and DON'T lists and the common patterns in `reference/best-practices.md`.
 
 ## Error Recovery
 
@@ -715,20 +509,11 @@ If validation fails:
 
 ## Reference Examples
 
-You SHOULD reference these i18n files:
-
-- **Simple**: `packages/nimbus/src/components/alert/alert.i18n.ts`
-- **Complex**:
-  `packages/nimbus/src/components/number-input/number-input.i18n.ts`
-- **Compound**: `packages/nimbus/src/components/date-picker/date-picker.i18n.ts`
+Use the examples in `reference/examples.md` that match the component.
 
 ## RFC 2119 Key Words
 
-- **MUST** / **REQUIRED** / **SHALL** - Absolute requirement
-- **MUST NOT** / **SHALL NOT** - Absolute prohibition
-- **SHOULD** / **RECOMMENDED** - Should do unless valid reason not to
-- **SHOULD NOT** / **NOT RECOMMENDED** - Should not do unless valid reason
-- **MAY** / **OPTIONAL** - Truly optional
+MUST means required, SHOULD means recommended, and MAY means optional, as defined in [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt). The full table is in `reference/rfc-2119.md`.
 
 ---
 

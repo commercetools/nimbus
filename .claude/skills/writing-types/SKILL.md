@@ -28,25 +28,13 @@ If no mode is specified, default to **create**.
 
 ## Required Research (All Modes)
 
-Before implementation, you MUST research in parallel:
+Do not read whole guideline files. Read only the sections listed here. To find a section, run `rg -n '^## ' <file>` for its line numbers, then use the Read tool with `offset` and `limit`.
 
-1. **Read** JSDoc standards:
+**Before implementation, read these sections:**
 
-   ```bash
-   cat docs/jsdoc-standards.md
-   ```
-
-2. **Read** naming conventions:
-
-   ```bash
-   cat docs/naming-conventions.md
-   ```
-
-3. **Read** type definition guidelines:
-
-   ```bash
-   cat docs/file-type-guidelines/types.md
-   ```
+1. `docs/file-type-guidelines/types.md`, section `## Core Architecture`
+2. `docs/naming-conventions.md`, section `## Quick Reference Checklist`
+3. `docs/jsdoc-standards.md`, section `## Quick Reference Checklist`
 
 4. **Analyze** similar component types:
 
@@ -59,18 +47,25 @@ Before implementation, you MUST research in parallel:
    cat packages/nimbus/src/components/menu/menu.types.ts      # Compound
    ```
 
-5. **Check** component complexity tier:
-   - See docs/file-type-guidelines/types.md for tier decision flow
-   - Tier 1: Simple (Button, Badge)
-   - Tier 2: Slot-based (TextInput, NumberInput)
-   - Tier 3: Compound (Menu, Dialog)
-   - Tier 4: Complex (DataTable, DatePicker)
+5. **Check** the component tier: read `docs/file-type-guidelines/types.md`, section `## Component Tiers`, then the matching tier in `reference/component-tiers.md`.
 
 6. **Review** recipe and slot files if they exist:
    ```bash
    cat packages/nimbus/src/components/{component}/{component}.recipe.ts
    cat packages/nimbus/src/components/{component}/{component}.slots.tsx
    ```
+
+**Read these sections only when the task needs them:**
+
+| Task | Section to read |
+| --- | --- |
+| Type visibility and file organization | `docs/file-type-guidelines/types.md`, `## Type Visibility and Organization` |
+| File structure details | `docs/file-type-guidelines/types.md`, `## File Structure` |
+| Naming types | `docs/file-type-guidelines/types.md`, `## Naming Conventions` |
+| JSDoc on types | `docs/file-type-guidelines/types.md`, `## JSDoc Documentation` |
+| Generic components and event handler types | `reference/advanced-types.md` |
+
+---
 
 ## The Universal Four-Layer Pattern (CRITICAL)
 
@@ -106,343 +101,7 @@ scratch.
 
 ## Component Tier Decision Matrix
 
-### Tier 1: Simple Components
-
-**Examples:** Button, Avatar, Separator, Icon, Badge
-
-**Type Structure:**
-
-```
-RecipeProps → RootSlotProps → MainProps
-```
-
-**Files:** ~10-30 lines
-
-**Template:**
-
-```typescript
-import type {
-  HTMLChakraProps,
-  RecipeProps,
-  UnstyledProp,
-} from "@chakra-ui/react/styled-system";
-
-// ============================================================
-// RECIPE PROPS
-// ============================================================
-
-type ButtonRecipeProps = {
-  /**
-   * Size variant of the button
-   * @default "md"
-   */
-  size?: RecipeProps<"button">["size"];
-  /**
-   * Visual style variant of the button
-   * @default "solid"
-   */
-  variant?: RecipeProps<"button">["variant"];
-} & UnstyledProp;
-
-// ============================================================
-// SLOT PROPS
-// ============================================================
-
-export type ButtonRootSlotProps = HTMLChakraProps<"button", ButtonRecipeProps>;
-
-// ============================================================
-// MAIN PROPS
-// ============================================================
-
-export type ButtonProps = ButtonRootSlotProps & {
-  /**
-   * Whether the button is in a loading state
-   * @default false
-   */
-  isLoading?: boolean;
-
-  /**
-   * Reference to the button element
-   */
-  ref?: React.Ref<HTMLButtonElement>;
-};
-```
-
-### Tier 2: Slot-Based Components
-
-**Examples:** TextInput, NumberInput, MoneyInput, PasswordInput
-
-**Type Structure:**
-
-```
-RecipeProps → Multiple SlotProps → MainProps
-```
-
-**Files:** ~50-100 lines
-
-**Slot Pattern:**
-
-- `RootSlotProps` - Container element
-- `InputSlotProps` - Input element
-- `LeadingElementSlotProps` - Start decoration
-- `TrailingElementSlotProps` - End decoration
-
-**Template:**
-
-```typescript
-import type {
-  HTMLChakraProps,
-  SlotRecipeProps,
-  UnstyledProp,
-} from "@chakra-ui/react/styled-system";
-
-// ============================================================
-// RECIPE PROPS
-// ============================================================
-
-type TextInputRecipeProps = SlotRecipeProps<"textInput">;
-
-// ============================================================
-// SLOT PROPS
-// ============================================================
-
-export type TextInputRootSlotProps = HTMLChakraProps<
-  "div",
-  TextInputRecipeProps
->;
-export type TextInputInputSlotProps = HTMLChakraProps<"input">;
-export type TextInputLeadingElementSlotProps = HTMLChakraProps<"div">;
-export type TextInputTrailingElementSlotProps = HTMLChakraProps<"div">;
-
-// ============================================================
-// MAIN PROPS
-// ============================================================
-
-export type TextInputProps = TextInputRootSlotProps & {
-  /**
-   * Input value (controlled)
-   */
-  value?: string;
-
-  /**
-   * Default value (uncontrolled)
-   */
-  defaultValue?: string;
-
-  /**
-   * Callback when value changes
-   */
-  onChange?: (value: string) => void;
-
-  /**
-   * Reference to the input element
-   */
-  ref?: React.Ref<HTMLInputElement>;
-};
-```
-
-### Tier 3: Compound Components
-
-**Examples:** Menu, Dialog, Card, Tabs, Accordion
-
-**Type Structure:**
-
-```
-RootSlotProps (with recipe) + Multiple SubComponentProps
-```
-
-**Files:** ~100-200 lines
-
-**Naming Pattern:**
-
-- Root: `{Component}RootProps`
-- Parts: `{Component}{Part}Props`
-
-**Template:**
-
-```typescript
-import type {
-  HTMLChakraProps,
-  SlotRecipeProps,
-} from "@chakra-ui/react/styled-system";
-import type {
-  MenuProps as RaMenuProps,
-  MenuItemProps as RaMenuItemProps,
-} from "react-aria-components";
-
-// ============================================================
-// RECIPE PROPS
-// ============================================================
-
-type MenuRecipeProps = SlotRecipeProps<"menu">;
-
-// ============================================================
-// SLOT PROPS
-// ============================================================
-
-export type MenuRootSlotProps = HTMLChakraProps<"div", MenuRecipeProps>;
-export type MenuTriggerSlotProps = HTMLChakraProps<"button">;
-export type MenuContentSlotProps = HTMLChakraProps<"div">;
-export type MenuItemSlotProps = HTMLChakraProps<"div">;
-
-// ============================================================
-// MAIN PROPS
-// ============================================================
-
-/**
- * Props for the Menu.Root component.
- * Provides context and configuration for the entire menu.
- */
-export type MenuRootProps = MenuRootSlotProps & {
-  /**
-   * Controlled open state
-   */
-  isOpen?: boolean;
-
-  /**
-   * Callback when open state changes
-   */
-  onOpenChange?: (isOpen: boolean) => void;
-
-  /**
-   * Default open state for uncontrolled usage
-   * @default false
-   */
-  defaultOpen?: boolean;
-};
-
-/**
- * Props for the Menu.Trigger component.
- */
-export type MenuTriggerProps = MenuTriggerSlotProps & {
-  /**
-   * Reference to the button element
-   */
-  ref?: React.Ref<HTMLButtonElement>;
-};
-
-/**
- * Props for the Menu.Item component.
- */
-export type MenuItemProps = MenuItemSlotProps &
-  RaMenuItemProps & {
-    /**
-     * Unique value for the menu item
-     */
-    value: string;
-
-    /**
-     * Whether the item is disabled
-     * @default false
-     */
-    isDisabled?: boolean;
-
-    /**
-     * Reference to the item element
-     */
-    ref?: React.Ref<HTMLDivElement>;
-  };
-```
-
-### Tier 4: Complex Compositions
-
-**Examples:** DataTable, DatePicker, Pagination, ComboBox
-
-**Type Structure:**
-
-```
-All of above + ContextValue + Helper types + Generics
-```
-
-**Files:** ~200-400 lines
-
-**Additional Patterns:**
-
-- Generic types: `<T extends object>`
-- Context value types
-- Helper types (SortDescriptor, ColumnItem, etc.)
-
-**Template:**
-
-```typescript
-import type { ReactNode } from "react";
-import type {
-  HTMLChakraProps,
-  SlotRecipeProps,
-  UnstyledProp,
-} from "@chakra-ui/react/styled-system";
-
-// ============================================================
-// RECIPE PROPS
-// ============================================================
-
-type DataTableRecipeProps = {
-  /**
-   * Density variant controlling row height and padding
-   * @default "default"
-   */
-  density?: SlotRecipeProps<"dataTable">["density"];
-  /**
-   * Whether to truncate cell content with ellipsis
-   * @default false
-   */
-  truncated?: SlotRecipeProps<"dataTable">["truncated"];
-} & UnstyledProp;
-
-// ============================================================
-// SLOT PROPS
-// ============================================================
-
-export type DataTableRootSlotProps = HTMLChakraProps<
-  "div",
-  DataTableRecipeProps
->;
-export type DataTableTableSlotProps = HTMLChakraProps<"table">;
-
-// ============================================================
-// HELPER TYPES
-// ============================================================
-
-/**
- * Sort direction from React Aria.
- */
-export type SortDirection = "ascending" | "descending";
-
-/**
- * Sort descriptor defining which column and direction to sort by.
- */
-export type SortDescriptor = {
-  column: string;
-  direction: SortDirection;
-};
-
-/**
- * Column item configuration defining structure and behavior.
- */
-export type DataTableColumnItem<T extends object = Record<string, unknown>> = {
-  /** Unique identifier for the column */
-  id: string;
-  /** Header content */
-  header: ReactNode;
-  /** Function to extract cell value */
-  accessor: (row: T) => ReactNode;
-};
-
-// ============================================================
-// MAIN PROPS
-// ============================================================
-
-/**
- * Main props for the DataTable component.
- */
-export type DataTableProps<T extends object = Record<string, unknown>> =
-  DataTableRootSlotProps & {
-    /** Column configuration array */
-    columns: DataTableColumnItem<T>[];
-    /** Row data array */
-    data: T[];
-  };
-```
+Choose the tier by reading `docs/file-type-guidelines/types.md`, section `## Component Tiers`. Then read the matching tier in `reference/component-tiers.md`. List its tier headings with `rg -n '^###' .claude/skills/writing-types/reference/component-tiers.md`.
 
 ## File Structure Requirements
 
@@ -474,7 +133,7 @@ import type {
 // ============================================================
 // Explicit documentation of props that conflict between libraries
 // Utility types, generic constraints, context values
-// Only present in Tier 3/4 components
+// Conflict documentation: any tier. Utility types, generic constraints, context values: Tier 3/4 only
 
 // ============================================================
 // MAIN PROPS
@@ -577,78 +236,9 @@ export type TabsProps = TabsSlotProps & {
 };
 ```
 
-## Generic Components
+## Generic Components and Event Handler Types
 
-### When to Use Generics
-
-For components that work with different data types:
-
-```typescript
-// For components that handle collections
-export type SelectProps<T = string> = {
-  options: SelectOption<T>[];
-  value?: T;
-  onChange?: (value: T) => void;
-};
-
-export type SelectOption<T = string> = {
-  label: string;
-  value: T;
-  isDisabled?: boolean;
-};
-```
-
-### Generic Constraints
-
-```typescript
-// With constraints
-export type DataTableProps<T extends Record<string, unknown>> = {
-  data: T[];
-  columns: ColumnDef<T>[];
-};
-
-// With default type
-export type ListProps<T = unknown> = {
-  items: T[];
-  renderItem: (item: T) => React.ReactNode;
-};
-```
-
-## Event Handler Types
-
-### Standard Events
-
-```typescript
-import { type MouseEvent, type KeyboardEvent } from "react";
-
-export type InteractiveProps = {
-  /**
-   * Callback when element is clicked
-   */
-  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
-
-  /**
-   * Callback for keyboard events
-   */
-  onKeyDown?: (event: KeyboardEvent<HTMLButtonElement>) => void;
-};
-```
-
-### Custom Events
-
-```typescript
-export type CustomComponentProps = {
-  /**
-   * Called when selection changes
-   */
-  onSelectionChange?: (selectedKeys: Set<string>) => void;
-
-  /**
-   * Called when value is committed
-   */
-  onCommit?: (value: string) => void;
-};
-```
+For generic components and event handler types, read `reference/advanced-types.md`. List its sections with `rg -n '^#' .claude/skills/writing-types/reference/advanced-types.md`.
 
 ## Create Mode
 
@@ -709,7 +299,7 @@ export type ComponentPartSlotProps = HTMLChakraProps<"span">;
 
 ### Step 5: Define Helper Types
 
-For Tier 3/4 components with conflicts:
+For components with conflicts (any tier):
 
 ```typescript
 type ConflictingProps = keyof SomeAriaProps;
@@ -773,84 +363,7 @@ export type ComponentPartProps = ComponentPartSlotProps & {
 
 ### Validation Checklist
 
-You MUST validate against these requirements:
-
-#### File Structure
-
-- [ ] Types file exists with `.ts` extension
-- [ ] Section dividers in correct order (Recipe → Slot → Helper → Main)
-- [ ] Only consumer-facing types in file
-- [ ] Internal types colocated with usage
-
-#### Naming Conventions
-
-- [ ] All naming follows conventions table
-- [ ] Props follow `{ComponentName}Props` pattern
-- [ ] React Aria imports use "Ra" prefix
-- [ ] Recipe props: `{Component}RecipeProps`
-- [ ] Slot props: `{Component}RootSlotProps`, `{Component}{Part}SlotProps`
-
-#### Type Construction
-
-- [ ] Uses `type` syntax (not `interface`)
-- [ ] Extends appropriate slot props
-- [ ] Recipe variants automatically inherited (not explicit)
-- [ ] Conflicts explicitly documented in Helper Types
-- [ ] Four-layer pattern followed
-
-#### Documentation
-
-- [ ] JSDoc comments for all properties
-- [ ] Default values documented with `@default`
-- [ ] Complex props have `@example` tags
-- [ ] Event handlers properly typed
-- [ ] No file-level JSDoc preamble
-
-#### Type Safety
-
-- [ ] Generic types used appropriately
-- [ ] No inline complex types
-- [ ] No implementation details leaked
-- [ ] Ref forwarding included in public props
-
-### Validation Report Format
-
-```markdown
-## Type Validation: {ComponentName}
-
-### Status: [✅ PASS | ❌ FAIL | ⚠️ WARNING]
-
-### Component Tier: [1 | 2 | 3 | 4]
-
-### Files Reviewed
-
-- Types file: `{component}.types.ts`
-- Slots file: `{component}.slots.tsx`
-- Recipe file: `{component}.recipe.ts`
-
-### ✅ Compliant
-
-[List passing checks]
-
-### ❌ Violations (MUST FIX)
-
-- [Violation with guideline reference and line number]
-
-### ⚠️ Warnings (SHOULD FIX)
-
-- [Non-critical improvements]
-
-### Type Structure Assessment
-
-- Layer organization: [Correct | Incorrect]
-- Naming conventions: [Followed | Violations found]
-- JSDoc coverage: [Complete | Partial | Missing]
-- Recipe integration: [Automatic | Explicit (wrong)]
-
-### Recommendations
-
-- [Specific improvements needed]
-```
+Run every item in `reference/validation-checklist.md`. Record each violation with its file and line. Write the report using `reference/validation-report.md`.
 
 ## Error Recovery
 
@@ -864,20 +377,11 @@ If validation fails:
 
 ## Reference Examples
 
-You SHOULD reference these type files:
-
-- **Tier 1**: `packages/nimbus/src/components/button/button.types.ts`
-- **Tier 2**: `packages/nimbus/src/components/text-input/text-input.types.ts`
-- **Tier 3**: `packages/nimbus/src/components/menu/menu.types.ts`
-- **Tier 4**: `packages/nimbus/src/components/data-table/data-table.types.ts`
+Use the examples in `reference/examples.md` that match the component's tier.
 
 ## RFC 2119 Key Words
 
-- **MUST** / **REQUIRED** / **SHALL** - Absolute requirement
-- **MUST NOT** / **SHALL NOT** - Absolute prohibition
-- **SHOULD** / **RECOMMENDED** - Should do unless valid reason not to
-- **SHOULD NOT** / **NOT RECOMMENDED** - Should not do unless valid reason
-- **MAY** / **OPTIONAL** - Truly optional
+MUST means required, SHOULD means recommended, and MAY means optional, as defined in [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt). The full table is in `reference/rfc-2119.md`.
 
 ---
 

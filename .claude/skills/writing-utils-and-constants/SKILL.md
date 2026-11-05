@@ -44,12 +44,12 @@ If no mode is specified, default to **validate**.
 
 ## Required Research (All Modes)
 
-Before any operation, you MUST read in parallel:
+Do not read whole guideline files. Read only the sections listed here. To find a section, run `rg -n '^## ' <file>` for its line numbers, then use the Read tool with `offset` and `limit`.
 
-1. **Utils and constants guidelines**:
-   `docs/file-type-guidelines/utils-and-constants.md`
-2. **Unit testing strategy**:
-   `docs/file-type-guidelines/unit-testing.md`
+**Before any operation, read these sections:**
+
+1. **Utils and constants guidelines**: `docs/file-type-guidelines/utils-and-constants.md`, section `## File Organization`
+2. **Unit testing**: `docs/file-type-guidelines/unit-testing.md`, section `## Testing Patterns`
 3. **Existing patterns** (study at least one):
    - `packages/nimbus/src/components/combobox/utils/` — multi-file utils with
      specs (`filters.ts` + `filters.spec.ts`, `selection.ts` +
@@ -58,6 +58,17 @@ Before any operation, you MUST read in parallel:
      util with sibling spec
    - `packages/nimbus/src/components/money-input/utils/` — utils plus an index
      barrel re-exporting multiple helpers
+
+**Read these sections only when the task needs them:**
+
+| Task | Section to read |
+| --- | --- |
+| Utility function structure | `docs/file-type-guidelines/utils-and-constants.md`, `## Utils Patterns` |
+| Constant structure | `docs/file-type-guidelines/utils-and-constants.md`, `## Constants Patterns` |
+| TypeScript in utils | `docs/file-type-guidelines/utils-and-constants.md`, `## TypeScript Best Practices` |
+| Test file structure | `docs/file-type-guidelines/unit-testing.md`, `## File Structure` |
+| Common test patterns | `docs/file-type-guidelines/unit-testing.md`, `## Common Test Patterns` |
+| Async code or mocks under test | `docs/file-type-guidelines/unit-testing.md`, `## Async Testing` or `## Mocking` |
 
 ---
 
@@ -88,131 +99,7 @@ packages/nimbus/src/components/{component}/
 
 ### Validation Checklist
 
-Validate against these requirements. Each violation MUST be reported with the
-specific file path and line number.
-
-#### Category 1: Location & Inlining (3 items)
-
-- [ ] **No inlined utils in main file**: `{component}.tsx` MUST NOT export pure
-      helper functions. Detection: any `export function name(...)` or
-      `export const name = (...) => ...` whose return value is not JSX is a
-      utility and belongs in `utils/`.
-- [ ] **Utils folder exists**: If the component has utilities, they live under
-      `packages/nimbus/src/components/{component}/utils/`.
-- [ ] **Constants folder exists** (if applicable): Constants live under
-      `packages/nimbus/src/components/{component}/constants/`.
-
-#### Category 2: File Organization (4 items)
-
-- [ ] **One purpose per file**: A solo helper lives in its own
-      `{kebab-name}.ts`. Cohesive helpers merge into a single file when
-      (1) they share a meaningful name token (≥4 chars after dropping generic
-      verbs and connectors), (2) one is a factory for another's signature, or
-      (3) they form a direct dependency chain. Merged files are named for the
-      shared token (agent-noun pluralized: `filters.ts`, `validators.ts`).
-      Banned: `helpers.ts`, `utils.ts`, `misc.ts`, or naming a merged file
-      after a single export. Promotable and component-coupled helpers do not
-      belong in the same file. See
-      [File Organization](../../../docs/file-type-guidelines/utils-and-constants.md#file-organization)
-      in `utils-and-constants.md` for the full rule.
-- [ ] **Kebab-case filename**: File name matches the function/topic name in
-      kebab-case.
-- [ ] **Index barrel**: `utils/index.ts` re-exports every util:
-      `export { getInitials } from "./get-initials";`
-- [ ] **Constants index barrel** (if applicable): `constants/index.ts`
-      re-exports every constant.
-
-#### Category 3: Purity (4 items)
-
-- [ ] **No React imports**: Util files MUST NOT import React, hooks, or any
-      `react-aria` modules. If you need React, it's a hook — move it to
-      `hooks/` instead.
-- [ ] **No JSX**: Util files MUST NOT return JSX. Files containing JSX are
-      components, not utilities.
-- [ ] **No side effects at module level**: Top-level statements must be
-      `import`, `export`, type definitions, or `const` declarations. No
-      mutation, no I/O, no DOM access at module scope.
-- [ ] **Deterministic**: Pure functions — same input always yields same
-      output, no reliance on `Date.now()`, `Math.random()`, or external state
-      (unless explicitly passed as a parameter).
-
-#### Category 4: Documentation (2 items)
-
-- [ ] **JSDoc on every export**: Each exported function/constant has a JSDoc
-      block explaining purpose, parameter contracts, and any non-obvious
-      behavior (e.g. codepoint safety, locale handling).
-- [ ] **No "WHAT" comments**: JSDoc explains WHY/contracts. Don't restate the
-      function signature in prose.
-
-#### Category 5: Type Safety (3 items)
-
-- [ ] **Explicit parameter types**: All parameters typed (TypeScript may
-      infer; the export signature should still be explicit).
-- [ ] **`as const` for constants**: Constants use `as const` assertions for
-      narrowest types.
-- [ ] **No `any`**: No `any` types without an inline comment justifying the
-      use.
-
-#### Category 6: Testing (4 items)
-
-- [ ] **Sibling spec exists**: Every `{name}.ts` has a sibling
-      `{name}.spec.ts` (Vitest, JSDOM).
-- [ ] **Edge case coverage**: Tests cover empty/undefined/null inputs,
-      boundary values, and codepoint-sensitive cases (emoji surrogate pairs,
-      CJK, RTL) where applicable.
-- [ ] **Imports from sibling**: Spec imports the unit under test from
-      `./{name}`, NOT from a barrel or the main component file.
-- [ ] **Tests pass**: `pnpm test:dev packages/nimbus/src/components/{component}/utils/`
-      reports 0 failures.
-
-### Total Validation Items: 20 across 6 categories
-
----
-
-## Validation Report Format
-
-```markdown
-## Utils & Constants Validation: {ComponentName}
-
-### Status: [✅ PASS | ❌ FAIL | ⚠️ WARNING]
-
-### Files Reviewed
-
-- Utils dir: `packages/nimbus/src/components/{component}/utils/`
-- Constants dir: `packages/nimbus/src/components/{component}/constants/` (if
-  applicable)
-- Main file scanned for inlined helpers:
-  `packages/nimbus/src/components/{component}/{component}.tsx`
-
----
-
-### ✅ Compliant (X/20)
-
-[Per category breakdown]
-
----
-
-### ❌ Violations (MUST FIX)
-
-- **`{file}:{line}`**: [violation description]
-  - **Guideline**: [reference to utils-and-constants.md section or this
-    skill's checklist]
-  - **Fix**: [how to resolve, including target file path]
-
----
-
-### ⚠️ Warnings (SHOULD FIX)
-
-[Same format as violations]
-
----
-
-### Next Steps
-
-1. Fix all ❌ violations first
-2. Run tests: `pnpm test:dev packages/nimbus/src/components/{component}/utils/`
-3. Re-validate: `writing-utils-and-constants validate {ComponentName}`
-```
+Run every item in `reference/validation-checklist.md`. Record each violation with its file and line. Write the report using `reference/validation-report.md`.
 
 ---
 
@@ -229,7 +116,7 @@ already in the [Required Research](#required-research-all-modes) list above).
 One-line summary for quick reference: **merge into a single family file when
 helpers share a meaningful name token (≥4 chars after dropping generic verbs
 and connectors), when one is a factory for another's signature, or when one
-directly depends on the other. Otherwise solo files. Banned filenames:
+directly depends on the other. Chains of pairs are reported, not merged. Otherwise solo files. Banned filenames:
 `helpers.ts`, `utils.ts`, `misc.ts`.**
 
 ---
@@ -248,7 +135,7 @@ When adding a new helper:
 4. **Check each merge criterion** (shared token / factory relationship /
    direct dependency) against each existing helper.
 5. **If any criterion fires**, merge into a single file named per the
-   file-naming rule. The PR that adds the connecting helper does the rename
+   file-naming rule. Merge only the pair where the criterion fires. Do not pull in a third file that shares a token with only one of them. Report chains. The PR that adds the connecting helper does the rename
    and barrel update — not punted as follow-up.
 6. **Update the sibling `*.spec.ts`** the same way (one source file = one
    spec file).

@@ -286,13 +286,13 @@ type ButtonRecipeProps = {
 // SLOT PROPS
 // ============================================================
 
-export type ButtonRootSlotProps = HTMLChakraProps<"button", ButtonRecipeProps>;
+export type ButtonRootProps = HTMLChakraProps<"button", ButtonRecipeProps>;
 
 // ============================================================
 // MAIN PROPS
 // ============================================================
 
-export type ButtonProps = ButtonRootSlotProps & {
+export type ButtonProps = ButtonRootProps & {
   /**
    * Component-specific prop
    * @default "default"
