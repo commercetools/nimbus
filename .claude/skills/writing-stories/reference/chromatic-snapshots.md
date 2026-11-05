@@ -21,7 +21,7 @@ Four questions decide every snapshot call, then a fifth step packs the survivors
 
 **The rules themselves live in `docs/file-type-guidelines/stories.md`** (its
 "Chromatic Visual Regression Snapshots" section) - terse rules plus paste-ready
-snippets, already loaded by Required Research. This skill's **Chromatic
+snippets. Read that section for a VRT audit (`## Chromatic Visual Regression Snapshots`). This skill's **Chromatic
 Snapshots** validation checklist repeats them as checkboxes under the same five
 headings, and is what you tick off when validating.
 
