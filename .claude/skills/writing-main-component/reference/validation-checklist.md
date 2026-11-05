@@ -213,6 +213,14 @@ guideline references.
 - [ ] **Build succeeds**: Component builds without errors:
       `pnpm --filter @commercetools/nimbus build`
 
-### Total Validation Items: 64 across 10 categories
+## How to Count
+
+Do not use a fixed number. Count the items in this file each time:
+
+```bash
+rg -c '^- \[ \]' reference/validation-checklist.md
+```
+
+Run the command from this skill's folder. The result is N in the report.
 
 ---
