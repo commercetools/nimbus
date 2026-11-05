@@ -4,6 +4,13 @@
 
 When validation completes, you MUST provide a report in this format:
 
+**Status rule** (the same in every validation report):
+- `FAIL` if any MUST item fails.
+- `WARNING` if no MUST item fails and a SHOULD item fails.
+- `PASS` if no item fails.
+
+Items that cannot be checked in read-only mode are listed under Not verified. They do not change the status.
+
 ```markdown
 ## Main Component Validation: {ComponentName}
 
