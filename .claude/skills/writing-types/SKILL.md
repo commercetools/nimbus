@@ -386,11 +386,7 @@ Use the examples in `reference/examples.md` that match the component's tier.
 
 ## RFC 2119 Key Words
 
-- **MUST** / **REQUIRED** / **SHALL** - Absolute requirement
-- **MUST NOT** / **SHALL NOT** - Absolute prohibition
-- **SHOULD** / **RECOMMENDED** - Should do unless valid reason not to
-- **SHOULD NOT** / **NOT RECOMMENDED** - Should not do unless valid reason
-- **MAY** / **OPTIONAL** - Truly optional
+MUST means required, SHOULD means recommended, and MAY means optional, as defined in [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt). The full table is in `reference/rfc-2119.md`.
 
 ---
 
