@@ -134,3 +134,48 @@ expand what the library accepts as valid input.
 Every change needs a reason. If the change is not a fix (bug fix, typo, config
 tweak, docs for existing behavior, or test for existing behavior), it SHOULD
 have an OpenSpec proposal via `/opsx:propose` before implementation.
+
+## MCP Server Tools
+
+This project includes integrated MCP (Model Context Protocol) tooling that
+provides automated development workflows. Leverage these tools for automated
+tasks:
+
+### Available MCP Servers
+
+- **context7**: Primary interface for querying library documentation for React
+  Aria, Chakra UI, and other libraries before implementing features.
+- **playwright**: Browser automation for visual testing and web interaction to
+  verify UI changes and test user flows.
+- **sequential-thinking**: For complex planning and multi-step reasoning when
+  tackling large features or architecture design decisions that require
+  systematic analysis.
+
+### Usage Guidelines
+
+- **Always** use context7 to find relevant documentation before implementing new
+  components or patterns
+- **Proactively** use playwright to visually verify UI changes and capture
+  screenshots for documentation
+- **Leverage** sequential-thinking for breaking down complex tasks into
+  manageable steps
+- These tools are pre-configured and ready to use - no additional setup required
+
+### Agent-Driven Development Workflow
+
+**Use specialized agents proactively in an iterative cycle for all component
+development:**
+
+1. **Research Phase** (nimbus-researcher): Gather requirements, patterns,
+   library documentation, and architectural guidance before writing any code
+2. **Implementation Phase** (nimbus-coder): Write code strictly according to the
+   guidelines and patterns identified in research
+3. **Review Phase** (nimbus-reviewer): Validate code compliance against Nimbus
+   standards and guidelines
+4. **Iteration**: If review identifies non-compliance or improvement areas,
+   return to implementation phase and repeat until all standards are met
+
+Invoke agents autonomously when task complexity warrants it - don't wait for
+explicit user requests. The goal is to leverage automation intelligently by
+recognizing when a task's scope or requirements align with an agent's
+capabilities.
