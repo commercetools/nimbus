@@ -6,7 +6,7 @@ You MUST validate main component files against these requirements organized by
 category. Each violation MUST be reported with specific line numbers and
 guideline references.
 
-#### Category 1: File Structure & Architecture (7 items)
+#### Category 1: File Structure & Architecture
 
 - [ ] **File location**: Component file exists at correct location:
       `packages/nimbus/src/components/{component}/{component}.tsx`
@@ -36,7 +36,7 @@ guideline references.
       `export const name = (...) => ...` where the return value is not JSX is a
       utility, not a component.
 
-#### Category 2: Component Type & Pattern (7 items)
+#### Category 2: Component Type & Pattern
 
 - [ ] **Architecture decision**: Component type (single vs compound) matches
       requirements
@@ -55,7 +55,7 @@ guideline references.
 - [ ] **Type exports**: Component types properly exported (re-export from types
       file or inline)
 
-#### Category 3: Ref Forwarding (6 items)
+#### Category 3: Ref Forwarding
 
 - [ ] **Ref prop acceptance**: Component accepts `ref` prop in props interface
 - [ ] **Local ref creation**: Local ref created with `useRef<HTMLElement>(null)`
@@ -69,7 +69,7 @@ guideline references.
 - [ ] **Compound ref**: For compound Root components, ref forwarding implemented
       if needed
 
-#### Category 4: Props Management (8 items)
+#### Category 4: Props Management
 
 - [ ] **Props destructuring**: Props destructured appropriately at component
       entry
@@ -92,7 +92,7 @@ guideline references.
       `onValueChange`, `onTextChange`) are component abstractions, not DOM
       events. Destructure them before spreading props to DOM elements
 
-#### Category 5: React Aria Integration (8 items)
+#### Category 5: React Aria Integration
 
 - [ ] **Ra prefix imports**: React Aria imports use `Ra` prefix consistently, except `useObjectRef` (see `docs/naming-conventions.md`):
   - `import { Button as RaButton } from 'react-aria-components'`
@@ -111,7 +111,7 @@ guideline references.
 - [ ] **State management**: Uses React Aria hooks for complex state
       (useToggleState, useSelectState, etc.) when applicable
 
-#### Category 6: Accessibility (WCAG 2.1 AA) (9 items)
+#### Category 6: Accessibility (WCAG 2.1 AA)
 
 - [ ] **Semantic HTML**: Uses semantic HTML elements (button, nav, main) OR
       proper ARIA roles
@@ -131,7 +131,7 @@ guideline references.
 - [ ] **Form associations**: For form elements, labels associated with inputs,
       error messages announced
 
-#### Category 7: JSDoc Documentation (8 items)
+#### Category 7: JSDoc Documentation
 
 - [ ] **Main component JSDoc**: Main export has JSDoc block with heading
       separator:
@@ -164,7 +164,7 @@ guideline references.
 - [ ] **Complete example**: For compound components, main JSDoc shows complete
       usage example with all parts
 
-#### Category 8: Import Conventions (7 items)
+#### Category 8: Import Conventions
 
 - [ ] **Ra prefix requirement**: React Aria imports NEVER unaliased (always use
       `Ra` prefix). Exception: `useObjectRef` is imported without the prefix.
@@ -186,7 +186,7 @@ guideline references.
 - [ ] **Import organization**: Imports organized logically (React, third-party,
       internal, relative)
 
-#### Category 9: Type Safety (6 items)
+#### Category 9: Type Safety
 
 - [ ] **Explicit typing**: Component explicitly typed with props interface:
       `(props: ComponentProps) => JSX.Element`
@@ -199,7 +199,7 @@ guideline references.
       collections
 - [ ] **No any types**: No `any` types without explicit comment justification
 
-#### Category 10: Integration & Testing (6 items)
+#### Category 10: Integration & Testing
 
 - [ ] **Barrel export**: Component exported from directory's `index.ts` barrel
       export
