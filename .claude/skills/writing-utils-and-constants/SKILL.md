@@ -44,12 +44,12 @@ If no mode is specified, default to **validate**.
 
 ## Required Research (All Modes)
 
-Before any operation, you MUST read in parallel:
+Do not read whole guideline files. Read only the sections listed here. To find a section, run `rg -n '^## ' <file>` for its line numbers, then use the Read tool with `offset` and `limit`.
 
-1. **Utils and constants guidelines**:
-   `docs/file-type-guidelines/utils-and-constants.md`
-2. **Unit testing strategy**:
-   `docs/file-type-guidelines/unit-testing.md`
+**Before any operation, read these sections:**
+
+1. **Utils and constants guidelines**: `docs/file-type-guidelines/utils-and-constants.md`, section `## File Organization`
+2. **Unit testing**: `docs/file-type-guidelines/unit-testing.md`, section `## Testing Patterns`
 3. **Existing patterns** (study at least one):
    - `packages/nimbus/src/components/combobox/utils/` — multi-file utils with
      specs (`filters.ts` + `filters.spec.ts`, `selection.ts` +
@@ -58,6 +58,17 @@ Before any operation, you MUST read in parallel:
      util with sibling spec
    - `packages/nimbus/src/components/money-input/utils/` — utils plus an index
      barrel re-exporting multiple helpers
+
+**Read these sections only when the task needs them:**
+
+| Task | Section to read |
+| --- | --- |
+| Utility function structure | `docs/file-type-guidelines/utils-and-constants.md`, `## Utils Patterns` |
+| Constant structure | `docs/file-type-guidelines/utils-and-constants.md`, `## Constants Patterns` |
+| TypeScript in utils | `docs/file-type-guidelines/utils-and-constants.md`, `## TypeScript Best Practices` |
+| Test file structure | `docs/file-type-guidelines/unit-testing.md`, `## File Structure` |
+| Common test patterns | `docs/file-type-guidelines/unit-testing.md`, `## Common Test Patterns` |
+| Async code or mocks under test | `docs/file-type-guidelines/unit-testing.md`, `## Async Testing` or `## Mocking` |
 
 ---
 
