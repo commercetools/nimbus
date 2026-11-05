@@ -23,7 +23,7 @@ specific file path and line number.
       (1) they share a meaningful name token (≥4 chars after dropping generic
       verbs and connectors), (2) one is a factory for another's signature, or
       (3) they form a direct dependency chain. Merged files are named for the
-      shared token (agent-noun pluralized: `filters.ts`, `validators.ts`).
+      shared token (agent-noun pluralized: `filters.ts`, `validators.ts`). Chains are not merged: when A and B share a token and B and C share one, but A and C do not, report the chain instead of merging all three.
       Banned: `helpers.ts`, `utils.ts`, `misc.ts`, or naming a merged file
       after a single export. Promotable and component-coupled helpers do not
       belong in the same file. See

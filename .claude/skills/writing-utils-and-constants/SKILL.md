@@ -116,7 +116,7 @@ already in the [Required Research](#required-research-all-modes) list above).
 One-line summary for quick reference: **merge into a single family file when
 helpers share a meaningful name token (≥4 chars after dropping generic verbs
 and connectors), when one is a factory for another's signature, or when one
-directly depends on the other. Otherwise solo files. Banned filenames:
+directly depends on the other. Chains of pairs are reported, not merged. Otherwise solo files. Banned filenames:
 `helpers.ts`, `utils.ts`, `misc.ts`.**
 
 ---
@@ -135,7 +135,7 @@ When adding a new helper:
 4. **Check each merge criterion** (shared token / factory relationship /
    direct dependency) against each existing helper.
 5. **If any criterion fires**, merge into a single file named per the
-   file-naming rule. The PR that adds the connecting helper does the rename
+   file-naming rule. Merge only the pair where the criterion fires. Do not pull in a third file that shares a token with only one of them. Report chains. The PR that adds the connecting helper does the rename
    and barrel update — not punted as follow-up.
 6. **Update the sibling `*.spec.ts`** the same way (one source file = one
    spec file).
