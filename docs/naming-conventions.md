@@ -265,6 +265,8 @@ import { useButton } from "react-aria";
 - Hooks: `useRaButton`, `useRaMenu`
 - Types: `RaAriaButtonProps`, `RaMenuTriggerProps`
 
+**Exception:** `useObjectRef` is imported without the prefix: `import { useObjectRef } from "react-aria";`. Component files import it this way.
+
 ---
 
 ## Slot Name Mapping (CRITICAL)
