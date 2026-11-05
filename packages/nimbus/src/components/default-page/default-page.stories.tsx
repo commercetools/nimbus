@@ -2234,6 +2234,86 @@ export const CollapseHeaderConstrained: Story = {
 };
 
 /**
+ * Scroll-driven collapse: the width of the page changes while the header is
+ * pinned. The header is measured again after every size change, and the parts
+ * that the collapsed form hides (subtitle, back link label) must stay hidden in
+ * every frame in between. The width goes down until the title wraps, which
+ * changes the height of the header, and back up.
+ */
+export const CollapseHeaderResizeWhilePinned: Story = {
+  render: () => (
+    <Box data-testid="frame" width="900px">
+      <Box data-testid="scroll-container" height="500px" overflow="auto">
+        <DefaultPage.Root layout="flexible" stickyHeader collapseHeaderOnScroll>
+          <CollapsingHeader />
+          <DefaultPage.Content>
+            <LongFormContent fields={16} />
+          </DefaultPage.Content>
+        </DefaultPage.Root>
+      </Box>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const header = getHeader(canvasElement);
+    const frame = canvas.getByTestId("frame");
+    const scroller = canvas.getByTestId("scroll-container");
+    const subtitle = canvas.getByText("SKU-12345 · Last modified today");
+    const backLink = canvas.getByRole("link", { name: "Back to products" });
+    const backLinkLabel = backLink.querySelector<HTMLElement>(
+      ".nimbus-default-page__backLinkLabel"
+    )!;
+
+    await step("Scrolls until the header is pinned", async () => {
+      await waitFor(() =>
+        expect(scroller.scrollHeight).toBeGreaterThan(scroller.clientHeight)
+      );
+      await waitFor(() => expect(header.style.top).toMatch(/^-\d/));
+      scroller.scrollTop = -parseFloat(header.style.top) + 100;
+      await waitForPinned(header, true);
+      await waitForRest(header);
+      await expect(Number(getComputedStyle(subtitle).opacity)).toBe(0);
+      await expect(Number(getComputedStyle(backLinkLabel).opacity)).toBe(0);
+    });
+
+    await step(
+      "The hidden parts stay hidden in every frame while the width changes",
+      async () => {
+        const widths: number[] = [];
+        for (let width = 900; width >= 420; width -= 20) widths.push(width);
+        for (let width = 420; width <= 900; width += 20) widths.push(width);
+
+        const headerHeights = new Set<number>();
+        let mostVisible = 0;
+        for (const width of widths) {
+          frame.style.width = `${width}px`;
+          // Two frames per size: the first one after the change, and the next.
+          for (let frames = 0; frames < 2; frames += 1) {
+            await nextFrame();
+            mostVisible = Math.max(
+              mostVisible,
+              Number(getComputedStyle(subtitle).opacity),
+              Number(getComputedStyle(backLinkLabel).opacity)
+            );
+          }
+          headerHeights.add(Math.round(header.getBoundingClientRect().height));
+        }
+
+        // The test only means something if the header was measured again.
+        await expect(headerHeights.size).toBeGreaterThan(1);
+        await expect(mostVisible).toBeLessThan(0.05);
+      }
+    );
+
+    await step("Ends at rest with the original width", async () => {
+      frame.style.width = "900px";
+      await waitForPinned(header, true);
+      await waitForRest(header);
+    });
+  },
+};
+
+/**
  * A title that wraps in the full form (a 640px wide page). The title keeps
  * its lines in the collapsed form, at the smaller size, and the title row
  * grows to fit them. For one line, truncate the title

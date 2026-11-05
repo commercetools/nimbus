@@ -189,6 +189,9 @@ export function useScrollDrivenHeader({
       const size = `${width}x${height}`;
       if (size === lastSize) return;
       lastSize = size;
+      // The form the header has now. It is shown again at the end, so the
+      // hidden parts do not come back for the frames until the observer reports.
+      const previous = current;
 
       cancelRestAtStart();
       stopAnimations();
@@ -262,8 +265,8 @@ export function useScrollDrivenHeader({
         { threshold: [thresholds.pinned, thresholds.full] }
       );
       // The first report applies the state again on the new measurements.
-      current = "full";
-      show("full");
+      current = previous;
+      show(previous);
       stateObserver.observe(header);
     };
 

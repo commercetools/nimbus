@@ -152,6 +152,15 @@ form, plus the extra height of a title with several lines.
 - **THEN** the header SHALL show its full form at once, also while the mouse
   pointer is over the header
 
+#### Scenario: Size change while pinned
+
+- **WHEN** the header is pinned
+- **AND** the size of the header changes, for example because the page width
+  changes
+- **THEN** the parts that the collapsed form hides SHALL stay hidden in every
+  frame
+- **AND** the header SHALL be measured again for the new size
+
 ### Requirement: One-Step Header Collapse
 
 In the one-step change, the header SHALL switch between its full and its

@@ -230,6 +230,11 @@ scroll-driven change.
       in WebKit, and
       `pnpm exec openspec validate default-page-compact-header --type change --strict`,
       all without errors.
+- [x] 6.10 A size change while the header is pinned keeps the form: measuring
+      again must not show the hidden parts for a frame. Verify with
+      `CollapseHeaderResizeWhilePinned`, which changes the page width in steps
+      and checks the opacity of the subtitle and the back link label on every
+      frame (fails with `--retry=0` before the fix).
 
 ## Workflow follow-up
 
