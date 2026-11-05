@@ -25,6 +25,10 @@ with TypeScript, React Aria Components, and Chakra UI v3.
 - **Documentation**: JSDoc-extracted API documentation site and Storybook for
   component development
 
+## Keep Docs and Tooling in Sync
+
+When you change a pattern (file structure, naming, code style, template format), update every skill, command, guideline, and template that documents it. A pattern change is not complete until the old pattern is gone from all of them. Details: `docs/maintaining-docs.md`.
+
 ## Package Execution
 
 Always use `pnpx` or `pnpm exec` instead of `npx` to execute packages:
