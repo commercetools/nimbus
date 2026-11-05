@@ -35,7 +35,7 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   ...props
 }: DataTableBodyProps<T>) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
-  const { activeColumns, renderEmptyState, getRowKey } =
+  const { activeColumns, renderEmptyState, getRowKey, draggableKeys } =
     useStableDataTableContext<T>();
   const { sortedRows, expanded, pinnedRows, pinnedRowIds } =
     useInteractionContext<T>();
@@ -64,6 +64,8 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   expandedRef.current = expanded;
   const pinnedRowsRef = useRef(pinnedRows);
   pinnedRowsRef.current = pinnedRows;
+  const draggableKeysRef = useRef(draggableKeys);
+  draggableKeysRef.current = draggableKeys;
   // Position of each pinned row on screen, looked up once per row instead of
   // searching `pinnedRowIds` for every pinned row.
   const pinnedIndexById = useMemo(
@@ -90,6 +92,9 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
         isFirstPinned: pinnedIdx === 0,
         isLastPinned: pinnedIdx !== undefined && pinnedIdx === pinnedCount - 1,
         isSinglePinned: pinnedIdx !== undefined && pinnedCount === 1,
+        isDragDisabled:
+          draggableKeysRef.current !== undefined &&
+          !draggableKeysRef.current.has(rowKey),
       };
       // React Aria derives the collection key from
       // `rendered.props.id ?? item.key ?? item.id` (see `useCachedChildren`),
@@ -133,6 +138,7 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
           expanded,
           pinnedRows,
           pinnedRowIds,
+          draggableKeys,
           ...(dependenciesFromProps ?? []),
         ]}
       >

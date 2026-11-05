@@ -174,6 +174,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   isFirstPinned = false,
   isLastPinned = false,
   isSinglePinned = false,
+  isDragDisabled = false,
   ...props
 }: DataTableRowProps<T> & DataTableRowPerRowProps) => {
   const {
@@ -694,16 +695,18 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
            * need to be in the same order in the header and row components*/}
           {allowsDragging && (
             <RaCell className="data-table-sticky-cell" data-slot="drag">
-              <IconButton
-                slot="drag"
-                data-drag-handle=""
-                size="2xs"
-                variant="ghost"
-                colorPalette="neutral"
-                aria-label={msg.format("dragRow")}
-              >
-                <DragIndicator />
-              </IconButton>
+              {!isDragDisabled && (
+                <IconButton
+                  slot="drag"
+                  data-drag-handle=""
+                  size="2xs"
+                  variant="ghost"
+                  colorPalette="neutral"
+                  aria-label={msg.format("dragRow")}
+                >
+                  <DragIndicator />
+                </IconButton>
+              )}
             </RaCell>
           )}
           {/* Selection checkbox cell if selection is enabled */}
