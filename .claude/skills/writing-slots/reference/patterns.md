@@ -13,7 +13,7 @@ import {
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
 import { buttonRecipe } from "./button.recipe";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/type-utils";
 
 const { withContext } = createRecipeContext({
   recipe: buttonRecipe,
@@ -36,7 +36,7 @@ import {
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
 import { menuSlotRecipe } from "./menu.recipe";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/type-utils";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   recipe: menuSlotRecipe,

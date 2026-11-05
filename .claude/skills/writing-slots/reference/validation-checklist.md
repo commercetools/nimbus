@@ -7,7 +7,7 @@ You MUST validate against these requirements:
 #### File Structure
 
 - [ ] Slots file exists with `.tsx` extension
-- [ ] `SlotComponent` utility type imported from `../utils/slot-types`
+- [ ] `SlotComponent` utility type imported from `@/type-utils`
 - [ ] Recipe imported from recipe file
 - [ ] Context created with appropriate function
 

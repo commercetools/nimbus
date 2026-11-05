@@ -149,7 +149,7 @@ export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
 **ALL slot component exports MUST include explicit return type annotation:**
 
 ```typescript
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/type-utils";
 
 export const ComponentSlot: SlotComponent<TElement, TProps> = withContext<
   TElement,
@@ -170,7 +170,7 @@ export const ComponentSlot: SlotComponent<TElement, TProps> = withContext<
 ### Type Definition
 
 ```typescript
-// packages/nimbus/src/components/utils/slot-types.ts
+// packages/nimbus/src/type-utils/slot-types.ts
 export type SlotComponent<
   TElement = Element,
   TProps = Record<string, unknown>,
@@ -218,7 +218,7 @@ import {
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
 import { componentRecipe } from "./component.recipe"; // Import recipe
-import type { SlotComponent } from "../utils/slot-types"; // MUST import
+import type { SlotComponent } from "@/type-utils"; // MUST import
 ```
 
 ### Step 3: Create Context
