@@ -208,7 +208,7 @@ guideline references.
 - [ ] **Play functions**: Stories include play functions for interactive
       components
 - [ ] **Recipe registered**: If component has styling, recipe registered in
-      theme: `packages/nimbus/src/theme/recipes.ts`
+      theme. Find the registration with `rg -il "<component>" packages/nimbus/src/theme`.
 - [ ] **i18n defined**: If component has user-facing text, i18n messages defined
 - [ ] **Build succeeds**: Component builds without errors:
       `pnpm --filter @commercetools/nimbus build`
