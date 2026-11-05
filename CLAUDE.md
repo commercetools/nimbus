@@ -38,17 +38,6 @@ pnpm lint                                           # lint all files
 
 ## Code Architecture
 
-### Package Structure
-
-- **packages/nimbus**: Core UI component library with React Aria Components
-- **packages/tokens**: Design tokens (colors, spacing, typography, animations)
-- **packages/nimbus-icons**: SVG icons wrapped as React components (Material
-  Icons + custom)
-- **packages/color-tokens**: Brand-specific color definitions
-- **packages/i18n**: Translation messages and internationalization support
-- **apps/docs**: Documentation SPA with interactive examples and auto-generated
-  content
-
 ### Chakra UI Imports (CRITICAL)
 
 **NEVER use barrel imports from `@chakra-ui/react`.** Always use modular subpath
