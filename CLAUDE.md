@@ -55,15 +55,6 @@ import { mergeRefs } from "@/utils"; // local utility, not from Chakra
 import { defineRecipe, Box, mergeRefs } from "@chakra-ui/react";
 ```
 
-### Component Development
-
-For comprehensive component development guidance, see:
-
-- Component Guidelines: `./docs/component-guidelines.md`
-- Architecture Decisions:
-  `./docs/file-type-guidelines/architecture-decisions.md`
-- File Review Protocol: `./docs/file-review-protocol.md`
-
 ## MCP Server Tools
 
 This project includes integrated MCP (Model Context Protocol) tooling that

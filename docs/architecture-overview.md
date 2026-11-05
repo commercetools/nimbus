@@ -29,3 +29,12 @@ with TypeScript, React Aria Components, and Chakra UI v3.
 - **packages/i18n**: Translation messages and internationalization support
 - **apps/docs**: Documentation SPA with interactive examples and auto-generated
   content
+
+### Component Development
+
+For comprehensive component development guidance, see:
+
+- Component Guidelines: `./docs/component-guidelines.md`
+- Architecture Decisions:
+  `./docs/file-type-guidelines/architecture-decisions.md`
+- File Review Protocol: `./docs/file-review-protocol.md`
