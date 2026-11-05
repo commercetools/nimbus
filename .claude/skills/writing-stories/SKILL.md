@@ -63,13 +63,11 @@ If no mode is specified, default to **create**.
 
 ## Required Research (All Modes)
 
-Before implementation, you MUST research in parallel:
+Do not read whole guideline files. Read only the sections listed here. To find a section, run `rg -n '^## ' <file>` to get its line numbers, then use the Read tool with `offset` and `limit` for that section.
 
-1. **Read** story guidelines and type matrix:
+**Before implementation, read this section:**
 
-   ```bash
-   cat docs/file-type-guidelines/stories.md
-   ```
+1. `docs/file-type-guidelines/stories.md`, section `## Story Type Requirements by Component Category`
 
 2. **Analyze** component characteristics to determine story type
 
@@ -79,18 +77,19 @@ Before implementation, you MUST research in parallel:
    find packages/nimbus/src -name "*.stories.tsx"
    ```
 
-**Conditionally, for a first-pass VRT audit only** - when you are deciding _which_
-stories snapshot rather than writing one to a settled spec:
+**Read these sections only when the task needs them:**
 
-```bash
-cat docs/chromatic-visual-testing.md
-```
+| Task | Section to read |
+| --- | --- |
+| Story type is unclear | `docs/file-type-guidelines/stories.md`, `## Story Type Decision Flowchart` |
+| Where stories go and how to organize them | `docs/file-type-guidelines/stories.md`, `## Story Organization` |
+| File naming and structure | `docs/file-type-guidelines/stories.md`, `## File Structure` |
+| Play functions | `docs/file-type-guidelines/stories.md`, `## Play Functions (CRITICAL)`, and `reference/play-patterns.md` |
+| Async tests | `docs/file-type-guidelines/stories.md`, `## Async Testing Patterns` |
+| Decorators | `docs/file-type-guidelines/stories.md`, `## Story Decorators` |
+| Clean testing patterns | `docs/file-type-guidelines/stories.md`, `## Clean Testing Patterns (Storybook)` |
 
-That doc is rationale and worked precedent, not instructions; it is long and
-adds nothing for mechanical authoring. See
-"Chromatic Snapshots: What Gets Captured" below for the specific calls that
-warrant reading it. For CI behavior (triggers, baselines, gating) see
-`docs/chromatic-ci.md` - never needed to author a story.
+**Conditionally, for a first-pass VRT audit only**: read `docs/chromatic-visual-testing.md`. It is rationale and worked precedent, not instructions. Read `reference/chromatic-snapshots.md` for the specific calls that matter. CI behavior (triggers, baselines, gating) is in `docs/chromatic-ci.md`, which authoring never needs.
 
 ## Story Requirements by Component Type
 
