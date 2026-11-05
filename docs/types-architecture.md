@@ -209,9 +209,9 @@ type ButtonRecipeProps = {
   variant?: RecipeProps<"button">["variant"];
 } & UnstyledProp;
 
-export type ButtonRootSlotProps = HTMLChakraProps<"button", ButtonRecipeProps>;
+export type ButtonRootProps = HTMLChakraProps<"button", ButtonRecipeProps>;
 
-export type ButtonProps = ButtonRootSlotProps & {
+export type ButtonProps = ButtonRootProps & {
   isLoading?: boolean;
   ref?: React.Ref<HTMLButtonElement>;
 };

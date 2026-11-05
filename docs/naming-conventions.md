@@ -177,6 +177,8 @@ export type ButtonRootProps = HTMLChakraProps<"button", ButtonRecipeProps>;
 export const ButtonRoot: SlotComponent<HTMLButtonElement, ButtonRootProps> = ...
 ```
 
+Button's files still export `ButtonRootSlotProps`. Renaming it changes a public export, so it is a separate change. The examples in this guide use the rule name.
+
 **Multi-Slot Components:**
 
 | Pattern        | Example                          |
@@ -204,7 +206,7 @@ The public API props type always uses `{Component}Props`:
 
 ```typescript
 // ✅ CORRECT
-export type ButtonProps = ButtonRootSlotProps & {
+export type ButtonProps = ButtonRootProps & {
   isLoading?: boolean;
   startIcon?: React.ReactNode;
 };
@@ -633,8 +635,8 @@ export const Button = () => {};
 
 // File: button.types.ts
 export type ButtonRecipeProps = {};
-export type ButtonRootSlotProps = HTMLChakraProps<"button", ButtonRecipeProps>;
-export type ButtonProps = ButtonRootSlotProps & { isLoading?: boolean };
+export type ButtonRootProps = HTMLChakraProps<"button", ButtonRecipeProps>;
+export type ButtonProps = ButtonRootProps & { isLoading?: boolean };
 
 // File: button.recipe.ts
 export const buttonRecipe = defineRecipe({/* ... */});

@@ -20,7 +20,7 @@ requirements across component types, test files, and documentation.
 Every property in a public props interface MUST have a JSDoc comment:
 
 ```typescript
-export type ButtonProps = ButtonRootSlotProps & {
+export type ButtonProps = ButtonRootProps & {
   /**
    * Whether the button is in a loading state
    * @default false
@@ -554,7 +554,7 @@ documentation guidelines.
 ### Tier 1: Simple Component (Button)
 
 ```typescript
-export type ButtonProps = ButtonRootSlotProps & {
+export type ButtonProps = ButtonRootProps & {
   /**
    * Whether the button is in a loading state.
    * When true, shows a spinner and disables interaction.
