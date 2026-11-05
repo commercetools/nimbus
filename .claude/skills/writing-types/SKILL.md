@@ -28,25 +28,13 @@ If no mode is specified, default to **create**.
 
 ## Required Research (All Modes)
 
-Before implementation, you MUST research in parallel:
+Do not read whole guideline files. Read only the sections listed here. To find a section, run `rg -n '^## ' <file>` for its line numbers, then use the Read tool with `offset` and `limit`.
 
-1. **Read** JSDoc standards:
+**Before implementation, read these sections:**
 
-   ```bash
-   cat docs/jsdoc-standards.md
-   ```
-
-2. **Read** naming conventions:
-
-   ```bash
-   cat docs/naming-conventions.md
-   ```
-
-3. **Read** type definition guidelines:
-
-   ```bash
-   cat docs/file-type-guidelines/types.md
-   ```
+1. `docs/file-type-guidelines/types.md`, section `## Core Architecture`
+2. `docs/naming-conventions.md`, section `## Quick Reference Checklist`
+3. `docs/jsdoc-standards.md`, section `## Quick Reference Checklist`
 
 4. **Analyze** similar component types:
 
@@ -59,18 +47,25 @@ Before implementation, you MUST research in parallel:
    cat packages/nimbus/src/components/menu/menu.types.ts      # Compound
    ```
 
-5. **Check** component complexity tier:
-   - See docs/file-type-guidelines/types.md for tier decision flow
-   - Tier 1: Simple (Button, Badge)
-   - Tier 2: Slot-based (TextInput, NumberInput)
-   - Tier 3: Compound (Menu, Dialog)
-   - Tier 4: Complex (DataTable, DatePicker)
+5. **Check** the component tier: read `docs/file-type-guidelines/types.md`, section `## Component Tiers`, and the tier decision in `reference/component-tiers.md`.
 
 6. **Review** recipe and slot files if they exist:
    ```bash
    cat packages/nimbus/src/components/{component}/{component}.recipe.ts
    cat packages/nimbus/src/components/{component}/{component}.slots.tsx
    ```
+
+**Read these sections only when the task needs them:**
+
+| Task | Section to read |
+| --- | --- |
+| Type visibility and file organization | `docs/file-type-guidelines/types.md`, `## Type Visibility and Organization` |
+| File structure details | `docs/file-type-guidelines/types.md`, `## File Structure` |
+| Naming types | `docs/file-type-guidelines/types.md`, `## Naming Conventions` |
+| JSDoc on types | `docs/file-type-guidelines/types.md`, `## JSDoc Documentation` |
+| Generic components and event handler types | `reference/advanced-types.md` |
+
+---
 
 ## The Universal Four-Layer Pattern (CRITICAL)
 
