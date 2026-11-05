@@ -94,7 +94,7 @@ guideline references.
 
 #### Category 5: React Aria Integration (8 items)
 
-- [ ] **Ra prefix imports**: React Aria imports use `Ra` prefix consistently:
+- [ ] **Ra prefix imports**: React Aria imports use `Ra` prefix consistently, except `useObjectRef` (see `docs/naming-conventions.md`):
   - `import { Button as RaButton } from 'react-aria-components'`
   - `import type { ButtonProps as RaButtonProps } from 'react-aria-components'`
 - [ ] **Hook integration**: For hook-based components, props passed to React
@@ -167,7 +167,7 @@ guideline references.
 #### Category 8: Import Conventions (7 items)
 
 - [ ] **Ra prefix requirement**: React Aria imports NEVER unaliased (always use
-      `Ra` prefix)
+      `Ra` prefix). Exception: `useObjectRef` is imported without the prefix.
 - [ ] **Same-directory imports**: Slot/type/i18n imports use relative paths:
   - `./component.slots`
   - `./component.types`
