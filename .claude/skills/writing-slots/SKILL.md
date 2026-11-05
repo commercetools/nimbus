@@ -296,52 +296,6 @@ export const ComponentPartSlot: SlotComponent<
 
 Run every item in `reference/validation-checklist.md`. Record each violation with its file and line. Write the report using `reference/validation-report.md`.
 
-### Validation Report Format
-
-```markdown
-## Slot Components Validation: {ComponentName}
-
-### Status: [✅ PASS | ❌ FAIL | ⚠️ WARNING]
-
-### Slot Type: [Standard Recipe | Slot Recipe]
-
-### Slot Count: [1 | Multiple]
-
-### Files Reviewed
-
-- Slots file: `{component}.slots.tsx`
-- Recipe file: `{component}.recipe.ts`
-- Types file: `{component}.types.ts`
-
-### ✅ Compliant
-
-[List passing checks]
-
-### ❌ Violations (MUST FIX)
-
-- [Violation with guideline reference and line number]
-
-### ⚠️ Warnings (SHOULD FIX)
-
-- [Non-critical improvements]
-
-### Slot Components Found
-
-- [List slot components with their types and annotations]
-
-### Missing Return Type Annotations
-
-- [List components without SlotComponent annotation]
-
-### Missing Type Exports
-
-- [List components without corresponding type exports]
-
-### Recommendations
-
-- [Specific improvements needed]
-```
-
 ## Error Recovery
 
 If validation fails:
