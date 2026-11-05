@@ -88,6 +88,7 @@ Do not read whole guideline files. Read only the sections listed here. To find a
 | Async tests | `docs/file-type-guidelines/stories.md`, `## Async Testing Patterns` |
 | Decorators | `docs/file-type-guidelines/stories.md`, `## Story Decorators` |
 | Clean testing patterns | `docs/file-type-guidelines/stories.md`, `## Clean Testing Patterns (Storybook)` |
+| Snapshot (VRT) decisions | `docs/file-type-guidelines/stories.md`, `## Chromatic Visual Regression Snapshots` |
 
 **Conditionally, for a first-pass VRT audit only**: read `docs/chromatic-visual-testing.md`. It is rationale and worked precedent, not instructions. Read `reference/chromatic-snapshots.md` for the specific calls that matter. CI behavior (triggers, baselines, gating) is in `docs/chromatic-ci.md`, which authoring never needs.
 
