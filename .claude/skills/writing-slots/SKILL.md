@@ -27,20 +27,12 @@ If no mode is specified, default to **create**.
 
 ## Required Research (All Modes)
 
-Before implementation, you MUST research in parallel:
+Do not read whole guideline files. Read only the sections listed here. To find a section, run `rg -n '^## ' <file>` for its line numbers, then use the Read tool with `offset` and `limit`.
 
-1. **Read** slot component guidelines:
+**Before implementation, read these sections:**
 
-   ```bash
-   cat docs/file-type-guidelines/slots.md
-   ```
-
-2. **Read** naming conventions:
-
-   ```bash
-   cat docs/naming-conventions.md
-   ```
-
+1. `docs/file-type-guidelines/slots.md`, sections `## Critical Requirements` and `## SlotComponent Utility Type`
+2. `docs/naming-conventions.md`, section `## Slot Name Mapping (CRITICAL)`
 3. **Analyze** recipe slot definitions:
 
    ```bash
@@ -51,6 +43,16 @@ Before implementation, you MUST research in parallel:
    ```bash
    ls packages/nimbus/src/components/*/*.slots.tsx
    ```
+
+**Read these sections only when the task needs them:**
+
+| Task | Section to read |
+| --- | --- |
+| File layout, context, React Aria, and type patterns | `reference/patterns.md` |
+| Naming slots and recipes | `docs/naming-conventions.md`, `## Recipe and Slot Naming` |
+| Common patterns | `docs/file-type-guidelines/slots.md`, `## Common Patterns from Nimbus` |
+
+---
 
 ## Slot Type Decision Flow
 
