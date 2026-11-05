@@ -1,5 +1,9 @@
 # @commercetools/nimbus-icons
 
+## 3.8.1
+
+No changes in this release.
+
 ## 3.8.0
 
 No changes in this release.

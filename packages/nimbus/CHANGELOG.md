@@ -1,5 +1,77 @@
 # @commercetools/nimbus
 
+## 3.8.1
+
+### Patch Changes
+
+- [#2122](https://github.com/commercetools/nimbus/pull/2122)
+  [`000a948`](https://github.com/commercetools/nimbus/commit/000a948930175912402ce8217fc92a594ce7fa16)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Accordion`: Other icons,
+  badges and spinners inside `Accordion.Header` now keep their own size and no
+  longer rotate when the item opens. Only the chevron is sized and rotated.
+
+  If you added a `& svg` override inside the header to undo the chevron size,
+  you can remove it.
+
+- [#2119](https://github.com/commercetools/nimbus/pull/2119)
+  [`efa03fc`](https://github.com/commercetools/nimbus/commit/efa03fc1c0ef832e029a57cc0732033221a4ff3f)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `DatePicker`: the
+  `leadingElement` prop now renders at the start of the input. Before, the prop
+  was accepted but nothing was shown.
+
+- [#2115](https://github.com/commercetools/nimbus/pull/2115)
+  [`7ea4545`](https://github.com/commercetools/nimbus/commit/7ea45450228d0588d0281855e60bd1e58ddb76ed)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Pre-release components
+  now show their lifecycle state in the editor. `ActivityIndicator`,
+  `ChatMessage`, `ChatMessageList`, `FileTrigger`, `ListBox` and `ModalPage`
+  (Experimental), and `DefaultPage`, `DropZone`, `FormActionBar`, `Item`,
+  `ItemGroup`, `Markdown`, `Popover`, `PublicPageLayout`, `RangeSlider`,
+  `Region`, `Slider`, `Splitter`, `Steps` and `Tree` (Beta) carry the
+  `@experimental` or `@beta` JSDoc tag in their type definitions.
+
+- [#2123](https://github.com/commercetools/nimbus/pull/2123)
+  [`99b3907`](https://github.com/commercetools/nimbus/commit/99b390765d2d72104d44330ed8bbbb487a96d188)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `NimbusProvider`: no
+  longer triggers React 19.3's "Encountered a script tag while rendering React
+  component" console error when it renders in the browser. Tests that fail on
+  `console.error` now pass with React 19.3, including those that render Nimbus
+  components wrapped in their own `NimbusProvider`.
+
+  On the server, the theme script is still output as executable JavaScript, so
+  server-rendered pages keep setting the correct theme before first paint. A
+  non-empty `type` passed in `scriptProps` is still used as given.
+
+  `NimbusProvider`: can now be rendered on the server (for example with
+  `renderToString`). Before, it threw "Missing getServerSnapshot" while
+  rendering the toast outlet.
+
+- [#2064](https://github.com/commercetools/nimbus/pull/2064)
+  [`2e039aa`](https://github.com/commercetools/nimbus/commit/2e039aa7517ddd1ab91a782380102eddf22c3f69)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `SearchInput`: in an
+  empty field, a `trailingElement` now sits at the field's trailing edge, in
+  line with the same element in other inputs. Before, the hidden clear button
+  kept its place after the `trailingElement` and left a gap. The clear button
+  now appears only when the field has a value, after the `trailingElement`. The
+  field keeps the same width with or without it. While the field is empty, the
+  placeholder can use the clear button's space.
+
+  `SearchInput`: in a field narrower than the width it has when you set none,
+  the text, the `trailingElement` and the clear button no longer extend past the
+  field's edge. The text area now gets smaller to fit.
+
+- [#2121](https://github.com/commercetools/nimbus/pull/2121)
+  [`ba3883d`](https://github.com/commercetools/nimbus/commit/ba3883d0af8d53c5d5db83e8e9eabdf372b414bf)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Select`: The default
+  outline variant now has the same dark grey background as `TextInput` and the
+  other input components in dark mode. Before, it had a pure black background.
+
+- [#2120](https://github.com/commercetools/nimbus/pull/2120)
+  [`b02f8ab`](https://github.com/commercetools/nimbus/commit/b02f8abdef092cd02d2e137052b202368245e33a)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Tabs`: The selected tab
+  label in the `line` variant now uses a darker color step, so it has better
+  contrast on light `primary` colors. The indicator bar color does not change.
+  This matches `TabNav`.
+
 ## 3.8.0
 
 ### Minor Changes

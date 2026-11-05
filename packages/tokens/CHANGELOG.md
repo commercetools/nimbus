@@ -1,5 +1,20 @@
 # @commercetools/nimbus-tokens
 
+## 3.8.1
+
+### Patch Changes
+
+- [#2126](https://github.com/commercetools/nimbus/pull/2126)
+  [`086ba0a`](https://github.com/commercetools/nimbus/commit/086ba0afd85472e4bdde9edee460472e91e11af0)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - TypeScript types for
+  `@commercetools/nimbus-tokens` now resolve for ESM imports under `node16`,
+  `nodenext` and `bundler` module resolution. Previously these setups reported
+  that no declaration file was found.
+
+  Tools that read the `main` field instead of `exports` (for example Jest 27 and
+  older) can now load the package. Before, the file `main` pointed to was
+  missing from the published package.
+
 ## 3.8.0
 
 No changes in this release.
