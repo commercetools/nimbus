@@ -46,33 +46,34 @@ Direct creation should only be used for standalone needs or prototyping.
 
 ## Required Research (All Modes)
 
-Before any operation, you MUST research in parallel:
+Do not read whole guideline files. Read only the sections listed here. To find a section, run `rg -n '^## ' <file>` to get its line numbers, then use the Read tool with `offset` and `limit` for that section.
 
-1. **Read** main component guidelines:
-   - File: `docs/file-type-guidelines/main-component.md`
-   - Purpose: Core validation rules for main components
+**Before any operation, read these sections:**
 
-2. **Read** architecture decision guide:
-   - File: `docs/file-type-guidelines/architecture-decisions.md`
-   - Purpose: Understanding when to use single vs compound patterns
+1. `docs/file-type-guidelines/main-component.md`, section `## Critical Rules`
+2. `docs/naming-conventions.md`, section `## Quick Reference Checklist`
+3. `docs/jsdoc-standards.md`, section `## Quick Reference Checklist`
 
-3. **Read** compound component patterns:
-   - File: `docs/file-type-guidelines/compound-components.md`
-   - Purpose: Compound component structure and requirements
+**For compound components only, also read:**
 
-4. **Read** JSDoc standards:
-   - File: `docs/jsdoc-standards.md`
-   - Purpose: Documentation requirements and format
+4. `docs/file-type-guidelines/compound-components.md`, section `## Critical Rules`
 
-5. **Read** naming conventions:
-   - File: `docs/naming-conventions.md`
-   - Purpose: File naming, component naming, and import patterns
+**Read these only when the task needs them:**
 
-6. **Analyze** component type (single vs compound):
+| Task | Section to read |
+| --- | --- |
+| Choosing single vs compound pattern | `docs/file-type-guidelines/architecture-decisions.md`, `## Decision Flow` |
+| React Aria imports or hooks | `docs/file-type-guidelines/main-component.md`, `## React Aria Integration` |
+| Accessibility checks | `docs/file-type-guidelines/main-component.md`, `## Accessibility Requirements` (long: read in parts) |
+| Cross-component imports | `docs/file-type-guidelines/main-component.md`, `## Cross-Component Imports (CRITICAL)` |
+| Internationalization | `docs/file-type-guidelines/main-component.md`, `## Internationalization (i18n)` |
+| JSDoc on props | `docs/jsdoc-standards.md`, `## Component Props JSDoc (Required)` |
+
+5. **Analyze** component type (single vs compound):
    - Single: Implementation in main file
    - Compound: Exports only, implementation in `components/` subfolder
 
-7. **Review** related component files:
+6. **Review** related component files:
    - Types file:
      `packages/nimbus/src/components/{component}/{component}.types.ts`
    - Slots file:
@@ -84,7 +85,7 @@ Before any operation, you MUST research in parallel:
    - i18n file: `packages/nimbus/src/components/{component}/{component}.i18n.ts`
      (if exists)
 
-8. **Study** similar component patterns:
+7. **Study** similar component patterns:
    - Simple single: `packages/nimbus/src/components/button/button.tsx`
    - Complex single:
      `packages/nimbus/src/components/split-button/split-button.tsx`
