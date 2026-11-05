@@ -22,7 +22,7 @@ export const DataTableTable = function DataTableTable({
   ref: forwardedRef,
   children,
   "aria-label": ariaLabelProp,
-  dragAndDropHooks,
+  dragAndDropHooks: dragAndDropHooksProp,
   ...props
 }: DataTableTableSlotProps) {
   const localRef = useRef<HTMLTableElement>(null);
@@ -33,6 +33,7 @@ export const DataTableTable = function DataTableTable({
     selectionMode,
     disallowEmptySelection,
     disabledKeys,
+    draggableKeys,
     hasRenderNestedContent,
     rows,
     getRowKey,
@@ -46,6 +47,27 @@ export const DataTableTable = function DataTableTable({
       disabledKeys === "all" ? new Set(rows.map(getRowKey)) : disabledKeys,
     [disabledKeys, rows, getRowKey]
   );
+
+  // React Aria has no per-row drag switch. Wrap `useDraggableItem` so a row
+  // outside `draggableKeys` gets React Aria's own "disabled" result: no drag
+  // props, and a drag button with `isDisabled`. The row stays a normal item:
+  // focusable, actionable and a valid drop target. The original hook always
+  // runs, so the hook order does not change when `draggableKeys` changes.
+  const dragAndDropHooks = useMemo(() => {
+    const useDraggableItem = dragAndDropHooksProp?.useDraggableItem;
+    if (!dragAndDropHooksProp || !useDraggableItem || !draggableKeys) {
+      return dragAndDropHooksProp;
+    }
+    const useDraggableRowItem: typeof useDraggableItem = (props, state) => {
+      const result = useDraggableItem(props, state);
+      if (draggableKeys.has(String(props.key))) return result;
+      return {
+        dragProps: {},
+        dragButtonProps: { ...result.dragButtonProps, isDisabled: true },
+      };
+    };
+    return { ...dragAndDropHooksProp, useDraggableItem: useDraggableRowItem };
+  }, [dragAndDropHooksProp, draggableKeys]);
 
   const { selectedKeys, defaultSelectedKeys, onSelectionChange } =
     useTableSelectionContext();
