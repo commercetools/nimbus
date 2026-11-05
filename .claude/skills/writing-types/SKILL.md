@@ -133,7 +133,7 @@ import type {
 // ============================================================
 // Explicit documentation of props that conflict between libraries
 // Utility types, generic constraints, context values
-// Only present in Tier 3/4 components
+// Conflict documentation: any tier. Utility types, generic constraints, context values: Tier 3/4 only
 
 // ============================================================
 // MAIN PROPS
@@ -299,7 +299,7 @@ export type ComponentPartSlotProps = HTMLChakraProps<"span">;
 
 ### Step 5: Define Helper Types
 
-For Tier 3/4 components with conflicts:
+For components with conflicts (any tier):
 
 ```typescript
 type ConflictingProps = keyof SomeAriaProps;
