@@ -88,8 +88,8 @@ graph TD
 **Pattern:**
 
 ```typescript
-const { withContext } = createRecipeContext({ recipe });
-export const ComponentRoot = withContext("element", "root");
+const { withContext } = createRecipeContext({ key: "nimbusComponent" });
+export const ComponentRoot = withContext("element");
 ```
 
 **Examples:** Button, Badge, Avatar
@@ -122,16 +122,15 @@ export const ComponentPartSlot = withContext("element", "part");
 // ✅ CORRECT - Export both type and component
 export type ButtonRootProps = HTMLChakraProps<"button">;
 export const ButtonRoot: SlotComponent<HTMLButtonElement, ButtonRootProps> =
-  withContext<HTMLButtonElement, ButtonRootProps>("button", "root");
+  withContext<HTMLButtonElement, ButtonRootProps>("button");
 
 // ❌ INCORRECT - Missing type export
-export const ButtonRoot = withContext("button", "root");
+export const ButtonRoot = withContext("button");
 
 // ❌ INCORRECT - Missing explicit return type annotation
 export type ButtonRootProps = HTMLChakraProps<"button">;
 export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
-  "button",
-  "root"
+  "button"
 );
 ```
 
@@ -227,7 +226,7 @@ import type { SlotComponent } from "@/type-utils"; // MUST import
 
 ```typescript
 const { withContext } = createRecipeContext({
-  recipe: componentRecipe,
+  key: "nimbusComponent",
 });
 ```
 
@@ -235,7 +234,7 @@ const { withContext } = createRecipeContext({
 
 ```typescript
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: componentSlotRecipe,
+  key: "nimbusComponentSlot",
 });
 ```
 
@@ -246,7 +245,7 @@ const { withProvider, withContext } = createSlotRecipeContext({
 ```typescript
 export type ComponentRootProps = HTMLChakraProps<"element">;
 export const ComponentRoot: SlotComponent<HTMLElementType, ComponentRootProps> =
-  withContext<HTMLElementType, ComponentRootProps>("element", "root");
+  withContext<HTMLElementType, ComponentRootProps>("element");
 ```
 
 **For slot recipe (multiple slots):**

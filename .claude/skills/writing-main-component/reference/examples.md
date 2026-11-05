@@ -205,6 +205,6 @@ Use this matrix to find the right example component for specific patterns:
 | **Keyboard Navigation**    | Menu, Tabs        | Arrow key handling                       | `packages/nimbus/src/components/menu/menu.tsx`                 |
 | **Multi-Panel**            | Tabs              | Panel coordination                       | `packages/nimbus/src/components/tabs/tabs.tsx`                 |
 | **Slot Recipe**            | Checkbox, Menu    | Multi-slot styling                       | `packages/nimbus/src/components/checkbox/checkbox.tsx`         |
-| **Style Props Support**    | Button            | extractStyleProps                        | `packages/nimbus/src/components/button/button.tsx`             |
+| **Style Props Support**    | TextInput         | extractStyleProps                        | `packages/nimbus/src/components/text-input/text-input.tsx`     |
 
 ---
