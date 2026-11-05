@@ -36,22 +36,12 @@ If no mode is specified, default to **create**.
 
 ## Required Research (All Modes)
 
-Before implementation, you MUST research in parallel:
+Do not read whole guideline files. Read only the sections listed here. To find a section, run `rg -n '^## ' <file>` for its line numbers, then use the Read tool with `offset` and `limit`.
 
-1. **Read** i18n guidelines:
+**Before implementation, read these sections:**
 
-   ```bash
-   cat docs/file-type-guidelines/i18n.md
-   ```
-
-2. **Read** naming conventions for message IDs:
-
-   ```bash
-   cat docs/naming-conventions.md
-   ```
-
-   Message ID pattern: Nimbus.{ComponentName}.{messageKey}
-
+1. `docs/file-type-guidelines/i18n.md`, sections `## Message ID Convention` and `## Message Properties`
+2. `docs/naming-conventions.md`, section `## i18n Message IDs`. Message ID pattern: Nimbus.{ComponentName}.{messageKey}
 3. **Review** component implementation to identify translatable text:
 
    ```bash
@@ -62,6 +52,18 @@ Before implementation, you MUST research in parallel:
    ```bash
    ls packages/nimbus/src/components/*/*.i18n.ts
    ```
+
+**Read these sections only when the task needs them:**
+
+| Task | Section to read |
+| --- | --- |
+| Component integration and usage | `docs/file-type-guidelines/i18n.md`, `## Component Integration` |
+| Components with several parts | `docs/file-type-guidelines/i18n.md`, `## Components with Multiple Parts` |
+| React Aria labels | `docs/file-type-guidelines/i18n.md`, `## React Aria Integration` |
+| Supported locales | `docs/file-type-guidelines/i18n.md`, `## Supported Locales` |
+| Message wording by use case | `reference/message-patterns.md` |
+
+---
 
 ## When i18n Is Needed (Decision Flow)
 
