@@ -696,7 +696,8 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           {allowsDragging && (
             <RaCell className="data-table-sticky-cell" data-slot="drag">
               {/* A row outside draggableKeys gets a disabled handle from React
-               * Aria. It keeps the same look as the other handles. */}
+               * Aria. It uses the standard disabled look, so the row reads as
+               * not draggable. */}
               <IconButton
                 slot="drag"
                 data-drag-handle=""
@@ -713,9 +714,6 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                 // does not move focus from the cell into the handle, and the
                 // first drag works in Chromium and WebKit.
                 style={isDragDisabled ? undefined : { pointerEvents: "auto" }}
-                // The disabled layer style dims the button (opacity 0.5). Keep
-                // the look of the enabled handles.
-                _disabled={{ opacity: 1, cursor: "inherit" }}
               >
                 <DragIndicator />
               </IconButton>
