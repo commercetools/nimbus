@@ -10,8 +10,7 @@ export {
   SCROLL_COLLAPSED_ATTRIBUTE,
   measureHeaderForm,
   getScrollDrivenHeaderState,
-  createScrollDrivenMarkers,
-  removeScrollDrivenMarkers,
+  getScrollDrivenHeaderThresholds,
   planHeaderPartMotions,
   planScrollDrivenHeader,
   setHeaderPartsAtRest,
@@ -25,5 +24,5 @@ export type {
   PlanHeaderPartMotionsOptions,
   ScrollDrivenHeaderPlan,
   ScrollDrivenHeaderState,
-  ScrollDrivenHeaderMarkers,
+  ScrollDrivenHeaderThresholds,
 } from "./scroll-driven-header";

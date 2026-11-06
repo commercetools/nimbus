@@ -178,16 +178,6 @@ form, plus the extra height of a title with several lines.
   measured at the top and while pinned
 - **AND** `isCollapsed` SHALL stay true from the start of the collapse
 
-#### Scenario: Clipping that is not scrolling
-
-- **WHEN** the viewport or an ancestor clips the header at its bottom edge at
-  the scroll start (a short scroll container, or a page that starts low in its
-  host layout)
-- **THEN** the header SHALL show the full form at the scroll start
-- **AND** only scrolling SHALL collapse it, once the collapse distance has
-  scrolled out at the top
-- **AND** this SHALL hold when the header is clipped at both edges
-
 ### Requirement: One-Step Header Collapse
 
 In the one-step change, the header SHALL switch between its full and its
