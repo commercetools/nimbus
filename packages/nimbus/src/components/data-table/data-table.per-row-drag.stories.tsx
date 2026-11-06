@@ -5,13 +5,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, type ReactNode } from "react";
 import { within, expect, waitFor, userEvent, fn } from "storybook/test";
-import { Button, DataTable, Stack, Text } from "@/components";
+import { Button, DataTable, Flex, Select, Stack, Text } from "@/components";
 import { useDragAndDrop, createArrayHandlers } from "@commercetools/nimbus";
 import type {
   DataTableCellRenderProps,
   DataTableColumnItem,
   DataTableProps,
   DataTableRowItem,
+  DataTableSize,
 } from "./data-table.types";
 
 const meta: Meta<object> = {
@@ -49,6 +50,7 @@ type PerRowDragTableProps = {
   onRowAction: (row: DataTableRowItem) => void;
   onReorderKeys: (keys: string[], targetKey: string) => void;
   label: string;
+  size?: DataTableSize;
 };
 
 const PerRowDragTable = ({
@@ -57,6 +59,7 @@ const PerRowDragTable = ({
   onRowAction,
   onReorderKeys,
   label,
+  size = "md",
 }: PerRowDragTableProps) => {
   const [tableRows, setTableRows] = useState<DataTableRowItem[]>(makeRows);
   const handlers = createArrayHandlers(setTableRows, (row) => row.id);
@@ -81,10 +84,48 @@ const PerRowDragTable = ({
         onRowAction={onRowAction}
         dragAndDropHooks={dragAndDropHooks}
         aria-label={label}
+        size={size}
       />
       <Text data-testid="row-order">
         Order: {tableRows.map((r) => r.id).join(",")}
       </Text>
+    </Stack>
+  );
+};
+
+// Sizes the selector offers. `xl` is the deprecated default, so it is left out,
+// as in the `size` argType of data-table.stories.tsx.
+const SIZE_OPTIONS: { id: Exclude<DataTableSize, "xl">; label: string }[] = [
+  { id: "sm", label: "Small" },
+  { id: "md", label: "Medium" },
+  { id: "lg", label: "Large" },
+];
+
+// `PerRowDragTable` with a size selector above it.
+const PerRowDragSizeTable = (props: Omit<PerRowDragTableProps, "size">) => {
+  const [size, setSize] = useState<DataTableSize>("md");
+  return (
+    <Stack gap="400">
+      <Flex alignItems="center" gap="400">
+        <Text as="label" id="per-row-drag-size" fontSize="350">
+          Size:
+        </Text>
+        <Select.Root
+          selectedKey={size}
+          onSelectionChange={(key) => setSize(key as DataTableSize)}
+          size="sm"
+          aria-labelledby="per-row-drag-size"
+        >
+          <Select.Options>
+            {SIZE_OPTIONS.map((option) => (
+              <Select.Option key={option.id} id={option.id}>
+                {option.label}
+              </Select.Option>
+            ))}
+          </Select.Options>
+        </Select.Root>
+      </Flex>
+      <PerRowDragTable {...props} size={size} />
     </Stack>
   );
 };
@@ -98,7 +139,7 @@ export const PerRowDrag: Story = {
     const onRowAction = fn().mockName("onRowAction");
     const onReorderKeys = fn().mockName("onReorderKeys");
     return (
-      <PerRowDragTable
+      <PerRowDragSizeTable
         label="Per-row drag"
         draggableKeys={new Set(["C"])}
         onRowAction={onRowAction}
@@ -410,6 +451,7 @@ const RenderCountTable = () => {
         columns={dragColumns}
         rows={rows}
         draggableKeys={draggableKeys}
+        size="md"
       >
         <DataTable.Table
           aria-label="Render counts"
