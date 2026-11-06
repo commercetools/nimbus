@@ -9,6 +9,7 @@ import {
   useScrollDrivenSupport,
   useUnpinnedCollapseWarning,
 } from "../hooks";
+import type { HeaderForm } from "../utils";
 import type { DefaultPageProps } from "../default-page.types";
 
 /**
@@ -55,9 +56,7 @@ export const DefaultPageRoot = ({
   const isScrollDriven = isCollapseEnabled && canScrollDrive;
 
   // Set by the scroll-driven collapse while it measures a form of the header.
-  const [measuredForm, setMeasuredForm] = useState<"full" | "collapsed" | null>(
-    null
-  );
+  const [measuredForm, setMeasuredForm] = useState<HeaderForm | null>(null);
 
   const { state: scrollDrivenState } = useScrollDrivenHeader({
     isEnabled: isScrollDriven,

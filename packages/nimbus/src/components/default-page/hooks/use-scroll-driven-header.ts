@@ -13,6 +13,8 @@ import {
   removeScrollDrivenMarkers,
   setHeaderPartsAtRest,
   startHeaderPartAnimations,
+  type HeaderForm,
+  type HeaderFormLayout,
   type HeaderMotion,
   type ScrollDrivenHeaderState,
 } from "../utils";
@@ -42,7 +44,7 @@ export type UseScrollDrivenHeaderOptions = {
    * header, or the live content (`null`). Called inside `flushSync`, so the
    * header has the content of that form when it is measured.
    */
-  setMeasuredForm?: (form: "full" | "collapsed" | null) => void;
+  setMeasuredForm?: (form: HeaderForm | null) => void;
 };
 
 export type { ScrollDrivenHeaderState };
@@ -147,8 +149,13 @@ export function useScrollDrivenHeader({
       animations = [];
     };
 
+    /** Writes the held value, or the element's own inline value, to every hold. */
+    const applyHolds = (value: "held" | "own") => {
+      for (const hold of holds) hold.element.style[hold.property] = hold[value];
+    };
+
     const releaseHolds = () => {
-      for (const hold of holds) hold.element.style[hold.property] = hold.own;
+      applyHolds("own");
       holds = [];
     };
 
@@ -245,7 +252,7 @@ export function useScrollDrivenHeader({
             held: getComputedStyle(element)[property],
           });
         }
-        for (const hold of holds) hold.element.style[hold.property] = hold.held;
+        applyHolds("held");
       }
       for (const animation of driverAnimations) animation.cancel();
       driverAnimations = [];
@@ -256,16 +263,16 @@ export function useScrollDrivenHeader({
       removeScrollDrivenMarkers(header);
 
       // Measure and read the page's own values without the holds.
-      for (const hold of holds) hold.element.style[hold.property] = hold.own;
+      applyHolds("own");
       // Each form is measured with the page content that it renders: the
       // content can depend on `isCollapsed`. Both passes and the restore
       // finish before paint.
-      const measure = (form: "full" | "collapsed") => {
+      const measure = (form: HeaderForm) => {
         flushSync(() => setMeasuredForm?.(form));
         return measureHeaderForm(header, container, form === "collapsed");
       };
-      let full: ReturnType<typeof measureHeaderForm>;
-      let collapsed: ReturnType<typeof measureHeaderForm>;
+      let full: HeaderFormLayout;
+      let collapsed: HeaderFormLayout;
       try {
         full = measure("full");
         collapsed = measure("collapsed");
@@ -296,7 +303,7 @@ export function useScrollDrivenHeader({
               parseFloat(getComputedStyle(scroller).paddingTop) || 0,
           }
         : undefined;
-      for (const hold of holds) hold.element.style[hold.property] = hold.held;
+      applyHolds("held");
       motion = planHeaderPartMotions({
         header,
         root: container,
@@ -315,7 +322,7 @@ export function useScrollDrivenHeader({
       const markers = createScrollDrivenMarkers(header, plan.distance);
       const markerElements = [markers.start, markers.collapse, markers.end];
       const shown = new Map<Element, boolean>();
-      const observer = (stateObserver = new IntersectionObserver((entries) => {
+      const observer = new IntersectionObserver((entries) => {
         for (const entry of entries)
           shown.set(entry.target, entry.isIntersecting);
         // The first report has every marker.
@@ -329,7 +336,8 @@ export function useScrollDrivenHeader({
           current
         );
         if (next !== current) show(next);
-      }));
+      });
+      stateObserver = observer;
       const observeMarkers = () => {
         for (const marker of markerElements) observer.observe(marker);
       };

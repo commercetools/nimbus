@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import type { HeaderForm } from "./utils";
 
 /**
  * Shared state of a `DefaultPage`, provided by `DefaultPage.Root`.
@@ -23,7 +24,7 @@ export type DefaultPageContextValue = {
    * content `DefaultPage.Header` renders, whatever the header shows now.
    * `isCollapsed` is `true` for `"collapsed"` and `false` for `"full"`.
    */
-  measuredForm?: "full" | "collapsed" | null;
+  measuredForm?: HeaderForm | null;
   /**
    * `true` while the header follows the scroll position (scroll-driven
    * collapse). It then keeps its full layout, so it does not get
