@@ -21,8 +21,8 @@ const zIndex = {
   // cell, so it covers the drag cell's scroll shadow.
   frozenCell: 11,
   expandCell: 12,
-  // Focus ring and pinned row outline in the body, above every frozen body
-  // cell.
+  // Focus ring, pinned row outline and drop indicator in the body, above every
+  // frozen body cell.
   bodyLayer: 13,
   // Frozen header cells. The pin header is below the others.
   pinHeaderCell: 11,
@@ -399,6 +399,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     body: {
       "& .react-aria-DropIndicator[data-drop-target]": {
         outline: "{sizes.50} solid {colors.primary.7}",
+        // The line is drawn on the row, which the frozen drag and pin cells of
+        // the neighbouring rows would otherwise cover at both ends.
+        position: "relative",
+        zIndex: zIndex.bodyLayer,
       },
     },
     row: {
