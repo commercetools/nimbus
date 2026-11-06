@@ -297,6 +297,61 @@ export const PerRowDragDisabledRow: Story = {
   },
 };
 
+/**
+ * Rows B and D are disabled and only row C is draggable. The play moves C above
+ * B, then back between B and D, so drops next to two disabled rows are checked.
+ */
+export const PerRowDragBetweenDisabledRows: Story = {
+  render: () => (
+    <PerRowDragTable
+      label="Between disabled rows"
+      draggableKeys={new Set(["C"])}
+      disabledKeys={new Set(["B", "D"])}
+      onRowAction={fn()}
+      onReorderKeys={fn()}
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Move C above disabled row B", async () => {
+      rowNamedExactly(canvas, "Row C").focus();
+      await wait();
+      await userEvent.keyboard("{ArrowRight}");
+      await wait();
+      await userEvent.keyboard("{Enter}");
+      await wait();
+      await userEvent.keyboard("{ArrowUp}");
+      await wait();
+      await userEvent.keyboard("{ArrowUp}");
+      await wait();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() => {
+        expect(canvas.getByTestId("row-order")).toHaveTextContent(
+          "Order: A,C,B,D,E"
+        );
+      });
+    });
+
+    await step("Move C back between disabled rows B and D", async () => {
+      rowNamedExactly(canvas, "Row C").focus();
+      await wait();
+      await userEvent.keyboard("{ArrowRight}");
+      await wait();
+      await userEvent.keyboard("{Enter}");
+      await wait();
+      await userEvent.keyboard("{ArrowDown}");
+      await wait();
+      await userEvent.keyboard("{Enter}");
+      await waitFor(() => {
+        expect(canvas.getByTestId("row-order")).toHaveTextContent(
+          "Order: A,B,C,D,E"
+        );
+      });
+    });
+  },
+};
+
 // Render counts, read by the play function below.
 const renderCounts: Record<string, number> = {};
 
