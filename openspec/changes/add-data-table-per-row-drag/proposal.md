@@ -19,10 +19,12 @@ Jira: FEC-1482.
   `isPinned`.
 - `DataTable.Table` wraps `dragAndDropHooks.useDraggableItem` and returns React
   Aria's own "disabled" result for rows that are not in the set.
-- A row that is not draggable renders an empty drag cell. The column stays
-  aligned and no drag button is rendered.
+- A row that is not draggable renders a disabled drag button labelled "Row
+  cannot be reordered". The column stays aligned, and the button starts no drag.
 - A row that is not draggable stays focusable, keeps `onRowAction`, and still
   accepts drops before and after it (pointer and keyboard).
+- A drop lands between two rows. Whether the adjacent row is disabled or not
+  draggable does not change whether the drop is accepted.
 - A disabled row (`disabledKeys`, `isDisabled`) is never draggable.
   `disabledBehavior="all"` does not change.
 - Changing `draggableKeys` re-renders only the rows whose flag changed.
@@ -58,7 +60,10 @@ None.
   `components/data-table.root.tsx`, `components/data-table.context.tsx`: pass
   `draggableKeys` to the table and body.
 - `components/data-table.table.tsx`, `components/data-table.body.tsx`,
-  `components/data-table.row.tsx`: per-row drag logic and empty drag cell.
+  `components/data-table.row.tsx`: per-row drag logic and the disabled drag
+  button.
+- `data-table.i18n.ts` and `packages/i18n/data/*.json`: the `dragRowDisabled`
+  message.
 - Stories, `data-table.dev.mdx`, `data-table.a11y.mdx`, `data-table.mdx`,
   `data-table.docs.spec.tsx`, one changeset in `.changeset/`.
 

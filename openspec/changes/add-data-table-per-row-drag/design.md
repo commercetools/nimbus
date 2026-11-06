@@ -3,9 +3,10 @@
 `DataTable` forwards `dragAndDropHooks` to React Aria's `Table`
 (`components/data-table.table.tsx`). Drag is all rows or none. The only per-row
 switch in React Aria is `disabledKeys`, and Nimbus uses `disabledBehavior="all"`,
-so a disabled row is also skipped by keyboard navigation, cannot be clicked and
-cannot receive drops. The ranking prototype (FEC-1442) needs one draggable row
-among fixed rows that stay reachable and stay drop targets.
+so a disabled row is also skipped by keyboard navigation and cannot be clicked.
+A drop lands between two rows, so a disabled row next to a drop position does
+not stop the drop. The ranking prototype (FEC-1442) needs one draggable row
+among fixed rows that stay reachable and do not block drops.
 
 Existing structure this change builds on:
 
@@ -23,7 +24,8 @@ Existing structure this change builds on:
 
 - A consumer marks which rows can be dragged, with one optional prop.
 - Rows that cannot be dragged keep keyboard focus, `onRowAction`, and drop
-  target behavior.
+  behavior.
+- A drop between two rows works whatever the state of the rows on either side.
 - No change for existing tables (`draggableKeys` is `undefined`).
 - Changing `draggableKeys` re-renders only rows whose flag changed.
 
@@ -69,11 +71,14 @@ all rows when the set identity changes. Row `memo` then limits the actual
 re-render to rows with a changed boolean. Verify this with a render-count story,
 as in the `reduce-data-table-render-cost` change.
 
-### 4. Empty drag cell for rows that are not draggable
+### 4. Disabled drag button for rows that are not draggable
 
-`DataTable.Row` renders `<RaCell data-slot="drag">` without the `IconButton`
-when `isDragDisabled` is true. The cell keeps its sticky class so column width
-and alignment do not change.
+`DataTable.Row` renders the drag `IconButton` (`slot="drag"`) in every row when
+`allowsDragging` is true. When `isDragDisabled` is true, the button is disabled,
+its label is "Row cannot be reordered" (`dragRowDisabled` message), and it uses
+the standard disabled look (dimmed, `not-allowed` cursor). The button keeps the
+drag column aligned and gives the row a labelled control. The cell keeps its
+sticky class, so column width and alignment do not change.
 
 ### 5. Selection and expandable rows are documented, not enforced
 
@@ -89,8 +94,9 @@ unsupported.
   drops on a non-draggable row.
 - [React Aria logs a development warning, "Draggable items in a Table must
   contain a <Button slot=\"drag\">", once per row that renders no drag button]
-  → Follows from the requirement "no button is rendered". Development only
-  (`NODE_ENV !== 'production'`). Decision pending with the maintainers.
+  → Not applicable: every row renders a `slot="drag"` button (Decision 4).
+  React Aria logs this warning only when a dragged row has no `slot="drag"`
+  button. Development only (`NODE_ENV !== 'production'`).
 - [Consumers pass a new `Set` on every render] → All rows are re-evaluated but
   only changed rows re-render; document that a stable `Set` (`useMemo`) is
   preferred.
@@ -99,5 +105,5 @@ unsupported.
 
 ## Open Questions
 
-- The development-only React Aria warning above for rows without a drag button:
-  accept it, or render a hidden `slot="drag"` button for those rows?
+None. Rows outside `draggableKeys` render a disabled button (Decision 4), so
+every row has a drag button and React Aria does not log its development warning.
