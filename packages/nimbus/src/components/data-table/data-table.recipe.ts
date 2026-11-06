@@ -421,6 +421,14 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       "&[draggable='true']": {
         cursor: "grab",
       },
+      // A clickable row keeps `pointer` on its cells, so the drag handle is the
+      // only place that shows the grab cursor on such a row.
+      "& [data-slot='drag'] button:not(:disabled)": {
+        cursor: "grab",
+      },
+      "&[data-dragging='true'] [data-slot='drag'] button:not(:disabled)": {
+        cursor: "grabbing",
+      },
 
       // Disabled rows give no hover feedback: they cannot be interacted with.
       "&:hover:not([data-nested-row-expanded]):not([data-disabled])": {
