@@ -68,6 +68,7 @@ export const DataTableRoot = function DataTableRoot<
     onRowClick,
     renderNestedContent,
     disabledKeys,
+    draggableKeys,
     onRowAction,
     isResizable,
     expandedRows: controlledExpandedRows,
@@ -439,6 +440,7 @@ export const DataTableRoot = function DataTableRoot<
       selectRowLabel,
       isResizable,
       disabledKeys,
+      draggableKeys,
       onRowActionRef,
       togglePin,
       onColumnsChangeRef,
@@ -472,6 +474,7 @@ export const DataTableRoot = function DataTableRoot<
       selectRowLabel,
       isResizable,
       disabledKeys,
+      draggableKeys,
       togglePin,
       getRowKey,
     ]

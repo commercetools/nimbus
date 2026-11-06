@@ -174,6 +174,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   isFirstPinned = false,
   isLastPinned = false,
   isSinglePinned = false,
+  isDragDisabled = false,
   ...props
 }: DataTableRowProps<T> & DataTableRowPerRowProps) => {
   const {
@@ -694,16 +695,36 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
            * need to be in the same order in the header and row components*/}
           {allowsDragging && (
             <RaCell className="data-table-sticky-cell" data-slot="drag">
-              <IconButton
-                slot="drag"
-                data-drag-handle=""
-                size="2xs"
-                variant="ghost"
-                colorPalette="neutral"
-                aria-label={msg.format("dragRow")}
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                w="100%"
+                h="100%"
               >
-                <DragIndicator />
-              </IconButton>
+                {/* A row outside draggableKeys gets a disabled handle from
+                 * React Aria. It uses the standard disabled look, so the row
+                 * reads as not draggable. */}
+                <IconButton
+                  slot="drag"
+                  data-drag-handle=""
+                  size="2xs"
+                  variant="ghost"
+                  colorPalette="neutral"
+                  aria-label={
+                    isDragDisabled
+                      ? msg.format("dragRowDisabled")
+                      : msg.format("dragRow")
+                  }
+                  // React Aria sets `pointerEvents: none` on this slot, so a
+                  // press lands on the cell. A press that starts on the handle
+                  // does not move focus from the cell into the handle, and the
+                  // first drag works in Chromium and WebKit.
+                  style={isDragDisabled ? undefined : { pointerEvents: "auto" }}
+                >
+                  <DragIndicator />
+                </IconButton>
+              </Box>
             </RaCell>
           )}
           {/* Selection checkbox cell if selection is enabled */}

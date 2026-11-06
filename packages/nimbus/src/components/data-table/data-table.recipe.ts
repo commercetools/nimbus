@@ -21,8 +21,8 @@ const zIndex = {
   // cell, so it covers the drag cell's scroll shadow.
   frozenCell: 11,
   expandCell: 12,
-  // Focus ring and pinned row outline in the body, above every frozen body
-  // cell.
+  // Focus ring, pinned row outline and drop indicator in the body, above every
+  // frozen body cell.
   bodyLayer: 13,
   // Frozen header cells. The pin header is below the others.
   pinHeaderCell: 11,
@@ -126,9 +126,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
 
       // Widths of the internal columns, read by the sticky offsets below:
       // the 24px control, plus the horizontal padding on both sides for the
-      // selection column. React Aria gets the same widths as numbers from
-      // `DATA_TABLE_INTERNAL_COLUMN_WIDTHS` (`utils/sizes.utils.ts`).
-      "--data-table-drag-column-width": "{sizes.600}",
+      // drag and selection columns. React Aria gets the same widths as numbers
+      // from `DATA_TABLE_INTERNAL_COLUMN_WIDTHS` (`utils/sizes.utils.ts`).
+      "--data-table-drag-column-width":
+        "calc({sizes.600} + 2 * var(--data-table-padding-x))",
       "--data-table-selection-column-width":
         "calc({sizes.600} + 2 * var(--data-table-padding-x))",
 
@@ -308,11 +309,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     column: {
       textAlign: "right",
       position: "relative",
-      // td height:auto is not "definite" per CSS spec, so child height:100%
-      // collapses to content height. Setting an explicit height makes it
-      // definite; table layout still stretches the cell to match the row,
-      // allowing children (height:100%) to fill the full cell.
-      h: "1px",
       p: 0,
       ...headerFocusRing,
 
@@ -321,7 +317,9 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         px: "var(--data-table-padding-x)",
         display: "flex",
         alignItems: "center",
-        h: "100%",
+        // No percentage height here. Firefox resolves it against the cell, and
+        // the padding then leaves no room for the text. The cell sizes to its
+        // content, and the container follows.
         // https://react-spectrum.adobe.com/react-aria/Table.html#width-values
         // Not positioned itself, so the ring covers the whole header cell.
         ...headerFocusRing,
@@ -399,6 +397,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     body: {
       "& .react-aria-DropIndicator[data-drop-target]": {
         outline: "{sizes.50} solid {colors.primary.7}",
+        // The line is drawn on the row, which the frozen drag and pin cells of
+        // the neighbouring rows would otherwise cover at both ends.
+        position: "relative",
+        zIndex: zIndex.bodyLayer,
       },
     },
     row: {
@@ -418,6 +420,14 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
       "&[draggable='true']": {
         cursor: "grab",
+      },
+      // A clickable row keeps `pointer` on its cells, so the drag handle is the
+      // only place that shows the grab cursor on such a row.
+      "& [data-slot='drag'] button:not(:disabled)": {
+        cursor: "grab",
+      },
+      "&[data-dragging='true'] [data-slot='drag'] button:not(:disabled)": {
+        cursor: "grabbing",
       },
 
       // Disabled rows give no hover feedback: they cannot be interacted with.

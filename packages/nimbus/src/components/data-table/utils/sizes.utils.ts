@@ -32,9 +32,9 @@ export const DATA_TABLE_CELL_PADDING_X: Record<DataTableSize, number> = {
  * the sticky offsets (`--data-table-drag-column-width`,
  * `--data-table-selection-column-width`).
  *
- * - `padded`: selection, pin, and expand without a selection column —
+ * - `padded`: drag, selection, pin, and expand without a selection column —
  *   control plus the size's horizontal cell padding on both sides
- * - `bare`: drag, and expand next to a selection column — control only
+ * - `bare`: expand next to a selection column — control only
  */
 export const DATA_TABLE_INTERNAL_COLUMN_WIDTHS = Object.fromEntries(
   (Object.keys(DATA_TABLE_CELL_PADDING_X) as DataTableSize[]).map((size) => [

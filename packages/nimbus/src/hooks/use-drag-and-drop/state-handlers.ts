@@ -147,8 +147,10 @@ export function createArrayHandlers<T extends Record<string, unknown>>(
       setItems((prev) => {
         const movedItems = prev.filter((i) => keys.has(getKey(i)));
         const remaining = prev.filter((i) => !keys.has(getKey(i)));
-        const idx = remaining.findIndex((i) => getKey(i) === target.key);
-        if (idx === -1) {
+        // Look up the target in `prev`. It can be one of the moved items, for
+        // example when a row is dropped next to itself.
+        const anchorIdx = prev.findIndex((i) => getKey(i) === target.key);
+        if (anchorIdx === -1) {
           warnKeyMismatch(
             "the reorder target",
             prev,
@@ -157,7 +159,15 @@ export function createArrayHandlers<T extends Record<string, unknown>>(
           );
           return [...remaining, ...movedItems];
         }
-        const pos = target.dropPosition === "before" ? idx : idx + 1;
+        // Count the items that stay in place before the target. Insert after
+        // them, and after the target too when the target stays in place. When
+        // the target is a moved item, the insert point is where it was.
+        const staying = prev
+          .slice(0, anchorIdx)
+          .filter((i) => !keys.has(getKey(i))).length;
+        const targetStays = !keys.has(target.key);
+        const pos =
+          staying + (target.dropPosition === "after" && targetStays ? 1 : 0);
         return [
           ...remaining.slice(0, pos),
           ...movedItems,

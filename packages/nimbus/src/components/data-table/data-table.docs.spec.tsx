@@ -1,7 +1,14 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { DataTable, NimbusProvider, Box } from "@commercetools/nimbus";
+import { useState } from "react";
+import {
+  DataTable,
+  NimbusProvider,
+  Box,
+  useDragAndDrop,
+  createArrayHandlers,
+} from "@commercetools/nimbus";
 import type { DataTableColumnItem, DataTableRowItem } from "./data-table.types";
 
 // Sample test data
@@ -1209,5 +1216,63 @@ describe("DataTable.Manager - Custom settings", () => {
       expect(screen.getByTestId("custom-panel")).toBeInTheDocument();
       expect(screen.getByText("Custom Panel Content")).toBeInTheDocument();
     });
+  });
+});
+
+/**
+ * @docs-section per-row-drag
+ * @docs-title Per-Row Drag Tests
+ * @docs-description Test that only rows in draggableKeys have an enabled drag button
+ * @docs-order 15
+ */
+describe("DataTable - Per-row drag", () => {
+  const DragTable = ({ draggableKeys }: { draggableKeys?: Set<string> }) => {
+    const [tableRows, setTableRows] = useState<DataTableRowItem[]>(rows);
+    const { dragAndDropHooks } = useDragAndDrop({
+      ...createArrayHandlers(setTableRows, (row) => row.id),
+    });
+    return (
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={tableRows}
+          draggableKeys={draggableKeys}
+          dragAndDropHooks={dragAndDropHooks}
+        />
+      </NimbusProvider>
+    );
+  };
+
+  it("renders an enabled drag button only in rows listed in draggableKeys", () => {
+    render(<DragTable draggableKeys={new Set(["2"])} />);
+
+    const enabled = screen.getAllByRole("button", { name: /drag to reorder/i });
+    expect(enabled).toHaveLength(1);
+    expect(
+      within(screen.getByRole("row", { name: /Bob Smith/ })).getByRole(
+        "button",
+        { name: /drag to reorder/i }
+      )
+    ).toBeInTheDocument();
+
+    // Every other row has a disabled drag button, so the column stays aligned.
+    const disabled = screen.getAllByRole("button", {
+      name: /cannot be reordered/i,
+    });
+    expect(disabled).toHaveLength(rows.length - 1);
+    disabled.forEach((button) => expect(button).toBeDisabled());
+  });
+
+  it("renders only disabled drag buttons when draggableKeys is empty", () => {
+    render(<DragTable draggableKeys={new Set()} />);
+
+    expect(
+      screen.queryByRole("button", { name: /drag to reorder/i })
+    ).toBeNull();
+    const disabled = screen.getAllByRole("button", {
+      name: /cannot be reordered/i,
+    });
+    expect(disabled).toHaveLength(rows.length);
+    disabled.forEach((button) => expect(button).toBeDisabled());
   });
 });

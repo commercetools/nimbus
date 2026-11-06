@@ -1048,11 +1048,51 @@ When `dragAndDropHooks` is provided:
 - **Keyboard accessible**: focus the drag handle, press Enter to start drag, use arrow keys to move, Enter to drop, Escape to cancel
 - A **drop indicator** shows where the row will be placed
 - **Double-click text selection** is preserved via programmatic word selection
-- Drag and drop works alongside **row selection** and **clickable rows**
+- Drag and drop works alongside **row selection** and **clickable rows** (selection is not supported together with `draggableKeys`)
 
 > **Note:** When combining drag and drop with **row pinning**, pinned rows can
 > be reordered among themselves and non-pinned rows among themselves, but items
 > cannot be dragged between pinned and non-pinned groups.
+
+### Per-row drag
+
+By default every row can be dragged. Pass `draggableKeys` to choose which rows
+can be dragged. This is useful when a table mixes rows that can move with rows
+that stay in place.
+
+```tsx
+const draggableKeys = useMemo(() => new Set(['row-3']), []);
+
+<DataTable
+  columns={columns}
+  rows={rows}
+  draggableKeys={draggableKeys}
+  dragAndDropHooks={dragAndDropHooks}
+/>
+```
+
+- `undefined` (default): every row is draggable.
+- A `Set` of row ids: only those rows are draggable. An empty set means no row
+  is draggable.
+- A row that is not draggable shows a disabled drag button, labelled "Row cannot
+  be reordered", so the column stays aligned. The button is dimmed and shows the
+  not-allowed cursor, like other disabled controls. It stays reachable with the
+  arrow keys, calls `onRowAction` on click or `Enter`, and accepts drops before
+  and after it.
+- A disabled row (`disabledKeys` or `isDisabled`) is never draggable.
+- `DataTableRowRenderProps.isDragDisabled` is `true` for rows that are not
+  draggable, for custom row render functions.
+
+Limits:
+
+- `draggableKeys` together with `selectionMode` is not supported.
+- `draggableKeys` together with expandable rows is not supported.
+- `onReorder` reports positions in the displayed order. When column sorting is
+  on, this can differ from the order of your `rows` array.
+- To reject specific drop positions, pass `getDropOperation` to
+  `useDragAndDrop`. Return `"cancel"` for positions that are not allowed.
+- Pass a stable `Set` (for example with `useMemo`). Rows whose flag did not
+  change do not re-render.
 
 ### Namespace isolation
 
@@ -1863,6 +1903,7 @@ type DataTableRowRenderProps = {
   isFirstPinned: boolean;
   isLastPinned: boolean;
   isSinglePinned: boolean;
+  isDragDisabled: boolean;
 };
 ```
 
