@@ -2531,6 +2531,104 @@ export const CollapseHeaderNoteRemovedWhenCollapsed: Story = {
 };
 
 /**
+ * A header cut off at its bottom edge by the scroll container (the page starts
+ * low in a short container) shows the full form at the scroll start: only
+ * scrolling collapses it. The fixture is sized from the measured header
+ * height and collapse distance, so the visible part of the header at the
+ * start is smaller than the pinned height. A second fixture cuts the header
+ * at both edges: the container is shorter than the pinned height.
+ */
+export const CollapseHeaderClippedAtBottom: Story = {
+  render: () => (
+    <Box data-testid="scroll-container" height="500px" overflow="auto">
+      <Box data-testid="spacer" />
+      <DefaultPage.Root layout="flexible" stickyHeader collapseHeaderOnScroll>
+        <CollapsingHeader />
+        <DefaultPage.Content>
+          <LongFormContent fields={20} />
+        </DefaultPage.Content>
+      </DefaultPage.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const header = getHeader(canvasElement);
+    const scroller = canvas.getByTestId("scroll-container");
+    const spacer = canvas.getByTestId("spacer");
+    const subtitle = header.querySelector<HTMLElement>(
+      ".nimbus-default-page__subtitle"
+    )!;
+    let distance = 0;
+    let pinnedHeight = 0;
+
+    /** Sets the spacer above Root and the container height. */
+    const fit = async (spacerHeight: number, containerHeight: number) => {
+      scroller.scrollTop = 0;
+      spacer.style.height = `${spacerHeight}px`;
+      scroller.style.height = `${containerHeight}px`;
+      // Long enough for the observer to report and the parts to come to rest.
+      await wait(700);
+    };
+
+    const checkFullAtStart = async () => {
+      await waitForRest(header);
+      await expect(header).not.toHaveAttribute("data-scroll-collapsed");
+      await expect(getComputedStyle(subtitle).opacity).toBe("1");
+      await waitFor(() =>
+        expect(header.getAnimations({ subtree: true })).toHaveLength(0)
+      );
+    };
+
+    await step("Measures the header", async () => {
+      await waitFor(() => expect(header.style.top).toMatch(/^-\d/));
+      distance = -parseFloat(header.style.top);
+      pinnedHeight = header.getBoundingClientRect().height - distance;
+      await expect(distance).toBeGreaterThan(40);
+      await expect(pinnedHeight).toBeGreaterThan(40);
+    });
+
+    await step(
+      "Clipped at the bottom: the full form, until scrolling",
+      async () => {
+        // Half of the pinned height is visible at the start.
+        await fit(400, 400 + pinnedHeight / 2);
+        await checkFullAtStart();
+
+        scroller.scrollTop = 400 + distance / 2;
+        await wait(100);
+        await expect(header).not.toHaveAttribute("data-scroll-collapsed");
+
+        scroller.scrollTop = 400 + distance + 50;
+        await waitForPinned(header, true);
+
+        scroller.scrollTop = 0;
+        await waitForPinned(header, false);
+        await checkFullAtStart();
+      }
+    );
+
+    await step(
+      "Clipped at both edges: pinned only after the collapse distance has scrolled away",
+      async () => {
+        await fit(20, pinnedHeight * 0.6);
+        await checkFullAtStart();
+
+        scroller.scrollTop = 20 + distance / 2;
+        await wait(100);
+        await expect(header).not.toHaveAttribute("data-scroll-collapsed");
+
+        scroller.scrollTop = 20 + distance + 50;
+        await waitForPinned(header, true);
+
+        scroller.scrollTop = 0;
+        await waitForPinned(header, false);
+        await checkFullAtStart();
+      }
+    );
+  },
+};
+
+/**
  * A title that wraps in the full form (a 640px wide page). The title keeps
  * its lines in the collapsed form, at the smaller size, and the title row
  * grows to fit them. For one line, truncate the title

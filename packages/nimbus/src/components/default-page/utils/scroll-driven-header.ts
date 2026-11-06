@@ -283,36 +283,86 @@ export const planScrollDrivenHeader = (
  */
 export type ScrollDrivenHeaderState = "full" | "collapsing" | "pinned";
 
-/** Visible ratios of the header that separate the states. */
-export type ScrollDrivenHeaderThresholds = {
-  /** At or above: the whole header is visible (half a pixel of tolerance). */
-  full: number;
-  /** Below: no more than the pinned height is visible (half a pixel). */
-  pinned: number;
-};
-
-/** The visible ratios of the header that separate the states. */
-export const getScrollDrivenHeaderThresholds = (
-  fullHeight: number,
-  pinnedHeight: number
-): ScrollDrivenHeaderThresholds => {
-  const full = (fullHeight - 0.5) / fullHeight;
-  return { full, pinned: Math.min(full, (pinnedHeight + 0.5) / fullHeight) };
+/**
+ * Which markers inside the header the view shows (see
+ * `createScrollDrivenMarkers`). Markers that are cut off at the bottom of the
+ * view do not count as shown, so clipping at the bottom changes none of them
+ * unless the marker itself is reached.
+ */
+export type ScrollDrivenHeaderMarkers = {
+  /** The top edge of the header. */
+  start: boolean;
+  /** Any part of the collapse distance. */
+  collapse: boolean;
+  /** The edge where the pinned height starts. */
+  end: boolean;
 };
 
 /**
- * The header state for the visible ratio of the header. A ratio of 0 (the
- * header scrolled away with an outer scroller) keeps the current state.
+ * The header state for the markers that the view shows: the top edge is in
+ * view at the start; some of the collapse distance is in view while it
+ * collapses; once it has scrolled out at the top, the edge below it is still
+ * in view (pinned). When no marker is in view (the header scrolled away with
+ * an outer scroller, or not reached yet), the state stays as it is.
  */
 export const getScrollDrivenHeaderState = (
-  ratio: number,
-  thresholds: ScrollDrivenHeaderThresholds,
+  markers: ScrollDrivenHeaderMarkers,
   current: ScrollDrivenHeaderState
 ): ScrollDrivenHeaderState => {
-  if (ratio <= 0) return current;
-  if (ratio >= thresholds.full) return "full";
-  if (ratio < thresholds.pinned) return "pinned";
-  return "collapsing";
+  if (markers.start) return "full";
+  if (markers.collapse) return "collapsing";
+  if (markers.end) return "pinned";
+  return current;
+};
+
+/** Set on the markers, so they can be told apart from page content. */
+export const SCROLL_MARKER_ATTRIBUTE = "data-scroll-marker";
+
+/** Tolerance, in pixels, at the edges of the collapse distance. */
+const MARKER_TOLERANCE = 0.5;
+
+/**
+ * Adds three empty markers to the header, for an `IntersectionObserver` that
+ * tells the state from the scroll position, whatever clips the header at its
+ * bottom edge: a point at the top edge, a strip over the collapse distance,
+ * and a point just below it. They are absolutely positioned and one pixel
+ * wide, so they take no space, and hidden from assistive technology. The
+ * header must be a containing block (the caller makes it one).
+ */
+export const createScrollDrivenMarkers = (
+  header: HTMLElement,
+  distance: number
+): Record<keyof ScrollDrivenHeaderMarkers, HTMLElement> => {
+  const add = (top: number, height: number) => {
+    const marker = header.ownerDocument.createElement("span");
+    marker.setAttribute(SCROLL_MARKER_ATTRIBUTE, "");
+    marker.setAttribute("aria-hidden", "true");
+    Object.assign(marker.style, {
+      position: "absolute",
+      left: "0",
+      top: `${top}px`,
+      width: "1px",
+      height: `${height}px`,
+      pointerEvents: "none",
+    });
+    header.appendChild(marker);
+    return marker;
+  };
+  return {
+    start: add(MARKER_TOLERANCE, 0),
+    collapse: add(
+      MARKER_TOLERANCE,
+      Math.max(0, distance - 2 * MARKER_TOLERANCE)
+    ),
+    end: add(distance + MARKER_TOLERANCE, 0),
+  };
+};
+
+/** Removes the markers that `createScrollDrivenMarkers` added. */
+export const removeScrollDrivenMarkers = (header: HTMLElement) => {
+  header
+    .querySelectorAll(`:scope > [${SCROLL_MARKER_ATTRIBUTE}]`)
+    .forEach((marker) => marker.remove());
 };
 
 export type PlanHeaderPartMotionsOptions = {

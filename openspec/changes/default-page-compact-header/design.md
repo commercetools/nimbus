@@ -220,17 +220,24 @@ Alternatives:
 
 ### 6. The state comes from an `IntersectionObserver`
 
-- The header is observed with two thresholds: all of it visible (minus half a
-  pixel) means **full**; no more than the pinned height visible (plus half a
-  pixel) means **pinned**; anything in between means **collapsing**.
+- Three empty markers inside the header are observed: a point at its top edge,
+  a strip over the collapse distance, and a point just below it (half a pixel
+  of tolerance at each edge). The top edge in view means **full**; otherwise
+  some of the strip in view means **collapsing**; otherwise the point below it
+  in view means **pinned**. The markers are absolutely positioned and
+  `aria-hidden`, so they take no space, and they are added after the header
+  is measured, so the measured copy never has them.
 - This works because in both layouts the visible part of the header changes with
   the scroll position: in the flexible layout through sticky positioning, in the
   constrained layout through the top margin and Root's clip. In the constrained
   layout the layout animations therefore always run.
-- Only the ratio is used. Chrome reports `isIntersecting: false` below the first
-  threshold, even when part of the header is visible (tested).
-- A ratio of 0 (the header scrolled away with an outer scroller) keeps the
-  current state.
+- Markers, not the visible ratio of the header: the ratio counts clipping from
+  any edge, so a header cut off at its bottom by a short container or a low
+  start position looked pinned without any scrolling. A marker that is cut off
+  at the bottom is simply not in view, so the state changes only when a marker
+  leaves the top.
+- When no marker is in view (the header scrolled away with an outer scroller,
+  or not reached yet) the current state is kept.
 - **Alternative: scroll listeners.** Rejected: script on every scroll event.
 
 ### 7. Long titles keep their lines

@@ -245,6 +245,11 @@ scroll-driven change.
       collapse distance and pinned height at the top and while pinned. Verify
       with `CollapseHeaderNoteRemovedWhenCollapsed` (fails with `--retry=0`
       before the fix).
+- [x] 6.13 Only scrolling collapses the header: a header clipped at its bottom
+      edge by the viewport or an ancestor shows the full form at the scroll
+      start. Verify with `CollapseHeaderClippedAtBottom` (fails with
+      `--retry=0` before the fix: the collapsed form shows at scroll
+      position 0).
 
 ## Workflow follow-up
 

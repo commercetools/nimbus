@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
   getScrollDrivenHeaderState,
-  getScrollDrivenHeaderThresholds,
   planScrollDrivenHeader,
   type HeaderFormLayout,
 } from "./scroll-driven-header";
@@ -85,40 +84,42 @@ describe("planScrollDrivenHeader", () => {
   });
 });
 
-describe("getScrollDrivenHeaderThresholds", () => {
-  it("separates the states with half a pixel of tolerance", () => {
-    const thresholds = getScrollDrivenHeaderThresholds(200, 100);
-    expect(thresholds.full).toBeCloseTo(199.5 / 200, 10);
-    expect(thresholds.pinned).toBeCloseTo(100.5 / 200, 10);
-  });
-
-  it("never puts the pinned threshold above the full one", () => {
-    const thresholds = getScrollDrivenHeaderThresholds(100, 100);
-    expect(thresholds.pinned).toBe(thresholds.full);
-  });
-});
-
 describe("getScrollDrivenHeaderState", () => {
-  const thresholds = getScrollDrivenHeaderThresholds(200, 100);
+  const none = { start: false, collapse: false, end: false };
 
-  it("is full while the whole header is visible", () => {
-    expect(getScrollDrivenHeaderState(1, thresholds, "pinned")).toBe("full");
+  it("is full while the top edge of the header is in view", () => {
+    expect(
+      getScrollDrivenHeaderState(
+        { start: true, collapse: true, end: false },
+        "pinned"
+      )
+    ).toBe("full");
   });
 
-  it("is collapsing while more than the pinned height is visible", () => {
-    expect(getScrollDrivenHeaderState(0.75, thresholds, "full")).toBe(
-      "collapsing"
+  it("is full when the top edge is in view and the rest is cut off", () => {
+    expect(getScrollDrivenHeaderState({ ...none, start: true }, "pinned")).toBe(
+      "full"
     );
   });
 
-  it("is pinned when only the pinned height is visible", () => {
-    expect(getScrollDrivenHeaderState(0.5, thresholds, "collapsing")).toBe(
-      "pinned"
-    );
+  it("is collapsing while some of the collapse distance is in view", () => {
+    expect(
+      getScrollDrivenHeaderState(
+        { start: false, collapse: true, end: true },
+        "full"
+      )
+    ).toBe("collapsing");
   });
 
-  it("keeps the state when the header is not visible at all", () => {
-    expect(getScrollDrivenHeaderState(0, thresholds, "pinned")).toBe("pinned");
-    expect(getScrollDrivenHeaderState(0, thresholds, "full")).toBe("full");
+  it("is pinned once the collapse distance has scrolled out at the top", () => {
+    expect(
+      getScrollDrivenHeaderState({ ...none, end: true }, "collapsing")
+    ).toBe("pinned");
+  });
+
+  it("keeps the state when no marker is in view", () => {
+    expect(getScrollDrivenHeaderState(none, "pinned")).toBe("pinned");
+    expect(getScrollDrivenHeaderState(none, "collapsing")).toBe("collapsing");
+    expect(getScrollDrivenHeaderState(none, "full")).toBe("full");
   });
 });
