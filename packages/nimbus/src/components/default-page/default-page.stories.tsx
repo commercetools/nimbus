@@ -2314,6 +2314,106 @@ export const CollapseHeaderResizeWhilePinned: Story = {
 };
 
 /**
+ * Constrained layout: while the header is pinned and the content is scrolled
+ * to its bottom, a size change measures the header again. Measuring does not
+ * lower the scroll position, only the real maximum of the scroller can.
+ */
+export const CollapseHeaderResizeWhilePinnedConstrained: Story = {
+  render: () => (
+    <Box data-testid="frame" width="900px">
+      <Box height="500px">
+        <DefaultPage.Root collapseHeaderOnScroll>
+          <CollapsingHeader />
+          <DefaultPage.Content>
+            <Box height="1200px" />
+          </DefaultPage.Content>
+        </DefaultPage.Root>
+      </Box>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const header = getHeader(canvasElement);
+    const frame = canvas.getByTestId("frame");
+    const content = canvas.getByRole("main");
+
+    await step("Scrolls to the bottom until the header is pinned", async () => {
+      await waitFor(() =>
+        expect(content.scrollHeight).toBeGreaterThan(content.clientHeight)
+      );
+      content.scrollTop = content.scrollHeight;
+      await waitForPinned(header, true);
+      await waitForRest(header);
+      // The padding that grows while collapsing raised the maximum: go again.
+      content.scrollTop = content.scrollHeight;
+      await nextFrame();
+      await expect(
+        content.scrollHeight - content.clientHeight - content.scrollTop
+      ).toBeLessThanOrEqual(1);
+    });
+
+    await step(
+      "The pinned position and padding are kept in every frame while the width changes",
+      async () => {
+        const widths: number[] = [];
+        for (let width = 900; width >= 420; width -= 20) widths.push(width);
+        for (let width = 420; width <= 900; width += 20) widths.push(width);
+
+        const pinnedLook = () => ({
+          headerTop: header.getBoundingClientRect().top,
+          padding: parseFloat(getComputedStyle(content).paddingTop),
+        });
+        const headerHeights = new Set<number>();
+        let before = pinnedLook();
+        headerHeights.add(Math.round(header.getBoundingClientRect().height));
+        for (const width of widths) {
+          const saved = content.scrollTop;
+          frame.style.width = `${width}px`;
+          const sampled: { headerTop: number; padding: number }[] = [];
+          for (let frames = 0; frames < 2; frames += 1) {
+            await nextFrame();
+            sampled.push(pinnedLook());
+            const maxScrollTop = content.scrollHeight - content.clientHeight;
+            await expect(content.scrollTop).toBeGreaterThanOrEqual(
+              Math.min(saved, maxScrollTop) - 1
+            );
+          }
+          await waitForPinned(header, true);
+          await waitForRest(header);
+          const after = pinnedLook();
+          headerHeights.add(Math.round(header.getBoundingClientRect().height));
+          // The collapse distance can change with the width, so the pinned
+          // look changes too. A frame stays between the look before and after
+          // the change, and never shows the look without the drivers.
+          const within = (value: number, a: number, b: number) =>
+            value >= Math.min(a, b) - 1 && value <= Math.max(a, b) + 1;
+          for (const frameLook of sampled) {
+            await expect(
+              within(frameLook.headerTop, before.headerTop, after.headerTop),
+              `header top ${frameLook.headerTop} at ${width}px (pinned ${before.headerTop} / ${after.headerTop})`
+            ).toBe(true);
+            await expect(
+              within(frameLook.padding, before.padding, after.padding),
+              `padding-top ${frameLook.padding} at ${width}px (pinned ${before.padding} / ${after.padding})`
+            ).toBe(true);
+          }
+          before = after;
+        }
+
+        // The test only means something if the header was measured again.
+        await expect(headerHeights.size).toBeGreaterThan(1);
+      }
+    );
+
+    await step("Ends pinned and at rest", async () => {
+      frame.style.width = "900px";
+      await waitForPinned(header, true);
+      await waitForRest(header);
+    });
+  },
+};
+
+/**
  * A title that wraps in the full form (a 640px wide page). The title keeps
  * its lines in the collapsed form, at the smaller size, and the title row
  * grows to fit them. For one line, truncate the title

@@ -161,6 +161,14 @@ form, plus the extra height of a title with several lines.
   frame
 - **AND** the header SHALL be measured again for the new size
 
+#### Scenario: No visible jump while measuring
+
+- **WHEN** the header is pinned in the constrained layout
+- **AND** the size of the header changes
+- **THEN** on every frame the header SHALL keep its pinned position and the
+  scroller its pinned top padding
+- **AND** the scroll position SHALL NOT be lowered by measuring again
+
 ### Requirement: One-Step Header Collapse
 
 In the one-step change, the header SHALL switch between its full and its

@@ -43,6 +43,16 @@ export type UseScrollDrivenHeaderResult = {
   state: ScrollDrivenHeaderState;
 };
 
+/** A style value held inline while the drivers are swapped. */
+type Hold = {
+  element: HTMLElement;
+  property: "marginTop" | "paddingTop";
+  /** The value held now. */
+  held: string;
+  /** The element's own inline value, put back at the release. */
+  own: string;
+};
+
 /** How long the header stays at the top before its animations are removed. */
 const REST_AT_START_DELAY_MS = 500;
 
@@ -108,6 +118,11 @@ export function useScrollDrivenHeader({
     let current: ScrollDrivenHeaderState = "full";
     let stateObserver: IntersectionObserver | null = null;
     let lastSize = "";
+    // Constrained layout: the values the drivers give to the header's top
+    // margin and the scroller's top padding, held inline while the drivers are
+    // swapped, so nothing jumps for the frame before the new drivers run.
+    // Each entry keeps the element's own inline value for the release.
+    let holds: Hold[] = [];
     let restTimer: ReturnType<typeof setTimeout> | null = null;
     const doc = header.ownerDocument;
 
@@ -115,6 +130,11 @@ export function useScrollDrivenHeader({
       change += 1;
       for (const animation of animations) animation.cancel();
       animations = [];
+    };
+
+    const releaseHolds = () => {
+      for (const hold of holds) hold.element.style[hold.property] = hold.own;
+      holds = [];
     };
 
     const cancelRestAtStart = () => {
@@ -195,6 +215,23 @@ export function useScrollDrivenHeader({
 
       cancelRestAtStart();
       stopAnimations();
+      if (scroller && holds.length === 0 && driverAnimations.length > 0) {
+        // The drivers move the header's margin and the scroller's padding.
+        // Without them both jump for a frame: keep what they give now until
+        // the new drivers run.
+        for (const [element, property] of [
+          [header, "marginTop"],
+          [scroller, "paddingTop"],
+        ] as const) {
+          holds.push({
+            element,
+            property,
+            own: element.style[property],
+            held: getComputedStyle(element)[property],
+          });
+        }
+        for (const hold of holds) hold.element.style[hold.property] = hold.held;
+      }
       for (const animation of driverAnimations) animation.cancel();
       driverAnimations = [];
       if (motion) setHeaderPartsAtRest(motion, "start");
@@ -202,6 +239,8 @@ export function useScrollDrivenHeader({
       stateObserver?.disconnect();
       stateObserver = null;
 
+      // Measure and read the page's own values without the holds.
+      for (const hold of holds) hold.element.style[hold.property] = hold.own;
       const full = measureHeaderForm(header, container, false);
       const collapsed = measureHeaderForm(header, container, true);
       const plan = planScrollDrivenHeader(full, collapsed);
@@ -220,31 +259,39 @@ export function useScrollDrivenHeader({
         `${plan.backIconInset}px`
       );
       container.style.setProperty(heightVariable, `${plan.pinnedHeight}px`);
+      const baseOffsets = scroller
+        ? {
+            headerMarginTop:
+              parseFloat(getComputedStyle(header).marginTop) || 0,
+            scrollerPaddingTop:
+              parseFloat(getComputedStyle(scroller).paddingTop) || 0,
+          }
+        : undefined;
+      for (const hold of holds) hold.element.style[hold.property] = hold.held;
       motion = planHeaderPartMotions({
         header,
         root: container,
         scroller,
-        // Read now, while no driver runs: the page's own values.
-        baseOffsets: scroller
-          ? {
-              headerMarginTop:
-                parseFloat(getComputedStyle(header).marginTop) || 0,
-              scrollerPaddingTop:
-                parseFloat(getComputedStyle(scroller).paddingTop) || 0,
-            }
-          : undefined,
+        baseOffsets,
         full,
         collapsed,
         plan,
       });
 
       if (!motion || full.height <= 0) {
+        releaseHolds();
         show("full");
         return;
       }
       driverAnimations = motion.drivers.map((driver) =>
         driver.element.animate(driver.keyframes, motion!.timing)
       );
+      // The new drivers take effect a frame later: release the holds then.
+      void Promise.all(
+        driverAnimations.map((animation) => animation.ready)
+      ).then(releaseHolds, () => {
+        // Cancelled by a newer change, which keeps or releases the holds.
+      });
       // The visible part of the header tells the state: all of it at the
       // start, only the pinned height at the end (half a pixel of tolerance
       // each). Only the ratio is used: Chrome reports `isIntersecting: false`
@@ -288,6 +335,7 @@ export function useScrollDrivenHeader({
       cancelRestAtStart();
       stopAnimations();
       for (const animation of driverAnimations) animation.cancel();
+      releaseHolds();
       if (motion) setHeaderPartsAtRest(motion, "start");
       header.style.top = "";
       header.style.removeProperty(BACK_ICON_INSET_VARIABLE);

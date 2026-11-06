@@ -235,6 +235,11 @@ scroll-driven change.
       `CollapseHeaderResizeWhilePinned`, which changes the page width in steps
       and checks the opacity of the subtitle and the back link label on every
       frame (fails with `--retry=0` before the fix).
+- [x] 6.11 A size change while the header is pinned in the constrained layout
+      shows no jump: the header top and the content area's top padding keep
+      their pinned values on every frame. Verify with
+      `CollapseHeaderResizeWhilePinnedConstrained` (fails with `--retry=0`
+      before the fix).
 
 ## Workflow follow-up
 
