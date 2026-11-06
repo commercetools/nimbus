@@ -258,8 +258,9 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
    */
   dragAndDropHooks?: RaDragAndDropHooks;
   /**
-   * Row ids that can be dragged. Rows not in the set show an empty drag cell,
-   * cannot start a drag, and stay focusable, clickable and valid drop targets.
+   * Row ids that can be dragged. Rows not in the set show a disabled drag
+   * button labelled "Row cannot be reordered", cannot start a drag, and stay
+   * focusable, clickable and valid drop targets.
    * `undefined` (default) makes every row draggable; an empty set makes none
    * draggable. Needs `dragAndDropHooks`. A disabled row is never draggable.
    *
@@ -396,7 +397,7 @@ export type DataTableRowRenderProps = {
   isSinglePinned: boolean;
   /**
    * `true` when `draggableKeys` is set and does not contain this row. The row
-   * renders an empty drag cell and cannot start a drag.
+   * renders a disabled drag button and cannot start a drag.
    */
   isDragDisabled: boolean;
 };
