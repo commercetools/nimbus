@@ -54,12 +54,18 @@ export const DefaultPageRoot = ({
   const canScrollDrive = useScrollDrivenSupport();
   const isScrollDriven = isCollapseEnabled && canScrollDrive;
 
+  // Set by the scroll-driven collapse while it measures a form of the header.
+  const [measuredForm, setMeasuredForm] = useState<"full" | "collapsed" | null>(
+    null
+  );
+
   const { state: scrollDrivenState } = useScrollDrivenHeader({
     isEnabled: isScrollDriven,
     containerElement: rootElement,
     headerElement,
     contentElement,
     layout: layout === "flexible" ? "flexible" : "constrained",
+    setMeasuredForm,
   });
 
   const { isCollapsed } = useCollapseHeaderOnScroll({
@@ -87,11 +93,18 @@ export const DefaultPageRoot = ({
       isHeaderCollapseStarted: isScrollDriven
         ? scrollDrivenState !== "full"
         : isCollapsed,
+      measuredForm,
       isScrollDriven,
       registerHeader: setHeaderElement,
       registerContent: setContentElement,
     }),
-    [isCollapseEnabled, isCollapsed, isScrollDriven, scrollDrivenState]
+    [
+      isCollapseEnabled,
+      isCollapsed,
+      isScrollDriven,
+      scrollDrivenState,
+      measuredForm,
+    ]
   );
 
   return (

@@ -240,6 +240,11 @@ scroll-driven change.
       their pinned values on every frame. Verify with
       `CollapseHeaderResizeWhilePinnedConstrained` (fails with `--retry=0`
       before the fix).
+- [x] 6.12 Each form is measured with the page content that it renders, so a
+      page that removes content when `isCollapsed` is true gets the same
+      collapse distance and pinned height at the top and while pinned. Verify
+      with `CollapseHeaderNoteRemovedWhenCollapsed` (fails with `--retry=0`
+      before the fix).
 
 ## Workflow follow-up
 

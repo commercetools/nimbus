@@ -169,6 +169,15 @@ form, plus the extra height of a title with several lines.
   scroller its pinned top padding
 - **AND** the scroll position SHALL NOT be lowered by measuring again
 
+#### Scenario: Measurement does not depend on isCollapsed
+
+- **WHEN** the page removes content from the header while `isCollapsed` is true
+- **THEN** each form SHALL be measured with the page content that this form
+  renders, whatever form the header shows
+- **AND** the collapse distance and the pinned height SHALL be the same when
+  measured at the top and while pinned
+- **AND** `isCollapsed` SHALL stay true from the start of the collapse
+
 ### Requirement: One-Step Header Collapse
 
 In the one-step change, the header SHALL switch between its full and its

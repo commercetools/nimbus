@@ -2414,6 +2414,123 @@ export const CollapseHeaderResizeWhilePinnedConstrained: Story = {
 };
 
 /**
+ * Scroll-driven collapse: a page removes a tall note (renders nothing) when
+ * `isCollapsed` is true. Each form is measured with the content that the form
+ * renders, so the collapse distance and the pinned height measured while the
+ * header is pinned (note absent) equal the ones measured at the top (note
+ * present).
+ */
+export const CollapseHeaderNoteRemovedWhenCollapsed: Story = {
+  render: () => (
+    <Box data-testid="frame" width="900px">
+      <Box data-testid="scroll-container" height="500px" overflow="auto">
+        <DefaultPage.Root layout="flexible" stickyHeader collapseHeaderOnScroll>
+          <DefaultPage.Header>
+            {({ isCollapsed }) => (
+              <>
+                <DefaultPage.BackLink href="/products">
+                  Back to products
+                </DefaultPage.BackLink>
+                <DefaultPage.Title>Spring campaign</DefaultPage.Title>
+                <DefaultPage.Subtitle>
+                  Runs from March to May
+                </DefaultPage.Subtitle>
+                <DefaultPage.Actions>
+                  <Button variant="solid" colorPalette="primary">
+                    Publish
+                  </Button>
+                </DefaultPage.Actions>
+                {!isCollapsed && (
+                  <Box
+                    data-testid="removable-note"
+                    gridColumn="1 / -1"
+                    height="48px"
+                  >
+                    Draft, not visible to customers
+                  </Box>
+                )}
+              </>
+            )}
+          </DefaultPage.Header>
+          <DefaultPage.Content>
+            <LongFormContent fields={16} />
+          </DefaultPage.Content>
+        </DefaultPage.Root>
+      </Box>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const header = getHeader(canvasElement);
+    const root = getRoot(canvasElement);
+    const frame = canvas.getByTestId("frame");
+    const scroller = canvas.getByTestId("scroll-container");
+    const distanceOf = () => -parseFloat(header.style.top);
+    const pinnedHeightOf = () => parseFloat(getHeightVariable(root));
+    let distance = 0;
+    let pinnedHeight = 0;
+
+    await step("Measures at the top, with the note present", async () => {
+      await waitFor(() =>
+        expect(scroller.scrollHeight).toBeGreaterThan(scroller.clientHeight)
+      );
+      await waitFor(() => expect(header.style.top).toMatch(/^-\d/));
+      await expect(canvas.getByTestId("removable-note")).toBeInTheDocument();
+      distance = distanceOf();
+      pinnedHeight = pinnedHeightOf();
+      await expect(distance).toBeGreaterThan(0);
+    });
+
+    await step("Pins the header: the note is gone", async () => {
+      scroller.scrollTop = distance + 100;
+      await waitForPinned(header, true);
+      await waitForRest(header);
+      await expect(canvas.queryByTestId("removable-note")).toBeNull();
+    });
+
+    await step(
+      "A resize while pinned measures the same distance and pinned height",
+      async () => {
+        for (const width of [860, 900]) {
+          frame.style.width = `${width}px`;
+          await nextFrame();
+          await nextFrame();
+          await waitForPinned(header, true);
+          await waitForRest(header);
+        }
+        await expect(
+          Math.abs(distanceOf() - distance),
+          `distance ${distanceOf()} (at the top ${distance})`
+        ).toBeLessThanOrEqual(1);
+        await expect(
+          Math.abs(pinnedHeightOf() - pinnedHeight),
+          `pinned height ${pinnedHeightOf()} (at the top ${pinnedHeight})`
+        ).toBeLessThanOrEqual(1);
+      }
+    );
+
+    await step(
+      "Back at the top the note is shown again and the header is stable",
+      async () => {
+        scroller.scrollTop = 0;
+        await waitForPinned(header, false);
+        await waitFor(() =>
+          expect(canvas.getByTestId("removable-note")).toBeInTheDocument()
+        );
+        await waitForRest(header);
+        const heights = new Set<number>();
+        for (let frames = 0; frames < 10; frames += 1) {
+          await nextFrame();
+          heights.add(header.getBoundingClientRect().height);
+        }
+        await expect(heights.size).toBe(1);
+        await expect(Math.abs(distanceOf() - distance)).toBeLessThanOrEqual(1);
+      }
+    );
+  },
+};
+
+/**
  * A title that wraps in the full form (a 640px wide page). The title keeps
  * its lines in the collapsed form, at the smaller size, and the title row
  * grows to fit them. For one line, truncate the title

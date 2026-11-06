@@ -1,4 +1,5 @@
 import { useLayoutEffect, useState } from "react";
+import { flushSync } from "react-dom";
 import { HEADER_HEIGHT_VARIABLE } from "../constants";
 import {
   BACK_ICON_INSET_VARIABLE,
@@ -35,6 +36,12 @@ export type UseScrollDrivenHeaderOptions = {
    * @default "--default-page-header-height"
    */
   heightVariable?: string;
+  /**
+   * Renders the page content of one form (`"full"` or `"collapsed"`) in the
+   * header, or the live content (`null`). Called inside `flushSync`, so the
+   * header has the content of that form when it is measured.
+   */
+  setMeasuredForm?: (form: "full" | "collapsed" | null) => void;
 };
 
 export type { ScrollDrivenHeaderState };
@@ -100,6 +107,7 @@ export function useScrollDrivenHeader({
   contentElement,
   layout,
   heightVariable = HEADER_HEIGHT_VARIABLE,
+  setMeasuredForm,
 }: UseScrollDrivenHeaderOptions): UseScrollDrivenHeaderResult {
   const [state, setState] = useState<ScrollDrivenHeaderState>("full");
 
@@ -241,8 +249,21 @@ export function useScrollDrivenHeader({
 
       // Measure and read the page's own values without the holds.
       for (const hold of holds) hold.element.style[hold.property] = hold.own;
-      const full = measureHeaderForm(header, container, false);
-      const collapsed = measureHeaderForm(header, container, true);
+      // Each form is measured with the page content that it renders: the
+      // content can depend on `isCollapsed`. Both passes and the restore
+      // finish before paint.
+      const measure = (form: "full" | "collapsed") => {
+        flushSync(() => setMeasuredForm?.(form));
+        return measureHeaderForm(header, container, form === "collapsed");
+      };
+      let full: ReturnType<typeof measureHeaderForm>;
+      let collapsed: ReturnType<typeof measureHeaderForm>;
+      try {
+        full = measure("full");
+        collapsed = measure("collapsed");
+      } finally {
+        flushSync(() => setMeasuredForm?.(null));
+      }
       const plan = planScrollDrivenHeader(full, collapsed);
 
       if (scroller) {
@@ -289,9 +310,21 @@ export function useScrollDrivenHeader({
       // The new drivers take effect a frame later: release the holds then.
       void Promise.all(
         driverAnimations.map((animation) => animation.ready)
-      ).then(releaseHolds, () => {
-        // Cancelled by a newer change, which keeps or releases the holds.
-      });
+      ).then(
+        () => {
+          releaseHolds();
+          // The first report can come before the new drivers take effect, and
+          // the observer reports only changes after it: ask for a new first
+          // report on the header as it is now.
+          if (stateObserver === observer) {
+            observer.unobserve(header);
+            observer.observe(header);
+          }
+        },
+        () => {
+          // Cancelled by a newer change, which keeps or releases the holds.
+        }
+      );
       // The visible part of the header tells the state: all of it at the
       // start, only the pinned height at the end (half a pixel of tolerance
       // each). Only the ratio is used: Chrome reports `isIntersecting: false`
@@ -300,7 +333,7 @@ export function useScrollDrivenHeader({
         full.height,
         plan.pinnedHeight
       );
-      stateObserver = new IntersectionObserver(
+      const observer = (stateObserver = new IntersectionObserver(
         ([entry]) => {
           const next = getScrollDrivenHeaderState(
             entry.intersectionRatio,
@@ -310,16 +343,17 @@ export function useScrollDrivenHeader({
           if (next !== current) show(next);
         },
         { threshold: [thresholds.pinned, thresholds.full] }
-      );
+      ));
       // The first report applies the state again on the new measurements.
       current = previous;
       show(previous);
       stateObserver.observe(header);
     };
 
-    setUp();
     // Transforms and opacity do not change the header size, and the compact
     // back link keeps its outer size, so this does not run while scrolling.
+    // The first report comes before the first paint. It also runs the first
+    // measurement: `flushSync` is not flushed inside a layout effect.
     const resizeObserver = new ResizeObserver(setUp);
     resizeObserver.observe(header, { box: "border-box" });
     for (const type of intentEvents) {
@@ -351,6 +385,7 @@ export function useScrollDrivenHeader({
     contentElement,
     layout,
     heightVariable,
+    setMeasuredForm,
   ]);
 
   return { state: isEnabled ? state : "full" };

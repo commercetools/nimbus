@@ -19,6 +19,12 @@ export type DefaultPageContextValue = {
    */
   isHeaderCollapseStarted: boolean;
   /**
+   * Set while the scroll-driven collapse measures the header: the form whose
+   * content `DefaultPage.Header` renders, whatever the header shows now.
+   * `isCollapsed` is `true` for `"collapsed"` and `false` for `"full"`.
+   */
+  measuredForm?: "full" | "collapsed" | null;
+  /**
    * `true` while the header follows the scroll position (scroll-driven
    * collapse). It then keeps its full layout, so it does not get
    * `data-collapsed`; it marks the pinned collapsed form with the internal
