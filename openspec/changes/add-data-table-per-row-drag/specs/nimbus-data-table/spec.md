@@ -3,7 +3,7 @@
 ### Requirement: Per-Row Drag Control
 The component SHALL let consumers choose which rows are draggable through the
 `draggableKeys` prop on `DataTable` and `DataTable.Root`, while every row stays
-a keyboard-reachable item and a valid drop target.
+a keyboard-reachable item and drops next to it stay valid.
 
 #### Scenario: Default keeps all rows draggable
 - **WHEN** `dragAndDropHooks` is provided and `draggableKeys` is `undefined`
@@ -18,11 +18,12 @@ a keyboard-reachable item and a valid drop target.
 #### Scenario: Empty set
 - **WHEN** `draggableKeys` is an empty `Set`
 - **THEN** no row SHALL be draggable
-- **AND** no row SHALL render a drag button
+- **AND** every row SHALL render a disabled drag button
 
-#### Scenario: Row that is not draggable renders an empty drag cell
+#### Scenario: Row that is not draggable renders a disabled drag button
 - **WHEN** a row is not in `draggableKeys`
-- **THEN** SHALL render the drag cell with no drag button
+- **THEN** SHALL render a disabled drag button labelled with the localized
+  message `dragRowDisabled` (English: "Row cannot be reordered")
 - **AND** the drag column SHALL stay aligned with the header and other rows
 - **AND** no drag SHALL start from pointer or keyboard on that row
 
@@ -31,10 +32,12 @@ a keyboard-reachable item and a valid drop target.
 - **THEN** ArrowUp and ArrowDown SHALL move focus onto that row
 - **AND** click or Enter SHALL call `onRowAction` once
 
-#### Scenario: Row that is not draggable accepts drops
-- **WHEN** a draggable row is dragged over a row that is not draggable
-- **THEN** SHALL show a drop indicator before and after that row
+#### Scenario: Drop position does not depend on row state
+- **WHEN** a draggable row is dropped before or after another row
+- **THEN** SHALL show a drop indicator at that position
 - **AND** SHALL accept the drop with pointer and with keyboard
+- **AND** this SHALL hold whether the adjacent rows are disabled (`disabledKeys`
+  or `isDisabled`) or not in `draggableKeys`
 
 #### Scenario: Disabled rows are never draggable
 - **WHEN** a row is in `disabledKeys` or has `isDisabled`
