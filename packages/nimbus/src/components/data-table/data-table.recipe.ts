@@ -309,11 +309,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     column: {
       textAlign: "right",
       position: "relative",
-      // td height:auto is not "definite" per CSS spec, so child height:100%
-      // collapses to content height. Setting an explicit height makes it
-      // definite; table layout still stretches the cell to match the row,
-      // allowing children (height:100%) to fill the full cell.
-      h: "1px",
       p: 0,
       ...headerFocusRing,
 
@@ -322,7 +317,9 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         px: "var(--data-table-padding-x)",
         display: "flex",
         alignItems: "center",
-        h: "100%",
+        // No percentage height here. Firefox resolves it against the cell, and
+        // the padding then leaves no room for the text. The cell sizes to its
+        // content, and the container follows.
         // https://react-spectrum.adobe.com/react-aria/Table.html#width-values
         // Not positioned itself, so the ring covers the whole header cell.
         ...headerFocusRing,
