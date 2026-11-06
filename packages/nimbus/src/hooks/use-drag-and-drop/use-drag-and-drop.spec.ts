@@ -128,6 +128,24 @@ describe("createArrayHandlers", () => {
     expect(items).toEqual([a, c, b]);
   });
 
+  it("keeps an item in place when dropped after itself", () => {
+    const h = createArrayHandlers(setItems, (i) => i.key);
+    h.onReorder(new Set(["b"]), afterTarget("b"));
+    expect(items).toEqual([a, b, c]);
+  });
+
+  it("keeps an item in place when dropped before itself", () => {
+    const h = createArrayHandlers(setItems, (i) => i.key);
+    h.onReorder(new Set(["b"]), beforeTarget("b"));
+    expect(items).toEqual([a, b, c]);
+  });
+
+  it("moves a group next to one of its own items", () => {
+    const h = createArrayHandlers(setItems, (i) => i.key);
+    h.onReorder(new Set(["a", "c"]), afterTarget("a"));
+    expect(items).toEqual([a, c, b]);
+  });
+
   it("appends moved items when reorder target is not found", () => {
     const h = createArrayHandlers(setItems, (i) => i.key);
     h.onReorder(new Set(["a"]), afterTarget("missing"));

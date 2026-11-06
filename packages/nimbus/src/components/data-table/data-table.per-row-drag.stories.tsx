@@ -138,6 +138,24 @@ export const PerRowDrag: Story = {
         await waitFor(() => expect(rowEls[i]).toHaveFocus());
       }
     });
+
+    await step(
+      "Enter twice on a drag button keeps the row in place",
+      async () => {
+        rowNamedExactly(canvas, "Row C").focus();
+        await wait();
+        await userEvent.keyboard("{ArrowRight}");
+        await wait();
+        await userEvent.keyboard("{Enter}");
+        await wait();
+        await userEvent.keyboard("{Enter}");
+        await waitFor(() => {
+          expect(canvas.getByTestId("row-order")).toHaveTextContent(
+            "Order: A,B,C,D,E"
+          );
+        });
+      }
+    );
   },
 };
 
