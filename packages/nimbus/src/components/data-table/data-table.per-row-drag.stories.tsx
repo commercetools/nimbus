@@ -109,19 +109,22 @@ export const PerRowDrag: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Only the listed row renders a drag button", async () => {
-      const buttons = dragButtons(canvasElement);
-      expect(buttons).toHaveLength(1);
-      expect(rowNamedExactly(canvas, "Row C")).toContainElement(buttons[0]);
-      // The other rows keep an empty drag cell, so the column stays aligned.
-      for (const id of ["A", "B", "D", "E"]) {
-        const cell = rowNamedExactly(canvas, `Row ${id}`).querySelector(
-          "[data-slot='drag']"
-        );
-        expect(cell).toBeInTheDocument();
-        expect(cell!.children).toHaveLength(0);
+    await step(
+      "Only the listed row renders an enabled drag button",
+      async () => {
+        const buttons = dragButtons(canvasElement);
+        expect(buttons).toHaveLength(1);
+        expect(rowNamedExactly(canvas, "Row C")).toContainElement(buttons[0]);
+        // The other rows keep a disabled drag button, so the column stays aligned.
+        for (const id of ["A", "B", "D", "E"]) {
+          expect(
+            within(rowNamedExactly(canvas, `Row ${id}`)).getByRole("button", {
+              name: /cannot be reordered/i,
+            })
+          ).toBeDisabled();
+        }
       }
-    });
+    );
 
     await step("ArrowDown and ArrowUp reach every row", async () => {
       const rowEls = canvas.getAllByRole("row").slice(1);
@@ -250,8 +253,14 @@ export const PerRowDragUndefinedAndEmpty: Story = {
       expect(dragButtons(canvas.getByTestId("all-rows"))).toHaveLength(5);
     });
 
-    await step("empty set: no row has a drag button", async () => {
-      expect(dragButtons(canvas.getByTestId("no-rows"))).toHaveLength(0);
+    await step("empty set: every row has a disabled drag button", async () => {
+      const noRows = canvas.getByTestId("no-rows");
+      expect(dragButtons(noRows)).toHaveLength(0);
+      const disabled = within(noRows).getAllByRole("button", {
+        name: /cannot be reordered/i,
+      });
+      expect(disabled).toHaveLength(5);
+      disabled.forEach((button) => expect(button).toBeDisabled());
     });
   },
 };
@@ -271,15 +280,11 @@ export const PerRowDragDisabledRow: Story = {
     const canvas = within(canvasElement);
 
     await step("The disabled row's drag button is disabled", async () => {
-      const button = within(rowNamedExactly(canvas, "Row B")).queryByRole(
+      const button = within(rowNamedExactly(canvas, "Row B")).getByRole(
         "button",
         { name: /drag to reorder/i }
       );
-      const isInert =
-        button === null ||
-        button.hasAttribute("disabled") ||
-        button.getAttribute("aria-disabled") === "true";
-      expect(isInert).toBe(true);
+      expect(button).toBeDisabled();
     });
 
     await step("The enabled listed row stays draggable", async () => {
