@@ -375,12 +375,10 @@ const CountedBody = () => (
   </DataTable.Body>
 );
 
-// Created once: new row objects on every render would re-render every row.
-const countedRows = makeRows();
-
 const RenderCountTable = () => {
   const [draggableKeys, setDraggableKeys] = useState(new Set(["C"]));
-  const [, setRows] = useState<DataTableRowItem[]>(makeRows);
+  // Created once: new row objects on every render would re-render every row.
+  const [rows, setRows] = useState<DataTableRowItem[]>(makeRows);
   const { dragAndDropHooks } = useDragAndDrop({
     ...createArrayHandlers(setRows, (row) => row.id),
   });
@@ -392,7 +390,7 @@ const RenderCountTable = () => {
       </Button>
       <DataTable.Root
         columns={dragColumns}
-        rows={countedRows}
+        rows={rows}
         draggableKeys={draggableKeys}
       >
         <DataTable.Table
