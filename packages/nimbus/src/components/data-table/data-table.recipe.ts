@@ -126,9 +126,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
 
       // Widths of the internal columns, read by the sticky offsets below:
       // the 24px control, plus the horizontal padding on both sides for the
-      // selection column. React Aria gets the same widths as numbers from
-      // `DATA_TABLE_INTERNAL_COLUMN_WIDTHS` (`utils/sizes.utils.ts`).
-      "--data-table-drag-column-width": "{sizes.600}",
+      // drag and selection columns. React Aria gets the same widths as numbers
+      // from `DATA_TABLE_INTERNAL_COLUMN_WIDTHS` (`utils/sizes.utils.ts`).
+      "--data-table-drag-column-width":
+        "calc({sizes.600} + 2 * var(--data-table-padding-x))",
       "--data-table-selection-column-width":
         "calc({sizes.600} + 2 * var(--data-table-padding-x))",
 

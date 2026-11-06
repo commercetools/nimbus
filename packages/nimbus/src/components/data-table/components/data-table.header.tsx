@@ -113,8 +113,8 @@ export const DataTableHeader = <
           <DataTableColumn
             id="__nimbus-drag__"
             className="drag-column-header"
-            maxWidth={internalWidths.bare}
-            minWidth={internalWidths.bare}
+            maxWidth={internalWidths.padded}
+            minWidth={internalWidths.padded}
             allowsSorting={false}
             isInternalColumn={true}
             aria-label={msg.format("dragRowsColumn")}
