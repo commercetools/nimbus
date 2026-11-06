@@ -1939,7 +1939,9 @@ export const SizeInternalColumns: Story = {
       await step(`${size}: internal column widths`, async () => {
         const table = await canvas.findByTestId(testId);
         const thead = table.querySelector("thead")!;
-        expect(width(thead.querySelector(".drag-column-header")!)).toBe(24);
+        expect(width(thead.querySelector(".drag-column-header")!)).toBe(
+          expected.padded
+        );
         expect(width(thead.querySelector(".selection-column-header")!)).toBe(
           expected.padded
         );
