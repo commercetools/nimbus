@@ -2,6 +2,7 @@
   "semanticColors": {
     "bg": "#fff / hsl(0, 0%, 7%) (d)",
     "fg": "hsl(0, 0%, 13%) / hsl(0, 0%, 93%) (d)",
+    "fg.subtle": "hsl(0, 0%, 39%) / hsl(0, 0%, 71%) (d)",
     "border": "hsl(0, 0%, 85%) / hsl(0, 0%, 23%) (d)",
     "border.muted": "hsl(0, 0%, 81%) / hsl(0, 0%, 28%) (d)",
     "border.subtle": "hsl(0, 0%, 85%) / hsl(0, 0%, 23%) (d)",
