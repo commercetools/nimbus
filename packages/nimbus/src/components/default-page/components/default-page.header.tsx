@@ -47,11 +47,7 @@ export const DefaultPageHeader = ({
       }
     >
       {typeof children === "function"
-        ? children({
-            isCollapsed: context?.measuredForm
-              ? context.measuredForm === "collapsed"
-              : (context?.isHeaderCollapseStarted ?? false),
-          })
+        ? children({ isCollapsed: context?.isHeaderCollapseStarted ?? false })
         : children}
     </DefaultPageHeaderSlot>
   );

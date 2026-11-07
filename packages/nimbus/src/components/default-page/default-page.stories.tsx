@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect, userEvent, waitFor, spyOn } from "storybook/test";
 import type { MockInstance } from "storybook/test";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Badge,
   Box,
@@ -2413,12 +2413,27 @@ export const CollapseHeaderResizeWhilePinnedConstrained: Story = {
   },
 };
 
+/** Counts how often the note in `CollapseHeaderNoteRemovedWhenCollapsed` mounts. */
+const noteMounts = { count: 0 };
+
+/** A note that counts its mounts, to show that measuring never remounts it. */
+const CountedNote = () => {
+  useEffect(() => {
+    noteMounts.count += 1;
+  }, []);
+  return (
+    <Box data-testid="removable-note" gridColumn="1 / -1" height="48px">
+      Draft, not visible to customers
+    </Box>
+  );
+};
+
 /**
  * Scroll-driven collapse: a page removes a tall note (renders nothing) when
- * `isCollapsed` is true. Each form is measured with the content that the form
- * renders, so the collapse distance and the pinned height measured while the
- * header is pinned (note absent) equal the ones measured at the top (note
- * present).
+ * `isCollapsed` is true. The header keeps its full layout while it collapses,
+ * so it is measured with the content it shows: while pinned, without the note.
+ * The visible part of the pinned header is the pinned height, and measuring
+ * never renders the other form, so content in the header is not remounted.
  */
 export const CollapseHeaderNoteRemovedWhenCollapsed: Story = {
   render: () => (
@@ -2440,15 +2455,7 @@ export const CollapseHeaderNoteRemovedWhenCollapsed: Story = {
                     Publish
                   </Button>
                 </DefaultPage.Actions>
-                {!isCollapsed && (
-                  <Box
-                    data-testid="removable-note"
-                    gridColumn="1 / -1"
-                    height="48px"
-                  >
-                    Draft, not visible to customers
-                  </Box>
-                )}
+                {!isCollapsed && <CountedNote />}
               </>
             )}
           </DefaultPage.Header>
@@ -2465,46 +2472,58 @@ export const CollapseHeaderNoteRemovedWhenCollapsed: Story = {
     const root = getRoot(canvasElement);
     const frame = canvas.getByTestId("frame");
     const scroller = canvas.getByTestId("scroll-container");
-    const distanceOf = () => -parseFloat(header.style.top);
+    /** Height of the header part that is in view at the top of the scroller. */
+    const visibleHeaderHeight = () =>
+      header.getBoundingClientRect().bottom -
+      scroller.getBoundingClientRect().top;
     const pinnedHeightOf = () => parseFloat(getHeightVariable(root));
-    let distance = 0;
-    let pinnedHeight = 0;
+    const resizeAndSettle = async (pinned: boolean) => {
+      for (const width of [860, 900]) {
+        frame.style.width = `${width}px`;
+        await nextFrame();
+        await nextFrame();
+        await waitForPinned(header, pinned);
+        await waitForRest(header);
+      }
+    };
 
-    await step("Measures at the top, with the note present", async () => {
+    await step("At the top the note is shown", async () => {
       await waitFor(() =>
         expect(scroller.scrollHeight).toBeGreaterThan(scroller.clientHeight)
       );
       await waitFor(() => expect(header.style.top).toMatch(/^-\d/));
       await expect(canvas.getByTestId("removable-note")).toBeInTheDocument();
-      distance = distanceOf();
-      pinnedHeight = pinnedHeightOf();
-      await expect(distance).toBeGreaterThan(0);
+      await waitForRest(header);
     });
 
-    await step("Pins the header: the note is gone", async () => {
-      scroller.scrollTop = distance + 100;
-      await waitForPinned(header, true);
-      await waitForRest(header);
-      await expect(canvas.queryByTestId("removable-note")).toBeNull();
+    await step("A resize at the top does not remount the note", async () => {
+      const mountsBefore = noteMounts.count;
+      await resizeAndSettle(false);
+      await expect(canvas.getByTestId("removable-note")).toBeInTheDocument();
+      await expect(noteMounts.count, "note mounts").toBe(mountsBefore);
     });
 
     await step(
-      "A resize while pinned measures the same distance and pinned height",
+      "Pinned, the note is gone and the pinned height is in view",
       async () => {
-        for (const width of [860, 900]) {
-          frame.style.width = `${width}px`;
-          await nextFrame();
-          await nextFrame();
-          await waitForPinned(header, true);
-          await waitForRest(header);
-        }
+        scroller.scrollTop = 600;
+        await waitForPinned(header, true);
+        await waitForRest(header);
+        await expect(canvas.queryByTestId("removable-note")).toBeNull();
         await expect(
-          Math.abs(distanceOf() - distance),
-          `distance ${distanceOf()} (at the top ${distance})`
+          Math.abs(visibleHeaderHeight() - pinnedHeightOf()),
+          `in view ${visibleHeaderHeight()}, pinned height ${pinnedHeightOf()}`
         ).toBeLessThanOrEqual(1);
+      }
+    );
+
+    await step(
+      "A resize while pinned keeps the pinned height in view",
+      async () => {
+        await resizeAndSettle(true);
         await expect(
-          Math.abs(pinnedHeightOf() - pinnedHeight),
-          `pinned height ${pinnedHeightOf()} (at the top ${pinnedHeight})`
+          Math.abs(visibleHeaderHeight() - pinnedHeightOf()),
+          `in view ${visibleHeaderHeight()}, pinned height ${pinnedHeightOf()}`
         ).toBeLessThanOrEqual(1);
       }
     );
@@ -2524,7 +2543,6 @@ export const CollapseHeaderNoteRemovedWhenCollapsed: Story = {
           heights.add(header.getBoundingClientRect().height);
         }
         await expect(heights.size).toBe(1);
-        await expect(Math.abs(distanceOf() - distance)).toBeLessThanOrEqual(1);
       }
     );
   },

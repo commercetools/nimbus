@@ -169,14 +169,14 @@ form, plus the extra height of a title with several lines.
   scroller its pinned top padding
 - **AND** the scroll position SHALL NOT be lowered by measuring again
 
-#### Scenario: Measurement does not depend on isCollapsed
+#### Scenario: Header content that depends on isCollapsed
 
-- **WHEN** the page removes content from the header while `isCollapsed` is true
-- **THEN** each form SHALL be measured with the page content that this form
-  renders, whatever form the header shows
-- **AND** the collapse distance and the pinned height SHALL be the same when
-  measured at the top and while pinned
-- **AND** `isCollapsed` SHALL stay true from the start of the collapse
+- **WHEN** page content in the header depends on `isCollapsed`, for example a
+  note that is removed in the collapsed form
+- **AND** the header is pinned
+- **THEN** the part of the header in view SHALL be the pinned height
+- **AND** measuring SHALL use the header as it is shown and SHALL NOT render
+  its content for another form, so that content is not remounted
 
 ### Requirement: One-Step Header Collapse
 
