@@ -246,6 +246,9 @@ export function useScrollDrivenHeader({
 
       // Measure and read the page's own values without the holds.
       applyHolds("own");
+      // No driver runs now, so this is the scroll range of the content alone.
+      const hasScrollRange =
+        !scroller || scroller.scrollHeight > scroller.clientHeight;
       const full = measureHeaderForm(header, container, false);
       const collapsed = measureHeaderForm(header, container, true);
       const plan = planScrollDrivenHeader(full, collapsed);
@@ -288,15 +291,21 @@ export function useScrollDrivenHeader({
         show("full");
         return;
       }
-      driverAnimations = motion.drivers.map((driver) =>
+      const drivers = motion.drivers.map((driver) =>
         driver.element.animate(driver.keyframes, motion!.timing)
       );
+      driverAnimations = drivers;
       // The new drivers take effect a frame later: release the holds then.
-      void Promise.all(
-        driverAnimations.map((animation) => animation.ready)
-      ).then(releaseHolds, () => {
-        // Cancelled by a newer change, which keeps or releases the holds.
-      });
+      void Promise.all(drivers.map((animation) => animation.ready)).then(
+        releaseHolds,
+        () => {
+          // Cancelled by a newer change, which keeps or releases the holds.
+        }
+      );
+      // Without a scroll range the scroll timeline is inactive and `ready`
+      // stays pending, but the drivers have no effect then: the page's own
+      // values are what shows, so nothing needs to be held.
+      if (!hasScrollRange) releaseHolds();
       // The visible part of the header tells the state: all of it at the
       // start, only the pinned height at the end (half a pixel of tolerance
       // each). Only the ratio is used: Chrome reports `isIntersecting: false`

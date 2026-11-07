@@ -3251,6 +3251,57 @@ export const CollapseHeaderSwitchedOff: Story = {
   },
 };
 
+/**
+ * Constrained layout with content that does not overflow: the content area
+ * has no scroll range. A size change of the header measures it again; the
+ * values held while the drivers are swapped are removed again, although the
+ * new drivers have no scroll range to follow.
+ */
+export const CollapseHeaderResizeWithoutScrollRange: Story = {
+  render: () => (
+    <Box data-testid="frame" width="900px" height="500px">
+      <DefaultPage.Root collapseHeaderOnScroll>
+        <CollapsingHeader />
+        <DefaultPage.Content>
+          <Text>Content that fits.</Text>
+        </DefaultPage.Content>
+      </DefaultPage.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const root = getRoot(canvasElement);
+    const header = getHeader(canvasElement);
+    const frame = canvas.getByTestId("frame");
+    const content = canvas.getByRole("main");
+
+    await step("The content area has no scroll range", async () => {
+      await waitFor(() =>
+        expect(root).toHaveAttribute("data-scroll-driven", "constrained")
+      );
+      await expect(content.scrollHeight).toBeLessThanOrEqual(
+        content.clientHeight
+      );
+    });
+
+    await step(
+      "After a size change of the header, no held values are left",
+      async () => {
+        const heightBefore = header.getBoundingClientRect().height;
+        frame.style.width = "420px";
+        await waitFor(() =>
+          expect(header.getBoundingClientRect().height).not.toBe(heightBefore)
+        );
+        for (let frames = 0; frames < 5; frames += 1) await nextFrame();
+        await expect(header.style.marginTop, "header margin-top").toBe("");
+        await expect(content.style.paddingTop, "content padding-top").toBe("");
+        frame.style.width = "900px";
+        await waitForRest(header);
+      }
+    );
+  },
+};
+
 let unpinnedWarnSpy: MockInstance<typeof console.warn> | undefined;
 
 /**

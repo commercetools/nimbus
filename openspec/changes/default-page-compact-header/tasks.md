@@ -245,6 +245,11 @@ scroll-driven change.
       remount that content. Verify with
       `CollapseHeaderNoteRemovedWhenCollapsed` (fails with `--retry=0` while
       the header is rendered once per form to measure it).
+- [x] 6.13 A size change of the header while the content area has no scroll
+      range leaves no held styles: the scroll timeline is inactive, so the
+      drivers never become ready. Verify with
+      `CollapseHeaderResizeWithoutScrollRange` (fails with `--retry=0` before
+      the fix).
 
 ## Workflow follow-up
 

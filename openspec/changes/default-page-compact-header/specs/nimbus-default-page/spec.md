@@ -178,6 +178,13 @@ form, plus the extra height of a title with several lines.
 - **AND** measuring SHALL use the header as it is shown and SHALL NOT render
   its content for another form, so that content is not remounted
 
+#### Scenario: Size change without a scroll range
+
+- **WHEN** the content area in the constrained layout has no scroll range
+- **AND** the size of the header changes
+- **THEN** no style that holds the header or the content area for the swap
+  SHALL be left on them after the next frames
+
 ### Requirement: One-Step Header Collapse
 
 In the one-step change, the header SHALL switch between its full and its
