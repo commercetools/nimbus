@@ -220,17 +220,25 @@ Alternatives:
 
 ### 6. The state comes from an `IntersectionObserver`
 
-- The header is observed with two thresholds: all of it visible (minus half a
-  pixel) means **full**; no more than the pinned height visible (plus half a
-  pixel) means **pinned**; anything in between means **collapsing**.
-- This works because in both layouts the visible part of the header changes with
-  the scroll position: in the flexible layout through sticky positioning, in the
-  constrained layout through the top margin and Root's clip. In the constrained
-  layout the layout animations therefore always run.
-- Only the ratio is used. Chrome reports `isIntersecting: false` below the first
-  threshold, even when part of the header is visible (tested).
-- A ratio of 0 (the header scrolled away with an outer scroller) keeps the
-  current state.
+- Only scrolling changes the state. Clipping by the page around the header (a
+  short container, a page that starts low, a page wider than its container)
+  does not count.
+- Constrained layout: the header moves only inside Root, which clips it, so it
+  is observed with Root as the root, with two thresholds: all of it visible
+  (minus half a pixel) means **full**; no more than the pinned height visible
+  (plus half a pixel) means **pinned**; anything in between means
+  **collapsing**. The layout animations therefore always run. Only the ratio is
+  used: Chrome reports `isIntersecting: false` below the first threshold, even
+  when part of the header is visible (tested).
+- Flexible layout: the scrolling element is unknown, so three empty markers at
+  the top of the sticky header are observed: a line at its top edge (in view:
+  **full**), a strip over the collapse distance (in view: **collapsing**) and a
+  line just below it (in view: **pinned**). They span the header's width and
+  are positioned against the sticky header, which is a containing block; the
+  header's own position is not changed. Changing it to `relative` broke the
+  sticky header in Safari 27 (tested, reverted).
+- When nothing is in view (the header scrolled away with an outer scroller), the
+  state stays as it is.
 - **Alternative: scroll listeners.** Rejected: script on every scroll event.
 
 ### 7. Long titles keep their lines

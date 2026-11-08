@@ -185,6 +185,13 @@ form, plus the extra height of a title with several lines.
 - **THEN** no style that holds the header or the content area for the swap
   SHALL be left on them after the next frames
 
+#### Scenario: Clipping that is not scrolling
+
+- **WHEN** the page around the header clips it, at its bottom edge or at one
+  side, for example a short container or a page wider than its container
+- **THEN** the header SHALL show its full form at the scroll start
+- **AND** only scrolling SHALL collapse it
+
 ### Requirement: One-Step Header Collapse
 
 In the one-step change, the header SHALL switch between its full and its

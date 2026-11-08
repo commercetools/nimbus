@@ -315,6 +315,86 @@ export const getScrollDrivenHeaderState = (
   return "collapsing";
 };
 
+/**
+ * Flexible layout: which markers inside the header are in view (see
+ * `createScrollDrivenMarkers`). The markers sit at the top of the header and
+ * span its width, so clipping at the bottom or at one side of the header
+ * changes none of them.
+ */
+export type ScrollDrivenHeaderMarkers = {
+  /** The top edge of the header. */
+  start: boolean;
+  /** Any part of the collapse distance. */
+  collapse: boolean;
+  /** The edge where the pinned height starts. */
+  end: boolean;
+};
+
+/**
+ * Flexible layout: the header state for the markers in view. The top edge is
+ * in view at the start; some of the collapse distance is in view while the
+ * header collapses; once that has scrolled out at the top, the edge below it
+ * is still in view (pinned). When no marker is in view (the header scrolled
+ * away with an outer scroller), the state stays as it is.
+ */
+export const getScrollDrivenHeaderStateFromMarkers = (
+  markers: ScrollDrivenHeaderMarkers,
+  current: ScrollDrivenHeaderState
+): ScrollDrivenHeaderState => {
+  if (markers.start) return "full";
+  if (markers.collapse) return "collapsing";
+  if (markers.end) return "pinned";
+  return current;
+};
+
+/** Set on the markers, so they can be told apart from page content. */
+export const SCROLL_MARKER_ATTRIBUTE = "data-scroll-marker";
+
+/** Tolerance, in pixels, at the edges of the collapse distance. */
+const MARKER_TOLERANCE = 0.5;
+
+/**
+ * Flexible layout: adds three empty markers to the sticky header, a line at
+ * its top edge, a strip over the collapse distance and a line just below it.
+ * They are absolutely positioned against the header (a sticky element is a
+ * containing block), span its width and take no space, and are hidden from
+ * assistive technology. The header's own position is not changed.
+ */
+export const createScrollDrivenMarkers = (
+  header: HTMLElement,
+  distance: number
+): Record<keyof ScrollDrivenHeaderMarkers, HTMLElement> => {
+  const add = (top: number, height: number) => {
+    const marker = header.ownerDocument.createElement("span");
+    marker.setAttribute(SCROLL_MARKER_ATTRIBUTE, "");
+    marker.setAttribute("aria-hidden", "true");
+    Object.assign(marker.style, {
+      position: "absolute",
+      insetInline: "0",
+      top: `${top}px`,
+      height: `${height}px`,
+      pointerEvents: "none",
+    });
+    header.appendChild(marker);
+    return marker;
+  };
+  return {
+    start: add(MARKER_TOLERANCE, 0),
+    collapse: add(
+      MARKER_TOLERANCE,
+      Math.max(0, distance - 2 * MARKER_TOLERANCE)
+    ),
+    end: add(distance + MARKER_TOLERANCE, 0),
+  };
+};
+
+/** Removes the markers that `createScrollDrivenMarkers` added. */
+export const removeScrollDrivenMarkers = (header: HTMLElement) => {
+  header
+    .querySelectorAll(`:scope > [${SCROLL_MARKER_ATTRIBUTE}]`)
+    .forEach((marker) => marker.remove());
+};
+
 export type PlanHeaderPartMotionsOptions = {
   header: HTMLElement;
   /**

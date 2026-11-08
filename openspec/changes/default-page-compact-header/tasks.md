@@ -250,6 +250,13 @@ scroll-driven change.
       drivers never become ready. Verify with
       `CollapseHeaderResizeWithoutScrollRange` (fails with `--retry=0` before
       the fix).
+- [x] 6.14 Only scrolling collapses the header, not clipping by the page around
+      it: the constrained layout observes the header within Root, the
+      flexible layout observes markers at the top of the sticky header without
+      changing its position. Verify with `CollapseHeaderClippedAtBottom`,
+      `CollapseHeaderClippedHorizontally` and
+      `CollapseHeaderConstrainedClippedAtBottom` (fail with `--retry=0` before
+      the fix; pass in Chromium and Safari 27.0.1).
 
 ## Workflow follow-up
 

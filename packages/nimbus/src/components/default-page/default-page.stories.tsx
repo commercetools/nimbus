@@ -3252,6 +3252,213 @@ export const CollapseHeaderSwitchedOff: Story = {
 };
 
 /**
+ * A header cut off at its bottom edge by the scroll container (the page starts
+ * low in a short container) shows the full form at the scroll start: only
+ * scrolling collapses it. The fixture is sized from the measured header
+ * height and collapse distance, so the visible part of the header at the
+ * start is smaller than the pinned height. A second fixture cuts the header
+ * at both edges: the container is shorter than the pinned height.
+ */
+export const CollapseHeaderClippedAtBottom: Story = {
+  render: () => (
+    <Box data-testid="scroll-container" height="500px" overflow="auto">
+      <Box data-testid="spacer" />
+      <DefaultPage.Root layout="flexible" stickyHeader collapseHeaderOnScroll>
+        <CollapsingHeader />
+        <DefaultPage.Content>
+          <LongFormContent fields={20} />
+        </DefaultPage.Content>
+      </DefaultPage.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const header = getHeader(canvasElement);
+    const scroller = canvas.getByTestId("scroll-container");
+    const spacer = canvas.getByTestId("spacer");
+    const subtitle = header.querySelector<HTMLElement>(
+      ".nimbus-default-page__subtitle"
+    )!;
+    let distance = 0;
+    let pinnedHeight = 0;
+
+    /** Sets the spacer above Root and the container height. */
+    const fit = async (spacerHeight: number, containerHeight: number) => {
+      scroller.scrollTop = 0;
+      spacer.style.height = `${spacerHeight}px`;
+      scroller.style.height = `${containerHeight}px`;
+      // Long enough for the observer to report and the parts to come to rest.
+      await wait(700);
+    };
+
+    const checkFullAtStart = async () => {
+      await waitForRest(header);
+      await expect(header).not.toHaveAttribute("data-scroll-collapsed");
+      await expect(getComputedStyle(subtitle).opacity).toBe("1");
+      await waitFor(() =>
+        expect(header.getAnimations({ subtree: true })).toHaveLength(0)
+      );
+    };
+
+    await step("Measures the header", async () => {
+      await waitFor(() => expect(header.style.top).toMatch(/^-\d/));
+      distance = -parseFloat(header.style.top);
+      pinnedHeight = header.getBoundingClientRect().height - distance;
+      await expect(distance).toBeGreaterThan(40);
+      await expect(pinnedHeight).toBeGreaterThan(40);
+    });
+
+    await step(
+      "Clipped at the bottom: the full form, until scrolling",
+      async () => {
+        // Half of the pinned height is visible at the start.
+        await fit(400, 400 + pinnedHeight / 2);
+        await checkFullAtStart();
+
+        scroller.scrollTop = 400 + distance / 2;
+        await wait(100);
+        await expect(header).not.toHaveAttribute("data-scroll-collapsed");
+
+        scroller.scrollTop = 400 + distance + 50;
+        await waitForPinned(header, true);
+
+        scroller.scrollTop = 0;
+        await waitForPinned(header, false);
+        await checkFullAtStart();
+      }
+    );
+
+    await step(
+      "Clipped at both edges: pinned only after the collapse distance has scrolled away",
+      async () => {
+        await fit(20, pinnedHeight * 0.6);
+        await checkFullAtStart();
+
+        scroller.scrollTop = 20 + distance / 2;
+        await wait(100);
+        await expect(header).not.toHaveAttribute("data-scroll-collapsed");
+
+        scroller.scrollTop = 20 + distance + 50;
+        await waitForPinned(header, true);
+
+        scroller.scrollTop = 0;
+        await waitForPinned(header, false);
+        await checkFullAtStart();
+      }
+    );
+  },
+};
+
+/**
+ * A page wider than its container, which clips it at the side: the header is
+ * cut off at its right edge. It shows the full form at the scroll start, and
+ * only scrolling collapses it.
+ */
+export const CollapseHeaderClippedHorizontally: Story = {
+  render: () => (
+    <Box width="600px" overflowX="hidden">
+      <Box
+        data-testid="scroll-container"
+        width="900px"
+        height="500px"
+        overflowY="auto"
+      >
+        <DefaultPage.Root layout="flexible" stickyHeader collapseHeaderOnScroll>
+          <CollapsingHeader />
+          <DefaultPage.Content>
+            <LongFormContent fields={16} />
+          </DefaultPage.Content>
+        </DefaultPage.Root>
+      </Box>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const header = getHeader(canvasElement);
+    const scroller = canvas.getByTestId("scroll-container");
+    let distance = 0;
+
+    await step("Clipped at the side: the full form at the start", async () => {
+      await waitFor(() => expect(header.style.top).toMatch(/^-\d/));
+      distance = -parseFloat(header.style.top);
+      await wait(700);
+      await waitForRest(header);
+      await expect(header).not.toHaveAttribute("data-scroll-collapsed");
+    });
+
+    await step(
+      "Scrolling collapses it, and back at the top it is full",
+      async () => {
+        scroller.scrollTop = distance + 50;
+        await waitForPinned(header, true);
+        scroller.scrollTop = 0;
+        await waitForPinned(header, false);
+        await waitForRest(header);
+      }
+    );
+  },
+};
+
+/**
+ * Constrained layout inside a container that cuts the header off at its
+ * bottom edge (the page starts low). The header shows the full form until its
+ * content area scrolls.
+ */
+export const CollapseHeaderConstrainedClippedAtBottom: Story = {
+  render: () => (
+    <Box data-testid="outer" height="300px" overflowY="auto">
+      <Box height="240px" />
+      <Box height="500px">
+        <DefaultPage.Root collapseHeaderOnScroll>
+          <CollapsingHeader />
+          <DefaultPage.Content>
+            <LongFormContent fields={16} />
+          </DefaultPage.Content>
+        </DefaultPage.Root>
+      </Box>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const root = getRoot(canvasElement);
+    const header = getHeader(canvasElement);
+    const content = canvas.getByRole("main");
+    let distance = 0;
+
+    await step(
+      "Clipped at the bottom: the full form at the start",
+      async () => {
+        await waitFor(() =>
+          expect(root).toHaveAttribute("data-scroll-driven", "constrained")
+        );
+        // The first measurement can come before the header has its final
+        // size, with a collapse distance of 0.
+        const distanceOf = () =>
+          parseFloat(
+            root.style.getPropertyValue("--default-page-collapse-distance")
+          ) || 0;
+        await waitFor(() => expect(distanceOf()).toBeGreaterThan(0));
+        await wait(700);
+        distance = distanceOf();
+        await waitForRest(header);
+        await expect(header).not.toHaveAttribute("data-scroll-collapsed");
+      }
+    );
+
+    await step(
+      "Scrolling the content area collapses it, and back at the top it is full",
+      async () => {
+        content.scrollTop = distance + 50;
+        await waitForPinned(header, true);
+        content.scrollTop = 0;
+        await waitForPinned(header, false);
+        await waitForRest(header);
+      }
+    );
+  },
+};
+
+/**
  * Constrained layout with content that does not overflow: the content area
  * has no scroll range. A size change of the header measures it again; the
  * values held while the drivers are swapped are removed again, although the

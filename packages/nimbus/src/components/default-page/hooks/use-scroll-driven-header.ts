@@ -4,11 +4,14 @@ import {
   BACK_ICON_INSET_VARIABLE,
   COLLAPSE_DISTANCE_VARIABLE,
   SCROLL_DRIVEN_ATTRIBUTE,
+  createScrollDrivenMarkers,
   getScrollDrivenHeaderState,
+  getScrollDrivenHeaderStateFromMarkers,
   getScrollDrivenHeaderThresholds,
   measureHeaderForm,
   planHeaderPartMotions,
   planScrollDrivenHeader,
+  removeScrollDrivenMarkers,
   setHeaderPartsAtRest,
   startHeaderPartAnimations,
   type HeaderMotion,
@@ -77,8 +80,9 @@ const SCROLL_KEYS = new Set([
  * content area's top padding change with the scroll position (see
  * `HeaderMotion["drivers"]`). Does
  * it again when the header changes size. Adds no scroll listeners: an
- * `IntersectionObserver` reports how much of the header is visible, which
- * tells the state.
+ * `IntersectionObserver` tells the state, from the visible part of the header
+ * within Root (constrained) or from markers at the top of the sticky header
+ * (flexible), so clipping by the page around the header does not count.
  *
  * At rest, the parts have no animations, so the browser draws their text at
  * its real size (sharp): when pinned, they get their end look as fixed
@@ -243,6 +247,7 @@ export function useScrollDrivenHeader({
       motion = null;
       stateObserver?.disconnect();
       stateObserver = null;
+      removeScrollDrivenMarkers(header);
 
       // Measure and read the page's own values without the holds.
       applyHolds("own");
@@ -306,29 +311,64 @@ export function useScrollDrivenHeader({
       // stays pending, but the drivers have no effect then: the page's own
       // values are what shows, so nothing needs to be held.
       if (!hasScrollRange) releaseHolds();
-      // The visible part of the header tells the state: all of it at the
-      // start, only the pinned height at the end (half a pixel of tolerance
-      // each). Only the ratio is used: Chrome reports `isIntersecting: false`
-      // below the first threshold even when part of the header is visible.
-      const thresholds = getScrollDrivenHeaderThresholds(
-        full.height,
-        plan.pinnedHeight
-      );
-      stateObserver = new IntersectionObserver(
-        ([entry]) => {
-          const next = getScrollDrivenHeaderState(
-            entry.intersectionRatio,
-            thresholds,
+      // Only scrolling may change the state, not clipping by the page around
+      // the header (a short container, a page that starts low, a page wider
+      // than its container).
+      let observe: () => void;
+      if (scroller) {
+        // Constrained: the header moves only inside Root, which clips it.
+        // Its visible part within Root tells the state: all of it at the
+        // start, only the pinned height at the end (half a pixel of tolerance
+        // each). Only the ratio is used: Chrome reports `isIntersecting:
+        // false` below the first threshold even when part of it is visible.
+        const thresholds = getScrollDrivenHeaderThresholds(
+          full.height,
+          plan.pinnedHeight
+        );
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            const next = getScrollDrivenHeaderState(
+              entry.intersectionRatio,
+              thresholds,
+              current
+            );
+            if (next !== current) show(next);
+          },
+          { root: container, threshold: [thresholds.pinned, thresholds.full] }
+        );
+        stateObserver = observer;
+        observe = () => observer.observe(header);
+      } else {
+        // Flexible: the scrolling element is unknown, so markers inside the
+        // sticky header tell how much of its top has scrolled away.
+        const markers = createScrollDrivenMarkers(header, plan.distance);
+        const markerElements = [markers.start, markers.collapse, markers.end];
+        const shown = new Map<Element, boolean>();
+        const observer = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            shown.set(entry.target, entry.isIntersecting);
+          }
+          // The first report has every marker.
+          if (shown.size < markerElements.length) return;
+          const next = getScrollDrivenHeaderStateFromMarkers(
+            {
+              start: shown.get(markers.start) === true,
+              collapse: shown.get(markers.collapse) === true,
+              end: shown.get(markers.end) === true,
+            },
             current
           );
           if (next !== current) show(next);
-        },
-        { threshold: [thresholds.pinned, thresholds.full] }
-      );
+        });
+        stateObserver = observer;
+        observe = () => {
+          for (const marker of markerElements) observer.observe(marker);
+        };
+      }
       // The first report applies the state again on the new measurements.
       current = previous;
       show(previous);
-      stateObserver.observe(header);
+      observe();
     };
 
     setUp();
@@ -351,6 +391,7 @@ export function useScrollDrivenHeader({
       for (const animation of driverAnimations) animation.cancel();
       releaseHolds();
       if (motion) setHeaderPartsAtRest(motion, "start");
+      removeScrollDrivenMarkers(header);
       header.style.top = "";
       header.style.removeProperty(BACK_ICON_INSET_VARIABLE);
       container.style.removeProperty(COLLAPSE_DISTANCE_VARIABLE);

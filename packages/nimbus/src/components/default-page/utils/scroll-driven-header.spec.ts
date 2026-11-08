@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   getScrollDrivenHeaderState,
+  getScrollDrivenHeaderStateFromMarkers,
   getScrollDrivenHeaderThresholds,
   planScrollDrivenHeader,
   type HeaderFormLayout,
@@ -120,5 +121,60 @@ describe("getScrollDrivenHeaderState", () => {
   it("keeps the state when the header is not visible at all", () => {
     expect(getScrollDrivenHeaderState(0, thresholds, "pinned")).toBe("pinned");
     expect(getScrollDrivenHeaderState(0, thresholds, "full")).toBe("full");
+  });
+});
+
+describe("getScrollDrivenHeaderStateFromMarkers", () => {
+  const markers = (start: boolean, collapse: boolean, end: boolean) => ({
+    start,
+    collapse,
+    end,
+  });
+
+  it("is full while the top edge is in view", () => {
+    expect(
+      getScrollDrivenHeaderStateFromMarkers(markers(true, true, true), "pinned")
+    ).toBe("full");
+    // Clipped below the top edge: still full.
+    expect(
+      getScrollDrivenHeaderStateFromMarkers(
+        markers(true, false, false),
+        "pinned"
+      )
+    ).toBe("full");
+  });
+
+  it("is collapsing while part of the collapse distance is in view", () => {
+    expect(
+      getScrollDrivenHeaderStateFromMarkers(markers(false, true, true), "full")
+    ).toBe("collapsing");
+    // Clipped at the bottom, so the edge below is out of view: still collapsing.
+    expect(
+      getScrollDrivenHeaderStateFromMarkers(markers(false, true, false), "full")
+    ).toBe("collapsing");
+  });
+
+  it("is pinned once the collapse distance has scrolled away", () => {
+    expect(
+      getScrollDrivenHeaderStateFromMarkers(
+        markers(false, false, true),
+        "collapsing"
+      )
+    ).toBe("pinned");
+  });
+
+  it("keeps the state when no marker is in view", () => {
+    expect(
+      getScrollDrivenHeaderStateFromMarkers(
+        markers(false, false, false),
+        "full"
+      )
+    ).toBe("full");
+    expect(
+      getScrollDrivenHeaderStateFromMarkers(
+        markers(false, false, false),
+        "pinned"
+      )
+    ).toBe("pinned");
   });
 });
