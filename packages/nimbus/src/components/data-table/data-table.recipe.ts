@@ -415,14 +415,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
       borderBottom: "1px solid {colors.neutral.3}",
       ...bodyFocusRing,
-      "&[data-dragging='true']": {
-        cursor: "grabbing",
-      },
-      "&[draggable='true']": {
-        cursor: "grab",
-      },
-      // A clickable row keeps `pointer` on its cells, so the drag handle is the
-      // only place that shows the grab cursor on such a row.
+      // Only the drag handle shows a grab cursor. A row keeps the default
+      // cursor, or `pointer` when it is clickable.
       "& [data-slot='drag'] button:not(:disabled)": {
         cursor: "grab",
       },
