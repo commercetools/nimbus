@@ -61,5 +61,5 @@ a keyboard-reachable item and drops next to it stay valid.
 - **AND** that expandable rows together with `draggableKeys` are not supported
 - **AND** that `onReorder` reports positions in the displayed order, which
   matters when column sorting is on
-- **AND** that consumers can reject drop positions with `getDropOperation` from
-  `useDragAndDrop`
+- **AND** that consumers can reject drop positions with `getDropOperation` of
+  React Aria's `useDragAndDrop`
