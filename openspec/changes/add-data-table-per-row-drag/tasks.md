@@ -10,7 +10,7 @@
 - [x] 2.2 Play function: click and Enter on a non-draggable row call `onRowAction` once
 - [x] 2.3 Play function: no drag starts from a non-draggable row (keyboard covered; pointer drag not covered)
 - [x] 2.4 Play function: a keyboard drop after a non-draggable row works; `onReorder` never receives a key outside `draggableKeys` (pointer drops and drops before a fixed row not covered)
-- [x] 2.5 Play function: empty set renders only disabled drag buttons; `undefined` keeps every row draggable
+- [x] 2.5 Play function: empty set renders only disabled, visually hidden drag buttons; `undefined` keeps every row draggable
 - [x] 2.6 Play function: a row in `disabledKeys` is never draggable (`isDisabled` row data not covered) even when listed in `draggableKeys`
 - [x] 2.7 Render-count story: changing `draggableKeys` re-renders only rows whose flag changed
 - [ ] 2.8 Run the new stories and confirm they fail before implementation (skipped: code was written before the stories; stories now pass)
@@ -20,10 +20,11 @@
 
 - [x] 3.1 In `data-table.table.tsx`, wrap `dragAndDropHooks.useDraggableItem` and return React Aria's "disabled" result for keys not in `draggableKeys` (confirm the expected shape against the installed `react-aria-components`)
 - [x] 3.2 In `data-table.body.tsx`, compute `isDragDisabled` per row from a ref and add `draggableKeys` to the `RaTableBody` `dependencies`
-- [x] 3.3 In `data-table.row.tsx`, accept `isDragDisabled` and render an empty drag cell (sticky class kept, no `IconButton`)
+- [x] 3.3 In `data-table.row.tsx`, accept `isDragDisabled` and render the drag cell with a disabled, visually hidden `IconButton` (sticky class kept)
 - [x] 3.4 Confirm `disabledBehavior="all"` and disabled-row behavior are unchanged
 - [x] 3.5 Run the stories from section 2 and make them pass
 - [x] 3.6 Render a disabled drag button for rows outside `draggableKeys`, with the `dragRowDisabled` message in `data-table.i18n.ts` and `packages/i18n/data/*.json`
+- [x] 3.7 Wrap the disabled drag button in `VisuallyHidden`, so React Aria keeps it in the DOM and sighted users see no handle
 
 ## 4. Documentation
 
