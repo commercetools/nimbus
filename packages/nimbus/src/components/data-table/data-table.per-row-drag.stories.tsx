@@ -3,8 +3,8 @@
 // under one DataTable entry.
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState, type ReactNode } from "react";
-import { within, expect, waitFor, userEvent, fn } from "storybook/test";
+import { useCallback, useMemo, useState, type ReactNode } from "react";
+import { within, expect, waitFor, userEvent, fn, mocked } from "storybook/test";
 import { Button, DataTable, Flex, Select, Stack, Text } from "@/components";
 import { useDragAndDrop, createArrayHandlers } from "@commercetools/nimbus";
 import type {
@@ -14,6 +14,7 @@ import type {
   DataTableRowItem,
   DataTableSize,
 } from "./data-table.types";
+import { recordWarnings } from "./utils/data-table.test-utils";
 
 const meta: Meta<object> = {
   title: "Components/DataTable",
@@ -23,9 +24,6 @@ const meta: Meta<object> = {
 export default meta;
 
 type Story = StoryObj<DataTableProps>;
-
-const wait = (ms: number = 50) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
 
 const dragColumns: DataTableColumnItem[] = [
   {
@@ -44,6 +42,77 @@ const dragButtons = (root: HTMLElement) =>
 const rowNamedExactly = (canvas: ReturnType<typeof within>, name: string) =>
   canvas.getByRole("row", { name: new RegExp(`^${name}$`) });
 
+const isDragging = (root: HTMLElement) =>
+  root.querySelector("[data-dragging='true']") !== null;
+
+/** Focuses the row's drag button with the keyboard and starts a keyboard drag. */
+const startKeyboardDrag = async (root: HTMLElement, row: HTMLElement) => {
+  row.focus();
+  const handle = within(row).getByRole("button", { name: /drag to reorder/i });
+  // React Aria reads its focus state when the key arrives, so a key sent right
+  // after `focus()` can be lost. Send ArrowRight again until the handle has
+  // focus, and only while the row still has it.
+  await waitFor(async () => {
+    if (document.activeElement === row)
+      await userEvent.keyboard("{ArrowRight}");
+    expect(handle).toHaveFocus();
+  });
+  await userEvent.keyboard("{Enter}");
+  await waitFor(() => expect(isDragging(root)).toBe(true));
+};
+
+/** Presses a key and waits until focus moves to the next drop target. */
+const moveDropTarget = async (key: string) => {
+  const before = document.activeElement;
+  await userEvent.keyboard(key);
+  await waitFor(() => expect(document.activeElement).not.toBe(before));
+};
+
+/**
+ * The minimal `DataTransfer` that React Aria's drag source and drop target
+ * read. Chromium does not let a script build a real one (see the ListBox
+ * stories), and a play cannot start a native drag with the pointer.
+ */
+const createDataTransfer = () => {
+  const data = new Map<string, string>();
+  return {
+    effectAllowed: "all",
+    dropEffect: "none",
+    files: [] as File[],
+    get types() {
+      return [...data.keys()];
+    },
+    get items() {
+      const items = [...data.keys()].map((type) => ({ kind: "string", type }));
+      return Object.assign(items, {
+        add: (value: string, type: string) => void data.set(type, value),
+      });
+    },
+    setData: (type: string, value: string) => void data.set(type, value),
+    getData: (type: string) => data.get(type) ?? "",
+    setDragImage: () => {},
+  };
+};
+
+/** Dispatches a native drag event at the vertical position inside `el`. */
+const dispatchDrag = (
+  el: Element,
+  type: "dragstart" | "dragenter" | "dragover" | "drop" | "dragend",
+  dataTransfer: ReturnType<typeof createDataTransfer>,
+  fraction = 0.5
+) => {
+  const rect = el.getBoundingClientRect();
+  const event = new Event(type, { bubbles: true, cancelable: true });
+  Object.defineProperty(event, "dataTransfer", { value: dataTransfer });
+  Object.defineProperty(event, "clientX", {
+    value: rect.left + rect.width / 2,
+  });
+  Object.defineProperty(event, "clientY", {
+    value: rect.top + rect.height * fraction,
+  });
+  el.dispatchEvent(event);
+};
+
 type PerRowDragTableProps = {
   draggableKeys?: Set<string>;
   disabledKeys?: DataTableProps["disabledKeys"];
@@ -51,7 +120,11 @@ type PerRowDragTableProps = {
   onReorderKeys: (keys: string[], targetKey: string) => void;
   label: string;
   size?: DataTableSize;
+  /** Initial rows. Defaults to rows A to E. */
+  initialRows?: DataTableRowItem[];
 };
+
+type TableStory = StoryObj<PerRowDragTableProps>;
 
 const PerRowDragTable = ({
   draggableKeys,
@@ -60,8 +133,11 @@ const PerRowDragTable = ({
   onReorderKeys,
   label,
   size = "md",
+  initialRows,
 }: PerRowDragTableProps) => {
-  const [tableRows, setTableRows] = useState<DataTableRowItem[]>(makeRows);
+  const [tableRows, setTableRows] = useState<DataTableRowItem[]>(
+    () => initialRows ?? makeRows()
+  );
   const handlers = createArrayHandlers(setTableRows, (row) => row.id);
   const { dragAndDropHooks } = useDragAndDrop({
     ...handlers,
@@ -134,19 +210,14 @@ const PerRowDragSizeTable = (props: Omit<PerRowDragTableProps, "size">) => {
  * One draggable row (C) among fixed rows. The fixed rows keep their place in
  * keyboard navigation, call `onRowAction`, and accept drops.
  */
-export const PerRowDrag: Story = {
-  render: () => {
-    const onRowAction = fn().mockName("onRowAction");
-    const onReorderKeys = fn().mockName("onReorderKeys");
-    return (
-      <PerRowDragSizeTable
-        label="Per-row drag"
-        draggableKeys={new Set(["C"])}
-        onRowAction={onRowAction}
-        onReorderKeys={onReorderKeys}
-      />
-    );
+export const PerRowDrag: TableStory = {
+  args: {
+    label: "Per-row drag",
+    draggableKeys: new Set(["C"]),
+    onRowAction: fn(),
+    onReorderKeys: fn(),
   },
+  render: (args) => <PerRowDragSizeTable {...args} />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -188,18 +259,15 @@ export const PerRowDrag: Story = {
     await step(
       "Enter twice on a drag button keeps the row in place",
       async () => {
-        rowNamedExactly(canvas, "Row C").focus();
-        await wait();
-        await userEvent.keyboard("{ArrowRight}");
-        await wait();
+        await startKeyboardDrag(
+          canvasElement,
+          rowNamedExactly(canvas, "Row C")
+        );
         await userEvent.keyboard("{Enter}");
-        await wait();
-        await userEvent.keyboard("{Enter}");
-        await waitFor(() => {
-          expect(canvas.getByTestId("row-order")).toHaveTextContent(
-            "Order: A,B,C,D,E"
-          );
-        });
+        await waitFor(() => expect(isDragging(canvasElement)).toBe(false));
+        expect(canvas.getByTestId("row-order")).toHaveTextContent(
+          "Order: A,B,C,D,E"
+        );
       }
     );
   },
@@ -209,82 +277,111 @@ export const PerRowDrag: Story = {
  * Pointer and keyboard drags of the draggable row. `onReorder` receives only
  * keys from `draggableKeys`, and a fixed row is a valid drop target.
  */
-export const PerRowDragReorder: Story = {
-  render: () => {
-    const onRowAction = fn().mockName("onRowAction");
-    const onReorderKeys = fn().mockName("onReorderKeys");
-    (window as unknown as Record<string, unknown>).__perRowDrag = {
-      onRowAction,
-      onReorderKeys,
-    };
-    return (
-      <PerRowDragTable
-        label="Per-row drag reorder"
-        draggableKeys={new Set(["C"])}
-        onRowAction={onRowAction}
-        onReorderKeys={onReorderKeys}
-      />
-    );
+export const PerRowDragReorder: TableStory = {
+  args: {
+    label: "Per-row drag reorder",
+    draggableKeys: new Set(["C"]),
+    onRowAction: fn(),
+    onReorderKeys: fn(),
   },
-  play: async ({ canvasElement, step }) => {
+  render: (args) => <PerRowDragTable {...args} />,
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
-    const spies = (window as unknown as Record<string, unknown>)
-      .__perRowDrag as {
-      onRowAction: ReturnType<typeof fn>;
-      onReorderKeys: ReturnType<typeof fn>;
-    };
+    const order = () => canvas.getByTestId("row-order");
 
     await step("Click on a fixed row calls onRowAction once", async () => {
       await userEvent.click(
         within(rowNamedExactly(canvas, "Row B")).getByText("Row B")
       );
-      await waitFor(() => expect(spies.onRowAction).toHaveBeenCalledTimes(1));
-      expect(spies.onRowAction.mock.calls[0][0]).toMatchObject({ id: "B" });
+      await waitFor(() => expect(args.onRowAction).toHaveBeenCalledTimes(1));
+      expect(mocked(args.onRowAction).mock.calls[0][0]).toMatchObject({
+        id: "B",
+      });
     });
 
     await step("Enter on a fixed row calls onRowAction once", async () => {
-      spies.onRowAction.mockClear();
+      mocked(args.onRowAction).mockClear();
       rowNamedExactly(canvas, "Row D").focus();
       await userEvent.keyboard("{Enter}");
-      await waitFor(() => expect(spies.onRowAction).toHaveBeenCalledTimes(1));
-      expect(spies.onRowAction.mock.calls[0][0]).toMatchObject({ id: "D" });
+      await waitFor(() => expect(args.onRowAction).toHaveBeenCalledTimes(1));
+      expect(mocked(args.onRowAction).mock.calls[0][0]).toMatchObject({
+        id: "D",
+      });
     });
 
     await step("Keyboard drag of row C drops after fixed row D", async () => {
-      rowNamedExactly(canvas, "Row C").focus();
-      await wait();
-      await userEvent.keyboard("{ArrowRight}");
-      await wait();
+      await startKeyboardDrag(canvasElement, rowNamedExactly(canvas, "Row C"));
+      await moveDropTarget("{ArrowDown}");
       await userEvent.keyboard("{Enter}");
-      await wait();
-      await userEvent.keyboard("{ArrowDown}");
-      await wait();
-      await userEvent.keyboard("{Enter}");
-
-      await waitFor(() => {
-        expect(canvas.getByTestId("row-order")).toHaveTextContent(
-          "Order: A,B,D,C,E"
-        );
-      });
-      expect(spies.onReorderKeys).toHaveBeenCalledTimes(1);
-      expect(spies.onReorderKeys.mock.calls[0][0]).toEqual(["C"]);
+      await waitFor(() =>
+        expect(order()).toHaveTextContent("Order: A,B,D,C,E")
+      );
+      expect(args.onReorderKeys).toHaveBeenCalledTimes(1);
+      expect(mocked(args.onReorderKeys).mock.calls[0][0]).toEqual(["C"]);
     });
 
-    await step("No drag starts from a fixed row", async () => {
-      spies.onReorderKeys.mockClear();
-      const row = rowNamedExactly(canvas, "Row A");
-      row.focus();
-      await wait();
-      await userEvent.keyboard("{ArrowRight}");
+    await step("No keyboard drag starts from a fixed row", async () => {
+      mocked(args.onReorderKeys).mockClear();
+      mocked(args.onRowAction).mockClear();
+      const rowA = rowNamedExactly(canvas, "Row A");
+      rowA.focus();
+      // Enter activates the row. It does not pick it up.
       await userEvent.keyboard("{Enter}");
-      await wait();
+      await waitFor(() => expect(args.onRowAction).toHaveBeenCalledTimes(1));
+      expect(mocked(args.onRowAction).mock.calls[0][0]).toMatchObject({
+        id: "A",
+      });
+      expect(isDragging(canvasElement)).toBe(false);
+      // Not in drag mode: ArrowDown moves focus to the next row.
       await userEvent.keyboard("{ArrowDown}");
-      await userEvent.keyboard("{Enter}");
-      await wait(100);
-      expect(canvas.getByTestId("row-order")).toHaveTextContent(
-        "Order: A,B,D,C,E"
+      await waitFor(() =>
+        expect(rowNamedExactly(canvas, "Row B")).toHaveFocus()
       );
-      expect(spies.onReorderKeys).not.toHaveBeenCalled();
+      expect(args.onReorderKeys).not.toHaveBeenCalled();
+      expect(order()).toHaveTextContent("Order: A,B,D,C,E");
+    });
+
+    await step("No pointer drag starts from a fixed row", async () => {
+      const dataTransfer = createDataTransfer();
+      dispatchDrag(rowNamedExactly(canvas, "Row A"), "dragstart", dataTransfer);
+      // A row that can start a drag is not draggable here, so nothing is
+      // written to the drag data and no row enters the dragging state.
+      expect(dataTransfer.types).toHaveLength(0);
+      expect(isDragging(canvasElement)).toBe(false);
+    });
+
+    await step("A pointer drag starts from the listed row", async () => {
+      // The same events on row C start a drag, so the step above is a real
+      // check and not an event that React Aria ignores anyway.
+      const dataTransfer = createDataTransfer();
+      const rowC = rowNamedExactly(canvas, "Row C");
+      dispatchDrag(rowC, "dragstart", dataTransfer);
+      await waitFor(() => expect(isDragging(canvasElement)).toBe(true));
+      expect(dataTransfer.types.length).toBeGreaterThan(0);
+      dispatchDrag(rowC, "dragend", dataTransfer);
+      await waitFor(() => expect(isDragging(canvasElement)).toBe(false));
+    });
+
+    await step("A pointer drop before a fixed row reorders", async () => {
+      mocked(args.onReorderKeys).mockClear();
+      const dataTransfer = createDataTransfer();
+      const rowC = rowNamedExactly(canvas, "Row C");
+      const rowA = rowNamedExactly(canvas, "Row A");
+      dispatchDrag(rowC, "dragstart", dataTransfer);
+      await waitFor(() => expect(isDragging(canvasElement)).toBe(true));
+      // Upper half of row A: the drop lands before the fixed row.
+      dispatchDrag(rowA, "dragenter", dataTransfer, 0.2);
+      dispatchDrag(rowA, "dragover", dataTransfer, 0.2);
+      await waitFor(() =>
+        expect(canvasElement.querySelector("[data-drop-target]")).not.toBeNull()
+      );
+      dispatchDrag(rowA, "drop", dataTransfer, 0.2);
+      dispatchDrag(rowC, "dragend", dataTransfer);
+      await waitFor(() =>
+        expect(order()).toHaveTextContent("Order: C,A,B,D,E")
+      );
+      expect(args.onReorderKeys).toHaveBeenCalledTimes(1);
+      expect(mocked(args.onReorderKeys).mock.calls[0]).toEqual([["C"], "A"]);
     });
   },
 };
@@ -332,35 +429,67 @@ export const PerRowDragUndefinedAndEmpty: Story = {
   },
 };
 
-/** A disabled row is never draggable, even when its key is in the set. */
+const rowsWithDisabledB = (): DataTableRowItem[] =>
+  makeRows().map((row) =>
+    row.id === "B" ? { ...row, isDisabled: true } : row
+  );
+
+/**
+ * A disabled row is never draggable, even when its key is in the set. Both
+ * ways to disable a row are covered: `disabledKeys` and `isDisabled` in the
+ * row data.
+ */
 export const PerRowDragDisabledRow: Story = {
   render: () => (
-    <PerRowDragTable
-      label="Disabled row"
-      draggableKeys={new Set(["B", "C"])}
-      disabledKeys={new Set(["B"])}
-      onRowAction={fn()}
-      onReorderKeys={fn()}
-    />
+    <Stack gap="800">
+      <div data-testid="disabled-keys">
+        <PerRowDragTable
+          label="Disabled by key"
+          draggableKeys={new Set(["B", "C"])}
+          disabledKeys={new Set(["B"])}
+          onRowAction={fn()}
+          onReorderKeys={fn()}
+        />
+      </div>
+      <div data-testid="disabled-data">
+        <PerRowDragTable
+          label="Disabled by row data"
+          draggableKeys={new Set(["B", "C"])}
+          initialRows={rowsWithDisabledB()}
+          onRowAction={fn()}
+          onReorderKeys={fn()}
+        />
+      </div>
+    </Stack>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("The disabled row's drag button is disabled", async () => {
-      const button = within(rowNamedExactly(canvas, "Row B")).getByRole(
-        "button",
-        { name: /drag to reorder/i }
-      );
-      expect(button).toBeDisabled();
-    });
+    for (const [testId, how] of [
+      ["disabled-keys", "disabledKeys"],
+      ["disabled-data", "isDisabled row data"],
+    ] as const) {
+      const table = within(canvas.getByTestId(testId));
 
-    await step("The enabled listed row stays draggable", async () => {
-      const button = within(rowNamedExactly(canvas, "Row C")).getByRole(
-        "button",
-        { name: /drag to reorder/i }
+      await step(
+        `${how}: the disabled row's drag button is disabled`,
+        async () => {
+          const button = within(rowNamedExactly(table, "Row B")).getByRole(
+            "button",
+            { name: /drag to reorder/i }
+          );
+          expect(button).toBeDisabled();
+        }
       );
-      expect(button).not.toBeDisabled();
-    });
+
+      await step(`${how}: the enabled listed row stays draggable`, async () => {
+        const button = within(rowNamedExactly(table, "Row C")).getByRole(
+          "button",
+          { name: /drag to reorder/i }
+        );
+        expect(button).not.toBeDisabled();
+      });
+    }
   },
 };
 
@@ -380,75 +509,51 @@ export const PerRowDragBetweenDisabledRows: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    const order = () => canvas.getByTestId("row-order");
 
     await step("Move C above disabled row B", async () => {
-      rowNamedExactly(canvas, "Row C").focus();
-      await wait();
-      await userEvent.keyboard("{ArrowRight}");
-      await wait();
+      await startKeyboardDrag(canvasElement, rowNamedExactly(canvas, "Row C"));
+      await moveDropTarget("{ArrowUp}");
+      await moveDropTarget("{ArrowUp}");
       await userEvent.keyboard("{Enter}");
-      await wait();
-      await userEvent.keyboard("{ArrowUp}");
-      await wait();
-      await userEvent.keyboard("{ArrowUp}");
-      await wait();
-      await userEvent.keyboard("{Enter}");
-      await waitFor(() => {
-        expect(canvas.getByTestId("row-order")).toHaveTextContent(
-          "Order: A,C,B,D,E"
-        );
-      });
+      await waitFor(() =>
+        expect(order()).toHaveTextContent("Order: A,C,B,D,E")
+      );
     });
 
     await step("Move C back between disabled rows B and D", async () => {
-      rowNamedExactly(canvas, "Row C").focus();
-      await wait();
-      await userEvent.keyboard("{ArrowRight}");
-      await wait();
+      await startKeyboardDrag(canvasElement, rowNamedExactly(canvas, "Row C"));
+      await moveDropTarget("{ArrowDown}");
       await userEvent.keyboard("{Enter}");
-      await wait();
-      await userEvent.keyboard("{ArrowDown}");
-      await wait();
-      await userEvent.keyboard("{Enter}");
-      await waitFor(() => {
-        expect(canvas.getByTestId("row-order")).toHaveTextContent(
-          "Order: A,B,C,D,E"
-        );
-      });
+      await waitFor(() =>
+        expect(order()).toHaveTextContent("Order: A,B,C,D,E")
+      );
     });
   },
 };
 
-// Render counts, read by the play function below.
-const renderCounts: Record<string, number> = {};
-
-const CountedCells = ({
-  columns: cols,
-  row,
-}: DataTableCellRenderProps<DataTableRowItem>) => {
-  renderCounts[row.id as string] = (renderCounts[row.id as string] ?? 0) + 1;
-  return cols.map((col) => (
-    <DataTable.Cell key={col.id}>{col.accessor(row)}</DataTable.Cell>
-  ));
+type RenderCountTableProps = {
+  /** Called with the row id each time a row renders its cells. */
+  onCellsRender: (rowId: string) => void;
 };
 
-const CountedBody = () => (
-  <DataTable.Body>
-    {(row, rowRenderProps) => (
-      <DataTable.Row row={row} {...rowRenderProps}>
-        {CountedCells}
-      </DataTable.Row>
-    )}
-  </DataTable.Body>
-);
-
-const RenderCountTable = () => {
+const RenderCountTable = ({ onCellsRender }: RenderCountTableProps) => {
   const [draggableKeys, setDraggableKeys] = useState(new Set(["C"]));
   // Created once: new row objects on every render would re-render every row.
   const [rows, setRows] = useState<DataTableRowItem[]>(makeRows);
   const { dragAndDropHooks } = useDragAndDrop({
     ...createArrayHandlers(setRows, (row) => row.id),
   });
+  // A stable function: a new one would make every row render again.
+  const renderCells = useCallback(
+    ({ columns: cols, row }: DataTableCellRenderProps<DataTableRowItem>) => {
+      onCellsRender(row.id);
+      return cols.map((col) => (
+        <DataTable.Cell key={col.id}>{col.accessor(row)}</DataTable.Cell>
+      ));
+    },
+    [onCellsRender]
+  );
 
   return (
     <Stack gap="400">
@@ -466,7 +571,13 @@ const RenderCountTable = () => {
           dragAndDropHooks={dragAndDropHooks}
         >
           <DataTable.Header />
-          <CountedBody />
+          <DataTable.Body>
+            {(row, rowRenderProps) => (
+              <DataTable.Row row={row} {...rowRenderProps}>
+                {renderCells}
+              </DataTable.Row>
+            )}
+          </DataTable.Body>
         </DataTable.Table>
       </DataTable.Root>
     </Stack>
@@ -474,25 +585,284 @@ const RenderCountTable = () => {
 };
 
 /** Changing `draggableKeys` re-renders only the rows whose flag changed. */
-export const PerRowDragRenderOnlyChangedRows: Story = {
-  render: () => <RenderCountTable />,
+export const PerRowDragRenderOnlyChangedRows: StoryObj<RenderCountTableProps> =
+  {
+    args: { onCellsRender: fn() },
+    render: (args) => <RenderCountTable {...args} />,
+    play: async ({ canvasElement, args, step }) => {
+      const canvas = within(canvasElement);
+
+      await step("Adding D to the set renders only row D", async () => {
+        mocked(args.onCellsRender).mockClear();
+        await userEvent.click(
+          canvas.getByRole("button", { name: "Make D draggable" })
+        );
+        await waitFor(() => {
+          expect(
+            within(rowNamedExactly(canvas, "Row D")).getByRole("button", {
+              name: /drag to reorder/i,
+            })
+          ).toBeInTheDocument();
+        });
+        // Only row D changed, so only row D renders.
+        const rendered = new Set(
+          mocked(args.onCellsRender).mock.calls.map(([id]) => id)
+        );
+        expect([...rendered]).toEqual(["D"]);
+      });
+    },
+  };
+
+const renderProbeColumns: DataTableColumnItem[] = [
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row: Record<string, unknown>) => row.name as ReactNode,
+  },
+  {
+    id: "flag",
+    header: "isDragDisabled",
+    accessor: () => null,
+  },
+];
+
+/** A table whose cells print the `isDragDisabled` flag of their row. */
+const FlagTable = ({
+  label,
+  draggableKeys,
+  withDragAndDrop,
+}: {
+  label: string;
+  draggableKeys: Set<string>;
+  withDragAndDrop: boolean;
+}) => {
+  const [rows, setRows] = useState<DataTableRowItem[]>(makeRows);
+  const { dragAndDropHooks } = useDragAndDrop({
+    ...createArrayHandlers(setRows, (row) => row.id),
+  });
+  const body = useMemo(
+    () => (
+      <DataTable.Body>
+        {(row, rowRenderProps) => (
+          <DataTable.Row row={row} {...rowRenderProps}>
+            {({ columns: cols }) =>
+              cols.map((col) => (
+                <DataTable.Cell key={col.id}>
+                  {col.id === "flag"
+                    ? `${row.id}:${String(rowRenderProps.isDragDisabled)}`
+                    : col.accessor(row)}
+                </DataTable.Cell>
+              ))
+            }
+          </DataTable.Row>
+        )}
+      </DataTable.Body>
+    ),
+    []
+  );
+  return (
+    <DataTable.Root
+      columns={renderProbeColumns}
+      rows={rows}
+      draggableKeys={draggableKeys}
+      size="md"
+    >
+      <DataTable.Table
+        aria-label={label}
+        dragAndDropHooks={withDragAndDrop ? dragAndDropHooks : undefined}
+      >
+        <DataTable.Header />
+        {body}
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+};
+
+const flagWarnings: string[] = [];
+
+/**
+ * Custom row render functions get `isDragDisabled`. It is `true` for rows
+ * outside `draggableKeys`, and `false` for every row when drag and drop is off,
+ * because `draggableKeys` has no effect then (and a warning says so).
+ */
+export const PerRowDragRenderProp: Story = {
+  beforeEach: recordWarnings(flagWarnings),
+  render: () => (
+    <Stack gap="800">
+      <div data-testid="with-dnd">
+        <FlagTable
+          label="With drag and drop"
+          draggableKeys={new Set(["C"])}
+          withDragAndDrop
+        />
+      </div>
+      <div data-testid="without-dnd">
+        <FlagTable
+          label="Without drag and drop"
+          draggableKeys={new Set(["C"])}
+          withDragAndDrop={false}
+        />
+      </div>
+    </Stack>
+  ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Adding D to the set renders only row D", async () => {
-      for (const id of Object.keys(renderCounts)) delete renderCounts[id];
-      await userEvent.click(
-        canvas.getByRole("button", { name: "Make D draggable" })
-      );
-      await waitFor(() => {
-        expect(
-          within(rowNamedExactly(canvas, "Row D")).getByRole("button", {
-            name: /drag to reorder/i,
-          })
-        ).toBeInTheDocument();
-      });
-      // Only row D changed, so only row D renders.
-      expect(renderCounts).toEqual({ D: expect.any(Number) });
+    await step("Rows outside the set get isDragDisabled true", async () => {
+      const table = within(canvas.getByTestId("with-dnd"));
+      for (const id of ["A", "B", "D", "E"]) {
+        expect(table.getByText(`${id}:true`)).toBeInTheDocument();
+      }
+      expect(table.getByText("C:false")).toBeInTheDocument();
     });
+
+    await step("Without drag and drop, no row is drag disabled", async () => {
+      const table = within(canvas.getByTestId("without-dnd"));
+      for (const id of ["A", "B", "C", "D", "E"]) {
+        expect(table.getByText(`${id}:false`)).toBeInTheDocument();
+      }
+      expect(dragButtons(canvas.getByTestId("without-dnd"))).toHaveLength(0);
+    });
+
+    await step("draggableKeys without drag and drop warns", async () => {
+      await waitFor(() =>
+        expect(
+          flagWarnings.filter((w) =>
+            w.includes("`draggableKeys` has no effect")
+          )
+        ).toHaveLength(1)
+      );
+    });
+  },
+};
+
+const unsupportedWarnings: string[] = [];
+
+/**
+ * `draggableKeys` together with selection or with expandable rows is not
+ * supported. Each combination warns once in development.
+ */
+export const PerRowDragUnsupportedCombinationsWarn: Story = {
+  beforeEach: recordWarnings(unsupportedWarnings),
+  render: () => {
+    const Tables = () => {
+      const [rows] = useState<DataTableRowItem[]>(makeRows);
+      const [nestedRows] = useState<DataTableRowItem[]>(() =>
+        makeRows().map((row, i) =>
+          i === 0 ? { ...row, children: [{ id: "A1", name: "Row A1" }] } : row
+        )
+      );
+      const { dragAndDropHooks } = useDragAndDrop({
+        ...createArrayHandlers(
+          () => {},
+          (row) => String(row.id)
+        ),
+      });
+      return (
+        <Stack gap="800">
+          <DataTable
+            columns={dragColumns}
+            rows={rows}
+            selectionMode="multiple"
+            draggableKeys={new Set(["C"])}
+            dragAndDropHooks={dragAndDropHooks}
+            aria-label="Selection and draggableKeys"
+          />
+          <DataTable
+            columns={dragColumns}
+            rows={nestedRows}
+            nestedKey="children"
+            draggableKeys={new Set(["C"])}
+            dragAndDropHooks={dragAndDropHooks}
+            aria-label="Expandable rows and draggableKeys"
+          />
+        </Stack>
+      );
+    };
+    return <Tables />;
+  },
+  play: async ({ step }) => {
+    await step("Selection with draggableKeys warns once", async () => {
+      await waitFor(() =>
+        expect(
+          unsupportedWarnings.filter((w) => w.includes("`selectionMode`"))
+        ).toHaveLength(1)
+      );
+    });
+
+    await step("Expandable rows with draggableKeys warn once", async () => {
+      await waitFor(() =>
+        expect(
+          unsupportedWarnings.filter((w) => w.includes("expandable rows"))
+        ).toHaveLength(1)
+      );
+    });
+  },
+};
+
+const showcaseSizes: DataTableSize[] = ["sm", "md", "lg"];
+
+/**
+ * One draggable row (C) among fixed rows at every size. The fixed rows have no
+ * visible drag handle, and their empty drag cell lines up with the header and
+ * the draggable row.
+ */
+export const PerRowDragSizes: Story = {
+  // VRT: the hidden handles of fixed rows, and the drag column at each size.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="800">
+      {showcaseSizes.map((size) => (
+        <PerRowDragTable
+          key={size}
+          label={`Per-row drag, size ${size}`}
+          size={size}
+          draggableKeys={new Set(["C"])}
+          onRowAction={fn()}
+          onReorderKeys={fn()}
+        />
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // The frame is only worth capturing once every table has rendered.
+    await waitFor(() => expect(canvas.getAllByRole("grid")).toHaveLength(3));
+    expect(dragButtons(canvasElement)).toHaveLength(3);
+  },
+};
+
+/**
+ * A keyboard drag of the draggable row, left in progress. The drop indicator
+ * shows between two fixed rows, over the sticky drag column.
+ */
+export const PerRowDragDropIndicator: TableStory = {
+  // VRT: the drop indicator in the middle of a drag. The play ends mid-drag,
+  // so the snapshot has the indicator.
+  tags: ["vrt"],
+  parameters: {
+    chromatic: { disableSnapshot: false },
+    // While a drag is in progress, React Aria renders its drop indicators as
+    // rows with `aria-level` in a `grid`, which axe rejects. The rule is off
+    // for this story only: the indicators exist only mid-drag.
+    a11y: {
+      config: {
+        rules: [{ id: "aria-conditional-attr", enabled: false }],
+      },
+    },
+  },
+  args: {
+    label: "Per-row drag, drop indicator",
+    draggableKeys: new Set(["C"]),
+    onRowAction: fn(),
+    onReorderKeys: fn(),
+  },
+  render: (args) => <PerRowDragTable {...args} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await startKeyboardDrag(canvasElement, rowNamedExactly(canvas, "Row C"));
+    await moveDropTarget("{ArrowUp}");
+    await moveDropTarget("{ArrowUp}");
   },
 };
