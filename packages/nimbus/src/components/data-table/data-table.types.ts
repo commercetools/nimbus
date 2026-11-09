@@ -397,7 +397,9 @@ export type DataTableRowRenderProps = {
   isSinglePinned: boolean;
   /**
    * `true` when `draggableKeys` is set and does not contain this row. The row
-   * renders a disabled drag button and cannot start a drag.
+   * renders a visually hidden, disabled drag button and cannot start a drag.
+   * It is `false` for every row when `dragAndDropHooks` is not set, because
+   * `draggableKeys` has no effect then.
    */
   isDragDisabled: boolean;
 };
