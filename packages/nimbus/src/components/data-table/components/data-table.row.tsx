@@ -6,6 +6,7 @@ import {
   TableStateContext,
   useTableOptions,
 } from "react-aria-components";
+import { VisuallyHidden } from "react-aria";
 import { isFocusable } from "@react-aria/utils";
 import { mergeRefs } from "@/utils";
 import { Highlight } from "@chakra-ui/react/highlight";
@@ -591,6 +592,26 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
 
   const { allowsDragging } = useTableOptions();
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
+
+  const dragHandle = (
+    <IconButton
+      slot="drag"
+      data-drag-handle=""
+      size="2xs"
+      variant="ghost"
+      colorPalette="neutral"
+      aria-label={
+        isDragDisabled ? msg.format("dragRowDisabled") : msg.format("dragRow")
+      }
+      // React Aria sets `pointerEvents: none` on this slot, so a
+      // press lands on the cell. A press that starts on the handle
+      // does not move focus from the cell into the handle, and the
+      // first drag works in Chromium and WebKit.
+      style={isDragDisabled ? undefined : { pointerEvents: "auto" }}
+    >
+      <DragIndicator />
+    </IconButton>
+  );
   const pinLabel = msg.format(isPinned ? "unpinRow" : "pinRow");
 
   const nestedRowNodeRef = useRef<HTMLElement | null>(null);
@@ -703,27 +724,14 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                 h="100%"
               >
                 {/* A row outside draggableKeys gets a disabled handle from
-                 * React Aria. It uses the standard disabled look, so the row
-                 * reads as not draggable. */}
-                <IconButton
-                  slot="drag"
-                  data-drag-handle=""
-                  size="2xs"
-                  variant="ghost"
-                  colorPalette="neutral"
-                  aria-label={
-                    isDragDisabled
-                      ? msg.format("dragRowDisabled")
-                      : msg.format("dragRow")
-                  }
-                  // React Aria sets `pointerEvents: none` on this slot, so a
-                  // press lands on the cell. A press that starts on the handle
-                  // does not move focus from the cell into the handle, and the
-                  // first drag works in Chromium and WebKit.
-                  style={isDragDisabled ? undefined : { pointerEvents: "auto" }}
-                >
-                  <DragIndicator />
-                </IconButton>
+                 * React Aria. React Aria needs the handle in the DOM, so it is
+                 * visually hidden instead of removed. Screen readers still
+                 * find it through its "not draggable" label. */}
+                {isDragDisabled ? (
+                  <VisuallyHidden>{dragHandle}</VisuallyHidden>
+                ) : (
+                  dragHandle
+                )}
               </Box>
             </RaCell>
           )}
