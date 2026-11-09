@@ -35,9 +35,16 @@
 - [x] 4.5 Add a consumer example to `data-table.docs.spec.tsx` and run it
 - [x] 4.6 Check `.claude/skills/`, `.claude/commands/` and `docs/` for references to DataTable drag that need the same update
 
-## 5. Release and Verification
+## 5. Review Follow-up
+
+- [x] 5.5 Add VRT stories: `PerRowDragSizes` (hidden handles at every size) and `PerRowDragDropIndicator` (drop indicator mid-drag)
+- [x] 5.6 Cover pointer drag and drop from and onto fixed rows, `isDragDisabled` values, `isDisabled` row data, and the render-count story with spies instead of module state
+- [x] 5.7 Warn in development for `draggableKeys` with selection, with expandable rows, and without `dragAndDropHooks`; `isDragDisabled` is `false` without drag and drop
+- [x] 5.8 Strengthen the consumer example in `data-table.docs.spec.tsx` (keyboard reorder, fixed rows)
+
+## 6. Release and Verification
 
 - [x] 5.1 Add a minor changeset for `@commercetools/nimbus` written from the consumer's view
 - [x] 5.2 Run `pnpm --filter @commercetools/nimbus typecheck:dev` and lint (ESLint run on the data-table directory only, not the whole repo)
 - [x] 5.3 Run the data-table tests and the docs spec (run with `test:dev` against source, not the built bundle)
-- [ ] 5.4 Run the `nimbus-reviewer` agent on the change
+- [x] 5.4 Run the `nimbus-reviewer` agent on the change
