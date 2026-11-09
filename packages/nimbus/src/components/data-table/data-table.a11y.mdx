@@ -59,8 +59,8 @@ const App = () => {
 | `Enter` on a link or text field in a cell | Follow the link, or add a line break; the row is not activated                        |
 
 **Rows that cannot be dragged.** With `draggableKeys`, a row outside the set has
-a disabled drag button labelled "Row cannot be reordered". The disabled button
-cannot be focused. The row stays in the arrow-key order, is activated with
+a disabled drag button labelled "Row cannot be reordered". The button is
+visually hidden but stays in the accessibility tree. It cannot be focused. The row stays in the arrow-key order, is activated with
 `Enter`, and is a valid drop target. A keyboard user picks up a draggable row with `Enter` on
 its drag button, moves with the arrow keys, and drops with `Enter`, also next to
 rows that cannot be dragged.

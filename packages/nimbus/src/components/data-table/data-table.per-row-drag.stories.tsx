@@ -156,13 +156,18 @@ export const PerRowDrag: Story = {
         const buttons = dragButtons(canvasElement);
         expect(buttons).toHaveLength(1);
         expect(rowNamedExactly(canvas, "Row C")).toContainElement(buttons[0]);
-        // The other rows keep a disabled drag button, so the column stays aligned.
+        // The other rows keep a disabled drag button in the DOM for React
+        // Aria. It is visually hidden, so only screen readers find it.
         for (const id of ["A", "B", "D", "E"]) {
+          const button = within(rowNamedExactly(canvas, `Row ${id}`)).getByRole(
+            "button",
+            { name: /cannot be reordered/i }
+          );
+          expect(button).toBeDisabled();
+          // The VisuallyHidden wrapper is 1px wide and clips the button.
           expect(
-            within(rowNamedExactly(canvas, `Row ${id}`)).getByRole("button", {
-              name: /cannot be reordered/i,
-            })
-          ).toBeDisabled();
+            button.parentElement!.getBoundingClientRect().width
+          ).toBeLessThanOrEqual(1);
         }
       }
     );
@@ -312,15 +317,18 @@ export const PerRowDragUndefinedAndEmpty: Story = {
       expect(dragButtons(canvas.getByTestId("all-rows"))).toHaveLength(5);
     });
 
-    await step("empty set: every row has a disabled drag button", async () => {
-      const noRows = canvas.getByTestId("no-rows");
-      expect(dragButtons(noRows)).toHaveLength(0);
-      const disabled = within(noRows).getAllByRole("button", {
-        name: /cannot be reordered/i,
-      });
-      expect(disabled).toHaveLength(5);
-      disabled.forEach((button) => expect(button).toBeDisabled());
-    });
+    await step(
+      "empty set: every row has a hidden disabled drag button",
+      async () => {
+        const noRows = canvas.getByTestId("no-rows");
+        expect(dragButtons(noRows)).toHaveLength(0);
+        const disabled = within(noRows).getAllByRole("button", {
+          name: /cannot be reordered/i,
+        });
+        expect(disabled).toHaveLength(5);
+        disabled.forEach((button) => expect(button).toBeDisabled());
+      }
+    );
   },
 };
 
