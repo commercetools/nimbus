@@ -311,6 +311,10 @@ pnpm --filter @commercetools/nimbus typecheck   # nimbus only, built surface
 # Validate published package shape (attw + publint against packed tarballs)
 pnpm check:package-shape
 
+# Validate that the nimbus dist bundles under a strict webpack consumer build
+# and contains no Rolldown `require` helper
+pnpm check:bundler-compat
+
 # Validate published bundle sizes against baseline
 pnpm check:bundle-size
 
@@ -360,8 +364,12 @@ and validates the result with `@arethetypeswrong/cli` (types resolve across
 vs the npm spec). Run it locally before pushing changes to a bundler config,
 `package.json` `exports` map, postbuild script, or any publishable entry point.
 See [Package Shape Verification](./docs/package-shape-verification.md) for
-details. For bundle sizes, see
-[Bundle Size Monitoring](./docs/bundle-size-monitoring.md).
+details. `pnpm check:bundler-compat` checks the bundled code itself: it bundles
+the nimbus dist with webpack 5 the way `mc-scripts` does
+(`strictExportPresence`, warnings fail) and scans the ESM output for Rolldown's
+runtime `require` helper. See
+[Bundler Compatibility Verification](./docs/bundler-compat-verification.md). For
+bundle sizes, see [Bundle Size Monitoring](./docs/bundle-size-monitoring.md).
 
 ### Workspace-Specific Development
 
@@ -399,6 +407,10 @@ pnpm changeset:version-and-format
 # Check changeset status
 pnpm changeset:status
 ```
+
+To publish a canary build of a PR branch, push a commit whose message contains
+`[publish-preview]` (see
+[Publishing a PR canary](./docs/changeset-conventions.md#publishing-a-pr-canary)).
 
 For changeset content (what to write, what to leave out, audience), see
 [Changeset Conventions](./docs/changeset-conventions.md). Changesets are release
@@ -516,6 +528,11 @@ snapshotted and why is in
 [Chromatic Visual Regression: Authoring Stories](./docs/chromatic-visual-testing.md);
 triggers, baselines, the manual full-snapshot run and merge gating are in the
 [Chromatic CI Runbook](./docs/chromatic-ci.md).
+
+Figma Code Connect mappings (`*.figma.tsx`) are checked with a dry run on pull
+requests that change them, and published to Figma after merge to `main`.
+Triggers, the `FIGMA_ACCESS_TOKEN` secret and how to renew it, and the manual
+publish are in [Figma Code Connect CI](./docs/figma-code-connect-ci.md).
 
 ### Git Conventions
 

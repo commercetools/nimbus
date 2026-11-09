@@ -1,7 +1,8 @@
 # nimbus-use-sliding-indicator Specification
 
 ## Purpose
-TBD - created by archiving change add-animated-tab-indicator. Update Purpose after archive.
+
+Places an indicator over the active item in a group, such as the selected tab, and moves it when the active item or the layout changes.
 
 ## Requirements
 
@@ -9,12 +10,7 @@ TBD - created by archiving change add-animated-tab-indicator. Update Purpose aft
 
 The hook SHALL position an absolutely-placed indicator element over the active
 item within a container and keep it in sync as the active item or layout changes.
-The caller SHALL provide the indicator ref, a CSS `activeSelector` identifying
-the active item within the container, the attribute names to watch for
-active-item changes, and a `getGeometry({ container, active })` callback that maps
-the container and active bounding rects to indicator geometry (`x`, `y`, and
-optional `width` / `height`). The container SHALL be the indicator's positioned
-parent element.
+The container SHALL be the indicator's positioned parent element.
 
 #### Scenario: Indicator measures the active item before paint
 
@@ -53,3 +49,13 @@ parent element.
 - **THEN** it sets `data-animated="true"` on the container and removes it on
   cleanup, so the recipe can suppress the static marker only once the sliding
   indicator is live (keeping the static marker as the no-JS fallback)
+
+#### Scenario: Caller inputs
+
+- **WHEN** a component calls the hook
+- **THEN** it provides the indicator ref, a CSS `activeSelector` identifying the
+  active item within the container, and the attribute names to watch for
+  active-item changes
+- **AND** it provides a `getGeometry({ container, active })` callback that maps
+  the container and active bounding rects to indicator geometry (`x`, `y`, and
+  optional `width` / `height`)

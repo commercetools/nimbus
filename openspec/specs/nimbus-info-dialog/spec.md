@@ -1,7 +1,9 @@
 # nimbus-info-dialog Specification
 
 ## Purpose
-TBD - created by archiving change info-dialog-pattern. Update Purpose after archive.
+
+Shows read-only information in a dialog that the user can only close.
+
 ## Requirements
 ### Requirement: Component Export
 

@@ -21,9 +21,9 @@
 
 ## 4. Development warnings (commit 5)
 
-- [x] 4.1 Add pure `findRowKeyProblems` / `formatRowKeyProblems`; warn from `DataTable.Root` on duplicate or empty ids
+- [x] 4.1 Add pure `findRowKeyProblems` / `formatRowKeyProblems`; `DataTable.Root` throws on duplicate ids and warns on empty or missing ids, outside production
 - [x] 4.2 Warn from `DataTable.Row` when a custom body renders it with an `id` different from `getRowKey(row)`
-- [x] 4.3 Stories `CustomRowIdOnElementWarns` (row still expands and pins), `DefaultRowIdDoesNotWarn`, `DuplicateRowKeysWarnInDevelopment`; record warnings with `spyOn` in `beforeEach` with a cleanup
+- [x] 4.3 Stories `CustomRowIdOnElementWarns` (row still expands and pins), `DefaultRowIdDoesNotWarn`, `DuplicateRowKeysThrowInDevelopment`; record warnings with `spyOn` in `beforeEach` with a cleanup
 - [x] 4.4 Unit tests in `row-keys.utils.spec.ts`
 - [x] 4.5 In `data-table.dev.mdx`, state that `id` keys selection, `disabledKeys`, expansion and pinning and how to choose another identity ("Row data structure"), and that a custom body must not set `id` on `DataTable.Row` ("Custom row styling"); list both warnings in the changeset
 

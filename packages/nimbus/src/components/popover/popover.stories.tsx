@@ -213,6 +213,16 @@ export const EscapeStopsAtThePopover: Story = {
     );
 
     await step("A second Escape then closes the dialog", async () => {
+      // Focus must be restored into the dialog before the next Escape,
+      // otherwise the key event lands on <body> and is ignored
+      await waitFor(
+        () => {
+          expect(canvas.getByRole("dialog")).toContainElement(
+            document.activeElement as HTMLElement
+          );
+        },
+        { timeout: 3000 }
+      );
       await userEvent.keyboard("{Escape}");
       await waitFor(() =>
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()

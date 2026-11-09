@@ -36,10 +36,16 @@ The component SHALL identify every row by its `id` and every column by its `id`.
 - **THEN** expansion and pinning SHALL keep working on the row's `id`
 - **AND** the component SHALL log a development warning naming both ids and pointing to the row data
 
-#### Scenario: Duplicate or empty row ids
+#### Scenario: Duplicate row ids
 
-- **WHEN** two rows share an `id`, or a row's `id` is empty or missing
-- **THEN** the component SHALL log a development warning naming the duplicated id or the index of the row without one
+- **WHEN** two rows share an `id` outside a production build
+- **THEN** `DataTable.Root` SHALL throw an error while rendering that names the duplicated id and tells the developer to give each row a unique `id`
+- **AND** the check SHALL NOT run in production builds
+
+#### Scenario: Empty or missing row ids
+
+- **WHEN** a row's `id` is empty or missing outside a production build
+- **THEN** the component SHALL log a development warning naming the index of the row without one
 - **AND** SHALL NOT log it in production builds
 
 ## MODIFIED Requirements

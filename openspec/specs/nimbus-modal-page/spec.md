@@ -1,7 +1,9 @@
 # nimbus-modal-page Specification
 
 ## Purpose
-TBD - created by archiving change add-modal-page-component. Update Purpose after archive.
+
+Shows a full-screen page on top of the current page, for a focused task that the user finishes or closes.
+
 ## Requirements
 ### Requirement: Namespace Structure
 

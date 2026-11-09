@@ -33,12 +33,12 @@ export type PaginationProps = {
   "aria-label"?: string;
   /**
    * Whether to show page number input for direct navigation
-   * @default false
+   * @default true
    */
   enablePageInput?: boolean;
   /**
    * Whether to show page size selector dropdown
-   * @default false
+   * @default true
    */
   enablePageSizeSelector?: boolean;
 };

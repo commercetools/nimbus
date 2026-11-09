@@ -1,7 +1,7 @@
 import { fileURLToPath } from "node:url";
 import { glob } from "glob";
 import optimizeLocales from "@react-aria/optimize-locales-plugin";
-import { defineConfig, esmExternalRequirePlugin } from "vite";
+import { defineConfig } from "vite";
 import type { LibraryFormats, PluginOption, Rollup } from "vite";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
@@ -82,43 +82,16 @@ const createEntries = async () => {
 /**
  * External (peer) dependencies — not bundled into the nimbus dist.
  *
- * Two arrays exist because of how the upstream packages are published:
- *
- * ### `requireRewriteExternals` — via `esmExternalRequirePlugin`
- *
- * For packages whose graph contains CJS files calling `require("<name>")`.
- * The plugin both externalizes them **and** rewrites internal `require()`
- * calls into ESM imports — without the rewrite, Rolldown leaks
- * `__require(...)` into our ESM dist and breaks pure-ESM consumers.
- *
- * Only React-family hits this today: `react` ships as CJS, and
- * `use-sync-external-store/cjs/*` (transitively via react-aria /
- * react-stately) calls `require("react")` internally.
- *
- * **Critical:** entries here must **not** also be in `external` below.
- * If they are, Rolldown externalizes them before the plugin's rewrite
- * runs, the rewrite no-ops, and `__require(...)` leaks into the dist.
- * Ref: https://github.com/vitejs/rolldown-vite/issues/596
- *
- * ### `external` — via `rollupOptions.external`
- *
- * For packages where plain externalization is enough — they ship ESM
- * (chakra, slate) or are workspace packages.
- *
- * **Default to this list when adding a new external.** Move an entry to
- * `requireRewriteExternals` only if you observe `__require(...)` leaking
- * into the built output.
- *
- * Anything externalized (either list) must also be a peerDependency &
- * devDependency in this package's `package.json`.
+ * Anything externalized must also be a peerDependency & devDependency in this
+ * package's `package.json`.
  */
-const requireRewriteExternals = [/^react(-dom)?(\/.+)?$/];
-
 const external = [
   // Node built-ins — the plugin entries use `node:module` (createRequire) and
   // must not be browser-externalized by Vite, otherwise the built output
   // replaces them with an empty shim and `isNimbusResolvable` always fails.
   /^node:/,
+  // React, including subpaths such as `react/jsx-runtime` and `react-dom/client`.
+  /^react(-dom)?(\/.+)?$/,
   // UI frameworks & styling.
   new RegExp("@chakra-ui/react?[^.].*$"),
   // Slate dependencies for RichTextInput
@@ -181,26 +154,13 @@ export default defineConfig(async () => {
         formats: ["es", "cjs"] satisfies LibraryFormats[],
       },
       rollupOptions: {
-        /**
-         * `esmExternalRequirePlugin` handles `requireRewriteExternals`
-         * (see the file-top doc).
-         *
-         * **Must live in `rollupOptions.plugins`** (not in the top-level
-         * `plugins` array) so it only applies to nimbus's lib build. If it
-         * leaks into Storybook's iframe build, react gets externalized
-         * there too and the deployed Storybook breaks with
-         * `Uncaught TypeError: Failed to resolve module specifier 'react'`
-         * (no importmap).
-         */
-        plugins: [
-          esmExternalRequirePlugin({ external: requireRewriteExternals }),
-        ],
         external,
         output: {
           // Keep chunks out of dist/ root so entry points are easier to find.
-          // Vite 8/Rolldown renders `[format]` as `esm`/`cjs` (was `es`/`cjs`
-          // pre-Rolldown). Nothing outside this build depends on the chunk
-          // extension — entry-point filenames are produced by `lib.fileName`.
+          // `[format]` renders as `es`/`cjs` in this lib build, so chunks end
+          // in `.es.js`/`.cjs.js`. `scripts/check-bundler-compat.mjs` scans
+          // the ESM chunks and fails if it finds none, so a naming change
+          // shows up there. Entry-point filenames come from `lib.fileName`.
           chunkFileNames: "chunks/[name]-[hash].[format].js",
         },
         /**
@@ -228,7 +188,24 @@ export default defineConfig(async () => {
     },
     target: "esnext",
     assetsInclude: ["/sb-preview/runtime.js"],
-    resolve: { tsconfigPaths: true },
+    resolve: {
+      tsconfigPaths: true,
+      alias: [
+        /**
+         * react-aria, react-aria-components and react-stately import
+         * `useSyncExternalStore` from `use-sync-external-store/shim`, a CJS
+         * polyfill for React < 18 that returns React's own hook on newer
+         * versions. Nimbus requires React 19, so import the hook from `react`
+         * directly. This keeps CJS code that calls `require("react")` out of
+         * the dist, which a pure-ESM build can't express without an interop
+         * facade that webpack rejects.
+         */
+        {
+          find: /^use-sync-external-store\/shim(\/index\.js)?$/,
+          replacement: "react",
+        },
+      ],
+    },
   };
 
   if (!isWatchMode) {
