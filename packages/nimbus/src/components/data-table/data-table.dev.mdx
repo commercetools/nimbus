@@ -1081,12 +1081,15 @@ const draggableKeys = useMemo(() => new Set(['row-3']), []);
   accepts drops before and after it.
 - A disabled row (`disabledKeys` or `isDisabled`) is never draggable.
 - `DataTableRowRenderProps.isDragDisabled` is `true` for rows that are not
-  draggable, for custom row render functions.
+  draggable, for custom row render functions. It is `false` for every row when
+  `dragAndDropHooks` is not set, because `draggableKeys` has no effect then.
 
 Limits:
 
 - `draggableKeys` together with `selectionMode` is not supported.
 - `draggableKeys` together with expandable rows is not supported.
+- In development, `DataTable` logs a warning for each of these two
+  combinations, and when `draggableKeys` is set without `dragAndDropHooks`.
 - `onReorder` reports positions in the displayed order. When column sorting is
   on, this can differ from the order of your `rows` array.
 - To reject specific drop positions, pass `getDropOperation` to

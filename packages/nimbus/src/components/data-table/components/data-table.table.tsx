@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Table as RaTable, type SortDescriptor } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
@@ -47,6 +47,19 @@ export const DataTableTable = function DataTableTable({
       disabledKeys === "all" ? new Set(rows.map(getRowKey)) : disabledKeys,
     [disabledKeys, rows, getRowKey]
   );
+
+  // `draggableKeys` has nothing to restrict without drag and drop. Development
+  // only.
+  const hasDragAndDropHooks = !!dragAndDropHooksProp;
+  const hasDraggableKeys = draggableKeys !== undefined;
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    if (hasDraggableKeys && !hasDragAndDropHooks) {
+      console.warn(
+        "[Nimbus] DataTable: `draggableKeys` has no effect without `dragAndDropHooks`. Pass `dragAndDropHooks` from `useDragAndDrop`, or remove `draggableKeys`."
+      );
+    }
+  }, [hasDraggableKeys, hasDragAndDropHooks]);
 
   // React Aria has no per-row drag switch. Wrap `useDraggableItem` so a row
   // outside `draggableKeys` gets React Aria's own "disabled" result: no drag
