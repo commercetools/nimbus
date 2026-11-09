@@ -45,6 +45,7 @@
 ## 6. Review Follow-up
 
 - [x] 6.1 Add VRT stories: `PerRowDragSizes` (hidden handles at every size) and `PerRowDragDropIndicator` (drop indicator mid-drag)
-- [x] 6.2 Cover pointer drag and drop from and onto fixed rows, `isDragDisabled` values, `isDisabled` row data, and the render-count story with spies instead of module state
+- [x] 6.2 Cover pointer drag and drop from the handle and onto fixed and disabled rows (`disabledKeys` and `isDisabled` row data), `isDragDisabled` values, and the render-count story with spies instead of module state
 - [x] 6.3 Warn in development for `draggableKeys` with selection, with expandable rows, and without `dragAndDropHooks`; `isDragDisabled` is `false` without drag and drop
 - [x] 6.4 Strengthen the consumer example in `data-table.docs.spec.tsx` (keyboard reorder, fixed rows)
+- [x] 6.5 Story `PerRowDragRejectDrops`: `getDropOperation` of React Aria's `useDragAndDrop` rejects a drop position in a DataTable

@@ -34,8 +34,8 @@ Jira: FEC-1482.
   - Expandable rows together with `draggableKeys` are not supported.
   - `onReorder` reports positions in the displayed order. This matters when
     column sorting is on.
-  - Consumers can reject specific drop positions with `getDropOperation` from
-    `useDragAndDrop`.
+  - Consumers can reject specific drop positions with `getDropOperation` of
+    React Aria's `useDragAndDrop`.
 - Add stories with play functions, update `data-table.dev.mdx`, the a11y docs,
   the designer docs, and `data-table.docs.spec.tsx`. Add a minor changeset.
 

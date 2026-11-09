@@ -1092,8 +1092,10 @@ Limits:
   combinations, and when `draggableKeys` is set without `dragAndDropHooks`.
 - `onReorder` reports positions in the displayed order. When column sorting is
   on, this can differ from the order of your `rows` array.
-- To reject specific drop positions, pass `getDropOperation` to
-  `useDragAndDrop`. Return `"cancel"` for positions that are not allowed.
+- To reject specific drop positions, pass `getDropOperation` to React Aria's
+  `useDragAndDrop` from `react-aria-components`. Return `"cancel"` for positions
+  that are not allowed. Nimbus's `useDragAndDrop` sets its own drop rules and
+  does not take this option.
 - Pass a stable `Set` (for example with `useMemo`). Rows whose flag did not
   change do not re-render.
 

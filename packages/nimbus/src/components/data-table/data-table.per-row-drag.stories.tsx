@@ -4,6 +4,7 @@
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useCallback, useMemo, useState, type ReactNode } from "react";
+import { useDragAndDrop as useReactAriaDragAndDrop } from "react-aria-components";
 import { within, expect, waitFor, userEvent, fn, mocked } from "storybook/test";
 import { Button, DataTable, Flex, Select, Stack, Text } from "@/components";
 import { useDragAndDrop, createArrayHandlers } from "@commercetools/nimbus";
@@ -111,6 +112,29 @@ const dispatchDrag = (
     value: rect.top + rect.height * fraction,
   });
   el.dispatchEvent(event);
+};
+
+/**
+ * A pointer drag from `source` onto the `fraction` (0 top, 1 bottom) of
+ * `target`, with mocked native drag events.
+ */
+const pointerDrag = async (
+  root: HTMLElement,
+  source: HTMLElement,
+  target: HTMLElement,
+  fraction: number
+) => {
+  const dataTransfer = createDataTransfer();
+  dispatchDrag(source, "dragstart", dataTransfer);
+  await waitFor(() => expect(isDragging(root)).toBe(true));
+  dispatchDrag(target, "dragenter", dataTransfer, fraction);
+  dispatchDrag(target, "dragover", dataTransfer, fraction);
+  await waitFor(() =>
+    expect(root.querySelector("[data-drop-target]")).not.toBeNull()
+  );
+  dispatchDrag(target, "drop", dataTransfer, fraction);
+  dispatchDrag(source, "dragend", dataTransfer);
+  await waitFor(() => expect(isDragging(root)).toBe(false));
 };
 
 type PerRowDragTableProps = {
@@ -362,26 +386,57 @@ export const PerRowDragReorder: TableStory = {
       await waitFor(() => expect(isDragging(canvasElement)).toBe(false));
     });
 
+    await step("A pointer press on the handle reaches the handle", async () => {
+      // React Aria sets `pointer-events: none` on the handle. The row sets it
+      // back to `auto` on an enabled handle, so a press lands on the handle.
+      const handle = within(rowNamedExactly(canvas, "Row C")).getByRole(
+        "button",
+        { name: /drag to reorder/i }
+      );
+      const rect = handle.getBoundingClientRect();
+      const hit = document.elementFromPoint(
+        rect.left + rect.width / 2,
+        rect.top + rect.height / 2
+      );
+      // The hit element is the handle or its icon, not the cell below.
+      expect(hit).not.toBeNull();
+      expect(handle.contains(hit)).toBe(true);
+      // A drag that starts on the handle starts the row's drag.
+      const dataTransfer = createDataTransfer();
+      dispatchDrag(handle, "dragstart", dataTransfer);
+      await waitFor(() => expect(isDragging(canvasElement)).toBe(true));
+      dispatchDrag(handle, "dragend", dataTransfer);
+      await waitFor(() => expect(isDragging(canvasElement)).toBe(false));
+    });
+
     await step("A pointer drop before a fixed row reorders", async () => {
       mocked(args.onReorderKeys).mockClear();
-      const dataTransfer = createDataTransfer();
-      const rowC = rowNamedExactly(canvas, "Row C");
-      const rowA = rowNamedExactly(canvas, "Row A");
-      dispatchDrag(rowC, "dragstart", dataTransfer);
-      await waitFor(() => expect(isDragging(canvasElement)).toBe(true));
-      // Upper half of row A: the drop lands before the fixed row.
-      dispatchDrag(rowA, "dragenter", dataTransfer, 0.2);
-      dispatchDrag(rowA, "dragover", dataTransfer, 0.2);
-      await waitFor(() =>
-        expect(canvasElement.querySelector("[data-drop-target]")).not.toBeNull()
+      await pointerDrag(
+        canvasElement,
+        rowNamedExactly(canvas, "Row C"),
+        rowNamedExactly(canvas, "Row A"),
+        0.2
       );
-      dispatchDrag(rowA, "drop", dataTransfer, 0.2);
-      dispatchDrag(rowC, "dragend", dataTransfer);
       await waitFor(() =>
         expect(order()).toHaveTextContent("Order: C,A,B,D,E")
       );
       expect(args.onReorderKeys).toHaveBeenCalledTimes(1);
       expect(mocked(args.onReorderKeys).mock.calls[0]).toEqual([["C"], "A"]);
+    });
+
+    await step("A pointer drop after a fixed row reorders", async () => {
+      mocked(args.onReorderKeys).mockClear();
+      await pointerDrag(
+        canvasElement,
+        rowNamedExactly(canvas, "Row C"),
+        rowNamedExactly(canvas, "Row E"),
+        0.8
+      );
+      await waitFor(() =>
+        expect(order()).toHaveTextContent("Order: A,B,D,E,C")
+      );
+      expect(args.onReorderKeys).toHaveBeenCalledTimes(1);
+      expect(mocked(args.onReorderKeys).mock.calls[0]).toEqual([["C"], "E"]);
     });
   },
 };
@@ -434,13 +489,21 @@ const rowsWithDisabledB = (): DataTableRowItem[] =>
     row.id === "B" ? { ...row, isDisabled: true } : row
   );
 
+type DisabledRowStoryArgs = {
+  /** Called by the table that disables row B with `disabledKeys`. */
+  onReorderByKeys: (keys: string[], targetKey: string) => void;
+  /** Called by the table that disables row B with `isDisabled` row data. */
+  onReorderByData: (keys: string[], targetKey: string) => void;
+};
+
 /**
- * A disabled row is never draggable, even when its key is in the set. Both
- * ways to disable a row are covered: `disabledKeys` and `isDisabled` in the
- * row data.
+ * A disabled row is never draggable, even when its key is in the set, and it
+ * accepts pointer drops before and after it. Both ways to disable a row are
+ * covered: `disabledKeys` and `isDisabled` in the row data.
  */
-export const PerRowDragDisabledRow: Story = {
-  render: () => (
+export const PerRowDragDisabledRow: StoryObj<DisabledRowStoryArgs> = {
+  args: { onReorderByKeys: fn(), onReorderByData: fn() },
+  render: (args) => (
     <Stack gap="800">
       <div data-testid="disabled-keys">
         <PerRowDragTable
@@ -448,7 +511,7 @@ export const PerRowDragDisabledRow: Story = {
           draggableKeys={new Set(["B", "C"])}
           disabledKeys={new Set(["B"])}
           onRowAction={fn()}
-          onReorderKeys={fn()}
+          onReorderKeys={args.onReorderByKeys}
         />
       </div>
       <div data-testid="disabled-data">
@@ -457,19 +520,21 @@ export const PerRowDragDisabledRow: Story = {
           draggableKeys={new Set(["B", "C"])}
           initialRows={rowsWithDisabledB()}
           onRowAction={fn()}
-          onReorderKeys={fn()}
+          onReorderKeys={args.onReorderByData}
         />
       </div>
     </Stack>
   ),
-  play: async ({ canvasElement, step }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
 
-    for (const [testId, how] of [
-      ["disabled-keys", "disabledKeys"],
-      ["disabled-data", "isDisabled row data"],
+    for (const [testId, how, spy] of [
+      ["disabled-keys", "disabledKeys", args.onReorderByKeys],
+      ["disabled-data", "isDisabled row data", args.onReorderByData],
     ] as const) {
-      const table = within(canvas.getByTestId(testId));
+      const container = canvas.getByTestId(testId);
+      const table = within(container);
+      const order = () => table.getByTestId("row-order");
 
       await step(
         `${how}: the disabled row's drag button is disabled`,
@@ -489,6 +554,51 @@ export const PerRowDragDisabledRow: Story = {
         );
         expect(button).not.toBeDisabled();
       });
+
+      await step(
+        `${how}: no pointer drag starts from the disabled row`,
+        async () => {
+          const dataTransfer = createDataTransfer();
+          dispatchDrag(
+            rowNamedExactly(table, "Row B"),
+            "dragstart",
+            dataTransfer
+          );
+          expect(dataTransfer.types).toHaveLength(0);
+          expect(isDragging(container)).toBe(false);
+        }
+      );
+
+      await step(`${how}: a pointer drop before the disabled row`, async () => {
+        await pointerDrag(
+          container,
+          rowNamedExactly(table, "Row C"),
+          rowNamedExactly(table, "Row B"),
+          0.2
+        );
+        await waitFor(() =>
+          expect(order()).toHaveTextContent("Order: A,C,B,D,E")
+        );
+      });
+
+      await step(`${how}: a pointer drop after the disabled row`, async () => {
+        await pointerDrag(
+          container,
+          rowNamedExactly(table, "Row C"),
+          rowNamedExactly(table, "Row B"),
+          0.8
+        );
+        await waitFor(() =>
+          expect(order()).toHaveTextContent("Order: A,B,C,D,E")
+        );
+      });
+
+      await step(`${how}: onReorder received only permitted keys`, async () => {
+        // React Aria names the neighbour that ends the gap as the target, so
+        // only the moved keys are compared.
+        const movedKeys = mocked(spy).mock.calls.map(([keys]) => keys);
+        expect(movedKeys).toEqual([["C"], ["C"]]);
+      });
     }
   },
 };
@@ -497,17 +607,16 @@ export const PerRowDragDisabledRow: Story = {
  * Rows B and D are disabled and only row C is draggable. The play moves C above
  * B, then back between B and D, so drops next to two disabled rows are checked.
  */
-export const PerRowDragBetweenDisabledRows: Story = {
-  render: () => (
-    <PerRowDragTable
-      label="Between disabled rows"
-      draggableKeys={new Set(["C"])}
-      disabledKeys={new Set(["B", "D"])}
-      onRowAction={fn()}
-      onReorderKeys={fn()}
-    />
-  ),
-  play: async ({ canvasElement, step }) => {
+export const PerRowDragBetweenDisabledRows: TableStory = {
+  args: {
+    label: "Between disabled rows",
+    draggableKeys: new Set(["C"]),
+    disabledKeys: new Set(["B", "D"]),
+    onRowAction: fn(),
+    onReorderKeys: fn(),
+  },
+  render: (args) => <PerRowDragTable {...args} />,
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
     const order = () => canvas.getByTestId("row-order");
 
@@ -528,6 +637,124 @@ export const PerRowDragBetweenDisabledRows: Story = {
       await waitFor(() =>
         expect(order()).toHaveTextContent("Order: A,B,C,D,E")
       );
+    });
+
+    await step("A pointer drop above disabled row B", async () => {
+      mocked(args.onReorderKeys).mockClear();
+      await pointerDrag(
+        canvasElement,
+        rowNamedExactly(canvas, "Row C"),
+        rowNamedExactly(canvas, "Row B"),
+        0.2
+      );
+      await waitFor(() =>
+        expect(order()).toHaveTextContent("Order: A,C,B,D,E")
+      );
+    });
+
+    await step("A pointer drop below disabled row D", async () => {
+      await pointerDrag(
+        canvasElement,
+        rowNamedExactly(canvas, "Row C"),
+        rowNamedExactly(canvas, "Row D"),
+        0.8
+      );
+      await waitFor(() =>
+        expect(order()).toHaveTextContent("Order: A,B,D,C,E")
+      );
+      // Only the draggable row is ever reported as moved.
+      expect(
+        mocked(args.onReorderKeys).mock.calls.map(([keys]) => keys)
+      ).toEqual([["C"], ["C"]]);
+    });
+  },
+};
+
+const RejectingDropsTable = ({
+  onReorderKeys,
+}: Pick<PerRowDragTableProps, "onReorderKeys">) => {
+  const [rows, setRows] = useState<DataTableRowItem[]>(makeRows);
+  const handlers = createArrayHandlers(setRows, (row) => row.id);
+  // React Aria's own hook: it accepts `getDropOperation`, which Nimbus's
+  // `useDragAndDrop` does not pass through.
+  const { dragAndDropHooks } = useReactAriaDragAndDrop({
+    getItems: (_keys, items) =>
+      (items as DataTableRowItem[]).map((item) => ({
+        "text/plain": String(item.name),
+      })),
+    // Dropping next to the last row (row E) is not allowed.
+    getDropOperation: (target) =>
+      target.type === "item" && target.key === "E" ? "cancel" : "move",
+    onReorder(e) {
+      onReorderKeys([...e.keys].map(String), String(e.target.key));
+      handlers.onReorder?.(e.keys, e.target);
+    },
+  });
+  return (
+    <Stack gap="400">
+      <DataTable
+        columns={dragColumns}
+        rows={rows}
+        draggableKeys={new Set(["C"])}
+        dragAndDropHooks={dragAndDropHooks}
+        aria-label="Rejecting drops"
+      />
+      <Text data-testid="row-order">
+        Order: {rows.map((r) => r.id).join(",")}
+      </Text>
+    </Stack>
+  );
+};
+
+/**
+ * With React Aria's `useDragAndDrop`, `getDropOperation` rejects drop
+ * positions. Here, no row can be dropped next to row E.
+ */
+export const PerRowDragRejectDrops: StoryObj<
+  Pick<PerRowDragTableProps, "onReorderKeys">
+> = {
+  args: { onReorderKeys: fn() },
+  render: (args) => <RejectingDropsTable {...args} />,
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const order = () => canvas.getByTestId("row-order");
+
+    await step("A drop at an allowed position reorders", async () => {
+      await pointerDrag(
+        canvasElement,
+        rowNamedExactly(canvas, "Row C"),
+        rowNamedExactly(canvas, "Row A"),
+        0.2
+      );
+      await waitFor(() =>
+        expect(order()).toHaveTextContent("Order: C,A,B,D,E")
+      );
+      expect(args.onReorderKeys).toHaveBeenCalledTimes(1);
+    });
+
+    await step("A drop next to row E is rejected", async () => {
+      mocked(args.onReorderKeys).mockClear();
+      const dataTransfer = createDataTransfer();
+      const rowC = rowNamedExactly(canvas, "Row C");
+      const rowD = rowNamedExactly(canvas, "Row D");
+      const rowE = rowNamedExactly(canvas, "Row E");
+      const dropTarget = () =>
+        canvasElement.querySelector("[data-drop-target]");
+      dispatchDrag(rowC, "dragstart", dataTransfer);
+      await waitFor(() => expect(isDragging(canvasElement)).toBe(true));
+      // Hover an allowed position first, so a missing drop target below shows
+      // that the position was rejected and not that React Aria had not
+      // processed the event yet.
+      dispatchDrag(rowD, "dragenter", dataTransfer, 0.2);
+      dispatchDrag(rowD, "dragover", dataTransfer, 0.2);
+      await waitFor(() => expect(dropTarget()).not.toBeNull());
+      dispatchDrag(rowE, "dragover", dataTransfer, 0.8);
+      await waitFor(() => expect(dropTarget()).toBeNull());
+      dispatchDrag(rowE, "drop", dataTransfer, 0.8);
+      dispatchDrag(rowC, "dragend", dataTransfer);
+      await waitFor(() => expect(isDragging(canvasElement)).toBe(false));
+      expect(order()).toHaveTextContent("Order: C,A,B,D,E");
+      expect(args.onReorderKeys).not.toHaveBeenCalled();
     });
   },
 };
