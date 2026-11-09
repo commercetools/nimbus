@@ -1074,11 +1074,11 @@ const draggableKeys = useMemo(() => new Set(['row-3']), []);
 - `undefined` (default): every row is draggable.
 - A `Set` of row ids: only those rows are draggable. An empty set means no row
   is draggable.
-- A row that is not draggable shows a disabled drag button, labelled "Row cannot
-  be reordered", so the column stays aligned. The button is dimmed and shows the
-  not-allowed cursor, like other disabled controls. It stays reachable with the
-  arrow keys, calls `onRowAction` on click or `Enter`, and accepts drops before
-  and after it.
+- A row that is not draggable renders a disabled drag button, labelled "Row
+  cannot be reordered". The button is visually hidden, so the row looks
+  without a handle, and screen readers can still find it. The row stays
+  reachable with the arrow keys, calls `onRowAction` on click or `Enter`, and
+  accepts drops before and after it.
 - A disabled row (`disabledKeys` or `isDisabled`) is never draggable.
 - `DataTableRowRenderProps.isDragDisabled` is `true` for rows that are not
   draggable, for custom row render functions.

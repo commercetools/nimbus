@@ -75,10 +75,11 @@ as in the `reduce-data-table-render-cost` change.
 
 `DataTable.Row` renders the drag `IconButton` (`slot="drag"`) in every row when
 `allowsDragging` is true. When `isDragDisabled` is true, the button is disabled,
-its label is "Row cannot be reordered" (`dragRowDisabled` message), and it uses
-the standard disabled look (dimmed, `not-allowed` cursor). The button keeps the
-drag column aligned and gives the row a labelled control. The cell keeps its
-sticky class, so column width and alignment do not change.
+its label is "Row cannot be reordered" (`dragRowDisabled` message), and it is
+wrapped in `VisuallyHidden`. React Aria needs the button in the DOM, but sighted
+users see no handle on a row that cannot be dragged. Screen readers still find
+the labelled control. The cell keeps its sticky class, so column width and
+alignment do not change.
 
 ### 5. Selection and expandable rows are documented, not enforced
 

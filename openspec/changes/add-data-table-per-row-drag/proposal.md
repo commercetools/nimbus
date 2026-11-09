@@ -20,7 +20,8 @@ Jira: FEC-1482.
 - `DataTable.Table` wraps `dragAndDropHooks.useDraggableItem` and returns React
   Aria's own "disabled" result for rows that are not in the set.
 - A row that is not draggable renders a disabled drag button labelled "Row
-  cannot be reordered". The column stays aligned, and the button starts no drag.
+  cannot be reordered". The button is visually hidden (React Aria needs it in the
+  DOM), the column stays aligned, and the button starts no drag.
 - A row that is not draggable stays focusable, keeps `onRowAction`, and still
   accepts drops before and after it (pointer and keyboard).
 - A drop lands between two rows. Whether the adjacent row is disabled or not

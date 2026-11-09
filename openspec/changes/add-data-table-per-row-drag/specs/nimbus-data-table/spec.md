@@ -24,6 +24,7 @@ a keyboard-reachable item and drops next to it stay valid.
 - **WHEN** a row is not in `draggableKeys`
 - **THEN** SHALL render a disabled drag button labelled with the localized
   message `dragRowDisabled` (English: "Row cannot be reordered")
+- **AND** the button SHALL be visually hidden but stay in the accessibility tree
 - **AND** the drag column SHALL stay aligned with the header and other rows
 - **AND** no drag SHALL start from pointer or keyboard on that row
 

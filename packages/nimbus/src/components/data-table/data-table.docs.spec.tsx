@@ -1255,7 +1255,7 @@ describe("DataTable - Per-row drag", () => {
       )
     ).toBeInTheDocument();
 
-    // Every other row has a disabled drag button, so the column stays aligned.
+    // Every other row has a disabled drag button that is visually hidden.
     const disabled = screen.getAllByRole("button", {
       name: /cannot be reordered/i,
     });
