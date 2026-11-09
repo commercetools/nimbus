@@ -18,5 +18,5 @@ Other changes for tables with drag and drop:
 - The drag handle works on the first drag in Chromium and WebKit, also in
   clickable rows, and shows a grab cursor.
 
-Side fix: header cells follow the height of their content in Firefox, also when
-a header text wraps onto two lines.
+`DataTable` fix: in Firefox, header cells now follow the height of their
+content, also when a header text wraps onto two lines.
