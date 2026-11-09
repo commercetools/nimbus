@@ -12,6 +12,8 @@ export const loadingSpinnerRecipe = defineRecipe({
     alignItems: "center",
     justifyContent: "center",
     "& svg": {
+      width: "full",
+      aspectRatio: "1",
       overflow: "visible",
       // This proportionally scales the spinner to fit the container while also scaling padding
       transform: "scale(calc(1 - 2/12))",
