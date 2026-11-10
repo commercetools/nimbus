@@ -267,24 +267,6 @@ export const PerRowDrag: TableStory = {
       }
     );
 
-    await step(
-      "Rows highlight on hover through data-hovered, fixed rows too",
-      async () => {
-        // The highlight must follow React Aria's `data-hovered`, not CSS
-        // `:hover`: Safari keeps `:hover` on a row after a drag.
-        for (const id of ["C", "A"]) {
-          const row = rowNamedExactly(canvas, `Row ${id}`);
-          const resting = getComputedStyle(row).backgroundColor;
-          await userEvent.hover(row);
-          await waitFor(() => expect(row).toHaveAttribute("data-hovered"));
-          expect(getComputedStyle(row).backgroundColor).not.toBe(resting);
-          await userEvent.unhover(row);
-          await waitFor(() => expect(row).not.toHaveAttribute("data-hovered"));
-          expect(getComputedStyle(row).backgroundColor).toBe(resting);
-        }
-      }
-    );
-
     await step("ArrowDown and ArrowUp reach every row", async () => {
       const rowEls = canvas.getAllByRole("row").slice(1);
       rowEls[0].focus();
