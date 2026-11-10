@@ -55,6 +55,7 @@ type DataTableRowContextValue<T extends object = Record<string, unknown>> =
     | "togglePin"
     | "selectRowLabel"
     | "getRowKey"
+    | "registry"
   >;
 
 export const DataTableContext = createContext<DataTableContextValue<

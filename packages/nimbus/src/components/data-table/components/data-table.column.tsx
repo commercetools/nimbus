@@ -4,6 +4,7 @@ import { Flex, Separator } from "@/components";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { useStableDataTableContext } from "./data-table.context";
+import { TableStateRegistrar } from "./data-table.table-state-registrar";
 import {
   DataTableColumnSlot,
   DataTableHeaderSortIcon,
@@ -52,9 +53,14 @@ export const DataTableColumn: DataTableColumnComponent = ({
           const { allowsSorting, sortDirection } = renderProps;
 
           if (isInternalColumn) {
-            return typeof children === "function"
-              ? children(renderProps)
-              : children;
+            return (
+              <>
+                <TableStateRegistrar />
+                {typeof children === "function"
+                  ? children(renderProps)
+                  : children}
+              </>
+            );
           }
           return (
             <Flex
@@ -62,6 +68,7 @@ export const DataTableColumn: DataTableColumnComponent = ({
               tabIndex={isColumnResizable || allowsSorting ? -1 : 0}
               className="nimbus-data-table__column-container"
             >
+              <TableStateRegistrar />
               <Separator
                 orientation="vertical"
                 className="data-table-column-divider"
