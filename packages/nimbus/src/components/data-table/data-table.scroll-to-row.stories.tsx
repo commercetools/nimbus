@@ -173,7 +173,8 @@ const PlaygroundTable = () => {
           </Text>
           <Select.Root
             selectedKey={align}
-            onSelectionChange={(key) => setAlign(key as typeof align)}
+            onSelectionChange={(key) => key && setAlign(key as typeof align)}
+            isClearable={false}
             size="sm"
             aria-labelledby="playground-align"
           >
@@ -192,7 +193,10 @@ const PlaygroundTable = () => {
           </Text>
           <Select.Root
             selectedKey={behavior}
-            onSelectionChange={(key) => setBehavior(key as typeof behavior)}
+            onSelectionChange={(key) =>
+              key && setBehavior(key as typeof behavior)
+            }
+            isClearable={false}
             size="sm"
             aria-labelledby="playground-behavior"
           >
