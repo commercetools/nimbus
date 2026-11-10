@@ -1,6 +1,6 @@
 // DataTable stories for scrolling to a row (`apiRef.scrollToRow`).
 // They share the title of data-table.stories.tsx, so Storybook lists them
-// under one DataTable entry. They test behavior only. No story in this file
+// under one DataTable entry. They test behavior, except the playground, which is for trying it by hand. No story in this file
 // carries a Chromatic snapshot: the recipe is unchanged and
 // data-table.stories.tsx owns the visuals.
 
@@ -14,12 +14,22 @@ import {
   type RefObject,
 } from "react";
 import { within, expect, waitFor, userEvent, spyOn } from "storybook/test";
-import { Button, DataTable, Stack, Text } from "@/components";
+import {
+  Button,
+  Checkbox,
+  DataTable,
+  Flex,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+} from "@/components";
 import type {
   DataTableApi,
   DataTableColumnItem,
   DataTableProps,
   DataTableRowItem,
+  DataTableScrollToRowOptions,
 } from "./data-table.types";
 import { recordWarnings } from "./utils/data-table.test-utils";
 
@@ -114,6 +124,145 @@ const outcomeOf = (promise: Promise<boolean>) =>
 
 const nextFrame = () =>
   new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+
+// ---------------------------------------------------------------------------
+// Playground (for trying it by hand)
+// ---------------------------------------------------------------------------
+
+const playgroundApi: ApiRef = createRef<DataTableApi | null>();
+
+const ALIGN_OPTIONS = ["nearest", "start", "center", "end"] as const;
+const BEHAVIOR_OPTIONS = ["auto", "smooth"] as const;
+
+const PlaygroundTable = () => {
+  const [rowNumber, setRowNumber] = useState("30");
+  const [align, setAlign] =
+    useState<NonNullable<DataTableScrollToRowOptions["align"]>>("nearest");
+  const [behavior, setBehavior] =
+    useState<NonNullable<DataTableScrollToRowOptions["behavior"]>>("auto");
+  const [focus, setFocus] = useState(false);
+  const [search, setSearch] = useState("");
+  const [log, setLog] = useState<string[]>([]);
+
+  const record = (text: string) =>
+    setLog((previous) => [text, ...previous].slice(0, 6));
+
+  const scrollTo = (key: string) =>
+    playgroundApi.current?.scrollToRow(key, { align, behavior, focus }).then(
+      (result) => record(`${key}: resolved ${result}`),
+      (error: Error) => record(`${key}: rejected with ${error.name}`)
+    );
+
+  return (
+    <Stack gap="400">
+      <Flex gap="400" wrap="wrap" alignItems="end">
+        <Stack gap="100">
+          <Text as="label" id="playground-row" fontSize="350">
+            Row number (0 to 59)
+          </Text>
+          <TextInput
+            value={rowNumber}
+            onChange={setRowNumber}
+            aria-labelledby="playground-row"
+            width="160px"
+          />
+        </Stack>
+        <Stack gap="100">
+          <Text as="label" id="playground-align" fontSize="350">
+            align
+          </Text>
+          <Select.Root
+            selectedKey={align}
+            onSelectionChange={(key) => setAlign(key as typeof align)}
+            size="sm"
+            aria-labelledby="playground-align"
+          >
+            <Select.Options>
+              {ALIGN_OPTIONS.map((option) => (
+                <Select.Option key={option} id={option}>
+                  {option}
+                </Select.Option>
+              ))}
+            </Select.Options>
+          </Select.Root>
+        </Stack>
+        <Stack gap="100">
+          <Text as="label" id="playground-behavior" fontSize="350">
+            behavior
+          </Text>
+          <Select.Root
+            selectedKey={behavior}
+            onSelectionChange={(key) => setBehavior(key as typeof behavior)}
+            size="sm"
+            aria-labelledby="playground-behavior"
+          >
+            <Select.Options>
+              {BEHAVIOR_OPTIONS.map((option) => (
+                <Select.Option key={option} id={option}>
+                  {option}
+                </Select.Option>
+              ))}
+            </Select.Options>
+          </Select.Root>
+        </Stack>
+        <Checkbox isSelected={focus} onChange={setFocus}>
+          focus
+        </Checkbox>
+      </Flex>
+      <Flex gap="400" wrap="wrap" alignItems="end">
+        <Button onPress={() => scrollTo(`r${rowNumber}`)}>Scroll to row</Button>
+        <Button
+          variant="outline"
+          onPress={() => {
+            // The second call replaces the first, so the first is rejected.
+            scrollTo(`r${rowNumber}`);
+            scrollTo("r59");
+          }}
+        >
+          Call twice (then Row 59)
+        </Button>
+        <Stack gap="100">
+          <Text as="label" id="playground-search" fontSize="350">
+            search (hides rows, so their key resolves false)
+          </Text>
+          <TextInput
+            value={search}
+            onChange={setSearch}
+            aria-labelledby="playground-search"
+            width="240px"
+          />
+        </Stack>
+      </Flex>
+      <Text fontSize="350">
+        Row 30 is disabled. Row 99 does not exist. Click a row first to see
+        where keyboard focus is.
+      </Text>
+      <Stack gap="100" aria-live="polite" data-testid="playground-log">
+        <Text fontWeight="600">Results (newest first)</Text>
+        {log.length === 0 ? <Text>No call yet.</Text> : null}
+        {log.map((line, index) => (
+          <Text key={`${line}-${index}`}>{line}</Text>
+        ))}
+      </Stack>
+      <ScrollTable
+        apiRef={playgroundApi}
+        disabledKeys={disabledRow30}
+        search={search}
+      />
+    </Stack>
+  );
+};
+
+/**
+ * Try `scrollToRow` by hand: pick the row, `align`, `behavior` and `focus`,
+ * then press "Scroll to row". "Call twice" shows the `AbortError` of a replaced
+ * call. The search field hides rows, so their key resolves `false`. Row 30 is
+ * disabled. The results of the calls are listed above the table. This story
+ * has no play function: nothing runs until you press a button.
+ */
+export const ScrollToRowPlayground: Story = {
+  render: () => <PlaygroundTable />,
+};
 
 // ---------------------------------------------------------------------------
 // Alignment
