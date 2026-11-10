@@ -225,6 +225,17 @@ scroll-driven change.
       trackpad, Space and Page Down, a `#hash` link, a tab click, the back
       link tooltip, a long title, right-to-left text, a narrow page, and a 1x
       and a 2x display. Record the results here.
+      - 2026-11-10, Firefox 159.0.1 (real `/Applications/Firefox.app`,
+        WebDriver BiDi, headless): `ViewTimeline` and `ScrollTimeline` exist.
+        Loading the Storybook iframe runs the play function. These stories
+        finished without an error overlay: ScrollContainerOffset,
+        CollapsedHeader, FlexibleSticky, Constrained, ResizeWhilePinned,
+        ResizeWhilePinnedConstrained, DocumentScroll, FallbackFlexibleSticky,
+        FallbackConstrained. Fallback stories correctly see no timelines.
+      - Playwright's bundled Firefox 157 still cannot launch on this Mac
+        without `CFFIXED_USER_HOME`, and it has no scroll-driven APIs, so
+        the scroll-driven stories fail there (`header.style.top` stays empty).
+        That is the one-step fallback, not Firefox 159.
 - [x] 6.9 Run `pnpm --filter @commercetools/nimbus typecheck:dev`, `pnpm lint`,
       `pnpm test:dev packages/nimbus/src/components/default-page/`, the stories
       in WebKit, and
