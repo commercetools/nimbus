@@ -140,8 +140,25 @@ const removeScrollEndSupport = () => {
   };
 };
 
+/**
+ * The unit tests share one JSDOM window across spec files (`isolate: false`),
+ * so a replaced `window.matchMedia` must be put back after each test. Other
+ * specs render `NimbusProvider`, and `next-themes` calls `addListener` on the
+ * result.
+ */
+const originalMatchMedia = window.matchMedia;
+
 const mockReducedMotion = (matches: boolean) => {
-  window.matchMedia = vi.fn().mockReturnValue({ matches }) as never;
+  window.matchMedia = ((query: string) => ({
+    matches,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  })) as typeof window.matchMedia;
 };
 
 describe("useDataTableApi", () => {
@@ -153,6 +170,7 @@ describe("useDataTableApi", () => {
   afterEach(() => {
     vi.useRealTimers();
     vi.restoreAllMocks();
+    window.matchMedia = originalMatchMedia;
     document.body.replaceChildren();
   });
 
