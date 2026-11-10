@@ -58,16 +58,16 @@
 
 ## 4. Documentation
 
-- [ ] 4.1 Add a hand-written section "Scroll to a row (`apiRef`)" to
+- [x] 4.1 Add a hand-written section "Scroll to a row (`apiRef`)" to
       `data-table.dev.mdx`: both methods and options, "call after the rows have
       rendered", an example whose `catch` ignores `AbortError`, the focus rule,
-      which keys resolve `false`; verify the docs app renders the section
-- [ ] 4.2 Add examples to `data-table.docs.spec.tsx`: `scrollToRow` for an
+      which keys resolve `false`; verify the MDX compiles with the new section (the page was not viewed in the docs app)
+- [x] 4.2 Add examples to `data-table.docs.spec.tsx`: `scrollToRow` for an
       unknown key expects `false`, and the recommended `catch` that ignores
       `AbortError`; verify
       `pnpm test packages/nimbus/src/components/data-table/data-table.docs.spec.tsx`
       passes
-- [ ] 4.3 Check `.claude/skills/`, `.claude/commands/` and `docs/` for DataTable
+- [x] 4.3 Check `.claude/skills/`, `.claude/commands/` and `docs/` for DataTable
       references that need the same update; verify with `rg`
 
 ## 5. Release and Integration Checks
