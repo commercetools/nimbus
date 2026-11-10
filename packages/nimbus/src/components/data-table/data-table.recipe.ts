@@ -228,14 +228,13 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         //
         // Keyboard focus reveals it too: a keyboard user moving through the
         // row must be able to see the pin button they land on (WCAG 2.4.7).
-        "&:hover:not([data-hover-suppressed] *), &[data-focus-visible], &[data-focus-visible-within]":
-          {
-            "& [data-slot='pin-row-cell']": {
-              "& [data-slot='nimbus-table-cell-pin-button']": {
-                opacity: 1,
-              },
+        "&:hover, &[data-focus-visible], &[data-focus-visible-within]": {
+          "& [data-slot='pin-row-cell']": {
+            "& [data-slot='nimbus-table-cell-pin-button']": {
+              opacity: 1,
             },
           },
+        },
       },
       "& .data-table-row-pinned": {
         ...pinnedOutline(
@@ -426,18 +425,12 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
 
       // Disabled rows give no hover feedback: they cannot be interacted with.
-      //
-      // `data-hover-suppressed` is set on the table from the end of a drag until
-      // the pointer moves. A browser sends no mouse events during a drag, so
-      // after the drop it applies `:hover` at the position where the drag
-      // started, which now holds a different row.
-      "&:hover:not([data-nested-row-expanded]):not([data-disabled]):not([data-hover-suppressed] *)":
-        {
-          backgroundColor: "{colors.primary.3}",
-        },
+      "&:hover:not([data-nested-row-expanded]):not([data-disabled])": {
+        backgroundColor: "{colors.primary.3}",
+      },
       // Frozen cells mirror the hover highlight through the variable. Skipped for
       // custom-bg rows so their frozen cells keep inheriting the consumer color.
-      "&:hover:not([data-nested-row-expanded]):not([data-disabled]):not([data-custom-bg]):not([data-hover-suppressed] *)":
+      "&:hover:not([data-nested-row-expanded]):not([data-disabled]):not([data-custom-bg])":
         {
           "--data-table-row-bg": "{colors.primary.3}",
         },

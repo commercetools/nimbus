@@ -438,25 +438,6 @@ export const PerRowDragReorder: TableStory = {
       expect(args.onReorderKeys).toHaveBeenCalledTimes(1);
       expect(mocked(args.onReorderKeys).mock.calls[0]).toEqual([["C"], "E"]);
     });
-
-    await step(
-      "No row highlights after a drop until the pointer moves",
-      async () => {
-        // A browser sends no mouse events during a drag, so after the drop it
-        // applies `:hover` at the position where the drag started.
-        const table = canvas.getByRole("grid");
-        expect(table).toHaveAttribute("data-hover-suppressed");
-        // The row hover styles skip a table with this attribute. A scripted
-        // pointer cannot trigger CSS `:hover`, so the story checks the
-        // attribute, not the background.
-        const row = rowNamedExactly(canvas, "Row A");
-        await userEvent.hover(row);
-        await waitFor(() =>
-          expect(table).not.toHaveAttribute("data-hover-suppressed")
-        );
-        await userEvent.unhover(row);
-      }
-    );
   },
 };
 
