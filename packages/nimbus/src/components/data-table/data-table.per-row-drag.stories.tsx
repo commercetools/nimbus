@@ -1086,6 +1086,13 @@ export const PerRowDragDropIndicator: TableStory = {
     onReorderKeys: fn(),
   },
   render: (args) => <PerRowDragTable {...args} />,
+  // The play ends mid-drag. React Aria's drag manager is global: while a
+  // keyboard drag is active it cancels every keydown, including Tab. Stories
+  // in all test files share one browser page, so end the drag when this story
+  // ends, or a later story that presses Tab never moves focus.
+  beforeEach: () => async () => {
+    await userEvent.keyboard("{Escape}");
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await startKeyboardDrag(canvasElement, rowNamedExactly(canvas, "Row C"));
