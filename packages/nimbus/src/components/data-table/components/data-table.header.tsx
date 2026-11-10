@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { VisuallyHidden } from "react-aria";
 import {
   TableHeader as RaTableHeader,
@@ -6,7 +7,7 @@ import {
 } from "react-aria-components";
 import { Box, Checkbox, Icon } from "@/components";
 import { PushPin } from "@commercetools/nimbus-icons";
-import { extractStyleProps } from "@/utils";
+import { extractStyleProps, mergeRefs } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import type {
   DataTableHeaderProps,
@@ -41,8 +42,17 @@ export const DataTableHeader = <
     showSelectionColumn,
     disabledKeys,
     size,
+    registry,
   } = useStableDataTableContext();
   const { selectionMode, allowsDragging } = useTableOptions();
+
+  // `apiRef.scrollToRow` keeps the row clear of the header.
+  const registerHeaderElement = useCallback(
+    (node: HTMLElement | null) => {
+      registry.headerElement = node;
+    },
+    [registry]
+  );
   const [styleProps, restProps] = extractStyleProps(props);
   const internalWidths = DATA_TABLE_INTERNAL_COLUMN_WIDTHS[size];
   const expandWidth = showSelectionColumn
@@ -100,7 +110,7 @@ export const DataTableHeader = <
   return (
     <DataTableHeaderSlot {...styleProps} asChild>
       <RaTableHeader
-        ref={ref}
+        ref={mergeRefs(ref, registerHeaderElement)}
         aria-label={ariaLabel}
         className="data-table-header"
         {...(maxHeight && { ["data-sticky"]: true })}

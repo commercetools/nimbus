@@ -32,12 +32,12 @@
 
 ## 3. Wiring and Stories
 
-- [ ] 3.1 Create the registry once in `data-table.root.tsx`, put it in the
+- [x] 3.1 Create the registry once in `data-table.root.tsx`, put it in the
       context, and call the hook with `apiRef`; verify typecheck
-- [ ] 3.2 Register the row element from the row's ref callback (merged with the
+- [x] 3.2 Register the row element from the row's ref callback (merged with the
       existing ref) in `data-table.row.tsx`, the header element in
       `data-table.header.tsx`, and the table state through a small internal
-      component in cell content that writes on every context change and clears
+      component in column content that writes on every context change and clears
       only its own value; verify typecheck and that the existing DataTable
       stories still pass
 - [ ] 3.3 Write `data-table.scroll-to-row.stories.tsx` with play functions: each

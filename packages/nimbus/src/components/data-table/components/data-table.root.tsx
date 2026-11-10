@@ -25,6 +25,7 @@ import type {
   CustomSettingsContextValue,
   TableSelectionContextValue,
   DataTableRowItem,
+  DataTableRegistry,
 } from "../data-table.types";
 import {
   defaultGetRowKey,
@@ -32,7 +33,7 @@ import {
   formatRowKeyProblems,
 } from "../utils/row-keys.utils";
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
-import { useStableArray } from "../hooks";
+import { useStableArray, useDataTableApi } from "../hooks";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "../data-table.messages";
 import { DATA_TABLE_DEFAULT_SIZE } from "../utils/sizes.utils";
@@ -47,6 +48,7 @@ export const DataTableRoot = function DataTableRoot<
 >(props: DataTableProps<T>) {
   const {
     ref: forwardedRef,
+    apiRef,
     columns: columnsProp = [],
     rows: rowsProp = [],
     visibleColumns: visibleColumnsProp,
@@ -98,6 +100,14 @@ export const DataTableRoot = function DataTableRoot<
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const selectRowLabel = msg.format("selectRow");
+
+  // What rows, header and columns tell `apiRef`. One object for the life of
+  // the table; writing to it re-renders nothing.
+  const [registry] = useState<DataTableRegistry>(() => ({
+    rowElements: new Map(),
+    headerElement: null,
+    tableState: null,
+  }));
 
   const size = sizeProp ?? DATA_TABLE_DEFAULT_SIZE;
   // Latches once the table has had `xl` at any render and stays set. The
@@ -462,6 +472,7 @@ export const DataTableRoot = function DataTableRoot<
       isResizable,
       disabledKeys,
       draggableKeys,
+      registry,
       onRowActionRef,
       togglePin,
       onColumnsChangeRef,
@@ -496,6 +507,7 @@ export const DataTableRoot = function DataTableRoot<
       isResizable,
       disabledKeys,
       draggableKeys,
+      registry,
       togglePin,
       getRowKey,
     ]
@@ -523,6 +535,7 @@ export const DataTableRoot = function DataTableRoot<
       togglePin,
       selectRowLabel,
       getRowKey,
+      registry,
     }),
     [
       activeColumns,
@@ -541,8 +554,18 @@ export const DataTableRoot = function DataTableRoot<
       togglePin,
       selectRowLabel,
       getRowKey,
+      registry,
     ]
   );
+
+  useDataTableApi({
+    apiRef,
+    rootRef: ref,
+    registry,
+    sortedRows,
+    getRowKey,
+    disabledKeys,
+  });
 
   const selectionContextValue: TableSelectionContextValue = useMemo(
     () => ({

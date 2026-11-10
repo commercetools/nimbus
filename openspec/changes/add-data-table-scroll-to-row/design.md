@@ -75,13 +75,17 @@ nothing.
 - _Alternative: React state._ Rejected: every registration would re-render the
   table.
 
-**2. Read table state through `TableStateContext` in cell content, and keep the
-latest value.** A small internal component in cell content reads the context and
-writes it to the registry in an effect on every change. On unmount it clears the
-entry only when the stored value is still its own. `scrollToRow` reads the
-registry when it runs. Reason: the manager is replaced on every render, and a
-stale manager ignores keys added after it was created.
+**2. Read table state through `TableStateContext` in column content, and keep
+the latest value.** A small internal component in column content reads the
+context and writes it to the registry in an effect on every change. On unmount it
+clears the entry only when the stored value is still its own. `scrollToRow`
+reads the registry when it runs. Reason: the manager is replaced on every render,
+and a stale manager ignores keys added after it was created. Column content is
+rendered inside the same state context as cell content (the `NestedContentPanel`
+pattern), and the header stays mounted when rows come and go.
 
+- _Alternative: register from cell content._ Rejected: it would mount one
+  registrar per row, and registration would depend on which rows are rendered.
 - _Alternative: register once from the first row._ Rejected: that row can be
   removed, and the stored manager would keep an old collection.
 
