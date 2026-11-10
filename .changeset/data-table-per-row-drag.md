@@ -18,3 +18,5 @@ Without it, every row stays draggable.
 - The grab cursor shows on the drag handle only, not on the whole row.
 - In Firefox, header cells follow the height of their content, also when a
   header text wraps onto two lines.
+- After a drag and drop, no row stays highlighted at the old pointer position
+  until the pointer moves.
