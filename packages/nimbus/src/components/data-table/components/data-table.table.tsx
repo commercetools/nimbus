@@ -61,30 +61,6 @@ export const DataTableTable = function DataTableTable({
     }
   }, [hasDraggableKeys, hasDragAndDropHooks]);
 
-  // After a drag the browser applies `:hover` at the position where the drag
-  // started, until the pointer moves (it sends no mouse events during a drag).
-  // The row there is now a different row, so it looks highlighted for no
-  // reason. Mark the table from the end of a drag until the next pointer move,
-  // so the row hover styles can wait for the pointer.
-  useEffect(() => {
-    const table = localRef.current;
-    if (!hasDragAndDropHooks || !table) return;
-    const clear = () => table.removeAttribute("data-hover-suppressed");
-    const onDragEnd = () => {
-      table.setAttribute("data-hover-suppressed", "");
-      document.addEventListener("pointermove", clear, {
-        once: true,
-        capture: true,
-      });
-    };
-    document.addEventListener("dragend", onDragEnd, true);
-    return () => {
-      document.removeEventListener("dragend", onDragEnd, true);
-      document.removeEventListener("pointermove", clear, true);
-      clear();
-    };
-  }, [hasDragAndDropHooks]);
-
   // React Aria has no per-row drag switch. Wrap `useDraggableItem` so a row
   // outside `draggableKeys` gets React Aria's own "disabled" result: no drag
   // props, and a drag button with `isDisabled`. The row stays a normal item:
