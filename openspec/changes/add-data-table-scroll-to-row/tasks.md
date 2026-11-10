@@ -1,14 +1,14 @@
 ## 1. Types and Offset Calculation
 
-- [ ] 1.1 Add `DataTableScrollToRowOptions` and `DataTableApi` with JSDoc on
+- [x] 1.1 Add `DataTableScrollToRowOptions` and `DataTableApi` with JSDoc on
       every member, and `apiRef?: Ref<DataTableApi>` on the `DataTable` and
       `DataTable.Root` props in `data-table.types.ts`; verify with
       `pnpm --filter @commercetools/nimbus typecheck:dev`
-- [ ] 1.2 Write `utils/scroll-to-row.utils.spec.ts` first: every `align` value,
+- [x] 1.2 Write `utils/scroll-to-row.utils.spec.ts` first: every `align` value,
       `"nearest"` returns `null` for a fully visible row and takes the shorter
       direction otherwise, clamping at the first and last row, non-zero
       `topInset` and `bottomInset`; verify it fails
-- [ ] 1.3 Implement `computeTargetScrollTop` in `utils/scroll-to-row.utils.ts`
+- [x] 1.3 Implement `computeTargetScrollTop` in `utils/scroll-to-row.utils.ts`
       as the only place that knows about insets; verify
       `pnpm test packages/nimbus/src/components/data-table/utils/scroll-to-row.utils.spec.ts`
       passes
