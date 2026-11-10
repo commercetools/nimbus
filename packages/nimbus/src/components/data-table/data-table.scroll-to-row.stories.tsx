@@ -252,6 +252,7 @@ const PlaygroundTable = () => {
         apiRef={playgroundApi}
         disabledKeys={disabledRow30}
         search={search}
+        allowsPinning={false}
       />
     </Stack>
   );
