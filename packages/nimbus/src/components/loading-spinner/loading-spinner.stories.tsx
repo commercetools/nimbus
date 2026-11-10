@@ -73,7 +73,7 @@ export const Sizes: Story = {
 /**
  * The spinner is a single svg element, so it behaves like an icon: it renders
  * at its `size` for every size, at a size set through style props, and inside
- * a button, where the button decides the size, as it does for icons.
+ * a button, where the `size` prop still decides.
  */
 export const RendersAtRequestedSize: Story = {
   render: () => (
@@ -93,6 +93,10 @@ export const RendersAtRequestedSize: Story = {
       <Button size="md">
         Save
         <LoadingSpinner size="2xs" data-testid="spinner-in-button" />
+      </Button>
+      <Button size="2xs">
+        Save
+        <LoadingSpinner size="2xs" data-testid="spinner-in-small-button" />
       </Button>
     </Stack>
   ),
@@ -120,9 +124,9 @@ export const RendersAtRequestedSize: Story = {
       expect(sizeOf("spinner-manual")).toEqual([100, 100]);
     });
 
-    await step("Inside a button, the button decides the size", async () => {
-      // Button size "md" gives its icons 24px
-      expect(sizeOf("spinner-in-button")).toEqual([24, 24]);
+    await step("Inside a button, the size prop decides", async () => {
+      expect(sizeOf("spinner-in-button")).toEqual([14, 14]);
+      expect(sizeOf("spinner-in-small-button")).toEqual([14, 14]);
     });
   },
 };
