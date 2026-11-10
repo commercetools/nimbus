@@ -36,8 +36,8 @@ export const Base: Story = {
     const canvas = within(canvasElement);
     const spinner = canvas.getByTestId("spinner-test");
 
-    await step("Uses a <div> wrapper by default", async () => {
-      await expect(spinner.tagName).toBe("DIV");
+    await step("Renders as an <svg> element", async () => {
+      await expect(spinner.tagName.toLowerCase()).toBe("svg");
     });
 
     await step("Has ARIA role='progressbar'", async () => {
@@ -71,11 +71,11 @@ export const Sizes: Story = {
 };
 
 /**
- * The svg fills the outer element, so the spinner is as large as its outer
- * element: for every `size`, for a size set through style props, and inside a
- * button, where the `size` prop still decides.
+ * The spinner is a single svg element, so it behaves like an icon: it renders
+ * at its `size` for every size, at a size set through style props, and inside
+ * a button, where the button decides the size, as it does for icons.
  */
-export const SvgFillsOuterElement: Story = {
+export const RendersAtRequestedSize: Story = {
   render: () => (
     <Stack direction="row" gap="400" alignItems="center">
       {sizes.map((size) => (
@@ -99,49 +99,30 @@ export const SvgFillsOuterElement: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const sizeOf = (testId: string) => {
-      const outer = canvas.getByTestId(testId);
-      const svg = outer.querySelector("svg") as SVGSVGElement;
-      const style = getComputedStyle(svg);
-      return {
-        outer: [
-          Math.round(outer.getBoundingClientRect().width),
-          Math.round(outer.getBoundingClientRect().height),
-        ],
-        svg: [
-          Math.round(parseFloat(style.width)),
-          Math.round(parseFloat(style.height)),
-        ],
-      };
+      const rect = canvas.getByTestId(testId).getBoundingClientRect();
+      return [Math.round(rect.width), Math.round(rect.height)];
     };
 
-    await step(
-      "Every size: the svg is as large as the outer element",
-      async () => {
-        const expected: Record<string, number> = {
-          lg: 40,
-          md: 32,
-          sm: 24,
-          xs: 20,
-          "2xs": 14,
-        };
-        for (const [size, px] of Object.entries(expected)) {
-          const { outer, svg } = sizeOf(`spinner-${size}`);
-          expect(outer).toEqual([px, px]);
-          expect(svg).toEqual([px, px]);
-        }
+    await step("Every size renders at its requested size", async () => {
+      const expected: Record<string, number> = {
+        lg: 40,
+        md: 32,
+        sm: 24,
+        xs: 20,
+        "2xs": 14,
+      };
+      for (const [size, px] of Object.entries(expected)) {
+        expect(sizeOf(`spinner-${size}`)).toEqual([px, px]);
       }
-    );
-
-    await step("A size set through style props is adopted", async () => {
-      const { outer, svg } = sizeOf("spinner-manual");
-      expect(outer).toEqual([100, 100]);
-      expect(svg).toEqual([100, 100]);
     });
 
-    await step("Inside a button, the size prop decides", async () => {
-      const { outer, svg } = sizeOf("spinner-in-button");
-      expect(outer).toEqual([14, 14]);
-      expect(svg).toEqual([14, 14]);
+    await step("A size set through style props is adopted", async () => {
+      expect(sizeOf("spinner-manual")).toEqual([100, 100]);
+    });
+
+    await step("Inside a button, the button decides the size", async () => {
+      // Button size "md" gives its icons 24px
+      expect(sizeOf("spinner-in-button")).toEqual([24, 24]);
     });
   },
 };

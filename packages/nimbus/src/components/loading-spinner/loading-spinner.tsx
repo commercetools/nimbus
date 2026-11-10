@@ -9,6 +9,10 @@ const circlePath =
 const pointerPath =
   "M12 1.5C13.3789 1.5 14.7443 1.77159 16.0182 2.29927C17.2921 2.82694 18.4496 3.60036 19.4246 4.57538C20.3996 5.55039 21.1731 6.70791 21.7007 7.98183C22.2284 9.25574 22.5 10.6211 22.5 12";
 
+// The circle is drawn on a 24x24 grid. The view box adds 2/12 of padding around
+// it, so the spinner keeps some space inside its box at every size.
+const viewBox = "-2.4 -2.4 28.8 28.8";
+
 /**
  * # LoadingSpinner
  *
@@ -32,23 +36,25 @@ export const LoadingSpinner = (props: LoadingSpinnerProps) => {
       ref={ref}
       {...mergeProps(restProps, progressBarProps)}
       aria-label={ariaLabel}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox={viewBox}
+      fill="none"
+      focusable="false"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-        <path
-          d={circlePath}
-          data-svg-path="spinner-circle"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d={pointerPath}
-          data-svg-path="spinner-pointer"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      <path
+        d={circlePath}
+        data-svg-path="spinner-circle"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d={pointerPath}
+        data-svg-path="spinner-pointer"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </LoadingSpinnerRoot>
   );
 };
