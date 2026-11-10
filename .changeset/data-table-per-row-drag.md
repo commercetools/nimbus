@@ -18,5 +18,6 @@ Without it, every row stays draggable.
 - The grab cursor shows on the drag handle only, not on the whole row.
 - In Firefox, header cells follow the height of their content, also when a
   header text wraps onto two lines.
-- In Safari, the hover highlight no longer stays on a row after you drag and
-  drop it, in tables with drag and drop.
+- In Safari, a row that is highlighted after a drag and drop is cleared when the
+  pointer moves. Before, it stayed highlighted until the pointer entered and
+  left it.
