@@ -15,9 +15,9 @@
 
 ## 2. Handle Hook
 
-- [ ] 2.1 Add the internal registry (`rowElements`, `tableState`,
+- [x] 2.1 Add the internal registry (`rowElements`, `tableState`,
       `headerElement`) to the context type; verify typecheck
-- [ ] 2.2 Write `hooks/use-data-table-api.spec.ts` first (JSDOM, fake registry):
+- [x] 2.2 Write `hooks/use-data-table-api.spec.ts` first (JSDOM, fake registry):
       `false` for an unknown key, a key hidden by search and a nested child key;
       a second call rejects the first with `AbortError`; unmount rejects a
       pending call; the focused key is set, and a disabled row changes no focus
@@ -27,7 +27,7 @@
       `scrollend` when it exists and through the two-frame fallback when
       `scrollend` is not supported; nothing throws without `scrollTo`; `false`
       with a development warning when no Table has registered; verify it fails
-- [ ] 2.3 Implement `hooks/use-data-table-api.ts` and export it from
+- [x] 2.3 Implement `hooks/use-data-table-api.ts` and export it from
       `hooks/index.ts`; verify the hook spec passes
 
 ## 3. Wiring and Stories
