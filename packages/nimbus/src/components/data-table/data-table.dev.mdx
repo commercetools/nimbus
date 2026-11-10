@@ -1180,6 +1180,10 @@ is not a row that the table shows:
 - `DataTable.Root` has no `DataTable.Table` inside it. In development, `DataTable`
   also logs a warning.
 
+The table is the element that scrolls, and its header is sticky when you set
+`maxHeight`. `scrollToRow` keeps a row clear of the header only when the header
+is sticky.
+
 ### Call it after the rows have rendered
 
 Call `scrollToRow` after the rows have rendered. A call from an effect right

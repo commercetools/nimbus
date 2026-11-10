@@ -66,6 +66,7 @@ const setup = ({
 
   const setFocusedKey = vi.fn();
   const header = document.createElement("div");
+  header.style.position = "sticky";
   header.getBoundingClientRect = () =>
     ({ top: 0, height: HEADER_HEIGHT }) as DOMRect;
 
@@ -220,6 +221,17 @@ describe("useDataTableApi", () => {
       await expect(result).resolves.toBe(true);
       expect(scrollTo).not.toHaveBeenCalled();
       expect(setFocusedKey).toHaveBeenCalledWith("r2");
+    });
+
+    it("does not leave room for a header that is not sticky", async () => {
+      const { api, scrollTo, registry } = setup();
+      (registry.headerElement as HTMLElement).style.position = "static";
+      const result = api().scrollToRow("r20", { align: "start" });
+      await nextFrame();
+      await nextFrame();
+      await expect(result).resolves.toBe(true);
+      // r20 is at 1040 and nothing covers the top of the container.
+      expect(scrollTo).toHaveBeenCalledWith({ top: 1040, behavior: "instant" });
     });
 
     it("stops at the end of the scroll range for a row near the end", async () => {
