@@ -698,6 +698,7 @@ const RejectingDropsTable = ({
         draggableKeys={new Set(["C"])}
         dragAndDropHooks={dragAndDropHooks}
         aria-label="Rejecting drops"
+        size="md"
       />
       <Text data-testid="row-order">
         Order: {rows.map((r) => r.id).join(",")}
@@ -994,6 +995,7 @@ export const PerRowDragUnsupportedCombinationsWarn: Story = {
             draggableKeys={new Set(["C"])}
             dragAndDropHooks={dragAndDropHooks}
             aria-label="Selection and draggableKeys"
+            size="md"
           />
           <DataTable
             columns={dragColumns}
@@ -1002,6 +1004,7 @@ export const PerRowDragUnsupportedCombinationsWarn: Story = {
             draggableKeys={new Set(["C"])}
             dragAndDropHooks={dragAndDropHooks}
             aria-label="Expandable rows and draggableKeys"
+            size="md"
           />
         </Stack>
       );
