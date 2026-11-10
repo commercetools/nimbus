@@ -72,12 +72,12 @@
 
 ## 5. Release and Integration Checks
 
-- [ ] 5.1 Add a minor changeset for `@commercetools/nimbus` written from the
+- [x] 5.1 Add a minor changeset for `@commercetools/nimbus` written from the
       consumer's view (`docs/changeset-conventions.md`); verify with
       `pnpm changeset:status`
-- [ ] 5.2 Run `pnpm --filter @commercetools/nimbus typecheck:dev`, `pnpm lint`,
+- [x] 5.2 Run `pnpm --filter @commercetools/nimbus typecheck:dev`, `pnpm lint`,
       and the DataTable story and unit tests; verify all pass
-- [ ] 5.3 Run
+- [x] 5.3 Run
       `pnpm exec openspec validate add-data-table-scroll-to-row --strict`;
       verify it passes
 
