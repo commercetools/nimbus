@@ -7,7 +7,7 @@ description:
   max, so that the right element appears in front.
 order: 999
 menu:
-  - Foundations
+  - Home
   - Design Tokens
   - Other
   - Z-Indices
@@ -44,14 +44,14 @@ the cards with lower tokens.
 
 | Your element                                                 | Use      | See                                                                          |
 | ------------------------------------------------------------ | -------- | ---------------------------------------------------------------------------- |
-| A header or a toolbar that stays at the top while you scroll | `sticky` | [Place above other elements](/learn/how-do-i/place-above-other-elements)     |
+| A header or a toolbar that stays at the top while you scroll | `sticky` | —                                                                            |
 | A floating action button                                     | `fab`    | [FloatingActionButton](/patterns/buttons/floating-action-button)             |
 | A dialog or a drawer                                         | `modal`  | [Dialog](/components/feedback/dialog), [Drawer](/components/feedback/drawer) |
 
 The other tokens are named after the layer that they are for, such as `banner`,
 `overlay`, `toast` and `tooltip`. Menus, popovers, toasts and tooltips of Nimbus
 are placed above the page by Nimbus itself, so you do not set a z-index for
-them. See [Provider and layers](/learn/concepts/provider-and-layers).
+them.
 
 ## Use z-indices in code
 
@@ -68,9 +68,7 @@ base: {
 },
 ```
 
-For a full example, see
-[Place above other elements](/learn/how-do-i/place-above-other-elements). For
-the full list of props, see [Style props: Layout](/foundations/style-props/layout).
+For the full list of props, see [Style props: Layout](/home/style-props/layout).
 
 ### CSS variables
 

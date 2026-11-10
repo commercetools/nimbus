@@ -15,7 +15,7 @@ import { routePathToSlug } from "../utils/route.js";
 // ---------------------------------------------------------------------------
 
 const STYLE_PROPS_HINT =
-  'Also accepts style props. Use get_docs_page(path: "foundations/style-props") for full reference.';
+  'Also accepts style props. Use get_docs_page(path: "home/style-props") for full reference.';
 
 /** Route prefix that identifies component documentation pages. */
 const COMPONENT_ROUTE_PREFIX = "components/";
@@ -177,7 +177,7 @@ export function registerGetDocsPage(server: McpServer): void {
         }
 
         // Enrich the style-props landing page with a compact prop index
-        if (meta.route === "foundations/style-props") {
+        if (meta.route === "home/style-props") {
           content = await enrichStylePropsLanding(content);
         }
 

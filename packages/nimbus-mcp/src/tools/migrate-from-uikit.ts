@@ -254,7 +254,7 @@ function buildTokenRedirect(name: string): MigrateComponentResult {
 }
 
 const STYLE_PROPS_HINT =
-  'Also accepts style props. Use get_docs_page(path: "foundations/style-props") for full reference.';
+  'Also accepts style props. Use get_docs_page(path: "home/style-props") for full reference.';
 
 async function buildComponentResult(
   uiKitName: string

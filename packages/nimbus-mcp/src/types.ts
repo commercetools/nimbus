@@ -622,7 +622,7 @@ export interface DocsPageResult {
 export interface StylePropsCategorySummary {
   /** Category display name (e.g. "Spacing", "Sizing"). */
   name: string;
-  /** Route path for drill-down docs (e.g. "foundations/style-props/spacing"). */
+  /** Route path for drill-down docs (e.g. "home/style-props/spacing"). */
   path: string;
   /** All prop names in this category. */
   props: string[];

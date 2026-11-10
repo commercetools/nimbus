@@ -374,7 +374,7 @@ describe("get_component — style props coverage", () => {
 describe("get_docs_page — style props landing page", () => {
   it("returns enriched content with prop index", async () => {
     const { parsed } = await callTool(local, "get_docs_page", {
-      path: "foundations/style-props",
+      path: "home/style-props",
     });
     const content = parsed.content as string;
     expect(content).toContain("Style Props Index");

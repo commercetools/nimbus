@@ -7,7 +7,7 @@ description:
   props, shorthands and the props that have no effect."
 order: 1
 menu:
-  - Foundations
+  - Home
   - Style Props
   - How style props work
 tags:
@@ -31,9 +31,6 @@ follows the CSS property. For example, `padding` sets `padding` and
 `borderRadius` sets `border-radius`. The other pages in this section list the
 style props by topic.
 
-Before you set a style prop, check [Customize in three steps](/foundations/customize-in-three-steps). It tells you
-when a style prop is the right step.
-
 ```jsx live
 import { Box, Button, Stack } from "@commercetools/nimbus";
 
@@ -49,9 +46,6 @@ const App = () => (
 );
 ```
 
-For the full order, see
-[Styling with theming props and style props](/learn/concepts/styling).
-
 ## Values are design tokens
 
 Give a style prop a design token, not a raw value. A token is a named value
@@ -64,13 +58,13 @@ the token category of each prop.
 
 | Group      | Example token | Used by                       | Reference                                                  |
 | ---------- | ------------- | ----------------------------- | ---------------------------------------------------------- |
-| Colors     | `primary.9`   | `color`, `bg`                 | [Colors](/foundations/design-tokens/colors)                       |
-| Spacing    | `400`         | `p`, `m`, `gap`               | [Spacing](/foundations/design-tokens/spacing)                     |
-| Sizes      | `full`, `1/2` | `w`, `h`, `maxW`              | [Sizes](/foundations/design-tokens/sizes)                         |
-| Typography | `400`, `body` | `fontSize`, `textStyle`       | [Typography](/foundations/design-tokens/typography)               |
-| Radii      | `200`         | `borderRadius`                | [Radii](/foundations/design-tokens/radii)                         |
-| Shadows    | `2`           | `boxShadow`                   | [Shadows](/foundations/design-tokens/shadows)                     |
-| Z-indices  | `sticky`      | `zIndex`                      | [Z-Indices](/foundations/design-tokens/other/z-indices)           |
+| Colors     | `primary.9`   | `color`, `bg`                 | [Colors](/home/design-tokens/colors)                       |
+| Spacing    | `400`         | `p`, `m`, `gap`               | [Spacing](/home/design-tokens/spacing)                     |
+| Sizes      | `full`, `1/2` | `w`, `h`, `maxW`              | [Sizes](/home/design-tokens/sizes)                         |
+| Typography | `400`, `body` | `fontSize`, `textStyle`       | [Typography](/home/design-tokens/typography)               |
+| Radii      | `200`         | `borderRadius`                | [Radii](/home/design-tokens/radii)                         |
+| Shadows    | `2`           | `boxShadow`                   | [Shadows](/home/design-tokens/shadows)                     |
+| Z-indices  | `sticky`      | `zIndex`                      | [Z-Indices](/home/design-tokens/other/z-indices)           |
 
 ```jsx live
 import { Box, Text } from "@commercetools/nimbus";
@@ -84,9 +78,7 @@ const App = () => (
 
 The spacing and size scales have the same numeric tokens up to `3200`, so
 `p="400"` and `w="400"` are both 16px. The prop decides which scale applies.
-For an introduction to tokens, see
-[Design tokens and colors](/learn/concepts/tokens-and-colors). For all groups,
-see [Design Tokens](/foundations/design-tokens).
+For all groups of tokens, see [Design Tokens](/home/design-tokens).
 
 ## Responsive values
 
@@ -115,7 +107,7 @@ const App = () => (
 ```
 
 Change the width of your browser window to see the change at 768px. For the
-breakpoint scale, see [Breakpoints](/foundations/design-tokens/other/breakpoints).
+breakpoint scale, see [Breakpoints](/home/design-tokens/other/breakpoints).
 
 ## Pseudo props
 
@@ -224,18 +216,18 @@ token in curly braces:
 <Box backdropFilter="blur({blurs.200})" bg="bg/60" />
 ```
 
-See [Filters](/foundations/style-props/filters) and [Blurs](/foundations/design-tokens/other/blurs).
+See [Filters](/home/style-props/filters) and [Blurs](/home/design-tokens/other/blurs).
 
 ## Where to go next
 
-- [Layout](/foundations/style-props/layout): aspect ratio, breaks, display, position and more
-- [Flex and Grid](/foundations/style-props/flex-and-grid): direction, alignment, gaps and grid tracks
-- [Spacing](/foundations/style-props/spacing): padding and margin
-- [Sizing](/foundations/style-props/sizing): width, height and their limits
-- [Typography](/foundations/style-props/typography): fonts, text, lists and tables
-- [Background](/foundations/style-props/background): colors, images, effects and SVG
-- [Border](/foundations/style-props/border): borders, radii and outlines
-- [Filters](/foundations/style-props/filters): blur and other visual effects
-- [Transforms](/foundations/style-props/transforms): move, scale and rotate
-- [Transitions](/foundations/style-props/transitions): animate changes
-- [Interactivity](/foundations/style-props/interactivity): cursor and user input
+- [Layout](/home/style-props/layout): aspect ratio, breaks, display, position and more
+- [Flex and Grid](/home/style-props/flex-and-grid): direction, alignment, gaps and grid tracks
+- [Spacing](/home/style-props/spacing): padding and margin
+- [Sizing](/home/style-props/sizing): width, height and their limits
+- [Typography](/home/style-props/typography): fonts, text, lists and tables
+- [Background](/home/style-props/background): colors, images, effects and SVG
+- [Border](/home/style-props/border): borders, radii and outlines
+- [Filters](/home/style-props/filters): blur and other visual effects
+- [Transforms](/home/style-props/transforms): move, scale and rotate
+- [Transitions](/home/style-props/transitions): animate changes
+- [Interactivity](/home/style-props/interactivity): cursor and user input

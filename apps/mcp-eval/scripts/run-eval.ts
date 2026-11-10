@@ -279,8 +279,8 @@ async function runDocsPagesDimension(
   client: Client
 ): Promise<DocsPagesDimension> {
   const checks = [
-    { path: "foundations/style-props", label: "Style Props Landing" },
-    { path: "foundations/style-props/spacing", label: "Style Props / Spacing" },
+    { path: "home/style-props", label: "Style Props Landing" },
+    { path: "home/style-props/spacing", label: "Style Props / Spacing" },
     { path: "home/getting-started/installation", label: "Installation" },
     { path: "components/layout/box", label: "Box (component page)" },
     { path: "components/buttons/button", label: "Button (component page)" },
@@ -310,7 +310,7 @@ async function runDocsPagesDimension(
     };
 
     // Extra data for the style-props landing page
-    if (check.path === "foundations/style-props") {
+    if (check.path === "home/style-props") {
       const categoryCount = (content.match(/home\/style-props\//g) || [])
         .length;
       result.extra = { categoryCount };
@@ -451,7 +451,7 @@ async function runMcpComparisons(
     {
       label: "Docs: style-props landing",
       tool: "get_docs_page",
-      args: { path: "foundations/style-props" },
+      args: { path: "home/style-props" },
     },
     {
       label: "Docs: Box component",

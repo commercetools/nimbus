@@ -23,7 +23,7 @@ import { routePathToSlug as pathToSlug } from "../utils/route.js";
 // ---------------------------------------------------------------------------
 
 const STYLE_PROPS_HINT =
-  'Also accepts style props. Use get_docs_page(path: "foundations/style-props") for full reference.';
+  'Also accepts style props. Use get_docs_page(path: "home/style-props") for full reference.';
 
 /**
  * Checks whether a component (or any of its sub-components) supports style
@@ -399,7 +399,7 @@ export function registerGetComponent(server: McpServer): void {
               if (stylePropsSubComponents.length > 0) {
                 response.styleProps =
                   `${stylePropsSubComponents.join(", ")} also accept style props. ` +
-                  'Use get_docs_page(path: "foundations/style-props") for full reference.';
+                  'Use get_docs_page(path: "home/style-props") for full reference.';
               }
             } else if (typeData.supportsStyleProps) {
               response.styleProps = STYLE_PROPS_HINT;

@@ -7,7 +7,7 @@ description:
   by screen size.
 order: 999
 menu:
-  - Foundations
+  - Home
   - Design Tokens
   - Other
   - Breakpoints
@@ -27,7 +27,7 @@ on larger screens, until a style for a larger breakpoint replaces it.
 > [!IMPORTANT]\
 > Looking for the width of a breakpoint, for example for `maxWidth`? Use the
 > breakpoint sizes, such as `maxWidth="breakpoint-md"` (768px). See
-> [Sizes](/foundations/design-tokens/sizes#breakpoint-sizes). `maxWidth="md"` is a
+> [Sizes](/home/design-tokens/sizes#breakpoint-sizes). `maxWidth="md"` is a
 > named size of 448px, not the `md` breakpoint.
 
 ## Breakpoint scale
@@ -56,8 +56,7 @@ for larger screens.
 
 Below 768px, the items are in a column with `200` between them. From 768px up,
 they are in a row with `600` between them. This works for style props and for
-layout props such as `direction` and `gap`. See
-[Layout](/learn/concepts/layout#screen-sizes) for a live example.
+layout props such as `direction` and `gap`.
 
 ### Target a range
 
@@ -84,7 +83,7 @@ every breakpoint, such as `lgOnly`, `smDown` or `smToLg`.
 | Hide an element from a breakpoint up       | `hideFrom`  | `<Box hideFrom="md" />`  |
 | Hide an element below a breakpoint         | `hideBelow` | `<Box hideBelow="md" />` |
 
-See [Style props: Layout](/foundations/style-props/layout).
+See [Style props: Layout](/home/style-props/layout).
 
 ### Components that take responsive values
 
@@ -104,8 +103,7 @@ The queries use `rem`: `md` is `@media screen and (min-width: 48rem)`, which is
 768px when the browser uses its default font size of 16px.
 
 For a layout that adapts to the space of its parent instead, use `SimpleGrid`
-with `minChildWidth`: it adds or removes columns to fit the space. See
-[Layout](/learn/concepts/layout#screen-sizes).
+with `minChildWidth`: it adds or removes columns to fit the space.
 
 The breakpoints are the same in every app. You cannot add a breakpoint or move
 one to another width.

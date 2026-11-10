@@ -8,7 +8,7 @@ export const navigationConfig: NavigationConfig = {
   // Pages for trying out docs features, not documentation.
   hidden: ["home/playground"],
   // "Other" says nothing about its pages; list them with the other tokens.
-  merged: ["foundations/design-tokens/other"],
+  merged: ["home/design-tokens/other"],
   // Show the component name instead of a description of it.
   labels: {
     "components/inputs/select-input": "Select",
