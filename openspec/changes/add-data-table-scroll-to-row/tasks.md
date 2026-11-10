@@ -40,7 +40,7 @@
       component in column content that writes on every context change and clears
       only its own value; verify typecheck and that the existing DataTable
       stories still pass
-- [ ] 3.3 Write `data-table.scroll-to-row.stories.tsx` with play functions: each
+- [x] 3.3 Write `data-table.scroll-to-row.stories.tsx` with play functions: each
       `align` value ends at the expected position below the header; `"nearest"`
       does not move a visible row; first and last rows clamp; a key hidden by
       search resolves `false` without scrolling; a nested child key resolves
@@ -52,7 +52,7 @@
       `true`; a second call rejects the first with `AbortError`; unmounting
       rejects a pending call; verify with
       `pnpm test:dev packages/nimbus/src/components/data-table/data-table.scroll-to-row.stories.tsx`
-- [ ] 3.4 If the story for the call after a sort change fails, stop and report
+- [x] 3.4 If the story for the call after a sort change fails, stop and report
       the result to the user before changing design decision 9; verify the story
       passes
 
