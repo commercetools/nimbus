@@ -425,15 +425,32 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
 
       // Disabled rows give no hover feedback: they cannot be interacted with.
-      "&:hover:not([data-nested-row-expanded]):not([data-disabled])": {
-        backgroundColor: "{colors.primary.3}",
-      },
+      //
+      // In a table with drag and drop the highlight follows React Aria's
+      // `data-hovered`, not CSS `:hover`. After a drag, Safari keeps `:hover` on
+      // the row until the pointer enters and leaves it, so the old position
+      // stays highlighted. React Aria clears `data-hovered` itself. It tracks
+      // hover on every row of such a table. Other tables keep `:hover`.
+      "&:hover:not([data-nested-row-expanded]):not([data-disabled]):not([data-allows-dragging] *)":
+        {
+          backgroundColor: "{colors.primary.3}",
+        },
       // Frozen cells mirror the hover highlight through the variable. Skipped for
       // custom-bg rows so their frozen cells keep inheriting the consumer color.
-      "&:hover:not([data-nested-row-expanded]):not([data-disabled]):not([data-custom-bg])":
+      "&:hover:not([data-nested-row-expanded]):not([data-disabled]):not([data-custom-bg]):not([data-allows-dragging] *)":
         {
           "--data-table-row-bg": "{colors.primary.3}",
         },
+      "[data-allows-dragging] &": {
+        "&[data-hovered]:not([data-nested-row-expanded]):not([data-disabled])":
+          {
+            backgroundColor: "{colors.primary.3}",
+          },
+        "&[data-hovered]:not([data-nested-row-expanded]):not([data-disabled]):not([data-custom-bg])":
+          {
+            "--data-table-row-bg": "{colors.primary.3}",
+          },
+      },
       _last: {
         borderBottom: "none",
       },
