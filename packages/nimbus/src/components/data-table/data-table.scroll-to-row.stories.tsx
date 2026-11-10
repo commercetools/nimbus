@@ -1,7 +1,8 @@
 // DataTable stories for scrolling to a row (`apiRef.scrollToRow`).
 // They share the title of data-table.stories.tsx, so Storybook lists them
-// under one DataTable entry. They test behavior only and carry no Chromatic
-// snapshot.
+// under one DataTable entry. They test behavior only. No story in this file
+// carries a Chromatic snapshot: the recipe is unchanged and
+// data-table.stories.tsx owns the visuals.
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
@@ -28,8 +29,6 @@ const meta: Meta<object> = {
 };
 
 export default meta;
-// No story in this file carries a Chromatic snapshot: the recipe is unchanged
-// and data-table.stories.tsx owns the visuals.
 
 type Story = StoryObj<DataTableProps>;
 
@@ -106,8 +105,12 @@ const expectFullyVisible = (container: HTMLElement, row: HTMLElement) => {
   expect(rect.bottom).toBeLessThanOrEqual(areaBottom(container) + 1);
 };
 
-const expectAbortError = (promise: Promise<unknown>) =>
-  expect(promise).rejects.toMatchObject({ name: "AbortError" });
+/** What a call settles with, so a rejection never goes unhandled. */
+const outcomeOf = (promise: Promise<boolean>) =>
+  promise.then(
+    (value) => String(value),
+    (error: Error) => error.name
+  );
 
 const nextFrame = () =>
   new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
@@ -117,17 +120,23 @@ const nextFrame = () =>
 // ---------------------------------------------------------------------------
 
 const alignApi: ApiRef = createRef<DataTableApi | null>();
+const alignRootRef = createRef<HTMLDivElement>();
 
 /**
- * `align` puts the row at the top, middle or bottom of the visible area. The
- * visible area starts below the sticky header, so the header never covers the
- * row.
+ * `align` puts the row where it asks, below the sticky header. `"nearest"` is
+ * the default and scrolls only as far as it has to. The first and last rows
+ * stop at the edges. `getScrollContainer()` returns the element of `ref`.
  */
 export const ScrollToRowAlign: Story = {
-  render: () => <ScrollTable apiRef={alignApi} />,
+  render: () => <ScrollTable apiRef={alignApi} ref={alignRootRef} />,
   play: async ({ step }) => {
     const api = await getApi(alignApi);
     const container = containerOf(api);
+
+    await step("getScrollContainer returns the element of ref", async () => {
+      expect(api.getScrollContainer()).toBe(alignRootRef.current);
+      expect(getComputedStyle(container).overflowY).toBe("auto");
+    });
 
     await step("start puts the row right below the header", async () => {
       await expect(api.scrollToRow("r30", { align: "start" })).resolves.toBe(
@@ -158,40 +167,59 @@ export const ScrollToRowAlign: Story = {
         expectWithin1px(rect.top + rect.height / 2, middle);
       }
     );
-  },
-};
 
-const nearestApi: ApiRef = createRef<DataTableApi | null>();
-
-/** `"nearest"` is the default. It scrolls only as far as it has to. */
-export const ScrollToRowNearest: Story = {
-  render: () => <ScrollTable apiRef={nearestApi} />,
-  play: async ({ step }) => {
-    const api = await getApi(nearestApi);
-    const container = containerOf(api);
-
-    await step("a visible row does not scroll", async () => {
+    await step("nearest: a visible row does not scroll", async () => {
+      container.scrollTo({ top: 0, behavior: "instant" });
       const before = container.scrollTop;
       await expect(api.scrollToRow("r2")).resolves.toBe(true);
       expect(container.scrollTop).toBe(before);
     });
 
-    await step("a row below scrolls until its bottom edge shows", async () => {
-      await expect(api.scrollToRow("r30")).resolves.toBe(true);
-      const rect = rowOf(container, "Row 30").getBoundingClientRect();
-      expectWithin1px(rect.bottom, areaBottom(container));
-    });
+    await step(
+      "nearest: a row below scrolls until its bottom edge shows",
+      async () => {
+        await expect(api.scrollToRow("r30")).resolves.toBe(true);
+        const rect = rowOf(container, "Row 30").getBoundingClientRect();
+        expectWithin1px(rect.bottom, areaBottom(container));
+      }
+    );
 
-    await step("a row above scrolls until it is below the header", async () => {
-      await expect(api.scrollToRow("r20")).resolves.toBe(true);
-      const rect = rowOf(container, "Row 20").getBoundingClientRect();
-      expectWithin1px(rect.top, headerBottom(container));
-    });
+    await step(
+      "nearest: a row above scrolls until it is below the header",
+      async () => {
+        await expect(api.scrollToRow("r20")).resolves.toBe(true);
+        const rect = rowOf(container, "Row 20").getBoundingClientRect();
+        expectWithin1px(rect.top, headerBottom(container));
+      }
+    );
 
-    await step("a row now fully visible does not scroll", async () => {
-      const before = container.scrollTop;
-      await expect(api.scrollToRow("r21")).resolves.toBe(true);
-      expect(container.scrollTop).toBe(before);
+    await step(
+      "nearest: a row that is now fully visible does not scroll",
+      async () => {
+        const before = container.scrollTop;
+        await expect(api.scrollToRow("r21")).resolves.toBe(true);
+        expect(container.scrollTop).toBe(before);
+      }
+    );
+
+    await step(
+      "the last row stops at the end of the scroll range",
+      async () => {
+        await expect(api.scrollToRow("r59", { align: "start" })).resolves.toBe(
+          true
+        );
+        expectWithin1px(
+          container.scrollTop,
+          container.scrollHeight - container.clientHeight
+        );
+        expectFullyVisible(container, rowOf(container, "Row 59"));
+      }
+    );
+
+    await step("the first row stops at the start", async () => {
+      await expect(api.scrollToRow("r0", { align: "end" })).resolves.toBe(true);
+      expect(container.scrollTop).toBe(0);
+      expectFullyVisible(container, rowOf(container, "Row 0"));
     });
   },
 };
@@ -214,35 +242,11 @@ export const ScrollToRowHeaderNotSticky: Story = {
       true
     );
     const rect = rowOf(container, "Row 30").getBoundingClientRect();
-    expectWithin1px(rect.top, container.getBoundingClientRect().top);
-  },
-};
-
-const clampApi: ApiRef = createRef<DataTableApi | null>();
-
-/** The first and last rows stop at the edges of the scroll range. */
-export const ScrollToRowClampsAtEdges: Story = {
-  render: () => <ScrollTable apiRef={clampApi} />,
-  play: async ({ step }) => {
-    const api = await getApi(clampApi);
-    const container = containerOf(api);
-
-    await step("the last row stops at the end", async () => {
-      await expect(api.scrollToRow("r59", { align: "start" })).resolves.toBe(
-        true
-      );
-      expectWithin1px(
-        container.scrollTop,
-        container.scrollHeight - container.clientHeight
-      );
-      expectFullyVisible(container, rowOf(container, "Row 59"));
-    });
-
-    await step("the first row stops at the start", async () => {
-      await expect(api.scrollToRow("r0", { align: "end" })).resolves.toBe(true);
-      expect(container.scrollTop).toBe(0);
-      expectFullyVisible(container, rowOf(container, "Row 0"));
-    });
+    // The inner top edge of the container, inside its border.
+    expectWithin1px(
+      rect.top,
+      container.getBoundingClientRect().top + container.clientTop
+    );
   },
 };
 
@@ -250,52 +254,77 @@ export const ScrollToRowClampsAtEdges: Story = {
 // Keys that are not shown
 // ---------------------------------------------------------------------------
 
-const unknownApi: ApiRef = createRef<DataTableApi | null>();
+const keysApi: ApiRef = createRef<DataTableApi | null>();
 
-/** An unknown key resolves `false`, without scrolling or changing focus. */
-export const ScrollToRowUnknownKey: Story = {
-  render: () => <ScrollTable apiRef={unknownApi} />,
-  play: async () => {
-    const api = await getApi(unknownApi);
+const KeysNotShownTable = () => {
+  const [search, setSearch] = useState<string | undefined>();
+  const rows = useMemo(
+    () => [
+      ...makeRows(),
+      {
+        id: "parent",
+        name: "Parent",
+        children: [{ id: "child", name: "Child" }],
+      },
+    ],
+    []
+  );
+  return (
+    <Stack>
+      <Button onPress={() => setSearch("Row 5")}>Search for Row 5</Button>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        nestedKey="children"
+        search={search}
+        maxHeight="400px"
+        apiRef={keysApi}
+      />
+    </Stack>
+  );
+};
+
+/**
+ * A key that is not a shown row resolves `false`, without scrolling or
+ * changing focus: an unknown key, a nested child row, and a row that `search`
+ * hides.
+ */
+export const ScrollToRowKeysNotShown: Story = {
+  render: () => <KeysNotShownTable />,
+  play: async ({ canvasElement, step }) => {
+    const api = await getApi(keysApi);
     const container = containerOf(api);
     const before = document.activeElement;
-    await expect(api.scrollToRow("nope")).resolves.toBe(false);
-    expect(container.scrollTop).toBe(0);
-    expect(document.activeElement).toBe(before);
-  },
-};
 
-const searchApi: ApiRef = createRef<DataTableApi | null>();
+    await step("an unknown key resolves false", async () => {
+      await expect(api.scrollToRow("nope")).resolves.toBe(false);
+      expect(container.scrollTop).toBe(0);
+      expect(document.activeElement).toBe(before);
+    });
 
-/** A row that `search` hides is not a shown row. */
-export const ScrollToRowHiddenBySearch: Story = {
-  render: () => <ScrollTable apiRef={searchApi} search="Row 5" />,
-  play: async () => {
-    const api = await getApi(searchApi);
-    await expect(api.scrollToRow("r20")).resolves.toBe(false);
-    await expect(api.scrollToRow("r5")).resolves.toBe(true);
-  },
-};
+    await step(
+      "a nested child row resolves false, its parent true",
+      async () => {
+        await expect(api.scrollToRow("child")).resolves.toBe(false);
+        expect(container.scrollTop).toBe(0);
+        await expect(api.scrollToRow("parent")).resolves.toBe(true);
+      }
+    );
 
-const nestedApi: ApiRef = createRef<DataTableApi | null>();
-
-const nestedRows: DataTableRowItem[] = [
-  {
-    id: "parent",
-    name: "Parent",
-    children: [{ id: "child", name: "Child" }],
-  },
-];
-
-/** A nested child row is shown only as a count, so it is not a shown row. */
-export const ScrollToRowNestedChild: Story = {
-  render: () => (
-    <ScrollTable apiRef={nestedApi} rows={nestedRows} nestedKey="children" />
-  ),
-  play: async () => {
-    const api = await getApi(nestedApi);
-    await expect(api.scrollToRow("child")).resolves.toBe(false);
-    await expect(api.scrollToRow("parent")).resolves.toBe(true);
+    await step("a row hidden by search resolves false", async () => {
+      container.scrollTo({ top: 0, behavior: "instant" });
+      await userEvent.click(
+        within(canvasElement).getByRole("button", { name: "Search for Row 5" })
+      );
+      await waitFor(() =>
+        expect(
+          within(container).queryByRole("row", { name: /^Row 20$/ })
+        ).toBeNull()
+      );
+      await expect(api.scrollToRow("r20")).resolves.toBe(false);
+      expect(container.scrollTop).toBe(0);
+      await expect(api.scrollToRow("r5")).resolves.toBe(true);
+    });
   },
 };
 
@@ -324,16 +353,20 @@ export const ScrollToRowWithoutTable: Story = {
 // ---------------------------------------------------------------------------
 
 const focusApi: ApiRef = createRef<DataTableApi | null>();
+const focusWarnings: string[] = [];
 
 /**
- * React Aria's focused key is always set. DOM focus moves only with
- * `focus: true`, and it keeps the chosen alignment.
+ * React Aria's focused row is always set. DOM focus moves only with
+ * `focus: true`, and it keeps the chosen alignment. A disabled row is scrolled
+ * to, but focus does not change, and `focus: true` is ignored with a
+ * development warning.
  */
 export const ScrollToRowFocus: Story = {
+  beforeEach: recordWarnings(focusWarnings),
   render: () => (
     <Stack>
       <Button>Before the table</Button>
-      <ScrollTable apiRef={focusApi} />
+      <ScrollTable apiRef={focusApi} disabledKeys={disabledRow30} />
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
@@ -344,11 +377,11 @@ export const ScrollToRowFocus: Story = {
     });
     outside.focus();
 
-    await step("sets the focused key without moving DOM focus", async () => {
-      await expect(api.scrollToRow("r30", { align: "start" })).resolves.toBe(
+    await step("sets the focused row without moving DOM focus", async () => {
+      await expect(api.scrollToRow("r20", { align: "start" })).resolves.toBe(
         true
       );
-      await waitFor(() => expect(rowOf(container, "Row 30").tabIndex).toBe(0));
+      await waitFor(() => expect(rowOf(container, "Row 20").tabIndex).toBe(0));
       expect(outside).toHaveFocus();
     });
 
@@ -367,45 +400,24 @@ export const ScrollToRowFocus: Story = {
         );
       }
     );
-  },
-};
 
-const disabledApi: ApiRef = createRef<DataTableApi | null>();
-const disabledWarnings: string[] = [];
-
-/**
- * A disabled row is scrolled to, but focus does not change. `focus: true` is
- * ignored with a development warning.
- */
-export const ScrollToRowDisabledRow: Story = {
-  beforeEach: recordWarnings(disabledWarnings),
-  render: () => (
-    <Stack>
-      <Button>Before the table</Button>
-      <ScrollTable apiRef={disabledApi} disabledKeys={disabledRow30} />
-    </Stack>
-  ),
-  play: async ({ canvasElement }) => {
-    const api = await getApi(disabledApi);
-    const container = containerOf(api);
-    const outside = within(canvasElement).getByRole("button", {
-      name: "Before the table",
-    });
-    outside.focus();
-
-    await expect(
-      api.scrollToRow("r30", { align: "start", focus: true })
-    ).resolves.toBe(true);
-
-    expectWithin1px(
-      rowOf(container, "Row 30").getBoundingClientRect().top,
-      headerBottom(container)
+    await step(
+      "a disabled row scrolls but takes no focus, and warns",
+      async () => {
+        await expect(
+          api.scrollToRow("r30", { align: "start", focus: true })
+        ).resolves.toBe(true);
+        expectWithin1px(
+          rowOf(container, "Row 30").getBoundingClientRect().top,
+          headerBottom(container)
+        );
+        expect(rowOf(container, "Row 45")).toHaveFocus();
+        expect(rowOf(container, "Row 30").tabIndex).not.toBe(0);
+        expect(
+          focusWarnings.some((message) => message.includes("disabled"))
+        ).toBe(true);
+      }
     );
-    expect(outside).toHaveFocus();
-    expect(rowOf(container, "Row 30").tabIndex).not.toBe(0);
-    expect(
-      disabledWarnings.some((message) => message.includes("disabled"))
-    ).toBe(true);
   },
 };
 
@@ -413,72 +425,56 @@ export const ScrollToRowDisabledRow: Story = {
 // Behavior
 // ---------------------------------------------------------------------------
 
-const motionApi: ApiRef = createRef<DataTableApi | null>();
+const behaviorApi: ApiRef = createRef<DataTableApi | null>();
 
-/** `"smooth"` becomes instant when the user prefers reduced motion. */
-export const ScrollToRowReducedMotion: Story = {
-  render: () => <ScrollTable apiRef={motionApi} />,
-  play: async () => {
-    const api = await getApi(motionApi);
+/**
+ * `"smooth"` resolves only after scrolling has stopped, and becomes instant
+ * when the user prefers reduced motion.
+ */
+export const ScrollToRowBehavior: Story = {
+  render: () => <ScrollTable apiRef={behaviorApi} />,
+  play: async ({ step }) => {
+    const api = await getApi(behaviorApi);
     const container = containerOf(api);
-    const scrollTo = spyOn(container, "scrollTo");
-    const original = window.matchMedia;
-    window.matchMedia = ((query: string) =>
-      query.includes("prefers-reduced-motion")
-        ? ({ matches: true, media: query } as MediaQueryList)
-        : original.call(window, query)) as typeof window.matchMedia;
 
-    try {
+    await step("smooth resolves after scrolling has stopped", async () => {
       await expect(
-        api.scrollToRow("r40", { align: "start", behavior: "smooth" })
+        api.scrollToRow("r50", { align: "start", behavior: "smooth" })
       ).resolves.toBe(true);
-      expect(scrollTo).toHaveBeenCalledWith(
-        expect.objectContaining({ behavior: "instant" })
-      );
+      const settledAt = container.scrollTop;
+      await nextFrame();
+      await nextFrame();
+      expect(container.scrollTop).toBe(settledAt);
       expectWithin1px(
-        rowOf(container, "Row 40").getBoundingClientRect().top,
+        rowOf(container, "Row 50").getBoundingClientRect().top,
         headerBottom(container)
       );
-    } finally {
-      window.matchMedia = original;
-      scrollTo.mockRestore();
-    }
-  },
-};
+    });
 
-const smoothApi: ApiRef = createRef<DataTableApi | null>();
+    await step("smooth is instant with reduced motion", async () => {
+      const scrollTo = spyOn(container, "scrollTo");
+      const original = window.matchMedia;
+      window.matchMedia = ((query: string) =>
+        query.includes("prefers-reduced-motion")
+          ? ({ matches: true, media: query } as MediaQueryList)
+          : original.call(window, query)) as typeof window.matchMedia;
 
-/** A smooth scroll resolves only after scrolling has stopped. */
-export const ScrollToRowSmooth: Story = {
-  render: () => <ScrollTable apiRef={smoothApi} />,
-  play: async () => {
-    const api = await getApi(smoothApi);
-    const container = containerOf(api);
-    await expect(
-      api.scrollToRow("r50", { align: "start", behavior: "smooth" })
-    ).resolves.toBe(true);
-    const settledAt = container.scrollTop;
-    await nextFrame();
-    await nextFrame();
-    expect(container.scrollTop).toBe(settledAt);
-    expectWithin1px(
-      rowOf(container, "Row 50").getBoundingClientRect().top,
-      headerBottom(container)
-    );
-  },
-};
-
-const containerApi: ApiRef = createRef<DataTableApi | null>();
-const containerRootRef = createRef<HTMLDivElement>();
-
-/** `getScrollContainer()` returns the element that `ref` points to. */
-export const GetScrollContainer: Story = {
-  render: () => <ScrollTable apiRef={containerApi} ref={containerRootRef} />,
-  play: async () => {
-    const api = await getApi(containerApi);
-    const container = api.getScrollContainer();
-    expect(container).toBe(containerRootRef.current);
-    expect(getComputedStyle(container as HTMLElement).overflowY).toBe("auto");
+      try {
+        await expect(
+          api.scrollToRow("r10", { align: "start", behavior: "smooth" })
+        ).resolves.toBe(true);
+        expect(scrollTo).toHaveBeenCalledWith(
+          expect.objectContaining({ behavior: "instant" })
+        );
+        expectWithin1px(
+          rowOf(container, "Row 10").getBoundingClientRect().top,
+          headerBottom(container)
+        );
+      } finally {
+        window.matchMedia = original;
+        scrollTo.mockRestore();
+      }
+    });
   },
 };
 
@@ -530,50 +526,44 @@ const ChangingRows = ({ apiRef, onSettled }: ChangingRowsProps) => {
 const changingApi: ApiRef = createRef<DataTableApi | null>();
 const changingResult = { value: "" };
 
-/** A call from an effect after the sort order changed resolves `true`. */
-export const ScrollToRowAfterReorder: Story = {
+/**
+ * A call from an effect right after the rows changed resolves `true`. This
+ * covers a row that moved (the sort order changed) and a row that was just
+ * added, which becomes React Aria's focused row.
+ */
+export const ScrollToRowAfterRowsChange: Story = {
   render: () => (
     <ChangingRows
       apiRef={changingApi}
       onSettled={(value) => (changingResult.value = value)}
     />
   ),
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const api = await getApi(changingApi);
-    changingResult.value = "";
-    await userEvent.click(canvas.getByRole("button", { name: "Reverse rows" }));
-    await waitFor(() => expect(changingResult.value).toBe("true"));
     const container = containerOf(api);
-    // Row 0 is now the last row, and the call has brought it into view.
-    expectFullyVisible(container, rowOf(container, "Row 0"));
-  },
-};
 
-const addedApi: ApiRef = createRef<DataTableApi | null>();
-const addedResult = { value: "" };
+    await step("a row that moved resolves true and is in view", async () => {
+      changingResult.value = "";
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Reverse rows" })
+      );
+      await waitFor(() => expect(changingResult.value).toBe("true"));
+      // Row 0 is now the last row, and the call has brought it into view.
+      expectFullyVisible(container, rowOf(container, "Row 0"));
+    });
 
-/**
- * A call from an effect right after a row was added resolves `true`, and the
- * new row becomes React Aria's focused key.
- */
-export const ScrollToRowAfterRowAdded: Story = {
-  render: () => (
-    <ChangingRows
-      apiRef={addedApi}
-      onSettled={(value) => (addedResult.value = value)}
-    />
-  ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const api = await getApi(addedApi);
-    addedResult.value = "";
-    await userEvent.click(canvas.getByRole("button", { name: "Add row" }));
-    await waitFor(() => expect(addedResult.value).toBe("true"));
-    const container = containerOf(api);
-    const row = rowOf(container, "Added row");
-    expectFullyVisible(container, row);
-    await waitFor(() => expect(row.tabIndex).toBe(0));
+    await step(
+      "a row that was just added resolves true and is focused",
+      async () => {
+        changingResult.value = "";
+        await userEvent.click(canvas.getByRole("button", { name: "Add row" }));
+        await waitFor(() => expect(changingResult.value).toBe("true"));
+        const row = rowOf(container, "Added row");
+        expectFullyVisible(container, row);
+        await waitFor(() => expect(row.tabIndex).toBe(0));
+      }
+    );
   },
 };
 
@@ -581,52 +571,51 @@ export const ScrollToRowAfterRowAdded: Story = {
 // Cancellation
 // ---------------------------------------------------------------------------
 
-const abortApi: ApiRef = createRef<DataTableApi | null>();
+const cancelApi: ApiRef = createRef<DataTableApi | null>();
 
-/** A newer call replaces a pending call, for any key. */
-export const ScrollToRowReplacedByNewerCall: Story = {
-  render: () => <ScrollTable apiRef={abortApi} />,
-  play: async () => {
-    const api = await getApi(abortApi);
-    const container = containerOf(api);
-    const first = api.scrollToRow("r10", { align: "start" });
-    const second = api.scrollToRow("r40", { align: "start" });
-    await expectAbortError(first);
-    await expect(second).resolves.toBe(true);
-    expectWithin1px(
-      rowOf(container, "Row 40").getBoundingClientRect().top,
-      headerBottom(container)
-    );
-  },
-};
-
-const unmountApi: ApiRef = createRef<DataTableApi | null>();
-
-const UnmountableTable = () => {
+const CancellableTable = () => {
   const [isShown, setIsShown] = useState(true);
   return (
     <Stack>
       <Button onPress={() => setIsShown(false)}>Remove table</Button>
-      {isShown && <ScrollTable apiRef={unmountApi} />}
+      {isShown && <ScrollTable apiRef={cancelApi} />}
     </Stack>
   );
 };
 
-/** Removing the table rejects a pending call. */
-export const ScrollToRowUnmount: Story = {
-  render: () => <UnmountableTable />,
-  play: async ({ canvasElement }) => {
-    const api = await getApi(unmountApi);
-    // The rejection happens during the click, so the handler goes on first.
-    const outcome = api
-      .scrollToRow("r40", { align: "start", behavior: "smooth" })
-      .then(
-        () => "resolved",
-        (error: Error) => error.name
+/**
+ * A pending call rejects with an `AbortError` when a newer call replaces it
+ * (for any key), and when the table is removed.
+ */
+export const ScrollToRowCancellation: Story = {
+  render: () => <CancellableTable />,
+  play: async ({ canvasElement, step }) => {
+    const api = await getApi(cancelApi);
+    const container = containerOf(api);
+
+    await step("a newer call replaces a pending call", async () => {
+      // The handler goes on when the call starts: the older call rejects as
+      // soon as the newer one starts.
+      const first = outcomeOf(api.scrollToRow("r10", { align: "start" }));
+      const second = api.scrollToRow("r40", { align: "start" });
+      expect(await first).toBe("AbortError");
+      await expect(second).resolves.toBe(true);
+      expectWithin1px(
+        rowOf(container, "Row 40").getBoundingClientRect().top,
+        headerBottom(container)
       );
-    await userEvent.click(
-      within(canvasElement).getByRole("button", { name: "Remove table" })
-    );
-    expect(await outcome).toBe("AbortError");
+    });
+
+    await step("removing the table rejects a pending call", async () => {
+      // Start the call and remove the table in the same tick. The call has not
+      // had a frame yet, so it is pending whatever the speed of the machine.
+      const pending = outcomeOf(
+        api.scrollToRow("r40", { align: "start", behavior: "smooth" })
+      );
+      within(canvasElement)
+        .getByRole("button", { name: "Remove table" })
+        .click();
+      expect(await pending).toBe("AbortError");
+    });
   },
 };
