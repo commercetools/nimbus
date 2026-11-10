@@ -29,17 +29,24 @@ type UseDataTableApiParams<T extends object> = {
 /** A call that has not settled yet. */
 type PendingCall = { abort: (message: string) => void };
 
-const isDevelopment = process.env.NODE_ENV !== "production";
+const isDevelopment = () => process.env.NODE_ENV !== "production";
 
 /**
- * The parts of the scroll container that cover rows. The header stays on top
- * while rows scroll under it, so it is the top inset. Nothing covers the
- * bottom. This is the one place that decides what covers rows.
+ * The parts of the scroll container that cover rows. A sticky header stays on
+ * top while rows scroll under it, so it is the top inset. A header that is not
+ * sticky (the table has no `maxHeight` prop) scrolls away with the rows and
+ * covers nothing. Nothing covers the bottom. This is the one place that decides
+ * what covers rows.
  */
-const getScrollInsets = (registry: DataTableRegistry) => ({
-  topInset: registry.headerElement?.getBoundingClientRect().height ?? 0,
-  bottomInset: 0,
-});
+const getScrollInsets = (registry: DataTableRegistry) => {
+  const header = registry.headerElement;
+  const isHeaderSticky =
+    !!header && window.getComputedStyle(header).position === "sticky";
+  return {
+    topInset: isHeaderSticky ? header.getBoundingClientRect().height : 0,
+    bottomInset: 0,
+  };
+};
 
 /** Whether the browser fires `scrollend`. Older Safari versions do not. */
 const hasScrollEndEvent = (element: Element): boolean =>
@@ -112,7 +119,7 @@ export const useDataTableApi = <T extends object>({
 
             const container = rootRef.current;
             if (!registry.tableState) {
-              if (isDevelopment) {
+              if (isDevelopment()) {
                 console.warn(
                   "[Nimbus] DataTable: scrollToRow needs DataTable.Table inside DataTable.Root. Render DataTable.Table, or use the DataTable component."
                 );
@@ -129,7 +136,7 @@ export const useDataTableApi = <T extends object>({
 
             const finalize = () => {
               if (isDisabled) {
-                if (options.focus && isDevelopment) {
+                if (options.focus && isDevelopment()) {
                   console.warn(
                     `[Nimbus] DataTable: scrollToRow ignored focus: true for the disabled row "${key}". A disabled row cannot take focus.`
                   );

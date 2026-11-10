@@ -28,6 +28,8 @@ const meta: Meta<object> = {
 };
 
 export default meta;
+// No story in this file carries a Chromatic snapshot: the recipe is unchanged
+// and data-table.stories.tsx owns the visuals.
 
 type Story = StoryObj<DataTableProps>;
 
@@ -191,6 +193,28 @@ export const ScrollToRowNearest: Story = {
       await expect(api.scrollToRow("r21")).resolves.toBe(true);
       expect(container.scrollTop).toBe(before);
     });
+  },
+};
+
+const unstickyApi: ApiRef = createRef<DataTableApi | null>();
+
+/**
+ * The header is sticky only with the `maxHeight` prop. When the table is sized
+ * with a style prop instead, the header scrolls away with the rows, so it
+ * covers nothing and the row goes to the very top.
+ */
+export const ScrollToRowHeaderNotSticky: Story = {
+  render: () => (
+    <ScrollTable apiRef={unstickyApi} maxHeight={undefined} maxH="400px" />
+  ),
+  play: async () => {
+    const api = await getApi(unstickyApi);
+    const container = containerOf(api);
+    await expect(api.scrollToRow("r30", { align: "start" })).resolves.toBe(
+      true
+    );
+    const rect = rowOf(container, "Row 30").getBoundingClientRect();
+    expectWithin1px(rect.top, container.getBoundingClientRect().top);
   },
 };
 
