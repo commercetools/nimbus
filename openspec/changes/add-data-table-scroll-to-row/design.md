@@ -1,118 +1,149 @@
 ## Context
 
-`DataTable.Root` renders the scroll container (`data-table.recipe.ts`), and
-#2062 keeps it that way. React Aria renders `DataTable.Row` itself outside the
-table's state context; cell content is rendered inside it, so
-`TableStateContext` is only available there (`NestedContentPanel` in
-`components/data-table.row.tsx` uses this).
+Sources for this design: the Jira ticket FEC-1483, the current DataTable code,
+and primary React Aria and web-platform sources. Each fact below names its
+source.
 
-Checked in the installed `react-aria-components` 1.22.1 and `react-stately`
-3.51.0:
+**Code today.** The root element scrolls (`overflow: "auto"`,
+`data-table.recipe.ts:138`). The header is `position: sticky; top: 0`
+(`data-table.recipe.ts:268-272`). `DataTable.Row` renders `RaRow` with
+`id={rowKey}` and a `ref` (`components/data-table.row.tsx:701-705`). React Aria
+renders `DataTable.Row` itself outside the table's state context; cell content
+is rendered inside it, so `TableStateContext` is only available there
+(`NestedContentPanel`, `components/data-table.row.tsx:124-164`).
+`ChatMessageList` already has an imperative handle with `scrollToBottom` and a
+`prefers-reduced-motion` fallback (`chat-message-list.types.ts:31-37`).
 
-- `TableInner` provides `TableStateContext` with `filteredState` around the
-  collection (`Table.mjs`). Cell content can read it.
-- `filteredState.selectionManager` is created again on every `TableInner` render
-  (`state.selectionManager.withCollection(collection)` in `useTableState.mjs`).
-  The old manager keeps the old collection.
+**React Aria (react-aria-components 1.22.1, react-aria 3.53.1, react-stately
+3.51.0, read in `node_modules`).**
+
+- `TableStateContext` is a public export (`Table.mjs`, export list). It is
+  provided by `TableInner` around the collection, with `filteredState`.
+- `filteredState` is rebuilt on every render, and `selectionManager` is created
+  again with it (`useTableState.mjs:82`). The collection is memoized
+  (`useTableState.mjs:78`). `focusedKey` and `isFocused` live in refs, so
+  reading them is always current (`useMultipleSelectionState.mjs:27-28`). No
+  documentation describes how stable the state object is between renders.
 - `selectionManager.setFocusedKey(key)` does nothing when the key is not in that
-  manager's own collection (`SelectionManager.mjs:65-66`). A stale manager
-  silently ignores a row that was added after it was created.
+  manager's collection (`SelectionManager.mjs:65-66`).
+- `setFocusedKey` alone does not move DOM focus. The row's effect in
+  `useSelectableItem.mjs` focuses the element only when
+  `key === manager.focusedKey` and `manager.isFocused` are both true. React
+  Aria's own scroll into view runs only when `manager.isFocused` is true, and
+  only for keyboard modality (`useSelectableCollection.mjs`, about lines
+  402-428).
+- React Aria finds a row element with `[data-key="…"]`. That attribute is not
+  documented. The ticket names this as the problem with the prototype.
 
-See `proposal.md` for the scope and `specs/nimbus-data-table/spec.md` for the
-behavior.
+**Web platform.**
+
+- `behavior: "auto"` follows the computed CSS `scroll-behavior` (MDN,
+  `Element.scrollTo`). A consumer's `scroll-behavior: smooth` would make
+  `"auto"` smooth. `"instant"` is always a single jump.
+- `scrollend`: MDN browser-compat-data lists Safari 26.2 (desktop and iOS),
+  Chrome 114, Firefox 109. I found no WebKit release note that confirms it, and
+  I did not test Safari. No `scrollend` fires when the scroll position does not
+  change (MDN).
+
+See `proposal.md` for scope and `specs/nimbus-data-table/spec.md` for behavior.
 
 ## Goals / Non-Goals
 
 **Goals:**
 
-- `apiRef` works after the rows changed, including a call from an effect right
-  after a sort or filter change.
-- One small place computes the scroll offset, so FEC-1484 can add sticky stacks
-  without rewriting it.
+- `scrollToRow` works after the rows changed, including a call from an effect
+  right after a sort or filter change.
+- One small function computes the scroll offset, so FEC-1484 can add sticky
+  stacks without rewriting it.
 
 **Non-Goals:**
 
-- Any sticky-row code. FEC-1484 adds it; nothing here is prepared for it except
-  the `topInset` and `bottomInset` inputs of the offset function.
+- Sticky-row code. The only preparation is the `topInset` and `bottomInset`
+  inputs of the offset function.
 - Virtualized tables (#2062).
 
 ## Decisions
 
-**1. A registry object in the context, written by row, header and cell.** The
-root creates a stable object once with `useRef`:
-`rowElements: Map<string, HTMLElement>`, `tableState`, `headerElement`. Writing
-to it re-renders nothing. The row adds its element under its key and removes it
-on unmount. The header stores its element. A small internal component rendered
-in cell content reads `TableStateContext` and stores it.
+**1. Find row elements through a registry filled by the row's ref.** The root
+creates one stable object with `useRef` and puts it in the context. Each
+`DataTable.Row` adds its element under its key and removes it on unmount,
+through a ref callback merged with the existing ref. Writing to it re-renders
+nothing.
 
-- *Alternative: query the DOM with `data-key`.* Rejected: `data-key` is a React
-  Aria detail that Nimbus does not document, and it cannot find rows that are not
-  in the DOM.
-- *Alternative: React state for the registry.* Rejected: every registration
-  would re-render the table.
+- _Alternative: `querySelector('[data-key]')`._ Rejected: undocumented React
+  Aria internal, and the ticket names it as the problem.
+- _Alternative: React state._ Rejected: every registration would re-render the
+  table.
 
-**2. The cell registrar writes the latest table state on every render and is
-read at call time.** Because the selection manager is replaced on each render
-(see Context), the registrar writes in an effect on every change of the context
-value, not once. On unmount it clears the field only when the stored value is
-still its own, so a newer registrar is not erased by an older one that unmounts
-later. `scrollToRow` reads the registry when it runs, never earlier.
+**2. Read table state through `TableStateContext` in cell content, and keep the
+latest value.** A small internal component in cell content reads the context and
+writes it to the registry in an effect on every change. On unmount it clears the
+entry only when the stored value is still its own. `scrollToRow` reads the
+registry when it runs. Reason: the manager is replaced on every render, and a
+stale manager ignores keys added after it was created.
 
-- *Alternative: register once from the first row.* Rejected: that row can be
-  removed or replaced, and the manager would then hold an old collection.
+- _Alternative: register once from the first row._ Rejected: that row can be
+  removed, and the stored manager would keep an old collection.
 
-**3. Wait one animation frame before reading the registry.** The consumer may
-call from an effect right after the rows changed. At that moment React Aria may
-not have rendered the new collection yet. `scrollToRow` waits one frame, then
-checks the shown-row rule and reads the registry. This is verified by a story
-(a call from an effect right after a sort change resolves `true`). If the story
-shows one frame is not enough, the wait changes and the change goes back to the
-user.
-
-**4. One pure function computes the target.** `computeTargetScrollTop` in
-`utils/scroll-to-row.utils.ts` takes `rowTop`, `rowHeight`, `viewportHeight`,
-`scrollTop`, `scrollHeight`, `topInset`, `bottomInset` and `align`, and returns
-a number, or `null` when no scroll is needed. The visible area is
-`[scrollTop + topInset, scrollTop + viewportHeight - bottomInset]`. The result is
-clamped to `[0, scrollHeight - viewportHeight]`. In this change `topInset` is the
-header height and `bottomInset` is `0`. The function is the only place that
+**3. One pure function computes the target scroll position.**
+`computeTargetScrollTop` takes the row's top and height, the viewport height,
+`scrollTop`, `scrollHeight`, `topInset`, `bottomInset` and `align`. It returns
+the new `scrollTop`, or `null` when `"nearest"` needs no scroll. The visible
+area is `[scrollTop + topInset, scrollTop + viewportHeight - bottomInset]`. The
+result is clamped to `[0, scrollHeight - viewportHeight]`. Here `topInset` is
+the header height and `bottomInset` is `0`. The function is the only place that
 knows about insets.
 
-- *Alternative: `element.scrollIntoView()`.* Rejected: it cannot subtract the
+- _Alternative: `element.scrollIntoView()`._ Rejected: it cannot subtract the
   header, and FEC-1484 needs to subtract more.
 
-**5. Settling.** For `"auto"` the table sets `scrollTop` and the Promise
-resolves after the next animation frame. For `"smooth"` it resolves on
-`scrollend`. Browser support for `scrollend` in Safari is not verified in this
-work: MDN lists the event as "Baseline 2025 Newly available. Since December
-2025" and gives no Safari version. So the fallback from the design document is
-always active: the Promise also resolves when `scrollTop` has not changed for
-two animation frames. Whichever happens first wins, and the other is cleaned up.
+**4. Focus.** The focused key is always set after the scroll, with
+`selectionManager.setFocusedKey(key)` on the state from the registry. That sets
+the roving tab stop and moves no DOM focus. With `focus: true`, call
+`element.focus({ preventScroll: true })` on the row element, so the browser does
+not undo the chosen alignment. For a disabled row, do neither, and warn in
+development if `focus: true` was passed.
 
-**6. Cancellation.** The handle keeps one pending call. A new call rejects it
-with `new DOMException("Replaced by a newer scrollToRow call", "AbortError")`
-before it does anything else. An effect cleanup rejects it on unmount.
+**5. `"auto"` means instant.** The ticket says `"auto"` is instant. Because the
+platform's `"auto"` follows CSS `scroll-behavior`, Nimbus passes `"instant"` to
+`scrollTo` for `"auto"`. `"smooth"` becomes `"instant"` when
+`matchMedia("(prefers-reduced-motion: reduce)")` matches.
 
-**7. Focus.** After the scroll, unless the row is disabled, call
-`tableState.selectionManager.setFocusedKey(key)` on the state read from the
-registry. With `focus: true`, call `element.focus({ preventScroll: true })`. For a
-disabled row, do neither and log a development warning if `focus: true` was
-passed. React Aria would accept the key, but its arrow keys skip disabled rows.
+**6. Settling.**
+
+- Instant: resolve after the next animation frame.
+- Smooth: if the computed target equals the current `scrollTop`, resolve at
+  once, because no `scrollend` would fire. Otherwise resolve on `scrollend` when
+  the browser supports it (`"onscrollend" in window`). When it does not, resolve
+  after `scrollTop` has not changed for two animation frames.
+- The fallback is chosen by feature detection, not by browser name. I could not
+  test Safari; the fallback is covered by a unit test where `scrollend` does not
+  exist.
+
+**7. Cancellation.** The handle keeps one pending call. A new call rejects it
+with `new DOMException("…", "AbortError")` before it does anything else. An
+effect cleanup rejects the pending call on unmount.
 
 **8. Shown rows.** A row is shown when it is a top-level row of the sorted and
-searched rows in the interaction context. Anything else resolves `false` before
-any scroll.
+searched rows in the interaction context. Any other key resolves `false` before
+any scroll or focus change. Without a registered Table, the call resolves
+`false` and logs a development warning.
+
+**9. Reading the registry after the rows changed (hypothesis, not yet tested).**
+`scrollToRow` waits one animation frame before it checks the shown-row rule and
+reads the registry, so a call from an effect right after a sort or filter change
+sees the new rows. A story tests this. If one frame is not enough, I stop and
+ask the user before I change the approach.
 
 ## Risks / Trade-offs
 
-- [Stale selection manager ignores a new key] → Decision 2 and 3; a story calls
+- [Stale selection manager ignores a new key] → Decisions 2 and 9; a story calls
   `scrollToRow` right after the rows change.
-- [`scrollend` missing in some Safari versions] → The two-frame fallback is
-  always active. No Safari test was possible here; the fallback is covered by a
-  unit test with `scrollend` never fired.
-- [JSDOM has no `scrollTo`] → The hook tests fake the scroll container, and
+- [`scrollend` support in older Safari] → Feature-detected fallback (decision
+  6), unit tested. Not tested in Safari.
+- [JSDOM has no `scrollTo`] → Hook tests use a fake scroll container, and
   nothing throws when `scrollTo` is missing.
-- [A call before the rows have rendered] → Documented: call after the rows have
-  rendered.
-- [React Aria internals] → The plan relies on the behavior listed in Context. A
-  React Aria upgrade must re-check it.
+- [Consumer calls before the rows have rendered] → Documented in `dev.mdx`; the
+  call resolves `false` for a key that is not shown yet.
+- [React Aria internals] → Decisions 2 and 4 rely on the behavior listed in
+  Context. A React Aria upgrade must re-check it.
