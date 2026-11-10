@@ -1,0 +1,54 @@
+name: Check Figma token
+
+description: >-
+  Checks FIGMA_ACCESS_TOKEN with one read request to the NIMBUS design system
+  Figma file, before the Figma CLI runs. Runbook:
+  docs/figma-code-connect-ci.md#the-token-check
+
+inputs:
+  token:
+    description: The Figma access token (secrets.FIGMA_ACCESS_TOKEN)
+    required: true
+
+runs:
+  using: composite
+
+  steps:
+    # curl reads the header from stdin, so the token is not in its argument
+    # list. Only the HTTP status and Figma's `err` text are printed, never the
+    # response body. Node 67:549 is the Button component set.
+    - name: Check FIGMA_ACCESS_TOKEN
+      shell: bash
+      env:
+        FIGMA_ACCESS_TOKEN: ${{ inputs.token }}
+        CHECK_URL: https://api.figma.com/v1/files/AvtPX6g7OGGCRvNlatGOIY/nodes?ids=67:549&depth=1
+      run: |
+        if [ -z "$FIGMA_ACCESS_TOKEN" ]; then
+          echo "::error::FIGMA_ACCESS_TOKEN is not set. Add it as a repository secret (Settings → Secrets and variables → Actions)."
+          exit 1
+        fi
+
+        body="$(mktemp)"
+        status="$(printf 'X-Figma-Token: %s\n' "$FIGMA_ACCESS_TOKEN" |
+          curl --silent --max-time 60 --output "$body" \
+            --write-out '%{http_code}' --header @- "$CHECK_URL")" || true
+        err="$(jq -r '.err // empty' "$body" 2>/dev/null | tr -d '\r\n' || true)"
+        rm -f "$body"
+
+        case "$status" in
+          200)
+            echo "Figma accepted FIGMA_ACCESS_TOKEN (HTTP 200)."
+            ;;
+          000 | 429 | 5??)
+            echo "::error::Figma did not answer the token check (HTTP ${status}${err:+: $err}). This is not a token problem. Re-run the job later."
+            exit 1
+            ;;
+          404)
+            echo "::error::Figma could not find the file used for the token check (HTTP 404: ${err:-no error text}). Check that the file key in .github/actions/check-figma-token/action.yml is the NIMBUS design system file, and that the owner of FIGMA_ACCESS_TOKEN can open it."
+            exit 1
+            ;;
+          *)
+            echo "::error::FIGMA_ACCESS_TOKEN was rejected by Figma (HTTP ${status}: ${err:-no error text}). Create a new token in Figma → Settings → Security → Personal access tokens (scopes: Code Connect: Write, File content: Read) and update the repository secret FIGMA_ACCESS_TOKEN. Long-term: ask a Figma admin for a plan access token."
+            exit 1
+            ;;
+        esac
