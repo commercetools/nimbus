@@ -78,7 +78,9 @@ reduced motion.
 ### Requirement: Scroll Result
 
 `scrollToRow` SHALL return a Promise that resolves `true` when the row is at its
-final position. It SHALL resolve `false` for a key that is not a shown row.
+final position. It SHALL resolve `false` for a key that is not a shown row. It
+SHALL resolve `false`, without changing focus, when the scrolling ends more than
+1px away from the target.
 
 #### Scenario: Unknown key
 
@@ -136,6 +138,19 @@ move DOM focus to the row only when `focus` is `true`.
 - **WHEN** `scrollToRow` is called without `focus: true`
 - **THEN** React Aria's focused key SHALL be the row
 - **AND** DOM focus SHALL NOT move
+
+#### Scenario: Table already has focus
+
+- **WHEN** DOM focus is inside the table and `scrollToRow` is called without
+  `focus: true`
+- **THEN** the focused key and DOM focus SHALL NOT change
+
+#### Scenario: Scrolling is interrupted
+
+- **WHEN** a smooth scroll ends away from the target, for example because the
+  user scrolled
+- **THEN** the Promise SHALL resolve `false`
+- **AND** the focused key and DOM focus SHALL NOT change
 
 #### Scenario: Focus requested
 

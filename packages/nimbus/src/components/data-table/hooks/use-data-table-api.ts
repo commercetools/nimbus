@@ -29,6 +29,9 @@ type UseDataTableApiParams<T extends object> = {
 /** A call that has not settled yet. */
 type PendingCall = { abort: (message: string) => void };
 
+/** How far, in pixels, the final `scrollTop` may be from the target. */
+const SCROLL_TOLERANCE = 1;
+
 const isDevelopment = () => process.env.NODE_ENV !== "production";
 
 /**
@@ -142,7 +145,14 @@ export const useDataTableApi = <T extends object>({
                   );
                 }
               } else {
-                registry.tableState?.selectionManager.setFocusedKey(key);
+                // React Aria moves DOM focus to a row when it becomes the
+                // focused key while the table has focus. Without `focus: true`
+                // that must not happen, so a table that has focus keeps its
+                // focused row.
+                const manager = registry.tableState?.selectionManager;
+                if (manager && (options.focus || !manager.isFocused)) {
+                  manager.setFocusedKey(key);
+                }
                 if (options.focus) {
                   registry.rowElements.get(key)?.focus({ preventScroll: true });
                 }
@@ -182,12 +192,22 @@ export const useDataTableApi = <T extends object>({
               container.scrollTop = target;
             }
 
-            if (behavior === "instant") return onFrame(finalize);
+            // The scroll can end somewhere else: the user scrolled during a
+            // smooth scroll, or the container does not scroll. Then the row is
+            // not in place, so the call resolves false and moves no focus.
+            const settle = () => {
+              if (Math.abs(container.scrollTop - target) > SCROLL_TOLERANCE) {
+                return resolveWith(false);
+              }
+              finalize();
+            };
+
+            if (behavior === "instant") return onFrame(settle);
 
             if (hasScrollEndEvent(container)) {
-              container.addEventListener("scrollend", finalize, { once: true });
+              container.addEventListener("scrollend", settle, { once: true });
               cleanups.push(() =>
-                container.removeEventListener("scrollend", finalize)
+                container.removeEventListener("scrollend", settle)
               );
               return;
             }
@@ -199,7 +219,7 @@ export const useDataTableApi = <T extends object>({
               unchangedFrames =
                 container.scrollTop === lastTop ? unchangedFrames + 1 : 0;
               lastTop = container.scrollTop;
-              if (unchangedFrames >= 2) finalize();
+              if (unchangedFrames >= 2) settle();
               else onFrame(watch);
             };
             onFrame(watch);

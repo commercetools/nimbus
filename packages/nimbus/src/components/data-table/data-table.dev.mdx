@@ -1166,7 +1166,9 @@ the table has mounted.
 - `behavior: "auto"` scrolls at once. `"smooth"` scrolls with an animation, and
   scrolls at once when the user prefers reduced motion.
 - The Promise resolves `true` when the row is at its final position. For
-  `"smooth"`, that is after the scrolling has stopped.
+  `"smooth"`, that is after the scrolling has stopped. If the scrolling stops
+  away from the row, for example because the user scrolled during a smooth
+  scroll, the Promise resolves `false` and focus does not change.
 
 ### When the Promise resolves false
 
@@ -1227,6 +1229,11 @@ call after a data change does not take focus away from an input where the user
 is typing.
 
 Pass `focus: true` to also move keyboard focus to the row after the scroll.
+
+When keyboard focus is already inside the table and you do not pass
+`focus: true`, the focused row stays as it is. React Aria would move keyboard
+focus to a new focused row, and `scrollToRow` does not do that without
+`focus: true`.
 
 A disabled row (`disabledKeys` or `isDisabled`) is scrolled to, and the Promise
 resolves `true`, but the focused row and keyboard focus do not change. In
