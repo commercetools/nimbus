@@ -793,6 +793,42 @@ export const ScrollToRowCancellation: Story = {
       );
     });
 
+    await step(
+      "a replaced smooth scroll stops where it is, so it cannot move the table later",
+      async () => {
+        const startTop = container.scrollTop;
+        const first = outcomeOf(
+          api.scrollToRow("r5", { align: "start", behavior: "smooth" })
+        );
+        // Wait until the animation is under way.
+        await waitFor(() =>
+          expect(container.scrollTop).toBeLessThan(startTop - 100)
+        );
+        // A row that is fully visible right now.
+        const visible = within(container)
+          .getAllByRole("row")
+          .find((row) => {
+            const rect = row.getBoundingClientRect();
+            return (
+              /Row \d+/.test(row.textContent ?? "") &&
+              rect.top >= headerBottom(container) + 1 &&
+              rect.bottom <= areaBottom(container) - 1
+            );
+          });
+        const name = visible?.textContent?.match(/Row \d+/)?.[0] ?? "";
+        const key = `r${name.replace("Row ", "")}`;
+
+        // "nearest" on a visible row does not scroll. If the old animation
+        // went on, it would move the table afterwards.
+        const second = api.scrollToRow(key);
+        expect(await first).toBe("AbortError");
+        await expect(second).resolves.toBe(true);
+        const stoppedAt = container.scrollTop;
+        for (let i = 0; i < 20; i++) await nextFrame();
+        expectWithin1px(container.scrollTop, stoppedAt);
+      }
+    );
+
     await step("removing the table rejects a pending call", async () => {
       // Start the call and remove the table in the same tick. The call has not
       // had a frame yet, so it is pending whatever the speed of the machine.

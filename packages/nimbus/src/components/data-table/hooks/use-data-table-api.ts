@@ -32,6 +32,14 @@ type PendingCall = { abort: (message: string) => void };
 /** How far, in pixels, the final `scrollTop` may be from the target. */
 const SCROLL_TOLERANCE = 1;
 
+/**
+ * How long a smooth scroll may stand still before the call gives up. A
+ * container that cannot scroll (for example `overflow: clip`) never moves and
+ * never fires `scrollend`. Not used without `scrollend`: then two frames
+ * without movement end the scroll.
+ */
+const SCROLL_STALL_MS = 500;
+
 const isDevelopment = () => process.env.NODE_ENV !== "production";
 
 /**
@@ -90,6 +98,8 @@ export const useDataTableApi = <T extends object>({
           pendingRef.current?.abort("Replaced by a newer scrollToRow call");
 
           const cleanups: Array<() => void> = [];
+          // Set while a smooth scroll of this call is running.
+          let stopSmoothScroll: (() => void) | null = null;
           let isDone = false;
           const finish = (settle: () => void) => {
             if (isDone) return;
@@ -99,12 +109,15 @@ export const useDataTableApi = <T extends object>({
             settle();
           };
           const call: PendingCall = {
-            abort: (message) =>
-              finish(() => reject(new DOMException(message, "AbortError"))),
+            abort: (message) => {
+              // The browser keeps a smooth scroll going after the call is over.
+              stopSmoothScroll?.();
+              finish(() => reject(new DOMException(message, "AbortError")));
+            },
           };
           pendingRef.current = call;
 
-          const onFrame = (callback: () => void) => {
+          const onFrame = (callback: (time: number) => void) => {
             const id = requestAnimationFrame(callback);
             cleanups.push(() => cancelAnimationFrame(id));
           };
@@ -160,21 +173,32 @@ export const useDataTableApi = <T extends object>({
               resolveWith(true);
             };
 
-            const containerRect = container.getBoundingClientRect();
-            const rowRect = element.getBoundingClientRect();
-            const target = computeTargetScrollTop({
-              rowTop:
-                rowRect.top -
-                containerRect.top -
-                container.clientTop +
-                container.scrollTop,
-              rowHeight: rowRect.height,
-              viewportHeight: container.clientHeight,
-              scrollTop: container.scrollTop,
-              scrollHeight: container.scrollHeight,
-              ...getScrollInsets(registry),
-              align: options.align,
-            });
+            /**
+             * The new `scrollTop` for the row as it is now, `null` when no
+             * scroll is needed, `undefined` when the row has gone.
+             */
+            const measureTarget = () => {
+              const rowElement = registry.rowElements.get(key);
+              if (!rowElement) return undefined;
+              const containerRect = container.getBoundingClientRect();
+              const rowRect = rowElement.getBoundingClientRect();
+              return computeTargetScrollTop({
+                rowTop:
+                  rowRect.top -
+                  containerRect.top -
+                  container.clientTop +
+                  container.scrollTop,
+                rowHeight: rowRect.height,
+                viewportHeight: container.clientHeight,
+                scrollTop: container.scrollTop,
+                scrollHeight: container.scrollHeight,
+                ...getScrollInsets(registry),
+                align: options.align,
+              });
+            };
+
+            const target = measureTarget();
+            if (target === undefined) return resolveWith(false);
 
             if (target === null || target === container.scrollTop) {
               return finalize();
@@ -193,10 +217,22 @@ export const useDataTableApi = <T extends object>({
             }
 
             // The scroll can end somewhere else: the user scrolled during a
-            // smooth scroll, or the container does not scroll. Then the row is
-            // not in place, so the call resolves false and moves no focus.
+            // smooth scroll, the container does not scroll, or rows changed
+            // while it ran. So the row is measured again. If it is not in
+            // place, or it has gone, the call resolves false and moves no
+            // focus.
             const settle = () => {
-              if (Math.abs(container.scrollTop - target) > SCROLL_TOLERANCE) {
+              const latest = latestRef.current;
+              const isShown = latest.sortedRows.some(
+                (item) => latest.getRowKey(item) === key
+              );
+              const finalTarget = isShown ? measureTarget() : undefined;
+              if (
+                finalTarget === undefined ||
+                (finalTarget !== null &&
+                  Math.abs(container.scrollTop - finalTarget) >
+                    SCROLL_TOLERANCE)
+              ) {
                 return resolveWith(false);
               }
               finalize();
@@ -204,22 +240,38 @@ export const useDataTableApi = <T extends object>({
 
             if (behavior === "instant") return onFrame(settle);
 
-            if (hasScrollEndEvent(container)) {
+            stopSmoothScroll = () =>
+              container.scrollTo?.({
+                top: container.scrollTop,
+                behavior: "instant",
+              });
+
+            // `scrollend` ends the scroll when the browser has the event. The
+            // watcher below also ends it when the position stands still: for
+            // two frames without `scrollend`, for SCROLL_STALL_MS with it.
+            const hasScrollEnd = hasScrollEndEvent(container);
+            if (hasScrollEnd) {
               container.addEventListener("scrollend", settle, { once: true });
               cleanups.push(() =>
                 container.removeEventListener("scrollend", settle)
               );
-              return;
             }
-            // No `scrollend` event: the scroll is over when the position has
-            // not changed for two frames.
             let lastTop = container.scrollTop;
+            let lastMoveTime: number | null = null;
             let unchangedFrames = 0;
-            const watch = () => {
-              unchangedFrames =
-                container.scrollTop === lastTop ? unchangedFrames + 1 : 0;
-              lastTop = container.scrollTop;
-              if (unchangedFrames >= 2) settle();
+            const watch = (time: number) => {
+              lastMoveTime ??= time;
+              if (container.scrollTop === lastTop) {
+                unchangedFrames += 1;
+              } else {
+                unchangedFrames = 0;
+                lastMoveTime = time;
+                lastTop = container.scrollTop;
+              }
+              const isStalled = hasScrollEnd
+                ? time - lastMoveTime >= SCROLL_STALL_MS
+                : unchangedFrames >= 2;
+              if (isStalled) settle();
               else onFrame(watch);
             };
             onFrame(watch);
