@@ -25,8 +25,8 @@ import type {
   CustomSettingsContextValue,
   TableSelectionContextValue,
   DataTableRowItem,
-  DataTableRegistry,
 } from "../data-table.types";
+import type { DataTableRegistry } from "../utils/registry.types";
 import {
   defaultGetRowKey,
   findRowKeyProblems,

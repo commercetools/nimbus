@@ -1,5 +1,6 @@
-import type { ReactNode, FC, Ref, ContextType } from "react";
+import type { ReactNode, FC, Ref } from "react";
 import type { DataTableRowKeyResolver } from "./utils/row-keys.utils";
+import type { DataTableRegistry } from "./utils/registry.types";
 import type {
   SortDirection as RaSortDirection,
   TableHeaderProps as RaTableHeaderProps,
@@ -9,7 +10,6 @@ import type {
   CellProps as RaCellProps,
   Selection,
   DragAndDropHooks as RaDragAndDropHooks,
-  TableStateContext as RaTableStateContext,
 } from "react-aria-components";
 import type {
   HTMLChakraProps,
@@ -188,21 +188,6 @@ export type DataTableApi = {
    * `null` before the table has mounted.
    */
   getScrollContainer: () => HTMLDivElement | null;
-};
-
-/**
- * What the rows, the header and the cells of one table tell `apiRef`. Writing
- * to it does not re-render anything.
- *
- * @internal
- */
-export type DataTableRegistry = {
-  /** The element of each rendered row, by row key. */
-  rowElements: Map<string, HTMLElement>;
-  /** The header element, which stays on top of the rows while scrolling. */
-  headerElement: HTMLElement | null;
-  /** React Aria's table state. A new object after every render of the table. */
-  tableState: NonNullable<ContextType<typeof RaTableStateContext>> | null;
 };
 
 export type DataTableCustomSettings = {

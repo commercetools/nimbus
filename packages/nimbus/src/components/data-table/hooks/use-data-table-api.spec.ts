@@ -10,11 +10,8 @@ import {
 import { createRef, type RefObject } from "react";
 import { renderHook } from "@testing-library/react";
 import { useDataTableApi } from "./use-data-table-api";
-import type {
-  DataTableApi,
-  DataTableRegistry,
-  DataTableRowItem,
-} from "../data-table.types";
+import type { DataTableApi, DataTableRowItem } from "../data-table.types";
+import type { DataTableRegistry } from "../utils/registry.types";
 
 const ROW_HEIGHT = 50;
 const HEADER_HEIGHT = 40;
