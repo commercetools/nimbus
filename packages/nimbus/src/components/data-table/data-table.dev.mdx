@@ -1167,8 +1167,10 @@ the table has mounted.
   scrolls at once when the user prefers reduced motion.
 - The Promise resolves `true` when the row is at its final position. For
   `"smooth"`, that is after the scrolling has stopped. If the scrolling stops
-  away from the row, for example because the user scrolled during a smooth
-  scroll, the Promise resolves `false` and focus does not change.
+  away from the row, the Promise resolves `false` and focus does not change.
+  This happens when the user scrolled during a smooth scroll, when the table
+  cannot scroll (a smooth scroll that does not move for 500ms gives up), and
+  when the row moved or was removed while the scroll ran.
 
 ### When the Promise resolves false
 

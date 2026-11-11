@@ -120,24 +120,36 @@ platform's `"auto"` follows CSS `scroll-behavior`, Nimbus passes `"instant"` to
   once, because no `scrollend` would fire. Otherwise resolve on `scrollend` when
   the browser supports it (`"onscrollend" in window`). When it does not, resolve
   after `scrollTop` has not changed for two animation frames.
+- At the end of every scroll the row is measured again, in the same function that
+  computed the first target. The call resolves `true` only when the row is in
+  place (within 1px) or `"nearest"` finds it visible. A row that moved, was
+  removed or is hidden, an interrupted scroll and a container that does not
+  scroll all resolve `false` and move no focus.
+- A smooth scroll also ends when the position has not changed for 500ms
+  (`SCROLL_STALL_MS`), because no `scrollend` fires without movement. This
+  guard runs with and without `scrollend`; without it, two frames without
+  movement end the scroll. 500ms is a chosen value, not a measured one.
 - The fallback is chosen by feature detection, not by browser name. I could not
   test Safari; the fallback is covered by a unit test where `scrollend` does not
   exist.
 
 **7. Cancellation.** The handle keeps one pending call. A new call rejects it
 with `new DOMException("…", "AbortError")` before it does anything else. An
-effect cleanup rejects the pending call on unmount.
+effect cleanup rejects the pending call on unmount. When the call has a smooth scroll running, `abort` first calls
+`scrollTo({ top: scrollTop, behavior: "instant" })`, which stops the browser's
+animation at its current position. Otherwise the animation would keep moving
+the table after a replacement call.
 
 **8. Shown rows.** A row is shown when it is a top-level row of the sorted and
 searched rows in the interaction context. Any other key resolves `false` before
 any scroll or focus change. Without a registered Table, the call resolves
 `false` and logs a development warning.
 
-**9. Reading the registry after the rows changed (hypothesis, not yet tested).**
+**9. Reading the registry after the rows changed.**
 `scrollToRow` waits one animation frame before it checks the shown-row rule and
 reads the registry, so a call from an effect right after a sort or filter change
-sees the new rows. A story tests this. If one frame is not enough, I stop and
-ask the user before I change the approach.
+sees the new rows. A story tests this. Removing the wait makes the "after rows
+change" and cancellation stories fail, so one frame is needed and enough.
 
 ## Risks / Trade-offs
 

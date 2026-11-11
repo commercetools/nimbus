@@ -79,8 +79,9 @@ reduced motion.
 
 `scrollToRow` SHALL return a Promise that resolves `true` when the row is at its
 final position. It SHALL resolve `false` for a key that is not a shown row. It
-SHALL resolve `false`, without changing focus, when the scrolling ends more than
-1px away from the target.
+SHALL resolve `false`, without changing focus, when the row is not in place
+when the scrolling ends. The row is measured again at that moment, so rows that
+changed during the scroll count.
 
 #### Scenario: Unknown key
 
@@ -128,6 +129,13 @@ unmounts.
 - **WHEN** the table unmounts while a call is pending
 - **THEN** the Promise SHALL reject with an `AbortError`
 
+#### Scenario: Smooth scroll of a replaced call
+
+- **WHEN** a call with a smooth scroll that is running is replaced or aborted
+- **THEN** the scroll SHALL stop at its current position
+- **AND** a replacement `"nearest"` call for a visible row SHALL leave the table
+  where it stopped
+
 ### Requirement: Scroll Focus
 
 `scrollToRow` SHALL always set React Aria's focused key to the row. It SHALL
@@ -144,6 +152,21 @@ move DOM focus to the row only when `focus` is `true`.
 - **WHEN** DOM focus is inside the table and `scrollToRow` is called without
   `focus: true`
 - **THEN** the focused key and DOM focus SHALL NOT change
+
+#### Scenario: Container does not scroll
+
+- **WHEN** the scroll container does not move after `scrollToRow` (for example
+  `overflow: clip`)
+- **THEN** an instant call SHALL resolve `false` after the next frame
+- **AND** a smooth call SHALL resolve `false` when the position has not changed
+  for 500ms, also when the browser fires `scrollend`
+- **AND** the focused key and DOM focus SHALL NOT change
+
+#### Scenario: Row changes during a smooth scroll
+
+- **WHEN** the row is removed, hidden or moved while a smooth scroll runs
+- **THEN** the Promise SHALL resolve `false` when the scroll ends
+- **AND** the focused key and DOM focus SHALL NOT change
 
 #### Scenario: Scrolling is interrupted
 

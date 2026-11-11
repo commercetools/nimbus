@@ -12,8 +12,9 @@
   instantly when the user prefers reduced motion.
 - The Promise resolves `true` when the row is at its final position. It resolves
   `false` for a key that is not a shown row: an unknown key, a row hidden by
-  `search`, or a nested child row. It also resolves `false` when the scrolling
-  ends away from the row, for example because the user scrolled.
+  `search`, or a nested child row. It also resolves `false` when the row is not
+  in place when the scrolling ends: the user scrolled, the table cannot scroll,
+  or the row moved or was removed during a smooth scroll.
 - The Promise rejects with an `AbortError` when a newer call replaces it or the
   table unmounts. Ignore this error in your `catch`.
 - React Aria's focused row is always set. Keyboard focus moves to the row only
