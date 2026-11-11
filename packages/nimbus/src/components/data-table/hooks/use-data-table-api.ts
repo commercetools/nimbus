@@ -8,10 +8,10 @@ import {
 import type { Selection } from "react-aria-components";
 import type {
   DataTableApi,
-  DataTableRegistry,
   DataTableRowItem,
   DataTableScrollToRowOptions,
 } from "../data-table.types";
+import type { DataTableRegistry } from "../utils/registry.types";
 import type { DataTableRowKeyResolver } from "../utils/row-keys.utils";
 import { computeTargetScrollTop } from "../utils/scroll-to-row.utils";
 
