@@ -355,6 +355,111 @@ describe("useDataTableApi", () => {
       expect(focus).not.toHaveBeenCalled();
     });
 
+    it("resolves false when a container that supports scrollend does not move", async () => {
+      const { api, container, setFocusedKey } = setup();
+      // A container that cannot scroll: no movement, so no `scrollend`.
+      container.scrollTo = vi.fn() as never;
+      const result = api().scrollToRow("r20", {
+        align: "start",
+        behavior: "smooth",
+        focus: true,
+      });
+      let settled = false;
+      void result.then(() => (settled = true));
+      await vi.advanceTimersByTimeAsync(300);
+      expect(settled).toBe(false);
+      await vi.advanceTimersByTimeAsync(400);
+      await expect(result).resolves.toBe(false);
+      expect(setFocusedKey).not.toHaveBeenCalled();
+    });
+
+    it("resolves false when the row is removed during the scroll", async () => {
+      const { api, container, rerender, registry, setFocusedKey } = setup();
+      container.scrollTo = vi.fn((options: ScrollToOptions) => {
+        container.scrollTop = options.top ?? 0;
+      }) as never;
+      const rows = Array.from({ length: 30 }, (_, n) => ({ id: `r${n}` }));
+      const result = api().scrollToRow("r20", {
+        align: "start",
+        behavior: "smooth",
+      });
+      await nextFrame();
+      await nextFrame(); // starts the scroll
+      expect(container.scrollTo).toHaveBeenCalled();
+      registry.rowElements.delete("r20");
+      rerender({ sortedRows: rows.filter((row) => row.id !== "r20") });
+      container.dispatchEvent(new Event("scrollend"));
+      await expect(result).resolves.toBe(false);
+      expect(setFocusedKey).not.toHaveBeenCalled();
+    });
+
+    it("resolves false when the row moved during the scroll", async () => {
+      const { api, container, rowElement, setFocusedKey } = setup();
+      container.scrollTo = vi.fn((options: ScrollToOptions) => {
+        container.scrollTop = options.top ?? 0;
+      }) as never;
+      const result = api().scrollToRow("r20", {
+        align: "start",
+        behavior: "smooth",
+      });
+      await nextFrame();
+      await nextFrame(); // starts the scroll
+      expect(container.scrollTo).toHaveBeenCalled();
+      // Rows above were added: the row is 500px lower now.
+      rowElement("r20").getBoundingClientRect = () =>
+        ({
+          top: HEADER_HEIGHT + 20 * ROW_HEIGHT + 500 - container.scrollTop,
+          height: ROW_HEIGHT,
+        }) as DOMRect;
+      container.dispatchEvent(new Event("scrollend"));
+      await expect(result).resolves.toBe(false);
+      expect(setFocusedKey).not.toHaveBeenCalled();
+    });
+
+    it("stops a smooth scroll where it is when a newer call replaces it", async () => {
+      const { api, container, scrollTo } = setup();
+      // Moves part of the way, as an animation would.
+      container.scrollTo = scrollTo.mockImplementation(
+        (options: ScrollToOptions) => {
+          container.scrollTop =
+            options.behavior === "smooth" ? 300 : (options.top ?? 0);
+        }
+      ) as never;
+      const first = api().scrollToRow("r25", {
+        align: "start",
+        behavior: "smooth",
+      });
+      first.catch(() => {});
+      await nextFrame();
+      await nextFrame(); // starts the scroll
+      expect(container.scrollTop).toBe(300);
+      scrollTo.mockClear();
+
+      const second = api().scrollToRow("r8"); // visible at scrollTop 300
+      await expect(first).rejects.toMatchObject({ name: "AbortError" });
+      expect(scrollTo).toHaveBeenCalledWith({ top: 300, behavior: "instant" });
+      await nextFrame();
+      await expect(second).resolves.toBe(true);
+    });
+
+    it("stops a smooth scroll when the table unmounts", async () => {
+      const { api, container, scrollTo, unmount } = setup();
+      container.scrollTop = 0;
+      const pending = api().scrollToRow("r20", {
+        align: "start",
+        behavior: "smooth",
+      });
+      pending.catch(() => {});
+      await nextFrame();
+      await nextFrame(); // starts the scroll
+      scrollTo.mockClear();
+      unmount();
+      await expect(pending).rejects.toMatchObject({ name: "AbortError" });
+      expect(scrollTo).toHaveBeenCalledWith(
+        expect.objectContaining({ behavior: "instant" })
+      );
+    });
+
     it("resolves at once when the target is the current position", async () => {
       const { api, container, scrollTo } = setup({ scrollTop: 1000 });
       (container as unknown as { onscrollend: null }).onscrollend = null;
