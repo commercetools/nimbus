@@ -314,7 +314,11 @@ describe("useDataTableApi", () => {
       const { api, container } = setup();
       // Make the fake smooth scroll move in steps, then stop.
       container.scrollTo = vi.fn((options: ScrollToOptions) => {
-        container.scrollTop = (options.top ?? 0) / 2;
+        const top = options.top ?? 0;
+        container.scrollTop = top / 2;
+        requestAnimationFrame(() => {
+          container.scrollTop = top;
+        });
       }) as never;
       let settled = false;
       const result = api()
@@ -329,6 +333,26 @@ describe("useDataTableApi", () => {
       await nextFrame();
       await nextFrame();
       await expect(result).resolves.toBe(true);
+    });
+
+    it("resolves false and moves no focus when the scroll stops before the target", async () => {
+      const restoreScrollEnd = removeScrollEndSupport();
+      onTestFinished(restoreScrollEnd);
+      const { api, container, setFocusedKey, rowElement } = setup();
+      // The user stops the animation halfway.
+      container.scrollTo = vi.fn((options: ScrollToOptions) => {
+        container.scrollTop = (options.top ?? 0) / 2;
+      }) as never;
+      const focus = vi.spyOn(rowElement("r20"), "focus");
+      const result = api().scrollToRow("r20", {
+        align: "start",
+        behavior: "smooth",
+        focus: true,
+      });
+      for (let i = 0; i < 5; i++) await nextFrame();
+      await expect(result).resolves.toBe(false);
+      expect(setFocusedKey).not.toHaveBeenCalled();
+      expect(focus).not.toHaveBeenCalled();
     });
 
     it("resolves at once when the target is the current position", async () => {

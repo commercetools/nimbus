@@ -23,14 +23,12 @@ import {
   Stack,
   Text,
   TextInput,
-} from "@/components";
-import type {
-  DataTableApi,
-  DataTableColumnItem,
-  DataTableProps,
-  DataTableRowItem,
-  DataTableScrollToRowOptions,
-} from "./data-table.types";
+  type DataTableApi,
+  type DataTableColumnItem,
+  type DataTableProps,
+  type DataTableRowItem,
+  type DataTableScrollToRowOptions,
+} from "@commercetools/nimbus";
 import { recordWarnings } from "./utils/data-table.test-utils";
 
 const meta: Meta<object> = {
@@ -556,6 +554,24 @@ export const ScrollToRowFocus: Story = {
     );
 
     await step(
+      "without focus true, keeps DOM focus where it is inside the table",
+      async () => {
+        const focused = rowOf(container, "Row 45");
+        expect(focused).toHaveFocus();
+        await expect(api.scrollToRow("r20", { align: "start" })).resolves.toBe(
+          true
+        );
+        await nextFrame();
+        await nextFrame();
+        expect(focused).toHaveFocus();
+        expectWithin1px(
+          rowOf(container, "Row 20").getBoundingClientRect().top,
+          headerBottom(container)
+        );
+      }
+    );
+
+    await step(
       "a disabled row scrolls but takes no focus, and warns",
       async () => {
         await expect(
@@ -629,6 +645,23 @@ export const ScrollToRowBehavior: Story = {
         scrollTo.mockRestore();
       }
     });
+
+    await step(
+      "a smooth scroll that is interrupted resolves false and moves no focus",
+      async () => {
+        const call = api.scrollToRow("r55", {
+          align: "start",
+          behavior: "smooth",
+          focus: true,
+        });
+        await nextFrame();
+        await nextFrame();
+        // Stop the animation by jumping somewhere else.
+        container.scrollTo({ top: 0, behavior: "instant" });
+        await expect(call).resolves.toBe(false);
+        expect(rowOf(container, "Row 55")).not.toHaveFocus();
+      }
+    );
   },
 };
 
