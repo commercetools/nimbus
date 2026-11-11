@@ -81,6 +81,19 @@
       `pnpm exec openspec validate add-data-table-scroll-to-row --strict`;
       verify it passes
 
+## 6. Review follow-up
+
+- [x] 6.1 Keep focus where it is when the table has focus and `focus` is not
+      `true`; verify the `ScrollToRowFocus` story
+- [x] 6.2 Resolve `false` when the row is not in place at the end of a scroll
+      (interrupted, not scrollable, moved or removed); verify the hook spec and
+      the `ScrollToRowBehavior` story
+- [x] 6.3 Stop a smooth scroll when its call is replaced or aborted, and end a
+      stalled smooth scroll after 500ms; verify the hook spec and the
+      `ScrollToRowCancellation` story
+- [x] 6.4 Keep `DataTableRegistry` out of the public exports and import stories
+      from `@commercetools/nimbus`
+
 ## Workflow follow-up
 
 - Archive the change when its PR merges.

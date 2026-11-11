@@ -171,8 +171,10 @@ export type DataTableApi = {
    * without scrolling, for a key that is not a shown row: an unknown key, a row
    * that `search` hides, or a nested child row. It also resolves `false` when
    * `DataTable.Root` is used without `DataTable.Table`. It resolves `false`
-   * too, without moving focus, when the scrolling ends away from the row, for
-   * example because the user scrolled during a smooth scroll.
+   * too, without moving focus, when the row is not in place when the scrolling
+   * ends: the user scrolled during a smooth scroll, the container does not
+   * scroll (a smooth scroll that does not move for 500ms gives up), or the row
+   * moved or was removed while the scroll ran.
    *
    * Rejects with a `DOMException` named `"AbortError"` when a newer call
    * replaces it, and when the table unmounts. Ignore that error:
