@@ -145,7 +145,7 @@ export const ConfirmationDialog = ({
             onPress={handleConfirm}
           >
             {resolvedConfirmLabel}
-            {isConfirmLoading && <LoadingSpinner ml="100" />}
+            {isConfirmLoading && <LoadingSpinner />}
           </Button>
         </Dialog.Footer>
       </Dialog.Content>
