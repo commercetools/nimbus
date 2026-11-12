@@ -60,7 +60,7 @@ export const FormActionBar = ({
           data-slot="delete"
         >
           {resolvedDeleteLabel}
-          {isDeleteLoading && <LoadingSpinner ml="100" size="2xs" />}
+          {isDeleteLoading && <LoadingSpinner ml="100" />}
         </Button>
       )}
       <Button
@@ -82,7 +82,7 @@ export const FormActionBar = ({
         data-slot="save"
       >
         {resolvedSaveLabel}
-        {isSaveLoading && <LoadingSpinner ml="100" size="2xs" />}
+        {isSaveLoading && <LoadingSpinner ml="100" />}
       </Button>
     </Group>
   );
