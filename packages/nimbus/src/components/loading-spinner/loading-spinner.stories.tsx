@@ -40,6 +40,10 @@ export const Base: Story = {
       await expect(spinner.tagName.toLowerCase()).toBe("svg");
     });
 
+    await step("Is drawn on the 24x24 icon grid", async () => {
+      await expect(spinner).toHaveAttribute("viewBox", "0 0 24 24");
+    });
+
     await step("Has ARIA role='progressbar'", async () => {
       await expect(spinner).toHaveAttribute("role", "progressbar");
     });
