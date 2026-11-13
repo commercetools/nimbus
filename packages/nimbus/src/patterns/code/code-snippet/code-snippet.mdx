@@ -1,0 +1,168 @@
+---
+id: Patterns-CodeSnippet
+title: Code snippet
+exportName: CodeSnippet
+description: A ready-made code block with a title, a language label, copy and download buttons, line options and an optional footer.
+documentState: InitialDraft
+lifecycleState: Beta
+order: 999
+menu:
+  - Patterns
+  - Code
+  - Code snippet
+tags:
+  - component
+  - pattern
+  - code
+  - snippet
+  - CodeBlock
+related-components:
+  - CodeBlock
+  - CodeSnippetGroup
+  - JsonSnippet
+  - CommandSnippet
+---
+
+## Overview
+
+CodeSnippet shows one piece of source code with syntax highlighting. You set
+the props, and the pattern builds the layout for you. It is made from the
+[CodeBlock](/components/data-display/codeblock) component.
+
+For layouts that this pattern does not cover, use
+[CodeBlock](/components/data-display/codeblock) and compose its parts yourself.
+
+### Resources
+
+- [CodeBlock guidelines](/components/data-display/codeblock) - the component
+  that CodeSnippet is built from
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-code-codesnippet--docs)
+
+## Anatomy
+
+- A header, shown when a `title` is set or the language label is shown. It
+  holds the title, the language label and the action buttons.
+- The highlighted code, with optional line numbers and line marks.
+- A copy button. A download button appears when you set `downloadFileName`.
+- A "Show more" button, shown when `maxLines` is set and the code is longer.
+- An optional footer below the code.
+
+If there is no header, the action buttons sit in the top corner of the code
+area.
+
+## Variables
+
+### Header
+
+The header shows the title and the language label. Set `showLanguage` to
+`false` to hide the language label.
+
+```jsx live
+const App = () => (
+  <CodeSnippet
+    title="greeting.js"
+    language="js"
+    code={`const greeting = (name) => \`Hello, \${name}!\`;`}
+  />
+)
+```
+
+### Without a header
+
+When there is no `title` and no language label, the header is not rendered. The
+copy button sits next to the code.
+
+```jsx live
+const App = () => (
+  <CodeSnippet
+    language="js"
+    showLanguage={false}
+    code={`const greeting = (name) => \`Hello, \${name}!\`;`}
+  />
+)
+```
+
+### Line options
+
+Show line numbers, start at a different number, and mark lines or words.
+
+```jsx live
+const App = () => (
+  <CodeSnippet
+    title="sum.js"
+    language="js"
+    showLineNumbers
+    startLineNumber={10}
+    highlightedLines={[11]}
+    code={`const sum = (a, b) => {\n  return a + b;\n};\nsum(1, 2);`}
+  />
+)
+```
+
+### Download button and footer
+
+Set `downloadFileName` to add a download button. Use `footer` for a note or a
+link below the code.
+
+```jsx live
+const App = () => (
+  <CodeSnippet
+    title="client.env"
+    language="bash"
+    downloadFileName="client.env"
+    code={`API_URL=https://example.com\nAPI_KEY=your-key`}
+    footer="Replace your-key with a key from your project settings."
+  />
+)
+```
+
+### Long code
+
+Set `maxLines` to show only the first lines. The user can expand the rest.
+
+```jsx live
+const App = () => (
+  <CodeSnippet
+    title="list.js"
+    language="js"
+    maxLines={3}
+    showLineNumbers
+    code={Array.from({ length: 10 }, (_, i) => `console.log(${i + 1});`).join("\n")}
+  />
+)
+```
+
+## Guidelines
+
+### When to use
+
+- To show one example of code in documentation, onboarding or help text.
+- When the user needs to copy the code or download it as a file.
+
+### When not to use
+
+- For a word or a short value inside a sentence, use the inline `Code`
+  component.
+- For the same example in several languages, use
+  [CodeSnippetGroup](/patterns/code/code-snippet-group).
+- For shell commands, use [CommandSnippet](/patterns/code/command-snippet).
+- For data that is a JSON value, use [JsonSnippet](/patterns/code/json-snippet).
+- For a custom layout, use [CodeBlock](/components/data-display/codeblock).
+
+### Do
+
+- Set a `title` when the code belongs to a file. A title also gives the snippet
+  an accessible name.
+- Set `maxLines` for long code, so the page stays short.
+
+### Don't
+
+- Don't use CodeSnippet for code that the user must edit. It is read-only.
+
+## Accessibility
+
+- A snippet is a `region` landmark only when it has a name. Set a `title` or an
+  `aria-label` to name it.
+- A snippet without a name is not a landmark. This means you can show many
+  unnamed snippets on one page without filling the landmark list.
+- The copy button announces "Copied" or "Copy failed" to screen readers.

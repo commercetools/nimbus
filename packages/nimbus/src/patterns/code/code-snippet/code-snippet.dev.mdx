@@ -1,0 +1,201 @@
+---
+title: CodeSnippet Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+## Comparison: pattern vs manual composition
+
+**With CodeSnippet:**
+
+```tsx
+<CodeSnippet
+  title="button.tsx"
+  code={source}
+  language="tsx"
+  showLineNumbers
+  downloadFileName="button.tsx"
+/>
+```
+
+**Manual composition (escape hatch):**
+
+```tsx
+<CodeBlock.Root code={source} language="tsx">
+  <CodeBlock.Header>
+    <CodeBlock.Title>button.tsx</CodeBlock.Title>
+    <CodeBlock.LanguageLabel />
+    <CodeBlock.Actions>
+      <CodeBlock.DownloadTrigger fileName="button.tsx" />
+      <CodeBlock.CopyTrigger />
+    </CodeBlock.Actions>
+  </CodeBlock.Header>
+  <CodeBlock.Content showLineNumbers />
+</CodeBlock.Root>
+```
+
+### When to use which
+
+**Use CodeSnippet when:**
+
+- You want a standard snippet with a title, actions and a footer
+- You want to set everything with props
+
+**Use [CodeBlock](/components/data-display/codeblock) when:**
+
+- You need a custom layout, for example actions in another place
+- You need parts that the pattern does not expose
+
+## Getting started
+
+### Import
+
+```tsx
+import { CodeSnippet, type CodeSnippetProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+Pass `code` and `language`. The header shows the language label and a copy
+button.
+
+```jsx live-dev
+const App = () => (
+  <CodeSnippet
+    language="js"
+    code={`const greeting = (name) => \`Hello, \${name}!\`;`}
+  />
+)
+```
+
+## Usage examples
+
+### Title
+
+A `title` is shown in the header. It also names the snippet as a region.
+
+```jsx live-dev
+const App = () => (
+  <CodeSnippet
+    title="greeting.js"
+    language="js"
+    code={`const greeting = (name) => \`Hello, \${name}!\`;`}
+  />
+)
+```
+
+### Without a header
+
+Without a `title` and with `showLanguage={false}`, no header is rendered. The
+copy button sits next to the code. Use `aria-label` if the snippet needs a
+name.
+
+```jsx live-dev
+const App = () => (
+  <CodeSnippet
+    aria-label="Greeting function"
+    language="js"
+    showLanguage={false}
+    code={`const greeting = (name) => \`Hello, \${name}!\`;`}
+  />
+)
+```
+
+### Line options
+
+`showLineNumbers`, `startLineNumber`, `highlightedLines`, `addedLines`,
+`removedLines` and `highlightedWords` work as in `CodeBlock.Content`.
+
+```jsx live-dev
+const App = () => (
+  <CodeSnippet
+    title="sum.js"
+    language="js"
+    showLineNumbers
+    highlightedLines={[2]}
+    addedLines={[3]}
+    removedLines={[4]}
+    highlightedWords={["sum"]}
+    code={`const sum = (a, b) => {\n  return a + b;\n};\nconsole.log(sum(1, 2));`}
+  />
+)
+```
+
+### Download button and footer
+
+```jsx live-dev
+const App = () => (
+  <CodeSnippet
+    title="client.env"
+    language="bash"
+    downloadFileName="client.env"
+    code={`API_URL=https://example.com`}
+    footer="Do not commit this file."
+  />
+)
+```
+
+### Long code
+
+`maxLines` shows the first lines and adds an expand button. Use
+`defaultExpanded` to start expanded.
+
+```jsx live-dev
+const App = () => (
+  <CodeSnippet
+    title="list.js"
+    language="js"
+    maxLines={3}
+    code={Array.from({ length: 10 }, (_, i) => `console.log(${i + 1});`).join("\n")}
+  />
+)
+```
+
+### Track copies
+
+`onCopy` is called once after each successful copy. Copy uses the Clipboard
+API and falls back to `document.execCommand("copy")` when it is not available.
+
+```jsx live-dev
+const App = () => {
+  const [count, setCount] = React.useState(0);
+  return (
+    <Stack gap="200">
+      <CodeSnippet
+        title="greeting.js"
+        language="js"
+        code="const x = 1;"
+        onCopy={() => setCount((value) => value + 1)}
+      />
+      <Text>Copied {count} times</Text>
+    </Stack>
+  );
+}
+```
+
+## Accessibility
+
+- A snippet is a `region` landmark only when it has a name: a `title` or an
+  `aria-label`. Unnamed snippets are not landmarks, so many snippets on one
+  page are fine.
+- The copy button has a localized label. After a copy, "Copied" or "Copy
+  failed" is announced in a live region.
+- The code area can be reached with the keyboard, so users can scroll long
+  lines.
+
+## API reference
+
+<PropsTable id="CodeSnippet" />
+
+## Testing your implementation
+
+These examples show how to test CodeSnippet in your application. Nimbus
+already tests the component itself.
+
+{{docs-tests: code-snippet.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-code-codesnippet--docs)
+- [CodeBlock Component](/components/data-display/codeblock) - for custom
+  layouts

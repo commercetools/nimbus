@@ -1,0 +1,78 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+CodeBlock follows WCAG 2.1 AA. People who use a keyboard or a screen reader can
+reach, read, scroll and copy the code, and can tell marked lines apart without
+color.
+
+```jsx live
+const App = () => (
+  <CodeBlock.Root
+    language="js"
+    code={`const total = price;\nconst total = price * quantity;\nreturn total;`}
+  >
+    <CodeBlock.Header>
+      <CodeBlock.Title>total.js</CodeBlock.Title>
+      <CodeBlock.LanguageLabel />
+      <CodeBlock.Actions>
+        <CodeBlock.DownloadTrigger fileName="total.js" />
+        <CodeBlock.CopyTrigger />
+      </CodeBlock.Actions>
+    </CodeBlock.Header>
+    <CodeBlock.Content showLineNumbers removedLines={[1]} addedLines={[2]} />
+  </CodeBlock.Root>
+)
+```
+
+### Accessibility standards
+
+- **Region (landmark):** A block is a `region` only when it has a name. The
+  name comes from `aria-label` on `CodeBlock.Root`, or from `CodeBlock.Title`.
+  If both are set, `aria-label` wins. A block without a name is a plain
+  section, so several unnamed blocks on one page do not create duplicate
+  landmarks. Use distinct names for blocks that people should find.
+- **Language label:** `CodeBlock.LanguageLabel` is hidden from assistive
+  technology. It is a visual hint only.
+- **Keyboard navigation:** Focus follows the DOM order. Triggers in the header,
+  such as Download and Copy, come first. The code area comes next. Triggers
+  after the code, such as `CodeBlock.ExpandTrigger`, come last.
+- **Scrollable code:** The code area (`pre`) has `tabIndex` 0. Keyboard users
+  can focus it and scroll long or wide code with the arrow keys (WCAG 2.1.1).
+  No other part of the block is a tab stop.
+- **Copy feedback:** The copy button has the name "Copy code". A polite live
+  region announces "Copied" after success and "Copy failed" after a failure.
+  The feedback does not rely on the icon alone.
+- **Marked lines without color:** Highlighted lines have a bar at the start
+  edge. Added and removed lines have `+` and `−` markers. Each group of marked
+  lines has visually hidden start and end text for screen readers, for example
+  "Added lines start" and "Added lines end" (WCAG 1.4.1).
+- **Text that is not code:** Line numbers, prompts and markers cannot be
+  selected and are never copied. Prompts and markers are hidden from
+  assistive technology.
+- **Expand button:** `CodeBlock.ExpandTrigger` sets `aria-expanded` and
+  `aria-controls`. Focus stays on the button after it is activated.
+- **Hit area:** Every trigger has a hit area of at least 44 × 44 pixels, also
+  in the `sm` size.
+- **Dark mode:** Colors come from design tokens and change with the color mode.
+  The DOM structure stays the same.
+- **Safe rendering:** Code is rendered as text, never as markup.
+- **Text direction:** The code area is always left-to-right (`dir="ltr"`), also
+  on right-to-left pages, because code is left-to-right text. The header,
+  actions and footer follow the page direction.
+
+### Keyboard navigation
+
+The table follows the order in which focus moves through a block that has
+header triggers, code and an expand trigger.
+
+| Key               | Action                                                                  |
+| ----------------- | ----------------------------------------------------------------------- |
+| `Tab`             | Moves focus to the next stop: header triggers, the code area, then triggers after the code |
+| `Shift` + `Tab`   | Moves focus to the previous stop                                        |
+| `Enter` / `Space` | Activates the focused trigger: Download, Copy or Show more / Show less  |
+| `Arrow keys`      | Scroll the code when the code area has focus                            |
+| `Page Up` / `Page Down`, `Home` / `End` | Scroll the code when the code area has focus      |
