@@ -100,9 +100,11 @@ const FIGMA_TO_CODE: Record<string, FigmaMapping | null> = {
   "Combobox Menu": { dir: "combobox" },
   "Combobox with menu open": { dir: "combobox" },
   "Select Menu": { dir: "select" },
-  Controls: { dir: "accordion" },
-  "Table cell": { dir: "data-table" },
-  Step: { dir: "steps" },
+  Accordion: { dir: "accordion", subComponent: "Root" },
+  "chat-message": { dir: "chat-message", subComponent: "Root" },
+  "Table cell": { dir: "data-table", subComponent: "Cell" },
+  Steps: { dir: "steps", subComponent: "Root" },
+  Step: { dir: "steps", subComponent: "Item" },
   "Toast ": { dir: "toast" }, // Figma component has trailing space in name
   Toast: { dir: "toast" },
 
@@ -111,6 +113,10 @@ const FIGMA_TO_CODE: Record<string, FigmaMapping | null> = {
 
   // --- Explicitly skipped ---
   "Note - CT 🚫": null,
+  // Placeholder content for Accordion.HeaderRightContent, not a component
+  Controls: null,
+  // The message bubble inside "chat-message", connected through ChatMessage.Root
+  "chat-message-body": null,
 };
 
 // Figma property type

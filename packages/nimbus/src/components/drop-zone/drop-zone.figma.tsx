@@ -1,12 +1,15 @@
 import figma from "@figma/code-connect/react";
 import { DropZone } from "./drop-zone";
 
-// TODO: update with real Figma node id — this is a placeholder until the
-// DropZone component is added to the NIMBUS design system Figma file.
+// NOTE: Skipped State "dropTarget" → no mapping in STATE_BOOLEAN_MAP
+// NOTE: Skipped State "focusWithin" → no mapping in STATE_BOOLEAN_MAP
 figma.connect(
   DropZone,
-  "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=0-0",
+  "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=12940-63867",
   {
-    example: () => <DropZone />,
+    props: {
+      isDisabled: figma.enum("state", { disabled: true }),
+    },
+    example: (props) => <DropZone isDisabled={props.isDisabled} />,
   }
 );

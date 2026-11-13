@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { format, resolveConfig } from "prettier";
 import { describe, it, expect } from "vitest";
 import {
   cleanPropName,
@@ -8,6 +11,7 @@ import {
   isValidCodeProp,
   classifyProps,
   generateExampleJsx,
+  generateComponentFile,
   type CodeConnectEntry,
 } from "./generate-code-connect";
 
@@ -475,6 +479,38 @@ describe("classifyProps", () => {
       expect(props.some((p) => p.codePropName === "width")).toBe(true);
     });
   });
+
+  describe("figma.children for container sub-components", () => {
+    const compoundMetadata = {
+      ...makeEntry().codeMetadata,
+      isCompound: true,
+      subComponents: ["Root", "Options"],
+    };
+
+    it("adds figma.children to a compound Root", () => {
+      const entry = makeEntry({
+        dirName: "dialog",
+        subComponent: "Root",
+        codeMetadata: compoundMetadata,
+      });
+
+      const { props } = classifyProps(entry);
+      expect(props.some((p) => p.code === 'figma.children("*")')).toBe(true);
+    });
+
+    it("omits figma.children when the override sets omitChildren", () => {
+      // select Root override sets omitChildren: its nested instances are
+      // input parts, not options
+      const entry = makeEntry({
+        dirName: "select",
+        subComponent: "Root",
+        codeMetadata: compoundMetadata,
+      });
+
+      const { props } = classifyProps(entry);
+      expect(props.some((p) => p.codePropName === "children")).toBe(false);
+    });
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -576,4 +612,99 @@ describe("generateExampleJsx", () => {
     );
     expect(jsx).toContain("{/* label placeholder */}");
   });
+});
+
+// ---------------------------------------------------------------------------
+// generateComponentFile — fully manual overrides
+// ---------------------------------------------------------------------------
+
+const FIGMA_FILE_URL =
+  "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system";
+
+function componentFilePath(dirName: string): string {
+  return fileURLToPath(
+    new URL(
+      `../../../packages/nimbus/src/components/${dirName}/${dirName}.figma.tsx`,
+      import.meta.url
+    )
+  );
+}
+
+function makeComponentEntry(
+  dirName: string,
+  exportName: string,
+  subComponent: string,
+  nodeId: string
+): CodeConnectEntry {
+  const base = makeEntry();
+  return makeEntry({
+    component: exportName,
+    dirName,
+    subComponent,
+    figmaName: subComponent,
+    figmaUrl: `${FIGMA_FILE_URL}?node-id=${nodeId}`,
+    figmaNodeId: nodeId.replace("-", ":"),
+    codeMetadata: {
+      ...base.codeMetadata,
+      exportName,
+      isCompound: true,
+      files: {
+        ...base.codeMetadata.files,
+        figmaOutput: componentFilePath(dirName),
+      },
+    },
+  });
+}
+
+describe("generateComponentFile — fully manual overrides", () => {
+  it("imports Card and writes the Card.Body connect when only Card Root is collected", () => {
+    // The hidden ".Card content" set is never collected, so Root is the only
+    // card entry a regeneration sees.
+    const { content, connectCount } = generateComponentFile("card", [
+      makeComponentEntry("card", "Card", "Root", "266-547"),
+    ]);
+
+    expect(connectCount).toBe(0);
+    expect(content.match(/import \{ Card \} from "\.\/card";/g)).toHaveLength(
+      1
+    );
+    expect(content).toContain(`"${FIGMA_FILE_URL}?node-id=266-482"`);
+    expect(content).toMatch(/figma\.connect\(\s*Card\.Body,/);
+  });
+
+  // Regeneration must reproduce the committed file, so that hand edits to a
+  // .figma.tsx file and its override in code-connect-constants.ts stay in sync.
+  const committedFiles: Array<[string, string, Array<[string, string]>]> = [
+    ["accordion", "Accordion", [["Root", "2609-4122"]]],
+    ["card", "Card", [["Root", "266-547"]]],
+    ["chat-message", "ChatMessage", [["Root", "12563-79221"]]],
+    ["data-table", "DataTable", [["Cell", "6041-28672"]]],
+    [
+      "steps",
+      "Steps",
+      [
+        ["Root", "7381-65271"],
+        ["Item", "7381-65256"],
+      ],
+    ],
+  ];
+
+  it.each(committedFiles)(
+    "regenerates the committed %s.figma.tsx",
+    async (dirName, exportName, parts) => {
+      const entries = parts.map(([subComponent, nodeId]) =>
+        makeComponentEntry(dirName, exportName, subComponent, nodeId)
+      );
+      const { content } = generateComponentFile(dirName, entries);
+
+      const filePath = componentFilePath(dirName);
+      const prettierOptions = (await resolveConfig(filePath)) ?? {};
+      const formatted = await format(content, {
+        ...prettierOptions,
+        filepath: filePath,
+      });
+
+      expect(formatted).toBe(readFileSync(filePath, "utf-8"));
+    }
+  );
 });
