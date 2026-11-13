@@ -1,7 +1,9 @@
 ---
 id: TokensBlurs
 title: Blurs
-description: The list of available blur tokens
+illustration: token-blurs
+description:
+  Blur tokens soften an element, or what is behind it, from 4px to 64px.
 order: 999
 menu:
   - Home
@@ -10,11 +12,85 @@ menu:
   - Blurs
 tags:
   - blur
+  - backdrop
+  - backdrop-filter
+  - filter
+  - frosted glass
+  - backdropBlur
 icon: BlurOn
 ---
 
-# Blurs
+Blur tokens set how strong a blur is. There are eight, from `100` (4px) to
+`1600` (64px). As with the [spacing](/home/design-tokens/spacing) tokens, a
+token is its pixel value times 25. A blur can soften the element itself, or what
+is behind the element, such as the page behind a panel.
 
-The list of available blur tokens:
+## Blur scale
 
-<GenericTokenTableDemo category="blurs" demoProperty="blur" />
+In each sample, a panel covers the right half and blurs what is behind it with
+`backdropFilter`. The left half stays sharp, for comparison. `filter` blurs an
+element by the same amount.
+
+<BlursScale />
+
+## Choose a blur
+
+To match the components next to your element, use the blur that Nimbus uses for
+elements of the same kind.
+
+| Your element                                               | Use         | Nimbus components with this blur  |
+| ---------------------------------------------------------- | ----------- | --------------------------------- |
+| A bar or a panel over content, such as a scroll bar        | `200` (8px) | The `glass` variant of ScrollArea |
+| The layer that covers the page behind a dialog or a drawer | `100` (4px) | Dialog, Drawer                    |
+
+The tokens `300` to `1600` are not used by Nimbus components.
+
+A backdrop blur is only visible when the panel lets the content behind it show
+through. Give the panel a transparent background, or a color with an opacity,
+such as `bg="bg/60"`.
+
+## Use blurs in code
+
+Write the CSS `blur()` function, with the token in curly braces, such as
+`blur({blurs.200})`. This is how the recipes of Nimbus components use the blur
+tokens.
+
+| You blur                   | Prop             | CSS property                                                                          |
+| -------------------------- | ---------------- | ------------------------------------------------------------------------------------- |
+| The element itself         | `filter`         | [`filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/filter)                   |
+| What is behind the element | `backdropFilter` | [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter) |
+
+```tsx
+// Blur the element
+<Box filter="blur({blurs.200})" />
+
+// Blur what is behind a panel
+<Box backdropFilter="blur({blurs.200})" bg="bg/60" />
+
+// In a recipe
+base: {
+  backdropFilter: "blur({blurs.200})",
+}
+```
+
+> [!WARNING]\
+> The `backdropBlur` prop does not work in Nimbus at the moment
+> ([issue #2143](https://github.com/commercetools/nimbus/issues/2143)). Write
+> `backdropFilter="blur({blurs.200})"` instead.
+
+For the other filter props, see
+[Style props: Filters](/home/style-props/filters).
+
+### Editor support
+
+With the design token TypeScript plugin, autocomplete shows the value next to
+the token. See
+[Installation](/home/getting-started/installation#design-token-autocomplete-optional)
+for how to set it up.
+
+## Values that Nimbus components use
+
+In the recipes of Nimbus components, `100` and `200` are used. The `glass`
+variant of ScrollArea blurs what is behind the scroll bar with `200` (8px), on a
+background of `bg/60`. Dialog and Drawer blur the page behind them with `100`
+(4px).

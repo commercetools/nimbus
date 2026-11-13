@@ -6,7 +6,9 @@ import * as nimbus from "@commercetools/nimbus";
  */
 export interface NimbusExportItem {
   name: string;
-  type: "component" | "hook" | "util";
+  type: "component" | "hook" | "util" | "unknown";
+  /** Whether the export is covered by generated type documentation */
+  hasTypes?: boolean;
 }
 
 /**
@@ -16,6 +18,7 @@ const typePriority: Record<NimbusExportItem["type"], number> = {
   component: 1,
   hook: 2,
   util: 3,
+  unknown: 4,
 };
 
 /**

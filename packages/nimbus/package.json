@@ -160,6 +160,8 @@
     "test": "vitest --run",
     "typecheck": "tsc --noEmit -p tsconfig.prod.json",
     "typecheck:dev": "tsc --noEmit -p tsconfig.json",
+    "illustrations:generate": "tsx scripts/illustrations/generate.ts",
+    "illustrations:sheet": "tsx scripts/illustrations/contact-sheet.ts",
     "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
     "postinstall": "test -f ./dist/theme.es.js && chakra typegen ./dist/theme.es.js || true",
     "bundles:analyze": "ANALYZE_BUNDLE=true vite build",

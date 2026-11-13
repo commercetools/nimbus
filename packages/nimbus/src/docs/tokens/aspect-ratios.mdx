@@ -1,8 +1,11 @@
 ---
 id: TokensAspectRatios
 title: Aspect Ratios
-description: The list of available aspect ratio tokens
-order: 999
+illustration: token-aspect-ratios
+description:
+  Aspect ratio tokens keep the width and the height of an element in a fixed
+  relation, for images, videos and their placeholders.
+order: 8
 menu:
   - Home
   - Design Tokens
@@ -10,11 +13,53 @@ menu:
 tags:
   - aspect ratio
   - ratios
+  - image
+  - video
+  - square
 icon: ImageAspectRatio
 ---
+Set one size of an element, such as the width, and the browser computes the
+other size from the ratio. This is useful for images, videos and the
+placeholders that stand in for them while they load.
 
-# Aspect Ratios
+## Aspect ratio tokens
 
-The list of available aspect ratio tokens:
+The ratio is the width to the height: `16 : 9` is 16 parts wide and 9 parts
+high. Each sample is the same photo, 64px high and cut to the ratio of the
+token.
 
-<GenericTokenTableDemo category="aspectRatios" demoProperty="aspectRatio" />
+<AspectRatiosScale />
+
+## Use aspect ratios in code
+
+Aspect ratio tokens work on the `aspectRatio` style prop. The ratio only has an
+effect when the width or the height of the element is not set
+([MDN: aspect-ratio](https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio)).
+Set one of them, and leave the other one to the ratio.
+
+```tsx
+// A box that keeps 16 : 9 at any width
+<Box width="full" aspectRatio="wide" />
+
+// An image that fills a square and cuts off what does not fit
+<Image src={src} alt={alt} width="full" aspectRatio="square" fit="cover" />
+```
+
+The `fit` prop of [Image](/components/media/image) sets the CSS `object-fit`
+property. With `cover`, the image fills the whole box and keeps its own ratio,
+so the parts that do not fit are cut off
+([MDN: object-fit](https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit)).
+
+For the full list of props, see [Style props: Layout](/home/style-props/layout).
+
+### Editor support
+
+With the design token TypeScript plugin, autocomplete shows the value next to
+the token. See
+[Installation](/home/getting-started/installation#design-token-autocomplete-optional)
+for how to set it up.
+
+## Values that Nimbus components use
+
+The recipes of Nimbus components do not use the aspect ratio tokens. The circle
+shape of Skeleton sets `aspectRatio: "1 / 1"`, the same ratio as `square`.

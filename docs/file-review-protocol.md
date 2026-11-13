@@ -14,6 +14,8 @@ Determine the file type by extension and location:
 - `*.slots.tsx` → Slot components
 - `*.types.ts` → Type definitions
 - `*.i18n.ts` → Internationalization messages
+- `*.illustration.ts` → Component illustration source (guideline:
+  `file-type-guidelines/illustrations.md`)
 - `{component-name}.tsx` → Main component file
 - `index.ts` → Barrel exports (public API)
 - `*/utils/*.ts` → Utility functions

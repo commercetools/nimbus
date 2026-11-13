@@ -6,6 +6,8 @@
 import type { MdxDocument } from "../types/mdx.js";
 import type { ValidationError } from "../types/config.js";
 import { flog } from "../utils/logger.js";
+import { findUnknownRelatedIds } from "../generators/resolve-related.js";
+import { findUnknownInternalLinks } from "./find-unknown-links.js";
 
 /**
  * Validate all documentation content
@@ -68,24 +70,38 @@ export function validateContent(
         severity: "error",
       });
     }
+  }
 
-    // Check for broken internal links (basic check)
-    const internalLinkPattern = /\[.*?\]\(\/[^)]+\)/g;
-    const matches = doc.mdx.match(internalLinkPattern);
-    if (matches) {
-      for (const match of matches) {
-        // Extract path
-        const path = match.match(/\((\/[^)]+)\)/)?.[1];
-        if (
-          path &&
-          !path.startsWith("/images/") &&
-          !path.startsWith("/public/")
-        ) {
-          // This is an internal doc link - could validate it exists
-          // For now, just log it as info
-        }
-      }
-    }
+  // Validate internal links: each must lead to a document or one of its tabs
+  const unknownLinks = findUnknownInternalLinks(
+    [...docs].map(([file, doc]) => ({
+      file,
+      route: doc.meta.route,
+      viewKeys: Object.keys(doc.views ?? {}),
+      // The text of the page and of all its tabs
+      mdx: [doc.mdx, ...Object.values(doc.views ?? {}).map((view) => view.mdx)]
+        .filter(Boolean)
+        .join("\n"),
+    }))
+  );
+  for (const { file, path } of unknownLinks) {
+    errors.push({
+      file,
+      message: `Link to an unknown page: "${path}" is not the route of any document`,
+      severity: "warning",
+    });
+  }
+
+  // Validate related ids: each must be the id of an existing document
+  const unknownRelated = findUnknownRelatedIds(
+    [...docs].map(([file, doc]) => ({ file, meta: doc.meta }))
+  );
+  for (const { file, id } of unknownRelated) {
+    errors.push({
+      file,
+      message: `Unknown id in related: "${id}" is not the id of any document`,
+      severity: "error",
+    });
   }
 
   // Report validation results

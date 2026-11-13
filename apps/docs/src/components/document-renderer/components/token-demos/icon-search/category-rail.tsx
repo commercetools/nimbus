@@ -1,106 +1,116 @@
-import { Box, Stack, Text } from "@commercetools/nimbus";
-import { ListBox, ListBoxItem, type Selection } from "react-aria-components";
-import { useMemo } from "react";
+import { Box, ListBox, Text } from "@commercetools/nimbus";
+import type { Selection } from "react-aria-components";
+import { useId, useMemo } from "react";
 import { ALL_CATEGORIES, slugifyCategory, titleCase } from "./use-icon-data";
 import { useIconRouteState } from "./use-icon-route-state";
 
 type CategoryOption = { id: string; label: string; count: number };
 
 /**
- * The category filter rail shown in the Splitter's aside. It is always present
- * across the `/icons` space; selecting a category sets the `?category=` filter
- * (via `useIconRouteState`) rather than mutating local state. The active
- * category comes from the URL — `ALL_CATEGORIES` ("all") on the `/icons` root,
- * which highlights the "All" option.
+ * The category list of the Icons page. The page has no site menu, so this
+ * list takes the place of the menu: same column, same group title style.
  *
- * Rendered as a single-select React Aria `ListBox` so the rail is one Tab stop:
- * Tab moves focus in/out, Up/Down (+ Home/End + typeahead) move between
- * categories, and Enter/Space selects. The selected option is the active
- * category; selecting one updates the URL.
+ * Each count is the number of results in that category for the current
+ * search and keyword, so a reader sees where the matches are. A category
+ * without results cannot be selected, except the selected one, so the list
+ * never leads to an empty grid.
+ *
+ * A single-select `ListBox`, so the list is one Tab stop: arrow keys move
+ * between categories and Enter or Space selects. The selection is the
+ * `?category=` URL parameter.
  */
 export const CategoryRail = ({
   categories,
-  totalCount,
+  counts,
+  allCount,
+  onSelect,
 }: {
+  /** Every category, in a fixed order (most icons first). */
   categories: { name: string; count: number }[];
-  totalCount: number;
+  /** Results per category slug for the current search and keyword. */
+  counts: Map<string, number>;
+  /** Results in all categories for the current search and keyword. */
+  allCount: number;
+  /** Called after a category is selected (closes the drawer on narrow screens). */
+  onSelect?: () => void;
 }) => {
   const { category, goToCategory } = useIconRouteState();
+  // The list is rendered twice (left column and drawer), so the id is unique.
+  const titleId = useId();
 
   const items = useMemo<CategoryOption[]>(
     () => [
-      { id: ALL_CATEGORIES, label: "All", count: totalCount },
-      ...categories.map(({ name, count }) => ({
-        id: slugifyCategory(name),
-        label: titleCase(name),
-        count,
-      })),
+      { id: ALL_CATEGORIES, label: "All icons", count: allCount },
+      ...categories.map(({ name }) => {
+        const id = slugifyCategory(name);
+        return { id, label: titleCase(name), count: counts.get(id) ?? 0 };
+      }),
     ],
-    [categories, totalCount]
+    [categories, counts, allCount]
+  );
+
+  const disabledKeys = useMemo(
+    () =>
+      items
+        .filter((item) => item.count === 0 && item.id !== category)
+        .map((item) => item.id),
+    [items, category]
   );
 
   const handleSelectionChange = (keys: Selection) => {
-    // Single selection → a Set with one key. `disallowEmptySelection` keeps the
-    // URL in sync (you can't deselect into a no-category state via the rail).
     const key = keys === "all" ? undefined : [...keys][0];
     if (key == null) return;
-    // `goToCategory` stays on the grid path (dropping any open dialog) and
-    // preserves the other filters; selecting "all" clears the `?category=` param.
     goToCategory(String(key));
+    onSelect?.();
   };
 
   return (
-    <Stack gap="200" p="400">
-      <Text textStyle="sm" fontWeight="600" color="neutral.11">
+    <Box ml="100">
+      <Text
+        id={titleId}
+        display="block"
+        color="neutral.12"
+        fontWeight="700"
+        px="400"
+        py="100"
+        mb="300"
+      >
         Categories
       </Text>
-      <ListBox
-        aria-label="Filter icons by category"
-        selectionMode="single"
-        disallowEmptySelection
-        selectedKeys={[category]}
-        onSelectionChange={handleSelectionChange}
-        items={items}
-      >
-        {(item) => <CategoryItem item={item} />}
-      </ListBox>
-    </Stack>
+      <Box px="200">
+        <ListBox.Root
+          aria-labelledby={titleId}
+          variant="plain"
+          size="sm"
+          selectionMode="single"
+          disallowEmptySelection
+          selectedKeys={[category]}
+          disabledKeys={disabledKeys}
+          onSelectionChange={handleSelectionChange}
+          items={items}
+        >
+          {(item) => (
+            <ListBox.Item
+              id={item.id}
+              textValue={item.label}
+              trailing={
+                // A plain span: a `Text` here would take React Aria's label
+                // slot, and the count would become the name of the option.
+                <Box
+                  as="span"
+                  textStyle="xs"
+                  color="neutral.10"
+                  css={{ fontVariantNumeric: "tabular-nums" }}
+                >
+                  {item.count}
+                </Box>
+              }
+            >
+              {item.label}
+            </ListBox.Item>
+          )}
+        </ListBox.Root>
+      </Box>
+    </Box>
   );
 };
-
-/** A single selectable row in the category filter rail. */
-const CategoryItem = ({ item }: { item: CategoryOption }) => (
-  <Box
-    asChild
-    display="flex"
-    width="100%"
-    justifyContent="space-between"
-    alignItems="center"
-    gap="200"
-    px="300"
-    py="200"
-    borderRadius="200"
-    cursor="pointer"
-    textAlign="left"
-    outline="none"
-    color="neutral.11"
-    css={{
-      "&[data-hovered]:not([data-selected])": { backgroundColor: "neutral.2" },
-      "&[data-selected]": {
-        backgroundColor: "primary.3",
-        color: "primary.11",
-        fontWeight: "600",
-      },
-      "&[data-focus-visible]": { layerStyle: "focusRing" },
-    }}
-  >
-    <ListBoxItem id={item.id} textValue={item.label}>
-      <Text textStyle="sm" truncate>
-        {item.label}
-      </Text>
-      <Text textStyle="xs" color="neutral.10">
-        {item.count}
-      </Text>
-    </ListBoxItem>
-  </Box>
-);

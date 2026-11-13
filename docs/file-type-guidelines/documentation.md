@@ -27,7 +27,8 @@ Required documentation for designers that:
 - Documents design variants and visual options (using `<PropsTable>` component)
 - Provides accessibility information from a user perspective (keyboard
   navigation, screen reader support, WCAG compliance)
-- Links to design resources (Figma, ARIA patterns when applicable)
+- Links to design resources: Figma through the `figmaLink` front matter field,
+  ARIA patterns (when applicable) in a Resources section
 
 **Note**: Internal utility components or non-exported components don't require
 MDX documentation.
@@ -60,19 +61,25 @@ frontmatter fields:
 ```yaml
 ---
 id: Components-ComponentName # Required: Unique identifier (Components-{ComponentName})
-title: Component Name # Required: Display name
+title: ComponentName # Required: Same as exportName
 exportName: ComponentName # Required: PascalCased name as exported from @commercetools/nimbus
 description: Brief description of the component # Required: One-line component description
 order: 999 # Required: Menu display order (use 999 as default)
 menu: # Required: Menu hierarchy array
   - Components
   - Category Name # Data Display, Navigation, Inputs, Feedback, etc.
-  - Component Name
+  - ComponentName # Same as exportName
 tags: # Required: Search tags array (always include 'component')
   - component
   - relevant-keywords
 ---
 ```
+
+`title` and the last `menu` item are the component's `exportName`, for example
+`IconButton`. The title appears on cards and in search, the menu item in the
+sidebar, the breadcrumb and the browser tab. The page URL is generated from
+`menu`, and the words of a PascalCase label are separated by dashes, so
+`IconButton` gives `/components/buttons/icon-button`.
 
 ### Optional Frontmatter Fields
 
@@ -87,19 +94,75 @@ lifecycleState: Experimental|Alpha|Beta|Stable|Deprecated|EOL
 # @experimental, @alpha or @beta JSDoc tag on the main export, and their
 # changesets mark the state. See main-component.md "Lifecycle State Tag".
 
-# Design resources (when available)
+# Design and code resources (when available)
 figmaLink: >-
   https://www.figma.com/design/...
+storybookLink: https://nimbus-storybook.vercel.app/?path=/story/components-buttons-button
+githubLink: https://github.com/commercetools/nimbus/tree/main/packages/nimbus/src/components/button
 ---
 ```
+
+The page header shows one link button for each of `figmaLink`, `storybookLink`
+and `githubLink` that is set, in this order: Figma, Storybook, GitHub.
+
+- `githubLink` points to the component folder in the `commercetools/nimbus`
+  repository. Every component page sets it.
+- `storybookLink` is the Storybook URL with `?path=/story/<id>`. The `<id>` is
+  the `title` of the component stories in lower case, with every run of other
+  characters replaced by one `-`: `Components/Buttons/Button` becomes
+  `components-buttons-button`. `?path=/docs/<id>--docs` opens the docs page of
+  the same component and also works. A component without stories sets no
+  `storybookLink`.
+
+`related` lists the `id` of other documents, for example the other parts of a
+component family. The page shows them as cards in a "Related content" carousel
+at the end of the page.
+
+```yaml
+---
+related:
+  - Components-SkeletonText
+  - Components-SkeletonCircle
+---
+```
+
+- Each value is the `id` of an existing document. The docs build fails for an id
+  that does not exist.
+- Links are two-way. If `Skeleton` lists `SkeletonText`, the `SkeletonText` page
+  also shows `Skeleton`, so one side is enough. List both sides when you want to
+  control the order on each page.
+- The list order is kept. Documents that only link back are added after it,
+  sorted by title.
+- Keep the list short: only components a reader would pick instead of, or
+  together with, this one.
+
+`illustration` names the illustration of a page that is not a component or
+pattern, for example a section page such as Design Tokens. The docs show it
+where they show the illustration of a component: in the page header, on overview
+cards, in search results and on the start page.
+
+```yaml
+---
+illustration: design-tokens
+---
+```
+
+- The value is the file name of an illustration source without
+  `.illustration.ts`. Sources for pages that are not a component or pattern are
+  in `packages/nimbus/src/docs/illustrations/`. The name of a component or
+  pattern illustration, such as `button`, also works.
+- The docs build fails for a name that has no source.
+- Component and pattern pages leave the field out. They show the illustration
+  next to their `.mdx` file (see [Illustration Guidelines](./illustrations.md)).
 
 ### Standard Content Structure
 
 Based on analysis of existing component MDX files, follow this structure:
 
-The component title and description are rendered automatically from the
-frontmatter `title` and `description` fields. Do not duplicate them in the body
-content.
+The page header renders the title, description, lifecycle badge, resource links
+and the component illustration from the front matter. The body starts with the
+first section. A first `## Overview` section is hidden visually because the
+Overview tab already names it; it stays in the page for screen readers.
 
 ```markdown
 ## Overview
@@ -115,9 +178,10 @@ cases.
 
 ### Resources
 
-Deep dive into implementation details and access the Nimbus design library.
+Add this section only for links that are not front matter fields. The Figma,
+Storybook and GitHub links are front matter fields.
 
-[Figma library](figmaLink) [React ARIA Docs](reactAriaLink) # If applicable
+[React ARIA Docs](reactAriaLink) # If applicable
 [ARIA Pattern](ariaPatternLink) # If applicable
 
 ## Variables (or Examples)
@@ -231,8 +295,14 @@ render live, interactive React components in the documentation site.
 
 **Key points**:
 
-- All Nimbus components (Button, Stack, Icons, etc.) are available globally - no
-  imports needed
+- All Nimbus components and `Icons` are available globally, so import lines are
+  optional
+- Import lines work as in an app, also over several lines, with comments and
+  with `as` aliases. The editor resolves them from the modules in `liveModules`
+  (`apps/docs/src/components/document-renderer/components/live-code-editor/live-code-editor.tsx`),
+  such as `@commercetools/nimbus`, `@commercetools/nimbus-icons` and `react`. An
+  import from any other module, or of a name that the module does not have,
+  shows an error, so code that needs a router is a plain `tsx` block
 - Each jsx live block should define an `App` component
 - The code executes in the browser and renders as a live component
 - Use regular markdown code blocks (with language tags like `jsx` or `tsx`) only
@@ -240,6 +310,42 @@ render live, interactive React components in the documentation site.
 
 **Note**: MDX files are for documentation. Use `.stories.tsx` files for
 Storybook content.
+
+### Code Tabs
+
+Use code tabs when the reader needs one of several alternatives of the same code
+and one alternative at a time is enough. The main case is an install command for
+each package manager. Add `tab="Label"` to the opening line of each code block,
+and write the blocks directly one after the other:
+
+````markdown
+```bash tab="pnpm"
+pnpm add @commercetools/nimbus
+```
+
+```bash tab="npm"
+npm install @commercetools/nimbus
+```
+
+```bash tab="yarn"
+yarn add @commercetools/nimbus
+```
+````
+
+**Key points**:
+
+- Blocks with a `tab="Label"` that follow each other, with only blank lines
+  between them, form one group. Text, a heading or any other element ends the
+  group
+- The label is the tab text. The docs app does not know what a label means, so
+  the author writes every alternative in full
+- The docs app saves the tab that the reader chose and shows the tab with the
+  same label in every group on every page. A group without that label shows its
+  first tab
+- A single block with a `tab` label is shown as a normal code block
+- The MCP server returns every block, each with its label as a `[Label]` line
+  before the code
+- Write the labels in the same order in every group, for example pnpm, npm, yarn
 
 ### Code Example Patterns
 
@@ -438,6 +544,8 @@ tags:
   - interactive
 figmaLink: >-
   https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m
+storybookLink: https://nimbus-storybook.vercel.app/?path=/story/components-dialog
+githubLink: https://github.com/commercetools/nimbus/tree/main/packages/nimbus/src/components/dialog
 ---
 ```
 
@@ -567,7 +675,8 @@ Supported in the Nimbus documentation site:
 
 - [ ] **Interactive examples using `jsx live` blocks only**
 - [ ] **NO Storybook-specific imports**
-- [ ] Resources section with relevant external links
+- [ ] Resources section (only when needed) with external links that are not
+      front matter fields
 - [ ] Variables/Examples section showing component variations
 - [ ] **Sizes demonstrated in a single code block** (not separate blocks per
       size)

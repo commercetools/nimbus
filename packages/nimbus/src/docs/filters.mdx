@@ -1,6 +1,7 @@
 ---
 id: Style Props-Filters
 title: Filters
+illustration: token-blurs
 description: JSX style props for applying various filters to elements.
 order: 999
 menu:
@@ -10,10 +11,17 @@ menu:
 tags:
   - document
 ---
-
-# Filters
-
 JSX style props for applying various filters to elements.
+
+Blur values are blur tokens, such as `100` (4px). For all tokens, see
+[Blurs](/home/design-tokens/other/blurs).
+
+> [!WARNING]\
+> At the moment, most props on this page have no effect in Nimbus
+> ([issue #2143](https://github.com/commercetools/nimbus/issues/2143)). Only
+> `filter`, `backdropFilter` and `blur` work. For the other effects, write the
+> CSS function in `filter` or `backdropFilter`, such as
+> `backdropFilter="blur({blurs.200})"`.
 
 ## Filter
 
@@ -39,7 +47,7 @@ this prop is to set the `filter` prop to `auto`.
 <Box filter="auto" blur="5px" />
 
 // token value
-<Box filter="auto" blur="sm" />
+<Box filter="auto" blur="100" />
 ```
 
 | Prop   | CSS Property | Token Category |
@@ -162,7 +170,7 @@ element. The requirement for this prop is to set the `backdropFilter` prop to
 <Box backdropFilter="auto" backdropBlur="5px" />
 
 // token value
-<Box backdropFilter="auto" backdropBlur="sm" />
+<Box backdropFilter="auto" backdropBlur="100" />
 ```
 
 | Prop           | CSS Property      | Token Category |

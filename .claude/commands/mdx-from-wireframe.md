@@ -74,18 +74,23 @@ Before writing examples, check the actual component implementation:
 ```yaml
 ---
 id: Components-ComponentName
-title: Component Name
+title: ComponentName # Same as exportName
+exportName: ComponentName
 description: Brief one-line description
 order: 999
 menu:
   - Components
   - Category Name # Data Display, Navigation, Inputs, Feedback, etc.
-  - Component Name
+  - ComponentName # Same as exportName
 tags:
   - component
   - relevant-keywords
 figmaLink: >-
   https://www.figma.com/design/...
+storybookLink: https://nimbus-storybook.vercel.app/?path=/story/components-category-componentname # Link button in the page header
+githubLink: https://github.com/commercetools/nimbus/tree/main/packages/nimbus/src/components/component-name # Link button in the page header
+related: # Optional: ids of related documents, shown as cards at the end of the Overview tab (links are two-way)
+  - Components-RelatedComponentName
 ---
 ```
 
@@ -104,9 +109,7 @@ Detailed explanation of purpose and behavior.
 
 ### Resources
 
-Deep dive into implementation details and access the Nimbus design library.
-
-[Figma library](figmaLink) [React Aria Docs](reactAriaLink) # If applicable
+[React Aria Docs](reactAriaLink) # If applicable
 
 ## Variables
 

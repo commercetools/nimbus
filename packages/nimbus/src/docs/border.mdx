@@ -1,6 +1,7 @@
 ---
 id: Style Props-Border
 title: Border
+illustration: token-borders
 description: JSX style props for styling border and border radius.
 order: 999
 menu:
@@ -11,9 +12,13 @@ tags:
   - document
 ---
 
-# Border
-
 JSX style props for styling border and border radius.
+
+Radius values are radius tokens, such as `200` (8px). For all tokens, see
+[Radii](/home/design-tokens/radii). Color values are color tokens, such as
+`neutral.7`; see [Colors](/home/design-tokens/colors). The `border` prop also
+takes border tokens, such as `solid-25` (1px solid); see
+[Borders](/home/design-tokens/borders).
 
 ## Border Radius
 
@@ -38,19 +43,19 @@ Use the `rounded{Left,Right,Top,Bottom}` or
 side of an element.
 
 ```jsx
-<Box borderTopRadius="md" />
-<Box roundedTop="md" /> // shorthand
+<Box borderTopRadius="200" />
+<Box roundedTop="200" /> // shorthand
 
-<Box borderLeftRadius="md" />
-<Box roundedLeft="md" /> // shorthand
+<Box borderLeftRadius="200" />
+<Box roundedLeft="200" /> // shorthand
 ```
 
 Use the logical equivalent to make the border radius adapt based on the text
 direction.
 
 ```jsx
-<Box roundedStart="md" />
-<Box roundedEnd="md" />
+<Box roundedStart="200" />
+<Box roundedEnd="200" />
 ```
 
 | Prop                                  | CSS Property                                           | Token Category |
@@ -68,23 +73,23 @@ Use the `border{Top,Bottom}{Left,Right}Radius` properties, or the shorthand
 equivalent to round a specific corner.
 
 ```jsx
-<Box borderTopLeftRadius="md" />
-<Box roundedTopLeft="md" /> // shorthand
+<Box borderTopLeftRadius="200" />
+<Box roundedTopLeft="200" /> // shorthand
 ```
 
 Use the logical properties to adapt based on the text direction.
 
 ```jsx
-<Box borderStartStartRadius="md" />
-<Box roundedStartStart="md" /> // shorthand
+<Box borderStartStartRadius="200" />
+<Box roundedStartStart="200" /> // shorthand
 ```
 
-| Prop                                     | CSS Property                 | Token Category |
-| ---------------------------------------- | ---------------------------- | -------------- |
-| `roundedTopLeft`,`borderTopLeftRadius`   | `border-top-left-radius`     | `radii`        |
-| `roundedTopRight`,`borderTopRight`       | `border-top-right-radius`    | `radii`        |
-| `roundedBottomRight`,`borderBottomRight` | `border-bottom-right-radius` | `radii`        |
-| `roundedBottomLeft`,`borderBottomLeft`   | `border-bottom-left-radius`  | `radii`        |
+| Prop                                           | CSS Property                 | Token Category |
+| ---------------------------------------------- | ---------------------------- | -------------- |
+| `roundedTopLeft`,`borderTopLeftRadius`         | `border-top-left-radius`     | `radii`        |
+| `roundedTopRight`,`borderTopRightRadius`       | `border-top-right-radius`    | `radii`        |
+| `roundedBottomRight`,`borderBottomRightRadius` | `border-bottom-right-radius` | `radii`        |
+| `roundedBottomLeft`,`borderBottomLeftRadius`   | `border-bottom-left-radius`  | `radii`        |
 
 ## Border Width
 
@@ -92,7 +97,7 @@ Use the logical properties to adapt based on the text direction.
 
 Use the `borderWidth` prop to apply border width on all sides of an element.
 
-> Chakra applies `borderStyle: solid` and a global border color by default.
+> Nimbus sets `borderStyle: solid` and a default border color on every element.
 > Specifying a border width is sufficient to apply the border.
 
 ```jsx
@@ -101,7 +106,7 @@ Use the `borderWidth` prop to apply border width on all sides of an element.
 
 | Prop          | CSS Property   | Token Category |
 | ------------- | -------------- | -------------- |
-| `borderWidth` | `border-width` | `borderWidths` |
+| `borderWidth` | `border-width` | -              |
 
 ### Specific sides
 
@@ -123,14 +128,14 @@ direction.
 
 | Prop                                          | CSS Property                | Token Category |
 | --------------------------------------------- | --------------------------- | -------------- |
-| `borderTopWidth`                              | `border-top-width`          | `borderWidths` |
-| `borderLeftWidth`                             | `border-left-width`         | `borderWidths` |
-| `borderRightWidth`                            | `border-right-width`        | `borderWidths` |
-| `borderBottomWidth`                           | `border-bottom-width`       | `borderWidths` |
-| `borderStartWidth` , `borderInlineStartWidth` | `border-{start+end}-width`  |
-| `borderEndWidth` , `borderInlineEndWidth`     | `border-{start+end}-width`  |
-| `borderXWidth` , `borderInlineWidth`          | `border-{left,right}-width` | `borderWidths` |
-| `borderYWidth` , `borderBlockWidth`           | `border-{top,bottom}-width` | `borderWidths` |
+| `borderTopWidth`                              | `border-top-width`          | -              |
+| `borderLeftWidth`                             | `border-left-width`         | -              |
+| `borderRightWidth`                            | `border-right-width`        | -              |
+| `borderBottomWidth`                           | `border-bottom-width`       | -              |
+| `borderStartWidth` , `borderInlineStartWidth` | `border-inline-start-width` | -              |
+| `borderEndWidth` , `borderInlineEndWidth`     | `border-inline-end-width`   | -              |
+| `borderXWidth` , `borderInlineWidth`          | `border-{left,right}-width` | -              |
+| `borderYWidth` , `borderBlockWidth`           | `border-{top,bottom}-width` | -              |
 
 ## Border Color
 
@@ -139,10 +144,10 @@ direction.
 Use the `borderColor` prop to apply border color on all sides of an element.
 
 ```jsx
-<Box borderColor="red.400" />
+<Box borderColor="critical.7" />
 
 // with opacity modifier
-<Box borderColor="red.400/20" />
+<Box borderColor="critical.7/20" />
 ```
 
 ### Specific sides
@@ -151,15 +156,15 @@ Use the `border{Left,Right,Top,Bottom}Color` prop to apply border color on a
 specific side of an element.
 
 ```jsx
-<Box borderTopColor="red.400" />
-<Box borderLeftColor="red.400" />
+<Box borderTopColor="critical.7" />
+<Box borderLeftColor="critical.7" />
 ```
 
 Use the logical properties to adapt based on the text direction.
 
 ```jsx
-<Box borderStartColor="red.400" />
-<Box borderEndColor="red.400" />
+<Box borderStartColor="critical.7" />
+<Box borderEndColor="critical.7" />
 ```
 
 | Prop                                          | CSS Property               | Token Category |
@@ -171,36 +176,37 @@ Use the logical properties to adapt based on the text direction.
 | `borderBottomColor`                           | `border-bottom-color`      | `colors`       |
 | `borderStartColor` , `borderInlineStartColor` | `border-{start,end}-color` | `colors`       |
 | `borderEndColor` , `borderInlineEndColor`     | `border-{start,end}-color` | `colors`       |
-| `borderXColor`, `borderInlineColor`           | `border-inline-color`      | `colors`       |
-| `borderYColor`, `borderBlockColor`            | `border-block-color`       | `colors`       |
+| `borderInlineColor`                           | `border-inline-color`      | -              |
+| `borderBlockColor`                            | `border-block-color`       | -              |
 
 ## Divide Width
 
-Use the `divide{X,Y}Width` prop to apply border width between elements. It uses
-the CSS selector `> * + *` to apply the `border*` properties.
+Use the `divideX` or `divideY` prop to apply border width between elements. It
+sets the border width on every child element except the first.
 
 ```jsx
-<Box divideXWidth="1px">
+<Box divideX="1px">
   <Box>1</Box>
   <Box>2</Box>
 </Box>
 
-<Box divideYWidth="1px">
+<Box divideY="1px">
   <Box>1</Box>
   <Box>2</Box>
 </Box>
 ```
 
-| Prop          | CSS Property                        | Token Category |
-| ------------- | ----------------------------------- | -------------- |
-| `divideWidth` | `border-{inline,block}-start-width` | `borderWidths` |
+| Prop      | CSS Property                | Token Category |
+| --------- | --------------------------- | -------------- |
+| `divideX` | `border-inline-start-width` | -              |
+| `divideY` | `border-top-width`          | -              |
 
 ## Divide Color
 
 Use the `divideColor` prop to apply border color between elements.
 
 ```jsx
-<Box divideColor="red.400">
+<Box divideColor="neutral.7">
   <Box>1</Box>
   <Box>2</Box>
 </Box>
@@ -223,4 +229,4 @@ Use the `divideStyle` prop to apply border style between elements.
 
 | Prop          | CSS Property     | Token Category |
 | ------------- | ---------------- | -------------- |
-| `divideStyle` | `--divide-style` | `borderStyle`  |
+| `divideStyle` | `--divide-style` | -              |

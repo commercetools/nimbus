@@ -1,1 +1,1 @@
-export * from "./sizes-token-demo.tsx";
+export * from "./sizes-scale.tsx";

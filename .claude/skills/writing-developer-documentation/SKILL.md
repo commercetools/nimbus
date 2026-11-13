@@ -392,10 +392,13 @@ These examples demonstrate how to test your implementation when using [Component
 
 ### 10. Resources
 
+Optional. The Storybook, Figma and GitHub links are front matter fields of the
+main `.mdx` file (`storybookLink`, `figmaLink`, `githubLink`) and show in the page
+header. The Resources section lists other links:
+
 ```markdown
 ## Resources
 
-- [Storybook examples](link-tbd)
 - [React Aria Documentation](https://react-spectrum.adobe.com/react-aria/)
 - [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
 - [Related Component](/components/category/component) (if applicable)
@@ -405,6 +408,31 @@ These examples demonstrate how to test your implementation when using [Component
 
 **IMPORTANT**: Internal component links MUST start with '/' (e.g.,
 `/components/inputs/searchinput`) to ensure absolute paths from root.
+
+## Alternative Commands (Code Tabs)
+
+When the reader needs one of several alternatives of the same code, such as an
+install command for each package manager, add `tab="Label"` to the opening line
+of each block and write the blocks directly one after the other:
+
+````markdown
+```bash tab="pnpm"
+pnpm add @commercetools/nimbus
+```
+
+```bash tab="npm"
+npm install @commercetools/nimbus
+```
+
+```bash tab="yarn"
+yarn add @commercetools/nimbus
+```
+````
+
+Blocks that follow each other with only blank lines between them form one tab
+group, and the reader sees one block at a time. Write every alternative in full,
+and use the same label order in every group. See
+`docs/file-type-guidelines/documentation.md` ("Code Tabs").
 
 ## Code Examples (jsx live-dev Blocks)
 
@@ -734,8 +762,8 @@ Create the documentation file:
      Labeling, Keyboard), include "Persistent ID" tracking text
    - **Testing**: Include mandatory disclaimer paragraph +
      `{{docs-tests: {component-name}.docs.spec.tsx}}` injection token
-   - **Resources**: Link to Storybook (use "link-tbd" placeholder), internal
-     links must start with '/'
+   - **Resources**: Links to React Aria and ARIA docs, internal links must start
+     with '/'. The Storybook link is the `storybookLink` front matter field
 
 7. **Remove all HTML comments**: Clean up template guidance comments
 
@@ -863,7 +891,7 @@ You MUST validate against these requirements:
 - [ ] API reference with PropsTable
 - [ ] Common patterns section (recommended)
 - [ ] Testing your implementation section with injection token
-- [ ] Resources section
+- [ ] Resources section (only for links that are not front matter fields)
 
 #### Code Examples
 

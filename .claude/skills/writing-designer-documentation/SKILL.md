@@ -65,7 +65,7 @@ packages/nimbus/src/components/{component}/{component}.mdx
 ```yaml
 ---
 id: Components-ComponentName
-title: Component Name
+title: ComponentName # Same as exportName
 exportName: ComponentName
 description: Brief one-line description
 lifecycleState: Stable # Experimental|Alpha|Beta|Stable|Deprecated
@@ -73,11 +73,15 @@ order: 999
 menu:
   - Components
   - Category Name # Inputs, Data Display, Navigation, Feedback, Overlay, Layout, Typography
-  - Component Name
+  - ComponentName # Same as exportName
 tags:
   - component
   - relevant-keywords
 figmaLink: https://www.figma.com/design/...
+storybookLink: https://nimbus-storybook.vercel.app/?path=/story/components-category-componentname # Link button in the page header
+githubLink: https://github.com/commercetools/nimbus/tree/main/packages/nimbus/src/components/component-name # Link button in the page header
+related: # Optional: ids of related documents, shown as cards at the end of the Overview tab (links are two-way)
+  - Components-RelatedComponentName
 ---
 ```
 
@@ -97,8 +101,7 @@ rationale.
 
 ### Resources
 
-[Figma library](figmaLink) [Related ARIA Pattern](ariaPatternLink) # If
-applicable
+[Related ARIA Pattern](ariaPatternLink) # If applicable
 ```
 
 ### 2. Design Hierarchy (if applicable)
@@ -236,6 +239,8 @@ links, clearer explanations.
 - [ ] All required frontmatter fields present: id, title, exportName, description, order, menu, tags (MUST exist)
 - [ ] ID follows pattern: `Components-{ComponentName}` (MUST match, breaks
       search/routing if wrong)
+- [ ] `title` and the last `menu` item equal `exportName` (the URL is built from
+      `menu`; PascalCase words become dashes)
 - [ ] Menu hierarchy includes proper category (MUST have)
 - [ ] Tags array present (MUST have)
 - [ ] Figma link present (SHOULD have if available)
@@ -244,7 +249,8 @@ links, clearer explanations.
 
 - [ ] No duplicate `# Component Name` heading in body (title comes from frontmatter)
 - [ ] Overview section explaining design purpose (design rationale)
-- [ ] Resources section with links (reference materials)
+- [ ] Resources section with links that are not front matter fields (reference
+      materials)
 - [ ] Variables section with jsx live examples (shows options)
 - [ ] Guidelines section (helps designers decide when to use)
 

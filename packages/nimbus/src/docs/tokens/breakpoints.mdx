@@ -1,7 +1,10 @@
 ---
 id: Breakpoints
 title: Breakpoints
-description: The list of available breakpoints
+illustration: token-breakpoints
+description:
+  The five screen widths at which a layout can change, and how to change a style
+  by screen size.
 order: 999
 menu:
   - Home
@@ -9,27 +12,105 @@ menu:
   - Other
   - Breakpoints
 tags:
-  - z-index
-  - layer
-  - stacking
-  - context
+  - breakpoints
+  - responsive
+  - media query
+  - screen size
+  - mobile
 icon: DesktopWindows
 ---
+Breakpoints are the screen widths at which a layout can change. Nimbus has five:
+`sm` (480px), `md` (768px), `lg` (1024px), `xl` (1280px) and `2xl` (1536px).
+Each breakpoint is a minimum width. A style for `md` applies from 768px up, also
+on larger screens, until a style for a larger breakpoint replaces it.
 
-# Breakpoints
+> [!IMPORTANT]\
+> Looking for the width of a breakpoint, for example for `maxWidth`? Use the
+> breakpoint sizes, such as `maxWidth="breakpoint-md"` (768px). See
+> [Sizes](/home/design-tokens/sizes#breakpoint-sizes). `maxWidth="md"` is a
+> named size of 448px, not the `md` breakpoint.
 
-Breakpoints define specific screen widths at which your design should adapt to
-provide an optimal viewing experience for users. They are thresholds that
-represent a starting point for changes in styling, such as font sizes, layouts,
-and visibility of elements.
+## Breakpoint scale
 
-Each breakpoint is a minimum width, meaning that styles associated with that
-breakpoint apply to screen sizes equal to or larger than the specified width.
-The styles remain active until the next breakpoint threshold is reached.
+Change the width of your browser window to see the breakpoint change. `base` is
+not a breakpoint: it is the range below `sm`.
 
-## Tokens
+<BreakpointsScale />
 
-The breakpoints **start** at the specified value and **end** at the next
-breakpoint value. The following breakpoint-tokens are supported:
+## Change a style by screen size
 
-<GenericTokenTableDemo category="breakpoints" />
+Give a style prop an object instead of a single value. The keys are the
+breakpoints, and `base` is the value for every width where no other key
+applies. Write the value for the smallest screen as `base`, and add the changes
+for larger screens.
+
+```tsx
+<Stack
+  direction={{ base: "column", md: "row" }}
+  gap={{ base: "200", md: "600" }}
+>
+  <Box>Item 1</Box>
+  <Box>Item 2</Box>
+</Stack>
+```
+
+Below 768px, the items are in a column with `200` between them. From 768px up,
+they are in a row with `600` between them. This works for style props and for
+layout props such as `direction` and `gap`.
+
+### Target a range
+
+Each breakpoint also has keys for a range of widths. The examples use `md`.
+
+| You want the style                        | Key      | Widths              |
+| ----------------------------------------- | -------- | ------------------- |
+| From the breakpoint up                    | `md`     | 768px and wider     |
+| Only within the breakpoint                | `mdOnly` | 768px to 1023px     |
+| Below the breakpoint                      | `mdDown` | Narrower than 768px |
+| From one breakpoint up to a later one     | `mdToXl` | 768px to 1279px     |
+
+`mdToXl` stops before `xl`: it covers `md` and `lg`. The same keys exist for
+every breakpoint, such as `lgOnly`, `smDown` or `smToLg`.
+
+```tsx
+<Text fontWeight={{ base: "400", mdOnly: "600" }}>Bold only at md</Text>
+```
+
+### Hide or show an element
+
+| You want                                   | Prop        | Example                  |
+| ------------------------------------------ | ----------- | ------------------------ |
+| Hide an element from a breakpoint up       | `hideFrom`  | `<Box hideFrom="md" />`  |
+| Hide an element below a breakpoint         | `hideBelow` | `<Box hideBelow="md" />` |
+
+See [Style props: Layout](/home/style-props/layout).
+
+### Components that take responsive values
+
+Some Nimbus components accept an object for a prop too. Steps, Tabs and Toolbar,
+for example, accept one for `orientation`:
+
+```tsx
+<Tabs.Root orientation={{ base: "vertical", md: "horizontal" }}>…</Tabs.Root>
+```
+
+## How breakpoints work
+
+Breakpoints are media queries, so they test the width of the browser window,
+not the width of the parent element
+([MDN: width media feature](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/width)).
+The queries use `rem`: `md` is `@media screen and (min-width: 48rem)`, which is
+768px when the browser uses its default font size of 16px.
+
+For a layout that adapts to the space of its parent instead, use `SimpleGrid`
+with `minChildWidth`: it adds or removes columns to fit the space.
+
+The breakpoints are the same in every app. You cannot add a breakpoint or move
+one to another width.
+
+## Values that Nimbus components use
+
+Pagination puts its parts in a column below `sm` and in a row from `sm` up
+(`direction={{ base: "column", sm: "row" }}`). Steps, Tabs and Toolbar resolve
+a responsive `orientation` with the current breakpoint. The recipes of Nimbus
+components do not change styles by breakpoint.

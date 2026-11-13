@@ -9,9 +9,11 @@ import {
   Tabs,
 } from "@commercetools/nimbus";
 import { Settings, Check } from "@commercetools/nimbus-icons";
+import * as React from "react";
 import { useState, useEffect, useCallback, useMemo, ReactNode } from "react";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 import { themes } from "prism-react-renderer";
+import * as internationalizedDate from "@internationalized/date";
 import {
   Time,
   CalendarDate,
@@ -26,6 +28,11 @@ import { useDebouncedCallback } from "use-debounce";
 import { useAtom } from "jotai";
 import { defaultLiveViewAtom } from "@/atoms/default-live-view-atom";
 import { defaultLiveDevViewAtom } from "@/atoms/default-live-dev-view-atom";
+import {
+  LIVE_MODULES_KEY,
+  resolveImports,
+  type LiveModules,
+} from "./resolve-imports";
 
 const baseHooks = {
   useState,
@@ -34,7 +41,17 @@ const baseHooks = {
   useMemo,
 };
 
-// functions & components available to the live code editor
+/** Modules that live examples can import from with an import line. */
+const liveModules: LiveModules = {
+  "@commercetools/nimbus": NimbusUi,
+  "@commercetools/nimbus-icons": icons,
+  react: React,
+  "@internationalized/date": internationalizedDate,
+  "react-stately": { useAsyncList },
+  "use-debounce": { useDebouncedCallback },
+};
+
+// functions & components available to the live code editor without an import
 const scope = {
   ...NimbusUi,
   ...baseHooks,
@@ -48,14 +65,10 @@ const scope = {
   today,
   useAsyncList,
   useDebouncedCallback,
+  [LIVE_MODULES_KEY]: liveModules,
 };
 
-const removeImportStatements = (code: string) => {
-  // Regular expression to match import statements
-  const importRegex = /^\s*import\s.+?;?\s*$/gm;
-  // Replace matched import statements with an empty string
-  return code.replace(importRegex, "") + "\n" + "render(<App />);";
-};
+const transformCode = (code: string) => resolveImports(code, liveModules);
 
 type LiveCodeEditorProps = {
   children?: ReactNode;
@@ -136,7 +149,7 @@ export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
       </Tabs.Root>
       <Box border="solid-25" borderColor="neutral.3">
         <LiveProvider
-          transformCode={removeImportStatements}
+          transformCode={transformCode}
           code={typeof code === "string" ? code : ""}
           scope={scope}
           noInline

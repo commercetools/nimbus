@@ -1,28 +1,23 @@
 /**
  * No Sidebar Body
  *
- * The full-width, scrollable body of the no-sidebar layout (no left navigation
- * or right aside). The breadcrumb bar and top bar live in the persistent shell
- * (`dynamic-layout.tsx`); this component is the part that swaps in/out when the
- * active document switches between the `app-frame` and `no-sidebar` layouts.
+ * The body of the no-sidebar layout: the space below the top bar, without the
+ * site menu, breadcrumb or table of contents. The page draws its own frame in
+ * it, including its `main` element, its scroll area and its breadcrumb. The
+ * Icons page uses it for its category list and icon grid (see `IconSearch`).
+ *
+ * The top bar lives in the persistent shell (`dynamic-layout.tsx`); this
+ * component is the part that swaps in/out when the active document switches
+ * between the `app-frame` and `no-sidebar` layouts.
  */
 
 import { Suspense, useRef } from "react";
 import { Outlet } from "react-router-dom";
-import { LoadingSpinner, Box, ScrollArea } from "@commercetools/nimbus";
-import {
-  ScrollContainerProvider,
-  useMainViewport,
-} from "@/contexts/scroll-container-context";
-import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
+import { LoadingSpinner, Box } from "@commercetools/nimbus";
+import { ScrollContainerProvider } from "@/contexts/scroll-container-context";
 import { useRouteInfo } from "@/hooks/use-route-info";
 
 function NoSidebarBodyInner() {
-  const mainViewportRef = useMainViewport();
-
-  // Enable scroll restoration on navigation
-  useScrollRestoration();
-
   // Key the content on the resolved base route (not the full pathname) so a
   // page that owns a sub-route space — like Icons, whose detail dialog is the
   // path segment `/icons/:name` (with its filters carried as query params) — is
@@ -33,40 +28,20 @@ function NoSidebarBodyInner() {
   const { baseRoute } = useRouteInfo();
 
   return (
-    <ScrollArea
-      as="main"
-      viewportRef={mainViewportRef}
-      flex={1}
-      bg="bg"
-      width="full"
-      size="sm"
-      css={{
-        animation: "fadeInSlideDown 0.4s ease-out forwards",
-        "@keyframes fadeInSlideDown": {
-          from: {
-            opacity: 0,
-            transform: "translateY(-16px)",
-          },
-          to: {
-            opacity: 1,
-            transform: "translateY(0)",
-          },
-        },
-      }}
-    >
-      <Box p="800">
-        <Suspense fallback={<LoadingSpinner />}>
-          <Box
-            key={baseRoute}
-            animationName="fade-in"
-            animationDuration="slow"
-            width="full"
-          >
-            <Outlet />
-          </Box>
-        </Suspense>
-      </Box>
-    </ScrollArea>
+    // `position: relative` and a fixed height, so the page can fill the body
+    // with `position: absolute; inset: 0`.
+    <Box position="relative" flex="1" minHeight="0" width="full" bg="bg">
+      <Suspense fallback={<LoadingSpinner />}>
+        <Box
+          key={baseRoute}
+          animationName="fade-in"
+          animationDuration="slow"
+          width="full"
+        >
+          <Outlet />
+        </Box>
+      </Suspense>
+    </Box>
   );
 }
 

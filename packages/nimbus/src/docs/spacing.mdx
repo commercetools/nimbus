@@ -1,6 +1,7 @@
 ---
 id: Style Props-Spacing
 title: Spacing
+illustration: token-spacing
 description:
   JSX style props for controlling the padding and margin of an element.
 order: 999
@@ -12,9 +13,10 @@ tags:
   - document
 ---
 
-# Spacing
-
 JSX style props for controlling the padding and margin of an element.
+
+The token values are spacing tokens, such as `100` (4px), `400` (16px) or `800`
+(32px). For all tokens, see [Spacing](/home/design-tokens/spacing).
 
 ## Padding
 
@@ -28,8 +30,8 @@ Use the `padding` prop to apply padding on all sides of an element
 <Box p="40px" /> // shorthand
 
 // token value
-<Box padding="4" />
-<Box p="4" /> // shorthand
+<Box padding="400" />
+<Box p="400" /> // shorthand
 ```
 
 | Prop          | CSS Property | Token Category |
@@ -42,22 +44,22 @@ Use the `padding{Left,Right,Top,Bottom}` to apply padding on one side of an
 element
 
 ```jsx
-<Box paddingLeft="3" />
-<Box pl="3" /> // shorthand
+<Box paddingLeft="300" />
+<Box pl="300" /> // shorthand
 
-<Box paddingTop="3" />
-<Box pt="3" /> // shorthand
+<Box paddingTop="300" />
+<Box pt="300" /> // shorthand
 ```
 
 Use the `padding{Start,End}` props to apply padding on the logical axis of an
 element based on the text direction.
 
 ```jsx
-<div className={css({ paddingStart: '8' })} />
-<div className={css({ ps: '8' })} /> // shorthand
+<Box paddingStart="800" />
+<Box ps="800" /> // shorthand
 
-<div className={css({ paddingEnd: '8' })} />
-<div className={css({ pe: '8' })} /> // shorthand
+<Box paddingEnd="800" />
+<Box pe="800" /> // shorthand
 ```
 
 | Prop                  | CSS Property           | Token Category |
@@ -75,11 +77,11 @@ Use the `padding{X,Y}` props to apply padding on the horizontal and vertical
 axis of an element
 
 ```jsx
-<Box paddingX="8" />
-<Box px="8" /> // shorthand
+<Box paddingX="800" />
+<Box px="800" /> // shorthand
 
-<Box paddingY="8" />
-<Box py="8" /> // shorthand
+<Box paddingY="800" />
+<Box py="800" /> // shorthand
 ```
 
 | Prop                  | CSS Property           | Token Category |
@@ -101,8 +103,8 @@ axis of an element
 Use the `margin` prop to apply margin on all sides of an element
 
 ```jsx
-<Box margin="5" />
-<Box m="5" /> // shorthand
+<Box margin="500" />
+<Box m="500" /> // shorthand
 ```
 
 | Prop         | CSS Property | Token Category |
@@ -115,22 +117,22 @@ Use the `margin{Left,Right,Top,Bottom}` to apply margin on one side of an
 element
 
 ```jsx
-<Box marginLeft="3" />
-<Box ml="3" /> // shorthand
+<Box marginLeft="300" />
+<Box ml="300" /> // shorthand
 
-<Box marginTop="3" />
-<Box mt="3" /> // shorthand
+<Box marginTop="300" />
+<Box mt="300" /> // shorthand
 ```
 
 Use the `margin{Start,End}` properties to apply margin on the logical axis of an
 element based on the text direction.
 
 ```jsx
-<Box marginStart="8" />
-<Box ms="8" /> // shorthand
+<Box marginStart="800" />
+<Box ms="800" /> // shorthand
 
-<Box marginEnd="8" />
-<Box me="8" /> // shorthand
+<Box marginEnd="800" />
+<Box me="800" /> // shorthand
 ```
 
 | Prop                 | CSS Property          | Token Category |
@@ -148,17 +150,17 @@ Use the `margin{X,Y}` properties to apply margin on the horizontal and vertical
 axis of an element
 
 ```jsx
-<Box marginX="8" />
-<Box mx="8" /> // shorthand
+<Box marginX="800" />
+<Box mx="800" /> // shorthand
 
-<Box marginY="8" />
-<Box my="8" /> // shorthand
+<Box marginY="800" />
+<Box my="800" /> // shorthand
 ```
 
-| Prop            | CSS Property  | Token Category |
-| --------------- | ------------- | -------------- |
-| `mx`, `marginX` | `margin-left` | `spacing`      |
-| `my`, `marginY` | `margin-top`  | `spacing`      |
+| Prop            | CSS Property    | Token Category |
+| --------------- | --------------- | -------------- |
+| `mx`, `marginX` | `margin-inline` | `spacing`      |
+| `my`, `marginY` | `margin-block`  | `spacing`      |
 
 ## Spacing Between
 
@@ -174,13 +176,13 @@ you need negative spacing.
 :::
 
 ```jsx
-<Box display="flex" spaceX="8">
+<Box display="flex" spaceX="800">
   <Box>Item 1</Box>
   <Box>Item 2</Box>
   <Box>Item 3</Box>
 </Box>
 
-<Box display="flex" spaceY="8">
+<Box display="flex" spaceY="800">
   <Box>Item 1</Box>
   <Box>Item 2</Box>
   <Box>Item 3</Box>
@@ -190,4 +192,4 @@ you need negative spacing.
 | Prop     | CSS Property          | Token Category |
 | -------- | --------------------- | -------------- |
 | `spaceX` | `margin-inline-start` | `spacing`      |
-| `spaceY` | `margin-block-start`  | `spacing`      |
+| `spaceY` | `margin-top`          | `spacing`      |

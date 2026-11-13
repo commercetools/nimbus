@@ -1,28 +1,18 @@
 import { useAtomValue } from "jotai";
 import { menuAtom } from "@/atoms/menu";
 import { MenuList } from "./components/menu-list";
+import { findActiveSection } from "./shape-navigation";
 import { useRouteInfo } from "@/hooks/use-route-info";
 
 /**
- * Component representing the main menu.
- * Displays only the sub-items of the currently selected top-level menu item.
+ * The sidebar menu. Shows the rows of the section the current page belongs
+ * to (the section that is active in the top bar).
  */
 export const Menu = () => {
-  const menuItems = useAtomValue(menuAtom);
+  const sections = useAtomValue(menuAtom);
   const { baseRoute } = useRouteInfo();
-  const activeRoute = baseRoute;
+  const activeSection = findActiveSection(sections, baseRoute);
 
-  // Extract the top-level route (first part before any /)
-  const topLevelRoute = activeRoute.split("/")[0];
-
-  // Find the active top-level item
-  const activeTopLevelItem = menuItems?.find(
-    (item) => item.route === topLevelRoute
-  );
-
-  // If we found the active item and it has children, show only its children
-  // Otherwise show all items (fallback)
-  const itemsToDisplay = activeTopLevelItem?.children || menuItems;
-
-  return <MenuList items={itemsToDisplay} level={0} />;
+  // A route outside every section falls back to the list of all sections.
+  return <MenuList items={activeSection?.children ?? sections} level={0} />;
 };

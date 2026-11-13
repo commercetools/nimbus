@@ -13,6 +13,12 @@
         "default": "./dist/index.js"
       }
     },
+    "./sluggify": {
+      "import": {
+        "types": "./dist/utils/sluggify.d.ts",
+        "default": "./dist/utils/sluggify.js"
+      }
+    },
     "./package.json": "./package.json"
   },
   "files": ["dist", "package.json", "README.md"],

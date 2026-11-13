@@ -1,8 +1,10 @@
 ---
 id: Style Props-Background
 title: Background
+illustration: token-colors
 description:
-  JSX style props for styling background colors, gradients, and images.
+  JSX style props for styling background colors, gradients, and images, plus
+  box shadows, opacity, blend mode, and SVG fill and stroke.
 order: 999
 menu:
   - Home
@@ -10,11 +12,19 @@ menu:
   - Background
 tags:
   - document
+  - effects
+  - shadow
+  - box-shadow
+  - opacity
+  - blend mode
+  - svg
+  - fill
+  - stroke
 ---
-
-# Background
-
 JSX style props for styling background colors, gradients, and images.
+
+Color values are color tokens, such as `primary.3` or `neutral.2`. For all
+tokens, see [Colors](/home/design-tokens/colors).
 
 ## Background Attachment
 
@@ -31,10 +41,10 @@ Use `bgAttachment` to control the attachment of a background image.
 ## Background Blend Mode
 
 Use `bgBlendMode` prop to control how an element's background image should blend
-with the its background color.
+with its background color.
 
 ```jsx
-<Box bgBlendMode="multiply" bgColor="red.200" bgImage="url(...)" />
+<Box bgBlendMode="multiply" bgColor="primary.3" bgImage="url(...)" />
 ```
 
 ## Background Clip
@@ -55,12 +65,12 @@ Use `bg`, `bgColor`, or `backgroundColor` props to set the background color of
 an element.
 
 ```jsx
-<Box bg="red.200" />
-<Box bgColor="red.200" />
+<Box bg="primary.3" />
+<Box bgColor="primary.3" />
 
 // with opacity modifier
-<Box bg="blue.200/30" />
-<Box bgColor="blue.200/30" />
+<Box bg="primary.9/30" />
+<Box bgColor="primary.9/30" />
 ```
 
 | Prop                         | CSS Property       | Token Category |
@@ -70,30 +80,29 @@ an element.
 
 ## Background Origin
 
-Use `bgOrigin` or `backgroundOrigin` to control the origin of a background
-image.
+Use `backgroundOrigin` to control the origin of a background image.
 
 ```jsx
-<Box bgOrigin="border-box" bgImage="url(...)" />
+<Box backgroundOrigin="border-box" bgImage="url(...)" />
 ```
 
-| Prop                           | CSS Property        | Token Category |
-| ------------------------------ | ------------------- | -------------- |
-| `bgOrigin`, `backgroundOrigin` | `background-origin` | -              |
+| Prop               | CSS Property        | Token Category |
+| ------------------ | ------------------- | -------------- |
+| `backgroundOrigin` | `background-origin` | -              |
 
 ## Background Position
 
 Properties for controlling the src and position of a background image.
 
 ```jsx
-<Box bgImage="url(...)" bgPosition="center" />
+<Box bgImage="url(...)" bgPos="center" />
 ```
 
-| Prop                                 | CSS Property       | Token Category |
-| ------------------------------------ | ------------------ | -------------- |
-| `bgPosition`, `backgroundPosition`   | `background-image` | -              |
-| `bgPositionX`, `backgroundPositionX` | `background-image` | -              |
-| `bgPositionY`, `backgroundPositionY` | `background-image` | -              |
+| Prop                          | CSS Property            | Token Category |
+| ----------------------------- | ----------------------- | -------------- |
+| `bgPos`, `backgroundPosition` | `background-position`   | -              |
+| `backgroundPositionX`         | `background-position-x` | -              |
+| `backgroundPositionY`         | `background-position-y` | -              |
 
 ## Background Repeat
 
@@ -130,25 +139,137 @@ Use `bgImage` or `backgroundImage` to set the background image of an element.
 <Box bgImage="linear-gradient(black, white)" />
 
 // with token reference
-<Box bgImage="linear-gradient({colors.red.200}, {colors.blue.200})" />
+<Box bgImage="linear-gradient({colors.primary.3}, {colors.info.3})" />
 ```
 
 | Prop                         | CSS Property       | Token Category |
 | ---------------------------- | ------------------ | -------------- |
-| `bgImage`, `backgroundImage` | `background-image` | assets         |
+| `bgImage`, `backgroundImage` | `background-image` | -              |
 
 ## Background Gradient
 
 Properties to create a background gradient based on color stops.
 
 ```jsx
-<Box bgGradient="to-r" gradientFrom="red.200" gradientTo="blue.200" />
+<Box bgGradient="to-r" gradientFrom="primary.3" gradientTo="info.3" />
 ```
 
 | Prop           | CSS Property       | Token Category |
 | -------------- | ------------------ | -------------- |
-| `bgGradient`   | `background-image` | `gradients`    |
-| `textGradient` | `background-image` | `gradients`    |
+| `bgGradient`   | `background-image` | -              |
 | `gradientFrom` | `--gradient-from`  | `colors`       |
 | `gradientTo`   | `--gradient-to`    | `colors`       |
 | `gradientVia`  | `--gradient-via`   | `colors`       |
+
+## Effects
+
+JSX style props for styling box shadows, opacity, and more.
+
+Shadow values are shadow tokens, such as `2`. For all tokens, see
+[Shadows](/home/design-tokens/shadows).
+
+### Box Shadow
+
+Use the `shadow` or `boxShadow` prop to apply a box shadow to an element.
+
+```jsx
+// hardcoded values
+<Box shadow="12px 12px 2px 1px rgba(0, 0, 255, .2)" />
+
+// token values
+<Box shadow="2" />
+```
+
+| Prop                   | CSS Property     | Token Category |
+| ---------------------- | ---------------- | -------------- |
+| `shadow`, `boxShadow`  | `box-shadow`     | `shadows`      |
+| `shadowColor`          | `--shadow-color` | `colors`       |
+
+### Box Shadow Color
+
+Use the `shadowColor` prop to set the color of a box shadow. This prop maps to
+the `--shadow-color` CSS variable.
+
+```jsx
+<Box shadow="60px -16px var(--shadow-color)" shadowColor="red" />
+```
+
+| Prop          | CSS Property     | Token Category |
+| ------------- | ---------------- | -------------- |
+| `shadowColor` | `--shadow-color` | `colors`       |
+
+### Opacity
+
+Use the `opacity` prop to set the opacity of an element.
+
+```jsx
+<Box opacity="0.5" />
+```
+
+| Prop      | CSS Property | Token Category |
+| --------- | ------------ | -------------- |
+| `opacity` | `opacity`    | -              |
+
+### Mix Blend Mode
+
+Use the `mixBlendMode` prop to control how an element's content should be
+blended with the background.
+
+```jsx
+<Box bg="primary.9">
+  <Image src="..." mixBlendMode="hard-light" />
+</Box>
+```
+
+| Prop           | CSS Property     | Token Category |
+| -------------- | ---------------- | -------------- |
+| `mixBlendMode` | `mix-blend-mode` | -              |
+
+## SVG
+
+JSX style props for SVG elements.
+
+Color values are color tokens, such as `primary.9`. For all tokens, see
+[Colors](/home/design-tokens/colors).
+
+### Fill
+
+Use the `fill` prop to set the fill color of an SVG element.
+
+```jsx
+<Box as="svg" fill="primary.9">
+  <path d="..." />
+</Box>
+```
+
+| Prop   | CSS Property | Token Category |
+| ------ | ------------ | -------------- |
+| `fill` | `fill`       | `colors`       |
+
+### Stroke
+
+Use the `stroke` prop to set the stroke color of an SVG element.
+
+```jsx
+<Box as="svg" stroke="primary.9">
+  <path d="..." />
+</Box>
+```
+
+| Prop     | CSS Property | Token Category |
+| -------- | ------------ | -------------- |
+| `stroke` | `stroke`     | `colors`       |
+
+### Stroke Width
+
+Use the `strokeWidth` prop to set the stroke width of an SVG element.
+
+```jsx
+<Box as="svg" strokeWidth="1px">
+  <path d="..." />
+</Box>
+```
+
+| Prop          | CSS Property   | Token Category |
+| ------------- | -------------- | -------------- |
+| `strokeWidth` | `stroke-width` | -              |

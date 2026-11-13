@@ -28,7 +28,7 @@ const App = () => (
 
 ### Size options
 
-Button supports three size variants to match different interface densities. The `md` size is the default.
+Button supports five sizes to match different interface densities: `2xs`, `xs`, `sm`, `md` and `xl`. The `md` size is the default.
 
 ```jsx live-dev
 const App = () => (
@@ -37,6 +37,7 @@ const App = () => (
     <Button size="xs">XS Button</Button>
     <Button size="sm">SM Button</Button>
     <Button size="md">MD Button (Default)</Button>
+    <Button size="xl">XL Button</Button>
   </Stack>
 )
 ```
@@ -59,7 +60,7 @@ const App = () => (
 
 ### Color palette options
 
-The Button component supports all semantic color palettes to convey meaning and hierarchy. The `primary` color palette is the default.
+The Button component supports all semantic color palettes to convey meaning and hierarchy. Without a `colorPalette`, a button uses `neutral`.
 
 ```jsx live-dev
 const App = () => (
@@ -78,13 +79,14 @@ const App = () => (
 )
 ```
 
-You can also override the color palette using Chakra UI style props for one-off customizations:
+Use the `colorPalette` prop to give a button a system palette, such as `purple`, when the color only separates one item from another. Use a semantic palette such as `critical` when the color has a meaning.
 
 ```jsx live-dev
 const App = () => (
-  <Button backgroundColor="purple.9" color="purple.contrast" _hover={{ backgroundColor: "purple.10" }}>
-    Custom Purple Button
-  </Button>
+  <Stack direction="row" gap="400" alignItems="center">
+    <Button colorPalette="purple">Purple Button</Button>
+    <Button variant="outline" colorPalette="purple">Purple Outline</Button>
+  </Stack>
 )
 ```
 
@@ -181,7 +183,7 @@ const App = () => {
 The Button component handles most accessibility requirements internally via React Aria.
 
 - **Labeling**: Ensure the button has a visible label (children) or an `aria-label` if it contains only an icon.
-- **Role**: Renders as `button` by default, or `link` (a tag) when using `as="a"`.
+- **Role**: Renders a `button` element by default. With `as="a"` or `asChild`, it renders the other element and keeps the `button` role. For an element that only navigates, use `Link`.
 
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
 
@@ -238,6 +240,4 @@ These examples demonstrate how to test your implementation when using Button in 
 
 ## Resources
 
-- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-buttons-button--docs)
 - [React Aria Button](https://react-spectrum.adobe.com/react-aria/Button.html)
-

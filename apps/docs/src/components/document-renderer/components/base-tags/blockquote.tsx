@@ -8,60 +8,111 @@ import {
   cloneElement,
   isValidElement,
 } from "react";
-import { Box } from "@commercetools/nimbus";
+import { Alert } from "@commercetools/nimbus";
 import {
-  Description,
-  Lightbulb,
-  Star,
-  Warning,
-  Error,
+  Campaign,
+  CheckCircleOutline,
+  ErrorOutline,
+  Info,
+  WarningAmber,
 } from "@commercetools/nimbus-icons";
-import { ListItem, UlList } from "./index";
-import { Paragraph } from "./index";
+import { ListItem, UlList } from "./lists";
+import { Paragraph } from "./paragraph";
+
+/** Maps a GitHub-flavored quote marker to the Alert color palette. */
+const flavorPalette = {
+  "[!NOTE]": "info",
+  "[!TIP]": "positive",
+  "[!IMPORTANT]": "primary",
+  "[!WARNING]": "warning",
+  "[!CAUTION]": "critical",
+} as const;
+
+type QuoteMarker = keyof typeof flavorPalette;
+
+/** Default title shown for each GitHub-flavored quote. */
+const flavorTitle: Record<QuoteMarker, string> = {
+  "[!NOTE]": "Note",
+  "[!TIP]": "Tip",
+  "[!IMPORTANT]": "Important",
+  "[!WARNING]": "Warning",
+  "[!CAUTION]": "Caution",
+};
+
+/** Same icons as the Alert uses for each palette by default. */
+const flavorIcon: Record<QuoteMarker, ReactNode> = {
+  "[!NOTE]": <Info />,
+  "[!TIP]": <CheckCircleOutline />,
+  "[!IMPORTANT]": <Campaign />,
+  "[!WARNING]": <WarningAmber />,
+  "[!CAUTION]": <ErrorOutline />,
+};
+
+const isQuoteMarker = (value: string): value is QuoteMarker =>
+  value in flavorPalette;
 
 const findLastIndex = (children: ReactNode, component: ElementType) => {
-  // Convert React children to an array
   const childrenArray = Children.toArray(children);
 
-  // Iterate from the last child to the first
   for (let i = childrenArray.length - 1; i >= 0; i--) {
     const child = childrenArray[i];
-
-    // Check if the child is a React element and has the displayName "UlList"
     if (isValidElement(child) && child.type === component) {
       return i;
     }
   }
 
-  // Return -1 if no matching element is found
   return -1;
 };
-
-const iconMapping = {
-  NOTE: Description,
-  TIP: Lightbulb,
-  IMPORTANT: Star,
-  WARNING: Warning,
-  CAUTION: Error,
-};
-function cleanQuoteFlavor(input: string) {
-  // Remove the brackets and exclamation mark
-  const cleanKey = input.replace(/[[\]!]/g, "") as keyof typeof iconMapping;
-  const Component = iconMapping[cleanKey];
-  return <Component size="1em" />;
-}
 
 const countChildrenByDisplayName = (
   children: ReactNode,
   component: ElementType
-) => {
-  // Convert React children to an array
-  const childrenArray = Children.toArray(children);
-
-  // Filter the array to count only elements with the given displayName
-  return childrenArray.filter(
+) =>
+  Children.toArray(children).filter(
     (child) => isValidElement(child) && child.type === component
   ).length;
+
+/** A marker at the start of a text, followed by a line break or the end. */
+const MARKER_AT_START = /^(\[![A-Z]+\])(?=[ \t]*(?:\r?\n|$))/;
+
+/**
+ * Returns the quote marker at the start of a paragraph, if there is one.
+ *
+ * The text after the marker can start on the next line with two trailing
+ * spaces (a hard line break) or with just a line break.
+ */
+const getMarker = (child: ReactNode): QuoteMarker | undefined => {
+  if (!isValidElement(child) || child.type !== Paragraph) return undefined;
+
+  const [first] = Children.toArray(
+    (child as ReactElement<{ children?: ReactNode }>).props.children
+  );
+  if (typeof first !== "string") return undefined;
+
+  const marker = MARKER_AT_START.exec(first)?.[1];
+  return marker && isQuoteMarker(marker) ? marker : undefined;
+};
+
+/**
+ * Returns the paragraph without the marker and the line break after it, or
+ * null when nothing is left.
+ */
+const removeMarker = (paragraph: ReactElement<{ children?: ReactNode }>) => {
+  const [first, ...rest] = Children.toArray(paragraph.props.children);
+  // `getMarker` has checked that the first child is a string with a marker.
+  const text = (first as string)
+    .replace(MARKER_AT_START, "")
+    .replace(/^[ \t]*\r?\n/, "");
+
+  const [next, ...afterNext] = rest;
+  // A hard line break is its own element after the marker.
+  const remaining =
+    text === "" && isValidElement(next) && next.type === "br"
+      ? afterNext
+      : rest;
+  const children = text === "" ? remaining : [text, ...rest];
+
+  return children.length > 0 ? cloneElement(paragraph, { children }) : null;
 };
 
 type BlockquoteProps = DetailedHTMLProps<
@@ -74,133 +125,61 @@ export const Blockquote = (props: BlockquoteProps) => {
 
   const lastListElementIndex = findLastIndex(children, UlList);
 
-  const quoteFlavorProps = (() => {
-    let flavorProps = {};
-
-    Children.map(children, (child) => {
-      const isParagraph = isValidElement(child) && child.type === Paragraph;
-      if (!isParagraph) return;
-
-      const firstChild = child.props.children[0];
-
-      // Type guard: ensure firstChild is a string before calling .trim()
-      if (typeof firstChild !== "string") return;
-
-      switch (true) {
-        case firstChild.trim() === "[!NOTE]":
-          flavorProps = {
-            colorPalette: "info",
-          };
-          break;
-        case firstChild.trim() === "[!TIP]":
-          flavorProps = {
-            colorPalette: "positive",
-          };
-          break;
-        case firstChild.trim() === "[!IMPORTANT]":
-          flavorProps = {
-            colorPalette: "primary",
-          };
-          break;
-        case firstChild.trim() === "[!WARNING]":
-          flavorProps = {
-            colorPalette: "warning",
-          };
-          break;
-        case firstChild.trim() === "[!CAUTION]":
-          flavorProps = {
-            colorPalette: "critical",
-          };
-          break;
-        default:
-          return null;
-      }
-    });
-
-    return flavorProps;
-  })();
+  const marker = Children.toArray(children)
+    .map(getMarker)
+    .find((value) => value !== undefined);
 
   return (
-    <Box
-      as="blockquote"
-      borderLeft="solid-75"
-      py="50"
-      px="400"
+    <Alert.Root
+      variant="accent-start"
+      colorPalette={marker ? flavorPalette[marker] : "neutral"}
+      hideIcon={!marker}
+      // The page around the alert is smaller than the body text. Use the text
+      // size of Paragraph and the lists, so the alert matches the text next
+      // to it. Title and description inherit it.
+      textStyle="md"
+      lineHeight="650"
       mb="400"
-      borderColor="colorPalette.9"
-      bg="colorPalette.2"
-      color="colorPalette.11"
-      css={{
-        "& > p": {
-          mt: "400",
-        },
-      }}
-      {...quoteFlavorProps}
     >
-      {Children.map(children, (child, idx) => {
-        const isLastList = lastListElementIndex === idx;
-        const isParagraph = isValidElement(child) && child.type === Paragraph;
-
-        if (isParagraph) {
-          const firstChild = child.props.children[0];
-
-          // Type guard: ensure firstChild is a string before calling .trim()
-          if (typeof firstChild !== "string") {
-            return child;
+      {marker && (
+        // Same icons as the Alert default, a bit larger (default is 1.25em).
+        <Alert.Icon css={{ "& svg": { width: "1.5em", height: "1.5em" } }}>
+          {flavorIcon[marker]}
+        </Alert.Icon>
+      )}
+      {marker && <Alert.Title>{flavorTitle[marker]}</Alert.Title>}
+      <Alert.Description
+        as="div"
+        css={{
+          // Paragraph sets its own font size and line height. Inherit the
+          // Alert's, so the text lines up with the icon and the title.
+          "& > p": { fontSize: "inherit", lineHeight: "inherit", mb: "200" },
+          "& > :last-child": { mb: "0" },
+        }}
+      >
+        {Children.map(children, (child, idx) => {
+          if (getMarker(child)) {
+            return removeMarker(
+              child as ReactElement<{ children?: ReactNode }>
+            );
           }
 
+          // Drop a trailing list that has no list items.
           if (
-            [
-              "[!NOTE]",
-              "[!IMPORTANT]",
-              "[!WARNING]",
-              "[!CAUTION]",
-              "[!TIP]",
-            ].includes(firstChild.trim())
+            isValidElement(child) &&
+            child.type === UlList &&
+            lastListElementIndex === idx &&
+            countChildrenByDisplayName(
+              (child as ReactElement<{ children: ReactNode }>).props.children,
+              ListItem
+            ) < 1
           ) {
-            // Get rid of first child
-
-            return cloneElement(child as ReactElement, {
-              children: [
-                <Box
-                  key="blockquote-flavor-icon"
-                  position="relative"
-                  top="-50"
-                  mr="100"
-                  verticalAlign="middle"
-                  display="inline-block"
-                  fontSize="500"
-                  asChild
-                >
-                  {cleanQuoteFlavor(firstChild.trim())}
-                </Box>,
-                ...Children.toArray(child.props.children.slice(2)),
-              ],
-              mt: "400",
-              //mb: "200",
-            });
+            return null;
           }
 
           return child;
-        }
-
-        // Check if the child is a React element and if its type is 'kbd'
-        if (isValidElement(child) && child.type === UlList && isLastList) {
-          const listItemCount = countChildrenByDisplayName(
-            child.props.children,
-            ListItem
-          );
-
-          if (listItemCount >= 1) {
-            return child;
-          }
-
-          return null;
-        }
-
-        // Otherwise, return the child unchanged
-        return child;
-      })}
-    </Box>
+        })}
+      </Alert.Description>
+    </Alert.Root>
   );
 };
