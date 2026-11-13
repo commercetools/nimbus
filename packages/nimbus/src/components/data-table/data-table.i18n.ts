@@ -34,6 +34,12 @@ export const messages = {
     description: "aria-label for the drag handle button on each row",
     defaultMessage: "Drag to reorder",
   },
+  dragRowDisabled: {
+    id: "Nimbus.DataTable.dragRowDisabled",
+    description:
+      "aria-label for the drag handle button on a row that cannot be reordered",
+    defaultMessage: "Row cannot be reordered",
+  },
   dragRowsColumn: {
     id: "Nimbus.DataTable.dragRowsColumn",
     description: "aria-label for the drag rows column header",
