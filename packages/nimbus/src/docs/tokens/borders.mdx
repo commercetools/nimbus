@@ -3,8 +3,8 @@ id: TokensBorders
 title: Borders
 illustration: token-borders
 description:
-  Border tokens set the width and the style of a border in one value, and the
-  border colors set its color.
+  Border tokens set the width and the style of a border in one value. The color
+  comes from a step of a palette.
 order: 6
 menu:
   - Home
@@ -34,40 +34,23 @@ value times 25.
 > the text color
 > ([MDN: border](https://developer.mozilla.org/en-US/docs/Web/CSS/border)).
 > `<Box border="solid-25" />` draws a line in the text color. Write
-> `<Box border="solid-25" borderColor="border" />`.
+> `<Box border="solid-25" borderColor="neutral.6" />`. Use a step from 6 to 8 of
+> a palette for a border. See [Steps](/home/design-tokens/colors#steps) on the
+> Colors page.
 
-The samples use `borderColor="border.emphasized"`.
+The samples use `borderColor="neutral.7"`.
 
-<BordersScale kind="tokens" />
-
-## Border colors
-
-The color `border` is the default border color of Nimbus. Nimbus sets it on
-every element, so it applies when an element has a border width but no border
-token.
-
-Each border color points to a step of a palette, as the table shows. Steps 6 to
-8 of every palette are the border steps, so you can also use a step of another
-palette, such as `primary.7`. See [Steps](/home/design-tokens/colors#steps) on
-the Colors page.
-
-The samples use `border="solid-25"`.
-
-<BordersScale kind="colors" />
-
-`border.subtle` and `border.muted` are not weaker than `border`: `border.subtle`
-is the same color, and `border.muted` is one step stronger
-([issue #2147](https://github.com/commercetools/nimbus/issues/2147)).
+<BordersScale />
 
 ## Choose a border
 
-| You want                                                | Use                                       | Example                                                     |
-| ------------------------------------------------------- | ----------------------------------------- | ----------------------------------------------------------- |
-| A thin line around an element, such as a card           | `solid-25` and `border`                   | `<Box border="solid-25" borderColor="border" />`            |
-| A line on one side, for example between rows            | `solid-25` on one side                    | `<Box borderBottom="solid-25" borderColor="border" />`      |
-| A stronger line                                         | `border.emphasized`                       | `<Box border="solid-25" borderColor="border.emphasized" />` |
-| A line that shows a status                              | A status color, such as `border.critical` | `<Box border="solid-25" borderColor="border.critical" />`   |
-| A thicker line, for a small control that must stand out | `solid-50`                                | `<Box border="solid-50" borderColor="border.emphasized" />` |
+| You want                                                | Use                                       | Example                                                  |
+| ------------------------------------------------------- | ----------------------------------------- | -------------------------------------------------------- |
+| A thin line around an element, such as a card           | `solid-25` and `neutral.6`                | `<Box border="solid-25" borderColor="neutral.6" />`      |
+| A line on one side, for example between rows            | `solid-25` on one side                    | `<Box borderBottom="solid-25" borderColor="neutral.6" />` |
+| A stronger line                                         | A higher step, such as `neutral.7`        | `<Box border="solid-25" borderColor="neutral.7" />`      |
+| A line that shows a status                              | A status palette, such as `critical.7`    | `<Box border="solid-25" borderColor="critical.7" />`     |
+| A thicker line, for a small control that must stand out | `solid-50`                                | `<Box border="solid-50" borderColor="neutral.7" />`      |
 
 ## Use borders in code
 
@@ -87,13 +70,13 @@ start is on the right
 
 ```tsx
 // A line around a card
-<Box border="solid-25" borderColor="border" borderRadius="300" />
+<Box border="solid-25" borderColor="neutral.6" borderRadius="300" />
 
 // A separator below a header
-<Box borderBottom="solid-25" borderColor="border" />
+<Box borderBottom="solid-25" borderColor="neutral.6" />
 
 // A thicker line in a status color
-<Box border="solid-50" borderColor="border.critical" />
+<Box border="solid-50" borderColor="critical.7" />
 
 // In a recipe
 base: {
@@ -113,7 +96,7 @@ an element is selected, set a border token and its color again in that state:
 // In a recipe
 base: {
   border: "solid-25",
-  borderColor: "border",
+  borderColor: "neutral.6",
 },
 _selected: {
   border: "solid-50",

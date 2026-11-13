@@ -17,6 +17,7 @@ tags:
   - depth
 icon: Texture
 ---
+
 Shadow tokens make an element look raised above the page. The tokens `1` to `6`
 cast a shadow below the element, and a higher number casts a larger shadow.
 `left` and `right` cast a shadow to one side. All shadows are black with an
@@ -57,7 +58,7 @@ Shadow tokens work on the `boxShadow` style prop, or its short name `shadow`.
 <Box bg="bg" borderRadius="300" boxShadow="1" />
 
 // A shadow and an inner line together
-<Box boxShadow="inset 0 0 0 1px {colors.border}, {shadows.1}" />
+<Box boxShadow="inset 0 0 0 1px {colors.neutral.6}, {shadows.1}" />
 
 // In a recipe
 base: {
@@ -70,7 +71,8 @@ list of shadows, as in the second example. Nimbus resolves the name to the CSS
 variable of the token. The Toast recipe uses this to draw a line and a shadow
 together.
 
-For the full list of props, see [Style props: Background](/home/style-props/background).
+For the full list of props, see
+[Style props: Background](/home/style-props/background).
 
 ### Editor support
 
@@ -82,5 +84,5 @@ for how to set it up.
 ## Values that Nimbus components use
 
 In the recipes of Nimbus components, `1` is the most common shadow (10 times).
-Then come `5` (6 times), `6` (3 times), `4` (2 times), and `left` and `right`
-(2 times each). FloatingActionButton sets `3` in its code, not in a recipe.
+Then come `5` (6 times), `6` (3 times), `4` (2 times), and `left` and `right` (2
+times each). FloatingActionButton sets `3` in its code, not in a recipe.
