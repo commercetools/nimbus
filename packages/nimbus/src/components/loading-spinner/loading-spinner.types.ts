@@ -21,7 +21,7 @@ type LoadingSpinnerRecipeProps = {
 // ============================================================
 
 export type LoadingSpinnerRootSlotProps = Omit<
-  HTMLChakraProps<"div", LoadingSpinnerRecipeProps>,
+  HTMLChakraProps<"svg", LoadingSpinnerRecipeProps>,
   "as" | "asChild" | "css" | "colorPalette"
 > & {
   colorPalette?: "primary" | "white";
@@ -43,5 +43,5 @@ export type LoadingSpinnerProps = LoadingSpinnerVariantProps & {
   /**
    * Ref forwarding to the root element
    */
-  ref?: React.Ref<HTMLDivElement>;
+  ref?: React.Ref<SVGSVGElement>;
 };

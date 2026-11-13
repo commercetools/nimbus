@@ -8,6 +8,6 @@ const { withContext } = createRecipeContext({ key: "nimbusLoadingSpinner" });
  * Uses Chakra UI's recipe context system for consistent styling across instances.
  */
 export const LoadingSpinnerRoot = withContext<
-  HTMLDivElement,
+  SVGSVGElement,
   LoadingSpinnerRootSlotProps
->("div");
+>("svg");

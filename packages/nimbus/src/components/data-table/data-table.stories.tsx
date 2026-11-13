@@ -582,6 +582,56 @@ export const AdjustableColumns: Story = {
   },
 };
 
+/**
+ * With resizable columns and no pin column, the last column has a resize
+ * handle. At rest, that handle must stay inside the table: a handle that
+ * reaches past the table edge adds scrollable width, so the table shows a
+ * horizontal scrollbar although nothing is wider than its container.
+ */
+export const LastColumnResizerStaysInsideTable: Story = {
+  render: () => (
+    <Box w="900px">
+      <DataTable
+        columns={mcColumns}
+        rows={mcMockData}
+        isResizable
+        allowsPinning={false}
+        aria-label="Resizable table without a pin column"
+      />
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText("Urban Canvas Denim");
+    const table = canvas.getByRole("grid");
+    const container = table.parentElement as HTMLElement;
+    const resizers = Array.from(
+      container.querySelectorAll(".nimbus-data-table__columnResizer")
+    );
+
+    await step("The last column has a resize handle", async () => {
+      const lastHeader = canvas.getAllByRole("columnheader").at(-1)!;
+      expect(
+        lastHeader.querySelector(".nimbus-data-table__columnResizer")
+      ).not.toBeNull();
+    });
+
+    await step("The table does not scroll horizontally at rest", async () => {
+      expect(container.scrollWidth).toBe(container.clientWidth);
+    });
+
+    await step("The last handle ends inside the table", async () => {
+      const containerRight =
+        container.getBoundingClientRect().left +
+        container.clientLeft +
+        container.clientWidth;
+      expect(
+        Math.round(resizers.at(-1)!.getBoundingClientRect().right)
+      ).toBeLessThanOrEqual(Math.round(containerRight));
+    });
+  },
+};
+
 export const Condensed: Story = {
   // VRT: `density: condensed`; the play ends in condensed mode.
   tags: ["vrt"],

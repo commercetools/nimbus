@@ -315,6 +315,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       h: "1px",
       p: 0,
       ...headerFocusRing,
+      "&:last-child .nimbus-data-table__columnResizer": { right: 0 },
 
       "& > .nimbus-data-table__column-container": {
         py: "var(--data-table-header-padding-y)",
