@@ -6,8 +6,8 @@
 - [x] 1.2 Add the stories `RendersAtRequestedSize` and `NextToIconsInButtons`; verify they assert 14/20/24/32/40px for the five sizes, 24px without size, and the button icon size inside buttons of every size
 - [x] 1.3 Draw the ring on whole pixels (radius 9, stroke 2, pointer path `M12 3A9 9 0 0 1 21 12`); verify the stories above still pass
 - [x] 1.4 Add the changeset `.changeset/safari-spinner-table-overflow.md` (`patch`) with the `ref` type, the button icon size, the patterns and the thinner stroke; verify `pnpm changeset:status` lists `@commercetools/nimbus`
-- [ ] 1.5 Update `loading-spinner.dev.mdx` ("`sm` (default)" in the sizes section) to say that without `size` the spinner takes the icon size of its parent and is 24px elsewhere; verify the text matches the "No size specified" scenario in the spec
-- [ ] 1.6 Check the `.docs.spec.tsx`, `.guidelines.mdx` and `.a11y.mdx` files of the spinner for statements about the `div`, the default size, `ml`/`size` in buttons or the `ref` type; verify with `rg -n "div|default|HTMLDivElement|ml=" packages/nimbus/src/components/loading-spinner/*.mdx` and fix any hit
+- [x] 1.5 Update `loading-spinner.dev.mdx` ("`sm` (default)" in the sizes section) to say that without `size` the spinner takes the icon size of its parent and is 24px elsewhere; verify the text matches the "No size specified" scenario in the spec
+- [x] 1.6 Check the `.docs.spec.tsx`, `.guidelines.mdx` and `.a11y.mdx` files of the spinner for statements about the `div`, the default size, `ml`/`size` in buttons or the `ref` type; verify with `rg -n "div|default|HTMLDivElement|ml=" packages/nimbus/src/components/loading-spinner/*.mdx` and fix any hit
 
 ## 2. Patterns and DataTable
 
