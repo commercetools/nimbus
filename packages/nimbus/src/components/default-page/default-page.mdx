@@ -225,6 +225,40 @@ const App = () => (
 )
 ```
 
+### Compact header on scroll
+
+Use `stickyHeader="compact-on-scroll"` on a flexible page when the header
+should take less room once the user has scrolled. The title gets smaller, the
+back link keeps only its icon on the title row, and the subtitle collapses,
+while the actions stay in place. The header returns to full size when the page
+is back at the top.
+
+```jsx live
+const App = () => (
+  <Box height="400px" overflow="auto" borderRadius="200">
+    <DefaultPage.Root layout="flexible" stickyHeader="compact-on-scroll">
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/products">
+          Back to products
+        </DefaultPage.BackLink>
+        <DefaultPage.Title>Edit product</DefaultPage.Title>
+        <DefaultPage.Subtitle>SKU-001</DefaultPage.Subtitle>
+        <DefaultPage.Actions>
+          <Button colorPalette="primary" variant="solid">Save changes</Button>
+        </DefaultPage.Actions>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          {Array.from({ length: 30 }, (_, i) => (
+            <Text key={i}>{`Content row ${i + 1}`}</Text>
+          ))}
+        </Stack>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
 ## Accessibility
 
 DefaultPage uses semantic HTML landmarks to provide a clear document structure
