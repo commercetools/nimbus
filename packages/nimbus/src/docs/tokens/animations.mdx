@@ -30,11 +30,11 @@ value.
 
 ## Choose how to animate
 
-| You want                                                           | Use                                                   | Example                                                                                 |
-| ------------------------------------------------------------------ | ----------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| An element that enters or leaves, such as an overlay               | Keyframes and a duration                              | [Animate an element that enters and leaves](#animate-an-element-that-enters-and-leaves) |
-| A smooth change of a color, a size or a position, such as on hover | A transition with a duration and an easing            | [Animate a change](#animate-a-change)                                                   |
-| A motion that repeats, such as a pulse                             | An animation token                                    | `<Box animation="pulse" />`                                                             |
+| You want                                                           | Use                                                    | Example                                                                                 |
+| ------------------------------------------------------------------ | ------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| An element that enters or leaves, such as an overlay               | Keyframes and a duration                               | [Animate an element that enters and leaves](#animate-an-element-that-enters-and-leaves) |
+| A smooth change of a color, a size or a position, such as on hover | A transition with a duration and an easing             | [Animate a change](#animate-a-change)                                                   |
+| A motion that repeats, such as a pulse                             | An animation token                                     | `<Box animation="pulse" />`                                                             |
 | A loading indicator                                                | [LoadingSpinner](/components/feedback/loading-spinner) | `<LoadingSpinner />`                                                                    |
 
 ## Try a motion
@@ -144,12 +144,6 @@ over an element. `transitionProperty` takes a group of properties: `colors` is
 />
 ```
 
-### CSS variables
-
-Durations, easings and animations are also CSS variables, such as
-`var(--nimbus-durations-fast)`, `var(--nimbus-easings-ease-in-smooth)` or
-`var(--nimbus-animations-spin)`, for styles that you write yourself.
-
 ### Editor support
 
 With the design token TypeScript plugin, autocomplete shows the value next to
@@ -180,5 +174,5 @@ your own motion, use the `_motionReduce` condition:
 In the recipes of Nimbus components, the most common durations are `fast` (7
 times), `faster` (6 times) and `moderate` (5 times). The most common easings are
 `ease-in-smooth` (6 times) and `ease-in-out` (3 times). The most common
-keyframes are `fade-in` and `fade-out` (6 times each), and `scale-in` and
+keyframes are `fade-in` and `fade-out` (7 times each), and `scale-in` and
 `scale-out` (5 times each).

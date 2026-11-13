@@ -21,6 +21,7 @@ tags:
   - shorthands
   - dark mode
 ---
+
 How style props work in Nimbus: tokens as values, responsive values, pseudo
 props, shorthands and the props that have no effect.
 
@@ -48,23 +49,23 @@ const App = () => (
 
 ## Values are design tokens
 
-Give a style prop a design token, not a raw value. A token is a named value
-from the design system. For example, `p="400"` sets 16px of padding and
+Give a style prop a design token, not a raw value. A token is a named value from
+the design system. For example, `p="400"` sets 16px of padding and
 `bg="primary.9"` sets the main color. Tokens keep your screen consistent with
 the Nimbus components, and color tokens follow the color mode.
 
-The token group depends on the prop. The prop tables on the other pages show
-the token category of each prop.
+The token group depends on the prop. The prop tables on the other pages show the
+token category of each prop.
 
-| Group      | Example token | Used by                       | Reference                                                  |
-| ---------- | ------------- | ----------------------------- | ---------------------------------------------------------- |
-| Colors     | `primary.9`   | `color`, `bg`                 | [Colors](/home/design-tokens/colors)                       |
-| Spacing    | `400`         | `p`, `m`, `gap`               | [Spacing](/home/design-tokens/spacing)                     |
-| Sizes      | `full`, `1/2` | `w`, `h`, `maxW`              | [Sizes](/home/design-tokens/sizes)                         |
-| Typography | `400`, `body` | `fontSize`, `textStyle`       | [Typography](/home/design-tokens/typography)               |
-| Radii      | `200`         | `borderRadius`                | [Radii](/home/design-tokens/radii)                         |
-| Shadows    | `2`           | `boxShadow`                   | [Shadows](/home/design-tokens/shadows)                     |
-| Z-indices  | `sticky`      | `zIndex`                      | [Z-Indices](/home/design-tokens/other/z-indices)           |
+| Group      | Example token | Used by                 | Reference                                        |
+| ---------- | ------------- | ----------------------- | ------------------------------------------------ |
+| Colors     | `primary.9`   | `color`, `bg`           | [Colors](/home/design-tokens/colors)             |
+| Spacing    | `400`         | `p`, `m`, `gap`         | [Spacing](/home/design-tokens/spacing)           |
+| Sizes      | `full`, `1/2` | `w`, `h`, `maxW`        | [Sizes](/home/design-tokens/sizes)               |
+| Typography | `400`, `body` | `fontSize`, `textStyle` | [Typography](/home/design-tokens/typography)     |
+| Radii      | `200`         | `borderRadius`          | [Radii](/home/design-tokens/radii)               |
+| Shadows    | `2`           | `boxShadow`             | [Shadows](/home/design-tokens/shadows)           |
+| Z-indices  | `sticky`      | `zIndex`                | [Z-Indices](/home/design-tokens/other/z-indices) |
 
 ```jsx live
 import { Box, Text } from "@commercetools/nimbus";
@@ -77,8 +78,8 @@ const App = () => (
 ```
 
 The spacing and size scales have the same numeric tokens up to `3200`, so
-`p="400"` and `w="400"` are both 16px. The prop decides which scale applies.
-For all groups of tokens, see [Design Tokens](/home/design-tokens).
+`p="400"` and `w="400"` are both 16px. The prop decides which scale applies. For
+all groups of tokens, see [Design Tokens](/home/design-tokens).
 
 ## Responsive values
 
@@ -95,7 +96,10 @@ Nimbus has five breakpoints: `sm` (480px), `md` (768px), `lg` (1024px), `xl`
 import { Box, Stack } from "@commercetools/nimbus";
 
 const App = () => (
-  <Stack direction={{ base: "column", md: "row" }} gap={{ base: "200", md: "600" }}>
+  <Stack
+    direction={{ base: "column", md: "row" }}
+    gap={{ base: "200", md: "600" }}
+  >
     <Box p="400" bg="info.3">
       Item 1
     </Box>
@@ -133,27 +137,27 @@ const App = () => (
 
 These pseudo props are available:
 
-| Pseudo prop     | Applies when                                         |
-| --------------- | ---------------------------------------------------- |
-| `_hover`        | The pointer is over the element                      |
-| `_focus`        | The element has focus                                |
-| `_focusVisible` | The element has focus that the browser shows         |
-| `_focusWithin`  | The element or a child has focus                     |
-| `_active`       | The element is pressed down                          |
-| `_disabled`     | The element is disabled                              |
-| `_checked`      | The element is checked                               |
-| `_invalid`      | The element is invalid                               |
-| `_readOnly`     | The element is read-only                             |
-| `_expanded`     | The element is expanded                              |
-| `_pressed`      | The element is pressed, as in a toggle button        |
-| `_selected`     | The element is selected                              |
-| `_open`         | The element is open or entering                      |
-| `_closed`       | The element is closed or exiting                     |
-| `_before`       | The `::before` pseudo-element                        |
-| `_after`        | The `::after` pseudo-element                         |
-| `_placeholder`  | The placeholder of an input                          |
+| Pseudo prop     | Applies when                                 |
+| --------------- | -------------------------------------------- |
+| `_hover`        | The pointer is over the element              |
+| `_focus`        | The element has focus                        |
+| `_focusVisible` | The element has focus that the browser shows |
+| `_focusWithin`  | The element or a child has focus             |
+| `_active`       | The element is pressed down                  |
+| `_disabled`     | The element is disabled                      |
+| `_checked`      | The element is checked                       |
+| `_invalid`      | The element is invalid                       |
+| `_readOnly`     | The element is read-only                     |
+| `_expanded`     | The element is expanded                      |
+| `_pressed`      | A React Aria component is being pressed      |
+| `_selected`     | The element is selected                      |
+| `_open`         | The element is open or entering              |
+| `_closed`       | The element is closed or exiting             |
+| `_before`       | The `::before` pseudo-element                |
+| `_after`        | The `::after` pseudo-element                 |
+| `_placeholder`  | The placeholder of an input                  |
 
-Nimbus changes four of these so that they work with React Aria components:
+Nimbus changes five of these so that they work with React Aria components:
 
 - `_hover` applies only on devices that can hover. It also matches the
   `data-hovered` attribute that React Aria sets.
@@ -175,21 +179,21 @@ have a value for each color mode, so you rarely need them.
 Some style props have a short name. A shorthand sets the same CSS property and
 accepts the same tokens.
 
-| Shorthand            | Style prop                       |
-| -------------------- | -------------------------------- |
-| `p`                  | `padding`                        |
-| `px`, `py`           | `paddingInline`, `paddingBlock`  |
+| Shorthand              | Style prop                                                   |
+| ---------------------- | ------------------------------------------------------------ |
+| `p`                    | `padding`                                                    |
+| `px`, `py`             | `paddingInline`, `paddingBlock`                              |
 | `pt`, `pr`, `pb`, `pl` | `paddingTop`, `paddingRight`, `paddingBottom`, `paddingLeft` |
-| `m`                  | `margin`                         |
-| `mx`, `my`           | `marginInline`, `marginBlock`    |
-| `w`, `h`             | `width`, `height`                |
-| `minW`, `maxW`       | `minWidth`, `maxWidth`           |
-| `minH`, `maxH`       | `minHeight`, `maxHeight`         |
-| `bg`                 | `background`                     |
-| `bgColor`            | `backgroundColor`                |
-| `rounded`            | `borderRadius`                   |
-| `flexDir`            | `flexDirection`                  |
-| `textDecor`          | `textDecoration`                 |
+| `m`                    | `margin`                                                     |
+| `mx`, `my`             | `marginInline`, `marginBlock`                                |
+| `w`, `h`               | `width`, `height`                                            |
+| `minW`, `maxW`         | `minWidth`, `maxWidth`                                       |
+| `minH`, `maxH`         | `minHeight`, `maxHeight`                                     |
+| `bg`                   | `background`                                                 |
+| `bgColor`              | `backgroundColor`                                            |
+| `rounded`              | `borderRadius`                                               |
+| `flexDir`              | `flexDirection`                                              |
+| `textDecor`            | `textDecoration`                                             |
 
 ```jsx
 <Box p="400" w="full" bg="primary.2" rounded="200" />
@@ -202,10 +206,9 @@ Most filter props have no effect in Nimbus at the moment. These are
 `saturate`, `sepia`, `dropShadow` and the other `backdrop*` filter props. Only
 `filter`, `backdropFilter` and `blur` work.
 
-The reason is in the global CSS of Nimbus. It resets the CSS variables of these
-props on every element with the value `var(--chakra-empty,/*!*/ /*!*/)`.
-Chakra UI reads an exclamation mark in a string value as `!important`, so the
-reset wins over the value of your style prop. The problem is tracked in
+The reason is in the global styles of Nimbus. For each of these props, they set
+a default on every element, and that default wins over the value of your style
+prop. The problem is tracked in
 [issue #2143](https://github.com/commercetools/nimbus/issues/2143).
 
 Write the CSS function in `filter` or `backdropFilter` instead, with a blur
@@ -216,12 +219,15 @@ token in curly braces:
 <Box backdropFilter="blur({blurs.200})" bg="bg/60" />
 ```
 
-See [Filters](/home/style-props/filters) and [Blurs](/home/design-tokens/other/blurs).
+See [Filters](/home/style-props/filters) and
+[Blurs](/home/design-tokens/other/blurs).
 
 ## Where to go next
 
-- [Layout](/home/style-props/layout): aspect ratio, breaks, display, position and more
-- [Flex and Grid](/home/style-props/flex-and-grid): direction, alignment, gaps and grid tracks
+- [Layout](/home/style-props/layout): aspect ratio, breaks, display, position
+  and more
+- [Flex and Grid](/home/style-props/flex-and-grid): direction, alignment, gaps
+  and grid tracks
 - [Spacing](/home/style-props/spacing): padding and margin
 - [Sizing](/home/style-props/sizing): width, height and their limits
 - [Typography](/home/style-props/typography): fonts, text, lists and tables

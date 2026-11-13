@@ -56,8 +56,8 @@ The styles from `2xs` to `7xl` are the main scale. `caption`, `detail` and
 `body` are older names. `caption` and `detail` have the same values as `xs` and
 `sm`, and `body` is the size of `md` with a taller line (26px instead of 22px).
 
-A text style does not set a font weight, a font family or a letter spacing. Set
-those with the tokens below.
+The text styles of Nimbus set a font size and a line height. To set a font
+weight, a font family or a letter spacing, use the tokens below.
 
 > [!WARNING]\
 > The `2xs` text style (10px) is deprecated. Text should not be smaller than
@@ -158,12 +158,6 @@ as it is. CSS then ignores a value that it does not know. The `font-weight`
 property, for example, accepts `normal`, `bold`, `lighter`, `bolder` or a number
 ([MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight)), so
 `medium` has no effect.
-
-### CSS variables
-
-Every token is also a CSS variable, such as `var(--nimbus-font-sizes-350)`,
-`var(--nimbus-fonts-mono)` or `var(--nimbus-letter-spacings-wide)`, for styles
-that you write yourself.
 
 ### Editor support
 

@@ -110,7 +110,8 @@ and `githubLink` that is set, in this order: Figma, Storybook, GitHub.
 - `storybookLink` is the Storybook URL with `?path=/story/<id>`. The `<id>` is
   the `title` of the component stories in lower case, with every run of other
   characters replaced by one `-`: `Components/Buttons/Button` becomes
-  `components-buttons-button`. A component without stories sets no
+  `components-buttons-button`. `?path=/docs/<id>--docs` opens the docs page of
+  the same component and also works. A component without stories sets no
   `storybookLink`.
 
 `related` lists the `id` of other documents, for example the other parts of a

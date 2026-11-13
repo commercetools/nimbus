@@ -51,12 +51,12 @@ such as `bg="bg/60"`.
 
 ## Use blurs in code
 
-Write the CSS `blur()` function, with the token in curly braces. Nimbus replaces
-`{blurs.200}` with the CSS variable of the token. This is how the recipes of
-Nimbus components use the blur tokens.
+Write the CSS `blur()` function, with the token in curly braces, such as
+`blur({blurs.200})`. This is how the recipes of Nimbus components use the blur
+tokens.
 
-| You blur                   | Prop             | CSS property                                                                         |
-| -------------------------- | ---------------- | ------------------------------------------------------------------------------------ |
+| You blur                   | Prop             | CSS property                                                                          |
+| -------------------------- | ---------------- | ------------------------------------------------------------------------------------- |
 | The element itself         | `filter`         | [`filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/filter)                   |
 | What is behind the element | `backdropFilter` | [`backdrop-filter`](https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter) |
 
@@ -78,12 +78,8 @@ base: {
 > ([issue #2143](https://github.com/commercetools/nimbus/issues/2143)). Write
 > `backdropFilter="blur({blurs.200})"` instead.
 
-For the other filter props, see [Style props: Filters](/home/style-props/filters).
-
-### CSS variables
-
-Every token is also a CSS variable, such as `var(--nimbus-blurs-200)`, for
-styles that you write yourself.
+For the other filter props, see
+[Style props: Filters](/home/style-props/filters).
 
 ### Editor support
 
@@ -94,7 +90,7 @@ for how to set it up.
 
 ## Values that Nimbus components use
 
-In the recipes of Nimbus components, only `200` is used: the `glass` variant of
-ScrollArea blurs what is behind the scroll bar with `200` (8px), on a background
-of `bg/60`. Dialog and Drawer blur the page behind them by 4px, the value of
-`100`, but write it as `{sizes.100}`.
+In the recipes of Nimbus components, `100` and `200` are used. The `glass`
+variant of ScrollArea blurs what is behind the scroll bar with `200` (8px), on a
+background of `bg/60`. Dialog and Drawer blur the page behind them with `100`
+(4px).

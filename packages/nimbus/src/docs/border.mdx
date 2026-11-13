@@ -11,6 +11,7 @@ menu:
 tags:
   - document
 ---
+
 JSX style props for styling border and border radius.
 
 Radius values are radius tokens, such as `200` (8px). For all tokens, see
@@ -83,9 +84,9 @@ Use the logical properties to adapt based on the text direction.
 <Box roundedStartStart="200" /> // shorthand
 ```
 
-| Prop                                     | CSS Property                 | Token Category |
-| ---------------------------------------- | ---------------------------- | -------------- |
-| `roundedTopLeft`,`borderTopLeftRadius`   | `border-top-left-radius`     | `radii`        |
+| Prop                                           | CSS Property                 | Token Category |
+| ---------------------------------------------- | ---------------------------- | -------------- |
+| `roundedTopLeft`,`borderTopLeftRadius`         | `border-top-left-radius`     | `radii`        |
 | `roundedTopRight`,`borderTopRightRadius`       | `border-top-right-radius`    | `radii`        |
 | `roundedBottomRight`,`borderBottomRightRadius` | `border-bottom-right-radius` | `radii`        |
 | `roundedBottomLeft`,`borderBottomLeftRadius`   | `border-bottom-left-radius`  | `radii`        |
@@ -181,7 +182,7 @@ Use the logical properties to adapt based on the text direction.
 ## Divide Width
 
 Use the `divideX` or `divideY` prop to apply border width between elements. It
-uses the CSS selector `> * + *` to apply the `border*` properties.
+sets the border width on every child element except the first.
 
 ```jsx
 <Box divideX="1px">

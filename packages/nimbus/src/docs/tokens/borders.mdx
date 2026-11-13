@@ -17,6 +17,7 @@ tags:
   - line
 icon: BorderStyle
 ---
+
 There are four border tokens, from `solid-25` (1px) to `solid-100` (4px). As
 with the [spacing](/home/design-tokens/spacing) tokens, the number is the pixel
 value times 25.
@@ -42,9 +43,8 @@ The samples use `borderColor="border.emphasized"`.
 ## Border colors
 
 The color `border` is the default border color of Nimbus. Nimbus sets it on
-every element (`--global-color-border` in
-`packages/nimbus/src/theme/global-css.ts`), so it applies when an element has a
-border width but no border token.
+every element, so it applies when an element has a border width but no border
+token.
 
 Each border color points to a step of a palette, as the table shows. Steps 6 to
 8 of every palette are the border steps, so you can also use a step of another
@@ -127,11 +127,6 @@ _selected: {
 > Nimbus uses `box-sizing: border-box` for every element. The border is part of
 > the width and the height that you set. A `100px` wide box with a `solid-25`
 > border has 98px for the padding and the content.
-
-### CSS variables
-
-Every token is also a CSS variable, such as `var(--nimbus-borders-solid-25)`,
-and every border color too, such as `var(--nimbus-colors-border-emphasized)`.
 
 ### Editor support
 
