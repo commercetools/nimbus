@@ -410,6 +410,10 @@ pnpm changeset:version-and-format
 pnpm changeset:status
 ```
 
+To publish a canary build of a PR branch, push a commit whose message contains
+`[publish-preview]` (see
+[Publishing a PR canary](./docs/changeset-conventions.md#publishing-a-pr-canary)).
+
 For changeset content (what to write, what to leave out, audience), see
 [Changeset Conventions](./docs/changeset-conventions.md). Changesets are release
 notes for consumers — describe features and bug fixes from the consumer's
@@ -526,6 +530,11 @@ snapshotted and why is in
 [Chromatic Visual Regression: Authoring Stories](./docs/chromatic-visual-testing.md);
 triggers, baselines, the manual full-snapshot run and merge gating are in the
 [Chromatic CI Runbook](./docs/chromatic-ci.md).
+
+Figma Code Connect mappings (`*.figma.tsx`) are checked with a dry run on pull
+requests that change them, and published to Figma after merge to `main`.
+Triggers, the `FIGMA_ACCESS_TOKEN` secret and how to renew it, and the manual
+publish are in [Figma Code Connect CI](./docs/figma-code-connect-ci.md).
 
 ### Git Conventions
 
