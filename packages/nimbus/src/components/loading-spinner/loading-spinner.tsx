@@ -4,10 +4,11 @@ import type { LoadingSpinnerProps } from "./loading-spinner.types";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { loadingSpinnerMessagesStrings } from "./loading-spinner.messages";
 
-// Drawn on the same 24x24 grid as the icons. The ring has a radius of 8.75 and
-// a stroke of 2.5, so its outer edge sits 2px inside the grid, like the live
-// area of an icon.
-const pointerPath = "M12 3.25A8.75 8.75 0 0 1 20.75 12";
+// Drawn on the same 24x24 grid as the icons. The ring has a radius of 9 and a
+// stroke of 2, so its outer edge sits 2px inside the grid, like the live area
+// of an icon. Both edges of the stroke (outer 2 and 22, inner 4 and 20) are
+// whole numbers, so the ring is sharp at 24px.
+const pointerPath = "M12 3A9 9 0 0 1 21 12";
 
 /**
  * # LoadingSpinner
@@ -42,14 +43,14 @@ export const LoadingSpinner = (props: LoadingSpinnerProps) => {
       <circle
         cx="12"
         cy="12"
-        r="8.75"
+        r="9"
         data-svg-path="spinner-circle"
-        strokeWidth="2.5"
+        strokeWidth="2"
       />
       <path
         d={pointerPath}
         data-svg-path="spinner-pointer"
-        strokeWidth="2.5"
+        strokeWidth="2"
         strokeLinecap="round"
       />
     </LoadingSpinnerRoot>
