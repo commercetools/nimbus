@@ -98,6 +98,7 @@ const App = () => (
 | `layout="flexible" stickyHeader` | Flexible scroll with header pinned at top |
 | `layout="flexible" stickyFooter` | Flexible scroll with footer pinned at bottom |
 | `layout="flexible" stickyHeader stickyFooter` | Flexible scroll with both zones pinned |
+| `collapseHeaderOnScroll` | Pinned header collapses while the content is scrolled; full header at the top. Works with `layout="constrained"` and with `layout="flexible" stickyHeader` |
 
 > [!TIP]\
 > In **constrained** mode, header and footer are always pinned — you don't need
@@ -145,6 +146,231 @@ const App = () => (
   </Box>
 )
 ```
+
+### Collapse header on scroll
+
+Set `collapseHeaderOnScroll` on `DefaultPage.Root` to give the header height
+back to the content while the user works in it. The header then shows a
+**collapsed form**:
+
+- The subtitle is hidden visually. Screen readers still read it.
+- The back link shows only its icon, on the title row. A tooltip shows its
+  label on hover and keyboard focus.
+- The title is smaller. A title with several lines keeps all of them, and the
+  title row grows to fit them.
+- Actions, tab navigation and other header content stay visible.
+
+```jsx live-dev
+const App = () => (
+  <Box height="400px" border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root collapseHeaderOnScroll>
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/products">Back to products</DefaultPage.BackLink>
+        <DefaultPage.Title>Classic T-Shirt</DefaultPage.Title>
+        <DefaultPage.Subtitle>SKU-12345</DefaultPage.Subtitle>
+        <DefaultPage.Actions>
+          <Button variant="solid" colorPalette="primary">Save changes</Button>
+        </DefaultPage.Actions>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          <Text>Scroll down to collapse the header.</Text>
+          {Array.from({ length: 12 }, (_, i) => (
+            <FormField.Root key={i}>
+              <FormField.Label>{`Field ${i + 1}`}</FormField.Label>
+              <FormField.Input>
+                <TextInput placeholder={`Value for field ${i + 1}`} />
+              </FormField.Input>
+            </FormField.Root>
+          ))}
+        </Stack>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+The header changes in one of two ways. Pages use the same props for both:
+
+- **It follows the scroll position** in browsers that support scroll-driven
+  animations: Chrome and Edge 115 and later, Safari 26 and later, Firefox 159
+  and later (see
+  [`ViewTimeline` on MDN](https://developer.mozilla.org/en-US/docs/Web/API/ViewTimeline)).
+- **It changes in one step** in other browsers, and when the user prefers
+  reduced motion.
+
+On the server and in the first render, the header shows its full form in both
+cases.
+
+#### Following the scroll position
+
+- **Step by step.** Over the height the header gives back, the header changes
+  with every scrolled pixel from its full form to its collapsed form. The parts
+  move to their collapsed places, the title gets smaller, and the subtitle and
+  the back link label fade out. When the user stops scrolling in between, the
+  header keeps the form of that scroll position.
+- **Pinned.** After that distance, the header stays in its collapsed form, and
+  the back link shows its label in a tooltip.
+- **Back to the top.** Scrolling up shows the same forms in reverse order: the
+  header is full again when the content is back at the top. A click on a tab
+  that scrolls the content to the top therefore shows the full header at once,
+  and the tabs move down.
+- **Content moves only with the scroll.** The content moves exactly as far as
+  the user scrolls. The component never changes the scroll position.
+- **Flexible layout.** The header keeps its full height in the page. It moves
+  up with the page by the height it gives back and then stays.
+- **Constrained layout.** The header moves up with the scroll position of
+  `DefaultPage.Content`, and the content area grows upwards by the same amount,
+  so it always starts at the bottom edge of the header. A top padding on
+  `DefaultPage.Content` and a top margin on `DefaultPage.Header` that the page
+  sets stay in effect. For this, `DefaultPage.Root` cuts off what reaches out
+  of it at the top or bottom edge (`overflow-y: clip`). Elements rendered in a
+  portal, such as menus and tooltips, are not affected.
+
+#### Changing in one step
+
+- **Collapse.** The header collapses once the content has scrolled 8 pixels
+  more than the height the header gives back. In the flexible layout, the
+  header keeps its full height in the page, so it collapses once the content
+  has scrolled 8 pixels.
+- **Full form.** The header returns to its full form only when the content is
+  back at the top. Scrolling up does not expand it, so the user can re-read
+  something without the header taking the room back.
+- **After a pause.** The header changes form 150 milliseconds after the last
+  scroll event. It never interrupts the user's scrolling or a smooth scroll.
+- **Not under the mouse pointer.** While the mouse pointer is over the header,
+  the header keeps its form. It changes when the pointer leaves the header, or
+  when the user scrolls with the mouse wheel over the header. A click on a tab
+  that resets the scroll position therefore does not move the tabs under the
+  pointer. Touch has no hover, so this does not apply to touch.
+- **Content stays still.** When the header collapses after the user scrolled,
+  the content the user is reading stays where it is on screen. After a jump
+  (a `#hash` link or the browser's scroll restoration), the target ends
+  directly below the collapsed header.
+
+The height changes at once. Parts that appear fade in, unless the user prefers
+reduced motion.
+
+The option has an effect only when the header is pinned: with
+`layout="constrained"` (the default), or with `layout="flexible"` and
+`stickyHeader`. With `layout="flexible"` and no `stickyHeader`, the header keeps
+its full form, and development builds log a warning.
+
+```jsx live-dev
+const App = () => (
+  <Box height="400px" overflow="auto" border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root layout="flexible" stickyHeader collapseHeaderOnScroll>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Edit customer</DefaultPage.Title>
+        <DefaultPage.Subtitle>customer@example.com</DefaultPage.Subtitle>
+        <DefaultPage.TabNav>
+          <TabNav.Root aria-label="Customer sections">
+            <TabNav.Item href="/customers/123/general" isCurrent>General</TabNav.Item>
+            <TabNav.Item href="/customers/123/addresses">Addresses</TabNav.Item>
+          </TabNav.Root>
+        </DefaultPage.TabNav>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          {Array.from({ length: 12 }, (_, i) => (
+            <FormField.Root key={i}>
+              <FormField.Label>{`Field ${i + 1}`}</FormField.Label>
+              <FormField.Input>
+                <TextInput placeholder={`Value for field ${i + 1}`} />
+              </FormField.Input>
+            </FormField.Root>
+          ))}
+        </Stack>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+#### Header height variable
+
+While `collapseHeaderOnScroll` is set, `DefaultPage.Root` publishes a header
+height as the CSS variable `--default-page-header-height` (for example `92px`):
+
+- When the header follows the scroll position, the variable is the height of
+  the pinned header. It does not change while the user scrolls.
+- When the header changes in one step, the variable is the current header
+  height. It changes with the header form.
+
+In both cases, it changes when the header changes size.
+
+Use it in the flexible layout with `stickyHeader`, where the header covers the
+top of the scrolling area:
+
+- as `top` of sticky elements inside the page, so they stop below the header;
+- as `scroll-margin-top` of anchor targets inside the page, so a `#hash` link
+  does not hide its target under the header.
+
+Always add a fallback: `var(--default-page-header-height, 0px)`. The variable is
+not set without the option, before the first measurement and during server
+rendering.
+
+```jsx live-dev
+const App = () => (
+  <Box height="400px" overflow="auto" border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root layout="flexible" stickyHeader collapseHeaderOnScroll>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Order history</DefaultPage.Title>
+        <DefaultPage.Subtitle>Order #ORD-2024-001</DefaultPage.Subtitle>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Box
+          position="sticky"
+          top="var(--default-page-header-height, 0px)"
+          bg="neutral.3"
+          padding="200"
+          zIndex="1"
+        >
+          <Text>Sticky section title, below the header</Text>
+        </Box>
+        <Stack gap="400" paddingTop="400">
+          {Array.from({ length: 20 }, (_, i) => (
+            <Text key={i} scrollMarginTop="var(--default-page-header-height, 0px)">
+              {`Event ${i + 1}`}
+            </Text>
+          ))}
+        </Stack>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+Where the variable does not fit:
+
+- **`scroll-padding-top`.** This property belongs on the scrolling element,
+  which in the flexible layout is outside `DefaultPage.Root`. CSS variables are
+  only inherited downwards, so the scrolling element cannot read it. Use
+  `scroll-margin-top` on the targets instead.
+- **The constrained layout.** There the header does not cover the content, so
+  an offset would leave a gap.
+- **Sizes such as `height` or `min-height`.** A size that depends on the header
+  height changes the layout that is measured, and can cause a
+  `ResizeObserver` loop error.
+
+#### Things to know
+
+- **Tests in JSDOM.** JSDOM has no layout and no scroll-driven animations, so
+  the header always shows its full form, and `isCollapsed` is `false`. Test the
+  collapse in a real browser, for example with a Storybook play function.
+- **Scroll areas inside the content.** Only the scrolling of
+  `DefaultPage.Content` and of the elements around the page counts. Scroll
+  areas inside the content, such as a `DataTable`, are ignored. If the page
+  content scrolls inside such an area that fills the whole content (for
+  example a `Splitter` or a `ScrollArea`), the header never collapses.
+- **Long titles.** A title with several lines keeps all of them in the
+  collapsed header, so the collapsed header is taller. To keep the title on one
+  line, truncate it with style props, for example
+  `<DefaultPage.Title truncate>`; it is then on one line in both forms. Put the
+  part of the title that tells records apart first. Screen readers always read
+  the full title.
+- **Touch.** Tooltips do not open on touch. On touch devices the collapsed back
+  link shows only its icon. Its label stays its accessible name.
 
 ## Sub-components
 
@@ -249,6 +475,16 @@ or overview; omit it entirely for top-level main pages.
 Always provide destination-specific text as children (e.g., "Back to products").
 A generic fallback label "Go back" is provided via i18n when children are
 omitted, but destination-specific text is strongly recommended for usability.
+
+The label is the link's visible text and its accessible name. In the collapsed
+header (`collapseHeaderOnScroll`), it is hidden visually, stays the accessible
+name, and is shown in a tooltip. Pass the label as children, not as
+`aria-label`: an `aria-label` would give the link a name that differs from its
+visible label and from the tooltip.
+
+The label is wrapped in its own element. In tests, find the back link with
+`getByRole("link", { name: "Back to products" })`; `getByText` returns the
+label element, not the link.
 
 ```jsx live-dev
 const App = () => (
@@ -415,6 +651,49 @@ const App = () => (
 )
 ```
 
+#### Adapting header content to the collapsed form
+
+Pass a function as the children of `DefaultPage.Header`. It receives
+`{ isCollapsed }` and returns the header content. `isCollapsed` is `true` as
+soon as the header starts to collapse, and `false` again when the header is
+back in its full form. Without `collapseHeaderOnScroll`, or when the header is
+not pinned, it is always `false`.
+
+Change only how the content looks, for example its opacity, and keep its size
+and place. Content that appears, disappears or changes size changes the header
+height while the user scrolls, and the header jumps.
+
+```jsx live-dev
+const App = () => (
+  <Box height="400px" border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root collapseHeaderOnScroll>
+      <DefaultPage.Header>
+        {({ isCollapsed }) => (
+          <>
+            <DefaultPage.Title>Spring campaign</DefaultPage.Title>
+            <Text
+              gridColumn="1"
+              textStyle="xs"
+              color="neutral.11"
+              opacity={isCollapsed ? 0 : 1}
+            >
+              Draft, not visible to customers. Fades out when the header collapses.
+            </Text>
+          </>
+        )}
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          {Array.from({ length: 20 }, (_, i) => (
+            <Text key={i}>{`Paragraph ${i + 1}`}</Text>
+          ))}
+        </Stack>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
 ## Usage examples
 
 ### Info main page (no BackLink, no Footer)
@@ -565,8 +844,8 @@ const App = () => (
 
 | Part | Description |
 |------|-------------|
-| `DefaultPage.Root` | Page container providing layout context. Accepts `layout` (`"constrained"` \| `"flexible"`), and `stickyHeader`/`stickyFooter` (flexible mode only) |
-| `DefaultPage.Header` | Header section; two-column grid for title area (left) and actions (right) |
+| `DefaultPage.Root` | Page container providing layout context. Accepts `layout` (`"constrained"` \| `"flexible"`), `stickyHeader`/`stickyFooter` (flexible mode only), and `collapseHeaderOnScroll`. Sets `--default-page-header-height` while `collapseHeaderOnScroll` is set |
+| `DefaultPage.Header` | Header section; two-column grid for title area (left) and actions (right). Accepts a function as children that receives `{ isCollapsed }` |
 | `DefaultPage.BackLink` | Optional back navigation link (requires `href`); omit for main pages |
 | `DefaultPage.Title` | Page title (renders as `h1`) |
 | `DefaultPage.Subtitle` | Optional subtitle text (renders as `p`) |
@@ -586,8 +865,23 @@ proper heading hierarchy.
 - `DefaultPage.Content` uses the `<main>` element (main landmark)
 - `DefaultPage.Footer` uses the `<footer>` element (contentinfo landmark)
 - `DefaultPage.Title` renders as an `<h1>`, ensuring correct heading hierarchy
-- `DefaultPage.BackLink` renders as a semantic `<a>` element with a default
-  `aria-label` of "Go back" via i18n
+- `DefaultPage.BackLink` renders as a semantic `<a>` element. Its label (the
+  children, or "Go back" via i18n by default) is its accessible name
+
+### Collapsed header
+
+With `collapseHeaderOnScroll`, changing the header form keeps the page
+structure:
+
+- `DefaultPage.Title` stays the same `<h1>` element, and screen readers read
+  the full title.
+- The subtitle is hidden visually but stays in the accessibility tree.
+- The back link keeps its label as its accessible name. Its pointer target is
+  at least 24 by 24 CSS pixels. Its tooltip repeats the label and is hidden
+  from assistive technology, so screen readers do not read the label twice.
+- An element in the header that has focus keeps it.
+- With `prefers-reduced-motion: reduce`, the header does not follow the scroll
+  position. It changes form in one step, without a fade.
 
 ### Keyboard navigation
 
@@ -602,16 +896,16 @@ proper heading hierarchy.
 | Element | Role | Announced as |
 |---------|------|--------------|
 | `DefaultPage.Header` | `banner` | "banner" landmark |
-| `DefaultPage.BackLink` | `link` | Link with aria-label (e.g. "Go back" or custom label) |
+| `DefaultPage.BackLink` | `link` | Link named by its label (e.g. "Back to products", or "Go back" by default) |
 | `DefaultPage.Title` | `heading` (level 1) | "Products, heading level 1" |
 | `DefaultPage.Content` | `main` | "main" landmark |
 | `DefaultPage.Footer` | `contentinfo` | "contentinfo" landmark |
 
 ### Labeling best practices
 
-- Override `DefaultPage.BackLink`'s default `aria-label="Go back"` with a
-  destination-specific label (e.g. `aria-label="Back to products"`) when the
-  destination context is important.
+- Replace `DefaultPage.BackLink`'s default label "Go back" with a
+  destination-specific label, passed as children (e.g.
+  `<DefaultPage.BackLink href="/products">Back to products</DefaultPage.BackLink>`).
 - When composing with `TabNav`, always provide an `aria-label` on `TabNav.Root`
   to describe the navigation group for screen readers.
 - Because `<main>` must be unique per page, avoid nesting multiple `DefaultPage`
