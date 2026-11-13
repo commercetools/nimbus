@@ -197,6 +197,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     togglePin,
     selectRowLabel,
     getRowKey,
+    registry,
   } = useDataTableRowContext<T>();
 
   const [styleProps, restProps] = extractStyleProps(props);
@@ -588,7 +589,17 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     }
   }, [hasRenderNestedContent, isExpanded, nestedContentId]);
 
-  const rowRef = mergeRefs(ref, rowCallbackRef, ariaRef);
+  // `apiRef.scrollToRow` finds the row element here, not through React Aria's
+  // `data-key` attribute.
+  const registerRowElement = useCallback(
+    (node: HTMLElement | null) => {
+      if (node) registry.rowElements.set(rowKey, node);
+      else registry.rowElements.delete(rowKey);
+    },
+    [registry, rowKey]
+  );
+
+  const rowRef = mergeRefs(ref, rowCallbackRef, ariaRef, registerRowElement);
 
   const { allowsDragging } = useTableOptions();
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);

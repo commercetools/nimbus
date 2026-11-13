@@ -1112,6 +1112,141 @@ const { dragAndDropHooks } = useDragAndDrop({
 
 See the [`useDragAndDrop` hook documentation](/hooks/use-drag-and-drop) for external drop support, outgoing formats, and helper functions.
 
+## Scroll to a row
+
+Use `apiRef` to scroll a row into view from your own code, for example after
+you add a row or move one. `apiRef` receives a handle with two methods:
+`scrollToRow` and `getScrollContainer`. The `ref` prop still points to the root
+element.
+
+```tsx
+import { useRef } from 'react';
+import { Button, DataTable, type DataTableApi } from '@commercetools/nimbus';
+
+const MyTable = () => {
+  const apiRef = useRef<DataTableApi>(null);
+
+  const showRow = (key: string) => {
+    apiRef.current
+      ?.scrollToRow(key, { align: 'center' })
+      .catch((error: unknown) => {
+        // A newer call replaced this one. This is not an error.
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        throw error;
+      });
+  };
+
+  return (
+    <>
+      <Button onPress={() => showRow('row-42')}>Show row 42</Button>
+      <DataTable columns={columns} rows={rows} maxHeight="400px" apiRef={apiRef} />
+    </>
+  );
+};
+```
+
+`apiRef` works on `DataTable` and on `DataTable.Root`. Its value is `null` until
+the table has mounted.
+
+### scrollToRow
+
+`scrollToRow(key, options)` returns a Promise. `key` is the `id` of the row.
+
+| Option     | Values                                           | Default     |
+| ---------- | ------------------------------------------------ | ----------- |
+| `align`    | `"start"`, `"center"`, `"end"`, `"nearest"`      | `"nearest"` |
+| `behavior` | `"auto"`, `"smooth"`                             | `"auto"`    |
+| `focus`    | `true`, `false`                                  | `false`     |
+
+- `align` says where the row ends up. `"nearest"` does not scroll when the row
+  is already fully visible, and otherwise scrolls the shortest distance.
+  `"start"`, `"center"` and `"end"` put the row at the top, the middle or the
+  bottom of the visible area. The sticky header never covers the row. The first
+  and last rows stop at the edges of the table.
+- `behavior: "auto"` scrolls at once. `"smooth"` scrolls with an animation, and
+  scrolls at once when the user prefers reduced motion.
+- The Promise resolves `true` when the row is at its final position. For
+  `"smooth"`, that is after the scrolling has stopped. If the scrolling stops
+  away from the row, the Promise resolves `false` and focus does not change.
+  This happens when the user scrolled during a smooth scroll, when the table
+  cannot scroll (a smooth scroll that does not move for 500ms gives up), and
+  when the row moved or was removed while the scroll ran.
+
+### When the Promise resolves false
+
+The Promise resolves `false`, and nothing scrolls or changes focus, when the key
+is not a row that the table shows:
+
+- The key is not in `rows`.
+- The `search` prop hides the row.
+- The key belongs to a nested child row (`nestedKey`). Child rows are not shown
+  as rows.
+- `DataTable.Root` has no `DataTable.Table` inside it. In development, `DataTable`
+  also logs a warning.
+
+The table is the element that scrolls, and its header is sticky when you set
+`maxHeight`. `scrollToRow` keeps a row clear of the header only when the header
+is sticky.
+
+### Call it after the rows have rendered
+
+Call `scrollToRow` after the rows have rendered. A call from an effect right
+after you changed `rows`, `search` or the sort order works: the table reads the
+new rows before it scrolls.
+
+```tsx
+useEffect(() => {
+  apiRef.current?.scrollToRow(newRowId, { align: 'end' }).catch(ignoreAbortError);
+}, [rows, newRowId]);
+```
+
+### Ignore AbortError
+
+The Promise rejects with a `DOMException` named `"AbortError"` in two cases:
+
+- You call `scrollToRow` again before the first call is done. The newer call
+  replaces the older one, for any key.
+- The table unmounts before the call is done.
+
+Both cases are normal. Add a `catch` when you make the call, and ignore this
+error:
+
+```tsx
+const ignoreAbortError = (error: unknown) => {
+  if (error instanceof DOMException && error.name === 'AbortError') return;
+  throw error;
+};
+
+apiRef.current?.scrollToRow(key).catch(ignoreAbortError);
+```
+
+Add the `catch` at the call, not later. A rejection that nobody handles shows up
+as an unhandled rejection in the browser.
+
+### Focus
+
+`scrollToRow` always sets the focused row of the table. The next arrow key or
+Tab starts at that row. It does **not** move keyboard focus to the row, so a
+call after a data change does not take focus away from an input where the user
+is typing.
+
+Pass `focus: true` to also move keyboard focus to the row after the scroll.
+
+When keyboard focus is already inside the table and you do not pass
+`focus: true`, the focused row stays as it is. React Aria would move keyboard
+focus to a new focused row, and `scrollToRow` does not do that without
+`focus: true`.
+
+A disabled row (`disabledKeys` or `isDisabled`) is scrolled to, and the Promise
+resolves `true`, but the focused row and keyboard focus do not change. In
+development, `DataTable` logs a warning if you passed `focus: true` for it.
+
+### getScrollContainer
+
+`getScrollContainer()` returns the element that scrolls. It is the same element
+as the `ref` of the table, so you can add a scroll listener or read
+`scrollTop`.
+
 ## Compound component API
 
 For advanced customization, use the compound component pattern:
@@ -1921,6 +2056,26 @@ type DataTableCellRenderProps<T extends object = Record<string, unknown>> = {
   columns: DataTableColumnItem<T>[]; // Active columns to render
   row: DataTableRowItem<T>; // Current row data
   isDisabled: boolean; // Whether the row is disabled
+};
+```
+
+### DataTableApi
+
+The handle that `apiRef` receives. See [Scroll to a row](#scroll-to-a-row):
+
+```tsx
+type DataTableApi = {
+  scrollToRow: (
+    key: string,
+    options?: DataTableScrollToRowOptions
+  ) => Promise<boolean>;
+  getScrollContainer: () => HTMLDivElement | null;
+};
+
+type DataTableScrollToRowOptions = {
+  align?: "start" | "center" | "end" | "nearest"; // Default "nearest"
+  behavior?: ScrollBehavior; // Default "auto"
+  focus?: boolean; // Default false
 };
 ```
 

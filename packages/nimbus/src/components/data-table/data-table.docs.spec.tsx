@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useState } from "react";
+import { createRef, useState } from "react";
 import {
   DataTable,
   NimbusProvider,
@@ -9,7 +9,11 @@ import {
   useDragAndDrop,
   createArrayHandlers,
 } from "@commercetools/nimbus";
-import type { DataTableColumnItem, DataTableRowItem } from "./data-table.types";
+import type {
+  DataTableApi,
+  DataTableColumnItem,
+  DataTableRowItem,
+} from "./data-table.types";
 
 // Sample test data
 const columns: DataTableColumnItem[] = [
@@ -1360,5 +1364,95 @@ describe("DataTable - Per-row drag", () => {
       expect.objectContaining({ id: "3" })
     );
     expect(rowOrder()).toEqual(["Alice", "Bob", "Carol"]);
+  });
+});
+
+/**
+ * @docs-section scroll-to-row
+ * @docs-title Scroll To Row Tests
+ * @docs-description Test scrollToRow through apiRef: the result for shown and unknown rows, ignoring AbortError, and moving focus
+ * @docs-order 16
+ */
+describe("DataTable - Scroll to row", () => {
+  const renderTable = () => {
+    const apiRef = createRef<DataTableApi>();
+    render(
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          apiRef={apiRef}
+          aria-label="Team members"
+        />
+      </NimbusProvider>
+    );
+    return apiRef;
+  };
+
+  const getApi = async (apiRef: ReturnType<typeof renderTable>) => {
+    await waitFor(() => expect(apiRef.current).not.toBeNull());
+    return apiRef.current as DataTableApi;
+  };
+
+  it("resolves true for a row that is shown", async () => {
+    const api = await getApi(renderTable());
+
+    await expect(api.scrollToRow("2")).resolves.toBe(true);
+  });
+
+  it("resolves false for a key that is not a row", async () => {
+    const api = await getApi(renderTable());
+
+    await expect(api.scrollToRow("unknown-key")).resolves.toBe(false);
+  });
+
+  it("ignores the AbortError of a call that a newer call replaced", async () => {
+    const api = await getApi(renderTable());
+
+    // Add the catch when you make the call. A newer call rejects the older
+    // one with an AbortError, and that is not an error in your code.
+    const scrollTo = (key: string) =>
+      api.scrollToRow(key).catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return false;
+        }
+        throw error;
+      });
+
+    const replaced = scrollTo("1");
+    const latest = scrollTo("3");
+
+    await expect(replaced).resolves.toBe(false);
+    await expect(latest).resolves.toBe(true);
+  });
+
+  it("moves focus to the row only with focus: true", async () => {
+    const api = await getApi(renderTable());
+    const bob = screen.getByRole("row", { name: /Bob Smith/ });
+
+    await api.scrollToRow("2");
+    expect(bob).not.toHaveFocus();
+
+    await api.scrollToRow("2", { focus: true });
+    await waitFor(() => expect(bob).toHaveFocus());
+  });
+
+  it("returns the scrolling element from getScrollContainer", async () => {
+    const apiRef = createRef<DataTableApi>();
+    const rootRef = createRef<HTMLDivElement>();
+    render(
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          ref={rootRef}
+          apiRef={apiRef}
+          aria-label="Team members"
+        />
+      </NimbusProvider>
+    );
+    const api = await getApi(apiRef);
+
+    expect(api.getScrollContainer()).toBe(rootRef.current);
   });
 });
