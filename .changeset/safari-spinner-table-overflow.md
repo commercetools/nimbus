@@ -7,7 +7,7 @@
   inside a `Button` now takes the size the button gives to icons, so it needs no
   `size`.
 - `LoadingSpinner`: the ring is now drawn on whole pixels at 24px, so it is
-  sharper. Its stroke is slightly thinner (2px, was 2.5px at 24px).
+  sharper. Its stroke is slightly thicker (3px, was 2.5px at 24px).
 - `LoadingSpinner`: the `ref` is now typed as `SVGSVGElement` (was
   `HTMLDivElement`), because the spinner now renders as an `svg` element.
 - `FormActionBar`, `ConfirmationDialog` and `FormDialog`: the loading spinner in

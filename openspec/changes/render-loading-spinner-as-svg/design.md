@@ -69,19 +69,20 @@ Alternative: keep the default class and raise its specificity with `&&`. The
 branch had this in `e17cf6c0a` and removed it again, because a spinner in a
 button should match its icon.
 
-### 3. Whole-pixel ring geometry: radius 9, stroke 2
+### 3. Whole-pixel ring geometry: radius 8.5, stroke 3
 
-On the 24x24 grid, radius 9 and stroke 2 give an outer edge of 2 and 22 and an
-inner edge of 4 and 20. The earlier values (radius 8.75, stroke 2.5) put the
-inner edge at 4.5 and 19.5, which is blurred at 24px. The outer diameter is
-unchanged (20 units), so the footprint and the 2px live area do not change.
+On the 24x24 grid, radius 8.5 and stroke 3 give an outer edge of 2 and 22 and an
+inner edge of 5 and 19. The earlier values (radius 8.75, stroke 2.5) put the
+inner edge at 4.5 and 19.5, which is blurred at 24px. Rounding the stroke up
+(to 3) instead of down (to 2) keeps the ring close to the old look. The outer
+diameter is unchanged (20 units), so the footprint and the 2px live area do not
+change.
 
-Alternative: radius 8.5 and stroke 3 (inner edge 5 and 19). It is closer to the
-old look (the old effective stroke was 2.5px at 24px) but bolder than the icon
-stroke. Radius 9 and stroke 2 matches the usual 24px icon stroke.
+Alternative: radius 9 and stroke 2 (inner edge 4 and 20). It matches the usual
+24px icon stroke, but it is thinner than the old ring (2.5px at 24px).
 
-The ring is thinner than before. At 16px a 2-unit stroke is 1.33px and at 20px it
-is 1.67px, so some blur remains at sizes that are not a multiple of 12px. The
+The ring is slightly thicker than before. At 16px a 3-unit stroke is 2px and at
+20px it is 2.5px, so some blur remains at sizes that are not a multiple of 12px. The
 pointer arc rotates, so it is anti-aliased while it moves.
 
 ### 4. Patterns drop `size` and margin
@@ -118,7 +119,7 @@ inside, with the same width as the other handles. Covered by the story
   without `size`.
 - **Safari** → The reason for the change, but the final version was tested only in
   headless Chromium. Needs a manual check in Safari.
-- **Thinner stroke** → Visible in the Chromatic snapshot for `ColorPalettes`;
+- **Thicker stroke** → Visible in the Chromatic snapshot for `ColorPalettes`;
   needs a design check.
 
 ## Migration Plan

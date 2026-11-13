@@ -22,11 +22,11 @@ default size, stroke), so the change must be recorded in the spec.
   from `width` and `height` attributes elsewhere. The size scale points
   (`2xs` 14px to `lg` 40px) are unchanged. The recipe no longer sets
   `display: inline-flex`.
-- The ring is drawn on the 24x24 icon grid with whole-pixel edges: radius 9 and
-  stroke 2, so the outer edge sits 2px inside the grid and both edges of the
+- The ring is drawn on the 24x24 icon grid with whole-pixel edges: radius 8.5 and
+  stroke 3, so the outer edge sits 2px inside the grid and both edges of the
   stroke are whole numbers at 24px. Before, it used a radius of 10.5 and a
   stroke of 3 under a `scale(calc(1 - 2/12))` transform (an effective stroke of
-  2.5px at 24px). The outer diameter is the same. The ring is slightly thinner.
+  2.5px at 24px). The outer diameter is the same. The ring is slightly thicker.
 - `FormActionBar`, `ConfirmationDialog` and `FormDialog` render
   `<LoadingSpinner />` without `size` and without a margin. The spinner takes
   the icon size of the button and the button `gap` spaces it from the label.

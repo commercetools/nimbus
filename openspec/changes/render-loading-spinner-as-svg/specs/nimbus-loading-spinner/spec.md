@@ -87,14 +87,14 @@ The component SHALL render scalable vector graphics with proper sizing.
 
 #### Scenario: Ring geometry on the icon grid
 - **WHEN** the ring renders
-- **THEN** the circle SHALL be centered at 12,12 with radius 9
-- **AND** the stroke width of the circle and of the pointer path SHALL be 2
+- **THEN** the circle SHALL be centered at 12,12 with radius 8.5
+- **AND** the stroke width of the circle and of the pointer path SHALL be 3
 - **AND** the outer edge of the ring SHALL be 2 units inside the viewBox, like the live area of an icon
-- **AND** both edges of the stroke SHALL be whole numbers at 24px (outer 2 and 22, inner 4 and 20)
+- **AND** both edges of the stroke SHALL be whole numbers at 24px (outer 2 and 22, inner 5 and 19)
 
 #### Scenario: Path stroke styling
 - **WHEN** paths render
-- **THEN** strokeWidth SHALL be "2" for both paths
+- **THEN** strokeWidth SHALL be "3" for both paths
 - **AND** pointer strokeLinecap SHALL be "round"
 - **AND** SHALL provide smooth, rounded appearance
 
