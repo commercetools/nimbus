@@ -96,6 +96,14 @@ The table of contents SHALL stay in view while the page scrolls.
 ### Requirement: Content width
 The page SHALL fill its column. Paragraphs and lists SHALL be limited to `80ch`.
 
+#### Scenario: Page fills its column
+- **WHEN** a documentation page is shown
+- **THEN** the page content SHALL fill the width of its column
+
+#### Scenario: Line length of text
+- **WHEN** a paragraph or a list is shown
+- **THEN** its width SHALL be limited to `80ch`
+
 ### Requirement: Type hierarchy
 The docs app SHALL render the headings and text of a page with a clear size
 order: `h2` larger than `h3`, `h3` larger than `h4`, and `h4` larger than body
