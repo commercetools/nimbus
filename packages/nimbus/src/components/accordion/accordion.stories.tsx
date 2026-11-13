@@ -162,14 +162,10 @@ export const WithSvgInHeader: Story = {
     const trigger = canvas.getByRole("button", { name: /First Item/ });
     const chevron = trigger.querySelector(".nimbus-accordion__indicator")!;
     const icon = canvas.getByTestId("header-icon");
-    const spinnerSvg = canvas
-      .getByTestId("header-spinner")
-      .querySelector("svg")!;
+    const spinnerSvg = canvas.getByTestId("header-spinner");
 
     // Same spinner rendered outside the accordion: its standalone size.
-    const referenceSvg = canvas
-      .getByTestId("reference-spinner")
-      .querySelector("svg")!;
+    const referenceSvg = canvas.getByTestId("reference-spinner");
     const size = (el: Element) => {
       const { width, height } = getComputedStyle(el);
       return { width, height };
