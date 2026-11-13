@@ -45,6 +45,9 @@ back navigation.
   grid row collapses automatically
 - **Composable** — Arrange sub-components freely to cover read-only, editable,
   creation, and tabbed patterns from the same primitives
+- **Collapse on scroll** — Optional shorter header after the content scrolls
+  away from the top. The back link keeps its label as the accessible name and
+  shows that label in a tooltip.
 
 ## Variables
 
@@ -220,6 +223,39 @@ const App = () => (
       <DefaultPage.Footer>
         <FormActionBar onSave={() => {}} onCancel={() => {}} />
       </DefaultPage.Footer>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+### Collapse header on scroll
+
+On a pinned header, set `collapseHeaderOnScroll` so the header shortens after
+the page scrolls. The title stays on one line. The subtitle and the back link
+label hide visually but stay available to assistive technology. The back link
+shows a tooltip with its label on hover and keyboard focus.
+
+```jsx live
+const App = () => (
+  <Box height="400px" border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root collapseHeaderOnScroll>
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/products">
+          Back to products
+        </DefaultPage.BackLink>
+        <DefaultPage.Title>Product details</DefaultPage.Title>
+        <DefaultPage.Subtitle>SKU-001</DefaultPage.Subtitle>
+        <DefaultPage.Actions>
+          <Button variant="solid" colorPalette="primary">Save</Button>
+        </DefaultPage.Actions>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="600">
+          {Array.from({ length: 12 }, (_, index) => (
+            <Text key={index}>Row {index + 1}</Text>
+          ))}
+        </Stack>
+      </DefaultPage.Content>
     </DefaultPage.Root>
   </Box>
 )
