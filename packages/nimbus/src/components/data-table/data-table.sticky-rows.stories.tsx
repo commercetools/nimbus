@@ -250,3 +250,146 @@ export const StickyRowsRenderOnlyChangedRows: StoryObj<RenderCountTableProps> =
       });
     },
   };
+
+// ---------------------------------------------------------------------------
+// Stacks: the layout of sticky rows in a scroll area
+// ---------------------------------------------------------------------------
+
+const manyRows = (count: number): DataTableRowItem[] =>
+  Array.from({ length: count }, (_, index) => ({
+    id: `row-${index + 1}`,
+    name: `Row ${index + 1}`,
+  }));
+
+/** The element that scrolls: the table's root. */
+const getRoot = (canvasElement: HTMLElement) => {
+  const root = canvasElement
+    .querySelector("table")
+    ?.closest<HTMLElement>("[data-scroll-left]");
+  if (!root) throw new Error("The DataTable root was not found");
+  return root;
+};
+
+/** Waits for the browser to lay out and paint, and for animation frames. */
+const nextFrames = (count = 2) =>
+  new Promise<void>((resolve) => {
+    const step = (remaining: number) =>
+      remaining === 0
+        ? resolve()
+        : requestAnimationFrame(() => step(remaining - 1));
+    step(count);
+  });
+
+const rowByName = (canvas: ReturnType<typeof within>, name: string) =>
+  canvas.getByRole("row", { name: new RegExp(`^${name}$`) });
+
+/** Two stuck rows are within a pixel of each other: stacked without a gap. */
+const expectTouching = (above: number, below: number) =>
+  expect(Math.abs(below - above)).toBeLessThan(1);
+
+type StackTableProps = {
+  label?: string;
+  stickyRows: Set<string>;
+  maxHeight?: string;
+  rowCount?: number;
+};
+
+const StackTable = ({
+  label = "Sticky rows",
+  stickyRows,
+  // Tall enough that the rows in place at the top are clear of the bottom stack.
+  maxHeight = "480px",
+  rowCount = 40,
+}: StackTableProps) => {
+  const [rows] = useState(() => manyRows(rowCount));
+  return (
+    <DataTable
+      aria-label={label}
+      columns={nameColumns}
+      rows={rows}
+      stickyRows={stickyRows}
+      maxHeight={maxHeight}
+      size="md"
+    />
+  );
+};
+
+const stackStickyRows = new Set(["row-3", "row-5", "row-38"]);
+
+/**
+ * Sticky rows stick at both edges and stack in row order without a gap. A
+ * sticky row in its own place covers nothing, and the scroll padding follows
+ * the rows that are stuck.
+ */
+export const StickyRowsStacks: Story = {
+  render: () => <StackTable stickyRows={stackStickyRows} />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const root = getRoot(canvasElement);
+    const rect = (name: string) =>
+      rowByName(canvas, name).getBoundingClientRect();
+    const headerBottom = () =>
+      canvasElement.querySelector("thead")!.getBoundingClientRect().bottom;
+    const clientBottom = () =>
+      root.getBoundingClientRect().top + root.clientTop + root.clientHeight;
+    const padding = () => ({
+      top: parseFloat(root.style.scrollPaddingTop),
+      bottom: parseFloat(root.style.scrollPaddingBottom),
+    });
+
+    await step(
+      "At the top, rows 3 and 5 are in place and row 38 sticks at the bottom",
+      async () => {
+        await waitFor(() => {
+          expectTouching(rect("Row 38").bottom, clientBottom());
+        });
+        // Row 3 is in its own place, below rows 1 and 2.
+        expect(rect("Row 3").top).toBeGreaterThan(headerBottom() + 40);
+        // Only row 38 is stuck, so only it is in the padding.
+        await waitFor(() => {
+          expect(padding().bottom).toBeCloseTo(rect("Row 38").height, 0);
+        });
+        expect(padding().top).toBeCloseTo(
+          headerBottom() - root.getBoundingClientRect().top - root.clientTop,
+          0
+        );
+      }
+    );
+
+    await step(
+      "Scrolled down, rows 3 and 5 stack below the header",
+      async () => {
+        root.scrollTop = 600;
+        await nextFrames();
+        expectTouching(headerBottom(), rect("Row 3").top);
+        expectTouching(rect("Row 3").bottom, rect("Row 5").top);
+        // The bottom stack did not move.
+        expectTouching(rect("Row 38").bottom, clientBottom());
+      }
+    );
+
+    await step(
+      "The padding covers the header and both stuck rows",
+      async () => {
+        await waitFor(() => {
+          const headerHeight =
+            headerBottom() - root.getBoundingClientRect().top - root.clientTop;
+          expect(padding().top).toBeCloseTo(
+            headerHeight + rect("Row 3").height + rect("Row 5").height,
+            0
+          );
+        });
+        expect(padding().bottom).toBeCloseTo(rect("Row 38").height, 0);
+      }
+    );
+
+    await step("At the end, row 38 is in its own place", async () => {
+      root.scrollTop = root.scrollHeight;
+      await nextFrames();
+      // Row 38 is no longer stuck, so the bottom padding is 0. Rows 3 and 5
+      // are still stuck at the top.
+      await waitFor(() => expect(padding().bottom).toBe(0));
+      expectTouching(rect("Row 3").bottom, rect("Row 5").top);
+    });
+  },
+};

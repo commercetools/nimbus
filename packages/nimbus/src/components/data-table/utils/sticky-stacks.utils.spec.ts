@@ -1,0 +1,238 @@
+import { describe, it, expect } from "vitest";
+import {
+  computeStickyLayout,
+  computeStickyOffsets,
+  computeStuckStacks,
+  type StickyBodyRow,
+  type StickyRowLayout,
+} from "./sticky-stacks.utils";
+
+/**
+ * A table with a 40px header and 20 body rows, each 50px high. Rows 2 and 15
+ * are sticky. Positions are measured from the top of the scrollable content, so
+ * row 2 starts at 40 + 2 * 50 = 140 and row 15 at 40 + 15 * 50 = 790.
+ */
+const HEADER = 40;
+const rows = (overrides: Record<number, Partial<StickyBodyRow>> = {}) =>
+  Array.from({ length: 20 }, (_, index): StickyBodyRow => {
+    return {
+      height: 50,
+      isSticky: index === 2 || index === 15,
+      ...overrides[index],
+    };
+  });
+
+const layouts = (): StickyRowLayout[] =>
+  computeStickyLayout({ tableTop: 0, headerHeight: HEADER, rows: rows() });
+
+describe("computeStickyLayout", () => {
+  it("returns the natural top and height of the sticky rows only", () => {
+    expect(layouts()).toEqual([
+      { rowIndex: 2, naturalTop: 140, height: 50 },
+      { rowIndex: 15, naturalTop: 790, height: 50 },
+    ]);
+  });
+
+  it("counts rows that are not sticky, such as nested panels", () => {
+    // header 40, a row (50), its nested panel (30), then a sticky row.
+    const result = computeStickyLayout({
+      tableTop: 0,
+      headerHeight: HEADER,
+      rows: [
+        { height: 50, isSticky: false },
+        { height: 30, isSticky: false },
+        { height: 50, isSticky: true },
+      ],
+    });
+    expect(result).toEqual([{ rowIndex: 2, naturalTop: 120, height: 50 }]);
+  });
+
+  it("starts at the top of the table, not of the scrollable content", () => {
+    const result = computeStickyLayout({
+      tableTop: 10,
+      headerHeight: HEADER,
+      rows: [{ height: 50, isSticky: true }],
+    });
+    expect(result).toEqual([{ rowIndex: 0, naturalTop: 50, height: 50 }]);
+  });
+
+  it("keeps fractional heights", () => {
+    const result = computeStickyLayout({
+      tableTop: 0,
+      headerHeight: 40.5,
+      rows: [
+        { height: 40.40625, isSticky: false },
+        { height: 40.40625, isSticky: true },
+      ],
+    });
+    expect(result[0].naturalTop).toBeCloseTo(80.90625, 5);
+    expect(result[0].height).toBe(40.40625);
+  });
+
+  it("follows a changed row order with the same heights", () => {
+    const moved = computeStickyLayout({
+      tableTop: 0,
+      headerHeight: HEADER,
+      rows: rows({ 2: { isSticky: false }, 3: { isSticky: true } }),
+    });
+    expect(moved.map((l) => l.rowIndex)).toEqual([3, 15]);
+    expect(moved[0].naturalTop).toBe(190);
+  });
+
+  it("returns nothing when no row is sticky", () => {
+    expect(
+      computeStickyLayout({
+        tableTop: 0,
+        headerHeight: HEADER,
+        rows: [{ height: 50, isSticky: false }],
+      })
+    ).toEqual([]);
+  });
+});
+
+describe("computeStickyOffsets", () => {
+  it("stacks `top` below the header and `bottom` above the end", () => {
+    expect(
+      computeStickyOffsets({ headerHeight: HEADER, layouts: layouts() })
+    ).toEqual([
+      { top: 40, bottom: 50 },
+      { top: 90, bottom: 0 },
+    ]);
+  });
+
+  it("gives one sticky row the header height and no bottom offset", () => {
+    expect(
+      computeStickyOffsets({
+        headerHeight: HEADER,
+        layouts: [{ rowIndex: 4, naturalTop: 240, height: 50 }],
+      })
+    ).toEqual([{ top: 40, bottom: 0 }]);
+  });
+
+  it("changes when the header height changes", () => {
+    expect(
+      computeStickyOffsets({ headerHeight: 64, layouts: layouts() })[0].top
+    ).toBe(64);
+  });
+
+  it("adds fractional heights without rounding", () => {
+    const result = computeStickyOffsets({
+      headerHeight: 40.5,
+      layouts: [
+        { rowIndex: 0, naturalTop: 40.5, height: 40.40625 },
+        { rowIndex: 1, naturalTop: 80.90625, height: 40.40625 },
+      ],
+    });
+    expect(result[1].top).toBeCloseTo(80.90625, 5);
+    expect(result[0].bottom).toBe(40.40625);
+  });
+
+  it("returns an empty list for no sticky rows", () => {
+    expect(computeStickyOffsets({ headerHeight: HEADER, layouts: [] })).toEqual(
+      []
+    );
+  });
+});
+
+describe("computeStuckStacks", () => {
+  /** A scroll area 300px high. */
+  const stacks = (scrollTop: number, header = HEADER) =>
+    computeStuckStacks({
+      headerHeight: header,
+      layouts: layouts(),
+      scrollTop,
+      viewportHeight: 300,
+    });
+
+  it("stacks a row below the viewport at the bottom, and ignores one in place", () => {
+    // Row 2 (140..190) is inside 0..300 under the header: in place.
+    // Row 15 (790..840) is below the viewport: stuck at the bottom.
+    expect(stacks(0)).toEqual({
+      top: 0,
+      bottom: 50,
+      topCount: 0,
+      bottomCount: 1,
+    });
+  });
+
+  it("stacks a row above the viewport at the top", () => {
+    // Viewport 200..500: row 2 is above, row 15 is below.
+    expect(stacks(200)).toEqual({
+      top: 50,
+      bottom: 50,
+      topCount: 1,
+      bottomCount: 1,
+    });
+  });
+
+  it("counts a row that is in place in the visible area as not stuck", () => {
+    // Viewport 600..900 shows row 15 (790..840) in its own place.
+    expect(stacks(600)).toEqual({
+      top: 50,
+      bottom: 0,
+      topCount: 1,
+      bottomCount: 0,
+    });
+  });
+
+  it("sticks a row at the top only once it is under the stack above it", () => {
+    // At 700 the natural top of row 15 (790) equals 700 + 40 + 50: in place.
+    expect(stacks(700).topCount).toBe(1);
+    // One pixel further it is under the stack: stuck.
+    expect(stacks(701)).toEqual({
+      top: 100,
+      bottom: 0,
+      topCount: 2,
+      bottomCount: 0,
+    });
+  });
+
+  it("does not count the same row at the top and at the bottom", () => {
+    const one: StickyRowLayout[] = [
+      { rowIndex: 3, naturalTop: 190, height: 50 },
+    ];
+    // Scrolled far past it: top only.
+    expect(
+      computeStuckStacks({
+        headerHeight: HEADER,
+        layouts: one,
+        scrollTop: 600,
+        viewportHeight: 300,
+      })
+    ).toEqual({ top: 50, bottom: 0, topCount: 1, bottomCount: 0 });
+  });
+
+  it("uses the header height to decide what is stuck at the top", () => {
+    // Row 2 starts at 140. With a 40px header it is stuck when scrollTop > 100.
+    expect(stacks(101).topCount).toBe(1);
+    // With a 64px header it is stuck from scrollTop > 76.
+    expect(stacks(80, 64).topCount).toBe(1);
+    expect(stacks(80, 40).topCount).toBe(0);
+  });
+
+  it("returns zeros when there are no sticky rows", () => {
+    expect(
+      computeStuckStacks({
+        headerHeight: HEADER,
+        layouts: [],
+        scrollTop: 500,
+        viewportHeight: 300,
+      })
+    ).toEqual({ top: 0, bottom: 0, topCount: 0, bottomCount: 0 });
+  });
+
+  it("works with fractional heights", () => {
+    const fractional: StickyRowLayout[] = [
+      { rowIndex: 0, naturalTop: 40.5, height: 40.40625 },
+      { rowIndex: 1, naturalTop: 80.90625, height: 40.40625 },
+    ];
+    const result = computeStuckStacks({
+      headerHeight: 40.5,
+      layouts: fractional,
+      scrollTop: 500,
+      viewportHeight: 300,
+    });
+    expect(result.topCount).toBe(2);
+    expect(result.top).toBeCloseTo(80.8125, 5);
+  });
+});

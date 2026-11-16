@@ -305,6 +305,12 @@ scroll padding.
 - **THEN** the table SHALL scroll so that the focused row is above the bottom
   stack
 
+#### Scenario: A sticky row in its own place adds no padding
+
+- **WHEN** a sticky row is inside the visible area at its own position
+- **THEN** it SHALL NOT be counted in the top or bottom scroll padding
+- **AND** the padding SHALL follow the rows that are stuck as the user scrolls
+
 ### Requirement: Scroll To Row With Sticky Rows
 
 `apiRef.scrollToRow` SHALL add the heights of the top and bottom sticky stacks
@@ -322,6 +328,14 @@ and currently stuck SHALL count as in place.
 - **WHEN** `scrollToRow` is called with `align` `"end"` for a row that is not
   sticky, and a bottom stack is present
 - **THEN** the row SHALL end directly above the bottom stack
+
+#### Scenario: Only the stacks of the destination count
+
+- **WHEN** `scrollToRow` is called, and a sticky row is in its own place now but
+  will be stuck at the top once the table has scrolled to the target
+- **THEN** the insets SHALL include that row
+- **AND** a sticky row that will not be stuck at the destination SHALL NOT be
+  included
 
 #### Scenario: Stack heights are current right after a change
 

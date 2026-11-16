@@ -33,7 +33,7 @@ import {
   formatRowKeyProblems,
 } from "../utils/row-keys.utils";
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
-import { useStableArray, useDataTableApi } from "../hooks";
+import { useStableArray, useDataTableApi, useStickyStacks } from "../hooks";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "../data-table.messages";
 import { DATA_TABLE_DEFAULT_SIZE } from "../utils/sizes.utils";
@@ -568,6 +568,16 @@ export const DataTableRoot = function DataTableRoot<
     sortedRows,
     getRowKey,
     disabledKeys,
+  });
+
+  // Rows only stick in a scroll area with a sticky header, which needs
+  // `maxHeight` (see `DataTable.Body`).
+  useStickyStacks({
+    rootRef: ref,
+    registry,
+    isEnabled: !!maxHeight && !!stickyRows && stickyRows.size > 0,
+    stickyRows,
+    sortedRows,
   });
 
   const selectionContextValue: TableSelectionContextValue = useMemo(

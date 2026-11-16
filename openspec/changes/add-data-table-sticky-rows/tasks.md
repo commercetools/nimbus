@@ -58,20 +58,26 @@
 
 ## 3. Stacks and Keyboard Focus
 
-- [ ] 3.1 Write `utils/sticky-stacks.utils.spec.ts` first: from the row heights
-      in row order and the sticky flags, the top offsets (header plus the rows
-      before) and bottom offsets (the rows after), the two totals, no sticky
-      rows, one sticky row, fractional heights, a changed row order with the
-      same heights, a changed header height; verify it fails
-- [ ] 3.2 Implement the pure function in `utils/sticky-stacks.utils.ts`, and
-      `hooks/use-sticky-stacks.ts` with one `ResizeObserver` on the header and
-      on the sticky row elements from the row registry, measuring the fractional
-      border-box height; run it again after a change of the row order, the rows
-      or `stickyRows`; write the offsets and the two totals as CSS variables on
-      the root through the DOM (never through state), and set
-      `scroll-padding-top` and `scroll-padding-bottom` from the totals; call the
-      hook in `data-table.root.tsx`; verify the unit spec passes and typecheck
-      passes
+- [x] 3.1 Write `utils/sticky-stacks.utils.spec.ts` first, for the three pure
+      functions of design Decision 2: the natural layout of the sticky rows from
+      all body rows in order (nested and drop indicator rows take space); the
+      static offsets (`top` = header plus the sticky rows before, `bottom` = the
+      sticky rows after); the stuck stacks for a scroll position (a sticky row
+      in its own place is not counted, rows scrolled above stack at the top,
+      rows below stack at the bottom, mixed top and bottom, header height
+      changed, no sticky rows, one sticky row, fractional heights, a changed row
+      order with the same heights); verify it fails
+- [x] 3.2 Implement the three functions in `utils/sticky-stacks.utils.ts`, a
+      live DOM measuring function (`measureStickyLayout`, fractional border-box
+      heights from the body rows) and `hooks/use-sticky-stacks.ts`: measure
+      after a size change (`ResizeObserver` on the header, the table and the
+      root) and after a change of the row order, the rows or `stickyRows`; write
+      `--data-table-sticky-top` and `--data-table-sticky-bottom` on the sticky
+      row elements (and remove them from rows that are no longer sticky) and
+      `scroll-padding-top` and `scroll-padding-bottom` on the root, through the
+      DOM and never through state; recompute only the padding on scroll (passive
+      listener, one animation frame); clean up on unmount; call the hook in
+      `data-table.root.tsx`; verify the unit spec passes and typecheck passes
 - [ ] 3.3 Add stories with play functions: sticky rows stack at the top below
       the header and at the bottom in row order, with no overlap; a height
       change of a sticky row updates the other offsets; adding and removing a
@@ -104,16 +110,18 @@
 
 ## 4. Scroll To Row
 
-- [ ] 4.1 Extend `hooks/use-data-table-api.spec.ts` first: with sticky row
-      elements in the registry, `topInset` and `bottomInset` include their
-      heights, measured when the call runs; a call right after the set or the
-      row order changed uses the new heights; a target that is sticky and stuck
-      resolves `true` without calling `scrollTo`, for every `align`; a sticky
-      target that is not stuck scrolls as any other row; verify the new cases
-      fail
-- [ ] 4.2 Add the live stack heights to `getScrollInsets` in
-      `hooks/use-data-table-api.ts` (not read from the CSS variables) and
-      resolve `true` early for a stuck sticky target; leave
+- [ ] 4.1 Extend `hooks/use-data-table-api.spec.ts` first: the insets include
+      the stuck stacks of the destination, measured when the call runs (a sticky
+      row in its own place now but stuck at the destination is included; one
+      that will not be stuck is not); a call right after the set or the row
+      order changed uses the new layout; a target that is sticky and currently
+      stuck resolves `true` without calling `scrollTo`, for every `align`; a
+      sticky target that is not stuck scrolls as any other row; the destination
+      search stops after at most three passes; verify the new cases fail
+- [ ] 4.2 Add the destination stacks to `getScrollInsets` in
+      `hooks/use-data-table-api.ts` (live measuring, not the cache or the DOM
+      properties; repeat target and stacks until two passes agree, at most
+      three) and resolve `true` early for a stuck sticky target; leave
       `computeTargetScrollTop` unchanged; verify the hook spec passes
 - [ ] 4.3 Add to `data-table.scroll-to-row.stories.tsx` or the sticky stories:
       `align` `"start"` and `"end"` for a normal row end below the top stack and

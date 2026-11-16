@@ -65,19 +65,32 @@ CSS variables.
 - _Alternative: JavaScript that moves rows on scroll._ Rejected: it lags behind
   native scrolling and needs a scroll listener per table.
 
-**2. Measure the heights in one hook, and write CSS variables on the root.** A
-hook in `DataTable.Root` holds a `ResizeObserver` on the header and on the
-sticky row elements (found through the row registry from #2169). It computes the
-prefix and suffix sums in row order and writes `--data-table-sticky-top-<index>`
-style variables, or one variable per row key, on the root element through the
-DOM, not through React state. It also writes the two totals, used for
-`scroll-padding`. It measures the border-box height as a fractional number
-(`borderBoxSize`, or `getBoundingClientRect().height`), never a rounded or
+**2. One pure module decides what is stuck; one hook applies it.**
+`utils/sticky-stacks.utils.ts` has pure functions for three things. (a) The
+natural layout of the sticky rows: each one's natural top and fractional
+border-box height, from the heights of all body rows in DOM order (nested panel
+rows and drop indicator rows included, because they take space), starting at the
+table's top and the header height. (b) The static offsets: `top` is the header
+height plus the heights of the sticky rows before it, `bottom` is the heights of
+the sticky rows after it. (c) The stuck stacks for a scroll position. A sticky
+row is stuck at the top when its natural top is above the bottom edge of the
+stack above it (which starts with the header), and at the bottom when its
+natural bottom is below the top edge of the stack below it. Only the stuck rows
+cover other rows; a sticky row in its own place covers nothing.
+
+A hook in `DataTable.Root` measures the layout from the DOM and writes, always
+through the DOM and never through React state: the offsets as custom properties
+on the sticky row elements (`--data-table-sticky-top` and
+`--data-table-sticky-bottom`), and the stuck stack heights as
+`scroll-padding-top` and `scroll-padding-bottom` on the root. The layout is
+measured again after a size change (a `ResizeObserver` on the header, the table
+and the root) and after a change of the row order, the row set or `stickyRows`
+(the observer only reports sizes). On scroll, a passive listener throttled to
+one animation frame recomputes only the padding from the cached layout:
+arithmetic over the sticky rows, no layout read. Measuring uses the fractional
+border-box height (`getBoundingClientRect().height`), never a rounded or
 content-box value, so stacked rows leave no gap at fractional heights or page
-zoom. The observer only reports size changes, so the hook also runs again after
-every change of the row order, the row set or `stickyRows` (an effect on those
-inputs). Drop indicator rows are not in the row registry, so they are never
-counted.
+zoom.
 
 - _Alternative: React state for the heights._ Rejected: every height change
   would re-render the table.
@@ -101,12 +114,13 @@ the stories for focus ring and frozen cells (tasks 3.x) must confirm it. The
 comment is updated.
 
 **5. Keyboard focus clear of the stacks.** The root gets `scroll-padding-top`
-and `scroll-padding-bottom` equal to the two totals. React Aria's
-`scrollIntoView` reads them. A story arrows through a table with sticky rows and
-checks that the focused row is never behind a stack. If the story shows that the
-table's focus path does not use `scrollIntoView`, the design changes to scroll
-the focused row from `onFocus` with the same totals. This is the one decision
-that needs a check before the rest is built (task 3.4).
+and `scroll-padding-bottom` equal to the stuck stack heights at the current
+scroll position (Decision 2). React Aria's `scrollIntoView` reads them. A story
+arrows through a table with sticky rows and checks that the focused row is never
+behind a stack. If the story shows that the table's focus path does not use
+`scrollIntoView`, the design changes to scroll the focused row from `onFocus`
+with the same totals. This is the one decision that needs a check before the
+rest is built (task 3.4).
 
 This also serves WCAG 2.2 SC 2.4.11 (level AA): "When a user interface component
 receives keyboard focus, the component is not entirely hidden due to
@@ -124,16 +138,18 @@ selected rules, so those win. Frozen cells already read the variable, so they
 match without new rules. A consumer background (`data-custom-bg`) leaves the
 variable unset, so it wins, as it does today.
 
-**7. `scrollToRow` inset change.** `getScrollInsets` adds the stack heights to
-`topInset` and `bottomInset`. It measures them live when the call runs (the
-heights of the sticky row elements in the registry, in DOM order), the same way
-it already measures the header. It does not read the CSS variables, because a
-`ResizeObserver` writes those after layout, and a call right after `stickyRows`
-or the rows changed would read old numbers. For a target that is sticky and
-stuck, the hook resolves `true` before it computes a scroll. "Stuck" is decided
-from the row's position against the edges: the row's box touches the top or
-bottom edge of the visible area, and its own position is outside it. This keeps
-`computeTargetScrollTop` unchanged.
+**7. `scrollToRow` inset change.** `getScrollInsets` adds the stuck stack
+heights to `topInset` and `bottomInset`. It measures the layout live when the
+call runs, the same way it already measures the header, and does not read the
+cache or the DOM properties: a call right after `stickyRows` or the rows changed
+would read old numbers. The stacks must be those of the destination, not of the
+current position (a sticky row near the top is in place now, and stuck once the
+table has scrolled down). Because the destination depends on the insets, the
+hook computes a first target with the stacks at the current scroll position,
+computes the stacks at that target, and computes the target again, until two
+passes agree (at most three passes). For a target that is sticky and currently
+stuck (it is in a stuck stack at the current scroll position), the hook resolves
+`true` before it computes a scroll. `computeTargetScrollTop` stays unchanged.
 
 - _Alternative: compute the row's natural position and apply `align` to it._
   Rejected in the brainstorm: a sticky row's own offsets show its stuck
