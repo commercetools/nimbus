@@ -176,6 +176,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   isLastPinned = false,
   isSinglePinned = false,
   isDragDisabled = false,
+  isSticky = false,
   ...props
 }: DataTableRowProps<T> & DataTableRowPerRowProps) => {
   const {
@@ -720,6 +721,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           {...restProps}
           data-clickable={isClickable && !isDisabled}
           data-custom-bg={hasCustomBg || undefined}
+          data-sticky-row={isSticky || undefined}
           className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}${consumerClassName ? ` ${consumerClassName}` : ""}`}
           dependencies={[isExpanded, search, isTruncated]}
         >

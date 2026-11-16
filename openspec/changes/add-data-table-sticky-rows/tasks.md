@@ -1,23 +1,24 @@
 ## 1. Types and Row Flag
 
-- [ ] 1.1 Add `stickyRows?: Set<string>` to the `DataTable` and `DataTable.Root`
+- [x] 1.1 Add `stickyRows?: Set<string>` to the `DataTable` and `DataTable.Root`
       props and `isSticky: boolean` to `DataTableRowRenderProps`, with JSDoc on
       both, in `data-table.types.ts`; verify with
       `pnpm --filter @commercetools/nimbus typecheck:dev`
-- [ ] 1.2 Compute `isSticky` for each row in `data-table.body.tsx` from
+- [x] 1.2 Compute `isSticky` for each row in `data-table.body.tsx` from
       `getRowKey(row)` and a ref to the current set (the same way `isPinned` and
       `isDragDisabled` are computed), `true` only when the id is in the set and
       the table has `maxHeight`; pass it to `DataTable.Row`; set
       `data-sticky-row` on the row element only when it is `true`; verify
       typecheck and that the existing DataTable stories still pass with
       `pnpm test:dev packages/nimbus/src/components/data-table`
-- [ ] 1.3 Write a story (`data-table.sticky-rows.stories.tsx`) with a play
+- [x] 1.3 Write a story (`data-table.sticky-rows.stories.tsx`) with a play
       function: a custom row render function receives `isSticky` `true` only for
       rows in `stickyRows` and `false` without the prop; an empty set makes no
-      row sticky; an unknown id and a nested child id are ignored without an
-      error; without `maxHeight` (size set with `maxH`) every row has `isSticky`
+      row sticky; an id that is not a row is ignored without an error (nested
+      child ids are never rendered as rows, so the lookup never sees them);
+      without `maxHeight` (size set with `maxH`) every row has `isSticky`
       `false`; verify it passes with `pnpm test:dev` on that file
-- [ ] 1.4 Add a render-count story as in the per-row drag stories: adding one
+- [x] 1.4 Add a render-count story as in the per-row drag stories: adding one
       row to `stickyRows` re-renders only that row; verify it passes
 
 ## 2. Styles
