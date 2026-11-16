@@ -28,10 +28,13 @@ const zIndex = {
   pinHeaderCell: 11,
   expandHeaderCell: 12,
   frozenHeaderCell: 13,
-  // Sticky header, above the body layer so rows that scroll under the
-  // header stay hidden. Also the header's focus ring layer, above every
-  // frozen header cell.
-  header: 14,
+  // Sticky body rows that are stuck at an edge. Above every body row, frozen
+  // body cell and `bodyLayer`, so rows that scroll under them stay hidden.
+  stickyRow: 14,
+  // Sticky header, above the stuck rows, so rows that scroll under the header
+  // stay hidden. Also the header's focus ring layer, above every frozen
+  // header cell.
+  header: 15,
 } as const;
 
 // Pseudo-element that extends a sticky cell's background by 2px on each side.
@@ -414,6 +417,31 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         "--data-table-row-bg": "{colors.bg}",
       },
       borderBottom: "1px solid {colors.neutral.3}",
+
+      // Sticky row (`stickyRows`). It sticks at both edges: `top` and `bottom`
+      // come from the measured stacks (the custom properties are set on the row
+      // from JavaScript). This block comes before the hover and selected rules
+      // below, so those win over the highlight.
+      "&[data-sticky-row]": {
+        position: "sticky",
+        top: "var(--data-table-sticky-top, 0px)",
+        bottom: "var(--data-table-sticky-bottom, 0px)",
+        zIndex: zIndex.stickyRow,
+        // A border of a row in a collapsed-border table belongs to the table
+        // grid and is not painted at the stuck position, and it leaves one
+        // pixel of the scrolling rows showing. The line is drawn as an inset
+        // shadow on the cells instead.
+        borderBottom: "none",
+        "& > td": {
+          boxShadow: "inset 0 -1px 0 {colors.neutral.3}",
+        },
+      },
+      // The highlight. It is opaque, so rows that scroll under a stuck row stay
+      // hidden. A row with a background from the consumer keeps it.
+      "&[data-sticky-row]:not([data-custom-bg])": {
+        backgroundColor: "{colors.neutral.2}",
+        "--data-table-row-bg": "{colors.neutral.2}",
+      },
       ...bodyFocusRing,
       // Only the drag handle shows a grab cursor. A row keeps the default
       // cursor, or `pointer` when it is clickable.
@@ -466,6 +494,15 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
       "&[data-disabled='true']": {
         layerStyle: "disabled",
+      },
+      // A disabled row is drawn at half opacity, which would let the rows that
+      // scroll under a stuck row show through. A sticky row keeps its opaque
+      // background and dims only the content of its cells.
+      "&[data-sticky-row][data-disabled='true']": {
+        opacity: 1,
+        "& > td > *": {
+          opacity: 0.5,
+        },
       },
     },
     cell: {

@@ -32,7 +32,7 @@
       stacked rows is still possible). Firefox did not start in the session
       sandbox and stays in task 6.2; the pinned sticky row that is stuck alone
       (the group outline) needs the real table and moves to task 2.3
-- [ ] 2.2 In `data-table.recipe.ts`: give `[data-sticky-row]` `position: sticky`
+- [x] 2.2 In `data-table.recipe.ts`: give `[data-sticky-row]` `position: sticky`
       with `top` and `bottom` read from the row's CSS variables; add the sticky
       row level 14 to the `zIndex` table and move the header to 15 (update the
       comment); set the highlight (`neutral.2`) through `--data-table-row-bg`
