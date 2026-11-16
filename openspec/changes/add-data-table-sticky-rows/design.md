@@ -108,6 +108,15 @@ table's focus path does not use `scrollIntoView`, the design changes to scroll
 the focused row from `onFocus` with the same totals. This is the one decision
 that needs a check before the rest is built (task 3.4).
 
+This also serves WCAG 2.2 SC 2.4.11 (level AA): "When a user interface component
+receives keyboard focus, the component is not entirely hidden due to
+author-created content." Its Understanding document lists "sticky footers,
+sticky headers, and non-modal dialogs" as typical cases
+(w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html). Scroll
+padding avoids partly hidden rows too, which is more than the criterion asks.
+The project's target is WCAG 2.1 AA, so this is a quality choice, not a
+requirement.
+
 **6. Highlight through the existing background variable.** A sticky row sets
 `--data-table-row-bg` to the `neutral.2` token and the same value as its
 `background`, in the recipe, with a lower specificity than the hover and
@@ -186,9 +195,28 @@ counts renders, as the per-row drag story does (#2160, criterion 5).
   edges for the first, middle and last row of a group. A stuck row without its
   group may show an edge that makes no sense alone. I have not checked it; tasks
   2.1 and 2.3 look at it and Design decides.
-- [React Aria drag auto-scroll near the edges] → I do not know whether it
-  accounts for the stacks. The spec says drops follow React Aria's default, and
-  the docs list this as part of it.
+- [React Aria drag auto-scroll near the edges] → No change. React Aria's
+  `useAutoScroll.mjs` uses a 20px zone measured on the scroll container's box
+  and only runs on WebKit on macOS ("Most browsers auto scroll natively, but
+  WebKit on macOS does not"), so the pointer position decides and a stack does
+  not block it. The sticky header has the same shape today. Native auto-scroll
+  in Chrome and Firefox was not checked: item in the manual checklist (task
+  6.2). The docs list this as part of "React Aria's default".
+- [Footer at the bottom edge] → The footer is rendered inside the scrolling
+  root, after the table (`data-table.tsx:46`, `data-table.recipe.ts:138`). MDN
+  says a sticky element stays "stuck until meeting the opposite edge of its
+  containing block", so the bottom stack should stop at the table's edge and not
+  cover the footer. MDN does not mention `tr` for `sticky` (and calls the effect
+  of `relative` on table rows "undefined"), so a story checks it (task 3.7) and
+  task 2.1 covers the browsers.
+- [Highlight is the only cue, and forced-colors mode drops it] → Brainstorm
+  decision: keep one simple highlight, no ARIA state, no extra cue. WCAG 1.4.1
+  says "Color is not used as the only visual means of conveying information … or
+  distinguishing a visual element"; whether "this row is sticky" is such
+  information is a Design question and goes in the PR for Design to confirm. MDN
+  lists `background-color` among the properties replaced in forced-colors mode.
+  The manual checklist (task 6.2) checks that a stuck row still hides the rows
+  under it there.
 - [This change depends on #2169 and #2160] → It is based on the #2169 branch and
   cannot merge before it. The `scrollToRow` requirement here is written as ADDED
   because the main spec does not contain the `scrollToRow` requirements until

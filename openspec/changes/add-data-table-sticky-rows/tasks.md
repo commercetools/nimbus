@@ -89,6 +89,10 @@
       stack taller than half of the visible height), each logged once per cause
       and not in production; add a story that spies on `console.warn` for both
       and for the quiet case; verify it passes
+- [ ] 3.7 Add a story with `DataTable.Footer` and a bottom stack: at the end of
+      the scroll range the footer is fully visible and no stuck row covers it
+      (compare bounding boxes); verify it passes, and if a browser covers the
+      footer, record it in `design.md` under Risks and fix it before merge
 
 ## 4. Scroll To Row
 
@@ -120,10 +124,12 @@
       the stack follow React Aria's default (including drag auto-scroll near the
       edges, which is not adjusted), that a new `Set` is needed to change the
       set, that a consumer row background must be opaque, that a disabled sticky
-      row keeps an opaque background, and that virtualized tables are not
-      covered; add a copy-ready example to `data-table.docs.spec.tsx`; update
-      `data-table.a11y.mdx` and `data-table.mdx` where they describe rows or
-      scrolling; verify the docs spec passes and the MDX compiles
+      row keeps an opaque background, that the highlight is a visual hint only
+      (no ARIA state, replaced in forced-colors mode), and that virtualized
+      tables are not covered; add a copy-ready example to
+      `data-table.docs.spec.tsx`; update `data-table.a11y.mdx` and
+      `data-table.mdx` where they describe rows or scrolling; verify the docs
+      spec passes and the MDX compiles
 - [ ] 5.3 Add a minor changeset in `.changeset/` written from the consumer's
       view (`stickyRows`, `isSticky`, the highlight, the header z-index, the
       `scrollToRow` change), following `docs/changeset-conventions.md`; verify
@@ -137,8 +143,13 @@
       all pass
 - [ ] 6.2 Before merge, a person checks Firefox, Safari and Chrome on Windows
       with the checklist (both edges, stacks, focus ring, frozen-cell click,
-      drag, keyboard focus, highlight) and records the browsers, versions and
-      result in the PR description
+      drag, keyboard focus, highlight, a drag toward the top and bottom edges
+      with stacks present, the footer at the end of the scroll range, and
+      forced-colors mode: a stuck row still hides the rows under it) and records
+      the browsers, versions and result in the PR description
+- [ ] 6.3 Ask Design in the PR to confirm the `neutral.2` highlight, and that
+      the highlight is the only cue for a sticky row (no extra non-color cue, no
+      ARIA state); verify the answer is recorded in the PR
 
 ## Workflow follow-up
 

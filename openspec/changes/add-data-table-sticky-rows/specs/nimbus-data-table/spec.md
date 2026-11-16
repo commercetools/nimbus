@@ -109,6 +109,13 @@ the measured heights of the sticky rows before it (top) and after it (bottom).
 - **WHEN** every sticky row is hidden by `search`, or `stickyRows` becomes empty
 - **THEN** both stack heights SHALL be 0, and no scroll padding SHALL remain
 
+#### Scenario: Bottom stack does not cover the footer
+
+- **WHEN** the table has a footer and the user scrolls to the end of the scroll
+  range
+- **THEN** the footer SHALL be fully visible and SHALL NOT be covered by a stuck
+  row
+
 ### Requirement: Sticky Rows Need a Maximum Height
 
 Sticky rows SHALL work only when the table has `maxHeight`, as the sticky header
@@ -203,6 +210,13 @@ stronger and win over the highlight. A consumer background on the row SHALL win.
 
 - **WHEN** a sticky row is at its own position, or stuck at an edge
 - **THEN** it SHALL show the same highlight
+
+#### Scenario: Highlight is a visual hint only
+
+- **WHEN** a consumer reads the sticky rows section of `data-table.dev.mdx`
+- **THEN** it SHALL state that the highlight is a visual hint, that no ARIA
+  state marks a row as sticky, and that browser forced-colors mode replaces the
+  background color
 
 #### Scenario: Hover and selection win
 
