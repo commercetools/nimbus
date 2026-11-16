@@ -437,8 +437,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         },
       },
       // The highlight. It is opaque, so rows that scroll under a stuck row stay
-      // hidden. A row with a background from the consumer keeps it.
-      "&[data-sticky-row]:not([data-custom-bg])": {
+      // hidden. A row with a background from the consumer keeps it. `:where`
+      // adds no specificity, so the selected rule below, which is as specific
+      // as a plain attribute selector, comes later and wins.
+      "&[data-sticky-row]:where(:not([data-custom-bg]))": {
         backgroundColor: "{colors.neutral.2}",
         "--data-table-row-bg": "{colors.neutral.2}",
       },

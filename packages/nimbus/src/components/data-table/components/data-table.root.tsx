@@ -342,6 +342,19 @@ export const DataTableRoot = function DataTableRoot<
       );
     }
   }, [hasDraggableKeys, selectionMode, hasExpandableContent]);
+  // Rows only stick in a scroll area with a sticky header, which needs
+  // `maxHeight`. Without it no row is sticky, so say why. Once per cause,
+  // development only.
+  const hasStickyRows = !!stickyRows && stickyRows.size > 0;
+  const hasMaxHeight = !!maxHeight;
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    if (hasStickyRows && !hasMaxHeight) {
+      console.warn(
+        "[Nimbus] DataTable: `stickyRows` has no effect without `maxHeight`. Rows only stick in a scroll area with a sticky header. Set `maxHeight`, or remove `stickyRows`."
+      );
+    }
+  }, [hasStickyRows, hasMaxHeight]);
   // The single rule for whether the selection column exists. Header, cells
   // and the nested row's colSpan all read it, so they cannot disagree.
   const showSelectionColumn = selectionMode !== "none";
@@ -575,7 +588,7 @@ export const DataTableRoot = function DataTableRoot<
   useStickyStacks({
     rootRef: ref,
     registry,
-    isEnabled: !!maxHeight && !!stickyRows && stickyRows.size > 0,
+    isEnabled: hasMaxHeight && hasStickyRows,
     stickyRows,
     sortedRows,
   });

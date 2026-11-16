@@ -62,6 +62,9 @@ export const useStickyStacks = ({
     // being sticky.
     let styledRows = new Set<HTMLElement>();
     let animationFrame: number | undefined;
+    // Development only: warn once per run of this effect, so a change of
+    // `stickyRows` can warn again.
+    let hasWarnedTall = false;
 
     const clearRow = (row: HTMLElement) => {
       row.style.removeProperty(TOP_PROPERTY);
@@ -118,6 +121,25 @@ export const useStickyStacks = ({
       });
       styledRows = nextRows;
       applyPadding();
+
+      // All sticky rows in one stack would be the tallest stack. A stack above
+      // half of the visible height leaves little room for the other rows.
+      if (
+        !hasWarnedTall &&
+        measurement &&
+        process.env.NODE_ENV !== "production"
+      ) {
+        const stackHeight = measurement.layouts.reduce(
+          (sum, layout) => sum + layout.height,
+          0
+        );
+        if (stackHeight > root.clientHeight / 2) {
+          hasWarnedTall = true;
+          console.warn(
+            "[Nimbus] DataTable: the sticky rows are taller together than half of the visible height of the table, so they can cover most of the other rows. Make `maxHeight` taller, or use fewer sticky rows."
+          );
+        }
+      }
     };
 
     const onScroll = () => {

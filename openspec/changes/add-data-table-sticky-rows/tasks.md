@@ -44,17 +44,20 @@
       not apply the row-level opacity of `layerStyle: "disabled"`, keep the
       opaque background and dim the cell content; verify typecheck and the
       existing frozen column and pinning stories pass
-- [ ] 2.3 Add stories for the look and the stacking order with play functions: a
-      sticky row differs in background from a normal row and its frozen cells
-      match; hover and selected win; a stuck row hides rows that scroll under it
-      (frozen cells included) and the header is above a stuck row; a stuck row
-      that is disabled, selected or hovered shows nothing of the rows under it
-      (sample the pixel or check the computed opacity and background); the stuck
-      row's bottom line is painted (sample a pixel row); no pixel row of the
-      scrolling row shows between two stacked rows, and if one does, round the
-      offsets to device pixels or overlap the rows by one pixel (design Risks);
-      look at a pinned sticky row that is stuck alone (the group outline) and
-      record it for Design; verify they pass with `pnpm test:dev`
+- [x] 2.3 Add a story for the look and the stacking order with a play function:
+      a sticky row differs in background from a normal row and its frozen cells
+      match; selected wins (hover is not testable: `userEvent.hover` sends
+      synthetic events that never turn on CSS `:hover`, so it is covered by the
+      specificity of its rule in the recipe); a stuck row, also a disabled or
+      selected one, has an opaque computed background and opacity 1 (a disabled
+      row dims its content), and hides what is under it; the bottom line is
+      drawn on the cells; the header is above the stuck rows (done in
+      `StickyRowsLook`, which found the selector specificity bug fixed in the
+      recipe). Not done here, and listed in task 6.2 for the manual check: a
+      pixel sample for a one-pixel seam between stacked rows (the stories check
+      that stacked rows touch within one pixel, and design Risks names the
+      rounding fix if a seam shows), and the pinned sticky row that is stuck
+      alone (the group outline), which goes to Design
 
 ## 3. Stacks and Keyboard Focus
 
@@ -78,16 +81,18 @@
       DOM and never through state; recompute only the padding on scroll (passive
       listener, one animation frame); clean up on unmount; call the hook in
       `data-table.root.tsx`; verify the unit spec passes and typecheck passes
-- [ ] 3.3 Add stories with play functions: sticky rows stack at the top below
-      the header and at the bottom in row order, with no overlap; a height
-      change of a sticky row updates the other offsets; adding and removing a
-      row from `stickyRows` updates the stacks; a pinned sticky row is first in
-      the top stack; a sticky row hidden by `search` does not render and takes
-      no space and the totals return to 0; the nested panel of an expanded
-      sticky row scrolls; sorting, a drag and drop reorder and a pin toggle
-      change the stack order without a height change; a header that wraps moves
-      the top stack; changing a sticky row height does not re-render the table;
-      verify they pass with `pnpm test:dev`
+- [x] 3.3 Add stories with play functions (done: `StickyRowsStacks`,
+      `StickyRowsChanges`, `StickyRowsHeightChanges`,
+      `StickyRowsPinnedAndNested`): sticky rows stack at the top below the
+      header and at the bottom in row order, with no overlap; adding and
+      removing a row from `stickyRows` updates the stacks; a pinned sticky row
+      is first in the top stack; a sticky row hidden by `search` does not render
+      and the padding is removed; the nested panel of an expanded sticky row is
+      not sticky; a new row order (the rows reversed, which stands for sorting,
+      a drag and drop reorder and a pin toggle: the rows keep their heights and
+      move) gives a new stack order; a narrower table makes rows and header
+      wrap, the stack follows, and nothing re-renders because of it; verify they
+      pass with `pnpm test:dev`
 - [x] 3.4 Add a story that moves focus with ArrowUp and ArrowDown through a
       table with a top and a bottom stack, and checks that the focused row is
       never behind a stack (done: the story failed with padding alone, see
@@ -96,19 +101,21 @@
       `scrollToRow` with `align: "nearest"` would put it, using the shared
       destination-aware function from task 4.2; scrolling with the wheel is not
       pulled back; verify the story passes
-- [ ] 3.5 Add stories: a focused stuck row shows its whole focus ring; after
-      scrolling sideways a click on a stuck row's frozen cell calls
-      `onRowAction` for that row; a pointer drag and a keyboard drag start from
-      a stuck row (mocked native drag events for the pointer, as in the per-row
-      drag stories); verify they pass with `pnpm test:dev`
-- [ ] 3.6 Add the development warnings (`stickyRows` without `maxHeight`, a
+- [x] 3.5 Add stories (done: `StickyRowsFocusAndClick`, `StickyRowsDrag`): a
+      focused stuck row shows its whole focus ring; after scrolling sideways a
+      click on a stuck row's frozen cell calls `onRowAction` for that row; a
+      pointer drag and a keyboard drag start from a stuck row (mocked native
+      drag events for the pointer, as in the per-row drag stories); verify they
+      pass with `pnpm test:dev`
+- [x] 3.6 Add the development warnings (`stickyRows` without `maxHeight`, a
       stack taller than half of the visible height), each logged once per cause
       and not in production; add a story that spies on `console.warn` for both
       and for the quiet case; verify it passes
-- [ ] 3.7 Add a story with `DataTable.Footer` and a bottom stack: at the end of
-      the scroll range the footer is fully visible and no stuck row covers it
-      (compare bounding boxes); verify it passes, and if a browser covers the
-      footer, record it in `design.md` under Risks and fix it before merge
+- [x] 3.7 Add a story (`StickyRowsFooter`) with `DataTable.Footer` and a bottom
+      stack: at the end of the scroll range the footer is fully visible and no
+      stuck row covers it (compare bounding boxes); verify it passes, and if a
+      browser covers the footer, record it in `design.md` under Risks and fix it
+      before merge
 
 ## 4. Scroll To Row
 
@@ -167,8 +174,11 @@
       with the checklist (both edges, stacks, focus ring, frozen-cell click,
       drag, keyboard focus, highlight, a drag toward the top and bottom edges
       with stacks present, the footer at the end of the scroll range, and
-      forced-colors mode: a stuck row still hides the rows under it) and records
-      the browsers, versions and result in the PR description
+      forced-colors mode: a stuck row still hides the rows under it, no
+      one-pixel seam of the scrolling rows between two stacked rows, also at
+      fractional sizes and page zoom, and a pinned sticky row that is stuck
+      alone: the group outline is for Design to judge) and records the browsers,
+      versions and result in the PR description
 - [ ] 6.3 Ask Design in the PR to confirm the `neutral.2` highlight, and that
       the highlight is the only cue for a sticky row (no extra non-color cue, no
       ARIA state); verify the answer is recorded in the PR
