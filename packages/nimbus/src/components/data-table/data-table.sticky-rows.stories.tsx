@@ -1471,10 +1471,17 @@ const discountColumns = (rows: DataTableRowItem[]): DataTableColumnItem[] => [
 const positionOf = (canvasElement: HTMLElement, name: string) =>
   bodyRow(canvasElement, name).querySelector("[data-position]")?.textContent;
 
-const discountRows = (newAt: "start" | "end"): DataTableRowItem[] => {
-  const existing = discountNames.map((name, index) => ({
+/**
+ * The draft discount and the discounts around it, `rowCount` rows in total. The
+ * first discounts have names, the rest are numbered.
+ */
+const discountRows = (
+  newAt: "start" | "end",
+  rowCount: number
+): DataTableRowItem[] => {
+  const existing = Array.from({ length: rowCount - 1 }, (_, index) => ({
     id: `discount-${index + 1}`,
-    name,
+    name: discountNames[index] ?? `Discount ${index + 1}`,
     value: discountValues[index % discountValues.length],
     status: "Active",
   }));
@@ -1494,8 +1501,14 @@ const newDiscountOnly = new Set([NEW_DISCOUNT_ID]);
  * dragging. The draft is sticky, so it stays in reach at the top or bottom edge
  * while the list scrolls, and it is the only row that can be dragged.
  */
-const DiscountsTable = ({ newAt }: { newAt: "start" | "end" }) => {
-  const [rows, setRows] = useState(() => discountRows(newAt));
+const DiscountsTable = ({
+  newAt,
+  rowCount = discountNames.length + 1,
+}: {
+  newAt: "start" | "end";
+  rowCount?: number;
+}) => {
+  const [rows, setRows] = useState(() => discountRows(newAt, rowCount));
   const { dragAndDropHooks } = useDragAndDrop({
     ...createArrayHandlers(setRows, (row) => row.id),
   });
@@ -1550,13 +1563,13 @@ const expectOnlyDraftDraggable = (canvasElement: HTMLElement) => {
 };
 
 /**
- * The draft discount starts first in the list. The list is scrolled to the
- * place where the discount belongs: the draft stays stuck under the header, and
+ * The draft discount starts first in a list of 100 rows. The list is scrolled
+ * to the place where the discount belongs: the draft stays stuck under the header, and
  * is dropped between two discounts that are in view. Only the draft can be
  * dragged.
  */
 export const StickyRowsNewDiscountFromTop: Story = {
-  render: () => <DiscountsTable newAt="start" />,
+  render: () => <DiscountsTable newAt="start" rowCount={100} />,
   play: async ({ canvasElement, step }) => {
     const root = getRoot(canvasElement);
     const header = canvasElement.querySelector("thead") as HTMLElement;
