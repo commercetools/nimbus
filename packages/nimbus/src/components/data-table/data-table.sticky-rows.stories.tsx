@@ -393,3 +393,83 @@ export const StickyRowsStacks: Story = {
     });
   },
 };
+
+// ---------------------------------------------------------------------------
+// Keyboard focus
+// ---------------------------------------------------------------------------
+
+const keyboardStickyRows = new Set(["row-2", "row-3", "row-38", "row-39"]);
+
+/**
+ * Arrow keys through a table with a top and a bottom stack. A focused row never
+ * stays behind the header or another sticky row: React Aria scrolls it into
+ * view with the scroll padding, and the table corrects a row that a new stack
+ * covers after that scroll.
+ */
+export const StickyRowsKeyboardFocus: Story = {
+  render: () => (
+    <StackTable
+      label="Keyboard focus"
+      stickyRows={keyboardStickyRows}
+      maxHeight="360px"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const header = canvasElement.querySelector("thead") as HTMLElement;
+
+    // More than one pixel of each box lies inside the other.
+    const overlaps = (a: DOMRect, b: DOMRect) =>
+      a.bottom - 1 > b.top && a.top + 1 < b.bottom;
+
+    /** Names of the header and sticky rows that cover the focused row. */
+    const coveringTheFocusedRow = () => {
+      const row = document.activeElement as HTMLElement;
+      const rowRect = row.getBoundingClientRect();
+      const covers: string[] = [];
+      if (overlaps(header.getBoundingClientRect(), rowRect)) {
+        covers.push("header");
+      }
+      canvasElement
+        .querySelectorAll<HTMLElement>("[data-sticky-row]")
+        .forEach((sticky) => {
+          if (
+            sticky !== row &&
+            overlaps(sticky.getBoundingClientRect(), rowRect)
+          ) {
+            covers.push(sticky.textContent ?? "?");
+          }
+        });
+      return covers;
+    };
+
+    /** Presses a key, waits for the focus to move, then for the row to be clear. */
+    const press = async (key: string) => {
+      const before = document.activeElement;
+      await userEvent.keyboard(key);
+      await waitFor(() => expect(document.activeElement).not.toBe(before));
+      await waitFor(() => expect(coveringTheFocusedRow()).toEqual([]));
+    };
+
+    await step("Focus the first row", async () => {
+      rowByName(canvas, "Row 1").focus();
+      expect(document.activeElement).toBe(rowByName(canvas, "Row 1"));
+    });
+
+    await step(
+      "ArrowDown to the last row never hides the focused row",
+      async () => {
+        for (let index = 0; index < 39; index += 1) await press("{ArrowDown}");
+        expect(document.activeElement).toBe(rowByName(canvas, "Row 40"));
+      }
+    );
+
+    await step(
+      "ArrowUp back to the first row never hides it either",
+      async () => {
+        for (let index = 0; index < 39; index += 1) await press("{ArrowUp}");
+        expect(document.activeElement).toBe(rowByName(canvas, "Row 1"));
+      }
+    );
+  },
+};

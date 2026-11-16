@@ -88,12 +88,14 @@
       change the stack order without a height change; a header that wraps moves
       the top stack; changing a sticky row height does not re-render the table;
       verify they pass with `pnpm test:dev`
-- [ ] 3.4 Add a story that moves focus with ArrowUp and ArrowDown through a
+- [x] 3.4 Add a story that moves focus with ArrowUp and ArrowDown through a
       table with a top and a bottom stack, and checks that the focused row is
-      never behind a stack; if it fails because the table's focus path does not
-      use React Aria's `scrollIntoView`, scroll the focused row from its focus
-      handler with the same totals and update `design.md` Decision 5; verify the
-      story passes
+      never behind a stack (done: the story failed with padding alone, see
+      design Decision 5); add the correction after focus to
+      `hooks/use-sticky-stacks.ts`, which scrolls a covered focused row to where
+      `scrollToRow` with `align: "nearest"` would put it, using the shared
+      destination-aware function from task 4.2; scrolling with the wheel is not
+      pulled back; verify the story passes
 - [ ] 3.5 Add stories: a focused stuck row shows its whole focus ring; after
       scrolling sideways a click on a stuck row's frozen cell calls
       `onRowAction` for that row; a pointer drag and a keyboard drag start from

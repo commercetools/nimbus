@@ -1,3 +1,6 @@
+import { computeTargetScrollTop } from "./scroll-to-row.utils";
+import type { DataTableScrollToRowOptions } from "../data-table.types";
+
 /**
  * Pure functions behind sticky rows. They know nothing about the DOM: the
  * measuring code gives them heights and positions, and they say which rows are
@@ -135,4 +138,90 @@ export const computeStuckStacks = ({
   }
 
   return { top, bottom, topCount, bottomCount };
+};
+
+/**
+ * Whether the row at `rowIndex` is part of a stuck stack for these stacks. A row
+ * that is not sticky is never stuck.
+ */
+export const isRowStuck = (
+  rowIndex: number,
+  layouts: StickyRowLayout[],
+  stacks: StuckStacks
+): boolean => {
+  const position = layouts.findIndex((layout) => layout.rowIndex === rowIndex);
+  if (position === -1) return false;
+  return (
+    position < stacks.topCount ||
+    position >= layouts.length - stacks.bottomCount
+  );
+};
+
+/** How often the target and the stacks are worked out again. */
+const MAX_PASSES = 3;
+
+/**
+ * The `scrollTop` that puts a row where `align` asks, or `null` when `"nearest"`
+ * finds the row fully visible. Unlike `computeTargetScrollTop` alone, it knows
+ * the stuck stacks of the destination.
+ *
+ * The stacks depend on the scroll position, and the position depends on the
+ * stacks: a sticky row that is in place now becomes stuck once the table has
+ * scrolled past it. So the target is worked out with the stacks of the current
+ * position, the stacks are worked out again for that target, and so on until two
+ * passes agree, at most three times.
+ *
+ * `rowTop` is the row's top in its own place. Pass the natural top for a sticky
+ * row, which is not where it is while it is stuck.
+ *
+ * @param headerInset - Height the sticky header covers (0 if it is not sticky)
+ */
+export const computeScrollTopWithStacks = ({
+  rowTop,
+  rowHeight,
+  viewportHeight,
+  scrollTop,
+  scrollHeight,
+  headerInset,
+  layouts,
+  align,
+}: {
+  rowTop: number;
+  rowHeight: number;
+  viewportHeight: number;
+  scrollTop: number;
+  scrollHeight: number;
+  headerInset: number;
+  layouts: StickyRowLayout[];
+  align?: DataTableScrollToRowOptions["align"];
+}): number | null => {
+  let stacks = computeStuckStacks({
+    headerHeight: headerInset,
+    layouts,
+    scrollTop,
+    viewportHeight,
+  });
+  let target: number | null = null;
+  for (let pass = 0; pass < MAX_PASSES; pass += 1) {
+    target = computeTargetScrollTop({
+      rowTop,
+      rowHeight,
+      viewportHeight,
+      scrollTop,
+      scrollHeight,
+      topInset: headerInset + stacks.top,
+      bottomInset: stacks.bottom,
+      align,
+    });
+    if (target === null) return null;
+    const next = computeStuckStacks({
+      headerHeight: headerInset,
+      layouts,
+      scrollTop: target,
+      viewportHeight,
+    });
+    if (next.top === stacks.top && next.bottom === stacks.bottom) return target;
+    stacks = next;
+  }
+  return target;
 };

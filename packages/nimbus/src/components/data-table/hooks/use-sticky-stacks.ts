@@ -6,8 +6,10 @@ import {
   type StickyMeasurement,
 } from "../utils/sticky-stacks.dom";
 import {
+  computeScrollTopWithStacks,
   computeStickyOffsets,
   computeStuckStacks,
+  isRowStuck,
 } from "../utils/sticky-stacks.utils";
 
 const TOP_PROPERTY = "--data-table-sticky-top";
@@ -126,9 +128,80 @@ export const useStickyStacks = ({
       });
     };
 
+    /**
+     * Scrolls a focused row clear of the header and the stuck rows, if it is
+     * covered. React Aria and the browser scroll a focused row into view, but
+     * only with the padding of the position before the scroll. A stack that
+     * appears because of that scroll is not in it, and the row can end up behind
+     * it.
+     */
+    const keepRowClear = (row: HTMLTableRowElement) => {
+      if (!row.isConnected) return;
+      const current = measureStickyLayout(root, registry.headerElement);
+      const body = root.querySelector("table")?.tBodies[0];
+      if (!current || !body) return;
+      const rowIndex = Array.from(body.rows).indexOf(row);
+      if (rowIndex === -1) return;
+
+      const stacks = computeStuckStacks({
+        headerHeight: current.headerInset,
+        layouts: current.layouts,
+        scrollTop: root.scrollTop,
+        viewportHeight: root.clientHeight,
+      });
+      // A stuck row is part of a stack. It is in view and is never moved.
+      if (isRowStuck(rowIndex, current.layouts, stacks)) return;
+
+      const viewTop = root.getBoundingClientRect().top + root.clientTop;
+      const rect = row.getBoundingClientRect();
+      const coveredTop = viewTop + current.headerInset + stacks.top;
+      const coveredBottom = viewTop + root.clientHeight - stacks.bottom;
+      if (rect.top >= coveredTop - 0.5 && rect.bottom <= coveredBottom + 0.5) {
+        return;
+      }
+
+      const layout = current.layouts.find((item) => item.rowIndex === rowIndex);
+      const target = computeScrollTopWithStacks({
+        rowTop: layout?.naturalTop ?? rect.top - viewTop + root.scrollTop,
+        rowHeight: rect.height,
+        viewportHeight: root.clientHeight,
+        scrollTop: root.scrollTop,
+        scrollHeight: root.scrollHeight,
+        headerInset: current.headerInset,
+        layouts: current.layouts,
+        align: "nearest",
+      });
+      if (target !== null) root.scrollTop = target;
+    };
+
+    // Only focus that came from the keyboard counts, and only a change of focus:
+    // scrolling with the wheel or a click on a visible part of a row is never
+    // pulled back. Two frames wait for React Aria's own scroll, which runs in
+    // the next animation frame.
+    let focusFrame: number | undefined;
+    const onFocusIn = (event: FocusEvent) => {
+      const target = event.target;
+      if (
+        !(target instanceof HTMLElement) ||
+        !target.matches(":focus-visible")
+      ) {
+        return;
+      }
+      const row = target.closest("tr");
+      if (!row) return;
+      if (focusFrame !== undefined) cancelAnimationFrame(focusFrame);
+      focusFrame = requestAnimationFrame(() => {
+        focusFrame = requestAnimationFrame(() => {
+          focusFrame = undefined;
+          keepRowClear(row);
+        });
+      });
+    };
+
     measure();
 
     root.addEventListener("scroll", onScroll, { passive: true });
+    root.addEventListener("focusin", onFocusIn);
 
     // Rows come and go and move (sort, drag and drop, pinning, expanding), and a
     // row becomes sticky or stops being sticky, without any size changing. Only
@@ -155,6 +228,8 @@ export const useStickyStacks = ({
 
     return () => {
       root.removeEventListener("scroll", onScroll);
+      root.removeEventListener("focusin", onFocusIn);
+      if (focusFrame !== undefined) cancelAnimationFrame(focusFrame);
       resizeObserver.disconnect();
       mutationObserver.disconnect();
       if (animationFrame !== undefined) cancelAnimationFrame(animationFrame);

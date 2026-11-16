@@ -113,14 +113,38 @@ the stories for focus ring and frozen cells (tasks 3.x) must confirm it. The
 `zIndex` table in the recipe is the single place for the new values, and its
 comment is updated.
 
-**5. Keyboard focus clear of the stacks.** The root gets `scroll-padding-top`
-and `scroll-padding-bottom` equal to the stuck stack heights at the current
-scroll position (Decision 2). React Aria's `scrollIntoView` reads them. A story
-arrows through a table with sticky rows and checks that the focused row is never
-behind a stack. If the story shows that the table's focus path does not use
-`scrollIntoView`, the design changes to scroll the focused row from `onFocus`
-with the same totals. This is the one decision that needs a check before the
-rest is built (task 3.4).
+**5. Keyboard focus clear of the stacks.** Two parts.
+
+_Scroll padding._ The root gets `scroll-padding-top` and `scroll-padding-bottom`
+equal to the header and the stuck stack heights at the current scroll position
+(Decision 2). React Aria reads them when it scrolls a focused row into view
+(`scrollIntoView.mjs`).
+
+_Measured (task 3.4): padding alone is not enough._ A story arrowed down a
+40-row table (360 px high, Chromium 156) and sampled `scrollTop` every frame:
+
+- With no sticky rows at all, focus on Row 7 scrolled to 338 px in one step. The
+  row ended at the very top, 3.5 px above the viewport, under the 42.5 px sticky
+  header. Moving focus down aligns the new row to the top edge; it does not
+  scroll the minimum distance. This already happens on `main` for any table with
+  `maxHeight`. It is outside this change.
+- With the padding, a row is aligned just below the header, as intended.
+- A top stack that does not exist yet cannot be in the padding. Focus on Row 5
+  scrolled to 195 px, then rows 2 and 3 became stuck on top of it. The padding
+  describes the stacks at the position before the scroll, and the stacks at the
+  destination can be taller.
+
+So the padding makes most cases right, but it cannot give the guarantee in the
+spec.
+
+_Correction after focus._ When a row (or a cell of it) gets focus, the hook
+waits until React Aria and the browser have scrolled, then checks whether the
+focused row is covered by the header or a stuck row. If it is, the hook scrolls
+to the position `scrollToRow` would use for `align: "nearest"`: the same
+destination-aware calculation (Decision 7), so it is one function, not two. A
+sticky row that is stuck is part of a stack and is never moved. The correction
+runs only after a focus change, so scrolling with the mouse wheel is never
+pulled back.
 
 This also serves WCAG 2.2 SC 2.4.11 (level AA): "When a user interface component
 receives keyboard focus, the component is not entirely hidden due to

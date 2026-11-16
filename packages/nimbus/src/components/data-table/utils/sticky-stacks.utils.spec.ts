@@ -1,8 +1,10 @@
 import { describe, it, expect } from "vitest";
 import {
+  computeScrollTopWithStacks,
   computeStickyLayout,
   computeStickyOffsets,
   computeStuckStacks,
+  isRowStuck,
   type StickyBodyRow,
   type StickyRowLayout,
 } from "./sticky-stacks.utils";
@@ -234,5 +236,98 @@ describe("computeStuckStacks", () => {
     });
     expect(result.topCount).toBe(2);
     expect(result.top).toBeCloseTo(80.8125, 5);
+  });
+});
+
+describe("computeScrollTopWithStacks", () => {
+  // The table of the cases above: header 40, rows 50 high, sticky rows 2 and 15,
+  // a 300px scroll area, 40 + 20 * 50 = 1040px of content.
+  const input = {
+    viewportHeight: 300,
+    scrollHeight: 1040,
+    headerInset: HEADER,
+  };
+
+  it("counts a sticky row that is in place now and stuck at the destination", () => {
+    // Row 10 starts at 540. At scrollTop 0 only row 15 is stuck (at the bottom),
+    // so a first guess puts row 10 at 500. At 500 row 2 is stuck at the top too,
+    // so row 10 has to go to 540 - (40 + 50) = 450 to sit below it.
+    expect(
+      computeScrollTopWithStacks({
+        ...input,
+        layouts: layouts(),
+        rowTop: 540,
+        rowHeight: 50,
+        scrollTop: 0,
+        align: "start",
+      })
+    ).toBe(450);
+  });
+
+  it("does not count a sticky row that is not stuck at the destination", () => {
+    // Row 3 (190..240) is visible at scrollTop 0: above the bottom stack (250).
+    expect(
+      computeScrollTopWithStacks({
+        ...input,
+        layouts: layouts(),
+        rowTop: 190,
+        rowHeight: 50,
+        scrollTop: 0,
+        align: "nearest",
+      })
+    ).toBeNull();
+  });
+
+  it("matches computeTargetScrollTop when no row is sticky", () => {
+    expect(
+      computeScrollTopWithStacks({
+        ...input,
+        layouts: [],
+        rowTop: 540,
+        rowHeight: 50,
+        scrollTop: 0,
+        align: "start",
+      })
+    ).toBe(500);
+  });
+
+  it("settles after at most three passes", () => {
+    // Whatever the layout, the result is a number inside the scroll range.
+    const result = computeScrollTopWithStacks({
+      ...input,
+      layouts: layouts(),
+      rowTop: 940,
+      rowHeight: 50,
+      scrollTop: 0,
+      align: "end",
+    });
+    expect(result).not.toBeNull();
+    expect(result).toBeGreaterThanOrEqual(0);
+    expect(result).toBeLessThanOrEqual(740);
+  });
+});
+
+describe("isRowStuck", () => {
+  it("is true for rows in the top or the bottom stack, false for rows in place", () => {
+    const all = layouts();
+    // scrollTop 200: row 2 is stuck at the top, row 15 at the bottom.
+    const stuck = computeStuckStacks({
+      headerHeight: HEADER,
+      layouts: all,
+      scrollTop: 200,
+      viewportHeight: 300,
+    });
+    expect(isRowStuck(2, all, stuck)).toBe(true);
+    expect(isRowStuck(15, all, stuck)).toBe(true);
+    // A row that is not sticky is never stuck.
+    expect(isRowStuck(7, all, stuck)).toBe(false);
+    // scrollTop 600: row 15 is in its own place.
+    const later = computeStuckStacks({
+      headerHeight: HEADER,
+      layouts: all,
+      scrollTop: 600,
+      viewportHeight: 300,
+    });
+    expect(isRowStuck(15, all, later)).toBe(false);
   });
 });
