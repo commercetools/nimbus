@@ -65,6 +65,13 @@ visually hidden but stays in the accessibility tree. It cannot be focused. The r
 its drag button, moves with the arrow keys, and drops with `Enter`, also next to
 rows that cannot be dragged.
 
+**Sticky rows.** With `stickyRows`, the table keeps the focused row clear of the
+header and of the rows that are stuck at the top or bottom edge, so keyboard
+focus is never hidden behind them. A drag can start from a stuck row with the
+keyboard. The highlight of a sticky row is a visual hint only: no ARIA state
+marks a row as sticky, and browser forced-colors mode replaces the background
+color.
+
 Row activation works by keyboard and pointer alike, so a row that opens a detail
 view with a click also opens it with `Enter`. Pinning and expanding use the
 buttons in their cells and have no separate shortcut.

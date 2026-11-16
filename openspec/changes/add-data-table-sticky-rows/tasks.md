@@ -147,7 +147,7 @@
 - [x] 5.1 Mark two stories for Chromatic (sticky row stuck at the top, stuck at
       the bottom) following `docs/chromatic-visual-testing.md`; verify the story
       parameters match the other snapshotted DataTable stories
-- [ ] 5.2 Write the sticky rows section in `data-table.dev.mdx`: the prop,
+- [x] 5.2 Write the sticky rows section in `data-table.dev.mdx`: the prop,
       `maxHeight` requirement and the development warnings, the highlight,
       `isSticky`, `scrollToRow` behavior for stuck rows, that pointer drops over
       the stack follow React Aria's default (including drag auto-scroll near the
@@ -159,14 +159,14 @@
       `data-table.docs.spec.tsx`; update `data-table.a11y.mdx` and
       `data-table.mdx` where they describe rows or scrolling; verify the docs
       spec passes and the MDX compiles
-- [ ] 5.3 Add a minor changeset in `.changeset/` written from the consumer's
+- [x] 5.3 Add a minor changeset in `.changeset/` written from the consumer's
       view (`stickyRows`, `isSticky`, the highlight, the header z-index, the
       `scrollToRow` change), following `docs/changeset-conventions.md`; verify
       `pnpm changeset:status` lists it
 
 ## 6. Integration Checks
 
-- [ ] 6.1 Run `pnpm lint`, `pnpm --filter @commercetools/nimbus typecheck:dev`,
+- [x] 6.1 Run `pnpm lint`, `pnpm --filter @commercetools/nimbus typecheck:dev`,
       `pnpm test:dev packages/nimbus/src/components/data-table` and
       `pnpm exec openspec validate add-data-table-sticky-rows --strict`; verify
       all pass

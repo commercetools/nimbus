@@ -1112,6 +1112,62 @@ const { dragAndDropHooks } = useDragAndDrop({
 
 See the [`useDragAndDrop` hook documentation](/hooks/use-drag-and-drop) for external drop support, outgoing formats, and helper functions.
 
+## Sticky rows
+
+Pass `stickyRows` to keep chosen rows visible when the user scrolls them out of
+view. A sticky row sticks at the top edge, below the header, when it is scrolled
+above the visible area, and at the bottom edge when it lies below it. Several
+sticky rows stack in row order and do not overlap.
+
+```tsx
+const stickyRows = useMemo(() => new Set(['row-3', 'row-42']), []);
+
+<DataTable
+  columns={columns}
+  rows={rows}
+  maxHeight="400px"
+  stickyRows={stickyRows}
+/>
+```
+
+- `stickyRows` is a `Set` of row ids. An id that is not a row is ignored.
+- Sticky rows need `maxHeight`, as the sticky header does. Without `maxHeight`
+  no row is sticky and `isSticky` is `false` for every row. In development,
+  `DataTable` logs a warning.
+- In development, `DataTable` also logs a warning when the sticky rows are
+  together taller than half of the visible height of the table.
+- A sticky row has a slight background highlight. Selected rows keep their
+  selected background. A row with a background of its own keeps it: use an
+  opaque color, or the rows that scroll under the sticky row show through. A
+  disabled sticky row keeps an opaque background and dims only its content.
+- A row that is pinned and sticky is first in the top stack.
+- `DataTableRowRenderProps.isSticky` is `true` for sticky rows, for custom row
+  render functions.
+- Pass a new `Set` to change the sticky rows. A `Set` that you change in place
+  is not noticed. Keep the `Set` stable between renders (for example with
+  `useMemo`): rows whose flag did not change do not re-render.
+- Virtualized tables are not covered.
+
+### Keyboard focus and scrolling
+
+When the user moves focus with the keyboard, the table keeps the focused row
+clear of the header and of the rows that are stuck. `scrollToRow` does the same:
+a row never ends behind a stack. A sticky row that is stuck is already in view,
+so `scrollToRow` resolves `true` for it without scrolling.
+
+### Drag and drop
+
+A drag can start from a stuck row, with the pointer and with the keyboard.
+Pointer drops over the stuck rows follow React Aria's default behavior, and so
+does the scrolling near the edges of the table during a drag. Nimbus does not
+change either.
+
+### Accessibility
+
+The highlight is a visual hint. No ARIA state marks a row as sticky. In
+forced-colors mode the browser replaces the background color, so the highlight
+is not shown.
+
 ## Scroll to a row
 
 Use `apiRef` to scroll a row into view from your own code, for example after
@@ -1240,6 +1296,13 @@ focus to a new focused row, and `scrollToRow` does not do that without
 A disabled row (`disabledKeys` or `isDisabled`) is scrolled to, and the Promise
 resolves `true`, but the focused row and keyboard focus do not change. In
 development, `DataTable` logs a warning if you passed `focus: true` for it.
+
+### Sticky rows
+
+With [`stickyRows`](#sticky-rows), a row is never left behind the stuck rows or
+the header: `align` works on the area between them. A sticky row that is stuck
+at an edge is already in view, so the Promise resolves `true` and the table does
+not scroll.
 
 ### getScrollContainer
 
@@ -2044,6 +2107,7 @@ type DataTableRowRenderProps = {
   isLastPinned: boolean;
   isSinglePinned: boolean;
   isDragDisabled: boolean;
+  isSticky: boolean;
 };
 ```
 

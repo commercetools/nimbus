@@ -1456,3 +1456,59 @@ describe("DataTable - Scroll to row", () => {
     expect(api.getScrollContainer()).toBe(rootRef.current);
   });
 });
+
+/**
+ * @docs-section sticky-rows
+ * @docs-title Sticky Rows Tests
+ * @docs-description Test that rows in stickyRows are marked as sticky, and that rows do not stick without maxHeight
+ * @docs-order 17
+ */
+describe("DataTable - Sticky rows", () => {
+  const renderTable = ({
+    maxHeight,
+    stickyRows,
+  }: {
+    maxHeight?: string;
+    stickyRows?: Set<string>;
+  }) =>
+    render(
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          maxHeight={maxHeight}
+          stickyRows={stickyRows}
+          aria-label="Team members"
+        />
+      </NimbusProvider>
+    );
+
+  it("marks the rows in stickyRows as sticky", () => {
+    renderTable({ maxHeight: "300px", stickyRows: new Set(["2"]) });
+
+    expect(screen.getByRole("row", { name: /Bob Smith/ })).toHaveAttribute(
+      "data-sticky-row"
+    );
+    expect(
+      screen.getByRole("row", { name: /Alice Johnson/ })
+    ).not.toHaveAttribute("data-sticky-row");
+  });
+
+  it("makes no row sticky without stickyRows", () => {
+    renderTable({ maxHeight: "300px" });
+
+    expect(document.querySelector("[data-sticky-row]")).toBeNull();
+  });
+
+  it("makes no row sticky without maxHeight, and warns in development", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    renderTable({ stickyRows: new Set(["2"]) });
+
+    expect(document.querySelector("[data-sticky-row]")).toBeNull();
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining("`stickyRows` has no effect without `maxHeight`")
+    );
+    warn.mockRestore();
+  });
+});
