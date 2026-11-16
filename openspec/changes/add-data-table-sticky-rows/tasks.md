@@ -144,7 +144,7 @@
 
 ## 5. Documentation and Release
 
-- [ ] 5.1 Mark two stories for Chromatic (sticky row stuck at the top, stuck at
+- [x] 5.1 Mark two stories for Chromatic (sticky row stuck at the top, stuck at
       the bottom) following `docs/chromatic-visual-testing.md`; verify the story
       parameters match the other snapshotted DataTable stories
 - [ ] 5.2 Write the sticky rows section in `data-table.dev.mdx`: the prop,

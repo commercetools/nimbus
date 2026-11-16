@@ -1359,3 +1359,43 @@ export const StickyRowsFooter: Story = {
     });
   },
 };
+
+// ---------------------------------------------------------------------------
+// Visual regression (Chromatic)
+// ---------------------------------------------------------------------------
+
+/**
+ * Two sticky rows stuck at the top edge, below the header. The play scrolls and
+ * waits for the layout to settle, so Chromatic captures the stuck state.
+ */
+export const StickyRowsStuckAtTop: Story = {
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <StackTable
+      label="Stuck at the top"
+      stickyRows={new Set(["row-3", "row-5"])}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    getRoot(canvasElement).scrollTop = 600;
+    await nextFrames(3);
+  },
+};
+
+/**
+ * Two sticky rows stuck at the bottom edge. The play waits for the layout to
+ * settle, so Chromatic captures the stuck state.
+ */
+export const StickyRowsStuckAtBottom: Story = {
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <StackTable
+      label="Stuck at the bottom"
+      stickyRows={new Set(["row-38", "row-39"])}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    getRoot(canvasElement).scrollTop = 0;
+    await nextFrames(3);
+  },
+};
