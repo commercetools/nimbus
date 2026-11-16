@@ -104,6 +104,14 @@ export const RendersAtRequestedSize: Story = {
         Save
         <LoadingSpinner data-testid="spinner-in-small-button" />
       </Button>
+      <Button size="md">
+        Save
+        <LoadingSpinner size="2xs" data-testid="spinner-sized-in-button" />
+      </Button>
+      <Button size="2xs">
+        Save
+        <LoadingSpinner size="lg" data-testid="spinner-sized-in-small-button" />
+      </Button>
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
@@ -139,6 +147,15 @@ export const RendersAtRequestedSize: Story = {
       expect(sizeOf("spinner-in-button")).toEqual([24, 24]);
       expect(sizeOf("spinner-in-small-button")).toEqual([16, 16]);
     });
+
+    await step(
+      "Inside a button, an explicit size wins over the button",
+      async () => {
+        // The button would give its icons 24px and 16px
+        expect(sizeOf("spinner-sized-in-button")).toEqual([14, 14]);
+        expect(sizeOf("spinner-sized-in-small-button")).toEqual([40, 40]);
+      }
+    );
   },
 };
 
