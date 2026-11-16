@@ -173,11 +173,40 @@ counts renders, as the per-row drag story does (#2160, criterion 5).
 
 ## Risks / Trade-offs
 
-- [Row borders on a sticky `tr` in a `border-collapse: collapse` table] → I have
-  no source on how browsers paint them, and the header already is sticky in the
-  same table. Task 2.1 checks it in Chromium, WebKit and Firefox before the look
-  is finished. If borders do not move with the row, the fix is a `box-shadow` on
-  sticky rows instead of `borderBottom`.
+- [Row borders on a sticky `tr` in a `border-collapse: collapse` table] →
+  **Measured (task 2.1).** A throwaway page copied the table structure
+  (scrolling root, collapsed borders, sticky `thead`, rows with `border-bottom`,
+  sticky rows with `top` and `bottom`) and read pixels from screenshots.
+  Chromium 156.0.8078.4 and the Playwright WebKit build 27.2 (revision 2370; not
+  a Safari release) agree:
+  - Stack geometry is exact: 0.00 px gap and no overlap between the header and
+    the top stack and inside both stacks, also with fractional heights (40.90625
+    px) and at a device scale of 1.25. (WebKit showed 0.20 px at scale 1.25 at
+    the bottom edge.) Measuring the fractional border-box height (Decision 2)
+    works.
+  - The `border-bottom` of a sticky `tr` is **not painted** at the row's stuck
+    position. The collapsed border belongs to the table grid and stays at the
+    row's original position. Instead the bottom pixel row of the stuck row shows
+    the row that scrolls under it.
+  - An inset `box-shadow` (`inset 0 -1px 0`) on the cells of a sticky row, with
+    `border-bottom: none` on the row, paints the line at the stuck position in
+    both engines. **Decision for the recipe:** sticky rows draw their bottom
+    line this way.
+  - An outward 1px shadow on the cells to cover the seam was tried and rejected:
+    the lower stuck row paints over the line of the row above it.
+  - A 1px seam of the scrolling row can still show between two stacked rows when
+    the offsets are fractional (the header was 40.5 px high in the test).
+    Chromium and WebKit snap each sticky row to device pixels separately. This
+    is not solved: tasks 2.3 and 3.3 sample pixels in the real table, and if a
+    seam shows, the offsets are rounded to device pixels (or rows overlap by one
+    pixel) before merge.
+  - The header's own bottom border is not painted at its stuck position either
+    (the same one-pixel sliver above the first stuck row). This already happens
+    today; it is not changed here.
+  - **Firefox was not measured.** Firefox 157.0 (Playwright revision 1555) did
+    not start in the session sandbox ("Could not find profile folder", also with
+    a profile in a scratch directory). The script is `run2.mjs`, kept outside
+    the repository; Firefox stays in the manual check (task 6.2).
 - [Firefox and Windows Chrome are not measured] → The manual check in the ticket
   stays: a person checks Firefox, Safari and Windows Chrome against a checklist
   and records the result in the PR. Playwright Chromium and WebKit cover the

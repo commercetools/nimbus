@@ -23,31 +23,38 @@
 
 ## 2. Styles
 
-- [ ] 2.1 Check, in Chromium, WebKit and Firefox (Playwright and by hand), how
-      the `borderBottom` of a sticky `tr` paints in a collapsed-border table
-      (`borderCollapse: "collapse"`), with a stuck row at the top and at the
-      bottom; record the result in `design.md` under Risks, and if the border
-      does not move with the row, use an inset `box-shadow` for sticky rows; in
-      the same check, look at fractional row heights and page zoom (no gap or
-      overlap between stacked rows) and at a pinned sticky row that is stuck
-      alone (the group outline), and record both results; verify the recorded
-      results name the browsers and versions
+- [x] 2.1 Check, in Chromium and WebKit with a throwaway page and pixel reads,
+      how the `borderBottom` of a sticky `tr` paints in a collapsed-border table
+      (`borderCollapse: "collapse"`), with stuck rows at the top and at the
+      bottom, at fractional row heights and at a device scale of 1.25; record
+      the result in `design.md` under Risks (done: the border is not painted, an
+      inset `box-shadow` on the cells is, geometry is exact, a 1px seam between
+      stacked rows is still possible). Firefox did not start in the session
+      sandbox and stays in task 6.2; the pinned sticky row that is stuck alone
+      (the group outline) needs the real table and moves to task 2.3
 - [ ] 2.2 In `data-table.recipe.ts`: give `[data-sticky-row]` `position: sticky`
       with `top` and `bottom` read from the row's CSS variables; add the sticky
       row level 14 to the `zIndex` table and move the header to 15 (update the
       comment); set the highlight (`neutral.2`) through `--data-table-row-bg`
       and `background`, below the hover and selected rules, leaving
-      `data-custom-bg` rows alone; for a sticky row that is disabled, do not
-      apply the row-level opacity of `layerStyle: "disabled"`, keep the opaque
-      background and dim the cell content; verify typecheck and the existing
-      frozen column and pinning stories pass
+      `data-custom-bg` rows alone; for a sticky row, set `border-bottom: none`
+      on the row and draw the bottom line as `box-shadow: inset 0 -1px 0` on its
+      cells, in the color of the row border (task 2.1: a collapsed row border is
+      not painted at the stuck position); for a sticky row that is disabled, do
+      not apply the row-level opacity of `layerStyle: "disabled"`, keep the
+      opaque background and dim the cell content; verify typecheck and the
+      existing frozen column and pinning stories pass
 - [ ] 2.3 Add stories for the look and the stacking order with play functions: a
       sticky row differs in background from a normal row and its frozen cells
       match; hover and selected win; a stuck row hides rows that scroll under it
       (frozen cells included) and the header is above a stuck row; a stuck row
       that is disabled, selected or hovered shows nothing of the rows under it
-      (sample the pixel or check the computed opacity and background); verify
-      they pass with `pnpm test:dev`
+      (sample the pixel or check the computed opacity and background); the stuck
+      row's bottom line is painted (sample a pixel row); no pixel row of the
+      scrolling row shows between two stacked rows, and if one does, round the
+      offsets to device pixels or overlap the rows by one pixel (design Risks);
+      look at a pinned sticky row that is stuck alone (the group outline) and
+      record it for Design; verify they pass with `pnpm test:dev`
 
 ## 3. Stacks and Keyboard Focus
 
