@@ -1478,6 +1478,7 @@ describe("DataTable - Sticky rows", () => {
           rows={rows}
           maxHeight={maxHeight}
           stickyRows={stickyRows}
+          size="md"
           aria-label="Team members"
         />
       </NimbusProvider>

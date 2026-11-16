@@ -1435,7 +1435,25 @@ const discountValues = ["10 % off", "Free shipping", "15 % off", "5 EUR off"];
 
 const NEW_DISCOUNT_ID = "new-discount";
 
-const discountColumns: DataTableColumnItem[] = [
+/**
+ * The columns of the discounts. The first one shows the position of the row in
+ * the current order, counted from 1. It is derived from `rows`, so it follows a
+ * drop.
+ */
+const discountColumns = (rows: DataTableRowItem[]): DataTableColumnItem[] => [
+  {
+    id: "position",
+    header: "#",
+    // Pinned narrow: a `width` alone is a hint, and the table stretches columns.
+    width: 56,
+    minWidth: 56,
+    maxWidth: 56,
+    accessor: (row: Record<string, unknown>) => (
+      <span data-position>
+        {rows.findIndex((item) => item.id === row.id) + 1}
+      </span>
+    ),
+  },
   nameColumn,
   {
     id: "value",
@@ -1448,6 +1466,10 @@ const discountColumns: DataTableColumnItem[] = [
     accessor: (row: Record<string, unknown>) => row.status as ReactNode,
   },
 ];
+
+/** The position the `#` column shows for the row called `name`. */
+const positionOf = (canvasElement: HTMLElement, name: string) =>
+  bodyRow(canvasElement, name).querySelector("[data-position]")?.textContent;
 
 const discountRows = (newAt: "start" | "end"): DataTableRowItem[] => {
   const existing = discountNames.map((name, index) => ({
@@ -1477,10 +1499,11 @@ const DiscountsTable = ({ newAt }: { newAt: "start" | "end" }) => {
   const { dragAndDropHooks } = useDragAndDrop({
     ...createArrayHandlers(setRows, (row) => row.id),
   });
+  const columns = useMemo(() => discountColumns(rows), [rows]);
   return (
     <DataTable
       aria-label="Discounts"
-      columns={discountColumns}
+      columns={columns}
       rows={rows}
       stickyRows={newDiscountOnly}
       draggableKeys={newDiscountOnly}
@@ -1544,6 +1567,10 @@ export const StickyRowsNewDiscountFromTop: Story = {
       expectOnlyDraftDraggable(canvasElement);
     });
 
+    await step("The draft starts at position 1", async () => {
+      expect(positionOf(canvasElement, "New discount")).toBe("1");
+    });
+
     await step(
       "Scrolled to the place for it, the draft stays under the header",
       async () => {
@@ -1573,6 +1600,16 @@ export const StickyRowsNewDiscountFromTop: Story = {
         );
       }
     );
+
+    await step("The position column follows the drop", async () => {
+      // Flash sale was the 12th discount. The draft left position 1, so the
+      // discounts moved up by one, and the draft is now 13th.
+      await waitFor(() => {
+        expect(positionOf(canvasElement, "New discount")).toBe("13");
+      });
+      expect(positionOf(canvasElement, "Flash sale")).toBe("12");
+      expect(positionOf(canvasElement, "Birthday offer")).toBe("14");
+    });
   },
 };
 
@@ -1588,6 +1625,10 @@ export const StickyRowsNewDiscountFromBottom: Story = {
 
     await step("Only the draft discount can be dragged", async () => {
       expectOnlyDraftDraggable(canvasElement);
+    });
+
+    await step("The draft starts at position 25", async () => {
+      expect(positionOf(canvasElement, "New discount")).toBe("25");
     });
 
     await step(
@@ -1617,6 +1658,16 @@ export const StickyRowsNewDiscountFromBottom: Story = {
         );
       }
     );
+
+    await step("The position column follows the drop", async () => {
+      // "Back to school" is the 3rd discount, so the draft is now 4th, and the
+      // discounts after it moved down by one.
+      await waitFor(() => {
+        expect(positionOf(canvasElement, "New discount")).toBe("4");
+      });
+      expect(positionOf(canvasElement, "Back to school")).toBe("3");
+      expect(positionOf(canvasElement, "Black Friday")).toBe("5");
+    });
   },
 };
 
