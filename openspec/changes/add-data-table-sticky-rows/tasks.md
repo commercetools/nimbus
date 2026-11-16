@@ -38,9 +38,10 @@
       comment); set the highlight (`neutral.2`) through `--data-table-row-bg`
       and `background`, below the hover and selected rules, leaving
       `data-custom-bg` rows alone; for a sticky row, set `border-bottom: none`
-      on the row and draw the bottom line as `box-shadow: inset 0 -1px 0` on its
-      cells, in the color of the row border (task 2.1: a collapsed row border is
-      not painted at the stuck position); for a sticky row that is disabled, do
+      on the row and draw the divider as a 1px `outline` on the row, in the color
+      of the row border (task 2.1: a collapsed row border is not painted at the
+      stuck position, and no cell paints the grid line, so the rows under a
+      stuck row showed through it); for a sticky row that is disabled, do
       not apply the row-level opacity of `layerStyle: "disabled"`, keep the
       opaque background and dim the cell content; verify typecheck and the
       existing frozen column and pinning stories pass
@@ -50,8 +51,8 @@
       synthetic events that never turn on CSS `:hover`, so it is covered by the
       specificity of its rule in the recipe); a stuck row, also a disabled or
       selected one, has an opaque computed background and opacity 1 (a disabled
-      row dims its content), and hides what is under it; the bottom line is
-      drawn on the cells; the header is above the stuck rows (done in
+      row dims its content), and hides what is under it; the divider is
+      drawn as an outline on the row; the header is above the stuck rows (done in
       `StickyRowsLook`, which found the selector specificity bug fixed in the
       recipe). Not done here, and listed in task 6.2 for the manual check: a
       pixel sample for a one-pixel seam between stacked rows (the stories check

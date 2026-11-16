@@ -428,13 +428,16 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         bottom: "var(--data-table-sticky-bottom, 0px)",
         zIndex: zIndex.stickyRow,
         // A border of a row in a collapsed-border table belongs to the table
-        // grid and is not painted at the stuck position, and it leaves one
-        // pixel of the scrolling rows showing. The line is drawn as an inset
-        // shadow on the cells instead.
+        // grid and is not painted at the stuck position, and no cell paints the
+        // one-pixel line of the grid between two rows. The rows that scroll
+        // under a stuck row would show through that line: between the header
+        // and the first stuck row, and between two stuck rows. An outline on the
+        // row draws the divider there instead, in the color of the row border.
+        // It is on the row, not on the cells: cell outlines would also draw
+        // vertical lines between the cells.
         borderBottom: "none",
-        "& > td": {
-          boxShadow: "inset 0 -1px 0 {colors.neutral.3}",
-        },
+        outline: "1px solid {colors.neutral.3}",
+        outlineOffset: 0,
       },
       // The highlight. It is opaque, so rows that scroll under a stuck row stay
       // hidden. A row with a background from the consumer keeps it. `:where`

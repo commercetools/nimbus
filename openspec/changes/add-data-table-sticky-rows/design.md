@@ -248,12 +248,33 @@ counts renders, as the per-row drag story does (#2160, criterion 5).
     line this way.
   - An outward 1px shadow on the cells to cover the seam was tried and rejected:
     the lower stuck row paints over the line of the row above it.
-  - A 1px seam of the scrolling row can still show between two stacked rows when
-    the offsets are fractional (the header was 40.5 px high in the test).
-    Chromium and WebKit snap each sticky row to device pixels separately. This
-    is not solved: tasks 2.3 and 3.3 sample pixels in the real table, and if a
-    seam shows, the offsets are rounded to device pixels (or rows overlap by one
-    pixel) before merge.
+  - **The seam between stuck rows (measured after task 6.2 feedback).** A one
+    pixel line of the rows that scroll under the stack showed between the header
+    and the first stuck row and between two stuck rows, at almost every scroll
+    position, in Chromium and WebKit. It is **not** a rounding problem: hit
+    testing finds no gap (the rows and their cells touch), the line is one CSS
+    pixel at device scales 1, 2 and 3 (not one device pixel), and it disappears
+    when the table uses `border-collapse: separate`. The cause is the collapsed
+    border model: the one-pixel grid line between two rows belongs to the table,
+    no cell paints it, and a sticky row does not carry it along. An outward
+    shadow, an own cell background and an inset line at the cell top do not
+    change it. A one pixel outline in the row color fills the seam but also paints
+    over the divider, so no line shows between the rows. A cell outline in the
+    divider color draws vertical lines between the cells. **Decision for the
+    recipe:** the sticky `tr` itself draws a one pixel outline in the color of the
+    row border (`neutral.3`). It fills the line with the divider, it replaces the
+    inset shadow on the cells, and it does not depend on the row background, so
+    rows with a consumer background get it too.
+    Result on the real table, sampled at 71 to 141 scroll positions: no seam and
+    a divider at every boundary at scales 1 and 2 in Chromium; no seam between
+    stuck rows in WebKit (scales 1 and 2). Not solved: at scale 1.25 a seam stays
+    between two stuck rows at about half of the scroll positions (fractional
+    snapping); in WebKit the seam between the header and the first stuck row
+    stays (the header's own border, see below). Not understood: for the disabled
+    sticky row in its own place the divider under its frozen cells is missing,
+    and present under the other cells. A complete fix is
+    `border-collapse: separate` with the dividers on the cells, which changes
+    every DataTable and is not done here.
   - The header's own bottom border is not painted at its stuck position either
     (the same one-pixel sliver above the first stuck row). This already happens
     today; it is not changed here.

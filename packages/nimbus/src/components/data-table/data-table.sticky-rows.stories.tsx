@@ -32,237 +32,25 @@ export default meta;
 
 type Story = StoryObj<DataTableProps>;
 
-const stickyColumns: DataTableColumnItem[] = [
+const nameColumn: DataTableColumnItem = {
+  id: "name",
+  header: "Name",
+  accessor: (row: Record<string, unknown>) => row.name as ReactNode,
+};
+
+const nameColumns: DataTableColumnItem[] = [nameColumn];
+
+/** Added to the name of a sticky row, so a reader can see which rows they are. */
+const STICKY_MARK = " (sticky)";
+
+/** A name column that marks the rows of a fixed set. */
+const markedNameColumns = (stickyRows: Set<string>): DataTableColumnItem[] => [
   {
-    id: "name",
-    header: "Name",
-    accessor: (row: Record<string, unknown>) => row.name as ReactNode,
-  },
-  {
-    id: "flag",
-    header: "isSticky",
-    accessor: () => null,
+    ...nameColumn,
+    accessor: (row: Record<string, unknown>) =>
+      `${row.name as string}${stickyRows.has(row.id as string) ? STICKY_MARK : ""}`,
   },
 ];
-
-const nameColumns: DataTableColumnItem[] = [stickyColumns[0]];
-
-const makeRows = (): DataTableRowItem[] =>
-  ["A", "B", "C", "D", "E"].map((id) => ({ id, name: `Row ${id}` }));
-
-const rowNamedExactly = (canvas: ReturnType<typeof within>, name: string) =>
-  canvas.getByRole("row", { name: new RegExp(`^${name}`) });
-
-type FlagTableProps = {
-  label: string;
-  stickyRows?: Set<string>;
-  /** The `maxHeight` prop. Rows only stick with it. */
-  maxHeight?: string;
-  /** Sizes the table with the `maxH` style prop, which is not `maxHeight`. */
-  maxH?: string;
-};
-
-/** A table whose cells print the `isSticky` flag of their row. */
-const FlagTable = ({ label, stickyRows, maxHeight, maxH }: FlagTableProps) => {
-  const [rows] = useState<DataTableRowItem[]>(makeRows);
-  const body = useMemo(
-    () => (
-      <DataTable.Body>
-        {(row, rowRenderProps) => (
-          <DataTable.Row row={row} {...rowRenderProps}>
-            {({ columns: cols }) =>
-              cols.map((col) => (
-                <DataTable.Cell key={col.id}>
-                  {col.id === "flag"
-                    ? `${row.id}:${String(rowRenderProps.isSticky)}`
-                    : col.accessor(row)}
-                </DataTable.Cell>
-              ))
-            }
-          </DataTable.Row>
-        )}
-      </DataTable.Body>
-    ),
-    []
-  );
-  return (
-    <DataTable.Root
-      columns={stickyColumns}
-      rows={rows}
-      stickyRows={stickyRows}
-      maxHeight={maxHeight}
-      maxH={maxH}
-      size="md"
-    >
-      <DataTable.Table aria-label={label}>
-        <DataTable.Header />
-        {body}
-      </DataTable.Table>
-    </DataTable.Root>
-  );
-};
-
-const ALL_IDS = ["A", "B", "C", "D", "E"];
-
-/** Asserts which rows of a table print `isSticky` `true`. */
-const expectStickyFlags = (table: HTMLElement, stickyIds: string[]) => {
-  for (const id of ALL_IDS) {
-    expect(
-      within(table).getByText(`${id}:${String(stickyIds.includes(id))}`)
-    ).toBeInTheDocument();
-  }
-};
-
-const flagWarnings: string[] = [];
-
-/**
- * Custom row render functions get `isSticky`. It is `true` only for rows in
- * `stickyRows`, and only while the table has `maxHeight`. An id that is not a
- * row is ignored without an error. An empty set and a missing `stickyRows`
- * make no row sticky.
- */
-export const StickyRowsRenderProp: Story = {
-  beforeEach: recordWarnings(flagWarnings),
-  render: () => (
-    <Stack gap="800">
-      <div data-testid="sticky">
-        <FlagTable
-          label="Sticky rows"
-          stickyRows={new Set(["B", "D", "unknown-id"])}
-          maxHeight="300px"
-        />
-      </div>
-      <div data-testid="empty">
-        <FlagTable label="Empty set" stickyRows={new Set()} maxHeight="300px" />
-      </div>
-      <div data-testid="unset">
-        <FlagTable label="No stickyRows" maxHeight="300px" />
-      </div>
-      <div data-testid="no-max-height">
-        <FlagTable
-          label="No maxHeight"
-          stickyRows={new Set(["B", "D"])}
-          maxH="300px"
-        />
-      </div>
-    </Stack>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Only rows in the set are sticky", async () => {
-      expectStickyFlags(canvas.getByTestId("sticky"), ["B", "D"]);
-    });
-
-    await step("An id that is not a row is ignored", async () => {
-      const table = within(canvas.getByTestId("sticky"));
-      expect(table.queryByText(/unknown-id/)).not.toBeInTheDocument();
-      expect(table.getAllByRole("row")).toHaveLength(ALL_IDS.length + 1);
-    });
-
-    await step("An empty set makes no row sticky", async () => {
-      expectStickyFlags(canvas.getByTestId("empty"), []);
-    });
-
-    await step("Without stickyRows no row is sticky", async () => {
-      expectStickyFlags(canvas.getByTestId("unset"), []);
-    });
-
-    await step("Without maxHeight no row is sticky", async () => {
-      expectStickyFlags(canvas.getByTestId("no-max-height"), []);
-    });
-
-    await step("Only sticky rows get the sticky attribute", async () => {
-      const stickyTable = canvas.getByTestId("sticky");
-      expect(
-        Array.from(stickyTable.querySelectorAll("[data-sticky-row]")).map(
-          (row) => row.textContent?.match(/Row ([A-E])/)?.[1]
-        )
-      ).toEqual(["B", "D"]);
-      expect(
-        canvas.getByTestId("no-max-height").querySelector("[data-sticky-row]")
-      ).toBeNull();
-    });
-  },
-};
-
-type RenderCountTableProps = {
-  /** Called with the row id each time a row renders its cells. */
-  onCellsRender: (rowId: string) => void;
-};
-
-const RenderCountTable = ({ onCellsRender }: RenderCountTableProps) => {
-  const [stickyRows, setStickyRows] = useState(new Set(["C"]));
-  // Created once: new row objects on every render would re-render every row.
-  const [rows] = useState<DataTableRowItem[]>(makeRows);
-  // A stable function: a new one would make every row render again.
-  const renderCells = useCallback(
-    ({ columns: cols, row }: DataTableCellRenderProps<DataTableRowItem>) => {
-      onCellsRender(row.id);
-      return cols.map((col) => (
-        <DataTable.Cell key={col.id}>{col.accessor(row)}</DataTable.Cell>
-      ));
-    },
-    [onCellsRender]
-  );
-
-  return (
-    <Stack gap="400">
-      <Button onPress={() => setStickyRows(new Set(["C", "D"]))}>
-        Make D sticky
-      </Button>
-      <DataTable.Root
-        columns={nameColumns}
-        rows={rows}
-        stickyRows={stickyRows}
-        maxHeight="300px"
-        size="md"
-      >
-        <DataTable.Table aria-label="Render counts">
-          <DataTable.Header />
-          <DataTable.Body>
-            {(row, rowRenderProps) => (
-              <DataTable.Row row={row} {...rowRenderProps}>
-                {renderCells}
-              </DataTable.Row>
-            )}
-          </DataTable.Body>
-        </DataTable.Table>
-      </DataTable.Root>
-    </Stack>
-  );
-};
-
-/** Changing `stickyRows` re-renders only the rows whose flag changed. */
-export const StickyRowsRenderOnlyChangedRows: StoryObj<RenderCountTableProps> =
-  {
-    args: { onCellsRender: fn() },
-    render: (args) => <RenderCountTable {...args} />,
-    play: async ({ canvasElement, args, step }) => {
-      const canvas = within(canvasElement);
-
-      await step("Adding D to the set renders only row D", async () => {
-        mocked(args.onCellsRender).mockClear();
-        await userEvent.click(
-          canvas.getByRole("button", { name: "Make D sticky" })
-        );
-        await waitFor(() => {
-          expect(
-            rowNamedExactly(canvas, "Row D").hasAttribute("data-sticky-row")
-          ).toBe(true);
-        });
-        // Only row D changed, so only row D renders.
-        const rendered = new Set(
-          mocked(args.onCellsRender).mock.calls.map(([id]) => id)
-        );
-        expect([...rendered]).toEqual(["D"]);
-      });
-    },
-  };
-
-// ---------------------------------------------------------------------------
-// Stacks: the layout of sticky rows in a scroll area
-// ---------------------------------------------------------------------------
 
 const manyRows = (count: number): DataTableRowItem[] =>
   Array.from({ length: count }, (_, index) => ({
@@ -289,12 +77,330 @@ const nextFrames = (count = 2) =>
     step(count);
   });
 
+/**
+ * Scrolls the table's root to `top`. It waits until the content is taller than
+ * the root first: without overflow there is nothing to scroll and nothing can
+ * stick.
+ */
+const scrollRootTo = async (root: HTMLElement, top: number) => {
+  await waitFor(() =>
+    expect(root.scrollHeight).toBeGreaterThan(root.clientHeight)
+  );
+  // The browser clamps a position past the end of the scroll range.
+  const target = Math.min(top, root.scrollHeight - root.clientHeight);
+  root.scrollTop = target;
+  await waitFor(() =>
+    expect(Math.round(root.scrollTop)).toBe(Math.round(target))
+  );
+  await nextFrames();
+};
+
+/** The row of the table body whose first cell text is exactly `name`. */
+const bodyRow = (canvasElement: HTMLElement, name: string) => {
+  const found = Array.from(canvasElement.querySelectorAll("tbody tr")).find(
+    (tr) =>
+      Array.from(tr.querySelectorAll("td")).some(
+        (td) => td.textContent?.replace(STICKY_MARK, "").trim() === name
+      )
+  );
+  if (!found) throw new Error(`Row "${name}" was not found`);
+  return found as HTMLElement;
+};
+
 const rowByName = (canvas: ReturnType<typeof within>, name: string) =>
-  canvas.getByRole("row", { name: new RegExp(`^${name}$`) });
+  canvas.getByRole("row", {
+    name: new RegExp(`^${name}(${STICKY_MARK.replace(/[()]/g, "\\$&")})?$`),
+  });
 
 /** Two stuck rows are within a pixel of each other: stacked without a gap. */
 const expectTouching = (above: number, below: number) =>
   expect(Math.abs(below - above)).toBeLessThan(1);
+
+const flagColumns: DataTableColumnItem[] = [
+  nameColumn,
+  {
+    id: "flag",
+    header: "isSticky",
+    accessor: () => null,
+  },
+];
+
+type FlagTableProps = {
+  label: string;
+  stickyRows?: Set<string>;
+  /** The `maxHeight` prop. Rows only stick with it. */
+  maxHeight?: string;
+  /** Sizes the table with the `maxH` style prop, which is not `maxHeight`. */
+  maxH?: string;
+  rowCount?: number;
+};
+
+/** A table whose cells print the `isSticky` flag of their row. */
+const FlagTable = ({
+  label,
+  stickyRows,
+  maxHeight,
+  maxH,
+  rowCount = 30,
+}: FlagTableProps) => {
+  const [rows] = useState<DataTableRowItem[]>(() => manyRows(rowCount));
+  const body = useMemo(
+    () => (
+      <DataTable.Body>
+        {(row, rowRenderProps) => (
+          <DataTable.Row row={row} {...rowRenderProps}>
+            {({ columns: cols }) =>
+              cols.map((col) => (
+                <DataTable.Cell key={col.id}>
+                  {col.id === "flag"
+                    ? `isSticky: ${String(rowRenderProps.isSticky)}`
+                    : col.accessor(row)}
+                </DataTable.Cell>
+              ))
+            }
+          </DataTable.Row>
+        )}
+      </DataTable.Body>
+    ),
+    []
+  );
+  return (
+    <DataTable.Root
+      columns={flagColumns}
+      rows={rows}
+      stickyRows={stickyRows}
+      maxHeight={maxHeight}
+      // An explicit `maxH={undefined}` would replace the one `maxHeight` sets.
+      {...(maxH ? { maxH } : {})}
+      size="md"
+    >
+      <DataTable.Table aria-label={label}>
+        <DataTable.Header />
+        {body}
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+};
+
+/** The `isSticky` flag each row of a table prints, by row name. */
+const printedFlags = (table: HTMLElement) =>
+  Object.fromEntries(
+    Array.from(table.querySelectorAll("tbody tr")).map((tr) => {
+      const [name, flag] = Array.from(tr.querySelectorAll("td")).map(
+        (td) => td.textContent ?? ""
+      );
+      return [name, flag.replace("isSticky: ", "")];
+    })
+  );
+
+const flagWarnings: string[] = [];
+
+/**
+ * Custom row render functions get `isSticky`: `true` for the rows in
+ * `stickyRows`. The play scrolls the table, so the rows with `isSticky` `true`
+ * stay in view under the header, and the rows with `false` scroll away. An id
+ * that is not a row is ignored without an error.
+ */
+export const StickyRowsRenderProp: Story = {
+  beforeEach: recordWarnings(flagWarnings),
+  render: () => (
+    <FlagTable
+      label="Sticky rows"
+      stickyRows={new Set(["row-3", "row-5", "unknown-id"])}
+      maxHeight="320px"
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const root = getRoot(canvasElement);
+    const header = canvasElement.querySelector("thead") as HTMLElement;
+
+    await step("Only the rows in the set print isSticky true", async () => {
+      const flags = printedFlags(canvasElement);
+      expect(Object.keys(flags)).toHaveLength(30);
+      expect(
+        Object.entries(flags)
+          .filter(([, flag]) => flag === "true")
+          .map(([name]) => name)
+      ).toEqual(["Row 3", "Row 5"]);
+    });
+
+    await step("An id that is not a row is ignored", async () => {
+      expect(canvasElement.querySelectorAll("tbody tr")).toHaveLength(30);
+    });
+
+    await step(
+      "Scrolled down, the rows with isSticky true stay under the header",
+      async () => {
+        await scrollRootTo(root, 600);
+        const row3 = bodyRow(canvasElement, "Row 3");
+        const row5 = bodyRow(canvasElement, "Row 5");
+        expect(getComputedStyle(row3).position).toBe("sticky");
+        expectTouching(
+          header.getBoundingClientRect().bottom,
+          row3.getBoundingClientRect().top
+        );
+        expectTouching(
+          row3.getBoundingClientRect().bottom,
+          row5.getBoundingClientRect().top
+        );
+      }
+    );
+
+    await step("A row with isSticky false scrolls out of view", async () => {
+      const row4 = bodyRow(canvasElement, "Row 4").getBoundingClientRect();
+      const stackBottom = bodyRow(
+        canvasElement,
+        "Row 5"
+      ).getBoundingClientRect().bottom;
+      expect(row4.bottom).toBeLessThanOrEqual(stackBottom);
+      expect(
+        getComputedStyle(bodyRow(canvasElement, "Row 4")).position
+      ).not.toBe("sticky");
+    });
+  },
+};
+
+/**
+ * Nothing is sticky without `maxHeight`, with an empty set or without
+ * `stickyRows`. Each table is scrolled, and its rows leave the view like any
+ * other row.
+ */
+export const StickyRowsInactive: Story = {
+  render: () => (
+    <Stack gap="400">
+      <FlagTable
+        label="Empty set"
+        stickyRows={new Set()}
+        maxHeight="200px"
+        rowCount={12}
+      />
+      <FlagTable label="No stickyRows" maxHeight="200px" rowCount={12} />
+      <FlagTable
+        label="No maxHeight"
+        stickyRows={new Set(["row-3"])}
+        maxH="200px"
+        rowCount={12}
+      />
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    for (const label of ["Empty set", "No stickyRows", "No maxHeight"]) {
+      await step(`${label}: no row is sticky`, async () => {
+        const table = canvas.getByRole("grid", { name: label });
+        const root = table.closest<HTMLElement>("[data-scroll-left]")!;
+        await scrollRootTo(root, root.scrollHeight);
+        expect(table.querySelector("[data-sticky-row]")).toBeNull();
+        expect(Object.values(printedFlags(table))).not.toContain("true");
+        // Row 3 left the view with the scroll.
+        const row3 = bodyRow(table, "Row 3").getBoundingClientRect();
+        expect(row3.bottom).toBeLessThanOrEqual(
+          root.getBoundingClientRect().top + 60
+        );
+      });
+    }
+  },
+};
+
+type RenderCountTableProps = {
+  /** Called with the row id each time a row renders its cells. */
+  onCellsRender: (rowId: string) => void;
+};
+
+const renderCountRows = manyRows(40);
+const renderCountColumns = markedNameColumns(new Set(["row-3", "row-8"]));
+
+const RenderCountTable = ({ onCellsRender }: RenderCountTableProps) => {
+  const [stickyRows, setStickyRows] = useState(new Set(["row-3"]));
+  // A stable function: a new one would make every row render again.
+  const renderCells = useCallback(
+    ({ columns: cols, row }: DataTableCellRenderProps<DataTableRowItem>) => {
+      onCellsRender(row.id);
+      return cols.map((col) => (
+        <DataTable.Cell key={col.id}>{col.accessor(row)}</DataTable.Cell>
+      ));
+    },
+    [onCellsRender]
+  );
+
+  return (
+    <Stack gap="400">
+      <Button onPress={() => setStickyRows(new Set(["row-3", "row-8"]))}>
+        Make row 8 sticky
+      </Button>
+      <DataTable.Root
+        columns={renderCountColumns}
+        rows={renderCountRows}
+        stickyRows={stickyRows}
+        maxHeight="300px"
+        size="md"
+      >
+        <DataTable.Table aria-label="Render counts">
+          <DataTable.Header />
+          <DataTable.Body>
+            {(row, rowRenderProps) => (
+              <DataTable.Row row={row} {...rowRenderProps}>
+                {renderCells}
+              </DataTable.Row>
+            )}
+          </DataTable.Body>
+        </DataTable.Table>
+      </DataTable.Root>
+    </Stack>
+  );
+};
+
+/**
+ * Changing `stickyRows` re-renders only the rows whose flag changed. The table
+ * is scrolled first, so the new sticky row is visibly stacked under row 3.
+ */
+export const StickyRowsRenderOnlyChangedRows: StoryObj<RenderCountTableProps> =
+  {
+    args: { onCellsRender: fn() },
+    render: (args) => <RenderCountTable {...args} />,
+    play: async ({ canvasElement, args, step }) => {
+      const canvas = within(canvasElement);
+      const root = getRoot(canvasElement);
+      const header = canvasElement.querySelector("thead") as HTMLElement;
+      const rect = (name: string) =>
+        bodyRow(canvasElement, name).getBoundingClientRect();
+
+      await step("Scrolled down, row 3 is stuck under the header", async () => {
+        await scrollRootTo(root, 500);
+        expectTouching(
+          header.getBoundingClientRect().bottom,
+          rect("Row 3").top
+        );
+      });
+
+      await step("Adding row 8 renders only row 8", async () => {
+        mocked(args.onCellsRender).mockClear();
+        await userEvent.click(
+          canvas.getByRole("button", { name: "Make row 8 sticky" })
+        );
+        await waitFor(() => {
+          expect(
+            bodyRow(canvasElement, "Row 8").hasAttribute("data-sticky-row")
+          ).toBe(true);
+        });
+        const rendered = new Set(
+          mocked(args.onCellsRender).mock.calls.map(([id]) => id)
+        );
+        expect([...rendered]).toEqual(["row-8"]);
+      });
+
+      await step("Row 8 is stacked under row 3", async () => {
+        await waitFor(() => {
+          expectTouching(rect("Row 3").bottom, rect("Row 8").top);
+        });
+      });
+    },
+  };
+
+// ---------------------------------------------------------------------------
+// Stacks: the layout of sticky rows in a scroll area
+// ---------------------------------------------------------------------------
 
 type StackTableProps = {
   label?: string;
@@ -315,10 +421,11 @@ const StackTable = ({
   footer,
 }: StackTableProps) => {
   const [rows] = useState(() => manyRows(rowCount));
+  const columns = useMemo(() => markedNameColumns(stickyRows), [stickyRows]);
   return (
     <DataTable
       aria-label={label}
-      columns={nameColumns}
+      columns={columns}
       rows={rows}
       stickyRows={stickyRows}
       maxHeight={maxHeight}
@@ -621,18 +728,6 @@ export const StickyRowsScrollToRowAfterChange: Story = {
 // Look and stacking order
 // ---------------------------------------------------------------------------
 
-/** The row of the table body whose cell text is exactly `name`. */
-const bodyRow = (canvasElement: HTMLElement, name: string) => {
-  const found = Array.from(canvasElement.querySelectorAll("tbody tr")).find(
-    (tr) =>
-      Array.from(tr.querySelectorAll("td")).some(
-        (td) => td.textContent?.trim() === name
-      )
-  );
-  if (!found) throw new Error(`Row "${name}" was not found`);
-  return found as HTMLElement;
-};
-
 const backgroundOf = (element: Element) =>
   getComputedStyle(element).backgroundColor;
 
@@ -666,7 +761,7 @@ const LookTable = () => {
 /**
  * A sticky row has a highlight, and its frozen cells show the same background.
  * Selected wins over it. A stuck row is opaque in every state, also
- * when it is disabled, and draws its bottom line on its cells. The header is
+ * when it is disabled, and draws its divider as an outline. The header is
  * above the stuck rows.
  */
 export const StickyRowsLook: Story = {
@@ -717,13 +812,28 @@ export const StickyRowsLook: Story = {
       }
     );
 
-    await step("The bottom line is drawn on the cells", async () => {
-      const row3 = row("Row 3");
-      expect(getComputedStyle(row3).borderBottomStyle).toBe("none");
-      expect(
-        getComputedStyle(row3.querySelector("td") as Element).boxShadow
-      ).toContain("inset");
-    });
+    await step(
+      "The row draws its divider as an outline, in the color of the row border",
+      async () => {
+        // The one-pixel line of the collapsed-border grid between two rows is
+        // not painted by the cells, so the rows under a stuck row would show
+        // through it. This checks the rule that draws the divider there. A play
+        // cannot read pixels: the seam was measured with screenshots (see
+        // design.md).
+        const dividerColor = getComputedStyle(row("Row 8")).borderBottomColor;
+        for (const name of ["Row 3", "Row 5", "Row 7"]) {
+          const stuck = getComputedStyle(row(name));
+          expect(stuck.outlineStyle).toBe("solid");
+          expect(stuck.outlineWidth).toBe("1px");
+          expect(stuck.outlineColor).toBe(dividerColor);
+          // The cells draw no outline: it would show as vertical lines.
+          expect(
+            getComputedStyle(row(name).querySelector("td") as Element)
+              .outlineStyle
+          ).toBe("none");
+        }
+      }
+    );
 
     await step("A stuck row hides what scrolls under it", async () => {
       for (const name of ["Row 3", "Row 5", "Row 7"]) {
@@ -796,6 +906,7 @@ const ChangingTable = ({ onCellsRender }: ChangingTableProps) => {
         Reverse the rows
       </Button>
       <Button onPress={() => setSearch("Row 9")}>Search for row 9</Button>
+      <Button onPress={() => setSearch("")}>Clear the search</Button>
       <DataTable.Root
         columns={nameColumns}
         rows={shownRows}
@@ -890,6 +1001,20 @@ export const StickyRowsChanges: StoryObj<ChangingTableProps> = {
         });
       }
     );
+
+    await step("Clearing the search brings the stacks back", async () => {
+      await click("Clear the search");
+      await waitFor(() => {
+        expect(canvas.queryByRole("row", { name: /^Row 5$/ })).not.toBeNull();
+      });
+      await scrollRootTo(root, 600);
+      // Reversed, rows 7 and 5 are below the view and stack at the bottom.
+      expectTouching(rect("Row 5").bottom, clientBottom());
+      expectTouching(rect("Row 7").bottom, rect("Row 5").top);
+      await waitFor(() => {
+        expect(parseFloat(root.style.scrollPaddingBottom)).toBeGreaterThan(0);
+      });
+    });
   },
 };
 
@@ -1191,11 +1316,15 @@ const createDataTransfer = () => {
   };
 };
 
-/** Dispatches a native drag event on `el`. A play cannot start a real drag. */
+/**
+ * Dispatches a native drag event on `el`, at `fraction` (0 top, 1 bottom) of its
+ * height. A play cannot start a real drag.
+ */
 const dispatchDragEvent = (
   el: Element,
-  type: "dragstart" | "dragend",
-  dataTransfer: ReturnType<typeof createDataTransfer>
+  type: "dragstart" | "dragenter" | "dragover" | "drop" | "dragend",
+  dataTransfer: ReturnType<typeof createDataTransfer>,
+  fraction = 0.5
 ) => {
   const rect = el.getBoundingClientRect();
   const event = new Event(type, { bubbles: true, cancelable: true });
@@ -1204,7 +1333,7 @@ const dispatchDragEvent = (
     value: rect.left + rect.width / 2,
   });
   Object.defineProperty(event, "clientY", {
-    value: rect.top + rect.height / 2,
+    value: rect.top + rect.height * fraction,
   });
   el.dispatchEvent(event);
 };
@@ -1268,6 +1397,226 @@ export const StickyRowsDrag: Story = {
       await userEvent.keyboard("{Escape}");
       await waitFor(() => expect(isDragging()).toBe(false));
     });
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Product example: placing a new discount in a list of discounts
+// ---------------------------------------------------------------------------
+
+const discountNames = [
+  "Welcome 10%",
+  "Free shipping",
+  "Back to school",
+  "Black Friday",
+  "Cyber Monday",
+  "Loyalty 5%",
+  "Bundle and save",
+  "Spring clearance",
+  "Student discount",
+  "Newsletter signup",
+  "Refer a friend",
+  "Flash sale",
+  "Birthday offer",
+  "Winter warm-up",
+  "Holiday gift",
+  "Outlet 30%",
+  "Summer sale",
+  "VIP early access",
+  "Gift card bonus",
+  "Clearance 50%",
+  "Weekend deal",
+  "Member price",
+  "First order",
+  "Cart rescue",
+];
+
+const discountValues = ["10 % off", "Free shipping", "15 % off", "5 EUR off"];
+
+const NEW_DISCOUNT_ID = "new-discount";
+
+const discountColumns: DataTableColumnItem[] = [
+  nameColumn,
+  {
+    id: "value",
+    header: "Discount",
+    accessor: (row: Record<string, unknown>) => row.value as ReactNode,
+  },
+  {
+    id: "status",
+    header: "Status",
+    accessor: (row: Record<string, unknown>) => row.status as ReactNode,
+  },
+];
+
+const discountRows = (newAt: "start" | "end"): DataTableRowItem[] => {
+  const existing = discountNames.map((name, index) => ({
+    id: `discount-${index + 1}`,
+    name,
+    value: discountValues[index % discountValues.length],
+    status: "Active",
+  }));
+  const created = {
+    id: NEW_DISCOUNT_ID,
+    name: "New discount",
+    value: "15 % off",
+    status: "Draft",
+  };
+  return newAt === "start" ? [created, ...existing] : [...existing, created];
+};
+
+const newDiscountOnly = new Set([NEW_DISCOUNT_ID]);
+
+/**
+ * A list of discounts, with a draft discount that is placed in the list by
+ * dragging. The draft is sticky, so it stays in reach at the top or bottom edge
+ * while the list scrolls, and it is the only row that can be dragged.
+ */
+const DiscountsTable = ({ newAt }: { newAt: "start" | "end" }) => {
+  const [rows, setRows] = useState(() => discountRows(newAt));
+  const { dragAndDropHooks } = useDragAndDrop({
+    ...createArrayHandlers(setRows, (row) => row.id),
+  });
+  return (
+    <DataTable
+      aria-label="Discounts"
+      columns={discountColumns}
+      rows={rows}
+      stickyRows={newDiscountOnly}
+      draggableKeys={newDiscountOnly}
+      dragAndDropHooks={dragAndDropHooks}
+      maxHeight="400px"
+      size="md"
+    />
+  );
+};
+
+/** Drops the draft discount after `targetName` with mocked pointer drag events. */
+const dropDraftAfter = async (
+  canvasElement: HTMLElement,
+  targetName: string
+) => {
+  const draft = bodyRow(canvasElement, "New discount");
+  const dataTransfer = createDataTransfer();
+  dispatchDragEvent(draft, "dragstart", dataTransfer);
+  await waitFor(() =>
+    expect(canvasElement.querySelector("[data-dragging='true']")).not.toBeNull()
+  );
+  const target = bodyRow(canvasElement, targetName);
+  dispatchDragEvent(target, "dragenter", dataTransfer, 0.9);
+  dispatchDragEvent(target, "dragover", dataTransfer, 0.9);
+  await waitFor(() =>
+    expect(canvasElement.querySelector("[data-drop-target]")).not.toBeNull()
+  );
+  dispatchDragEvent(target, "drop", dataTransfer, 0.9);
+  dispatchDragEvent(draft, "dragend", dataTransfer);
+  await waitFor(() =>
+    expect(canvasElement.querySelector("[data-dragging='true']")).toBeNull()
+  );
+};
+
+/** Only the draft discount has a drag handle. */
+const expectOnlyDraftDraggable = (canvasElement: HTMLElement) => {
+  const handles = within(canvasElement).getAllByRole("button", {
+    name: /drag to reorder/i,
+  });
+  expect(handles).toHaveLength(1);
+  expect(bodyRow(canvasElement, "New discount").contains(handles[0])).toBe(
+    true
+  );
+};
+
+/**
+ * The draft discount starts first in the list. The list is scrolled to the
+ * place where the discount belongs: the draft stays stuck under the header, and
+ * is dropped between two discounts that are in view. Only the draft can be
+ * dragged.
+ */
+export const StickyRowsNewDiscountFromTop: Story = {
+  render: () => <DiscountsTable newAt="start" />,
+  play: async ({ canvasElement, step }) => {
+    const root = getRoot(canvasElement);
+    const header = canvasElement.querySelector("thead") as HTMLElement;
+    const rect = (name: string) =>
+      bodyRow(canvasElement, name).getBoundingClientRect();
+
+    await step("Only the draft discount can be dragged", async () => {
+      expectOnlyDraftDraggable(canvasElement);
+    });
+
+    await step(
+      "Scrolled to the place for it, the draft stays under the header",
+      async () => {
+        const rowHeight = bodyRow(canvasElement, "New discount").offsetHeight;
+        await scrollRootTo(root, rowHeight * 8);
+        expectTouching(
+          header.getBoundingClientRect().bottom,
+          rect("New discount").top
+        );
+        expect(rect("Flash sale").top).toBeGreaterThan(
+          rect("New discount").bottom
+        );
+      }
+    );
+
+    await step(
+      "Dropped between two discounts, the draft is placed there",
+      async () => {
+        await dropDraftAfter(canvasElement, "Flash sale");
+        await waitFor(() => {
+          expect(
+            bodyRow(canvasElement, "New discount").previousElementSibling
+          ).toBe(bodyRow(canvasElement, "Flash sale"));
+        });
+        expect(bodyRow(canvasElement, "New discount").nextElementSibling).toBe(
+          bodyRow(canvasElement, "Birthday offer")
+        );
+      }
+    );
+  },
+};
+
+/**
+ * The draft discount starts last in the list, so it is stuck at the bottom
+ * edge. It is dropped between two discounts at the top of the list, without
+ * scrolling. Only the draft can be dragged.
+ */
+export const StickyRowsNewDiscountFromBottom: Story = {
+  render: () => <DiscountsTable newAt="end" />,
+  play: async ({ canvasElement, step }) => {
+    const root = getRoot(canvasElement);
+
+    await step("Only the draft discount can be dragged", async () => {
+      expectOnlyDraftDraggable(canvasElement);
+    });
+
+    await step(
+      "At the top of the list, the draft is stuck at the bottom",
+      async () => {
+        await scrollRootTo(root, 0);
+        const bottom =
+          root.getBoundingClientRect().top + root.clientTop + root.clientHeight;
+        expectTouching(
+          bodyRow(canvasElement, "New discount").getBoundingClientRect().bottom,
+          bottom
+        );
+      }
+    );
+
+    await step(
+      "Dropped between two discounts, the draft is placed there",
+      async () => {
+        await dropDraftAfter(canvasElement, "Back to school");
+        await waitFor(() => {
+          expect(
+            bodyRow(canvasElement, "New discount").previousElementSibling
+          ).toBe(bodyRow(canvasElement, "Back to school"));
+        });
+        expect(bodyRow(canvasElement, "New discount").nextElementSibling).toBe(
+          bodyRow(canvasElement, "Black Friday")
+        );
+      }
+    );
   },
 };
 
@@ -1365,10 +1714,12 @@ export const StickyRowsFooter: Story = {
 // ---------------------------------------------------------------------------
 
 /**
- * Two sticky rows stuck at the top edge, below the header. The play scrolls and
- * waits for the layout to settle, so Chromatic captures the stuck state.
+ * Two sticky rows stuck at the top edge, below the header. The play scrolls
+ * far enough, derived from the row height, and waits for the stack to settle,
+ * so Chromatic captures the stuck state.
  */
 export const StickyRowsStuckAtTop: Story = {
+  tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <StackTable
@@ -1377,16 +1728,30 @@ export const StickyRowsStuckAtTop: Story = {
     />
   ),
   play: async ({ canvasElement }) => {
-    getRoot(canvasElement).scrollTop = 600;
-    await nextFrames(3);
+    const root = getRoot(canvasElement);
+    const header = canvasElement.querySelector("thead") as HTMLElement;
+    await waitFor(() =>
+      expect(canvasElement.querySelector("tbody tr")).not.toBeNull()
+    );
+    const rowHeight = (canvasElement.querySelector("tbody tr") as HTMLElement)
+      .offsetHeight;
+    await scrollRootTo(root, rowHeight * 12);
+    await waitFor(() => {
+      expectTouching(
+        header.getBoundingClientRect().bottom,
+        bodyRow(canvasElement, "Row 3").getBoundingClientRect().top
+      );
+    });
   },
 };
 
 /**
- * Two sticky rows stuck at the bottom edge. The play waits for the layout to
- * settle, so Chromatic captures the stuck state.
+ * Two sticky rows stuck at the bottom edge. The table rests at the top, so both
+ * rows are stuck at the bottom. The play waits for the stack to settle, so
+ * Chromatic captures the stuck state.
  */
 export const StickyRowsStuckAtBottom: Story = {
+  tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <StackTable
@@ -1395,7 +1760,17 @@ export const StickyRowsStuckAtBottom: Story = {
     />
   ),
   play: async ({ canvasElement }) => {
-    getRoot(canvasElement).scrollTop = 0;
-    await nextFrames(3);
+    const root = getRoot(canvasElement);
+    await waitFor(() =>
+      expect(root.scrollHeight).toBeGreaterThan(root.clientHeight)
+    );
+    await waitFor(() => {
+      const bottom =
+        root.getBoundingClientRect().top + root.clientTop + root.clientHeight;
+      expectTouching(
+        bodyRow(canvasElement, "Row 39").getBoundingClientRect().bottom,
+        bottom
+      );
+    });
   },
 };
