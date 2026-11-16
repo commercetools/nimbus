@@ -177,11 +177,13 @@ describe("computeStuckStacks", () => {
     });
   });
 
-  it("sticks a row at the top only once it is under the stack above it", () => {
-    // At 700 the natural top of row 15 (790) equals 700 + 40 + 50: in place.
-    expect(stacks(700).topCount).toBe(1);
-    // One pixel further it is under the stack: stuck.
-    expect(stacks(701)).toEqual({
+  it("counts a row that touches the stack above it as stuck", () => {
+    // At 699 the natural top of row 15 (790) is below the stack edge (699 + 40
+    // + 50 = 789): in place.
+    expect(stacks(699).topCount).toBe(1);
+    // At 700 it touches the edge. In place and stuck look the same there, and
+    // counting it keeps the answer stable.
+    expect(stacks(700)).toEqual({
       top: 100,
       bottom: 0,
       topCount: 2,
@@ -276,6 +278,57 @@ describe("computeScrollTopWithStacks", () => {
         align: "nearest",
       })
     ).toBeNull();
+  });
+
+  it("settles on one answer for a row right below a sticky row", () => {
+    // Row 3 (190..240) lies directly below sticky row 2 (140..190). Aligned at
+    // the start it goes to 190 - (40 + 50) = 100, which puts row 2 exactly at its
+    // stuck position. In place and stuck look the same there, and the answer
+    // must not flip between the two on every pass.
+    const result = computeScrollTopWithStacks({
+      ...input,
+      layouts: layouts(),
+      rowTop: 190,
+      rowHeight: 50,
+      scrollTop: 0,
+      align: "start",
+    });
+    expect(result).toBe(100);
+    expect(
+      computeStuckStacks({
+        headerHeight: HEADER,
+        layouts: layouts(),
+        scrollTop: result as number,
+        viewportHeight: 300,
+      }).top
+    ).toBe(50);
+  });
+
+  it("finds the stable answer for a row between two sticky rows", () => {
+    // Sticky rows at 140 and 240, and row 3 (190..240) between them. With no row
+    // stuck, row 3 would go to 150, but both sticky rows count as stuck there.
+    // With both stuck it would go to 50, where neither is. Only one stuck row
+    // is stable: row 3 goes to 190 - (40 + 50) = 100, below the first sticky row.
+    const between: StickyRowLayout[] = [
+      { rowIndex: 2, naturalTop: 140, height: 50 },
+      { rowIndex: 4, naturalTop: 240, height: 50 },
+    ];
+    const result = computeScrollTopWithStacks({
+      ...input,
+      layouts: between,
+      rowTop: 190,
+      rowHeight: 50,
+      scrollTop: 0,
+      align: "start",
+    });
+    expect(result).toBe(100);
+    const stacks = computeStuckStacks({
+      headerHeight: HEADER,
+      layouts: between,
+      scrollTop: 100,
+      viewportHeight: 300,
+    });
+    expect(stacks.topCount).toBe(1);
   });
 
   it("matches computeTargetScrollTop when no row is sticky", () => {

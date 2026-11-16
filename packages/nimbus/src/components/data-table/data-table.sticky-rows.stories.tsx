@@ -3,10 +3,18 @@
 // under one DataTable entry.
 
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useCallback, useMemo, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+  type Ref,
+} from "react";
 import { within, expect, waitFor, userEvent, fn, mocked } from "storybook/test";
 import { Button, DataTable, Stack } from "@/components";
 import type {
+  DataTableApi,
   DataTableCellRenderProps,
   DataTableColumnItem,
   DataTableProps,
@@ -292,6 +300,7 @@ type StackTableProps = {
   stickyRows: Set<string>;
   maxHeight?: string;
   rowCount?: number;
+  apiRef?: Ref<DataTableApi>;
 };
 
 const StackTable = ({
@@ -300,6 +309,7 @@ const StackTable = ({
   // Tall enough that the rows in place at the top are clear of the bottom stack.
   maxHeight = "480px",
   rowCount = 40,
+  apiRef,
 }: StackTableProps) => {
   const [rows] = useState(() => manyRows(rowCount));
   return (
@@ -309,6 +319,7 @@ const StackTable = ({
       rows={rows}
       stickyRows={stickyRows}
       maxHeight={maxHeight}
+      apiRef={apiRef}
       size="md"
     />
   );
@@ -471,5 +482,133 @@ export const StickyRowsKeyboardFocus: Story = {
         expect(document.activeElement).toBe(rowByName(canvas, "Row 1"));
       }
     );
+  },
+};
+
+// ---------------------------------------------------------------------------
+// scrollToRow
+// ---------------------------------------------------------------------------
+
+const scrollApi: { current: DataTableApi | null } = { current: null };
+
+/** A table where a button changes `stickyRows`, then calls `scrollToRow` from an effect. */
+const ScrollAfterStickyChange = () => {
+  const [stickyRows, setStickyRows] = useState(new Set(["row-3", "row-5"]));
+  const [rows] = useState(() => manyRows(40));
+  const [callCount, setCallCount] = useState(0);
+  useEffect(() => {
+    if (callCount === 0) return;
+    void scrollApi.current?.scrollToRow("row-20", { align: "start" });
+  }, [callCount]);
+  return (
+    <Stack gap="400">
+      <Button
+        onPress={() => {
+          setStickyRows(new Set(["row-3", "row-5", "row-10"]));
+          setCallCount((count) => count + 1);
+        }}
+      >
+        Make row 10 sticky and scroll
+      </Button>
+      <DataTable
+        aria-label="Scroll after change"
+        columns={nameColumns}
+        rows={rows}
+        stickyRows={stickyRows}
+        maxHeight="480px"
+        apiRef={scrollApi}
+        size="md"
+      />
+    </Stack>
+  );
+};
+
+/**
+ * `scrollToRow` knows the stacks of the destination: a sticky row that is in
+ * place now but stuck once the table has scrolled counts, and one that is not
+ * stuck there does not. A sticky row that is stuck is already in place.
+ */
+export const StickyRowsScrollToRow: Story = {
+  render: () => <StackTable stickyRows={stackStickyRows} apiRef={scrollApi} />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const root = getRoot(canvasElement);
+    const api = () => scrollApi.current as DataTableApi;
+    const rect = (name: string) =>
+      rowByName(canvas, name).getBoundingClientRect();
+    const toTop = async () => {
+      root.scrollTop = 0;
+      await nextFrames();
+    };
+    /** Calls `scrollToRow` and says which call resolved `false`. */
+    const go = async (key: string, align: "start" | "end" | "center") => {
+      const result = await api().scrollToRow(key, { align });
+      expect(
+        result,
+        `scrollToRow(${key}, ${align}) at scrollTop ${root.scrollTop}`
+      ).toBe(true);
+    };
+
+    await step(
+      "Rows 3 and 5 are in place now but stuck at the destination: the row goes below both",
+      async () => {
+        await toTop();
+        await go("row-20", "start");
+        await nextFrames();
+        expectTouching(rect("Row 5").bottom, rect("Row 20").top);
+        expectTouching(rect("Row 3").bottom, rect("Row 5").top);
+      }
+    );
+
+    await step("The bottom stack is kept clear with align end", async () => {
+      await expect(api().scrollToRow("row-30", { align: "end" })).resolves.toBe(
+        true
+      );
+      await nextFrames();
+      expectTouching(rect("Row 30").bottom, rect("Row 38").top);
+    });
+
+    await step(
+      "A sticky row that is not stuck at the destination is not counted",
+      async () => {
+        await toTop();
+        // Row 4 lies between rows 3 and 5. At the destination only row 3 is
+        // stuck above it, and row 5 stays in its own place just below row 4.
+        await go("row-4", "start");
+        await nextFrames();
+        expectTouching(rect("Row 3").bottom, rect("Row 4").top);
+        expectTouching(rect("Row 4").bottom, rect("Row 5").top);
+      }
+    );
+
+    await step("A sticky row that is stuck is already in place", async () => {
+      root.scrollTop = 800;
+      await nextFrames();
+      const before = root.scrollTop;
+      await go("row-3", "center");
+      await nextFrames();
+      expect(root.scrollTop).toBe(before);
+    });
+  },
+};
+
+/** A call from an effect right after `stickyRows` changed uses the new stacks. */
+export const StickyRowsScrollToRowAfterChange: Story = {
+  render: () => <ScrollAfterStickyChange />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const rect = (name: string) =>
+      rowByName(canvas, name).getBoundingClientRect();
+
+    await step("The row goes below the three rows of the new set", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Make row 10 sticky and scroll" })
+      );
+      await waitFor(() => {
+        expectTouching(rect("Row 10").bottom, rect("Row 20").top);
+      });
+      expectTouching(rect("Row 5").bottom, rect("Row 10").top);
+      expectTouching(rect("Row 3").bottom, rect("Row 5").top);
+    });
   },
 };

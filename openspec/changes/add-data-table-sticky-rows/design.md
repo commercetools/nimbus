@@ -171,9 +171,23 @@ current position (a sticky row near the top is in place now, and stuck once the
 table has scrolled down). Because the destination depends on the insets, the
 hook computes a first target with the stacks at the current scroll position,
 computes the stacks at that target, and computes the target again, until two
-passes agree (at most three passes). For a target that is sticky and currently
-stuck (it is in a stuck stack at the current scroll position), the hook resolves
-`true` before it computes a scroll. `computeTargetScrollTop` stays unchanged.
+passes agree (at most three passes).
+
+_Measured (tasks 4.3, 3.4): the passes can go round in a circle._ A row between
+two sticky rows does: with the stack of one pass it goes to a position where the
+stack is taller, and with the taller stack to a position where it is shorter.
+The stack changes by whole rows and there are few, so when the passes do not
+agree, the function tries every combination of stuck rows at the top and the
+bottom and returns the first one that agrees with the position it gives.
+
+_A row that touches the edge of a stack counts as stuck_ (0.5 px tolerance). In
+place and stuck look the same there, and counting it makes the answer stable. A
+row aligned right below a sticky row flipped between the two answers on every
+pass before this.
+
+For a target that is sticky and currently stuck (it is in a stuck stack at the
+current scroll position), the hook resolves `true` before it computes a scroll.
+`computeTargetScrollTop` stays unchanged.
 
 - _Alternative: compute the row's natural position and apply `align` to it._
   Rejected in the brainstorm: a sticky row's own offsets show its stuck

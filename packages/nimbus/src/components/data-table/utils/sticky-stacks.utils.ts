@@ -96,13 +96,21 @@ export const computeStickyOffsets = ({
 };
 
 /**
+ * A row whose natural position touches the edge of the stack above or below it
+ * is counted as stuck: in place and stuck look the same there. Counting it makes
+ * the answer stable. Without it, a row aligned right next to a sticky row flips
+ * between the two answers on every pass of `computeScrollTopWithStacks`.
+ */
+const EDGE_TOLERANCE = 0.5;
+
+/**
  * Which sticky rows are stuck for one scroll position, and how tall the stacks
  * are. A sticky row in its own place covers nothing and is not counted.
  *
- * A row is stuck at the top when its natural top is above the bottom edge of the
- * stack above it (which starts with the header). A row is stuck at the bottom
- * when its natural bottom is below the top edge of the stack below it. A row is
- * never counted at both edges.
+ * A row is stuck at the top when its natural top is at or above the bottom edge
+ * of the stack above it (which starts with the header). A row is stuck at the
+ * bottom when its natural bottom is at or below the top edge of the stack below
+ * it. A row is never counted at both edges.
  *
  * @param headerHeight - Height the sticky header covers (0 if it is not sticky)
  * @param scrollTop - Scroll position of the scroll container
@@ -122,7 +130,9 @@ export const computeStuckStacks = ({
   let top = 0;
   let topCount = 0;
   for (const layout of layouts) {
-    if (layout.naturalTop >= scrollTop + headerHeight + top) break;
+    if (layout.naturalTop > scrollTop + headerHeight + top + EDGE_TOLERANCE) {
+      break;
+    }
     top += layout.height;
     topCount += 1;
   }
@@ -132,7 +142,9 @@ export const computeStuckStacks = ({
   for (let index = layouts.length - 1; index >= topCount; index -= 1) {
     const layout = layouts[index];
     const naturalBottom = layout.naturalTop + layout.height;
-    if (naturalBottom <= scrollTop + viewportHeight - bottom) break;
+    if (naturalBottom < scrollTop + viewportHeight - bottom - EDGE_TOLERANCE) {
+      break;
+    }
     bottom += layout.height;
     bottomCount += 1;
   }
@@ -222,6 +234,46 @@ export const computeScrollTopWithStacks = ({
     });
     if (next.top === stacks.top && next.bottom === stacks.bottom) return target;
     stacks = next;
+  }
+
+  // The passes went round in a circle. That happens for a row between two sticky
+  // rows: with the stack of one pass the row goes to a position where the stack
+  // is taller, and with the taller stack it goes to a position where it is
+  // shorter. The stack changes by whole rows and there are few of them, so look
+  // for the combination of stuck rows that agrees with the position it gives.
+  const heightOf = (from: number, count: number, fromEnd = false) => {
+    const rows = fromEnd
+      ? layouts.slice(layouts.length - count)
+      : layouts.slice(from, from + count);
+    return rows.reduce((sum, layout) => sum + layout.height, 0);
+  };
+  for (let topCount = 0; topCount <= layouts.length; topCount += 1) {
+    for (
+      let bottomCount = 0;
+      topCount + bottomCount <= layouts.length;
+      bottomCount += 1
+    ) {
+      const candidate = computeTargetScrollTop({
+        rowTop,
+        rowHeight,
+        viewportHeight,
+        scrollTop,
+        scrollHeight,
+        topInset: headerInset + heightOf(0, topCount),
+        bottomInset: heightOf(0, bottomCount, true),
+        align,
+      });
+      if (candidate === null) continue;
+      const there = computeStuckStacks({
+        headerHeight: headerInset,
+        layouts,
+        scrollTop: candidate,
+        viewportHeight,
+      });
+      if (there.topCount === topCount && there.bottomCount === bottomCount) {
+        return candidate;
+      }
+    }
   }
   return target;
 };

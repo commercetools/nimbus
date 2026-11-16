@@ -112,24 +112,28 @@
 
 ## 4. Scroll To Row
 
-- [ ] 4.1 Extend `hooks/use-data-table-api.spec.ts` first: the insets include
-      the stuck stacks of the destination, measured when the call runs (a sticky
-      row in its own place now but stuck at the destination is included; one
-      that will not be stuck is not); a call right after the set or the row
-      order changed uses the new layout; a target that is sticky and currently
-      stuck resolves `true` without calling `scrollTo`, for every `align`; a
-      sticky target that is not stuck scrolls as any other row; the destination
-      search stops after at most three passes; verify the new cases fail
-- [ ] 4.2 Add the destination stacks to `getScrollInsets` in
+- [x] 4.1 Write the tests first, in `utils/sticky-stacks.utils.spec.ts` (the
+      logic is pure, so it is tested there; the fake container of
+      `use-data-table-api.spec.ts` has no `<table>`, so it cannot hold sticky
+      rows): the destination stacks (a sticky row in its own place now but stuck
+      at the destination is included; one that will not be stuck is not); a row
+      right below a sticky row settles; a row between two sticky rows settles on
+      the one stable answer; no sticky rows give `computeTargetScrollTop`;
+      `isRowStuck`; verify the new cases fail
+- [x] 4.2 Add `computeScrollTopWithStacks` and `isRowStuck` to
+      `utils/sticky-stacks.utils.ts` and use them in `measureTarget` of
       `hooks/use-data-table-api.ts` (live measuring, not the cache or the DOM
-      properties; repeat target and stacks until two passes agree, at most
-      three) and resolve `true` early for a stuck sticky target; leave
-      `computeTargetScrollTop` unchanged; verify the hook spec passes
-- [ ] 4.3 Add to `data-table.scroll-to-row.stories.tsx` or the sticky stories:
-      `align` `"start"` and `"end"` for a normal row end below the top stack and
-      above the bottom stack; a call from an effect right after `stickyRows`
-      changed uses the new stacks; a stuck sticky row resolves `true` and the
-      table does not move; verify with `pnpm test:dev`
+      properties; a sticky target that is stuck needs no scroll); leave
+      `computeTargetScrollTop` unchanged; verify the util spec and the existing
+      hook spec pass
+- [x] 4.3 Add stories in `data-table.sticky-rows.stories.tsx` (real layout, so
+      they test the DOM wiring): `align` `"start"` and `"end"` for a normal row
+      end below the top stack and above the bottom stack; rows that are in place
+      now but stuck at the destination are counted; a sticky row between the
+      target and the top is not counted when it is not stuck there; a row
+      between two sticky rows settles; a call from an effect right after
+      `stickyRows` changed uses the new stacks; a stuck sticky row resolves
+      `true` and the table does not move; verify with `pnpm test:dev`
 
 ## 5. Documentation and Release
 
