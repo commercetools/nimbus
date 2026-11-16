@@ -205,7 +205,7 @@ The component SHALL accept and forward all SearchInput props per nimbus-core sta
 #### Scenario: Clear button functionality
 - **WHEN** search input has value
 - **THEN** SHALL display clear button (X icon) on right side
-- **AND** clear button SHALL be visible only when value is not empty
+- **AND** clear button SHALL be rendered only when value is not empty
 - **AND** clicking clear button SHALL clear input value
 - **AND** clear button SHALL be provided by SearchInput functionality
 - **AND** clear button SHALL have localized aria-label

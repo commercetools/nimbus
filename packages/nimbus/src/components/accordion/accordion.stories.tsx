@@ -2,9 +2,11 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Accordion,
   Avatar,
+  Badge,
   Button,
   Checkbox,
   Flex,
+  LoadingSpinner,
   Stack,
 } from "@commercetools/nimbus";
 import { expect, userEvent, waitFor, within } from "storybook/test";
@@ -116,6 +118,95 @@ export const WithHeaderItemsToRight: Story = {
     });
 
     // Clicking the trigger leaves it focus-visible; blur so its ring isn't snapshotted.
+    trigger.blur();
+  },
+};
+
+/**
+ * Chevron styles (size, rotation) apply to the chevron only. Other svgs in the
+ * header, like a custom icon or a spinner inside a badge, keep their own size
+ * and do not rotate.
+ */
+export const WithSvgInHeader: Story = {
+  // No VRT: the play asserts computed size and rotation, the chevron pixels are covered by Sizes/SmokeTest.
+  // `sm` makes the chevron (20px) differ from the spinner's own size (24px).
+  render: () => (
+    <Stack gap="400">
+      <Badge alignSelf="start">
+        <LoadingSpinner size="2xs" data-testid="reference-spinner" />1
+      </Badge>
+      <Accordion.Root size="sm">
+        <Accordion.Item value="a">
+          <Accordion.Header>
+            First Item
+            <svg
+              data-testid="header-icon"
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              aria-hidden="true"
+            >
+              <circle cx="6" cy="6" r="6" fill="currentColor" />
+            </svg>
+            <Badge>
+              <LoadingSpinner size="2xs" data-testid="header-spinner" />1
+            </Badge>
+          </Accordion.Header>
+          <Accordion.Content>First item content</Accordion.Content>
+        </Accordion.Item>
+      </Accordion.Root>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole("button", { name: /First Item/ });
+    const chevron = trigger.querySelector(".nimbus-accordion__indicator")!;
+    const icon = canvas.getByTestId("header-icon");
+    const spinnerSvg = canvas
+      .getByTestId("header-spinner")
+      .querySelector("svg")!;
+
+    // Same spinner rendered outside the accordion: its standalone size.
+    const referenceSvg = canvas
+      .getByTestId("reference-spinner")
+      .querySelector("svg")!;
+    const size = (el: Element) => {
+      const { width, height } = getComputedStyle(el);
+      return { width, height };
+    };
+
+    const rotate = (el: Element) => getComputedStyle(el).rotate;
+    const isUnrotated = (el: Element) =>
+      expect(rotate(el)).toMatch(/^(none|0deg)$/);
+
+    await step("The chevron has the chevron size", async () => {
+      await expect(chevron.tagName.toLowerCase()).toBe("svg");
+      await expect(getComputedStyle(chevron).width).toBe("20px");
+    });
+
+    await step("Other svgs keep their own size", async () => {
+      await expect(getComputedStyle(icon).width).toBe("12px");
+      await expect(getComputedStyle(icon).height).toBe("12px");
+      await expect(size(spinnerSvg)).toEqual(size(referenceSvg));
+      await expect(size(spinnerSvg).width).not.toBe(
+        getComputedStyle(chevron).width
+      );
+    });
+
+    await step("Expanding rotates the chevron only", async () => {
+      await userEvent.click(trigger);
+      await waitFor(() => expect(rotate(chevron)).toBe("90deg"));
+      await isUnrotated(icon);
+      await isUnrotated(spinnerSvg);
+      await expect(getComputedStyle(icon).width).toBe("12px");
+      await expect(size(spinnerSvg)).toEqual(size(referenceSvg));
+    });
+
+    await step("Collapsing rotates the chevron back", async () => {
+      await userEvent.click(trigger);
+      await waitFor(() => expect(rotate(chevron)).toMatch(/^(none|0deg)$/));
+    });
+
     trigger.blur();
   },
 };

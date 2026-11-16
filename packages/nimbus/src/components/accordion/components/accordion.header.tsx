@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import {
   AccordionTriggerSlot,
+  AccordionIndicatorSlot,
   AccordionTitleSlot,
   AccordionHeaderRightContentSlot,
 } from "../accordion.slots";
@@ -55,7 +56,9 @@ export const AccordionHeader = ({
     >
       <AccordionTriggerSlot ref={ref} slot="trigger" asChild>
         <RaButton {...restProps}>
-          <KeyboardArrowRight />
+          <AccordionIndicatorSlot asChild>
+            <KeyboardArrowRight />
+          </AccordionIndicatorSlot>
           <AccordionTitleSlot>{headerContent.main}</AccordionTitleSlot>
         </RaButton>
       </AccordionTriggerSlot>

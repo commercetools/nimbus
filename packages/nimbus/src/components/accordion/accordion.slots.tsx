@@ -3,7 +3,10 @@ import {
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
 import type { SlotComponent } from "@/type-utils";
-import type { AccordionRootSlotProps } from "./accordion.types";
+import type {
+  AccordionIndicatorSlotProps,
+  AccordionRootSlotProps,
+} from "./accordion.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "nimbusAccordion",
@@ -23,6 +26,11 @@ export const AccordionTriggerSlot = withContext<
   HTMLButtonElement,
   HTMLChakraProps<"button">
 >("button", "trigger");
+
+export const AccordionIndicatorSlot: SlotComponent<
+  SVGSVGElement,
+  AccordionIndicatorSlotProps
+> = withContext<SVGSVGElement, AccordionIndicatorSlotProps>("svg", "indicator");
 
 export const AccordionPanelSlot = withContext<
   HTMLDivElement,

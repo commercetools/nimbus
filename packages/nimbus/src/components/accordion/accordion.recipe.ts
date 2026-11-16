@@ -9,6 +9,7 @@ export const accordionSlotRecipe = defineSlotRecipe({
     "root",
     "disclosure",
     "trigger",
+    "indicator",
     "panel",
     "accordionTitle",
     "headerContentRight",
@@ -33,18 +34,18 @@ export const accordionSlotRecipe = defineSlotRecipe({
       alignItems: "center",
       gap: "8px",
       width: "auto",
-      "& svg": {
-        width: "var(--accordion-width)",
-        height: "var(--accordion-height)",
-        rotate: "0deg",
-        transition: "rotate 200ms",
-      },
-      '&[aria-expanded="true"] svg': {
-        rotate: "90deg",
-      },
       "&[disabled]": {
         layerStyle: "disabled",
       },
+      '&[aria-expanded="true"] .nimbus-accordion__indicator': {
+        rotate: "90deg",
+      },
+    },
+    indicator: {
+      width: "var(--accordion-width)",
+      height: "var(--accordion-height)",
+      rotate: "0deg",
+      transition: "rotate 200ms",
     },
     panel: {
       paddingTop: "var(--accordion-padding-top)",
@@ -64,10 +65,10 @@ export const accordionSlotRecipe = defineSlotRecipe({
       md: {
         trigger: {
           "--accordion-font-size": "fontSizes.500",
-          "& svg": {
-            "--accordion-width": "sizes.600",
-            "--accordion-height": "sizes.600",
-          },
+        },
+        indicator: {
+          "--accordion-width": "sizes.600",
+          "--accordion-height": "sizes.600",
         },
         panel: {
           "--accordion-padding-top": "spacing.600",
@@ -78,10 +79,10 @@ export const accordionSlotRecipe = defineSlotRecipe({
       sm: {
         trigger: {
           "--accordion-font-size": "fontSizes.400",
-          "& svg": {
-            "--accordion-width": "sizes.500",
-            "--accordion-height": "sizes.500",
-          },
+        },
+        indicator: {
+          "--accordion-width": "sizes.500",
+          "--accordion-height": "sizes.500",
         },
         panel: {
           "--accordion-padding-top": "spacing.400",

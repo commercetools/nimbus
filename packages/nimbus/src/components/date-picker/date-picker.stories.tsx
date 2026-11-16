@@ -10,11 +10,13 @@ import {
   Button,
   DatePicker,
   FormField,
+  Icon,
   NimbusI18nProvider,
   Stack,
   Text,
   type DateValue,
 } from "@commercetools/nimbus";
+import { Schedule } from "@commercetools/nimbus-icons";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 
 /**
@@ -2576,6 +2578,33 @@ export const CustomWidth: Story = {
         <DatePicker {...args} width="full" />
       </Stack>
     );
+  },
+};
+
+/**
+ * Leading Element
+ * Demonstrates the DatePicker rendering a leading element inside the input
+ */
+export const LeadingElement: Story = {
+  args: {
+    ["aria-label"]: "Select a date",
+  },
+  render: (args) => (
+    <DatePicker
+      {...args}
+      leadingElement={<Icon as={Schedule} data-testid="leading-element" />}
+    />
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders the leading element inside the input", async () => {
+      const leadingElement = await canvas.findByTestId("leading-element");
+      await expect(leadingElement).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("group", { name: "Select a date" })
+      ).toContainElement(leadingElement);
+    });
   },
 };
 
