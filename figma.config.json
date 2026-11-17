@@ -5,6 +5,9 @@
       "packages/nimbus/src/components/**/*.figma.tsx",
       "packages/nimbus/src/components/**/index.ts",
       "packages/nimbus/src/components/**/*.tsx"
-    ]
+    ],
+    "importPaths": {
+      "src/components/*": "@commercetools/nimbus"
+    }
   }
 }
