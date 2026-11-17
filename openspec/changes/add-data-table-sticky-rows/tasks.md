@@ -37,11 +37,14 @@
       row level 14 to the `zIndex` table and move the header to 15 (update the
       comment); set the highlight (`neutral.2`) through `--data-table-row-bg`
       and `background`, below the hover and selected rules, leaving
-      `data-custom-bg` rows alone; for a sticky row, set `border-bottom: none`
-      on the row and draw the divider as a 1px `outline` on the row, in the color
-      of the row border (task 2.1: a collapsed row border is not painted at the
-      stuck position, and no cell paints the grid line, so the rows under a
-      stuck row showed through it); for a sticky row that is disabled, do
+      `data-custom-bg` rows alone; a table with sticky rows (`data-has-sticky-rows`
+      on the root) uses `border-collapse: separate` and draws its dividers as
+      cell borders on the body and header cells (task 2.1: in a collapsed-border
+      table a sticky row cannot carry its divider, and the rows under a stuck
+      row show through the grid line); the last sticky row turns its border
+      transparent while it is stuck at the bottom edge
+      (`data-sticky-bottom-edge`, set by `useStickyStacks`); for a sticky row that
+      is disabled, do
       not apply the row-level opacity of `layerStyle: "disabled"`, keep the
       opaque background and dim the cell content; verify typecheck and the
       existing frozen column and pinning stories pass
@@ -52,7 +55,7 @@
       specificity of its rule in the recipe); a stuck row, also a disabled or
       selected one, has an opaque computed background and opacity 1 (a disabled
       row dims its content), and hides what is under it; the divider is
-      drawn as an outline on the row; the header is above the stuck rows (done in
+      a cell border like any other row, and the bottom edge row hides it; the header is above the stuck rows (done in
       `StickyRowsLook`, which found the selector specificity bug fixed in the
       recipe). Not done here, and listed in task 6.2 for the manual check: a
       pixel sample for a one-pixel seam between stacked rows (the stories check

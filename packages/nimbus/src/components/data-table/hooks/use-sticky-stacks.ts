@@ -14,6 +14,20 @@ import {
 
 const TOP_PROPERTY = "--data-table-sticky-top";
 const BOTTOM_PROPERTY = "--data-table-sticky-bottom";
+/**
+ * Set on the last sticky row while rows are stuck at the bottom edge. The row's
+ * bottom border is hidden then, because the border of the scroll area is
+ * already the line there.
+ */
+const BOTTOM_EDGE_ATTRIBUTE = "data-sticky-bottom-edge";
+/**
+ * Set on the first row of the stack at the bottom edge while it is pushed up
+ * from its own place. Its divider on top is the bottom border of the row above
+ * it, which is not next to it then, so CSS draws the line on the row itself.
+ */
+const BOTTOM_START_ATTRIBUTE = "data-sticky-bottom-start";
+/** A row closer than this to its own place counts as being in place. */
+const IN_PLACE_TOLERANCE = 0.5;
 
 type UseStickyStacksParams = {
   /** The element that scrolls. */
@@ -69,12 +83,34 @@ export const useStickyStacks = ({
     const clearRow = (row: HTMLElement) => {
       row.style.removeProperty(TOP_PROPERTY);
       row.style.removeProperty(BOTTOM_PROPERTY);
+      row.removeAttribute(BOTTOM_EDGE_ATTRIBUTE);
+      row.removeAttribute(BOTTOM_START_ATTRIBUTE);
+    };
+
+    // The row that has the bottom edge attribute right now.
+    let bottomEdgeRow: HTMLElement | undefined;
+    const markBottomEdge = (row: HTMLElement | undefined) => {
+      if (row === bottomEdgeRow) return;
+      bottomEdgeRow?.removeAttribute(BOTTOM_EDGE_ATTRIBUTE);
+      row?.setAttribute(BOTTOM_EDGE_ATTRIBUTE, "");
+      bottomEdgeRow = row;
+    };
+
+    // The row that has the bottom start attribute right now.
+    let bottomStartRow: HTMLElement | undefined;
+    const markBottomStart = (row: HTMLElement | undefined) => {
+      if (row === bottomStartRow) return;
+      bottomStartRow?.removeAttribute(BOTTOM_START_ATTRIBUTE);
+      row?.setAttribute(BOTTOM_START_ATTRIBUTE, "");
+      bottomStartRow = row;
     };
 
     const applyPadding = () => {
       if (!measurement || measurement.layouts.length === 0) {
         root.style.removeProperty("scroll-padding-top");
         root.style.removeProperty("scroll-padding-bottom");
+        markBottomEdge(undefined);
+        markBottomStart(undefined);
         return;
       }
       const stacks = computeStuckStacks({
@@ -85,6 +121,22 @@ export const useStickyStacks = ({
       });
       root.style.scrollPaddingTop = `${measurement.headerInset + stacks.top}px`;
       root.style.scrollPaddingBottom = `${stacks.bottom}px`;
+      // The last sticky row is at the bottom edge when any row is stuck there.
+      markBottomEdge(
+        stacks.bottomCount > 0
+          ? measurement.elements[measurement.elements.length - 1]
+          : undefined
+      );
+      // The first row of the bottom stack, when it is pushed up from its place.
+      const startIndex = measurement.layouts.length - stacks.bottomCount;
+      const start = measurement.layouts[startIndex];
+      const stackTop = root.scrollTop + root.clientHeight - stacks.bottom;
+      markBottomStart(
+        stacks.bottomCount > 0 &&
+          start.naturalTop - stackTop > IN_PLACE_TOLERANCE
+          ? measurement.elements[startIndex]
+          : undefined
+      );
     };
 
     // A size change: the header wraps, a row wraps, a column is resized, the

@@ -471,6 +471,26 @@ export const StickyRowsStacks: Story = {
         await waitFor(() => {
           expect(padding().bottom).toBeCloseTo(rect("Row 38").height, 0);
         });
+        // Stuck at the bottom edge, the last sticky row hides its divider: the
+        // border of the scroll area is the line there. The border is only
+        // transparent, so the row keeps its height.
+        const row38 = rowByName(canvas, "Row 38");
+        expect(row38.hasAttribute("data-sticky-bottom-edge")).toBe(true);
+        const edgeCell = getComputedStyle(row38.querySelector("td") as Element);
+        expect(edgeCell.borderBottomWidth).toBe("1px");
+        expect(edgeCell.borderBottomColor).toBe("rgba(0, 0, 0, 0)");
+        // Row 37 is far above, so nothing paints the divider on top of row 38.
+        // The row draws it as a one pixel background, without a taller border.
+        expect(row38.hasAttribute("data-sticky-bottom-start")).toBe(true);
+        expect(edgeCell.borderTopWidth).toBe("0px");
+        expect(edgeCell.backgroundImage).toContain("linear-gradient");
+        expect(edgeCell.backgroundSize).toBe("100% 1px");
+        // A row that is not at the bottom edge keeps its visible divider.
+        expect(
+          getComputedStyle(
+            rowByName(canvas, "Row 3").querySelector("td") as Element
+          ).borderBottomColor
+        ).not.toBe("rgba(0, 0, 0, 0)");
         expect(padding().top).toBeCloseTo(
           headerBottom() - root.getBoundingClientRect().top - root.clientTop,
           0
@@ -511,6 +531,12 @@ export const StickyRowsStacks: Story = {
       // Row 38 is no longer stuck, so the bottom padding is 0. Rows 3 and 5
       // are still stuck at the top.
       await waitFor(() => expect(padding().bottom).toBe(0));
+      // In its own place, row 38 has its divider again.
+      const row38 = rowByName(canvas, "Row 38");
+      expect(row38.hasAttribute("data-sticky-bottom-edge")).toBe(false);
+      expect(
+        getComputedStyle(row38.querySelector("td") as Element).borderBottomColor
+      ).not.toBe("rgba(0, 0, 0, 0)");
       expectTouching(rect("Row 3").bottom, rect("Row 5").top);
     });
   },
@@ -813,24 +839,28 @@ export const StickyRowsLook: Story = {
     );
 
     await step(
-      "The row draws its divider as an outline, in the color of the row border",
+      "The divider of a sticky row is a cell border, like any other row",
       async () => {
-        // The one-pixel line of the collapsed-border grid between two rows is
-        // not painted by the cells, so the rows under a stuck row would show
-        // through it. This checks the rule that draws the divider there. A play
-        // cannot read pixels: the seam was measured with screenshots (see
-        // design.md).
-        const dividerColor = getComputedStyle(row("Row 8")).borderBottomColor;
+        // In a collapsed-border table the one-pixel line between two rows
+        // belongs to the table, no cell paints it, and the rows under a stuck
+        // row would show through it. A table with sticky rows uses separate
+        // borders, so the divider is a border of the cells and moves with the
+        // row. A play cannot read pixels: the seam was measured with
+        // screenshots (see design.md).
+        const table = canvasElement.querySelector("table") as Element;
+        expect(getComputedStyle(table).borderCollapse).toBe("separate");
+        const normalCell = getComputedStyle(
+          row("Row 8").querySelector("td") as Element
+        );
+        expect(normalCell.borderBottomWidth).toBe("1px");
         for (const name of ["Row 3", "Row 5", "Row 7"]) {
-          const stuck = getComputedStyle(row(name));
-          expect(stuck.outlineStyle).toBe("solid");
-          expect(stuck.outlineWidth).toBe("1px");
-          expect(stuck.outlineColor).toBe(dividerColor);
-          // The cells draw no outline: it would show as vertical lines.
-          expect(
-            getComputedStyle(row(name).querySelector("td") as Element)
-              .outlineStyle
-          ).toBe("none");
+          const stuck = row(name);
+          const cell = getComputedStyle(stuck.querySelector("td") as Element);
+          expect(cell.borderBottomWidth).toBe("1px");
+          expect(cell.borderBottomStyle).toBe("solid");
+          expect(cell.borderBottomColor).toBe(normalCell.borderBottomColor);
+          // No second line on the row itself.
+          expect(getComputedStyle(stuck).outlineStyle).toBe("none");
         }
       }
     );

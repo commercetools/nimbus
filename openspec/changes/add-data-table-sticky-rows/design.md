@@ -227,57 +227,71 @@ counts renders, as the per-row drag story does (#2160, criterion 5).
 
 ## Risks / Trade-offs
 
-- [Row borders on a sticky `tr` in a `border-collapse: collapse` table] →
-  **Measured (task 2.1).** A throwaway page copied the table structure
-  (scrolling root, collapsed borders, sticky `thead`, rows with `border-bottom`,
-  sticky rows with `top` and `bottom`) and read pixels from screenshots.
-  Chromium 156.0.8078.4 and the Playwright WebKit build 27.2 (revision 2370; not
-  a Safari release) agree:
-  - Stack geometry is exact: 0.00 px gap and no overlap between the header and
-    the top stack and inside both stacks, also with fractional heights (40.90625
-    px) and at a device scale of 1.25. (WebKit showed 0.20 px at scale 1.25 at
-    the bottom edge.) Measuring the fractional border-box height (Decision 2)
-    works.
-  - The `border-bottom` of a sticky `tr` is **not painted** at the row's stuck
-    position. The collapsed border belongs to the table grid and stays at the
-    row's original position. Instead the bottom pixel row of the stuck row shows
-    the row that scrolls under it.
-  - An inset `box-shadow` (`inset 0 -1px 0`) on the cells of a sticky row, with
-    `border-bottom: none` on the row, paints the line at the stuck position in
-    both engines. **Decision for the recipe:** sticky rows draw their bottom
-    line this way.
-  - An outward 1px shadow on the cells to cover the seam was tried and rejected:
-    the lower stuck row paints over the line of the row above it.
-  - **The seam between stuck rows (measured after task 6.2 feedback).** A one
-    pixel line of the rows that scroll under the stack showed between the header
-    and the first stuck row and between two stuck rows, at almost every scroll
-    position, in Chromium and WebKit. It is **not** a rounding problem: hit
-    testing finds no gap (the rows and their cells touch), the line is one CSS
-    pixel at device scales 1, 2 and 3 (not one device pixel), and it disappears
-    when the table uses `border-collapse: separate`. The cause is the collapsed
-    border model: the one-pixel grid line between two rows belongs to the table,
-    no cell paints it, and a sticky row does not carry it along. An outward
-    shadow, an own cell background and an inset line at the cell top do not
-    change it. A one pixel outline in the row color fills the seam but also paints
-    over the divider, so no line shows between the rows. A cell outline in the
-    divider color draws vertical lines between the cells. **Decision for the
-    recipe:** the sticky `tr` itself draws a one pixel outline in the color of the
-    row border (`neutral.3`). It fills the line with the divider, it replaces the
-    inset shadow on the cells, and it does not depend on the row background, so
-    rows with a consumer background get it too.
-    Result on the real table, sampled at 71 to 141 scroll positions: no seam and
-    a divider at every boundary at scales 1 and 2 in Chromium; no seam between
-    stuck rows in WebKit (scales 1 and 2). Not solved: at scale 1.25 a seam stays
-    between two stuck rows at about half of the scroll positions (fractional
-    snapping); in WebKit the seam between the header and the first stuck row
-    stays (the header's own border, see below). Not understood: for the disabled
-    sticky row in its own place the divider under its frozen cells is missing,
-    and present under the other cells. A complete fix is
-    `border-collapse: separate` with the dividers on the cells, which changes
-    every DataTable and is not done here.
-  - The header's own bottom border is not painted at its stuck position either
-    (the same one-pixel sliver above the first stuck row). This already happens
-    today; it is not changed here.
+- [Dividers of sticky rows in a `border-collapse: collapse` table] →
+  **Measured (task 2.1, then again after task 6.2 feedback).** Throwaway scripts
+  read pixels from screenshots of the stories, with every scrolling row painted
+  red so that a row showing through is unmistakable. They compare Chromium
+  156.0.8078.4 and the Playwright WebKit build 27.2 (revision 2370; not a Safari
+  release), and measure the thickness of each divider against the divider
+  between two normal rows.
+  - Stack geometry is exact: hit testing finds no gap between the header and the
+    stuck rows or between stuck rows, also at fractional heights. Measuring the
+    fractional border-box height (Decision 2) works.
+  - **In a collapsed-border table a sticky row cannot carry its divider.** The
+    one-pixel grid line between two rows belongs to the table, and no cell paints
+    it. A row border is not painted at the stuck position, and the rows that
+    scroll under the stack show through that line: a one-pixel seam between the
+    header and the first stuck row and between two stuck rows, at almost every
+    scroll position, at every device scale. It is one CSS pixel at scales 1, 2
+    and 3, so it is **not** a rounding problem (an earlier version of this note
+    proposed rounding the offsets; that would not have helped), and it
+    disappears with `border-collapse: separate`.
+  - Tried and rejected, each measured: an inset shadow on the cells (draws the
+    line, leaves the seam); an outward shadow on the cells (no effect, or the
+    lower stuck row paints over it); an own cell background (no effect); a
+    one-pixel outline in the row color (fills the seam but hides the divider); a
+    cell outline in the divider color (vertical lines between the cells); an
+    outline on the row in the divider color (no seam, but a divider of 2px
+    between two stuck rows, because the outline sits outside both rows); a
+    one-sided outline (1px, but the seam comes back at scale 2).
+  - **Decision for the recipe:** a table that has sticky rows (`stickyRows` is not
+    empty and `maxHeight` is set, `data-has-sticky-rows` on the root) uses
+    `border-collapse: separate`, and its dividers are cell borders, on the body
+    cells and on the header cells. A sticky row carries its cell borders along,
+    so the divider between two stuck rows is one pixel, like any other. Other
+    DataTables keep the collapsed borders and are not changed.
+  - The last sticky row is at the bottom edge when any row is stuck there. Its
+    divider would sit next to the border of the scroll area, two lines in all.
+    `useStickyStacks` sets `data-sticky-bottom-edge` on that row while rows are
+    stuck at the bottom, and the border turns transparent. It must stay a
+    border and not be removed: a row that changes height by one pixel makes the
+    measured stacks stale (a story failed by 1.25px when it was removed).
+  - The first row of the bottom stack has no divider on top. That line is the
+    bottom border of the row above, which is far away while the row is stuck
+    (row 38 in the stuck-at-bottom story had `border-top: 0` and nothing painted
+    its top edge). `useStickyStacks` sets `data-sticky-bottom-start` on that row
+    while it is pushed up from its own place by more than 0.5px, and the cells
+    draw the line as a 1px background gradient. A border on top would make the
+    row taller and make the stacks stale, as above. A box-shadow would replace
+    the shadows of the frozen cells. In its own place the row is not marked,
+    because the row above paints the line, and two lines would show.
+  - Result on the real stories (sampled at 21 to 47 scroll positions per stack):
+    no seam and a one-pixel divider at every boundary, in both stacks, in
+    Chromium at scales 1, 2 and 3 and in WebKit at scales 1 and 2. That includes
+    the seam between the header and the first stuck row, which WebKit showed
+    before. The line at the bottom edge of the scroll area is one line.
+  - **Not solved: fractional device scales in the top stack.** At 1.25 a seam
+    shows between two stuck rows at about a quarter of the scroll positions, at
+    1.5 at about half (the bottom stack is clean at both). Each sticky row is its
+    own stacking context, and Chromium snaps its origin to whole device pixels
+    separately, while the row heights are fractional, so the two edges can round
+    apart by one device pixel. Setting an own background or an inset line on the
+    cells, or `will-change: transform` on the rows, did not help. Making the
+    height of every sticky row a whole number of device pixels (set by the hook)
+    removed the seam at 1.25 in a prototype, but not at 1.5, and it would need a
+    new measure after every zoom change. Not built.
+  - The border of a column header cell of a table with sticky rows is a cell
+    border too, so the header's divider moves with the sticky header.
   - **Firefox was not measured.** Firefox 157.0 (Playwright revision 1555) did
     not start in the session sandbox ("Could not find profile folder", also with
     a profile in a scratch directory). The script is `run2.mjs`, kept outside

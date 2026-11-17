@@ -23,6 +23,9 @@ at the top or bottom edge of the table when they are scrolled out of view.
   is stuck is already in view, so the Promise resolves `true` without scrolling.
 - A drag can start from a stuck row. Pointer drops over the stuck rows follow
   React Aria's default.
+- A table with sticky rows draws its row dividers as cell borders
+  (`border-collapse: separate`), so a divider moves with a stuck row and the
+  rows that scroll under it do not show through. Other tables are not changed.
 - Pass a new `Set` to change the sticky rows. Virtualized tables are not
   covered.
 

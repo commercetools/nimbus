@@ -616,6 +616,8 @@ export const DataTableRoot = function DataTableRoot<
       size={size}
       density={recipeDensity}
       maxH={maxHeight}
+      // Tables with sticky rows draw their dividers on the cells, see the recipe.
+      data-has-sticky-rows={hasMaxHeight && hasStickyRows ? "" : undefined}
       {...rest}
       asChild
     >

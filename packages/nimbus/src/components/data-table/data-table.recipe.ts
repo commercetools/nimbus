@@ -261,6 +261,14 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       boxSizing: "border-box",
       colorPalette: "slate",
       width: "100%",
+      // A table with sticky rows does not use collapsed borders. In that model
+      // the one-pixel grid line between two rows belongs to the table: no cell
+      // paints it, and a sticky row does not carry it along, so the rows that
+      // scroll under a stuck row show through it. Here the dividers are cell
+      // borders (see the header and row slots), which move with their row.
+      "[data-has-sticky-rows] &": {
+        borderCollapse: "separate",
+      },
     },
     header: {
       background: "colorPalette.2",
@@ -310,6 +318,11 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
     },
     column: {
+      // Separate border model (see `table`): the divider under the header is a
+      // border of its cells.
+      "[data-has-sticky-rows] &": {
+        borderBottom: "1px solid {colors.neutral.3}",
+      },
       textAlign: "right",
       position: "relative",
       p: 0,
@@ -427,17 +440,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         top: "var(--data-table-sticky-top, 0px)",
         bottom: "var(--data-table-sticky-bottom, 0px)",
         zIndex: zIndex.stickyRow,
-        // A border of a row in a collapsed-border table belongs to the table
-        // grid and is not painted at the stuck position, and no cell paints the
-        // one-pixel line of the grid between two rows. The rows that scroll
-        // under a stuck row would show through that line: between the header
-        // and the first stuck row, and between two stuck rows. An outline on the
-        // row draws the divider there instead, in the color of the row border.
-        // It is on the row, not on the cells: cell outlines would also draw
-        // vertical lines between the cells.
-        borderBottom: "none",
-        outline: "1px solid {colors.neutral.3}",
-        outlineOffset: 0,
       },
       // The highlight. It is opaque, so rows that scroll under a stuck row stay
       // hidden. A row with a background from the consumer keeps it. `:where`
@@ -514,6 +516,30 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       py: "var(--data-table-cell-padding-y)",
       px: "var(--data-table-padding-x)",
       color: "neutral.12",
+      // Separate border model (see `table`): the divider between body rows is a
+      // cell border, like the header's. The last row has none. The last sticky
+      // row hides its divider while it is stuck at the bottom edge, where the
+      // border of the scroll area is already the line (`data-sticky-bottom-edge`,
+      // set by `useStickyStacks`). The border stays and turns transparent, so
+      // the row keeps its height: the stacks are measured from the row heights.
+      "[data-has-sticky-rows] tbody tr:not(:last-child) > &": {
+        borderBottom: "1px solid {colors.neutral.3}",
+      },
+      "[data-has-sticky-rows] tbody tr[data-sticky-bottom-edge] > &": {
+        borderBottomColor: "transparent",
+      },
+      // The first row of the bottom stack, pushed up from its place, has no row
+      // above it that paints the line on its top. It draws the line itself, as
+      // a background inside the cell: a border on top would make the row taller
+      // (`data-sticky-bottom-start`, set by `useStickyStacks`), and a shadow
+      // would replace the shadows of frozen cells.
+      "[data-has-sticky-rows] tbody tr[data-sticky-bottom-start] > &": {
+        backgroundImage:
+          "linear-gradient({colors.neutral.3}, {colors.neutral.3})",
+        backgroundSize: "100% 1px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "top",
+      },
       // Containing block for the focus ring. Frozen cells override it with
       // `position: sticky`, which is a containing block too.
       position: "relative",
