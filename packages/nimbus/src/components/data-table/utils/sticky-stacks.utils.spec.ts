@@ -250,6 +250,33 @@ describe("computeScrollTopWithStacks", () => {
     headerInset: HEADER,
   };
 
+  it("scrolls a row that the current stack covers, even if the destination stacks leave it in view", () => {
+    // Sticky rows 2 and 4 start at 140 and 240. The row between them, row 3,
+    // starts at 190. At scrollTop 150 both are stuck at the top (a stack of
+    // 100), so the row at 190 to 240 is behind the first of them. With the
+    // stacks of scrollTop 50, where none is stuck, the same row looks visible.
+    // It still has to scroll, to 100: the stack is then 50 and the row is below.
+    const twoStuck = computeStickyLayout({
+      tableTop: 0,
+      headerHeight: HEADER,
+      rows: rows({
+        2: { isSticky: true },
+        4: { isSticky: true },
+        15: { isSticky: false },
+      }),
+    });
+    expect(
+      computeScrollTopWithStacks({
+        ...input,
+        layouts: twoStuck,
+        rowTop: 190,
+        rowHeight: 50,
+        scrollTop: 150,
+        align: "nearest",
+      })
+    ).toBe(100);
+  });
+
   it("counts a sticky row that is in place now and stuck at the destination", () => {
     // Row 10 starts at 540. At scrollTop 0 only row 15 is stuck (at the bottom),
     // so a first guess puts row 10 at 500. At 500 row 2 is stuck at the top too,

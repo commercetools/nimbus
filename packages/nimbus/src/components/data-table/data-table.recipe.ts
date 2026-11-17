@@ -253,6 +253,24 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           "var(--data-table-pinned-shadow-left), var(--data-table-pinned-shadow-right), var(--data-table-pinned-shadow-top), var(--data-table-pinned-shadow-bottom)"
         ),
       },
+      // The drag cell is not a `cell` slot, so it gets the dividers of the
+      // `cell` slot here: the same three rules, for a table with sticky rows.
+      "&[data-has-sticky-rows] tbody tr:not(:last-child) > [data-slot='drag']":
+        {
+          borderBottom: "1px solid {colors.neutral.3}",
+        },
+      "&[data-has-sticky-rows] tbody tr[data-sticky-bottom-edge] > [data-slot='drag']":
+        {
+          borderBottomColor: "transparent",
+        },
+      "&[data-has-sticky-rows] tbody tr[data-sticky-bottom-start] > [data-slot='drag']":
+        {
+          backgroundImage:
+            "linear-gradient({colors.neutral.3}, {colors.neutral.3})",
+          backgroundSize: "100% 1px",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "top",
+        },
     },
     table: {
       tableLayout: "fixed",
@@ -509,6 +527,11 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         opacity: 1,
         "& > td > *": {
           opacity: 0.5,
+        },
+        // A custom cell can hold bare text. It has no element to dim, so the
+        // text colour is faded instead.
+        "& > td:not(:has(> *))": {
+          color: "color-mix(in srgb, {colors.neutral.12} 50%, transparent)",
         },
       },
     },

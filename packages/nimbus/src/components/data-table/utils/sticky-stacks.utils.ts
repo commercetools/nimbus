@@ -225,7 +225,13 @@ export const computeScrollTopWithStacks = ({
       bottomInset: stacks.bottom,
       align,
     });
-    if (target === null) return null;
+    if (target === null) {
+      // Visible with the stacks of the current position: nothing to do. In a
+      // later pass the stacks are those of a position the table has not
+      // reached, and the row can still be covered at the current one.
+      if (pass === 0) return null;
+      break;
+    }
     const next = computeStuckStacks({
       headerHeight: headerInset,
       layouts,

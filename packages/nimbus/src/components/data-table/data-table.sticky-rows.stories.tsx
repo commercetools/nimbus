@@ -1399,7 +1399,7 @@ const DragTable = () => {
       aria-label="Drag"
       columns={nameColumns}
       rows={rows}
-      stickyRows={new Set(["row-3"])}
+      stickyRows={new Set(["row-3", "row-38"])}
       dragAndDropHooks={dragAndDropHooks}
       maxHeight="400px"
       size="md"
@@ -1420,6 +1420,36 @@ export const StickyRowsDrag: Story = {
       root.scrollTop = 600;
       await nextFrames();
     });
+
+    await step(
+      "The drag column has the dividers of the other columns",
+      async () => {
+        const dragCell = (name: string) =>
+          bodyRow(canvasElement, name).querySelector(
+            "[data-slot='drag']"
+          ) as HTMLElement;
+        const textCell = (name: string) =>
+          Array.from(bodyRow(canvasElement, name).querySelectorAll("td")).find(
+            (td) => td.textContent === name
+          ) as HTMLElement;
+        // A row between the stacks has the divider under it, like its text cell.
+        expect(getComputedStyle(dragCell("Row 8")).borderBottomWidth).toBe(
+          getComputedStyle(textCell("Row 8")).borderBottomWidth
+        );
+        expect(getComputedStyle(dragCell("Row 8")).borderBottomWidth).toBe(
+          "1px"
+        );
+        // The first row of the bottom stack draws the line on its top.
+        const start = bodyRow(canvasElement, "Row 38");
+        expect(start.hasAttribute("data-sticky-bottom-start")).toBe(true);
+        expect(getComputedStyle(dragCell("Row 38")).backgroundImage).toContain(
+          "linear-gradient"
+        );
+        expect(getComputedStyle(dragCell("Row 38")).backgroundSize).toBe(
+          "100% 1px"
+        );
+      }
+    );
 
     await step("A pointer drag starts from the stuck row", async () => {
       const dataTransfer = createDataTransfer();
@@ -2069,5 +2099,153 @@ export const StickyRowsSizes: Story = {
         rootBottom(root)
       );
     }
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Disabled sticky row with a custom cell of bare text
+// ---------------------------------------------------------------------------
+
+const TextCellsTable = () => {
+  const [rows] = useState(() => manyRows(40));
+  const body = useMemo(
+    () => (
+      <DataTable.Body>
+        {(row, rowRenderProps) => (
+          <DataTable.Row row={row} {...rowRenderProps}>
+            {({ columns: cols }) =>
+              cols.map((col) => (
+                // A string child: the cell has no element inside.
+                <DataTable.Cell key={col.id}>
+                  {col.accessor(row)}
+                </DataTable.Cell>
+              ))
+            }
+          </DataTable.Row>
+        )}
+      </DataTable.Body>
+    ),
+    []
+  );
+  return (
+    <DataTable.Root
+      columns={nameColumns}
+      rows={rows}
+      stickyRows={new Set(["row-3"])}
+      disabledKeys={new Set(["row-3", "row-6"])}
+      maxHeight="320px"
+      size="md"
+    >
+      <DataTable.Table aria-label="Text cells">
+        <DataTable.Header />
+        {body}
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+};
+
+/**
+ * A disabled sticky row stays opaque and dims its content. A custom cell that
+ * holds bare text has no element to dim, so its text colour is faded.
+ */
+export const StickyRowsDisabledText: Story = {
+  render: () => <TextCellsTable />,
+  play: async ({ canvasElement, step }) => {
+    const root = getRoot(canvasElement);
+    const textColor = (name: string) =>
+      getComputedStyle(
+        bodyRow(canvasElement, name).querySelector("td") as Element
+      ).color;
+
+    await step("The cells hold bare text", async () => {
+      const cell = bodyRow(canvasElement, "Row 3").querySelector("td")!;
+      expect(cell.children).toHaveLength(0);
+    });
+
+    await step(
+      "A disabled sticky row is opaque and its text is faded",
+      async () => {
+        await scrollRootTo(root, 600);
+        const sticky = bodyRow(canvasElement, "Row 3");
+        expect(getComputedStyle(sticky).opacity).toBe("1");
+        expect(textColor("Row 3")).not.toBe(textColor("Row 4"));
+      }
+    );
+
+    await step("The text is half transparent", async () => {
+      // A disabled row that is not sticky fades through the opacity of its row.
+      expect(textColor("Row 3")).toContain("/ 0.5");
+      expect(getComputedStyle(bodyRow(canvasElement, "Row 6")).opacity).toBe(
+        "0.5"
+      );
+    });
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Keyboard focus in an expanded panel taller than the table
+// ---------------------------------------------------------------------------
+
+const TallPanelTable = () => {
+  const [rows] = useState(() => manyRows(40));
+  return (
+    <DataTable
+      aria-label="Tall panel"
+      columns={nameColumns}
+      rows={rows}
+      stickyRows={new Set(["row-3"])}
+      expandedRows={new Set(["row-3"])}
+      renderNestedContent={() => (
+        <div
+          style={{
+            height: 900,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <button type="button">First control</button>
+          <button type="button">Last control</button>
+        </div>
+      )}
+      maxHeight="480px"
+      size="md"
+    />
+  );
+};
+
+/**
+ * A control at the bottom of an expanded panel that is taller than the table
+ * stays in view when the keyboard focuses it. The correction for rows behind
+ * the stacks looks at the focused control then, and does not scroll the top of
+ * the oversized panel into view.
+ */
+export const StickyRowsTallPanelFocus: Story = {
+  render: () => <TallPanelTable />,
+  play: async ({ canvasElement, step }) => {
+    const root = getRoot(canvasElement);
+    const canvas = within(canvasElement);
+
+    await step("Focus the last control with the keyboard", async () => {
+      await waitFor(() =>
+        expect(root.scrollHeight).toBeGreaterThan(root.clientHeight)
+      );
+      // A key press first, so the focus counts as keyboard focus.
+      await userEvent.keyboard("{Shift}");
+      canvas.getByRole("button", { name: "Last control" }).focus();
+      await nextFrames(8);
+    });
+
+    await step("It is still in view, below the stuck row", async () => {
+      const control = canvas
+        .getByRole("button", { name: "Last control" })
+        .getBoundingClientRect();
+      const stackBottom = bodyRow(
+        canvasElement,
+        "Row 3"
+      ).getBoundingClientRect().bottom;
+      expect(control.top).toBeGreaterThanOrEqual(stackBottom - 1);
+      expect(control.bottom).toBeLessThanOrEqual(rootBottom(root) + 1);
+    });
   },
 };

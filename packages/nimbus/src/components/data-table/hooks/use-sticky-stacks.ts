@@ -209,7 +209,7 @@ export const useStickyStacks = ({
      * appears because of that scroll is not in it, and the row can end up behind
      * it.
      */
-    const keepRowClear = (row: HTMLTableRowElement) => {
+    const keepRowClear = (row: HTMLTableRowElement, focused: HTMLElement) => {
       if (!row.isConnected) return;
       const current = measureStickyLayout(root, registry.headerElement);
       const body = root.querySelector("table")?.tBodies[0];
@@ -227,16 +227,24 @@ export const useStickyStacks = ({
       if (isRowStuck(rowIndex, current.layouts, stacks)) return;
 
       const viewTop = root.getBoundingClientRect().top + root.clientTop;
-      const rect = row.getBoundingClientRect();
       const coveredTop = viewTop + current.headerInset + stacks.top;
       const coveredBottom = viewTop + root.clientHeight - stacks.bottom;
+      // A row taller than the space between the stacks, such as an expanded
+      // panel, can never be fully in view. Keep the focused control clear then:
+      // moving to the top of the row would scroll the control out of view.
+      const rowRect = row.getBoundingClientRect();
+      const oversized = rowRect.height > coveredBottom - coveredTop;
+      const rect = oversized ? focused.getBoundingClientRect() : rowRect;
       if (rect.top >= coveredTop - 0.5 && rect.bottom <= coveredBottom + 0.5) {
         return;
       }
 
       const layout = current.layouts.find((item) => item.rowIndex === rowIndex);
       const target = computeScrollTopWithStacks({
-        rowTop: layout?.naturalTop ?? rect.top - viewTop + root.scrollTop,
+        rowTop:
+          !oversized && layout
+            ? layout.naturalTop
+            : rect.top - viewTop + root.scrollTop,
         rowHeight: rect.height,
         viewportHeight: root.clientHeight,
         scrollTop: root.scrollTop,
@@ -267,7 +275,7 @@ export const useStickyStacks = ({
       focusFrame = requestAnimationFrame(() => {
         focusFrame = requestAnimationFrame(() => {
           focusFrame = undefined;
-          keepRowClear(row);
+          keepRowClear(row, target);
         });
       });
     };
