@@ -102,7 +102,11 @@ the measured heights of the sticky rows before it (top) and after it (bottom).
 #### Scenario: No gap and no overlap between stacked rows
 
 - **WHEN** sticky rows have fractional heights, or the page is zoomed
-- **THEN** stacked rows SHALL leave no visible gap and SHALL NOT overlap
+- **THEN** stacked rows SHALL NOT overlap
+- **AND** stacked rows SHALL leave no visible gap at whole-number device
+  scales (100%, 200%, 300%)
+- **AND** at fractional device scales (for example 125% and 150%), one device
+  pixel of a scrolling row MAY show between two stuck rows in the top stack
 
 #### Scenario: No sticky row is shown
 
