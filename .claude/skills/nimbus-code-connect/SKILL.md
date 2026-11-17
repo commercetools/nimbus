@@ -46,7 +46,7 @@ git diff --stat
 ```
 
 If there are no changes, the generated files are already up to date. Inform the
-user and skip to Step 7 (Publish). Do not run validation or review steps when
+user and skip to Step 8 (Publish). Do not run validation or review steps when
 there is nothing new to validate.
 
 ### Step 4: Validate
@@ -103,17 +103,29 @@ LLM-generated summaries.
 ### Step 7: Parse (optional)
 
 ```bash
-pnpx @figma/code-connect connect parse
+pnpm exec figma connect parse
 ```
 
 This parses all Code Connect files and surfaces syntax or import errors.
 
 ### Step 8: Publish (optional)
 
-Ask the user if they want to publish. If yes:
+Publishing happens in CI: pull requests that change a `.figma.tsx` file get a
+dry run, and after merge to `main` the workflow publishes all mappings to
+Figma. See [Figma Code Connect CI](../../../docs/figma-code-connect-ci.md).
+
+A manual publish is only needed to test a mapping in Figma before merge, and
+it changes what Figma shows for everyone. Ask the user first. To check the
+mappings against Figma without publishing:
 
 ```bash
-pnpx @figma/code-connect connect publish
+pnpm exec figma connect publish --dry-run --exit-on-unreadable-files
+```
+
+To publish:
+
+```bash
+pnpm exec figma connect publish --exit-on-unreadable-files
 ```
 
 ## Architecture
@@ -159,9 +171,10 @@ can't be auto-classified:
 
 - **calendar**: Variant-specific connects to DatePicker, RangeCalendar,
   DateRangePicker
-- **card**: Conditional JSX from Content type VARIANT; Root composes a single
-  kebab-case `variant` value from three independent Figma boolean/enum props
-  (Outlined / Elevated / Background)
+- **card**: One Root connect per Outlined × Elevated combination, each with a
+  fixed kebab-case `variant` value. The hidden `.Card content` set is never
+  collected, so its Card.Body connect (conditional header from Content type)
+  is written with a fixed node ID
 - **combobox**: Variant-specific connects for single/multi-select
 - **dialog, drawer**: Complex nested sub-component example JSX
 - **form-field**: Boolean→sub-component JSX, variant connects for

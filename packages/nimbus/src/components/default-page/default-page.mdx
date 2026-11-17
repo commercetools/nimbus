@@ -43,6 +43,8 @@ back navigation.
   preserves sticky positioning for child components
 - **DefaultPage.Footer** — Optional action bar for form pages; omit it and the
   grid row collapses automatically
+- **Collapse header on scroll** — Optional shorter header while the user works
+  in the content; the full header returns at the top
 - **Composable** — Arrange sub-components freely to cover read-only, editable,
   creation, and tabbed patterns from the same primitives
 
@@ -225,6 +227,68 @@ const App = () => (
 )
 ```
 
+### Collapse header on scroll
+
+A pinned header keeps actions and tabs in reach, but at full height it takes
+room from the content, most of all on short screens and at high browser zoom.
+With `collapseHeaderOnScroll`, the header gives that room back while the user
+works in the content:
+
+- It keeps what the user works with: actions, tabs and the title (smaller; a
+  title with several lines keeps them).
+- It hides what only orients the user: the subtitle and the back link label.
+  The back link shows its icon, and a tooltip shows the label on hover and
+  keyboard focus.
+- It follows the scroll: it gets shorter step by step as the content scrolls,
+  and is full again at the top. When the user stops in between, it keeps the
+  form of that scroll position.
+- In browsers without this support, and when the user prefers reduced motion,
+  it collapses in one step once scrolling pauses. It then returns to its full
+  form only at the top of the page, and does not change while the mouse
+  pointer is over it.
+
+Scroll inside the example to see the collapsed header.
+
+```jsx live
+const App = () => (
+  <Box height="400px" border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root collapseHeaderOnScroll>
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/products">
+          Back to products
+        </DefaultPage.BackLink>
+        <DefaultPage.Title>Wireless Headphones</DefaultPage.Title>
+        <DefaultPage.Subtitle>SKU-WH-2024-001</DefaultPage.Subtitle>
+        <DefaultPage.Actions>
+          <Button variant="solid" colorPalette="primary">Save</Button>
+        </DefaultPage.Actions>
+        <DefaultPage.TabNav>
+          <TabNav.Root aria-label="Product sections">
+            <TabNav.Item href="/products/1/general" isCurrent>General</TabNav.Item>
+            <TabNav.Item href="/products/1/variants">Variants</TabNav.Item>
+          </TabNav.Root>
+        </DefaultPage.TabNav>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          {Array.from({ length: 20 }, (_, i) => (
+            <Box key={i} bg="neutral.3" padding="400" borderRadius="200">
+              <Text>{`Section ${i + 1}`}</Text>
+            </Box>
+          ))}
+        </Stack>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+Use it on long pages where the user works down the content, such as long
+forms and detail pages. Put the part of the title that tells records apart
+first. A title with several lines keeps all of them in the collapsed header,
+so the header gives less room back; pages that keep the title on one line show
+only its beginning.
+
 ## Accessibility
 
 DefaultPage uses semantic HTML landmarks to provide a clear document structure
@@ -241,3 +305,8 @@ sections. Because `<main>` must be unique per page, avoid nesting multiple
 `DefaultPage` components in a single view. When composing with `TabNav`, provide
 an `aria-label` on `TabNav.Root` to describe the navigation group for screen
 readers.
+
+In the collapsed header, screen readers still read the full title, the
+subtitle and the back link label. The back link stays at least 24 by 24
+pixels. When the user prefers reduced motion, the header changes in one step,
+without movement.
