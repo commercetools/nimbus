@@ -20,6 +20,8 @@ import type {
   DataTableColumnItem,
   DataTableProps,
   DataTableRowItem,
+  DataTableSize,
+  SortDescriptor,
 } from "./data-table.types";
 import { recordWarnings } from "./utils/data-table.test-utils";
 
@@ -115,6 +117,25 @@ const rowByName = (canvas: ReturnType<typeof within>, name: string) =>
 /** Two stuck rows are within a pixel of each other: stacked without a gap. */
 const expectTouching = (above: number, below: number) =>
   expect(Math.abs(below - above)).toBeLessThan(1);
+
+/** The names of the rows in the order shown. Other cells and helper rows are skipped. */
+const rowNames = (scope: ParentNode) =>
+  Array.from(scope.querySelectorAll("tbody tr"))
+    .map(
+      (tr) =>
+        Array.from(tr.querySelectorAll("td"))
+          .map((td) => td.textContent?.trim() ?? "")
+          .find((text) => /^Row \d+$/.test(text)) ?? ""
+    )
+    .filter(Boolean);
+
+/** The bottom of the header, where the top stack starts. */
+const headerBottom = (scope: ParentNode) =>
+  (scope.querySelector("thead") as HTMLElement).getBoundingClientRect().bottom;
+
+/** The bottom edge of the area that scrolls, inside its border. */
+const rootBottom = (root: HTMLElement) =>
+  root.getBoundingClientRect().top + root.clientTop + root.clientHeight;
 
 const flagColumns: DataTableColumnItem[] = [
   nameColumn,
@@ -1866,5 +1887,187 @@ export const StickyRowsStuckAtBottom: Story = {
         bottom
       );
     });
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Combined with other features: sorting, the frozen checkbox column, sizes
+// ---------------------------------------------------------------------------
+
+const SortStickyTable = () => {
+  const [rows] = useState(() => manyRows(40));
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+    column: "name",
+    direction: "ascending",
+  });
+  return (
+    <DataTable
+      aria-label="Sticky rows and sorting"
+      columns={[{ ...nameColumn, isSortable: true }]}
+      rows={rows}
+      allowsSorting
+      sortDescriptor={sortDescriptor}
+      onSortChange={setSortDescriptor}
+      stickyRows={new Set(["row-3"])}
+      maxHeight="400px"
+      size="md"
+    />
+  );
+};
+
+/**
+ * Expected: the sticky row is a row id, not a position, so after a sort it is
+ * still sticky and sticks where it now belongs.
+ */
+export const StickyRowsSorting: Story = {
+  render: () => <SortStickyTable />,
+  play: async ({ canvasElement, step }) => {
+    const root = getRoot(canvasElement);
+    const canvas = within(canvasElement);
+    await waitFor(() =>
+      expect(root.scrollHeight).toBeGreaterThan(root.clientHeight)
+    );
+    const before = rowNames(canvasElement).indexOf("Row 3");
+
+    await step("Sort by name, in the other direction", async () => {
+      await userEvent.click(
+        canvas.getByRole("columnheader", { name: /name/i })
+      );
+      await waitFor(() =>
+        expect(rowNames(canvasElement).indexOf("Row 3")).not.toBe(before)
+      );
+    });
+
+    await step("The row is still the sticky row", async () => {
+      expect(bodyRow(canvasElement, "Row 3")).toHaveAttribute(
+        "data-sticky-row"
+      );
+      expect(canvasElement.querySelectorAll("[data-sticky-row]")).toHaveLength(
+        1
+      );
+    });
+
+    await step("It sticks at the edge that its new place needs", async () => {
+      const index = rowNames(canvasElement).indexOf("Row 3");
+      // After the sort the row sits far below, so at the top it is stuck at
+      // the bottom edge. If it sits above, it is in view or stuck at the top.
+      root.scrollTop = 0;
+      await nextFrames();
+      const rect = bodyRow(canvasElement, "Row 3").getBoundingClientRect();
+      if (index > 8) expectTouching(rect.bottom, rootBottom(root));
+      else
+        expect(rect.top).toBeGreaterThanOrEqual(
+          headerBottom(canvasElement) - 1
+        );
+    });
+  },
+};
+
+const FrozenColumnTable = () => {
+  const [rows] = useState(() => manyRows(40));
+  return (
+    <DataTable
+      aria-label="Frozen column and sticky rows"
+      columns={wideColumns}
+      selectionMode="multiple"
+      rows={rows}
+      stickyRows={new Set(["row-3"])}
+      maxHeight="400px"
+      size="md"
+    />
+  );
+};
+
+/**
+ * Expected: scrolled down and sideways, the stuck row keeps its frozen checkbox
+ * cell at the left edge, and that cell hides the cells that scroll under it.
+ */
+export const StickyRowsFrozenColumn: Story = {
+  render: () => <FrozenColumnTable />,
+  play: async ({ canvasElement }) => {
+    const root = getRoot(canvasElement);
+    await waitFor(() =>
+      expect(root.scrollHeight).toBeGreaterThan(root.clientHeight)
+    );
+    root.scrollTop = 600;
+    root.scrollLeft = 350;
+    await nextFrames(3);
+
+    const cell = bodyRow(canvasElement, "Row 3").querySelector(
+      "td"
+    ) as HTMLElement;
+    const rect = cell.getBoundingClientRect();
+    const rootRect = root.getBoundingClientRect();
+
+    // The row is stuck under the header, and its first cell is at the left edge.
+    expectTouching(headerBottom(canvasElement), rect.top);
+    expect(
+      Math.abs(rect.left - (rootRect.left + root.clientLeft))
+    ).toBeLessThan(2);
+    // Whatever is at the middle of that cell is that cell, so no other cell
+    // is painted over it, and the cell is opaque.
+    const hit = document.elementFromPoint(
+      rect.left + rect.width / 2,
+      rect.top + rect.height / 2
+    );
+    expect(cell.contains(hit)).toBe(true);
+    expect(getComputedStyle(cell).backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
+  },
+};
+
+const sizes: DataTableSize[] = ["sm", "md", "lg", "xl"];
+
+const SizesStickyTable = () => (
+  <Stack gap="600">
+    {sizes.map((size) => (
+      <DataTable
+        key={size}
+        aria-label={`Size ${size}`}
+        data-size={size}
+        columns={[nameColumn]}
+        rows={manyRows(60)}
+        stickyRows={new Set(["row-3", "row-4", "row-58", "row-59"])}
+        maxHeight="320px"
+        size={size}
+      />
+    ))}
+  </Stack>
+);
+
+/**
+ * Expected: at every size, two rows stick under the header and two at the
+ * bottom edge, and they touch without a gap.
+ */
+export const StickyRowsSizes: Story = {
+  render: () => <SizesStickyTable />,
+  play: async ({ canvasElement }) => {
+    const roots = Array.from(
+      canvasElement.querySelectorAll<HTMLElement>("[data-scroll-left]")
+    );
+    expect(roots).toHaveLength(sizes.length);
+    for (const root of roots) {
+      await waitFor(() =>
+        expect(root.scrollHeight).toBeGreaterThan(root.clientHeight)
+      );
+      // In the middle, rows 3 and 4 are stuck at the top, 58 and 59 at the bottom.
+      root.scrollTop = root.scrollHeight / 2;
+      await nextFrames(3);
+      expectTouching(
+        headerBottom(root),
+        bodyRow(root, "Row 3").getBoundingClientRect().top
+      );
+      expectTouching(
+        bodyRow(root, "Row 3").getBoundingClientRect().bottom,
+        bodyRow(root, "Row 4").getBoundingClientRect().top
+      );
+      expectTouching(
+        bodyRow(root, "Row 58").getBoundingClientRect().bottom,
+        bodyRow(root, "Row 59").getBoundingClientRect().top
+      );
+      expectTouching(
+        bodyRow(root, "Row 59").getBoundingClientRect().bottom,
+        rootBottom(root)
+      );
+    }
   },
 };
