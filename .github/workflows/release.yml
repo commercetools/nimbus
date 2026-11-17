@@ -185,7 +185,7 @@ jobs:
         id: publish
         run: |
           set -euo pipefail
-          # Branch names reach the shell through env, never through ${{ }}.
+          # Branch names reach the shell through env, never by inlining expressions.
           SNAPSHOT_TAG="canary-$(printf '%s' "$BRANCH" | sed 's/[^a-zA-Z0-9-]/-/g' | cut -c1-40)"
           # v3 exits 1 with no changesets; say why rather than leaking that.
           if [ -z "$(find .changeset -maxdepth 1 -name '*.md' ! -name 'README.md' -print -quit)" ]; then
