@@ -94,6 +94,11 @@ const external = [
   /^react(-dom)?(\/.+)?$/,
   // UI frameworks & styling.
   new RegExp("@chakra-ui/react?[^.].*$"),
+  // Recharts for the chart components. Externalized because bundling it fails
+  // `pnpm check:bundle-size` (+23.8%) and `pnpm check:bundler-compat` (its
+  // dependency use-sync-external-store is CommonJS and requires the external
+  // react). Consumers install it as a peer dependency.
+  /^recharts(\/.+)?$/,
   // Slate dependencies for RichTextInput
   // These are externalized because immer (slate's dependency) uses internal singletons that break when bundled
   "slate",
