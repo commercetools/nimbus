@@ -69,6 +69,9 @@ export default defineConfig(async () => {
         "@chakra-ui/react/kbd",
         "@storybook/react-vite",
         "storybook/test",
+        // Imported only by CodeBlock stories; discovered mid-run it makes
+        // Vite reload the test, which fails it.
+        "refractor/java",
       ],
     },
     plugins: [

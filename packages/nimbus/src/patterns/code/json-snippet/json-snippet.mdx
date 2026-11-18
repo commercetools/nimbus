@@ -1,0 +1,140 @@
+---
+id: Patterns-JsonSnippet
+title: JSON snippet
+exportName: JsonSnippet
+description: Shows any value as formatted, highlighted JSON, with copy and download buttons. Formatting never throws.
+documentState: InitialDraft
+lifecycleState: Beta
+order: 999
+menu:
+  - Patterns
+  - Code
+  - JSON snippet
+tags:
+  - component
+  - pattern
+  - code
+  - json
+  - snippet
+  - CodeBlock
+related-components:
+  - CodeBlock
+  - CodeSnippet
+---
+
+## Overview
+
+JsonSnippet takes a value and shows it as formatted JSON. You do not need to
+call `JSON.stringify` yourself. It uses the same options as
+[CodeSnippet](/patterns/code/code-snippet), and it is made from the
+[CodeBlock](/components/data-display/codeblock) component.
+
+For layouts that this pattern does not cover, use
+[CodeBlock](/components/data-display/codeblock) and compose its parts yourself.
+
+### Resources
+
+- [CodeBlock guidelines](/components/data-display/codeblock) - the component
+  that JsonSnippet is built from
+- [CodeSnippet guidelines](/patterns/code/code-snippet)
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-code-jsonsnippet--docs)
+
+## Anatomy
+
+JsonSnippet has the same parts as CodeSnippet: an optional header with title
+and language label ("json"), the highlighted code, copy and download buttons,
+and an optional footer.
+
+The copy and download buttons use the formatted text that you see.
+
+## Variables
+
+### Value
+
+Pass any value. Objects and arrays are formatted with line breaks.
+
+```jsx live
+const App = () => (
+  <JsonSnippet
+    title="Response"
+    value={{ id: "abc", name: "Nimbus", tags: ["design", "system"], active: true }}
+  />
+)
+```
+
+### Indent
+
+`indent` is the number of spaces for each level. The default is 2.
+
+```jsx live
+const App = () => (
+  <JsonSnippet title="Indent 4" indent={4} value={{ a: 1, b: { c: 2 } }} />
+)
+```
+
+### Unusual values
+
+JsonSnippet does not throw for values that `JSON.stringify` cannot handle.
+
+- A circular reference is shown as `"[Circular]"`.
+- A `BigInt` is shown as a string with its decimal digits.
+- `undefined` is shown as the text `undefined`.
+
+```jsx live
+const App = () => {
+  const circular = { name: "node" };
+  circular.self = circular;
+  return (
+    <Stack gap="400">
+      <JsonSnippet title="Circular" value={circular} />
+      <JsonSnippet title="BigInt" value={{ id: BigInt("12345678901234567890") }} />
+      <JsonSnippet title="Undefined" value={undefined} />
+    </Stack>
+  );
+}
+```
+
+### Long values
+
+Set `maxLines` to show only the first lines of long JSON.
+
+```jsx live
+const App = () => (
+  <JsonSnippet
+    title="Items"
+    maxLines={6}
+    showLineNumbers
+    value={Array.from({ length: 5 }, (_, i) => ({ id: i + 1, name: `Item ${i + 1}` }))}
+  />
+)
+```
+
+## Guidelines
+
+### When to use
+
+- To show an API response, a request body or a configuration as JSON.
+- When your data is a JavaScript value and you want it formatted for you.
+
+### When not to use
+
+- For JSON that is already a text with your own formatting, use
+  [CodeSnippet](/patterns/code/code-snippet) with `language="json"`.
+- For other languages, use [CodeSnippet](/patterns/code/code-snippet).
+- For a custom layout, use [CodeBlock](/components/data-display/codeblock).
+
+### Do
+
+- Set a `title` such as "Response". A title also gives the snippet an
+  accessible name.
+- Remove secrets from the value before you show it.
+
+### Don't
+
+- Don't use JsonSnippet to edit JSON. It is read-only.
+
+## Accessibility
+
+- A snippet is a `region` landmark only when it has a name: a `title` or an
+  `aria-label`. Unnamed snippets are not landmarks.
+- The copy button announces "Copied" or "Copy failed" to screen readers.

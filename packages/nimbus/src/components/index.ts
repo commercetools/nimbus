@@ -6,6 +6,7 @@ export * from "./avatar";
 export * from "./box";
 export * from "./button";
 export * from "./code";
+export * from "./code-block";
 export * from "./combobox";
 export * from "./default-page";
 export * from "./dialog";

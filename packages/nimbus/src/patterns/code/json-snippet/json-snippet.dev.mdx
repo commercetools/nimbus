@@ -1,0 +1,158 @@
+---
+title: JsonSnippet Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+## Comparison: pattern vs manual composition
+
+**With JsonSnippet:**
+
+```tsx
+<JsonSnippet title="Response" value={response} maxLines={20} />
+```
+
+**Manual composition (escape hatch):**
+
+You format the value yourself. `JSON.stringify` can throw, for example for
+circular references, so handle that case.
+
+```tsx
+const code = JSON.stringify(response, null, 2);
+
+<CodeBlock.Root code={code} language="json" maxLines={20}>
+  <CodeBlock.Header>
+    <CodeBlock.Title>Response</CodeBlock.Title>
+    <CodeBlock.LanguageLabel />
+    <CodeBlock.Actions>
+      <CodeBlock.CopyTrigger />
+    </CodeBlock.Actions>
+  </CodeBlock.Header>
+  <CodeBlock.Content />
+  <CodeBlock.ExpandTrigger />
+</CodeBlock.Root>;
+```
+
+### When to use which
+
+**Use JsonSnippet when:**
+
+- Your data is a JavaScript value
+- You want safe formatting that never throws
+
+**Use [CodeSnippet](/patterns/code/code-snippet) when:**
+
+- Your JSON is already a formatted string
+
+**Use [CodeBlock](/components/data-display/codeblock) when:**
+
+- You need a custom layout
+
+## Getting started
+
+### Import
+
+```tsx
+import { JsonSnippet, type JsonSnippetProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+```jsx live-dev
+const App = () => (
+  <JsonSnippet
+    title="Response"
+    value={{ id: "abc", name: "Nimbus", tags: ["design", "system"] }}
+  />
+)
+```
+
+`JsonSnippet` formats the value again only when `value` or `indent` changes.
+To show new data, pass a new object instead of changing the old one.
+
+## Usage examples
+
+### Indent
+
+The default `indent` is 2.
+
+```jsx live-dev
+const App = () => (
+  <JsonSnippet title="Indent 4" indent={4} value={{ a: 1, b: { c: 2 } }} />
+)
+```
+
+### Values that JSON cannot show
+
+JsonSnippet never throws. A circular reference becomes `"[Circular]"`. A
+`BigInt` becomes its decimal string. `undefined`, functions and symbols at the
+top level become the text `undefined`. A value whose serialization throws
+(for example a throwing `toJSON`) becomes the text `[Unserializable]`.
+
+```jsx live-dev
+const App = () => {
+  const circular = { name: "node" };
+  circular.self = circular;
+  return (
+    <Stack gap="400">
+      <JsonSnippet title="Circular" value={circular} />
+      <JsonSnippet title="BigInt" value={{ id: BigInt("12345678901234567890") }} />
+      <JsonSnippet title="Undefined" value={undefined} />
+    </Stack>
+  );
+}
+```
+
+### Other CodeSnippet options
+
+`JsonSnippet` accepts every `CodeSnippet` prop except `code` and `language`:
+`title`, `showLanguage`, `showCopyButton`, `downloadFileName`, `footer`,
+`maxLines`, `defaultExpanded` and the line options.
+
+```jsx live-dev
+const App = () => (
+  <JsonSnippet
+    title="package.json"
+    downloadFileName="package.json"
+    showLineNumbers
+    highlightedLines={[2]}
+    value={{ name: "my-app", version: "1.0.0" }}
+    footer="Saved as package.json."
+  />
+)
+```
+
+### Copy
+
+Copy and download use the formatted text. For `{ a: 1 }` with the default
+indent, the clipboard gets this text:
+
+```json
+{
+  "a": 1
+}
+```
+
+## Accessibility
+
+- A snippet is a `region` landmark only when it has a name: a `title` or an
+  `aria-label`. Unnamed snippets are not landmarks.
+- The copy button announces "Copied" or "Copy failed" in a live region.
+
+## API reference
+
+<PropsTable id="JsonSnippet" />
+
+## Testing your implementation
+
+These examples show how to test JsonSnippet in your application. Nimbus
+already tests the component itself.
+
+{{docs-tests: json-snippet.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-code-jsonsnippet--docs)
+- [CodeSnippet Pattern](/patterns/code/code-snippet)
+- [CodeBlock Component](/components/data-display/codeblock) - for custom
+  layouts
