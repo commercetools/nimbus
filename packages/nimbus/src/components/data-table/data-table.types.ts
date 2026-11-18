@@ -1,5 +1,6 @@
 import type { ReactNode, FC, Ref } from "react";
 import type { DataTableRowKeyResolver } from "./utils/row-keys.utils";
+import type { DataTableRegistry } from "./utils/registry.types";
 import type {
   SortDirection as RaSortDirection,
   TableHeaderProps as RaTableHeaderProps,
@@ -129,6 +130,70 @@ export type DataTableDensity = "default" | "condensed";
  */
 export type DataTableSize = "sm" | "md" | "lg" | "xl";
 
+/**
+ * Options for `DataTableApi.scrollToRow`.
+ */
+export type DataTableScrollToRowOptions = {
+  /**
+   * Where the row ends up in the visible area, which starts below the header.
+   * `"nearest"` does not scroll when the row is already fully visible, and
+   * otherwise scrolls the shortest distance. The first and last rows stop at
+   * the edges of the scroll range.
+   *
+   * @default "nearest"
+   */
+  align?: "start" | "center" | "end" | "nearest";
+  /**
+   * How the table scrolls. `"auto"` scrolls instantly. `"smooth"` scrolls
+   * instantly when the user prefers reduced motion.
+   *
+   * @default "auto"
+   */
+  behavior?: ScrollBehavior;
+  /**
+   * Also move keyboard focus to the row after the scroll. React Aria's focused
+   * key is always set, so the next Tab or arrow key starts at the row. Ignored
+   * for a disabled row.
+   *
+   * @default false
+   */
+  focus?: boolean;
+};
+
+/**
+ * The imperative handle that `DataTable` writes to `apiRef`.
+ */
+export type DataTableApi = {
+  /**
+   * Scrolls a row into view. Call it after the rows have rendered.
+   *
+   * Resolves `true` when the row is at its final position. Resolves `false`,
+   * without scrolling, for a key that is not a shown row: an unknown key, a row
+   * that `search` hides, or a nested child row. It also resolves `false` when
+   * `DataTable.Root` is used without `DataTable.Table`. It resolves `false`
+   * too, without moving focus, when the row is not in place when the scrolling
+   * ends: the user scrolled during a smooth scroll, the container does not
+   * scroll (a smooth scroll that does not move for 500ms gives up), or the row
+   * moved or was removed while the scroll ran.
+   *
+   * Rejects with a `DOMException` named `"AbortError"` when a newer call
+   * replaces it, and when the table unmounts. Ignore that error:
+   * `.catch((error) => { if (error.name !== "AbortError") throw error; })`.
+   *
+   * A disabled row is scrolled to, and the Promise resolves `true`, but focus
+   * does not change.
+   */
+  scrollToRow: (
+    key: string,
+    options?: DataTableScrollToRowOptions
+  ) => Promise<boolean>;
+  /**
+   * The element that scrolls: the same element as the `ref` of the component.
+   * `null` before the table has mounted.
+   */
+  getScrollContainer: () => HTMLDivElement | null;
+};
+
 export type DataTableCustomSettings = {
   icon?: ReactNode;
   label: ReactNode;
@@ -204,6 +269,8 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     selectRowLabel: string;
     disabledKeys?: Selection;
     draggableKeys?: Set<string>;
+    /** What `apiRef` needs from rows, header and cells. Stable across renders. */
+    registry: DataTableRegistry;
     onRowActionRef: React.RefObject<
       ((row: DataTableRowItem<T>) => void) | undefined
     >;
@@ -252,6 +319,12 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
    * React ref to be forwarded to the root element
    */
   ref?: React.Ref<HTMLDivElement>;
+  /**
+   * Receives the imperative handle: `scrollToRow(key, options)` and
+   * `getScrollContainer()`. The handle is `null` until the table has mounted.
+   * `ref` still points to the root element.
+   */
+  apiRef?: Ref<DataTableApi>;
   /**
    * Drag-and-drop hooks returned by `useDragAndDrop`.
    * When provided, enables row drag-and-drop reordering.
