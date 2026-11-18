@@ -23,6 +23,14 @@ export type RouteManifest = {
     order: number;
     chunkName: string;
     icon?: string;
+    /** names of the illustrations for this entry's card, possibly none */
+    illustrations: string[];
+    /** ids of related documents: own list first, then documents listing this one */
+    related: string[];
+    /** pages of this entry, e.g. overview, guidelines, dev, a11y */
+    tabs?: Array<{ key: string; title: string; order: number }>;
+    /** kinds of source files next to the doc: types, stories, recipe, ... */
+    files?: string[];
   }>;
   categories: Array<{
     id: string;

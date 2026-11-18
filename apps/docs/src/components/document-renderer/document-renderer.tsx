@@ -9,6 +9,21 @@ import { useActiveView } from "@/hooks/use-active-view";
 import { ViewTabs } from "@/components/view-tabs";
 import { DocMetadata } from "@/components/doc-metadata";
 import type { TabMetadata } from "@/types";
+import { useManifest } from "@/contexts/manifest-context";
+import { RelatedDocuments } from "./components/related-documents";
+import { ViewLabelContext } from "./view-label-context";
+
+const visuallyHiddenStyle = {
+  position: "absolute",
+  width: "1px",
+  height: "1px",
+  margin: "-1px",
+  padding: 0,
+  border: 0,
+  overflow: "hidden",
+  clip: "rect(0, 0, 0, 0)",
+  whiteSpace: "nowrap",
+} as const;
 
 // Constant empty array to prevent creating new references on every render
 const EMPTY_TABS: TabMetadata[] = [];
@@ -17,6 +32,7 @@ const DocumentRendererComponent = () => {
   const brandName = useAtomValue(brandNameAtom);
   const { doc: activeDoc, isLoading, error } = useActiveDoc();
   const activeView = useActiveView();
+  const { routeManifest } = useManifest();
 
   const meta = activeDoc?.meta;
   const tabs = meta?.tabs || EMPTY_TABS;
@@ -41,7 +57,22 @@ const DocumentRendererComponent = () => {
     return activeDoc.mdx;
   }, [activeDoc, activeView, tabs]);
 
+  const activeViewKey = activeView ?? tabs[0]?.key ?? "overview";
+
+  // The tab label tells the `h2` tag which heading only repeats the tab.
+  const viewLabel = hasMultipleViews
+    ? tabs.find((tab) => tab.key === activeViewKey)?.title
+    : undefined;
+
   const lifecycleState = meta?.lifecycleState;
+  // The header (title, description, links, illustration) is shown on every
+  // `app-frame` page. `wide` and `no-sidebar` pages keep their own heading and
+  // only get it when they have several views.
+  const showHeader = meta?.layout === "app-frame" || hasMultipleViews;
+  const illustration = routeManifest?.routes.find(
+    (route) => route.id === meta?.id
+  )?.illustrations[0];
+
   const lifecycleInfo = lifecycleState
     ? lifecycleStateDescriptions[lifecycleState]
     : null;
@@ -69,13 +100,10 @@ const DocumentRendererComponent = () => {
   return (
     <>
       <title>{pageTitle}</title>
-      {/* Full-bleed for no-sidebar pages (e.g. Icons); readable prose width elsewhere. */}
-      <Box
-        width="full"
-        maxWidth={meta.layout === "no-sidebar" ? "full" : "4xl"}
-      >
+      {/* The page fills its column. Paragraphs and lists limit their own width. */}
+      <Box width="full">
         <Stack gap="400">
-          {!hasMultipleViews && lifecycleInfo && (
+          {!showHeader && lifecycleInfo && (
             <Flex alignItems="center" justifyContent="flex-end">
               <Badge size="xs" colorPalette={lifecycleInfo.colorPalette}>
                 {lifecycleInfo.label}
@@ -83,23 +111,49 @@ const DocumentRendererComponent = () => {
             </Flex>
           )}
 
-          {/* Show metadata introduction if multiple views are available */}
-          {hasMultipleViews && (
+          {showHeader && (
             <DocMetadata
               title={meta.title}
               description={meta.description}
-              tags={meta.tags}
               lifecycleState={meta.lifecycleState}
               figmaLink={meta.figmaLink}
+              storybookLink={meta.storybookLink}
+              githubLink={meta.githubLink}
+              illustration={illustration}
             />
           )}
 
           {/* Show tabs if multiple views are available */}
           {hasMultipleViews && <ViewTabs tabs={tabs} />}
 
-          <Box pb="2400">
-            <MdxStringRenderer content={content} />
+          <Box
+            css={{
+              // The first `h2` that repeats the tab label stays in the page
+              // for screen readers and anchors but is not shown.
+              "& > h2[data-view-title]:first-of-type": visuallyHiddenStyle,
+              // Keep the space the heading gave to the content below it.
+              "& > h2[data-view-title]:first-of-type + *": { mt: "600" },
+            }}
+          >
+            <ViewLabelContext.Provider value={viewLabel}>
+              <MdxStringRenderer content={content} />
+            </ViewLabelContext.Provider>
           </Box>
+
+          {/* Related content comes after the page, so it does not interrupt
+              the text. */}
+          {showHeader && (
+            <Box
+              mt="2400"
+              pt="800"
+              borderTop="1px solid"
+              borderColor="neutral.6"
+            >
+              <RelatedDocuments />
+            </Box>
+          )}
+
+          <Box pb="2400" />
         </Stack>
       </Box>
     </>

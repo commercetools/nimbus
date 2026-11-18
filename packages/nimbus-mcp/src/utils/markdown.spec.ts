@@ -74,6 +74,29 @@ describe("stripMarkdown", () => {
     expect(result).toContain("Click me");
   });
 
+  it("keeps the label of a code block that has a tab label", () => {
+    const input = [
+      "Install:",
+      "",
+      '```bash tab="pnpm"',
+      "pnpm add a",
+      "```",
+      "",
+      '```bash tab="npm"',
+      "npm install a",
+      "```",
+    ].join("\n");
+    const result = stripMarkdown(input);
+    expect(result).toBe(
+      "Install:\n\n[pnpm]\npnpm add a\n\n[npm]\nnpm install a"
+    );
+  });
+
+  it("adds no label to a code block without a tab label", () => {
+    const result = stripMarkdown("```bash\npnpm add a\n```");
+    expect(result).toBe("pnpm add a");
+  });
+
   // ---------------------------------------------------------------------------
   // Markdown formatting
   // ---------------------------------------------------------------------------

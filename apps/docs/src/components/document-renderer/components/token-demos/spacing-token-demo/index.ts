@@ -1,1 +1,1 @@
-export * from "./spacing-token-demo.tsx";
+export * from "./spacing-scale.tsx";

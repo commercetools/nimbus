@@ -1,18 +1,25 @@
 import { Table, Box, Flex, Grid } from "@commercetools/nimbus";
-import { ColorScales } from "@/components/document-renderer/components/token-demos/color-scales.tsx";
+import { ColorPalettes } from "@/components/document-renderer/components/token-demos/color-palettes.tsx";
+import { ColorSteps } from "@/components/document-renderer/components/token-demos/color-steps.tsx";
 import { IconSearch } from "./token-demos/icon-search";
-import { SpacingTokenDemo } from "./token-demos/spacing-token-demo";
-import { SizesTokenDemo } from "./token-demos/sizes-token-demo";
-import { GenericTokenTableDemo } from "./token-demos/generic-token-table-demo";
-import { TextStylesDemo } from "./token-demos/text-styles-demo";
+import { SpacingScale } from "./token-demos/spacing-token-demo";
+import { SizesScale } from "./token-demos/sizes-token-demo";
+import { RadiiScale } from "./token-demos/radii-token-demo";
+import { BordersScale } from "./token-demos/borders-token-demo";
+import { ShadowsScale } from "./token-demos/shadows-token-demo";
+import { BlursScale } from "./token-demos/blurs-token-demo";
+import { CursorsScale } from "./token-demos/cursors-token-demo";
+import { ZIndexScale } from "./token-demos/z-index-token-demo";
+import { AspectRatiosScale } from "./token-demos/aspect-ratios-token-demo";
+import { BreakpointsScale } from "./token-demos/breakpoints-token-demo";
+import {
+  AnimationsScale,
+  MotionPlayground,
+} from "./token-demos/animations-token-demo";
+import { TypographyScale } from "./token-demos/typography-token-demo";
 import * as icons from "@commercetools/nimbus-icons";
 import { CategoryOverview } from "./category-overview/category-overview";
 import { MDXComponents } from "mdx/types";
-import {
-  EasingTokenDemo,
-  DurationTokenDemo,
-  KeyframeTokenDemo,
-} from "./token-demos/animation";
 import { NimbusExportsList } from "@/components/document-renderer/components/nimbus-exports-list";
 
 import {
@@ -34,7 +41,12 @@ import {
   Strong,
 } from "./base-tags";
 import { Frontpage } from "./frontpage";
+import { FoundationSections } from "./foundation-sections";
 import { PropsTable } from "./props-table";
+import { CodeTabs } from "./code-tabs";
+
+/** The narrowest width of a Markdown table cell, below the `md` breakpoint. */
+const MD_CELL_MIN_WIDTH = { base: "8rem", md: "0" };
 
 export const components: MDXComponents = {
   h1: H1,
@@ -57,15 +69,24 @@ export const components: MDXComponents = {
   img: Image,
   table: (props) => {
     return (
-      <Table.ScrollArea border="solid-25" borderColor="neutral.6" maxW="100%">
+      <Table.ScrollArea
+        border="solid-25"
+        borderColor="neutral.6"
+        maxW="100%"
+        mb="400"
+      >
         <Table.Root variant="outline" {...props} />
       </Table.ScrollArea>
     );
   },
   thead: Table.Header,
-  th: Table.ColumnHeader,
+  // On a narrow screen, a table with three or more columns scrolls sideways
+  // instead of putting one or two words on each line.
+  th: (props) => <Table.ColumnHeader minW={MD_CELL_MIN_WIDTH} {...props} />,
   tbody: Table.Body,
-  td: (props) => <Table.Cell whiteSpace="normal" {...props} />,
+  td: (props) => (
+    <Table.Cell whiteSpace="normal" minW={MD_CELL_MIN_WIDTH} {...props} />
+  ),
   tr: Table.Row,
   /** layout components */
   Box: (props) => <Box {...props} />,
@@ -73,15 +94,22 @@ export const components: MDXComponents = {
   Grid: (props) => <Grid {...props} />,
   /** custom elements */
   PropsTable: PropsTable,
-  ColorScales: ColorScales,
+  ColorPalettes: ColorPalettes,
+  ColorSteps: ColorSteps,
   IconSearch,
-  SpacingTokenDemo,
-  SizesTokenDemo,
-  GenericTokenTableDemo,
-  EasingTokenDemo,
-  DurationTokenDemo,
-  KeyframeTokenDemo,
-  TextStylesDemo,
+  SpacingScale,
+  SizesScale,
+  RadiiScale,
+  BordersScale,
+  ShadowsScale,
+  BlursScale,
+  CursorsScale,
+  ZIndexScale,
+  AspectRatiosScale,
+  BreakpointsScale,
+  AnimationsScale,
+  MotionPlayground,
+  TypographyScale,
   Icon: ({ id, ...props }) => {
     const Component = icons[id as keyof typeof icons];
     return (
@@ -94,5 +122,7 @@ export const components: MDXComponents = {
   Icons: icons,
   Frontpage,
   CategoryOverview,
+  FoundationSections,
   NimbusExportsList,
+  CodeTabs,
 };

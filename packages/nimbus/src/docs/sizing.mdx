@@ -1,6 +1,7 @@
 ---
 id: Style Props-Sizing
 title: Sizing
+illustration: token-sizes
 description: JSX style props for sizing an element
 order: 999
 menu:
@@ -10,10 +11,11 @@ menu:
 tags:
   - document
 ---
-
-# Sizing
-
 JSX style props for sizing an element
+
+The token values are size tokens: numbers such as `400` (16px), names such as
+`md` (448px), fractions such as `1/2`, and keywords such as `full`. For all
+tokens, see [Sizes](/home/design-tokens/sizes).
 
 ## Width
 
@@ -25,13 +27,13 @@ Use the `width` or `w` property to set the width of an element.
 <Box w="4rem" />
 
 // token values
-<Box width="5" />
-<Box w="5" />
+<Box width="500" />
+<Box w="500" />
 ```
 
 ### Fractional width
 
-Use can set fractional widths using the `width` or `w` property.
+You can set fractional widths using the `width` or `w` property.
 
 Values can be within the following ranges:
 
@@ -123,15 +125,15 @@ Use the `minWidth` or `minW` property to set the minimum width of an element.
 <Box minW="4rem" /> // shorthand
 
 // token values
-<Box minWidth="8" />
-<Box minW="10" /> // shorthand
+<Box minWidth="800" />
+<Box minW="1000" /> // shorthand
 ```
 
 | Prop               | CSS Property | Token Category |
 | ------------------ | ------------ | -------------- |
-| `w`, `width`       | `width`      | `sizing`       |
-| `maxW`, `maxWidth` | `max-width`  | `sizing`       |
-| `minW`, `minWidth` | `min-width`  | `sizing`       |
+| `w`, `width`       | `width`      | `sizes`        |
+| `maxW`, `maxWidth` | `max-width`  | `sizes`        |
+| `minW`, `minWidth` | `min-width`  | `sizes`        |
 
 ## Height
 
@@ -143,13 +145,13 @@ Use the `height` or `h` property to set the height of an element.
 <Box h="0.4rem" /> // shorthand
 
 // token values
-<Box height="5" />
-<Box h="5" /> // shorthand
+<Box height="500" />
+<Box h="500" /> // shorthand
 ```
 
 ### Fractional height
 
-Use can set fractional heights using the `height` or `h` property.
+You can set fractional heights using the `height` or `h` property.
 
 Values can be within the following ranges:
 
@@ -185,8 +187,8 @@ Use the `maxHeight` or `maxH` property to set the maximum height of an element.
 <Box maxH="0.4rem" /> // shorthand
 
 // token values
-<Box maxHeight="8" />
-<Box maxH="10" /> // shorthand
+<Box maxHeight="800" />
+<Box maxH="1000" /> // shorthand
 ```
 
 ## Min height
@@ -199,8 +201,8 @@ Use the `minHeight` or `minH` property to set the minimum height of an element.
 <Box minH="0.4rem" /> // shorthand
 
 // token values
-<Box minHeight="8" />
-<Box minH="10" /> // shorthand
+<Box minHeight="800" />
+<Box minH="1000" /> // shorthand
 ```
 
 | Prop                | CSS Property | Token Category |

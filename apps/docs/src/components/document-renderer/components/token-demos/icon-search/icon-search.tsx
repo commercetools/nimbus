@@ -1,97 +1,178 @@
 import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+import {
   Box,
+  Button,
+  Drawer,
   Flex,
+  Icon,
   ScrollArea,
-  Splitter,
-  useResponsiveSplitterSizes,
 } from "@commercetools/nimbus";
-import { useCallback, useRef } from "react";
+import { FilterList } from "@commercetools/nimbus-icons";
+
+import { AppFrame } from "@/components/app-frame";
+import { BreadcrumbNav } from "@/components/navigation/breadcrumb";
+import { DocMetadata } from "@/components/doc-metadata";
+import { useActiveDoc } from "@/hooks/useActiveDoc";
+import { useManifest } from "@/contexts/manifest-context";
 
 import { useIconData } from "./use-icon-data";
+import { useIconSearch } from "./use-icon-search";
+import { useIconRouteState } from "./use-icon-route-state";
 import { CategoryRail } from "./category-rail";
 import { IconBrowse } from "./icon-browse";
 import { IconDetailDialog } from "./icon-detail";
-import { IconDisplayControls } from "./icon-display-controls";
 
 /**
- * IconSearch is the entry point rendered by the Icons doc (`<IconSearch />` in
- * the MDX). Because `use-route-info` resolves any `/icons/*` path to the Icons
- * doc (longest-prefix match), this single component owns the `/icons` URL space,
- * and all browsing state lives in the URL (see `use-icon-route-state`):
+ * The Icons page (`<IconSearch />` in the Icons MDX). It uses the
+ * `no-sidebar` layout, which leaves the whole body below the top bar to the
+ * page, and draws the same frame as the other pages itself:
  *
- *   /icons                                    -> browse, no filters
- *   /icons?category=:slug&tag=:t&search=:q    -> browse, filtered (AND-combined)
- *   /icons?size=:px&surface=:shape            -> grid display preferences
- *   /icons/:name                              -> the icon's detail dialog, layered
- *                                                on top of whatever filters apply
+ *   - Left column: the category list. The Icons page has no site menu, so
+ *     the list takes its place. Below `lg` it moves into a drawer, like the
+ *     site menu does on other pages.
+ *   - Content column: breadcrumb, then the shared page header (title,
+ *     description, illustration), then the search and the icon grid.
  *
- * Filter/display params write with `{ replace: true }` so tweaks don't spam
- * history; opening an icon pushes an entry so Back closes the dialog and
- * restores the exact filtered grid. Because the no-sidebar layout keys its
- * content on the base route, this Splitter shell stays mounted across every
- * navigation within `/icons` — the rail never remounts and the dialog
- * opens/closes without tearing down the grid.
+ * All browsing state is in the URL (see `use-icon-route-state`):
  *
- * State is not threaded through props: children read the URL via
- * `useIconRouteState` directly, and this shell only passes the loaded data
- * down (`entries`, `categories`, `metadata`).
+ *   /icons                                    -> all icons
+ *   /icons?category=:slug&tag=:t&search=:q    -> filtered (all must match)
+ *   /icons?size=:px&surface=:shape            -> display of the grid
+ *   /icons/:name                              -> detail dialog of an icon, on
+ *                                                top of the filtered grid
+ *
+ * The layout keys its content on the base route, so this component stays
+ * mounted for every URL under `/icons`: the dialog opens and closes without
+ * rebuilding the grid.
  */
 export const IconSearch = () => {
   const { entries, categories, metadata } = useIconData();
+  const loading = metadata === null;
+  const search = useIconSearch(entries, loading);
 
-  // The scrollable viewport of the main (grid) pane. Held so a pagination page
-  // change can reset it to the top — see `scrollMainToTop`.
+  const { doc } = useActiveDoc();
+  const { routeManifest } = useManifest();
+  const meta = doc?.meta;
+  const illustration = routeManifest?.routes.find(
+    (route) => route.id === meta?.id
+  )?.illustrations[0];
+
+  // The scroll area of the content column, and the start of the results in
+  // it. A page change scrolls back to the results, not to the page header.
   const mainViewportRef = useRef<HTMLDivElement>(null);
-  const scrollMainToTop = useCallback(() => {
-    mainViewportRef.current?.scrollTo({ top: 0 });
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const scrollToResults = useCallback(() => {
+    const viewport = mainViewportRef.current;
+    const results = resultsRef.current;
+    if (!viewport || !results) return;
+    const top =
+      results.getBoundingClientRect().top -
+      viewport.getBoundingClientRect().top +
+      viewport.scrollTop;
+    viewport.scrollTo({ top: Math.min(top, viewport.scrollTop) });
   }, []);
 
-  // Persist the category-rail width (in pixels) across reloads. The hook
-  // measures the container, translates the pixel config to the percentage the
-  // splitter consumes, drives its controlled `size`, and writes the settled
-  // width back under `persistKey` on every resize.
-  const { rootProps } = useResponsiveSplitterSizes({
-    persistKey: "docs:icon-search-rail",
-    size: 240,
-    minSize: 180,
-    maxSize: 400,
-  });
+  const railProps = {
+    categories,
+    counts: search.categoryCounts,
+    allCount: search.allCategoriesCount,
+  };
 
   return (
-    <Box position="absolute" inset="0" overflow="hidden">
-      <Splitter.Root {...rootProps}>
-        <Splitter.Aside borderRight="solid-25" borderColor="neutral.3">
-          {/* Controls pinned above the scrollable category list so size +
-              surface stay reachable no matter how far the list is scrolled. */}
-          <Flex direction="column" height="100%">
-            <Box flexShrink={0} borderBottom="solid-25" borderColor="neutral.3">
-              <IconDisplayControls />
-            </Box>
-            <Box flex="1" minH="0">
-              <ScrollArea height="100%">
-                <CategoryRail
-                  categories={categories}
-                  totalCount={entries.length}
-                />
-              </ScrollArea>
-            </Box>
+    // The layout gives no height to its content, so the frame fills the body
+    // below the top bar from here.
+    <Box position="absolute" inset="0" display="flex">
+      <AppFrame.Root>
+        {/* Same column as AppFrame.LeftNav, but an `aside`: it filters the
+            icons, it does not move to another page. */}
+        <ScrollArea
+          as="aside"
+          aria-label="Icon categories"
+          gridArea="nav"
+          display={{ base: "none", lg: "block" }}
+          borderRight="solid-25"
+          borderColor="neutral.3"
+          bg="bg"
+          size="sm"
+        >
+          <Box py="400">
+            <CategoryRail {...railProps} />
+          </Box>
+        </ScrollArea>
+
+        <AppFrame.MainContent viewportRef={mainViewportRef}>
+          <Flex align="center" gap="200" mb="600">
+            <CategoryDrawer>
+              {(close) => <CategoryRail {...railProps} onSelect={close} />}
+            </CategoryDrawer>
+            <Suspense fallback={null}>
+              <BreadcrumbNav />
+            </Suspense>
           </Flex>
-        </Splitter.Aside>
 
-        <Splitter.Handle />
-
-        <Splitter.Main>
-          <ScrollArea height="100%" viewportRef={mainViewportRef}>
-            <IconBrowse
-              entries={entries}
-              loading={metadata === null}
-              scrollToTop={scrollMainToTop}
+          {meta && (
+            <DocMetadata
+              title={meta.title}
+              description={meta.description}
+              illustration={illustration}
             />
-          </ScrollArea>
-        </Splitter.Main>
-      </Splitter.Root>
+          )}
+
+          <Box ref={resultsRef} pb="1200">
+            <IconBrowse
+              search={search}
+              loading={loading}
+              onPageChange={scrollToResults}
+            />
+          </Box>
+        </AppFrame.MainContent>
+      </AppFrame.Root>
 
       <IconDetailDialog entries={entries} metadata={metadata} />
+    </Box>
+  );
+};
+
+/**
+ * The category list for narrow screens. Below `lg` the left column is hidden,
+ * so a button next to the breadcrumb opens the list in a drawer, like the
+ * site menu on other pages. Selecting a category closes the drawer.
+ */
+const CategoryDrawer = ({
+  children,
+}: {
+  children: (close: () => void) => ReactNode;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { iconName } = useIconRouteState();
+
+  // Opening an icon closes the drawer.
+  useEffect(() => {
+    if (iconName) setIsOpen(false);
+  }, [iconName]);
+
+  return (
+    <Box display={{ base: "block", lg: "none" }}>
+      <Button size="xs" variant="outline" onPress={() => setIsOpen(true)}>
+        <Icon as={FilterList} />
+        Categories
+      </Button>
+      <Drawer.Root isOpen={isOpen} onOpenChange={setIsOpen} placement="left">
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.Title>Categories</Drawer.Title>
+            <Drawer.CloseTrigger />
+          </Drawer.Header>
+          <Drawer.Body>{children(() => setIsOpen(false))}</Drawer.Body>
+        </Drawer.Content>
+      </Drawer.Root>
     </Box>
   );
 };

@@ -2,7 +2,9 @@
 id: Components-Kbd
 title: Kbd
 exportName: Kbd
-description: The KBD component visually renders a keystroke or key combination to highlight it within textual instructions.
+description:
+  The KBD component visually renders a keystroke or key combination to highlight
+  it within textual instructions.
 lifecycleState: Stable
 order: 999
 menu:
@@ -13,6 +15,7 @@ tags:
   - component
   - keyboard
   - key
+githubLink: https://github.com/commercetools/nimbus/tree/main/packages/nimbus/src/components/kbd
 ---
 
 ## Overview
@@ -28,11 +31,15 @@ Get familiar with the features.
 ### Basic
 
 ```jsx live
-const App = () => <Kbd>Ctrl</Kbd>
+const App = () => <Kbd>Ctrl</Kbd>;
 ```
 
 ### Key combinations
 
 ```jsx live
-const App = () => <div>Press <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> to copy</div>
+const App = () => (
+  <div>
+    Press <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> to copy
+  </div>
+);
 ```

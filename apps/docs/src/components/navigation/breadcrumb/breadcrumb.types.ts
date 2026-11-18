@@ -1,4 +1,5 @@
 export interface BreadcrumbItem {
   label: string;
-  href: string;
+  /** Absent for a group without a page of its own. */
+  href?: string;
 }

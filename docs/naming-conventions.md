@@ -66,20 +66,21 @@ data-table.tsx
 
 All component-related files follow predictable patterns:
 
-| File Type           | Pattern                     | Example                 |
-| ------------------- | --------------------------- | ----------------------- |
-| Main component      | `{component}.tsx`           | `button.tsx`            |
-| Types               | `{component}.types.ts`      | `button.types.ts`       |
-| Recipe              | `{component}.recipe.ts`     | `button.recipe.ts`      |
-| Slots               | `{component}.slots.tsx`     | `button.slots.tsx`      |
-| Stories             | `{component}.stories.tsx`   | `button.stories.tsx`    |
-| i18n                | `{component}.i18n.ts`       | `button.i18n.ts`        |
-| Developer docs      | `{component}.dev.mdx`       | `button.dev.mdx`        |
-| Documentation tests | `{component}.docs.spec.tsx` | `button.docs.spec.tsx`  |
-| Designer docs       | `{component}.mdx`           | `button.mdx`            |
-| Unit tests          | `{utility}.spec.ts`         | `format-date.spec.ts`   |
-| Lazy-loaded module  | `{component}.lazy.tsx`      | `toast.outlet.lazy.tsx` |
-| Barrel export       | `index.ts`                  | `index.ts`              |
+| File Type           | Pattern                       | Example                  |
+| ------------------- | ----------------------------- | ------------------------ |
+| Main component      | `{component}.tsx`             | `button.tsx`             |
+| Types               | `{component}.types.ts`        | `button.types.ts`        |
+| Recipe              | `{component}.recipe.ts`       | `button.recipe.ts`       |
+| Slots               | `{component}.slots.tsx`       | `button.slots.tsx`       |
+| Stories             | `{component}.stories.tsx`     | `button.stories.tsx`     |
+| i18n                | `{component}.i18n.ts`         | `button.i18n.ts`         |
+| Illustration source | `{component}.illustration.ts` | `button.illustration.ts` |
+| Developer docs      | `{component}.dev.mdx`         | `button.dev.mdx`         |
+| Documentation tests | `{component}.docs.spec.tsx`   | `button.docs.spec.tsx`   |
+| Designer docs       | `{component}.mdx`             | `button.mdx`             |
+| Unit tests          | `{utility}.spec.ts`           | `format-date.spec.ts`    |
+| Lazy-loaded module  | `{component}.lazy.tsx`        | `toast.outlet.lazy.tsx`  |
+| Barrel export       | `index.ts`                    | `index.ts`               |
 
 ### Directory Structure
 

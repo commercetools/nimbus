@@ -1,8 +1,11 @@
 ---
 id: Spacing
 title: Spacing
-description: Spacing tokens are used to define the space between elements.
-order: 999
+illustration: token-spacing
+description:
+  The spacing scale, built on a 4px base unit, and how to use it for padding,
+  margins and gaps.
+order: 3
 menu:
   - Home
   - Design Tokens
@@ -12,24 +15,73 @@ tags:
   - spacing
 icon: SpaceBar
 ---
+Spacing tokens set the space inside and between elements. The scale grows from
+1px to 128px and is built on a 4px base unit. A token is its pixel value times
+25, so `100` is 4px and `400` is 16px. Use the tokens instead of raw pixel
+values, so that spacing stays consistent across your layouts.
 
-# Spacing Tokens
+> [!IMPORTANT]\
+> Looking for `width` or `height`? Use the
+> [size tokens](/home/design-tokens/sizes). The style prop decides which scale
+> applies. Up to `3200`, both scales have the same numeric tokens, so `p="400"`
+> and `w="400"` are both 16px. Other size tokens, such as `md` or `1/2`, do not
+> work for spacing.
 
-Spacing tokens are used to define the space between elements. They are used to
-create consistent spacing between elements and to ensure that the layout is
-visually balanced.
+## Spacing scale
 
-> [!NOTE]  
-> Every token has a negative equivalent, in case you need to apply a negative
-> margin etc. Access the negative version by prependind the token name with a
-> dash. e.g. `-100`, `-400`, `-1000`, etc.
+<SpacingScale />
 
-<br />
+## Use spacing in code
 
-<SpacingTokenDemo />
+Spacing tokens work on the style props for padding, margin, gap and position.
 
-<br />
+| You set                 | Props                                     | Example                                 |
+| ----------------------- | ----------------------------------------- | --------------------------------------- |
+| Space inside an element | `p`, `px`, `py`, `pt`, `pr`, `pb`, `pl`   | `<Box p="400" />`                       |
+| Space around an element | `m`, `mx`, `my`, `mt`, `mr`, `mb`, `ml`   | `<Box mb="200" />`                      |
+| Space between children  | `gap`, `rowGap`, `columnGap`              | `<Flex gap="200" />`                    |
+| Position of an element  | `top`, `right`, `bottom`, `left`, `inset` | `<Box position="absolute" top="100" />` |
 
-> [!TIP]  
-> To quickly calculate the token value in px, take the token name and divide it
-> by 25. e.g. `100 / 25 = 4px`, `400 / 25 = 16px`, `1000 / 25 = 40px`, etc.
+```tsx
+<Flex direction="column" gap="400" p="600">
+  <Heading>Title</Heading>
+  <Text>Body text</Text>
+</Flex>
+```
+
+For the full list of props, see [Style props: Spacing](/home/style-props/spacing).
+
+### Negative values
+
+Every token has a negative twin. Add a dash in front of the token to use it, for
+example `-100` or `-400`. This is useful for a negative margin that pulls an
+element toward its neighbor.
+
+```tsx
+<Box mt="-100" />
+```
+
+### Editor support
+
+With the design token TypeScript plugin, autocomplete shows the pixel value next
+to the token, for example `600 = 24px`. See
+[Installation](/home/getting-started/installation#design-token-autocomplete-optional)
+for how to set it up.
+
+## Choose how to add space
+
+For a simple row or column with even space, Stack is often simpler than Flex.
+
+| You want                                    | Use                                                                             |
+| ------------------------------------------- | ------------------------------------------------------------------------------- |
+| Even space between items in a row or column | [Stack](/components/layout/stack) or [Flex](/components/layout/flex) with `gap` |
+| Space inside a container                    | `padding` on [Box](/components/layout/box)                                      |
+| Fixed space around one element              | `margin` on [Box](/components/layout/box)                                       |
+| Push items to opposite ends                 | [Spacer](/components/layout/spacer) in a flex layout                            |
+
+### Values that Nimbus components use
+
+In the recipes of Nimbus components, the gap between items is most often `200`
+(8px) or `100` (4px). Padding is most often `200`, `300`, `400` or `600`, and
+margins are most often `200`. If you build next to Nimbus components, these
+values are a good place to start.

@@ -1,24 +1,30 @@
 import { useMemo, useEffect, useState } from "react";
-import { Box, Flex, Icon, Link, Button } from "@commercetools/nimbus";
+import { Box, Breadcrumbs, Flex, Icon, Button } from "@commercetools/nimbus";
 import {
-  ChevronRight,
   Home,
   Link as LinkIcon,
   CheckCircle,
 } from "@commercetools/nimbus-icons";
-import { menuToPath } from "../../../utils/sluggify";
+import { menuToPath } from "@commercetools/nimbus-docs-build/sluggify";
 import { BreadcrumbItem } from "./breadcrumb.types";
 import { useActiveDoc } from "../../../hooks/useActiveDoc";
 import { useBreadcrumbContext } from "../../../contexts/breadcrumb-context";
+import { useManifest } from "../../../contexts/manifest-context";
 
 /**
  * BreadcrumbNav component renders the breadcrumb navigation based on the active document.
  */
 export const BreadcrumbNav = () => {
   const { doc: activeDoc } = useActiveDoc();
+  const { routeManifest } = useManifest();
   const { previousParts, setPreviousParts } = useBreadcrumbContext();
   const [isHovered, setIsHovered] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+
+  const pagePaths = useMemo(
+    () => new Set(routeManifest?.routes.map((route) => route.path)),
+    [routeManifest]
+  );
 
   // Memoize the breadcrumb parts to avoid unnecessary recalculations
   const parts: BreadcrumbItem[] = useMemo(() => {
@@ -26,11 +32,13 @@ export const BreadcrumbNav = () => {
 
     const { menu } = activeDoc.meta;
 
-    return menu.map((item, idx) => ({
-      label: item,
-      href: menuToPath(menu.slice(0, idx + 1)),
-    }));
-  }, [activeDoc, previousParts]);
+    return menu.map((item, idx) => {
+      const path = `/${menuToPath(menu.slice(0, idx + 1))}`;
+      // A group without a page of its own (such as "Getting Started") is
+      // shown as text, not as a link.
+      return { label: item, href: pagePaths.has(path) ? path : undefined };
+    });
+  }, [activeDoc, previousParts, pagePaths]);
 
   // Update the previous parts in context when we have valid data
   useEffect(() => {
@@ -40,7 +48,33 @@ export const BreadcrumbNav = () => {
   }, [activeDoc, parts, setPreviousParts]);
 
   // Filter out "Home" from parts since we always show it as the first item with icon
-  const filteredParts = parts.filter((item) => item.label !== "Home");
+  const filteredParts = useMemo(
+    () => parts.filter((item) => item.label !== "Home"),
+    [parts]
+  );
+
+  // The first item is always Home, shown with an icon. The last item is the
+  // current page: Breadcrumbs renders it as text with `aria-current="page"`.
+  const items = useMemo(
+    () => [
+      {
+        id: "home",
+        href: "/home",
+        label: (
+          <>
+            <Icon as={Home} textStyle="sm" mr="100" color="inherit" />
+            Home
+          </>
+        ),
+      },
+      ...filteredParts.map((item, idx) => ({
+        id: item.href ?? `${idx}-${item.label}`,
+        href: item.href,
+        label: item.label,
+      })),
+    ],
+    [filteredParts]
+  );
 
   // Handle copy link to clipboard
   const handleCopyLink = async () => {
@@ -57,43 +91,18 @@ export const BreadcrumbNav = () => {
 
   return (
     <Flex
-      as="nav"
-      aria-label="Breadcrumb"
       color="neutral.11"
       alignItems="center"
       gap="200"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Box as="ul" display="inline-flex">
-        <Flex as="li">
-          <Link
-            _hover={{ textDecoration: "underline" }}
-            href={"home"}
-            aria-label="Home"
-            color="inherit"
-            textDecoration="none"
-          >
-            <Icon as={Home} textStyle="md" mr="100" color="inherit" />
-            Home
-          </Link>
-        </Flex>
-        {filteredParts.map((item) => {
-          return (
-            <Flex alignItems="center" as="li" key={item.href}>
-              <Icon as={ChevronRight} textStyle="md" mx="100" color="inherit" />
-              <Link
-                textDecoration="none"
-                _hover={{ textDecoration: "underline" }}
-                href={item.href}
-                color="inherit"
-              >
-                {item.label}
-              </Link>
-            </Flex>
-          );
-        })}
-      </Box>
+      <Breadcrumbs.Root
+        aria-label="Breadcrumb"
+        size="sm"
+        items={items}
+        color="inherit"
+      />
 
       {/* Copy Link Button - revealed on hover, and on keyboard focus so the
           control is visible when it receives focus (WCAG 2.4.7 Focus Visible).

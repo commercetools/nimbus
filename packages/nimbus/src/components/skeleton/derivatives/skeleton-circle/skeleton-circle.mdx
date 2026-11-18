@@ -5,6 +5,9 @@ exportName: SkeletonCircle
 description: A circular loading placeholder sized to the Avatar scale, for avatars and icons.
 lifecycleState: Stable
 order: 999
+related:
+  - Components-Skeleton
+  - Components-SkeletonText
 menu:
   - Components
   - Feedback
@@ -17,6 +20,9 @@ tags:
   - feedback
   - circle
   - avatar
+githubLink: https://github.com/commercetools/nimbus/tree/main/packages/nimbus/src/components/skeleton/derivatives/skeleton-circle
+storybookLink: https://nimbus-storybook.vercel.app/?path=/docs/components-skeletoncircle--docs
+figmaLink: https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system
 ---
 
 ## Overview
@@ -29,13 +35,7 @@ the layout stable during the transition.
 `SkeletonCircle` is part of the Skeleton family, a convenience wrapper over
 [Skeleton](/components/feedback/skeleton) with `shape="circle"`. For rectangular
 blocks use `Skeleton`; for paragraphs of text use
-[SkeletonText](/components/feedback/skeletontext).
-
-### Resources
-
-Deep dive into implementation details and access the Nimbus design library.
-
-[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system)
+[SkeletonText](/components/feedback/skeleton-text).
 
 ## Variables
 
@@ -94,7 +94,7 @@ const App = () => (
   placeholder and the loaded avatar occupy exactly the same space.
 - Reach for `boxSize` only when the circle sits outside the Avatar scale;
   otherwise prefer the named `size` for consistency.
-- Pair `SkeletonCircle` with [SkeletonText](/components/feedback/skeletontext)
+- Pair `SkeletonCircle` with [SkeletonText](/components/feedback/skeleton-text)
   to build avatar-plus-text loading rows.
 
 ### When to use
@@ -110,4 +110,4 @@ const App = () => (
 - For rectangular content such as images or cards — use
   [Skeleton](/components/feedback/skeleton) instead
 - For paragraphs of text — use
-  [SkeletonText](/components/feedback/skeletontext)
+  [SkeletonText](/components/feedback/skeleton-text)

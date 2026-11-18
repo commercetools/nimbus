@@ -15,7 +15,7 @@ import type {
   ComponentMetadata,
 } from "../types.js";
 import { stripMarkdown } from "../utils/markdown.js";
-import { fuzzyResolveName } from "../utils/relevance.js";
+import { fuzzyResolveName, lowerTitle } from "../utils/relevance.js";
 import { routePathToSlug as pathToSlug } from "../utils/route.js";
 
 // ---------------------------------------------------------------------------
@@ -249,6 +249,7 @@ async function resolveComponent(
   const exact = catalog.find((r) => {
     if (r.exportName?.toLowerCase() === needle) return true;
     if (r.title.toLowerCase() === needle) return true;
+    if (lowerTitle(r.title) === needle) return true;
     const idName = r.id.replace(/^(Components|Patterns)-/, "");
     return idName.toLowerCase() === needle;
   });

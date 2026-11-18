@@ -22,7 +22,7 @@ These sections must be included in every component's engineering documentation:
 4. **Component requirements** - Accessibility requirements (mandatory)
 5. **API reference** - PropsTable component
 6. **Testing your implementation** - Testing patterns and examples
-7. **Resources** - Links to Storybook and external documentation
+7. **Resources** (optional) - Links to external documentation
 
 ### Optional Sections
 
@@ -397,29 +397,11 @@ await waitFor(() => {
 
 ### Resources
 
-**Required for all components**
+**Optional**: include it when there are links that the page header does not show.
 
-#### Storybook Links
-
-Use actual URL pattern when possible:
-
-**For base components:**
-
-```markdown
-- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-[component]--docs)
-```
-
-**For field patterns:**
-
-```markdown
-- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-fields-[component]--docs)
-```
-
-Use `link-tbd` placeholder only if Storybook URL is not yet available.
-
-#### External Documentation
-
-Include when relevant:
+The Figma, Storybook and GitHub links are front matter fields of the main `.mdx`
+file (`figmaLink`, `storybookLink`, `githubLink`). The page header shows them.
+The Resources section lists other links:
 
 - React Aria documentation link (if component uses React Aria)
 - ARIA pattern link (if applicable)
