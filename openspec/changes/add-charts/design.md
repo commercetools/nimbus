@@ -329,3 +329,25 @@ component changes.
   design nodes for the charts, which this change does not have. Follow-up when
   designers publish chart components. The MCP data is generated from the docs
   build, so no entry is needed (checked in task 7.5).
+
+## Known Limits and Follow-ups
+
+- Arbitrary solid colors for a series (adapting any color at run time with
+  `useColorMode`) are not part of this version. `config` can take a `color` field
+  later without a breaking change.
+- Colors are checked against `bg` only. A chart on a gray or tinted surface can
+  fall just below 3:1 for a few palettes (measured in the Open Questions).
+- The legend and tooltip swatches show color only. The dash patterns of a
+  LineChart with more than 3 series are not shown there.
+- There is no y axis, and no option to format x axis labels. The first and last
+  x label are always kept, and overlapping labels in between are dropped.
+- Figma Code Connect mappings need Figma design nodes for the charts.
+- `ctteal` and the six other palettes with a black contrast color are not chart
+  palettes yet.
+- The MCP search matches a query that starts with a whole word of a description or
+  tag, also a one-letter word (found while writing the docs; the chart docs avoid
+  such words). The token mapping script of the TypeScript plugin only warns when it
+  cannot parse `semantic-tokens/colors.ts` and then writes empty data; it should
+  fail the build instead (found when the chart entry broke it).
+- `@commercetools/nimbus-i18n`: the empty-state text is in the translation data in
+  English and waits for the Transifex translations.

@@ -63,9 +63,9 @@
 
 ## 7. Final checks
 
-- [ ] 7.1 Run the Nimbus review (`nimbus-reviewer`) on all new files and fix findings
-- [ ] 7.2 Run `pnpm test`, `pnpm typecheck:strict`, `pnpm check:package-shape`, `pnpm check:bundler-compat` and `pnpm check:bundle-size`
-- [ ] 7.3 Check the stories in Storybook in light and dark mode, and with the keyboard only
-- [ ] 7.4 Run `pnpm openspec validate add-charts --strict`
-- [ ] 7.5 Check whether new components need a Figma Code Connect file (`docs/figma-code-connect-ci.md`) or an entry in the MCP data (`packages/nimbus-mcp`), and add them if required
-- [ ] 7.6 Move any chart that did not finish to a new change, and list it in the pull request
+- [x] 7.1 Run the Nimbus review (`nimbus-reviewer`) on all new files and fix findings. Done: reviewed after every group (foundation, Bar/Line/Area, Pie/Radar/Radial) and once more as a final audit with a scenario-to-evidence table; all findings fixed or recorded
+- [x] 7.2 Run `pnpm test`, `pnpm typecheck:strict`, `pnpm check:package-shape`, `pnpm check:bundler-compat` and `pnpm check:bundle-size`. Done: `pnpm build` (clean tree afterwards), `pnpm test` 306 files / 3894 tests, `pnpm typecheck:strict`, `pnpm check:package-shape` (all packages), `pnpm check:bundler-compat`, `pnpm check:bundle-size` (nimbus +1.0%, tokens +3.1%, limit 5%)
+- [x] 7.3 Check the stories in Storybook in light and dark mode, and with the keyboard only. Done: keyboard (Tab, arrows, Enter) and light/dark mode are covered by story tests for all six charts; all six chart types were also checked in a browser (light mode, plus Bar in dark mode) and compared with the shadcn references
+- [x] 7.4 Run `pnpm openspec validate add-charts --strict`. Done: `pnpm openspec validate add-charts --strict` passes
+- [x] 7.5 Check whether new components need a Figma Code Connect file (`docs/figma-code-connect-ci.md`) or an entry in the MCP data (`packages/nimbus-mcp`), and add them if required. Done: Figma Code Connect is optional (45 of 98 components have one, Meter has none) and needs Figma nodes for charts: follow-up. MCP data is generated from the docs build: no entry needed (343 MCP tests pass)
+- [x] 7.6 Move any chart that did not finish to a new change, and list it in the pull request. Done: all six charts are finished, none moved to a later change
