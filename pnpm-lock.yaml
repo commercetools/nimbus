@@ -582,6 +582,9 @@ importers:
       react-dom:
         specifier: catalog:react
         version: 19.2.0(react@19.2.0)
+      react-is:
+        specifier: catalog:charts
+        version: 19.2.6
       react-live:
         specifier: catalog:apps
         version: 4.1.8(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -597,6 +600,9 @@ importers:
       react-syntax-highlighter:
         specifier: catalog:apps
         version: 16.1.2(react@19.2.0)
+      recharts:
+        specifier: catalog:charts
+        version: 3.10.1(@types/react@19.3.0)(react-dom@19.2.0(react@19.2.0))(react-is@19.2.6)(react@19.2.0)(redux@5.0.1)
       remark-flexible-toc:
         specifier: catalog:markdown
         version: 1.3.0(unified@11.0.5)
