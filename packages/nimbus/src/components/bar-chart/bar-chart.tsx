@@ -33,7 +33,13 @@ const BarChartPlot = ({
   return (
     <RechartsBarChart data={data} aria-label={ariaLabel}>
       {showGrid && <CartesianGrid vertical={false} />}
-      <XAxis dataKey={xAxisKey} axisLine={false} tickLine={false} />
+      {/* `preserveStartEnd` always draws the first and last x axis label; middle labels that would overlap are dropped. */}
+      <XAxis
+        dataKey={xAxisKey}
+        axisLine={false}
+        tickLine={false}
+        interval="preserveStartEnd"
+      />
       {showTooltip && <Tooltip content={<ChartTooltip />} />}
       {series.map((item) => (
         <Bar

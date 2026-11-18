@@ -42,8 +42,10 @@ const LineChartPlot = ({ data, xAxisKey, showGrid }: LineChartPlotProps) => {
     useChartContext();
   const isDashed = series.length > MAX_SOLID_SERIES;
 
-  // The margin keeps the first and last x axis label inside the chart. A label
-  // that would cross the edge is otherwise dropped or cut off.
+  // The margin gives the first and last x axis label room at the chart edge.
+  // `preserveStartEnd` always draws the first and last label, even when a
+  // long label would cross the edge (the default interval drops it, and
+  // `interval={0}` cuts it off). Middle labels that would overlap are dropped.
   return (
     <RechartsLineChart
       data={data}
@@ -51,7 +53,12 @@ const LineChartPlot = ({ data, xAxisKey, showGrid }: LineChartPlotProps) => {
       margin={{ left: 12, right: 12 }}
     >
       {showGrid && <CartesianGrid vertical={false} />}
-      <XAxis dataKey={xAxisKey} axisLine={false} tickLine={false} />
+      <XAxis
+        dataKey={xAxisKey}
+        axisLine={false}
+        tickLine={false}
+        interval="preserveStartEnd"
+      />
       {showTooltip && <Tooltip content={<ChartTooltip />} />}
       {series.map((item, index) => (
         <Line

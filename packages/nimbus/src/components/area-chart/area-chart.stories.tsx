@@ -440,3 +440,58 @@ export const AllXLabelsVisible: Story = {
     }
   },
 };
+
+const longLabelData = ["September", "October", "November", "December"].map(
+  (month, index) => ({
+    month,
+    desktop: 100 + index * 40,
+    mobile: 80 + index * 10,
+  })
+);
+
+/** Long first and last x labels are drawn in full, inside the chart */
+export const LongXLabelsVisible: Story = {
+  render: () => <SampleChart data={longLabelData} />,
+  play: async ({ canvasElement }) => {
+    await findSvg(canvasElement);
+    await waitFor(() => {
+      expect(xAxisLabels(canvasElement).labels.map((l) => l.text)).toEqual([
+        "September",
+        "October",
+        "November",
+        "December",
+      ]);
+    });
+    const { svgLeft, svgRight, labels } = xAxisLabels(canvasElement);
+    for (const label of labels) {
+      await expect(label.left).toBeGreaterThanOrEqual(svgLeft);
+      await expect(label.right).toBeLessThanOrEqual(svgRight);
+    }
+  },
+};
+
+const dailyData = Array.from({ length: 30 }, (_, index) => ({
+  month: `2024-06-${String(index + 1).padStart(2, "0")}`,
+  desktop: 100 + ((index * 37) % 90),
+  mobile: 60 + ((index * 23) % 70),
+}));
+
+/** With many labels the first and last stay inside the chart, and none overlap */
+export const ManyXLabels: Story = {
+  render: () => <SampleChart data={dailyData} />,
+  play: async ({ canvasElement }) => {
+    await findSvg(canvasElement);
+    await waitFor(() =>
+      expect(xAxisLabels(canvasElement).labels.length).toBeGreaterThan(2)
+    );
+    const { svgLeft, svgRight, labels } = xAxisLabels(canvasElement);
+    await expect(labels[0].text).toBe("2024-06-01");
+    await expect(labels[labels.length - 1].text).toBe("2024-06-30");
+    await expect(labels[0].left).toBeGreaterThanOrEqual(svgLeft);
+    await expect(labels[labels.length - 1].right).toBeLessThanOrEqual(svgRight);
+    // Labels are in x order, so each one must start after the previous ends
+    for (let i = 1; i < labels.length; i++) {
+      await expect(labels[i].left).toBeGreaterThanOrEqual(labels[i - 1].right);
+    }
+  },
+};
