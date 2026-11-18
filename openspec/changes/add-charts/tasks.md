@@ -45,7 +45,7 @@
 - [x] 4.10 Add the same three docs files for `LineChart`
 - [x] 4.11 Add the same three docs files for `AreaChart`
 - [x] 4.12 Add a changeset for the three charts (consumer-facing, see `docs/changeset-conventions.md`). Say in the text that they are experimental
-- [ ] 4.13 Run `pnpm lint`, `pnpm --filter @commercetools/nimbus typecheck:dev`, `pnpm test`, and `pnpm check:bundle-size`
+- [x] 4.13 Run `pnpm lint`, `pnpm --filter @commercetools/nimbus typecheck:dev`, `pnpm test`, and `pnpm check:bundle-size`
 
 ## 5. PieChart
 
