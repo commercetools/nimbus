@@ -33,14 +33,14 @@
 
 ## 4. BarChart, LineChart and AreaChart (first release for the product team)
 
-- [ ] 4.1 Create the folders `bar-chart/`, `line-chart/` and `area-chart/` with `index.ts` and the file structure from `docs/component-guidelines.md`
-- [ ] 4.2 Write failing stories with play functions for `BarChart`: render, stacked, empty, loading, tooltip and legend, legend shown for two or more series, 2 px stroke between bars, role and tabIndex, ArrowLeft and ArrowRight, Tab focus, light and dark mode. Turn off Recharts animation in snapshotted stories and follow `docs/chromatic-visual-testing.md` for which stories get a visual snapshot
-- [ ] 4.3 Implement `BarChart` until 4.2 passes
-- [ ] 4.4 Write failing stories for `LineChart`: the same list as 4.2 (without stacked and bar stroke), plus the case with more than 3 series (dash style or marker)
-- [ ] 4.5 Implement `LineChart`
-- [ ] 4.6 Write failing stories for `AreaChart`: the same list as 4.2 (without bar stroke), plus the gradient fill (reduced opacity at the line, transparent at the baseline) with a full-color line
-- [ ] 4.7 Implement `AreaChart`
-- [ ] 4.8 Export the shared types and the three charts from `packages/nimbus/src/components/index.ts`
+- [x] 4.1 Create the folders `bar-chart/`, `line-chart/` and `area-chart/` with `index.ts` and the file structure from `docs/component-guidelines.md`
+- [x] 4.2 Write failing stories with play functions for `BarChart`: render, stacked, empty, loading, tooltip and legend, legend shown for two or more series, 2 px stroke between bars, role and tabIndex, ArrowLeft and ArrowRight, Tab focus, light and dark mode. Turn off Recharts animation in snapshotted stories and follow `docs/chromatic-visual-testing.md` for which stories get a visual snapshot
+- [x] 4.3 Implement `BarChart` until 4.2 passes
+- [x] 4.4 Write failing stories for `LineChart`: the same list as 4.2 (without stacked and bar stroke), plus the case with more than 3 series (dash style or marker)
+- [x] 4.5 Implement `LineChart`
+- [x] 4.6 Write failing stories for `AreaChart`: the same list as 4.2 (without bar stroke), plus the gradient fill (about 0.8 opacity at the line, about 0.1 at the baseline) with a full-color line
+- [x] 4.7 Implement `AreaChart`
+- [x] 4.8 Export the shared types and the three charts from `packages/nimbus/src/components/index.ts`
 - [ ] 4.9 Add the designer `*.mdx`, the developer `*.dev.mdx` and `*.docs.spec.tsx` for `BarChart` (use `/create-eng-docs` and the `writing-designer-documentation` skill). Add the `@experimental` JSDoc tag on the main export and state in the docs text that colors are checked against `bg`, that consumers install `recharts` and `react-is`, and that the chart is experimental in the first release (see `docs/file-type-guidelines/documentation.md` and `main-component.md` "Lifecycle State Tag")
 - [ ] 4.10 Add the same three docs files for `LineChart`
 - [ ] 4.11 Add the same three docs files for `AreaChart`

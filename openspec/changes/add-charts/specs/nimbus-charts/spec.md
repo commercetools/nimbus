@@ -146,9 +146,13 @@ Charts SHALL look like the shadcn charts (https://ui.shadcn.com/charts), in Nimb
 - **THEN** its grid, axes, bar and slice shapes, tooltip and legend SHALL follow the visual traits recorded from the shadcn reference screenshots in `design.md`
 - **AND** all colors SHALL come from Nimbus tokens
 
+#### Scenario: Smooth curves without overshoot
+- **WHEN** a `LineChart` or an `AreaChart` draws a series
+- **THEN** it SHALL use monotone interpolation, so a curve never goes below the lowest or above the highest value of the data
+
 #### Scenario: Area fill
 - **WHEN** an `AreaChart` draws the area under a line
-- **THEN** the area SHALL use a vertical gradient of the series color, from reduced opacity at the line to transparent at the baseline
+- **THEN** the area SHALL use a vertical gradient of the series color, from about 0.8 opacity at the line to about 0.1 opacity at the baseline
 - **AND** the line on top SHALL use the full series color
 
 ### Requirement: Chart Motion

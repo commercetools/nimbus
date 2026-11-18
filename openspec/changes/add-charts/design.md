@@ -267,9 +267,17 @@ reference, and renders Recharts. `ChartTooltip` and `ChartLegend` read the same
 
 ### 8. Area fill is a gradient of one color
 
-An area is drawn with a vertical gradient of the series color, from reduced opacity
-at the line to transparent at the baseline (as on the shadcn reference, task 1.5). The line on top uses the full series color and carries the
+An area is drawn with a vertical gradient of the series color, from about 0.8 opacity
+at the line to about 0.1 opacity at the baseline (nearly transparent, as on the
+shadcn reference, task 1.5). The line on top uses the full series color and carries the
 3:1 contrast. No extra token is needed, so "one chart token per palette" holds.
+
+### 8a. Curves are monotone
+
+Line and Area use `type="monotone"`. The shadcn demos use `natural`, but natural
+interpolation can draw below the data minimum (even below zero) and so shows values
+that are not in the data. Monotone interpolation never overshoots and looks almost
+the same.
 
 ### 9. Keep the Recharts default `role="application"`
 
