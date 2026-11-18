@@ -1,0 +1,227 @@
+---
+id: Components-PieChart
+title: Pie chart
+exportName: PieChart
+description: Shows how the total is split into categories, one slice for each.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Data Display
+  - Pie chart
+tags:
+  - component
+  - chart
+  - pie
+  - share
+  - proportion
+  - data visualization
+---
+
+## Overview
+
+Use `PieChart` to show how the total is split into a few categories, for example
+visitors by browser. Each slice is one category, and its size is its value
+divided by the sum of all values.
+
+> [!WARNING]\
+> **Experimental.** `PieChart` is experimental in this first release and may
+> change in a later version.
+
+`PieChart` needs two peer dependencies that are not installed with Nimbus:
+`recharts` and `react-is`. Install both:
+
+```bash
+pnpm add recharts react-is
+```
+
+npm and yarn also work (`npm install recharts react-is`,
+`yarn add recharts react-is`). Nimbus accepts `recharts` version `^3.10.1` or
+newer in the same major version.
+
+A chart is given the rows of data, the field that holds the category name
+(`nameKey`), the field that holds the value (`valueKey`), and a label and color
+for each category. It fills the width of its container and has a default aspect
+ratio. Slices are separated by a 2 px stroke in the page color, and the tooltip
+shows the values of one data point.
+
+### Resources
+
+[W3C WAI: Complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+
+## Variables
+
+### Categories
+
+With two or more categories the legend is always shown and lists the categories.
+Each category takes its label and palette from `config`.
+
+```jsx live
+const App = () => {
+  const data = [
+    { browser: "chrome", visitors: 275 },
+    { browser: "safari", visitors: 200 },
+    { browser: "firefox", visitors: 187 },
+  ];
+  return (
+    <PieChart
+      aria-label="Visitors by browser"
+      data={data}
+      nameKey="browser"
+      valueKey="visitors"
+      config={{
+        chrome: { label: "Chrome", palette: "ctviolet" },
+        safari: { label: "Safari", palette: "orange" },
+        firefox: { label: "Firefox", palette: "teal" },
+      }}
+    />
+  );
+};
+```
+
+### One category
+
+A chart with one category does not show a legend by default. Set `showLegend` to
+show it.
+
+```jsx live
+const App = () => {
+  const data = [{ browser: "chrome", visitors: 275 }];
+  return (
+    <PieChart
+      aria-label="Chrome visitors"
+      data={data}
+      nameKey="browser"
+      valueKey="visitors"
+      showLegend
+      config={{ chrome: { label: "Chrome", palette: "ctviolet" } }}
+    />
+  );
+};
+```
+
+### Tooltip
+
+`showTooltip` (default `true`) shows a tooltip with the values of the active
+data point. Set `showTooltip={false}` to hide it when the values are shown
+somewhere else.
+
+```jsx live
+const App = () => {
+  const data = [
+    { browser: "chrome", visitors: 275 },
+    { browser: "safari", visitors: 200 },
+    { browser: "firefox", visitors: 187 },
+  ];
+  return (
+    <PieChart
+      aria-label="Visitors by browser, without tooltip"
+      data={data}
+      nameKey="browser"
+      valueKey="visitors"
+      showTooltip={false}
+      config={{
+        chrome: { label: "Chrome", palette: "ctviolet" },
+        safari: { label: "Safari", palette: "orange" },
+        firefox: { label: "Firefox", palette: "teal" },
+      }}
+    />
+  );
+};
+```
+
+### States
+
+Set `isLoading` to show a placeholder while the data loads. An empty `data`
+array shows the text "No data to display".
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="400">
+    <PieChart
+      aria-label="Loading chart"
+      data={[]}
+      nameKey="browser"
+      valueKey="visitors"
+      config={{ chrome: { label: "Chrome" } }}
+      isLoading
+    />
+    <PieChart
+      aria-label="Empty chart"
+      data={[]}
+      nameKey="browser"
+      valueKey="visitors"
+      config={{ chrome: { label: "Chrome" } }}
+    />
+  </Stack>
+);
+```
+
+### Categories and `config`
+
+`nameKey` is the data field that holds the category name, and `valueKey` is the
+field that holds its value. Each distinct value of the `nameKey` field is a
+category, in the order of the data. `config` is keyed by the **category name**
+(the value of `nameKey`), not by `valueKey`: each category takes its label and
+palette from `config[categoryName]`. A category that is missing in `config` is
+skipped and not drawn, and the other categories keep their colors. If two rows
+have the same category name, both rows are drawn and the legend lists the name
+once.
+
+## Colors
+
+Each category has a color. Choose it with the name of a palette in `config`, for
+example `"ctviolet"` or `"orange"`. Only the 23 chart palettes are accepted:
+blue, bronze, brown, crimson, ctviolet, cyan, gold, grass, gray, green, indigo,
+iris, jade, orange, pink, plum, purple, red, ruby, slate, teal, tomato, violet.
+
+Seven palettes are not available, because their solid color is light and has a
+black contrast color: amber, lime, mint, sky, yellow, ctyellow and ctteal.
+
+When a category has no `palette`, it gets the next palette of the default order:
+ctviolet, orange, teal, crimson, blue, grass, plum, bronze, cyan, red and slate.
+A chart with more than 11 categories uses the same order again from the start.
+
+A chart uses the solid color of the palette. Only the lightness changes, and
+only as much as needed so the color has at least 3:1 contrast against the `bg`
+color of the current color mode. Colors are checked against `bg` only. Place
+charts on `bg`. On gray or tinted surfaces, a few palettes can have a contrast a
+little below 3:1.
+
+## Guidelines
+
+### Best practices
+
+- Write an `aria-label` that says what the chart shows and for which period.
+- Keep the number of categories low. The default order has 11 palettes that are
+  easy to tell apart; more categories reuse colors.
+- Use short, clear labels. They appear in the legend and the tooltip.
+- Place the chart on the `bg` color so the contrast checks apply.
+
+### When to use
+
+> [!TIP]\
+> Use `PieChart` to show the share of each category in one total, when there are
+> few categories (about 2 to 5) and the shares are clearly different.
+
+> [!CAUTION]\
+> Do not use `PieChart` to compare values that are close to each other, or when
+> there are many categories (use a bar chart), or to show change over time (use
+> a line chart).
+
+## Accessibility
+
+- Every chart needs an `aria-label` that says what the chart shows, for example
+  "Visitors by browser".
+- Keyboard: Tab moves focus to the chart. ArrowLeft and ArrowRight move between
+  the data points and show the tooltip. Enter hides the tooltip and shows it
+  again.
+- The tooltip is a live region, so a screen reader announces the values of the
+  active data point.
+- The legend is always shown for two or more categories, so color is never the
+  only way to tell categories apart. `showLegend` only matters for a chart with
+  one category.
+- Slices that touch are separated by a 2 px stroke in the page color, so each
+  slice has a visible edge.
+- The draw animation is off by default when the person prefers reduced motion.
+  Use `isAnimationActive` to set it yourself.

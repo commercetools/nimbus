@@ -1,0 +1,276 @@
+---
+title: PieChart component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+> [!WARNING]\
+> **Experimental.** `PieChart` is experimental in this first release and may
+> change in a later version.
+
+`PieChart` needs two peer dependencies that are not installed with Nimbus:
+`recharts` and `react-is`. Install both:
+
+```bash
+pnpm add recharts react-is
+```
+
+npm and yarn also work (`npm install recharts react-is`,
+`yarn add recharts react-is`). Nimbus accepts `recharts` version `^3.10.1` or
+newer in the same major version.
+
+### Import
+
+```tsx
+import {
+  PieChart,
+  type PieChartProps,
+  type ChartConfig,
+} from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+`PieChart` takes the rows as `data`, the field that holds the category name as
+`nameKey`, the field that holds the value as `valueKey`, and a `config` that
+maps each category name to a `label` and an optional `palette`. `aria-label` is
+required.
+
+`config` is keyed by the **category name**, which is the value of the `nameKey`
+field in a row (for example `"chrome"`), not by `valueKey`. A category that is
+missing in `config` is skipped and not drawn, and the other categories keep
+their colors. If two rows have the same category name, both rows are drawn and
+the legend lists the name once.
+
+```jsx live-dev
+const App = () => {
+  const data = [
+    { browser: "chrome", visitors: 275 },
+    { browser: "safari", visitors: 200 },
+    { browser: "firefox", visitors: 187 },
+  ];
+  return (
+    <PieChart
+      aria-label="Visitors by browser"
+      data={data}
+      nameKey="browser"
+      valueKey="visitors"
+      config={{
+        chrome: { label: "Chrome", palette: "ctviolet" },
+        safari: { label: "Safari", palette: "orange" },
+        firefox: { label: "Firefox", palette: "teal" },
+      }}
+    />
+  );
+};
+```
+
+## Usage examples
+
+### Colors
+
+Choose the color of a category with a palette name in `config`. Only the 23
+chart palettes are accepted: blue, bronze, brown, crimson, ctviolet, cyan, gold,
+grass, gray, green, indigo, iris, jade, orange, pink, plum, purple, red, ruby,
+slate, teal, tomato, violet. The `ChartPalette` type lists them, so TypeScript
+reports any other name. The 7 palettes with a black contrast color (amber, lime,
+mint, sky, yellow, ctyellow and ctteal) are not available.
+
+Without `palette`, a category gets the next palette of the default order:
+ctviolet, orange, teal, crimson, blue, grass, plum, bronze, cyan, red and slate.
+More than 11 categories use the same order again from the start.
+
+A chart uses the solid color of the palette. Only the lightness is adapted, so
+that the color has at least 3:1 contrast against the `bg` color of the current
+color mode. Colors are checked against `bg` only. Place charts on `bg`; on gray
+or tinted surfaces, a few palettes can have a contrast a little below 3:1.
+
+```tsx
+const config: ChartConfig = {
+  chrome: { label: "Chrome", palette: "ctviolet" },
+  safari: { label: "Safari" }, // gets the next palette of the default order
+};
+```
+
+### Legend
+
+The legend is always shown for two or more categories, so color is never the
+only signal. It lists the categories. For one category, set `showLegend` to show
+it.
+
+```jsx live-dev
+const App = () => {
+  const data = [{ browser: "chrome", visitors: 275 }];
+  return (
+    <PieChart
+      aria-label="One category"
+      data={data}
+      nameKey="browser"
+      valueKey="visitors"
+      showLegend
+      config={{ chrome: { label: "Chrome", palette: "teal" } }}
+    />
+  );
+};
+```
+
+### Tooltip
+
+`showTooltip` (default `true`) shows the tooltip with the values of the active
+data point.
+
+```jsx live-dev
+const App = () => {
+  const data = [
+    { browser: "chrome", visitors: 275 },
+    { browser: "safari", visitors: 200 },
+    { browser: "firefox", visitors: 187 },
+  ];
+  return (
+    <PieChart
+      aria-label="Visitors by browser, without tooltip"
+      data={data}
+      nameKey="browser"
+      valueKey="visitors"
+      showTooltip={false}
+      config={{
+        chrome: { label: "Chrome", palette: "ctviolet" },
+        safari: { label: "Safari", palette: "orange" },
+        firefox: { label: "Firefox", palette: "teal" },
+      }}
+    />
+  );
+};
+```
+
+### Slices
+
+Each row of `data` is one slice, and the size of a slice is its value divided by
+the sum of all values. Slices are separated by a 2 px stroke in the `bg` color.
+
+### Loading and empty states
+
+`isLoading` shows a skeleton and sets `aria-busy`. An empty `data` array shows
+the text "No data to display" in a status region. In both states the root
+element has `role="group"` and the `aria-label`.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <PieChart
+      aria-label="Loading chart"
+      data={[]}
+      nameKey="browser"
+      valueKey="visitors"
+      config={{ chrome: { label: "Chrome" } }}
+      isLoading
+    />
+    <PieChart
+      aria-label="Empty chart"
+      data={[]}
+      nameKey="browser"
+      valueKey="visitors"
+      config={{ chrome: { label: "Chrome" } }}
+    />
+  </Stack>
+);
+```
+
+### Animation
+
+`isAnimationActive` turns the draw animation on or off. When you do not set it,
+the animation is off if the person prefers reduced motion, and on otherwise.
+
+### Style props
+
+Chakra style props apply to the root element. Without a size, the chart fills
+the width of its container and uses a default aspect ratio.
+
+```jsx live-dev
+const App = () => {
+  const data = [
+    { browser: "chrome", visitors: 275 },
+    { browser: "safari", visitors: 200 },
+    { browser: "firefox", visitors: 187 },
+  ];
+  return (
+    <PieChart
+      aria-label="Visitors by browser"
+      data={data}
+      nameKey="browser"
+      valueKey="visitors"
+      maxWidth="600px"
+      config={{
+        chrome: { label: "Chrome", palette: "ctviolet" },
+        safari: { label: "Safari", palette: "orange" },
+        firefox: { label: "Firefox", palette: "teal" },
+      }}
+    />
+  );
+};
+```
+
+## Component requirements
+
+### Accessibility
+
+`aria-label` is required. Describe what the chart shows, for example "Visitors
+by browser".
+
+- **Legend**: the legend is always shown for two or more categories, so color is
+  never the only signal. `showLegend` only matters for one category.
+- **Marks**: slices that touch are separated by a 2 px stroke in the page color,
+  so each slice has a visible edge.
+- **Tooltip**: the tooltip is a live region (`role="status"`,
+  `aria-live="assertive"`), so a screen reader announces the active data point.
+- **Motion**: `isAnimationActive` defaults to off when the person prefers
+  reduced motion.
+
+If your use case requires tracking and analytics for this component, it is good
+practice to add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "pie-chart-example";
+
+export const Example = () => (
+  <PieChart
+    id={PERSISTENT_ID}
+    aria-label="Visitors by browser"
+    data={[{ browser: "chrome", visitors: 275 }]}
+    nameKey="browser"
+    valueKey="visitors"
+    config={{ chrome: { label: "Chrome" } }}
+  />
+);
+```
+
+#### Keyboard navigation
+
+- `Tab`: moves focus to the chart.
+- `ArrowLeft` and `ArrowRight`: move between the data points and show the
+  tooltip.
+- `Enter`: hides the tooltip, and shows it again.
+
+## API reference
+
+<PropsTable id="PieChart" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using PieChart
+within your application. As the component's internal functionality is already
+tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+Recharts needs a measured container to draw the marks, and JSDOM has no layout.
+In unit tests, test what your code controls: the legend, the labels, the loading
+state and the empty state. Test the drawn marks in a browser test.
+
+{{docs-tests: pie-chart.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-pie-chart--docs)
+- [Recharts](https://recharts.github.io/)
