@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box } from "@commercetools/nimbus";
-import { expect, userEvent, waitFor, within } from "storybook/test";
+import { expect, spyOn, userEvent, waitFor, within } from "storybook/test";
 import {
   DarkMode,
   findSvg,
@@ -124,17 +124,94 @@ export const SliceStroke: Story = {
   },
 };
 
-/** Categories that are not in the config are skipped in the legend */
+/** Colors, in data order, of the drawn marks */
+const fillsOf = (root: HTMLElement) =>
+  slices(root).map((el) => el.getAttribute("fill"));
+
+/** A category that is not in the config is skipped, the others keep their colors */
 export const UnknownCategorySkipped: Story = {
   render: () => (
     <SampleChart
-      data={[...data, { browser: "edge", visitors: 90 }]}
+      data={[
+        { browser: "chrome", visitors: 275 },
+        { browser: "edge", visitors: 90 },
+        { browser: "safari", visitors: 200 },
+        { browser: "firefox", visitors: 187 },
+      ]}
       showLegend={false}
     />
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findAllByRole("listitem")).toHaveLength(3);
+    const items = await canvas.findAllByRole("listitem");
+    await findSvg(canvasElement);
+    // 4 rows, 3 known categories: the unknown one is not drawn
+    await expect(slices(canvasElement)).toHaveLength(3);
+    await expect(fillsOf(canvasElement)).toEqual([
+      "var(--nimbus-colors-chart-ctviolet)",
+      "var(--nimbus-colors-chart-orange)",
+      "var(--nimbus-colors-chart-teal)",
+    ]);
+    await expect(items.map((i) => i.textContent)).toEqual([
+      "Chrome",
+      "Safari",
+      "Firefox",
+    ]);
+  },
+};
+
+/** Color follows the config entry of the category name, not the config order */
+export const ConfigOrderDiffersFromData: Story = {
+  render: () => (
+    <SampleChart
+      config={{
+        firefox: { label: "Firefox", palette: "teal" },
+        safari: { label: "Safari", palette: "orange" },
+        chrome: { label: "Chrome", palette: "ctviolet" },
+      }}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    await findSvg(canvasElement);
+    // Data order is chrome, safari, firefox
+    await expect(fillsOf(canvasElement)).toEqual([
+      "var(--nimbus-colors-chart-ctviolet)",
+      "var(--nimbus-colors-chart-orange)",
+      "var(--nimbus-colors-chart-teal)",
+    ]);
+  },
+};
+
+let consoleErrorSpy: ReturnType<typeof spyOn>;
+
+/** Two rows with the same category are both drawn, listed once, with no duplicate-key error */
+export const DuplicateCategory: Story = {
+  beforeEach: () => {
+    consoleErrorSpy = spyOn(console, "error");
+    return () => consoleErrorSpy.mockRestore();
+  },
+  render: () => (
+    <SampleChart
+      showLegend={false}
+      data={[
+        { browser: "chrome", visitors: 275 },
+        { browser: "chrome", visitors: 100 },
+        { browser: "safari", visitors: 200 },
+      ]}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const items = await canvas.findAllByRole("listitem");
+    await findSvg(canvasElement);
+    await expect(slices(canvasElement)).toHaveLength(3);
+    await expect(fillsOf(canvasElement).slice(0, 2)).toEqual([
+      "var(--nimbus-colors-chart-ctviolet)",
+      "var(--nimbus-colors-chart-ctviolet)",
+    ]);
+    await expect(items.map((i) => i.textContent)).toEqual(["Chrome", "Safari"]);
+    const messages = consoleErrorSpy.mock.calls.map((call) => String(call[0]));
+    await expect(messages.filter((m) => m.includes("same key"))).toEqual([]);
   },
 };
 
@@ -219,6 +296,29 @@ export const TooltipContent: Story = {
     await expect(swatch.style.color).toBe(
       "var(--nimbus-colors-chart-ctviolet)"
     );
+  },
+};
+
+/** The tooltip shows the category, even when `config` has a key equal to `valueKey` */
+export const TooltipWithValueKeyInConfig: Story = {
+  render: () => (
+    <SampleChart
+      config={{
+        visitors: { label: "Visitors" },
+        chrome: { label: "Chrome", palette: "ctviolet" },
+        safari: { label: "Safari", palette: "orange" },
+        firefox: { label: "Firefox", palette: "teal" },
+      }}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    await findSvg(canvasElement);
+    await userEvent.tab();
+    await waitFor(() =>
+      expect(tooltipText(canvasElement)).toHaveTextContent("Chrome")
+    );
+    await expect(tooltipText(canvasElement)).not.toHaveTextContent("Visitors");
+    await expect(tooltipText(canvasElement)).toHaveTextContent("275");
   },
 };
 
@@ -335,9 +435,5 @@ export const Dark: Story = {
     const canvas = within(canvasElement);
     await expect(await canvas.findAllByRole("listitem")).toHaveLength(3);
     await waitFor(() => expect(legendRed(canvasElement)).toBeGreaterThan(128));
-    await expect(
-      slices(canvasElement)[0].getAttribute("fill") ===
-        "var(--nimbus-colors-chart-ctviolet)"
-    ).toBe(true);
   },
 };

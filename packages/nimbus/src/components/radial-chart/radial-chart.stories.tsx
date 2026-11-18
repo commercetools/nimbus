@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box } from "@commercetools/nimbus";
-import { expect, userEvent, waitFor, within } from "storybook/test";
+import { expect, spyOn, userEvent, waitFor, within } from "storybook/test";
 import {
   DarkMode,
   findSvg,
@@ -130,6 +130,43 @@ export const RingStroke: Story = {
   },
 };
 
+/** Rings start at the top and grow clockwise: a half ring is the right half */
+export const RingsStartAtTopAndGrowClockwise: Story = {
+  render: () => (
+    <SampleChart
+      data={[
+        { browser: "chrome", visitors: 100 },
+        { browser: "safari", visitors: 50 },
+      ]}
+      config={{
+        chrome: { label: "Chrome", palette: "ctviolet" },
+        safari: { label: "Safari", palette: "orange" },
+      }}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const svg = await findSvg(canvasElement);
+    await waitFor(() => expect(rings(canvasElement)).toHaveLength(2));
+    const svgBox = svg.getBoundingClientRect();
+    const centerX = svgBox.left + svgBox.width / 2;
+    const centerY = svgBox.top + svgBox.height / 2;
+    const [full, half] = rings(canvasElement).map((ring) => {
+      const box = ring.getBoundingClientRect();
+      return {
+        x: box.left + box.width / 2,
+        y: box.top + box.height / 2,
+      };
+    });
+
+    // Control: the largest value is a full circle, centered on the chart
+    await expect(Math.abs(full.x - centerX)).toBeLessThan(3);
+    await expect(Math.abs(full.y - centerY)).toBeLessThan(3);
+    // The half ring is the right half: clearly right of the center, level with it
+    await expect(half.x - centerX).toBeGreaterThan(20);
+    await expect(Math.abs(half.y - centerY)).toBeLessThan(3);
+  },
+};
+
 /** The tooltip label is the category name, not an index */
 export const TooltipLabelIsCategory: Story = {
   render: () => <SampleChart />,
@@ -141,6 +178,97 @@ export const TooltipLabelIsCategory: Story = {
     );
     await expect(tooltipText(canvasElement)).not.toHaveTextContent("Chrome0");
     await expect(tooltipText(canvasElement)?.textContent).not.toMatch(/^0/);
+  },
+};
+
+/** Colors, in data order, of the drawn marks */
+const fillsOf = (root: HTMLElement) =>
+  rings(root).map((el) => el.getAttribute("fill"));
+
+/** A category that is not in the config is skipped, the others keep their colors */
+export const UnknownCategorySkipped: Story = {
+  render: () => (
+    <SampleChart
+      data={[
+        { browser: "chrome", visitors: 275 },
+        { browser: "edge", visitors: 90 },
+        { browser: "safari", visitors: 200 },
+        { browser: "firefox", visitors: 187 },
+      ]}
+      showLegend={false}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const items = await canvas.findAllByRole("listitem");
+    await findSvg(canvasElement);
+    // 4 rows, 3 known categories: the unknown one is not drawn
+    await expect(rings(canvasElement)).toHaveLength(3);
+    await expect(fillsOf(canvasElement)).toEqual([
+      "var(--nimbus-colors-chart-ctviolet)",
+      "var(--nimbus-colors-chart-orange)",
+      "var(--nimbus-colors-chart-teal)",
+    ]);
+    await expect(items.map((i) => i.textContent)).toEqual([
+      "Chrome",
+      "Safari",
+      "Firefox",
+    ]);
+  },
+};
+
+/** Color follows the config entry of the category name, not the config order */
+export const ConfigOrderDiffersFromData: Story = {
+  render: () => (
+    <SampleChart
+      config={{
+        firefox: { label: "Firefox", palette: "teal" },
+        safari: { label: "Safari", palette: "orange" },
+        chrome: { label: "Chrome", palette: "ctviolet" },
+      }}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    await findSvg(canvasElement);
+    // Data order is chrome, safari, firefox
+    await expect(fillsOf(canvasElement)).toEqual([
+      "var(--nimbus-colors-chart-ctviolet)",
+      "var(--nimbus-colors-chart-orange)",
+      "var(--nimbus-colors-chart-teal)",
+    ]);
+  },
+};
+
+let consoleErrorSpy: ReturnType<typeof spyOn>;
+
+/** Two rows with the same category are both drawn, listed once, with no duplicate-key error */
+export const DuplicateCategory: Story = {
+  beforeEach: () => {
+    consoleErrorSpy = spyOn(console, "error");
+    return () => consoleErrorSpy.mockRestore();
+  },
+  render: () => (
+    <SampleChart
+      showLegend={false}
+      data={[
+        { browser: "chrome", visitors: 275 },
+        { browser: "chrome", visitors: 100 },
+        { browser: "safari", visitors: 200 },
+      ]}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const items = await canvas.findAllByRole("listitem");
+    await findSvg(canvasElement);
+    await expect(rings(canvasElement)).toHaveLength(3);
+    await expect(fillsOf(canvasElement).slice(0, 2)).toEqual([
+      "var(--nimbus-colors-chart-ctviolet)",
+      "var(--nimbus-colors-chart-ctviolet)",
+    ]);
+    await expect(items.map((i) => i.textContent)).toEqual(["Chrome", "Safari"]);
+    const messages = consoleErrorSpy.mock.calls.map((call) => String(call[0]));
+    await expect(messages.filter((m) => m.includes("same key"))).toEqual([]);
   },
 };
 
@@ -341,9 +469,5 @@ export const Dark: Story = {
     const canvas = within(canvasElement);
     await expect(await canvas.findAllByRole("listitem")).toHaveLength(3);
     await waitFor(() => expect(legendRed(canvasElement)).toBeGreaterThan(128));
-    await expect(
-      rings(canvasElement)[0].getAttribute("fill") ===
-        "var(--nimbus-colors-chart-ctviolet)"
-    ).toBe(true);
   },
 };

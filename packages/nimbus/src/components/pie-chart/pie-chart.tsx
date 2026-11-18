@@ -22,16 +22,16 @@ const PieChartPlot = ({ data, nameKey, valueKey }: PieChartPlotProps) => {
 
   return (
     <RechartsPieChart aria-label={ariaLabel}>
-      {showTooltip && <Tooltip content={<ChartTooltip />} />}
+      {showTooltip && <Tooltip content={<ChartTooltip nameKey={nameKey} />} />}
       <Pie
         data={slices.map(({ row }) => row)}
         dataKey={valueKey}
         nameKey={nameKey}
         isAnimationActive={isAnimationActive}
       >
-        {slices.map(({ item }) => (
+        {slices.map(({ item }, index) => (
           <Cell
-            key={item.key}
+            key={`${item.key}-${index}`}
             fill={item.color}
             stroke="var(--nimbus-colors-bg)"
             strokeWidth={2}

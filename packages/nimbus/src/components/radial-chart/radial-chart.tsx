@@ -33,6 +33,10 @@ const RadialChartPlot = ({ data, nameKey, valueKey }: RadialChartPlotProps) => {
       data={rings.map(({ row }) => row)}
       innerRadius="20%"
       outerRadius="100%"
+      // Recharts measures angles counterclockwise from 3 o'clock. 90 to -270
+      // starts at the top and grows clockwise.
+      startAngle={90}
+      endAngle={-270}
       aria-label={ariaLabel}
     >
       {showTooltip && <Tooltip content={<ChartTooltip nameKey={nameKey} />} />}
@@ -41,9 +45,9 @@ const RadialChartPlot = ({ data, nameKey, valueKey }: RadialChartPlotProps) => {
         background={{ fill: "var(--nimbus-colors-neutral-4)" }}
         isAnimationActive={isAnimationActive}
       >
-        {rings.map(({ item }) => (
+        {rings.map(({ item }, index) => (
           <Cell
-            key={item.key}
+            key={`${item.key}-${index}`}
             fill={item.color}
             stroke="var(--nimbus-colors-bg)"
             strokeWidth={2}
