@@ -38,8 +38,14 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   ...props
 }: DataTableBodyProps<T>) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
-  const { activeColumns, renderEmptyState, getRowKey, draggableKeys } =
-    useStableDataTableContext<T>();
+  const {
+    activeColumns,
+    renderEmptyState,
+    getRowKey,
+    draggableKeys,
+    stickyRows,
+    maxHeight,
+  } = useStableDataTableContext<T>();
   const { sortedRows, expanded, pinnedRows, pinnedRowIds } =
     useInteractionContext<T>();
   const [styleProps, restProps] = extractStyleProps(props);
@@ -69,6 +75,12 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   pinnedRowsRef.current = pinnedRows;
   const draggableKeysRef = useRef(draggableKeys);
   draggableKeysRef.current = draggableKeys;
+  // Rows only stick in a scroll area with a sticky header, which needs
+  // `maxHeight`. Without it no row is sticky.
+  const stickyRowsRef = useRef(stickyRows);
+  stickyRowsRef.current = stickyRows;
+  const hasMaxHeightRef = useRef(!!maxHeight);
+  hasMaxHeightRef.current = !!maxHeight;
   // `draggableKeys` only has an effect while drag and drop is on, so a row is
   // only "drag disabled" then.
   const { allowsDragging } = useTableOptions();
@@ -104,6 +116,10 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
           allowsDraggingRef.current &&
           draggableKeysRef.current !== undefined &&
           !draggableKeysRef.current.has(String(rowKey)),
+        isSticky:
+          hasMaxHeightRef.current &&
+          stickyRowsRef.current !== undefined &&
+          stickyRowsRef.current.has(String(rowKey)),
       };
       // React Aria derives the collection key from
       // `rendered.props.id ?? item.key ?? item.id` (see `useCachedChildren`),
@@ -148,6 +164,8 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
           pinnedRows,
           pinnedRowIds,
           draggableKeys,
+          stickyRows,
+          maxHeight,
           allowsDragging,
           ...(dependenciesFromProps ?? []),
         ]}

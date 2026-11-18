@@ -269,6 +269,7 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     selectRowLabel: string;
     disabledKeys?: Selection;
     draggableKeys?: Set<string>;
+    stickyRows?: Set<string>;
     /** What `apiRef` needs from rows, header and cells. Stable across renders. */
     registry: DataTableRegistry;
     onRowActionRef: React.RefObject<
@@ -342,6 +343,22 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
    * column sorting is on. Pass a stable `Set` (for example from `useMemo`).
    */
   draggableKeys?: Set<string>;
+  /**
+   * Row ids that stay visible at the top or bottom edge of the scroll area when
+   * they are scrolled out of view. Several sticky rows stack in row order below
+   * the header at the top, and at the bottom edge. A sticky row has a slight
+   * background highlight.
+   *
+   * Needs `maxHeight`, as the sticky header does: without it no row is sticky,
+   * and a warning is logged in development. Also in development, a warning is
+   * logged when a stack is taller than half of the visible height. Ids that are
+   * not top-level rows are ignored. Virtualized tables are not covered.
+   *
+   * Pass a new `Set` to change it (a `Set` changed in place is not noticed), and
+   * keep it stable between renders (for example with `useMemo`). A background
+   * set on a sticky row must be opaque, or rows scrolling under it show through.
+   */
+  stickyRows?: Set<string>;
   columns: DataTableColumnItem<T>[];
   unstyled?: boolean;
   rows: DataTableRowItem<T>[];
@@ -475,6 +492,12 @@ export type DataTableRowRenderProps = {
    * `draggableKeys` has no effect then.
    */
   isDragDisabled: boolean;
+  /**
+   * `true` when the row is sticky: its id is in `stickyRows` and the table has
+   * `maxHeight`. It is `false` for every other row, also when `stickyRows` is
+   * not set.
+   */
+  isSticky: boolean;
 };
 
 /**
