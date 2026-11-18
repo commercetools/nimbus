@@ -23,6 +23,32 @@ const getViewport = (root: HTMLElement) =>
 const distanceFromBottom = (el: HTMLElement) =>
   el.scrollHeight - el.scrollTop - el.clientHeight;
 
+const nextFrame = () =>
+  new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+
+/**
+ * Scroll the viewport to the top the way a user would, once the list is ready.
+ *
+ * The hook releases the pin only on an upward move from a position it has seen,
+ * and it learns a position from a scroll event, which the browser delivers one
+ * frame after the write. So first wait until the list overflows and the initial
+ * stick-to-bottom landed, then wait one frame (scroll events run before
+ * animation-frame callbacks in the same frame), and only then scroll up.
+ * Without this, a slow runner scrolls "up" from a position the hook never saw.
+ */
+const scrollUpAsUser = async (viewport: HTMLElement) => {
+  await waitFor(() =>
+    expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight)
+  );
+  await waitFor(() => {
+    expect(viewport.scrollTop).toBeGreaterThan(0);
+    expect(distanceFromBottom(viewport)).toBeLessThanOrEqual(33);
+  });
+  await nextFrame();
+  viewport.scrollTop = 0;
+  viewport.dispatchEvent(new Event("scroll"));
+};
+
 const meta: Meta<typeof ChatMessageList.Root> = {
   title: "Components/Chat/ChatMessageList",
   component: ChatMessageList.Root,
@@ -188,8 +214,7 @@ export const ReleaseOnScrollUp: Story = {
     });
 
     await step("Scrolling up reveals the jump-to-latest control", async () => {
-      viewport.scrollTop = 0;
-      viewport.dispatchEvent(new Event("scroll"));
+      await scrollUpAsUser(viewport);
       await waitFor(() =>
         expect(
           canvas.getByRole("button", { name: "Scroll to latest message" })
@@ -227,13 +252,7 @@ export const ScrolledUp: Story = {
     const viewport = getViewport(canvas.getByTestId("list"));
 
     await step("Scrolling up reveals the jump-to-latest control", async () => {
-      // Until the list has laid out there is nothing to scroll, so the pin never releases.
-      await waitFor(() =>
-        expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight)
-      );
-
-      viewport.scrollTop = 0;
-      viewport.dispatchEvent(new Event("scroll"));
+      await scrollUpAsUser(viewport);
       await waitFor(() =>
         expect(
           canvas.getByRole("button", { name: "Scroll to latest message" })
@@ -312,8 +331,7 @@ export const RedundantScrollToBottomStillReleases: Story = {
     });
 
     await step("A later scroll-up still releases the pin", async () => {
-      viewport.scrollTop = 0;
-      viewport.dispatchEvent(new Event("scroll"));
+      await scrollUpAsUser(viewport);
       await waitFor(() =>
         expect(
           canvas.getByRole("button", { name: "Scroll to latest message" })
@@ -521,8 +539,7 @@ export const KeyboardJumpKeepsFocus: Story = {
     const viewport = getViewport(list);
 
     await step("Scroll up to reveal the jump control", async () => {
-      viewport.scrollTop = 0;
-      viewport.dispatchEvent(new Event("scroll"));
+      await scrollUpAsUser(viewport);
       await waitFor(() =>
         expect(
           canvas.getByRole("button", { name: "Scroll to latest message" })
@@ -588,8 +605,7 @@ export const ReducedMotionJump: Story = {
 
     try {
       await step("Reveal the jump control", async () => {
-        viewport.scrollTop = 0;
-        viewport.dispatchEvent(new Event("scroll"));
+        await scrollUpAsUser(viewport);
         await waitFor(() =>
           expect(
             canvas.getByRole("button", { name: "Scroll to latest message" })
