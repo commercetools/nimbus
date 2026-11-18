@@ -235,14 +235,18 @@ surface" case.
   (`bg`), 2 px wide (a proposed value, confirmed in task 1.5).
 - Line charts with more than 3 series (proposed threshold) also use a different
   dash style or marker for each line.
-- The default palette order has 11 palettes: `blue`, `bronze`, `crimson`,
-  `cyan`, `grass`, `indigo`, `orange`, `plum`, `red`, `slate`, `teal`. Each
+- The default palette order has 11 palettes, in this order: `ctviolet`, `orange`,
+  `teal`, `crimson`, `blue`, `grass`, `plum`, `bronze`, `cyan`, `red`, `slate`. Each
   pair differs by a deltaE2000 of at least 15 in light and dark mode (minimum
-  15.28, between `crimson` and `red`, checked by two reviewers). An exact search
-  shows that 11 is the largest set of palettes with that property, so a default
-  order of all 23 palettes is not possible. This threshold is our own, not a WCAG
-  value. A chart with more than 11 series reuses palettes in the same order and
-  warns in development. Consumers can still pick any other chart palette by name.
+  15.34, measured on the emitted colors in task 2.5). An exact search (task 2.5) shows
+  that 11 is the largest set of chart palettes with that property (28 such sets), so
+  a default order of all 23 palettes is not possible. Four of the 28 sets contain
+  `ctviolet`, the Nimbus brand violet. `indigo`, `iris` and `violet` are too close to
+  it (`indigo` is 6.6 away) to be in the same set. The order therefore starts with
+  `ctviolet`, which replaces `indigo` in the first candidate list. This threshold is
+  our own, not a WCAG value. A chart with more than 11 series reuses palettes in
+  the same order and warns in development. Consumers can still pick any other chart
+  palette by name.
 - Chart text (axes, legend, tooltip, empty state) uses `fg` or `fg.subtle`.
   Grid lines are decorative and are exempt from 3:1.
 

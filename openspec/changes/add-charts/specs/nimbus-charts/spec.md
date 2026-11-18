@@ -115,7 +115,7 @@ Charts SHALL meet WCAG 2.1 AA.
 
 #### Scenario: Default palette order
 - **WHEN** a chart assigns palettes by default order
-- **THEN** the default order SHALL have exactly 11 palettes: `blue`, `bronze`, `crimson`, `cyan`, `grass`, `indigo`, `orange`, `plum`, `red`, `slate`, `teal`
+- **THEN** the default order SHALL have exactly 11 palettes, in this order: `ctviolet`, `orange`, `teal`, `crimson`, `blue`, `grass`, `plum`, `bronze`, `cyan`, `red`, `slate`
 - **AND** each pair of these palettes SHALL differ by a deltaE2000 of at least 15, in light and dark mode
 - **AND** a chart with more than 11 series SHALL warn in development and reuse palettes in the same order
 - **AND** a consumer MAY choose any other chart palette by name
