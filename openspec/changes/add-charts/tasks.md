@@ -51,7 +51,7 @@
 
 - [x] 5.1 Write the failing stories for `PieChart` with `nameKey` and `valueKey`: the same list as 4.2 (without stacked), legend always shown, 2 px stroke between slices
 - [x] 5.2 Implement `PieChart`
-- [ ] 5.3 Add the designer and developer docs, the docs spec, the `@experimental` JSDoc tag, and the changeset text (say the chart is experimental, as in 4.12). Export from the components index
+- [x] 5.3 Add the designer and developer docs, the docs spec, the `@experimental` JSDoc tag, and the changeset text (say the chart is experimental, as in 4.12). Export from the components index
 
 ## 6. RadarChart and RadialChart (first to move to a later change if time runs out)
 
@@ -59,7 +59,7 @@
 - [x] 6.2 Implement `RadarChart`
 - [x] 6.3 Write failing stories for `RadialChart` with `nameKey` and `valueKey`: the same list as 5.1
 - [x] 6.4 Implement `RadialChart`
-- [ ] 6.5 Add the designer and developer docs, the docs specs, the `@experimental` JSDoc tag, and the changeset text (say the charts are experimental, as in 4.12). Export from the components index
+- [x] 6.5 Add the designer and developer docs, the docs specs, the `@experimental` JSDoc tag, and the changeset text (say the charts are experimental, as in 4.12). Export from the components index
 
 ## 7. Final checks
 
