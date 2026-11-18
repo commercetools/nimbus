@@ -16,7 +16,7 @@ export type LineChartProps = ChartBaseProps & {
   /**
    * Data keys of the series to draw, in drawing order. Each key must exist
    * in `config`; keys that are missing there are skipped. With more than 3
-   * series, each line also gets its own dash pattern, so color is not the
+   * series, each line also gets a dash pattern (six patterns in total; with more than 6 series the patterns repeat), so color is not the
    * only way to tell the lines apart.
    */
   series: string[];

@@ -6,7 +6,7 @@ The system SHALL provide one chart color token per chart palette. The token SHAL
 #### Scenario: Chart palette selection
 - **WHEN** chart color tokens are generated
 - **THEN** the system SHALL include only palettes whose `contrast` token is white
-- **AND** SHALL read the `contrast` token from the generated palette data, not from a hand-written list
+- **AND** SHALL compute the contrast color with the function the palette generator uses (`calculateContrastColor` in `contrast-color.ts`), not from a hand-written list
 
 #### Scenario: Current background
 - **WHEN** a chart color is checked for contrast

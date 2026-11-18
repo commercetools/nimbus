@@ -87,7 +87,7 @@ const config: ChartConfig = {
 
 ### More than 3 series
 
-With more than 3 series, each line also gets its own dash pattern. The swatches
+With more than 3 series, each line also gets a dash pattern (six patterns in total; with more than 6 series the patterns repeat). The swatches
 in the legend and in the tooltip show color only; the dash pattern is not shown
 there. This is a known gap.
 
@@ -221,7 +221,7 @@ per month".
 
 - **Legend**: the legend is always shown for two or more series, so color is
   never the only signal. `showLegend` only matters for one series.
-- **Marks**: with more than 3 series, each line also has its own dash pattern. The legend and tooltip swatches show color only.
+- **Marks**: with more than 3 series, each line also has a dash pattern (six patterns in total; with more than 6 series the patterns repeat). The legend and tooltip swatches show color only.
 - **Tooltip**: the tooltip is a live region (`role="status"`,
   `aria-live="assertive"`), so a screen reader announces the active data point.
 - **Motion**: `isAnimationActive` defaults to off when the person prefers

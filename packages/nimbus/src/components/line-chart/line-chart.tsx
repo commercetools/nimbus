@@ -89,7 +89,7 @@ const LineChartPlot = ({ data, xAxisKey, showGrid }: LineChartPlotProps) => {
  * Shows how values change along an ordered x axis, with one smooth line per
  * series. Pass the rows as `data`, the x axis field as `xAxisKey`, the data
  * keys to draw as `series`, and the label and color of each series in
- * `config`. With more than 3 series, each line also gets its own dash pattern,
+ * `config`. With more than 3 series, each line also gets a dash pattern (six patterns in total; with more than 6 series the patterns repeat),
  * so color is not the only signal. The legend is shown for two or more series.
  *
  * Needs the peer dependencies `recharts` and `react-is`.

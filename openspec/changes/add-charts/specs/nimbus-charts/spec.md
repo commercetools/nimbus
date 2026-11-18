@@ -115,7 +115,8 @@ Charts SHALL meet WCAG 2.1 AA.
 
 #### Scenario: Series with many lines
 - **WHEN** a Line chart has more than 3 series
-- **THEN** each line SHALL also have a different dash style or marker
+- **THEN** each line SHALL also have a dash pattern from a list of six different patterns
+- **AND** with more than 6 series the patterns SHALL repeat
 
 #### Scenario: Default palette order
 - **WHEN** a chart assigns palettes by default order
@@ -137,6 +138,23 @@ Charts SHALL meet WCAG 2.1 AA.
 #### Scenario: Grid lines
 - **WHEN** a chart shows grid lines
 - **THEN** they SHALL be decorative and need not reach 3:1
+
+### Requirement: Chart Axis Labels
+Cartesian charts SHALL keep the first and last x axis label.
+
+#### Scenario: Long or many labels
+- **WHEN** a Bar, Line or Area chart has x axis labels that do not all fit
+- **THEN** the first and the last label SHALL be drawn and lie inside the chart
+- **AND** labels in between that would overlap SHALL be dropped
+- **AND** Line and Area charts SHALL keep a 12 px margin on the left and right
+
+### Requirement: Radial Rings
+A `RadialChart` SHALL draw one ring for each category.
+
+#### Scenario: Ring geometry
+- **WHEN** a `RadialChart` is drawn
+- **THEN** each ring SHALL start at the top and grow clockwise on a light gray track
+- **AND** the ring with the largest value SHALL be a full circle, and every other ring SHALL be drawn relative to it
 
 ### Requirement: Chart Appearance
 Charts SHALL look like the shadcn charts (https://ui.shadcn.com/charts), in Nimbus colors.

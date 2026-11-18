@@ -12,8 +12,10 @@ mode, or the Nimbus contrast rules.
   `LineChart`, `PieChart`, `RadarChart` and `RadialChart`. Each is a thin Nimbus
   layer over Recharts 3.x. Recharts is also the library behind the shadcn charts
   that the team referenced (confirmed by the requester).
-- Add shared parts used by all six charts: `ChartContainer` (size and series
-  color variables), `ChartTooltip`, `ChartLegend`, and the `ChartConfig` type.
+- Add shared internal parts used by all six charts: `ChartContainer` (size, empty
+  and loading states, series colors through context), `ChartTooltip` (with an
+  optional `nameKey`) and `ChartLegend`. Only the `ChartConfig` type and its
+  related types are exported.
 - Use a prop-based API: `data`, `config`, `xAxisKey`, `series`, `stacked`,
   `showGrid`, `showTooltip`, `showLegend`, `isLoading`,
   `isAnimationActive`. `PieChart` and `RadialChart` take
@@ -59,7 +61,11 @@ mode, or the Nimbus contrast rules.
   install `recharts` and `react-is` (a new "Charts (Optional)" section in the
   installation docs). Bundling Recharts was measured and rejected (see
   `design.md`). The version stays within the repository's 24-hour release-age rule.
-- Add a changeset. No breaking changes.
+- Add two changesets: one for `@commercetools/nimbus` (the six charts and the new
+  peer dependency) and one for `@commercetools/nimbus-tokens` (the chart color
+  tokens). There are no breaking changes, but package managers warn about the new
+  peer dependency `recharts` when it is missing, also for consumers who do not use
+  charts.
 
 Order of work, in case time runs out: foundation and palette tokens first, then
 Bar, Line and Area, then Pie, then Radar and Radial. Radar and Radial are the
@@ -100,4 +106,10 @@ first to move to a later change.
   exports.
 - Docs: `packages/color-tokens/CLAUDE.md`, `packages/tokens` docs, designer and
   developer MDX for each chart.
-- Open questions to settle in `design.md`: whether `ctteal` should be included.
+- Also changed: `packages/i18n/data/*.json` (new message `Nimbus.Chart.empty`),
+  `vitest.config.mts` and `packages/color-tokens/{vitest.config.mts,contrast-color.ts}`
+  (a Vitest project for the chart color tests), `apps/docs/package.json`,
+  `packages/design-token-ts-plugin/scripts/generate-token-mapping.mjs` (the parser
+  must accept the new `chart` entry), and the generated token output in
+  `packages/tokens` (CSS, TypeScript and Chakra files).
+- `ctteal` stays excluded in this version (see `design.md`).

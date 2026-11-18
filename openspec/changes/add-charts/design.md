@@ -25,7 +25,7 @@ number):
   div) gets `role="application"` and `tabindex="0"`. Tab focuses it and the tooltip
   shows the first item at once. ArrowRight moves to the next item (A, B, C). Enter
   hides the tooltip. The default tooltip has `role="status"`. Pie and Radial behave
-  like Bar. Radar was not tested. Every chart type has the `isAnimationActive` prop
+  like Bar. Radar is covered by the `RadarChart` stories (task 6.1). Every chart type has the `isAnimationActive` prop
   (`boolean | 'auto'`) to turn animation off.
 - **CSS variables.** Recharts accepts CSS variables in `stroke` and `fill`, for
   example `stroke="var(--color-text-1)"`
@@ -35,8 +35,9 @@ number):
   `@radix-ui/colors`). `chroma-js` is already a dependency of `color-tokens`.
   `@commercetools/nimbus` has no color library.
 - **Solid and contrast color.** The solid color is `DEFAULT`, which equals step 9
-  (`packages/color-tokens/index.ts:143`). Its `contrast` color is white when white
-  on the solid has a ratio above 2.9, and black otherwise (`index.ts:132-138`).
+  (`packages/color-tokens/index.ts`). Its `contrast` color is white when white on
+  the solid has a ratio above 2.9, and black otherwise (`calculateContrastColor`
+  in `packages/color-tokens/contrast-color.ts`, shared with `index.ts`).
   With that rule, 7 of 30 palettes have a black contrast color (`amber`, `lime`,
   `mint`, `sky`, `yellow`, `ctyellow`, `ctteal`) and 23 have white. Light and
   dark mode agree.
@@ -68,12 +69,12 @@ number):
   only `src/base/tokens.json` (`packages/tokens/src/style-dictionary.config.js:81`).
   The manual copy has already drifted: `ctviolet.light.11` is `#4F52D0` in the
   generator and `#4042B0` in `tokens.json`.
-- **Bundling.** `packages/nimbus/vite.config.ts:88-110` lists the externals
-  (React, Chakra, Slate). Recharts is not in the list, so it is bundled with its
-  dependencies. `check-bundle-size.mjs` fails above 5%
-  (`.github/actions/bundle-size/check-bundle-size.mjs:62`). The require-helper
-  scan is in `scripts/check-bundler-compat.mjs`. Size and scan result are not
-  measured yet.
+- **Bundling.** `packages/nimbus/vite.config.ts` lists the externals (React,
+  Chakra, Slate, and now Recharts). At the start Recharts was not in the list and
+  would have been bundled with its dependencies. `check-bundle-size.mjs` fails
+  above 5% (`.github/actions/bundle-size/check-bundle-size.mjs:62`). The
+  require-helper scan is in `scripts/check-bundler-compat.mjs`. Both were measured
+  in task 1.4 (see Decision 1).
 - Nimbus already has `useColorMode` and `useColorModeValue` in
   `packages/nimbus/src/hooks/`.
 
@@ -165,7 +166,7 @@ measured both options with a throwaway `BarChart` (named imports from
   consumer without Recharts could fail to build if their bundler resolves the chart
   chunk (not tested).
 
-### 2. Prop-based API### 2. Prop-based API, no exported Recharts parts
+### 2. Prop-based API, no exported Recharts parts
 
 Each chart takes `data`, `config`, `xAxisKey`, `series` and a few switches.
 `PieChart` and `RadialChart` use `nameKey` and `valueKey`. `isAnimationActive`
@@ -193,9 +194,9 @@ tolerance, so "smallest" is testable) unless it is unchanged, and, for chromatic
 stay within 3 degrees of the solid. Achromatic colors such as grays are checked
 for lightness and contrast only. The chroma value 0.02 is a proposed threshold.
 
-Only palettes with a white contrast color are chart palettes. The list is read
-from the generated `contrast` token, not written by hand, so a new palette
-follows the rule automatically. The seven excluded palettes can reach 3:1, but
+Only palettes with a white contrast color are chart palettes. The list is computed
+with the function that generates the `contrast` token (`calculateContrastColor`),
+not written by hand, so a new palette follows the rule automatically. The seven excluded palettes can reach 3:1, but
 only with a large lightness change, so they would no longer look like their
 palette. `ctteal` is the smallest change of the seven (about -0.08) and is an open
 question.
@@ -235,8 +236,9 @@ surface" case.
   `showLegend` applies only to single-series charts.
 - Adjacent bars and slices are separated by a stroke in the background color
   (`bg`), 2 px wide (a proposed value, confirmed in task 1.5).
-- Line charts with more than 3 series (proposed threshold) also use a different
-  dash style or marker for each line.
+- Line charts with more than 3 series also draw each line with a dash pattern
+  from a list of six different patterns. With more than 6 series the patterns
+  repeat.
 - The default palette order has 11 palettes, in this order: `ctviolet`, `orange`,
   `teal`, `crimson`, `blue`, `grass`, `plum`, `bronze`, `cyan`, `red`, `slate`. Each
   pair differs by a deltaE2000 of at least 15 in light and dark mode (minimum
@@ -320,12 +322,10 @@ component changes.
   place charts on `bg`. Revisit if a team needs charts on other surfaces.
 - `ctteal` is a brand palette with a black contrast color, so it is not a chart
   palette, although it reaches 3:1 with the smallest change (`#0bbfbf` to
-  `#00a5a6`). Should it be included?
-- Does Style Dictionary merge a second `source` file without problems? Check in
-  task 1.1.
-- Is the dark-mode selector that Chakra uses for semantic tokens the same one the
-  docs and Storybook use? Check in task 1.1 with the generated variable.
-- Which of the six charts does the product team really need this week? The task
-  order assumes all six, with Radar and Radial last.
-- Is a Figma Code Connect file or MCP data entry required for new components?
-  Check in task 7.5.
+  `#00a5a6`). Decided: it stays excluded in this version. Including it later
+  means adapting palettes whose contrast color is black as well.
+- Figma Code Connect: 45 of 98 component folders have a `.figma.tsx`, and the
+  newest component (Meter) has none, so it is not required. A mapping needs Figma
+  design nodes for the charts, which this change does not have. Follow-up when
+  designers publish chart components. The MCP data is generated from the docs
+  build, so no entry is needed (checked in task 7.5).

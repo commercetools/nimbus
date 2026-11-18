@@ -105,7 +105,7 @@ const App = () => {
 
 ### Many series
 
-With more than 3 series, each line also has its own dash pattern. Use as few
+With more than 3 series, each line also has a dash pattern (six patterns in total; with more than 6 series the patterns repeat). Use as few
 series as you can. A chart with many lines is hard to read, even with different
 colors and dashes.
 
@@ -241,7 +241,7 @@ a little below 3:1.
 - The legend is always shown for two or more series, so color is never the only
   way to tell series apart. `showLegend` only matters for a chart with one
   series.
-- With more than 3 series, each line has its own dash pattern, so the lines
+- With more than 3 series, each line has a dash pattern (six patterns in total; with more than 6 series the patterns repeat), so the lines
   differ in more than color. The swatches in the legend and in the tooltip show
   color only. This is a known gap: the dash pattern is not shown there.
 - The draw animation is off by default when the person prefers reduced motion.
