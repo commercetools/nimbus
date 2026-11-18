@@ -1,0 +1,248 @@
+---
+id: Components-LineChart
+title: Line chart
+exportName: LineChart
+description: Shows how values change along an ordered x axis, with one smooth line for each series.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Data Display
+  - Line chart
+tags:
+  - component
+  - chart
+  - line
+  - trend
+  - time series
+  - data visualization
+---
+
+## Overview
+
+Use `LineChart` to show how values change over an ordered axis, most often time. A line shows the direction of change and works well with many points.
+
+> [!WARNING]\
+> **Experimental.** `LineChart` is experimental in this first release and may
+> change in a later version.
+
+`LineChart` needs two peer dependencies that are not installed with Nimbus:
+`recharts` and `react-is`. Install both:
+
+```bash
+pnpm add recharts react-is
+```
+
+npm and yarn also work (`npm install recharts react-is`,
+`yarn add recharts react-is`). Nimbus accepts `recharts` version `^3.10.1` or
+newer in the same major version.
+
+A chart is given the rows of data, the field for the x axis, the series to draw,
+and a label and color for each series. It fills the width of its container and
+has a default aspect ratio. The look is minimal: light grid lines, no axis lines,
+and a tooltip with the values of one data point.
+
+### Resources
+
+[W3C WAI: Complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+
+## Variables
+
+### One series
+
+A chart with one series does not show a legend by default. Set `showLegend` to
+show it.
+
+```jsx live
+const App = () => {
+  const data = [
+    { month: "Jan", desktop: 186, mobile: 80 },
+    { month: "Feb", desktop: 305, mobile: 200 },
+    { month: "Mar", desktop: 237, mobile: 120 },
+    { month: "Apr", desktop: 273, mobile: 190 },
+    { month: "May", desktop: 209, mobile: 130 },
+  ];
+  return (
+    <LineChart
+      aria-label="Desktop visitors per month"
+      data={data}
+      xAxisKey="month"
+      series={["desktop"]}
+      config={{ desktop: { label: "Desktop", palette: "ctviolet" } }}
+    />
+  );
+};
+```
+
+### Several series
+
+With two or more series the legend is always shown. Each series has a `label`
+and an optional `palette` in `config`.
+
+```jsx live
+const App = () => {
+  const data = [
+    { month: "Jan", desktop: 186, mobile: 80 },
+    { month: "Feb", desktop: 305, mobile: 200 },
+    { month: "Mar", desktop: 237, mobile: 120 },
+    { month: "Apr", desktop: 273, mobile: 190 },
+    { month: "May", desktop: 209, mobile: 130 },
+  ];
+  return (
+    <LineChart
+      aria-label="Visitors per month"
+      data={data}
+      xAxisKey="month"
+      series={["desktop", "mobile"]}
+      config={{
+        desktop: { label: "Desktop", palette: "ctviolet" },
+        mobile: { label: "Mobile", palette: "orange" },
+      }}
+    />
+  );
+};
+```
+
+### Many series
+
+With more than 3 series, each line also has its own dash pattern. Use as few
+series as you can. A chart with many lines is hard to read, even with different
+colors and dashes.
+
+```jsx live
+const App = () => {
+  const data = [
+    { month: "Jan", a: 40, b: 80, c: 120, d: 160 },
+    { month: "Feb", a: 55, b: 90, c: 100, d: 150 },
+    { month: "Mar", a: 70, b: 85, c: 130, d: 170 },
+    { month: "Apr", a: 65, b: 110, c: 125, d: 190 },
+    { month: "May", a: 90, b: 105, c: 140, d: 200 },
+  ];
+  return (
+    <LineChart
+      aria-label="Four regions per month"
+      data={data}
+      xAxisKey="month"
+      series={["a", "b", "c", "d"]}
+      config={{
+        a: { label: "North" },
+        b: { label: "South" },
+        c: { label: "East" },
+        d: { label: "West" },
+      }}
+    />
+  );
+};
+```
+
+### Grid
+
+Horizontal grid lines are shown by default. Set `showGrid={false}` to hide them
+when the values are easy to read from the tooltip or from labels around the chart.
+
+```jsx live
+const App = () => {
+  const data = [
+    { month: "Jan", desktop: 186, mobile: 80 },
+    { month: "Feb", desktop: 305, mobile: 200 },
+    { month: "Mar", desktop: 237, mobile: 120 },
+    { month: "Apr", desktop: 273, mobile: 190 },
+    { month: "May", desktop: 209, mobile: 130 },
+  ];
+  return (
+    <LineChart
+      aria-label="Visitors per month, without grid"
+      data={data}
+      xAxisKey="month"
+      series={["desktop", "mobile"]}
+      showGrid={false}
+      config={{
+        desktop: { label: "Desktop" },
+        mobile: { label: "Mobile" },
+      }}
+    />
+  );
+};
+```
+
+### States
+
+Set `isLoading` to show a placeholder while the data loads. An empty `data` array
+shows the text "No data to display".
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="400">
+    <LineChart
+      aria-label="Loading chart"
+      data={[]}
+      xAxisKey="month"
+      series={["desktop"]}
+      config={{ desktop: { label: "Desktop" } }}
+      isLoading
+    />
+    <LineChart
+      aria-label="Empty chart"
+      data={[]}
+      xAxisKey="month"
+      series={["desktop"]}
+      config={{ desktop: { label: "Desktop" } }}
+    />
+  </Stack>
+);
+```
+
+## Colors
+
+Each series has a color. Choose it with the name of a palette in `config`, for
+example `"ctviolet"` or `"orange"`. Only the 23 chart palettes are accepted:
+blue, bronze, brown, crimson, ctviolet, cyan, gold, grass, gray, green, indigo, iris, jade, orange, pink, plum, purple, red, ruby, slate, teal, tomato, violet.
+
+Seven palettes are not available, because their solid color is light and has a
+black contrast color: amber, lime, mint, sky, yellow, ctyellow and ctteal.
+
+When a series has no `palette`, it gets the next palette of the default order:
+ctviolet, orange, teal, crimson, blue, grass, plum, bronze, cyan, red and slate.
+A chart with more than 11 series uses the same order again from the start.
+
+A chart uses the solid color of the palette. Only the lightness changes, and
+only as much as needed so the color has at least 3:1 contrast against the `bg`
+color of the current color mode. Colors are checked against `bg` only. Place
+charts on `bg`. On gray or tinted surfaces, a few palettes can have a contrast
+a little below 3:1.
+
+## Guidelines
+
+### Best practices
+
+- Write an `aria-label` that says what the chart shows and for which period.
+- Keep the number of series low. The default order has 11 palettes that are easy
+  to tell apart; more series reuse colors.
+- Use short, clear series labels. They appear in the legend and the tooltip.
+- Place the chart on the `bg` color so the contrast checks apply.
+
+### When to use
+
+> [!TIP]\
+> Use `LineChart` for a trend over an ordered axis, such as time.
+
+> [!CAUTION]\
+> Do not use `LineChart` for comparing a few categories that have no order (use a bar chart).
+
+## Accessibility
+
+- Every chart needs an `aria-label` that says what the chart shows, for example
+  "Visitors per month".
+- Keyboard: Tab moves focus to the chart. ArrowLeft and ArrowRight move between
+  the data points and show the tooltip. Enter hides the tooltip and shows it
+  again.
+- The tooltip is a live region, so a screen reader announces the values of the
+  active data point.
+- The legend is always shown for two or more series, so color is never the only
+  way to tell series apart. `showLegend` only matters for a chart with one
+  series.
+- With more than 3 series, each line has its own dash pattern, so the lines
+  differ in more than color. The swatches in the legend and in the tooltip show
+  color only. This is a known gap: the dash pattern is not shown there.
+- The draw animation is off by default when the person prefers reduced motion.
+  Use `isAnimationActive` to set it yourself.
