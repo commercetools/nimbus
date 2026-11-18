@@ -69,6 +69,7 @@ export * from "./date-input";
 export * from "./calendar";
 export * from "./date-picker";
 export * from "./progress-bar";
+export * from "./chart";
 export * from "./meter";
 export * from "./range-calendar";
 export * from "./menu";
