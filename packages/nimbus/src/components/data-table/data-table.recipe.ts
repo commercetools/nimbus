@@ -458,6 +458,12 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         top: "var(--data-table-sticky-top, 0px)",
         bottom: "var(--data-table-sticky-bottom, 0px)",
         zIndex: zIndex.stickyRow,
+        // An invisible shadow above the row, so Firefox draws a row that is
+        // stuck at the bottom edge and finds it under the pointer.
+        // `useStickyStacks` sets the custom property in Firefox only, so in
+        // other browsers the shadow has no size.
+        boxShadow:
+          "0 calc(-1 * var(--data-table-sticky-reach, 0px)) transparent",
       },
       // The highlight. It is opaque, so rows that scroll under a stuck row stay
       // hidden. A row with a background from the consumer keeps it. `:where`

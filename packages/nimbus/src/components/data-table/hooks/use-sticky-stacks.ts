@@ -1,4 +1,5 @@
 import { useEffect, type RefObject } from "react";
+import { isFirefox } from "@react-aria/utils";
 import type { DataTableRegistry } from "../utils/registry.types";
 import {
   measureStickyLayout,
@@ -14,6 +15,20 @@ import {
 
 const TOP_PROPERTY = "--data-table-sticky-top";
 const BOTTOM_PROPERTY = "--data-table-sticky-bottom";
+/**
+ * Firefox only: how far above itself a sticky row draws, as an invisible
+ * shadow. The row's natural distance from the top of the content: a row stuck
+ * at the bottom edge is never further above its natural place.
+ *
+ * Firefox skips rows when it draws a table body of more than 20 rows, and when
+ * it finds the row under the pointer. It goes through the rows in order and
+ * stops at the first row that starts below the visible area. A row stuck at
+ * the bottom edge comes later in that order, so it was neither drawn nor
+ * clickable. What a row draws above itself moves that stop further down.
+ * https://searchfox.org/mozilla-central/source/layout/tables/nsTableRowGroupFrame.cpp
+ * (`DisplayRows` and `FrameCursorData::AppendFrame`)
+ */
+const REACH_PROPERTY = "--data-table-sticky-reach";
 /**
  * Set on the last sticky row while rows are stuck at the bottom edge. The row's
  * bottom border is hidden then, because the border of the scroll area is
@@ -51,7 +66,8 @@ type UseStickyStacksParams = {
  * so nothing re-renders:
  *
  * - `--data-table-sticky-top` and `--data-table-sticky-bottom` on each sticky
- *   row. The row's styles read them for `top` and `bottom`.
+ *   row. The row's styles read them for `top` and `bottom`. In Firefox also
+ *   `--data-table-sticky-reach`, for the row's `box-shadow`.
  * - `scroll-padding-top` and `scroll-padding-bottom` on the root: the height
  *   the header and the rows that are stuck right now cover. React Aria reads
  *   them when it scrolls a focused row into view.
@@ -80,9 +96,12 @@ export const useStickyStacks = ({
     // `stickyRows` can warn again.
     let hasWarnedTall = false;
 
+    const needsReach = isFirefox();
+
     const clearRow = (row: HTMLElement) => {
       row.style.removeProperty(TOP_PROPERTY);
       row.style.removeProperty(BOTTOM_PROPERTY);
+      row.style.removeProperty(REACH_PROPERTY);
       row.removeAttribute(BOTTOM_EDGE_ATTRIBUTE);
       row.removeAttribute(BOTTOM_START_ATTRIBUTE);
     };
@@ -158,13 +177,20 @@ export const useStickyStacks = ({
       measurement = measureStickyLayout(root, registry.headerElement);
       const nextRows = new Set<HTMLElement>();
       if (measurement) {
+        const { layouts } = measurement;
         const offsets = computeStickyOffsets({
           headerHeight: measurement.headerInset,
-          layouts: measurement.layouts,
+          layouts,
         });
         measurement.elements.forEach((row, index) => {
           row.style.setProperty(TOP_PROPERTY, `${offsets[index].top}px`);
           row.style.setProperty(BOTTOM_PROPERTY, `${offsets[index].bottom}px`);
+          if (needsReach) {
+            row.style.setProperty(
+              REACH_PROPERTY,
+              `${Math.ceil(layouts[index].naturalTop)}px`
+            );
+          }
           nextRows.add(row);
         });
       }
