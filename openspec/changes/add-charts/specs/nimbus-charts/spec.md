@@ -16,6 +16,7 @@ The system SHALL export `AreaChart`, `BarChart`, `LineChart`, `PieChart`, `Radar
 - **WHEN** `AreaChart`, `BarChart`, `LineChart` or `RadarChart` is used
 - **THEN** it SHALL accept `xAxisKey` and `series`
 - **AND** SHALL accept `showGrid` and `showTooltip`
+- **AND** SHALL accept `showLegend`, which is effective only for a single series
 
 #### Scenario: Stacked series
 - **WHEN** `AreaChart` or `BarChart` receives `stacked`
@@ -85,6 +86,7 @@ Charts SHALL meet WCAG 2.1 AA.
 #### Scenario: Screen reader
 - **WHEN** the active data point changes
 - **THEN** the tooltip content SHALL be announced through a live region
+- **AND** the tooltip SHALL have `role="status"` and `aria-live="assertive"`
 
 #### Scenario: Legend with two or more series
 - **WHEN** a chart has two or more series or categories
@@ -105,7 +107,10 @@ Charts SHALL meet WCAG 2.1 AA.
 
 #### Scenario: Default palette order
 - **WHEN** a chart assigns palettes by default order
-- **THEN** each palette SHALL differ from its neighbor in the order by a deltaE2000 of at least 15
+- **THEN** the default order SHALL have exactly 11 palettes: `blue`, `bronze`, `crimson`, `cyan`, `grass`, `indigo`, `orange`, `plum`, `red`, `slate`, `teal`
+- **AND** each pair of these palettes SHALL differ by a deltaE2000 of at least 15, in light and dark mode
+- **AND** a chart with more than 11 series SHALL warn in development and reuse palettes in the same order
+- **AND** a consumer MAY choose any other chart palette by name
 - **AND** a unit test SHALL check the order
 
 #### Scenario: Series contrast
@@ -159,6 +164,7 @@ Charts SHALL show a Nimbus-styled tooltip and legend that read the shared config
 #### Scenario: Legend content
 - **WHEN** the legend is shown
 - **THEN** it SHALL show the label and color of each series
+- **AND** it SHALL also show the value of each category when the Pie and Radial keyboard fallback applies
 
 ### Requirement: Chart Tests and Docs
 Each chart SHALL have Storybook tests, documentation and a consumer example.
@@ -166,6 +172,8 @@ Each chart SHALL have Storybook tests, documentation and a consumer example.
 #### Scenario: Story tests
 - **WHEN** story tests run for a chart
 - **THEN** they SHALL cover render, empty state, loading state, tooltip and legend, keyboard navigation, and light and dark mode
+- **AND** the same cases SHALL be covered for every chart type, with the cases that do not apply to a type recorded in its story file
+- **AND** snapshotted chart stories SHALL turn off or finish the Recharts animation, because Chromatic does not pause JavaScript animations
 
 #### Scenario: Consumer example
 - **WHEN** a consumer reads the developer documentation of a chart

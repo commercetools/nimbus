@@ -48,7 +48,7 @@ number):
     (lowest: `cyan` 3.003:1).
   - Dark mode on `#111111`: none of the 23 changes (lowest: `ctviolet`, 3.06:1).
   - The 7 excluded palettes can reach 3:1, but need an OKLCH lightness change
-    between -0.080 (`ctteal`, to `#00a5a6`) and -0.254 (`yellow`), and `ctyellow`
+    of about -0.08 (`ctteal`, to `#00a5a6`) to -0.25 (`yellow`), and `ctyellow`
     shifts hue by 6.2 degrees.
   - Neighbor problem: adapted `iris` and `violet` are 1.00:1 apart (deltaE2000
     4.0). `jade` and `teal` are 1.03:1. `green` and `jade` are 1.00:1. `gray` and
@@ -135,14 +135,15 @@ mode. The script uses `chroma-js` and changes only the lightness (OKLCH), keepin
 hue and chroma, by the smallest amount that gives at least 3:1 contrast against
 the current background of that mode. If the solid already has 3:1, it stays
 unchanged. The adapted color must have a contrast of at most 3.2:1 (a proposed
-tolerance, so "smallest" is testable) unless it is unchanged, and its hue must
-stay within 3 degrees of the solid.
+tolerance, so "smallest" is testable) unless it is unchanged, and, for chromatic colors (OKLCH chroma of at least 0.02), its hue must
+stay within 3 degrees of the solid. Achromatic colors such as grays are checked
+for lightness and contrast only. The chroma value 0.02 is a proposed threshold.
 
 Only palettes with a white contrast color are chart palettes. The list is read
 from the generated `contrast` token, not written by hand, so a new palette
 follows the rule automatically. The seven excluded palettes can reach 3:1, but
 only with a large lightness change, so they would no longer look like their
-palette. `ctteal` is the smallest change of the seven (-0.080) and is an open
+palette. `ctteal` is the smallest change of the seven (about -0.08) and is an open
 question.
 
 "Current background" is `bg` in each mode (`#fff` and `#111111`). Cards use the
@@ -150,8 +151,10 @@ same token. Other surfaces are not checked (open question).
 
 The script writes `packages/tokens/src/base/chart-tokens.json`. It is committed,
 and `style-dictionary.config.js` adds it to `source`. `tokens.json` is not edited.
-A drift check (or running the script inside `build:tokens`) makes sure the file
-matches the palettes. The existing manual copy workflow stays for the system
+The file uses `color.chart.<palette>.{light,dark}`, and each light/dark pair has
+no other keys, because `dtcg-to-chakra.js` combines only pairs with exactly the
+keys `light` and `dark`. A drift check (or running the script inside
+`build:tokens`) makes sure the file matches the palettes. The existing manual copy workflow stays for the system
 palettes. Chakra emits `--nimbus-colors-chart-<palette>`, with a light value and
 a dark value. At run time the chart writes `var(--nimbus-colors-chart-<palette>)`
 into `stroke` and `fill`.
@@ -170,12 +173,14 @@ surface" case.
   (`bg`), 2 px wide (a proposed value, confirmed in task 1.5).
 - Line charts with more than 3 series (proposed threshold) also use a different
   dash style or marker for each line.
-- The default palette order puts visually different palettes next to each other:
-  deltaE2000 of at least 15 between neighbors in the default order. This is our
-  own threshold, not a WCAG value. A first candidate list from the review, by a
-  greedy search, is: `blue`, `bronze`, `crimson`, `cyan`, `grass`, `indigo`,
-  `orange`, `plum`, `red`, `slate`, `teal` (11 palettes). The final order is set in
-  task 2.4 and is tested.
+- The default palette order has 11 palettes: `blue`, `bronze`, `crimson`,
+  `cyan`, `grass`, `indigo`, `orange`, `plum`, `red`, `slate`, `teal`. Each
+  pair differs by a deltaE2000 of at least 15 in light and dark mode (minimum
+  15.28, between `crimson` and `red`, checked by two reviewers). An exact search
+  shows that 11 is the largest set of palettes with that property, so a default
+  order of all 23 palettes is not possible. This threshold is our own, not a WCAG
+  value. A chart with more than 11 series reuses palettes in the same order and
+  warns in development. Consumers can still pick any other chart palette by name.
 - Chart text (axes, legend, tooltip, empty state) uses `fg` or `fg.subtle`.
   Grid lines are decorative and are exempt from 3:1.
 

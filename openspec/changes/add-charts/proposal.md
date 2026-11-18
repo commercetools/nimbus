@@ -37,7 +37,7 @@ mode, or the Nimbus contrast rules.
 - Chart palettes are the palettes that have a white contrast color (23 palettes).
   Palettes with a black contrast color (`amber`, `lime`, `mint`, `sky`, `yellow`,
   `ctyellow` and `ctteal`) are not chart palettes. Their solids need a large
-  lightness change to reach 3:1 (OKLCH lightness change between -0.080 and -0.254,
+  lightness change to reach 3:1 (OKLCH lightness change of about -0.08 to -0.25,
   and a hue shift of up to 6.2 degrees for `ctyellow`), so the result would no
   longer look like the palette.
 - Keep the chart look close to the shadcn charts (https://ui.shadcn.com/charts) in

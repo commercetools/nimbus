@@ -17,7 +17,8 @@ The system SHALL provide one chart color token per chart palette. The token SHAL
 - **WHEN** the solid color (`DEFAULT`) of a palette has less than 3:1 contrast against the current background
 - **THEN** the system SHALL change only its lightness in OKLCH, in the direction that increases contrast
 - **AND** the adapted color SHALL have a contrast of at least 3:1 and at most 3.2:1 against the current background
-- **AND** the hue of the adapted color SHALL be within 3 degrees of the solid color
+- **AND** for chromatic colors (OKLCH chroma of at least 0.02) the hue SHALL be within 3 degrees of the solid color
+- **AND** achromatic colors SHALL be checked for lightness and contrast only
 - **AND** SHALL compute contrast with chroma-js `contrast()`
 
 #### Scenario: Solid color already has enough contrast
