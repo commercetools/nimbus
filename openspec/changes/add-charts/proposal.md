@@ -15,7 +15,7 @@ mode, or the Nimbus contrast rules.
 - Add shared parts used by all six charts: `ChartContainer` (size and series
   color variables), `ChartTooltip`, `ChartLegend`, and the `ChartConfig` type.
 - Use a prop-based API: `data`, `config`, `xAxisKey`, `series`, `stacked`,
-  `showGrid`, `showTooltip`, `isLoading`. `PieChart` and `RadialChart` take
+  `showGrid`, `showTooltip`, `showLegend`, `isLoading`. `PieChart` and `RadialChart` take
   `nameKey` and `valueKey` instead of `xAxisKey` and `series`. Recharts parts are
   not exported and there is no children-based escape hatch in this version.
 - Show the legend whenever a chart has two or more series (or categories), so

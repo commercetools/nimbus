@@ -207,7 +207,7 @@ reference, task 1.5). The line on top uses the full series color and carries the
 
 The chart keeps the Recharts default role and `tabIndex={0}`. A story test checks
 them. Keyboard behavior is tested for Bar, Line, Area and Radar. For Pie and
-Radial it is unverified, so tasks 5.1 and 6.3 start with a check. If arrow keys do
+Radial it is unverified, so task 1.6 checks it before tasks 5.1 and 6.3. If arrow keys do
 not move between slices, the chart records the gap in its docs and the legend
 lists each category with its value so the data stays reachable.
 
@@ -229,8 +229,7 @@ lists each category with its value so the data stays reachable.
   Radial last so they can move to a later change without blocking the team.
 - [Recharts internals can change] → The public API hides Recharts, so a later
   library change would not be breaking for consumers.
-- [Pie and Radial keyboard support is unverified] → Checked first in tasks 5.1 and
-  6.3, with a documented fallback.
+- [Pie and Radial keyboard support is unverified] → Checked in task 1.6, before tasks 5.1 and 6.3, with a documented fallback.
 
 ## Migration Plan
 

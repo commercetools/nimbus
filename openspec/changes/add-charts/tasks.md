@@ -13,8 +13,8 @@
 - [ ] 2.2 Write failing unit tests for adaptation: (d) a changed color has at most 3.2:1 and, if chromatic (OKLCH chroma of at least 0.02), a hue within 3 degrees of the solid, (e) fixture `orange` in light mode changes (2.97 to at least 3:1), (f) fixture `#484848` on `#111111` changes (2.06 to at least 3:1)
 - [ ] 2.3 Add the build script in `packages/color-tokens`: for each chart palette and mode, adapt only the OKLCH lightness of the solid (`DEFAULT`) by the smallest amount that gives 3:1 against `bg`, using chroma-js `contrast()`. Write `packages/tokens/src/base/chart-tokens.json` until 2.1 and 2.2 pass
 - [ ] 2.4 Add the drift check that fails when `chart-tokens.json` differs from the generator output (a test, or a step in `build:tokens`)
-- [ ] 2.5 Write a failing unit test for the default palette order (the 11 palettes in `design.md`: `blue`, `bronze`, `crimson`, `cyan`, `grass`, `indigo`, `orange`, `plum`, `red`, `slate`, `teal`; every pair at deltaE2000 of at least 15 in light and dark mode), then export the order
-- [ ] 2.6 Generate the `ChartPalette` union type and the default order into `packages/nimbus/src/components/chart/chart.palettes.ts` from the token file, so `config` accepts only chart palette names
+- [ ] 2.5 Write a failing unit test for the default palette order (the 11 palettes in `design.md`: `blue`, `bronze`, `crimson`, `cyan`, `grass`, `indigo`, `orange`, `plum`, `red`, `slate`, `teal`; every pair at deltaE2000 of at least 15 in light and dark mode)
+- [ ] 2.6 Generate the `ChartPalette` union type from the token file into `packages/nimbus/src/components/chart/chart.palettes.ts`, and export the default order (a fixed list) as a constant in the same file, so `config` accepts only chart palette names
 - [ ] 2.7 Rebuild tokens and confirm all tests in this group pass. Check that only `orange` changes in light mode and that no palette changes in dark mode
 - [ ] 2.8 Update `packages/color-tokens/CLAUDE.md`, `packages/color-tokens/README.md`, `packages/tokens` docs and the `color-tokens` spec text for the new output
 
@@ -40,7 +40,7 @@
 - [ ] 4.6 Write failing stories for `AreaChart`: the same list as 4.2 (without bar stroke), plus the reduced-opacity fill with a full-color line
 - [ ] 4.7 Implement `AreaChart`
 - [ ] 4.8 Export the shared types and the three charts from `packages/nimbus/src/components/index.ts`
-- [ ] 4.9 Add the designer `*.mdx`, the developer `*.dev.mdx` and `*.docs.spec.tsx` for `BarChart` (use `/create-eng-docs` and the `writing-designer-documentation` skill). State in the docs text that the charts are experimental in the first release (see `docs/file-type-guidelines/documentation.md`)
+- [ ] 4.9 Add the designer `*.mdx`, the developer `*.dev.mdx` and `*.docs.spec.tsx` for `BarChart` (use `/create-eng-docs` and the `writing-designer-documentation` skill). Add the `@experimental` JSDoc tag on the main export and state in the docs text that the chart is experimental in the first release (see `docs/file-type-guidelines/documentation.md` and `main-component.md` "Lifecycle State Tag")
 - [ ] 4.10 Add the same three docs files for `LineChart`
 - [ ] 4.11 Add the same three docs files for `AreaChart`
 - [ ] 4.12 Add a changeset for the three charts (consumer-facing, see `docs/changeset-conventions.md`). Say in the text that they are experimental
@@ -50,7 +50,7 @@
 
 - [ ] 5.1 Use the result of task 1.6 to write the failing stories for `PieChart` with `nameKey` and `valueKey`: the same list as 4.2 (without stacked, ArrowLeft and ArrowRight unless 1.6 shows they work), legend always shown, 2 px stroke between slices
 - [ ] 5.2 Implement `PieChart`. If arrow keys do not move between slices, show the value of each category in the legend and record the gap in the docs
-- [ ] 5.3 Add the designer and developer docs, the docs spec, and the changeset text. Export from the components index
+- [ ] 5.3 Add the designer and developer docs, the docs spec, the `@experimental` JSDoc tag, and the changeset text (say the chart is experimental, as in 4.12). Export from the components index
 
 ## 6. RadarChart and RadialChart (first to move to a later change if time runs out)
 
@@ -58,7 +58,7 @@
 - [ ] 6.2 Implement `RadarChart`
 - [ ] 6.3 Write failing stories for `RadialChart` with `nameKey` and `valueKey`: the same list as 5.1, using the result of task 1.6
 - [ ] 6.4 Implement `RadialChart`
-- [ ] 6.5 Add the designer and developer docs, the docs specs, and the changeset text. Export from the components index
+- [ ] 6.5 Add the designer and developer docs, the docs specs, the `@experimental` JSDoc tag, and the changeset text (say the charts are experimental, as in 4.12). Export from the components index
 
 ## 7. Final checks
 
