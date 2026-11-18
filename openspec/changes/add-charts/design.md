@@ -110,28 +110,29 @@ Recharts and `react-is` were added to `packages/nimbus` (task 1.3) through a new
 `charts` catalog in `pnpm-workspace.yaml`. Recharts 3.10.1 is installed. It passes
 the release-age rule, and no `minimumReleaseAgeExclude` entry was added.
 
-**How Recharts ships is not decided yet.** Task 1.4 measured two options with a
-throwaway `BarChart` (named imports from `recharts`; the package has
-`sideEffects: false` and no `exports` map):
+**Decision: Recharts is an external, required peer dependency** (like Slate), and a
+dev dependency of `packages/nimbus`, with `react-is` as a dev dependency. Task 1.4
+measured both options with a throwaway `BarChart` (named imports from
+`recharts`; the package has `sideEffects: false` and no `exports` map):
 
-- **Option A, bundle it** (the first draft of this design). `pnpm check:bundle-size`
-  fails: the `@commercetools/nimbus` dist grows from 21,720 KB to 26,882 KB
-  (+23.8%, the limit is 5%). About 4.2 MB of that is sourcemaps, because the check
-  sums every file in `dist`. The JS added is 545 KB (ESM) and 399 KB (CJS) in one
-  separate chunk that only chart users load. `pnpm check:bundler-compat` also fails:
-  the ESM chunk imports Rolldown's `require` helper, because Recharts depends on
-  `react-redux`, which depends on `use-sync-external-store`. That package is
-  CommonJS only and calls `require("react")`, and React is an external of the
-  Nimbus build. Option A needs a workaround for that package (an alias to an ESM
-  version of `use-sync-external-store/with-selector`, not tried yet) and the
-  `bundle-size-approved` label.
-- **Option B, externalize it.** Add `recharts` to `external` in `vite.config.ts`
-  and declare it as a peer dependency (and a dev dependency, as the comment in
-  `vite.config.ts` requires). Measured: the dist grows by 2.9 KB (+0.0%) and
-  `pnpm check:bundler-compat` passes. Cost: consumers that use charts must install
-  `recharts`. A required peer dependency makes every Nimbus consumer install it. An
-  optional peer dependency may break a consumer that has no Recharts, if their
-  bundler resolves the chart chunk (not tested).
+- **Bundled (rejected).** `pnpm check:bundle-size` fails: the
+  `@commercetools/nimbus` dist grows from 21,720 KB to 26,882 KB (+23.8%, the limit
+  is 5%). About 4.2 MB of that is sourcemaps, because the check sums every file in
+  `dist`. The JS added is 545 KB (ESM) and 399 KB (CJS) in one separate chunk.
+  `pnpm check:bundler-compat` also fails: the ESM chunk imports Rolldown's
+  `require` helper, because Recharts depends on `react-redux`, which depends on
+  `use-sync-external-store`. That package is CommonJS only and calls
+  `require("react")`, and React is an external of the Nimbus build. Bundling would
+  need an alias workaround and the `bundle-size-approved` label.
+- **External peer dependency (chosen).** `recharts` is in `external` in
+  `vite.config.ts`. Measured: the dist grows by 2.9 KB (+0.0%) and
+  `pnpm check:bundler-compat` passes. Consumers who use charts install
+  `recharts` and `react-is`. This follows the Slate precedent: a required peer in
+  `package.json` and an "(Optional)" install section in
+  `packages/nimbus/src/docs/home-installation.mdx` (added). The peer range is
+  `^3.10.1`, the lowest version tested. An optional peer was not chosen, because a
+  consumer without Recharts could fail to build if their bundler resolves the chart
+  chunk (not tested).
 
 ### 2. Prop-based API### 2. Prop-based API, no exported Recharts parts
 
@@ -245,8 +246,9 @@ lists each category with its value so the data stays reachable.
 
 - [Recharts 3.11.0 cannot be installed for about a day (24-hour rule)] → Use
   `^3.10.1`. Do not add a release-age exclude.
-- [Bundling Recharts breaks the 5% size limit and the require-helper scan] →
-  Measured in task 1.4 (see Decision 1). Choose option A or B before group 3.
+- [Consumers who use charts must install `recharts` and `react-is`] → New
+  "Charts (Optional)" section in the installation docs, and the charts docs say it
+  in the first lines. The peer range is `^3.10.1`.
 - [Palette tokens and the adaptation script are new tooling in the tokens build]
   → Build this first, with its unit test, before any chart. Use failing fixtures
   (`orange` in light mode, a synthetic `#484848` on `#111111`), because most real
@@ -266,18 +268,13 @@ component changes.
 
 ## Open Questions
 
-- Bundle Recharts (option A) or make it an external peer dependency (option B)?
-  See Decision 1 for the measured results. This blocks group 3.
-- Surface data from task 1.2: recipes use `bg`, `neutral.1`, `neutral.3` and tinted
-  surfaces. In light mode `neutral.1` is `#fcfcfc`. Measured with the adapted
-  colors: on `neutral.1` (`#fcfcfc`) 4 of 23 palettes fall just below 3:1 (`cyan`
-  2.93, `grass` 2.95, `orange` 2.93, `teal` 2.99). On `neutral.3` (`#f0f0f0`) 9 fall
-  below. In dark mode only `ctviolet` is a problem, and only on lighter surfaces
-  (2.58 on `#222222`). Adapting against `neutral.1` instead of `bg` would cost only
-  slight changes to those 4 palettes and would cover both surfaces. Which background
-  does the adaptation use?
-- Charts on surfaces other than `bg` (for example a colored panel) are not checked
-  against 3:1. Is that acceptable for week one?
+- Charts on surfaces other than `bg` are not checked against 3:1 (decided: the
+  adaptation uses `bg` only). Measured with the adapted colors: on `neutral.1`
+  (`#fcfcfc` in light mode) 4 of 23 palettes fall just below 3:1 (`cyan` 2.93,
+  `grass` 2.95, `orange` 2.93, `teal` 2.99), and on `neutral.3` (`#f0f0f0`) 9 do.
+  In dark mode only `ctviolet` is a problem, and only on lighter surfaces (2.58 on
+  `#222222`). The charts docs say that colors are checked against `bg`, so teams
+  place charts on `bg`. Revisit if a team needs charts on other surfaces.
 - `ctteal` is a brand palette with a black contrast color, so it is not a chart
   palette, although it reaches 3:1 with the smallest change (`#0bbfbf` to
   `#00a5a6`). Should it be included?

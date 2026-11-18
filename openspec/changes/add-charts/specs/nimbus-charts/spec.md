@@ -32,6 +32,18 @@ The system SHALL export `AreaChart`, `BarChart`, `LineChart`, `PieChart`, `Radar
 - **THEN** only the six charts and the shared chart types SHALL be exported for charts
 - **AND** charts SHALL accept only the documented props, not Recharts parts as children
 
+### Requirement: Recharts Peer Dependency
+The system SHALL treat Recharts as an external peer dependency of `@commercetools/nimbus`.
+
+#### Scenario: Package setup
+- **WHEN** the `@commercetools/nimbus` package is built and published
+- **THEN** `recharts` SHALL be a peer dependency and a dev dependency, and SHALL be external in the library build
+- **AND** `pnpm check:bundle-size` and `pnpm check:bundler-compat` SHALL pass
+
+#### Scenario: Installation docs
+- **WHEN** a consumer reads the installation docs
+- **THEN** a "Charts (Optional)" section SHALL tell them to install `recharts` and `react-is`
+
 ### Requirement: Chart Config
 The system SHALL accept a `ChartConfig` that maps each data key to a label and a chart palette name.
 

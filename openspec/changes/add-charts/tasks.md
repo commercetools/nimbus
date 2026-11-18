@@ -1,7 +1,7 @@
 ## 1. Spikes: resolve open questions before building
 
 - [x] 1.1 Token route spike: add a tiny `chart-tokens.json` with one token `color.chart.<palette>.{light,dark}` (no other keys in the pair) to `packages/tokens/src/base/`, add it to `source` in `packages/tokens/src/style-dictionary.config.js`, run `pnpm build:tokens`, and confirm that (a) Style Dictionary merges the second file, (b) the CSS variable is `--nimbus-colors-chart-<palette>` with a light and a dark value, and (c) the dark selector matches the one used by the docs and Storybook. Write the result into `design.md`
-- [ ] 1.2 Check the background: confirm that `bg` is `#fff` (light) and `#111111` (dark), and check the surfaces Nimbus uses for panels and cards. Write the result into `design.md` and decide the open question about other surfaces
+- [x] 1.2 Check the background: confirm that `bg` is `#fff` (light) and `#111111` (dark), and check the surfaces Nimbus uses for panels and cards. Done: decided to adapt against `bg` only, with the measured limits in `design.md`
 - [x] 1.3 Add `recharts@^3.10.1` and `react-is` to `packages/nimbus/package.json` and install with pnpm. Keep `minimumReleaseAgeStrict` as it is and add no `minimumReleaseAgeExclude` entry
 - [x] 1.4 Build a throwaway `BarChart` with narrow Recharts imports. Run `pnpm build`, `pnpm check:bundle-size` and `pnpm check:bundler-compat`. Record the size change and the require-helper result in `design.md`. If `victory-vendor` fails the scan, decide between an alias, an external dependency or another version before going on
 - [ ] 1.5 Open https://ui.shadcn.com/charts with Playwright and take reference screenshots of the six chart types. List the visual traits (grid lines, axes, bar radius, tooltip, legend, area opacity, stroke width between shapes) in `design.md`. Limit this to one short session
@@ -29,6 +29,7 @@
 - [ ] 3.7 Implement `ChartContainer` with a default aspect ratio, the empty state, the `isLoading` skeleton, `displayName`, and the legend rule (shown for two or more series)
 - [ ] 3.8 Add the slot recipe and register it in `packages/nimbus/src/theme/slot-recipes/index.ts`. Regenerate theme typings
 - [ ] 3.9 Add the `chart.i18n.ts` source file for the empty state text and run `pnpm extract-intl` (see `docs/file-type-guidelines/i18n.md`)
+- [ ] 3.10 Check that `apps/docs` and Storybook resolve `recharts` from the workspace (it is an external peer and dev dependency of `packages/nimbus`), and run `pnpm check:package-shape` with a first chart exported
 
 ## 4. BarChart, LineChart and AreaChart (first release for the product team)
 
@@ -40,7 +41,7 @@
 - [ ] 4.6 Write failing stories for `AreaChart`: the same list as 4.2 (without bar stroke), plus the reduced-opacity fill with a full-color line
 - [ ] 4.7 Implement `AreaChart`
 - [ ] 4.8 Export the shared types and the three charts from `packages/nimbus/src/components/index.ts`
-- [ ] 4.9 Add the designer `*.mdx`, the developer `*.dev.mdx` and `*.docs.spec.tsx` for `BarChart` (use `/create-eng-docs` and the `writing-designer-documentation` skill). Add the `@experimental` JSDoc tag on the main export and state in the docs text that the chart is experimental in the first release (see `docs/file-type-guidelines/documentation.md` and `main-component.md` "Lifecycle State Tag")
+- [ ] 4.9 Add the designer `*.mdx`, the developer `*.dev.mdx` and `*.docs.spec.tsx` for `BarChart` (use `/create-eng-docs` and the `writing-designer-documentation` skill). Add the `@experimental` JSDoc tag on the main export and state in the docs text that colors are checked against `bg`, that consumers install `recharts` and `react-is`, and that the chart is experimental in the first release (see `docs/file-type-guidelines/documentation.md` and `main-component.md` "Lifecycle State Tag")
 - [ ] 4.10 Add the same three docs files for `LineChart`
 - [ ] 4.11 Add the same three docs files for `AreaChart`
 - [ ] 4.12 Add a changeset for the three charts (consumer-facing, see `docs/changeset-conventions.md`). Say in the text that they are experimental

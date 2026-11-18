@@ -51,9 +51,12 @@ mode, or the Nimbus contrast rules.
 - Handle empty data (empty state), `isLoading` (skeleton), unknown series keys
   (development warning, series skipped) and invalid palettes (development
   warning, fallback to the first palette in production).
-- Add `recharts` and `react-is` as dependencies of `@commercetools/nimbus`,
-  within the repository's 24-hour release-age rule (`pnpm-workspace.yaml`).
-  Recharts is bundled into the Nimbus dist.
+- Add `recharts` as a required peer dependency of `@commercetools/nimbus`, like
+  Slate: it is external in the library build and a dev dependency. `react-is`
+  (a peer dependency of Recharts) is a dev dependency. Consumers who use charts
+  install `recharts` and `react-is` (a new "Charts (Optional)" section in the
+  installation docs). Bundling Recharts was measured and rejected (see
+  `design.md`). The version stays within the repository's 24-hour release-age rule.
 - Add a changeset. No breaking changes.
 
 Order of work, in case time runs out: foundation and palette tokens first, then
@@ -80,18 +83,20 @@ first to move to a later change.
 - `packages/color-tokens` (build script, uses the `chroma-js` dependency it
   already has) and `packages/tokens` (new committed `chart-tokens.json`, added to
   the Style Dictionary `source`).
-- `packages/nimbus/package.json`: new dependencies `recharts` and `react-is`.
-  The newest Recharts version that passes the 24-hour release-age rule today is
-  3.10.1 (3.11.0 was published on 2026-11-17 at 16:54 UTC). Its peer range allows
-  React 19.
-- `packages/nimbus/vite.config.ts` does not externalize Recharts, so Recharts and
-  its dependencies are bundled. `pnpm check:bundle-size` (fails above 5%) and
-  `pnpm check:bundler-compat` must pass. The size is not measured yet.
+- `packages/nimbus/package.json`: `recharts` as a peer dependency and, with
+  `react-is`, as dev dependencies (through the new `charts` catalog in
+  `pnpm-workspace.yaml`). The newest Recharts version that passes the 24-hour
+  release-age rule today is 3.10.1 (3.11.0 was published on 2026-11-17 at 16:54
+  UTC). Its peer range allows React 19.
+- `packages/nimbus/vite.config.ts`: `recharts` is added to the externals.
+  Measured with a throwaway chart: the dist grows by 2.9 KB and both
+  `pnpm check:bundle-size` and `pnpm check:bundler-compat` pass. Bundled, it grew
+  the dist by 23.8% and failed the strict bundler check.
+- `packages/nimbus/src/docs/home-installation.mdx`: new "Charts (Optional)" section.
 - `packages/nimbus/src/theme/slot-recipes/index.ts`: new recipe registrations;
   theme typings regenerated. `packages/nimbus/src/components/index.ts`: new
   exports.
 - Docs: `packages/color-tokens/CLAUDE.md`, `packages/tokens` docs, designer and
   developer MDX for each chart.
-- Open questions to settle in `design.md`: whether charts on surfaces other than
-  `bg` need their own check, whether `ctteal` should be included, and how Pie
-  and Radial behave with the keyboard.
+- Open questions to settle in `design.md`: whether `ctteal` should be included, and
+  how Pie and Radial behave with the keyboard.
