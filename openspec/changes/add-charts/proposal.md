@@ -15,42 +15,50 @@ mode, or the Nimbus contrast rules.
 - Add shared parts used by all six charts: `ChartContainer` (size and series
   color variables), `ChartTooltip`, `ChartLegend`, and the `ChartConfig` type.
 - Use a prop-based API: `data`, `config`, `xAxisKey`, `series`, `stacked`,
-  `showLegend`, `showGrid`, `showTooltip`, `isLoading`. `PieChart` and
-  `RadialChart` take `nameKey` and `valueKey` instead of `xAxisKey` and
-  `series`. Recharts parts are not exported and there is no children-based
-  escape hatch in this version.
+  `showGrid`, `showTooltip`, `isLoading`. `PieChart` and `RadialChart` take
+  `nameKey` and `valueKey` instead of `xAxisKey` and `series`. Recharts parts are
+  not exported and there is no children-based escape hatch in this version.
+- Show the legend whenever a chart has two or more series (or categories), so
+  color is never the only signal. `showLegend` only applies to charts with a
+  single series.
 - `ChartConfig` maps each data key to `{ label, palette }`. In this version a
-  series color is a **palette name only** (for example `"violet"` or `"teal"`).
-  Arbitrary solid colors are deferred to a later change. The `config` shape
-  allows adding a `color` field later without a breaking change.
-- Add chart palette CSS variables (for example `--nimbus-chart-violet`),
-  generated at build time. For each palette and each color mode, the build takes
-  the palette's solid color (the `DEFAULT`, which is step 9) and adapts only its
-  lightness, so that it has at least 3:1 contrast against the current background
-  of that mode (WCAG 1.4.11). The result is the closest possible version of the
-  solid color: darker or lighter only as far as needed. The build can also
-  generate intermediate colors between the adapted solid and the background (for
-  example for area fills). A test fails the build if any chart color misses 3:1.
-- Chart palettes are the palettes that have a white contrast color. Palettes with
-  a black contrast color (`amber`, `lime`, `mint`, `sky`, `yellow`,
-  `ctyellow` and `ctteal`) are not chart palettes. Their solid colors are too
-  light on a light background, so excluding them keeps the color calculation
-  simple.
-- Charts follow the look of the shadcn charts (https://ui.shadcn.com/charts) in
-  Nimbus colors.
+  series color is a **palette name only** (for example `"violet"` or `"teal"`),
+  typed as a union of the chart palette names. Arbitrary solid colors are
+  deferred to a later change. The `config` shape allows adding a `color` field
+  later without a breaking change.
+- Add chart color tokens, generated at build time into a committed file
+  (`packages/tokens/src/base/chart-tokens.json`). Chakra turns them into CSS
+  variables such as `--nimbus-colors-chart-violet`. For each palette and each
+  color mode, the build takes the palette's solid color (`DEFAULT`, which is step
+  9) and adapts only its lightness, by the smallest amount that gives at least
+  3:1 contrast against the current background of that mode (WCAG 1.4.11). A solid
+  that already has 3:1 stays unchanged. A test fails the build if any chart color
+  misses 3:1.
+- Chart palettes are the palettes that have a white contrast color (23 palettes).
+  Palettes with a black contrast color (`amber`, `lime`, `mint`, `sky`, `yellow`,
+  `ctyellow` and `ctteal`) are not chart palettes. Their solids need a large
+  lightness change to reach 3:1 (OKLCH lightness change between -0.080 and -0.254,
+  and a hue shift of up to 6.2 degrees for `ctyellow`), so the result would no
+  longer look like the palette.
+- Keep the chart look close to the shadcn charts (https://ui.shadcn.com/charts) in
+  Nimbus colors. An area is drawn with the series color at reduced opacity, and
+  the line on top uses the full series color.
 - Make `aria-label` required in the chart types. Use the Recharts 3
-  accessibility layer for keyboard and screen reader support. Add gaps or
-  outlines between adjacent bars and slices, and always show legend labels, so
-  color is not the only signal (WCAG 1.4.1).
+  accessibility layer for keyboard and screen reader support. Separate adjacent
+  bars and slices with a stroke in the background color. Chart text (axes,
+  legend, tooltip, empty state) uses Nimbus text tokens with at least 4.5:1
+  contrast (WCAG 1.4.3).
 - Handle empty data (empty state), `isLoading` (skeleton), unknown series keys
   (development warning, series skipped) and invalid palettes (development
   warning, fallback to the first palette in production).
-- Add `recharts` and `react-is` as dependencies of `@commercetools/nimbus`.
+- Add `recharts` and `react-is` as dependencies of `@commercetools/nimbus`,
+  within the repository's 24-hour release-age rule (`pnpm-workspace.yaml`).
+  Recharts is bundled into the Nimbus dist.
 - Add a changeset. No breaking changes.
 
-Order of work, in case time runs out: foundation and palette variables first,
-then Bar, Line and Area, then Pie, then Radar and Radial. Radar and Radial are
-the first to move to a later change.
+Order of work, in case time runs out: foundation and palette tokens first, then
+Bar, Line and Area, then Pie, then Radar and Radial. Radar and Radial are the
+first to move to a later change.
 
 ## Capabilities
 
@@ -61,23 +69,29 @@ the first to move to a later change.
 
 ### Modified Capabilities
 
-- `color-tokens`: Adds the requirement to generate contrast-checked chart
-  palette CSS variables for each palette and color mode.
+- `color-tokens`: Adds the requirement to generate contrast-checked chart color
+  tokens for each chart palette and color mode, into a committed token file.
 
 ## Impact
 
-- New directories under `packages/nimbus/src/components/` for the charts and the
-  shared chart parts (component, types, recipe, slots, stories, docs, docs spec
-  for each).
+- New directories under `packages/nimbus/src/components/` for the shared chart
+  parts and for each chart (component, types, recipe, slots, i18n, stories,
+  designer and developer docs, docs spec, `index.ts`).
 - `packages/color-tokens` (build script, uses the `chroma-js` dependency it
-  already has) and `packages/tokens` (generated chart variables).
-- `packages/nimbus/package.json`: new dependencies `recharts` (latest is 3.11.0;
-  its peer range allows React 19) and `react-is`.
+  already has) and `packages/tokens` (new committed `chart-tokens.json`, added to
+  the Style Dictionary `source`).
+- `packages/nimbus/package.json`: new dependencies `recharts` and `react-is`.
+  The newest Recharts version that passes the 24-hour release-age rule today is
+  3.10.1 (3.11.0 was published on 2026-11-17 at 16:54 UTC). Its peer range allows
+  React 19.
+- `packages/nimbus/vite.config.ts` does not externalize Recharts, so Recharts and
+  its dependencies are bundled. `pnpm check:bundle-size` (fails above 5%) and
+  `pnpm check:bundler-compat` must pass. The size is not measured yet.
 - `packages/nimbus/src/theme/slot-recipes/index.ts`: new recipe registrations;
   theme typings regenerated. `packages/nimbus/src/components/index.ts`: new
   exports.
-- Bundle size is not measured yet. `pnpm check:bundle-size` must pass, and the
-  baseline may need an explicit, reviewed update.
-- Open questions to settle in `design.md`: which Nimbus token is the "current
-  background" of each color mode, and how many distinguishable palettes are
-  available for charts with many series.
+- Docs: `packages/color-tokens/CLAUDE.md`, `packages/tokens` docs, designer and
+  developer MDX for each chart.
+- Open questions to settle in `design.md`: whether charts on surfaces other than
+  `bg` need their own check, whether `ctteal` should be included, and how Pie
+  and Radial behave with the keyboard.

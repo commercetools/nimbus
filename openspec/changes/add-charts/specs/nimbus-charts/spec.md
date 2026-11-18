@@ -15,7 +15,7 @@ The system SHALL export `AreaChart`, `BarChart`, `LineChart`, `PieChart`, `Radar
 #### Scenario: Cartesian chart props
 - **WHEN** `AreaChart`, `BarChart`, `LineChart` or `RadarChart` is used
 - **THEN** it SHALL accept `xAxisKey` and `series`
-- **AND** SHALL accept `showLegend`, `showGrid` and `showTooltip`
+- **AND** SHALL accept `showGrid` and `showTooltip`
 
 #### Scenario: Stacked series
 - **WHEN** `AreaChart` or `BarChart` receives `stacked`
@@ -26,23 +26,24 @@ The system SHALL export `AreaChart`, `BarChart`, `LineChart`, `PieChart`, `Radar
 - **THEN** it SHALL accept `nameKey` and `valueKey` instead of `xAxisKey` and `series`
 - **AND** each category SHALL take its color from the `config` entry for its name
 
-#### Scenario: No Recharts API exposed
+#### Scenario: Recharts is not part of the public API
 - **WHEN** a consumer imports from `@commercetools/nimbus`
-- **THEN** no Recharts component SHALL be exported
-- **AND** charts SHALL NOT accept Recharts parts as children
+- **THEN** only the six charts and the shared chart types SHALL be exported for charts
+- **AND** charts SHALL accept only the documented props, not Recharts parts as children
 
 ### Requirement: Chart Config
-The system SHALL accept a `ChartConfig` that maps each data key to a label and a palette name.
+The system SHALL accept a `ChartConfig` that maps each data key to a label and a chart palette name.
 
 #### Scenario: Palette color
 - **WHEN** a config entry has `palette: "violet"`
-- **THEN** the series SHALL be drawn with `var(--nimbus-chart-violet)`
-- **AND** that color SHALL be the closest version of the palette's solid color that has at least 3:1 contrast against the current background
+- **THEN** the series SHALL be drawn with `var(--nimbus-colors-chart-violet)`
+- **AND** that color SHALL be the palette's solid color, adapted only in lightness to have at least 3:1 contrast against the current background
 - **AND** the color SHALL change with light and dark mode without JavaScript
 
-#### Scenario: Palettes with a black contrast color
-- **WHEN** a config entry uses a palette whose contrast color is black (for example `yellow`)
-- **THEN** TypeScript SHALL report an error, because it is not a chart palette
+#### Scenario: Palette names are typed
+- **WHEN** a consumer writes a palette name in `config`
+- **THEN** TypeScript SHALL accept only the chart palette names
+- **AND** SHALL report an error for a palette with a black contrast color (for example `yellow`)
 
 #### Scenario: Labels
 - **WHEN** a config entry has a `label`
@@ -53,10 +54,10 @@ The system SHALL accept a `ChartConfig` that maps each data key to a label and a
 - **THEN** the chart SHALL skip that series
 - **AND** SHALL log a warning in development
 
-#### Scenario: Invalid palette
-- **WHEN** a config entry has a palette name that does not exist
+#### Scenario: Invalid palette at run time
+- **WHEN** a config entry has a palette name that is not a chart palette (for example from untyped data)
 - **THEN** the chart SHALL log a warning in development
-- **AND** SHALL use the first palette in production
+- **AND** SHALL use the first palette in the default order in production
 
 ### Requirement: Chart Accessibility
 Charts SHALL meet WCAG 2.1 AA.
@@ -65,28 +66,60 @@ Charts SHALL meet WCAG 2.1 AA.
 - **WHEN** a consumer uses a chart without `aria-label`
 - **THEN** TypeScript SHALL report an error
 
-#### Scenario: Keyboard navigation
+#### Scenario: Recharts defaults are kept
+- **WHEN** a chart is rendered
+- **THEN** it SHALL keep the Recharts accessibility layer defaults, which are `role="application"` and `tabIndex={0}`
+- **AND** a story test SHALL check both
+
+#### Scenario: Keyboard navigation for Area, Bar, Line and Radar
 - **WHEN** the chart has focus and the user presses ArrowRight or ArrowLeft
 - **THEN** the active data point SHALL move to the next or previous point
 - **AND** the tooltip SHALL show that point
 - **AND** the chart SHALL be reachable with the Tab key
 
+#### Scenario: Keyboard navigation for Pie and Radial
+- **WHEN** a story test checks Pie and Radial charts with the keyboard
+- **THEN** the chart SHALL be reachable with the Tab key
+- **AND** if arrow keys do not move between slices, the docs SHALL record the gap and the legend SHALL list each category with its value
+
 #### Scenario: Screen reader
 - **WHEN** the active data point changes
 - **THEN** the tooltip content SHALL be announced through a live region
 
-#### Scenario: Color is not the only signal
-- **WHEN** a Bar or Pie chart has adjacent bars or slices
-- **THEN** they SHALL be separated by a gap or an outline
-- **AND** the legend SHALL show a text label for each series
+#### Scenario: Legend with two or more series
+- **WHEN** a chart has two or more series or categories
+- **THEN** the legend SHALL be shown with a text label for each series
+- **AND** `showLegend` SHALL have no effect on that chart
+
+#### Scenario: Single series legend
+- **WHEN** a chart has one series
+- **THEN** the legend SHALL be shown only when `showLegend` is true
+
+#### Scenario: Separation of adjacent shapes
+- **WHEN** a Bar chart has adjacent bars, or a Pie or Radial chart has adjacent slices
+- **THEN** they SHALL be separated by a 2 px stroke in the `bg` color
 
 #### Scenario: Series with many lines
-- **WHEN** a Line chart has more series than the documented threshold
+- **WHEN** a Line chart has more than 3 series
 - **THEN** each line SHALL also have a different dash style or marker
 
-#### Scenario: Contrast
+#### Scenario: Default palette order
+- **WHEN** a chart assigns palettes by default order
+- **THEN** each palette SHALL differ from its neighbor in the order by a deltaE2000 of at least 15
+- **AND** a unit test SHALL check the order
+
+#### Scenario: Series contrast
 - **WHEN** a series is drawn with a palette color
 - **THEN** it SHALL have at least 3:1 contrast against the current background of the active color mode, in light and dark mode
+
+#### Scenario: Text contrast
+- **WHEN** a chart shows text (axis labels, legend, tooltip, empty state)
+- **THEN** the text SHALL use the `fg` or `fg.subtle` token
+- **AND** SHALL have at least 4.5:1 contrast against its background in light and dark mode
+
+#### Scenario: Grid lines
+- **WHEN** a chart shows grid lines
+- **THEN** they SHALL be decorative and need not reach 3:1
 
 ### Requirement: Chart Appearance
 Charts SHALL look like the shadcn charts (https://ui.shadcn.com/charts), in Nimbus colors.
@@ -98,8 +131,8 @@ Charts SHALL look like the shadcn charts (https://ui.shadcn.com/charts), in Nimb
 
 #### Scenario: Area fill
 - **WHEN** an `AreaChart` draws the area under a line
-- **THEN** the area SHALL use an intermediate color between the series color and the current background
-- **AND** the line on top SHALL use the full-strength series color
+- **THEN** the area SHALL use the series color at reduced opacity
+- **AND** the line on top SHALL use the full series color
 
 ### Requirement: Chart States
 Charts SHALL show clear empty and loading states.
@@ -123,9 +156,9 @@ Charts SHALL show a Nimbus-styled tooltip and legend that read the shared config
 - **WHEN** `showTooltip` is true and the user hovers or focuses a data point
 - **THEN** a tooltip SHALL show the label, color and value of each series at that point
 
-#### Scenario: Legend
-- **WHEN** `showLegend` is true
-- **THEN** a legend SHALL show the label and color of each series
+#### Scenario: Legend content
+- **WHEN** the legend is shown
+- **THEN** it SHALL show the label and color of each series
 
 ### Requirement: Chart Tests and Docs
 Each chart SHALL have Storybook tests, documentation and a consumer example.
