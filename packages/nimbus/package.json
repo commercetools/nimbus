@@ -94,9 +94,11 @@
     "react-aria": "catalog:react",
     "react-aria-components": "catalog:react",
     "react-hotkeys-hook": "catalog:react",
+    "react-is": "catalog:charts",
     "react-markdown": "catalog:markdown",
     "react-stately": "catalog:react",
     "react-use": "catalog:react",
+    "recharts": "catalog:charts",
     "remark-gfm": "catalog:markdown",
     "remend": "catalog:markdown",
     "use-debounce": "catalog:react"
