@@ -47,6 +47,10 @@ The system SHALL treat Recharts as an external peer dependency of `@commercetool
 ### Requirement: Chart Config
 The system SHALL accept a `ChartConfig` that maps each data key to a label and a chart palette name.
 
+#### Scenario: Palette is optional
+- **WHEN** a config entry has no `palette`
+- **THEN** the chart SHALL use the palette of the default order that matches the position of the series (or category)
+
 #### Scenario: Palette color
 - **WHEN** a config entry has `palette: "violet"`
 - **THEN** the series SHALL be drawn with `var(--nimbus-colors-chart-violet)`
@@ -146,6 +150,17 @@ Charts SHALL look like the shadcn charts (https://ui.shadcn.com/charts), in Nimb
 - **WHEN** an `AreaChart` draws the area under a line
 - **THEN** the area SHALL use a vertical gradient of the series color, from reduced opacity at the line to transparent at the baseline
 - **AND** the line on top SHALL use the full series color
+
+### Requirement: Chart Motion
+Charts SHALL respect the reduced motion preference.
+
+#### Scenario: Animation prop
+- **WHEN** a chart receives `isAnimationActive`
+- **THEN** it SHALL turn the Recharts draw animation on or off accordingly
+
+#### Scenario: Reduced motion
+- **WHEN** `isAnimationActive` is not set and the user prefers reduced motion
+- **THEN** the chart SHALL draw without animation
 
 ### Requirement: Chart States
 Charts SHALL show clear empty and loading states.

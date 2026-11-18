@@ -15,13 +15,15 @@ mode, or the Nimbus contrast rules.
 - Add shared parts used by all six charts: `ChartContainer` (size and series
   color variables), `ChartTooltip`, `ChartLegend`, and the `ChartConfig` type.
 - Use a prop-based API: `data`, `config`, `xAxisKey`, `series`, `stacked`,
-  `showGrid`, `showTooltip`, `showLegend`, `isLoading`. `PieChart` and `RadialChart` take
+  `showGrid`, `showTooltip`, `showLegend`, `isLoading`,
+  `isAnimationActive`. `PieChart` and `RadialChart` take
   `nameKey` and `valueKey` instead of `xAxisKey` and `series`. Recharts parts are
   not exported and there is no children-based escape hatch in this version.
 - Show the legend whenever a chart has two or more series (or categories), so
   color is never the only signal. `showLegend` only applies to charts with a
   single series.
-- `ChartConfig` maps each data key to `{ label, palette }`. In this version a
+- `ChartConfig` maps each data key to `{ label, palette }`. `palette` is optional: a
+  key without a palette gets the next palette of the default order. In this version a
   series color is a **palette name only** (for example `"violet"` or `"teal"`),
   typed as a union of the chart palette names. Arbitrary solid colors are
   deferred to a later change. The `config` shape allows adding a `color` field

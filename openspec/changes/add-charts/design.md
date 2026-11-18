@@ -168,8 +168,10 @@ measured both options with a throwaway `BarChart` (named imports from
 ### 2. Prop-based API### 2. Prop-based API, no exported Recharts parts
 
 Each chart takes `data`, `config`, `xAxisKey`, `series` and a few switches.
-`PieChart` and `RadialChart` use `nameKey` and `valueKey`. `aria-label` is
-required by the types. This keeps the API small and lets us change the library
+`PieChart` and `RadialChart` use `nameKey` and `valueKey`. `isAnimationActive`
+turns the draw animation on or off; it is off by default when the user prefers
+reduced motion, and the Chromatic stories turn it off. `aria-label` is required by
+the types. This keeps the API small and lets us change the library
 later. shadcn lets users compose Recharts children. That gives more power but
 makes Recharts' API the Nimbus API. A children-based escape hatch can be added
 in a later change.
