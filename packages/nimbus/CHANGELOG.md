@@ -1,5 +1,152 @@
 # @commercetools/nimbus
 
+## 3.9.0
+
+### Minor Changes
+
+- [#2010](https://github.com/commercetools/nimbus/pull/2010)
+  [`9a462d0`](https://github.com/commercetools/nimbus/commit/9a462d04491822ae5e5bf1d0db8156ac5ab9f6bf)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Meter` (Beta): new
+  component that shows a measured value within a known range, such as storage
+  used or a quota consumed. Use it instead of `ProgressBar` when the value is
+  not the progress of a task.
+
+  - Show one measurement with `value`, or several parts of one total with
+    `segments`.
+  - Set `colorPalette` and `thresholds` to change the fill color as the value
+    grows, for example `warning` from 80 and `critical` from 95.
+  - Compose `Meter.Label`, `Meter.Value`, `Meter.Track` and `Meter.Legend`. Pass
+    children to `Meter.Value` for rich content.
+
+- [#2162](https://github.com/commercetools/nimbus/pull/2162)
+  [`f904479`](https://github.com/commercetools/nimbus/commit/f904479b7c00dd6b737ff29ab34f1a9e083496a3)
+  Thanks [@ismaelocaramelo](https://github.com/ismaelocaramelo)! - `DefaultPage`
+  (Beta): added `collapseHeaderOnScroll` to `DefaultPage.Root`.
+
+  - While the content is scrolled, a pinned header shows a shorter form: the
+    subtitle is hidden visually, the back link shows only its icon with a
+    tooltip, and the title is smaller. Actions and tabs stay visible. The full
+    header returns at the top. Works with the default `layout="constrained"` and
+    with `layout="flexible"` plus `stickyHeader`.
+  - In browsers that support scroll-driven animations, the header follows the
+    scroll position. In other browsers, and when the user prefers reduced
+    motion, it changes in one step after scrolling pauses.
+  - A title with several lines keeps all of them in the shorter form. To keep it
+    on one line, truncate it with style props, for example
+    `<DefaultPage.Title truncate>`.
+  - `DefaultPage.Header` accepts a function as children. It receives
+    `{ isCollapsed }`, so pages can adapt their own header content.
+  - `DefaultPage.Root` sets the CSS variable `--default-page-header-height`, for
+    sticky offsets and `scroll-margin-top` inside the page. When the header
+    follows the scroll position, it is the height of the collapsed header; in
+    the one-step change, it is the current header height.
+  - In the constrained layout, `DefaultPage.Root` cuts off content that reaches
+    out of it at the top or bottom edge while the header follows the scroll
+    position. Elements rendered in a portal, such as menus and tooltips, are not
+    affected.
+  - The back link label is now wrapped in its own element on every page. Nothing
+    changes on screen, but snapshot tests of pages with a back link change, and
+    `getByText` on the label returns that element instead of the link. Use
+    `getByRole("link", { name })` to find the back link.
+  - Docs: the back link label is its accessible name. Pass it as children, not
+    as `aria-label`.
+
+### Patch Changes
+
+- [#2122](https://github.com/commercetools/nimbus/pull/2122)
+  [`000a948`](https://github.com/commercetools/nimbus/commit/000a948930175912402ce8217fc92a594ce7fa16)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Accordion`: Other icons,
+  badges and spinners inside `Accordion.Header` now keep their own size and no
+  longer rotate when the item opens. Only the chevron is sized and rotated.
+
+  If you added a `& svg` override inside the header to undo the chevron size,
+  you can remove it.
+
+- [#2119](https://github.com/commercetools/nimbus/pull/2119)
+  [`efa03fc`](https://github.com/commercetools/nimbus/commit/efa03fc1c0ef832e029a57cc0732033221a4ff3f)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `DatePicker`: the
+  `leadingElement` prop now renders at the start of the input. Before, the prop
+  was accepted but nothing was shown.
+
+- [#2151](https://github.com/commercetools/nimbus/pull/2151)
+  [`96d6e6d`](https://github.com/commercetools/nimbus/commit/96d6e6dcb5ae44453bfd495dad5c8064f2f91631)
+  Thanks [@renovate](https://github.com/apps/renovate)! - Update dependency
+  `slate` to `0.123.0 || ^0.126.0 || ^0.147.0`, `slate-history` to `0.144.0`,
+  `slate-hyperscript` to `0.115.0 || ^0.127.0 || ^0.138.0`, `slate-react` to
+  `0.123.0 || ^0.126.0 || ^0.147.0`, `@fission-ai/openspec` to `1.15.0`,
+  `react-router` to `8.5.1`.
+
+- [#2115](https://github.com/commercetools/nimbus/pull/2115)
+  [`7ea4545`](https://github.com/commercetools/nimbus/commit/7ea45450228d0588d0281855e60bd1e58ddb76ed)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Pre-release components
+  now show their lifecycle state in the editor. `ActivityIndicator`,
+  `ChatMessage`, `ChatMessageList`, `FileTrigger`, `ListBox` and `ModalPage`
+  (Experimental), and `DefaultPage`, `DropZone`, `FormActionBar`, `Item`,
+  `ItemGroup`, `Markdown`, `Popover`, `PublicPageLayout`, `RangeSlider`,
+  `Region`, `Slider`, `Splitter`, `Steps` and `Tree` (Beta) carry the
+  `@experimental` or `@beta` JSDoc tag in their type definitions.
+
+- [#2123](https://github.com/commercetools/nimbus/pull/2123)
+  [`99b3907`](https://github.com/commercetools/nimbus/commit/99b390765d2d72104d44330ed8bbbb487a96d188)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `NimbusProvider`: no
+  longer triggers React 19.3's "Encountered a script tag while rendering React
+  component" console error when it renders in the browser. Tests that fail on
+  `console.error` now pass with React 19.3, including those that render Nimbus
+  components wrapped in their own `NimbusProvider`.
+
+  On the server, the theme script is still output as executable JavaScript, so
+  server-rendered pages keep setting the correct theme before first paint. A
+  non-empty `type` passed in `scriptProps` is still used as given.
+
+  `NimbusProvider`: can now be rendered on the server (for example with
+  `renderToString`). Before, it threw "Missing getServerSnapshot" while
+  rendering the toast outlet.
+
+- [#2166](https://github.com/commercetools/nimbus/pull/2166)
+  [`b88aaa6`](https://github.com/commercetools/nimbus/commit/b88aaa6dec80091fc1d62f3ae82d8ad075de249a)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - - `LoadingSpinner`:
+  spinners now render at their requested `size` in Safari instead of all
+  appearing in the same very large size. Like an icon, a spinner inside a
+  `Button` now takes the size the button gives to icons, so it needs no `size`.
+  - `LoadingSpinner`: the ring is now drawn on whole pixels at 24px, so it is
+    sharper. Its stroke is slightly thicker (3px, was 2.5px at 24px).
+  - `LoadingSpinner`: the `ref` is now typed as `SVGSVGElement` (was
+    `HTMLDivElement`), because the spinner now renders as an `svg` element.
+  - `FormActionBar`, `ConfirmationDialog` and `FormDialog`: the loading spinner
+    in the save, delete or confirm button now has the same size as the icons of
+    that button (for example 24px in the default button, was 14px).
+  - `DataTable`: a table with `isResizable` and `allowsPinning={false}` no
+    longer shows a horizontal scrollbar when no column is wider than the table.
+    The resize handle of the last column is now as wide as the handles of the
+    other columns.
+
+- [#2064](https://github.com/commercetools/nimbus/pull/2064)
+  [`2e039aa`](https://github.com/commercetools/nimbus/commit/2e039aa7517ddd1ab91a782380102eddf22c3f69)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `SearchInput`: in an
+  empty field, a `trailingElement` now sits at the field's trailing edge, in
+  line with the same element in other inputs. Before, the hidden clear button
+  kept its place after the `trailingElement` and left a gap. The clear button
+  now appears only when the field has a value, after the `trailingElement`. The
+  field keeps the same width with or without it. While the field is empty, the
+  placeholder can use the clear button's space.
+
+  `SearchInput`: in a field narrower than the width it has when you set none,
+  the text, the `trailingElement` and the clear button no longer extend past the
+  field's edge. The text area now gets smaller to fit.
+
+- [#2121](https://github.com/commercetools/nimbus/pull/2121)
+  [`ba3883d`](https://github.com/commercetools/nimbus/commit/ba3883d0af8d53c5d5db83e8e9eabdf372b414bf)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Select`: The default
+  outline variant now has the same dark grey background as `TextInput` and the
+  other input components in dark mode. Before, it had a pure black background.
+
+- [#2120](https://github.com/commercetools/nimbus/pull/2120)
+  [`b02f8ab`](https://github.com/commercetools/nimbus/commit/b02f8abdef092cd02d2e137052b202368245e33a)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Tabs`: The selected tab
+  label in the `line` variant now uses a darker color step, so it has better
+  contrast on light `primary` colors. The indicator bar color does not change.
+  This matches `TabNav`.
+
 ## 3.8.0
 
 ### Minor Changes
