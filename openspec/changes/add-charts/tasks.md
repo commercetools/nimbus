@@ -29,7 +29,7 @@
 - [x] 3.7 Implement `ChartContainer` with a default aspect ratio, the empty state, the `isLoading` skeleton, `displayName`, and the legend rule (shown for two or more series)
 - [x] 3.8 Add the slot recipe and register it in `packages/nimbus/src/theme/slot-recipes/index.ts`. Regenerate theme typings
 - [x] 3.9 Add the `chart.i18n.ts` source file for the empty state text and run `pnpm extract-intl` (see `docs/file-type-guidelines/i18n.md`)
-- [ ] 3.10 Check that `apps/docs` and Storybook resolve `recharts` from the workspace (it is an external peer and dev dependency of `packages/nimbus`), and run `pnpm check:package-shape` with a first chart exported. Status: Storybook resolves `recharts` (verified by the shared stories). `apps/docs` does not list `recharts` or `react-is`; add both (catalog `charts`) together with the first chart docs in task 4.9. `check:package-shape` can only show something once a chart is exported, so run it in task 4.13. `check:package-shape` also fails today on `nimbus-design-token-ts-plugin` and `nimbus-mcp` (publint), which this change does not touch
+- [x] 3.10 Check that `apps/docs` and Storybook resolve `recharts` from the workspace (it is an external peer and dev dependency of `packages/nimbus`), and run `pnpm check:package-shape` with a first chart exported. Status: Storybook resolves `recharts` (verified by the shared stories). `apps/docs` does not list `recharts` or `react-is`; add both (catalog `charts`) together with the first chart docs in task 4.9. `check:package-shape` can only show something once a chart is exported, so run it in task 4.13. `check:package-shape` also fails today on `nimbus-design-token-ts-plugin` and `nimbus-mcp` (publint), which this change does not touch Done: `apps/docs` lists `recharts` and `react-is` (catalog `charts`) and the docs build passes; `pnpm check:package-shape` with the charts exported reports no problems for `@commercetools/nimbus` (attw and publint pass). The overall command still fails on `nimbus-design-token-ts-plugin` and `nimbus-mcp`, which this change does not touch.
 
 ## 4. BarChart, LineChart and AreaChart (first release for the product team)
 
@@ -41,10 +41,10 @@
 - [x] 4.6 Write failing stories for `AreaChart`: the same list as 4.2 (without bar stroke), plus the gradient fill (about 0.8 opacity at the line, about 0.1 at the baseline) with a full-color line
 - [x] 4.7 Implement `AreaChart`
 - [x] 4.8 Export the shared types and the three charts from `packages/nimbus/src/components/index.ts`
-- [ ] 4.9 Add the designer `*.mdx`, the developer `*.dev.mdx` and `*.docs.spec.tsx` for `BarChart` (use `/create-eng-docs` and the `writing-designer-documentation` skill). Add the `@experimental` JSDoc tag on the main export and state in the docs text that colors are checked against `bg`, that consumers install `recharts` and `react-is`, and that the chart is experimental in the first release (see `docs/file-type-guidelines/documentation.md` and `main-component.md` "Lifecycle State Tag")
-- [ ] 4.10 Add the same three docs files for `LineChart`
-- [ ] 4.11 Add the same three docs files for `AreaChart`
-- [ ] 4.12 Add a changeset for the three charts (consumer-facing, see `docs/changeset-conventions.md`). Say in the text that they are experimental
+- [x] 4.9 Add the designer `*.mdx`, the developer `*.dev.mdx` and `*.docs.spec.tsx` for `BarChart` (use `/create-eng-docs` and the `writing-designer-documentation` skill). Add the `@experimental` JSDoc tag on the main export and state in the docs text that colors are checked against `bg`, that consumers install `recharts` and `react-is`, and that the chart is experimental in the first release (see `docs/file-type-guidelines/documentation.md` and `main-component.md` "Lifecycle State Tag")
+- [x] 4.10 Add the same three docs files for `LineChart`
+- [x] 4.11 Add the same three docs files for `AreaChart`
+- [x] 4.12 Add a changeset for the three charts (consumer-facing, see `docs/changeset-conventions.md`). Say in the text that they are experimental
 - [ ] 4.13 Run `pnpm lint`, `pnpm --filter @commercetools/nimbus typecheck:dev`, `pnpm test`, and `pnpm check:bundle-size`
 
 ## 5. PieChart
