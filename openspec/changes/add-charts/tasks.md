@@ -20,16 +20,16 @@
 
 ## 3. Shared chart foundation (spec: `nimbus-charts`)
 
-- [ ] 3.1 Create the folder `packages/nimbus/src/components/chart/` with `index.ts`, following `docs/file-type-guidelines/barrel-exports.md` and the structure in `docs/component-guidelines.md`
-- [ ] 3.2 Define `ChartConfig` and shared types with JSDoc on every prop, with `aria-label` required
-- [ ] 3.3 Write failing unit tests for config handling: palette to CSS variable, unknown series key (skipped and warned in development), invalid palette at run time (warned in development, first palette of the default order in production), more than 11 series (warned in development, palettes reused in the default order)
-- [ ] 3.4 Implement the config utilities until 3.3 passes
-- [ ] 3.5 Write a failing test for text contrast: chart text tokens have at least 4.5:1 against `bg` in both modes
-- [ ] 3.6 Implement `ChartTooltip` (with `role="status"` and `aria-live="assertive"`) and `ChartLegend` reading the shared config. Text uses `fg` and `fg.subtle`.
-- [ ] 3.7 Implement `ChartContainer` with a default aspect ratio, the empty state, the `isLoading` skeleton, `displayName`, and the legend rule (shown for two or more series)
-- [ ] 3.8 Add the slot recipe and register it in `packages/nimbus/src/theme/slot-recipes/index.ts`. Regenerate theme typings
-- [ ] 3.9 Add the `chart.i18n.ts` source file for the empty state text and run `pnpm extract-intl` (see `docs/file-type-guidelines/i18n.md`)
-- [ ] 3.10 Check that `apps/docs` and Storybook resolve `recharts` from the workspace (it is an external peer and dev dependency of `packages/nimbus`), and run `pnpm check:package-shape` with a first chart exported
+- [x] 3.1 Create the folder `packages/nimbus/src/components/chart/` with `index.ts`, following `docs/file-type-guidelines/barrel-exports.md` and the structure in `docs/component-guidelines.md`
+- [x] 3.2 Define `ChartConfig` and shared types with JSDoc on every prop, with `aria-label` required
+- [x] 3.3 Write failing unit tests for config handling: palette to CSS variable, unknown series key (skipped and warned in development), invalid palette at run time (warned in development, first palette of the default order in production), more than 11 series (warned in development, palettes reused in the default order)
+- [x] 3.4 Implement the config utilities until 3.3 passes
+- [x] 3.5 Write a failing test for text contrast: chart text tokens have at least 4.5:1 against `bg` in both modes
+- [x] 3.6 Implement `ChartTooltip` (with `role="status"` and `aria-live="assertive"`) and `ChartLegend` reading the shared config. Text uses `fg` and `fg.subtle`.
+- [x] 3.7 Implement `ChartContainer` with a default aspect ratio, the empty state, the `isLoading` skeleton, `displayName`, and the legend rule (shown for two or more series)
+- [x] 3.8 Add the slot recipe and register it in `packages/nimbus/src/theme/slot-recipes/index.ts`. Regenerate theme typings
+- [x] 3.9 Add the `chart.i18n.ts` source file for the empty state text and run `pnpm extract-intl` (see `docs/file-type-guidelines/i18n.md`)
+- [ ] 3.10 Check that `apps/docs` and Storybook resolve `recharts` from the workspace (it is an external peer and dev dependency of `packages/nimbus`), and run `pnpm check:package-shape` with a first chart exported. Status: Storybook resolves `recharts` (verified by the shared stories). `apps/docs` does not list `recharts` or `react-is`; add both (catalog `charts`) together with the first chart docs in task 4.9. `check:package-shape` can only show something once a chart is exported, so run it in task 4.13. `check:package-shape` also fails today on `nimbus-design-token-ts-plugin` and `nimbus-mcp` (publint), which this change does not touch
 
 ## 4. BarChart, LineChart and AreaChart (first release for the product team)
 
