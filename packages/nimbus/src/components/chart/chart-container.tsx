@@ -8,7 +8,7 @@ import { ChartEmptySlot, ChartPlotSlot, ChartRootSlot } from "./chart.slots";
 import type { ChartContainerProps } from "./chart.types";
 import { ChartLegend } from "./components/chart-legend";
 import { usePrefersReducedMotion } from "./hooks";
-import { resolveChartConfig } from "./utils";
+import { resolveChartConfig, resolveIsAnimationActive } from "./utils";
 
 /**
  * # ChartContainer
@@ -55,7 +55,10 @@ export const ChartContainer = (props: ChartContainerProps) => {
   const contextValue = useMemo(
     () => ({
       series,
-      isAnimationActive: isAnimationActive ?? !prefersReducedMotion,
+      isAnimationActive: resolveIsAnimationActive(
+        isAnimationActive,
+        prefersReducedMotion
+      ),
       showTooltip,
       ariaLabel,
     }),

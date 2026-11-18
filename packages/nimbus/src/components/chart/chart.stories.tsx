@@ -90,6 +90,22 @@ export default meta;
 
 type Story = StoryObj<typeof SampleChart>;
 
+/**
+ * Computed color of the first (ctviolet) legend swatch, as [r, g, b]. A real
+ * color proves the `--nimbus-colors-chart-ctviolet` variable exists and
+ * resolves; an unknown variable would give a transparent swatch.
+ */
+const firstSwatchRgb = (root: HTMLElement): number[] => {
+  const swatch = root.querySelector<HTMLElement>(
+    ".nimbus-chart__legendSwatch"
+  )!;
+  const color = getComputedStyle(swatch).backgroundColor;
+  if (!/^rgb/.test(color) || color === "rgba(0, 0, 0, 0)") {
+    throw new Error(`Swatch color does not resolve: "${color}"`);
+  }
+  return color.match(/\d+/g)!.slice(0, 3).map(Number);
+};
+
 /** Two series: the legend is always shown, with the config colors */
 export const Base: Story = {
   tags: ["vrt"],
@@ -112,6 +128,11 @@ export const Base: Story = {
       await expect(swatch.style.color).toBe(
         "var(--nimbus-colors-chart-ctviolet)"
       );
+    });
+
+    await step("The ctviolet variable resolves to a violet color", async () => {
+      const [red, , blue] = firstSwatchRgb(canvasElement);
+      await expect(blue).toBeGreaterThan(red + 40);
     });
 
     await step("Keeps the Recharts role and tab stop", async () => {
@@ -304,5 +325,8 @@ export const Dark: Story = {
     await expect(await canvas.findAllByRole("listitem")).toHaveLength(2);
     // fg.subtle is a dark gray in light mode (see Base) and a light gray here
     await waitFor(() => expect(legendRed(canvasElement)).toBeGreaterThan(128));
+    // The token also resolves in dark mode
+    const [red, , blue] = firstSwatchRgb(canvasElement);
+    await expect(blue).toBeGreaterThan(red + 40);
   },
 };

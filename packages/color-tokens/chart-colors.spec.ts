@@ -24,7 +24,7 @@ import committedChartTokens from "../tokens/src/base/chart-tokens.json";
 
 const MODES: ChartMode[] = ["light", "dark"];
 
-/** Palettes that have a black contrast color (see design.md, "Facts checked"). */
+/** Palettes that have a black contrast color (see packages/color-tokens/README.md, section "Chart colors"). */
 const BLACK_CONTRAST_PALETTES = [
   "amber",
   "lime",
@@ -145,6 +145,25 @@ describe("chart color tokens, contrast on the emitted value", () => {
   );
 });
 
+describe("chart color tokens, generated files agree", () => {
+  it.each(MODES)(
+    "has the committed %s value in the generated theme tokens, for every chart palette",
+    (mode) => {
+      const key = mode === "light" ? "_light" : "_dark";
+      for (const palette of chartPalettes) {
+        const generated = emittedChart[palette.name]?.DEFAULT.value[key];
+        const committed = committedChart[palette.name]?.[mode].DEFAULT.$value;
+        expect(generated, `${palette.name} ${mode} generated`).toBeTypeOf(
+          "string"
+        );
+        expect(emittedColor(committed), `${palette.name} ${mode}`).toBe(
+          chroma(generated).hex()
+        );
+      }
+    }
+  );
+});
+
 describe("chart color tokens, adaptation of the solid color", () => {
   it("keeps a solid that already has 3:1 unchanged", () => {
     for (const palette of chartPalettes) {
@@ -247,6 +266,19 @@ describe("chart tokens file", () => {
 
 describe("default chart palette order", () => {
   it("lists 11 different chart palettes", () => {
+    expect(DEFAULT_CHART_PALETTE_ORDER).toEqual([
+      "ctviolet",
+      "orange",
+      "teal",
+      "crimson",
+      "blue",
+      "grass",
+      "plum",
+      "bronze",
+      "cyan",
+      "red",
+      "slate",
+    ]);
     expect(DEFAULT_CHART_PALETTE_ORDER).toHaveLength(11);
     expect(new Set(DEFAULT_CHART_PALETTE_ORDER).size).toBe(11);
     const chartNames = new Set(chartPalettes.map((p) => p.name));

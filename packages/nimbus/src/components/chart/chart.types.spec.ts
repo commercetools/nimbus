@@ -1,0 +1,83 @@
+import { describe, expect, it } from "vitest";
+import type { BarChartProps } from "@/components/bar-chart/bar-chart.types";
+import type { PieChartProps } from "@/components/pie-chart/pie-chart.types";
+import type { ChartConfig } from "./chart.types";
+
+/**
+ * Type-level tests. An unused `@ts-expect-error` is a compile error, so these
+ * fail `typecheck` when the types get looser. Run with `typecheck:dev`.
+ */
+
+const data = [{ month: "Jan", desktop: 1 }];
+const config: ChartConfig = { desktop: { label: "Desktop" } };
+
+describe("chart types", () => {
+  it("accepts a chart palette and rejects one with a black contrast color", () => {
+    const valid: ChartConfig = {
+      desktop: { label: "Desktop", palette: "ctviolet" },
+    };
+    const invalid: ChartConfig = {
+      // @ts-expect-error "yellow" has a black contrast color, so it is not a chart palette
+      desktop: { label: "Desktop", palette: "yellow" },
+    };
+    expect(valid.desktop.palette).toBe("ctviolet");
+    expect(invalid).toBeDefined();
+  });
+
+  it("requires aria-label on BarChart", () => {
+    const valid: BarChartProps = {
+      data,
+      config,
+      xAxisKey: "month",
+      series: ["desktop"],
+      "aria-label": "Visitors",
+    };
+    // @ts-expect-error aria-label is required
+    const missing: BarChartProps = {
+      data,
+      config,
+      xAxisKey: "month",
+      series: ["desktop"],
+    };
+    expect(valid["aria-label"]).toBe("Visitors");
+    expect(missing).toBeDefined();
+  });
+
+  it("gives PieChart nameKey and valueKey instead of xAxisKey and series", () => {
+    const valid: PieChartProps = {
+      data,
+      config,
+      nameKey: "month",
+      valueKey: "desktop",
+      "aria-label": "Visitors",
+    };
+    const withXAxisKey: PieChartProps = {
+      data,
+      config,
+      nameKey: "month",
+      valueKey: "desktop",
+      "aria-label": "Visitors",
+      // @ts-expect-error PieChart has no xAxisKey
+      xAxisKey: "month",
+    };
+    const withSeries: PieChartProps = {
+      data,
+      config,
+      nameKey: "month",
+      valueKey: "desktop",
+      "aria-label": "Visitors",
+      // @ts-expect-error PieChart has no series
+      series: ["desktop"],
+    };
+    // @ts-expect-error nameKey and valueKey are required
+    const missingKeys: PieChartProps = {
+      data,
+      config,
+      "aria-label": "Visitors",
+    };
+    expect(valid.nameKey).toBe("month");
+    expect(withXAxisKey).toBeDefined();
+    expect(withSeries).toBeDefined();
+    expect(missingKeys).toBeDefined();
+  });
+});
