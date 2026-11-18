@@ -42,8 +42,14 @@ const LineChartPlot = ({ data, xAxisKey, showGrid }: LineChartPlotProps) => {
     useChartContext();
   const isDashed = series.length > MAX_SOLID_SERIES;
 
+  // The margin keeps the first and last x axis label inside the chart. A label
+  // that would cross the edge is otherwise dropped or cut off.
   return (
-    <RechartsLineChart data={data} aria-label={ariaLabel}>
+    <RechartsLineChart
+      data={data}
+      aria-label={ariaLabel}
+      margin={{ left: 12, right: 12 }}
+    >
       {showGrid && <CartesianGrid vertical={false} />}
       <XAxis dataKey={xAxisKey} axisLine={false} tickLine={false} />
       {showTooltip && <Tooltip content={<ChartTooltip />} />}

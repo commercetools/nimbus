@@ -6,6 +6,7 @@ import {
   findSvg,
   legendRed,
   tooltipText,
+  xAxisLabels,
 } from "../chart/chart.test-utils";
 import { LineChart } from "./line-chart";
 import type { LineChartProps } from "./line-chart.types";
@@ -383,5 +384,26 @@ export const Dark: Story = {
     const canvas = within(canvasElement);
     await expect(await canvas.findAllByRole("listitem")).toHaveLength(2);
     await waitFor(() => expect(legendRed(canvasElement)).toBeGreaterThan(128));
+  },
+};
+
+/** Every x axis label is drawn, and none is cut off at the chart edge */
+export const AllXLabelsVisible: Story = {
+  render: () => <SampleChart />,
+  play: async ({ canvasElement }) => {
+    await findSvg(canvasElement);
+    await waitFor(() => {
+      expect(xAxisLabels(canvasElement).labels.map((l) => l.text)).toEqual([
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+      ]);
+    });
+    const { svgLeft, svgRight, labels } = xAxisLabels(canvasElement);
+    for (const label of labels) {
+      await expect(label.left).toBeGreaterThanOrEqual(svgLeft);
+      await expect(label.right).toBeLessThanOrEqual(svgRight);
+    }
   },
 };

@@ -50,3 +50,23 @@ export const DarkMode = ({ children }: { children: ReactNode }) => {
     </Box>
   );
 };
+
+/**
+ * The x axis labels with their position, and the bounds of the chart svg.
+ * Used to check that every label is drawn and none is cut off at an edge.
+ */
+export const xAxisLabels = (root: HTMLElement) => {
+  const svg = root
+    .querySelector("svg.recharts-surface")!
+    .getBoundingClientRect();
+  return {
+    svgLeft: svg.left,
+    svgRight: svg.right,
+    labels: Array.from(
+      root.querySelectorAll(".recharts-cartesian-axis-tick-label text")
+    ).map((text) => {
+      const box = text.getBoundingClientRect();
+      return { text: text.textContent ?? "", left: box.left, right: box.right };
+    }),
+  };
+};

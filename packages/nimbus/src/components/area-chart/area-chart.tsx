@@ -33,8 +33,14 @@ const AreaChartPlot = ({
   // `useId` can contain characters that are not valid in a url(#...) reference
   const chartId = useId().replace(/[^a-zA-Z0-9_-]/g, "");
 
+  // The margin keeps the first and last x axis label inside the chart. A label
+  // that would cross the edge is otherwise dropped or cut off.
   return (
-    <RechartsAreaChart data={data} aria-label={ariaLabel}>
+    <RechartsAreaChart
+      data={data}
+      aria-label={ariaLabel}
+      margin={{ left: 12, right: 12 }}
+    >
       <defs>
         {series.map((item, index) => (
           <linearGradient

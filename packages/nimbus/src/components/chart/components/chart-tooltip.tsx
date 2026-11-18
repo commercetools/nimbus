@@ -9,6 +9,19 @@ import {
   ChartTooltipValueSlot,
 } from "../chart.slots";
 
+/** Props of `ChartTooltip`: the content props that Recharts passes, plus `nameKey` */
+export type ChartTooltipProps = Partial<
+  TooltipContentProps<number | string, string | number>
+> & {
+  /**
+   * Key of the data field that holds the category name. Set it for charts
+   * whose payload entries carry no category name (radial charts name them
+   * after the value key and use the row index as label). The category is
+   * then read from the data row, and the label is left out.
+   */
+  nameKey?: string;
+};
+
 /**
  * # ChartTooltip
  *
@@ -23,17 +36,24 @@ import {
  * <Tooltip content={<ChartTooltip />} />
  * ```
  */
-export const ChartTooltip = (
-  props: Partial<TooltipContentProps<number | string, string | number>>
-) => {
-  const { active, payload, label } = props;
+export const ChartTooltip = (props: ChartTooltipProps) => {
+  const { active, payload, nameKey } = props;
+  // With `nameKey`, the label would be the row index, not a name
+  const label = nameKey === undefined ? props.label : undefined;
   const { series } = useChartContext();
   const numberFormatter = useNumberFormatter();
 
   if (!active || !payload || payload.length === 0) return null;
 
   const rows = payload.flatMap((entry) => {
+    const category =
+      nameKey === undefined
+        ? undefined
+        : (entry.payload as Record<string, unknown> | undefined)?.[nameKey];
     const item =
+      (category === undefined
+        ? undefined
+        : series.find((s) => s.key === String(category))) ??
       series.find((s) => s.key === String(entry.dataKey)) ??
       series.find((s) => s.key === String(entry.name));
     return item ? [{ item, value: entry.value }] : [];
