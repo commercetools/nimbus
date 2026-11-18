@@ -1,0 +1,84 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+GridList is built on React Aria's GridList. Most accessibility work is done for
+you. You are responsible for the names of the list and its items, and for the
+content you put inside items.
+
+### Roles and states
+
+- The collection has `role="grid"`. Each item has `role="row"`.
+- Selected items expose `aria-selected`.
+- Disabled items expose `aria-disabled="true"` and cannot be selected.
+
+### Name the list and its items
+
+Give the list a name with `aria-label` or `aria-labelledby`. Give each item a
+`textValue` when its children are not plain text. Screen readers use it as the
+name of the item.
+
+```jsx live
+const App = () => (
+  <GridList.Root aria-label="Photos" selectionMode="multiple">
+    <GridList.Item id="mountain" textValue="Mountain, snow-covered peak">
+      <Stack gap="100">
+        <Text fontWeight="600">Mountain</Text>
+        <Text>Snow-covered peak</Text>
+      </Stack>
+    </GridList.Item>
+  </GridList.Root>
+)
+```
+
+### Keyboard
+
+- `Tab` / `Shift+Tab`: move focus into and out of the list.
+- `Arrow keys`: move between items. In a grid, Up and Down move by one row, and
+  Left and Right move by one item.
+- `Space`: select or deselect the focused item, when selection is on.
+- `Enter`: run the item action, when `onAction` is set.
+
+At the edges of a grid:
+
+- Down on an item with no item below it does not move focus.
+- Right on the last item of a row moves to the first item of the next row. Left
+  on the first item of a row moves back.
+- Up on the first row does not move focus.
+
+When the number of columns follows the container width (`minChildWidth`), the
+arrow keys follow the columns that are on screen.
+
+### Selection and actions
+
+When `selectionMode` is set, a press can select an item instead of running its
+action. Test the combination you use. If you need both, provide a clear separate
+control for the action.
+
+### Items with form fields
+
+If items contain text fields, set `keyboardNavigationBehavior="tab"`. Then the
+arrow keys and typing inside a field do not move focus between items or change
+the selection.
+
+### Drag and drop
+
+Reordering works with mouse, touch and keyboard. With the built-in drag handle,
+the handle has a name that React Aria provides in the current language, for
+example "Mountain ziehen" in German. React Aria supports screen reader
+interactions for drag and drop.
+
+To drag with the keyboard, move focus to the handle, press `Enter`, move with the
+arrow keys, and press `Enter` to drop.
+
+### Your content
+
+GridList cannot check the content you put in items. You must make sure that:
+
+- icon-only buttons have an accessible name,
+- the focus order inside an item makes sense,
+- an item does not hold interactive elements inside other interactive elements,
+- text and icons have enough contrast.

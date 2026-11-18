@@ -1,0 +1,134 @@
+---
+id: Components-GridList
+title: GridList
+exportName: GridList
+description: A keyboard-navigable collection of items in a list or a responsive grid, filled with your own content.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Data Display
+  - Grid list
+tags:
+  - component
+  - gridlist
+  - grid
+  - list
+  - selection
+  - drag-and-drop
+---
+
+A GridList shows a collection of items in a list or a grid. You decide what each
+item contains. People can move between items with the keyboard, select one or
+many items, and reorder them by dragging.
+
+## Overview
+
+Reach for a GridList when each item is more than a line of text: a photo card, a
+file with details and actions, a product tile. The GridList takes care of
+selection, keyboard movement and drag-and-drop. You take care of what is inside
+each item.
+
+```jsx live
+const App = () => (
+  <GridList.Root aria-label="Places" selectionMode="single">
+    <GridList.Item id="mountain" textValue="Mountain">
+      <Text>Mountain</Text>
+    </GridList.Item>
+    <GridList.Item id="lake" textValue="Lake">
+      <Text>Lake</Text>
+    </GridList.Item>
+    <GridList.Item id="forest" textValue="Forest">
+      <Text>Forest</Text>
+    </GridList.Item>
+  </GridList.Root>
+)
+```
+
+## When to use
+
+- **GridList** — the items have rich content, or you want them in a grid, and
+  people need to move between them with the keyboard.
+- **ListBox** — people pick options from a list of short text options.
+- **DraggableList** — you want a ready-made list that people can reorder, with a
+  fixed look.
+- **Tree** — the items have a hierarchy.
+- **DataTable** — the data has columns that people compare.
+
+## Anatomy
+
+- `GridList.Root` — the collection. It owns selection, layout, drag-and-drop,
+  keyboard behavior and the size.
+- `GridList.Item` — one item. It shows the content you give it. It can also
+  show a selection checkbox and a drag handle.
+
+## Variables
+
+### Layout
+
+A GridList is a single column by default. Set `layout="grid"` and choose the
+number of columns. The number can change with the screen size.
+
+```jsx live
+const App = () => (
+  <GridList.Root
+    aria-label="Places"
+    layout="grid"
+    columns={{ base: 1, md: 3 }}
+    selectionMode="multiple"
+  >
+    {["Mountain", "Lake", "Forest", "Desert", "River", "Beach"].map((name) => (
+      <GridList.Item key={name} id={name} textValue={name}>
+        <Text>{name}</Text>
+      </GridList.Item>
+    ))}
+  </GridList.Root>
+)
+```
+
+All items in a grid have the same size. Items that span several columns or rows
+are not supported.
+
+### Size
+
+The size sets the space inside each item, the space between items and the size
+of the drag handle. Your own content keeps its own size.
+
+```jsx live
+const App = () => (
+  <Stack gap="400">
+    {["sm", "md", "lg"].map((size) => (
+      <GridList.Root key={size} aria-label={`Size ${size}`} size={size}>
+        <GridList.Item id="one" textValue="One">
+          <Text>Size {size}: first item</Text>
+        </GridList.Item>
+        <GridList.Item id="two" textValue="Two">
+          <Text>Size {size}: second item</Text>
+        </GridList.Item>
+      </GridList.Root>
+    ))}
+  </Stack>
+)
+```
+
+### Selection checkbox
+
+With multiple selection, you can show a checkbox in each item. This makes it
+clear that several items can be selected.
+
+```jsx live
+const App = () => (
+  <GridList.Root
+    aria-label="Places"
+    selectionMode="multiple"
+    showSelectionCheckbox
+  >
+    <GridList.Item id="mountain" textValue="Mountain">
+      <Text>Mountain</Text>
+    </GridList.Item>
+    <GridList.Item id="lake" textValue="Lake">
+      <Text>Lake</Text>
+    </GridList.Item>
+  </GridList.Root>
+)
+```

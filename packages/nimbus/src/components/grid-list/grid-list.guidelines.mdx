@@ -1,0 +1,64 @@
+---
+title: GridList
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+A GridList shows items with rich content in a list or a grid. Use these
+guidelines to decide when it is the right choice and how to set it up.
+
+### When to use a GridList
+
+- **Use a GridList** when each item holds more than short text — a photo, a
+  card, a file with details — or when the items sit in a grid, and people need
+  to move between items with the keyboard.
+- **Use a ListBox** when people pick from a list of short text options.
+- **Use a DraggableList** when you want a ready-made list that people can
+  reorder, and its fixed look fits.
+- **Use a Tree** when the items have a hierarchy.
+- **Use a DataTable** when people compare values in columns.
+
+### List or grid
+
+- Use the default single column for items that are read from top to bottom, such
+  as files with details.
+- Use `layout="grid"` for items that people scan as tiles, such as photos or
+  products.
+- Give the number of columns a responsive value, for example one column on small
+  screens and three on larger screens.
+- All items in a grid have the same size. If your design needs items of
+  different sizes, a GridList is not the right component.
+
+### Selection
+
+- Use **single selection** when one item applies at a time.
+- Use **multiple selection** when people choose several items. Show the
+  selection checkbox so the choice is easy to see.
+- Do not use selection together with an action on the same press, unless people
+  can tell the two apart. With selection on, a press can select the item
+  instead of running its action.
+
+### Reordering
+
+- Show the drag handle when people reorder items. A handle makes the option
+  visible and gives keyboard and touch users a clear target.
+- Leave the built-in handle and checkbox off when your design needs them in
+  another place, for example a checkbox on the corner of an image. You can then
+  place your own controls inside the item.
+
+### Content in items
+
+- Keep the main content of an item easy to scan. Put secondary actions in a
+  consistent place.
+- Do not put many interactive elements in one item. Each one is a place that
+  keyboard users must reach.
+- Give every item a short text name. Screen readers read it to describe the
+  item.
+
+### Writing
+
+- Write item names that are different from each other, so people can tell items
+  apart when they hear them read aloud.
+- Describe the collection with a short label, such as "Photos" or "Files".

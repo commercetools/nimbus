@@ -1,0 +1,413 @@
+---
+title: GridList
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import {
+  GridList,
+  type GridListRootProps,
+  type GridListItemProps,
+} from "@commercetools/nimbus";
+```
+
+`GridList` is a collection of items with your own content, built on React Aria's
+GridList. It gives you keyboard navigation, selection and drag-and-drop. You own
+the items and the state.
+
+### Basic usage
+
+Always give the list an accessible name with `aria-label` (or `aria-labelledby`).
+Give each item an `id`, and a `textValue` when its children are not plain text.
+
+```jsx live-dev
+const App = () => (
+  <GridList.Root aria-label="Places" selectionMode="single">
+    <GridList.Item id="mountain" textValue="Mountain">
+      <Text>Mountain</Text>
+    </GridList.Item>
+    <GridList.Item id="lake" textValue="Lake">
+      <Text>Lake</Text>
+    </GridList.Item>
+    <GridList.Item id="forest" textValue="Forest">
+      <Text>Forest</Text>
+    </GridList.Item>
+  </GridList.Root>
+)
+```
+
+## Selection
+
+Selection uses React Aria's key-based pattern: each `GridList.Item` needs an
+`id`, and selection is expressed as those keys.
+
+### Controlled selection
+
+```jsx live-dev
+const App = () => {
+  const [selected, setSelected] = useState(new Set(["lake"]));
+
+  return (
+    <Stack gap="300">
+      <GridList.Root
+        aria-label="Places"
+        selectionMode="multiple"
+        selectedKeys={selected}
+        onSelectionChange={setSelected}
+      >
+        <GridList.Item id="mountain" textValue="Mountain">
+          <Text>Mountain</Text>
+        </GridList.Item>
+        <GridList.Item id="lake" textValue="Lake">
+          <Text>Lake</Text>
+        </GridList.Item>
+        <GridList.Item id="forest" textValue="Forest">
+          <Text>Forest</Text>
+        </GridList.Item>
+      </GridList.Root>
+      <Text>Selected: {[...selected].join(", ") || "none"}</Text>
+    </Stack>
+  );
+}
+```
+
+`onSelectionChange` receives a set of keys, or the string `"all"` when everything
+is selected.
+
+### Disabled items
+
+```jsx live-dev
+const App = () => (
+  <GridList.Root
+    aria-label="Places"
+    selectionMode="multiple"
+    disabledKeys={["lake"]}
+  >
+    <GridList.Item id="mountain" textValue="Mountain">
+      <Text>Mountain</Text>
+    </GridList.Item>
+    <GridList.Item id="lake" textValue="Lake">
+      <Text>Lake (disabled)</Text>
+    </GridList.Item>
+  </GridList.Root>
+)
+```
+
+### Selection and actions
+
+With `onAction`, an item can do something when it is activated, for example open
+a details page. When `selectionMode` is also set, a press can select the item
+instead of running the action. Test the combination you use.
+
+- `selectionMode="none"` and `onAction`: a press and `Enter` call `onAction` with
+  the item key.
+- `selectionMode` set: `Space` toggles the selection of the focused item.
+
+```jsx live-dev
+const App = () => {
+  const [last, setLast] = useState("nothing yet");
+
+  return (
+    <Stack gap="300">
+      <GridList.Root
+        aria-label="Places"
+        selectionMode="none"
+        onAction={(key) => setLast(String(key))}
+      >
+        <GridList.Item id="mountain" textValue="Mountain">
+          <Text>Mountain</Text>
+        </GridList.Item>
+        <GridList.Item id="lake" textValue="Lake">
+          <Text>Lake</Text>
+        </GridList.Item>
+      </GridList.Root>
+      <Text>Last action: {last}</Text>
+    </Stack>
+  );
+}
+```
+
+## Layout
+
+By default a GridList is one column (`layout="stack"`). Set `layout="grid"` and
+use `columns` or `minChildWidth` to make a grid. `GridList.Root` renders through
+`SimpleGrid`, so these props work like the `SimpleGrid` props, including
+responsive objects.
+
+### Columns
+
+```jsx live-dev
+const App = () => (
+  <GridList.Root
+    aria-label="Places"
+    layout="grid"
+    columns={{ base: 1, md: 3 }}
+    selectionMode="multiple"
+  >
+    {["Mountain", "Lake", "Forest", "Desert", "River", "Beach"].map((name) => (
+      <GridList.Item key={name} id={name} textValue={name}>
+        <Text>{name}</Text>
+      </GridList.Item>
+    ))}
+  </GridList.Root>
+)
+```
+
+### Minimum item width
+
+With `minChildWidth`, the number of columns follows the container width. Set
+`columns` or `minChildWidth`, not both. `minChildWidth` overrides `columns`, so
+the types do not allow both.
+
+```jsx live-dev
+const App = () => (
+  <GridList.Root aria-label="Places" layout="grid" minChildWidth="150px">
+    {["Mountain", "Lake", "Forest", "Desert", "River", "Beach"].map((name) => (
+      <GridList.Item key={name} id={name} textValue={name}>
+        <Text>{name}</Text>
+      </GridList.Item>
+    ))}
+  </GridList.Root>
+)
+```
+
+### Gap and size
+
+`size` (`sm`, `md`, `lg`) sets the item padding, the default gap and the drag
+handle size. Use `gap` to set the gap yourself. `gap` accepts a responsive
+object.
+
+```jsx live-dev
+const App = () => (
+  <GridList.Root
+    aria-label="Places"
+    size="lg"
+    layout="grid"
+    columns={2}
+    gap="100"
+  >
+    {["Mountain", "Lake", "Forest", "Desert"].map((name) => (
+      <GridList.Item key={name} id={name} textValue={name}>
+        <Text>{name}</Text>
+      </GridList.Item>
+    ))}
+  </GridList.Root>
+)
+```
+
+### Uniform cells
+
+All items in a grid have the same size. Span props such as `colSpan` are not
+supported.
+
+## Built-in controls
+
+`GridList.Item` can show a selection checkbox and a drag handle. Both are off by
+default. Set them on `GridList.Root` for all items, and override them on a single
+`GridList.Item`.
+
+- `showSelectionCheckbox` shows a checkbox. It only appears when
+  `selectionMode="multiple"`.
+- `showDragHandle` shows a drag handle. It only appears when dragging is
+  enabled through `dragAndDropHooks`.
+- The order inside an item is the drag handle, the checkbox, then your content.
+- An item value wins over the Root value.
+
+```jsx live-dev
+const App = () => (
+  <GridList.Root
+    aria-label="Places"
+    selectionMode="multiple"
+    showSelectionCheckbox
+  >
+    <GridList.Item id="mountain" textValue="Mountain">
+      <Text>Mountain</Text>
+    </GridList.Item>
+    <GridList.Item id="lake" textValue="Lake" showSelectionCheckbox={false}>
+      <Text>Lake (no checkbox)</Text>
+    </GridList.Item>
+    <GridList.Item id="forest" textValue="Forest">
+      <Text>Forest</Text>
+    </GridList.Item>
+  </GridList.Root>
+)
+```
+
+If you need a control in another place, for example a checkbox on the corner of
+an image, leave these props off and render the React Aria slot element yourself
+inside the item, for example `<Checkbox slot="selection" />`.
+
+## Drag and drop
+
+Reordering uses React Aria's `dragAndDropHooks`. You own the list state.
+`GridList` keeps none.
+
+```tsx
+import { useDragAndDrop } from "react-aria-components";
+import { useListData } from "react-stately";
+import { GridList, Text } from "@commercetools/nimbus";
+
+const photos = [
+  { id: "mountain", name: "Mountain" },
+  { id: "lake", name: "Lake" },
+  { id: "forest", name: "Forest" },
+];
+
+export const ReorderablePhotos = () => {
+  const list = useListData({ initialItems: photos });
+  const { dragAndDropHooks } = useDragAndDrop({
+    getItems: (keys) =>
+      [...keys].map((key) => ({ "text/plain": list.getItem(key)?.name ?? "" })),
+    onReorder(event) {
+      if (event.target.dropPosition === "before") {
+        list.moveBefore(event.target.key, event.keys);
+      } else if (event.target.dropPosition === "after") {
+        list.moveAfter(event.target.key, event.keys);
+      }
+    },
+  });
+
+  return (
+    <GridList.Root
+      aria-label="Photos"
+      items={list.items}
+      dragAndDropHooks={dragAndDropHooks}
+      showDragHandle
+    >
+      {(item) => (
+        <GridList.Item id={item.id} textValue={item.name}>
+          <Text>{item.name}</Text>
+        </GridList.Item>
+      )}
+    </GridList.Root>
+  );
+};
+```
+
+To drag with the keyboard, focus the drag handle, press `Enter`, move with the
+arrow keys, and press `Enter` to drop.
+
+## Items with form fields
+
+If items contain text fields, set `keyboardNavigationBehavior="tab"`. Typing in a
+field then does not move focus between items or change the selection.
+
+```jsx live-dev
+const App = () => (
+  <GridList.Root
+    aria-label="Titles"
+    selectionMode="multiple"
+    keyboardNavigationBehavior="tab"
+  >
+    <GridList.Item id="one" textValue="First">
+      <TextInput aria-label="First title" defaultValue="First" />
+    </GridList.Item>
+    <GridList.Item id="two" textValue="Second">
+      <TextInput aria-label="Second title" defaultValue="Second" />
+    </GridList.Item>
+  </GridList.Root>
+)
+```
+
+## Empty state
+
+When the collection is empty, the list shows a default message. Use
+`renderEmptyState` to show your own.
+
+```jsx live-dev
+const App = () => (
+  <GridList.Root
+    aria-label="Places"
+    renderEmptyState={() => <Text>No places yet. Add one to get started.</Text>}
+  >
+    {[]}
+  </GridList.Root>
+)
+```
+
+## Large collections
+
+`GridList.Root` works inside React Aria's `Virtualizer` with `ListLayout`.
+Inside a `Virtualizer`, the layout object positions the items, so `columns`,
+`minChildWidth` and `gap` do not apply. Give the root a fixed height and
+`display="block"`.
+
+```tsx
+import { Virtualizer, ListLayout } from "react-aria-components";
+
+<Virtualizer layout={ListLayout} layoutOptions={{ rowSize: 40 }}>
+  <GridList.Root aria-label="Items" items={items} display="block" h="300px">
+    {(item) => (
+      <GridList.Item id={item.id} textValue={item.name}>
+        {item.name}
+      </GridList.Item>
+    )}
+  </GridList.Root>
+</Virtualizer>;
+```
+
+The examples here use `ListLayout`.
+
+## Accessibility
+
+`GridList` uses the ARIA grid roles through React Aria: the collection has
+`role="grid"` and each item has `role="row"`. Selected items expose
+`aria-selected`. You must give the list an accessible name:
+
+```tsx
+// Visible label
+<Text id="places-label">Places</Text>
+<GridList.Root aria-labelledby="places-label">…</GridList.Root>
+
+// Hidden label
+<GridList.Root aria-label="Places">…</GridList.Root>
+```
+
+If your use case requires tracking and analytics for this component, it is good
+practice to add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "places-list";
+
+export const Example = () => (
+  <GridList.Root id={PERSISTENT_ID} aria-label="Places">
+    …
+  </GridList.Root>
+);
+```
+
+### Keyboard navigation
+
+- `Tab` / `Shift+Tab`: move focus into and out of the list.
+- `Arrow keys`: move between items. In a grid, Up and Down move by one row.
+- `Space`: toggle the selection of the focused item.
+- `Enter`: run `onAction` for the focused item.
+
+At the edges of a grid, Down on an item with no item below it does not move
+focus. Right on the last item of a row moves to the first item of the next row,
+and Left on the first item of a row moves back.
+
+## API reference
+
+<PropsTable id="GridList" />
+
+## Testing your implementation
+
+These examples show how to test a `GridList` in your own application. The
+component's internal behavior is already tested by Nimbus. These patterns help
+you verify your integration.
+
+{{docs-tests: grid-list.docs.spec.tsx}}
+
+## Resources
+
+- [React Aria GridList](https://react-spectrum.adobe.com/react-aria/GridList.html)
+- [ARIA Grid Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/)
+- [SimpleGrid](/components/layout/simplegrid)
+- [ListBox](/components/inputs/list-box)
+- [DraggableList](/components/data-display/draggable-list)
