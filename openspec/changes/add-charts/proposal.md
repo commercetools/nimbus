@@ -41,7 +41,7 @@ mode, or the Nimbus contrast rules.
   and a hue shift of up to 6.2 degrees for `ctyellow`), so the result would no
   longer look like the palette.
 - Keep the chart look close to the shadcn charts (https://ui.shadcn.com/charts) in
-  Nimbus colors. An area is drawn with the series color at reduced opacity, and
+  Nimbus colors. An area is drawn with a gradient of the series color, and
   the line on top uses the full series color.
 - Make `aria-label` required in the chart types. Use the Recharts 3
   accessibility layer for keyboard and screen reader support. Separate adjacent
@@ -98,5 +98,4 @@ first to move to a later change.
   exports.
 - Docs: `packages/color-tokens/CLAUDE.md`, `packages/tokens` docs, designer and
   developer MDX for each chart.
-- Open questions to settle in `design.md`: whether `ctteal` should be included, and
-  how Pie and Radial behave with the keyboard.
+- Open questions to settle in `design.md`: whether `ctteal` should be included.

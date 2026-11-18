@@ -20,10 +20,13 @@ number):
   ArrowLeft and ArrowRight move between data points, and the default tooltip is a
   live region
   (https://github.com/recharts/recharts/blob/main/storybook/stories/API/Accessibility.mdx).
-  The keyboard code contains the comment "TODO this is lacking index for charts
-  that do not support numeric indexes" (`src/state/keyboardEventsMiddleware.ts`
-  in the Recharts repository), so keyboard behavior for Pie and Radial is not
-  verified.
+  Task 1.6 checked this in Chromium (Recharts 3.10.1) with a throwaway story on
+  `BarChart`, `PieChart` and `RadialBarChart`: the `<svg>` element (not the wrapper
+  div) gets `role="application"` and `tabindex="0"`. Tab focuses it and the tooltip
+  shows the first item at once. ArrowRight moves to the next item (A, B, C). Enter
+  hides the tooltip. The default tooltip has `role="status"`. Pie and Radial behave
+  like Bar. Radar was not tested. Every chart type has the `isAnimationActive` prop
+  (`boolean | 'auto'`) to turn animation off.
 - **CSS variables.** Recharts accepts CSS variables in `stroke` and `fill`, for
   example `stroke="var(--color-text-1)"`
   (https://github.com/recharts/recharts/blob/main/www/src/utils/SuccessIcon.tsx).
@@ -73,6 +76,34 @@ number):
   measured yet.
 - Nimbus already has `useColorMode` and `useColorModeValue` in
   `packages/nimbus/src/hooks/`.
+
+## Reference look (task 1.5)
+
+Observed on https://ui.shadcn.com/charts (screenshots of the Area, Bar, Line, Pie,
+Radar and Radial pages, taken 2026-11-18; the page text says "built with Recharts").
+Pixel values were not measured.
+
+- **Cartesian charts (Area, Bar, Line):** horizontal grid lines only, very light
+  gray. No axis lines and no y-axis labels. Small gray x-axis labels. Smooth curves
+  for Area and Line. Line is a thin line without dots. Bars are flat, with no
+  outline and narrow gaps.
+- **Area:** the fill fades from the series color at the line to transparent at the
+  baseline (a gradient, not a flat opacity). The line on top is the full color.
+- **Legend:** centered below the chart, small square swatches with gray labels.
+- **Pie:** flat slices with a thin white separator between slices (the page also
+  shows a "Separator None" variant). Optional value labels with leader lines.
+- **Radar:** hexagonal polar grid in light gray, fill at low opacity, optional dots
+  on the points, and a "lines only" variant.
+- **Radial:** concentric arcs on a light gray track, optional labels along the arcs,
+  and a "grid" variant.
+- **Around the chart:** the demos sit inside cards with a title, a description and
+  a footer. That belongs to the page, not to the chart component.
+- **Colors:** the demos use shades of one blue hue (light to dark) for all series.
+  Nimbus uses a different palette for each series, which is easier to tell apart
+  (WCAG 1.4.1). The one-hue look is not available in this version, because
+  intermediate colors were removed from the scope.
+- **Separator width:** the Nimbus stroke between bars and slices is 2 px in the
+  `bg` color. This is our value; shadcn's width was not measured.
 
 ## Goals / Non-Goals
 
@@ -228,19 +259,18 @@ has a default aspect ratio so Recharts never gets a zero-height parent.
 reference, and renders Recharts. `ChartTooltip` and `ChartLegend` read the same
 `config`, so labels and colors always match the drawing.
 
-### 8. Area fill uses opacity
+### 8. Area fill is a gradient of one color
 
-An area is drawn with the series color at reduced opacity (value from the shadcn
-reference, task 1.5). The line on top uses the full series color and carries the
+An area is drawn with a vertical gradient of the series color, from reduced opacity
+at the line to transparent at the baseline (as on the shadcn reference, task 1.5). The line on top uses the full series color and carries the
 3:1 contrast. No extra token is needed, so "one chart token per palette" holds.
 
 ### 9. Keep the Recharts default `role="application"`
 
-The chart keeps the Recharts default role and `tabIndex={0}`. A story test checks
-them. Keyboard behavior is tested for Bar, Line, Area and Radar. For Pie and
-Radial it is unverified, so task 1.6 checks it before tasks 5.1 and 6.3. If arrow keys do
-not move between slices, the chart records the gap in its docs and the legend
-lists each category with its value so the data stays reachable.
+The chart keeps the Recharts default role and `tabIndex={0}` (both on the `<svg>`).
+A story test checks them. Keyboard behavior is tested for every chart type in its
+stories (task 1.6 verified Bar, Pie and Radial; Radar is checked in task 6.1). Enter
+toggles the tooltip, which the docs describe.
 
 ## Risks / Trade-offs
 
@@ -259,7 +289,6 @@ lists each category with its value so the data stays reachable.
   Radial last so they can move to a later change without blocking the team.
 - [Recharts internals can change] → The public API hides Recharts, so a later
   library change would not be breaking for consumers.
-- [Pie and Radial keyboard support is unverified] → Checked in task 1.6, before tasks 5.1 and 6.3, with a documented fallback.
 
 ## Migration Plan
 

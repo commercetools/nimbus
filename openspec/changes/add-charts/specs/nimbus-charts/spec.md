@@ -84,16 +84,12 @@ Charts SHALL meet WCAG 2.1 AA.
 - **THEN** it SHALL keep the Recharts accessibility layer defaults, which are `role="application"` and `tabIndex={0}`
 - **AND** a story test SHALL check both
 
-#### Scenario: Keyboard navigation for Area, Bar, Line and Radar
+#### Scenario: Keyboard navigation
 - **WHEN** the chart has focus and the user presses ArrowRight or ArrowLeft
 - **THEN** the active data point SHALL move to the next or previous point
 - **AND** the tooltip SHALL show that point
 - **AND** the chart SHALL be reachable with the Tab key
-
-#### Scenario: Keyboard navigation for Pie and Radial
-- **WHEN** a story test checks Pie and Radial charts with the keyboard
-- **THEN** the chart SHALL be reachable with the Tab key
-- **AND** if arrow keys do not move between slices, the docs SHALL record the gap and the legend SHALL list each category with its value
+- **AND** pressing Enter SHALL hide or show the tooltip
 
 #### Scenario: Screen reader
 - **WHEN** the active data point changes
@@ -148,7 +144,7 @@ Charts SHALL look like the shadcn charts (https://ui.shadcn.com/charts), in Nimb
 
 #### Scenario: Area fill
 - **WHEN** an `AreaChart` draws the area under a line
-- **THEN** the area SHALL use the series color at reduced opacity
+- **THEN** the area SHALL use a vertical gradient of the series color, from reduced opacity at the line to transparent at the baseline
 - **AND** the line on top SHALL use the full series color
 
 ### Requirement: Chart States
@@ -176,7 +172,6 @@ Charts SHALL show a Nimbus-styled tooltip and legend that read the shared config
 #### Scenario: Legend content
 - **WHEN** the legend is shown
 - **THEN** it SHALL show the label and color of each series
-- **AND** it SHALL also show the value of each category when the Pie and Radial keyboard fallback applies
 
 ### Requirement: Chart Tests and Docs
 Each chart SHALL have Storybook tests, documentation and a consumer example.
