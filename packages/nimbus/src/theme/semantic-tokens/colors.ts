@@ -47,6 +47,8 @@ export const colors = defineSemanticTokens.colors({
   ...themeTokens.color["system-palettes"],
   ...themeTokens.color["brand-palettes"],
   ...themeTokens.color["semantic-palettes"],
+  /** Chart series colors: the palette solid color, adapted in lightness for 3:1 contrast against `bg`. */
+  chart: themeTokens.color.chart,
 });
 
 export const darkColors = colors;

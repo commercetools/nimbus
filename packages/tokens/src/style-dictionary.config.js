@@ -78,7 +78,7 @@ StyleDictionary.registerTransformGroup({
 /** configure style dictionary
  * https://v4.styledictionary.com/reference/config/ */
 export default {
-  source: ["src/base/tokens.json"],
+  source: ["src/base/tokens.json", "src/base/chart-tokens.json"],
   /** run tokens studio preprocessor
    * https://github.com/tokens-studio/sd-transforms?tab=readme-ov-file#using-the-preprocessor*/
   preprocessors: ["tokens-studio"],

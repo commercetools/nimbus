@@ -1,0 +1,282 @@
+{
+  "color": {
+    "chart": {
+      "blue": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#0090ff"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#0090ff"
+          }
+        }
+      },
+      "bronze": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#a18072"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#a18072"
+          }
+        }
+      },
+      "brown": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#ad7f58"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#ad7f58"
+          }
+        }
+      },
+      "crimson": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#e93d82"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#e93d82"
+          }
+        }
+      },
+      "ctviolet": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#4E4ED8"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#4E4ED8"
+          }
+        }
+      },
+      "cyan": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#00a2c7"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#00a2c7"
+          }
+        }
+      },
+      "gold": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#978365"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#978365"
+          }
+        }
+      },
+      "grass": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#46a758"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#46a758"
+          }
+        }
+      },
+      "gray": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#8d8d8d"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#6e6e6e"
+          }
+        }
+      },
+      "green": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#30a46c"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#30a46c"
+          }
+        }
+      },
+      "indigo": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#3e63dd"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#3e63dd"
+          }
+        }
+      },
+      "iris": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#5b5bd6"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#5b5bd6"
+          }
+        }
+      },
+      "jade": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#29a383"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#29a383"
+          }
+        }
+      },
+      "orange": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#f76b14"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#f76b15"
+          }
+        }
+      },
+      "pink": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#d6409f"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#d6409f"
+          }
+        }
+      },
+      "plum": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#ab4aba"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#ab4aba"
+          }
+        }
+      },
+      "purple": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#8e4ec6"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#8e4ec6"
+          }
+        }
+      },
+      "red": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#e5484d"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#e5484d"
+          }
+        }
+      },
+      "ruby": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#e54666"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#e54666"
+          }
+        }
+      },
+      "slate": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#8b8d98"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#696e77"
+          }
+        }
+      },
+      "teal": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#12a594"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#12a594"
+          }
+        }
+      },
+      "tomato": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#e54d2e"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#e54d2e"
+          }
+        }
+      },
+      "violet": {
+        "light": {
+          "DEFAULT": {
+            "$value": "#6e56cf"
+          }
+        },
+        "dark": {
+          "DEFAULT": {
+            "$value": "#6e56cf"
+          }
+        }
+      }
+    }
+  }
+}

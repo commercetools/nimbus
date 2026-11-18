@@ -6390,6 +6390,192 @@ export default {
         },
       },
     },
+    chart: {
+      blue: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(206, 100%, 50%)",
+            _dark: "hsl(206, 100%, 50%)",
+          },
+        },
+      },
+      bronze: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(18, 20%, 54%)",
+            _dark: "hsl(18, 20%, 54%)",
+          },
+        },
+      },
+      brown: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(28, 34%, 51%)",
+            _dark: "hsl(28, 34%, 51%)",
+          },
+        },
+      },
+      crimson: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(336, 80%, 58%)",
+            _dark: "hsl(336, 80%, 58%)",
+          },
+        },
+      },
+      ctviolet: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(240, 64%, 58%)",
+            _dark: "hsl(240, 64%, 58%)",
+          },
+        },
+      },
+      cyan: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(191, 100%, 39%)",
+            _dark: "hsl(191, 100%, 39%)",
+          },
+        },
+      },
+      gold: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(36, 20%, 49%)",
+            _dark: "hsl(36, 20%, 49%)",
+          },
+        },
+      },
+      grass: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(131, 41%, 46%)",
+            _dark: "hsl(131, 41%, 46%)",
+          },
+        },
+      },
+      gray: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(0, 0%, 55%)",
+            _dark: "hsl(0, 0%, 43%)",
+          },
+        },
+      },
+      green: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(151, 55%, 42%)",
+            _dark: "hsl(151, 55%, 42%)",
+          },
+        },
+      },
+      indigo: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(226, 70%, 55%)",
+            _dark: "hsl(226, 70%, 55%)",
+          },
+        },
+      },
+      iris: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(240, 60%, 60%)",
+            _dark: "hsl(240, 60%, 60%)",
+          },
+        },
+      },
+      jade: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(164, 60%, 40%)",
+            _dark: "hsl(164, 60%, 40%)",
+          },
+        },
+      },
+      orange: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(23, 93%, 52%)",
+            _dark: "hsl(23, 93%, 53%)",
+          },
+        },
+      },
+      pink: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(322, 65%, 55%)",
+            _dark: "hsl(322, 65%, 55%)",
+          },
+        },
+      },
+      plum: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(292, 45%, 51%)",
+            _dark: "hsl(292, 45%, 51%)",
+          },
+        },
+      },
+      purple: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(272, 51%, 54%)",
+            _dark: "hsl(272, 51%, 54%)",
+          },
+        },
+      },
+      red: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(358, 75%, 59%)",
+            _dark: "hsl(358, 75%, 59%)",
+          },
+        },
+      },
+      ruby: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(348, 75%, 59%)",
+            _dark: "hsl(348, 75%, 59%)",
+          },
+        },
+      },
+      slate: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(231, 6%, 57%)",
+            _dark: "hsl(219, 6%, 44%)",
+          },
+        },
+      },
+      teal: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(173, 80%, 36%)",
+            _dark: "hsl(173, 80%, 36%)",
+          },
+        },
+      },
+      tomato: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(10, 78%, 54%)",
+            _dark: "hsl(10, 78%, 54%)",
+          },
+        },
+      },
+      violet: {
+        DEFAULT: {
+          value: {
+            _light: "hsl(252, 56%, 57%)",
+            _dark: "hsl(252, 56%, 57%)",
+          },
+        },
+      },
+    },
   },
   fontFamily: {
     heading: {
