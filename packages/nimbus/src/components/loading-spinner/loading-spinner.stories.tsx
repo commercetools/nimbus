@@ -159,7 +159,7 @@ export const RendersAtRequestedSize: Story = {
   },
 };
 
-const buttonSizes = ["2xs", "xs", "sm", "md"] as const;
+const buttonSizes = ["2xs", "xs", "sm", "md", "xl"] as const;
 
 /**
  * A spinner next to an icon in buttons of every size, to compare their sizes.
