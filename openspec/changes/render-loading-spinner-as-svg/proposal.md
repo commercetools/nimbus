@@ -63,13 +63,16 @@ None.
 - **Consumers (Nimbus Pulse, scan 89, `nimbus-pulse.sqlite`):**
   - 143 `LoadingSpinner` instances in 13 repositories. No instance uses `ref`,
     spread props or children.
-  - 96 instances have an explicit `size`, 47 have none. None of the 47 is inside
-    a `Button`, so they stay at 24px.
+  - 96 instances have an explicit `size`, 47 have none. None of the 47 sets
+    width, height, `boxSize`, `css` or `style` on the spinner. Not checked: the
+    parent of each of the 47. A spinner without `size` takes the size its parent
+    gives to icons (for example a `Button`), and is 24px otherwise; its layout
+    box in such a parent can therefore change.
   - 23 spinners with an explicit `size` sit inside a `Button` (18 `2xs`, 3 `xs`,
-    2 `sm`). On `main`, the visible ring in a `Button` already followed the
-    button icon size; only the layout box followed `size`. The layout box now
-    follows the icon size too, so these buttons can change width (a `2xs`
-    spinner in a `md` button: box 14px to 24px).
+    2 `sm`). An explicit `size` wins over the icon size of the `Button`, so
+    these spinners keep their requested size and box. On `main`, the visible
+    ring in a `Button` followed the button icon size, not `size`; it now follows
+    `size` (a `2xs` spinner in a `md` button: ring 20px to 14px).
   - No selector on `nimbus-loading-spinner`, `div[role="progressbar"]` or
     `HTMLDivElement` was found in the commercetools GitHub organization. Search
     covers only indexed default branches.

@@ -28,11 +28,12 @@ the layout box followed `size`.
   not depend on how a browser sizes a nested `svg` from its wrapper.
 - A spinner that behaves like an icon: it takes the size a parent gives to icons
   and falls back to 24px.
+- An explicit `size` always wins over a parent that sizes its `svg` children,
+  for every button size.
 - Sharp rendering at 24px.
 
 **Non-Goals:**
 
-- Specifying the result of an explicit `size` inside a `Button` (see Risks).
 - Fixing unrelated drift in the `nimbus-loading-spinner` spec, for example the
   registration key `"loadingSpinner"` that the spec names while the code uses
   `nimbusLoadingSpinner`.
@@ -67,7 +68,18 @@ parent decides.
 
 Alternative: keep the default class and raise its specificity with `&&`. The
 branch had this in `e17cf6c0a` and removed it again, because a spinner in a
-button should match its icon.
+button should match its icon. The `&&` selector is kept for the explicit `size`
+variants only (decision 6).
+
+### 6. An explicit `size` wins over the parent
+
+A parent that sizes every `svg` (`Button`, `Badge`) has the same specificity as
+the class of a `size` variant, so the winner depended on CSS order: in an
+accordion header a spinner with `size="2xs"` rendered at 24px. The size variants
+use `&&`, which raises their specificity by one class, so an explicit `size`
+wins. Covered by the stories `RendersAtRequestedSize` (a `2xs` spinner in a `md`
+button is 14px; a `lg` spinner in a `2xs` button is 40px) and
+`WithSvgInHeader`.
 
 ### 3. Whole-pixel ring geometry: radius 8.5, stroke 3
 
@@ -94,7 +106,7 @@ the label, so `size="2xs"` and `ml="100"` are no longer needed.
 ### 5. `DataTable`: `right: 0` for the last resizer
 
 The resizer of the last column reached past the table edge and added scrollable
-width. `&:last-child .nimbus-data-table__columnResizer { right: 0 }` keeps it
+width. `&:last-of-type .nimbus-data-table__columnResizer { right: 0 }` keeps it
 inside, with the same width as the other handles. Covered by the story
 `LastColumnResizerStaysInsideTable`.
 
@@ -107,16 +119,15 @@ inside, with the same width as the other handles. Covered by the story
   found in the commercetools organization. This covers only indexed default
   branches; other selectors were not searched. The changeset names the `ref`
   change.
-- **Layout box in buttons** → The box now equals the icon size. Buttons with
-  `<LoadingSpinner size="2xs" />` in a `md` button grow by about 10px (box 14px to
-  24px); a `lg` spinner there shrinks from 40px to 24px. 23 such sites exist in
-  Pulse. The visible ring does not change.
-- **Explicit `size` inside a `Button`** → With equal specificity, the result
-  depends on the button size. Measured on the branch (width in px, spinner
-  `size` 2xs / xs / lg): button 2xs gives 14 / 20 / 40; buttons xs, sm and md give
-  20 / 20 / 20 and 24 / 24 / 24 (the button wins). The cause (CSS order or
-  selector form) was not established. The spec therefore states only the case
-  without `size`.
+- **Layout box of a spinner without `size` in a parent that sizes `svg`s** → The
+  box now equals the icon size the parent gives (on `main` it stayed at 24px
+  while only the nested `svg` followed the parent). In a `2xs` button the box
+  shrinks from 24px to 16px. Pulse (scan 89) has 47 spinners without `size`; the
+  parent of each was not checked.
+- **Explicit `size` inside a `Button`** → The explicit `size` wins (decision 6),
+  so the 23 such sites in Pulse keep their box. Their visible ring changes: on
+  `main` it followed the button icon size, now it follows `size` (a `2xs`
+  spinner in a `md` button: 20px to 14px).
 - **Safari** → The reason for the change, but the final version was tested only in
   headless Chromium. Needs a manual check in Safari.
 - **Thicker stroke** → Visible in the Chromatic snapshot for `ColorPalettes`;

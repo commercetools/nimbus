@@ -194,6 +194,11 @@ The component SHALL support composition within other components.
 - **AND** SHALL align with button text via flex layout
 - **AND** SHALL maintain button dimensions (no layout shift)
 
+#### Scenario: Explicit size inside a Button
+- **WHEN** LoadingSpinner with a `size` is used inside Button
+- **THEN** SHALL render at the requested size, not at the size the button gives to its icons
+- **AND** SHALL do so for every button size
+
 #### Scenario: Usage in container elements
 - **WHEN** LoadingSpinner is used in Box, Stack, or Flex
 - **THEN** SHALL behave like an icon in the layout context
@@ -229,10 +234,11 @@ The component SHALL provide comprehensive Storybook stories with interaction tes
 - **AND** SHALL verify a spinner without size is 24px
 - **AND** SHALL verify a size set through style props is adopted
 - **AND** SHALL verify a spinner without size inside buttons takes the icon size of each button
+- **AND** SHALL verify a spinner with an explicit size inside buttons keeps its requested size (2xs in a md button: 14px; lg in a 2xs button: 40px)
 
 #### Scenario: Icon comparison story
 - **WHEN** NextToIconsInButtons story runs its play function
-- **THEN** SHALL verify that in buttons of every size, the spinner is as large as an icon
+- **THEN** SHALL verify that in buttons of every size (2xs, xs, sm, md and xl), the spinner is as large as an icon
 
 #### Scenario: Color palette story
 - **WHEN** ColorPalettes story renders

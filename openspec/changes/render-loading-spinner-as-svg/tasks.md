@@ -3,7 +3,7 @@
 ## 1. LoadingSpinner as a single svg
 
 - [x] 1.1 Render the spinner as one `svg` root (slot, types, component, recipe) with a 24px attribute fallback and no default size variant; verify `pnpm test:dev packages/nimbus/src/components/loading-spinner/loading-spinner.stories.tsx` passes
-- [x] 1.2 Add the stories `RendersAtRequestedSize` and `NextToIconsInButtons`; verify they assert 14/20/24/32/40px for the five sizes, 24px without size, and the button icon size inside buttons of every size
+- [x] 1.2 Add the stories `RendersAtRequestedSize` and `NextToIconsInButtons`; verify they assert 14/20/24/32/40px for the five sizes, 24px without size, and the button icon size inside buttons of every size (2xs, xs, sm, md, xl), and an explicit size that wins inside a button
 - [x] 1.3 Draw the ring on whole pixels (radius 8.5, stroke 3, pointer path `M12 3.5A8.5 8.5 0 0 1 20.5 12`); verify the stories above still pass
 - [x] 1.4 Add the changeset `.changeset/safari-spinner-table-overflow.md` (`patch`) with the `ref` type, the button icon size, the patterns and the thicker stroke; verify `pnpm changeset:status` lists `@commercetools/nimbus`
 - [x] 1.5 Update `loading-spinner.dev.mdx` ("`sm` (default)" in the sizes section) to say that without `size` the spinner takes the icon size of its parent and is 24px elsewhere; verify the text matches the "No size specified" scenario in the spec
