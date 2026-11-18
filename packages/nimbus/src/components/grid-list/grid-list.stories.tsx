@@ -7,6 +7,7 @@ import {
   NimbusI18nProvider,
   Stack,
   Text,
+  useDragAndDrop as useNimbusDragAndDrop,
 } from "@commercetools/nimbus";
 import {
   useDragAndDrop,
@@ -143,17 +144,15 @@ const ReorderableList = ({
   itemProps?: Partial<React.ComponentProps<typeof GridList.Item>>;
 }) => {
   const list = useListData({ initialItems: photos });
-  const { dragAndDropHooks } = useDragAndDrop({
-    getItems: (keys) =>
-      [...keys].map((key) => ({
-        "text/plain": list.getItem(key)?.name ?? "",
-      })),
-    onReorder(event) {
-      onReorder?.(event.keys, event.target.key);
-      if (event.target.dropPosition === "before") {
-        list.moveBefore(event.target.key, event.keys);
-      } else if (event.target.dropPosition === "after") {
-        list.moveAfter(event.target.key, event.keys);
+  // Nimbus's hook, so React Aria's localized strings share the copy of React
+  // Aria that GridList (and NimbusI18nProvider) use in the built bundle.
+  const { dragAndDropHooks } = useNimbusDragAndDrop({
+    onReorder(keys, target) {
+      onReorder?.(keys, target.key);
+      if (target.dropPosition === "before") {
+        list.moveBefore(target.key, keys);
+      } else if (target.dropPosition === "after") {
+        list.moveAfter(target.key, keys);
       }
     },
   });
