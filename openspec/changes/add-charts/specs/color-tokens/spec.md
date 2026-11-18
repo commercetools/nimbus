@@ -33,8 +33,14 @@ The system SHALL provide one chart color token per chart palette. The token SHAL
 - **WHEN** chart color tokens are generated
 - **THEN** the system SHALL write them to the committed file `packages/tokens/src/base/chart-tokens.json`
 - **AND** `@commercetools/nimbus-tokens` SHALL read that file as a Style Dictionary source
-- **AND** each chart palette SHALL have one token with a light-mode value and a dark-mode value
+- **AND** each chart palette SHALL have one token `color.chart.<palette>` with the shape `{ light: { DEFAULT }, dark: { DEFAULT } }`, so that it has a light-mode value and a dark-mode value
 - **AND** the generated CSS variable SHALL be `--nimbus-colors-chart-<palette>`
+- **AND** the Nimbus theme SHALL register the tokens as `chart` in the semantic color tokens
+
+#### Scenario: Contrast is checked on the emitted value
+- **WHEN** the tokens build converts a chart color to its generated format (rounded HSL)
+- **THEN** the contrast tests SHALL measure the value as emitted, not the hex value before conversion
+- **AND** the generator SHALL choose a value whose emitted form still has at least 3:1 contrast
 
 #### Scenario: Output matches the palettes
 - **WHEN** the build or the tests run

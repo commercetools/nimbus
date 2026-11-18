@@ -106,14 +106,34 @@ Recharts gives all six chart types and an accessibility layer. visx and d3 give
 more control but need much more code for six charts. Plain SVG has no
 dependency but is the largest effort. Only the Recharts option fits one week.
 
-Recharts and `react-is` are bundled into the Nimbus dist, like other
-non-externalized dependencies. Imports stay narrow. The version range is
-`^3.10.1`, which resolves to the newest version that passes the release-age rule.
-No `minimumReleaseAgeExclude` entry is added. Task 1.4 measures the bundle size
-and runs the bundler checks, because Recharts depends on `victory-vendor`, whose
-main entry is CommonJS (`lib/index.js`). This is the first thing to verify.
+Recharts and `react-is` were added to `packages/nimbus` (task 1.3) through a new
+`charts` catalog in `pnpm-workspace.yaml`. Recharts 3.10.1 is installed. It passes
+the release-age rule, and no `minimumReleaseAgeExclude` entry was added.
 
-### 2. Prop-based API, no exported Recharts parts
+**How Recharts ships is not decided yet.** Task 1.4 measured two options with a
+throwaway `BarChart` (named imports from `recharts`; the package has
+`sideEffects: false` and no `exports` map):
+
+- **Option A, bundle it** (the first draft of this design). `pnpm check:bundle-size`
+  fails: the `@commercetools/nimbus` dist grows from 21,720 KB to 26,882 KB
+  (+23.8%, the limit is 5%). About 4.2 MB of that is sourcemaps, because the check
+  sums every file in `dist`. The JS added is 545 KB (ESM) and 399 KB (CJS) in one
+  separate chunk that only chart users load. `pnpm check:bundler-compat` also fails:
+  the ESM chunk imports Rolldown's `require` helper, because Recharts depends on
+  `react-redux`, which depends on `use-sync-external-store`. That package is
+  CommonJS only and calls `require("react")`, and React is an external of the
+  Nimbus build. Option A needs a workaround for that package (an alias to an ESM
+  version of `use-sync-external-store/with-selector`, not tried yet) and the
+  `bundle-size-approved` label.
+- **Option B, externalize it.** Add `recharts` to `external` in `vite.config.ts`
+  and declare it as a peer dependency (and a dev dependency, as the comment in
+  `vite.config.ts` requires). Measured: the dist grows by 2.9 KB (+0.0%) and
+  `pnpm check:bundler-compat` passes. Cost: consumers that use charts must install
+  `recharts`. A required peer dependency makes every Nimbus consumer install it. An
+  optional peer dependency may break a consumer that has no Recharts, if their
+  bundler resolves the chart chunk (not tested).
+
+### 2. Prop-based API### 2. Prop-based API, no exported Recharts parts
 
 Each chart takes `data`, `config`, `xAxisKey`, `series` and a few switches.
 `PieChart` and `RadialChart` use `nameKey` and `valueKey`. `aria-label` is
@@ -151,11 +171,21 @@ same token. Other surfaces are not checked (open question).
 
 The script writes `packages/tokens/src/base/chart-tokens.json`. It is committed,
 and `style-dictionary.config.js` adds it to `source`. `tokens.json` is not edited.
-The file uses `color.chart.<palette>.{light,dark}`, and each light/dark pair has
-no other keys, because `dtcg-to-chakra.js` combines only pairs with exactly the
-keys `light` and `dark`. A drift check (or running the script inside
-`build:tokens`) makes sure the file matches the palettes. The existing manual copy workflow stays for the system
-palettes. Chakra emits `--nimbus-colors-chart-<palette>`, with a light value and
+The file uses `color.chart.<palette>` with the shape
+`{ light: { DEFAULT: { $value } }, dark: { DEFAULT: { $value } } }`, like the existing
+palettes. `dtcg-to-chakra.js` combines a pair only when it has exactly the keys
+`light` and `dark`, and a leaf directly inside a pair would produce an invalid Chakra
+token, so the value sits under `DEFAULT`. Chakra drops `DEFAULT` from the variable
+name. Task 1.1 confirmed this with a spike: Style Dictionary merged the second source
+file and produced `chart.violet.DEFAULT.value` with `_light` and `_dark`. The nimbus
+theme must register it with `chart: themeTokens.color.chart` in
+`packages/nimbus/src/theme/semantic-tokens/colors.ts`. The tokens build converts hex
+to rounded HSL (`#6e56cf` becomes `hsl(252, 56%, 57%)`), so the contrast check runs
+on the value as emitted. Computed with chroma-js for the 23 palettes in both modes,
+rounding keeps every adapted color at 3:1 or more (lowest: `cyan` 3.003, adapted
+`orange` 3.004), but this is not guaranteed in general. A drift check (or running
+the script inside `build:tokens`) makes sure the file matches the palettes. The
+existing manual copy workflow stays for the system palettes. Chakra emits `--nimbus-colors-chart-<palette>`, with a light value and
 a dark value. At run time the chart writes `var(--nimbus-colors-chart-<palette>)`
 into `stroke` and `fill`.
 
@@ -215,10 +245,8 @@ lists each category with its value so the data stays reachable.
 
 - [Recharts 3.11.0 cannot be installed for about a day (24-hour rule)] → Use
   `^3.10.1`. Do not add a release-age exclude.
-- [Bundling Recharts may break the 5% size limit or the require-helper scan] →
-  Task 1.4 runs both checks on a throwaway chart before any other work. If
-  `victory-vendor` fails the scan, decide between a Vite alias, an externalized
-  dependency, or a different Recharts version before continuing.
+- [Bundling Recharts breaks the 5% size limit and the require-helper scan] →
+  Measured in task 1.4 (see Decision 1). Choose option A or B before group 3.
 - [Palette tokens and the adaptation script are new tooling in the tokens build]
   → Build this first, with its unit test, before any chart. Use failing fixtures
   (`orange` in light mode, a synthetic `#484848` on `#111111`), because most real
@@ -238,6 +266,16 @@ component changes.
 
 ## Open Questions
 
+- Bundle Recharts (option A) or make it an external peer dependency (option B)?
+  See Decision 1 for the measured results. This blocks group 3.
+- Surface data from task 1.2: recipes use `bg`, `neutral.1`, `neutral.3` and tinted
+  surfaces. In light mode `neutral.1` is `#fcfcfc`. Measured with the adapted
+  colors: on `neutral.1` (`#fcfcfc`) 4 of 23 palettes fall just below 3:1 (`cyan`
+  2.93, `grass` 2.95, `orange` 2.93, `teal` 2.99). On `neutral.3` (`#f0f0f0`) 9 fall
+  below. In dark mode only `ctviolet` is a problem, and only on lighter surfaces
+  (2.58 on `#222222`). Adapting against `neutral.1` instead of `bg` would cost only
+  slight changes to those 4 palettes and would cover both surfaces. Which background
+  does the adaptation use?
 - Charts on surfaces other than `bg` (for example a colored panel) are not checked
   against 3:1. Is that acceptable for week one?
 - `ctteal` is a brand palette with a black contrast color, so it is not a chart
