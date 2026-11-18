@@ -147,7 +147,7 @@ export const FormDialog = ({
             onPress={handleSave}
           >
             {resolvedSaveLabel}
-            {isSaveLoading && <LoadingSpinner ml="100" size="2xs" />}
+            {isSaveLoading && <LoadingSpinner />}
           </Button>
         </Dialog.Footer>
       </Dialog.Content>
