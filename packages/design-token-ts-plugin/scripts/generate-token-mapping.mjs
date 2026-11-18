@@ -170,6 +170,10 @@ function resolveSemanticColors(lightLookup, darkLookup) {
     const cleaned = objSource
       // Remove spread lines like: ...themeTokens.color["system-palettes"],
       .replace(/\.\.\.themeTokens\.[^\n,]+,?/g, "")
+      // Remove palette references that are written as a property, such as
+      // `chart: themeTokens.color.chart,` (the chart colors). They hold palette
+      // colors from the tokens package, not semantic shortcuts.
+      .replace(/\b\w+\s*:\s*themeTokens\.[^\n,]+,?/g, "")
       // Wrap unquoted keys in double quotes: `bg:` → `"bg":`
       .replace(/(?<=[{,]\s*)(\w+)\s*:/g, '"$1":')
       // Also handle _light / _dark keys
