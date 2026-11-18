@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useEffect, useRef, type ReactNode } from "react";
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
-import { Box, useColorMode } from "@commercetools/nimbus";
+import { Box } from "@commercetools/nimbus";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import { ChartContainer } from "./chart-container";
 import { useChartContext } from "./chart.context";
 import { ChartTooltip } from "./components/chart-tooltip";
+import { DarkMode, legendRed } from "./chart.test-utils";
 import type { ChartBaseProps, ChartConfig } from "./chart.types";
 
 const data = [
@@ -89,12 +89,6 @@ const meta: Meta<typeof SampleChart> = {
 export default meta;
 
 type Story = StoryObj<typeof SampleChart>;
-
-/** Red channel of the legend text color: low in light mode, high in dark mode */
-const legendRed = (root: HTMLElement): number => {
-  const legend = root.querySelector<HTMLElement>(".nimbus-chart__legend")!;
-  return Number(getComputedStyle(legend).color.match(/\d+/)![0]);
-};
 
 /** Two series: the legend is always shown, with the config colors */
 export const Base: Story = {
@@ -294,31 +288,6 @@ export const DefaultAspectRatio: Story = {
     // `wide` is 16:9; the legend adds height below the plot
     await expect(plot.offsetWidth / plot.offsetHeight).toBeCloseTo(16 / 9, 1);
   },
-};
-
-/**
- * Switches the color mode to dark while mounted, with the same hook an app
- * uses. The Storybook theme decorator lets next-themes own the mode class on
- * the document root, so adding a `dark` class by hand would leave both
- * `light` and `dark` there and the light tokens would win.
- */
-const DarkMode = ({ children }: { children: ReactNode }) => {
-  const { colorMode, setColorMode } = useColorMode();
-  // The setter gets a new identity on every mode change, so hold it in a ref
-  // and switch the mode only once, on mount.
-  const setColorModeRef = useRef(setColorMode);
-  setColorModeRef.current = setColorMode;
-  const initialMode = useRef(colorMode);
-  useEffect(() => {
-    const previousMode = initialMode.current ?? "light";
-    setColorModeRef.current("dark");
-    return () => setColorModeRef.current(previousMode);
-  }, []);
-  return (
-    <Box bg="bg" p="400">
-      {children}
-    </Box>
-  );
 };
 
 /** Colors come from variables that switch with the color mode */
