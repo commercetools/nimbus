@@ -21,10 +21,6 @@ figma.connect(
   ComboBox.Trigger,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6358-57260",
   {
-    props: {
-      isInvalid: figma.enum("State", { Invalid: true }),
-      isDisabled: figma.enum("State", { Disabled: true }),
-    },
     example: () => <ComboBox.Trigger />,
   }
 );
