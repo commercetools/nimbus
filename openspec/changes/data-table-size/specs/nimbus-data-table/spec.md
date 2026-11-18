@@ -106,17 +106,16 @@ their interactive controls keep a target size of at least 24×24 CSS pixels
 
 #### Scenario: Padded internal column width
 
-- **WHEN** the table shows the selection column, the pin column, or the
-  expand column without a selection column
+- **WHEN** the table shows the drag column, the selection column, the pin
+  column, or the expand column without a selection column
 - **THEN** that column SHALL be 24px plus twice the horizontal cell padding
   of the chosen size wide: 40px for `sm`, 48px for `md`, 56px for `lg`,
   72px for `xl`
 
-#### Scenario: Drag and expand column width
+#### Scenario: Expand column next to a selection column
 
-- **WHEN** the table shows the drag column, or the expand column next to a
-  selection column
-- **THEN** that column SHALL be 24px wide at every size
+- **WHEN** the table shows the expand column next to a selection column
+- **THEN** that column SHALL be 24px wide
 
 #### Scenario: Control target size
 

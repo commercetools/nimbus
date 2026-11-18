@@ -115,10 +115,12 @@ DATA_TABLE_INTERNAL_COLUMN_WIDTHS = {
 ```
 
 - `data-table.header.tsx` reads it for `minWidth`/`maxWidth` (replacing the
-  hardcoded 24/72).
+  hardcoded 24/72). The drag, selection, pin and expand-without-selection
+  columns use `padded`; the expand column next to a selection column uses
+  `bare`.
 - The recipe computes the same widths in CSS on the root slot, from the same
-  formula: `--data-table-drag-column-width` is `{sizes.600}` (24px), and
-  `--data-table-selection-column-width` is
+  formula: `--data-table-drag-column-width` and
+  `--data-table-selection-column-width` are both
   `calc({sizes.600} + 2 * var(--data-table-padding-x))`.
 - The recipe's sticky offsets use those variables
   (`left: var(--data-table-drag-column-width)`, `calc(...)` for the sum) instead
