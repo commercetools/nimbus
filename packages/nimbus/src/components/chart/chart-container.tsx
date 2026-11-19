@@ -54,6 +54,7 @@ export const ChartContainer = (props: ChartContainerProps) => {
 
   const contextValue = useMemo(
     () => ({
+      data,
       series,
       isAnimationActive: resolveIsAnimationActive(
         isAnimationActive,
@@ -62,7 +63,14 @@ export const ChartContainer = (props: ChartContainerProps) => {
       showTooltip,
       ariaLabel,
     }),
-    [series, isAnimationActive, prefersReducedMotion, showTooltip, ariaLabel]
+    [
+      data,
+      series,
+      isAnimationActive,
+      prefersReducedMotion,
+      showTooltip,
+      ariaLabel,
+    ]
   );
 
   const isEmpty = data.length === 0;

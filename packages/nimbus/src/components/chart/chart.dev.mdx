@@ -1,0 +1,132 @@
+---
+title: Chart component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+> [!WARNING]\
+> **Experimental.** `Chart` is experimental in this first release and may
+> change in a later version.
+
+`Chart` needs two peer dependencies that are not installed with Nimbus:
+`recharts` and `react-is`. Install both:
+
+```bash
+pnpm add recharts react-is
+```
+
+Nimbus accepts `recharts` version `^3.10.1` or newer in the same major version.
+You never import from `recharts`: every part you need is on `Chart`.
+
+### Import
+
+```tsx
+import { Chart, type ChartConfig } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+`Chart.Root` takes the rows as `data`, a `config` that maps each data key to a
+`label` and an optional `palette`, and `aria-label` (required). It takes one
+`Chart.Plot` as child. Inside the plot, add the grid, the axis, the tooltip and
+the series.
+
+```jsx live-dev
+const App = () => {
+  const data = [
+    { month: "Jan", orders: 186, trend: 150 },
+    { month: "Feb", orders: 305, trend: 220 },
+    { month: "Mar", orders: 237, trend: 260 },
+    { month: "Apr", orders: 273, trend: 240 },
+    { month: "May", orders: 209, trend: 230 },
+  ];
+  return (
+    <Chart.Root
+      aria-label="Orders and trend per month"
+      data={data}
+      config={{
+        orders: { label: "Orders", palette: "ctviolet" },
+        trend: { label: "Trend", palette: "orange" },
+      }}
+    >
+      <Chart.Plot>
+        <Chart.Grid />
+        <Chart.XAxis dataKey="month" />
+        <Chart.Tooltip />
+        <Chart.Bar dataKey="orders" />
+        <Chart.Line dataKey="trend" />
+      </Chart.Plot>
+    </Chart.Root>
+  );
+};
+```
+
+## Usage examples
+
+### Series
+
+The legend and the tooltip list the `series` of `Chart.Root`. Without `series`,
+the series are the keys of `config`, in order. A series part draws only when its
+`dataKey` is one of the series. Its color is the `palette` in `config`, or the
+next palette of the default order.
+
+### Stacked series
+
+Set `stacked` on `Chart.Bar` or `Chart.Area` to put those series on top of each
+other.
+
+### Lines with many series
+
+With more than 3 series in the chart, each `Chart.Line` also gets a dash
+pattern (six patterns; with more than 6 series they repeat).
+
+### Grid and tooltip
+
+Leave out `Chart.Grid` to hide the grid lines. Set `showTooltip={false}` on
+`Chart.Root` to hide the tooltip.
+
+### Loading and empty states
+
+`isLoading` on `Chart.Root` shows a skeleton and sets `aria-busy`. An empty
+`data` array shows the text "No data to display" in a status region. In both
+states the root has `role="group"` and the `aria-label`.
+
+### Animation
+
+`isAnimationActive` on `Chart.Root` turns the draw animation on or off. When you
+do not set it, the animation is off if the person prefers reduced motion.
+
+### Style props
+
+`Chart.Root` accepts Chakra style props. They apply to the root element.
+
+## Accessibility
+
+- `aria-label` on `Chart.Root` is required.
+- Keyboard: Tab moves focus to the chart. `ArrowLeft` and `ArrowRight` move
+  between the data points and show the tooltip. `Enter` hides the tooltip and
+  shows it again.
+- The tooltip is a live region (`role="status"`, `aria-live="assertive"`).
+- The legend is always shown for two or more series.
+- A part used outside `Chart.Root` throws an error that names `Chart.Root`.
+
+## API reference
+
+<PropsTable id="Chart" />
+
+## Testing your implementation
+
+These examples show how to test your implementation when using `Chart` in your
+application. Recharts needs a measured container to draw the marks, and JSDOM
+has no layout. In unit tests, test what your code controls: the legend, the
+series labels, the loading state and the empty state. Test the drawn marks in a
+browser test.
+
+{{docs-tests: chart.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-chart-composition--docs)
+- [Recharts](https://recharts.github.io/)

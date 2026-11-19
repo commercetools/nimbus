@@ -1,0 +1,153 @@
+---
+id: Components-Chart
+title: Chart
+exportName: Chart
+description: Parts to build a custom chart, for example bars and a line in one chart.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Data Display
+  - Chart
+tags:
+  - component
+  - chart
+  - composition
+  - combined chart
+  - data visualization
+---
+
+## Overview
+
+Use `Chart` when the ready-made charts do not fit, for example when you want
+bars and a line in one chart. `Chart` is a set of parts that you put together.
+Colors, labels, tooltip, legend, and the loading and empty states are the same
+as in the other charts.
+
+> [!WARNING]\
+> **Experimental.** `Chart` is experimental in this first release and may
+> change in a later version.
+
+For one bar, line or area chart, use `BarChart`, `LineChart` or `AreaChart`.
+They are simpler. Pie, radar and radial charts cannot be composed.
+
+`Chart` needs two peer dependencies that are not installed with Nimbus:
+`recharts` and `react-is`. You do not import from `recharts` yourself.
+
+```bash
+pnpm add recharts react-is
+```
+
+### Parts
+
+- `Chart.Root`: the container. It takes the rows, the label and color of each
+  series, and the accessible name.
+- `Chart.Plot`: the drawing area inside the root.
+- `Chart.Grid`, `Chart.XAxis` and `Chart.Tooltip`: grid lines, the x axis and the
+  tooltip.
+- `Chart.Bar`, `Chart.Line` and `Chart.Area`: the series, drawn in any mix.
+
+### Resources
+
+[W3C WAI: Complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+
+## Variables
+
+### Bars and a line
+
+Each series part names its data key. Its color and label come from the config
+of the root, so the chart and its legend always match.
+
+```jsx live
+const App = () => {
+  const data = [
+    { month: "Jan", orders: 186, trend: 150 },
+    { month: "Feb", orders: 305, trend: 220 },
+    { month: "Mar", orders: 237, trend: 260 },
+    { month: "Apr", orders: 273, trend: 240 },
+    { month: "May", orders: 209, trend: 230 },
+  ];
+  return (
+    <Chart.Root
+      aria-label="Orders and trend per month"
+      data={data}
+      config={{
+        orders: { label: "Orders", palette: "ctviolet" },
+        trend: { label: "Trend", palette: "orange" },
+      }}
+    >
+      <Chart.Plot>
+        <Chart.Grid />
+        <Chart.XAxis dataKey="month" />
+        <Chart.Tooltip />
+        <Chart.Bar dataKey="orders" />
+        <Chart.Line dataKey="trend" />
+      </Chart.Plot>
+    </Chart.Root>
+  );
+};
+```
+
+### Stacked bars and an area
+
+Set `stacked` on `Chart.Bar` or `Chart.Area` to put those series on top of each
+other.
+
+```jsx live
+const App = () => {
+  const data = [
+    { month: "Jan", desktop: 186, mobile: 80 },
+    { month: "Feb", desktop: 305, mobile: 200 },
+    { month: "Mar", desktop: 237, mobile: 120 },
+    { month: "Apr", desktop: 273, mobile: 190 },
+  ];
+  return (
+    <Chart.Root
+      aria-label="Visitors per month, stacked"
+      data={data}
+      config={{
+        desktop: { label: "Desktop", palette: "ctviolet" },
+        mobile: { label: "Mobile", palette: "orange" },
+      }}
+    >
+      <Chart.Plot>
+        <Chart.Grid />
+        <Chart.XAxis dataKey="month" />
+        <Chart.Tooltip />
+        <Chart.Area dataKey="desktop" stacked />
+        <Chart.Area dataKey="mobile" stacked />
+      </Chart.Plot>
+    </Chart.Root>
+  );
+};
+```
+
+## Guidelines
+
+### Best practices
+
+- Write an `aria-label` that says what the chart shows and for which period.
+- Keep the number of series low. With more than 3 series, lines also get dash
+  patterns, so color is not the only signal.
+- Leave out `Chart.Grid` or `Chart.Tooltip` to hide them.
+
+### When to use
+
+> [!TIP]\
+> Use `Chart` for a chart that mixes bars, lines and areas, for example values and their trend.
+
+> [!CAUTION]\
+> Do not use `Chart` for one bar, line or area chart. Use `BarChart`, `LineChart` or `AreaChart`, which need less code.
+
+## Accessibility
+
+- Every chart needs an `aria-label` on `Chart.Root`.
+- Keyboard: Tab moves focus to the chart. ArrowLeft and ArrowRight move between
+  the data points and show the tooltip. Enter hides the tooltip and shows it
+  again.
+- The tooltip is a live region, so a screen reader announces the values of the
+  active data point.
+- The legend is always shown for two or more series, so color is never the only
+  way to tell series apart.
+- Chart colors have at least 3:1 contrast against the `bg` color in light and
+  dark mode.

@@ -1,14 +1,12 @@
-import { useId } from "react";
-import {
-  Area,
-  AreaChart as RechartsAreaChart,
-  CartesianGrid,
-  Tooltip,
-  XAxis,
-} from "recharts";
+import { AreaChart as RechartsAreaChart } from "recharts";
 import { ChartContainer } from "@/components/chart/chart-container";
 import { useChartContext } from "@/components/chart/chart.context";
-import { ChartTooltip } from "@/components/chart/components/chart-tooltip";
+import {
+  ChartArea,
+  ChartGrid,
+  ChartTooltipPart,
+  ChartXAxis,
+} from "@/components/chart/components";
 import type { AreaChartProps } from "./area-chart.types";
 
 type AreaChartPlotProps = Pick<
@@ -28,10 +26,7 @@ const AreaChartPlot = ({
   stacked,
   showGrid,
 }: AreaChartPlotProps) => {
-  const { series, isAnimationActive, showTooltip, ariaLabel } =
-    useChartContext();
-  // `useId` can contain characters that are not valid in a url(#...) reference
-  const chartId = useId().replace(/[^a-zA-Z0-9_-]/g, "");
+  const { series, ariaLabel } = useChartContext();
 
   // The margin gives the first and last x axis label room at the chart edge.
   // `preserveStartEnd` always draws the first and last label, even when a
@@ -43,43 +38,11 @@ const AreaChartPlot = ({
       aria-label={ariaLabel}
       margin={{ left: 12, right: 12 }}
     >
-      <defs>
-        {series.map((item, index) => (
-          <linearGradient
-            key={item.key}
-            id={`${chartId}-fill-${index}`}
-            x1="0"
-            y1="0"
-            x2="0"
-            y2="1"
-          >
-            <stop offset="5%" stopColor={item.color} stopOpacity={0.8} />
-            <stop offset="95%" stopColor={item.color} stopOpacity={0.1} />
-          </linearGradient>
-        ))}
-      </defs>
-      {showGrid && <CartesianGrid vertical={false} />}
-      <XAxis
-        dataKey={xAxisKey}
-        axisLine={false}
-        tickLine={false}
-        interval="preserveStartEnd"
-      />
-      {showTooltip && <Tooltip content={<ChartTooltip />} />}
-      {series.map((item, index) => (
-        <Area
-          key={item.key}
-          dataKey={item.key}
-          // "monotone", not "natural": natural interpolation can overshoot and
-          // draw below the data minimum (even below zero), which shows values
-          // that are not in the data. Monotone never overshoots.
-          type="monotone"
-          fill={`url(#${chartId}-fill-${index})`}
-          stroke={item.color}
-          strokeWidth={2}
-          stackId={stacked ? "stack" : undefined}
-          isAnimationActive={isAnimationActive}
-        />
+      {showGrid && <ChartGrid />}
+      <ChartXAxis dataKey={xAxisKey} />
+      <ChartTooltipPart />
+      {series.map((item) => (
+        <ChartArea key={item.key} dataKey={item.key} stacked={stacked} />
       ))}
     </RechartsAreaChart>
   );

@@ -3,8 +3,9 @@
 ---
 
 `BarChart`, `LineChart`, `AreaChart`, `PieChart`, `RadarChart` and `RadialChart`
-(Experimental): six new chart components to show data. They are experimental in
-this first release and may change in a later version.
+(Experimental): six new chart components to show data, and a `Chart` namespace
+to compose your own. They are experimental in this first release and may change
+in a later version.
 
 - `recharts` (`^3.10.1`) is now a peer dependency of `@commercetools/nimbus`.
   Install it, together with its own peer dependency `react-is`, to use the
@@ -13,6 +14,12 @@ this first release and may change in a later version.
 - `BarChart`, `LineChart` and `AreaChart`: pass the rows as `data`, the x axis
   field as `xAxisKey`, and the data keys to draw as `series`. Set a `label` and
   a color `palette` for each series in `config`. `aria-label` is required.
+- `Chart` (Experimental): a set of parts for charts that the six components
+  cannot draw, for example bars and a line in one chart. Use `Chart.Root`,
+  `Chart.Plot`, `Chart.Grid`, `Chart.XAxis`, `Chart.Tooltip`, `Chart.Bar`,
+  `Chart.Line` and `Chart.Area`. Colors, tooltip, legend and states are the same
+  as in the six charts. You never import from `recharts`. `PieChart`,
+  `RadarChart` and `RadialChart` cannot be composed.
 - `RadarChart` also takes `xAxisKey` (the field that names each spoke) and
   `series` (the polygons to draw). Use `showGrid` to show or hide the polar
   grid.

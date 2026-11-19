@@ -1,10 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
-import { Box } from "@commercetools/nimbus";
+import { Box, Chart } from "@commercetools/nimbus";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import { ChartContainer } from "./chart-container";
-import { useChartContext } from "./chart.context";
-import { ChartTooltip } from "./components/chart-tooltip";
 import { DarkMode, legendRed } from "./chart.test-utils";
 import type { ChartBaseProps, ChartConfig } from "./chart.types";
 
@@ -23,54 +19,37 @@ const oneSeries: ChartConfig = {
   desktop: { label: "Desktop", palette: "ctviolet" },
 };
 
-/**
- * The shared parts need a real chart to be tested. This is a minimal
- * Recharts bar chart that reads series and animation from the container.
- * The six charts are built the same way.
- */
-const InnerBars = ({ keys }: { keys: string[] }) => {
-  const { series, isAnimationActive, showTooltip, ariaLabel } =
-    useChartContext();
-  return (
-    <BarChart data={data} aria-label={ariaLabel}>
-      <CartesianGrid vertical={false} />
-      <XAxis dataKey="month" />
-      <YAxis />
-      {showTooltip && <Tooltip content={<ChartTooltip />} />}
-      {keys.map((key) => {
-        const item = series.find((s) => s.key === key);
-        return item ? (
-          <Bar
-            key={key}
-            dataKey={key}
-            fill={item.color}
-            isAnimationActive={isAnimationActive}
-          />
-        ) : null;
-      })}
-    </BarChart>
-  );
-};
-
 type SampleProps = Partial<ChartBaseProps> & { keys?: string[] };
 
+/**
+ * The shared parts (container, legend, tooltip, empty and loading states) are
+ * tested through the public `Chart` parts, the same way a consumer builds a
+ * custom chart. The six charts are built from the same parts.
+ */
 const SampleChart = ({
   keys = ["desktop", "mobile"],
   config = twoSeries,
   ...props
 }: SampleProps) => (
   <Box width="600px">
-    <ChartContainer
+    <Chart.Root
       data={data}
       config={config}
       aria-label="Visitors per month"
       isAnimationActive={false}
-      seriesKeys={keys}
+      series={keys}
       data-testid="chart"
       {...props}
     >
-      <InnerBars keys={keys} />
-    </ChartContainer>
+      <Chart.Plot>
+        <Chart.Grid />
+        <Chart.XAxis dataKey="month" />
+        <Chart.Tooltip />
+        {keys.map((key) => (
+          <Chart.Bar key={key} dataKey={key} />
+        ))}
+      </Chart.Plot>
+    </Chart.Root>
   </Box>
 );
 

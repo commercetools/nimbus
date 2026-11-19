@@ -1,13 +1,12 @@
-import {
-  Bar,
-  BarChart as RechartsBarChart,
-  CartesianGrid,
-  Tooltip,
-  XAxis,
-} from "recharts";
+import { BarChart as RechartsBarChart } from "recharts";
 import { ChartContainer } from "@/components/chart/chart-container";
 import { useChartContext } from "@/components/chart/chart.context";
-import { ChartTooltip } from "@/components/chart/components/chart-tooltip";
+import {
+  ChartBar,
+  ChartGrid,
+  ChartTooltipPart,
+  ChartXAxis,
+} from "@/components/chart/components";
 import type { BarChartProps } from "./bar-chart.types";
 
 type BarChartPlotProps = Pick<
@@ -27,30 +26,15 @@ const BarChartPlot = ({
   stacked,
   showGrid,
 }: BarChartPlotProps) => {
-  const { series, isAnimationActive, showTooltip, ariaLabel } =
-    useChartContext();
+  const { series, ariaLabel } = useChartContext();
 
   return (
     <RechartsBarChart data={data} aria-label={ariaLabel}>
-      {showGrid && <CartesianGrid vertical={false} />}
-      {/* `preserveStartEnd` always draws the first and last x axis label; middle labels that would overlap are dropped. */}
-      <XAxis
-        dataKey={xAxisKey}
-        axisLine={false}
-        tickLine={false}
-        interval="preserveStartEnd"
-      />
-      {showTooltip && <Tooltip content={<ChartTooltip />} />}
+      {showGrid && <ChartGrid />}
+      <ChartXAxis dataKey={xAxisKey} />
+      <ChartTooltipPart />
       {series.map((item) => (
-        <Bar
-          key={item.key}
-          dataKey={item.key}
-          fill={item.color}
-          stroke="var(--nimbus-colors-bg)"
-          strokeWidth={2}
-          stackId={stacked ? "stack" : undefined}
-          isAnimationActive={isAnimationActive}
-        />
+        <ChartBar key={item.key} dataKey={item.key} stacked={stacked} />
       ))}
     </RechartsBarChart>
   );

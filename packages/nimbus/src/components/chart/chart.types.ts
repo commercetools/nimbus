@@ -128,3 +128,22 @@ export type ChartContainerProps = ChartBaseProps & {
    */
   children: ReactElement;
 };
+
+/**
+ * Props of `Chart.Root`, the root of a composed chart. Chakra style props
+ * apply to the root element.
+ */
+export type ChartRootProps = ChartBaseProps & {
+  /**
+   * Data keys of the series, in drawing order. They are listed in the legend
+   * and the tooltip. A series part (`Chart.Bar`, `Chart.Line`, `Chart.Area`)
+   * draws only when its `dataKey` is in this list; keys that are missing in
+   * `config` are skipped.
+   * @default the keys of `config`, in order
+   */
+  series?: string[];
+  /**
+   * One `Chart.Plot`
+   */
+  children: ReactElement;
+};

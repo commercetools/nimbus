@@ -1,33 +1,13 @@
-import {
-  CartesianGrid,
-  Line,
-  LineChart as RechartsLineChart,
-  Tooltip,
-  XAxis,
-} from "recharts";
+import { LineChart as RechartsLineChart } from "recharts";
 import { ChartContainer } from "@/components/chart/chart-container";
 import { useChartContext } from "@/components/chart/chart.context";
-import { ChartTooltip } from "@/components/chart/components/chart-tooltip";
+import {
+  ChartGrid,
+  ChartLine,
+  ChartTooltipPart,
+  ChartXAxis,
+} from "@/components/chart/components";
 import type { LineChartProps } from "./line-chart.types";
-
-/** Number of series up to which every line is solid and color is enough */
-const MAX_SOLID_SERIES = 3;
-
-/**
- * Dash patterns for charts with many series, in order. The first line is
- * solid. At a 2 px stroke the patterns differ in dash length, gap length or
- * rhythm: long dashes, short dots, a dash-dot cycle, very long dashes, and a
- * dot-dot-dash cycle. Each of the six is told apart from the others by more
- * than color. The list repeats after its last entry.
- */
-const LINE_DASH_PATTERNS: readonly (string | undefined)[] = [
-  undefined,
-  "8 4",
-  "2 4",
-  "10 3 2 3",
-  "14 4",
-  "2 2 8 2 2 6",
-];
 
 type LineChartPlotProps = Pick<LineChartProps, "data" | "xAxisKey"> & {
   showGrid: boolean;
@@ -38,9 +18,7 @@ type LineChartPlotProps = Pick<LineChartProps, "data" | "xAxisKey"> & {
  * the accessible name from the surrounding `ChartContainer`.
  */
 const LineChartPlot = ({ data, xAxisKey, showGrid }: LineChartPlotProps) => {
-  const { series, isAnimationActive, showTooltip, ariaLabel } =
-    useChartContext();
-  const isDashed = series.length > MAX_SOLID_SERIES;
+  const { series, ariaLabel } = useChartContext();
 
   // The margin gives the first and last x axis label room at the chart edge.
   // `preserveStartEnd` always draws the first and last label, even when a
@@ -52,32 +30,11 @@ const LineChartPlot = ({ data, xAxisKey, showGrid }: LineChartPlotProps) => {
       aria-label={ariaLabel}
       margin={{ left: 12, right: 12 }}
     >
-      {showGrid && <CartesianGrid vertical={false} />}
-      <XAxis
-        dataKey={xAxisKey}
-        axisLine={false}
-        tickLine={false}
-        interval="preserveStartEnd"
-      />
-      {showTooltip && <Tooltip content={<ChartTooltip />} />}
-      {series.map((item, index) => (
-        <Line
-          key={item.key}
-          dataKey={item.key}
-          // "monotone", not "natural": natural interpolation can overshoot and
-          // draw below the data minimum (even below zero), which shows values
-          // that are not in the data. Monotone never overshoots.
-          type="monotone"
-          stroke={item.color}
-          strokeWidth={2}
-          strokeDasharray={
-            isDashed
-              ? LINE_DASH_PATTERNS[index % LINE_DASH_PATTERNS.length]
-              : undefined
-          }
-          dot={false}
-          isAnimationActive={isAnimationActive}
-        />
+      {showGrid && <ChartGrid />}
+      <ChartXAxis dataKey={xAxisKey} />
+      <ChartTooltipPart />
+      {series.map((item) => (
+        <ChartLine key={item.key} dataKey={item.key} />
       ))}
     </RechartsLineChart>
   );

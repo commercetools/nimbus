@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { BarChartProps } from "@/components/bar-chart/bar-chart.types";
 import type { PieChartProps } from "@/components/pie-chart/pie-chart.types";
-import type { ChartConfig } from "./chart.types";
+import type { ChartConfig, ChartRootProps } from "./chart.types";
+import type { ChartBarProps } from "./components/chart-bar";
+import type { ReactElement } from "react";
 
 /**
  * Type-level tests. An unused `@ts-expect-error` is a compile error, so these
@@ -79,5 +81,42 @@ describe("chart types", () => {
     expect(withXAxisKey).toBeDefined();
     expect(withSeries).toBeDefined();
     expect(missingKeys).toBeDefined();
+  });
+
+  it("requires aria-label, config and one child on Chart.Root", () => {
+    const child = null as unknown as ReactElement;
+    const valid: ChartRootProps = {
+      data,
+      config,
+      "aria-label": "Visitors",
+      children: child,
+    };
+    // @ts-expect-error aria-label is required
+    const missingLabel: ChartRootProps = { data, config, children: child };
+    const withRechartsProp: ChartRootProps = {
+      data,
+      config,
+      "aria-label": "Visitors",
+      children: child,
+      // @ts-expect-error a Recharts prop is not accepted
+      stackOffset: "expand",
+    };
+    expect(valid.series).toBeUndefined();
+    expect(missingLabel).toBeDefined();
+    expect(withRechartsProp).toBeDefined();
+  });
+
+  it("gives series parts a required dataKey and no Recharts props", () => {
+    const valid: ChartBarProps = { dataKey: "desktop", stacked: true };
+    // @ts-expect-error dataKey is required
+    const missing: ChartBarProps = { stacked: true };
+    const withFill: ChartBarProps = {
+      dataKey: "desktop",
+      // @ts-expect-error fill comes from the config palette
+      fill: "red",
+    };
+    expect(valid.dataKey).toBe("desktop");
+    expect(missing).toBeDefined();
+    expect(withFill).toBeDefined();
   });
 });

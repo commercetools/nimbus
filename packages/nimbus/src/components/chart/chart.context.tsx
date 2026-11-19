@@ -6,6 +6,8 @@ import type { ResolvedChartSeries } from "./utils/chart-config";
  * tooltip and legend, so labels and colors always match the drawing.
  */
 export type ChartContextValue = {
+  /** The rows of the chart, for `Chart.Plot` */
+  data: Record<string, unknown>[];
   /** Series with resolved label and CSS color, unknown keys already removed */
   series: ResolvedChartSeries[];
   /** Whether Recharts animates the drawing (prop, else off under reduced motion) */
@@ -28,7 +30,9 @@ export const ChartContext = createContext<ChartContextValue | undefined>(
 export const useChartContext = (): ChartContextValue => {
   const context = useContext(ChartContext);
   if (!context) {
-    throw new Error("useChartContext must be used within ChartContainer");
+    throw new Error(
+      "Chart parts must be used within Chart.Root (useChartContext was called outside ChartContainer)"
+    );
   }
   return context;
 };
