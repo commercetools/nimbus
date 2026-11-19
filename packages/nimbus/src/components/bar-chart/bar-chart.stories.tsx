@@ -83,11 +83,11 @@ export const Base: Story = {
       const second = barsOf(canvasElement, 1)[0].querySelector("path")!;
       await expect(first).toHaveAttribute(
         "fill",
-        "var(--nimbus-colors-chart-ctviolet)"
+        "var(--nimbus-colors-ctviolet-9)"
       );
       await expect(second).toHaveAttribute(
         "fill",
-        "var(--nimbus-colors-chart-orange)"
+        "var(--nimbus-colors-orange-9)"
       );
     });
 
@@ -189,7 +189,7 @@ export const LegendForTwoSeries: Story = {
       ".nimbus-chart__legendSwatch"
     )!;
     await expect(swatch.style.color).toBe(
-      "var(--nimbus-colors-chart-ctviolet)"
+      "var(--nimbus-colors-ctviolet-9)"
     );
   },
 };
@@ -256,7 +256,7 @@ export const TooltipContent: Story = {
       ".nimbus-chart__legendSwatch"
     )!;
     await expect(swatch.style.color).toBe(
-      "var(--nimbus-colors-chart-ctviolet)"
+      "var(--nimbus-colors-ctviolet-9)"
     );
   },
 };

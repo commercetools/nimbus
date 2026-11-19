@@ -71,7 +71,7 @@ type Story = StoryObj<typeof SampleChart>;
 
 /**
  * Computed color of the first (ctviolet) legend swatch, as [r, g, b]. A real
- * color proves the `--nimbus-colors-chart-ctviolet` variable exists and
+ * color proves the `--nimbus-colors-ctviolet-9` variable exists and
  * resolves; an unknown variable would give a transparent swatch.
  */
 const firstSwatchRgb = (root: HTMLElement): number[] => {
@@ -105,7 +105,7 @@ export const Base: Story = {
         ".nimbus-chart__legendSwatch"
       )!;
       await expect(swatch.style.color).toBe(
-        "var(--nimbus-colors-chart-ctviolet)"
+        "var(--nimbus-colors-ctviolet-9)"
       );
     });
 
@@ -193,8 +193,8 @@ export const DefaultPaletteOrder: Story = {
       canvasElement.querySelectorAll<HTMLElement>(".nimbus-chart__legendSwatch")
     );
     await expect(swatches.map((s) => s.style.color)).toEqual([
-      "var(--nimbus-colors-chart-ctviolet)",
-      "var(--nimbus-colors-chart-orange)",
+      "var(--nimbus-colors-ctviolet-9)",
+      "var(--nimbus-colors-orange-9)",
     ]);
   },
 };

@@ -76,10 +76,10 @@ export const MixedBarAndLine: Story = {
     await step("Series colors come from the config palettes", async () => {
       const bar = canvasElement.querySelector(".recharts-bar-rectangle path")!;
       await expect(bar.getAttribute("fill")).toBe(
-        "var(--nimbus-colors-chart-ctviolet)"
+        "var(--nimbus-colors-ctviolet-9)"
       );
       await expect(lines(canvasElement)[0].getAttribute("stroke")).toBe(
-        "var(--nimbus-colors-chart-orange)"
+        "var(--nimbus-colors-orange-9)"
       );
     });
 
@@ -400,7 +400,7 @@ export const AreaUsesGradient: Story = {
     await expect(canvasElement.ownerDocument.getElementById(id)).not.toBeNull();
     const curve = canvasElement.querySelector("path.recharts-area-curve")!;
     await expect(curve.getAttribute("stroke")).toBe(
-      "var(--nimbus-colors-chart-ctviolet)"
+      "var(--nimbus-colors-ctviolet-9)"
     );
   },
 };

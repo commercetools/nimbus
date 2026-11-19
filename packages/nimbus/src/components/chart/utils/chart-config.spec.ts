@@ -3,7 +3,7 @@ import { chartPaletteNames, defaultChartPaletteOrder } from "../chart.palettes";
 import type { ChartConfig } from "../chart.types";
 import { getChartPaletteColor, resolveChartConfig } from "./chart-config";
 
-const colorOf = (palette: string) => `var(--nimbus-colors-chart-${palette})`;
+const colorOf = (palette: string) => `var(--nimbus-colors-${palette}-9)`;
 
 describe("chart config utilities", () => {
   let warn: ReturnType<typeof vi.spyOn>;
@@ -20,7 +20,7 @@ describe("chart config utilities", () => {
   describe("getChartPaletteColor", () => {
     it("turns a palette name into its CSS variable reference", () => {
       expect(getChartPaletteColor("violet")).toBe(
-        "var(--nimbus-colors-chart-violet)"
+        "var(--nimbus-colors-violet-9)"
       );
     });
 

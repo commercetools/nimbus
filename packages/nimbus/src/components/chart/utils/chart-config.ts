@@ -13,7 +13,7 @@ export type ResolvedChartSeries = {
   key: string;
   /** Human-readable name from the config */
   label: string;
-  /** CSS color, a `var(--nimbus-colors-chart-<palette>)` reference */
+  /** CSS color, a `var(--nimbus-colors-<palette>-9)` reference */
   color: string;
 };
 
@@ -29,10 +29,10 @@ const isChartPalette = (value: unknown): value is ChartPalette =>
  * dark value, so the color follows the color mode without JavaScript.
  *
  * @param palette - Name of a chart palette
- * @returns `var(--nimbus-colors-chart-<palette>)`
+ * @returns `var(--nimbus-colors-<palette>-9)`
  */
 export const getChartPaletteColor = (palette: ChartPalette): string =>
-  `var(--nimbus-colors-chart-${palette})`;
+  `var(--nimbus-colors-${palette}-9)`;
 
 /**
  * Resolves label and color of each series from the chart config.

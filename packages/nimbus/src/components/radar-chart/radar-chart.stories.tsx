@@ -99,15 +99,15 @@ export const FillAndLine: Story = {
     const [first, second] = polygons(canvasElement);
     await expect(first).toHaveAttribute(
       "fill",
-      "var(--nimbus-colors-chart-ctviolet)"
+      "var(--nimbus-colors-ctviolet-9)"
     );
     await expect(first).toHaveAttribute(
       "stroke",
-      "var(--nimbus-colors-chart-ctviolet)"
+      "var(--nimbus-colors-ctviolet-9)"
     );
     await expect(second).toHaveAttribute(
       "stroke",
-      "var(--nimbus-colors-chart-orange)"
+      "var(--nimbus-colors-orange-9)"
     );
     await expect(first).toHaveAttribute("stroke-width", "2");
     const opacity = Number(first.getAttribute("fill-opacity"));
@@ -150,7 +150,7 @@ export const LegendForSeveral: Story = {
       ".nimbus-chart__legendSwatch"
     )!;
     await expect(swatch.style.color).toBe(
-      "var(--nimbus-colors-chart-ctviolet)"
+      "var(--nimbus-colors-ctviolet-9)"
     );
   },
 };
@@ -218,7 +218,7 @@ export const TooltipContent: Story = {
       ".nimbus-chart__legendSwatch"
     )!;
     await expect(swatch.style.color).toBe(
-      "var(--nimbus-colors-chart-ctviolet)"
+      "var(--nimbus-colors-ctviolet-9)"
     );
   },
 };
@@ -338,7 +338,7 @@ export const Dark: Story = {
     await waitFor(() => expect(legendRed(canvasElement)).toBeGreaterThan(128));
     await expect(
       polygons(canvasElement)[0].getAttribute("fill") ===
-        "var(--nimbus-colors-chart-ctviolet)"
+        "var(--nimbus-colors-ctviolet-9)"
     ).toBe(true);
   },
 };

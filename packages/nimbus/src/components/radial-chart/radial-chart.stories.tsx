@@ -85,9 +85,9 @@ export const Base: Story = {
       async () => {
         const fills = rings(canvasElement).map((r) => r.getAttribute("fill"));
         await expect(fills).toEqual([
-          "var(--nimbus-colors-chart-ctviolet)",
-          "var(--nimbus-colors-chart-orange)",
-          "var(--nimbus-colors-chart-teal)",
+          "var(--nimbus-colors-ctviolet-9)",
+          "var(--nimbus-colors-orange-9)",
+          "var(--nimbus-colors-teal-9)",
         ]);
       }
     );
@@ -205,9 +205,9 @@ export const UnknownCategorySkipped: Story = {
     // 4 rows, 3 known categories: the unknown one is not drawn
     await expect(rings(canvasElement)).toHaveLength(3);
     await expect(fillsOf(canvasElement)).toEqual([
-      "var(--nimbus-colors-chart-ctviolet)",
-      "var(--nimbus-colors-chart-orange)",
-      "var(--nimbus-colors-chart-teal)",
+      "var(--nimbus-colors-ctviolet-9)",
+      "var(--nimbus-colors-orange-9)",
+      "var(--nimbus-colors-teal-9)",
     ]);
     await expect(items.map((i) => i.textContent)).toEqual([
       "Chrome",
@@ -232,9 +232,9 @@ export const ConfigOrderDiffersFromData: Story = {
     await findSvg(canvasElement);
     // Data order is chrome, safari, firefox
     await expect(fillsOf(canvasElement)).toEqual([
-      "var(--nimbus-colors-chart-ctviolet)",
-      "var(--nimbus-colors-chart-orange)",
-      "var(--nimbus-colors-chart-teal)",
+      "var(--nimbus-colors-ctviolet-9)",
+      "var(--nimbus-colors-orange-9)",
+      "var(--nimbus-colors-teal-9)",
     ]);
   },
 };
@@ -263,8 +263,8 @@ export const DuplicateCategory: Story = {
     await findSvg(canvasElement);
     await expect(rings(canvasElement)).toHaveLength(3);
     await expect(fillsOf(canvasElement).slice(0, 2)).toEqual([
-      "var(--nimbus-colors-chart-ctviolet)",
-      "var(--nimbus-colors-chart-ctviolet)",
+      "var(--nimbus-colors-ctviolet-9)",
+      "var(--nimbus-colors-ctviolet-9)",
     ]);
     await expect(items.map((i) => i.textContent)).toEqual(["Chrome", "Safari"]);
     const messages = consoleErrorSpy.mock.calls.map((call) => String(call[0]));
@@ -285,7 +285,7 @@ export const LegendForSeveral: Story = {
       ".nimbus-chart__legendSwatch"
     )!;
     await expect(swatch.style.color).toBe(
-      "var(--nimbus-colors-chart-ctviolet)"
+      "var(--nimbus-colors-ctviolet-9)"
     );
   },
 };
@@ -351,7 +351,7 @@ export const TooltipContent: Story = {
       ".nimbus-chart__legendSwatch"
     )!;
     await expect(swatch.style.color).toBe(
-      "var(--nimbus-colors-chart-ctviolet)"
+      "var(--nimbus-colors-ctviolet-9)"
     );
   },
 };

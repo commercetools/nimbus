@@ -1,9 +1,6 @@
 import { defineSemanticTokens } from "@chakra-ui/react/styled-system";
 import { themeTokens } from "@commercetools/nimbus-tokens";
 
-// The `chart` colors (last entry) are the palette solid colors, adapted in lightness
-// for 3:1 contrast against `bg`. Keep comments out of the object below: the token
-// mapping script of the TypeScript plugin parses its text.
 export const colors = defineSemanticTokens.colors({
   bg: {
     DEFAULT: {
@@ -50,7 +47,6 @@ export const colors = defineSemanticTokens.colors({
   ...themeTokens.color["system-palettes"],
   ...themeTokens.color["brand-palettes"],
   ...themeTokens.color["semantic-palettes"],
-  chart: themeTokens.color.chart,
 });
 
 export const darkColors = colors;

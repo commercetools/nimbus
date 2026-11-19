@@ -7,7 +7,7 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * Recharts draws plain SVG with its own class names. The root styles them with
  * descendant selectors, so grid lines, axes and tick text use Nimbus tokens
  * and follow light and dark mode. Series colors are not set here: they come
- * from `var(--nimbus-colors-chart-<palette>)` on each shape.
+ * from `var(--nimbus-colors-<palette>-9)` on each shape.
  * Text uses `fg` and `fg.subtle`, both at least 4.5:1 against `bg`.
  */
 export const chartSlotRecipe = defineSlotRecipe({

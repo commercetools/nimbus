@@ -88,11 +88,11 @@ export const Base: Story = {
       const [first, second] = areaPaths(canvasElement, "curve");
       await expect(first).toHaveAttribute(
         "stroke",
-        "var(--nimbus-colors-chart-ctviolet)"
+        "var(--nimbus-colors-ctviolet-9)"
       );
       await expect(second).toHaveAttribute(
         "stroke",
-        "var(--nimbus-colors-chart-orange)"
+        "var(--nimbus-colors-orange-9)"
       );
     });
 
@@ -149,7 +149,7 @@ export const GradientFill: Story = {
       const [top, bottom] = stops;
       await expect(top.getAttribute("offset")).toBe("5%");
       await expect(top.getAttribute("stop-color")).toBe(
-        `var(--nimbus-colors-chart-${color})`
+        `var(--nimbus-colors-${color}-9)`
       );
       await expect(Number(top.getAttribute("stop-opacity"))).toBeGreaterThan(
         0.7
@@ -171,7 +171,7 @@ export const FullColorLine: Story = {
     await findSvg(canvasElement);
     for (const line of areaPaths(canvasElement, "curve")) {
       await expect(line.getAttribute("stroke")).toMatch(
-        /^var\(--nimbus-colors-chart-/
+        /^var\(--nimbus-colors-\w+-9\)$/
       );
       await expect(line).toHaveAttribute("stroke-width", "2");
       await expect(line.getAttribute("fill")).toBe("none");
@@ -230,7 +230,7 @@ export const LegendForTwoSeries: Story = {
       ".nimbus-chart__legendSwatch"
     )!;
     await expect(swatch.style.color).toBe(
-      "var(--nimbus-colors-chart-ctviolet)"
+      "var(--nimbus-colors-ctviolet-9)"
     );
   },
 };
@@ -297,7 +297,7 @@ export const TooltipContent: Story = {
       ".nimbus-chart__legendSwatch"
     )!;
     await expect(swatch.style.color).toBe(
-      "var(--nimbus-colors-chart-ctviolet)"
+      "var(--nimbus-colors-ctviolet-9)"
     );
   },
 };
