@@ -19,7 +19,6 @@ import {
   SimpleGrid,
   Stack,
   Table,
-  Tabs,
   Text,
 } from "@commercetools/nimbus";
 import { ArrowDownward, ArrowUpward } from "@commercetools/nimbus-icons";
@@ -243,6 +242,12 @@ const orders = [
 const figures = { fontVariantNumeric: "tabular-nums" } as const;
 
 /**
+ * The dashboard is a visual regression page, so its charts do not animate:
+ * Chromatic would otherwise capture a frame in the middle of the drawing.
+ */
+const still = { isAnimationActive: false } as const;
+
+/**
  * A page section. Sections are separated by a hairline, not boxed in cards,
  * so the charts sit directly on the page.
  */
@@ -339,6 +344,7 @@ const Sparkline = ({
     css={{ "& .nimbus-chart__plot": { aspectRatio: "6 / 1" } }}
   >
     <Chart.Root
+      {...still}
       aria-label={label}
       data={monthly}
       config={{ [dataKey]: { label: seriesLabel, palette: "ctviolet" } }}
@@ -404,9 +410,13 @@ const KeyFigure = ({
 /**
  * A fake e-commerce dashboard for a made-up outdoor gear retailer. It shows
  * every chart type, the `Chart` parts (sparklines and a bar and line chart)
- * and the Meter component. Each chart is introduced by what it shows.
+ * and the Meter component. Each chart is introduced by what it shows. Every
+ * chart is visible without interaction and does not animate, so this story is
+ * one stable frame for the visual regression test.
  */
 export const EcommerceDashboard: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Box
       maxWidth="1200px"
@@ -527,6 +537,7 @@ export const EcommerceDashboard: Story = {
               }}
             >
               <AreaChart
+                {...still}
                 aria-label="Revenue per month in thousands of euros, online and shops"
                 data={revenue}
                 xAxisKey="month"
@@ -543,93 +554,76 @@ export const EcommerceDashboard: Story = {
             <Heading as="h2" id="orders-heading" size="2xl">
               Orders and conversion
             </Heading>
-            <Tabs.Root defaultSelectedKey="devices">
-              <Tabs.List>
-                <Tabs.Tab id="devices">By device</Tabs.Tab>
-                <Tabs.Tab id="sources">By traffic source</Tabs.Tab>
-                <Tabs.Tab id="forecast">Against forecast</Tabs.Tab>
-              </Tabs.List>
-              <Tabs.Panels>
-                <Tabs.Panel id="devices">
-                  <Box paddingTop="800">
-                    <TextAndChart
-                      text={
-                        <Finding
-                          id="devices-heading"
-                          title="Mobile overtakes desktop at the weekend"
-                        >
-                          On Saturday mobile brings 214 orders and desktop 190.
-                          On Sunday the gap grows to 201 against 158.
-                        </Finding>
-                      }
-                    >
-                      <BarChart
-                        aria-label="Orders per weekday by device"
-                        data={ordersByDay}
-                        xAxisKey="day"
-                        series={["desktop", "mobile", "tablet"]}
-                        config={ordersConfig}
-                      />
-                    </TextAndChart>
-                  </Box>
-                </Tabs.Panel>
-                <Tabs.Panel id="sources">
-                  <Box paddingTop="800">
-                    <TextAndChart
-                      text={
-                        <Finding
-                          id="sources-heading"
-                          title="Email converts best, and social is catching up"
-                        >
-                          Email reached 7.2% this week. Social almost doubled
-                          since week 40, from 1.8% to 3.3%. Each line also has
-                          its own dash pattern, so it works without color.
-                        </Finding>
-                      }
-                    >
-                      <LineChart
-                        aria-label="Conversion rate per week by traffic source"
-                        data={conversion}
-                        xAxisKey="week"
-                        series={["search", "email", "social", "direct"]}
-                        config={conversionConfig}
-                      />
-                    </TextAndChart>
-                  </Box>
-                </Tabs.Panel>
-                <Tabs.Panel id="forecast">
-                  <Box paddingTop="800">
-                    <TextAndChart
-                      text={
-                        <Finding
-                          id="forecast-heading"
-                          title="Orders have beaten the forecast since September"
-                        >
-                          August was the only month below the line. December
-                          came in at 6,040 orders against a forecast of 5,600.
-                          This chart is composed from the Chart parts: bars and
-                          a line in one plot.
-                        </Finding>
-                      }
-                    >
-                      <Chart.Root
-                        aria-label="Orders and forecast per month"
-                        data={ordersAndForecast}
-                        config={forecastConfig}
-                      >
-                        <Chart.Plot>
-                          <Chart.Grid />
-                          <Chart.XAxis dataKey="month" />
-                          <Chart.Tooltip />
-                          <Chart.Bar dataKey="orders" />
-                          <Chart.Line dataKey="forecast" />
-                        </Chart.Plot>
-                      </Chart.Root>
-                    </TextAndChart>
-                  </Box>
-                </Tabs.Panel>
-              </Tabs.Panels>
-            </Tabs.Root>
+            <Stack gap="1200">
+              <TextAndChart
+                text={
+                  <Finding
+                    id="devices-heading"
+                    title="Mobile overtakes desktop at the weekend"
+                  >
+                    On Saturday mobile brings 214 orders and desktop 190. On
+                    Sunday the gap grows to 201 against 158.
+                  </Finding>
+                }
+              >
+                <BarChart
+                  {...still}
+                  aria-label="Orders per weekday by device"
+                  data={ordersByDay}
+                  xAxisKey="day"
+                  series={["desktop", "mobile", "tablet"]}
+                  config={ordersConfig}
+                />
+              </TextAndChart>
+              <TextAndChart
+                text={
+                  <Finding
+                    id="sources-heading"
+                    title="Email converts best, and social is catching up"
+                  >
+                    Email reached 7.2% this week. Social almost doubled since
+                    week 40, from 1.8% to 3.3%. Each line also has its own dash
+                    pattern, so it works without color.
+                  </Finding>
+                }
+              >
+                <LineChart
+                  {...still}
+                  aria-label="Conversion rate per week by traffic source"
+                  data={conversion}
+                  xAxisKey="week"
+                  series={["search", "email", "social", "direct"]}
+                  config={conversionConfig}
+                />
+              </TextAndChart>
+              <TextAndChart
+                text={
+                  <Finding
+                    id="forecast-heading"
+                    title="Orders have beaten the forecast since September"
+                  >
+                    August was the only month below the line. December came in
+                    at 6,040 orders against a forecast of 5,600. This chart is
+                    composed from the Chart parts: bars and a line in one plot.
+                  </Finding>
+                }
+              >
+                <Chart.Root
+                  {...still}
+                  aria-label="Orders and forecast per month"
+                  data={ordersAndForecast}
+                  config={forecastConfig}
+                >
+                  <Chart.Plot>
+                    <Chart.Grid />
+                    <Chart.XAxis dataKey="month" />
+                    <Chart.Tooltip />
+                    <Chart.Bar dataKey="orders" />
+                    <Chart.Line dataKey="forecast" />
+                  </Chart.Plot>
+                </Chart.Root>
+              </TextAndChart>
+            </Stack>
           </Stack>
         </Section>
 
@@ -648,6 +642,7 @@ export const EcommerceDashboard: Story = {
                   at 7%.
                 </Finding>
                 <PieChart
+                  {...still}
                   aria-label="Share of revenue by sales channel in percent"
                   data={channels}
                   nameKey="channel"
@@ -664,6 +659,7 @@ export const EcommerceDashboard: Story = {
                   below the market.
                 </Finding>
                 <RadarChart
+                  {...still}
                   aria-label="Customer satisfaction per topic, Nordlicht and the market"
                   data={satisfaction}
                   xAxisKey="topic"
@@ -680,6 +676,7 @@ export const EcommerceDashboard: Story = {
                   orders.
                 </Finding>
                 <RadialChart
+                  {...still}
                   aria-label="Orders shipped on time per warehouse in percent"
                   data={warehouses}
                   nameKey="warehouse"
