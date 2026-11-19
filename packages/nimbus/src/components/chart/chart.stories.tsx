@@ -1,0 +1,315 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Box, Chart } from "@commercetools/nimbus";
+import { expect, userEvent, waitFor, within } from "storybook/test";
+import { DarkMode, findSvg, legendRed, liveRegion } from "./chart.test-utils";
+import type { ChartBaseProps, ChartConfig } from "./chart.types";
+
+const data = [
+  { month: "Jan", desktop: 186, mobile: 80 },
+  { month: "Feb", desktop: 305, mobile: 200 },
+  { month: "Mar", desktop: 237, mobile: 120 },
+];
+
+const twoSeries: ChartConfig = {
+  desktop: { label: "Desktop", palette: "ctviolet" },
+  mobile: { label: "Mobile", palette: "orange" },
+};
+
+const oneSeries: ChartConfig = {
+  desktop: { label: "Desktop", palette: "ctviolet" },
+};
+
+type SampleProps = Partial<
+  Omit<ChartBaseProps, "aria-label" | "aria-labelledby">
+> & { keys?: string[] };
+
+/**
+ * The shared parts (container, legend, tooltip, empty and loading states) are
+ * tested through the public `Chart` parts, the same way a consumer builds a
+ * custom chart. The six charts are built from the same parts.
+ */
+const SampleChart = ({
+  keys = ["desktop", "mobile"],
+  config = twoSeries,
+  ...props
+}: SampleProps) => (
+  <Box width="600px">
+    <Chart.Root
+      data={data}
+      config={config}
+      aria-label="Visitors per month"
+      isAnimationActive={false}
+      series={keys}
+      data-testid="chart"
+      {...props}
+    >
+      <Chart.Plot>
+        <Chart.Grid />
+        <Chart.XAxis dataKey="month" />
+        <Chart.Tooltip />
+        {keys.map((key) => (
+          <Chart.Bar key={key} dataKey={key} />
+        ))}
+      </Chart.Plot>
+    </Chart.Root>
+  </Box>
+);
+
+// VRT: the recipe paints the grid, tick text, legend swatches, tooltip, focus
+// ring and empty state. Snapshotted: Base (grid, ticks, two-series legend), Dark,
+// SingleSeriesWithLegend (single-series legend), Empty, and Focused (the shared
+// focus ring plus the tooltip of the first point, which the tab stop opens).
+// Loading is a skeleton from Skeleton, whose recipe is covered by its own
+// stories. RTL is not snapshotted: only the tooltip value margin is logical, and
+// the layout is otherwise symmetric.
+const meta: Meta<typeof SampleChart> = {
+  title: "Components/Charts/Chart/Shared",
+  component: SampleChart,
+};
+
+export default meta;
+
+type Story = StoryObj<typeof SampleChart>;
+
+/**
+ * Computed color of the first (ctviolet) legend swatch, as [r, g, b]. A real
+ * color proves the `--nimbus-colors-ctviolet-9` variable exists and
+ * resolves; an unknown variable would give a transparent swatch.
+ */
+const firstSwatchRgb = (root: HTMLElement): number[] => {
+  const swatch = root.querySelector<HTMLElement>(
+    ".nimbus-chart__legendSwatch"
+  )!;
+  const color = getComputedStyle(swatch).backgroundColor;
+  if (!/^rgb/.test(color) || color === "rgba(0, 0, 0, 0)") {
+    throw new Error(`Swatch color does not resolve: "${color}"`);
+  }
+  return color.match(/\d+/g)!.slice(0, 3).map(Number);
+};
+
+/** Two series: the legend is always shown, with the config colors */
+export const Base: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => <SampleChart />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Legend lists each series with its label", async () => {
+      const items = await canvas.findAllByRole("listitem");
+      await expect(items).toHaveLength(2);
+      await expect(items[0]).toHaveTextContent("Desktop");
+      await expect(items[1]).toHaveTextContent("Mobile");
+    });
+
+    await step("Swatches use the palette CSS variable", async () => {
+      const swatch = canvasElement.querySelector<HTMLElement>(
+        ".nimbus-chart__legendSwatch"
+      )!;
+      await expect(swatch.style.color).toBe("var(--nimbus-colors-ctviolet-9)");
+    });
+
+    await step("The ctviolet variable resolves to a violet color", async () => {
+      const [red, , blue] = firstSwatchRgb(canvasElement);
+      await expect(blue).toBeGreaterThan(red + 40);
+    });
+
+    await step("Keeps the Recharts role and tab stop", async () => {
+      // Recharts draws the svg after it has measured the container
+      const svg = await findSvg(canvasElement);
+      await expect(svg).toHaveAttribute("role", "application");
+      await expect(svg).toHaveAttribute("tabindex", "0");
+    });
+
+    await step("The aria-label reaches the chart", async () => {
+      const svg = await findSvg(canvasElement);
+      await expect(svg).toHaveAttribute("aria-label", "Visitors per month");
+    });
+
+    await step("Legend text is a dark gray in light mode", async () => {
+      await expect(legendRed(canvasElement)).toBeLessThan(128);
+    });
+  },
+};
+
+/** The tab stop shows the shared focus ring and the tooltip of the first point */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => <SampleChart />,
+  play: async ({ canvasElement }) => {
+    // The svg exists only after Recharts has measured the container
+    const svg = await findSvg(canvasElement);
+    await userEvent.tab();
+    await expect(svg).toHaveFocus();
+  },
+};
+
+/** The legend is hidden for a single series */
+export const SingleSeries: Story = {
+  render: () => <SampleChart keys={["desktop"]} config={oneSeries} />,
+  play: async ({ canvasElement }) => {
+    await waitFor(() =>
+      expect(canvasElement.querySelector(".recharts-bar")).not.toBeNull()
+    );
+    await expect(canvasElement.querySelector("ul")).toBeNull();
+  },
+};
+
+/** `showLegend` shows the legend of a single series */
+export const SingleSeriesWithLegend: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <SampleChart keys={["desktop"]} config={oneSeries} showLegend />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findAllByRole("listitem")).toHaveLength(1);
+  },
+};
+
+/** `showLegend={false}` does not hide the legend of two series */
+export const LegendAlwaysForTwoSeries: Story = {
+  render: () => <SampleChart showLegend={false} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findAllByRole("listitem")).toHaveLength(2);
+  },
+};
+
+/** Entries without a palette get the default order at their position */
+export const DefaultPaletteOrder: Story = {
+  render: () => (
+    <SampleChart
+      config={{ desktop: { label: "Desktop" }, mobile: { label: "Mobile" } }}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    await waitFor(() =>
+      expect(
+        canvasElement.querySelectorAll(".nimbus-chart__legendSwatch")
+      ).toHaveLength(2)
+    );
+    const swatches = Array.from(
+      canvasElement.querySelectorAll<HTMLElement>(".nimbus-chart__legendSwatch")
+    );
+    await expect(swatches.map((s) => s.style.color)).toEqual([
+      "var(--nimbus-colors-ctviolet-9)",
+      "var(--nimbus-colors-orange-9)",
+    ]);
+  },
+};
+
+/** The tooltip is a live region with label, swatch and value of each series */
+export const TooltipContent: Story = {
+  render: () => <SampleChart />,
+  play: async ({ canvasElement, step }) => {
+    await waitFor(() =>
+      expect(canvasElement.querySelector("svg.recharts-surface")).not.toBeNull()
+    );
+
+    await step("Focusing the chart shows the first data point", async () => {
+      await userEvent.tab();
+      const tooltip = await waitFor(() => {
+        const el = canvasElement.querySelector<HTMLElement>(
+          ".nimbus-chart__tooltip"
+        );
+        if (!el) throw new Error("tooltip not shown yet");
+        return el;
+      });
+      await expect(tooltip).toHaveAttribute("aria-hidden", "true");
+      await waitFor(() =>
+        expect(liveRegion(canvasElement)).toHaveTextContent(/\S/)
+      );
+      await expect(tooltip).toHaveTextContent("Jan");
+      await expect(tooltip).toHaveTextContent("Desktop");
+      await expect(tooltip).toHaveTextContent("186");
+      await expect(tooltip).toHaveTextContent("Mobile");
+    });
+
+    await step("ArrowRight moves to the next data point", async () => {
+      await userEvent.keyboard("{ArrowRight}");
+      await waitFor(() =>
+        expect(
+          canvasElement.querySelector(".nimbus-chart__tooltip")
+        ).toHaveTextContent("Feb")
+      );
+    });
+  },
+};
+
+/** `showTooltip={false}` renders no tooltip */
+export const TooltipOff: Story = {
+  render: () => <SampleChart showTooltip={false} />,
+  play: async ({ canvasElement }) => {
+    await waitFor(() =>
+      expect(canvasElement.querySelector("svg.recharts-surface")).not.toBeNull()
+    );
+    await userEvent.tab();
+    await expect(
+      canvasElement.querySelector(".nimbus-chart__tooltip")
+    ).toBeNull();
+  },
+};
+
+/** `isLoading` shows the skeleton instead of the chart */
+export const Loading: Story = {
+  render: () => <SampleChart isLoading />,
+  play: async ({ canvasElement }) => {
+    const root = canvasElement.querySelector<HTMLElement>(
+      "[data-testid='chart']"
+    )!;
+    await expect(root).toHaveAttribute("aria-busy", "true");
+    await expect(root.querySelector("svg.recharts-surface")).toBeNull();
+    await expect(root.querySelector(".nimbus-skeleton")).not.toBeNull();
+  },
+};
+
+/** Empty data shows a translated empty state instead of a blank area */
+export const Empty: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => <SampleChart data={[]} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const status = await canvas.findByRole("status");
+    await expect(status).toHaveTextContent("No data to display");
+    await expect(
+      canvasElement.querySelector("svg.recharts-surface")
+    ).toBeNull();
+  },
+};
+
+/** Without a fixed parent height the root keeps its aspect ratio */
+export const DefaultAspectRatio: Story = {
+  render: () => <SampleChart />,
+  play: async ({ canvasElement }) => {
+    const plot = canvasElement.querySelector<HTMLElement>(
+      ".nimbus-chart__plot"
+    )!;
+    await waitFor(() => expect(plot.offsetHeight).toBeGreaterThan(100));
+    // `wide` is 16:9; the legend adds height below the plot
+    await expect(plot.offsetWidth / plot.offsetHeight).toBeCloseTo(16 / 9, 1);
+  },
+};
+
+/** Colors come from variables that switch with the color mode */
+export const Dark: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <DarkMode>
+      <SampleChart />
+    </DarkMode>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findAllByRole("listitem")).toHaveLength(2);
+    // fg.subtle is a dark gray in light mode (see Base) and a light gray here
+    await waitFor(() => expect(legendRed(canvasElement)).toBeGreaterThan(128));
+    // The token also resolves in dark mode
+    const [red, , blue] = firstSwatchRgb(canvasElement);
+    await expect(blue).toBeGreaterThan(red + 40);
+  },
+};

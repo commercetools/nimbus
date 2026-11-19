@@ -80,10 +80,10 @@ const createEntries = async () => {
 };
 
 /**
- * External (peer) dependencies — not bundled into the nimbus dist.
+ * External dependencies — not bundled into the nimbus dist.
  *
- * Anything externalized must also be a peerDependency & devDependency in this
- * package's `package.json`.
+ * Anything externalized must also be a peerDependency & devDependency, or a
+ * regular dependency (recharts), in this package's `package.json`.
  */
 const external = [
   // Node built-ins — the plugin entries use `node:module` (createRequire) and
@@ -94,6 +94,11 @@ const external = [
   /^react(-dom)?(\/.+)?$/,
   // UI frameworks & styling.
   new RegExp("@chakra-ui/react?[^.].*$"),
+  // Recharts for the chart components. Externalized because bundling it fails
+  // `pnpm check:bundle-size` (+23.8%) and `pnpm check:bundler-compat` (its
+  // dependency use-sync-external-store is CommonJS and requires the external
+  // react). It is a regular dependency, so consumers get it with Nimbus.
+  /^recharts(\/.+)?$/,
   // Slate dependencies for RichTextInput
   // These are externalized because immer (slate's dependency) uses internal singletons that break when bundled
   "slate",

@@ -27,6 +27,10 @@
     "developer_comment": "aria-label for previous year navigation button",
     "string": "Année précédente"
   },
+  "Nimbus.Chart.empty": {
+    "developer_comment": "Text shown in place of a chart when it has no data",
+    "string": "No data to display"
+  },
   "Nimbus.ChatMessageList.conversationLabel": {
     "developer_comment": "default accessible name for the chat transcript live region when the consumer does not provide one",
     "string": "Conversation"
