@@ -2,35 +2,6 @@ import { describe, it, expect } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import { Chart, NimbusProvider } from "@commercetools/nimbus";
 
-const data = [
-  { month: "Jan", orders: 186, trend: 150 },
-  { month: "Feb", orders: 305, trend: 220 },
-];
-
-const config = {
-  orders: { label: "Orders", palette: "ctviolet" },
-  trend: { label: "Trend", palette: "orange" },
-} as const;
-
-const MixedChart = (props: { isLoading?: boolean; rows?: typeof data }) => (
-  <NimbusProvider>
-    <Chart.Root
-      aria-label="Orders and trend per month"
-      data={props.rows ?? data}
-      config={config}
-      isLoading={props.isLoading}
-    >
-      <Chart.Plot>
-        <Chart.Grid />
-        <Chart.XAxis dataKey="month" />
-        <Chart.Tooltip />
-        <Chart.Bar dataKey="orders" />
-        <Chart.Line dataKey="trend" />
-      </Chart.Plot>
-    </Chart.Root>
-  </NimbusProvider>
-);
-
 /**
  * @docs-section legend
  * @docs-title Legend Tests
@@ -38,6 +9,35 @@ const MixedChart = (props: { isLoading?: boolean; rows?: typeof data }) => (
  * @docs-order 1
  */
 describe("Chart - Legend", () => {
+  const data = [
+    { month: "Jan", orders: 186, trend: 150 },
+    { month: "Feb", orders: 305, trend: 220 },
+  ];
+
+  const config = {
+    orders: { label: "Orders", palette: "ctviolet" },
+    trend: { label: "Trend", palette: "orange" },
+  } as const;
+
+  const MixedChart = (props: { isLoading?: boolean; rows?: typeof data }) => (
+    <NimbusProvider>
+      <Chart.Root
+        aria-label="Orders and trend per month"
+        data={props.rows ?? data}
+        config={config}
+        isLoading={props.isLoading}
+      >
+        <Chart.Plot>
+          <Chart.Grid />
+          <Chart.XAxis dataKey="month" />
+          <Chart.Tooltip />
+          <Chart.Bar dataKey="orders" />
+          <Chart.Line dataKey="trend" />
+        </Chart.Plot>
+      </Chart.Root>
+    </NimbusProvider>
+  );
+
   it("lists every series of the chart in the legend", () => {
     render(<MixedChart />);
 
@@ -55,6 +55,35 @@ describe("Chart - Legend", () => {
  * @docs-order 2
  */
 describe("Chart - Empty state", () => {
+  const data = [
+    { month: "Jan", orders: 186, trend: 150 },
+    { month: "Feb", orders: 305, trend: 220 },
+  ];
+
+  const config = {
+    orders: { label: "Orders", palette: "ctviolet" },
+    trend: { label: "Trend", palette: "orange" },
+  } as const;
+
+  const MixedChart = (props: { isLoading?: boolean; rows?: typeof data }) => (
+    <NimbusProvider>
+      <Chart.Root
+        aria-label="Orders and trend per month"
+        data={props.rows ?? data}
+        config={config}
+        isLoading={props.isLoading}
+      >
+        <Chart.Plot>
+          <Chart.Grid />
+          <Chart.XAxis dataKey="month" />
+          <Chart.Tooltip />
+          <Chart.Bar dataKey="orders" />
+          <Chart.Line dataKey="trend" />
+        </Chart.Plot>
+      </Chart.Root>
+    </NimbusProvider>
+  );
+
   it("shows the empty text for an empty data array", () => {
     render(<MixedChart rows={[]} />);
 
@@ -72,6 +101,35 @@ describe("Chart - Empty state", () => {
  * @docs-order 3
  */
 describe("Chart - Loading state", () => {
+  const data = [
+    { month: "Jan", orders: 186, trend: 150 },
+    { month: "Feb", orders: 305, trend: 220 },
+  ];
+
+  const config = {
+    orders: { label: "Orders", palette: "ctviolet" },
+    trend: { label: "Trend", palette: "orange" },
+  } as const;
+
+  const MixedChart = (props: { isLoading?: boolean; rows?: typeof data }) => (
+    <NimbusProvider>
+      <Chart.Root
+        aria-label="Orders and trend per month"
+        data={props.rows ?? data}
+        config={config}
+        isLoading={props.isLoading}
+      >
+        <Chart.Plot>
+          <Chart.Grid />
+          <Chart.XAxis dataKey="month" />
+          <Chart.Tooltip />
+          <Chart.Bar dataKey="orders" />
+          <Chart.Line dataKey="trend" />
+        </Chart.Plot>
+      </Chart.Root>
+    </NimbusProvider>
+  );
+
   it("marks the chart as busy and keeps its accessible name", () => {
     render(<MixedChart isLoading />);
 

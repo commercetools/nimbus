@@ -2,18 +2,6 @@ import { describe, it, expect } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import { RadialChart, NimbusProvider } from "@commercetools/nimbus";
 
-const data = [
-  { browser: "chrome", visitors: 275 },
-  { browser: "safari", visitors: 200 },
-  { browser: "firefox", visitors: 187 },
-];
-
-const config = {
-  chrome: { label: "Chrome", palette: "ctviolet" },
-  safari: { label: "Safari", palette: "orange" },
-  firefox: { label: "Firefox", palette: "teal" },
-} as const;
-
 /**
  * @docs-section legend
  * @docs-title Legend Tests
@@ -21,6 +9,18 @@ const config = {
  * @docs-order 1
  */
 describe("RadialChart - Legend", () => {
+  const data = [
+    { browser: "chrome", visitors: 275 },
+    { browser: "safari", visitors: 200 },
+    { browser: "firefox", visitors: 187 },
+  ];
+
+  const config = {
+    chrome: { label: "Chrome", palette: "ctviolet" },
+    safari: { label: "Safari", palette: "orange" },
+    firefox: { label: "Firefox", palette: "teal" },
+  } as const;
+
   it("shows the label of each category in the legend", () => {
     render(
       <NimbusProvider>
@@ -80,6 +80,12 @@ describe("RadialChart - Legend", () => {
  * @docs-order 2
  */
 describe("RadialChart - Empty state", () => {
+  const config = {
+    chrome: { label: "Chrome", palette: "ctviolet" },
+    safari: { label: "Safari", palette: "orange" },
+    firefox: { label: "Firefox", palette: "teal" },
+  } as const;
+
   it("shows the empty text for an empty data array", () => {
     render(
       <NimbusProvider>
@@ -107,6 +113,18 @@ describe("RadialChart - Empty state", () => {
  * @docs-order 3
  */
 describe("RadialChart - Loading state", () => {
+  const data = [
+    { browser: "chrome", visitors: 275 },
+    { browser: "safari", visitors: 200 },
+    { browser: "firefox", visitors: 187 },
+  ];
+
+  const config = {
+    chrome: { label: "Chrome", palette: "ctviolet" },
+    safari: { label: "Safari", palette: "orange" },
+    firefox: { label: "Firefox", palette: "teal" },
+  } as const;
+
   it("marks the chart as busy and keeps its accessible name", () => {
     render(
       <NimbusProvider>
@@ -134,6 +152,18 @@ describe("RadialChart - Loading state", () => {
  * @docs-order 4
  */
 describe("RadialChart - Config", () => {
+  const data = [
+    { browser: "chrome", visitors: 275 },
+    { browser: "safari", visitors: 200 },
+    { browser: "firefox", visitors: 187 },
+  ];
+
+  const config = {
+    chrome: { label: "Chrome", palette: "ctviolet" },
+    safari: { label: "Safari", palette: "orange" },
+    firefox: { label: "Firefox", palette: "teal" },
+  } as const;
+
   it("skips a category that is missing in config", () => {
     render(
       <NimbusProvider>

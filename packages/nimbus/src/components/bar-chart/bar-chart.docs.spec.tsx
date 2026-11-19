@@ -2,16 +2,6 @@ import { describe, it, expect } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import { BarChart, NimbusProvider } from "@commercetools/nimbus";
 
-const data = [
-  { month: "Jan", desktop: 186, mobile: 80 },
-  { month: "Feb", desktop: 305, mobile: 200 },
-];
-
-const config = {
-  desktop: { label: "Desktop", palette: "ctviolet" },
-  mobile: { label: "Mobile", palette: "orange" },
-} as const;
-
 /**
  * @docs-section legend
  * @docs-title Legend Tests
@@ -19,6 +9,16 @@ const config = {
  * @docs-order 1
  */
 describe("BarChart - Legend", () => {
+  const data = [
+    { month: "Jan", desktop: 186, mobile: 80 },
+    { month: "Feb", desktop: 305, mobile: 200 },
+  ];
+
+  const config = {
+    desktop: { label: "Desktop", palette: "ctviolet" },
+    mobile: { label: "Mobile", palette: "orange" },
+  } as const;
+
   it("shows the label of each series in the legend", () => {
     render(
       <NimbusProvider>
@@ -78,6 +78,11 @@ describe("BarChart - Legend", () => {
  * @docs-order 2
  */
 describe("BarChart - Empty state", () => {
+  const config = {
+    desktop: { label: "Desktop", palette: "ctviolet" },
+    mobile: { label: "Mobile", palette: "orange" },
+  } as const;
+
   it("shows the empty text for an empty data array", () => {
     render(
       <NimbusProvider>
@@ -105,6 +110,16 @@ describe("BarChart - Empty state", () => {
  * @docs-order 3
  */
 describe("BarChart - Loading state", () => {
+  const data = [
+    { month: "Jan", desktop: 186, mobile: 80 },
+    { month: "Feb", desktop: 305, mobile: 200 },
+  ];
+
+  const config = {
+    desktop: { label: "Desktop", palette: "ctviolet" },
+    mobile: { label: "Mobile", palette: "orange" },
+  } as const;
+
   it("marks the chart as busy and keeps its accessible name", () => {
     render(
       <NimbusProvider>
