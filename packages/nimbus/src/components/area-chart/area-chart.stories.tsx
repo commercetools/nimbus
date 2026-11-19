@@ -229,9 +229,7 @@ export const LegendForTwoSeries: Story = {
     const swatch = canvasElement.querySelector<HTMLElement>(
       ".nimbus-chart__legendSwatch"
     )!;
-    await expect(swatch.style.color).toBe(
-      "var(--nimbus-colors-ctviolet-9)"
-    );
+    await expect(swatch.style.color).toBe("var(--nimbus-colors-ctviolet-9)");
   },
 };
 
@@ -296,9 +294,7 @@ export const TooltipContent: Story = {
     const swatch = tooltip.querySelector<HTMLElement>(
       ".nimbus-chart__legendSwatch"
     )!;
-    await expect(swatch.style.color).toBe(
-      "var(--nimbus-colors-ctviolet-9)"
-    );
+    await expect(swatch.style.color).toBe("var(--nimbus-colors-ctviolet-9)");
   },
 };
 

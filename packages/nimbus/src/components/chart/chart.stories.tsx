@@ -104,9 +104,7 @@ export const Base: Story = {
       const swatch = canvasElement.querySelector<HTMLElement>(
         ".nimbus-chart__legendSwatch"
       )!;
-      await expect(swatch.style.color).toBe(
-        "var(--nimbus-colors-ctviolet-9)"
-      );
+      await expect(swatch.style.color).toBe("var(--nimbus-colors-ctviolet-9)");
     });
 
     await step("The ctviolet variable resolves to a violet color", async () => {
