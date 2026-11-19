@@ -104,7 +104,8 @@ do not set it, the animation is off if the person prefers reduced motion.
 - Keyboard: Tab moves focus to the chart. `ArrowLeft` and `ArrowRight` move
   between the data points and show the tooltip. `Enter` hides the tooltip and
   shows it again.
-- The tooltip is a live region (`role="status"`, `aria-live="assertive"`).
+- A polite live region (`role="status"`) in the chart root announces the active
+  data point. The visible tooltip is hidden from assistive technology.
 - The legend is always shown for two or more series.
 - A part used outside `Chart.Root` throws an error that names `Chart.Root`.
 

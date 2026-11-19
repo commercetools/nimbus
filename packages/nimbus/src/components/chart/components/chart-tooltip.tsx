@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNumberFormatter } from "react-aria";
 import type { TooltipContentProps } from "recharts";
 import { useChartContext } from "../chart.context";
@@ -25,11 +26,11 @@ export type ChartTooltipProps = Partial<
 /**
  * # ChartTooltip
  *
- * Content for the Recharts `<Tooltip content={...} />`. It is a live region
- * (`role="status"`, `aria-live="assertive"`), so a screen reader announces the
- * active data point. Each row shows the swatch, label and value of a series,
- * read from the resolved chart config. Entries that are not in the config
- * are left out.
+ * Content for the Recharts `<Tooltip content={...} />`. A screen reader
+ * announces the active data point through the polite live region of the chart
+ * root, so the visible tooltip is hidden from assistive technology. Each row
+ * shows the swatch, label and value of a series, read from the resolved chart
+ * config. Entries that are not in the config are left out.
  *
  * @example
  * ```tsx
@@ -40,29 +41,48 @@ export const ChartTooltip = (props: ChartTooltipProps) => {
   const { active, payload, nameKey } = props;
   // With `nameKey`, the label would be the row index, not a name
   const label = nameKey === undefined ? props.label : undefined;
-  const { series } = useChartContext();
+  const { series, announce } = useChartContext();
   const numberFormatter = useNumberFormatter();
 
-  if (!active || !payload || payload.length === 0) return null;
+  const rows =
+    !active || !payload
+      ? []
+      : payload.flatMap((entry) => {
+          const category =
+            nameKey === undefined
+              ? undefined
+              : (entry.payload as Record<string, unknown> | undefined)?.[
+                  nameKey
+                ];
+          const item =
+            (category === undefined
+              ? undefined
+              : series.find((s) => s.key === String(category))) ??
+            series.find((s) => s.key === String(entry.dataKey)) ??
+            series.find((s) => s.key === String(entry.name));
+          return item ? [{ item, value: entry.value }] : [];
+        });
 
-  const rows = payload.flatMap((entry) => {
-    const category =
-      nameKey === undefined
-        ? undefined
-        : (entry.payload as Record<string, unknown> | undefined)?.[nameKey];
-    const item =
-      (category === undefined
-        ? undefined
-        : series.find((s) => s.key === String(category))) ??
-      series.find((s) => s.key === String(entry.dataKey)) ??
-      series.find((s) => s.key === String(entry.name));
-    return item ? [{ item, value: entry.value }] : [];
-  });
+  const formatValue = (value: unknown) =>
+    typeof value === "number" ? numberFormatter.format(value) : String(value);
+  const text = [
+    label === undefined || label === "" ? "" : String(label),
+    ...rows.map(({ item, value }) => `${item.label} ${formatValue(value)}`),
+  ]
+    .filter(Boolean)
+    .join(", ");
+  const announcement = rows.length === 0 ? "" : text;
+
+  useEffect(() => {
+    announce(announcement);
+  }, [announce, announcement]);
+  // Clear the region when the tooltip goes away
+  useEffect(() => () => announce(""), [announce]);
 
   if (rows.length === 0) return null;
 
   return (
-    <ChartTooltipSlot role="status" aria-live="assertive">
+    <ChartTooltipSlot aria-hidden="true">
       {label !== undefined && label !== "" && (
         <ChartTooltipLabelSlot>{String(label)}</ChartTooltipLabelSlot>
       )}
@@ -73,11 +93,7 @@ export const ChartTooltip = (props: ChartTooltipProps) => {
             style={{ color: item.color }}
           />
           <span>{item.label}</span>
-          <ChartTooltipValueSlot>
-            {typeof value === "number"
-              ? numberFormatter.format(value)
-              : String(value)}
-          </ChartTooltipValueSlot>
+          <ChartTooltipValueSlot>{formatValue(value)}</ChartTooltipValueSlot>
         </ChartTooltipItemSlot>
       ))}
     </ChartTooltipSlot>

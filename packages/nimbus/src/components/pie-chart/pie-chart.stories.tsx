@@ -6,6 +6,7 @@ import {
   findSvg,
   legendRed,
   tooltipText,
+  liveRegion,
 } from "../chart/chart.test-utils";
 import { PieChart } from "./pie-chart";
 import type { PieChartProps } from "./pie-chart.types";
@@ -283,8 +284,10 @@ export const TooltipContent: Story = {
       if (!el) throw new Error("tooltip not shown yet");
       return el as HTMLElement;
     });
-    await expect(tooltip).toHaveAttribute("role", "status");
-    await expect(tooltip).toHaveAttribute("aria-live", "assertive");
+    await expect(tooltip).toHaveAttribute("aria-hidden", "true");
+    await waitFor(() =>
+      expect(liveRegion(canvasElement)).toHaveTextContent(/\S/)
+    );
     await expect(tooltip).toHaveTextContent("Chrome");
     await expect(tooltip).toHaveTextContent("275");
     await expect(tooltip).not.toHaveTextContent("Safari");

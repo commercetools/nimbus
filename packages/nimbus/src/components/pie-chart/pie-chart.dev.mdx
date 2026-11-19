@@ -214,8 +214,9 @@ by browser".
   never the only signal. `showLegend` only matters for one category.
 - **Marks**: slices that touch are separated by a 2 px stroke in the page color,
   so each slice has a visible edge.
-- **Tooltip**: the tooltip is a live region (`role="status"`,
-  `aria-live="assertive"`), so a screen reader announces the active data point.
+- **Tooltip**: a polite live region (`role="status"`) in the chart root announces
+  the active data point to a screen reader. The visible tooltip is hidden from
+  assistive technology.
 - **Motion**: `isAnimationActive` defaults to off when the person prefers
   reduced motion.
 

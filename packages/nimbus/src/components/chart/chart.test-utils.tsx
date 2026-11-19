@@ -20,6 +20,10 @@ export const findSvg = (canvasElement: HTMLElement) =>
 export const tooltipText = (root: HTMLElement) =>
   root.querySelector(".nimbus-chart__tooltip");
 
+/** The polite live region of the chart root, which announces the active data point */
+export const liveRegion = (root: HTMLElement) =>
+  root.querySelector<HTMLElement>('[role="status"][aria-live="polite"]');
+
 /** Red channel of the legend text color: low in light mode, high in dark mode */
 export const legendRed = (root: HTMLElement): number => {
   const legend = root.querySelector<HTMLElement>(".nimbus-chart__legend")!;

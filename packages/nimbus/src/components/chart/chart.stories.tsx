@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box, Chart } from "@commercetools/nimbus";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import { DarkMode, legendRed } from "./chart.test-utils";
+import { DarkMode, legendRed, liveRegion } from "./chart.test-utils";
 import type { ChartBaseProps, ChartConfig } from "./chart.types";
 
 const data = [
@@ -214,8 +214,10 @@ export const TooltipContent: Story = {
         if (!el) throw new Error("tooltip not shown yet");
         return el;
       });
-      await expect(tooltip).toHaveAttribute("role", "status");
-      await expect(tooltip).toHaveAttribute("aria-live", "assertive");
+      await expect(tooltip).toHaveAttribute("aria-hidden", "true");
+      await waitFor(() =>
+        expect(liveRegion(canvasElement)).toHaveTextContent(/\S/)
+      );
       await expect(tooltip).toHaveTextContent("Jan");
       await expect(tooltip).toHaveTextContent("Desktop");
       await expect(tooltip).toHaveTextContent("186");

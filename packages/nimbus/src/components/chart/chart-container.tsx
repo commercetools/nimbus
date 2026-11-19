@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ResponsiveContainer } from "recharts";
 import { Skeleton } from "@/components/skeleton/skeleton";
+import { VisuallyHidden } from "@/components/visually-hidden/visually-hidden";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { ChartContext } from "./chart.context";
 import { chartMessagesStrings } from "./chart.messages";
@@ -37,6 +38,9 @@ export const ChartContainer = (props: ChartContainerProps) => {
   } = props;
   const msg = useLocalizedStringFormatter(chartMessagesStrings);
   const prefersReducedMotion = usePrefersReducedMotion();
+  // Text of the live region. The region stays mounted, so a screen reader
+  // announces each change of the active data point.
+  const [announcement, setAnnouncement] = useState("");
 
   // Charts pass a new array on every render. Memoizing on the joined keys
   // resolves (and warns) only when the keys or the config change.
@@ -62,6 +66,7 @@ export const ChartContainer = (props: ChartContainerProps) => {
       ),
       showTooltip,
       ariaLabel,
+      announce: setAnnouncement,
     }),
     [
       data,
@@ -112,6 +117,9 @@ export const ChartContainer = (props: ChartContainerProps) => {
           </ResponsiveContainer>
         </ChartPlotSlot>
         {isLegendShown && <ChartLegend />}
+        <VisuallyHidden as="div" role="status" aria-live="polite" aria-atomic>
+          {announcement}
+        </VisuallyHidden>
       </ChartRootSlot>
     </ChartContext.Provider>
   );

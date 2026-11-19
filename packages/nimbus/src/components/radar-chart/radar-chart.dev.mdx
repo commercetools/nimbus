@@ -213,8 +213,9 @@ player".
 
 - **Legend**: the legend is always shown for two or more series, so color is
   never the only signal. `showLegend` only matters for one series.
-- **Tooltip**: the tooltip is a live region (`role="status"`,
-  `aria-live="assertive"`), so a screen reader announces the active data point.
+- **Tooltip**: a polite live region (`role="status"`) in the chart root announces
+  the active data point to a screen reader. The visible tooltip is hidden from
+  assistive technology.
 - **Motion**: `isAnimationActive` defaults to off when the person prefers
   reduced motion.
 

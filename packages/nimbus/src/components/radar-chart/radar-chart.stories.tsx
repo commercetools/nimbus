@@ -6,6 +6,7 @@ import {
   findSvg,
   legendRed,
   tooltipText,
+  liveRegion,
 } from "../chart/chart.test-utils";
 import { RadarChart } from "./radar-chart";
 import type { RadarChartProps } from "./radar-chart.types";
@@ -205,8 +206,10 @@ export const TooltipContent: Story = {
       if (!el) throw new Error("tooltip not shown yet");
       return el as HTMLElement;
     });
-    await expect(tooltip).toHaveAttribute("role", "status");
-    await expect(tooltip).toHaveAttribute("aria-live", "assertive");
+    await expect(tooltip).toHaveAttribute("aria-hidden", "true");
+    await waitFor(() =>
+      expect(liveRegion(canvasElement)).toHaveTextContent(/\S/)
+    );
     await expect(tooltip).toHaveTextContent("Speed");
     await expect(tooltip).toHaveTextContent("Alpha");
     await expect(tooltip).toHaveTextContent("120");

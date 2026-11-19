@@ -7,6 +7,7 @@ import {
   legendRed,
   tooltipText,
   xAxisLabels,
+  liveRegion,
 } from "../chart/chart.test-utils";
 import { BarChart } from "./bar-chart";
 import type { BarChartProps } from "./bar-chart.types";
@@ -244,7 +245,10 @@ export const TooltipContent: Story = {
       if (!el) throw new Error("tooltip not shown yet");
       return el as HTMLElement;
     });
-    await expect(tooltip).toHaveAttribute("role", "status");
+    await expect(tooltip).toHaveAttribute("aria-hidden", "true");
+    await waitFor(() =>
+      expect(liveRegion(canvasElement)).toHaveTextContent(/\S/)
+    );
     await expect(tooltip).toHaveTextContent("Jan");
     await expect(tooltip).toHaveTextContent("Desktop");
     await expect(tooltip).toHaveTextContent("186");

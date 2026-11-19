@@ -16,6 +16,8 @@ export type ChartContextValue = {
   showTooltip: boolean;
   /** Accessible name of the chart, for the Recharts chart element */
   ariaLabel: string;
+  /** Sets the text of the live region that announces the active data point */
+  announce: (text: string) => void;
 };
 
 export const ChartContext = createContext<ChartContextValue | undefined>(
