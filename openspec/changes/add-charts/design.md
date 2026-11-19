@@ -126,8 +126,9 @@ Recharts and `react-is` were added to `packages/nimbus` (task 1.3) through a new
 `charts` catalog in `pnpm-workspace.yaml`. Recharts 3.10.1 is installed. It
 passes the release-age rule, and no `minimumReleaseAgeExclude` entry was added.
 
-**Decision: Recharts is an external, required peer dependency** (like Slate),
-and a dev dependency of `packages/nimbus`, with `react-is` as a dev dependency.
+**Decision: Recharts is an external, regular dependency.** `recharts` and
+`react-is` are in `dependencies` of `packages/nimbus`, so consumers get them with
+Nimbus.
 Task 1.4 measured both options with a throwaway `BarChart` (named imports from
 `recharts`; the package has `sideEffects: false` and no `exports` map):
 
@@ -140,15 +141,14 @@ Task 1.4 measured both options with a throwaway `BarChart` (named imports from
   depends on `use-sync-external-store`. That package is CommonJS only and calls
   `require("react")`, and React is an external of the Nimbus build. Bundling
   would need an alias workaround and the `bundle-size-approved` label.
-- **External peer dependency (chosen).** `recharts` is in `external` in
+- **External regular dependency (chosen).** `recharts` is in `external` in
   `vite.config.ts`. Measured: the dist grows by 2.9 KB (+0.0%) and
-  `pnpm check:bundler-compat` passes. Consumers who use charts install
-  `recharts` and `react-is`. This follows the Slate precedent: a required peer
-  in `package.json` and an "(Optional)" install section in
-  `packages/nimbus/src/docs/home-installation.mdx` (added). The peer range is
-  `^3.10.1`, the lowest version tested. An optional peer was not chosen, because
-  a consumer without Recharts could fail to build if their bundler resolves the
-  chart chunk (not tested).
+  `pnpm check:bundler-compat` passes. The first version listed Recharts as a
+  required peer dependency (the Slate precedent), but then every consumer must
+  install and update it. Consumers never import `recharts`, so nothing needs one
+  shared copy, and a regular dependency works without effort for them. The
+  range is `^3.10.1`, the lowest version tested. With an incompatible Recharts
+  of their own, an app gets a second copy (see the Risks).
 
 ### 2. Prop-based API, no exported Recharts parts
 
@@ -284,9 +284,10 @@ task 6.1). Enter toggles the tooltip, which the docs describe.
 
 - [Recharts 3.11.0 cannot be installed for about a day (24-hour rule)] → Use
   `^3.10.1`. Do not add a release-age exclude.
-- [Consumers who use charts must install `recharts` and `react-is`] → New
-  "Charts (Optional)" section in the installation docs, and the charts docs say
-  it in the first lines. The peer range is `^3.10.1`.
+- [Every install downloads Recharts, and an app with its own incompatible
+  Recharts ships two copies when it uses Nimbus charts] → Accepted: consumers do
+  nothing extra, bundles stay small when no chart is used (not measured), and
+  the range is `^3.10.1`.
 - [Neighboring series can look the same] → Stroke between shapes, a tested
   default palette order, and a legend for two or more series.
 - [Six chart types, docs and stories in one week] → Task order puts Radar and

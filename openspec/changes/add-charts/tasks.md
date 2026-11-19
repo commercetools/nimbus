@@ -64,7 +64,7 @@
 - [x] 3.9 Add the `chart.i18n.ts` source file for the empty state text and run
       `pnpm extract-intl` (see `docs/file-type-guidelines/i18n.md`)
 - [x] 3.10 Check that `apps/docs` and Storybook resolve `recharts` from the
-      workspace (it is an external peer and dev dependency of
+      workspace (it is an external dependency of
       `packages/nimbus`), and run `pnpm check:package-shape` with a first chart
       exported. Status: Storybook resolves `recharts` (verified by the shared
       stories). `apps/docs` does not list `recharts` or `react-is`; add both

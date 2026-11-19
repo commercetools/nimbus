@@ -10,16 +10,7 @@ tab-order: 3
 > **Experimental.** `RadarChart` is experimental in this first release and may
 > change in a later version.
 
-`RadarChart` needs two peer dependencies that are not installed with Nimbus:
-`recharts` and `react-is`. Install both:
-
-```bash
-pnpm add recharts react-is
-```
-
-npm and yarn also work (`npm install recharts react-is`,
-`yarn add recharts react-is`). Nimbus accepts `recharts` version `^3.10.1` or
-newer in the same major version.
+Nimbus installs `recharts` and `react-is` with it. You never import from `recharts`: `RadarChart` and the chart types come from `@commercetools/nimbus`.
 
 ### Import
 

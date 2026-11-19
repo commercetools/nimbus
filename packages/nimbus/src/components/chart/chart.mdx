@@ -31,12 +31,7 @@ as in the other charts.
 For one bar, line or area chart, use `BarChart`, `LineChart` or `AreaChart`.
 They are simpler. Pie, radar and radial charts cannot be composed.
 
-`Chart` needs two peer dependencies that are not installed with Nimbus:
-`recharts` and `react-is`. You do not import from `recharts` yourself.
-
-```bash
-pnpm add recharts react-is
-```
+Nimbus installs `recharts` and `react-is` with it. You never import from `recharts`: `Chart` and the chart types come from `@commercetools/nimbus`.
 
 ### Parts
 

@@ -59,17 +59,13 @@ mode, or the Nimbus contrast rules.
 - Handle empty data (empty state), `isLoading` (skeleton), unknown series keys
   (development warning, series skipped) and invalid palettes (development
   warning, fallback to the first palette in production).
-- Add `recharts` as a required peer dependency of `@commercetools/nimbus`, like
-  Slate: it is external in the library build and a dev dependency. `react-is` (a
-  peer dependency of Recharts) is a dev dependency. Consumers who use charts
-  install `recharts` and `react-is` (a new "Charts (Optional)" section in the
-  installation docs). Bundling Recharts was measured and rejected (see
-  `design.md`). The version stays within the repository's 24-hour release-age
-  rule.
-- Add one changeset for `@commercetools/nimbus` (the charts and the new peer
-  dependency). There are no breaking changes, but package managers warn about
-  the new peer dependency `recharts` when it is missing, also for consumers who
-  do not use charts.
+- Add `recharts` and `react-is` (a peer dependency of Recharts) as regular
+  dependencies of `@commercetools/nimbus`. Recharts is external in the library
+  build, so it is not bundled. Consumers install nothing extra and never import
+  from it. Bundling Recharts was measured and rejected (see `design.md`). The
+  version stays within the repository's 24-hour release-age rule.
+- Add one changeset for `@commercetools/nimbus` (the charts and the new
+  dependencies). There are no breaking changes.
 
 Order of work, in case time runs out: foundation and palette colors first, then
 Bar, Line and Area, then Pie, then Radar and Radial. Radar and Radial are the
@@ -87,17 +83,16 @@ first to move to a later change.
 - New directories under `packages/nimbus/src/components/` for the shared chart
   parts and for each chart (component, types, recipe, slots, i18n, stories,
   designer and developer docs, docs spec, `index.ts`).
-- `packages/nimbus/package.json`: `recharts` as a peer dependency and, with
-  `react-is`, as dev dependencies (through the new `charts` catalog in
-  `pnpm-workspace.yaml`). The newest Recharts version that passes the 24-hour
+- `packages/nimbus/package.json`: `recharts` and `react-is` as dependencies
+  (through the new `charts` catalog in `pnpm-workspace.yaml`). The newest Recharts version that passes the 24-hour
   release-age rule today is 3.10.1 (3.11.0 was published on 2026-11-17 at 16:54
   UTC). Its peer range allows React 19.
 - `packages/nimbus/vite.config.ts`: `recharts` is added to the externals.
   Measured with a throwaway chart: the dist grows by 2.9 KB and both
   `pnpm check:bundle-size` and `pnpm check:bundler-compat` pass. Bundled, it
   grew the dist by 23.8% and failed the strict bundler check.
-- `packages/nimbus/src/docs/home-installation.mdx`: new "Charts (Optional)"
-  section.
+- `packages/nimbus/src/docs/home-installation.mdx`: new "Charts" section that
+  says nothing needs to be installed.
 - `packages/nimbus/src/theme/slot-recipes/index.ts`: new recipe registrations;
   theme typings regenerated. `packages/nimbus/src/components/index.ts`: new
   exports.

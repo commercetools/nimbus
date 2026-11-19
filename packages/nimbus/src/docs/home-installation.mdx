@@ -66,30 +66,10 @@ npm install slate slate-history slate-hyperscript slate-react
 yarn add slate slate-history slate-hyperscript slate-react
 ```
 
-### Charts (Optional)
+### Charts
 
-If you're using the chart components, also install Recharts and its `react-is` peer dependency:
-
-#### pnpm
-
-```bash
-pnpm add recharts react-is
-```
-
-#### npm
-
-```bash
-npm install recharts react-is
-```
-
-#### yarn
-
-```bash
-yarn add recharts react-is
-```
-
-> [!TIP]
-> Your package manager will automatically resolve compatible versions based on Nimbus's peer dependency requirements.
+The chart components need nothing extra. Nimbus installs `recharts` and
+`react-is` with it, and you never import from them.
 
 > [!NOTE]  
 > Nimbus requires React 19.x. If you're on an earlier version, upgrade with `pnpm add react@19 react-dom@19`

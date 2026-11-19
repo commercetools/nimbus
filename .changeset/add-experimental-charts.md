@@ -7,10 +7,9 @@
 to compose your own. They are experimental in this first release and may change
 in a later version.
 
-- `recharts` (`^3.10.1`) is now a peer dependency of `@commercetools/nimbus`.
-  Install it, together with its own peer dependency `react-is`, to use the
-  charts: `pnpm add recharts react-is`. Your package manager warns when
-  `recharts` is missing, also if you do not use the charts.
+- `recharts` (`^3.10.1`) and `react-is` are now dependencies of
+  `@commercetools/nimbus`. Your package manager installs them with Nimbus, so
+  you do nothing extra, and you never import from them.
 - `BarChart`, `LineChart` and `AreaChart`: pass the rows as `data`, the x axis
   field as `xAxisKey`, and the data keys to draw as `series`. Set a `label` and
   a color `palette` for each series in `config`. `aria-label` is required.

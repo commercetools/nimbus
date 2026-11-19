@@ -94,23 +94,22 @@ bars and a line in one chart.
 - **THEN** it SHALL include a copy-ready mixed chart example from
   `chart.docs.spec.tsx`
 
-### Requirement: Recharts Peer Dependency
+### Requirement: Recharts Dependency
 
-The system SHALL treat Recharts as an external peer dependency of
+The system SHALL treat Recharts as an external, regular dependency of
 `@commercetools/nimbus`.
 
 #### Scenario: Package setup
 
 - **WHEN** the `@commercetools/nimbus` package is built and published
-- **THEN** `recharts` SHALL be a peer dependency and a dev dependency, and SHALL
+- **THEN** `recharts` and `react-is` SHALL be dependencies, and `recharts` SHALL
   be external in the library build
 - **AND** `pnpm check:bundle-size` and `pnpm check:bundler-compat` SHALL pass
 
 #### Scenario: Installation docs
 
 - **WHEN** a consumer reads the installation docs
-- **THEN** a "Charts (Optional)" section SHALL tell them to install `recharts`
-  and `react-is`
+- **THEN** a "Charts" section SHALL say that nothing needs to be installed
 
 ### Requirement: Chart Config
 

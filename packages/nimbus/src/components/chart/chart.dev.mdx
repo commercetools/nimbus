@@ -10,15 +10,7 @@ tab-order: 3
 > **Experimental.** `Chart` is experimental in this first release and may
 > change in a later version.
 
-`Chart` needs two peer dependencies that are not installed with Nimbus:
-`recharts` and `react-is`. Install both:
-
-```bash
-pnpm add recharts react-is
-```
-
-Nimbus accepts `recharts` version `^3.10.1` or newer in the same major version.
-You never import from `recharts`: every part you need is on `Chart`.
+Nimbus installs `recharts` and `react-is` with it. You never import from `recharts`: `Chart` and the chart types come from `@commercetools/nimbus`.
 
 ### Import
 
