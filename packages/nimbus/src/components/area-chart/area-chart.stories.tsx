@@ -47,7 +47,7 @@ const SampleChart = (props: Partial<AreaChartProps>) => (
 // is a Skeleton, covered by its own stories. Legend rules, tooltip and keyboard
 // behavior are DOM assertions, not pixels.
 const meta: Meta<typeof SampleChart> = {
-  title: "Components/AreaChart",
+  title: "Components/Charts/AreaChart",
   component: SampleChart,
 };
 

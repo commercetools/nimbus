@@ -61,7 +61,7 @@ const SampleChart = ({
 // stories. RTL is not snapshotted: only the tooltip value margin is logical, and
 // the layout is otherwise symmetric.
 const meta: Meta<typeof SampleChart> = {
-  title: "Components/Chart/Shared",
+  title: "Components/Charts/Chart/Shared",
   component: SampleChart,
 };
 

@@ -47,7 +47,7 @@ const SampleChart = (props: Partial<LineChartProps>) => (
 // covered by its own stories. Legend rules, tooltip and keyboard behavior are DOM
 // assertions, not pixels. Not applicable: stacked (LineChart has no such prop).
 const meta: Meta<typeof SampleChart> = {
-  title: "Components/LineChart",
+  title: "Components/Charts/LineChart",
   component: SampleChart,
 };
 

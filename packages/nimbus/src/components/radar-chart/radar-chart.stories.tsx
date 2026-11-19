@@ -48,7 +48,7 @@ const SampleChart = (props: Partial<RadarChartProps>) => (
 // them in the DOM. Empty is snapshotted once, in chart.stories.tsx. Loading is a
 // Skeleton, covered by its own stories. Not applicable: stacked.
 const meta: Meta<typeof SampleChart> = {
-  title: "Components/RadarChart",
+  title: "Components/Charts/RadarChart",
   component: SampleChart,
 };
 

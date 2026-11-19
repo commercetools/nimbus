@@ -46,7 +46,7 @@ const SampleChart = (props: Partial<PieChartProps>) => (
 // snapshotted once, in chart.stories.tsx. Loading is a Skeleton, covered by its
 // own stories. Legend rules, tooltip and keyboard behavior are DOM assertions.
 const meta: Meta<typeof SampleChart> = {
-  title: "Components/PieChart",
+  title: "Components/Charts/PieChart",
   component: SampleChart,
 };
 

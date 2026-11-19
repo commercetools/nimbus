@@ -46,7 +46,7 @@ const SampleChart = (props: Partial<RadialChartProps>) => (
 // is asserted as a variable below. Empty is snapshotted once, in
 // chart.stories.tsx. Loading is a Skeleton, covered by its own stories.
 const meta: Meta<typeof SampleChart> = {
-  title: "Components/RadialChart",
+  title: "Components/Charts/RadialChart",
   component: SampleChart,
 };
 

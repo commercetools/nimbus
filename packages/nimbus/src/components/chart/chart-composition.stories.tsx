@@ -21,7 +21,7 @@ const config: ChartConfig = {
  * These stories use no Recharts import: that is part of what they test.
  */
 const meta: Meta<typeof Chart.Root> = {
-  title: "Components/Chart/Composition",
+  title: "Components/Charts/Chart/Composition",
   component: Chart.Root,
 };
 
