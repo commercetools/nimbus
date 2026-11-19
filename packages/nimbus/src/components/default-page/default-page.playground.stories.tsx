@@ -50,7 +50,7 @@ import {
 } from "../chart/chart.playground.parts";
 
 const meta: Meta<typeof DefaultPage.Root> = {
-  title: "Playground/Dashboard",
+  title: "Playground/Charts/Dashboard",
   component: DefaultPage.Root,
   parameters: { layout: "fullscreen" },
 };
@@ -622,12 +622,13 @@ const StoreDashboard = () => {
 };
 
 /**
- * A fake e-commerce admin dashboard built on `DefaultPage`: a sticky header
- * that collapses on scroll, with a title, a working period toggle, an export
- * button and tab navigation. The content shows key figures with sparklines
- * (built from the Chart parts), every chart type, Meter, and a table.
+ * The charts in the context of an app page: `DefaultPage` with a sticky header
+ * that collapses on scroll, a period toggle, an export button and tab
+ * navigation. The content shows the sparklines (built from the Chart parts),
+ * every chart type, Meter and a table. The period toggle changes the key
+ * figures and the revenue chart.
  */
-export const StoreDashboardPage: Story = {
+export const Dashboard: Story = {
   render: () => <StoreDashboard />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
