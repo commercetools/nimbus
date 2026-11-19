@@ -45,6 +45,27 @@ describe("chart types", () => {
     expect(missing).toBeDefined();
   });
 
+  it("accepts aria-labelledby instead of aria-label, but not both", () => {
+    const labelledBy: BarChartProps = {
+      data,
+      config,
+      xAxisKey: "month",
+      series: ["desktop"],
+      "aria-labelledby": "visitors-heading",
+    };
+    // @ts-expect-error aria-label and aria-labelledby are alternatives
+    const both: BarChartProps = {
+      data,
+      config,
+      xAxisKey: "month",
+      series: ["desktop"],
+      "aria-label": "Visitors",
+      "aria-labelledby": "visitors-heading",
+    };
+    expect(labelledBy["aria-labelledby"]).toBe("visitors-heading");
+    expect(both).toBeDefined();
+  });
+
   it("gives PieChart nameKey and valueKey instead of xAxisKey and series", () => {
     const valid: PieChartProps = {
       data,

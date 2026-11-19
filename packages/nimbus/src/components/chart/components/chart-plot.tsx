@@ -27,13 +27,9 @@ export type ChartPlotProps = {
  * ```
  */
 export const ChartPlot = ({ children }: ChartPlotProps) => {
-  const { data, ariaLabel } = useChartContext();
+  const { data, labelProps } = useChartContext();
   return (
-    <ComposedChart
-      data={data}
-      aria-label={ariaLabel}
-      margin={{ left: 12, right: 12 }}
-    >
+    <ComposedChart data={data} {...labelProps} margin={{ left: 12, right: 12 }}>
       {children}
     </ComposedChart>
   );

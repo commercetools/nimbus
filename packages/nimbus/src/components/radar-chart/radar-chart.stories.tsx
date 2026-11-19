@@ -25,7 +25,9 @@ const config = {
   beta: { label: "Beta", palette: "orange" },
 } as const;
 
-const SampleChart = (props: Partial<RadarChartProps>) => (
+const SampleChart = (
+  props: Partial<Omit<RadarChartProps, "aria-label" | "aria-labelledby">>
+) => (
   <Box width="600px">
     <RadarChart
       data={data}

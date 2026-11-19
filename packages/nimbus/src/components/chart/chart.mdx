@@ -121,7 +121,8 @@ const App = () => {
 
 ### Best practices
 
-- Write an `aria-label` that says what the chart shows and for which period.
+- Write an `aria-label` that says what the chart shows and for which period,
+  or point `aria-labelledby` at a visible heading that does.
 - Keep the number of series low. In a chart with several lines, set
   `strokeDasharray` on `Chart.Line`, so color is not the only signal.
 - Leave out `Chart.Grid` or `Chart.Tooltip` to hide them.

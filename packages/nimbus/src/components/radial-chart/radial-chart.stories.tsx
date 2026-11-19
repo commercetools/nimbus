@@ -23,7 +23,9 @@ const config = {
   firefox: { label: "Firefox", palette: "teal" },
 } as const;
 
-const SampleChart = (props: Partial<RadialChartProps>) => (
+const SampleChart = (
+  props: Partial<Omit<RadialChartProps, "aria-label" | "aria-labelledby">>
+) => (
   <Box width="600px">
     <RadialChart
       data={data}

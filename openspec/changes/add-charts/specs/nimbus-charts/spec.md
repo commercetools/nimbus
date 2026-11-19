@@ -67,15 +67,14 @@ bars and a line in one chart.
 - **THEN** it SHALL show the empty state, the loading state, the legend rule,
   the tooltip, the keyboard behavior and the reduced-motion behavior of the six
   charts
-- **AND** `aria-label` SHALL be required on `Chart.Root`
+- **AND** `aria-label` or `aria-labelledby` SHALL be required on `Chart.Root`
 
 #### Scenario: Series parts
 
 - **WHEN** a series part has a `dataKey` that is in `series` of `Chart.Root`
 - **THEN** it SHALL take its color from the resolved `config`
 - **AND** a `dataKey` that is not in `series` SHALL draw nothing
-- **AND** `Chart.Line` SHALL use dash patterns when the chart has more than 3
-  series
+- **AND** `Chart.Line` SHALL be solid unless it has `strokeDasharray`
 - **AND** `Chart.Bar` and `Chart.Area` SHALL stack with `stacked`
 
 #### Scenario: Default series
@@ -163,7 +162,8 @@ Charts SHALL meet WCAG 2.1 AA.
 
 #### Scenario: Required label
 
-- **WHEN** a consumer uses a chart without `aria-label`
+- **WHEN** a consumer uses a chart without `aria-label` or `aria-labelledby`, or
+  with both
 - **THEN** TypeScript SHALL report an error
 
 #### Scenario: Recharts defaults are kept
@@ -184,8 +184,10 @@ Charts SHALL meet WCAG 2.1 AA.
 #### Scenario: Screen reader
 
 - **WHEN** the active data point changes
-- **THEN** the tooltip content SHALL be announced through a live region
-- **AND** the tooltip SHALL have `role="status"` and `aria-live="assertive"`
+- **THEN** the tooltip content SHALL be announced through a live region that
+  stays mounted
+- **AND** the live region SHALL have `role="status"` and `aria-live="polite"`
+- **AND** the visible tooltip SHALL be hidden from assistive technology
 
 #### Scenario: Legend with two or more series
 
@@ -206,7 +208,7 @@ Charts SHALL meet WCAG 2.1 AA.
 
 #### Scenario: Series with many lines
 
-- **WHEN** a Line chart has more than 3 series
+- **WHEN** a `LineChart` has more than 3 series
 - **THEN** each line SHALL also have a dash pattern from a list of six different
   patterns
 - **AND** with more than 6 series the patterns SHALL repeat

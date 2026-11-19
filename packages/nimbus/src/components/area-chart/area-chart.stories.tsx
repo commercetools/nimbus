@@ -24,7 +24,9 @@ const config = {
   mobile: { label: "Mobile", palette: "orange" },
 } as const;
 
-const SampleChart = (props: Partial<AreaChartProps>) => (
+const SampleChart = (
+  props: Partial<Omit<AreaChartProps, "aria-label" | "aria-labelledby">>
+) => (
   <Box width="600px">
     <AreaChart
       data={data}

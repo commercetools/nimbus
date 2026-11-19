@@ -22,7 +22,7 @@ type LineChartPlotProps = Pick<LineChartProps, "data" | "xAxisKey"> & {
  * the accessible name from the surrounding `ChartContainer`.
  */
 const LineChartPlot = ({ data, xAxisKey, showGrid }: LineChartPlotProps) => {
-  const { series, ariaLabel } = useChartContext();
+  const { series, labelProps } = useChartContext();
 
   // The margin gives the first and last x axis label room at the chart edge.
   // `preserveStartEnd` always draws the first and last label, even when a
@@ -31,7 +31,7 @@ const LineChartPlot = ({ data, xAxisKey, showGrid }: LineChartPlotProps) => {
   return (
     <RechartsLineChart
       data={data}
-      aria-label={ariaLabel}
+      {...labelProps}
       margin={{ left: 12, right: 12 }}
     >
       {showGrid && <ChartGrid />}

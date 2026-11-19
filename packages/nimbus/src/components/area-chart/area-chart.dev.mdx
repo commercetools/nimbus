@@ -22,7 +22,7 @@ import { AreaChart, type AreaChartProps, type ChartConfig } from "@commercetools
 
 `AreaChart` takes the rows as `data`, the field for the x axis as `xAxisKey`, the
 data keys to draw as `series`, and a `config` that maps each data key to a
-`label` and an optional `palette`. `aria-label` is required.
+`label` and an optional `palette`. `aria-label` or `aria-labelledby` is required.
 
 Each key in `series` must exist in `config`. A key that is missing in `config`
 is skipped, and a warning is logged in development.
@@ -230,7 +230,7 @@ const App = () => {
 
 ### Accessibility
 
-`aria-label` is required. Describe what the chart shows, for example "Visitors
+Set `aria-label` or `aria-labelledby` (the id of a visible heading). Describe what the chart shows, for example "Visitors
 per month".
 
 - **Legend**: the legend is always shown for two or more series, so color is

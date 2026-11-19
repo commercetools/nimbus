@@ -14,8 +14,8 @@ export type ChartContextValue = {
   isAnimationActive: boolean;
   /** Whether the chart renders its tooltip */
   showTooltip: boolean;
-  /** Accessible name of the chart, for the Recharts chart element */
-  ariaLabel: string;
+  /** Accessible name of the chart (`aria-label` or `aria-labelledby`), for the Recharts chart element */
+  labelProps: { "aria-label"?: string; "aria-labelledby"?: string };
   /** Sets the text of the live region that announces the active data point */
   announce: (text: string) => void;
 };

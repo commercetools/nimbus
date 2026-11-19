@@ -24,7 +24,7 @@ type RadialChartPlotProps = Pick<
  * and the accessible name from the surrounding `ChartContainer`.
  */
 const RadialChartPlot = ({ data, nameKey, valueKey }: RadialChartPlotProps) => {
-  const { series, isAnimationActive, showTooltip, ariaLabel } =
+  const { series, isAnimationActive, showTooltip, labelProps } =
     useChartContext();
 
   // Rows whose category is not in `config` are not drawn
@@ -51,7 +51,7 @@ const RadialChartPlot = ({ data, nameKey, valueKey }: RadialChartPlotProps) => {
       // starts at the top and grows clockwise.
       startAngle={90}
       endAngle={-270}
-      aria-label={ariaLabel}
+      {...labelProps}
     >
       {showTooltip && <Tooltip content={<ChartTooltip nameKey={nameKey} />} />}
       <PolarAngleAxis

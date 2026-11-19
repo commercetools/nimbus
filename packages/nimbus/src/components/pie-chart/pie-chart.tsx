@@ -15,7 +15,7 @@ type PieChartPlotProps = Pick<PieChartProps, "data" | "nameKey" | "valueKey">;
  * and the accessible name from the surrounding `ChartContainer`.
  */
 const PieChartPlot = ({ data, nameKey, valueKey }: PieChartPlotProps) => {
-  const { series, isAnimationActive, showTooltip, ariaLabel } =
+  const { series, isAnimationActive, showTooltip, labelProps } =
     useChartContext();
 
   // Rows whose category is not in `config` are not drawn
@@ -25,7 +25,7 @@ const PieChartPlot = ({ data, nameKey, valueKey }: PieChartPlotProps) => {
   });
 
   return (
-    <RechartsPieChart aria-label={ariaLabel}>
+    <RechartsPieChart {...labelProps}>
       {showTooltip && <Tooltip content={<ChartTooltip nameKey={nameKey} />} />}
       <Pie
         data={slices.map(({ row }) => row)}

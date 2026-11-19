@@ -26,10 +26,10 @@ const BarChartPlot = ({
   stacked,
   showGrid,
 }: BarChartPlotProps) => {
-  const { series, ariaLabel } = useChartContext();
+  const { series, labelProps } = useChartContext();
 
   return (
-    <RechartsBarChart data={data} aria-label={ariaLabel}>
+    <RechartsBarChart data={data} {...labelProps}>
       {showGrid && <ChartGrid />}
       <ChartXAxis dataKey={xAxisKey} />
       <ChartTooltipPart />

@@ -24,7 +24,9 @@ const config = {
   mobile: { label: "Mobile", palette: "orange" },
 } as const;
 
-const SampleChart = (props: Partial<BarChartProps>) => (
+const SampleChart = (
+  props: Partial<Omit<BarChartProps, "aria-label" | "aria-labelledby">>
+) => (
   <Box width="600px">
     <BarChart
       data={data}
@@ -210,6 +212,32 @@ export const SingleSeriesWithLegend: Story = {
   },
 };
 
+/** `aria-labelledby` names the chart by a visible heading, on the root group and the svg */
+export const LabelledByHeading: Story = {
+  render: () => (
+    <Box width="600px">
+      <Box as="h2" id="visitors-heading">
+        Visitors per month
+      </Box>
+      <BarChart
+        aria-labelledby="visitors-heading"
+        data={data}
+        config={config}
+        xAxisKey="month"
+        series={["desktop", "mobile"]}
+        isAnimationActive={false}
+      />
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    const svg = await findSvg(canvasElement);
+    await expect(svg).toHaveAttribute("aria-labelledby", "visitors-heading");
+    await expect(svg).not.toHaveAttribute("aria-label");
+    const group = canvasElement.querySelector('[role="group"]');
+    await expect(group).toHaveAttribute("aria-labelledby", "visitors-heading");
+  },
+};
+
 /** The svg keeps the Recharts role and tab stop, and carries the aria-label */
 export const Accessibility: Story = {
   render: () => <SampleChart />,
@@ -218,6 +246,11 @@ export const Accessibility: Story = {
     await expect(svg).toHaveAttribute("role", "application");
     await expect(svg).toHaveAttribute("tabindex", "0");
     await expect(svg).toHaveAttribute("aria-label", "Visitors per month");
+    // The root is a labelled group in every state (drawn, loading and empty)
+    await expect(canvasElement.querySelector('[role="group"]')).toHaveAttribute(
+      "aria-label",
+      "Visitors per month"
+    );
   },
 };
 

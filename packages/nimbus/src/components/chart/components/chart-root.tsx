@@ -8,7 +8,7 @@ import type { ChartRootProps } from "../chart.types";
  * empty states and the legend, resolves the series colors from `config`, and
  * shares them with the parts inside. It takes one `Chart.Plot` as child.
  * Pass the rows as `data`, the label and color of each series in `config`, and
- * `aria-label` (required). The legend is shown for two or more series.
+ * `aria-label` or `aria-labelledby` (one is required). The legend is shown for two or more series.
  *
  * @example
  * ```tsx

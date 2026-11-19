@@ -23,7 +23,9 @@ const config = {
   firefox: { label: "Firefox", palette: "teal" },
 } as const;
 
-const SampleChart = (props: Partial<PieChartProps>) => (
+const SampleChart = (
+  props: Partial<Omit<PieChartProps, "aria-label" | "aria-labelledby">>
+) => (
   <Box width="600px">
     <PieChart
       data={data}

@@ -22,11 +22,11 @@ type RadarChartPlotProps = Pick<RadarChartProps, "data" | "xAxisKey"> & {
  * the accessible name from the surrounding `ChartContainer`.
  */
 const RadarChartPlot = ({ data, xAxisKey, showGrid }: RadarChartPlotProps) => {
-  const { series, isAnimationActive, showTooltip, ariaLabel } =
+  const { series, isAnimationActive, showTooltip, labelProps } =
     useChartContext();
 
   return (
-    <RechartsRadarChart data={data} aria-label={ariaLabel}>
+    <RechartsRadarChart data={data} {...labelProps}>
       {showGrid && <PolarGrid />}
       <PolarAngleAxis dataKey={xAxisKey} />
       {showTooltip && <Tooltip content={<ChartTooltip />} />}

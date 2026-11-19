@@ -146,8 +146,8 @@ Task 1.4 measured both options with a throwaway `BarChart` (named imports from
 Each chart takes `data`, `config`, `xAxisKey`, `series` and a few switches.
 `PieChart` and `RadialChart` use `nameKey` and `valueKey`. `isAnimationActive`
 turns the draw animation on or off; it is off by default when the user prefers
-reduced motion, and the Chromatic stories turn it off. `aria-label` is required
-by the types. This keeps the API small and lets us change the library later.
+reduced motion, and the Chromatic stories turn it off. a name is required by the
+types: `aria-label`, or `aria-labelledby` for a visible heading. This keeps the API small and lets us change the library later.
 Letting users compose Recharts children gives more power but makes Recharts'
 API the Nimbus API. A consumer must never need to import from
 `recharts`, so the escape hatch is the wrapped `Chart` namespace (2a).
@@ -174,9 +174,9 @@ component convention (`export const Menu = { Root, Trigger, ... }`).
 
 A series part reads color, animation and its position from the context of
 `Chart.Root`, so a series gets the same color as in the legend and tooltip. A `dataKey` that is not in `series` draws
-nothing. Line dash patterns and area gradients use the position among all
-series, so a mixed chart with more than 3 series still gets dash patterns on its
-lines. `BarChart`, `LineChart` and `AreaChart` use the same series parts, axis,
+nothing. Area gradients use the position among all series. A `Chart.Line` is
+solid unless it gets `strokeDasharray`; `LineChart` sets the dash patterns for
+its own lines. `BarChart`, `LineChart` and `AreaChart` use the same series parts, axis,
 grid and tooltip (the chart-level container stays Recharts' `BarChart`,
 `LineChart` and `AreaChart`, so these charts look as before). The parts need the
 Recharts 3 behavior that custom components can be children of a chart (checked

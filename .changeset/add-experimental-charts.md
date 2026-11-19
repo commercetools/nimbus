@@ -12,7 +12,8 @@ in a later version.
   you do nothing extra, and you never import from them.
 - `BarChart`, `LineChart` and `AreaChart`: pass the rows as `data`, the x axis
   field as `xAxisKey`, and the data keys to draw as `series`. Set a `label` and
-  a color `palette` for each series in `config`. `aria-label` is required.
+  a color `palette` for each series in `config`. `aria-label` or
+  `aria-labelledby` is required.
 - `Chart` (Experimental): a set of parts for charts that the six components
   cannot draw, for example bars and a line in one chart. Use `Chart.Root`,
   `Chart.Plot`, `Chart.Grid`, `Chart.XAxis`, `Chart.Tooltip`, `Chart.Bar`,
@@ -33,7 +34,7 @@ in a later version.
 - `isAnimationActive` turns the draw animation on or off. Without it, charts
   draw without animation when the user prefers reduced motion.
 - Colors come from 23 chart palettes. A series uses the solid color of its
-  palette, in light and dark mode. Series and categories without a `palette`
-  get colors from a default order.
+  palette, in light and dark mode. Series and categories without a `palette` get
+  colors from a default order.
 - The legend is always shown for two or more series or categories. The tooltip
   is announced by screen readers, and the arrow keys move between data points.

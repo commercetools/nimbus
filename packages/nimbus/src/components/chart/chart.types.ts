@@ -67,6 +67,27 @@ export type ChartConfig = Record<string, ChartConfigEntry>;
 // ============================================================
 
 /**
+ * Accessible name of a chart: a label, or the id of a visible element that
+ * holds the name, for example a heading above the chart.
+ */
+export type ChartLabelProps =
+  | {
+      /**
+       * Accessible name of the chart. Describe what the chart shows,
+       * for example "Visitors per month".
+       */
+      "aria-label": string;
+      "aria-labelledby"?: never;
+    }
+  | {
+      /**
+       * Id of the element that names the chart, for example a visible heading
+       */
+      "aria-labelledby": string;
+      "aria-label"?: never;
+    };
+
+/**
  * Props that every chart shares. Chakra style props apply to the root element.
  */
 export type ChartBaseProps = Omit<
@@ -86,11 +107,6 @@ export type ChartBaseProps = Omit<
    * Label and color of each series or category, by data key
    */
   config: ChartConfig;
-  /**
-   * Accessible name of the chart. Describe what the chart shows,
-   * for example "Visitors per month".
-   */
-  "aria-label": string;
   /**
    * Shows a skeleton instead of the chart
    * @default false
@@ -113,7 +129,7 @@ export type ChartBaseProps = Omit<
    * if the user prefers reduced motion, and on otherwise.
    */
   isAnimationActive?: boolean;
-};
+} & ChartLabelProps;
 
 /**
  * Props of the internal `ChartContainer`

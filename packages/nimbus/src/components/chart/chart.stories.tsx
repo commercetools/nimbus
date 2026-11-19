@@ -19,7 +19,9 @@ const oneSeries: ChartConfig = {
   desktop: { label: "Desktop", palette: "ctviolet" },
 };
 
-type SampleProps = Partial<ChartBaseProps> & { keys?: string[] };
+type SampleProps = Partial<
+  Omit<ChartBaseProps, "aria-label" | "aria-labelledby">
+> & { keys?: string[] };
 
 /**
  * The shared parts (container, legend, tooltip, empty and loading states) are

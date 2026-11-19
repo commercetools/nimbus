@@ -28,6 +28,7 @@ export const ChartContainer = (props: ChartContainerProps) => {
     data,
     config,
     "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledby,
     isLoading = false,
     showTooltip = true,
     showLegend = false,
@@ -56,6 +57,11 @@ export const ChartContainer = (props: ChartContainerProps) => {
     [configKey, stableKeys]
   );
 
+  const labelProps = useMemo(
+    () => ({ "aria-label": ariaLabel, "aria-labelledby": ariaLabelledby }),
+    [ariaLabel, ariaLabelledby]
+  );
+
   const contextValue = useMemo(
     () => ({
       data,
@@ -65,7 +71,7 @@ export const ChartContainer = (props: ChartContainerProps) => {
         prefersReducedMotion
       ),
       showTooltip,
-      ariaLabel,
+      labelProps,
       announce: setAnnouncement,
     }),
     [
@@ -74,7 +80,7 @@ export const ChartContainer = (props: ChartContainerProps) => {
       isAnimationActive,
       prefersReducedMotion,
       showTooltip,
-      ariaLabel,
+      labelProps,
     ]
   );
 
@@ -87,7 +93,7 @@ export const ChartContainer = (props: ChartContainerProps) => {
       <ChartRootSlot
         ref={ref}
         role="group"
-        aria-label={ariaLabel}
+        {...labelProps}
         {...rest}
         aria-busy="true"
       >
@@ -100,7 +106,7 @@ export const ChartContainer = (props: ChartContainerProps) => {
 
   if (isEmpty) {
     return (
-      <ChartRootSlot ref={ref} role="group" aria-label={ariaLabel} {...rest}>
+      <ChartRootSlot ref={ref} role="group" {...labelProps} {...rest}>
         <ChartPlotSlot>
           <ChartEmptySlot role="status">{msg.format("empty")}</ChartEmptySlot>
         </ChartPlotSlot>
@@ -110,7 +116,7 @@ export const ChartContainer = (props: ChartContainerProps) => {
 
   return (
     <ChartContext.Provider value={contextValue}>
-      <ChartRootSlot ref={ref} {...rest}>
+      <ChartRootSlot ref={ref} role="group" {...labelProps} {...rest}>
         <ChartPlotSlot>
           <ResponsiveContainer width="100%" height="100%">
             {children}

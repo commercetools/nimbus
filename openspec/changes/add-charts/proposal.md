@@ -48,7 +48,7 @@ mode, or the Nimbus contrast rules.
   their solids are too light for a line or a bar on the page background.
 - Give the charts a clean, light look in Nimbus colors. An area is drawn with a gradient of the series color, and
   the line on top uses the full series color.
-- Make `aria-label` required in the chart types. Use the Recharts 3
+- Require `aria-label` or `aria-labelledby` in the chart types. Use the Recharts 3
   accessibility layer for keyboard and screen reader support. Separate adjacent
   bars and slices with a stroke in the background color. Chart text (axes,
   legend, tooltip, empty state) uses Nimbus text tokens with at least 4.5:1

@@ -41,7 +41,7 @@
       `index.ts`, following `docs/file-type-guidelines/barrel-exports.md` and
       the structure in `docs/component-guidelines.md`
 - [x] 3.2 Define `ChartConfig` and shared types with JSDoc on every prop, with
-      `aria-label` required
+      `aria-label` or `aria-labelledby` required
 - [x] 3.3 Write failing unit tests for config handling: palette to CSS variable,
       unknown series key (skipped and warned in development), invalid palette at
       run time (warned in development, first palette of the default order in
@@ -50,8 +50,8 @@
 - [x] 3.4 Implement the config utilities until 3.3 passes
 - [x] 3.5 Write a failing test for text contrast: chart text tokens have at
       least 4.5:1 against `bg` in both modes
-- [x] 3.6 Implement `ChartTooltip` (with `role="status"` and
-      `aria-live="assertive"`) and `ChartLegend` reading the shared config. Text
+- [x] 3.6 Implement `ChartTooltip` (announced through a polite live
+      region in the chart root) and `ChartLegend` reading the shared config. Text
       uses `fg` and `fg.subtle`.
 - [x] 3.7 Implement `ChartContainer` with a default aspect ratio, the empty
       state, the `isLoading` skeleton, `displayName`, and the legend rule (shown

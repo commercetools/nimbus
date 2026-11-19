@@ -23,8 +23,8 @@ export const Chart = {
   /**
    * # Chart.Root
    *
-   * The root of a composed chart. Takes `data`, `config`, `aria-label`
-   * (required) and an optional `series` list, and one `Chart.Plot` as child.
+   * The root of a composed chart. Takes `data`, `config`, `aria-label` or
+   * `aria-labelledby` (one is required) and an optional `series` list, and one `Chart.Plot` as child.
    *
    * @example
    * ```tsx

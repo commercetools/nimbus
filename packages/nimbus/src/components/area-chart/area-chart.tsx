@@ -26,7 +26,7 @@ const AreaChartPlot = ({
   stacked,
   showGrid,
 }: AreaChartPlotProps) => {
-  const { series, ariaLabel } = useChartContext();
+  const { series, labelProps } = useChartContext();
 
   // The margin gives the first and last x axis label room at the chart edge.
   // `preserveStartEnd` always draws the first and last label, even when a
@@ -35,7 +35,7 @@ const AreaChartPlot = ({
   return (
     <RechartsAreaChart
       data={data}
-      aria-label={ariaLabel}
+      {...labelProps}
       margin={{ left: 12, right: 12 }}
     >
       {showGrid && <ChartGrid />}
