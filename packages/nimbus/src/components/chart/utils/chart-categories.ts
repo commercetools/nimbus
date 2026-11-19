@@ -1,5 +1,8 @@
 const isDevelopment = () => process.env.NODE_ENV !== "production";
 
+/** `nameKey` values that already warned, so a re-render does not warn again */
+const warnedKeys = new Set<string>();
+
 /**
  * Reads the category name of a row as a string.
  *
@@ -12,7 +15,8 @@ export const getCategory = (row: object, nameKey: string): string =>
 
 /**
  * Lists the distinct categories of the rows, in data order. Each row still
- * draws its own slice or ring, so a repeated category warns in development.
+ * draws its own slice or ring, so a repeated category warns in development,
+ * once per `nameKey`.
  *
  * @param data - The rows of the chart
  * @param nameKey - Key of the field that holds the category name
@@ -24,7 +28,12 @@ export const getCategories = (
 ): string[] => {
   const names = data.map((row) => getCategory(row, nameKey));
   const categories = [...new Set(names)];
-  if (isDevelopment() && categories.length < names.length) {
+  if (
+    isDevelopment() &&
+    categories.length < names.length &&
+    !warnedKeys.has(nameKey)
+  ) {
+    warnedKeys.add(nameKey);
     console.warn(
       `[Nimbus] Chart: "${nameKey}" has repeated values. Each row draws its own mark in the same color, but the legend shows one entry. Use one row per category.`
     );

@@ -66,6 +66,19 @@ describe("chart types", () => {
     expect(both).toBeDefined();
   });
 
+  it("has no asChild, because a chart renders several children", () => {
+    const withAsChild: BarChartProps = {
+      data,
+      config,
+      xAxisKey: "month",
+      series: ["desktop"],
+      "aria-label": "Visitors",
+      // @ts-expect-error BarChart has no asChild
+      asChild: true,
+    };
+    expect(withAsChild).toBeDefined();
+  });
+
   it("gives PieChart nameKey and valueKey instead of xAxisKey and series", () => {
     const valid: PieChartProps = {
       data,

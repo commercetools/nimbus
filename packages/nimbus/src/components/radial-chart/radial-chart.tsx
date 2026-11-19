@@ -34,7 +34,8 @@ const RadialChartPlot = ({ data, nameKey, valueKey }: RadialChartPlotProps) => {
   });
 
   // The largest value is a full circle. A numeric domain from 0 to that value
-  // keeps Recharts from rounding the maximum up to the next "nice" tick.
+  // keeps Recharts from rounding the maximum up to the next "nice" tick. When
+  // all values are 0 the domain is [0, 1], so it keeps a width.
   const max = Math.max(
     0,
     ...rings
@@ -56,7 +57,7 @@ const RadialChartPlot = ({ data, nameKey, valueKey }: RadialChartPlotProps) => {
       {showTooltip && <Tooltip content={<ChartTooltip nameKey={nameKey} />} />}
       <PolarAngleAxis
         type="number"
-        domain={[0, max]}
+        domain={[0, max > 0 ? max : 1]}
         tick={false}
         axisLine={false}
       />

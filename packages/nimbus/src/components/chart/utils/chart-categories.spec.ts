@@ -26,12 +26,12 @@ describe("getCategories", () => {
     expect(warn).not.toHaveBeenCalled();
   });
 
-  it("warns once in development when a category repeats", () => {
+  it("warns once per key in development when a category repeats", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-    expect(getCategories([{ b: "x" }, { b: "x" }, { b: "y" }], "b")).toEqual([
-      "x",
-      "y",
-    ]);
+    const rows = [{ repeated: "x" }, { repeated: "x" }, { repeated: "y" }];
+    expect(getCategories(rows, "repeated")).toEqual(["x", "y"]);
+    // A re-render calls it again with the same key
+    getCategories(rows, "repeated");
     expect(warn).toHaveBeenCalledTimes(1);
   });
 });

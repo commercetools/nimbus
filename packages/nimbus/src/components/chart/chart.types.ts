@@ -92,7 +92,7 @@ export type ChartLabelProps =
  */
 export type ChartBaseProps = Omit<
   ChartRootSlotProps,
-  "children" | "aria-label" | "aria-labelledby"
+  "children" | "aria-label" | "aria-labelledby" | "asChild"
 > & {
   /**
    * Ref forwarded to the root element

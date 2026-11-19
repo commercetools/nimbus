@@ -191,6 +191,35 @@ export const LargestValueIsFullCircleForRoundedMax: Story = {
   },
 };
 
+/** Rings with the value 0 stay empty tracks, not half circles */
+export const ZeroValuesDrawNoArc: Story = {
+  render: () => (
+    <SampleChart
+      data={[
+        { browser: "chrome", visitors: 0 },
+        { browser: "safari", visitors: 0 },
+      ]}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    await findSvg(canvasElement);
+    await waitFor(() =>
+      expect(
+        canvasElement.querySelectorAll(".recharts-radial-bar-background-sector")
+      ).toHaveLength(2)
+    );
+    const lengths = (selector: string) =>
+      Array.from(
+        canvasElement.querySelectorAll<SVGPathElement>(selector),
+        (p) => p.getTotalLength()
+      );
+    const tracks = lengths(".recharts-radial-bar-background-sector");
+    const bars = lengths(".recharts-radial-bar-sector");
+    // No ring is drawn for 0, and a drawn ring would be at most a sliver
+    bars.forEach((bar, index) => expect(bar / tracks[index]).toBeLessThan(0.1));
+  },
+};
+
 /** The tooltip label is the category name, not an index */
 export const TooltipLabelIsCategory: Story = {
   render: () => <SampleChart />,
