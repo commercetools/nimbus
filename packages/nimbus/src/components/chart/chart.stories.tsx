@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box, Chart } from "@commercetools/nimbus";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import { DarkMode, legendRed, liveRegion } from "./chart.test-utils";
+import { DarkMode, findSvg, legendRed, liveRegion } from "./chart.test-utils";
 import type { ChartBaseProps, ChartConfig } from "./chart.types";
 
 const data = [
@@ -115,13 +115,14 @@ export const Base: Story = {
     });
 
     await step("Keeps the Recharts role and tab stop", async () => {
-      const svg = canvasElement.querySelector("svg.recharts-surface")!;
+      // Recharts draws the svg after it has measured the container
+      const svg = await findSvg(canvasElement);
       await expect(svg).toHaveAttribute("role", "application");
       await expect(svg).toHaveAttribute("tabindex", "0");
     });
 
     await step("The aria-label reaches the chart", async () => {
-      const svg = canvasElement.querySelector("svg.recharts-surface")!;
+      const svg = await findSvg(canvasElement);
       await expect(svg).toHaveAttribute("aria-label", "Visitors per month");
     });
 
@@ -137,8 +138,9 @@ export const Focused: Story = {
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => <SampleChart />,
   play: async ({ canvasElement }) => {
+    // The svg exists only after Recharts has measured the container
+    const svg = await findSvg(canvasElement);
     await userEvent.tab();
-    const svg = canvasElement.querySelector("svg.recharts-surface")!;
     await expect(svg).toHaveFocus();
   },
 };

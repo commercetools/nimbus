@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
-import { expect, within } from "storybook/test";
+import { expect, waitFor, within } from "storybook/test";
 import {
   AreaChart,
   BarChart,
@@ -544,10 +544,13 @@ export const Report: Story = {
     const canvas = within(canvasElement);
 
     // Four sparklines, the revenue chart, three charts in the next section
-    // and the selected tab: nine drawing surfaces in total.
-    await expect(
-      canvasElement.querySelectorAll("svg.recharts-surface").length
-    ).toBeGreaterThanOrEqual(8);
+    // and the selected tab: nine drawing surfaces in total. Recharts draws
+    // each one after it has measured its container.
+    await waitFor(() =>
+      expect(
+        canvasElement.querySelectorAll("svg.recharts-surface").length
+      ).toBeGreaterThanOrEqual(8)
+    );
     await expect(canvas.getAllByRole("meter").length).toBeGreaterThanOrEqual(7);
     await expect(canvas.getByRole("heading", { level: 1 })).toHaveTextContent(
       /Sales are 18% above last year/
