@@ -17,10 +17,9 @@
       Record the size change and the require-helper result in `design.md`. If
       `victory-vendor` fails the scan, decide between an alias, an external
       dependency or another version before going on
-- [x] 1.5 Open https://ui.shadcn.com/charts with Playwright and take reference
-      screenshots of the six chart types. List the visual traits (grid lines,
-      axes, bar radius, tooltip, legend, area opacity, stroke width between
-      shapes) in `design.md`. Limit this to one short session
+- [x] 1.5 Decide the visual traits of the six chart types (grid lines, axes, bar
+      radius, tooltip, legend, area opacity, stroke width between shapes) and
+      list them in `design.md`. Limit this to one short session
 - [x] 1.6 Check how Recharts `PieChart` and `RadialBarChart` behave with the
       keyboard (Tab, ArrowLeft, ArrowRight, Enter). Write the result into
       `design.md`. Done: all six chart types work; animation is turned off with
@@ -79,7 +78,7 @@
       `nimbus-design-token-ts-plugin` and `nimbus-mcp`, which this change does
       not touch.
 
-## 4. BarChart, LineChart and AreaChart (first release for the product team)
+## 4. BarChart, LineChart and AreaChart (first release)
 
 - [x] 4.1 Create the folders `bar-chart/`, `line-chart/` and `area-chart/` with
       `index.ts` and the file structure from `docs/component-guidelines.md`
@@ -126,7 +125,7 @@
       `@experimental` JSDoc tag, and the changeset text (say the chart is
       experimental, as in 4.12). Export from the components index
 
-## 6. RadarChart and RadialChart (first to move to a later change if time runs out)
+## 6. RadarChart and RadialChart
 
 - [x] 6.1 Write failing stories for `RadarChart`: the same list as 4.2 (without
       stacked and bar stroke)
@@ -152,8 +151,7 @@
 - [x] 7.3 Check the stories in Storybook in light and dark mode, and with the
       keyboard only. Done: keyboard (Tab, arrows, Enter) and light/dark mode are
       covered by story tests for all six charts; all six chart types were also
-      checked in a browser (light mode, plus Bar in dark mode) and compared with
-      the shadcn references
+      checked in a browser (light mode, plus Bar in dark mode)
 - [x] 7.4 Run `pnpm openspec validate add-charts --strict`. Done:
       `pnpm openspec validate add-charts --strict` passes
 - [x] 7.5 Check whether new components need a Figma Code Connect file

@@ -1,8 +1,7 @@
 ## Why
 
-Nimbus has no chart components. A product team needs a dashboard by the end of
-this week and needs Area, Bar, Line, Pie, Radar and Radial charts that look and
-behave like the rest of Nimbus. Without them, each team picks its own chart
+Nimbus has no chart components. Teams that build dashboards need Area, Bar,
+Line, Pie, Radar and Radial charts that look and behave like the rest of Nimbus. Without them, each team picks its own chart
 library and colors, and the charts do not follow Nimbus themes, light and dark
 mode, or the Nimbus contrast rules.
 
@@ -10,8 +9,7 @@ mode, or the Nimbus contrast rules.
 
 - Add six chart components to `@commercetools/nimbus`: `AreaChart`, `BarChart`,
   `LineChart`, `PieChart`, `RadarChart` and `RadialChart`. Each is a thin Nimbus
-  layer over Recharts 3.x. Recharts is also the library behind the shadcn charts
-  that the team referenced (confirmed by the requester).
+  layer over Recharts 3.x.
 - Add shared internal parts used by all six charts: `ChartContainer` (size,
   empty and loading states, series colors through context), `ChartTooltip` (with
   an optional `nameKey`) and `ChartLegend`. Only the `ChartConfig` type and its
@@ -48,8 +46,7 @@ mode, or the Nimbus contrast rules.
   palettes). Palettes with a black contrast color (`amber`, `lime`, `mint`,
   `sky`, `yellow`, `ctyellow` and `ctteal`) are not chart palettes, because
   their solids are too light for a line or a bar on the page background.
-- Keep the chart look close to the shadcn charts (https://ui.shadcn.com/charts)
-  in Nimbus colors. An area is drawn with a gradient of the series color, and
+- Give the charts a clean, light look in Nimbus colors. An area is drawn with a gradient of the series color, and
   the line on top uses the full series color.
 - Make `aria-label` required in the chart types. Use the Recharts 3
   accessibility layer for keyboard and screen reader support. Separate adjacent
@@ -67,9 +64,8 @@ mode, or the Nimbus contrast rules.
 - Add one changeset for `@commercetools/nimbus` (the charts and the new
   dependencies). There are no breaking changes.
 
-Order of work, in case time runs out: foundation and palette colors first, then
-Bar, Line and Area, then Pie, then Radar and Radial. Radar and Radial are the
-first to move to a later change.
+Order of work: foundation and palette colors first, then Bar, Line and Area,
+then Pie, then Radar and Radial.
 
 ## Capabilities
 

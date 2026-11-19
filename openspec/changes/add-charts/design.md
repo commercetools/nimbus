@@ -1,9 +1,7 @@
 ## Context
 
-Nimbus has no chart components. A product team needs a dashboard by the end of
-this week with Area, Bar, Line, Pie, Radar and Radial charts. The reference is
-the shadcn charts page (https://ui.shadcn.com/charts). The requester confirmed
-that shadcn wraps Recharts.
+Nimbus has no chart components. Teams that build dashboards need Area, Bar,
+Line, Pie, Radar and Radial charts.
 
 Facts checked while preparing this design (file and line, URL, or a computed
 number):
@@ -42,8 +40,7 @@ number):
   contrast color (`amber`, `lime`, `mint`, `sky`, `yellow`, `ctyellow`,
   `ctteal`) and 23 have white. Light and dark mode agree.
 - **Trusted solids.** Nimbus checks its colors with APCA, so the solids count as
-  verified and charts add no contrast check of their own (decided with the
-  requester).
+  verified and charts add no contrast check of their own.
 - **CSS variable names.** `cssVarsPrefix` is `nimbus`
   (`packages/nimbus/src/theme/index.ts:17`). Chakra adds the token category, so
   the step 9 solid of `blue` is `--nimbus-colors-blue-9`. Components reach the
@@ -57,11 +54,9 @@ number):
 - Nimbus already has `useColorMode` and `useColorModeValue` in
   `packages/nimbus/src/hooks/`.
 
-## Reference look (task 1.5)
+## Visual traits (task 1.5)
 
-Observed on https://ui.shadcn.com/charts (screenshots of the Area, Bar, Line,
-Pie, Radar and Radial pages, taken 2026-11-18; the page text says "built with
-Recharts"). Pixel values were not measured.
+The look of the charts is light and flat. Pixel values were not specified.
 
 - **Cartesian charts (Area, Bar, Line):** horizontal grid lines only, very light
   gray. No axis lines and no y-axis labels. Small gray x-axis labels. Smooth
@@ -71,28 +66,24 @@ Recharts"). Pixel values were not measured.
   the baseline (a gradient, not a flat opacity). The line on top is the full
   color.
 - **Legend:** centered below the chart, small square swatches with gray labels.
-- **Pie:** flat slices with a thin white separator between slices (the page also
-  shows a "Separator None" variant). Optional value labels with leader lines.
-- **Radar:** hexagonal polar grid in light gray, fill at low opacity, optional
-  dots on the points, and a "lines only" variant.
-- **Radial:** concentric arcs on a light gray track, optional labels along the
-  arcs, and a "grid" variant.
-- **Around the chart:** the demos sit inside cards with a title, a description
-  and a footer. That belongs to the page, not to the chart component.
-- **Colors:** the demos use shades of one blue hue (light to dark) for all
-  series. Nimbus uses a different palette for each series, which is easier to
-  tell apart (WCAG 1.4.1). The one-hue look is not available in this version,
+- **Pie:** flat slices with a thin separator in the background color.
+- **Radar:** hexagonal polar grid in light gray, fill at low opacity.
+- **Radial:** concentric arcs on a light gray track.
+- **Around the chart:** a chart has no title, description or footer of its own.
+  The page provides them.
+- **Colors:** Nimbus uses a different palette for each series, which is easier
+  to tell apart (WCAG 1.4.1). A one-hue look is not available in this version,
   because intermediate colors were removed from the scope.
 - **Separator width:** the Nimbus stroke between bars and slices is 2 px in the
-  `bg` color. This is our value; shadcn's width was not measured.
+  `bg` color (a proposed value).
 
 ## Goals / Non-Goals
 
 **Goals:**
 
-- Charts look like the shadcn charts, in Nimbus colors. The visual traits (grid,
-  axes, bar radius, tooltip, legend, area opacity) are taken from reference
-  screenshots of https://ui.shadcn.com/charts in task 1.5.
+- Charts have a clean, light look in Nimbus colors. The visual traits (grid,
+  axes, bar radius, tooltip, legend, area opacity) are listed in "Visual
+  traits" (task 1.5).
 - Series colors come from Nimbus palettes, switch with light and dark mode
   without JavaScript, and use the palette solid (step 9) that Nimbus verifies
   with APCA.
@@ -157,8 +148,8 @@ Each chart takes `data`, `config`, `xAxisKey`, `series` and a few switches.
 turns the draw animation on or off; it is off by default when the user prefers
 reduced motion, and the Chromatic stories turn it off. `aria-label` is required
 by the types. This keeps the API small and lets us change the library later.
-shadcn lets users compose Recharts children. That gives more power but makes
-Recharts' API the Nimbus API. A consumer must never need to import from
+Letting users compose Recharts children gives more power but makes Recharts'
+API the Nimbus API. A consumer must never need to import from
 `recharts`, so the escape hatch is the wrapped `Chart` namespace (2a).
 
 ### 2a. `Chart` namespace of wrapped parts, no re-exported Recharts
@@ -262,14 +253,12 @@ reference, and renders Recharts. `ChartTooltip` and `ChartLegend` read the same
 ### 8. Area fill is a gradient of one color
 
 An area is drawn with a vertical gradient of the series color, from about 0.8
-opacity at the line to about 0.1 opacity at the baseline (nearly transparent, as
-on the shadcn reference, task 1.5). The line on top uses the full series color
+opacity at the line to about 0.1 opacity at the baseline (nearly transparent). The line on top uses the full series color
 and carries the series color. No extra token is needed.
 
 ### 8a. Curves are monotone
 
-Line and Area use `type="monotone"`. The shadcn demos use `natural`, but natural
-interpolation can draw below the data minimum (even below zero) and so shows
+Line and Area use `type="monotone"`. `natural` interpolation can draw below the data minimum (even below zero) and so shows
 values that are not in the data. Monotone interpolation never overshoots and
 looks almost the same.
 

@@ -259,15 +259,13 @@ A `RadialChart` SHALL draw one ring for each category.
 
 ### Requirement: Chart Appearance
 
-Charts SHALL look like the shadcn charts (https://ui.shadcn.com/charts), in
-Nimbus colors.
+Charts SHALL have a clean, light look in Nimbus colors.
 
-#### Scenario: Reference look
+#### Scenario: Visual traits
 
 - **WHEN** a chart is rendered
 - **THEN** its grid, axes, bar and slice shapes, tooltip and legend SHALL follow
-  the visual traits recorded from the shadcn reference screenshots in
-  `design.md`
+  the visual traits recorded in `design.md`
 - **AND** all colors SHALL come from Nimbus tokens
 
 #### Scenario: Smooth curves without overshoot
