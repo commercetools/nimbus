@@ -313,23 +313,3 @@ If transformed colors look wrong:
 2. Check chroma-js documentation for transformation methods
 3. Verify input color format (hex vs rgb vs hsl)
 4. Test transformations in isolation with small script
-
-## Chart Colors
-
-Chart colors have their own files next to `index.ts`:
-
-```
-packages/color-tokens/
-├── chart-colors.ts           # Palette selection, lightness adaptation, token generation
-├── contrast-color.ts         # White/black contrast rule, shared with index.ts
-├── generate-chart-tokens.ts  # Writes chart-tokens.json and chart.palettes.ts
-├── chart-colors.spec.ts      # Vitest tests (run: pnpm --filter color-tokens test)
-└── vitest.config.mts
-```
-
-Run `pnpm generate:chart-tokens` after changing palettes, then
-`pnpm build:tokens`. The generator writes
-`packages/tokens/src/base/chart-tokens.json` and
-`packages/nimbus/src/components/chart/chart.palettes.ts`. Both are committed,
-and a test fails when they differ from the generator output. See the README
-section "Chart colors" for how colors are chosen.

@@ -1,6 +1,6 @@
 import * as radixColors from "@radix-ui/colors";
 import { brandColors } from "./brand-colors";
-import { calculateContrastColor } from "./contrast-color";
+import chroma from "chroma-js";
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
@@ -12,16 +12,7 @@ const paletteKeys = Object.keys(radixColors).filter(
   (key) => key !== "__esModule"
 );
 
-const ignoredColors = [
-  "mauve",
-  "sage",
-  "olive",
-  "sand",
-  "P3",
-  "default",
-  // Added by Node 23+ when a CommonJS package is imported with `import * as`.
-  "module.exports",
-];
+const ignoredColors = ["mauve", "sage", "olive", "sand", "P3", "default"];
 const pickedPalettes = paletteKeys.filter(
   (key) => !ignoredColors.some((ignoredColor) => key.includes(ignoredColor))
 );
@@ -138,13 +129,22 @@ function createSimpleAlphaPalette(palette: Palette): SimplePalette {
   }, {} as SimplePalette);
 }
 
+function calculateContrastColor(baseKey: string, color: string): string {
+  const black = "#000000";
+  const white = "#ffffff";
+
+  const whiteContrast = chroma.contrast(white, color);
+
+  return whiteContrast > 2.9 ? white : black;
+}
+
 function createColorPalette(basePalette: Palette): ColorPalette {
   const baseKey = Object.keys(basePalette)[0].replace(/\d+$/, "");
   const defaultColor = basePalette[`${baseKey}9`];
   return {
     ...createSimplePalette(basePalette),
     DEFAULT: createValue(defaultColor),
-    contrast: createValue(calculateContrastColor(defaultColor)),
+    contrast: createValue(calculateContrastColor(baseKey, defaultColor)),
   };
 }
 

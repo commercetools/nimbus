@@ -6,8 +6,7 @@
   "private": true,
   "devDependencies": {
     "@types/chroma-js": "^3.1.0",
-    "@types/node": "catalog:utils",
-    "vitest": "catalog:tooling"
+    "@types/node": "catalog:utils"
   },
   "peerDependencies": {
     "typescript": "catalog:tooling"
@@ -18,8 +17,6 @@
     "lodash": "catalog:utils"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "generate:chart-tokens": "tsx generate-chart-tokens.ts"
+    "typecheck": "tsc --noEmit"
   }
 }

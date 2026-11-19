@@ -12,7 +12,6 @@ export default defineConfig({
       "./packages/nimbus/vitest.storybook.config.ts",
       "./packages/nimbus/vitest.unit.config.ts",
       "./packages/nimbus/vitest.unit-isolated.config.ts",
-      "./packages/color-tokens/vitest.config.mts",
       "./packages/design-token-ts-plugin/vitest.config.mts",
       "./packages/nimbus-mcp/vitest.config.ts",
       "./vitest.scripts.config.mts",

@@ -33,8 +33,8 @@ in a later version.
   shown in English until the translations are added.
 - `isAnimationActive` turns the draw animation on or off. Without it, charts
   draw without animation when the user prefers reduced motion.
-- Colors come from 23 chart palettes, adapted to have at least 3:1 contrast
-  against the `bg` color in light and dark mode. Place charts on `bg`. Series
-  and categories without a `palette` get colors from a default order.
+- Colors come from 23 chart palettes. A series uses the solid color of its
+  palette, in light and dark mode. Series and categories without a `palette`
+  get colors from a default order.
 - The legend is always shown for two or more series or categories. The tooltip
   is announced by screen readers, and the arrow keys move between data points.
