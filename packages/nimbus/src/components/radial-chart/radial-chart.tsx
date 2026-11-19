@@ -6,6 +6,10 @@ import {
 } from "recharts";
 import { ChartContainer } from "@/components/chart/chart-container";
 import { useChartContext } from "@/components/chart/chart.context";
+import {
+  getCategories,
+  getCategory,
+} from "@/components/chart/utils/chart-categories";
 import { ChartTooltip } from "@/components/chart/components/chart-tooltip";
 import type { RadialChartProps } from "./radial-chart.types";
 
@@ -24,7 +28,7 @@ const RadialChartPlot = ({ data, nameKey, valueKey }: RadialChartPlotProps) => {
 
   // Rows whose category is not in `config` are not drawn
   const rings = data.flatMap((row) => {
-    const item = series.find((s) => s.key === String(row[nameKey]));
+    const item = series.find((s) => s.key === getCategory(row, nameKey));
     return item ? [{ row, item }] : [];
   });
 
@@ -92,7 +96,7 @@ const RadialChartPlot = ({ data, nameKey, valueKey }: RadialChartPlotProps) => {
 export const RadialChart = (props: RadialChartProps) => {
   const { nameKey, valueKey, ...rest } = props;
   // Each distinct value of `nameKey` is a category, in data order
-  const categories = [...new Set(rest.data.map((row) => String(row[nameKey])))];
+  const categories = getCategories(rest.data, nameKey);
 
   return (
     <ChartContainer {...rest} seriesKeys={categories}>

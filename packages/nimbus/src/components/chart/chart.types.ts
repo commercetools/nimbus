@@ -78,9 +78,10 @@ export type ChartBaseProps = Omit<
    */
   ref?: React.Ref<HTMLDivElement>;
   /**
-   * The rows to draw. An empty array shows the empty state.
+   * The rows to draw, as objects or interface-typed records. An empty array
+   * shows the empty state.
    */
-  data: Record<string, unknown>[];
+  data: readonly object[];
   /**
    * Label and color of each series or category, by data key
    */

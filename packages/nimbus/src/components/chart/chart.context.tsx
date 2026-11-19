@@ -7,7 +7,7 @@ import type { ResolvedChartSeries } from "./utils/chart-config";
  */
 export type ChartContextValue = {
   /** The rows of the chart, for `Chart.Plot` */
-  data: Record<string, unknown>[];
+  data: readonly object[];
   /** Series with resolved label and CSS color, unknown keys already removed */
   series: ResolvedChartSeries[];
   /** Whether Recharts animates the drawing (prop, else off under reduced motion) */
