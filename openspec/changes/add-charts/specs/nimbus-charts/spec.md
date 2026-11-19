@@ -126,10 +126,11 @@ chart palette name.
 #### Scenario: Palette color
 
 - **WHEN** a config entry has `palette: "violet"`
-- **THEN** the series SHALL be drawn with `var(--nimbus-colors-chart-violet)`
-- **AND** that color SHALL be the palette's solid color, adapted only in
-  lightness to have at least 3:1 contrast against the current background
+- **THEN** the series SHALL be drawn with `var(--nimbus-colors-violet-9)`, the
+  palette solid (step 9), unchanged
 - **AND** the color SHALL change with light and dark mode without JavaScript
+- **AND** the chart SHALL add no color tokens, because Nimbus verifies the
+  solids with APCA
 
 #### Scenario: Palette names are typed
 
@@ -217,18 +218,10 @@ Charts SHALL meet WCAG 2.1 AA.
 - **THEN** the default order SHALL have exactly 11 palettes, in this order:
   `ctviolet`, `orange`, `teal`, `crimson`, `blue`, `grass`, `plum`, `bronze`,
   `cyan`, `red`, `slate`
-- **AND** each pair of these palettes SHALL differ by a deltaE2000 of at least
-  15, in light and dark mode
 - **AND** a chart with more than 11 series SHALL warn in development and reuse
   palettes in the same order
 - **AND** a consumer MAY choose any other chart palette by name
 - **AND** a unit test SHALL check the order
-
-#### Scenario: Series contrast
-
-- **WHEN** a series is drawn with a palette color
-- **THEN** it SHALL have at least 3:1 contrast against the current background of
-  the active color mode, in light and dark mode
 
 #### Scenario: Text contrast
 

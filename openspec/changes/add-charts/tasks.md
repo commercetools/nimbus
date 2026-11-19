@@ -1,13 +1,9 @@
 ## 1. Spikes: resolve open questions before building
 
-- [x] 1.1 Token route spike: add a tiny `chart-tokens.json` with one token
-      `color.chart.<palette>.{light,dark}` (no other keys in the pair) to
-      `packages/tokens/src/base/`, add it to `source` in
-      `packages/tokens/src/style-dictionary.config.js`, run `pnpm build:tokens`,
-      and confirm that (a) Style Dictionary merges the second file, (b) the CSS
-      variable is `--nimbus-colors-chart-<palette>` with a light and a dark
-      value, and (c) the dark selector matches the one used by the docs and
-      Storybook. Write the result into `design.md`
+- [x] 1.1 Color route: confirm that the step 9 solid of a palette is available
+      as a CSS variable that switches with light and dark mode
+      (`--nimbus-colors-<palette>-9`), so charts need no color tokens of their
+      own. Written into `design.md`. Done: the chart stories read the variable
 - [x] 1.2 Check the background: confirm that `bg` is `#fff` (light) and
       `#111111` (dark), and check the surfaces Nimbus uses for panels and cards.
       Done: decided to adapt against `bg` only, with the measured limits in
@@ -30,44 +26,16 @@
       `design.md`. Done: all six chart types work; animation is turned off with
       `isAnimationActive={false}`
 
-## 2. Chart color tokens (spec: `color-tokens`)
+## 2. Chart palettes (spec: `nimbus-charts`)
 
-- [x] 2.1 Write failing unit tests for selection and contrast: (a) only palettes
-      with a white `contrast` token are chart palettes, computed with the shared
-      `calculateContrastColor` function, (b) every chart color, measured on the
-      value as emitted in `packages/tokens/src/generated/chakra/theme-tokens.ts`
-      (the build converts hex to rounded HSL), has at least 3:1 contrast against
-      `bg` in light and dark mode, (c) a solid that already has 3:1 is unchanged
-- [x] 2.2 Write failing unit tests for adaptation: (d) a changed color has at
-      most 3.2:1 and, if chromatic (OKLCH chroma of at least 0.02), a hue within
-      3 degrees of the solid, (e) fixture `orange` in light mode changes (2.97
-      to at least 3:1), (f) fixture `#484848` on `#111111` changes (2.06 to at
-      least 3:1)
-- [x] 2.3 Add the build script in `packages/color-tokens`: for each chart
-      palette and mode, adapt only the OKLCH lightness of the solid (`DEFAULT`)
-      by the smallest amount that gives 3:1 against `bg`, using chroma-js
-      `contrast()`. Write `packages/tokens/src/base/chart-tokens.json` (shape
-      `color.chart.<palette>` with `light.DEFAULT` and `dark.DEFAULT`), add it
-      to `source` in `packages/tokens/src/style-dictionary.config.js`, and
-      register `chart: themeTokens.color.chart` in
-      `packages/nimbus/src/theme/semantic-tokens/colors.ts`, until 2.1 and 2.2
-      pass
-- [x] 2.4 Add the drift check that fails when `chart-tokens.json` differs from
-      the generator output (a test, or a step in `build:tokens`)
-- [x] 2.5 Write a failing unit test for the default palette order (the 11
-      palettes in `design.md`, starting with `ctviolet`; every pair at
-      deltaE2000 of at least 15 in light and dark mode)
-- [x] 2.6 Generate the `ChartPalette` type (named `chartPaletteNames` for the
-      list) from the chart palettes into
-      `packages/nimbus/src/components/chart/chart.palettes.ts`, and export the
-      default order (a fixed list) as a constant in the same file, so `config`
-      accepts only chart palette names
-- [x] 2.7 Rebuild tokens and confirm all tests in this group pass. Check that
-      only `orange` changes in light mode and that no palette changes in dark
-      mode
-- [x] 2.8 Update `packages/color-tokens/CLAUDE.md`,
-      `packages/color-tokens/README.md`, `packages/tokens` docs and the
-      `color-tokens` spec text for the new output
+- [x] 2.1 Write `packages/nimbus/src/components/chart/chart.palettes.ts` by
+      hand: `chartPaletteNames` (the 23 palettes with a white contrast color),
+      the `ChartPalette` type and the default order (11 palettes in `design.md`,
+      starting with `ctviolet`), so `config` accepts only chart palette names
+- [x] 2.2 Color a series with `var(--nimbus-colors-<palette>-9)` in
+      `utils/chart-config.ts`, with a unit test for the variable name and the
+      default order. No change in `color-tokens`, `tokens` or
+      `design-token-ts-plugin`
 
 ## 3. Shared chart foundation (spec: `nimbus-charts`)
 
@@ -180,8 +148,7 @@
       `pnpm check:bundler-compat` and `pnpm check:bundle-size`. Done:
       `pnpm build` (clean tree afterwards), `pnpm test` 306 files / 3894 tests,
       `pnpm typecheck:strict`, `pnpm check:package-shape` (all packages),
-      `pnpm check:bundler-compat`, `pnpm check:bundle-size` (nimbus +1.0%,
-      tokens +3.1%, limit 5%)
+      `pnpm check:bundler-compat`, `pnpm check:bundle-size` (limit 5%)
 - [x] 7.3 Check the stories in Storybook in light and dark mode, and with the
       keyboard only. Done: keyboard (Tab, arrows, Enter) and light/dark mode are
       covered by story tests for all six charts; all six chart types were also

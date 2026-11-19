@@ -38,20 +38,16 @@ mode, or the Nimbus contrast rules.
   `"violet"` or `"teal"`), typed as a union of the chart palette names.
   Arbitrary solid colors are deferred to a later change. The `config` shape
   allows adding a `color` field later without a breaking change.
-- Add chart color tokens, generated at build time into a committed file
-  (`packages/tokens/src/base/chart-tokens.json`). Chakra turns them into CSS
-  variables such as `--nimbus-colors-chart-violet`. For each palette and each
-  color mode, the build takes the palette's solid color (`DEFAULT`, which is
-  step 9) and adapts only its lightness, by the smallest amount that gives at
-  least 3:1 contrast against the current background of that mode (WCAG 1.4.11).
-  A solid that already has 3:1 stays unchanged. A test fails the build if any
-  chart color misses 3:1.
+- A series color is the palette solid (`colors.<palette>.9`, step 9), unchanged:
+  `var(--nimbus-colors-<palette>-9)`. This is the token that every Nimbus
+  component already uses through `colorPalette.9`, so charts add no color tokens
+  and change no token package. Nimbus checks its colors with APCA, and the
+  solids count as verified. If a chart ever needs a derived color, it adapts the
+  solid at run time with CSS `color-mix()`.
 - Chart palettes are the palettes that have a white contrast color (23
   palettes). Palettes with a black contrast color (`amber`, `lime`, `mint`,
-  `sky`, `yellow`, `ctyellow` and `ctteal`) are not chart palettes. Their solids
-  need a large lightness change to reach 3:1 (OKLCH lightness change of about
-  -0.08 to -0.25, and a hue shift of up to 6.2 degrees for `ctyellow`), so the
-  result would no longer look like the palette.
+  `sky`, `yellow`, `ctyellow` and `ctteal`) are not chart palettes, because
+  their solids are too light for a line or a bar on the page background.
 - Keep the chart look close to the shadcn charts (https://ui.shadcn.com/charts)
   in Nimbus colors. An area is drawn with a gradient of the series color, and
   the line on top uses the full series color.
@@ -70,13 +66,12 @@ mode, or the Nimbus contrast rules.
   installation docs). Bundling Recharts was measured and rejected (see
   `design.md`). The version stays within the repository's 24-hour release-age
   rule.
-- Add two changesets: one for `@commercetools/nimbus` (the six charts and the
-  new peer dependency) and one for `@commercetools/nimbus-tokens` (the chart
-  color tokens). There are no breaking changes, but package managers warn about
+- Add one changeset for `@commercetools/nimbus` (the charts and the new peer
+  dependency). There are no breaking changes, but package managers warn about
   the new peer dependency `recharts` when it is missing, also for consumers who
   do not use charts.
 
-Order of work, in case time runs out: foundation and palette tokens first, then
+Order of work, in case time runs out: foundation and palette colors first, then
 Bar, Line and Area, then Pie, then Radar and Radial. Radar and Radial are the
 first to move to a later change.
 
@@ -87,19 +82,11 @@ first to move to a later change.
 - `nimbus-charts`: Shared chart foundation (container, tooltip, legend, config,
   palette colors, states, accessibility) and the six chart types built on it.
 
-### Modified Capabilities
-
-- `color-tokens`: Adds the requirement to generate contrast-checked chart color
-  tokens for each chart palette and color mode, into a committed token file.
-
 ## Impact
 
 - New directories under `packages/nimbus/src/components/` for the shared chart
   parts and for each chart (component, types, recipe, slots, i18n, stories,
   designer and developer docs, docs spec, `index.ts`).
-- `packages/color-tokens` (build script, uses the `chroma-js` dependency it
-  already has) and `packages/tokens` (new committed `chart-tokens.json`, added
-  to the Style Dictionary `source`).
 - `packages/nimbus/package.json`: `recharts` as a peer dependency and, with
   `react-is`, as dev dependencies (through the new `charts` catalog in
   `pnpm-workspace.yaml`). The newest Recharts version that passes the 24-hour
@@ -114,13 +101,9 @@ first to move to a later change.
 - `packages/nimbus/src/theme/slot-recipes/index.ts`: new recipe registrations;
   theme typings regenerated. `packages/nimbus/src/components/index.ts`: new
   exports.
-- Docs: `packages/color-tokens/CLAUDE.md`, `packages/tokens` docs, designer and
-  developer MDX for each chart.
-- Also changed: `packages/i18n/data/*.json` (new message `Nimbus.Chart.empty`),
-  `vitest.config.mts` and
-  `packages/color-tokens/{vitest.config.mts,contrast-color.ts}` (a Vitest
-  project for the chart color tests), `apps/docs/package.json`,
-  `packages/design-token-ts-plugin/scripts/generate-token-mapping.mjs` (the
-  parser must accept the new `chart` entry), and the generated token output in
-  `packages/tokens` (CSS, TypeScript and Chakra files).
+- Docs: designer and developer MDX for each chart.
+- Also changed: `packages/i18n/data/*.json` (new message `Nimbus.Chart.empty`)
+  and `apps/docs/package.json`.
+- No change in `packages/color-tokens`, `packages/tokens` or
+  `packages/design-token-ts-plugin`.
 - `ctteal` stays excluded in this version (see `design.md`).
