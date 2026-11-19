@@ -4,10 +4,11 @@ import { expect, within } from "storybook/test";
 import {
   AreaChart,
   BarChart,
+  Badge,
   Box,
-  Card,
   Chart,
   type ChartConfig,
+  Flex,
   Heading,
   LineChart,
   Meter,
@@ -17,8 +18,11 @@ import {
   RadialChart,
   SimpleGrid,
   Stack,
+  Table,
+  Tabs,
   Text,
 } from "@commercetools/nimbus";
+import { ArrowDownward, ArrowUpward } from "@commercetools/nimbus-icons";
 
 const meta: Meta = {
   title: "Playground/Charts",
@@ -29,10 +33,10 @@ export default meta;
 type Story = StoryObj;
 
 // ============================================================
-// FAKE DATA
+// FAKE DATA: Nordlicht Outdoor, a made-up outdoor gear retailer
 // ============================================================
 
-/** Revenue per month in thousands of euros, online and in the shops */
+/** Revenue per month in thousands of euros */
 const revenue = [
   { month: "Jan", online: 86, shops: 42 },
   { month: "Feb", online: 92, shops: 38 },
@@ -52,6 +56,43 @@ const revenueConfig = {
   shops: { label: "Shops", palette: "teal" },
 } satisfies ChartConfig;
 
+/**
+ * Scales a series to 20 to 100, so a sparkline shows the shape of the trend
+ * even when the values barely change. A sparkline has no axis and no tooltip,
+ * so the scaled values are never shown.
+ */
+const toShape = (values: number[]) => {
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  return values.map((value) => 20 + (80 * (value - min)) / (max - min));
+};
+
+const revenueTotals = revenue.map((row) => row.online + row.shops);
+const orderTotals = [
+  1900, 1980, 2210, 2350, 2680, 2870, 3120, 2980, 3410, 3760, 5120, 6040,
+];
+const conversionRates = [
+  3.2, 3.3, 3.4, 3.6, 3.7, 3.7, 3.9, 3.9, 4.1, 4.3, 4.5, 4.6,
+];
+const refundRates = [
+  3.9, 3.8, 3.8, 3.7, 3.6, 3.7, 3.5, 3.6, 3.5, 3.4, 3.5, 3.4,
+];
+
+/** The scaled trend of each key figure for the sparklines */
+const trends = {
+  revenue: toShape(revenueTotals),
+  orders: toShape(orderTotals),
+  conversion: toShape(conversionRates),
+  refunds: toShape(refundRates),
+};
+const monthly = revenue.map((row, index) => ({
+  month: row.month,
+  revenue: trends.revenue[index],
+  orders: trends.orders[index],
+  conversion: trends.conversion[index],
+  refunds: trends.refunds[index],
+}));
+
 /** Orders per weekday by device */
 const ordersByDay = [
   { day: "Mon", desktop: 120, mobile: 98, tablet: 24 },
@@ -68,13 +109,45 @@ const ordersConfig = {
   tablet: { label: "Tablet", palette: "teal" },
 } satisfies ChartConfig;
 
-/** Share of revenue by sales channel */
+/** Conversion rate in percent for four traffic sources over eight weeks */
+const conversion = [
+  { week: "Wk 40", search: 3.1, email: 5.2, social: 1.8, direct: 4.1 },
+  { week: "Wk 41", search: 3.3, email: 5.0, social: 2.0, direct: 4.3 },
+  { week: "Wk 42", search: 3.0, email: 5.6, social: 2.4, direct: 4.2 },
+  { week: "Wk 43", search: 3.6, email: 5.9, social: 2.1, direct: 4.6 },
+  { week: "Wk 44", search: 3.8, email: 6.3, social: 2.7, direct: 4.5 },
+  { week: "Wk 45", search: 3.7, email: 6.1, social: 3.0, direct: 4.9 },
+  { week: "Wk 46", search: 4.1, email: 6.8, social: 2.9, direct: 5.1 },
+  { week: "Wk 47", search: 4.4, email: 7.2, social: 3.3, direct: 5.3 },
+];
+const conversionConfig = {
+  search: { label: "Search", palette: "ctviolet" },
+  email: { label: "Email", palette: "orange" },
+  social: { label: "Social", palette: "teal" },
+  direct: { label: "Direct", palette: "crimson" },
+} satisfies ChartConfig;
+
+/** Orders and the forecast per month, for the chart that mixes bars and a line */
+const ordersAndForecast = [
+  { month: "Jul", orders: 3120, forecast: 3000 },
+  { month: "Aug", orders: 2980, forecast: 3100 },
+  { month: "Sep", orders: 3410, forecast: 3300 },
+  { month: "Oct", orders: 3760, forecast: 3600 },
+  { month: "Nov", orders: 5120, forecast: 4800 },
+  { month: "Dec", orders: 6040, forecast: 5600 },
+];
+const forecastConfig = {
+  orders: { label: "Orders", palette: "ctviolet" },
+  forecast: { label: "Forecast", palette: "orange" },
+} satisfies ChartConfig;
+
+/** Share of revenue by sales channel, in percent */
 const channels = [
-  { channel: "Web shop", revenue: 1840 },
-  { channel: "Mobile app", revenue: 920 },
-  { channel: "Marketplace", revenue: 610 },
-  { channel: "Stores", revenue: 540 },
-  { channel: "B2B portal", revenue: 280 },
+  { channel: "Web shop", share: 42 },
+  { channel: "Mobile app", share: 24 },
+  { channel: "Marketplace", share: 14 },
+  { channel: "Stores", share: 13 },
+  { channel: "B2B portal", share: 7 },
 ];
 const channelConfig = {
   "Web shop": { label: "Web shop", palette: "ctviolet" },
@@ -84,25 +157,7 @@ const channelConfig = {
   "B2B portal": { label: "B2B portal", palette: "blue" },
 } satisfies ChartConfig;
 
-/** Conversion rate in percent for four traffic sources over eight weeks */
-const conversion = [
-  { week: "W1", search: 3.1, email: 5.2, social: 1.8, direct: 4.1 },
-  { week: "W2", search: 3.3, email: 5.0, social: 2.0, direct: 4.3 },
-  { week: "W3", search: 3.0, email: 5.6, social: 2.4, direct: 4.2 },
-  { week: "W4", search: 3.6, email: 5.9, social: 2.1, direct: 4.6 },
-  { week: "W5", search: 3.8, email: 6.3, social: 2.7, direct: 4.5 },
-  { week: "W6", search: 3.7, email: 6.1, social: 3.0, direct: 4.9 },
-  { week: "W7", search: 4.1, email: 6.8, social: 2.9, direct: 5.1 },
-  { week: "W8", search: 4.4, email: 7.2, social: 3.3, direct: 5.3 },
-];
-const conversionConfig = {
-  search: { label: "Search", palette: "ctviolet" },
-  email: { label: "Email", palette: "orange" },
-  social: { label: "Social", palette: "teal" },
-  direct: { label: "Direct", palette: "crimson" },
-} satisfies ChartConfig;
-
-/** Customer satisfaction scores per topic, this store and the market average */
+/** Customer satisfaction per topic, this store against the market */
 const satisfaction = [
   { topic: "Delivery", store: 86, market: 78 },
   { topic: "Price", store: 72, market: 75 },
@@ -112,7 +167,7 @@ const satisfaction = [
   { topic: "Website", store: 88, market: 79 },
 ];
 const satisfactionConfig = {
-  store: { label: "Our store", palette: "ctviolet" },
+  store: { label: "Nordlicht", palette: "ctviolet" },
   market: { label: "Market", palette: "slate" },
 } satisfies ChartConfig;
 
@@ -130,21 +185,7 @@ const warehouseConfig = {
   Leipzig: { label: "Leipzig", palette: "crimson" },
 } satisfies ChartConfig;
 
-/** Orders and the refund trend per month, for a chart that mixes bars and a line */
-const ordersAndRefunds = [
-  { month: "Jul", orders: 3120, refunds: 3.4 },
-  { month: "Aug", orders: 2980, refunds: 3.1 },
-  { month: "Sep", orders: 3410, refunds: 3.3 },
-  { month: "Oct", orders: 3760, refunds: 2.9 },
-  { month: "Nov", orders: 5120, refunds: 3.8 },
-  { month: "Dec", orders: 6040, refunds: 4.2 },
-];
-const mixedConfig = {
-  orders: { label: "Orders", palette: "ctviolet" },
-  refunds: { label: "Refund rate (%)", palette: "orange" },
-} satisfies ChartConfig;
-
-/** Stock by category, for the segmented meter */
+/** Units in stock by category, for the segmented meter */
 const stock: MeterSegment[] = [
   { id: "apparel", label: "Apparel", value: 2400 },
   { id: "shoes", label: "Shoes", value: 1500 },
@@ -152,67 +193,208 @@ const stock: MeterSegment[] = [
   { id: "home", label: "Home", value: 700 },
 ];
 
+const orders = [
+  {
+    id: "48213",
+    customer: "Maren Vogt",
+    channel: "Mobile app",
+    status: "Delayed",
+    palette: "critical",
+    packed: 38,
+  },
+  {
+    id: "48207",
+    customer: "Jonas Albrecht",
+    channel: "Web shop",
+    status: "Backorder",
+    palette: "warning",
+    packed: 20,
+  },
+  {
+    id: "48199",
+    customer: "Studio Nord GmbH",
+    channel: "B2B portal",
+    status: "Packing",
+    palette: "info",
+    packed: 64,
+  },
+  {
+    id: "48191",
+    customer: "Lea Hartmann",
+    channel: "Marketplace",
+    status: "Packing",
+    palette: "info",
+    packed: 71,
+  },
+  {
+    id: "48180",
+    customer: "Tobias Reiter",
+    channel: "Web shop",
+    status: "Shipped",
+    palette: "positive",
+    packed: 100,
+  },
+] as const;
+
 // ============================================================
-// LAYOUT HELPERS
+// LAYOUT PARTS
 // ============================================================
 
-const SectionHeading = ({ children }: { children: ReactNode }) => (
-  <Text fontWeight="700" fontSize="500">
-    {children}
-  </Text>
-);
+const figures = { fontVariantNumeric: "tabular-nums" } as const;
 
-const Caption = ({ children }: { children: ReactNode }) => (
-  <Text color="neutral.11" fontSize="300">
-    {children}
-  </Text>
-);
-
-/** A card with a title, a short description and the chart below */
-const ChartCard = ({
-  title,
-  description,
+/**
+ * A page section. Sections are separated by a hairline, not boxed in cards,
+ * so the charts sit directly on the page.
+ */
+const Section = ({
+  labelledBy,
   children,
 }: {
-  title: string;
-  description?: string;
+  labelledBy: string;
   children: ReactNode;
 }) => (
-  <Card.Root variant="outlined">
-    <Card.Header>
-      <Stack gap="100">
-        <Text fontWeight="600">{title}</Text>
-        {description && <Caption>{description}</Caption>}
-      </Stack>
-    </Card.Header>
-    <Card.Body>{children}</Card.Body>
-  </Card.Root>
+  <Box
+    as="section"
+    aria-labelledby={labelledBy}
+    borderTopWidth="1px"
+    borderColor="neutral.6"
+    paddingTop="800"
+  >
+    {children}
+  </Box>
 );
 
-/** A number with a label, for the top row */
-const Kpi = ({
-  label,
-  value,
-  note,
+/** The sentence that says what a chart shows, with the numbers that matter */
+const Finding = ({
+  id,
+  title,
+  level = "h3",
   children,
 }: {
+  id: string;
+  title: string;
+  level?: "h2" | "h3";
+  children: ReactNode;
+}) => (
+  <Stack gap="300" maxWidth="40ch">
+    <Heading
+      as={level}
+      id={id}
+      size={level === "h2" ? "2xl" : "xl"}
+      letterSpacing="-0.01em"
+    >
+      {title}
+    </Heading>
+    <Text color="fg.subtle" textStyle="md">
+      {children}
+    </Text>
+  </Stack>
+);
+
+/** Text on the left, chart on the right. Stacks on narrow screens. */
+const TextAndChart = ({
+  text,
+  children,
+}: {
+  text: ReactNode;
+  children: ReactNode;
+}) => (
+  <Box
+    display="grid"
+    gridTemplateColumns={{ base: "1fr", lg: "minmax(0, 1fr) minmax(0, 2fr)" }}
+    gap={{ base: "600", lg: "1200" }}
+    alignItems="start"
+  >
+    {text}
+    <Box minWidth="0">{children}</Box>
+  </Box>
+);
+
+/** A change against last year. Green means better, also for a falling rate. */
+const Delta = ({
+  children,
+  falling,
+}: {
+  children: string;
+  falling?: boolean;
+}) => (
+  <Badge size="2xs" colorPalette="positive">
+    {falling ? <ArrowDownward /> : <ArrowUpward />}
+    {children}
+  </Badge>
+);
+
+/** A small chart without axes, built from the Chart parts */
+const Sparkline = ({
+  label,
+  dataKey,
+  seriesLabel,
+}: {
+  label: string;
+  dataKey: "revenue" | "orders" | "conversion" | "refunds";
+  seriesLabel: string;
+}) => (
+  <Box
+    marginInline="-12px"
+    css={{ "& .nimbus-chart__plot": { aspectRatio: "6 / 1" } }}
+  >
+    <Chart.Root
+      aria-label={label}
+      data={monthly}
+      config={{ [dataKey]: { label: seriesLabel, palette: "ctviolet" } }}
+    >
+      <Chart.Plot>
+        <Chart.Area dataKey={dataKey} />
+      </Chart.Plot>
+    </Chart.Root>
+  </Box>
+);
+
+const KeyFigure = ({
+  index,
+  label,
+  value,
+  delta,
+  falling,
+  sparkline,
+}: {
+  index: number;
   label: string;
   value: string;
-  note: string;
-  children?: ReactNode;
+  delta: string;
+  falling?: boolean;
+  sparkline: ReactNode;
 }) => (
-  <Card.Root variant="outlined">
-    <Card.Body>
-      <Stack gap="200">
-        <Caption>{label}</Caption>
-        <Text fontWeight="700" fontSize="700">
-          {value}
-        </Text>
-        <Caption>{note}</Caption>
-        {children}
-      </Stack>
-    </Card.Body>
-  </Card.Root>
+  <Stack
+    gap="200"
+    paddingY="600"
+    paddingInlineStart={{
+      base: index % 2 ? "600" : "0",
+      lg: index ? "600" : "0",
+    }}
+    paddingInlineEnd="600"
+    borderInlineStartWidth={{
+      base: index % 2 ? "1px" : "0",
+      lg: index ? "1px" : "0",
+    }}
+    borderColor="neutral.6"
+  >
+    <Text color="fg.subtle" textStyle="sm">
+      {label}
+    </Text>
+    <Flex align="center" gap="300" wrap="wrap">
+      <Text
+        textStyle="3xl"
+        fontWeight="600"
+        letterSpacing="-0.02em"
+        {...figures}
+      >
+        {value}
+      </Text>
+      <Delta falling={falling}>{delta}</Delta>
+    </Flex>
+    {sparkline}
+  </Stack>
 );
 
 // ============================================================
@@ -220,154 +402,312 @@ const Kpi = ({
 // ============================================================
 
 /**
- * A fake e-commerce dashboard: every chart type, the `Chart` parts, and the
- * Meter component in one view. The data is made up.
+ * A fake e-commerce dashboard for a made-up outdoor gear retailer. It shows
+ * every chart type, the `Chart` parts (sparklines and a bar and line chart)
+ * and the Meter component. Each chart is introduced by what it shows.
  */
 export const EcommerceDashboard: Story = {
   render: () => (
-    <Stack gap="800" padding="600" maxWidth="1280px">
-      <Stack gap="100">
-        <Heading as="h1" size="xl">
-          Store overview
-        </Heading>
-        <Caption>Last 12 months, all channels. Fake data.</Caption>
-      </Stack>
+    <Box
+      maxWidth="1200px"
+      marginInline="auto"
+      paddingX={{ base: "400", md: "800" }}
+      paddingY="800"
+    >
+      <Stack gap="1000">
+        <Stack gap="600" as="header">
+          <Text color="fg.subtle" textStyle="sm">
+            Nordlicht Outdoor, week 47 (17 to 23 November). All figures are made
+            up.
+          </Text>
+          <Heading
+            as="h1"
+            size={{ base: "3xl", md: "5xl" }}
+            letterSpacing="-0.03em"
+            maxWidth="22ch"
+            textWrap="balance"
+          >
+            Sales are 18% above last year, and the app drives most of it.
+          </Heading>
+          <Text color="fg.subtle" textStyle="lg" maxWidth="56ch">
+            Leipzig ships late. Fix that before Black Friday.
+          </Text>
+          <Box maxWidth="420px">
+            <Meter.Root
+              value={83}
+              size="sm"
+              layout="inline"
+              valueLabel="83% of €3.0M"
+            >
+              <Meter.Label>Revenue goal</Meter.Label>
+              <Meter.Track />
+              <Meter.Value />
+            </Meter.Root>
+          </Box>
+        </Stack>
 
-      <SimpleGrid columns={{ base: 1, md: 2, xl: 4 }} gap="400">
-        <Kpi label="Revenue" value="€2.19M" note="Goal: €2.8M">
-          <Meter.Root value={78} aria-label="Revenue goal reached" size="sm">
-            <Meter.Track />
-          </Meter.Root>
-        </Kpi>
-        <Kpi label="Orders" value="38,420" note="96% shipped">
-          <Meter.Root value={96} aria-label="Orders shipped" size="sm">
-            <Meter.Track />
-          </Meter.Root>
-        </Kpi>
-        <Kpi label="Conversion" value="4.6%" note="Up from 3.9%">
-          <Meter.Root
-            value={4.6}
-            maxValue={8}
-            aria-label="Conversion against a target of 8 percent"
-            size="sm"
-            colorPalette="positive"
-          >
-            <Meter.Track />
-          </Meter.Root>
-        </Kpi>
-        <Kpi label="Refund rate" value="3.4%" note="Limit: 4%">
-          <Meter.Root
-            value={3.4}
-            maxValue={4}
-            aria-label="Refund rate against the 4 percent limit"
-            size="sm"
-            colorPalette="warning"
-          >
-            <Meter.Track />
-          </Meter.Root>
-        </Kpi>
-      </SimpleGrid>
-
-      <SimpleGrid columns={{ base: 1, xl: 3 }} gap="400">
-        <Box gridColumn={{ xl: "span 2" }}>
-          <ChartCard
-            title="Revenue"
-            description="Online and shops, in thousands of euros"
-          >
-            <AreaChart
-              aria-label="Revenue per month, online and in the shops"
-              data={revenue}
-              xAxisKey="month"
-              series={["online", "shops"]}
-              config={revenueConfig}
-              stacked
+        <Box
+          as="section"
+          aria-label="Key figures"
+          borderTopWidth="1px"
+          borderColor="neutral.6"
+        >
+          <SimpleGrid columns={{ base: 2, lg: 4 }} gap="0">
+            <KeyFigure
+              index={0}
+              label="Revenue, 12 months"
+              value="€2.49M"
+              delta="18%"
+              sparkline={
+                <Sparkline
+                  label="Revenue trend over 12 months"
+                  dataKey="revenue"
+                  seriesLabel="Revenue"
+                />
+              }
             />
-          </ChartCard>
+            <KeyFigure
+              index={1}
+              label="Orders"
+              value="38,420"
+              delta="9%"
+              sparkline={
+                <Sparkline
+                  label="Orders trend over 12 months"
+                  dataKey="orders"
+                  seriesLabel="Orders"
+                />
+              }
+            />
+            <KeyFigure
+              index={2}
+              label="Conversion rate"
+              value="4.6%"
+              delta="0.7 pt"
+              sparkline={
+                <Sparkline
+                  label="Conversion rate trend over 12 months"
+                  dataKey="conversion"
+                  seriesLabel="Conversion rate"
+                />
+              }
+            />
+            <KeyFigure
+              index={3}
+              label="Refund rate"
+              value="3.4%"
+              delta="0.3 pt"
+              falling
+              sparkline={
+                <Sparkline
+                  label="Refund rate trend over 12 months"
+                  dataKey="refunds"
+                  seriesLabel="Refund rate"
+                />
+              }
+            />
+          </SimpleGrid>
         </Box>
-        <ChartCard title="Sales channels" description="Share of revenue">
-          <PieChart
-            aria-label="Share of revenue by sales channel"
-            data={channels}
-            nameKey="channel"
-            valueKey="revenue"
-            config={channelConfig}
-          />
-        </ChartCard>
-      </SimpleGrid>
 
-      <SimpleGrid columns={{ base: 1, xl: 2 }} gap="400">
-        <ChartCard title="Orders per weekday" description="By device">
-          <BarChart
-            aria-label="Orders per weekday by device"
-            data={ordersByDay}
-            xAxisKey="day"
-            series={["desktop", "mobile", "tablet"]}
-            config={ordersConfig}
-          />
-        </ChartCard>
-        <ChartCard
-          title="Conversion rate"
-          description="Percent, by traffic source. Four lines, so each has a dash pattern."
-        >
-          <LineChart
-            aria-label="Conversion rate per week by traffic source"
-            data={conversion}
-            xAxisKey="week"
-            series={["search", "email", "social", "direct"]}
-            config={conversionConfig}
-          />
-        </ChartCard>
-      </SimpleGrid>
+        <Section labelledBy="revenue-heading">
+          <Stack gap="800">
+            <Finding
+              id="revenue-heading"
+              level="h2"
+              title="Online grew faster than the shops all year"
+            >
+              Online revenue grew 3.1 times from January to December, the shops
+              2.5 times. November and December carry the gap.
+            </Finding>
+            <Box
+              css={{
+                "& .nimbus-chart__plot": {
+                  aspectRatio: { base: "4 / 3", md: "3 / 1" },
+                },
+              }}
+            >
+              <AreaChart
+                aria-label="Revenue per month in thousands of euros, online and shops"
+                data={revenue}
+                xAxisKey="month"
+                series={["online", "shops"]}
+                config={revenueConfig}
+                stacked
+              />
+            </Box>
+          </Stack>
+        </Section>
 
-      <SimpleGrid columns={{ base: 1, xl: 3 }} gap="400">
-        <ChartCard
-          title="Customer satisfaction"
-          description="Score per topic, against the market"
-        >
-          <RadarChart
-            aria-label="Customer satisfaction per topic, our store and the market"
-            data={satisfaction}
-            xAxisKey="topic"
-            series={["store", "market"]}
-            config={satisfactionConfig}
-          />
-        </ChartCard>
-        <ChartCard title="On-time shipping" description="Percent per warehouse">
-          <RadialChart
-            aria-label="Orders shipped on time per warehouse"
-            data={warehouses}
-            nameKey="warehouse"
-            valueKey="shipped"
-            config={warehouseConfig}
-          />
-        </ChartCard>
-        <ChartCard
-          title="Orders and refunds"
-          description="Bars and a line, built with the Chart parts"
-        >
-          <Chart.Root
-            aria-label="Orders and refund rate per month"
-            data={ordersAndRefunds}
-            config={mixedConfig}
+        <Section labelledBy="orders-heading">
+          <Stack gap="800">
+            <Heading as="h2" id="orders-heading" size="2xl">
+              Orders and conversion
+            </Heading>
+            <Tabs.Root defaultSelectedKey="devices">
+              <Tabs.List>
+                <Tabs.Tab id="devices">By device</Tabs.Tab>
+                <Tabs.Tab id="sources">By traffic source</Tabs.Tab>
+                <Tabs.Tab id="forecast">Against forecast</Tabs.Tab>
+              </Tabs.List>
+              <Tabs.Panels>
+                <Tabs.Panel id="devices">
+                  <Box paddingTop="800">
+                    <TextAndChart
+                      text={
+                        <Finding
+                          id="devices-heading"
+                          title="Mobile overtakes desktop at the weekend"
+                        >
+                          On Saturday mobile brings 214 orders and desktop 190.
+                          On Sunday the gap grows to 201 against 158.
+                        </Finding>
+                      }
+                    >
+                      <BarChart
+                        aria-label="Orders per weekday by device"
+                        data={ordersByDay}
+                        xAxisKey="day"
+                        series={["desktop", "mobile", "tablet"]}
+                        config={ordersConfig}
+                      />
+                    </TextAndChart>
+                  </Box>
+                </Tabs.Panel>
+                <Tabs.Panel id="sources">
+                  <Box paddingTop="800">
+                    <TextAndChart
+                      text={
+                        <Finding
+                          id="sources-heading"
+                          title="Email converts best, and social is catching up"
+                        >
+                          Email reached 7.2% this week. Social almost doubled
+                          since week 40, from 1.8% to 3.3%. Each line also has
+                          its own dash pattern, so it works without color.
+                        </Finding>
+                      }
+                    >
+                      <LineChart
+                        aria-label="Conversion rate per week by traffic source"
+                        data={conversion}
+                        xAxisKey="week"
+                        series={["search", "email", "social", "direct"]}
+                        config={conversionConfig}
+                      />
+                    </TextAndChart>
+                  </Box>
+                </Tabs.Panel>
+                <Tabs.Panel id="forecast">
+                  <Box paddingTop="800">
+                    <TextAndChart
+                      text={
+                        <Finding
+                          id="forecast-heading"
+                          title="Orders have beaten the forecast since September"
+                        >
+                          August was the only month below the line. December
+                          came in at 6,040 orders against a forecast of 5,600.
+                          This chart is composed from the Chart parts: bars and
+                          a line in one plot.
+                        </Finding>
+                      }
+                    >
+                      <Chart.Root
+                        aria-label="Orders and forecast per month"
+                        data={ordersAndForecast}
+                        config={forecastConfig}
+                      >
+                        <Chart.Plot>
+                          <Chart.Grid />
+                          <Chart.XAxis dataKey="month" />
+                          <Chart.Tooltip />
+                          <Chart.Bar dataKey="orders" />
+                          <Chart.Line dataKey="forecast" />
+                        </Chart.Plot>
+                      </Chart.Root>
+                    </TextAndChart>
+                  </Box>
+                </Tabs.Panel>
+              </Tabs.Panels>
+            </Tabs.Root>
+          </Stack>
+        </Section>
+
+        <Section labelledBy="quality-heading">
+          <Stack gap="800">
+            <Heading as="h2" id="quality-heading" size="2xl">
+              Channels, service and shipping
+            </Heading>
+            <SimpleGrid columns={{ base: 1, lg: 3 }} gap="1000">
+              <Stack gap="600">
+                <Finding
+                  id="channels-heading"
+                  title="The web shop and the app bring two thirds of revenue"
+                >
+                  Together they make 66%. The B2B portal is the smallest channel
+                  at 7%.
+                </Finding>
+                <PieChart
+                  aria-label="Share of revenue by sales channel in percent"
+                  data={channels}
+                  nameKey="channel"
+                  valueKey="share"
+                  config={channelConfig}
+                />
+              </Stack>
+              <Stack gap="600">
+                <Finding
+                  id="satisfaction-heading"
+                  title="Customers rate us above the market on four of six topics"
+                >
+                  Support and returns lead. Price and range are the two topics
+                  below the market.
+                </Finding>
+                <RadarChart
+                  aria-label="Customer satisfaction per topic, Nordlicht and the market"
+                  data={satisfaction}
+                  xAxisKey="topic"
+                  series={["store", "market"]}
+                  config={satisfactionConfig}
+                />
+              </Stack>
+              <Stack gap="600">
+                <Finding
+                  id="shipping-heading"
+                  title="Only Leipzig ships less than 80% on time"
+                >
+                  Berlin is at 97%. Leipzig is at 72% and has the most open
+                  orders.
+                </Finding>
+                <RadialChart
+                  aria-label="Orders shipped on time per warehouse in percent"
+                  data={warehouses}
+                  nameKey="warehouse"
+                  valueKey="shipped"
+                  config={warehouseConfig}
+                />
+              </Stack>
+            </SimpleGrid>
+          </Stack>
+        </Section>
+
+        <Section labelledBy="stock-heading">
+          <TextAndChart
+            text={
+              <Finding
+                id="stock-heading"
+                level="h2"
+                title="The warehouses are 92% full, and apparel takes 44%"
+              >
+                5,500 of 6,000 units are in stock. Shoes follow apparel with
+                1,500 units.
+              </Finding>
+            }
           >
-            <Chart.Plot>
-              <Chart.Grid />
-              <Chart.XAxis dataKey="month" />
-              <Chart.Tooltip />
-              <Chart.Bar dataKey="orders" />
-              <Chart.Line dataKey="refunds" />
-            </Chart.Plot>
-          </Chart.Root>
-        </ChartCard>
-      </SimpleGrid>
-
-      <Stack gap="400">
-        <SectionHeading>Stock</SectionHeading>
-        <Card.Root variant="outlined">
-          <Card.Body>
             <Meter.Root
               segments={stock}
               maxValue={6000}
+              size="lg"
               formatOptions={{ style: "decimal" }}
             >
               <Meter.Label>Units in stock by category</Meter.Label>
@@ -375,20 +715,78 @@ export const EcommerceDashboard: Story = {
               <Meter.Track />
               <Meter.Legend />
             </Meter.Root>
-          </Card.Body>
-        </Card.Root>
+          </TextAndChart>
+        </Section>
+
+        <Section labelledBy="orders-table-heading">
+          <Stack gap="800">
+            <Finding
+              id="orders-table-heading"
+              level="h2"
+              title="Two orders are late or on backorder"
+            >
+              The meter shows how much of each order is packed.
+            </Finding>
+            <Box overflowX="auto">
+              <Table.Root>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.ColumnHeader>Order</Table.ColumnHeader>
+                    <Table.ColumnHeader>Customer</Table.ColumnHeader>
+                    <Table.ColumnHeader>Channel</Table.ColumnHeader>
+                    <Table.ColumnHeader>Status</Table.ColumnHeader>
+                    <Table.ColumnHeader width="30%">Packed</Table.ColumnHeader>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {orders.map((order) => (
+                    <Table.Row key={order.id}>
+                      <Table.Cell {...figures}>#{order.id}</Table.Cell>
+                      <Table.Cell>{order.customer}</Table.Cell>
+                      <Table.Cell>{order.channel}</Table.Cell>
+                      <Table.Cell>
+                        <Badge size="xs" colorPalette={order.palette}>
+                          {order.status}
+                        </Badge>
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Meter.Root
+                          value={order.packed}
+                          size="sm"
+                          layout="inline"
+                          colorPalette={
+                            order.palette === "positive"
+                              ? "positive"
+                              : "primary"
+                          }
+                          aria-label={`Order ${order.id} packed`}
+                        >
+                          <Meter.Track />
+                          <Meter.Value />
+                        </Meter.Root>
+                      </Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table.Root>
+            </Box>
+          </Stack>
+        </Section>
       </Stack>
-    </Stack>
+    </Box>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Eight Recharts charts: area, pie, bar, line, radar, radial, and the
-    // mixed chart. The count is checked on the drawing surfaces.
+    // Four sparklines, the revenue chart, three charts in the next section
+    // and the selected tab: nine drawing surfaces in total.
     await expect(
       canvasElement.querySelectorAll("svg.recharts-surface").length
-    ).toBeGreaterThanOrEqual(7);
-    await expect(canvas.getAllByRole("meter").length).toBeGreaterThanOrEqual(5);
+    ).toBeGreaterThanOrEqual(8);
+    await expect(canvas.getAllByRole("meter").length).toBeGreaterThanOrEqual(7);
+    await expect(canvas.getByRole("heading", { level: 1 })).toHaveTextContent(
+      /Sales are 18% above last year/
+    );
   },
 };
 
@@ -398,11 +796,18 @@ export const EcommerceDashboard: Story = {
  */
 export const Variants: Story = {
   render: () => (
-    <Stack gap="800" padding="600" maxWidth="1280px">
-      <Stack gap="400">
-        <SectionHeading>Bar</SectionHeading>
-        <SimpleGrid columns={{ base: 1, xl: 3 }} gap="400">
-          <ChartCard title="Grouped (default)">
+    <Box
+      maxWidth="1200px"
+      marginInline="auto"
+      paddingX={{ base: "400", md: "800" }}
+      paddingY="800"
+    >
+      <Stack gap="1000">
+        <VariantGroup
+          title="Bar"
+          lead="Grouped by default, stacked with a prop."
+        >
+          <Variant caption="Grouped (default)">
             <BarChart
               aria-label="Orders per weekday by device, grouped"
               data={ordersByDay}
@@ -410,8 +815,8 @@ export const Variants: Story = {
               series={["desktop", "mobile"]}
               config={ordersConfig}
             />
-          </ChartCard>
-          <ChartCard title="Stacked">
+          </Variant>
+          <Variant caption="stacked">
             <BarChart
               aria-label="Orders per weekday by device, stacked"
               data={ordersByDay}
@@ -420,8 +825,8 @@ export const Variants: Story = {
               config={ordersConfig}
               stacked
             />
-          </ChartCard>
-          <ChartCard title="One series, legend on, no grid">
+          </Variant>
+          <Variant caption="One series, showLegend, showGrid={false}">
             <BarChart
               aria-label="Desktop orders per weekday"
               data={ordersByDay}
@@ -431,14 +836,14 @@ export const Variants: Story = {
               showLegend
               showGrid={false}
             />
-          </ChartCard>
-        </SimpleGrid>
-      </Stack>
+          </Variant>
+        </VariantGroup>
 
-      <Stack gap="400">
-        <SectionHeading>Line and area</SectionHeading>
-        <SimpleGrid columns={{ base: 1, xl: 3 }} gap="400">
-          <ChartCard title="Line, two series">
+        <VariantGroup
+          title="Line and area"
+          lead="Smooth curves that never go below the lowest value."
+        >
+          <Variant caption="Line, two series">
             <LineChart
               aria-label="Revenue per month, online and in the shops"
               data={revenue}
@@ -446,8 +851,8 @@ export const Variants: Story = {
               series={["online", "shops"]}
               config={revenueConfig}
             />
-          </ChartCard>
-          <ChartCard title="Line, four series (dash patterns)">
+          </Variant>
+          <Variant caption="Line, four series: each also gets a dash pattern">
             <LineChart
               aria-label="Conversion rate per week by traffic source"
               data={conversion}
@@ -455,8 +860,8 @@ export const Variants: Story = {
               series={["search", "email", "social", "direct"]}
               config={conversionConfig}
             />
-          </ChartCard>
-          <ChartCard title="Area, one series, no tooltip">
+          </Variant>
+          <Variant caption="Area, one series, showTooltip={false}">
             <AreaChart
               aria-label="Online revenue per month"
               data={revenue}
@@ -465,23 +870,23 @@ export const Variants: Story = {
               config={revenueConfig}
               showTooltip={false}
             />
-          </ChartCard>
-        </SimpleGrid>
-      </Stack>
+          </Variant>
+        </VariantGroup>
 
-      <Stack gap="400">
-        <SectionHeading>Pie, radar and radial</SectionHeading>
-        <SimpleGrid columns={{ base: 1, xl: 3 }} gap="400">
-          <ChartCard title="Pie">
+        <VariantGroup
+          title="Pie, radar and radial"
+          lead="Shapes are separated by a stroke in the background color."
+        >
+          <Variant caption="Pie">
             <PieChart
               aria-label="Share of revenue by sales channel"
               data={channels}
               nameKey="channel"
-              valueKey="revenue"
+              valueKey="share"
               config={channelConfig}
             />
-          </ChartCard>
-          <ChartCard title="Radar, one series">
+          </Variant>
+          <Variant caption="Radar, one series, showLegend">
             <RadarChart
               aria-label="Customer satisfaction per topic"
               data={satisfaction}
@@ -490,8 +895,8 @@ export const Variants: Story = {
               config={satisfactionConfig}
               showLegend
             />
-          </ChartCard>
-          <ChartCard title="Radial">
+          </Variant>
+          <Variant caption="Radial">
             <RadialChart
               aria-label="Orders shipped on time per warehouse"
               data={warehouses}
@@ -499,14 +904,14 @@ export const Variants: Story = {
               valueKey="shipped"
               config={warehouseConfig}
             />
-          </ChartCard>
-        </SimpleGrid>
-      </Stack>
+          </Variant>
+        </VariantGroup>
 
-      <Stack gap="400">
-        <SectionHeading>States</SectionHeading>
-        <SimpleGrid columns={{ base: 1, xl: 3 }} gap="400">
-          <ChartCard title="Loading">
+        <VariantGroup
+          title="States and parts"
+          lead="Loading and empty states, and a chart composed from the Chart parts."
+        >
+          <Variant caption="isLoading">
             <BarChart
               aria-label="Orders per weekday, loading"
               data={ordersByDay}
@@ -515,8 +920,8 @@ export const Variants: Story = {
               config={ordersConfig}
               isLoading
             />
-          </ChartCard>
-          <ChartCard title="Empty">
+          </Variant>
+          <Variant caption="Empty data">
             <LineChart
               aria-label="Revenue per month, no data"
               data={[]}
@@ -524,8 +929,8 @@ export const Variants: Story = {
               series={["online"]}
               config={revenueConfig}
             />
-          </ChartCard>
-          <ChartCard title="Composed, stacked areas">
+          </Variant>
+          <Variant caption="Chart parts: two stacked areas">
             <Chart.Root
               aria-label="Revenue per month, composed from parts"
               data={revenue}
@@ -539,10 +944,10 @@ export const Variants: Story = {
                 <Chart.Area dataKey="shops" stacked />
               </Chart.Plot>
             </Chart.Root>
-          </ChartCard>
-        </SimpleGrid>
+          </Variant>
+        </VariantGroup>
       </Stack>
-    </Stack>
+    </Box>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -553,3 +958,54 @@ export const Variants: Story = {
     await expect(canvas.getByText("No data to display")).toBeInTheDocument();
   },
 };
+
+/** A group of variants under one heading, separated from the next by a hairline */
+function VariantGroup({
+  title,
+  lead,
+  children,
+}: {
+  title: string;
+  lead: string;
+  children: ReactNode;
+}) {
+  return (
+    <Stack
+      as="section"
+      gap="600"
+      borderTopWidth="1px"
+      borderColor="neutral.6"
+      paddingTop="600"
+    >
+      <Stack gap="100">
+        <Heading as="h2" size="xl">
+          {title}
+        </Heading>
+        <Text color="fg.subtle" textStyle="md">
+          {lead}
+        </Text>
+      </Stack>
+      <SimpleGrid columns={{ base: 1, lg: 3 }} gap="800">
+        {children}
+      </SimpleGrid>
+    </Stack>
+  );
+}
+
+/** One chart with a caption that names the props that make it different */
+function Variant({
+  caption,
+  children,
+}: {
+  caption: string;
+  children: ReactNode;
+}) {
+  return (
+    <Stack gap="300" minWidth="0">
+      {children}
+      <Text color="fg.subtle" textStyle="sm" textAlign="center">
+        {caption}
+      </Text>
+    </Stack>
+  );
+}
