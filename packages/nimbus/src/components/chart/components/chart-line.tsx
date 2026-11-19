@@ -24,25 +24,28 @@ export const LINE_DASH_PATTERNS: readonly (string | undefined)[] = [
 export type ChartLineProps = {
   /** Data key of the series. It must be one of the `series` of `Chart.Root`. */
   dataKey: string;
+  /**
+   * Dash pattern of the line, for example `"8 4"`. Set it to give a line a
+   * second signal besides color. The line is solid by default.
+   */
+  strokeDasharray?: string;
 };
 
 /**
  * # Chart.Line
  *
  * Draws a series as a smooth line. Color, label and animation come from
- * `Chart.Root`. With more than 3 series in the chart, each line also gets a
- * dash pattern, so color is not the only signal.
+ * `Chart.Root`. A line is solid unless you set `strokeDasharray`.
  *
  * @example
  * ```tsx
  * <Chart.Line dataKey="trend" />
  * ```
  */
-export const ChartLine = ({ dataKey }: ChartLineProps) => {
+export const ChartLine = ({ dataKey, strokeDasharray }: ChartLineProps) => {
   const { series, isAnimationActive } = useChartContext();
   const index = series.findIndex((s) => s.key === dataKey);
   if (index === -1) return null;
-  const isDashed = series.length > MAX_SOLID_SERIES;
   return (
     <Line
       dataKey={dataKey}
@@ -52,11 +55,7 @@ export const ChartLine = ({ dataKey }: ChartLineProps) => {
       type="monotone"
       stroke={series[index].color}
       strokeWidth={2}
-      strokeDasharray={
-        isDashed
-          ? LINE_DASH_PATTERNS[index % LINE_DASH_PATTERNS.length]
-          : undefined
-      }
+      strokeDasharray={strokeDasharray}
       dot={false}
       isAnimationActive={isAnimationActive}
     />

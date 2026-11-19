@@ -283,8 +283,8 @@ const fourSeriesConfig: ChartConfig = {
   extra: { label: "Extra" },
 };
 
-/** With more than 3 series, lines get dash patterns, as in `LineChart` */
-export const LinesGetDashPatternsWithManySeries: Story = {
+/** `strokeDasharray` gives a line a dash pattern; lines are solid by default */
+export const LinesAreDashedOnlyWithStrokeDasharray: Story = {
   render: () => (
     <Box width="600px">
       <Chart.Root
@@ -296,8 +296,8 @@ export const LinesGetDashPatternsWithManySeries: Story = {
         <Chart.Plot>
           <Chart.XAxis dataKey="month" />
           <Chart.Line dataKey="orders" />
-          <Chart.Line dataKey="trend" />
-          <Chart.Line dataKey="other" />
+          <Chart.Line dataKey="trend" strokeDasharray="8 4" />
+          <Chart.Line dataKey="other" strokeDasharray="2 4" />
           <Chart.Line dataKey="extra" />
         </Chart.Plot>
       </Chart.Root>
@@ -308,9 +308,7 @@ export const LinesGetDashPatternsWithManySeries: Story = {
     const patterns = lines(canvasElement).map(
       (line) => line.getAttribute("stroke-dasharray") ?? ""
     );
-    await expect(patterns[0]).toBe("");
-    await expect(patterns[1]).not.toBe("");
-    await expect(new Set(patterns).size).toBe(4);
+    await expect(patterns).toEqual(["", "8 4", "2 4", ""]);
   },
 };
 

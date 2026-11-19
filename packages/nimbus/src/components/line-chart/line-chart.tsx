@@ -7,6 +7,10 @@ import {
   ChartTooltipPart,
   ChartXAxis,
 } from "@/components/chart/components";
+import {
+  LINE_DASH_PATTERNS,
+  MAX_SOLID_SERIES,
+} from "@/components/chart/components/chart-line";
 import type { LineChartProps } from "./line-chart.types";
 
 type LineChartPlotProps = Pick<LineChartProps, "data" | "xAxisKey"> & {
@@ -33,8 +37,16 @@ const LineChartPlot = ({ data, xAxisKey, showGrid }: LineChartPlotProps) => {
       {showGrid && <ChartGrid />}
       <ChartXAxis dataKey={xAxisKey} />
       <ChartTooltipPart />
-      {series.map((item) => (
-        <ChartLine key={item.key} dataKey={item.key} />
+      {series.map((item, index) => (
+        <ChartLine
+          key={item.key}
+          dataKey={item.key}
+          strokeDasharray={
+            series.length > MAX_SOLID_SERIES
+              ? LINE_DASH_PATTERNS[index % LINE_DASH_PATTERNS.length]
+              : undefined
+          }
+        />
       ))}
     </RechartsLineChart>
   );

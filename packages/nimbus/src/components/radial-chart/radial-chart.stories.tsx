@@ -174,8 +174,9 @@ export const LargestValueIsFullCircleForRoundedMax: Story = {
     await findSvg(canvasElement);
     await waitFor(() => expect(rings(canvasElement)).toHaveLength(3));
     const lengths = (selector: string) =>
-      [...canvasElement.querySelectorAll<SVGPathElement>(selector)].map((p) =>
-        p.getTotalLength()
+      Array.from(
+        canvasElement.querySelectorAll<SVGPathElement>(selector),
+        (p) => p.getTotalLength()
       );
     // The ring of 275 fills its track; the ring of 200 is clearly shorter
     await waitFor(() => {

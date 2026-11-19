@@ -71,8 +71,12 @@ other.
 
 ### Lines with many series
 
-With more than 3 series in the chart, each `Chart.Line` also gets a dash
-pattern (six patterns; with more than 6 series they repeat).
+A `Chart.Line` is solid by default. In a chart with several lines, give some of
+them a dash pattern with `strokeDasharray`, so color is not the only signal:
+
+```tsx
+<Chart.Line dataKey="trend" strokeDasharray="8 4" />
+```
 
 ### Grid and tooltip
 
