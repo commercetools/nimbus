@@ -167,6 +167,26 @@ export const RingsStartAtTopAndGrowClockwise: Story = {
   },
 };
 
+/** A maximum that is not a round number (275) still gives a full circle */
+export const LargestValueIsFullCircleForRoundedMax: Story = {
+  render: () => <SampleChart />,
+  play: async ({ canvasElement }) => {
+    await findSvg(canvasElement);
+    await waitFor(() => expect(rings(canvasElement)).toHaveLength(3));
+    const lengths = (selector: string) =>
+      [...canvasElement.querySelectorAll<SVGPathElement>(selector)].map((p) =>
+        p.getTotalLength()
+      );
+    // The ring of 275 fills its track; the ring of 200 is clearly shorter
+    await waitFor(() => {
+      const bars = lengths(".recharts-radial-bar-sector");
+      const tracks = lengths(".recharts-radial-bar-background-sector");
+      expect(bars[0] / tracks[0]).toBeGreaterThan(0.98);
+      expect(bars[1] / tracks[1]).toBeLessThan(0.85);
+    });
+  },
+};
+
 /** The tooltip label is the category name, not an index */
 export const TooltipLabelIsCategory: Story = {
   render: () => <SampleChart />,

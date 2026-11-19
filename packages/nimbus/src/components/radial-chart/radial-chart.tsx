@@ -1,5 +1,6 @@
 import {
   Cell,
+  PolarAngleAxis,
   RadialBar,
   RadialBarChart as RechartsRadialBarChart,
   Tooltip,
@@ -32,6 +33,15 @@ const RadialChartPlot = ({ data, nameKey, valueKey }: RadialChartPlotProps) => {
     return item ? [{ row, item }] : [];
   });
 
+  // The largest value is a full circle. A numeric domain from 0 to that value
+  // keeps Recharts from rounding the maximum up to the next "nice" tick.
+  const max = Math.max(
+    0,
+    ...rings
+      .map(({ row }) => Number((row as Record<string, unknown>)[valueKey]))
+      .filter(Number.isFinite)
+  );
+
   return (
     <RechartsRadialBarChart
       data={rings.map(({ row }) => row)}
@@ -44,6 +54,12 @@ const RadialChartPlot = ({ data, nameKey, valueKey }: RadialChartPlotProps) => {
       aria-label={ariaLabel}
     >
       {showTooltip && <Tooltip content={<ChartTooltip nameKey={nameKey} />} />}
+      <PolarAngleAxis
+        type="number"
+        domain={[0, max]}
+        tick={false}
+        axisLine={false}
+      />
       <RadialBar
         dataKey={valueKey}
         background={{ fill: "var(--nimbus-colors-neutral-4)" }}
