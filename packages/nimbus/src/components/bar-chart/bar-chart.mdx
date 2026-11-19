@@ -196,11 +196,10 @@ When a series has no `palette`, it gets the next palette of the default order:
 ctviolet, orange, teal, crimson, blue, grass, plum, bronze, cyan, red and slate.
 A chart with more than 11 series uses the same order again from the start.
 
-A chart uses the solid color of the palette. Only the lightness changes, and
-only as much as needed so the color has at least 3:1 contrast against the `bg`
-color of the current color mode. Colors are checked against `bg` only. Place
-charts on `bg`. On gray or tinted surfaces, a few palettes can have a contrast
-a little below 3:1.
+A chart uses the solid color of the palette, the same color that Nimbus
+components use as their main color. Nimbus verifies these colors with APCA.
+Color is never the only way to tell series apart: the legend and the tooltip
+name each one.
 
 ## Guidelines
 
@@ -210,7 +209,7 @@ a little below 3:1.
 - Keep the number of series low. The default order has 11 palettes that are easy
   to tell apart; more series reuse colors.
 - Use short, clear series labels. They appear in the legend and the tooltip.
-- Place the chart on the `bg` color so the contrast checks apply.
+- Do not rely on color alone. Keep the legend visible so series are told apart by their labels.
 
 ### When to use
 

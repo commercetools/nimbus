@@ -26,8 +26,8 @@ export type ChartEmptySlotProps = HTMLChakraProps<"div">;
 
 /**
  * Name of a chart color palette. Only palettes whose solid color works with
- * white text are chart palettes; each one has a color that is adapted for
- * at least 3:1 contrast against the background in light and dark mode.
+ * white text are chart palettes. A series uses the palette solid (step 9),
+ * which has a light and a dark value.
  */
 export type { ChartPalette };
 

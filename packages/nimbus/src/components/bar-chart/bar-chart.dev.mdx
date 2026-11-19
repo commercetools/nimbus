@@ -64,10 +64,10 @@ Without `palette`, a series gets the next palette of the default order: ctviolet
 orange, teal, crimson, blue, grass, plum, bronze, cyan, red and slate. More than
 11 series use the same order again from the start.
 
-A chart uses the solid color of the palette. Only the lightness is adapted, so
-that the color has at least 3:1 contrast against the `bg` color of the current
-color mode. Colors are checked against `bg` only. Place charts on `bg`; on gray
-or tinted surfaces, a few palettes can have a contrast a little below 3:1.
+A chart uses the solid color of the palette, the same color that Nimbus
+components use as their main color. Nimbus verifies these colors with APCA.
+Color is never the only way to tell series apart: the legend and the tooltip
+name each one.
 
 ```tsx
 const config: ChartConfig = {
