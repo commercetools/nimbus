@@ -52,8 +52,6 @@ const PieChartPlot = ({ data, nameKey, valueKey }: PieChartPlotProps) => {
  * stroke in the background color. The legend is shown for two or more
  * categories.
  *
- * Needs the peer dependencies `recharts` and `react-is`.
- *
  * @example
  * ```tsx
  * <PieChart

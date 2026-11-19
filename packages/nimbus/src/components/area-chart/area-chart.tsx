@@ -58,8 +58,6 @@ const AreaChartPlot = ({
  * color of each series in `config`. Use `stacked` to add the series up. The
  * legend is shown for two or more series.
  *
- * Needs the peer dependencies `recharts` and `react-is`.
- *
  * @example
  * ```tsx
  * <AreaChart

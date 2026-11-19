@@ -17,8 +17,6 @@ import {
  * legend, loading and empty states are the same as in the six charts.
  * `PieChart`, `RadarChart` and `RadialChart` are not composable.
  *
- * Needs the peer dependencies `recharts` and `react-is`.
- *
  * @experimental This component is experimental and may change or be removed in future versions.
  */
 export const Chart = {

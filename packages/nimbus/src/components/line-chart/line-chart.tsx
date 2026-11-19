@@ -49,8 +49,6 @@ const LineChartPlot = ({ data, xAxisKey, showGrid }: LineChartPlotProps) => {
  * `config`. With more than 3 series, each line also gets a dash pattern (six patterns in total; with more than 6 series the patterns repeat),
  * so color is not the only signal. The legend is shown for two or more series.
  *
- * Needs the peer dependencies `recharts` and `react-is`.
- *
  * @example
  * ```tsx
  * <LineChart

@@ -55,8 +55,6 @@ const RadarChartPlot = ({ data, xAxisKey, showGrid }: RadarChartPlotProps) => {
  * data keys to draw as `series`, and the label and color of each series in
  * `config`. The legend is shown for two or more series.
  *
- * Needs the peer dependencies `recharts` and `react-is`.
- *
  * @example
  * ```tsx
  * <RadarChart

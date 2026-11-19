@@ -6,8 +6,7 @@
       own. Written into `design.md`. Done: the chart stories read the variable
 - [x] 1.2 Check the background: confirm that `bg` is `#fff` (light) and
       `#111111` (dark), and check the surfaces Nimbus uses for panels and cards.
-      Done: decided to adapt against `bg` only, with the measured limits in
-      `design.md`
+      Done: measured against `bg`; the limits are in `design.md`
 - [x] 1.3 Add `recharts@^3.10.1` and `react-is` to
       `packages/nimbus/package.json` and install with pnpm. Keep
       `minimumReleaseAgeStrict` as it is and add no `minimumReleaseAgeExclude`
@@ -102,9 +101,8 @@
 - [x] 4.9 Add the designer `*.mdx`, the developer `*.dev.mdx` and
       `*.docs.spec.tsx` for `BarChart` (use `/create-eng-docs` and the
       `writing-designer-documentation` skill). Add the `@experimental` JSDoc tag
-      on the main export and state in the docs text that colors are checked
-      against `bg`, that consumers install `recharts` and `react-is`, and that
-      the chart is experimental in the first release (see
+      on the main export and state in the docs text that a series uses the palette solid, that
+      Nimbus installs `recharts` and `react-is`, and that the chart is experimental in the first release (see
       `docs/file-type-guidelines/documentation.md` and `main-component.md`
       "Lifecycle State Tag")
 - [x] 4.10 Add the same three docs files for `LineChart`

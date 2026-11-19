@@ -49,8 +49,6 @@ const BarChartPlot = ({
  * or on top of each other with `stacked`. The legend is shown for two or more
  * series.
  *
- * Needs the peer dependencies `recharts` and `react-is`.
- *
  * @example
  * ```tsx
  * <BarChart

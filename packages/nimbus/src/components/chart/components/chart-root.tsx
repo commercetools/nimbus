@@ -10,8 +10,6 @@ import type { ChartRootProps } from "../chart.types";
  * Pass the rows as `data`, the label and color of each series in `config`, and
  * `aria-label` (required). The legend is shown for two or more series.
  *
- * Needs the peer dependencies `recharts` and `react-is`.
- *
  * @example
  * ```tsx
  * <Chart.Root
