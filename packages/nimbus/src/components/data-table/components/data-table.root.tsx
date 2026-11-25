@@ -32,7 +32,7 @@ import {
   formatRowKeyProblems,
 } from "../utils/row-keys.utils";
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
-import { useStableArray, useStableSet, useDevWarning } from "../hooks";
+import { useStableArray, useStableKeySet, useDevWarning } from "../hooks";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "../data-table.messages";
 import { DATA_TABLE_DEFAULT_SIZE } from "../utils/sizes.utils";
@@ -309,9 +309,9 @@ export const DataTableRoot = function DataTableRoot<
     [filteredRows, nestedKey]
   );
   const hasExpandableContent = hasNestedKeyContent || !!renderNestedContent;
-  // Same keys, same set: a new `Set` with the same keys on each render does
+  // Same keys, same set: a new iterable with the same keys on each render does
   // not re-create the wrapped `dragAndDropHooks` or re-evaluate every row.
-  const draggableKeys = useStableSet(draggableKeysProp);
+  const draggableKeys = useStableKeySet(draggableKeysProp);
   const showExpandColumn = hasExpandableContent && allowsExpandColumn;
 
   // `draggableKeys` is documented as unsupported together with selection and

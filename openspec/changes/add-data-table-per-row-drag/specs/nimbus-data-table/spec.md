@@ -7,16 +7,16 @@ a keyboard-reachable item and drops next to it stay valid.
 
 #### Scenario: Default keeps all rows draggable
 - **WHEN** `dragAndDropHooks` is provided and `draggableKeys` is `undefined`
-- **THEN** SHALL render a drag button in every non-disabled row
+- **THEN** SHALL render a visible drag button in every row (disabled for disabled rows)
 - **AND** SHALL behave exactly as before this requirement existed
 
 #### Scenario: Only listed rows are draggable
-- **WHEN** `draggableKeys` is a `Set<string>`
-- **THEN** only rows whose key is in the set SHALL start a drag
+- **WHEN** `draggableKeys` is an `Iterable<Key>` (for example a `Set` or an array)
+- **THEN** only rows whose key is listed SHALL start a drag
 - **AND** `onReorder` SHALL NOT receive a key that is not in `draggableKeys`
 
-#### Scenario: Empty set
-- **WHEN** `draggableKeys` is an empty `Set`
+#### Scenario: Empty iterable
+- **WHEN** `draggableKeys` is empty
 - **THEN** no row SHALL be draggable
 - **AND** every row SHALL render a disabled drag button
 
@@ -43,7 +43,19 @@ a keyboard-reachable item and drops next to it stay valid.
 #### Scenario: Disabled rows are never draggable
 - **WHEN** a row is in `disabledKeys` or has `isDisabled`
 - **THEN** SHALL NOT be draggable, even if its key is in `draggableKeys`
+- **AND** when its key is in `draggableKeys`, SHALL render a visible, disabled
+  drag button (labelled "Drag to reorder"), not the hidden one
 - **AND** `disabledBehavior="all"` SHALL stay unchanged
+
+#### Scenario: Same keys in a new object
+- **WHEN** `draggableKeys` gets a new object with the same keys
+- **THEN** rows SHALL NOT re-render
+- **AND** after several such renders in a row, SHALL log one development
+  warning that recommends `useMemo`
+
+#### Scenario: Tables without draggableKeys keep their re-render behavior
+- **WHEN** `draggableKeys` is `undefined` and `disabledKeys` changes
+- **THEN** each row SHALL render at most once for that change
 
 #### Scenario: Render prop exposes drag state
 - **WHEN** a custom row render function is used

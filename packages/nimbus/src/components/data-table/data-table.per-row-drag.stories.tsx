@@ -48,7 +48,7 @@ const makeRows = (): DataTableRowItem[] =>
   ["A", "B", "C", "D", "E"].map((id) => ({ id, name: `Row ${id}` }));
 
 type PerRowDragTableProps = {
-  draggableKeys?: Set<string>;
+  draggableKeys?: DataTableProps["draggableKeys"];
   disabledKeys?: DataTableProps["disabledKeys"];
   onRowAction: (row: DataTableRowItem) => void;
   onReorderKeys: (keys: string[], targetKey: string) => void;
@@ -426,8 +426,9 @@ type DisabledRowStoryArgs = {
 
 /**
  * A disabled row is never draggable, even when its key is in the set, and it
- * accepts pointer drops before and after it. Both ways to disable a row are
- * covered: `disabledKeys` and `isDisabled` in the row data.
+ * accepts pointer drops before and after it. Being listed, it keeps a visible
+ * drag handle, shown disabled. Both ways to disable a row are covered:
+ * `disabledKeys` and `isDisabled` in the row data.
  */
 export const PerRowDragDisabledRow: StoryObj<DisabledRowStoryArgs> = {
   args: { onReorderByKeys: fn(), onReorderByData: fn() },
@@ -465,18 +466,16 @@ export const PerRowDragDisabledRow: StoryObj<DisabledRowStoryArgs> = {
       const order = () => table.getByTestId("row-order");
 
       await step(
-        `${how}: the disabled row's drag button is disabled and hidden`,
+        `${how}: the listed disabled row shows a disabled drag handle`,
         async () => {
-          // A disabled row is never draggable, so it gets the same hidden
-          // "cannot be reordered" button as a row outside draggableKeys.
+          // Listed in draggableKeys, so the handle is visible. React Aria
+          // disables it because the row is disabled.
           const button = within(rowNamedExactly(table, "Row B")).getByRole(
             "button",
-            { name: /cannot be reordered/i }
+            { name: /drag to reorder/i }
           );
           expect(button).toBeDisabled();
-          expect(
-            button.parentElement!.getBoundingClientRect().width
-          ).toBeLessThanOrEqual(1);
+          expect(button.getBoundingClientRect().width).toBeGreaterThan(1);
         }
       );
 
@@ -696,10 +695,16 @@ export const PerRowDragRejectDrops: StoryObj<
 type RenderCountTableProps = {
   /** Called with the row id each time a row renders its cells. */
   onCellsRender: (rowId: string) => void;
+  /** Leave `draggableKeys` unset, to check tables without per-row drag. */
+  withoutDraggableKeys?: boolean;
 };
 
-const RenderCountTable = ({ onCellsRender }: RenderCountTableProps) => {
+const RenderCountTable = ({
+  onCellsRender,
+  withoutDraggableKeys = false,
+}: RenderCountTableProps) => {
   const [draggableKeys, setDraggableKeys] = useState(new Set(["C"]));
+  const [disabledKeys, setDisabledKeys] = useState(new Set<string>());
   // Created once: new row objects on every render would re-render every row.
   const [rows, setRows] = useState<DataTableRowItem[]>(makeRows);
   const { dragAndDropHooks } = useDragAndDrop({
@@ -718,13 +723,19 @@ const RenderCountTable = ({ onCellsRender }: RenderCountTableProps) => {
 
   return (
     <Stack gap="400">
-      <Button onPress={() => setDraggableKeys(new Set(["C", "D"]))}>
-        Make D draggable
-      </Button>
+      <Flex gap="200">
+        <Button onPress={() => setDraggableKeys(new Set(["C", "D"]))}>
+          Make D draggable
+        </Button>
+        <Button onPress={() => setDisabledKeys(new Set(["B"]))}>
+          Disable B
+        </Button>
+      </Flex>
       <DataTable.Root
         columns={dragColumns}
         rows={rows}
-        draggableKeys={draggableKeys}
+        draggableKeys={withoutDraggableKeys ? undefined : draggableKeys}
+        disabledKeys={disabledKeys}
         size="md"
       >
         <DataTable.Table
@@ -770,6 +781,39 @@ export const PerRowDragRenderOnlyChangedRows: StoryObj<RenderCountTableProps> =
           mocked(args.onCellsRender).mock.calls.map(([id]) => id)
         );
         expect([...rendered]).toEqual(["D"]);
+      });
+    },
+  };
+
+/**
+ * Without `draggableKeys`, the per-row drag code adds no re-renders: changing
+ * `disabledKeys` re-renders rows exactly as before `draggableKeys` existed.
+ */
+export const PerRowDragRenderWithoutDraggableKeys: StoryObj<RenderCountTableProps> =
+  {
+    args: { onCellsRender: fn(), withoutDraggableKeys: true },
+    render: (args) => <RenderCountTable {...args} />,
+    play: async ({ canvasElement, args, step }) => {
+      const canvas = within(canvasElement);
+      const renderedRows = () =>
+        new Set(mocked(args.onCellsRender).mock.calls.map(([id]) => id));
+
+      await step("Disabling B renders each row at most once", async () => {
+        mocked(args.onCellsRender).mockClear();
+        await userEvent.click(
+          canvas.getByRole("button", { name: "Disable B" })
+        );
+        await waitFor(() =>
+          expect(rowNamedExactly(canvas, "Row B")).toHaveAttribute(
+            "data-disabled"
+          )
+        );
+        // `disabledKeys` is in the shared DataTable context, so every row
+        // re-renders once (as before `draggableKeys` existed). The body no
+        // longer lists `disabledKeys` as a dependency, so there is no second
+        // pass on top of that.
+        const calls = mocked(args.onCellsRender).mock.calls.map(([id]) => id);
+        expect(calls.length).toBe(renderedRows().size);
       });
     },
   };

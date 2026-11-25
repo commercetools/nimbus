@@ -11,14 +11,15 @@ Jira: FEC-1482.
 
 ## What Changes
 
-- Add prop `draggableKeys?: Set<string>` to `DataTable` and `DataTable.Root`.
+- Add prop `draggableKeys?: Iterable<Key>` to `DataTable` and `DataTable.Root`.
   - `undefined`: all rows are draggable (no change for existing tables).
-  - A set: only the rows in the set are draggable. An empty set means no row is
-    draggable.
+  - An iterable (`Set`, array, ...): only the listed rows are draggable. An
+    empty one means no row is draggable. Keys are compared as strings.
 - Add field `isDragDisabled: boolean` to `DataTableRowRenderProps`, next to
   `isPinned`.
-- `DataTable.Table` wraps `dragAndDropHooks.useDraggableItem` and returns React
-  Aria's own "disabled" result for rows that are not in the set.
+- `DataTable.Table` wraps `dragAndDropHooks.useDraggableItem`
+  (`restrictDraggableItem`) and returns React Aria's own "disabled" result for
+  rows that are not listed. A unit test guards that shape against React Aria.
 - A row that is not draggable renders a disabled drag button labelled "Row
   cannot be reordered". The button is visually hidden (React Aria needs it in the
   DOM), the column stays aligned, and the button starts no drag.
@@ -26,7 +27,8 @@ Jira: FEC-1482.
   accepts drops before and after it (pointer and keyboard).
 - A drop lands between two rows. Whether the adjacent row is disabled or not
   draggable does not change whether the drop is accepted.
-- A disabled row (`disabledKeys`, `isDisabled`) is never draggable.
+- A disabled row (`disabledKeys`, `isDisabled`) is never draggable. A listed
+  disabled row keeps a visible drag handle, disabled by React Aria.
   `disabledBehavior="all"` does not change.
 - Changing `draggableKeys` re-renders only the rows whose flag changed.
 - Documentation states:

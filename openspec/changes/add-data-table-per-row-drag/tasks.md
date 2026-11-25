@@ -1,6 +1,6 @@
 ## 1. Types and Prop Plumbing
 
-- [x] 1.1 Add `draggableKeys?: Set<string>` with JSDoc to the `DataTable` and `DataTable.Root` props in `data-table.types.ts`
+- [x] 1.1 Add `draggableKeys?: Iterable<Key>` with JSDoc to the `DataTable` and `DataTable.Root` props in `data-table.types.ts`
 - [x] 1.2 Add `isDragDisabled: boolean` with JSDoc to `DataTableRowRenderProps`
 - [x] 1.3 Pass `draggableKeys` from `DataTable` and `DataTable.Root` into the stable context (added to `DataTableContextValue` and `contextValue` in `data-table.root.tsx`; `data-table.context.tsx` needed no edit)
 
@@ -28,7 +28,7 @@
 
 ## 4. Documentation
 
-- [x] 4.1 Update `data-table.dev.mdx`: `draggableKeys` usage, `isDragDisabled`, `getDropOperation`, stable `Set` advice
+- [x] 4.1 Update `data-table.dev.mdx`: `draggableKeys` usage, `isDragDisabled`, `getDropOperation`, stable value advice
 - [x] 4.2 Document the limits: selection and expandable rows are not supported with `draggableKeys`; `onReorder` reports displayed order when sorting is on
 - [x] 4.3 Update `data-table.a11y.mdx` (keyboard reach of non-draggable rows, drops by keyboard)
 - [x] 4.4 Update the designer docs (`data-table.mdx` / guidelines) with the per-row drag behavior
@@ -49,3 +49,13 @@
 - [x] 6.3 Warn in development for `draggableKeys` with selection, with expandable rows, and without `dragAndDropHooks`; `isDragDisabled` is `false` without drag and drop
 - [x] 6.4 Strengthen the consumer example in `data-table.docs.spec.tsx` (keyboard reorder, fixed rows)
 - [x] 6.5 Story `PerRowDragRejectDrops`: `getDropOperation` of React Aria's `useDragAndDrop` rejects a drop position in a DataTable
+
+## 7. Review Hardening
+
+- [x] 7.1 Move the wrapper to `restrictDraggableItem` in `utils/drag.utils.ts`, built on `isRowDragDisabled`
+- [x] 7.2 `isRowDragDisabled` checks only `draggableKeys`; a listed disabled row shows a visible, disabled handle (`PerRowDragDisabledRow` updated)
+- [x] 7.3 Change `draggableKeys` to `Iterable<Key>`
+- [x] 7.4 Unit test in `drag.utils.spec.ts` comparing the wrapper with React Aria's real `useDraggableItem` disabled result
+- [x] 7.5 Replace `useStableSet` with `useStableKeySet` (normalizes, lazy init, compares only on identity change, dev churn warning), with unit tests
+- [x] 7.6 Remove `disabledKeys` from the `RaTableBody` dependencies; count `allowsDragging` only with `draggableKeys`
+- [x] 7.7 Story `PerRowDragRenderWithoutDraggableKeys`: changing `disabledKeys` without `draggableKeys` renders each row at most once

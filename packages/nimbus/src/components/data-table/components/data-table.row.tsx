@@ -726,7 +726,8 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                 {/* A row outside draggableKeys gets a disabled handle from
                  * React Aria. React Aria needs the handle in the DOM, so it is
                  * visually hidden instead of removed. Screen readers still
-                 * find it through its "not draggable" label. */}
+                 * find it through its "not draggable" label. A listed row
+                 * that is disabled keeps a visible, disabled handle. */}
                 {isDragDisabled ? (
                   <VisuallyHidden>{dragHandle}</VisuallyHidden>
                 ) : (

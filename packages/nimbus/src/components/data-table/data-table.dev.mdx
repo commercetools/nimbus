@@ -1072,14 +1072,15 @@ const draggableKeys = useMemo(() => new Set(['row-3']), []);
 ```
 
 - `undefined` (default): every row is draggable.
-- A `Set` of row ids: only those rows are draggable. An empty set means no row
-  is draggable.
+- An iterable of row ids (a `Set`, an array, ...): only those rows are
+  draggable. An empty one means no row is draggable.
 - A row that is not draggable renders a disabled drag button, labelled "Row
   cannot be reordered". The button is visually hidden, so the row looks
   without a handle, and screen readers can still find it. The row stays
   reachable with the arrow keys, calls `onRowAction` on click or `Enter`, and
   accepts drops before and after it.
-- A disabled row (`disabledKeys` or `isDisabled`) is never draggable.
+- A disabled row (`disabledKeys` or `isDisabled`) is never draggable. A
+  listed disabled row keeps its drag handle visible, shown disabled.
 - `DataTableRowRenderProps.isDragDisabled` is `true` for rows that are not
   draggable, for custom row render functions. It is `false` for every row when
   `dragAndDropHooks` is not set, because `draggableKeys` has no effect then.
@@ -1096,8 +1097,9 @@ Limits:
   `useDragAndDrop` from `react-aria-components`. Return `"cancel"` for positions
   that are not allowed. Nimbus's `useDragAndDrop` sets its own drop rules and
   does not take this option.
-- Pass a stable `Set` (for example with `useMemo`). Rows whose flag did not
-  change do not re-render.
+- Pass a stable value (for example with `useMemo`). Rows whose flag did not
+  change do not re-render. A new object with the same keys on every render
+  still works, but logs a development warning.
 
 ### Namespace isolation
 

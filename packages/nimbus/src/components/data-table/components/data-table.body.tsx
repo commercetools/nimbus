@@ -39,13 +39,8 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   ...props
 }: DataTableBodyProps<T>) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
-  const {
-    activeColumns,
-    renderEmptyState,
-    getRowKey,
-    draggableKeys,
-    disabledKeys,
-  } = useStableDataTableContext<T>();
+  const { activeColumns, renderEmptyState, getRowKey, draggableKeys } =
+    useStableDataTableContext<T>();
   const { sortedRows, expanded, pinnedRows, pinnedRowIds } =
     useInteractionContext<T>();
   const [styleProps, restProps] = extractStyleProps(props);
@@ -75,8 +70,6 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   pinnedRowsRef.current = pinnedRows;
   const draggableKeysRef = useRef(draggableKeys);
   draggableKeysRef.current = draggableKeys;
-  const disabledKeysRef = useRef(disabledKeys);
-  disabledKeysRef.current = disabledKeys;
   // `draggableKeys` only has an effect while drag and drop is on, so a row is
   // only "drag disabled" then.
   const { allowsDragging } = useTableOptions();
@@ -111,10 +104,8 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
         isDragDisabled:
           allowsDraggingRef.current &&
           isRowDragDisabled({
-            row,
             rowKey: String(rowKey),
             draggableKeys: draggableKeysRef.current,
-            disabledKeys: disabledKeysRef.current,
           }),
       };
       // React Aria derives the collection key from
@@ -160,8 +151,9 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
           pinnedRows,
           pinnedRowIds,
           draggableKeys,
-          disabledKeys,
-          allowsDragging,
+          // Only matters with `draggableKeys`. A constant otherwise, so tables
+          // without per-row drag re-render exactly as before.
+          draggableKeys ? allowsDragging : undefined,
           ...(dependenciesFromProps ?? []),
         ]}
       >

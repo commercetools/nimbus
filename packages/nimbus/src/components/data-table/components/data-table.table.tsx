@@ -13,6 +13,7 @@ import { DataTableTableSlot } from "../data-table.slots";
 import type { DataTableTableSlotProps } from "../data-table.types";
 import { dataTableMessagesStrings } from "../data-table.messages";
 import { useDevWarning } from "../hooks";
+import { restrictDraggableItem } from "../utils/drag.utils";
 
 /**
  * DataTable.Table - The main table element that wraps the header and body components
@@ -56,25 +57,17 @@ export const DataTableTable = function DataTableTable({
     "[Nimbus] DataTable: `draggableKeys` has no effect without `dragAndDropHooks`. Pass `dragAndDropHooks` from `useDragAndDrop`, or remove `draggableKeys`."
   );
 
-  // React Aria has no per-row drag switch. Wrap `useDraggableItem` so a row
-  // outside `draggableKeys` gets React Aria's own "disabled" result: no drag
-  // props, and a drag button with `isDisabled`. The row stays a normal item:
-  // focusable, actionable and a valid drop target. The original hook always
-  // runs, so the hook order does not change when `draggableKeys` changes.
+  // React Aria has no per-row drag switch, so `useDraggableItem` is wrapped
+  // to disable rows outside `draggableKeys` (see `restrictDraggableItem`).
   const dragAndDropHooks = useMemo(() => {
     const useDraggableItem = dragAndDropHooksProp?.useDraggableItem;
     if (!dragAndDropHooksProp || !useDraggableItem || !draggableKeys) {
       return dragAndDropHooksProp;
     }
-    const useDraggableRowItem: typeof useDraggableItem = (props, state) => {
-      const result = useDraggableItem(props, state);
-      if (draggableKeys.has(String(props.key))) return result;
-      return {
-        dragProps: {},
-        dragButtonProps: { ...result.dragButtonProps, isDisabled: true },
-      };
+    return {
+      ...dragAndDropHooksProp,
+      useDraggableItem: restrictDraggableItem(useDraggableItem, draggableKeys),
     };
-    return { ...dragAndDropHooksProp, useDraggableItem: useDraggableRowItem };
   }, [dragAndDropHooksProp, draggableKeys]);
 
   const { selectedKeys, defaultSelectedKeys, onSelectionChange } =
