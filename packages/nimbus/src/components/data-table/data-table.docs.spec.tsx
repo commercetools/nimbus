@@ -1,7 +1,14 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { DataTable, NimbusProvider, Box } from "@commercetools/nimbus";
+import { useState } from "react";
+import {
+  DataTable,
+  NimbusProvider,
+  Box,
+  useDragAndDrop,
+  createArrayHandlers,
+} from "@commercetools/nimbus";
 import type { DataTableColumnItem, DataTableRowItem } from "./data-table.types";
 
 // Sample test data
@@ -1209,5 +1216,149 @@ describe("DataTable.Manager - Custom settings", () => {
       expect(screen.getByTestId("custom-panel")).toBeInTheDocument();
       expect(screen.getByText("Custom Panel Content")).toBeInTheDocument();
     });
+  });
+});
+
+/**
+ * @docs-section per-row-drag
+ * @docs-title Per-Row Drag Tests
+ * @docs-description Test that only rows in draggableKeys can be dragged, and that fixed rows keep working
+ * @docs-order 15
+ */
+describe("DataTable - Per-row drag", () => {
+  const DragTable = ({
+    draggableKeys,
+    onReorderKeys = vi.fn(),
+    onRowAction = vi.fn(),
+  }: {
+    draggableKeys?: Set<string>;
+    onReorderKeys?: (keys: string[], targetKey: string) => void;
+    onRowAction?: (row: DataTableRowItem) => void;
+  }) => {
+    const [tableRows, setTableRows] = useState<DataTableRowItem[]>(rows);
+    const handlers = createArrayHandlers(setTableRows, (row) => row.id);
+    const { dragAndDropHooks } = useDragAndDrop({
+      ...handlers,
+      onReorder(keys, target) {
+        onReorderKeys(
+          [...keys].map(String),
+          String((target as { key: unknown }).key)
+        );
+        handlers.onReorder?.(keys, target);
+      },
+    });
+    return (
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={tableRows}
+          draggableKeys={draggableKeys}
+          onRowAction={onRowAction}
+          dragAndDropHooks={dragAndDropHooks}
+          aria-label="Team members"
+        />
+      </NimbusProvider>
+    );
+  };
+
+  /** Names of the data rows, top to bottom. */
+  const rowOrder = () =>
+    screen
+      .getAllByRole("row")
+      .slice(1)
+      .map((row) => /Alice|Bob|Carol/.exec(row.textContent ?? "")?.[0]);
+
+  /** Focuses a row's drag button and presses Enter to pick the row up. */
+  const pickUp = async (
+    user: ReturnType<typeof userEvent.setup>,
+    rowName: RegExp
+  ) => {
+    const row = screen.getByRole("row", { name: rowName });
+    row.focus();
+    await user.keyboard("{ArrowRight}");
+    await waitFor(() =>
+      expect(
+        within(row).getByRole("button", { name: /drag to reorder/i })
+      ).toHaveFocus()
+    );
+    await user.keyboard("{Enter}");
+  };
+
+  it("renders an enabled drag button only in rows listed in draggableKeys", () => {
+    render(<DragTable draggableKeys={new Set(["2"])} />);
+
+    const enabled = screen.getAllByRole("button", { name: /drag to reorder/i });
+    expect(enabled).toHaveLength(1);
+    expect(
+      within(screen.getByRole("row", { name: /Bob Smith/ })).getByRole(
+        "button",
+        { name: /drag to reorder/i }
+      )
+    ).toBeInTheDocument();
+
+    // Every other row has a disabled drag button that is visually hidden.
+    const disabled = screen.getAllByRole("button", {
+      name: /cannot be reordered/i,
+    });
+    expect(disabled).toHaveLength(rows.length - 1);
+    disabled.forEach((button) => expect(button).toBeDisabled());
+  });
+
+  it("renders only disabled drag buttons when draggableKeys is empty", () => {
+    render(<DragTable draggableKeys={new Set()} />);
+
+    expect(
+      screen.queryByRole("button", { name: /drag to reorder/i })
+    ).toBeNull();
+    const disabled = screen.getAllByRole("button", {
+      name: /cannot be reordered/i,
+    });
+    expect(disabled).toHaveLength(rows.length);
+    disabled.forEach((button) => expect(button).toBeDisabled());
+  });
+
+  it("reorders the draggable row by keyboard and reports only its key", async () => {
+    const user = userEvent.setup();
+    const onReorderKeys = vi.fn();
+    render(
+      <DragTable draggableKeys={new Set(["2"])} onReorderKeys={onReorderKeys} />
+    );
+    expect(rowOrder()).toEqual(["Alice", "Bob", "Carol"]);
+
+    // Pick up Bob, move the drop position down past Carol, and drop.
+    await pickUp(user, /Bob Smith/);
+    await user.keyboard("{ArrowDown}");
+    await user.keyboard("{Enter}");
+
+    await waitFor(() => expect(rowOrder()).toEqual(["Alice", "Carol", "Bob"]));
+    expect(onReorderKeys).toHaveBeenCalledTimes(1);
+    expect(onReorderKeys).toHaveBeenCalledWith(["2"], "3");
+  });
+
+  it("keeps fixed rows in the arrow-key order and activates them with Enter", async () => {
+    const user = userEvent.setup();
+    const onRowAction = vi.fn();
+    render(
+      <DragTable draggableKeys={new Set(["2"])} onRowAction={onRowAction} />
+    );
+
+    const alice = screen.getByRole("row", { name: /Alice Johnson/ });
+    alice.focus();
+    await user.keyboard("{ArrowDown}");
+    await waitFor(() =>
+      expect(screen.getByRole("row", { name: /Bob Smith/ })).toHaveFocus()
+    );
+    await user.keyboard("{ArrowDown}");
+    await waitFor(() =>
+      expect(screen.getByRole("row", { name: /Carol Williams/ })).toHaveFocus()
+    );
+
+    // Enter on a fixed row runs the row action. It does not pick the row up.
+    await user.keyboard("{Enter}");
+    await waitFor(() => expect(onRowAction).toHaveBeenCalledTimes(1));
+    expect(onRowAction).toHaveBeenCalledWith(
+      expect.objectContaining({ id: "3" })
+    );
+    expect(rowOrder()).toEqual(["Alice", "Bob", "Carol"]);
   });
 });

@@ -68,6 +68,7 @@ export const DataTableRoot = function DataTableRoot<
     onRowClick,
     renderNestedContent,
     disabledKeys,
+    draggableKeys,
     onRowAction,
     isResizable,
     expandedRows: controlledExpandedRows,
@@ -309,6 +310,27 @@ export const DataTableRoot = function DataTableRoot<
   );
   const hasExpandableContent = hasNestedKeyContent || !!renderNestedContent;
   const showExpandColumn = hasExpandableContent && allowsExpandColumn;
+
+  // `draggableKeys` is documented as unsupported together with selection and
+  // with expandable rows. Warn once per mount, development only.
+  const hasWarnedDragRef = useRef({ selection: false, expandable: false });
+  const hasDraggableKeys = draggableKeys !== undefined;
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production" || !hasDraggableKeys) return;
+    const warned = hasWarnedDragRef.current;
+    if (selectionMode !== "none" && !warned.selection) {
+      warned.selection = true;
+      console.warn(
+        "[Nimbus] DataTable: `draggableKeys` together with `selectionMode` is not supported. Remove `selectionMode`, or remove `draggableKeys`."
+      );
+    }
+    if (hasExpandableContent && !warned.expandable) {
+      warned.expandable = true;
+      console.warn(
+        "[Nimbus] DataTable: `draggableKeys` together with expandable rows is not supported. Remove the nested rows or `renderNestedContent`, or remove `draggableKeys`."
+      );
+    }
+  }, [hasDraggableKeys, selectionMode, hasExpandableContent]);
   // The single rule for whether the selection column exists. Header, cells
   // and the nested row's colSpan all read it, so they cannot disagree.
   const showSelectionColumn = selectionMode !== "none";
@@ -439,6 +461,7 @@ export const DataTableRoot = function DataTableRoot<
       selectRowLabel,
       isResizable,
       disabledKeys,
+      draggableKeys,
       onRowActionRef,
       togglePin,
       onColumnsChangeRef,
@@ -472,6 +495,7 @@ export const DataTableRoot = function DataTableRoot<
       selectRowLabel,
       isResizable,
       disabledKeys,
+      draggableKeys,
       togglePin,
       getRowKey,
     ]

@@ -87,6 +87,10 @@
     "developer_comment": "aria-label for the drag handle button on each row",
     "string": "Drag to reorder"
   },
+  "Nimbus.DataTable.dragRowDisabled": {
+    "developer_comment": "aria-label for the drag handle button on a row that cannot be reordered",
+    "string": "Row cannot be reordered"
+  },
   "Nimbus.DataTable.dragRowsColumn": {
     "developer_comment": "aria-label for the drag rows column header",
     "string": "Reorder rows"
