@@ -12,6 +12,11 @@ import {
 import { DataTableTableSlot } from "../data-table.slots";
 import type { DataTableTableSlotProps } from "../data-table.types";
 import { dataTableMessagesStrings } from "../data-table.messages";
+import {
+  hasNativeDragAutoScroll,
+  useDragAutoScroll,
+  withoutReactAriaAutoScroll,
+} from "../hooks/use-drag-auto-scroll";
 
 /**
  * DataTable.Table - The main table element that wraps the header and body components
@@ -61,26 +66,46 @@ export const DataTableTable = function DataTableTable({
     }
   }, [hasDraggableKeys, hasDragAndDropHooks]);
 
-  // React Aria has no per-row drag switch. Wrap `useDraggableItem` so a row
-  // outside `draggableKeys` gets React Aria's own "disabled" result: no drag
-  // props, and a drag button with `isDisabled`. The row stays a normal item:
-  // focusable, actionable and a valid drop target. The original hook always
-  // runs, so the hook order does not change when `draggableKeys` changes.
+  // Safari on macOS does not scroll while a row is dragged near the edge of the
+  // scroll area, and React Aria's replacement scrolls the wrong way in a table.
+  // There, the table scrolls itself, and React Aria's auto-scroll is kept off.
+  const replacesDragAutoScroll =
+    hasDragAndDropHooks && !hasNativeDragAutoScroll();
+  useDragAutoScroll({ tableRef: localRef, isEnabled: replacesDragAutoScroll });
+
   const dragAndDropHooks = useMemo(() => {
-    const useDraggableItem = dragAndDropHooksProp?.useDraggableItem;
-    if (!dragAndDropHooksProp || !useDraggableItem || !draggableKeys) {
-      return dragAndDropHooksProp;
-    }
-    const useDraggableRowItem: typeof useDraggableItem = (props, state) => {
-      const result = useDraggableItem(props, state);
-      if (draggableKeys.has(String(props.key))) return result;
-      return {
-        dragProps: {},
-        dragButtonProps: { ...result.dragButtonProps, isDisabled: true },
+    if (!dragAndDropHooksProp) return dragAndDropHooksProp;
+    let hooks = dragAndDropHooksProp;
+
+    // React Aria has no per-row drag switch. Wrap `useDraggableItem` so a row
+    // outside `draggableKeys` gets React Aria's own "disabled" result: no drag
+    // props, and a drag button with `isDisabled`. The row stays a normal item:
+    // focusable, actionable and a valid drop target. The original hook always
+    // runs, so the hook order does not change when `draggableKeys` changes.
+    const useDraggableItem = hooks.useDraggableItem;
+    if (useDraggableItem && draggableKeys) {
+      const useDraggableRowItem: typeof useDraggableItem = (props, state) => {
+        const result = useDraggableItem(props, state);
+        if (draggableKeys.has(String(props.key))) return result;
+        return {
+          dragProps: {},
+          dragButtonProps: { ...result.dragButtonProps, isDisabled: true },
+        };
       };
-    };
-    return { ...dragAndDropHooksProp, useDraggableItem: useDraggableRowItem };
-  }, [dragAndDropHooksProp, draggableKeys]);
+      hooks = { ...hooks, useDraggableItem: useDraggableRowItem };
+    }
+
+    const useDroppableCollection = hooks.useDroppableCollection;
+    if (useDroppableCollection && replacesDragAutoScroll) {
+      hooks = {
+        ...hooks,
+        useDroppableCollection: withoutReactAriaAutoScroll(
+          useDroppableCollection
+        ),
+      };
+    }
+    return hooks;
+  }, [dragAndDropHooksProp, draggableKeys, replacesDragAutoScroll]);
 
   const { selectedKeys, defaultSelectedKeys, onSelectionChange } =
     useTableSelectionContext();

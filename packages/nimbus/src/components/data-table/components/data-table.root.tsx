@@ -33,7 +33,7 @@ import {
   formatRowKeyProblems,
 } from "../utils/row-keys.utils";
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
-import { useStableArray, useDataTableApi } from "../hooks";
+import { useStableArray, useDataTableApi, useStickyStacks } from "../hooks";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "../data-table.messages";
 import { DATA_TABLE_DEFAULT_SIZE } from "../utils/sizes.utils";
@@ -71,6 +71,7 @@ export const DataTableRoot = function DataTableRoot<
     renderNestedContent,
     disabledKeys,
     draggableKeys,
+    stickyRows,
     onRowAction,
     isResizable,
     expandedRows: controlledExpandedRows,
@@ -341,6 +342,19 @@ export const DataTableRoot = function DataTableRoot<
       );
     }
   }, [hasDraggableKeys, selectionMode, hasExpandableContent]);
+  // Rows only stick in a scroll area with a sticky header, which needs
+  // `maxHeight`. Without it no row is sticky, so say why. Once per cause,
+  // development only.
+  const hasStickyRows = !!stickyRows && stickyRows.size > 0;
+  const hasMaxHeight = !!maxHeight;
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    if (hasStickyRows && !hasMaxHeight) {
+      console.warn(
+        "[Nimbus] DataTable: `stickyRows` has no effect without `maxHeight`. Rows only stick in a scroll area with a sticky header. Set `maxHeight`, or remove `stickyRows`."
+      );
+    }
+  }, [hasStickyRows, hasMaxHeight]);
   // The single rule for whether the selection column exists. Header, cells
   // and the nested row's colSpan all read it, so they cannot disagree.
   const showSelectionColumn = selectionMode !== "none";
@@ -472,6 +486,7 @@ export const DataTableRoot = function DataTableRoot<
       isResizable,
       disabledKeys,
       draggableKeys,
+      stickyRows,
       registry,
       onRowActionRef,
       togglePin,
@@ -507,6 +522,7 @@ export const DataTableRoot = function DataTableRoot<
       isResizable,
       disabledKeys,
       draggableKeys,
+      stickyRows,
       registry,
       togglePin,
       getRowKey,
@@ -567,6 +583,16 @@ export const DataTableRoot = function DataTableRoot<
     disabledKeys,
   });
 
+  // Rows only stick in a scroll area with a sticky header, which needs
+  // `maxHeight` (see `DataTable.Body`).
+  useStickyStacks({
+    rootRef: ref,
+    registry,
+    isEnabled: hasMaxHeight && hasStickyRows,
+    stickyRows,
+    sortedRows,
+  });
+
   const selectionContextValue: TableSelectionContextValue = useMemo(
     () => ({
       selectedKeys,
@@ -590,6 +616,8 @@ export const DataTableRoot = function DataTableRoot<
       size={size}
       density={recipeDensity}
       maxH={maxHeight}
+      // Tables with sticky rows draw their dividers on the cells, see the recipe.
+      data-has-sticky-rows={hasMaxHeight && hasStickyRows ? "" : undefined}
       {...rest}
       asChild
     >

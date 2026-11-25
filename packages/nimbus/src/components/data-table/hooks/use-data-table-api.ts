@@ -13,7 +13,12 @@ import type {
 } from "../data-table.types";
 import type { DataTableRegistry } from "../utils/registry.types";
 import type { DataTableRowKeyResolver } from "../utils/row-keys.utils";
-import { computeTargetScrollTop } from "../utils/scroll-to-row.utils";
+import { measureStickyLayout } from "../utils/sticky-stacks.dom";
+import {
+  computeScrollTopWithStacks,
+  computeStuckStacks,
+  isRowStuck,
+} from "../utils/sticky-stacks.utils";
 
 type UseDataTableApiParams<T extends object> = {
   apiRef: Ref<DataTableApi> | undefined;
@@ -182,17 +187,50 @@ export const useDataTableApi = <T extends object>({
               if (!rowElement) return undefined;
               const containerRect = container.getBoundingClientRect();
               const rowRect = rowElement.getBoundingClientRect();
-              return computeTargetScrollTop({
-                rowTop:
-                  rowRect.top -
-                  containerRect.top -
-                  container.clientTop +
-                  container.scrollTop,
+              const { topInset } = getScrollInsets(registry);
+
+              // The sticky rows are measured now, not read from a cache: a call
+              // right after `stickyRows` or the rows changed must see the new
+              // layout.
+              const sticky = measureStickyLayout(
+                container,
+                registry.headerElement
+              );
+              const layouts = sticky?.layouts ?? [];
+              const stickyPosition = sticky
+                ? sticky.elements.indexOf(rowElement)
+                : -1;
+              let rowTop =
+                rowRect.top -
+                containerRect.top -
+                container.clientTop +
+                container.scrollTop;
+              if (stickyPosition !== -1) {
+                // A sticky row that is stuck at an edge is in view, and it is
+                // part of a stack: there is nothing to scroll to.
+                const stacks = computeStuckStacks({
+                  headerHeight: topInset,
+                  layouts,
+                  scrollTop: container.scrollTop,
+                  viewportHeight: container.clientHeight,
+                });
+                if (
+                  isRowStuck(layouts[stickyPosition].rowIndex, layouts, stacks)
+                ) {
+                  return null;
+                }
+                // Not stuck, so it is in its own place.
+                rowTop = layouts[stickyPosition].naturalTop;
+              }
+
+              return computeScrollTopWithStacks({
+                rowTop,
                 rowHeight: rowRect.height,
                 viewportHeight: container.clientHeight,
                 scrollTop: container.scrollTop,
                 scrollHeight: container.scrollHeight,
-                ...getScrollInsets(registry),
+                headerInset: topInset,
+                layouts,
                 align: options.align,
               });
             };

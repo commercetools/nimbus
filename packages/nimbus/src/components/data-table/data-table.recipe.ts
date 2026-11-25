@@ -28,10 +28,13 @@ const zIndex = {
   pinHeaderCell: 11,
   expandHeaderCell: 12,
   frozenHeaderCell: 13,
-  // Sticky header, above the body layer so rows that scroll under the
-  // header stay hidden. Also the header's focus ring layer, above every
-  // frozen header cell.
-  header: 14,
+  // Sticky body rows that are stuck at an edge. Above every body row, frozen
+  // body cell and `bodyLayer`, so rows that scroll under them stay hidden.
+  stickyRow: 14,
+  // Sticky header, above the stuck rows, so rows that scroll under the header
+  // stay hidden. Also the header's focus ring layer, above every frozen
+  // header cell.
+  header: 15,
 } as const;
 
 // Pseudo-element that extends a sticky cell's background by 2px on each side.
@@ -250,6 +253,24 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           "var(--data-table-pinned-shadow-left), var(--data-table-pinned-shadow-right), var(--data-table-pinned-shadow-top), var(--data-table-pinned-shadow-bottom)"
         ),
       },
+      // The drag cell is not a `cell` slot, so it gets the dividers of the
+      // `cell` slot here: the same three rules, for a table with sticky rows.
+      "&[data-has-sticky-rows] tbody tr:not(:last-child) > [data-slot='drag']":
+        {
+          borderBottom: "1px solid {colors.neutral.3}",
+        },
+      "&[data-has-sticky-rows] tbody tr[data-sticky-bottom-edge] > [data-slot='drag']":
+        {
+          borderBottomColor: "transparent",
+        },
+      "&[data-has-sticky-rows] tbody tr[data-sticky-bottom-start] > [data-slot='drag']":
+        {
+          backgroundImage:
+            "linear-gradient({colors.neutral.3}, {colors.neutral.3})",
+          backgroundSize: "100% 1px",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "top",
+        },
     },
     table: {
       tableLayout: "fixed",
@@ -258,6 +279,14 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       boxSizing: "border-box",
       colorPalette: "slate",
       width: "100%",
+      // A table with sticky rows does not use collapsed borders. In that model
+      // the one-pixel grid line between two rows belongs to the table: no cell
+      // paints it, and a sticky row does not carry it along, so the rows that
+      // scroll under a stuck row show through it. Here the dividers are cell
+      // borders (see the header and row slots), which move with their row.
+      "[data-has-sticky-rows] &": {
+        borderCollapse: "separate",
+      },
     },
     header: {
       background: "colorPalette.2",
@@ -307,6 +336,11 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
     },
     column: {
+      // Separate border model (see `table`): the divider under the header is a
+      // border of its cells.
+      "[data-has-sticky-rows] &": {
+        borderBottom: "1px solid {colors.neutral.3}",
+      },
       textAlign: "right",
       position: "relative",
       p: 0,
@@ -415,6 +449,31 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         "--data-table-row-bg": "{colors.bg}",
       },
       borderBottom: "1px solid {colors.neutral.3}",
+
+      // Sticky row (`stickyRows`). It sticks at both edges: `top` and `bottom`
+      // come from the measured stacks (the custom properties are set on the row
+      // from JavaScript). This block comes before the hover and selected rules
+      // below, so those win over the highlight.
+      "&[data-sticky-row]": {
+        position: "sticky",
+        top: "var(--data-table-sticky-top, 0px)",
+        bottom: "var(--data-table-sticky-bottom, 0px)",
+        zIndex: zIndex.stickyRow,
+        // An invisible shadow above the row, so Firefox draws a row that is
+        // stuck at the bottom edge and finds it under the pointer.
+        // `useStickyStacks` sets the custom property in Firefox only, so in
+        // other browsers the shadow has no size.
+        boxShadow:
+          "0 calc(-1 * var(--data-table-sticky-reach, 0px)) transparent",
+      },
+      // The highlight. It is opaque, so rows that scroll under a stuck row stay
+      // hidden. A row with a background from the consumer keeps it. `:where`
+      // adds no specificity, so the selected rule below, which is as specific
+      // as a plain attribute selector, comes later and wins.
+      "&[data-sticky-row]:where(:not([data-custom-bg]))": {
+        backgroundColor: "{colors.neutral.2}",
+        "--data-table-row-bg": "{colors.neutral.2}",
+      },
       ...bodyFocusRing,
       // Only the drag handle shows a grab cursor. A row keeps the default
       // cursor, or `pointer` when it is clickable.
@@ -468,11 +527,49 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       "&[data-disabled='true']": {
         layerStyle: "disabled",
       },
+      // A disabled row is drawn at half opacity, which would let the rows that
+      // scroll under a stuck row show through. A sticky row keeps its opaque
+      // background and dims only the content of its cells.
+      "&[data-sticky-row][data-disabled='true']": {
+        opacity: 1,
+        "& > td > *": {
+          opacity: 0.5,
+        },
+        // A custom cell can hold bare text. It has no element to dim, so the
+        // text colour is faded instead.
+        "& > td:not(:has(> *))": {
+          color: "color-mix(in srgb, {colors.neutral.12} 50%, transparent)",
+        },
+      },
     },
     cell: {
       py: "var(--data-table-cell-padding-y)",
       px: "var(--data-table-padding-x)",
       color: "neutral.12",
+      // Separate border model (see `table`): the divider between body rows is a
+      // cell border, like the header's. The last row has none. The last sticky
+      // row hides its divider while it is stuck at the bottom edge, where the
+      // border of the scroll area is already the line (`data-sticky-bottom-edge`,
+      // set by `useStickyStacks`). The border stays and turns transparent, so
+      // the row keeps its height: the stacks are measured from the row heights.
+      "[data-has-sticky-rows] tbody tr:not(:last-child) > &": {
+        borderBottom: "1px solid {colors.neutral.3}",
+      },
+      "[data-has-sticky-rows] tbody tr[data-sticky-bottom-edge] > &": {
+        borderBottomColor: "transparent",
+      },
+      // The first row of the bottom stack, pushed up from its place, has no row
+      // above it that paints the line on its top. It draws the line itself, as
+      // a background inside the cell: a border on top would make the row taller
+      // (`data-sticky-bottom-start`, set by `useStickyStacks`), and a shadow
+      // would replace the shadows of frozen cells.
+      "[data-has-sticky-rows] tbody tr[data-sticky-bottom-start] > &": {
+        backgroundImage:
+          "linear-gradient({colors.neutral.3}, {colors.neutral.3})",
+        backgroundSize: "100% 1px",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "top",
+      },
       // Containing block for the focus ring. Frozen cells override it with
       // `position: sticky`, which is a containing block too.
       position: "relative",
