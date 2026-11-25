@@ -24,6 +24,7 @@ import {
 } from "./data-table.context";
 import { DataTableRow } from "./data-table.row";
 import { dataTableMessagesStrings } from "../data-table.messages";
+import { isRowDragDisabled } from "../utils/drag.utils";
 
 /**
  * DataTable.Body - The table body section that renders all data rows with selection and expansion capabilities
@@ -38,8 +39,13 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   ...props
 }: DataTableBodyProps<T>) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
-  const { activeColumns, renderEmptyState, getRowKey, draggableKeys } =
-    useStableDataTableContext<T>();
+  const {
+    activeColumns,
+    renderEmptyState,
+    getRowKey,
+    draggableKeys,
+    disabledKeys,
+  } = useStableDataTableContext<T>();
   const { sortedRows, expanded, pinnedRows, pinnedRowIds } =
     useInteractionContext<T>();
   const [styleProps, restProps] = extractStyleProps(props);
@@ -69,6 +75,8 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   pinnedRowsRef.current = pinnedRows;
   const draggableKeysRef = useRef(draggableKeys);
   draggableKeysRef.current = draggableKeys;
+  const disabledKeysRef = useRef(disabledKeys);
+  disabledKeysRef.current = disabledKeys;
   // `draggableKeys` only has an effect while drag and drop is on, so a row is
   // only "drag disabled" then.
   const { allowsDragging } = useTableOptions();
@@ -102,8 +110,12 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
         isSinglePinned: pinnedIdx !== undefined && pinnedCount === 1,
         isDragDisabled:
           allowsDraggingRef.current &&
-          draggableKeysRef.current !== undefined &&
-          !draggableKeysRef.current.has(String(rowKey)),
+          isRowDragDisabled({
+            row,
+            rowKey: String(rowKey),
+            draggableKeys: draggableKeysRef.current,
+            disabledKeys: disabledKeysRef.current,
+          }),
       };
       // React Aria derives the collection key from
       // `rendered.props.id ?? item.key ?? item.id` (see `useCachedChildren`),
@@ -148,6 +160,7 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
           pinnedRows,
           pinnedRowIds,
           draggableKeys,
+          disabledKeys,
           allowsDragging,
           ...(dependenciesFromProps ?? []),
         ]}

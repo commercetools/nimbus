@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo, useRef } from "react";
 import { Table as RaTable, type SortDescriptor } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
@@ -12,6 +12,7 @@ import {
 import { DataTableTableSlot } from "../data-table.slots";
 import type { DataTableTableSlotProps } from "../data-table.types";
 import { dataTableMessagesStrings } from "../data-table.messages";
+import { useDevWarning } from "../hooks";
 
 /**
  * DataTable.Table - The main table element that wraps the header and body components
@@ -48,18 +49,12 @@ export const DataTableTable = function DataTableTable({
     [disabledKeys, rows, getRowKey]
   );
 
-  // `draggableKeys` has nothing to restrict without drag and drop. Development
-  // only.
-  const hasDragAndDropHooks = !!dragAndDropHooksProp;
-  const hasDraggableKeys = draggableKeys !== undefined;
-  useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
-    if (hasDraggableKeys && !hasDragAndDropHooks) {
-      console.warn(
-        "[Nimbus] DataTable: `draggableKeys` has no effect without `dragAndDropHooks`. Pass `dragAndDropHooks` from `useDragAndDrop`, or remove `draggableKeys`."
-      );
-    }
-  }, [hasDraggableKeys, hasDragAndDropHooks]);
+  // `draggableKeys` has nothing to restrict without drag and drop. The other
+  // `draggableKeys` warnings are in `DataTable.Root`.
+  useDevWarning(
+    draggableKeys !== undefined && !dragAndDropHooksProp,
+    "[Nimbus] DataTable: `draggableKeys` has no effect without `dragAndDropHooks`. Pass `dragAndDropHooks` from `useDragAndDrop`, or remove `draggableKeys`."
+  );
 
   // React Aria has no per-row drag switch. Wrap `useDraggableItem` so a row
   // outside `draggableKeys` gets React Aria's own "disabled" result: no drag
