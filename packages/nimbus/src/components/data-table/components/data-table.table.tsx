@@ -12,6 +12,8 @@ import {
 import { DataTableTableSlot } from "../data-table.slots";
 import type { DataTableTableSlotProps } from "../data-table.types";
 import { dataTableMessagesStrings } from "../data-table.messages";
+import { useDevWarning } from "../hooks";
+import { restrictDraggableItem } from "../utils/drag.utils";
 
 /**
  * DataTable.Table - The main table element that wraps the header and body components
@@ -22,7 +24,7 @@ export const DataTableTable = function DataTableTable({
   ref: forwardedRef,
   children,
   "aria-label": ariaLabelProp,
-  dragAndDropHooks,
+  dragAndDropHooks: dragAndDropHooksProp,
   ...props
 }: DataTableTableSlotProps) {
   const localRef = useRef<HTMLTableElement>(null);
@@ -33,6 +35,7 @@ export const DataTableTable = function DataTableTable({
     selectionMode,
     disallowEmptySelection,
     disabledKeys,
+    draggableKeys,
     hasRenderNestedContent,
     rows,
     getRowKey,
@@ -46,6 +49,26 @@ export const DataTableTable = function DataTableTable({
       disabledKeys === "all" ? new Set(rows.map(getRowKey)) : disabledKeys,
     [disabledKeys, rows, getRowKey]
   );
+
+  // `draggableKeys` has nothing to restrict without drag and drop. The other
+  // `draggableKeys` warnings are in `DataTable.Root`.
+  useDevWarning(
+    draggableKeys !== undefined && !dragAndDropHooksProp,
+    "[Nimbus] DataTable: `draggableKeys` has no effect without `dragAndDropHooks`. Pass `dragAndDropHooks` from `useDragAndDrop`, or remove `draggableKeys`."
+  );
+
+  // React Aria has no per-row drag switch, so `useDraggableItem` is wrapped
+  // to disable rows outside `draggableKeys` (see `restrictDraggableItem`).
+  const dragAndDropHooks = useMemo(() => {
+    const useDraggableItem = dragAndDropHooksProp?.useDraggableItem;
+    if (!dragAndDropHooksProp || !useDraggableItem || !draggableKeys) {
+      return dragAndDropHooksProp;
+    }
+    return {
+      ...dragAndDropHooksProp,
+      useDraggableItem: restrictDraggableItem(useDraggableItem, draggableKeys),
+    };
+  }, [dragAndDropHooksProp, draggableKeys]);
 
   const { selectedKeys, defaultSelectedKeys, onSelectionChange } =
     useTableSelectionContext();

@@ -8,6 +8,7 @@ import type {
   RowProps as RaRowProps,
   CellProps as RaCellProps,
   Selection,
+  Key,
   DragAndDropHooks as RaDragAndDropHooks,
 } from "react-aria-components";
 import type {
@@ -203,6 +204,7 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     pinnedRowIds: string[];
     selectRowLabel: string;
     disabledKeys?: Selection;
+    draggableKeys?: ReadonlySet<string>;
     onRowActionRef: React.RefObject<
       ((row: DataTableRowItem<T>) => void) | undefined
     >;
@@ -256,6 +258,20 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
    * When provided, enables row drag-and-drop reordering.
    */
   dragAndDropHooks?: RaDragAndDropHooks;
+  /**
+   * Row ids that can be dragged, as any iterable (`Set`, array, ...). Rows not
+   * listed show a hidden, disabled drag button labelled "Row cannot be
+   * reordered", cannot start a drag, and stay focusable, clickable and valid
+   * drop targets.
+   * `undefined` (default) makes every row draggable; an empty iterable makes
+   * none draggable. Needs `dragAndDropHooks`. A disabled row is never
+   * draggable; a listed disabled row shows its drag handle as disabled.
+   *
+   * Not supported together with `selectionMode` or expandable rows.
+   * `onReorder` reports positions in the displayed order, which matters when
+   * column sorting is on. Pass a stable value (for example from `useMemo`).
+   */
+  draggableKeys?: Iterable<Key>;
   columns: DataTableColumnItem<T>[];
   unstyled?: boolean;
   rows: DataTableRowItem<T>[];
@@ -382,6 +398,14 @@ export type DataTableRowRenderProps = {
   isFirstPinned: boolean;
   isLastPinned: boolean;
   isSinglePinned: boolean;
+  /**
+   * `true` when `draggableKeys` is set and does not contain this row. The row
+   * renders a visually hidden, disabled drag button and cannot start a drag.
+   * A listed disabled row is `false`: its handle shows, disabled.
+   * It is `false` for every row when `dragAndDropHooks` is not set, because
+   * `draggableKeys` has no effect then.
+   */
+  isDragDisabled: boolean;
 };
 
 /**

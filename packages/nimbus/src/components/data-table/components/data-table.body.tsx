@@ -5,7 +5,10 @@ import {
   useMemo,
   useRef,
 } from "react";
-import { TableBody as RaTableBody } from "react-aria-components";
+import {
+  TableBody as RaTableBody,
+  useTableOptions,
+} from "react-aria-components";
 import { Box } from "@/components";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
@@ -21,6 +24,7 @@ import {
 } from "./data-table.context";
 import { DataTableRow } from "./data-table.row";
 import { dataTableMessagesStrings } from "../data-table.messages";
+import { isRowDragDisabled } from "../utils/drag.utils";
 
 /**
  * DataTable.Body - The table body section that renders all data rows with selection and expansion capabilities
@@ -35,7 +39,7 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   ...props
 }: DataTableBodyProps<T>) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
-  const { activeColumns, renderEmptyState, getRowKey } =
+  const { activeColumns, renderEmptyState, getRowKey, draggableKeys } =
     useStableDataTableContext<T>();
   const { sortedRows, expanded, pinnedRows, pinnedRowIds } =
     useInteractionContext<T>();
@@ -64,6 +68,13 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   expandedRef.current = expanded;
   const pinnedRowsRef = useRef(pinnedRows);
   pinnedRowsRef.current = pinnedRows;
+  const draggableKeysRef = useRef(draggableKeys);
+  draggableKeysRef.current = draggableKeys;
+  // `draggableKeys` only has an effect while drag and drop is on, so a row is
+  // only "drag disabled" then.
+  const { allowsDragging } = useTableOptions();
+  const allowsDraggingRef = useRef(allowsDragging);
+  allowsDraggingRef.current = allowsDragging;
   // Position of each pinned row on screen, looked up once per row instead of
   // searching `pinnedRowIds` for every pinned row.
   const pinnedIndexById = useMemo(
@@ -90,6 +101,12 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
         isFirstPinned: pinnedIdx === 0,
         isLastPinned: pinnedIdx !== undefined && pinnedIdx === pinnedCount - 1,
         isSinglePinned: pinnedIdx !== undefined && pinnedCount === 1,
+        isDragDisabled:
+          allowsDraggingRef.current &&
+          isRowDragDisabled({
+            rowKey: String(rowKey),
+            draggableKeys: draggableKeysRef.current,
+          }),
       };
       // React Aria derives the collection key from
       // `rendered.props.id ?? item.key ?? item.id` (see `useCachedChildren`),
@@ -133,6 +150,10 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
           expanded,
           pinnedRows,
           pinnedRowIds,
+          draggableKeys,
+          // Only matters with `draggableKeys`. A constant otherwise, so tables
+          // without per-row drag re-render exactly as before.
+          draggableKeys ? allowsDragging : undefined,
           ...(dependenciesFromProps ?? []),
         ]}
       >
