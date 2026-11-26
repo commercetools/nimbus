@@ -236,6 +236,10 @@ All current patterns compose existing components with flat-props APIs:
 | MultilineTextInputField | FormField + MultilineTextInput |
 | MoneyInputField         | FormField + MoneyInput         |
 | DateRangePickerField    | FormField + DateRangePicker    |
+| CodeSnippet             | CodeBlock                      |
+| CodeSnippetGroup        | CodeBlock + Tabs or Select     |
+| JsonSnippet             | CodeSnippet                    |
+| CommandSnippet          | CodeBlock                      |
 
 ## Related Guidelines
 

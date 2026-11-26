@@ -1,0 +1,136 @@
+---
+title: CommandSnippet Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+## Comparison: pattern vs manual composition
+
+**With CommandSnippet:**
+
+```tsx
+<CommandSnippet
+  aria-label="Install Nimbus"
+  command="pnpm add @commercetools/nimbus"
+/>
+```
+
+**Manual composition (escape hatch):**
+
+```tsx
+<CodeBlock.Root
+  aria-label="Install Nimbus"
+  code="pnpm add @commercetools/nimbus"
+  language="bash"
+>
+  <CodeBlock.Content prompt="$">
+    <CodeBlock.Actions>
+      <CodeBlock.CopyTrigger />
+    </CodeBlock.Actions>
+  </CodeBlock.Content>
+</CodeBlock.Root>
+```
+
+### When to use which
+
+**Use CommandSnippet when:**
+
+- You show shell commands that the user copies
+- You want a prompt that is not copied, and no header
+
+**Use [CodeBlock](/components/data-display/codeblock) when:**
+
+- You need a header, a title or other parts
+- You need a custom layout
+
+## Getting started
+
+### Import
+
+```tsx
+import { CommandSnippet, type CommandSnippetProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+```jsx live-dev
+const App = () => (
+  <CommandSnippet command="pnpm add @commercetools/nimbus" />
+)
+```
+
+## Usage examples
+
+### Several commands and output
+
+Put each command on its own line. Mark output lines with `outputLines`. Line
+numbers start at 1. Output lines show no prompt.
+
+```jsx live-dev
+const App = () => (
+  <CommandSnippet
+    aria-label="Check your login"
+    command={"npm whoami\nalice"}
+    outputLines={[2]}
+  />
+)
+```
+
+### Prompt
+
+The default is `$`. An empty string shows no prompt. The prompt is never part of
+the copied text.
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="400">
+    <CommandSnippet prompt=">" command="dir" />
+    <CommandSnippet prompt="" command="pnpm add @commercetools/nimbus" />
+  </Stack>
+)
+```
+
+### Language
+
+`language` is used for highlighting. The default is `bash`.
+
+```jsx live-dev
+const App = () => (
+  <CommandSnippet language="powershell" prompt="PS>" command="Get-Process" />
+)
+```
+
+### Copy
+
+The copy button is next to the code. It copies exactly the `command` text. Copy
+uses the Clipboard API and falls back to `document.execCommand("copy")`.
+`onCopy` is called once after a successful copy. Set `showCopyButton={false}`
+to hide the button.
+
+```tsx
+<CommandSnippet command="pnpm install" onCopy={() => track("copy-install")} />
+```
+
+## Accessibility
+
+- A snippet is a `region` landmark only when you set an `aria-label`. Without
+  it, the snippet is not a landmark.
+- The copy button has a localized label. "Copied" or "Copy failed" is
+  announced in a live region.
+
+## API reference
+
+<PropsTable id="CommandSnippet" />
+
+## Testing your implementation
+
+These examples show how to test CommandSnippet in your application. Nimbus
+already tests the component itself.
+
+{{docs-tests: command-snippet.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-code-commandsnippet--docs)
+- [CodeBlock Component](/components/data-display/codeblock) - for custom
+  layouts
