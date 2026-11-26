@@ -1,16 +1,18 @@
 ---
 id: Components-ChatMessage
-title: Chat message
+title: ChatMessage
 exportName: ChatMessage
 description:
   A single message in an AI chat conversation, pairing a sender avatar with a
   message body and optional actions, meta, and typing indicator.
 lifecycleState: Experimental
 order: 999
+related:
+  - Components-ChatMessageList
 menu:
   - Components
   - Chat
-  - Chat message
+  - ChatMessage
 tags:
   - component
   - chat
@@ -20,6 +22,8 @@ tags:
   - conversation
 figmaLink: >-
   https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=10601-14469
+githubLink: https://github.com/commercetools/nimbus/tree/main/packages/nimbus/src/components/chat-message
+storybookLink: https://nimbus-storybook.vercel.app/?path=/story/components-chat-chatmessage
 ---
 
 ## Overview
@@ -44,12 +48,6 @@ message. Neither is a `sender` value.
 
 `tone="error"` is independent of `sender` — it tints the body to flag a failed
 generation, since an agent message can still fail.
-
-### Resources
-
-Deep dive into implementation details and access the Nimbus design library.
-
-[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=10601-14469)
 
 ## Variables
 

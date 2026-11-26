@@ -1,4 +1,5 @@
 import { build } from "@commercetools/nimbus-docs-build";
+import { execFileSync } from "child_process";
 import path from "path";
 
 // Configuration for the documentation build
@@ -25,6 +26,19 @@ const config = {
 
 // Run the build
 console.log("🚀 Building documentation...\n");
+
+// Render the component illustrations (SVG) from their sources
+execFileSync(
+  "pnpm",
+  [
+    "--filter",
+    "@commercetools/nimbus",
+    "illustrations:generate",
+    "--out",
+    path.resolve("./src/data/illustrations"),
+  ],
+  { stdio: "inherit" }
+);
 
 try {
   const result = await build(config);

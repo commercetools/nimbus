@@ -1,8 +1,11 @@
 ---
 id: TokensSizes
 title: Sizes
-description: The list of available size tokens
-order: 999
+illustration: token-sizes
+description:
+  Size tokens for width and height, from fixed sizes and named container sizes
+  to fractions, breakpoints, and sizes based on the content or the viewport.
+order: 4
 menu:
   - Home
   - Design Tokens
@@ -11,44 +14,116 @@ tags:
   - sizes
 icon: Straighten
 ---
+Size tokens set the dimensions of an element: `width`, `height` and their min
+and max variants.
 
-# Sizes
+> [!IMPORTANT]\
+> Looking for `padding`, `margin` or `gap`? Use the
+> [spacing tokens](/home/design-tokens/spacing). The style prop decides which
+> scale applies. Up to `3200`, both scales have the same numeric tokens, so
+> `w="400"` and `p="400"` are both 16px. Other size tokens, such as `md` or
+> `1/2`, do not work for spacing.
 
-Different size type tokens are available to suit various design needs, including
-numerical, proportional, named, breakpoint, and others.
+## Choose a size
 
-The list of available size tokens:
+| You want                                          | Use                   | Example                            |
+| ------------------------------------------------- | --------------------- | ---------------------------------- |
+| A fixed size for a small element, like an icon    | A numeric size        | `<Box boxSize="500" />` (20px)     |
+| A maximum width for a container, such as a dialog | A named size          | `<Box maxWidth="xl" />` (576px)    |
+| A share of the parent                             | A fraction            | `<Box width="1/3" />`              |
+| The whole parent                                  | `full`                | `<Box width="full" />`             |
+| An element that fits its content                  | `fit`, `min` or `max` | `<Box width="fit" />`              |
+| A limit for the length of text lines              | `prose`               | `<Text maxWidth="prose" />`        |
+| An element as wide as a screen breakpoint         | A breakpoint size     | `<Box maxWidth="breakpoint-md" />` |
+| An element that fills the viewport                | A viewport size       | `<Box height="vh" />`              |
 
-## Numerical sizes
+## Browse sizes
 
-Precise, incrementally scaled units for defining fixed dimensions
+### Numeric sizes
 
-<SizesTokenDemo group="regular" />
+Fixed sizes from 1px to 384px. A token is its pixel value times 25, so `400` is
+16px. Bars are drawn at their real size.
 
-## Proportional sizes
+<SizesScale group="regular" />
 
-Proportional dimensional values expressed as fractions, suitable for dividing
-elements in layouts.
+### Named sizes
 
-<SizesTokenDemo group="fraction" />
+Sizes from `3xs` (224px) to `8xl` (1440px), for the width of containers. Bars
+are scaled to the widest size in the table.
 
-## Large sizes
+<SizesScale group="large" />
 
-Semantic size labels providing consistent values for specific dimensions,
-ensuring clarity and reusability.
+### Breakpoint sizes
 
-<SizesTokenDemo group="large" />
+The widths of the screen breakpoints. Use them to size an element to a
+breakpoint, for example `maxWidth="breakpoint-md"`. The prefix keeps them apart
+from the named sizes: `breakpoint-md` is 768px, while `md` is 448px. To change
+styles at a breakpoint, see [Breakpoints](/home/design-tokens/other/breakpoints).
+Bars are scaled to the widest size in the table.
 
-## Breakpoint
+<SizesScale group="breakpoint" />
 
-Predefined screen width thresholds to adjust dimensional values for responsive
-layouts.
+### Fractions
 
-<SizesTokenDemo group="breakpoint" />
+A share of the parent, in halves, thirds, fourths, fifths, sixths and twelfths.
+The bar is the share of the column.
 
-## Others
+<SizesScale group="fraction" />
 
-Viewport-based or content-driven dimensional values for flexible and adaptive
-element sizing.
+### Content sizes
 
-<SizesTokenDemo group="other" />
+Sizes that depend on the parent or on the content. `min`, `max` and `fit` follow
+[the CSS width keywords](https://developer.mozilla.org/en-US/docs/Web/CSS/width).
+
+<SizesScale group="content" />
+
+### Viewport sizes
+
+Sizes that depend on the viewport, the part of the browser window that shows the
+page. Some browsers show and hide parts of their interface, such as the address
+bar, and the viewport changes size when they do. Use `svh` for an element that
+must fit when the interface is shown, `lvh` for an element that must fill the
+viewport when it is hidden, and `dvh` to follow the current size. See
+[the CSS viewport units](https://developer.mozilla.org/en-US/docs/Web/CSS/length#relative_length_units_based_on_viewport).
+
+<SizesScale group="viewport" />
+
+## Use sizes in code
+
+Size tokens work on the style props for width and height.
+
+| You set                              | Props                                                                     |
+| ------------------------------------ | ------------------------------------------------------------------------- |
+| Width                                | `width`, `minWidth`, `maxWidth`, or the shorthands `w`, `minW`, `maxW`    |
+| Height                               | `height`, `minHeight`, `maxHeight`, or the shorthands `h`, `minH`, `maxH` |
+| Width and height together            | `boxSize`                                                                 |
+| Width and height of the writing mode | `inlineSize`, `blockSize` and their min and max variants                  |
+| The starting size in a flex layout   | `flexBasis`                                                               |
+
+```tsx
+// A fixed size
+<Box boxSize="500" />
+
+// A container that grows up to a named size
+<Box width="full" maxWidth="xl" />
+
+// Half of the parent
+<Box width="1/2" />
+```
+
+For the full list of props, see [Style props: Sizing](/home/style-props/sizing).
+
+### Editor support
+
+With the design token TypeScript plugin, autocomplete shows the value next to
+the token. See
+[Installation](/home/getting-started/installation#design-token-autocomplete-optional)
+for how to set it up.
+
+## Values that Nimbus components use
+
+In the recipes of Nimbus components, `width` and `height` most often use the
+numeric tokens `400` (16px), `500` (20px) and `600` (24px) for small parts such
+as icons and indicators. Named sizes are rare and are used for containers:
+Dialog and Drawer use `lg` (512px) for their width, and form fields use `xl`
+(576px) as their maximum width.

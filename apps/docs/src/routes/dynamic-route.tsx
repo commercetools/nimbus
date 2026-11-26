@@ -6,6 +6,7 @@
  */
 
 import { Suspense } from "react";
+import { Navigate } from "react-router-dom";
 import {
   Box,
   LoadingSpinner,
@@ -17,6 +18,41 @@ import {
 import { DocumentRenderer } from "@/components/document-renderer";
 import { useManifest } from "@/contexts/manifest-context";
 import { useRouteInfo } from "@/hooks/use-route-info";
+import { normalizeRoute } from "@/utils/normalize-route";
+
+/**
+ * Old links: PascalCase labels used to give one word ("/defaultpage"), now
+ * they give separate words ("/default-page"). Comparing without dashes finds
+ * the page; a tab suffix such as "/dev" is kept.
+ * @returns The current path of the page, or undefined if the path is not an old link
+ */
+const findMovedPath = (
+  routes: { path: string }[],
+  normalizedPath: string
+): string | undefined => {
+  const undashed = (path: string) => path.replace(/-/g, "");
+  const wanted = undashed(normalizedPath);
+
+  let best: { path: string; length: number } | undefined;
+  for (const route of routes) {
+    const current = normalizeRoute(route.path);
+    const old = undashed(current);
+    if (
+      (wanted === old || wanted.startsWith(`${old}/`)) &&
+      (!best || old.length > best.length)
+    ) {
+      best = { path: current, length: old.length };
+    }
+  }
+  if (!best) return undefined;
+
+  const isCurrent =
+    normalizedPath === best.path || normalizedPath.startsWith(`${best.path}/`);
+  if (isCurrent) return undefined;
+
+  const rest = normalizedPath.split("/").slice(best.path.split("/").length);
+  return `/${[best.path, ...rest].join("/")}`;
+};
 
 export default function DynamicRoute() {
   const { routeManifest, isLoading } = useManifest();
@@ -25,6 +61,11 @@ export default function DynamicRoute() {
   // Show loading only while the manifest itself is loading.
   if (isLoading || !routeManifest) {
     return <LoadingSpinner />;
+  }
+
+  const movedTo = findMovedPath(routeManifest.routes, normalizedPath);
+  if (movedTo) {
+    return <Navigate to={movedTo} replace />;
   }
 
   // Special case: home route

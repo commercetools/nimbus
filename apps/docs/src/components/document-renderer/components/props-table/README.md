@@ -2,7 +2,8 @@
 
 ## Overview
 
-The Props Table component automatically generates documentation tables for component props with intelligent grouping and filtering.
+The Props Table component automatically generates documentation tables for
+component props with intelligent grouping and filtering.
 
 ## Directory Structure
 
@@ -32,14 +33,22 @@ props-table/
 ## Features
 
 ### 1. **Prop Grouping (React Aria Style)**
-Props are automatically categorized into 12 groups based on React Aria's grouping system:
 
-- **Content**: Content-related props (children, items, columns, loadingState, etc.)
-- **Selection**: Selection management props (selectionMode, selectedKeys, disabledKeys, etc.)
-- **Value**: Value and change handling props (value, defaultValue, onChange, etc.)
-- **Labeling**: Label and description props (label, labelPosition, contextualHelp, etc.)
-- **Validation**: Validation and constraints (minValue, maxValue, isRequired, isInvalid, etc.)
-- **Overlay**: Overlay and positioning (isOpen, placement, offset, shouldFlip, etc.)
+Props are automatically categorized into 12 groups based on React Aria's
+grouping system:
+
+- **Content**: Content-related props (children, items, columns, loadingState,
+  etc.)
+- **Selection**: Selection management props (selectionMode, selectedKeys,
+  disabledKeys, etc.)
+- **Value**: Value and change handling props (value, defaultValue, onChange,
+  etc.)
+- **Labeling**: Label and description props (label, labelPosition,
+  contextualHelp, etc.)
+- **Validation**: Validation and constraints (minValue, maxValue, isRequired,
+  isInvalid, etc.)
+- **Overlay**: Overlay and positioning (isOpen, placement, offset, shouldFlip,
+  etc.)
 - **Events**: All event handler props (matching /^on[A-Z]/ pattern)
 - **Links**: Link-related props (href, target, rel, download, etc.)
 - **Styling**: Styling props (style, className)
@@ -47,9 +56,11 @@ Props are automatically categorized into 12 groups based on React Aria's groupin
 - **Accessibility**: Accessibility props (aria-*, role, id, tabIndex, etc.)
 - **Advanced**: Advanced/unsafe props (UNSAFE_className, UNSAFE_style, slot)
 
-Each category is collapsible with smooth animations. Empty categories are automatically hidden.
+Each category is collapsible with smooth animations. Empty categories are
+automatically hidden.
 
 ### 2. **Collapsible Categories**
+
 - Categories can be expanded/collapsed for better readability
 - Shows prop count badge when collapsed
 - Smooth expand/collapse animations using CollapsibleMotion
@@ -57,18 +68,24 @@ Each category is collapsible with smooth animations. Empty categories are automa
 - User preferences persist during session
 
 ### 3. **Chakra UI Style Props Detection**
-- Automatically detects if a component supports Chakra UI style props via `@supportsStyleProps` JSDoc tag
+
+- Automatically detects if a component supports Chakra UI style props via
+  `@supportsStyleProps` JSDoc tag
 - Displays a visual banner when style props are supported
-- Chakra style props (~200+) are filtered at documentation generation time to avoid clutter
+- Chakra style props (~200+) are filtered at documentation generation time to
+  avoid clutter
 - Provides a clear indicator without listing every CSS property
 
 ### 4. **Modular Architecture**
+
 The component is split into focused modules:
 
-- **Types**: TypeScript interfaces and type definitions (PropCategory, GroupedProps, PropMatcher, PropGroupConfig)
+- **Types**: TypeScript interfaces and type definitions (PropCategory,
+  GroupedProps, PropMatcher, PropGroupConfig)
 - **Constants**: Static configuration (prop groups, default expansion state)
 - **Utils**: Pure functions for categorization and grouping
-- **Components**: React components for rendering (ComponentPropsTable, CollapsiblePropsCategory, PropsCategoryTable)
+- **Components**: React components for rendering (ComponentPropsTable,
+  CollapsiblePropsCategory, PropsCategoryTable)
 
 ## Usage
 
@@ -89,33 +106,35 @@ import { PropsTable } from './props-table';
 The prop grouping system is configuration-driven. To add a new category:
 
 1. Update `types/prop-types.ts` to add the new category:
+
    ```typescript
    export type PropCategory =
      | "content"
      | "selection"
      // ... existing categories
-     | "myNewCategory";  // Add here
+     | "myNewCategory"; // Add here
 
    export interface GroupedProps {
      content: PropItem[];
      selection: PropItem[];
      // ... existing categories
-     myNewCategory: PropItem[];  // Add here
+     myNewCategory: PropItem[]; // Add here
    }
    ```
 
 2. Update `constants/prop-groups.ts` to define the new category:
+
    ```typescript
    export const PROP_GROUPS: PropGroupConfig[] = [
      // ... existing groups
      {
        category: "myNewCategory",
        displayName: "My New Category",
-       order: 13,  // Display order (higher numbers appear later)
+       order: 13, // Display order (higher numbers appear later)
        matchers: [
          "propName1",
          "propName2",
-         /^pattern/,  // Can use RegExp for pattern matching
+         /^pattern/, // Can use RegExp for pattern matching
        ],
      },
    ];
@@ -136,13 +155,15 @@ export const DEFAULT_EXPANDED = new Set<PropCategory>([
   "content",
   "selection",
   "value",
-  "myNewCategory",  // Add your category here to expand by default
+  "myNewCategory", // Add your category here to expand by default
 ]);
 ```
 
 ### Filtering Additional Props
 
-Chakra style props are filtered at documentation generation time in `scripts/doc-generation/filter-props.ts`. To filter additional prop types, update the filtering logic there rather than at runtime.
+Chakra style props are filtered at documentation generation time in
+`scripts/doc-generation/filter-props.ts`. To filter additional prop types,
+update the filtering logic there rather than at runtime.
 
 ## Component Hierarchy
 
@@ -163,10 +184,14 @@ PropsTable (selector for compound components)
 ### Need to modify...
 
 - **Type definitions?** → `types/prop-types.ts`
-- **Prop group configuration?** → `constants/prop-groups.ts` (add/modify categories here)
-- **Default expanded categories?** → `constants/prop-groups.ts` (modify DEFAULT_EXPANDED)
-- **Prop categorization logic?** → `utils/categorize-props.ts` (rarely needed - uses config)
-- **Prop filtering at generation time?** → `scripts/doc-generation/filter-props.ts`
+- **Prop group configuration?** → `constants/prop-groups.ts` (add/modify
+  categories here)
+- **Default expanded categories?** → `constants/prop-groups.ts` (modify
+  DEFAULT_EXPANDED)
+- **Prop categorization logic?** → `utils/categorize-props.ts` (rarely needed -
+  uses config)
+- **Prop filtering at generation time?** →
+  `scripts/doc-generation/filter-props.ts`
 - **Grouping logic?** → `utils/group-props.ts` (rarely needed - uses config)
 - **Banner appearance?** → `components/style-props-banner.tsx`
 - **Category collapsible UI?** → `components/collapsible-props-category.tsx`

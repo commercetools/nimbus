@@ -1,75 +1,123 @@
-import { Badge, Heading, Stack, Text } from "@commercetools/nimbus";
+import {
+  Badge,
+  Box,
+  Flex,
+  Grid,
+  Heading,
+  Link,
+  Text,
+  VisuallyHidden,
+} from "@commercetools/nimbus";
+import { OpenInNew } from "@commercetools/nimbus-icons";
+import { Illustration, hasIllustration } from "@/components/illustration";
 import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
+import { getResourceLinks } from "./get-resource-links";
 import type { DocMetadataProps } from "./doc-metadata.types";
 
 /**
  * DocMetadata Component
  *
- * Displays frontmatter metadata above view tabs as an introduction to the page.
- * Shows title, description, tags, lifecycle state, and design resource links
- * with subtle, inline styling.
+ * The header of a documentation page: title with lifecycle badge, description,
+ * resource link buttons (Figma, Storybook, GitHub) and, from the `md`
+ * breakpoint up, the illustration of the component on the right.
  */
 export const DocMetadata = ({
   title,
   description,
-  tags,
   lifecycleState,
   figmaLink,
+  storybookLink,
+  githubLink,
+  illustration,
 }: DocMetadataProps) => {
-  // Get lifecycle info from the schema
   const lifecycleInfo = lifecycleState
     ? lifecycleStateDescriptions[lifecycleState]
     : null;
+  const links = getResourceLinks({ figmaLink, storybookLink, githubLink });
+  const showIllustration = hasIllustration(illustration);
 
-  // Don't render if there's no content to display
-  const hasContent =
-    title || description || tags?.length || lifecycleState || figmaLink;
-
-  if (!hasContent) {
+  if (!title && !description && links.length === 0) {
     return null;
   }
 
   return (
-    <Stack direction="column" gap="400" mb="400">
-      {title && (
-        <Heading textStyle="3xl">
-          {title}{" "}
-          {lifecycleInfo && (
-            <Badge size="2xs" colorPalette={lifecycleInfo.colorPalette}>
-              {lifecycleInfo.label}
-            </Badge>
-          )}
-        </Heading>
-      )}
-      {/* Description */}
-      {description && <Text>{description}</Text>}
+    <Grid
+      mb="400"
+      columnGap="800"
+      rowGap="400"
+      alignItems="center"
+      gridTemplateColumns={{
+        base: "minmax(0, 1fr)",
+        md: showIllustration ? "minmax(0, 1fr) 200px" : "minmax(0, 1fr)",
+      }}
+    >
+      <Flex direction="column" gap="400" alignItems="flex-start">
+        {title && (
+          <Flex alignItems="center" gap="300" flexWrap="wrap">
+            <Heading as="h1" size="4xl" letterSpacing="-0.02em">
+              {title}
+            </Heading>
+            {lifecycleInfo && (
+              <Badge size="xs" colorPalette={lifecycleInfo.colorPalette}>
+                {lifecycleInfo.label}
+              </Badge>
+            )}
+          </Flex>
+        )}
 
-      {/* Tags and Lifecycle State Row */}
-      {(tags?.length || lifecycleState) && (
-        <Stack direction="row" gap="200" alignItems="center" flexWrap="wrap">
-          {/* Tags */}
-          {tags?.map((tag) => (
-            <Badge key={tag} size="2xs" colorPalette="neutral">
-              {tag}
-            </Badge>
-          ))}
-        </Stack>
-      )}
+        {description && (
+          <Text textStyle="lg" color="neutral.11" maxWidth="60ch">
+            {description}
+          </Text>
+        )}
 
-      {/* // TODO Flesh out resource links below, figma, github etc. */}
-      {/* figmaLink && (
-        <Stack direction="row" gap="400" alignItems="center">
-          <Link
-            href={figmaLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            fontSize="350"
-            color="fg.subtle"
+        {links.length > 0 && (
+          <Flex
+            as="ul"
+            gap="200"
+            flexWrap="wrap"
+            listStyle="none"
+            m="0"
+            p="0"
+            aria-label="Resources"
           >
-            View in Figma ↗
-          </Link>
-        </Stack>
-      ) */}
-    </Stack>
+            {links.map((link) => (
+              <li key={link.key}>
+                <Link
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  display="inline-flex"
+                  alignItems="center"
+                  gap="100"
+                  textStyle="sm"
+                  textDecoration="none"
+                  px="300"
+                  py="100"
+                  border="1px solid"
+                  borderColor="neutral.7"
+                  borderRadius="full"
+                >
+                  {link.label}
+                  <Box as="span" display="inline-flex" aria-hidden="true">
+                    <OpenInNew />
+                  </Box>
+                  <VisuallyHidden>(opens in a new tab)</VisuallyHidden>
+                </Link>
+              </li>
+            ))}
+          </Flex>
+        )}
+      </Flex>
+
+      {hasIllustration(illustration) && (
+        <Illustration
+          name={illustration}
+          display={{ base: "none", md: "block" }}
+          width="200px"
+          height="150px"
+        />
+      )}
+    </Grid>
   );
 };

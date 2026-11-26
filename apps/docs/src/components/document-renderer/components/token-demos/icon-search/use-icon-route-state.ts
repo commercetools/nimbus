@@ -127,6 +127,8 @@ export interface IconRouteState {
   goToCategory: (slug: string) => void;
   /** Filter to a keyword tag on the grid, dropping any open dialog. */
   goToTag: (tag: string) => void;
+  /** Remove the search, category and keyword in one step. Keeps size and surface. */
+  clearFilters: () => void;
   /** Open an icon's detail dialog (pushes history). */
   openIcon: (name: string) => void;
   /** Close the detail dialog, returning to the current filtered grid. */
@@ -264,6 +266,19 @@ export const useIconRouteState = (): IconRouteState => {
     [params, navigate]
   );
 
+  const clearFilters = useCallback(() => {
+    setParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete(PARAM.category);
+        next.delete(PARAM.tag);
+        next.delete(PARAM.search);
+        return next;
+      },
+      { replace: true }
+    );
+  }, [setParams]);
+
   const openIcon = useCallback(
     (name: string) => {
       // Opening from the grid roots a fresh trail on top of our own grid entry,
@@ -315,6 +330,7 @@ export const useIconRouteState = (): IconRouteState => {
     setSurface,
     goToCategory,
     goToTag,
+    clearFilters,
     openIcon,
     closeIcon,
   };

@@ -5,7 +5,7 @@ export const OlList = ({
   children,
   ...props
 }: ComponentProps<typeof List.Root>) => (
-  <List.Root pl="600" mb="400" asChild {...props}>
+  <List.Root pl="600" mb="400" maxWidth="80ch" asChild {...props}>
     <ol>{children}</ol>
   </List.Root>
 );
@@ -16,7 +16,7 @@ export const UlList = ({
   children,
   ...props
 }: ComponentProps<typeof List.Root>) => (
-  <List.Root pl="600" mb="400" asChild {...props}>
+  <List.Root pl="600" mb="400" maxWidth="80ch" asChild {...props}>
     <ul>{children}</ul>
   </List.Root>
 );
@@ -28,6 +28,8 @@ export const ListItem = (props: ComponentProps<typeof List.Item>) => {
   return (
     <List.Item
       pl="100"
+      textStyle="md"
+      lineHeight="650"
       css={{
         "& + li": {
           mt: "100",

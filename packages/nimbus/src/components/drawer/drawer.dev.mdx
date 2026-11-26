@@ -296,7 +296,7 @@ const App = () => {
                 Has unsaved changes
               </Switch>
               {showConfirmation && (
-                <Stack gap="300" p="400" borderWidth="1px" borderColor="border" borderRadius="200">
+                <Stack gap="300" p="400" borderWidth="1px" borderColor="neutral.6" borderRadius="200">
                   <Text fontWeight="semibold">You have unsaved changes. Discard them?</Text>
                   <Stack direction="row" gap="300">
                     <Button variant="outline" size="xs" onPress={() => setShowConfirmation(false)}>
@@ -569,7 +569,6 @@ These examples demonstrate how to test your implementation when using Drawer in 
 
 ## Resources
 
-- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-overlay-drawer--docs)
 - [React Aria DialogTrigger](https://react-spectrum.adobe.com/react-aria/Dialog.html#dialogtrigger)
 - [React Aria Modal](https://react-spectrum.adobe.com/react-aria/Modal.html)
 - [ARIA Dialog Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)

@@ -14,6 +14,7 @@ import type {
 import {
   filterAndRankPreLowered,
   fuzzyScorePreLowered,
+  lowerTitle,
   scorePreLowered,
 } from "../utils/relevance.js";
 import { stripMarkdown } from "../utils/markdown.js";
@@ -62,7 +63,7 @@ function getLoweredFields(
     if (entry._lower) {
       map.set(entry, entry._lower);
     } else {
-      const title = entry.title.toLowerCase();
+      const title = lowerTitle(entry.title);
       const description = entry.description.toLowerCase();
       const tags = entry.tags.join(" ").toLowerCase();
       const content = entry.content?.toLowerCase() ?? "";

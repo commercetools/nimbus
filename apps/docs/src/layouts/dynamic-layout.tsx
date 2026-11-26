@@ -1,10 +1,10 @@
 /**
  * Dynamic Layout Component
  *
- * The persistent layout shell. It renders the breadcrumb bar and top bar
- * (AppNavBar) at stable positions that never unmount, and swaps only the body
- * below them between the `app-frame` and `no-sidebar` variants based on the
- * active document's `layout` property.
+ * The persistent layout shell. It renders the top bar (AppNavBar) at a stable
+ * position that never unmounts, and swaps only the body below it between the
+ * `app-frame` and `no-sidebar` variants based on the active document's
+ * `layout` property. The breadcrumb is part of each body, above the content.
  *
  * Keeping the top bar mounted across layout swaps is what lets the AppNavBar's
  * animated TabNav indicator slide continuously when navigating to/from a
@@ -12,19 +12,16 @@
  */
 
 import { Suspense, useRef } from "react";
-import { useLocation } from "react-router-dom";
 import { Flex, Box, LoadingSpinner } from "@commercetools/nimbus";
 import { AppFrameBody } from "./app-layout";
 import { NoSidebarBody } from "./no-sidebar-layout";
 import { AppNavBar } from "@/components/navigation/app-nav-bar";
-import { BreadcrumbNav } from "@/components/navigation/breadcrumb";
 import { useActiveDoc } from "@/hooks/useActiveDoc";
 
 type LayoutKind = "app-frame" | "no-sidebar";
 
 export function DynamicLayout() {
   const { doc: activeDoc } = useActiveDoc();
-  const location = useLocation();
 
   // Sticky layout choice. `activeDoc` is momentarily `undefined` on every
   // navigation while the next route's doc loads. We remember the last resolved
@@ -41,50 +38,9 @@ export function DynamicLayout() {
   // Default to app-frame on the very first load, before any doc has resolved.
   const layout = lastLayoutRef.current ?? "app-frame";
   const isNoSidebar = layout === "no-sidebar";
-  const isHome = location.pathname === "/" || location.pathname === "/home";
 
   return (
     <Flex direction="column" height="100vh" width="100vw" overflow="hidden">
-      {/* Breadcrumb Bar - persistent position at the very top. Hidden on the
-          home route in the no-sidebar layout (no breadcrumb to show); shown
-          with a slide-in entrance on other no-sidebar pages; static in the
-          app-frame layout (matching the previous per-layout behavior). */}
-      {!(isNoSidebar && isHome) && (
-        <Box
-          id="app-frame-breadcrumb-bar"
-          position="sticky"
-          top={0}
-          zIndex={1000}
-          bg="bg"
-          borderBottom="solid-25"
-          borderColor="neutral.3"
-          width="full"
-          px="400"
-          py="200"
-          css={
-            isNoSidebar
-              ? {
-                  animation: "slideDown 0.3s ease-out forwards",
-                  "@keyframes slideDown": {
-                    from: {
-                      transform: "translateY(-100%)",
-                      opacity: 0,
-                    },
-                    to: {
-                      transform: "translateY(0)",
-                      opacity: 1,
-                    },
-                  },
-                }
-              : undefined
-          }
-        >
-          <Suspense fallback={<Box />}>
-            <BreadcrumbNav />
-          </Suspense>
-        </Box>
-      )}
-
       {/* Top Bar - persistent position. AppNavBar (and its animated TabNav
           indicator) stays mounted across body/layout swaps. */}
       <Box
@@ -98,7 +54,7 @@ export function DynamicLayout() {
         width="full"
       >
         <Suspense fallback={<LoadingSpinner />}>
-          <AppNavBar />
+          <AppNavBar showMobileNav={!isNoSidebar} />
         </Suspense>
       </Box>
 

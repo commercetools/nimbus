@@ -1,25 +1,126 @@
 ---
 id: TokensBorders
 title: Borders
-description: The list of available border tokens
-order: 999
+illustration: token-borders
+description:
+  Border tokens set the width and the style of a border in one value. The color
+  comes from a step of a palette.
+order: 6
 menu:
   - Home
   - Design Tokens
   - Borders
 tags:
   - border
+  - border color
+  - outline
+  - line
 icon: BorderStyle
 ---
 
-# Borders
+There are four border tokens, from `solid-25` (1px) to `solid-100` (4px). As
+with the [spacing](/home/design-tokens/spacing) tokens, the number is the pixel
+value times 25.
 
-The list of available border tokens:
+> [!IMPORTANT]\
+> Looking for rounded corners? Those use the [radii](/home/design-tokens/radii)
+> tokens. Border tokens set only the width and the style of the line.
 
-<GenericTokenTableDemo category="borders" demoProperty="border" />
+## Border tokens
 
-> [!IMPORTANT]  
-> The design system uses `box-sizing: border-box` as a default. If you assign an
-> element a `width` of `100px`, the computed `border-width` value will be
-> included in the `100px`, effectively reducing the amount of space available
-> for content.
+> [!WARNING]\
+> Always set `borderColor` next to a border token. A border token sets the CSS
+> `border` shorthand. Its value has no color, so the shorthand sets the color to
+> the text color
+> ([MDN: border](https://developer.mozilla.org/en-US/docs/Web/CSS/border)).
+> `<Box border="solid-25" />` draws a line in the text color. Write
+> `<Box border="solid-25" borderColor="neutral.6" />`. Use a step from 6 to 8 of
+> a palette for a border. See [Steps](/home/design-tokens/colors#steps) on the
+> Colors page.
+
+The samples use `borderColor="neutral.7"`.
+
+<BordersScale />
+
+## Choose a border
+
+| You want                                                | Use                                       | Example                                                  |
+| ------------------------------------------------------- | ----------------------------------------- | -------------------------------------------------------- |
+| A thin line around an element, such as a card           | `solid-25` and `neutral.6`                | `<Box border="solid-25" borderColor="neutral.6" />`      |
+| A line on one side, for example between rows            | `solid-25` on one side                    | `<Box borderBottom="solid-25" borderColor="neutral.6" />` |
+| A stronger line                                         | A higher step, such as `neutral.7`        | `<Box border="solid-25" borderColor="neutral.7" />`      |
+| A line that shows a status                              | A status palette, such as `critical.7`    | `<Box border="solid-25" borderColor="critical.7" />`     |
+| A thicker line, for a small control that must stand out | `solid-50`                                | `<Box border="solid-50" borderColor="neutral.7" />`      |
+
+## Use borders in code
+
+Border tokens work on the style props for borders.
+
+| You draw                                       | Props                                                    |
+| ---------------------------------------------- | -------------------------------------------------------- |
+| A line on all sides                            | `border`                                                 |
+| A line on one side                             | `borderTop`, `borderRight`, `borderBottom`, `borderLeft` |
+| Lines on the left and right, or top and bottom | `borderX`, `borderY`                                     |
+| A line at the start or end of the text line    | `borderStart`, `borderEnd`                               |
+| The color of the line                          | `borderColor`                                            |
+
+Start and end follow the direction of the text: in a right-to-left language, the
+start is on the right
+([MDN: CSS logical properties](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_logical_properties_and_values)).
+
+```tsx
+// A line around a card
+<Box border="solid-25" borderColor="neutral.6" borderRadius="300" />
+
+// A separator below a header
+<Box borderBottom="solid-25" borderColor="neutral.6" />
+
+// A thicker line in a status color
+<Box border="solid-50" borderColor="critical.7" />
+
+// In a recipe
+base: {
+  border: "solid-25",
+  borderColor: "colorPalette.6",
+}
+```
+
+For the full list of props, see [Style props: Border](/home/style-props/border).
+
+### Change the width in a state
+
+There are no tokens for the width alone. To change the width, for example when
+an element is selected, set a border token and its color again in that state:
+
+```tsx
+// In a recipe
+base: {
+  border: "solid-25",
+  borderColor: "neutral.6",
+},
+_selected: {
+  border: "solid-50",
+  borderColor: "primary.9",
+},
+```
+
+### Borders and the size of an element
+
+> [!NOTE]\
+> Nimbus uses `box-sizing: border-box` for every element. The border is part of
+> the width and the height that you set. A `100px` wide box with a `solid-25`
+> border has 98px for the padding and the content.
+
+### Editor support
+
+With the design token TypeScript plugin, autocomplete shows the value next to
+the token. See
+[Installation](/home/getting-started/installation#design-token-autocomplete-optional)
+for how to set it up.
+
+## Values that Nimbus components use
+
+In the recipes of Nimbus components, `solid-25` is the most common border token
+(19 times). Calendar, Select, ComboBox and ListBox, for example, use it on one
+side only, with `borderBottom`. `solid-50` is used 7 times, for Checkbox,
+Switch, Slider, Kbd, Steps and ListBox. `solid-75` and `solid-100` are not used.

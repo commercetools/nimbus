@@ -510,6 +510,9 @@ Before creating the main component, ensure these files exist:
 
 # 4. Create i18n file (if component has user-facing text)
 /writing-i18n create ComponentName
+
+# 5. Create the illustration (every component with a main doc page)
+/writing-illustrations create ComponentName
 ```
 
 #### Step 3: Generate Component Implementation

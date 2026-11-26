@@ -1,0 +1,239 @@
+---
+id: Style Props-How style props work
+title: How style props work
+illustration: style-props
+description:
+  "How style props work in Nimbus: tokens as values, responsive values, pseudo
+  props, shorthands and the props that have no effect."
+order: 1
+menu:
+  - Home
+  - Style Props
+  - How style props work
+tags:
+  - document
+  - style props
+  - tokens
+  - responsive
+  - breakpoints
+  - pseudo props
+  - conditions
+  - shorthands
+  - dark mode
+---
+
+How style props work in Nimbus: tokens as values, responsive values, pseudo
+props, shorthands and the props that have no effect.
+
+## What a style prop is
+
+A style prop is a prop on a Nimbus component that sets one CSS rule. Its name
+follows the CSS property. For example, `padding` sets `padding` and
+`borderRadius` sets `border-radius`. The other pages in this section list the
+style props by topic.
+
+```jsx live
+import { Box, Button, Stack } from "@commercetools/nimbus";
+
+const App = () => (
+  <Stack gap="400" align="start">
+    <Button variant="outline" colorPalette="critical">
+      Delete
+    </Button>
+    <Box padding="400" backgroundColor="neutral.3" borderRadius="200">
+      A box with style props
+    </Box>
+  </Stack>
+);
+```
+
+## Values are design tokens
+
+Give a style prop a design token, not a raw value. A token is a named value from
+the design system. For example, `p="400"` sets 16px of padding and
+`bg="primary.9"` sets the main color. Tokens keep your screen consistent with
+the Nimbus components, and color tokens follow the color mode.
+
+The token group depends on the prop. The prop tables on the other pages show the
+token category of each prop.
+
+| Group      | Example token | Used by                 | Reference                                        |
+| ---------- | ------------- | ----------------------- | ------------------------------------------------ |
+| Colors     | `primary.9`   | `color`, `bg`           | [Colors](/home/design-tokens/colors)             |
+| Spacing    | `400`         | `p`, `m`, `gap`         | [Spacing](/home/design-tokens/spacing)           |
+| Sizes      | `full`, `1/2` | `w`, `h`, `maxW`        | [Sizes](/home/design-tokens/sizes)               |
+| Typography | `400`, `body` | `fontSize`, `textStyle` | [Typography](/home/design-tokens/typography)     |
+| Radii      | `200`         | `borderRadius`          | [Radii](/home/design-tokens/radii)               |
+| Shadows    | `2`           | `boxShadow`             | [Shadows](/home/design-tokens/shadows)           |
+| Z-indices  | `sticky`      | `zIndex`                | [Z-Indices](/home/design-tokens/other/z-indices) |
+
+```jsx live
+import { Box, Text } from "@commercetools/nimbus";
+
+const App = () => (
+  <Box p="400" bg="primary.2" borderRadius="200" boxShadow="2">
+    <Text color="primary.11">Space, color, radius and shadow are tokens.</Text>
+  </Box>
+);
+```
+
+The spacing and size scales have the same numeric tokens up to `3200`, so
+`p="400"` and `w="400"` are both 16px. The prop decides which scale applies. For
+all groups of tokens, see [Design Tokens](/home/design-tokens).
+
+## Responsive values
+
+Give a style prop an object to change its value by screen size. The keys are the
+breakpoints. `base` is the value for every width where no other key applies.
+Write the value for the smallest screen as `base`, and add the changes for
+larger screens.
+
+Nimbus has five breakpoints: `sm` (480px), `md` (768px), `lg` (1024px), `xl`
+(1280px) and `2xl` (1536px). Each breakpoint is a minimum width. A value for
+`md` applies from 768px up, until a value for a larger breakpoint replaces it.
+
+```jsx live
+import { Box, Stack } from "@commercetools/nimbus";
+
+const App = () => (
+  <Stack
+    direction={{ base: "column", md: "row" }}
+    gap={{ base: "200", md: "600" }}
+  >
+    <Box p="400" bg="info.3">
+      Item 1
+    </Box>
+    <Box p="400" bg="info.3">
+      Item 2
+    </Box>
+  </Stack>
+);
+```
+
+Change the width of your browser window to see the change at 768px. For the
+breakpoint scale, see [Breakpoints](/home/design-tokens/other/breakpoints).
+
+## Pseudo props
+
+A pseudo prop applies style props only in a state. Its name starts with an
+underscore, and its value is an object of style props.
+
+```jsx live
+import { Box } from "@commercetools/nimbus";
+
+const App = () => (
+  <Box
+    p="400"
+    bg="neutral.2"
+    borderRadius="200"
+    tabIndex={0}
+    _hover={{ bg: "neutral.4" }}
+    _focusVisible={{ bg: "primary.3" }}
+  >
+    Move the pointer over this box, or focus it with the keyboard
+  </Box>
+);
+```
+
+These pseudo props are available:
+
+| Pseudo prop     | Applies when                                 |
+| --------------- | -------------------------------------------- |
+| `_hover`        | The pointer is over the element              |
+| `_focus`        | The element has focus                        |
+| `_focusVisible` | The element has focus that the browser shows |
+| `_focusWithin`  | The element or a child has focus             |
+| `_active`       | The element is pressed down                  |
+| `_disabled`     | The element is disabled                      |
+| `_checked`      | The element is checked                       |
+| `_invalid`      | The element is invalid                       |
+| `_readOnly`     | The element is read-only                     |
+| `_expanded`     | The element is expanded                      |
+| `_pressed`      | A React Aria component is being pressed      |
+| `_selected`     | The element is selected                      |
+| `_open`         | The element is open or entering              |
+| `_closed`       | The element is closed or exiting             |
+| `_before`       | The `::before` pseudo-element                |
+| `_after`        | The `::after` pseudo-element                 |
+| `_placeholder`  | The placeholder of an input                  |
+
+Nimbus changes five of these so that they work with React Aria components:
+
+- `_hover` applies only on devices that can hover. It also matches the
+  `data-hovered` attribute that React Aria sets.
+- `_pressed` matches the `data-pressed` attribute.
+- `_selected` matches `data-selected` and `aria-selected`.
+- `_open` and `_closed` match the entering and exiting states of animations.
+
+### Color mode
+
+Use `_dark` and `_light` to set a value for one color mode. Color tokens already
+have a value for each color mode, so you rarely need them.
+
+```jsx
+<Box bg={{ base: "primary.2", _dark: "primary.4" }} />
+```
+
+## Shorthands
+
+Some style props have a short name. A shorthand sets the same CSS property and
+accepts the same tokens.
+
+| Shorthand              | Style prop                                                   |
+| ---------------------- | ------------------------------------------------------------ |
+| `p`                    | `padding`                                                    |
+| `px`, `py`             | `paddingInline`, `paddingBlock`                              |
+| `pt`, `pr`, `pb`, `pl` | `paddingTop`, `paddingRight`, `paddingBottom`, `paddingLeft` |
+| `m`                    | `margin`                                                     |
+| `mx`, `my`             | `marginInline`, `marginBlock`                                |
+| `w`, `h`               | `width`, `height`                                            |
+| `minW`, `maxW`         | `minWidth`, `maxWidth`                                       |
+| `minH`, `maxH`         | `minHeight`, `maxHeight`                                     |
+| `bg`                   | `background`                                                 |
+| `bgColor`              | `backgroundColor`                                            |
+| `rounded`              | `borderRadius`                                               |
+| `flexDir`              | `flexDirection`                                              |
+| `textDecor`            | `textDecoration`                                             |
+
+```jsx
+<Box p="400" w="full" bg="primary.2" rounded="200" />
+```
+
+## Props that have no effect
+
+Most filter props have no effect in Nimbus at the moment. These are
+`backdropBlur`, `brightness`, `contrast`, `grayscale`, `hueRotate`, `invert`,
+`saturate`, `sepia`, `dropShadow` and the other `backdrop*` filter props. Only
+`filter`, `backdropFilter` and `blur` work.
+
+The reason is in the global styles of Nimbus. For each of these props, they set
+a default on every element, and that default wins over the value of your style
+prop. The problem is tracked in
+[issue #2143](https://github.com/commercetools/nimbus/issues/2143).
+
+Write the CSS function in `filter` or `backdropFilter` instead, with a blur
+token in curly braces:
+
+```jsx
+<Box filter="blur({blurs.200})" />
+<Box backdropFilter="blur({blurs.200})" bg="bg/60" />
+```
+
+See [Filters](/home/style-props/filters) and
+[Blurs](/home/design-tokens/other/blurs).
+
+## Where to go next
+
+- [Layout](/home/style-props/layout): aspect ratio, breaks, display, position
+  and more
+- [Flex and Grid](/home/style-props/flex-and-grid): direction, alignment, gaps
+  and grid tracks
+- [Spacing](/home/style-props/spacing): padding and margin
+- [Sizing](/home/style-props/sizing): width, height and their limits
+- [Typography](/home/style-props/typography): fonts, text, lists and tables
+- [Background](/home/style-props/background): colors, images, effects and SVG
+- [Border](/home/style-props/border): borders, radii and outlines
+- [Filters](/home/style-props/filters): blur and other visual effects
+- [Transforms](/home/style-props/transforms): move, scale and rotate
+- [Transitions](/home/style-props/transitions): animate changes
+- [Interactivity](/home/style-props/interactivity): cursor and user input

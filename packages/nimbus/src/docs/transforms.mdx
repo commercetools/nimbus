@@ -1,6 +1,7 @@
 ---
 id: Style Props-Transforms
 title: Transforms
+illustration: style-props-transforms
 description: JSX style props for transforming elements.
 order: 999
 menu:
@@ -10,10 +11,11 @@ menu:
 tags:
   - document
 ---
-
-# Transforms
-
 JSX style props for transforming elements.
+
+The token values of `translateX` and `translateY` are spacing tokens, such as
+`400` (16px) or `-1000` (-40px). For all tokens, see
+[Spacing](/home/design-tokens/spacing).
 
 ## Scale
 
@@ -122,8 +124,8 @@ requires the `translate` prop to be set to `auto`.
 <Box translate="auto" translateX="20px" />
 
 // token values
-<Box translate="auto" translateX="4" />
-<Box translate="auto" translateX="-10" />
+<Box translate="auto" translateX="400" />
+<Box translate="auto" translateX="-1000" />
 ```
 
 | Prop         | CSS Property    | Token Category |
@@ -141,8 +143,8 @@ requires the `translate` prop to be set to `auto`.
 <Box translate="auto" translateY="4rem" />
 
 // token values
-<Box translate="auto" translateY="4" />
-<Box translate="auto" translateY="-10" />
+<Box translate="auto" translateY="400" />
+<Box translate="auto" translateY="-1000" />
 ```
 
 | Prop         | CSS Property    | Token Category |

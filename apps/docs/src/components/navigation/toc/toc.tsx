@@ -1,10 +1,10 @@
 import { Box, Link, Text } from "@commercetools/nimbus";
-import { useEffect, useRef } from "react";
 import type { TocItem } from "@/types";
 import { useToc } from "@/hooks/useToc";
 import { useClosestHeading } from "./hooks/use-closest-heading.ts";
 import { useMainViewport } from "@/contexts/scroll-container-context";
 import { scrollToAnchor } from "@/utils/scroll-to-anchor";
+import { getVisibleTocItems } from "./toc-items";
 
 /**
  * Table of Contents (TOC) component
@@ -13,7 +13,8 @@ import { scrollToAnchor } from "@/utils/scroll-to-anchor";
  * Design: a single continuous hairline rail runs down the left of the list; the
  * active section is marked by a colored segment of that rail plus a bolder,
  * accented label. Nesting is conveyed by indentation alone (no connector
- * glyphs), and depth is capped at H3 to keep the list scannable. This mirrors
+ * glyphs). Only the H2 entries and the H3 entries of the active section are
+ * shown, to keep the list scannable. This mirrors
  * the convention used by Stripe, Vercel, Docusaurus, and other modern docs
  * sites.
  */
@@ -21,7 +22,6 @@ export const Toc = () => {
   const activeToc = useToc();
   const closestHeadingId = useClosestHeading();
   const mainViewportRef = useMainViewport();
-  const activeItemRef = useRef<HTMLDivElement>(null);
 
   // Left padding per heading depth, applied to the label (not the rail, which
   // stays flush). H1/H2 sit against the gutter; H3 gets one extra indent step.
@@ -30,19 +30,6 @@ export const Toc = () => {
     2: "300",
     3: "600",
   };
-
-  // Keep the active item visible when the TOC is taller than its scroll area.
-  useEffect(() => {
-    const el = activeItemRef.current;
-    if (!el) return;
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    el.scrollIntoView({
-      block: "nearest",
-      behavior: prefersReducedMotion ? "auto" : "smooth",
-    });
-  }, [closestHeadingId]);
 
   // Handle TOC link clicks
   const handleLinkClick = (e: React.MouseEvent<Element>, headingId: string) => {
@@ -66,8 +53,9 @@ export const Toc = () => {
     return null;
   }
 
-  // Cap depth at H3 — deeper headings make the list long and hard to scan.
-  const items = (activeToc as TocItem[]).filter((item) => item.depth <= 3);
+  // Show the H1/H2 entries, plus the H3 entries of the section that contains
+  // the active heading. Deeper headings make the list long and hard to scan.
+  const items = getVisibleTocItems(activeToc as TocItem[], closestHeadingId);
 
   if (items.length === 0) {
     return null;
@@ -90,7 +78,6 @@ export const Toc = () => {
             return (
               <Box
                 key={item.href}
-                ref={isActive ? activeItemRef : undefined}
                 colorPalette={isActive ? "primary" : "neutral"}
                 borderLeftWidth="2px"
                 borderLeftStyle="solid"

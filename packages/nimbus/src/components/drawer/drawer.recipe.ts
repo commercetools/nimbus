@@ -120,7 +120,7 @@ export const drawerSlotRecipe = defineSlotRecipe({
             _dark: "bg/20",
             _light: "fg/20",
           },
-          backdropFilter: "blur({sizes.100})",
+          backdropFilter: "blur({blurs.100})",
         },
       },
       false: {
