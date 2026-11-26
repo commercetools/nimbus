@@ -1,0 +1,267 @@
+---
+title: RadarChart component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+> [!WARNING]\
+> **Experimental.** `RadarChart` is experimental in this first release and may
+> change in a later version.
+
+Nimbus installs `recharts` and `react-is` with it. You never import from `recharts`: `RadarChart` and the chart types come from `@commercetools/nimbus`.
+
+### Import
+
+```tsx
+import {
+  RadarChart,
+  type RadarChartProps,
+  type ChartConfig,
+} from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+`RadarChart` takes the rows as `data`, the field that names each spoke as
+`xAxisKey`, the data keys to draw as `series`, and a `config` that maps each
+data key to a `label` and an optional `palette`. `aria-label` or `aria-labelledby` is required.
+
+Each key in `series` must exist in `config`. A key that is missing in `config`
+is skipped, and a warning is logged in development. The shape needs at least
+three spokes (three rows in `data`) to look like a polygon.
+
+```jsx live-dev
+const App = () => {
+  const data = [
+    { skill: "Speed", alpha: 120, beta: 80 },
+    { skill: "Power", alpha: 98, beta: 130 },
+    { skill: "Range", alpha: 86, beta: 100 },
+    { skill: "Skill", alpha: 99, beta: 90 },
+    { skill: "Focus", alpha: 85, beta: 110 },
+  ];
+  return (
+    <RadarChart
+      aria-label="Skills by player"
+      data={data}
+      xAxisKey="skill"
+      series={["alpha", "beta"]}
+      config={{
+        alpha: { label: "Alpha", palette: "ctviolet" },
+        beta: { label: "Beta", palette: "orange" },
+      }}
+    />
+  );
+};
+```
+
+## Usage examples
+
+### Colors
+
+Choose the color of a series with a palette name in `config`. Only the 23 chart
+palettes are accepted: blue, bronze, brown, crimson, ctviolet, cyan, gold,
+grass, gray, green, indigo, iris, jade, orange, pink, plum, purple, red, ruby,
+slate, teal, tomato, violet. The `ChartPalette` type lists them, so TypeScript
+reports any other name. The 7 palettes with a black contrast color (amber, lime,
+mint, sky, yellow, ctyellow and ctteal) are not available.
+
+Without `palette`, a series gets the next palette of the default order:
+ctviolet, orange, teal, crimson, blue, grass, plum, bronze, cyan, red and slate.
+More than 11 series use the same order again from the start.
+
+A chart uses the solid color of the palette, the same color that Nimbus
+components use as their main color. Nimbus verifies these colors with APCA.
+Color is never the only way to tell series apart: the legend and the tooltip
+name each one.
+
+```tsx
+const config: ChartConfig = {
+  alpha: { label: "Alpha", palette: "ctviolet" },
+  beta: { label: "Beta" }, // gets the next palette of the default order
+};
+```
+
+### Legend
+
+The legend is always shown for two or more series, so color is never the only
+signal. For one series, set `showLegend` to show it.
+
+```jsx live-dev
+const App = () => {
+  const data = [
+    { skill: "Speed", alpha: 120, beta: 80 },
+    { skill: "Power", alpha: 98, beta: 130 },
+    { skill: "Range", alpha: 86, beta: 100 },
+    { skill: "Skill", alpha: 99, beta: 90 },
+    { skill: "Focus", alpha: 85, beta: 110 },
+  ];
+  return (
+    <RadarChart
+      aria-label="One series"
+      data={data}
+      xAxisKey="skill"
+      series={["alpha"]}
+      showLegend
+      config={{ alpha: { label: "Alpha", palette: "teal" } }}
+    />
+  );
+};
+```
+
+### Grid
+
+`showGrid` (default `true`) shows the polar grid, the rings and spokes behind
+the series. Each series is drawn as a polygon with a low-opacity fill and a
+full-color outline.
+
+```jsx live-dev
+const App = () => {
+  const data = [
+    { skill: "Speed", alpha: 120, beta: 80 },
+    { skill: "Power", alpha: 98, beta: 130 },
+    { skill: "Range", alpha: 86, beta: 100 },
+    { skill: "Skill", alpha: 99, beta: 90 },
+    { skill: "Focus", alpha: 85, beta: 110 },
+  ];
+  return (
+    <RadarChart
+      aria-label="Skills by player, without grid"
+      data={data}
+      xAxisKey="skill"
+      series={["alpha", "beta"]}
+      showGrid={false}
+      config={{
+        alpha: { label: "Alpha", palette: "ctviolet" },
+        beta: { label: "Beta", palette: "orange" },
+      }}
+    />
+  );
+};
+```
+
+### Loading and empty states
+
+`isLoading` shows a skeleton and sets `aria-busy`. An empty `data` array shows
+the text "No data to display" in a status region. In both states the root
+element has `role="group"` and the `aria-label`.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <RadarChart
+      aria-label="Loading chart"
+      data={[]}
+      xAxisKey="skill"
+      series={["alpha"]}
+      config={{ alpha: { label: "Alpha" } }}
+      isLoading
+    />
+    <RadarChart
+      aria-label="Empty chart"
+      data={[]}
+      xAxisKey="skill"
+      series={["alpha"]}
+      config={{ alpha: { label: "Alpha" } }}
+    />
+  </Stack>
+);
+```
+
+### Animation
+
+`isAnimationActive` turns the draw animation on or off. When you do not set it,
+the animation is off if the person prefers reduced motion, and on otherwise.
+
+### Style props
+
+Chakra style props apply to the root element. Without a size, the chart fills
+the width of its container and uses a default aspect ratio.
+
+```jsx live-dev
+const App = () => {
+  const data = [
+    { skill: "Speed", alpha: 120, beta: 80 },
+    { skill: "Power", alpha: 98, beta: 130 },
+    { skill: "Range", alpha: 86, beta: 100 },
+    { skill: "Skill", alpha: 99, beta: 90 },
+    { skill: "Focus", alpha: 85, beta: 110 },
+  ];
+  return (
+    <RadarChart
+      aria-label="Skills by player"
+      data={data}
+      xAxisKey="skill"
+      series={["alpha", "beta"]}
+      maxWidth="600px"
+      config={{
+        alpha: { label: "Alpha", palette: "ctviolet" },
+        beta: { label: "Beta", palette: "orange" },
+      }}
+    />
+  );
+};
+```
+
+## Component requirements
+
+### Accessibility
+
+Set `aria-label` or `aria-labelledby` (the id of a visible heading). Describe what the chart shows, for example "Skills by
+player".
+
+- **Legend**: the legend is always shown for two or more series, so color is
+  never the only signal. `showLegend` only matters for one series.
+- **Tooltip**: a polite live region (`role="status"`) in the chart root announces
+  the active data point to a screen reader. The visible tooltip is hidden from
+  assistive technology.
+- **Motion**: `isAnimationActive` defaults to off when the person prefers
+  reduced motion.
+
+If your use case requires tracking and analytics for this component, it is good
+practice to add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "radar-chart-example";
+
+export const Example = () => (
+  <RadarChart
+    id={PERSISTENT_ID}
+    aria-label="Skills by player"
+    data={[{ skill: "Speed", alpha: 120 }]}
+    xAxisKey="skill"
+    series={["alpha"]}
+    config={{ alpha: { label: "Alpha" } }}
+  />
+);
+```
+
+#### Keyboard navigation
+
+- `Tab`: moves focus to the chart.
+- `ArrowLeft` and `ArrowRight`: move between the data points and show the
+  tooltip.
+- `Enter`: hides the tooltip, and shows it again.
+
+## API reference
+
+<PropsTable id="RadarChart" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using RadarChart
+within your application. As the component's internal functionality is already
+tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+Recharts needs a measured container to draw the marks, and JSDOM has no layout.
+In unit tests, test what your code controls: the legend, the labels, the loading
+state and the empty state. Test the drawn marks in a browser test.
+
+{{docs-tests: radar-chart.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-charts-radarchart--docs)
+- [Recharts](https://recharts.github.io/)

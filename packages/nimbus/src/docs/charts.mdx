@@ -1,0 +1,44 @@
+---
+id: Components-Charts
+title: Charts
+description: Components for showing data series as charts.
+order: 7
+menu:
+  - Components
+  - Charts
+tags:
+  - document
+  - chart
+icon: Leaderboard
+---
+
+# Charts
+
+Components for showing data series as charts.
+
+## Where to start
+
+Start with a ready-made chart. Each one is a single component: you pass `data`
+and `config`, and you get a complete chart with tooltip, legend, empty state and
+loading state. Show or hide parts with props such as `showGrid`, `showTooltip`
+and `showLegend`.
+
+| You want to show                         | Use           |
+| ---------------------------------------- | ------------- |
+| Values across categories                 | `BarChart`    |
+| A change over an ordered axis            | `LineChart`   |
+| A change over an ordered axis, filled    | `AreaChart`   |
+| The share of each category in a total    | `PieChart`    |
+| Several values per item on a polar grid  | `RadarChart`  |
+| Each category as a ring                  | `RadialChart` |
+| Bars, lines and areas in one chart       | `Chart`       |
+
+Use `Chart` only when no ready-made chart draws what you need, for example bars
+and a line together. You assemble it from `Chart.Root`, `Chart.Plot` and the
+series parts. `Chart` is for cartesian charts. Pie, radar and radial charts are
+ready-made only.
+
+All charts come from `@commercetools/nimbus`. You do not import anything from
+`recharts`.
+
+<CategoryOverview variant="list" />

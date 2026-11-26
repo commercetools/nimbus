@@ -1,0 +1,225 @@
+---
+id: Components-RadialChart
+title: Radial chart
+exportName: RadialChart
+description: Compares categories with concentric rings on light gray tracks.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Charts
+  - Radial chart
+tags:
+  - component
+  - chart
+  - radial
+  - ring
+  - gauge
+  - comparison
+  - data visualization
+---
+
+## Overview
+
+Use `RadialChart` to compare a few categories with concentric rings, for example
+visitors by browser. Each category is one ring. The longer the ring, the larger
+the value.
+
+> [!WARNING]\
+> **Experimental.** `RadialChart` is experimental in this first release and may
+> change in a later version.
+
+Nimbus installs `recharts` and `react-is` with it. You never import from `recharts`: `RadialChart` and the chart types come from `@commercetools/nimbus`.
+
+A chart is given the rows of data, the field that holds the category name
+(`nameKey`), the field that holds the value (`valueKey`), and a label and color
+for each category. It fills the width of its container and has a default aspect
+ratio. Rings are separated by a 2 px stroke in the page color, and the tooltip
+shows the values of one data point. Use one row per category: a repeated category draws a second mark in the same color, and the legend lists it once.
+
+### Resources
+
+[W3C WAI: Complex images](https://www.w3.org/WAI/tutorials/images/complex/)
+
+## Variables
+
+### Categories
+
+With two or more categories the legend is always shown and lists the categories.
+Each category takes its label and palette from `config`.
+
+```jsx live
+const App = () => {
+  const data = [
+    { browser: "chrome", visitors: 275 },
+    { browser: "safari", visitors: 200 },
+    { browser: "firefox", visitors: 187 },
+  ];
+  return (
+    <RadialChart
+      aria-label="Visitors by browser"
+      data={data}
+      nameKey="browser"
+      valueKey="visitors"
+      config={{
+        chrome: { label: "Chrome", palette: "ctviolet" },
+        safari: { label: "Safari", palette: "orange" },
+        firefox: { label: "Firefox", palette: "teal" },
+      }}
+    />
+  );
+};
+```
+
+### One category
+
+A chart with one category does not show a legend by default. Set `showLegend` to
+show it.
+
+```jsx live
+const App = () => {
+  const data = [{ browser: "chrome", visitors: 275 }];
+  return (
+    <RadialChart
+      aria-label="Chrome visitors"
+      data={data}
+      nameKey="browser"
+      valueKey="visitors"
+      showLegend
+      config={{ chrome: { label: "Chrome", palette: "ctviolet" } }}
+    />
+  );
+};
+```
+
+### Tooltip
+
+`showTooltip` (default `true`) shows a tooltip with the values of the active
+data point. Set `showTooltip={false}` to hide it when the values are shown
+somewhere else.
+
+```jsx live
+const App = () => {
+  const data = [
+    { browser: "chrome", visitors: 275 },
+    { browser: "safari", visitors: 200 },
+    { browser: "firefox", visitors: 187 },
+  ];
+  return (
+    <RadialChart
+      aria-label="Visitors by browser, without tooltip"
+      data={data}
+      nameKey="browser"
+      valueKey="visitors"
+      showTooltip={false}
+      config={{
+        chrome: { label: "Chrome", palette: "ctviolet" },
+        safari: { label: "Safari", palette: "orange" },
+        firefox: { label: "Firefox", palette: "teal" },
+      }}
+    />
+  );
+};
+```
+
+### States
+
+Set `isLoading` to show a placeholder while the data loads. An empty `data`
+array shows the text "No data to display".
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="400">
+    <RadialChart
+      aria-label="Loading chart"
+      data={[]}
+      nameKey="browser"
+      valueKey="visitors"
+      config={{ chrome: { label: "Chrome" } }}
+      isLoading
+    />
+    <RadialChart
+      aria-label="Empty chart"
+      data={[]}
+      nameKey="browser"
+      valueKey="visitors"
+      config={{ chrome: { label: "Chrome" } }}
+    />
+  </Stack>
+);
+```
+
+### Categories and `config`
+
+`nameKey` is the data field that holds the category name, and `valueKey` is the
+field that holds its value. Each distinct value of the `nameKey` field is a
+category, in the order of the data. `config` is keyed by the **category name**
+(the value of `nameKey`), not by `valueKey`: each category takes its label and
+palette from `config[categoryName]`. A category that is missing in `config` is
+skipped and not drawn, and the other categories keep their colors. If two rows
+have the same category name, both rows are drawn and the legend lists the name
+once.
+
+### How the rings are scaled
+
+Each ring starts at the top and grows clockwise. A ring shows a relative size,
+not a share of a total: the ring with the largest value is a full circle, and
+every other ring is drawn relative to it. A light gray track behind each ring
+shows the full circle. Read the exact values in the tooltip.
+
+## Colors
+
+Each category has a color. Choose it with the name of a palette in `config`, for
+example `"ctviolet"` or `"orange"`. Only the 23 chart palettes are accepted:
+blue, bronze, brown, crimson, ctviolet, cyan, gold, grass, gray, green, indigo,
+iris, jade, orange, pink, plum, purple, red, ruby, slate, teal, tomato, violet.
+
+Seven palettes are not available, because their solid color is light and has a
+black contrast color: amber, lime, mint, sky, yellow, ctyellow and ctteal.
+
+When a category has no `palette`, it gets the next palette of the default order:
+ctviolet, orange, teal, crimson, blue, grass, plum, bronze, cyan, red and slate.
+A chart with more than 11 categories uses the same order again from the start.
+
+A chart uses the solid color of the palette, the same color that Nimbus
+components use as their main color. Nimbus verifies these colors with APCA.
+Color is never the only way to tell series apart: the legend and the tooltip
+name each one.
+
+## Guidelines
+
+### Best practices
+
+- Write an `aria-label` that says what the chart shows and for which period,
+  or point `aria-labelledby` at a visible heading that does.
+- Keep the number of categories low. The default order has 11 palettes that are
+  easy to tell apart; more categories reuse colors.
+- Use short, clear labels. They appear in the legend and the tooltip.
+- Do not rely on color alone. Keep the legend visible so series are told apart by their labels.
+
+### When to use
+
+> [!TIP]\
+> Use `RadialChart` to compare a few categories (about 2 to 5) in a compact,
+> round shape, for example progress or share values.
+
+> [!CAUTION]\
+> Do not use `RadialChart` when readers must compare exact values or when there
+> are many categories. Bars are easier to compare (use a bar chart).
+
+## Accessibility
+
+- Every chart needs an `aria-label` that says what the chart shows, for example
+  "Visitors by browser".
+- Keyboard: Tab moves focus to the chart. ArrowLeft and ArrowRight move between
+  the data points and show the tooltip. Enter hides the tooltip and shows it
+  again.
+- A polite live region announces the values of the active data point to a
+  screen reader.
+- The legend is always shown for two or more categories, so color is never the
+  only way to tell categories apart. `showLegend` only matters for a chart with
+  one category.
+- Rings that touch are separated by a 2 px stroke in the page color, so each
+  ring has a visible edge.
+- The draw animation is off by default when the person prefers reduced motion.
+  Use `isAnimationActive` to set it yourself.

@@ -343,6 +343,14 @@ catalogs:
     remark: ^15.0.1
     remark-flexible-toc: ^1.3.0
     to-vfile: ^8.0.0
+  # Chart components. recharts and react-is (a peer dependency of recharts) are
+  # regular dependencies of @commercetools/nimbus, so consumers install them
+  # with Nimbus and never import them. They are externalized in the library
+  # build, see packages/nimbus/vite.config.ts. The lower bound ^3.10.1 is the
+  # newest version that passed the minimumReleaseAge rule when this was added.
+  charts:
+    recharts: ^3.10.1
+    react-is: ^19.0.0
   # Private docs-app pins — not published to npm. Exact versions (no ^ or ~) so
   # Renovate updates are explicit PRs rather than silent range expansion.
   apps:
